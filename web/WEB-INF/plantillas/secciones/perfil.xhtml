@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">				
+  <p:dialog id="perfil" widgetVar="dialogoPerfil" header="Perfil" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false"  onHide="janal.desbloquear()" resizable="false">    
+    <p:panel>
+      <i class="icon-user-2 Fs50 Fleft Wid25 hardblue"></i>
+      <div class="Fs24 Fright MarTop10 leaden Wid70">#{sessionScope.autentifica.empleado.nombreCompleto}</div>                          
+      <p:separator styleClass="Wid100"/>
+      <div class="EmptyBox10"></div>
+      <div class="Fs18 leaden">
+        <a class="DispInlBlock Wid100 Fleft Fs16 MarRight20"><i class="hardblue">Cuenta: </i><i class="leaden"> #{sessionScope.autentifica.empleado.cuenta}</i></a>
+      </div>                          
+      <div class="Fs18 leaden">
+        <a class="DispInlBlock Wid100 Fleft Fs16 MarRight20"><i class="hardblue">Perfil: </i><i class="leaden"> #{sessionScope.autentifica.empleado.descripcionPerfil}</i></a>
+      </div>                          
+      <div class="EmptyBox10"></div>
+      <p:separator styleClass="Wid100"/>
+      <div class="EmptyBox10"></div>
+      <div class="Container Wid100"><i class="icon-key softgray MarRight10 Fs14 Fright orange">Último acceso: #{sessionScope.autentifica.ultimoAcceso}</i></div>      
+      <div class="EmptyBox10"></div>
+      <i class="icon-desktop softgray MarRight10 Fs14 Fright">#{kajoolUtilAplicacion.versionAplicacion}</i>      
+      <div class="EmptyBox10"></div>
+    </p:panel>        
+    <div class="janal-line-button">
+      <p:commandButton process="@none" icon="fa fa-close" value="Cerrar" oncomplete="PF('dialogoPerfil').hide();"/>
+    </div>
+  </p:dialog>
+  <ui:include src="/WEB-INF/plantillas/secciones/sistema.xhtml" />
+  <p:notificationBar position="top" effect="slide" styleClass="jana-bar-top" widgetVar="notification" effectSpeed="slow">
+    <span title="Cerrar" style="position: absolute; top: 10px; right: 80px; cursor: pointer;" onclick="PF('notification').hide();"><i class="fa fa-lg fa-close"/></span>
+    <p:panelGrid layout="grid" columns="2" columnClasses="janal-wid-col-200">
+      <h:outputText value="Aplicación KAJOOL" styleClass="Fs20"/>
+      <h:outputText value="#{kajoolUtilAplicacion.notificacion}" escape="false" styleClass="Fs14"/>
+    </p:panelGrid>
+  </p:notificationBar>      
+</html>

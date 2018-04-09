@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Coloque la mascara y validacion que se desee probar" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields= {
+        'mascara': {validaciones: 'requerido', mascara: 'texto'},
+        'validaciones': {validaciones: 'requerido', mascara: 'libre'},
+        'notificacion': {validaciones: 'no-aplica', mascara: 'texto'}
+      };
+
+      function test() {
+        delete Janal.Control.fields['entrada'];
+        janal.update(Janal.Control.fields);
+        if(janal.execute()) {
+          Janal.Control.fields['entrada']= {validaciones: $.trim($('#validaciones').val()), mascara: $.trim($('option:selected', $('select[id="mascara_input"]')).val()), mensaje: $.trim($('#mensaje').val())};
+          $('#salida').text('Janal.Control.field: "entrada": {validaciones: "'+ $('#validaciones').val()+ '", mascara:"'+ $('#mascara').val()+ '", mensaje:"'+ $('#notificacion').val()+ '"}');
+          janal.update(Janal.Control.fields);
+        } // if
+      }
+
+      function execute() {
+        if(janal.execute())
+          janal.show([{summary: 'Validación', detail: 'Ok :)'},{summary: 'janal', detail: 'funcionando...'}]);
+      }
+    </script>
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-content-table">
+      <p:panelGrid columns="3" class="ui-grid-responsive" columnClasses="ui-grid-col-2,ui-grid-col-6,ui-grid-col-4" layout="grid">
+        <p:outputLabel for="mascara" value="Mascara:"/>
+        <p:selectOneMenu id="mascara" value="#{kajoolPlantillasFormulariosDinamico.mascara}" styleClass="Wid100">
+          <f:selectItems value="#{kajoolPlantillasFormulariosDinamico.masks}"/>
+        </p:selectOneMenu>
+        <p:spacer width="1"/>
+        <p:outputLabel for="validaciones" value="Validaciones:"/>
+        <p:inputText id="validaciones" value="#{kajoolPlantillasFormulariosDinamico.validaciones}" styleClass="Wid70"/>
+        <p:spacer width="1"/>
+        <p:outputLabel for="notificacion" value="Mensaje:"/>
+        <p:inputText id="notificacion" styleClass="Wid70"/>
+        <p:spacer width="1"/>
+        <p:outputLabel for="entrada" value="Entrada:"/>
+        <p:inputText id="entrada" value="#{kajoolPlantillasFormulariosDinamico.entrada}" styleClass="Wid70"/>
+        <p:commandButton id="cancelar" icon="fa fa-remove" type="button" icon="ui-icon-refresh" title="Aplicar reglas de validación" onclick="test()"/>
+      </p:panelGrid>
+      <p:spacer width="10"/>
+      <h:outputText id="salida" value="Janal.Control.field:"/>
+    </div>
+  </ui:define>
+  <ui:define name="acciones">
+    <p:commandButton id="aceptar" icon="fa fa-check" type="button" value="Aceptar" onclick="execute()"/>
+  </ui:define>
+</ui:composition>

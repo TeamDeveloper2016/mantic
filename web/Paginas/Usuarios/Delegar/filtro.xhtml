@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Usuarios con acceso delegado"/>
+  <ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {
+				parametro: {validaciones: 'libre', mascara: 'libre'}
+			};
+		</script>
+    <style type="text/css">
+      .janal-column-text {
+        text-align:left !important;
+        width: 5%;
+      }
+    </style>
+  </ui:define>
+  <ui:define name="contenido">
+    <p:fieldset legend="Buscar por" toggleable="true">
+			<p:panelGrid columns="3" layout="grid" columnClasses="ColWid15,ColWid30,ColWid5">
+				<p:outputLabel for="parametro" styleClass="janal-text-one-line" value="Curp, nombre ó cuenta:"/>
+				<p:inputText id="parametro" value="#{kajoolUsuariosDelegarFiltro.attrs.parametro}" styleClass="janal-wid-70"/>
+				<p:commandButton id="buscarDelega" icon="icono-buscar" process="@this parametro" actionListener="#{kajoolUsuariosDelegarFiltro.doLoad}" update="tabla" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();"/>
+			</p:panelGrid>			
+		</p:fieldset>
+		<p:dataTable styleClass="janal-content-table" lazy="true" widgetVar="kajoolTable" id="tabla" var="row" rowIndexVar="index" value="#{kajoolUsuariosDelegarFiltro.lazyModel}" paginator="#{kajoolUsuariosDelegarFiltro.lazyModel.rowCount gt kajoolUsuariosDelegarFiltro.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" selectionMode="single" selection="#{kajoolUsuariosDelegarFiltro.attrs.selected}" reflow="true">
+			<f:facet name="header">
+				<div style="height: 35px">
+					<div style="float: right">
+						<p:menuButton value="Opciones">
+							<p:menuitem value="Agregar" process="@this" action="general" icon="fa fa-plus" title="Agregar" ajax="false"/>
+							<p:separator/>
+							<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+						</p:menuButton>
+					</div>
+				</div>
+			</f:facet>									
+      <p:ajax event="contextMenu" update="idContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);"/>      		
+      <p:column styleClass="TexAlCenter Wid20 Responsive" sortBy="#{row.curp}">
+				<f:facet name="header">
+					<h:outputText value="CURP"/>
+				</f:facet>
+				<h:outputText value="#{row.curp}" />
+			</p:column>
+			<p:column styleClass="TexAlLeft Wid20 Responsive" sortBy="#{row.nombreCompleto}">
+				<f:facet name="header">
+					<h:outputText value="Nombre"/>
+				</f:facet>
+				<h:outputText value="#{row.nombreCompleto}"/>
+			</p:column>
+			<p:column styleClass="TexAlLeft Wid20 Responsive" sortBy="#{row.login}">
+				<f:facet name="header">
+					<h:outputText value="Cuenta"/>
+				</f:facet>
+				<h:outputText value="#{row.login}" />
+			</p:column>
+			<p:column styleClass="TexAlLeft Wid20 Responsive" sortBy="#{row.estatus}">
+				<f:facet name="header">
+					<h:outputText value="Estatus"/>
+				</f:facet>
+				<h:outputText value="#{row.estatus}" />
+			</p:column>
+			<p:column styleClass="TexAlCenter Wid20 Responsive" sortBy="#{row.vigenciaIni}">
+				<f:facet name="header">
+					<h:outputText value="Vigencia inicial"/>
+				</f:facet>
+				<h:outputText value="#{row.vigenciaIni}" class="TextAlCenter"/>
+			</p:column>
+			<p:column styleClass="TexAlCenter Wid20 Responsive" sortBy="#{row.vigenciaFin}">
+				<f:facet name="header">
+					<h:outputText value="Vigencia final"/>
+				</f:facet>
+				<h:outputText value="#{row.vigenciaFin}" />
+			</p:column>
+			<p:column styleClass="TexAlCenter Wid20 Responsive" sortBy="#{row.registro}">
+				<f:facet name="header">
+					<h:outputText value="Registro"/>
+				</f:facet>
+				<h:outputText value="#{row.registro}" />
+			</p:column>							
+			<f:facet name="footer">
+				Total [#{kajoolUsuariosDelegarFiltro.lazyModel.rowCount eq null ? '0' : kajoolUsuariosDelegarFiltro.lazyModel.rowCount}] registro(s)
+			</f:facet>
+		</p:dataTable>
+		<h:commandLink id="dataPdf">
+			<p:dataExporter type="pdf" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}" />
+		</h:commandLink>
+		<h:commandLink id="dataXls">
+			<p:dataExporter type="xls" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>
+		</h:commandLink>
+		<p:contextMenu id="idContextMenu" for="tabla" widgetVar="kajoolContextMenu">
+			<p:menuitem id="eliminar" value="Eliminar" onstart="return janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show();" process="@this tabla"  update="confirmacion" icon="fa fa-trash"/>
+			<p:separator/>
+			<p:menuitem id="activar" value="Activar" onstart="return janal.bloquear();" actionListener="#{kajoolUsuariosDelegarFiltro.doEvento('ACTIVAR')}"  rendered="#{kajoolUsuariosDelegarFiltro.mostrarMenu}" oncomplete="janal.desbloquear();" process="@this tabla"  update="tabla" icon="fa fa-check"/>
+			<p:menuitem id="desactivar" value="Desactivar" onstart="return janal.bloquear();" actionListener="#{kajoolUsuariosDelegarFiltro.doEvento('DESACTIVAR')}" rendered="#{!kajoolUsuariosDelegarFiltro.mostrarMenu}" oncomplete="janal.desbloquear();" process="@this tabla"  update="tabla" icon="fa fa-lock"/>
+		</p:contextMenu>
+  </ui:define>
+	<ui:param name="componenteBloqueo" value="tabla"/>
+	<ui:param name="tituloConfirmacion" value="Eliminar usuario" />
+	<ui:param name="textoConfirmacion" value="¿ Deseas continuar con la eliminación del usuario delegado ?" />
+	<ui:param name="accionConfirmacion" value="#{kajoolUsuariosDelegarFiltro}"/>
+  <ui:param name="eventoConfirmacion" value="doEliminar"/>
+  <ui:param name="renderedConfirmacion" value="true"/>	
+  <ui:param name="updateComponent" value=":datos:tabla"/>	
+	<ui:define name="detalleConfirmacion">
+		<h:panelGrid columns="2">
+			<label class="janal-text-one-line">CURP:</label>
+			<h:outputText value="#{kajoolUsuariosDelegarFiltro.attrs.selected.curp}" class="janal-text-one-line"/>						
+			<label class="janal-text-one-line">Nombre:</label>
+			<h:outputText value="#{kajoolUsuariosDelegarFiltro.attrs.selected.nombreCompleto}" class="janal-text-one-line"/>						
+		</h:panelGrid>
+	</ui:define>	
+</ui:composition>

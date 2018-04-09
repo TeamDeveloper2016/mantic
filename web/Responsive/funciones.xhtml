@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 31/08/2015
+ time 11:30:04 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/temporal.xhtml"
+                xmlns:pe="http://primefaces.org/ui/extensions">
+  <ui:param name="titulo" value="Por favor seleccione la(s) funcion(es) del personal" />
+  <ui:define name="contenido" >	
+    <p:fieldset  legend="Buscar por" toggleable="true" collapsed="false" styleClass="Responsive100">
+      <p:panelGrid columns="2" layout="grid" columnClasses="janal-wid-10,Wid40" >
+        <p:panelGrid columns="3" layout="grid">
+          <h:outputText value="CURP:"/>
+          <span class="janal-help-icon janal-help-11 fa fa-lg fa-fw fa-question-circle Fright" onclick="countHelp(11);"/>
+          <pe:tooltip for="@(.janal-help-11)" showEvent="click">
+            <h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(11)}" styleClass="Fs15" escape="false"/>
+          </pe:tooltip>
+        </p:panelGrid>
+        <p:selectOneMenu id="busqueda" value="JIGA760130HASMRL04 ALEJANDRO JIMENEZ GARCIA" filter="true" filterMatchMode="startsWith" maxlength="18">
+          <f:selectItem itemLabel="JIGA760130HASMRL04 ALEJANDRO JIMENEZ GARCIA" itemValue="1"/>
+        </p:selectOneMenu>
+        <p:outputLabel  value="Nombre:"/>
+        <h:outputText id="persona" value="ALEJANDRO JIMENEZ GARCIA" />
+      </p:panelGrid>
+    </p:fieldset>
+    <p:fieldset legend="Criterio" toggleable="true" collapsed="false" styleClass="Responsive100">
+      <p:panelGrid columns="2" layout="grid" columnClasses="janal-wid-10,Wid40">
+         <p:outputLabel value="Domicilio:" styleClass="janal-text-one-line"/>
+         <p:inputText size="80"/>
+         <p:outputLabel for="basic" value="Video juegos:" styleClass="janal-text-one-line"/>
+         <p:selectManyCheckbox id="basic">
+           <f:selectItem itemLabel="Xbox One" itemValue="Xbox One" />
+           <f:selectItem itemLabel="PS4" itemValue="PS+" />
+           <f:selectItem itemLabel="Wii U" itemValue="Wii U" />
+         </p:selectManyCheckbox>
+         <p:outputLabel for="console" value="Video juegos:" styleClass="janal-text-one-line"/>
+         <p:selectOneRadio id="console">
+           <f:selectItem itemLabel="Xbox One" itemValue="Xbox One" />
+           <f:selectItem itemLabel="PS4" itemValue="PS+" />
+           <f:selectItem itemLabel="Wii U" itemValue="Wii U" />
+         </p:selectOneRadio>
+      </p:panelGrid>
+    </p:fieldset>
+    <p:dataTable var="row" value="#{kajoolBienvenida.cars}" rows="5" paginator="true" pageLinks="5" styleClass="janal-content-table">
+      <p:column headerText="Matricula" sortBy="#{row.id}">
+        <h:outputText value="#{row.id}" />
+      </p:column>
+      <p:column headerText="Año" sortBy="#{row.year}" styleClass="TexAlRight">
+        <h:outputText value="#{row.year}" />
+      </p:column>
+      <p:column headerText="Nombre(s)" sortBy="#{row.brand}">
+        <h:outputText value="#{row.brand}" />
+      </p:column>
+      <p:column headerText="Color" sortBy="#{row.color}" styleClass="TexAlCenter">
+        <h:outputText value="#{row.color}" />
+      </p:column>
+    </p:dataTable>
+    <div class="janal-line-button">
+      <p:commandButton id="aceptar" icon="fa fa-check"  value="Aceptar"/>
+      <p:commandButton id="cancelar" icon="fa fa-remove" value="Regresar"/>
+    </div>
+  </ui:define>
+</ui:composition>

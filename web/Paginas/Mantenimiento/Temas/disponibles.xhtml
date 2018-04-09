@@ -1,0 +1,48 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+								xmlns:ui="http://java.sun.com/jsf/facelets"
+								xmlns:h="http://java.sun.com/jsf/html"
+								xmlns:f="http://java.sun.com/jsf/core"
+								xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+	<ui:param name="titulo" value="Click sobre el icono para cambiar de tema de colores"/>
+  <ui:define name="librerias">
+    <style type="text/css">
+      .no-link {
+        text-decoration: none;
+      }
+			.recuadro-opciones {
+				display: table;
+				width: 100%;
+				text-align: center;
+			}
+			.en-linea-opciones {
+        display: inline-block;
+        vertical-align: middle;
+			}
+    </style>
+  </ui:define>
+  <ui:define name="contenido">
+    <p:fieldset legend="Temas disponibles" toggleable="true" collapsed="false" styleClass="Responsive100">
+      <center>
+        <div class="recuadro-opciones">	
+          <ui:repeat var="item" value="#{kajoolMantenimientoTemasDisponibles.themes}">
+            <span class="en-linea-opciones">
+              <p:panel style="width:150px;margin:0 auto;text-align:-moz-center;border:none;">
+                <p:commandLink actionListener="#{kajoolMantenimientoTemasDisponibles.onChangeTheme}" onstart="return janal.bloquear();" oncomplete="mmenu.change('#{item.name}');janal.desbloquear();" title="Click para seleccionarlo" update="iktan-slide-menu">
+                  <f:attribute name="tema" value="#{item}"/>
+                  <div class="janal-content-table">
+                    <h:panelGrid columns="1" styleClass="sin-lineas TexAlCenter">
+                      <h:outputText value="#{item.title}" />
+                      <p:graphicImage library="janal" name="icon/temas/#{item.image}"/>
+                    </h:panelGrid>
+                  </div>
+                </p:commandLink>
+              </p:panel>
+            </span>	
+          </ui:repeat>
+        </div>
+      </center>		
+   </p:fieldset>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 18/09/2015
+ time 04:05:29 PM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Mensajes recibidos"/>
+  <ui:define name="contenido">
+    <div class="janal-content-table">
+      <p:fieldset legend="Buscar por" toggleable="true" collapsed="false" styleClass="Responsive100">
+        <p:panelGrid columns="3" layout="grid" columnClasses="janal-wid-5,Wid40,janal-wid-5">
+          <p:outputLabel value="Mensaje:" for="textoMensaje"/>
+          <p:inputText id="textoMensaje" value="#{kajoolMantenimientoMensajesNotificacionFiltro.attrs.mensaje}" styleClass="Container96"/>
+          <p:spacer/>
+          <p:outputLabel value="Prioridad:" for="prioridad"/>
+          <p:selectOneMenu id="prioridad" value="#{kajoolMantenimientoMensajesNotificacionFiltro.attrs.prioridad}">
+            <f:selectItem itemLabel="TODOS" itemValue=" "/>
+            <f:selectItem itemLabel="Alta" itemValue="1"/>
+            <f:selectItem itemLabel="Media" itemValue="2"/>
+            <f:selectItem itemLabel="Baja" itemValue="3"/>
+          </p:selectOneMenu>
+          <p:spacer/>
+          <p:outputLabel value="Estatus:" for="estatus"/>
+          <p:selectOneMenu id="estatus" value="#{kajoolMantenimientoMensajesNotificacionFiltro.attrs.estatus}">
+            <f:selectItem itemLabel="TODOS" itemValue=" "/>
+            <f:selectItem itemLabel="Leído" itemValue="1"/>
+            <f:selectItem itemLabel="No leído" itemValue="2"/>
+          </p:selectOneMenu>
+          <p:commandButton id="buscar" icon="fa fa-search" ajax="true" actionListener="#{kajoolMantenimientoMensajesNotificacionFiltro.doLoad}" process="@this textoMensaje prioridad estatus" update="tabla" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+        </p:panelGrid>
+      </p:fieldset>
+    </div>
+    <p:dataTable id="tabla" var="row" paginator="#{kajoolMantenimientoMensajesNotificacionFiltro.lazyModel.rowCount gt kajoolMantenimientoMensajesNotificacionFiltro.lazyModel.pageSize}" selectionMode="single"  lazy="true" reflow="true" value="#{kajoolMantenimientoMensajesNotificacionFiltro.lazyModel}" selection="#{kajoolMantenimientoMensajesNotificacionFiltro.attrs.selected}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}"  paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
+      <p:ajax event="rowSelect" update="dialogoMensaje" onstart="return janal.bloquear();" oncomplete="PF('dialogoMensajes').show();" />
+      <p:column headerText="Prioridad" styleClass="TexAlCenter ColWid15" sortBy="#{row.prioridad}">
+        <p:graphicImage library="janal" name="icon/acciones/circulo-rojo.png" rendered="#{row.prioridad =='Alta'}" title="#{row.prioridad}"/>
+        <p:graphicImage library="janal" name="icon/acciones/circulo-amarillo.png" rendered="#{row.prioridad =='Media'}" title="#{row.prioridad}"/>
+        <p:graphicImage library="janal" name="icon/acciones/circulo-verde.png" rendered="#{row.prioridad =='Baja'}" title="#{row.prioridad}"/>
+      </p:column>
+      <p:column headerText="Asunto" sortBy="#{row.nombre}">
+        <h:outputText value="#{row.nombre}"/>
+      </p:column>
+      <p:column headerText="Remitente" styleClass="ColWid70" sortBy="#{row.nombreEmpleado}">
+        <h:outputText value="#{row.nombreEmpleado}"/>
+      </p:column>
+      <p:column styleClass="TexAlCenter ColWid15" headerText="Marcar como leído" sortBy="#{row.idBooleano}" >
+        <p:commandButton id="leido" value="Sí" disabled="#{kajoolMantenimientoMensajesNotificacionFiltro.getIdBooleano(row.idBooleano)==1}" actionListener="#{kajoolMantenimientoMensajesNotificacionFiltro.doLeido(row)}" update="tabla"/>
+      </p:column>			
+      <f:facet name="footer">
+        Total [#{kajoolMantenimientoMensajesNotificacionFiltro.lazyModel.rowCount == null ? '0' : kajoolMantenimientoMensajesNotificacionFiltro.lazyModel.rowCount}] mensajes
+      </f:facet>
+    </p:dataTable>
+    <p:panelGrid columns="14">
+      <i class="fa fa-lg fa-question-circle-o icon-info-circled"/>
+      <h:outputText value="Prioridades: "/><p:spacer width="5px"/>
+      <h:outputText value="Alta"/><p:spacer width="5px"/>
+      <p:graphicImage library="janal" name="icon/acciones/circulo-rojo.png" style="border: none"/><p:spacer width="5px"/>					
+      <h:outputText value="Media"/><p:spacer width="5px"/>
+      <p:graphicImage library="janal" name="icon/acciones/circulo-amarillo.png" style="border: none"/><p:spacer width="5px"/>					
+      <h:outputText value="Baja"/><p:spacer width="5px"/>
+      <p:graphicImage library="janal" name="icon/acciones/circulo-verde.png" style="border: none"/>
+    </p:panelGrid>	
+  </ui:define>
+  <ui:define name="dialogos">
+    <p:dialog id="dialogoMensaje" widgetVar="dialogoMensajes" header="Mensaje" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" onHide="janal.desbloquear();" >
+      <p:panelGrid columns="2" layout="grid" styleClass="Container96" columnClasses="ColWid20, TxAlLeft">
+        <p:outputLabel value="Asunto:"/>
+        <p:outputLabel value="#{kajoolMantenimientoMensajesNotificacionFiltro.attrs.selected.nombre}"/>
+      </p:panelGrid>
+      <p:panelGrid columns="1" layout="grid" styleClass="Container96">
+        <p:outputLabel value="Mensaje:"/>
+        <h:inputTextarea value="#{kajoolMantenimientoMensajesNotificacionFiltro.attrs.selected.descripcion}" readonly="true" styleClass="Wid100" rows="10"/>
+      </p:panelGrid>
+      <p:commandButton value="Cerrar" styleClass="Fright" oncomplete="PF('dialogoMensajes').hide();"/>
+    </p:dialog>
+  </ui:define>
+</ui:composition>

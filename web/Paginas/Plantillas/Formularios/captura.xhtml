@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+								xmlns:ui="http://java.sun.com/jsf/facelets"
+								xmlns:h="http://java.sun.com/jsf/html"
+								xmlns:f="http://java.sun.com/jsf/core"
+								xmlns:c="http://java.sun.com/jsp/jstl/core"
+								xmlns:p="http://primefaces.org/ui"
+								template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Son todos los componentes que puede tener una página"/>
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      // valores posibles para display: inline, growl, classic default: growl
+      Janal.Control.display= 'inline';
+      Janal.Control.fields= {
+        'entero':   {validaciones: 'requerido|min-caracteres({"cuantos": 5})', mascara: 'entero'},
+        'letras':   {validaciones: 'requerido', mascara: 'letras'},
+        'fecha':    {validaciones: 'requerido|fecha', mascara: 'fecha'},
+        'registro': {validaciones: 'requerido|registro', mascara: 'registro'},
+        'multiple': {validaciones: 'requerido', mascara: 'libre'},
+        'unico':    {validaciones: 'requerido', mascara: 'libre'},
+        'texto' :   {validaciones: 'requerido', mascara: 'texto'},
+        'opcion':   {validaciones: 'requerido', mascara: 'libre'},
+        'vigenciaInicio': {validaciones: 'requerido|fecha-menor({"cual": "vigenciaTermino"})', mascara: 'fecha'},
+        'vigenciaTermino': {validaciones: 'requerido|fecha-mayor({"cual": "vigenciaInicio"})', mascara: 'fecha'},
+        'persona':  {validaciones: 'requerido', mascara: 'libre'},
+        'nombres':  {validaciones: 'requerido', mascara: 'libre'},
+        'radio':    {validaciones: 'requerido', mascara: 'libre'},
+        'xpersona': {validaciones: 'requerido', mascara: 'libre'},
+        'xnombres': {validaciones: 'requerido', mascara: 'libre'},
+        'xradio':   {validaciones: 'requerido', mascara: 'libre'}
+      };
+
+      function execute() {
+        if(janal.execute())
+          janal.show([{summary: 'Validación', detail: 'Ok :)'},{summary: 'janal', detail: 'funcionando...'}]);
+      }
+    </script>
+  </ui:define>
+	<ui:define name="contenido">
+		<div class="janal-content-table">
+      <h:panelGrid columns="2">
+        <h:panelGrid columns="2">
+          <p:outputLabel for="entero" value="Entero: "/>
+          <p:inputText id="entero"/>
+          <p:outputLabel for="letras" value="Letras: "/>
+          <p:inputText id="letras" size="80"/>
+          <p:outputLabel for="opcion" value="Opcion:"/>
+          <p:selectOneMenu id="opcion">
+            <f:selectItems value="#{kajoolPlantillasFormulariosCaptura.personas}" var="item" itemLabel="#{item.nombres}"/>
+          </p:selectOneMenu>
+          <p:outputLabel for="multiple" value="Multiple:"/>
+          <p:selectManyCheckbox id="multiple" layout="grid" columns="6">
+            <f:selectItems value="#{kajoolPlantillasFormulariosCaptura.personas}" var="item" itemLabel="#{item.nombres}"/>
+          </p:selectManyCheckbox>
+          <p:outputLabel for="unico" value="Unico:"/>
+          <p:selectOneRadio id="unico" layout="grid" columns="6">
+            <f:selectItems value="#{kajoolPlantillasFormulariosCaptura.personas}" var="item" itemLabel="#{item.nombres}"/>
+          </p:selectOneRadio>
+        </h:panelGrid>
+        <h:panelGrid columns="1">
+          <h:panelGrid columns="2">
+            <p:outputLabel for="fecha" styleClass="janal-text-one-line" value="Fecha:"/>
+            <p:calendar id="fecha" showOn="button" pattern="dd/MM/yyyy" locale="es" readonlyInput="true"/>
+            <p:outputLabel for="registro" styleClass="janal-text-one-line" value="Registro:"/>
+            <p:calendar id="registro" showOn="button" pattern="dd/MM/yyyy" locale="es" readonlyInput="true"/>
+            <p:outputLabel for="vigenciaInicio" styleClass="janal-text-one-line" value="Vigencia inicio:"/>
+            <p:calendar id="vigenciaInicio" showOn="button" pattern="dd/MM/yyyy" locale="es" readonlyInput="true"/>
+            <p:outputLabel for="vigenciaTermino" styleClass="janal-text-one-line" value="Vigencia termino:"/>
+            <p:calendar id="vigenciaTermino" showOn="button" pattern="dd/MM/yyyy" locale="es" readonlyInput="true"/>
+          </h:panelGrid>
+          <p:outputLabel for="texto" value="Texto: "/>
+          <p:inputTextarea id="texto" rows="2" cols="80"/>
+        </h:panelGrid>
+      </h:panelGrid>
+      <p:dataTable var="row" rowIndexVar="index" value="#{kajoolPlantillasFormulariosCaptura.personas}" paginator="false">
+        <f:facet name="header">
+          Esto es un ejemplo de una tabla donde todos los datos de la tabla son editables
+        </f:facet>
+        <p:column headerText="No.">
+          <p:outputLabel value="#{index+ 1}.-"/>
+        </p:column>
+        <p:column headerText="Persona" styleClass="persona">
+          <p:inputText id="persona" value="#{row.nombres}" size="50"/>
+        </p:column>
+        <p:column headerText="Nombres" styleClass="nombres">
+          <p:selectOneMenu id="nombres">
+            <f:selectItems value="#{kajoolPlantillasFormulariosCaptura.personas}" var="item" itemLabel="#{item.nombres}"/>
+          </p:selectOneMenu>
+        </p:column>
+        <p:column headerText="Radio" styleClass="radio">
+          <p:selectOneRadio id="radio">
+            <f:selectItems value="#{kajoolPlantillasFormulariosCaptura.personas}" var="item" itemLabel="#{item.nombres}"/>
+          </p:selectOneRadio>
+        </p:column>
+      </p:dataTable>
+      <p:spacer height="10px"/>
+      <p:dataTable var="row" rowIndexVar="index" value="#{kajoolPlantillasFormulariosCaptura.personas}" paginator="false" editable="true">
+        <f:facet name="header">
+          Esto es un ejemplo de una tabla con la opción de editar un registro
+        </f:facet>
+        <p:column headerText="No.">
+          <p:outputLabel value="#{index+ 1}.-"/>
+        </p:column>
+        <p:column headerText="Persona" styleClass="xpersona">
+          <p:cellEditor>
+            <f:facet name="output"><h:outputText value="#{row.nombres}"/></f:facet>
+            <f:facet name="input"><p:inputText id="xpersona" value="#{row.nombres}" style="width:100%"/></f:facet>
+          </p:cellEditor>
+         </p:column>
+        <p:column headerText="Nombres" styleClass="xnombres">
+          <p:cellEditor>
+            <f:facet name="output"><h:outputText value="#{row.nombres}"/></f:facet>
+            <f:facet name="input">
+              <p:selectOneMenu id="xnombres" style="width:200px">
+                <f:selectItems value="#{kajoolPlantillasFormulariosCaptura.personas}" var="item" itemLabel="#{item.nombres}"/>
+              </p:selectOneMenu>
+            </f:facet>
+          </p:cellEditor>
+        </p:column>
+        <p:column headerText="Radio" styleClass="xradio">
+          <p:cellEditor>
+            <f:facet name="output"><h:outputText value="#{row.nombres}"/></f:facet>
+            <f:facet name="input">
+              <p:selectManyCheckbox id="xradio">
+                <f:selectItems value="#{kajoolPlantillasFormulariosCaptura.personas}" var="item" itemLabel="#{item.nombres}"/>
+              </p:selectManyCheckbox>
+            </f:facet>
+          </p:cellEditor>
+        </p:column>
+        <p:column style="width:32px">
+          <p:rowEditor />
+        </p:column>
+      </p:dataTable>
+    </div>
+	</ui:define>
+	<ui:define name="acciones">
+    <p:commandButton id="aceptar" icon="fa fa-check" type="button" value="Aceptar" onclick="execute()"/>
+	</ui:define>
+	<ui:param name="componenteBloqueo" value="aceptar"/>
+</ui:composition>

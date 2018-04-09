@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date Aug 31, 2015
+ time 10:46:34 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/salir.xhtml">
+  <ui:define name="contenido">	
+    <p:remoteCommand name="testAutoRun" action="#{kajoolAccesoInvalidar.clean()}" autoRun="true" />
+    <div id="login-box" class="Container80 MaxWid500 Fnone MarAuto BordRad10" style="border: transparent;">
+      <div class="janal-content-center">
+        <div class="Container90 Fnone MarAuto TexAlCenter TabContent">
+          <p:panelGrid layout="grid" columns="1">
+            <p:graphicImage library="janal" name="img/sistema/cierre-sesion.svg" class="Wid80"/>
+            <span class=" softblue Fs50 Wid100 DispBlock lg-pantalla">Sesión concluida</span>
+            <span class=" softblue Fs20 Wid100 DispBlock xs-pantalla">Sesión concluida</span>
+            <div class="EmptyBox20"/>
+            <p:button value="Regresar al acceso" icon="fa fa-lg fa-user" styleClass="janal-button-alone" href="/indice.jsf?faces-redirect=true"/> 
+          </p:panelGrid>   
+        </div>  
+      </div>  
+    </div>    
+  </ui:define>
+</ui:composition>

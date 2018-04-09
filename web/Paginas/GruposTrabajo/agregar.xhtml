@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:c="http://java.sun.com/jsp/jstl/core"
+		xmlns:p="http://primefaces.org/ui"
+		template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Agregar usuario a grupo de trabajo" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+    Janal.Control.fields =
+       {
+        'nombreSeleccionado': { validaciones: 'requerido', mascara: 'libre'},
+        'unidades'					: { validaciones: 'requerido', mascara: 'libre', mensaje: 'Unidad Ejecutora Requerido'},
+        'ambitos'						: { validaciones: 'requerido', mascara: 'libre', mensaje: 'Ambito Requerido '},
+        'entidades'					: { validaciones: 'requerido', mascara: 'libre', mensaje: 'Seleccionar las entidades'},
+        'perfil'						: { validaciones: 'requerido', mascara: 'libre', mensaje: 'Seleccionar el perfil'},
+        'oficinas'					: { validaciones: 'requerido', mascara: 'libre', mensaje: 'Seleccionar oficina'}
+       };		
+
+       function  validar() {
+         regresar = false;
+				 if ($('#nombreSeleccionado_input').val()==="-1") {
+					 janal.show([{summary: 'Usuario', detail: 'Selecciona de favor un usuario'}]);
+				 }// if
+				 else {
+           if (janal.execute()) {						
+             regresar = janal.bloquear();
+           }// if 					
+				 }//	
+         return regresar;
+       }
+     </script>
+    <style type="text/css">
+      .items-selectonemenu-unidades {
+        overflow: auto;
+        width: 850px !important;
+      }
+    </style>
+  </ui:define>
+	<ui:define name="contenido">
+		<div class="tabla-filtro">
+    <h:panelGrid columns="2">
+      <label for="nombreSeleccionado">Usuario:</label>
+      <h:panelGrid columns="2">
+				<p:selectOneMenu id="nombreSeleccionado" styleClass="contenido-select-350">
+					<f:selectItems value="#{kajoolGruposTrabajoAgregar.busquedaNombre.seleccionado}" var="item" itemValue="#{item.value}"/>
+				</p:selectOneMenu>
+        <p:commandButton id="elegir" icon="icono-buscar" title="Buscar un usuario" onstart="return janal.bloquear();" oncomplete="PF('empleados').show();" update=":datos:nombreSeleccionado" rendered="#{kajoolGruposTrabajoAgregar.accion.name eq 'Agregar'}">
+					<f:setPropertyActionListener target="#{kajoolDialogosVentana.busqueda}" value="#{kajoolGruposTrabajoAgregar.busquedaNombre}" />
+				</p:commandButton>
+      </h:panelGrid>
+			<label for="ambitos">Ámbito:</label>
+      <p:selectOneMenu id="ambitos" value="#{kajoolGruposTrabajoAgregar.unidadEntidad.ambito}" disabled="#{kajoolGruposTrabajoAgregar.elementosDeshabilitados.deshabilitarSelects}"  var="item" converter="janal.convertidor.Entity" styleClass="contenido-select-80">
+        <p:ajax update="unidades entidades oficinas claveUsuario"  process="@this" listener="#{kajoolGruposTrabajoAgregar.doActualizarDesdeAmbitos}" />
+        <f:selectItems value="#{kajoolGruposTrabajoAgregar.unidadEntidad.ambitos}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
+				<p:column>
+					<h:outputText value="#{item.idAmbito}"/>
+				</p:column>
+				<p:column>
+					<h:outputText value="#{item.descripcion}"/>
+				</p:column>	
+			</p:selectOneMenu>
+			<label class="una-sola-linea" for="unidades">Unidad ejecutora:</label>
+      <p:selectOneMenu id="unidades" panelStyleClass="items-selectonemenu-unidades" value="#{kajoolGruposTrabajoAgregar.unidadEntidad.unidadEjecutora}"  var="item" converter="janal.convertidor.Entity" style="width:710px" disabled="#{kajoolGruposTrabajoAgregar.elementosDeshabilitados.deshabilitarSelects}">
+				<p:ajax update="ambitos entidades oficinas claveUsuario"  process="@this" listener="#{kajoolGruposTrabajoAgregar.doActualizarDesdeUnidades}" />
+				<f:selectItems value="#{kajoolGruposTrabajoAgregar.unidadEntidad.unidadesEjecutoras}" var="element" itemValue="#{element}" itemLabel="#{element.descUniEjecutoras}"/>
+				<p:column>
+					<h:outputText value="#{item.iniciales}"/>
+				</p:column>
+				<p:column>
+					<h:outputText value="#{item.descUniEjecutoras}"/>
+				</p:column>	
+			</p:selectOneMenu>
+		 <label for="entidades">Entidad:</label>
+      <p:selectOneMenu id="entidades" value="#{kajoolGruposTrabajoAgregar.unidadEntidad.entidad}" disabled="#{kajoolGruposTrabajoAgregar.elementosDeshabilitados.deshabilitarEntidades || kajoolGruposTrabajoAgregar.elementosDeshabilitados.deshabilitarSelects}"  var="item" converter="janal.convertidor.Entity" styleClass="contenido-select-150">
+        <p:ajax update="oficinas claveUsuario" process="@this" listener="#{kajoolGruposTrabajoAgregar.actualizarDesdeEntidades}" />
+        <f:selectItems value="#{kajoolGruposTrabajoAgregar.unidadEntidad.entidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}" />
+				<p:column>
+					<h:outputText value="#{item.entidad}"/>
+				</p:column>
+				<p:column>
+					<h:outputText value="#{item.descripcion}"/>
+				</p:column>	
+			</p:selectOneMenu>
+			
+     <label for="oficinas">Oficina:</label>
+      <p:selectOneMenu id="oficinas" value="#{kajoolGruposTrabajoAgregar.unidadEntidad.entidadOficina}" disabled="#{kajoolGruposTrabajoAgregar.elementosDeshabilitados.deshabilitarOficinas || kajoolGruposTrabajoAgregar.elementosDeshabilitados.deshabilitarSelects}"  var="item" converter="janal.convertidor.Entity" styleClass="contenido-select-250">
+				<p:ajax process="@this" listener="#{kajoolGruposTrabajoAgregar.actualizarDesdePerfiles}" update="claveUsuario"/>
+        <f:selectItems value="#{kajoolGruposTrabajoAgregar.unidadEntidad.oficinas}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
+				<p:column>
+					<h:outputText value="#{item.clave}"/>
+				</p:column>
+				<p:column>
+					<h:outputText value="#{item.descripcion}"/>
+				</p:column>	
+			</p:selectOneMenu>
+			
+     <label for="perfil" class="una-sola-linea">Perfil de acceso:</label>
+      <p:selectOneMenu id="perfil" value="#{kajoolGruposTrabajoAgregar.criteriosBusqueda.criterioPerfil}" styleClass="contenido-select-350">
+        <p:ajax update="claveUsuario" process="@this" listener="#{kajoolGruposTrabajoAgregar.actualizarDesdePerfiles}" />
+        <f:selectItems value="#{kajoolGruposTrabajoAgregar.criteriosBusqueda.listaPerfiles}" />
+      </p:selectOneMenu>
+
+     <label for="claveUsuario" class="una-sola-linea">Clave de usuario:</label>
+       <p:selectOneMenu  id="claveUsuario"  value="#{kajoolGruposTrabajoAgregar.clavePerfil.clave}"   disabled="#{kajoolGruposTrabajoAgregar.elementosDeshabilitados.deshabilitadoClaveUsuario}" styleClass="contenido-select-40">
+        <p:ajax update="claveUsuario" process="@this"/>
+        <f:selectItems value="#{kajoolGruposTrabajoAgregar.clavePerfil.claves}"   />
+      </p:selectOneMenu>
+     <h:outputText value="Notificar por correo electronico al usuario: " />
+        <p:selectBooleanButton id="enviarCorreo" value="#{kajoolGruposTrabajoAgregar.enviarCorreo}" onLabel="Si" offLabel="No" onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:60px">
+        </p:selectBooleanButton>
+		</h:panelGrid>	
+			</div>
+    <!-- Dialogo para mensajes de aviso -->
+    <ui:param name="textoConfirmacion" value="#{kajoolGruposTrabajoAgregar.mensajeParaUsuario}" />
+    <ui:param name="accionConfirmacion" value="#{kajoolGruposTrabajoAgregar}"/>
+		<ui:param name="eventoConfirmacion" value="activar"	/>	
+	</ui:define>
+	<!-- Dialogo para la búsqueda de personas -->
+	<ui:define name="dialogos">
+		<ui:include src="/Paginas/Dialogos/ventana.xhtml">
+			<ui:param name="dialogo" value="empleados"/>
+			<ui:param name="actualizar" value=":datos:nombreSeleccionado"/>
+			<ui:param name="busqueda" value="#{kajoolGruposTrabajoAgregar.busquedaNombre}" />			
+		</ui:include>
+	</ui:define>
+	
+	<ui:param name="componenteBloqueo"  value="unidades, ambitos, entidades, oficinas,perfil,claveUsuario,cancelar"/>
+	<ui:define name="acciones">
+    <p:commandButton id="aceptar" value="Aceptar" action="#{kajoolGruposTrabajoAgregar.doAceptar}" process="@form" onclick="return validar();" oncomplete="janal.desbloquear()"/>
+    <p:commandButton id="cancelar" value="Cancelar" action="filtro" immediate="true" ajax="false" />
+	</ui:define>
+
+</ui:composition>

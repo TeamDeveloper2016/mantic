@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 2/09/2015
+ time 09:38:53 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Mensajes de perfiles"/>
+  <ui:define name="contenido">
+    <p:fieldset legend="Buscar por" toggleable="true" collapsed="false" styleClass="Responsive100">
+      <p:panelGrid columns="3" layout="grid" columnClasses="janal-wid-20,Wid40,janal-wid-5">
+        <p:outputLabel for="idGrupo" value="Grupo:"/>
+        <p:selectOneMenu id="idGrupo" value="#{kajoolMensajesPerfilesFiltro.attrs.idGrupo}">
+          <f:selectItem itemValue="" itemLabel="Seleccione"/>
+          <f:selectItems value="#{kajoolMensajesPerfilesFiltro.attrs.grupos}"/>
+          <p:ajax event="change" listener="#{kajoolMensajesPerfilesFiltro.doPerfiles()}" process="@this" update="idPerfil"/>
+        </p:selectOneMenu>
+        <p:spacer/>
+        <p:outputLabel for="idPerfil" value="Perfil:"/>
+        <p:selectOneMenu id="idPerfil" value="#{kajoolMensajesPerfilesFiltro.attrs.idPerfil}">
+          <f:selectItem itemValue="" itemLabel="Seleccione"/>
+          <f:selectItems value="#{kajoolMensajesPerfilesFiltro.attrs.perfiles}"/>
+        </p:selectOneMenu>
+        <p:commandButton id="buscar" icon="fa fa-search" value="Buscar" actionListener="#{kajoolMensajesPerfilesFiltro.doLoad()}" update="tabla"/>
+      </p:panelGrid>
+    </p:fieldset>
+    <p:spacer height="1px"/>
+    <p:dataTable id="tabla" var="row" value="#{kajoolMensajesPerfilesFiltro.lazyModel}" selection="#{kajoolMensajesPerfilesFiltro.attrs.seleccion}" paginator="#{kajoolMensajesPerfilesFiltro.lazyModel.rowCount gt kajoolMensajesPerfilesFiltro.lazyModel.pageSize}" rows="#{Constantes.REGISTROS_POR_PAGINA}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single"  lazy="true" reflow="true" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
+      <f:facet name="header">
+        <p:menuButton value="Opciones">
+          <p:menuitem id="agregar" value="Agregar" icon="fa fa-plus" title="Agregar" ajax="false" action="agregar" actionListener="#{kajoolMensajesPerfilesFiltro.doEvento('AGREGAR')}"/>
+        </p:menuButton>				
+      </f:facet>
+      <p:column headerText="Grupo" sortBy="#{row.descripcion}">
+        <h:outputText value="#{row.descripcion}"/>
+      </p:column>
+      <p:column headerText="Perfil" sortBy="#{row.descripcionPerfil}">
+        <h:outputText value="#{row.descripcionPerfil}"/>
+      </p:column>
+      <p:column headerText="Mensaje" sortBy="#{row.descripcionMensaje}">
+        <h:outputText value="#{row.descripcionMensaje}"/>
+      </p:column>
+      <p:column headerText="Vigencia inicio" sortBy="#{row.vigenciaIni}">
+        <h:outputText value="#{row.vigenciaIni}"/>
+      </p:column>
+      <p:column headerText="Vigencia final" sortBy="#{row.vigenciaFin}">
+        <h:outputText value="#{row.vigenciaFin}"/>
+      </p:column>
+    </p:dataTable>
+    <p:contextMenu for="tabla">
+      <p:menuitem id="modificar" icon="fa fa-edit" value="Modificar" ajax="false" action="agregar" actionListener="#{kajoolMensajesPerfilesFiltro.doEvento('MODIFICAR')}"/>
+      <p:menuitem id="eliminar" icon="fa fa-trash" value="Eliminar" oncomplete="PF('confirmacion').show()" process="@this tabla" update="dialogo"/>
+    </p:contextMenu>
+    <p:dialog header="Confirmación" widgetVar="confirmacion" minHeight="40" id="dialogo">
+      <h:panelGrid columns="2">
+        <h:outputText value="¿Esta seguro de eliminar el mensaje seleccionado?" />
+        <h:outputText/>
+        <p:commandButton value="Aceptar" icon="fa fa-check" actionListener="#{kajoolMensajesPerfilesFiltro.doEvento('ELIMINAR')}" oncomplete="PF('confirmacion').hide()" update="tabla"/>
+        <p:commandButton value="Cancelar" icon="fa fa-remove" oncomplete="PF('confirmacion').hide();"/>
+      </h:panelGrid>
+    </p:dialog>
+  </ui:define>
+  <ui:param name="componenteBloqueo" value="idGrupo, idPerfil, buscar"/>
+</ui:composition>

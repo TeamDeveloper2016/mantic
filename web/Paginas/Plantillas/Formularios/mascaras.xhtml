@@ -1,0 +1,757 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date Jul 3, 2014
+ time 10:55:49 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Máscaras utilizadas dentro de kajool" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+			Janal.Control.fields = {
+				'fecha': {validaciones: 'requerido', mascara: 'fecha', mensaje: 'Selecciona una fecha'},
+				'fechaHora': {validaciones: 'requerido', mascara: 'fecha-hora', mensaje: 'Selecciona una fecha con hora'},
+				'registro': {validaciones: 'requerido', mascara: 'registro', mensaje: 'Selecciona una fecha con hora exacta'},
+				'horas': {validaciones: 'requerido', mascara: 'hora', mensaje: 'Selecciona una hora'},
+				'horasCompletas': {validaciones: 'requerido', mascara: 'hora-completa', mensaje: 'Selecciona una hora exacta'},
+				'tarjeta': {validaciones: 'requerido', mascara: 'tarjeta-credito', mensaje: 'Captura los 16 dígitos'},
+				'decimal': {validaciones: 'requerido', mascara: 'decimal', mensaje: 'Captura números decimales'},
+				'decimalSigno': {validaciones: 'requerido', mascara: 'decimal-signo', mensaje: 'Captura números decimales'},
+				'numero': {validaciones: 'requerido', mascara: 'numero', mensaje: 'Captura sólo numeros'},
+				'numeroUno': {validaciones: 'requerido', mascara: 'un-digito', mensaje: 'Captura un número'},
+				'numeroDos': {validaciones: 'requerido', mascara: 'dos-digitos', mensaje: 'Captura dos numeros'},
+				'numeroTres': {validaciones: 'requerido', mascara: 'tres-digitos', mensaje: 'Captura tres numeros'},
+				'tres-digitos-default': {validaciones: 'requerido', mascara: 'tres-digitos-default', mensaje: 'Captura tres numeros'},
+				'numeroCuatro': {validaciones: 'requerido', mascara: 'cuatro-digitos', mensaje: 'Captura cuatro numeros'},
+				'entero': {validaciones: 'requerido', mascara: 'entero', mensaje: 'Captura sólo numeros enteros'},
+				'enteroBlanco': {validaciones: 'requerido', mascara: 'entero-blanco', mensaje: 'Captura sólo numeros enteros separados por coma'},
+				'enteroSigno': {validaciones: 'requerido', mascara: 'entero-signo', mensaje: 'Captura sólo numeros enteros con signo'},
+				'entero-sin-signo': {validaciones: 'requerido', mascara: 'entero-sin-signo', mensaje: 'Captura sólo numeros enteros con signo'},
+				'flotante': {validaciones: 'requerido', mascara: 'flotante', mensaje: 'Captura sólo numeros flotantes'},
+				'flotanteSigno': {validaciones: 'requerido', mascara: 'flotante-signo', mensaje: 'Captura sólo numeros flotantes con signo'},
+				'rfc': {validaciones: 'requerido', mascara: 'rfc', mensaje: 'Captura RFC'},
+				'curp': {validaciones: 'requerido', mascara: 'curp', mensaje: 'Captura CURP'},
+				'moneda': {validaciones: 'requerido', mascara: 'moneda', mensaje: 'Captura tipo moneda'},
+				'monedaDecimal': {validaciones: 'requerido', mascara: 'moneda-decimal', mensaje: 'Captura tipo moneda con decimal'},
+				'minusculas': {validaciones: 'requerido', mascara: 'minusculas', mensaje: 'Captura sólo letras minusculas'},
+				'mayusculas': {validaciones: 'requerido', mascara: 'mayusculas', mensaje: 'Captura sólo letras mayúsculas'},
+				'letras': {validaciones: 'requerido', mascara: 'letras', mensaje: 'Captura solo letras'},
+				'vocales': {validaciones: 'requerido', mascara: 'vocales', mensaje: 'Captura solo letras'},
+				'cuenta': {validaciones: 'requerido', mascara: 'cuenta', mensaje: 'Captura mayúsculas, puntos y numeros'},
+				'libre': {validaciones: 'requerido', mascara: 'libre', mensaje: 'Captura libre'},
+				'numerosLetras': {validaciones: 'requerido', mascara: 'numeros-letras', mensaje: 'Captura mayúsculas, minúsculas y números'},
+				'nombreDto': {validaciones: 'requerido', mascara: 'nombre-dto', mensaje: 'Captura Letras y números sin espacios'},
+				'textos': {validaciones: 'requerido', mascara: 'texto', mensaje: 'Captura solo letras y signos de puntuación'},
+				'enteroSiete': {validaciones: 'requerido', mascara: 'siete-digitos', mensaje: 'Captura siete numeros enteros'},
+				'enteroCinco': {validaciones: 'requerido', mascara: 'cinco-digitos', mensaje: 'Captura cinco numeros enteros'},
+				'diezCinco': {validaciones: 'requerido', mascara: 'diez-digitos', mensaje: 'Captura cinco numeros enteros'},
+				'telefono': {validaciones: 'requerido', mascara: 'telefono', mensaje: 'Captura número telefónico'},
+				'version': {validaciones: 'requerido', mascara: 'version', mensaje: 'Acepta solo 4 numero separados por punto'},
+				'ip': {validaciones: 'requerido', mascara: 'ip', mensaje: 'Acepta solo números y puntos'},
+				'claveCtCallCenter': {validaciones: 'requerido', mascara: 'clave-ct-call-center', mensaje: 'Captura solo letras y numeros especificados'},
+				'claveCt': {validaciones: 'requerido', mascara: 'clave-ct', mensaje: 'Captura solo letras y numeros especificados'},
+				'resultado-entrevista-basico': {validaciones: 'requerido', mascara: 'resultado-entrevista-basico', mensaje: 'Captura solo letras y numeros especificados'},
+				'resultado-entrevista-modulo': {validaciones: 'requerido', mascara: 'resultado-entrevista-modulo', mensaje: 'Captura solo letras y numeros especificados'},
+				'clave-operativa': {validaciones: 'requerido', mascara: 'clave-operativa', mensaje: 'Captura solo letras y numeros especificados'}
+			};
+		</script>
+  </ui:define>
+  <ui:define name="contenido">	
+		<div>
+			<p:accordionPanel activeIndex="-3" widgetVar="accordion">
+				<p:tab title="Máscaras numéricas">
+					<h:panelGrid columns="5" style="width: 900px">
+						<p:column>
+							<label for="decimal" class="janal-text-one-line" >Decimal:</label>
+							<p:inputText id="decimal" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="decimalSigno" class="janal-text-one-line" >Decimal con signo:</label>
+							<p:inputText id="decimalSigno" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de números
+							decimales a dos dígitos, de derecha a izquierda.
+							La máscara separará los miles y los decimales<br/>
+							Tipo: 99,999.999.999.999<br/>
+							<label>	Nombre:<strong>decimal</strong> </label>
+							<br/>
+							<strong>ej</strong>: 11.212.121,22
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de números
+							decimales a dos dígitos con signo (+,-), de
+							derecha a izquierda. La máscara separará los
+							miles y los decimales.<br/>
+							Tipo: 99,999.999.999.999<br/>
+							<label>	Nombre: <strong>decimal-signo </strong></label>
+							<br/>
+							<strong>ej</strong>: -123.123.123,33
+						</p>
+						<p:spacer/>
+
+						<p:column>
+							<label for="numero" class="janal-text-one-line" >Número:</label>
+							<p:inputText id="numero" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="numeroUno" class="janal-text-one-line" >Un dígito:</label>
+							<p:inputText id="numeroUno" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de números
+							enteros .<br/>
+							Tipo: 999999999<br/>
+							<label>	Nombre:<strong> numero	</strong>	</label>	
+							<br/>
+							<strong>ej</strong>: 123456789
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de un<br/>
+							número.<br/>
+							Tipo: 9<br/>
+							<label>	Nombre: <strong>un-digito</strong></label>
+							<br/>
+							<strong>ej</strong>: 1
+						</p>
+						<p:spacer/>
+
+						<p:column>
+							<label for="numeroDos" class="janal-text-one-line" >Dos dígitos:</label>
+							<p:inputText id="numeroDos" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="numeroTres" class="janal-text-one-line" >Tres dígitos:</label>
+							<p:inputText id="numeroTres" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de dos
+							números.<br/>
+							Tipo: 99<br/>
+							<label>	Nombre: <strong>dos-digitos</strong> </label>
+							<br/>
+							<strong>ej</strong>: 12<br/>
+							Se sustituyó por numero_dos y  entero_dos
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de tres
+							números.<br/>
+							Tipo: 999<br/>
+							<label>	Nombre:<strong> tres-digitos</strong>  </label>
+							<br/>
+							<strong>ej</strong>: 123<br/>
+							Se sustituyó por numero_tres, edad y entero_tres
+						</p>
+						<p:spacer/>
+
+						<p:column>
+							<label for="numeroCuatro" class="janal-text-one-line" >Cuatro dígitos:</label>
+							<p:inputText id="numeroCuatro" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="entero" class="janal-text-one-line" >Entero:</label>
+							<p:inputText id="entero" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de cuatro
+							números.<br/>
+							Tipo: 9999<br/>
+							<label>	Nombre: <strong>cuatro-digitos</strong>  </label>
+							<br/>
+							<strong>ej</strong>: 1234<br/>
+							Se sustituyó por numero_cuatro
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de números
+							enteros, los separa por coma (,) cada tres
+							números capturados y rellena los caracteres
+							faltantes con ceros.<br/>
+							Tipo: 999,999,999<br/>
+							<label>		Nombre: <strong> entero </strong></label>
+							<br/>
+							<strong>ej</strong>: 123,456,000
+						</p>
+						<p:spacer/>
+
+						<p:column>
+							<label for="enteroBlanco" class="janal-text-one-line" >Entero blanco:</label>
+							<p:inputText id="enteroBlanco" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="enteroSigno" class="janal-text-one-line" >Entero con signo:</label>
+							<p:inputText id="enteroSigno" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de números
+							enteros y los separa por coma (,) cada tres
+							números capturados.<br/>
+							Tipo: 999,999,999<br/>
+							<label >	Nombre: <strong> entrero-blanco  </strong></label >
+							<br/>
+							<strong>ej</strong>: 123,123,123
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de números
+							enteros con signo (+,-), cada tres números los
+							separa por coma (,), acepta nueve números<br/>
+							Tipo: 999,999,999<br/>
+							<label >	Nombre: <strong>entero-signo </strong></label >
+							<br/>
+							<strong>ej</strong>: -123,123,123
+						</p>
+						<p:spacer/>
+
+						<p:column>
+							<label for="flotante" class="janal-text-one-line" >Flotante:</label>
+							<p:inputText id="flotante" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="flotanteSigno" class="janal-text-one-line" >Flotante signo:</label>
+							<p:inputText id="flotanteSigno" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de números
+							de coma flotante.<br/>
+							Tipo: 999,999,999,999.99<br/>
+							<label>	Nombre:<strong> flotante</strong> </label>
+							<br/>
+							<strong>ej</strong>: 123,123.12
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de números
+							de coma flotante con signo (+,-).<br/>
+							Tipo: 999,999,999,999.99<br/>
+							<label>	Nombre: <strong>flotante-signo</strong> </label>
+							<br/>
+							<strong>ej</strong>: -123,123.90
+						</p>
+						<p:spacer/>
+						<p:column>
+							<label for="moneda" class="janal-text-one-line" >Moneda:</label>
+							<p:inputText id="moneda" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="monedaDecimal" class="janal-text-one-line" >Moneda con decimal:</label>
+							<p:inputText id="monedaDecimal" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de números
+							con signo $.<br/>
+							Tipo: 999,999,999,999$<br/>
+							<label>		Nombre:<strong> moneda </strong></label>
+							<br/>
+							<strong>ej</strong>: 123,123$
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de números
+							de coma flotante con signo $.<br/>
+							Tipo: 999,999,999,999.99$<br/>
+							<label>	Nombre:<strong> moneda-decimal </strong></label>
+							<br/>
+							<strong>ej</strong>: 123,123.90$
+						</p>
+						<p:spacer/>
+
+						<p:column>
+							<label for="telefono" class="janal-text-one-line" >Teléfono:</label>
+							<p:inputText id="telefono" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="ip" class="janal-text-one-line" >ip: </label>
+							<p:inputText id="ip" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de números
+							enteros máximo 10 dígitos.<br/>
+							Tipo: (999)9999999<br/>
+							<label>	Nombre: <strong>telefono</strong> </label>
+							<br/>
+							<strong>ej</strong>: (449) 123-45-67
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de números y puntos<br/>
+							Tipo: k<br/>
+							Nombre:<strong> ip </strong>
+							<br/>
+							<strong>ej</strong>: 127.0.0.1
+						</p>
+						<p:spacer/>
+
+						<p:column>
+							<label for="version" class="janal-text-one-line" >Versión: </label>
+							<p:inputText id="version" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="tres-digitos-default" class="janal-text-one-line" >Tres dígitos default: </label>
+							<p:inputText id="tres-digitos-default" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de números y puntos<br/>
+							Tipo: 9.9.9.9 <br/>
+							Nombre: <strong>version</strong>
+							<br/>
+							<strong>ej</strong>: 1.0.0.1
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de tres números, y asiga un valor default de 0<br/>
+							Tipo: 999<br/>
+							Nombre: <strong>tres-digitos-default</strong>
+							<br/>
+							<strong>ej</strong>: 123
+						</p>
+						<p:spacer/>
+
+						<p:column>
+							<label for="enteroSiete" class="janal-text-one-line" >Siete dígitos:</label>
+							<p:inputText id="enteroSiete" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="entero-sin-signo" class="janal-text-one-line">Entero sin signo: </label>
+							<p:inputText id="entero-sin-signo" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de siete
+							números enteros.<br/>
+							Tipo: 9999999<br/>
+							<label>	Nombre:<strong> siete-digitos </strong></label>
+							<br/>
+							<strong>ej</strong>: 1234567<br/>
+							Se sustituyó por numero_siete
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de números enteros sin signo (+,-),  acepta nueve números<br/>
+							Tipo: 999999999<br/>
+							Nombre: <strong>entero-sin-signo</strong>
+							<br/>
+							<strong>ej</strong>: 123456789
+						</p>
+						<p:spacer/>
+
+						<p:column>
+							<label for="enteroCinco" class="janal-text-one-line" >Cinco dígitos:</label>
+							<p:inputText id="enteroCinco" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="tarjeta" class="janal-text-one-line" >Tarjeta de crédito:</label>
+							<p:inputText id="tarjeta" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de cinco
+							números enteros.<br/>
+							Tipo: 99999<br/>
+							<label>		Nombre:<strong> cinco-digitos </strong> </label>
+							<br/>
+							<strong>ej: </strong>: 12345<br/>
+							Se sustituyó por numero_cinco y entero_cinco
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que permite la captura de 16 números
+							que son los digitos de una tarjeta de credito. <br/>	
+							Tipo: 9999 9999 9999 9999 <br/>
+							<label>	Nombre: <strong>tarjeta-credito</strong></label>
+							<br/>
+							<strong>ej</strong>: 1234 1234 1234 1234
+						</p>
+						<p:spacer/>
+					</h:panelGrid>
+				</p:tab>
+				<p:tab title="Máscaras alfanuméricas">
+					<h:panelGrid columns="5" style="width: 900px">
+						<p:column>
+							<label for="rfc" class="janal-text-one-line" >RFC:</label>
+							<p:inputText id="rfc" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="curp" class="janal-text-one-line" >CURP:</label>
+							<p:inputText id="curp" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de un RFC
+							válido en mayúsculas.<br/>
+							Tipo: bbbb991939ddh<br/>
+							<label>	Nombre:<strong> rfc</strong> </label>
+							<br/>
+							<strong>ej</strong>: CUPU800825569
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de una CURP
+							válida en mayúsculas.<br/>
+							Tipo: bbbb991939fbbbbbdd<br/>
+							<label> Nombre: <strong>curp</strong>  </label>
+							<br/>
+							<strong>ej</strong>: ABCD910625MASRXM01
+						</p>
+						<p:spacer/>
+						<p:column>
+							<label for="mayusculas" class="janal-text-one-line" >Mayúsculas: </label>
+							<p:inputText id="mayusculas" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="minusculas" class="janal-text-one-line" >Minúsculas: </label>
+							<p:inputText id="minusculas" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de letras en
+							mayúsculas de hasta 250 caracteres.<br/>
+							Tipo: b<br/>
+							<label>	Nombre: <strong>mayúsculas</strong> </label>
+							<br/>
+							<strong>ej</strong>: KAJOOL
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de letras en
+							minúsculas de hasta 250 caracteres.<br/>
+							Tipo: a<br/>
+							<label>	Nombre:<strong> minúsculas </strong> </label>
+							<br/>
+							<strong>ej</strong>: kajool
+						</p>
+						<p:spacer/>
+						<p:column>
+							<label for="letras" class="janal-text-one-line" >Letras: </label>
+							<p:inputText id="letras" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="cuenta" class="janal-text-one-line" >Cuenta: </label>
+							<p:inputText id="cuenta" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de caracteres
+							en mayúsculas y minúsculas hasta 250
+							caracteres.<br/>
+							Tipo: c<br/>
+							<label>		Nombre:<strong> letras </strong> </label>
+							<br/>
+							<strong>ej</strong>: Esto es un ejemplo
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de letras, números y puntos.<br/>
+							Tipo: e<br/>
+							<label>	Nombre:<strong> cuenta </strong> </label>
+							<br/>
+							<strong>ej:</strong> NOMBRE.APELLIDO
+						</p>
+						<p:spacer/>
+
+						<p:column>
+							<label for="libre" class="janal-text-one-line" >Libre: </label>
+							<p:inputText id="libre" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="textos" class="janal-text-one-line" >Texto: </label>
+							<p:inputText id="textos" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara por omisión, que indica que no aplica
+							máscara en el dato. Debe ir en caso de no aplicar
+							alguna máscara.<br/>
+							Tipo: no aplica.<br/>
+							<label>	Nombre:<strong> libre</strong> </label>
+							<br/>
+							<strong>ej</strong>: Ésto es 1 ejemplo PARA libre
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de letras,
+							números y signos de puntuación, hasta 250
+							caracteres.<br/>
+							Tipo: t<br/>
+							<label>		Nombre:<strong> texto</strong> </label>
+							<br/>
+							<strong>ej</strong>: Esto, es un ejemplo de letras.
+						</p>
+						<p:spacer/>
+						<p:column>
+							<label for="numerosLetras" class="janal-text-one-line" >Números y letras </label>
+							<p:inputText id="numerosLetras" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="nombreDto" class="janal-text-one-line" >Nombre Dto: </label>
+							<p:inputText id="nombreDto" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de caracteres
+							en mayúsculas, minúsculas y números, hasta 250
+							caracteres.<br/>
+							Tipo: o<br/>
+							<label>		Nombre: <strong>numeros-letras </strong></label>
+							<br/>
+							<strong>ej</strong>: números para ejemplos 1234
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de letras y
+							números hasta 30 caracteres y sin espacios.<br/>
+							Tipo: g<br/>
+							<label>Nombre:<strong> nombre-dto</strong></label>
+							<br/>
+							<strong>ej</strong>: estoes1ejemploParaNombreDto
+						</p>
+						<p:spacer/>
+						<p:column>
+							<label for="resultado-entrevista-basico" class="janal-text-one-line" >Resultado entrevista basico:  </label>
+							<p:inputText id="resultado-entrevista-basico" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="resultado-entrevista-modulo" class="janal-text-one-line" >Resultado entrevista modulo: </label>
+							<p:inputText id="resultado-entrevista-modulo" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de letras mayusculas y números.<br/>
+							Tipo: m <br/>
+							Nombre: <strong>resultado-entrevista-basico</strong>
+							<br/>
+							<strong>ej</strong>: 01|02|A1|A2|A3|A4|A5|A6|A7|B1|B2|B3|C1|C2|C3|C4
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de letras mayusculas y números.<br/>
+							Tipo: n<br/>
+							Nombre: <strong>resultado-entrevista-modulo</strong>
+							<br/>
+							<strong>ej</strong>: 01|02|A1|A2|A3|A4|A5|A6|A7
+						</p>
+						<p:spacer/>
+						<p:column>
+							<label for="claveCtCallCenter" class="janal-text-one-line" >Clave ct call center:</label>
+							<p:inputText id="claveCtCallCenter" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="claveCt" class="janal-text-one-line" >Clave ct:</label>
+							<p:inputText id="claveCt" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de letras y
+							números especificados, trabaja con los centros
+							de trabajo, acepta diez dígitos.<br/>
+							Tipo: 99bbb9999b<br/>
+							Nombre: <strong>clave-ct-call-center</strong>
+							<br/>
+							<strong>ej</strong>: 01JZE0101E
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de letras y
+							números especificados, trabaja con los centros
+							de trabajo, acepta nueve dígitos.<br/>
+							Tipo: 99bbb9999b9<br/>
+							Nombre: <strong>clave-ct</strong>
+							<br/>
+							<strong>ej</strong>: 01DPR0496V
+						</p>
+						<p:spacer/>
+						<p:column>
+							<label for="clave-operativa" class="janal-text-one-line" >Clave operativa: </label>
+							<p:inputText id="clave-operativa" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<p:spacer/>
+							<p:spacer/>
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que solo acepta la captura de letras y
+							números especificados, trabaja con los centros
+							de trabajo, acepta nueve dígitos.<br/>
+							Tipo: 99b9999o9<br/>
+							Nombre: <strong>clave-operativa</strong>
+							<br/>
+							<strong>ej</strong>: 01J0101E1
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+								<p:spacer/>
+						</p>
+						<p:spacer/>
+					</h:panelGrid>
+				</p:tab>
+				<p:tab title="Máscaras para fechas">
+					<h:panelGrid columns="5" style="width: 900px">
+						<p:column>
+							<label for="fecha" class="janal-text-one-line">Fecha:</label>
+							<p:calendar id="fecha" showOn="button" pattern="dd/mm/yyyy" readonlyInput="true"  locale="es" disabled=""/>
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="fechaHora" class="janal-text-one-line">Fecha con hora:</label>
+							<p:calendar id="fechaHora" showOn="button" pattern="dd/mm/yyyy HH:mm" readonlyInput="true"  locale="es" disabled=""/>
+						</p:column>
+						<p:spacer/>				
+						<p>
+							Descripción: Máscara que permite la captura de una fecha
+							tipo: dd/mm/aaaa.<br/>
+							Tipo: 39/19/9999<br/>
+							<label>Nombre: <strong>fecha</strong></label><br/>
+							<strong>ej</strong>: 12/12/2014
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>	
+							Descripción: Máscara que permite la captura de una fecha
+							tipo: dd/mm/aaaa HH:mm.<br/>
+							Tipo: 39/19/9999 24:59<br/>
+							<label>Nombre:<strong> fecha-hora</strong></label>
+							<br/>
+							<strong>ej</strong>: 12/12/2014 00:00
+						</p>
+						<p:spacer/>
+						<p:column>
+							<label for="horas" class="janal-text-one-line">Hora: </label>
+							<p:calendar id="horas" showOn="button" pattern="HH:mm"/>
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="registro" class="janal-text-one-line">Registro:</label>
+							<p:calendar id="registro" showOn="button" pattern="dd/mm/yyyy HH:mm:ss" readonlyInput="true" locale="es"/>
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que permite la captura de una hora tipo:
+							HH:mm.<br/>
+							Tipo: 24:59<br/>
+							<label>Nombre: <strong>hora</strong></label>
+							<br/>
+							<strong>ej</strong>: 00:00
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que permite la captura de una fecha
+							tipo: dd/mm/aaaa HH:mm:ss.<br/>
+							Tipo: 39/19/9999 24:59:59<br/>
+							<label>Nombre: <strong>registro</strong></label>
+							<br/>
+							<strong>ej</strong>: 12/12/2014 00:00:00
+						</p>
+						<p:spacer/>
+						<p:column>
+							<label for="horasCompletas" class="janal-text-one-line">Hora completa: </label>
+							<p:calendar id="horasCompletas" showOn="button" pattern="HH:mm:ss"/>
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<p:spacer/>
+							<p:spacer/>
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Máscara que permite la captura de una hora tipo:
+							HH:mm:ss.<br/>
+							Tipo: 24:59:59<br/>
+							<label>Nombre: <strong>hora-completa </strong></label>
+							<br/>
+							<strong>ej</strong>: 00:00:00
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							<p:spacer/>
+						</p>
+						<p:spacer/>
+					</h:panelGrid>
+				</p:tab>
+			</p:accordionPanel>
+		</div>
+    <p:dataTable id="tabla" style="display:none"></p:dataTable>
+  </ui:define>
+</ui:composition>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date May 20, 2013
+ time 11:14:21 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/accion.xhtml"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <ui:param name="titulo" value="Asignar clave operativa" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'claveOperativa': {validaciones: 'requerido', mascara: 'libre'}
+      };
+    </script>
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="tabla-filtro">
+      <h:panelGrid id="panelDatos" columns="2">
+        <label for="usuario">Usuario:</label>
+        <h:outputText id="usuario" value="#{kajoolGruposTrabajoClavesOperativasAgregar.usuario.usuario}" />
+        <label for="perfil">Perfil:</label>
+        <h:outputText id="perfil" value="#{kajoolGruposTrabajoClavesOperativasAgregar.usuario.perfil}" />
+        <label for="cuenta">Cuenta:</label>
+        <h:outputText id="cuenta" value="#{kajoolGruposTrabajoClavesOperativasAgregar.usuario.cuenta}" />
+        <label for="unidadEjecutora">Unidad ejecutora:</label>
+        <h:outputText id="unidadEjecutora" value="#{kajoolGruposTrabajoClavesOperativasAgregar.usuario.unidadEjecutora}" />
+        <label for="usuario">Entidad Federativa:</label>
+        <h:outputText id="entidadFederativa" value="#{kajoolGruposTrabajoClavesOperativasAgregar.usuario.entidadFederativa}" />
+        <label for="ambito">Ámbito:</label>
+        <h:outputText id="ambito" value="#{kajoolGruposTrabajoClavesOperativasAgregar.usuario.ambito}" />
+        <label for="estatus">Estatus:</label>
+        <h:outputText id="estatus" value="#{kajoolGruposTrabajoClavesOperativasAgregar.usuario.estatus}" />
+      </h:panelGrid>
+      <p:spacer height="15px"/>
+      <h:panelGrid id="panelClaveOper" columns="3">
+        <label for="claveOperativa">Clave operativa:</label>
+        <p:inputText id="claveOperativa" value="#{kajoolGruposTrabajoClavesOperativasAgregar.claveOperativa}"/>
+        <p:commandButton id="buscar" icon="icono-buscar" actionListener="#{kajoolGruposTrabajoClavesOperativasAgregar.doConsultar}" update="tabla"/>
+      </h:panelGrid>
+      <p:spacer height="15px"/>
+      <p:dataTable lazy="true" id="tabla" var="filtro" value="#{kajoolGruposTrabajoClavesOperativasAgregar.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}"
+                   rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{kajoolGruposTrabajoClavesOperativasAgregar.lazyModel.rowCount gt kajoolGruposTrabajoClavesOperativasAgregar.lazyModel.pageSize}"
+                   selectionMode="single" rowIndexVar="rowIndex">
+        <p:column styleClass="alinear-centro" headerText="Clave operativa">					
+          <h:outputText  value="#{filtro['claveOper']}"/>
+				</p:column>
+        <p:column styleClass="alinear-centro" headerText="Nivel">					
+          <h:outputText value="#{filtro['nivel']}"/>
+				</p:column>
+        <p:column styleClass="alinear-centro" headerText="Descripcion">					
+          <h:outputText value="#{filtro['descripcion']}"/>
+				</p:column>
+        <p:column styleClass="alinear-centro" headerText="Asignar">					
+          <p:commandButton id="asigna" icon="icono-modificar" onstart="return janal.execute();" title="Asignar clave operativa" actionListener="#{kajoolGruposTrabajoClavesOperativasAgregar.doAsignar}"  action="#{kajoolGruposTrabajoClavesOperativasAgregar.doCancelar}" process="@this">
+            <f:attribute name="registro" value="#{filtro}"/>
+          </p:commandButton>
+				</p:column>
+      </p:dataTable>
+    </div>
+  </ui:define>
+  <ui:define name="acciones">
+    <p:commandButton id="aceptar" value="Aceptar" rendered="false"/>
+    <p:commandButton id="cancelar" value="Cancelar" action="#{kajoolGruposTrabajoClavesOperativasAgregar.doCancelar}" immediate="true" ajax="false" />
+  </ui:define>
+</ui:composition>

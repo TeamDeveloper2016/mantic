@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 2/12/2014
+ time 05:21:20 PM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+								xmlns:c="http://java.sun.com/jsp/jstl/core"
+								xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/Paginas/Mantenimiento/Gestion/plantilla.xhtml">
+  <ui:param name="titulo" value="Asistente para generar filtro" />
+  <ui:define name="librerias">
+    <h:outputStylesheet library="janal" name="css/codemirror.css"/>
+    <h:outputScript library="janal" name="mirror/codemirror-4.11.min.js" target="head" />
+    <h:outputScript library="janal" name="mirror/clike-4.11.js" target="head" />
+    <h:outputScript library="janal" name="mirror/vbscript-4.11.js" target="head" />
+    <h:outputScript library="janal" name="mirror/htmlmixed-4.11.js" target="head" />
+    <h:outputScript library="janal" name="mirror/runmode-4.11.js" target="head" />
+    <h:outputScript library="janal" name="mirror/xml-4.11.js" target="head" />
+    <h:outputScript library="janal" name="mirror/css-4.11.js" target="head" />
+    <h:outputScript library="janal" name="mirror/javascript-4.11.js" target="head" />
+    <script type="text/javascript">
+			Janal.Control.fields= {
+				'alias'        :{validaciones: 'requerido', mascara: 'libre'},
+				'sql'          :{validaciones: 'requerido', mascara: 'libre'},
+				'param'        :{validaciones: 'requerido', mascara: 'libre'},
+				'campoTabla'   :{validaciones: 'libre',     mascara: 'libre'},
+				'componente'   :{validaciones: 'libre',     mascara: 'libre'},
+				'alineacion'   :{validaciones: 'requerido', mascara: 'libre'},
+				'busqueda'     :{validaciones: 'libre',     mascara: 'libre'},
+				'titulo'	     :{validaciones: 'requerido', mascara: 'libre'},
+				'proceso'	     :{validaciones: 'requerido', mascara: 'texto'},
+				'nombre'	     :{validaciones: 'requerido', mascara: 'texto'},
+				'encuestaTexto':{validaciones: 'requerido',	mascara: 'libre'},
+				'nombreVista'  :{validaciones: 'libre',	    mascara: 'libre'},
+				'nombreAutor'  :{validaciones: 'requerido', mascara: 'libre'},
+				'correoAutor'  :{validaciones: 'requerido', mascara: 'libre'},
+			};
+
+      function centrarDialogo() {
+        $(".ui-dialog").css ({
+           "left": "50%",
+           "top": "50%",
+           "margin-left": -($('#dialogoCombo').width()/2),
+           "margin-top": -($('#dialogoCombo').height()/2),
+         });
+      }
+
+      function descargarShow() {
+				$('#descargar').show();
+			};
+			
+			function descargarHide() {
+				$('#descargar').hide();
+			};
+			
+			function descargar(){
+				$("#tab\\:generado").click();
+        PF('tabResultados').select(0);
+        refrescar();
+			};
+			
+			function refrescar(){
+				window.editor.refresh();
+			};
+			
+			function reload(textArea1,textArea2) {
+				$(".CodeMirror" ).remove();
+				$(".CodeMirror" ).empty();
+				if(document.getElementById(textArea1)!== null) {
+					generateCodeMirror (textArea1,"htmlmixed");
+				}
+				if(document.getElementById(textArea2)!== null){
+					generateCodeMirror (textArea2,"clike");
+				} // if
+			}
+			
+			function generateCodeMirror (id,modo){
+				window.editor = CodeMirror.fromTextArea(document.getElementById(id),{
+						mode        : modo,
+						lineNumbers : true,
+						readOnly    : true,
+						lineWrapping: true});
+				};
+		</script>
+		<style type="text/css">
+		  .ui-wizard-step-title {
+				font-size: 1em;
+        float: left;
+			  margin: 0 7px 7px 0;
+		  }
+
+      .contenido-clave {width:80px;}
+
+      .contenido-registro{width: 140px;}
+
+      .contenido-chico{width: 30px;}
+
+      .contenido-mediano{width: 200px;}
+
+      .contenido-mediano-porcentaje{width: 15%;}
+
+      .contenido-grande{width: 350px;}
+    </style>
+  </ui:define>
+  <ui:define name="contenido">
+		<div class="janal-content-table">
+      <p:wizard id="tabla" flowListener="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.onFlowProcess}" onback="descargarHide();" backLabel="Atras" nextLabel="Siguiente" >
+				<p:tab id="tabSql" title="SQL" >
+					<p:panel header="Consulta" class="janal-content-table">
+						<div class="janal-content-table">
+							<h:panelGrid columns="2">
+								<h:outputLabel styleClass="janal-text-one-line" value="Unit:" for="units"/>
+								<p:selectOneMenu id="units" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.unit}" style="width: 305px" filter="true" filterMatchMode="startsWith">
+									<p:ajax event="change" process="@this select" update="sql nombreVista select" listener="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.actualizarSelects('wizard')}"/>
+									<f:selectItem itemLabel="INSERTAR UNIT" itemValue="INSERTAR"/>
+									<f:selectItems value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.units}"/>
+								</p:selectOneMenu>
+								<h:outputLabel styleClass="janal-text-one-line" value="Select:" for="select"/>
+								<p:selectOneMenu id="select" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.select}" style="width: 305px" filter="true" filterMatchMode="startsWith" disabled="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.unit=='INSERTAR'}">
+									<p:ajax event="change" process="@this" update="sql nombreVista" listener="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.actualizaConsulta('wizard')}"/>
+									<f:selectItems value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.selects}"/>
+								</p:selectOneMenu>
+							</h:panelGrid>
+							<h:panelGrid>
+								<h:outputLabel styleClass="janal-text-one-line" value="Inserta sentencia a evaluar: " />
+                <p:inputTextarea id="sql" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.sql}" disabled="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.unit!='INSERTAR'}" rows="60" cols="100"/>
+							</h:panelGrid>
+							<h:panelGrid columns="2">
+								<h:outputLabel styleClass="janal-text-one-line" value="Nombre vista:" />
+								<p:inputText id="nombreVista" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.nombreVista}" disabled="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.unit!='INSERTAR'}" size="100"/>
+							</h:panelGrid>
+						</div>
+					</p:panel>
+				</p:tab>
+				<p:tab id="tabParametros" title="Parámetros" >
+					<p:panel header="Parametros de la consulta" styleClass="janal-content-table">
+            <p:dataTable id="tablaParametros" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.parametros}" var="params" >
+							<p:column headerText="Parametro">
+								<h:outputLabel value="#{params.nombre}"/>
+							</p:column>
+							<p:column headerText="Valor">
+								<p:inputText id="param" value="#{params.valor}" style="width: 95%"/>
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+				</p:tab>
+				<p:tab id="tabCampos" title="Campos">
+					<p:panel header="Criterios de busqueda" styleClass="janal-content-table">
+						<h:panelGrid columns ="2">
+							<p:dataTable id="tablaCampos" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.campos}" var="campos" selection="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.selected}" >
+								<p:column headerText="Campo" class="contenido-mediano">
+									<h:outputLabel value="#{campos.nombre}"/>
+								</p:column>
+								<p:column headerText="Texto a visualizar" styleClass="alias" class="contenido-mediano">
+									<p:inputText id="alias" value="#{campos.alias}" style="width: 95%"/>
+								</p:column>
+								<p:column headerText="Criterio" class="janal-column-center contenido-chico">
+									<p:selectBooleanCheckbox id="busqueda" value="#{campos.busqueda}">
+										<p:ajax event="change"  process="@this componente agregar"  update="agregar componente"/>
+									</p:selectBooleanCheckbox>
+								</p:column>
+								<p:column headerText="Tipo de entrada" id ="opcion"  class="janal-column-center contenido-mediano">
+                  <p:selectOneMenu id="componente" value="#{campos.componente}" disabled="#{!campos.busqueda==true}" style="vertical-align: middle">
+                    <p:ajax event="change" process="@this" listener="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.doCheckComponente(campos)}" onstart="return janal.bloquear();" update="agregar tablaCampos"/>
+										<f:selectItem itemLabel="Caja de texto" itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getComponente('TEXT_FIELD')}"/>
+										<f:selectItem itemLabel="Caja de selección" itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getComponente('SELECT_ONE_MENU')}"/>
+										<f:selectItem itemLabel="Caja de fecha" itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getComponente('DATE')}"/>
+									</p:selectOneMenu>
+                  <p:commandButton id="agregar" title="Asignar consulta" icon="ui-icon-plusthick" actionListener="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.doGuardarCampoSeleccionado(campos.nombre)}" style="vertical-align: middle; #{(campos.componente==kajoolMantenimientoGestionAsistenteFiltrosFiltro.getComponente('SELECT_ONE_MENU') and campos.busqueda==true?'':'display: none')}" onclick="janal.bloquear(); PF('dialogoCombo').show();" oncomplete="centrarDialogo();"/>
+								</p:column>
+								<p:column headerText="Columnas en tabla" class="janal-column-center contenido-chico">
+									<p:selectBooleanCheckbox id="campoTabla" value="#{campos.tabla}">
+										<p:ajax event="change" update="alineacion formato tamañoContenido"/>
+									</p:selectBooleanCheckbox>
+								</p:column>
+								<p:column headerText="Alineación" class="janal-column-center contenido-grande">
+									<p:selectOneRadio id="alineacion" value="#{campos.alineacion}" disabled="#{!campos.tabla==true}">
+										<f:selectItem itemLabel="Izq" itemValue="alinear-izquierda" />
+										<f:selectItem itemLabel="Cen" itemValue="janal-column-center" />
+										<f:selectItem itemLabel="Der" itemValue="janal-column-right" />
+									</p:selectOneRadio>
+								</p:column>
+								<p:column headerText="Estilo (class)" class="janal-column-center contenido-mediano">
+									<p:selectOneMenu id="tamañoContenido" value="#{campos.contenido}" disabled="#{!campos.tabla==true}" >
+										<p:ajax event="change" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<f:selectItem itemLabel="Clave" itemValue="contenido-clave"/>
+										<f:selectItem itemLabel="Registro" itemValue="contenido-registro"/>
+										<f:selectItem itemLabel="Chico" itemValue="contenido-chico"/>
+										<f:selectItem itemLabel="Mediano" itemValue="contenido-mediano"/>
+										<f:selectItem itemLabel="Grande" itemValue="contenido-grande"/>
+										<f:selectItem itemLabel="Mediano porcentaje" itemValue="contenido-mediano-porcentaje"/>
+									</p:selectOneMenu>
+								</p:column>
+								<p:column headerText="Formato" class="janal-column-center contenido-mediano-porcentaje">
+									<p:selectOneMenu id="formato" value="#{campos.formato}" disabled="#{!campos.tabla==true}">
+										<f:selectItem itemLabel="LIBRE"								 itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('LIBRE')}"/>
+										<f:selectItem itemLabel="MAYUSCULAS"					 itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('MAYUSCULAS')}"					 itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isString(campos.tipo)}"/>
+										<f:selectItem itemLabel="MINUSCULAS"					 itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('MINUSCULAS')}"					 itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isString(campos.tipo)}"/>
+										<f:selectItem itemLabel="LETRA CAPITAL"				 itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('LETRA_CAPITAL')}"				 itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isString(campos.tipo)}"/>
+										<f:selectItem itemLabel="NOMBRE DE PERSONA"		 itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('NOMBRE_DE_PERSONA')}"		 itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isString(campos.tipo)}"/>
+										<f:selectItem itemLabel="MILES CON DECIMALES"  itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('MILES_CON_DECIMALES')}"  itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isLong(campos.tipo)}"/>
+										<f:selectItem itemLabel="MILES SIN DECIMALES"  itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('MILES_SIN_DECIMALES')}"  itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isLong(campos.tipo)}"/>
+										<f:selectItem itemLabel="MONEDA CON DECIMALES" itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('MONEDA_CON_DECIMALES')}" itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isLong(campos.tipo)}"/>
+										<f:selectItem itemLabel="MONEDA SIN DECIMALES" itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('MONEDA_SIN_DECIMALES')}" itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isLong(campos.tipo)}"/>
+										<f:selectItem itemLabel="NUMERO CON DECIMALES" itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('NUMERO_CON_DECIMALES')}" itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isLong(campos.tipo)}"/>
+										<f:selectItem itemLabel="NUMERO SIN DECIMALES" itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('NUMERO_SIN_DECIMALES')}" itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isLong(campos.tipo)}"/>
+										<f:selectItem itemLabel="FECHA CORTA"					 itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('FECHA_CORTA')}"					 itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isDate(campos.tipo)}"/>
+										<f:selectItem itemLabel="FECHA NOMBRE DIA"		 itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('FECHA_NOMBRE_DIA')}"		 itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isDate(campos.tipo)}"/>
+										<f:selectItem itemLabel="FECHA EXTENDIDA"			 itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('FECHA_EXTENDIDA')}"			 itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isDate(campos.tipo)}"/>
+										<f:selectItem itemLabel="FECHA LARGA"					 itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('FECHA_LARGA')}"					 itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isDate(campos.tipo)}"/>
+										<f:selectItem itemLabel="FECHA NOMBRE MES"		 itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('FECHA_NOMBRE_MES')}"		 itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isDate(campos.tipo)}"/>
+										<f:selectItem itemLabel="FECHA HORA"					 itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('FECHA_HORA')}"					 itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isDate(campos.tipo)}"/>
+										<f:selectItem itemLabel="FECHA HORA CORTA"		 itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('FECHA_HORA_CORTA')}"		 itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isDate(campos.tipo)}"/>
+										<f:selectItem itemLabel="DIA FECHA HORA"			 itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('DIA_FECHA_HORA')}"			 itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isDate(campos.tipo)}"/>
+										<f:selectItem itemLabel="DIA FECHA HORA CORTA" itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('DIA_FECHA_HORA_CORTA')}" itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isDate(campos.tipo)}"/>
+										<f:selectItem itemLabel="HORA LARGA"					 itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('HORA_LARGA')}"					 itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isDate(campos.tipo)}"/>
+										<f:selectItem itemLabel="HORA CORTA"					 itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('HORA_CORTA')}"					 itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isDate(campos.tipo)}"/>
+										<f:selectItem itemLabel="FECHA HORA ANTERIOR"  itemValue="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.getEnumerador('FECHA_HORA_ANTERIOR')}"  itemDisabled="#{!kajoolMantenimientoGestionAsistenteFiltrosFiltro.isDate(campos.tipo)}"/>
+									</p:selectOneMenu>
+								</p:column>
+							</p:dataTable>
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+				<p:tab id="tabOrden" title="Orden">
+					<p:panel header="Asignación de orden a elementos de busqueda y tabla">
+						<h:panelGrid columns="2">
+							<p:orderList var="campos"  value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.busqueda}" itemValue="#{campos}" controlsLocation="none" >
+								<f:facet name="caption">Orden de campos en búsqueda</f:facet>
+								<p:column>
+									<h:outputLabel value="#{campos}" />
+								</p:column>
+							</p:orderList>
+							<p:orderList var="campos"  value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.ordenar}" itemValue="#{campos}" controlsLocation="none" >
+								<f:facet name="caption">Orden de campos en tabla</f:facet>
+								<p:column>
+									<h:outputLabel value="#{campos}" />
+								</p:column>
+							</p:orderList>
+						</h:panelGrid>
+					</p:panel>
+				</p:tab>
+				<p:tab id="tabDatosGenerales" title="Datos">
+					<p:panel header="Datos generales">
+						<h:panelGrid id="confirmation" columns="3">
+              <label for="titulo" class="janal-text-one-line"> Titulo de la página:</label>
+							<p:inputText id="titulo" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.titulo}" size="100" />
+							<p:spacer/>
+              <label for="nombre" class="janal-text-one-line"> Nombre del filtro:</label>
+							<p:inputText id="nombre" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.nombreFiltro}" size="100" />
+							<p:spacer/>
+							<h:outputLabel value="Proyecto:" for="encuestaTexto"/>
+							<p:inputText id="encuestaTexto"  value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.encuestaTexto}">
+                <p:ajax event="keyup" listener="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.doActualizarRuta}" update="ruta rutaBacking" process="@this"/>
+              </p:inputText>
+              <p:spacer/>
+              <h:outputLabel  value="Proceso:" for="proceso"/>
+							<p:inputText id="proceso" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.proceso}" size="100" >
+								<p:ajax event="keyup" listener="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.doActualizarRuta}" update="ruta rutaBacking" process="@this nombreVista"/>
+							</p:inputText>
+							<p:spacer/>
+              <h:outputLabel styleClass="janal-text-one-line" value="Ruta página:"/>
+							<h:outputLabel id="ruta" value="/Paginas/#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.rutaPagina}"/>
+							<p:spacer/>							
+              <h:outputLabel styleClass="janal-text-one-line" value="Ruta backing:"/>
+							<h:outputLabel id="rutaBacking" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.rutaBacking}"/>
+							<p:spacer/>							
+						</h:panelGrid>
+						<p:fieldset legend="Autor" toggleable="true" toggleSpeed="500" collapsed="true" style="margin-bottom:10px; width: 98%" styleClass="sin-lineas">
+							<h:panelGrid columns="2">	
+								<h:outputLabel for="nombreAutor" value="Nombre:"/>
+								<p:inputText id="nombreAutor" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.autor}" size="100" />
+								<h:outputLabel for="correoAutor" value="Correo:"/>
+								<p:inputText id="correoAutor" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.correo}" size="100" />
+							</h:panelGrid>
+						</p:fieldset>
+						<div class="janal-column-right">
+              <p:commandButton value="Generar" icon="ui-icon-gear" action="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear(); reload('tab:textoPagina','tab:textoBacking'); refrescar();" />
+						</div>	
+					</p:panel>
+				</p:tab>
+			</p:wizard>
+			<p:panel styleClass="janal-content-table" id='descargar' widgetVar="descargaArchivo"  >
+				<p:tabView id="tab" dynamic="true" onTabShow="refrescar();" widgetVar="tabResultados">
+					<p:ajax event="tabChange" listener="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.onTabChange}"/>
+					<p:tab title="filtro.xhtml">
+						<p:inputTextarea id="textoPagina" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.textoPagina}" style="width: 98%; height: 1000px;" readonly="true"/>
+					</p:tab>
+					<p:tab  title="Filtro.java" id="tabFiltro">
+						<p:inputTextarea id="textoBacking" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.textoBacking}" style="width: 98%; height: 1000px;" readonly="true"/>
+					</p:tab>
+          <p:tab title="Descargar" titleStyle="float:right;">
+						<p:panel visible="false">
+							<p:commandLink id="generado" title="Click para descargar el archivo" ajax="false" >
+								<p:fileDownload value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.descargar}" />
+							</p:commandLink>
+						</p:panel>
+					</p:tab>
+				</p:tabView >
+			</p:panel>
+		</div>
+    <p:dialog id="dialogoConverter" widgetVar="dialogoConverter" header="Converter" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" resizable="false" onHide="janal.desbloquear();">
+			<p:selectOneMenu id="converter" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.converter}">
+				<p:ajax event="change" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+				<f:selectItem itemValue="Fecha" itemLabel="Fecha [dd/mm/yyyy]"/>
+				<f:selectItem itemValue="Hora" itemLabel="Hora [HH:MM]"/>
+				<f:selectItem itemValue="Calendario" itemLabel="Registro [dd/mm/yyyy HH:MM]"/>
+			</p:selectOneMenu>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton id="aceptarConverter" icon="ui-icon-check" process="@this converter"  value="Aceptar" actionListener="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.doAsignarConverter}" oncomplete="PF('dialogoConverter').hide();"/>
+				<p:commandButton icon="ui-icon-closethick" process="@none"  value="Cancelar" oncomplete="PF('dialogoConverter').hide();"/>
+			</div>
+		</p:dialog>
+    <p:dialog id="dialogoCombo" widgetVar="dialogoCombo" header="Elementos de caja de selección" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" resizable="false" onHide="janal.desbloquear();" onShow="centrarDialogo();">
+      <div class="janal-content-table">
+        <p:wizard id="wizardCombo" widgetVar="wizardCombo" flowListener="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.onFlowProcess}" onback="descargarHide();" backLabel="Atras" nextLabel="Siguiente" >
+          <p:tab id="tabSqlCombo" title="SQL">
+            <p:panel header="Consulta" class="janal-content-table">
+              <div class="janal-content-table">
+                <h:panelGrid columns="2">
+                  <h:outputLabel styleClass="janal-text-one-line" value="Unit:" for="unitsCombo"/>
+                  <p:selectOneMenu id="unitsCombo" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.unitCombo}" style="width: 305px" filter="true" filterMatchMode="startsWith">
+                    <p:ajax event="change" process="@this selectCombo" update="sqlCombo nombreVistaCombo selectCombo" listener="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.actualizarSelects('dialogo')}"/>
+                    <f:selectItem itemLabel="INSERTAR UNIT" itemValue="INSERTAR"/>
+                    <f:selectItems value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.units}"/>
+                  </p:selectOneMenu>
+                  <h:outputLabel styleClass="janal-text-one-line" value="Select:" for="selectCombo"/>
+                  <p:selectOneMenu id="selectCombo" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.selectCombo}" style="width: 305px" filter="true" filterMatchMode="startsWith" disabled="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.unit=='INSERTAR'}">
+                    <p:ajax event="change" process="@this" update="sqlCombo nombreVistaCombo" listener="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.actualizaConsulta('dialogo')}"/>
+                    <f:selectItems value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.selects}"/>
+                  </p:selectOneMenu>
+                </h:panelGrid>
+                <h:panelGrid>
+                  <h:outputLabel styleClass="janal-text-one-line" value="Inserta sentencia a evaluar: " />
+                  <p:inputTextarea id="sqlCombo" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.sqlCombo}" disabled="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.unit!='INSERTAR'}" cols="80" rows="25"/>
+                </h:panelGrid>
+                <h:panelGrid columns="2">
+                  <h:outputLabel styleClass="janal-text-one-line" value="Nombre vista:" />
+                  <p:inputText id="nombreVistaCombo" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.nombreVistaCombo}" disabled="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.unit!='INSERTAR'}" size="100"/>
+                </h:panelGrid>
+              </div>
+            </p:panel>
+          </p:tab>
+          <p:tab id="tabParametrosCombo" title="Parámetros" >
+            <p:panel header="Parametros de la consulta" styleClass="janal-content-table">
+              <p:dataTable id="tablaParametrosCombo" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.parametrosCombo}" var="params" style="width: 500px">
+                <p:column headerText="Parametro">
+                  <h:outputLabel value="#{params.nombre}"/>
+                </p:column>
+                <p:column headerText="Valor">
+                  <p:inputText id="paramCombo" value="#{params.valor}" style="width: 95%"/>
+                </p:column>
+              </p:dataTable>
+            </p:panel>
+          </p:tab>
+          <p:tab id="tabCamposCombo" title="Campos" >
+            <p:panel header="Personalización de la selección" styleClass="janal-content-table">
+              <h:panelGrid columns ="2">
+                <label for="campoCombo" class="janal-text-one-line">Campo a visualizar en la caja: </label>
+                <p:selectOneMenu id="campoCombo" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.campo}">
+                  <f:selectItems value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.camposCombo}" var="campo" itemLabel="#{campo.nombre}" itemValue="#{campo.nombre}"/>
+                </p:selectOneMenu>
+                <label for="tipoSelect" class="janal-text-one-line">Tipo de caja de selección:</label>
+                <p:selectOneMenu id="tipoSelect" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.tipoSelect}">
+                  <p:ajax event="change" process="@this labelValue value" update="value labelValue"/>
+                  <f:selectItem itemLabel="UISelect.build" itemValue="UISelect.build"/>
+                  <f:selectItem itemLabel="UISelect.free" itemValue="UISelect.free"/>
+                </p:selectOneMenu>
+                <p:outputLabel id="labelValue" class="janal-text-one-line" value="Value:" style="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.tipoSelect=='UISelect.free'?'':'display: none'}"/>
+                <p:selectOneMenu id="value" value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.value}" style="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.attrs.tipoSelect=='UISelect.free'?'':'display: none'}">
+                  <f:selectItems value="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.camposCombo}" var="campo" itemLabel="#{campo.nombre}" itemValue="#{campo.nombre}"/>
+                </p:selectOneMenu>	
+              </h:panelGrid>
+              <div class="janal-column-right">
+                <p:commandButton icon="ui-icon-plusthick" value="Aceptar" process="@this campoCombo tipoSelect value" actionListener="#{kajoolMantenimientoGestionAsistenteFiltrosFiltro.doAsignarCampo}" onstart="PF('dialogoCombo').hide(); janal.bloquear();" oncomplete="janal.desbloquear(); PF('wizardCombo').loadStep('tabSqlCombo', false);" update="tablaCampos"/>
+              </div>
+            </p:panel>
+          </p:tab>
+        </p:wizard>
+      </div>
+    </p:dialog>
+  </ui:define>
+</ui:composition>
+	

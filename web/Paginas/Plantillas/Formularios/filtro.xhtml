@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 11-mar-2014
+ time 15:15:07
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Pagina que muestra un combo con despliegue de una tabla" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'idTipoDato': { validaciones : 'requerido', mascara: 'libre', mensaje : 'Se requiere seleccionar un elemento'}
+      };
+
+      function addItems() {
+        $('li.ui-treenode-hasselected').each(function() {
+          PF('tree').addToSelection($(this).attr('data-rowkey'));
+        });
+        PF('tree').writeSelections();
+        return true;
+        return true;
+      }
+    </script>
+  </ui:define>
+  <ui:define name="contenido">	
+		<div class="janal-content-table">
+			<p:panelGrid columns="3" class="ui-grid-responsive" columnClasses="ui-grid-col-1,ui-grid-col-4,ui-grid-col-6" layout="grid">
+				<label for="idTipoDato">Cadena:</label>
+        <p:selectOneMenu id="idTipoDato" var="item" value="#{kajoolPlantillasFormulariosFiltro.attrs.idTipoDato}" style="width:300px" converter="janal.convertidor.Entity">
+          <f:selectItems value="#{kajoolPlantillasFormulariosFiltro.registros}" var="element" itemValue="#{element.key}"/>
+          <p:column>
+            #{item.entero}
+          </p:column>
+          <p:column>
+            #{item.cadena}
+          </p:column>
+        </p:selectOneMenu>
+        <p:commandButton id="busqueda" actionListener="#{kajoolPlantillasFormulariosFiltro.doAceptar}" update="mensaje" process="@this idTipoDato"  icon="fa fa-search"/>
+        <label for="arbol">Selección:</label>
+        <p:tree id="arbol" value="#{kajoolPlantillasFormulariosFiltro.root}" var="node" selectionMode="checkbox" selection="#{kajoolPlantillasFormulariosFiltro.selecteds}" widgetVar="tree">
+          <p:treeNode>
+            <h:outputText value="#{node}" />
+          </p:treeNode>
+        </p:tree>
+        <p:commandButton value="Display" update="mensaje" actionListener="#{kajoolPlantillasFormulariosFiltro.doDisplaySelectedMultiple}" onstart="return addItems()"/>
+			</p:panelGrid>
+		</div>
+  </ui:define>
+	<ui:param name="componenteBloqueo" value="idTipoDato, busqueda"/>
+</ui:composition>

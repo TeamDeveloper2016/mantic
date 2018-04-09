@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+    Relacion de consultas para la generacion de DBF's  
+-->
+<process>
+
+  <model>
+  
+
+   
+  </model>
+
+  <dml>
+    <unit id="Cuestionarios">
+      <select id="cuestionarioPrincipal">
+        select
+            tc_janal_muestras.id_muestra as id_key,
+            tc_janal_muestras.ent,
+            tc_janal_muestras.entidad,
+            tc_janal_muestras.cve_mun,
+            tc_janal_muestras.mun,
+            tc_janal_muestras.localidad,
+            tc_janal_muestras.loc,
+            tc_janal_muestras.consecutivo,
+            tc_janal_muestras.folio,
+            tc_janal_muestras.upm,
+            tc_janal_muestras.calle ,
+            tc_janal_muestras.entre_calle as calle_1,
+            tc_janal_muestras.y_calle as calle_2,
+            tc_janal_muestras.calle_atras,
+            tc_janal_muestras.codigo_postal,
+            tc_janal_muestras.referencia,
+            tc_janal_muestras.colonia,
+            concat(tc_janal_muestras.telefono_1, ' ', tc_janal_muestras.telefono_2, ' ', tc_janal_muestras.telefono_3) as telefono, 
+            tc_janal_muestras.no_ext,
+            tc_janal_muestras.no_int,
+            tc_janal_muestras.nombre,
+            tc_janal_muestras.ap_paterno,
+            tc_janal_muestras.ap_materno
+        from
+            tc_janal_muestras           
+        inner join
+            tr_janal_movimientos 
+                ON tc_janal_muestras.id_movimiento = tr_janal_movimientos.id_movimiento   
+        where
+           tc_janal_muestras.folio LIKE '%{folio}%'
+      </select>      
+      <select id="cuentaIntegrantes">
+        SELECT MAX( DISTINCT cuest ) integrantes FROM  tr_janal_integrantes WHERE id_muestra= {idMuestra}
+      </select>
+      <select id="cuestionarioIntegrantes">
+        SELECT 
+          t.NOMBRES,t.apellido_paterno, t.apellido_materno,	@rownum := @rownum + 1 AS orden
+        FROM 
+          tr_janal_integrantes t,(SELECT @rownum := 0) r   
+        WHERE id_muestra= {idMuestra} AND cuest= {cuest} 
+        UNION ALL
+        SELECT 
+          ' ' apellido_paterno, ' ' apellido_materno, ' ' nombres, @rownum := @rownum + 1 AS orden
+        FROM
+          tr_janal_integrantes, (SELECT @rownum := 0) r 
+        WHERE
+          @rownum &lt;=9 
+      </select>
+    </unit>
+
+  </dml>
+  
+</process>

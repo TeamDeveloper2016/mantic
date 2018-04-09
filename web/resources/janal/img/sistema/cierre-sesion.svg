@@ -1,0 +1,17 @@
+<svg width="430" height="400" xmlns="http://www.w3.org/2000/svg">.st0{fill:url(#SVGID_1_);}
+	.st1{fill:url(#SVGID_2_);}
+ <g>
+  <title>Layer 1</title>
+  <g id="svg_1">
+   <linearGradient fill="#63a3e2" transform="translate(45,10) translate(-10,-10) translate(-50,-20) translate(0,-10) translate(0,20) translate(50,0) translate(-90,30) translate(107,-2) translate(-302,-100) " y2="285.2148" x2="649.1295" y1="285.2148" x1="433" gradientUnits="userSpaceOnUse" id="SVGID_1_">
+    <stop fill="#63a3e2" stop-color="#0C68B4" offset="0"/>
+    <stop fill="#63a3e2" stop-color="#1477C7" offset="1"/>
+   </linearGradient>
+   <polygon fill="#7f7f7f" id="svg_2" points="363.29998779296875,182.39999389648438 328,161.6999969482422 328,183 183,183 183,231 328,231 328,244.79998779296875 363.4000244140625,224 399.0999755859375,203.20001220703125 " class="st0"/>
+   <linearGradient fill="#63a3e2" transform="translate(45,10) translate(-10,-10) translate(-50,-20) translate(0,-10) translate(0,20) translate(50,0) translate(-90,30) translate(107,-2) translate(-302,-100) " y2="281" x2="562" y1="281" x1="310" gradientUnits="userSpaceOnUse" id="SVGID_2_">
+    <stop fill="#63a3e2" stop-color="#0C68B4" offset="0"/>
+    <stop fill="#63a3e2" stop-color="#1477C7" offset="1"/>
+   </linearGradient>
+   <polygon fill="#4a95db" id="svg_3" points="264,279 264,322 108,322 108,76 264,76 264,135 312,135 312,27 60,27 60,371 312,371 312,279 " class="st1"/>
+  </g>
+ </g></svg>

@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+								xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Registro de usuario a quien se le delegado la responsabilidad de acceso al sistema" />
+  <ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {
+				'general\\:parametro': {validaciones: 'libre', mascara: 'libre', grupo: 'busqueda', mensaje: 'Capture el campo de busqueda'},
+				'general\\:encontrados': {validaciones: 'requerido', mascara: 'libre', grupo: 'busqueda', mensaje: 'Seleccione un usuario'},
+				'general\\:curp': {validaciones: 'requerido', mascara: 'curp', grupo: 'datos', mensaje: 'Capture el campo CURP'},
+				'general\\:rfc': {validaciones: 'requerido', mascara: 'rfc', grupo: 'datos', mensaje: 'Capture el campo RFC'},
+				'general\\:nombre': {validaciones: 'requerido', mascara: 'letras', grupo: 'datos', mensaje: 'Capture el campo nombre'},
+				'general\\:primerApellido': {validaciones: 'requerido', mascara: 'letras', grupo: 'datos', mensaje: 'Capture el campo primer apellido'},
+				'general\\:segundoApellido': {validaciones: 'requerido', mascara: 'letras', grupo: 'datos', mensaje: 'Capture el campo segundo apellido'},
+				'general\\:sexoGenerales': {validaciones: 'requerido', mascara: 'libre', grupo: 'datos', mensaje: 'Seleccione un sexo'},
+				'general\\:paisNacimientoGenerales': {validaciones: 'requerido', mascara: 'libre', grupo: 'datos', mensaje: 'Seleccione un pais de nacimiento'},
+				'general\\:entidadNacimientoGenerales': {validaciones: 'requerido', mascara: 'libre', grupo: 'datos', mensaje: 'Seleccione una entidad de nacimiento'},
+				'general\\:paisResidenciaGeneral': {validaciones: 'requerido', mascara: 'libre', grupo: 'datos', mensaje: 'Seleccione el pais de residencia'},
+				'general\\:entidadResidenciaGeneral': {validaciones: 'requerido', mascara: 'libre', grupo: 'datos', mensaje: 'Seleccione la entidad de residencia'},
+				'general\\:municipioResidenciaGeneral': {validaciones: 'requerido', mascara: 'libre', grupo: 'datos', mensaje: 'Seleccione el municipio de residencia'},
+				'general\\:codigoPostalResidenciaGeneral': {validaciones: 'requerido', mascara: 'libre', grupo: 'datos', mensaje: 'Seleccione el codigo postal'},
+				'general\\:domicilio': {validaciones: 'requerido', mascara: 'libre', grupo: 'datos', mensaje: 'Captura el campo domicilio'},
+				'general\\:contrasenia': {validaciones: 'requerido', mascara: 'libre', grupo: 'informe', mensaje: 'Captura la conntraseña'},
+				'general\\:confirmacionContrasenia': {validaciones: 'requerido', mascara: 'libre', grupo: 'informe', mensaje: 'Captura la confirmación de la contraseña'}
+			};
+
+			function executeValidaciones(step) {
+				var ok = false;
+				if (step === 0)
+					ok = janal.partial('busqueda');
+				else if (step === 1)
+					ok = janal.partial('datos');
+				else
+					ok = janal.partial('informe');
+				if (ok)
+					janal.bloquear();
+				return ok;
+			}
+			;
+		</script>
+    <style type="text/css">
+      .ui-tabs-nav{
+        display: none;
+      }
+			.ui-steps .ui-steps-item {
+				width: 33%;
+      }
+			.ui-panelgrid tbody tr td {
+        border: none !important;
+      }
+    </style>
+  </ui:define>
+	<ui:define name="contenido">
+    <div>
+			<p:remoteCommand name="doFiltro"  action="#{kajoolUsuariosDelegarGeneral.doCancelar}"/>     			
+      <p:steps id="steps" activeIndex="#{kajoolUsuariosDelegarGeneral.attrs.step}">
+        <p:menuitem value="Búsqueda usuario"/>
+        <p:menuitem value="Datos personales"/>
+        <p:menuitem value="Informe"/>
+      </p:steps>
+			<p:tabView id="general" activeIndex="#{kajoolUsuariosDelegarGeneral.attrs.step}" styleClass="janal-content-table">
+				<p:tab class="janal-display-none">
+					<div>
+						<p:fieldset id="registro" legend="Buscar por" toggleable="true" collapsed="false">
+							<p:panelGrid columns="1" layout="grid">
+								<p:panelGrid columns="3" layout="grid" columnClasses="janal-wid-15, janal-wid-30, janal-wid-10">
+									<p:outputLabel for="parametro" styleClass="janal-text-one-line" value="Rfc, nombre completo:"/>
+									<p:inputText id="parametro" value="#{kajoolUsuariosDelegarGeneral.attrs.parametro}" styleClass="janal-wid-70"/>
+									<p:commandButton id="buscarDelega" icon="icono-buscar" process="@this, parametro" update="encontrados" actionListener="#{kajoolUsuariosDelegarGeneral.doBuscarEmpleados}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+								</p:panelGrid>
+								<p:panelGrid columns="2" layout="grid" columnClasses="janal-wid-15, janal-wid-30">
+									<p:outputLabel for="encontrados" value="Encontrados:"/>
+									<p:selectOneMenu id="encontrados" value="#{kajoolUsuariosDelegarGeneral.attrs.usuariosDelega}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-70">											
+										<f:selectItem itemValue="-1" itemLabel="Seleccione"/>
+										<f:selectItems value="#{kajoolUsuariosDelegarGeneral.usuarios}" var="element" itemValue="#{element.key}" itemLabel="#{element.nombreCompleto}"/>						
+										<p:column>
+											<p:outputLabel value="#{item.rfc}"/>
+										</p:column>
+										<p:column>
+											<p:outputLabel value="#{item.nombreCompleto}"/>
+										</p:column>				
+									</p:selectOneMenu>
+								</p:panelGrid>
+							</p:panelGrid>
+						</p:fieldset>
+					</div>
+				</p:tab>
+				<p:tab class="janal-display-none">
+					<p:fieldset id="personal" legend="CURP y RFC" toggleable="false" collapsed="false">
+						<p:panelGrid columns="1" layout="grid">
+							<p:panelGrid columns="2" layout="grid" columnClasses="janal-wid-20, janal-wid-20">								
+								<p:panelGrid columns="1"  columnClasses="janal-wid-30">
+									<p:panelGrid columns="3">
+										<p:outputLabel for="curp" value="CURP"/>
+										<span class="janal-help-icon janal-help-11 fa fa-lg fa-fw fa-question-circle " onclick="countHelp(11);"/>
+										<pe:tooltip for="@(.janal-help-11)" showEvent="click">
+											<p:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(11)}" styleClass="Fs15" escape="false"/>
+										</pe:tooltip>  										
+									</p:panelGrid>	
+									<p:inputText id="curp" value="#{kajoolUsuariosDelegarGeneral.persona.curp}" />
+								</p:panelGrid>																									
+								<p:panelGrid columns="1"  columnClasses="janal-wid-30">
+									<p:panelGrid columns="3">
+										<p:outputLabel for="rfc" value="RFC"/>
+										<span class="janal-help-icon janal-help-166 fa fa-lg fa-fw fa-question-circle " onclick="countHelp(166);"/>
+										<pe:tooltip for="@(.janal-help-166)" showEvent="click">
+											<p:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(166)}" styleClass="Fs15" escape="false"/>
+										</pe:tooltip>
+									</p:panelGrid>
+									<p:inputText id="rfc" value="#{kajoolUsuariosDelegarGeneral.persona.rfc}" />
+								</p:panelGrid>																	
+							</p:panelGrid>
+						</p:panelGrid>
+					</p:fieldset>
+					<p:fieldset id="identificacion" legend="Nombre y sexo" toggleable="false" collapsed="false">
+						<p:panelGrid columns="1" layout="grid">
+							<p:panelGrid columns="4" layout="grid" columnClasses="janal-wid-20, janal-wid-20, janal-wid-20, janal-wid-20">
+								<p:panelGrid columns="1" layout="grid" >
+									<p:outputLabel value="Primer apellido:" for="primerApellido" styleClass="janal-text-one-line"/>
+									<p:inputText id="primerApellido" value="#{kajoolUsuariosDelegarGeneral.persona.primerApellido}" />
+								</p:panelGrid>
+								<p:panelGrid columns="1" layout="grid">
+                  <p:outputLabel value="Segundo apellido:" for="segundoApellido" styleClass="janal-text-one-line"/>
+									<p:inputText id="segundoApellido"  value="#{kajoolUsuariosDelegarGeneral.persona.segundoApellido}" />
+								</p:panelGrid>
+								<p:panelGrid columns="1" layout="grid" >
+									<p:outputLabel value="Nombre:" for="nombre"/>
+									<p:inputText id="nombre" value="#{kajoolUsuariosDelegarGeneral.persona.nombres}" />
+								</p:panelGrid>
+								<p:panelGrid columns="1" layout="grid" >
+									<p:outputLabel value="Sexo:" for="sexoGenerales"/>
+									<p:selectOneMenu id="sexoGenerales" value="#{kajoolUsuariosDelegarGeneral.persona.idSexo}">
+										<f:selectItem itemLabel="Seleccione" itemValue=""/>
+										<f:selectItems value="#{kajoolUsuariosDelegarGeneral.sexo}"/>
+									</p:selectOneMenu>
+								</p:panelGrid>
+							</p:panelGrid>
+						</p:panelGrid>
+					</p:fieldset>
+					<p:fieldset id="nacimiento" legend="Fecha y lugar de nacimiento" toggleable="false" collapsed="false">
+						<p:panelGrid columns="1" layout="grid">
+							<p:panelGrid columns="3" layout="grid" columnClasses="janal-wid-20, janal-wid-40, janal-wid-20">
+								<p:panelGrid columns="1" columnClasses="janal-wid-30">
+									<p:panelGrid columns="3">
+										<p:outputLabel for="fechaNacimiento" value="Fecha"/>
+										<span class="janal-help-icon janal-help-175 fa fa-lg fa-fw fa-question-circle " onclick="countHelp(175);"/>
+										<pe:tooltip for="@(.janal-help-175)" showEvent="click">
+											<p:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(175)}" styleClass="Fs15" escape="false"/>
+										</pe:tooltip>
+									</p:panelGrid>
+									<p:calendar id="fechaNacimiento" value="#{kajoolUsuariosDelegarGeneral.persona.fechaNacimiento}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="false" locale="es" converter="janal.convertidor.Fecha" />
+								</p:panelGrid>
+								<p:panelGrid columns="1" columnClasses="janal-wid-30">
+									<p:panelGrid columns="3">
+										<p:outputLabel for="paisNacimientoGenerales" value="País"/>
+										<span class="janal-help-icon janal-help-154 fa fa-lg fa-fw fa-question-circle " onclick="countHelp(154);"/>
+										<pe:tooltip for="@(.janal-help-154)" showEvent="click">
+											<p:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(154)}" styleClass="Fs15" escape="false"/>
+										</pe:tooltip>
+									</p:panelGrid>
+									<p:selectOneMenu id="paisNacimientoGenerales" value="#{kajoolUsuariosDelegarGeneral.persona.idPaisNacimiento}" >
+										<p:ajax event="change" process="@this" update="entidadNacimientoGenerales" listener="#{kajoolUsuariosDelegarGeneral.doLoadMenus('ENTIDAD')}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<f:selectItem itemLabel="Seleccione" itemValue=""/>
+										<f:selectItems value="#{kajoolUsuariosDelegarGeneral.paises}"/>
+									</p:selectOneMenu>
+								</p:panelGrid>
+								<p:panelGrid columns="1" columnClasses="janal-wid-30">
+									<p:panelGrid columns="3">
+										<p:outputLabel for="entidadNacimientoGenerales" value="Entidad federativa"/>
+										<span class="janal-help-icon janal-help-117 fa fa-lg fa-fw fa-question-circle " onclick="countHelp(117);"/>
+										<pe:tooltip for="@(.janal-help-117)" showEvent="click">
+											<p:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(117)}" styleClass="Fs15" escape="false"/>
+										</pe:tooltip>
+									</p:panelGrid>
+									<p:selectOneMenu id="entidadNacimientoGenerales" value="#{kajoolUsuariosDelegarGeneral.persona.idEntidadNacimiento}" >
+										<f:selectItem itemLabel="Seleccione" itemValue=""/>
+										<f:selectItems value="#{kajoolUsuariosDelegarGeneral.entidades}"/>
+									</p:selectOneMenu>
+								</p:panelGrid>
+							</p:panelGrid>
+						</p:panelGrid>
+					</p:fieldset>
+					<p:fieldset id="residencia" legend="Lugar de residencia" toggleable="false" collapsed="false">
+						<p:panelGrid columns="1" layout="grid" >
+							<p:panelGrid columns="3" layout="grid" columnClasses="janal-wid-40,janal-wid-30,janal-wid-30">
+								<p:panelGrid columns="1" columnClasses="janal-wid-30">
+									<p:panelGrid columns="3">
+										<p:outputLabel for="paisResidenciaGeneral" value="País"/>
+										<span class="janal-help-icon janal-help-190 fa fa-lg fa-fw fa-question-circle " onclick="countHelp(190);"/>
+										<pe:tooltip for="@(.janal-help-190)" showEvent="click">
+											<p:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(190)}" styleClass="Fs15" escape="false"/>
+										</pe:tooltip>
+									</p:panelGrid>
+									<p:selectOneMenu id="paisResidenciaGeneral" value="#{kajoolUsuariosDelegarGeneral.persona.idPaisResidencia}" >
+										<p:ajax event="change" process="@this" update="entidadResidenciaGeneral municipioResidenciaGeneral" listener="#{kajoolUsuariosDelegarGeneral.doLoadMenus('RESIDENCIA')}"  onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<f:selectItem itemLabel="Seleccione" itemValue=""/>
+										<f:selectItems value="#{kajoolUsuariosDelegarGeneral.paises}"/>
+									</p:selectOneMenu>
+								</p:panelGrid>
+								<p:panelGrid columns="1" columnClasses="janal-wid-30">
+									<p:panelGrid columns="3">
+										<p:outputLabel for="entidadResidenciaGeneral" value="Entidad federativa"  styleClass="janal-text-one-line"/>
+										<span class="janal-help-icon janal-help-118 fa fa-lg fa-fw fa-question-circle " onclick="countHelp(118);"/>
+										<pe:tooltip for="@(.janal-help-118)" showEvent="click">
+											<p:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(118)}" styleClass="Fs15" escape="false"/>
+										</pe:tooltip>
+									</p:panelGrid>
+									<p:selectOneMenu id="entidadResidenciaGeneral" value="#{kajoolUsuariosDelegarGeneral.attrs.idEntidad}" >
+										<p:ajax event="change" process="@this" update="municipioResidenciaGeneral" listener="#{kajoolUsuariosDelegarGeneral.doLoadMenus('MUNICIPIO')}"  onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<f:selectItem itemLabel="Seleccione" itemValue=""/>
+										<f:selectItems value="#{kajoolUsuariosDelegarGeneral.entidadesResidencia}"/>
+									</p:selectOneMenu>
+								</p:panelGrid>
+								<p:panelGrid columns="1" columnClasses="janal-wid-30">
+									<p:panelGrid columns="3">
+										<p:outputLabel for="municipioResidenciaGeneral" value="Municipio"/>
+										<span class="janal-help-icon janal-help-119 fa fa-lg fa-fw fa-question-circle " onclick="countHelp(119);"/>
+										<pe:tooltip for="@(.janal-help-119)" showEvent="click">
+											<p:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(119)}" styleClass="Fs15" escape="false"/>
+										</pe:tooltip>
+									</p:panelGrid>
+									<p:selectOneMenu id="municipioResidenciaGeneral" value="#{kajoolUsuariosDelegarGeneral.attrs.idMunicipio}" >
+										<p:ajax event="change" process="@this" update="codigoPostalResidenciaGeneral" listener="#{kajoolUsuariosDelegarGeneral.doLoadMenus('CODIGOPOSTAL')}"  onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<f:selectItem itemLabel="Seleccione" itemValue=""/>
+										<f:selectItems value="#{kajoolUsuariosDelegarGeneral.municipios}"/>
+									</p:selectOneMenu>
+								</p:panelGrid>
+							</p:panelGrid>
+							<p:panelGrid columns="2" layout="grid" columnClasses="janal-wid-15, janal-wid-30">
+								<p:panelGrid columns="1" columnClasses="janal-wid-30">
+									<p:panelGrid columns="3">
+										<p:outputLabel for="codigoPostalResidenciaGeneral" value="Código postal" styleClass="janal-text-one-line"/>
+										<span class="janal-help-icon janal-help-176 fa fa-lg fa-fw fa-question-circle " onclick="countHelp(176);"/>
+										<pe:tooltip for="@(.janal-help-176)" showEvent="click">
+											<p:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(176)}" styleClass="Fs15" escape="false"/>
+										</pe:tooltip>
+									</p:panelGrid>
+									<p:selectOneMenu id="codigoPostalResidenciaGeneral" value="#{kajoolUsuariosDelegarGeneral.persona.idCodigoPostal}" >
+										<f:selectItem itemLabel="Seleccione" itemValue=""/>
+										<f:selectItems value="#{kajoolUsuariosDelegarGeneral.codigosPostales}"/>
+									</p:selectOneMenu>
+								</p:panelGrid>           														
+								<p:panelGrid columns="1" columnClasses="janal-wid-50">
+									<p:panelGrid columns="3">
+										<p:outputLabel value="Domicilio" for="domicilio"/>
+										<span class="janal-help-icon janal-help-177 fa fa-lg fa-fw fa-question-circle " onclick="countHelp(177);"/>
+										<pe:tooltip for="@(.janal-help-177)" showEvent="click">
+											<p:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(177)}" styleClass="Fs15" escape="false"/>
+										</pe:tooltip>
+									</p:panelGrid>
+									<p:inputText id="domicilio" value="#{kajoolUsuariosDelegarGeneral.persona.domicilio}" size="100"/>
+								</p:panelGrid>
+							</p:panelGrid>
+						</p:panelGrid>
+					</p:fieldset>								
+				</p:tab>
+				<p:tab class="janal-display-none">	
+					<p:panelGrid columns="1" layout="grid">
+						<p:fieldset id="informeGenerales" legend="Detalle de usuario" toggleable="false" collapsed="false">
+							<p:panelGrid columns="1" layout="grid">
+								<p:panelGrid columns="2" layout="grid" columnClasses="janal-wid-10, janal-wid-40">
+									<p:outputLabel value="CURP:"/>
+									<p:outputLabel value="#{kajoolUsuariosDelegarGeneral.attrs.informe.curp}"/>
+									<p:outputLabel value="RFC:"/>
+									<p:outputLabel value="#{kajoolUsuariosDelegarGeneral.attrs.informe.rfc}"/>
+									<p:outputLabel value="Nombre:"/>
+									<p:outputLabel value="#{kajoolUsuariosDelegarGeneral.attrs.informe.nombreCompleto}"/>
+									<p:outputLabel value="Perfil:"/>
+									<p:outputLabel value="#{kajoolUsuariosDelegarGeneral.attrs.informe.perfil}"/>
+									<p:outputLabel value="Cuenta:"/>
+									<p:outputLabel value="#{kajoolUsuariosDelegarGeneral.attrs.informe.cuenta}"/>
+									<p:outputLabel value="Contrasenia:" rendered="#{!kajoolUsuariosDelegarGeneral.attrs.credenciales}" for="contrasenia"/>
+									<p:password id="contrasenia" value="#{kajoolUsuariosDelegarGeneral.attrs.informe.contrasenia}" feedback="true" promptLabel="Captura la contraseña" weakLabel="Nivel de seguridad: Baja" goodLabel="Nivel de seguridad: Media" strongLabel="Nivel de seguridad: Alta" rendered="#{!kajoolUsuariosDelegarGeneral.attrs.credenciales}"/>								
+									<p:outputLabel value="Confirmar contraseña:" rendered="#{!kajoolUsuariosDelegarGeneral.attrs.credenciales}" for="confirmacionContrasenia"/>
+									<p:password id="confirmacionContrasenia" value="#{kajoolUsuariosDelegarGeneral.attrs.confirmacionContrasenia}" feedback="true" promptLabel="Captura la contraseña" weakLabel="Nivel de seguridad: Baja" goodLabel="Nivel de seguridad: Media" strongLabel="Nivel de seguridad: Alta" rendered="#{!kajoolUsuariosDelegarGeneral.attrs.credenciales}"/>								
+								</p:panelGrid>							
+							</p:panelGrid>							
+						</p:fieldset>							
+					</p:panelGrid>
+				</p:tab>
+			</p:tabView>			
+			<div>
+        <p:commandButton id="cancelar" icon="fa fa-arrow-left" value="Atras" actionListener="#{kajoolUsuariosDelegarGeneral.doRetroceder}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" update="steps general aceptar"/>
+        <p:commandButton id="aceptar" icon="fa fa-check" value="#{kajoolUsuariosDelegarGeneral.attrs.step eq 2 ? 'Finalizar' : 'Siguiente'}" actionListener="#{kajoolUsuariosDelegarGeneral.doAvanzar}" onstart="return executeValidaciones(#{kajoolUsuariosDelegarGeneral.attrs.step});" oncomplete="janal.desbloquear();" update="steps general aceptar" styleClass="Fright" process="@form"/>
+      </div>
+		</div>
+	</ui:define>
+</ui:composition>

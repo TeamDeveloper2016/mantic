@@ -1,0 +1,91 @@
+package {paquete};
+
+/**
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
+ *@date {fecha}
+ *@time {hora}
+ *@author {autor} <{correo}>
+ */
+
+import java.util.List;
+import java.io.Serializable;
+import java.sql.Date;
+import java.util.Calendar;
+import java.util.ArrayList;
+import java.util.Collections;
+import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.pagina.IBaseFilter;
+import mx.org.kaana.libs.pagina.JsfUtilities;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.libs.pagina.UISelect;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+@ManagedBean(name="{backing}")
+@ViewScoped
+public class {nombreFiltro} extends IBaseFilter implements Serializable {
+
+	private static final Log LOG = LogFactory.getLog({nombreFiltro}.class);
+{atributos}
+{getters}
+	@PostConstruct
+	@Override
+	protected void init() {
+		try {
+{inicializaciones}
+			LOG.debug(JsfUtilities.getFacesContext().getCurrentPhaseId());
+		} // try
+		catch(Exception e) {
+			JsfUtilities.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+	} // init
+
+	@Override
+	public void doLoad() {
+		List<Columna> columnas = new ArrayList<>();
+		try {
+		{formatos}
+			this.lazyModel= new FormatLazyModel("{nombreVista}", this.attrs, {coleccion});
+			UIBackingUtilities.resetDataTable();
+		} // try
+		catch(Exception e) {
+			JsfUtilities.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(columnas);
+		}//finally
+	} // doLoad
+
+	public String doEvento(String evento) {
+		EAccion	accion	= null;
+		try {
+			accion	= EAccion.valueOf(evento.toUpperCase());
+			switch (accion) {
+				case MODIFICAR:
+				case ELIMINAR:
+				JsfUtilities.setFlashAttribute("seleccionado", ((Entity)this.attrs.get("selected")));
+				break;
+			} // switch
+			JsfUtilities.setFlashAttribute("accion", accion);
+		} // try
+		catch(Exception e) {
+			JsfUtilities.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+		return "agregar";
+	} // doEvento
+
+}

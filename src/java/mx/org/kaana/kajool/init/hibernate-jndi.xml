@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<hibernate-configuration>  
+  <session-factory>   
+    <property name="hibernate.dialect">{lenguaje}</property>
+		<property name="connection.datasource">{jndi}</property>        
+    <property name="hibernate.jdbc.batch_size">{batchSize}</property>    
+  </session-factory>
+<hibernate-configuration>  

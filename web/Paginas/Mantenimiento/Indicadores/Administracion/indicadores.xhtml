@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date Mar 12, 2015
+ time 2:10:01 PM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Indicadores de avance #{kajoolMantenimientoIndicadoresAdministracionIndicadores.attrs.nombreGrupo}" />
+  <ui:define name="contenido">
+		<p:contextMenu for="tabla">
+			<p:menuitem icon="fa fa-table" value="Tablas temporales" action="#{kajoolMantenimientoIndicadoresAdministracionIndicadores.doTablaTemporal}" process="@this,tabla"/>
+			<p:separator/>
+			<p:menuitem id="modificar" icon="fa fa-edit" value="Modificar" process="@this,tabla" action="#{kajoolMantenimientoIndicadoresAdministracionIndicadores.doModificar}"/>
+			<p:menuitem id="eliminar" icon="fa fa-trash" value="Eliminar" onstart="janal.bloquear();PF('dialogoConfirmacion').show()"/>
+			<p:menuitem id="consultar" icon="fa fa-eye" value="Consultar" actionListener="#{kajoolMantenimientoIndicadoresAdministracionIndicadores.doConsultar}" update="consultaEstatus" oncomplete="PF('dialogoConsultar').show()" onstart="janal.bloquear()" process="@this,tabla"/>
+		</p:contextMenu>
+		<p:dataTable lazy="true" id="tabla" var="fila" rowIndexVar="index" value="#{kajoolMantenimientoIndicadoresAdministracionIndicadores.lazyModel}" paginator="#{kajoolMantenimientoIndicadoresAdministracionIndicadores.lazyModel.rowCount gt kajoolMantenimientoIndicadoresAdministracionIndicadores.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"
+								 emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="janal-content-table" selection="#{kajoolMantenimientoIndicadoresAdministracionIndicadores.seleccionado}" selectionMode="single" reflow="true">
+			<f:facet name="header">
+				<p:menuButton value="Opciones">
+					<p:menuitem id="agregar" icon="fa fa-plus" value="Agregar" process="@this" action="#{kajoolMantenimientoIndicadoresAdministracionIndicadores.doAgregar}"/>
+				</p:menuButton>
+			</f:facet>
+			<p:column headerText="Nombre">
+				#{fila['descripcion']}
+			</p:column>
+			<p:column headerText="Activo" styleClass="janal-column-center janal-wid-10">
+				#{fila['activo']}
+			</p:column>
+			<p:column headerText="Corte">
+				#{fila['corte']}
+			</p:column>
+			<p:column headerText="Estatus indicador">
+				#{fila['estatusIndicador']}
+			</p:column>
+			<p:column headerText="Orden" styleClass="janal-column-center janal-wid-10">
+				#{fila['orden']}
+			</p:column>
+			<f:facet name="footer">
+				Total [#{kajoolMantenimientoIndicadoresAdministracionIndicadores.lazyModel==null?0:kajoolMantenimientoIndicadoresAdministracionIndicadores.lazyModel.rowCount}] registros
+			</f:facet>
+		</p:dataTable>
+		<div class="janal-line-button">
+			<p:commandButton id="cancelar" value="Regresar" action="#{kajoolMantenimientoIndicadoresAdministracionIndicadores.doRegresar}" immediate="true" ajax="false" process="@this" />
+		</div>
+  </ui:define>
+	<ui:define name="dialogos">
+		<p:dialog id="ventanaConsultar" widgetVar="dialogoConsultar" onHide="janal.desbloquear()" showEffect="clip" hideEffect="clip" header="Estatus del indicador" closable="false">
+			<div class="janal-content-table">
+				<p:pickList id="consultaEstatus" value="#{kajoolMantenimientoIndicadoresAdministracionIndicadores.model}" var="item" itemValue="#{item}" itemLabel="#{item}" disabled="true">
+					<f:facet name="sourceCaption">Estatus</f:facet>
+						<f:facet name="targetCaption">Columnas</f:facet>
+					<p:column style="width:100%">
+						#{item}
+					</p:column>
+				</p:pickList>
+			</div>
+			<hr class="ui-widget-content" style="#{empty lineaSeparacion? '': 'display:none'}"/>
+			<div class="janal-line-button">
+				<p:commandButton process="@none"  value="Regresar" oncomplete="PF('dialogoConsultar').hide()" />
+			</div>
+		</p:dialog>
+	</ui:define>
+	<ui:param name="textoConfirmacion" value="¿Desea eliminar el indicador de avance? También se borrarán las tablas temporales"/>
+	<ui:param name="updateComponent" value="tabla"/>
+	<ui:param name="accionConfirmacion" value="#{kajoolMantenimientoIndicadoresAdministracionIndicadores}"/>
+	<ui:param name="eventoConfirmacion" value="doEliminar"/>
+	<ui:param name="renderedConfirmacion" value="true"/>
+</ui:composition>

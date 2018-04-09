@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+	<ui:param name="titulo" value="Mantenimiento a las opciones del menú" />
+  <ui:define name="contenido">
+    <p:panelGrid id="contenidoPrincipal" columns="1" layout="grid">
+			<p:toolbar  styleClass="janal-content-table" id="seguimiento">
+        <f:facet name="left">
+          <p:commandButton value="Inicio" icon="fa fa-caret-right" actionListener="#{kajoolMantenimientoMenusEncabezadoFiltro.doInicio}"  update=":datos:tabla,:datos:seguimiento" id="visitados"/>
+          <ui:repeat var="visitado" value="#{kajoolMantenimientoMenusEncabezadoFiltro.visitados}" >
+            <p:commandButton value="#{visitado.descripcion}" icon="ui-icon-triangle-1-e"  actionListener="#{kajoolMantenimientoMenusEncabezadoFiltro.doVisitado(visitado)}" update=":datos:tabla,:datos:seguimiento" />
+          </ui:repeat>
+				</f:facet>
+      </p:toolbar>
+			<p:contextMenu id="idContextMenu" for="tabla" widgetVar="kajoolContextMenu" >
+				<p:menuitem icon="fa fa-edit" action="#{kajoolMantenimientoMenusEncabezadoFiltro.doActualizar('MODIFICAR')}"  value="Modificar"  title="Modificar opción de menú" />
+				<p:menuitem icon="fa fa-trash" action="#{kajoolMantenimientoMenusEncabezadoFiltro.doActualizar('ELIMINAR')}"  value="Eliminar"  title="Eliminar opción de menú" />
+				<p:separator/>
+				<p:menuitem icon="fa icon-up-outline" id="subir" actionListener="#{kajoolMantenimientoMenusEncabezadoFiltro.doMoverPosicion('SUBIR')}" value="Subir" title="Subir opción" update="tabla" process="@this,:datos:tabla"/>
+				<p:menuitem icon="fa icon-down-outline" id="bajar" actionListener="#{kajoolMantenimientoMenusEncabezadoFiltro.doMoverPosicion('BAJAR')}" value="Bajar" title="Bajar opción" update="tabla" process="@this,:datos:tabla"/>
+				<p:menuitem icon="fa icon-clipboard" action="#{kajoolMantenimientoMenusEncabezadoFiltro.doActualizar('REGISTRAR')}" ajax="false" value="Descendencia"  title="Agregar descendencia"/>             				
+			</p:contextMenu>
+      <p:dataTable lazy="true" id="tabla" var="row" rows="200" widgetVar="kajoolTable" rowIndexVar="index" selectionMode="single" selection="#{kajoolMantenimientoMenusEncabezadoFiltro.seleccionado}" rowKey="#{row.idMenuEncabezado}" styleClass="janal-content-table"  value="#{kajoolMantenimientoMenusEncabezadoFiltro.lazyModel}" reflow="true" >
+				<p:ajax event="rowDblselect"  listener="#{kajoolMantenimientoMenusEncabezadoFiltro.doActualizarChildren}" onstart="return janal.bloquear();" update=":datos:tabla,:datos:seguimiento" process="@this" oncomplete="janal.desbloquear();"/>
+        <f:facet name="header">
+          <p:menuButton   value="Opciones">
+            <p:menuitem value="Agregar" action="#{kajoolMantenimientoMenusEncabezadoFiltro.doActualizar('AGREGAR')}" icon="fa fa-plus" title="Agregar opción a menú" ajax="false" />
+            <p:separator/>
+            <p:menuitem value="Reasignar claves" icon="fa fa-edit" actionListener="#{kajoolMantenimientoMenusEncabezadoFiltro.doReasignarClaves}" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+          </p:menuButton>
+        </f:facet>
+				<p:ajax event="rowSelect" update="idContextMenu" oncomplete="PF('kajoolTable').writeSelections()"/>
+				<p:ajax event="contextMenu" update="idContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);"/>      		
+        <p:column headerText="Icono" styleClass="TexAlCenter Responsive janal-wid-col-40">
+					<i class="#{row.icono} fa-lg"/>
+        </p:column>
+        <p:column headerText="Descripción" class="janal-column-left MarAuto Responsive">
+          <h:outputText value="#{row.descripcion}"/>					
+        </p:column>
+        <p:column headerText="Ayuda">
+          <h:outputText value="#{row.ayuda}" class="janal-column-left MarAuto Responsive janal-wid-20"/>					
+        </p:column>
+        <p:column headerText="Ruta">
+          <h:outputText value="#{row.ruta}" class="janal-column-left MarAuto Responsive janal-wid-40"/>					
+        </p:column>
+        <p:column headerText="Publicar" styleClass="TexAlCenter Responsive janal-wid-col-50">
+          <p:graphicImage library="janal" name="icon/acciones/#{kajoolMantenimientoMenusEncabezadoFiltro.doSemaforo(row.publicar)}.png"/>
+        </p:column>
+      </p:dataTable>
+			<div class="janal-content-table">
+				<label class="janal-text-one-line"><i class="fa fa-info-circle"/> Doble clic sobre la fila para entrar a opciones de menú </label>
+			</div>
+		</p:panelGrid>
+  </ui:define>
+	<ui:param name="componenteBloqueo" value="subir bajar visitados"/>
+</ui:composition>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Datos del grupo " />
+  <ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {
+				'clave': { validaciones : 'requerido', mascara: 'mayusculas'},
+				'descripcion': { validaciones : 'requerido', mascara: 'libre'}
+			};
+		</script>
+	</ui:define>
+  <ui:define name="contenido" >
+		<div class="janal-content-table">
+			<p:panelGrid id="formulario" columns="2" class="ui-grid-responsive" columnClasses="ui-grid-col-2 janal-wid-col-120,ui-grid-col-3" layout="grid">
+				<p:outputLabel for="clave" value="Clave:"/>
+				<p:inputText id="clave" value ="#{kajoolMantenimientoGruposperfilesGruposAgregar.attrs.dto.clave}" styleClass="Container80"/>
+				<p:outputLabel for="descripcion" value="Nombre del grupo:"/>
+				<p:inputText id="descripcion" value ="#{kajoolMantenimientoGruposperfilesGruposAgregar.attrs.dto.descripcion}" styleClass="Container80"/>
+			</p:panelGrid>
+		</div>
+  </ui:define>
+  <ui:param name="componenteBloqueo" value="aceptar,cancelar"/>
+  <ui:define name ="acciones" >
+    <p:commandButton id="aceptar" icon="fa fa-check" process="@this clave descripcion" action="#{kajoolMantenimientoGruposperfilesGruposAgregar.doAgregar}" value="Aceptar" onstart="return janal.execute();" />
+    <p:commandButton  id="cancelar" icon="fa fa-remove" value="Cancelar" ajax="false"  action="filtro"/>
+  </ui:define>
+</ui:composition>

@@ -1,0 +1,53 @@
+package {paqueteReglas};
+
+/**
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
+ *@date {fecha}
+ *@time {hora}
+ *@author {autor} <{correo}>
+ */
+
+import org.hibernate.Session;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.reglas.IBaseTnx;
+import org.apache.log4j.Logger;
+{importDto}
+
+public class Transaccion extends IBaseTnx {
+
+  private static final Logger LOG = Logger.getLogger(Transaccion.class);
+
+  private {nombreDto} dto;
+
+	public Transaccion ({nombreDto} dto) {
+		this.dto= dto;
+  }
+
+  @Override
+  protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
+    boolean regresar	= false;
+    try {
+      switch(accion) {
+        case AGREGAR :
+          regresar	= DaoFactory.getInstance().insert(sesion, this.dto) >= 1;
+        break;
+        case MODIFICAR :
+          regresar	= DaoFactory.getInstance().update(sesion, this.dto) >= 1;
+        break;
+        case ELIMINAR :
+          regresar	= DaoFactory.getInstance().delete(sesion, this.dto) >= 1;
+        break;
+      } // switch
+			if(!regresar)
+				throw new RuntimeException("No se modifico ningun registro");
+      LOG.info("Transaccion ".concat(accion.name()).concat(" para ? ["+ regresar+ "]."));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+    return regresar;
+  }
+
+}

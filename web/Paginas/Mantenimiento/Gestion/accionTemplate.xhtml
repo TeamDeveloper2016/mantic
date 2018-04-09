@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 2/03/2015
+ time 02:34:54 PM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/Paginas/Mantenimiento/Gestion/plantilla.xhtml">
+  <ui:param name="titulo" value="Asistente para generar acción" />
+  <ui:define name="librerias">
+    <h:outputStylesheet library="janal" name="css/codemirror.css" />
+    <h:outputScript library="janal" name="mirror/codemirror-4.11.min.js" target="head" />
+    <h:outputScript library="janal" name="mirror/clike-4.11.js" target="head" />
+    <h:outputScript library="janal" name="mirror/vbscript-4.11.js" target="head" />
+    <h:outputScript library="janal" name="mirror/htmlmixed-4.11.js" target="head" />
+    <h:outputScript library="janal" name="mirror/runmode-4.11.js" target="head" />
+    <h:outputScript library="janal" name="mirror/xml-4.11.js" target="head" />
+    <h:outputScript library="janal" name="mirror/css-4.11.js" target="head" />
+    <h:outputScript library="janal" name="mirror/javascript-4.11.js" target="head" />
+		<script type="text/javascript">
+			Janal.Control.fields = {
+				'campo'         :{validaciones: 'requerido', mascara: 'libre', grupo:'tabCampos'},
+        'titulo'	      :{validaciones: 'requerido', mascara: 'libre', grupo:'generar'},
+				'proceso'	      :{validaciones: 'requerido', mascara: 'texto', grupo:'generar'},
+				'nombre'	      :{validaciones: 'requerido', mascara: 'texto', grupo:'generar'},
+				'encuestaTexto'	:{validaciones: 'requerido', mascara: 'texto', grupo:'generar'},
+				'encuesta'      :{validaciones: 'requerido',	mascara: 'libre', grupo:'generar'},
+				'nombreAutor'   :{validaciones: 'requerido',	mascara: 'libre', grupo:'generar'},
+				'correoAutor'   :{validaciones: 'requerido',	mascara: 'libre', grupo:'generar'}
+			};
+
+			function centrarDialogo(dialogo) {
+        $(".ui-dialog").css ({
+          "left": "50%",
+          "top": "50%",
+          "margin-left": -($('#'+dialogo).width()/2),
+          "margin-top": -($('#'+dialogo).height()/2),
+        });
+      };
+
+			function descargarShow() {
+				$('#descargar').show();
+			};
+			
+			function descargarHide() {
+				$('#descargar').hide();
+			};
+			
+			function descargar(){
+				$("#tab\\:generado").click();
+        PF('tabResultados').select(0);
+        refrescar();
+			};
+			
+			function refrescar(){
+				window.editor.refresh();
+			};
+			
+			function reload(textArea1,textArea2, textArea3, textArea4) {
+				$(".CodeMirror" ).remove();
+				$(".CodeMirror" ).empty();
+				if(document.getElementById(textArea1)!== null) {
+					generateCodeMirror (textArea1,"htmlmixed");
+				}
+				if(document.getElementById(textArea2)!== null){
+					generateCodeMirror (textArea2,"clike");
+				} // if
+				if(document.getElementById(textArea3)!== null){
+					generateCodeMirror (textArea3,"clike");
+        } // if
+				if(document.getElementById(textArea4)!== null){
+					generateCodeMirror (textArea4,"clike");
+				} // if
+			}
+			
+			function generateCodeMirror (id,modo){
+				window.editor = CodeMirror.fromTextArea(document.getElementById(id),{
+						mode        : modo,
+						lineNumbers : true,
+						readOnly    : true,
+						lineWrapping: true});
+				};
+		</script>
+		<style type="text/css">
+		  .ui-wizard-content {
+        font-size: 12px;
+      }
+      .ui-wizard-step-title {
+				font-size: 1em;
+        float: left;
+			  margin: 0 7px 7px 0;
+		  }
+      .ui-picklist .ui-picklist-list {
+        width: 425px !important;
+        height: 200px !important;
+      }
+      .ui-picklist .ui-picklist-filter {
+        width: 94% !important;
+      }
+    </style>
+  </ui:define>
+  <ui:define name="contenido">
+    <p:wizard id="tabla" flowListener="#{kajoolMantenimientoGestionAccionTemplate.onFlowProcess}" onback="descargarHide();" backLabel="Atras" nextLabel="Siguiente">
+			<p:tab id="tabReferencia" title="Referencia" >
+        <h:panelGrid columns="2">
+          <h:outputLabel value="Proyecto:"/>
+          <p:inputText id="encuestaTexto"  value="#{kajoolMantenimientoGestionAccionTemplate.attrs.encuestaTexto}">
+            <p:ajax event="keyup" listener="#{kajoolMantenimientoGestionAccionTemplate.doActualizarRuta}" update="ruta rutaBacking dtoReferencia" process="@this"/>
+          </p:inputText>
+          <h:outputLabel value="Dto:"/>
+          <p:selectOneMenu id="dtoReferencia" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.dto}" filter="true">
+            <f:selectItems value="#{kajoolMantenimientoGestionAccionTemplate.attrs.dtosEncuesta}" var="dto" itemLabel="#{dto.simpleName}" itemValue="#{dto}"/>
+          </p:selectOneMenu>
+        </h:panelGrid>
+      </p:tab>
+			<p:tab id="tabCampos" title="Campos" >
+				<h:outputText value="Selecciona los campos a implementar"/>
+        <p:pickList id="pickList" value="#{kajoolMantenimientoGestionAccionTemplate.pickList}" var="campo" itemLabel="#{campo.value}" itemValue="#{campo}"  converter="janal.convertidor.PickList"/>
+			</p:tab>
+			<p:tab id="tabOrden" title="Orden" >
+				<div class="janal-content-table">
+					<h:outputText value="Desliza las filas (arriba/abajo) para indicar el orden en la página e indica la máscara y validación para cada campo."/>
+					<p:dataTable id="propiedadesCampos" value="#{kajoolMantenimientoGestionAccionTemplate.camposSeleccionados}" var="row" draggableRows="true" >
+						<p:column headerText="Nombre de campo">
+							<h:outputText value="#{row.dtoAlQuePertenece.simpleName}.#{row.nombre}"/>
+						</p:column>
+						<p:column headerText="Descripcion de la etiqueta">
+							<p:inputText value="#{row.alias}" style="width: 95%"/>
+						</p:column>
+						<p:column headerText="Tipo entrada">
+							<p:selectOneMenu id="componente" value="#{row.tipoComponente}" style="width: 60%; vertical-align: middle">
+								<p:ajax event="change" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" update="agregarConsulta agregarConverter"/>
+								<f:selectItem itemLabel="Caja de texto" itemValue="#{kajoolMantenimientoGestionAccionTemplate.getComponente('TEXT_FIELD_ACCION')}"/>
+								<f:selectItem itemLabel="Combo" itemValue="#{kajoolMantenimientoGestionAccionTemplate.getComponente('SELECT_ONE_MENU_ACCION')}"/>
+								<f:selectItem itemLabel="Fecha" itemValue="#{kajoolMantenimientoGestionAccionTemplate.getComponente('DATE_ACCION')}"/>		
+							</p:selectOneMenu>
+							<p:commandButton id="agregarConsulta" icon="ui-icon-plusthick" actionListener="#{kajoolMantenimientoGestionAccionTemplate.doGuardarCampoSeleccionado(row.nombre)}" style="vertical-align: middle; #{(row.tipoComponente==kajoolMantenimientoGestionAccionTemplate.getComponente('SELECT_ONE_MENU_ACCION')?'':'display: none')}"  onclick="janal.bloquear(); PF('dialogoCombo').show();"/>
+							<p:commandButton id="agregarConverter" icon="ui-icon-plusthick" actionListener="#{kajoolMantenimientoGestionAccionTemplate.doGuardarCampoSeleccionado(row.nombre)}" style="vertical-align: middle; #{(row.tipoComponente==kajoolMantenimientoGestionAccionTemplate.getComponente('DATE_ACCION')?'':'display: none')}"  onclick="janal.bloquear(); PF('dialogoConverter').show();"/>
+						</p:column>
+						<p:column headerText="Validación">
+							<p:selectCheckboxMenu id="validacion" value="#{row.validacion}" label="#{kajoolMantenimientoGestionAccionTemplate.doObtenerStringValidacion(row.validacion)}" filter="true" filterMatchMode="startsWith" style="width: 85%">
+								<p:ajax event="change" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" update="@this"/>
+								<f:selectItems value="#{kajoolMantenimientoGestionAccionTemplate.validaciones}" />
+							</p:selectCheckboxMenu>
+						</p:column>
+						<p:column headerText="Máscara">
+							<p:selectOneMenu id="mascara" value="#{row.mascara}" style="width: 70%" filter="true" filterMatchMode="startsWith">
+								<p:ajax event="change" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+								<f:selectItems value="#{kajoolMantenimientoGestionAccionTemplate.mascaras}"/>
+							</p:selectOneMenu>
+						</p:column>
+					</p:dataTable>	
+				</div>
+			</p:tab>
+			<p:tab id="tabDatos" title="Datos generales" >
+				<div class="janal-content-table">
+					<h:panelGrid columns="2">
+						<h:outputText value="Opciones para creación de la página"/><p:spacer/>
+						<h:outputLabel for="titulo" value="Título: "/>
+						<p:inputText id="titulo" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.titulo}" size="80"/>
+						<h:outputText value="Funcionalidad: "/>
+						<p:selectOneMenu id="tipo" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.tipo}" >
+							<f:selectItem itemValue="Consulta" itemLabel="Consulta"/>
+							<f:selectItem itemValue="Transaccion" itemLabel="Transacción"/>
+						</p:selectOneMenu>
+						<label for="nombre" class="janal-text-one-line"> Nombre de la acción:</label>
+						<p:inputText id="nombre" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.nombreAccion}" size="80" />
+						<h:outputLabel for="proceso" value="Proceso:"/>
+						<p:inputText id="proceso" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.proceso}" size="80" >
+							<p:ajax event="keyup" listener="#{kajoolMantenimientoGestionAccionTemplate.doActualizarRuta}" update="ruta rutaBacking" process="@this"/>
+						</p:inputText>
+						<h:outputLabel styleClass="janal-text-one-line" value="Ruta página:"/>
+						<h:outputLabel id="ruta" value="/Paginas/#{kajoolMantenimientoGestionAccionTemplate.attrs.rutaPagina}"/>					
+						<h:outputLabel styleClass="janal-text-one-line" value="Ruta backing:"/>
+						<h:outputLabel id="rutaBacking" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.rutaBacking}"/>
+            <h:outputLabel styleClass="janal-text-one-line" value="Crear bean"/>
+            <p:selectBooleanCheckbox id="bean" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.crearBean}">
+              <p:ajax event="change" process="@this" update="nombreBean lblNombreBean"/>
+            </p:selectBooleanCheckbox>
+						<h:outputLabel id="lblNombreBean" styleClass="janal-text-one-line" value="Nombre bean" style="#{kajoolMantenimientoGestionAccionTemplate.attrs.crearBean==true?'':'display: none'}"/>
+            <p:inputText id="nombreBean" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.nombreBean}" style="#{kajoolMantenimientoGestionAccionTemplate.attrs.crearBean==true?'':'display: none'}"/>
+					</h:panelGrid>
+					<p:fieldset legend="Autor" toggleable="true" toggleSpeed="500" collapsed="true" style="margin-bottom:10px; width: 98%" styleClass="sin-lineas">
+						<h:panelGrid columns="2">	
+							<h:outputLabel for="nombreAutor" value="Nombre:"/>
+							<p:inputText id="nombreAutor" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.autor}" size="100" />
+							<h:outputLabel for="correoAutor" value="Correo:"/>
+							<p:inputText id="correoAutor" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.correo}" size="100" />
+						</h:panelGrid>
+					</p:fieldset>
+					<div class="janal-column-right">
+						<p:commandButton id="generar" value="Generar" actionListener="#{kajoolMantenimientoGestionAccionTemplate.doAceptar}" process="tabla" onstart="return janal.partial('generar',true);" oncomplete="janal.desbloquear(); reload('tab:textoPagina','tab:textoBacking','tab:textoTransaccion','tab:textoBean'); refrescar();" />
+					</div>
+				</div>
+			</p:tab>
+		</p:wizard>
+		<p:panel styleClass="janal-content-table" id='descargar' widgetVar="descargaArchivo">
+			<p:tabView id="tab" dynamic="true" onTabShow="refrescar();" widgetVar="tabResultados">
+				<p:ajax event="tabChange" listener="#{kajoolMantenimientoGestionAccionTemplate.onTabChange}"/>
+				<p:tab title="accion.xhtml">
+					<p:inputTextarea id="textoPagina" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.textoPagina}" style="width: 98%; height: 1000px;" readonly="true"/>
+				</p:tab>
+				<p:tab  title="Accion.java" id="tabFiltro">
+					<p:inputTextarea id="textoBacking" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.textoBacking}" style="width: 98%; height: 1000px;" readonly="true"/>
+				</p:tab>
+				<p:tab  title="Transaccion.java" id="tabTransaccion" >
+					<p:inputTextarea id="textoTransaccion" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.textoTransaccion}" style="width: 98%; height: 1000px;" readonly="true"/>
+				</p:tab>
+        <p:tab  title="Bean.java" id="tabBean" >
+					<p:inputTextarea id="textoBean" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.textoBean}" style="width: 98%; height: 1000px;" readonly="true"/>
+				</p:tab>
+				<p:tab title="Descargar" titleStyle="float:right;">
+					<p:panel visible="false">
+            <p:commandLink id="generado" title="Click para descargar el archivo" ajax="false" update="tab" >
+							<p:fileDownload value="#{kajoolMantenimientoGestionAccionTemplate.descargar}" />
+						</p:commandLink>
+					</p:panel>
+				</p:tab>
+			</p:tabView >
+		</p:panel>
+		<p:dialog id="dialogoConverter" widgetVar="dialogoConverter" header="Converter" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false"  onHide="janal.desbloquear();" onShow="centrarDialogo('dialogoConverter');">
+			<p:selectOneMenu id="converter" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.converter}">
+				<p:ajax event="change" process="@this"/>
+				<f:selectItem itemLabel="Fecha" itemValue="Fecha"/>
+				<f:selectItem itemLabel="Hora" itemValue="Hora"/>
+				<f:selectItem itemLabel="Calendario" itemValue="Calendario"/>		
+			</p:selectOneMenu>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton icon="ui-icon-check" id="aceptarConverter" process="@this converter" value="Aceptar" actionListener="#{kajoolMantenimientoGestionAccionTemplate.doAsignarConverter}" oncomplete="PF('dialogoConverter').hide();"/>
+				<p:commandButton icon="ui-icon-closethick" process="@none"  value="Cancelar" oncomplete="PF('dialogoConverter').hide();"/>
+			</div>
+		</p:dialog>
+    <p:dialog id="dialogoCombo" widgetVar="dialogoCombo" header="Elementos de caja de selección" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" resizable="false" onHide="janal.desbloquear();" onShow="centrarDialogo('dialogoCombo');">
+      <div class="janal-content-table">
+        <p:wizard id="wizardCombo" widgetVar="wizardCombo" flowListener="#{kajoolMantenimientoGestionAccionTemplate.onFlowProcess}" onback="descargarHide();" backLabel="Atras" nextLabel="Siguiente" >
+          <p:tab id="tabSqlCombo" title="SQL" >
+            <p:panel header="Consulta" class="janal-content-table">
+              <div class="janal-content-table">
+                <h:panelGrid columns="2">
+                  <h:outputLabel styleClass="janal-text-one-line" value="Unit:" for="unitsCombo"/>
+                  <p:selectOneMenu id="unitsCombo" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.unitCombo}" style="width: 305px" filter="true" filterMatchMode="startsWith">
+                    <p:ajax event="change" process="@this selectCombo" update="sqlCombo nombreVistaCombo selectCombo" listener="#{kajoolMantenimientoGestionAccionTemplate.actualizarSelects()}"/>
+                    <f:selectItem itemLabel="INSERTAR UNIT" itemValue="INSERTAR"/>
+                    <f:selectItems value="#{kajoolMantenimientoGestionAccionTemplate.units}"/>
+                  </p:selectOneMenu>
+                  <h:outputLabel styleClass="janal-text-one-line" value="Select:" for="selectCombo"/>
+                  <p:selectOneMenu id="selectCombo" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.selectCombo}" style="width: 305px" filter="true" filterMatchMode="startsWith" disabled="#{kajoolMantenimientoGestionAccionTemplate.attrs.unit=='INSERTAR'}">
+                    <p:ajax event="change" process="@this" update="sqlCombo nombreVistaCombo" listener="#{kajoolMantenimientoGestionAccionTemplate.actualizaConsulta()}"/>
+                    <f:selectItems value="#{kajoolMantenimientoGestionAccionTemplate.selects}"/>
+                  </p:selectOneMenu>
+                </h:panelGrid>
+                <h:panelGrid>
+                  <h:outputLabel styleClass="janal-text-one-line" value="Inserta sentencia a evaluar: " />
+                  <p:inputTextarea id="sqlCombo" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.sqlCombo}" disabled="#{kajoolMantenimientoGestionAccionTemplate.attrs.unit!='INSERTAR'}" style="width: 400px; height: 500px"/>
+                </h:panelGrid>
+                <h:panelGrid columns="2">
+                  <h:outputLabel styleClass="janal-text-one-line" value="Nombre vista:" />
+                  <p:inputText id="nombreVistaCombo" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.nombreVistaCombo}" disabled="#{kajoolMantenimientoGestionAccionTemplate.attrs.unit!='INSERTAR'}" size="100"/>
+                </h:panelGrid>
+              </div>
+            </p:panel>
+          </p:tab>
+          <p:tab id="tabParametrosCombo" title="Parámetros" >
+            <p:panel header="Parametros de la consulta" styleClass="janal-content-table">
+              <p:dataTable id="tablaParametrosCombo" value="#{kajoolMantenimientoGestionAccionTemplate.parametrosCombo}" var="params">
+                <p:column headerText="Parametro">
+                  <h:outputLabel value="#{params.nombre}"/>
+                </p:column>
+                <p:column headerText="Valor">
+                  <p:inputText id="paramCombo" value="#{params.valor}" style="width: 95%"/>
+                </p:column>
+              </p:dataTable>
+            </p:panel>
+          </p:tab>
+          <p:tab id="tabCamposCombo" title="Campos" >
+            <p:panel header="Personalización de combo" styleClass="janal-content-table">
+              <h:panelGrid columns ="2">
+                <label class="janal-text-one-line">Campo a visualizar en combo: </label>
+                <p:selectOneMenu id="campoCombo" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.campoCombo}">
+                  <f:selectItems value="#{kajoolMantenimientoGestionAccionTemplate.camposCombo}" var="campo" itemLabel="#{campo.nombre}" itemValue="#{campo.nombre}"/>
+                </p:selectOneMenu>
+                <label class="janal-text-one-line">Tipo: </label>
+                <p:selectOneMenu id="tipoSelect" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.tipoSelect}">
+                  <p:ajax event="change" process="@this labelValue value" update="value labelValue"/>
+                  <f:selectItem itemLabel="UISelect.build" itemValue="UISelect.build"/>
+                  <f:selectItem itemLabel="UISelect.free" itemValue="UISelect.free"/>
+                </p:selectOneMenu>
+                <p:outputLabel id="labelValue" class="janal-text-one-line" value="Value:" style="#{kajoolMantenimientoGestionAccionTemplate.attrs.tipoSelect=='UISelect.free'?'':'display: none'}"/>
+                <p:selectOneMenu id="value" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.value}" style="#{kajoolMantenimientoGestionAccionTemplate.attrs.tipoSelect=='UISelect.free'?'':'display: none'}">
+                  <f:selectItems value="#{kajoolMantenimientoGestionAccionTemplate.camposCombo}" var="campo" itemLabel="#{campo.nombre}" itemValue="#{campo.nombre}"/>
+                </p:selectOneMenu>	
+              </h:panelGrid>
+              <div class="janal-column-right">
+                <p:commandButton icon="ui-icon-home" value="Aceptar" process="@this campoCombo tipoSelect value" actionListener="#{kajoolMantenimientoGestionAccionTemplate.doAsignarCampo}" onstart="PF('dialogoCombo').hide(); janal.bloquear();" oncomplete="janal.desbloquear(); PF('wizardCombo').loadStep('tabSqlCombo', false);" update="propiedadesCampos"/>
+              </div>
+            </p:panel>
+          </p:tab>
+        </p:wizard>
+      </div>
+    </p:dialog>
+	</ui:define>
+</ui:composition>

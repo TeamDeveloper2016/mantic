@@ -1,0 +1,21 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:p="http://primefaces.org/ui"
+    xmlns:ui="http://java.sun.com/jsf/facelets">   		
+    <div id="layout-header" class="Unselectable fontRegular janal-top-menu">
+    	<ul id="sm-topmenu" class="layout-header-widgets white Fs14">
+        <li class="Fleft BordRadHalf TexAlCenter"><i class="#{sessionScope.autentifica.empleado.idSexo== 1? 'icon-user-male': 'icon-user-female'}"></i>
+					<ul class="layout-header-widgets-submenu BordRad5 shadows white Animated05">						
+            <li class="Animated05">
+              <a href="#{facesContext.externalContext.requestContextPath}/Exclusiones/salir.jsf" class="white Unselectable"><i class="icon-logout"></i>Salir</a>
+            </li>
+					</ul>
+				</li>
+    	</ul>    	
+    	<ul id="sm-mobiletopmenu" class="layout-header-widgets white Fs14">
+    		<li class="Fleft BordRadHalf TexAlCenter Animated05 DisplayOnResponsive"><i class="icon-th-1"></i></li>
+    	</ul>
+   	</div>
+</ui:composition>

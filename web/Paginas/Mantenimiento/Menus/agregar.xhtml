@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+								template="/WEB-INF/plantillas/accion.xhtml"
+								xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+  <ui:param name="titulo" value="#{kajoolMantenimientoMenusAgregar.titulo}" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+			Janal.Control.fields = {
+				'descripcion': {validaciones: 'requerido', mascara: 'libre'},
+				'ayuda': {validaciones: 'requerido', mascara: 'libre'},
+				'url': {validaciones: 'requerido', mascara: 'libre'}
+			};
+			
+			$(document).ready(function(){
+				$("[id*=icon-]").on("click", function(){
+					var icono= $(this).find("i").attr("class");
+					asignarIcono([{name: "iconoSeleccionado", value: icono}]);
+				});
+			});
+    </script>
+  </ui:define>
+  <ui:define name="contenido">
+		<p:remoteCommand name="asignarIcono" actionListener="#{kajoolMantenimientoMenusAgregar.doAsignarIcono}" update="textoIcono,labelIcono,tamanio" onstart="PF('dialogoIconos').hide();" oncomplete="janal.desbloquear();"/>
+    <p:fieldset legend="Menú" toggleable="true" collapsed="false" styleClass="Responsive100">
+			<p:panelGrid id="definicion" columns="2"  layout="grid">
+				<p:outputLabel for="descripcion">Descripción:</p:outputLabel>
+				<p:inputText id="descripcion" styleClass="Wid70" value="#{kajoolMantenimientoMenusAgregar.current.descripcion}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}"/>
+				<p:outputLabel for="ayuda">Ayuda:</p:outputLabel>
+				<p:inputText id="ayuda" styleClass="Wid70" value="#{kajoolMantenimientoMenusAgregar.current.ayuda}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}"/>
+				<p:outputLabel for="url">URL:</p:outputLabel>
+				<p:inputText id="url" styleClass="Wid70" value="#{kajoolMantenimientoMenusAgregar.current.ruta}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}"/>
+				<p:outputLabel value="Icono:"/>
+				<p:panelGrid columns="3" layout="grid" columnClasses="ui-grid-col-4,ui-grid-col-1,ui-grid-col-4">
+					<p:inputText id="textoIcono" value="#{kajoolMantenimientoMenusAgregar.current.icono}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}">
+						<p:ajax event="blur" update="labelIcono"/>
+					</p:inputText>
+					<p:commandButton id="muestraIconos" icon="fa fa-search" onstart="janal.bloquear(); PF('dialogoIconos').show()" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}"/>
+					<p:outputLabel id="labelIcono">
+						<i class="#{kajoolMantenimientoMenusAgregar.current.icono}"></i>
+						#{kajoolMantenimientoMenusAgregar.current.icono}
+					</p:outputLabel>
+				</p:panelGrid>
+				<label for="tamanio">Tamaño:</label>
+				<p:selectOneMenu id="tamanio" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}" value="#{kajoolMantenimientoMenusAgregar.tamanio}">
+					<p:ajax event="change" listener="#{kajoolMantenimientoMenusAgregar.doAsignarTamanio}" process="@this" update="labelIcono" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+					<f:selectItem itemValue="fa-1x" itemLabel="1x"/>
+					<f:selectItem itemValue="fa-2x" itemLabel="2x"/>
+					<f:selectItem itemValue="fa-3x" itemLabel="3x"/>
+					<f:selectItem itemValue="fa-4x" itemLabel="4x"/>
+					<f:selectItem itemValue="fa-5x" itemLabel="5x"/>
+				</p:selectOneMenu>
+				<label for="publicar">Publicar:</label>
+				<p:selectOneMenu id="publicar" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}" value="#{kajoolMantenimientoMenusAgregar.current.publicar}" >
+					<f:selectItem itemValue="1" itemLabel="Sí"/>
+					<f:selectItem itemValue="0" itemLabel="No"/>
+					<f:selectItem itemValue="3" itemLabel="En construcción"/>
+				</p:selectOneMenu>
+			</p:panelGrid>		
+    </p:fieldset>
+		<h:inputHidden id="current" />			
+  </ui:define>
+  <ui:define name="acciones">
+    <p:commandButton id="aceptar" icon="fa fa-check" value="Aceptar" ajax="false" action="#{kajoolMantenimientoMenusAgregar.doAceptar}" process="@this:datos:definicion" onstart="return janal.execute();" update=":datos:current"/>
+    <p:commandButton id="cancelar" icon="fa fa-remove" value="Cancelar" action="#{kajoolMantenimientoMenusAgregar.doCancelar}" ajax="false" />
+  </ui:define>	
+	<ui:define name="dialogos">
+		<p:dialog id="iconos" widgetVar="dialogoIconos" header="Iconos" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" resizable="false" closable="false" onShow="$('.ui-carousel-viewport').css('height','60px');">
+			<p:scrollPanel mode="native" style="width:800px;height:600px">
+				<p:fieldset legend="Iconos web" toggleable="true" toggleSpeed="500" collapsed="true">
+					<ui:include src="/Paginas/Mantenimiento/Menus/Secciones/iconosWeb.xhtml"/>
+				</p:fieldset>
+				<p:fieldset legend="Iconos mano" toggleable="true" toggleSpeed="500" collapsed="true">
+					<ui:include src="/Paginas/Mantenimiento/Menus/Secciones/iconosMano.xhtml"/>
+				</p:fieldset>
+				<p:fieldset legend="Iconos transporte" toggleable="true" toggleSpeed="500" collapsed="true">
+					<ui:include src="/Paginas/Mantenimiento/Menus/Secciones/iconosTransporte.xhtml"/>
+				</p:fieldset>
+				<p:fieldset legend="Iconos genero" toggleable="true" toggleSpeed="500" collapsed="true">
+					<ui:include src="/Paginas/Mantenimiento/Menus/Secciones/iconosGenero.xhtml"/>
+				</p:fieldset>
+				<p:fieldset legend="Iconos archivo" toggleable="true" toggleSpeed="500" collapsed="true">
+					<ui:include src="/Paginas/Mantenimiento/Menus/Secciones/iconosArchivo.xhtml"/>
+				</p:fieldset>
+				<p:fieldset legend="Iconos spinner" toggleable="true" toggleSpeed="500" collapsed="true">
+					<ui:include src="/Paginas/Mantenimiento/Menus/Secciones/iconosSpinner.xhtml"/>
+				</p:fieldset>
+				<p:fieldset legend="Iconos formulario" toggleable="true" toggleSpeed="500" collapsed="true">
+					<ui:include src="/Paginas/Mantenimiento/Menus/Secciones/iconosFormulario.xhtml"/>
+				</p:fieldset>
+				<p:fieldset legend="Iconos pago" toggleable="true" toggleSpeed="500" collapsed="true">
+					<ui:include src="/Paginas/Mantenimiento/Menus/Secciones/iconosPago.xhtml"/>
+				</p:fieldset>
+				<p:fieldset legend="Iconos gráfica" toggleable="true" toggleSpeed="500" collapsed="true">
+					<ui:include src="/Paginas/Mantenimiento/Menus/Secciones/iconosGrafica.xhtml"/>
+				</p:fieldset>
+				<p:fieldset legend="Iconos moneda" toggleable="true" toggleSpeed="500" collapsed="true">
+					<ui:include src="/Paginas/Mantenimiento/Menus/Secciones/iconosMoneda.xhtml"/>
+				</p:fieldset>
+				<p:fieldset legend="Iconos texto" toggleable="true" toggleSpeed="500" collapsed="true">
+					<ui:include src="/Paginas/Mantenimiento/Menus/Secciones/iconosTexto.xhtml"/>
+				</p:fieldset>
+				<p:fieldset legend="Iconos direccion" toggleable="true" toggleSpeed="500" collapsed="true">
+					<ui:include src="/Paginas/Mantenimiento/Menus/Secciones/iconosDireccion.xhtml"/>
+				</p:fieldset>
+				<p:fieldset legend="Iconos video" toggleable="true" toggleSpeed="500" collapsed="true">
+					<ui:include src="/Paginas/Mantenimiento/Menus/Secciones/iconosVideo.xhtml"/>
+				</p:fieldset>
+				<p:fieldset legend="Iconos marca" toggleable="true" toggleSpeed="500" collapsed="true">
+					<ui:include src="/Paginas/Mantenimiento/Menus/Secciones/iconosMarca.xhtml"/>
+				</p:fieldset>
+				<p:fieldset legend="Iconos medico" toggleable="true" toggleSpeed="500" collapsed="true">
+					<ui:include src="/Paginas/Mantenimiento/Menus/Secciones/iconosMedico.xhtml"/>
+				</p:fieldset>
+			</p:scrollPanel>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" onstart="PF('dialogoIconos').hide(); return true;" oncomplete="janal.desbloquear();"/>
+			</div>
+		</p:dialog>
+  </ui:define>
+	<ui:param name="componenteBloqueo" value="aceptar,cancelar"/>	
+</ui:composition>

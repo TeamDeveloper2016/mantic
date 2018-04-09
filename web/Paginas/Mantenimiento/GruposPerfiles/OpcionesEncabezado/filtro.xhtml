@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * @project Team Developer 2016 <team.developer@kaana.org.mx>
+ * @company KAANA
+ * @date 10/09/2015
+ * @time 13:06:25 PM
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Seleccionar opciones de encabezado del perfil: #{kajoolMantenimientoGruposperfilesOpcionesEncabezado.attrs.descPerfil}" />
+  <ui:define name="librerias">
+		<script type="text/javascript">
+			function selecciona(){
+				$.each($('span[aria-selected*="true"]'),function(){
+					PF('arbol').addToSelection($(this).parent().attr("data-rowkey"));
+				});
+				PF('arbol').writeSelections();
+			}
+		</script>
+	</ui:define>
+  <ui:define name="contenido">
+    <p:panelGrid columns="1"  id="arbolPrincipal" layout="grid">
+			<p:tree widgetVar="arbol" value="#{kajoolMantenimientoGruposperfilesOpcionesEncabezado.attrs.root}" selection="#{kajoolMantenimientoGruposperfilesOpcionesEncabezado.selectedNodes}"  var="node" id="checkboxTree"  selectionMode="checkbox"
+       styleClass="celda" cache="false" style="width: 100%"  >
+				<p:ajax event="unselect" update=":datos:arbolPrincipal " listener="#{kajoolMantenimientoGruposperfilesOpcionesEncabezado.onNodeUnselect}" />
+        <p:ajax event="select" update=":datos:arbolPrincipal :datos:checkboxTree" listener="#{kajoolMantenimientoGruposperfilesOpcionesEncabezado.onNodeSelect}" />
+        <p:treeNode styleClass="solo-lineas-externas">
+          <h:outputText value="#{node.descripcion}" />
+        </p:treeNode>
+      </p:tree>
+    </p:panelGrid>
+    <h:inputHidden id="idGrupo" value="#{kajoolMantenimientoGruposperfilesOpcionesEncabezado.attrs.idGrupo}" />
+    <h:inputHidden id="idPerfil" value="#{kajoolMantenimientoGruposperfilesOpcionesEncabezado.attrs.idPerfil}" />
+  </ui:define>
+	<ui:param name="componenteBloqueo" value="aceptar,cancelar"/>
+  <ui:define name="acciones">
+    <p:commandButton id="aceptar" icon="fa fa-check" value="Aceptar" onclick="selecciona();" action="#{kajoolMantenimientoGruposperfilesOpcionesEncabezado.doGuardar}" process="@this" ajax="false" />
+    <p:commandButton  id="cancelar" icon="fa fa-remove" value="Cancelar" ajax="false" action="#{kajoolMantenimientoGruposperfilesOpcionesEncabezado.doRegresar}" process="@none"/>
+  </ui:define>
+</ui:composition>

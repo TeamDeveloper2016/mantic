@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date Jul 28, 2014
+ time 10:53:41 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Administrador de indicadores" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+		</script>
+	</ui:define>
+  <ui:define name="contenido">
+		<p:contextMenu for="tabla">
+			<p:menuitem value="Indicadores" action="#{kajoolMantenimientoIndicadoresAdministracionFiltro.doIndicador}" process="@this,tabla" icon="fa fa-list-alt"/>
+		</p:contextMenu>
+    <p:dataTable value="#{kajoolMantenimientoIndicadoresAdministracionFiltro.lazyModel}" selection="#{kajoolMantenimientoIndicadoresAdministracionFiltro.attrs.seleccionado}" selectionMode="single" lazy="true" id="tabla" var="fila" rowIndexVar="index"  paginator="#{kajoolMantenimientoIndicadoresAdministracionFiltro.lazyModel.rowCount gt kajoolMantenimientoIndicadoresAdministracionFiltro.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="janal-content-table" reflow="true">
+      <p:column headerText="Grupo" sortBy="#{fila.clave}">
+        #{fila.clave}
+      </p:column>
+      <p:column headerText="Indicadores" styleClass="janal-column-right" sortBy="#{fila.total}">
+        #{fila.total}
+      </p:column>
+			<f:facet name="footer">
+				Total [#{kajoolMantenimientoIndicadoresAdministracionFiltro.lazyModel==null?0:kajoolMantenimientoIndicadoresAdministracionFiltro.lazyModel.rowCount}] registros
+			</f:facet>
+    </p:dataTable>
+    </ui:define>
+</ui:composition>

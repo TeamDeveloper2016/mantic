@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Mensajes de grupos"/>
+  <ui:define name="contenido">
+		<div class="janal-content-table">
+      <p:fieldset legend="Buscar por" toggleable="true" collapsed="false" styleClass="Responsive100">
+        <p:panelGrid columns="3" layout="grid" columnClasses="janal-wid-20,Wid40,janal-wid-5">
+          <p:outputLabel value="Grupo:" for="idGrupo"/>
+          <p:selectOneMenu id="idGrupo" value="#{kajoolMantenimientoMensajesGruposFiltro.attrs.idGrupo}" styleClass="Container90">
+            <f:selectItem itemValue="" itemLabel="Seleccione"/>
+            <f:selectItems value="#{kajoolMantenimientoMensajesGruposFiltro.attrs.grupos}"/>
+          </p:selectOneMenu>
+          <p:spacer/>
+          <p:outputLabel value="Descripción"/>
+          <p:inputText id="descripcion" styleClass="Container90" value="#{kajoolMantenimientoMensajesGruposFiltro.attrs.descripcion}"/>
+          <p:commandButton id="buscar" icon="fa fa-search" ajax="true" actionListener="#{kajoolMantenimientoMensajesGruposFiltro.doLoad}" process="@this idGrupo descripcion" update="tabla"/>
+        </p:panelGrid>
+      </p:fieldset>
+		</div>
+    <p:dataTable id="tabla" var="row" paginator="#{kajoolMantenimientoMensajesGruposFiltro.lazyModel.rowCount gt kajoolMantenimientoMensajesGruposFiltro.lazyModel.pageSize}" selectionMode="single"  lazy="true" reflow="true" value="#{kajoolMantenimientoMensajesGruposFiltro.lazyModel}" selection="#{kajoolMantenimientoMensajesGruposFiltro.attrs.selected}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}"  paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}">
+      <f:facet name="header">				
+        <p:menuButton value="Opciones">
+          <p:menuitem value="Agregar" icon="fa fa-plus" title="Agregar" ajax="false" action="agregar" actionListener="#{kajoolMantenimientoMensajesGruposFiltro.doEvento('AGREGAR')}"/>
+        </p:menuButton>				
+      </f:facet>
+      <p:column headerText="Nombre" styleClass="Wid10 Responsive TexAlLeft" sortBy="#{row.nombre}">
+        <h:outputText value="#{row.nombre}"/>
+      </p:column>
+      <p:column headerText="Fecha inicial" styleClass="Wid10 Responsive TexAlCenter" sortBy="#{row.ini}">
+        <h:outputText value="#{row.ini}"/>
+      </p:column>
+			<p:column headerText="Fecha final" styleClass="Wid10 Responsive TexAlCenter" sortBy="#{row.fin}">
+        <h:outputText value="#{row.fin}"/>
+      </p:column>
+      <p:column headerText="Mensaje" styleClass="Wid10 Responsive TexAlLeft" sortBy="#{row.descc}">
+        <h:outputText value="#{row.descc}"/>
+      </p:column>
+      <p:column headerText="Prioridad" styleClass="Wid10 Responsive TexAlLeft" sortBy="#{row.prioridad}">
+        <h:outputText value="#{row.prioridad}"/>
+      </p:column>
+      <p:column headerText="URL seguimiento" styleClass="Wid50 Responsive TexAlLeft" sortBy="#{row.url}">
+        <h:outputText value="#{row.url}"/>
+      </p:column>
+			<f:facet name="footer">
+        <p:column>
+					Total [#{kajoolMantenimientoMensajesGruposFiltro.lazyModel.rowCount == null ? '0' : kajoolMantenimientoMensajesGruposFiltro.lazyModel.rowCount}] registros
+        </p:column>
+      </f:facet>
+    </p:dataTable>
+    <p:contextMenu for="tabla">
+      <p:menuitem value="Modificar" icon="fa fa-edit" ajax="false" action="agregar" actionListener="#{kajoolMantenimientoMensajesGruposFiltro.doEvento('MODIFICAR')}"/>
+      <p:menuitem value="Eliminar" icon="fa fa-trash" oncomplete="PF('confirmacion').show()" process="@this tabla" update="dialogo"/>
+    </p:contextMenu>
+    <p:dialog header="Confirmación" widgetVar="confirmacion" minHeight="40" id="dialogo">
+      <h:panelGrid columns="2">
+        <h:outputText value="¿Esta seguro de eliminar el registro seleccionado?" />
+        <h:outputText/>
+        <p:commandButton value="Aceptar" icon="fa fa-check" actionListener="#{kajoolMantenimientoMensajesGruposFiltro.doEvento('ELIMINAR')}" oncomplete="PF('confirmacion').hide()" update="tabla"/>
+        <p:commandButton value="Cancelar" icon="fa fa-remove" oncomplete="PF('confirmacion').hide();"/>
+      </h:panelGrid>
+    </p:dialog>
+  </ui:define>
+</ui:composition>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 28/09/2015
+ time 01:31:05 PM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Páginas disponibles para perfil #{kajoolMantenimientoGruposperfilesPerfilesPaginaInicial.attrs.nombrePerfil}" />
+  <ui:define name="contenido">	
+		<div class="tabla-filtro">
+			<h:panelGrid columns="1" width="1000">
+				<h:outputLabel value="Página Actual" />
+				<h:outputLabel id="descripcion" value="Descripción: #{kajoolMantenimientoGruposperfilesPerfilesPaginaInicial.attrs.paginaActual}" />
+				<h:outputLabel id="ruta" value="Ruta: #{kajoolMantenimientoGruposperfilesPerfilesPaginaInicial.attrs.rutaActual}"/>
+			</h:panelGrid>
+		</div>
+		<p:contextMenu for="tabla" id="menuTabla">       			
+      <p:menuitem value="Asignar" actionListener="#{kajoolMantenimientoGruposperfilesPerfilesPaginaInicial.doAsignar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" ajax="false" process="tabla" icon="fa fa-check" update="descripcion ruta"/>
+		</p:contextMenu>
+		<p:dataTable lazy="true" id="tabla" styleClass="tabla-filtro" style="width: 100%"  var="row" value="#{kajoolMantenimientoGruposperfilesPerfilesPaginaInicial.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{kajoolMantenimientoGruposperfilesPerfilesPaginaInicial.lazyModel.rowCount gt kajoolMantenimientoGruposperfilesPerfilesPaginaInicial.lazyModel.pageSize}" selection="#{kajoolMantenimientoGruposperfilesPerfilesPaginaInicial.attrs.seleccionado}">
+			<f:facet name="header" class="alinear-derecha" >
+				<p:menuButton value="Opciones" >
+					<p:menuitem action="#{kajoolMantenimientoGruposperfilesPerfilesPaginaInicial.doLimpiar()}" ajax="false" icon="icono-eliminar" title="Restaurar" value="Restaurar"/>
+				</p:menuButton>
+      </f:facet>
+			<p:column headerText="Descripción" >
+        <h:outputText value="#{row.descripcion}"/>
+      </p:column>
+      <p:column headerText="Ruta" >
+        <h:outputText value="#{row.ruta}"/>
+      </p:column>
+    </p:dataTable> 				
+  </ui:define>
+	<ui:param name="componenteBloqueo" value="tabla"/>
+	<ui:define name="acciones">
+    <p:commandButton  id="cancelar" value="Regresar" ajax="false" action="#{kajoolMantenimientoGruposperfilesPerfilesPaginaInicial.doRegresar}" process="@none"/>
+  </ui:define>
+</ui:composition>

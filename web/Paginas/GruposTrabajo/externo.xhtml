@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 19/01/2015
+ time 01:31:19 PM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:c="http://java.sun.com/jsp/jstl/core"
+		xmlns:p="http://primefaces.org/ui"
+		template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Datos generales usuario externo" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+    Janal.Control.fields =
+       {
+        'unidades': {validaciones: 'requerido', mascara: 'libre', mensaje: 'Unidad Ejecutora Requerido', grupo: 'todos'},
+        'ambitos': {validaciones: 'requerido', mascara: 'libre', mensaje: 'Ambito Requerido ', grupo: 'todos'},
+        'entidades': {validaciones: 'requerido', mascara: 'libre', mensaje: 'Seleccionar las entidades', grupo: 'todos'},
+        'perfil': {validaciones: 'requerido', mascara: 'libre', mensaje: 'Seleccionar el perfil', grupo: 'todos'},
+				'oficinas': {validaciones: 'requerido', mascara: 'libre', mensaje: 'Seleccionar oficina', grupo: 'todos'},
+        'nombres': {validaciones: 'requerido', mascara: 'libre', mensaje: 'Nombres requerido', grupo: 'nombre'},
+        'primerApellido': {validaciones: 'requerido', mascara: 'libre', mensaje: 'Primer apellido requerido', grupo: 'nombre'},
+        'curp': {validaciones: 'requerido', mascara: 'curp', mensaje: 'Curp requerido', grupo: 'opcional'},
+        'segundoApellido': {validaciones: 'requerido', mascara: 'libre', mensaje: 'Segundo apellido requerido', grupo: 'opcional'},
+        'acceso': {validaciones: 'requerido', mascara: 'libre', mensaje: 'Cogin requerido', grupo: 'todos'},
+        'contrasenia': {validaciones: 'requerido', mascara: 'libre', mensaje: 'Contraseña requerida', grupo: 'todos'},
+        'contraseniaConfirmar': { validaciones : 'requerido', mascara: 'libre', mensaje : 'Tiene que confirmar la contraseña', grupo: 'todos'}
+       };		
+     </script>
+  </ui:define>
+	<ui:define name="contenido">
+		<div class="tabla-filtro">
+				<h:panelGrid columns="2">
+					<label class="una-sola-linea" for="nombres">Nombre(s):</label>
+          <p:inputText id="nombres"  value="#{kajoolGruposTrabajoExterno.attrs.nombres}" maxlength="50" style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" size="80"/>
+					<label class="una-sola-linea" for="primerApellido">1er apellido:</label>
+					<p:inputText id="primerApellido"  value="#{kajoolGruposTrabajoExterno.attrs.primerApellido}"  maxlength="30"  style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" size="80"/>
+					<label class="una-sola-linea" for="segundoApellido">2do apellido:</label>
+					<p:inputText id="segundoApellido"  value="#{kajoolGruposTrabajoExterno.attrs.segundoApellido}" maxlength="30"  style="text-transform:uppercase;" onkeyup="javascript:this.value=this.value.toUpperCase();" size="80"/>
+					<label class="una-sola-linea" for="curp">Curp:</label>
+					<p:inputText id="curp"  value="#{kajoolGruposTrabajoExterno.attrs.curp}" />
+				</h:panelGrid>
+			<h:panelGrid columns="3">
+					<label class="una-sola-linea" for="sexo">Sexo:</label>
+					<p:selectOneMenu id="sexo" value="#{kajoolGruposTrabajoExterno.attrs.sexo}" styleClass="contenido-select-80">
+						<f:selectItem itemLabel="HOMBRE" itemValue="1" />
+						<f:selectItem itemLabel="MUJER" itemValue="2" />
+					</p:selectOneMenu>
+					<p:commandButton icon="icono-buscar"  id="sugerir" onstart="return janal.partial('nombre',true);" value="Sugerir cuenta y contraseña" oncomplete="janal.desbloquear()"  actionListener="#{kajoolGruposTrabajoExterno.doContrasenia}" process="@this, nombres, primerApellido, segundoApellido, curp" update="contrasenia, acceso, usuarioCaptura"   />
+					<label class="una-sola-linea" for="acceso">Cuenta de acceso:</label>
+					<p:inputText id="acceso"  value="#{kajoolGruposTrabajoExterno.attrs.acceso}"  />
+					<p:spacer/>
+					<label class="una-sola-linea" for="contrasenia">Contraseña:</label>
+					<p:inputText id="contrasenia"  value="#{kajoolGruposTrabajoExterno.attrs.contrasenia}"/>
+					<p:spacer/>
+					<label class="una-sola-linea" for="contraseniaConfirmar">Confirmar contraseña:</label>
+					<p:inputText id="contraseniaConfirmar"  value="#{kajoolGruposTrabajoExterno.attrs.contraseniaConfirmar}"/>
+					<p:spacer/>
+			</h:panelGrid>
+			</div>
+			<div class="tabla-filtro">
+				<p:fieldset legend="Crear usuario"  toggleable="true" collapsed="true" style="display: #{kajoolGruposTrabajoExterno.primeraVez?'block;':'none;'}" id="usuarioCaptura"  >
+					 <p:ajax event="toggle" listener="#{kajoolGruposTrabajoExterno.handleToggle}" />
+				<p:panelGrid  columns="2"  styleClass="sin-lineas"  >
+			<label class="una-sola-linea" for="unidades">Unidad ejecutora:</label>
+			<p:selectOneMenu id="unidades" value="#{kajoolGruposTrabajoExterno.unidadEntidad.unidadEjecutora}"  var="item" converter="janal.convertidor.Entity" styleClass="contenido-select-350" disabled="#{kajoolGruposTrabajoExterno.elementosDeshabilitados.deshabilitadoUnidadEntidad || kajoolGruposTrabajoExterno.elementosDeshabilitados.deshabilitarSelects }" >
+				<p:ajax  update="ambitos entidades oficinas claveUsuario"  process="@this" listener="#{kajoolGruposTrabajoExterno.doActualizarDesdeUnidades}" />
+				<f:selectItems value="#{kajoolGruposTrabajoExterno.unidadEntidad.unidadesEjecutoras}" var="element" itemValue="#{element}" itemLabel="#{element.descUniEjecutoras}"/>
+				<p:column>
+					<h:outputText value="#{item.iniciales}"/>
+				</p:column>
+				<p:column>
+					<h:outputText value="#{item.descUniEjecutoras}"/>
+				</p:column>	
+			</p:selectOneMenu>
+			<label for="ambitos">Ámbito:</label>
+      <p:selectOneMenu id="ambitos" value="#{kajoolGruposTrabajoExterno.unidadEntidad.ambito}" disabled="#{kajoolGruposTrabajoExterno.elementosDeshabilitados.deshabilitarAmbitos || kajoolGruposTrabajoExterno.elementosDeshabilitados.deshabilitarSelects}"  var="item" converter="janal.convertidor.Entity" styleClass="contenido-select-150">
+        <p:ajax update="entidades oficinas claveUsuario"  process="@this" listener="#{kajoolGruposTrabajoExterno.doActualizarDesdeAmbitos}" />
+        <f:selectItems value="#{kajoolGruposTrabajoExterno.unidadEntidad.ambitos}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
+				<p:column>
+					<h:outputText value="#{item.idAmbito}"/>
+				</p:column>
+				<p:column>
+					<h:outputText value="#{item.descripcion}"/>
+				</p:column>	
+			</p:selectOneMenu>
+		  <label for="entidades">Entidad:</label>
+			<p:selectOneMenu id="entidades" value="#{kajoolGruposTrabajoExterno.unidadEntidad.entidad}" disabled="#{kajoolGruposTrabajoExterno.elementosDeshabilitados.deshabilitarEntidades || kajoolGruposTrabajoExterno.elementosDeshabilitados.deshabilitarSelects}"  var="item" converter="janal.convertidor.Entity" styleClass="contenido-select-250">
+        <p:ajax update="oficinas claveUsuario" process="@this" listener="#{kajoolGruposTrabajoExterno.actualizarDesdeEntidades}" />
+        <f:selectItems value="#{kajoolGruposTrabajoExterno.unidadEntidad.entidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}" />
+				<p:column>
+					<h:outputText value="#{item.entidad}"/>
+				</p:column>
+				<p:column>
+					<h:outputText value="#{item.descripcion}"/>
+				</p:column>	
+			</p:selectOneMenu>
+			<label for="oficinas">Oficinas:</label>
+			<p:selectOneMenu id="oficinas" value="#{kajoolGruposTrabajoExterno.unidadEntidad.entidadOficina}" disabled="#{kajoolGruposTrabajoExterno.elementosDeshabilitados.deshabilitarOficinas || kajoolGruposTrabajoExterno.elementosDeshabilitados.deshabilitarSelects}"  var="item" converter="janal.convertidor.Entity" styleClass="contenido-select-250">
+        <f:selectItems value="#{kajoolGruposTrabajoExterno.unidadEntidad.oficinas}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
+				<p:column>
+					<h:outputText value="#{item.clave}"/>
+				</p:column>
+				<p:column>
+					<h:outputText value="#{item.descripcion}"/>
+				</p:column>	
+			</p:selectOneMenu>
+				 <label for="perfil" class="una-sola-linea">Perfil de acceso:</label>
+					<p:selectOneMenu id="perfil" value="#{kajoolGruposTrabajoExterno.criteriosBusqueda.criterioPerfil}" styleClass="contenido-select-150">
+						<p:ajax update="claveUsuario" process="@this" listener="#{kajoolGruposTrabajoExterno.actualizarDesdePerfiles}" />
+						<f:selectItems value="#{kajoolGruposTrabajoExterno.criteriosBusqueda.listaPerfiles}" />
+					</p:selectOneMenu>
+				 <label for="claveUsuario" class="una-sola-linea">Clave de usuario:</label>
+					 <p:selectOneMenu  id="claveUsuario"  value="#{kajoolGruposTrabajoExterno.clavePerfil.clave}" disabled="#{kajoolGruposTrabajoExterno.elementosDeshabilitados.deshabilitadoClaveUsuario}" styleClass="contenido-select-40">
+						<p:ajax update="claveUsuario" process="@this"/>
+						<f:selectItems value="#{kajoolGruposTrabajoExterno.clavePerfil.claves}"/>
+					</p:selectOneMenu>
+				</p:panelGrid>	
+			</p:fieldset>
+		</div>
+			<!-- Dialogo para mensajes de aviso -->
+			<ui:param name="textoConfirmacion" value="#{kajoolGruposTrabajoExterno.mensajeParaUsuario}" />
+			<ui:param name="accionConfirmacion" value="#{kajoolGruposTrabajoExterno}"/>
+			<ui:param name="eventoConfirmacion" value="activar"	/>	
+	</ui:define>
+	<!-- Dialogo para la búsqueda de personas -->
+	<ui:param name="componenteBloqueo"  value="unidades,ambitos,entidades,oficinas,perfil,claveUsuario,cancelar"/>
+	<ui:define name="acciones">
+    <p:commandButton id="aceptar" value="Aceptar"  onclick="return janal.partial('todos|nombre',true);" oncomplete="janal.desbloquear()" update="usuarioCaptura"  action="#{kajoolGruposTrabajoExterno.doAceptar}"    process="@form"  />
+    <p:commandButton id="cancelar" value="Cancelar" action="filtro" immediate="true" ajax="false" />
+	</ui:define>
+</ui:composition>

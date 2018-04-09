@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date Mar 12, 2015
+ time 3:18:56 PM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Agregar indicador de avance" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'nombre'					:	{validaciones: 'requerido', mascara: 'libre'},
+        'activo'					:	{validaciones: 'requerido'},
+				'estatusIndicador': {validaciones: 'requerido', mascara: 'libre'},
+				'corte'						: {validaciones: 'requerido', mascara: 'libre'},
+				'orden'						:	{validaciones: 'requerido', mascara: 'numero'},
+				'estatusInput'		: {validaciones: 'requerido|max-caracteres({"cuantos":19})', mascara: 'libre'}
+      };
+    </script>
+  </ui:define>
+  <ui:define name="contenido">
+		<p:tabView id="tabView" styleClass="janal-content-table">
+			<p:ajax event="tabChange" process="@this,:datos:tabView:seleccionEstatus" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" update="tabla"/>
+			<p:tab id="tab_indicador" title="Indicador">
+				<p:panelGrid columns="2" layout="grid" class="ui-grid-responsive" columnClasses="ui-grid-col-2, ui-grid-col-2">
+					<label for="nombre">Nombre:</label>
+					<p:inputText id="nombre" value ="#{kajoolMantenimientoIndicadoresAdministracionAgregar.dto.descripcion}"/>
+					<label for="activo">Activo:</label>
+					<p:selectOneRadio id="activo" value="#{kajoolMantenimientoIndicadoresAdministracionAgregar.dto.activo}">
+						<f:selectItem itemLabel="Si" itemValue="1"/>
+						<f:selectItem itemLabel="No" itemValue="0"/>
+					</p:selectOneRadio>
+					<label>Campo:</label>
+					<p:outputLabel value="ID_ESTATUS_AVANCE"/>
+					<label>Tabla:</label>
+					<p:outputLabel value="KAJOOL (Control system polls)ESTATUS_AVANCES"/>
+					<label for="estatusIndicador">Estatus indicador:</label>
+					<p:selectOneMenu id="estatusIndicador" value="#{kajoolMantenimientoIndicadoresAdministracionAgregar.beanIndicador.idEstatusIndicador}">
+						<f:selectItems value="#{kajoolMantenimientoIndicadoresAdministracionAgregar.beanIndicador.estatusIndicadores}"/>
+					</p:selectOneMenu>
+					<label for="corte">Corte:</label>
+					<p:selectOneMenu id="corte" value="#{kajoolMantenimientoIndicadoresAdministracionAgregar.dto.corte}">
+						<f:selectItem itemLabel="Entidad" itemValue="Entidad"/>
+						<f:selectItem itemLabel="Municipio" itemValue="Municipio"/>
+						<f:selectItem itemLabel="Grupo" itemValue="Grupop"/>
+					</p:selectOneMenu>
+					<label for="orden">Orden:</label>
+					<p:spinner id="orden" value="#{kajoolMantenimientoIndicadoresAdministracionAgregar.dto.orden}" disabled="#{kajoolMantenimientoIndicadoresAdministracionAgregar.beanIndicador.disableOrden}" min="1"/>
+				</p:panelGrid>
+			</p:tab>
+			<p:tab id="tab_perfiles" title="Perfiles">
+				<p:selectManyCheckbox id="perfiles" value="#{kajoolMantenimientoIndicadoresAdministracionAgregar.beanIndicador.perfilesSeleccionados}" layout="grid" columns="1">
+					<f:selectItems value="#{kajoolMantenimientoIndicadoresAdministracionAgregar.beanIndicador.perfiles}" var="perfil" itemLabel="#{perfil.item}" itemValue="#{perfil.key}"/>
+				</p:selectManyCheckbox>
+				<p:spacer height="20px"/>
+				*Al no seleccionar ningún perfil, el indicador será visible para todos los perfiles
+			</p:tab>
+			<p:tab id="tab_estatusAplican" title="Estatus del indicador">
+				<p:pickList id="seleccionEstatus" value="#{kajoolMantenimientoIndicadoresAdministracionAgregar.beanIndicador.model}" converter="janal.convertidor.SelectionItem"  var="itemSelection"
+										itemValue="#{itemSelection}" itemLabel="#{itemSelection.item}">
+					<p:ajax event="transfer" listener="#{kajoolMantenimientoIndicadoresAdministracionAgregar.onTransfer}" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+					<f:facet name="sourceCaption">Estatus disponibles</f:facet>
+					<f:facet name="targetCaption">Estatus asignados</f:facet>
+					<p:column style="width: 100%" >
+						#{itemSelection.item}
+					</p:column>  	
+				</p:pickList>
+			</p:tab>
+			<p:tab id="tab_nombreColumna" title="Nombres de columnas">
+				<div class="tabla-filtro">
+					<p:dataTable id="tabla" var="fila" value="#{kajoolMantenimientoIndicadoresAdministracionAgregar.beanIndicador.targetTemporal}" editable="true" draggableRows="true" styleClass="janal-wid-30" reflow="true">
+						<p:ajax event="rowReorder" update="@this" />
+						<p:column headerText="Columnas" styleClass="estatusInput">
+							<p:cellEditor>
+								<f:facet name="output"><h:outputText value="#{fila.item}"/></f:facet>
+								<f:facet name="input"><p:inputText id="estatusInput" value="#{fila.item}" style="width:100%"/></f:facet>
+							</p:cellEditor>
+						</p:column>
+						<p:column style="width:32px">
+							<p:rowEditor />
+						</p:column>
+					</p:dataTable>
+				</div>
+			</p:tab>
+		</p:tabView>
+  </ui:define>
+  <ui:define name="acciones">
+    <p:commandButton id="aceptar" value="Aceptar" action="#{kajoolMantenimientoIndicadoresAdministracionAgregar.doAceptar}" process="@form" onstart="return janal.execute();"/>
+    <p:commandButton id="cancelar" value="Cancelar" action="#{kajoolMantenimientoIndicadoresAdministracionAgregar.doRegresar}" immediate="true" ajax="false" process="@this" />
+  </ui:define>
+	<ui:param name="componenteBloqueo" value="aceptar"/>
+</ui:composition>

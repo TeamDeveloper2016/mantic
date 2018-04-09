@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 16/10/2016
+ time 01:38:20 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Usuarios en linea"/>
+  <ui:define name="librerias">		
+    <script type="text/javascript">			
+      $(document).ready(function() { ocultar(); });			
+			function ocultar(){
+				$.each( $('[id*=total]'),
+					function(){            
+						document.getElementById(this.id).style.display= this.id.substring(7).indexOf('_')=== -1 ? '' : 'none';
+					} // function  
+				);}
+		</script>
+  </ui:define>
+  <ui:define name="contenido">		
+		<p:treeTable value="#{kajoolMantenimientoUtileriasUsuarioFiltro.grupos}" var="grupo" id="grupos" styleClass="tabla-filtro">
+		  <p:ajax event="expand" oncomplete="ocultar();"/>
+			<p:ajax event="collapse" oncomplete="ocultar();"/>
+      <p:column headerText="[Id]-Descripcion">
+				<h:outputText value="[#{grupo.id}]- #{grupo.descripcion}"/>
+      </p:column>
+      <p:column styleClass="alinear-derecha" headerText="Total perfiles">
+				<h:outputText value="#{grupo.total}" id="totalPerfiles"/>
+      </p:column>
+      <p:column styleClass="alinear-derecha" headerText="Total usuarios">
+				<h:outputText value="#{grupo.totalUsuarios}"/>
+      </p:column>
+    </p:treeTable>
+    <p:spacer height="10px"/>
+    <p:dataTable lazy="true" id="tabla" value="#{kajoolMantenimientoUtileriasUsuarioFiltro.lazyModel}" paginator="#{kajoolMantenimientoUtileriasUsuarioFiltro.lazyModel.rowCount gt kajoolMantenimientoUtileriasUsuarioFiltro.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="tabla-filtro" var="row">
+       <p:column headerText="Cuenta" styleClass="janal-wid-col-130 TexAlLeft">
+          #{row.cuenta}
+       </p:column>
+       <p:column headerText="Fecha" styleClass="janal-wid-col-160 TexAlCenter">
+         #{row.fecha}
+       </p:column>
+       <p:column headerText="Hora" styleClass="janal-wid-col-50 TexAlCenter">
+          #{row.tiempo}
+       </p:column>
+       <p:column headerText="Minutos" styleClass="janal-wid-col-80 TexAlCenter">
+          #{row.minutos}
+       </p:column>
+       <p:column headerText="Nombre" styleClass="TexAlLeft">
+         #{row.nombre}
+       </p:column>
+       <p:column headerText="Entidad" styleClass="janal-wid-col-140 TexAlLeft">
+          #{row.entidad}
+       </p:column>
+       <p:column headerText="Grupo" styleClass="janal-wid-col-80 TexAlLeft">
+         #{row.grupo}
+       </p:column>
+       <p:column headerText="Perfil" styleClass="TexAlLeft">
+         #{row.perfil}
+       </p:column>
+			 <f:facet name="footer">
+         <h:outputText value="Total [ #{kajoolMantenimientoUtileriasUsuarioFiltro.lazyModel.rowCount} ] registros"/>
+      </f:facet>
+     </p:dataTable>			
+  </ui:define>
+	<ui:param name="componenteBloqueo" value="tabla grupos"/>
+</ui:composition>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 23/09/2015
+ time 11:01:11 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Mensajes enviados al usuario: #{kajoolMensajesUsuariosDetalleUsuario.attrs.usuario}"/>
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'vigenciaIni':    {validaciones: 'requerido|fecha-menor({"cual":"vigenciaFin"})', mascara: 'libre', mensaje: 'Vigencia inicial debe ser menor o igual a la final para agregar'},
+        'vigenciaFin':    {validaciones: 'requerido|fecha-mayor({"cual":"vigenciaIni"})', mascara: 'libre', mensaje: 'Vigencia final debe de ser mayor o igual a la incial para agregar'}
+      };
+    </script>
+  </ui:define>
+  <ui:define name="contenido">
+    <p:dataTable id="tabla" var="row" value="#{kajoolMensajesUsuariosDetalleUsuario.lazyModel}" selection="#{kajoolMensajesUsuariosDetalleUsuario.attrs.seleccion}" paginator="#{kajoolMensajesUsuariosDetalleUsuario.lazyModel.rowCount gt kajoolMensajesUsuariosDetalleUsuario.lazyModel.pageSize}" rows="#{Constantes.REGISTROS_POR_PAGINA}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single"  lazy="true" reflow="true" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
+      <f:facet name="header">
+        <p:menuButton value="Opciones">
+          <p:menuitem id="agregar" value="Agregar" icon="fa fa-plus" title="Agregar" ajax="false" action="#{kajoolMensajesUsuariosDetalleUsuario.doAgregar}"/>
+        </p:menuButton>				
+      </f:facet>
+      <p:column headerText="Asunto">
+        <h:outputText value="#{row.nombre}"/>
+      </p:column>
+      <p:column headerText="Mensaje">
+        <h:outputText value="#{row.descripcion}"/>
+      </p:column>
+      <p:column headerText="Vigencia inicio" styleClass="TexAlCenter">
+        <h:outputText value="#{row.vigenciaIni}"/>
+      </p:column>
+      <p:column headerText="Vigencia fin" styleClass="TexAlCenter">
+        <h:outputText value="#{row.vigenciaFin}"/>
+      </p:column>
+    </p:dataTable>
+    <p:contextMenu for="tabla">
+      <p:menuitem value="Modificar" icon="fa fa-edit" onstart="return janal.bloquear();" actionListener="#{kajoolMensajesUsuariosDetalleUsuario.doActualizaDialogo}" update="dialogoModificar" oncomplete="PF('dialogoModificar').show();"/>
+    </p:contextMenu>
+    <p:dialog id="dialogoModificar" widgetVar="dialogoModificar" header="Modificar vigencias" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" onHide="janal.desbloquear();" >
+      <p:panelGrid columns="2" layout="grid" styleClass="Container96" columnClasses="ColWid20, TexAlLeft">
+        <p:outputLabel for="vigenciaIni" value="Vigencia inicial:"/>
+        <p:calendar id="vigenciaIni" styleClass="Wid100" value="#{kajoolMensajesUsuariosDetalleUsuario.attrs.vigenciaIni}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+        <p:outputLabel for="vigenciaFin" value="Vigencia final:"/>
+        <p:calendar id="vigenciaFin" styleClass="Wid100" value="#{kajoolMensajesUsuariosDetalleUsuario.attrs.vigenciaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+      </p:panelGrid>
+      <div class="Fright">
+        <p:commandButton value="Guardar" actionListener="#{kajoolMensajesUsuariosDetalleUsuario.doMofificar}" onstart="return janal.execute(true);" oncomplete="PF('dialogoModificar').hide();" process="@this dialogoModificar" update=":datos:tabla"/>
+        <p:commandButton value="Cancelar" oncomplete="PF('dialogoModificar').hide();"/>
+      </div>
+    </p:dialog>
+  </ui:define>
+  <ui:define name ="acciones" >
+    <p:commandButton id="aceptar" styleClass="janal-display-none"/>
+    <p:commandButton id="cancelar" icon="fa fa-remove" value="Regresar" action="filtro" ajax="false"/>
+  </ui:define>
+</ui:composition>

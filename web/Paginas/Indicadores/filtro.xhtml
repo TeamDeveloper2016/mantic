@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 12/10/2016
+ time 01:20:14 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Avance de captura" />
+  <ui:define name="librerias">
+  </ui:define>
+  <ui:define name="contenido">	
+    <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolIndicadoresFiltro.lazyModel}" paginator="false" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="40" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolIndicadoresFiltro.attrs.selected}" reflow="true">
+      <f:facet name="header">
+        <p:menuButton value="Opciones">
+					<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+          <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+        </p:menuButton>
+      </f:facet>
+      <p:column class="" styleClass="janal-column-center ColWid5 Responsive">
+        <f:facet name="header">
+          <h:outputText value="Clave"/>
+        </f:facet>
+        <h:outputText value="#{row.clave}"  />
+      </p:column>
+      <p:column styleClass="Wid20 Responsive">
+        <f:facet name="header">
+          <h:outputText value="Descripción"/>
+        </f:facet>
+        <h:outputText value="#{row.descripcion}" />
+      </p:column>
+      <p:column class="" styleClass="janal-column-right ColWid5 Responsive">
+        <f:facet name="header">
+          <h:outputText value="Total"/>
+        </f:facet>
+        <h:outputText value="#{row.total}"/>
+      </p:column>
+      <p:column styleClass="janal-column-right ColWid10 Responsive">
+        <f:facet name="header">
+          <h:outputText value="Disponibles"/>
+        </f:facet>
+        <h:outputText value="#{row.disponibles}"/>
+      </p:column>
+      <p:column styleClass="janal-column-right ColWid10 Responsive">
+        <f:facet name="header">
+          <h:outputText value="Asignados"/>
+        </f:facet>
+        <h:outputText value="#{row.asignados}" />
+      </p:column>
+      <p:column styleClass="janal-column-right ColWid10 Responsive">
+        <f:facet name="header">
+          <h:outputText value="Sin captura"/>
+        </f:facet>
+        <h:outputText value="#{row.sinCaptura}" />
+      </p:column>
+      <p:column styleClass="janal-column-right ColWid10 Responsive">
+        <f:facet name="header">
+          <h:outputText value="Parciales"/>
+        </f:facet>
+        <h:outputText value="#{row.parciales}" />
+      </p:column>
+      <p:column styleClass="janal-column-right ColWid10 Responsive">
+        <f:facet name="header">
+          <h:outputText value="Completos"/>
+        </f:facet>
+        <h:outputText value="#{row.completos}" />
+      </p:column>
+      <p:column styleClass="Responsive">
+        <f:facet name="header">
+          <h:outputText value="% Completos"/>
+        </f:facet>
+        <p:graphicImage library="janal" name="icon/tableros/1.png" rendered="#{kajoolIndicadoresFiltro.doPintado('UNO', row.porcCompletos)}"/>
+        <p:graphicImage library="janal" name="icon/tableros/2.png" rendered="#{kajoolIndicadoresFiltro.doPintado('DOS', row.porcCompletos)}"/>
+        <p:graphicImage library="janal" name="icon/tableros/3.png" rendered="#{kajoolIndicadoresFiltro.doPintado('TRES', row.porcCompletos)}"/>
+        <p:graphicImage library="janal" name="icon/tableros/4.png" rendered="#{kajoolIndicadoresFiltro.doPintado('CUATRO', row.porcCompletos)}"/>
+        <p:graphicImage library="janal" name="icon/tableros/5.png" rendered="#{kajoolIndicadoresFiltro.doPintado('CINCO', row.porcCompletos)}"/>
+        <p:graphicImage library="janal" name="icon/tableros/6.png" rendered="#{kajoolIndicadoresFiltro.doPintado('SEIS', row.porcCompletos)}"/>
+        <p:graphicImage library="janal" name="icon/tableros/7.png" rendered="#{kajoolIndicadoresFiltro.doPintado('SIETE', row.porcCompletos)}"/>
+        <p:graphicImage library="janal" name="icon/tableros/8.png" rendered="#{kajoolIndicadoresFiltro.doPintado('OCHO', row.porcCompletos)}"/>
+        <p:graphicImage library="janal" name="icon/tableros/9.png" rendered="#{kajoolIndicadoresFiltro.doPintado('NUEVE', row.porcCompletos)}"/>
+        <p:graphicImage library="janal" name="icon/tableros/10.png" rendered="#{kajoolIndicadoresFiltro.doPintado('DIEZ', row.porcCompletos)}"/>
+        <p:graphicImage library="janal" name="icon/tableros/11.png" rendered="#{kajoolIndicadoresFiltro.doPintado('ONCE', row.porcCompletos)}"/>
+        <p:graphicImage library="janal" name="icon/tableros/12.png" rendered="#{kajoolIndicadoresFiltro.doPintado('DOCE', row.porcCompletos)}"/>
+        <p:graphicImage library="janal" name="icon/tableros/13.png" rendered="#{kajoolIndicadoresFiltro.doPintado('TRECE', row.porcCompletos)}"/>
+        <p:graphicImage library="janal" name="icon/tableros/14.png" rendered="#{kajoolIndicadoresFiltro.doPintado('CATORCE', row.porcCompletos)}"/>
+        <p:graphicImage library="janal" name="icon/tableros/15.png" rendered="#{kajoolIndicadoresFiltro.doPintado('QUINCE', row.porcCompletos)}"/>
+        <p:graphicImage library="janal" name="icon/tableros/16.png" rendered="#{kajoolIndicadoresFiltro.doPintado('DIECISEIS', row.porcCompletos)}"/>
+        <p:graphicImage library="janal" name="icon/tableros/17.png" rendered="#{kajoolIndicadoresFiltro.doPintado('DIECISIETE', row.porcCompletos)}"/>
+        <p:graphicImage library="janal" name="icon/tableros/18.png" rendered="#{kajoolIndicadoresFiltro.doPintado('DIECIOCHO', row.porcCompletos)}"/>
+        <p:graphicImage library="janal" name="icon/tableros/19.png" rendered="#{kajoolIndicadoresFiltro.doPintado('DIECINUEVE', row.porcCompletos)}"/>
+        <p:graphicImage library="janal" name="icon/tableros/20.png" rendered="#{kajoolIndicadoresFiltro.doPintado('VEINTE', row.porcCompletos)}"/>
+        <h:outputText value="#{row.porcCompletos}%"/>
+      </p:column>
+			<p:columnGroup type="footer">
+				<p:row>
+          <p:column colspan="2" footerText="Total:" styleClass="TexAlRight"/>
+					<p:column footerText="#{kajoolIndicadoresFiltro.toTotal('total')}" styleClass="TexAlRight"/>
+					<p:column footerText="#{kajoolIndicadoresFiltro.toTotal('disponibles')}" styleClass="TexAlRight"/>
+					<p:column footerText="#{kajoolIndicadoresFiltro.toTotal('asignados')}" styleClass="TexAlRight"/>	
+					<p:column footerText="#{kajoolIndicadoresFiltro.toTotal('sinCaptura')}" styleClass="TexAlRight"/>	
+					<p:column footerText="#{kajoolIndicadoresFiltro.toTotal('parciales')}" styleClass="TexAlRight"/>
+					<p:column footerText="#{kajoolIndicadoresFiltro.toTotal('completos')}" styleClass="TexAlRight"/>	
+					<p:column footerText="#{kajoolIndicadoresFiltro.toPorcentaje('porcCompletos')}" styleClass="TexAlLeft"/>	
+				</p:row>
+			</p:columnGroup>
+      <f:facet name="footer">
+        Total [#{kajoolIndicadoresFiltro.lazyModel.rowCount}] registros
+      </f:facet>
+    </p:dataTable>
+    <h:commandLink id="dataPdf">
+      <p:dataExporter type="pdf" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}" />
+    </h:commandLink>
+    <h:commandLink id="dataXls">
+      <p:dataExporter type="xls" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>
+    </h:commandLink>
+  </ui:define>
+</ui:composition>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui">		
+  <script type="text/javascript">
+    $(function() {
+      janal.fecha();
+      $('#banner').addClass('ui-panelgrid');
+      $('#banner').addClass('ui-widget');
+      $('#banner tr:eq(0)').addClass('ui-widget-content');
+    });
+  </script>
+  <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+    <div class="ui-grid-row janal-grid-row">
+      <div class="ui-grid-col-4 janal-header-sedesol" style="display:block"/>
+      <div class="ui-grid-col-4">
+        <h1 class="titulo-proyecto janal-header-title">#{kajoolUtilAplicacion.tituloSistema}</h1>
+        <h1 class="titulo-siglas janal-header-acronym">#{kajoolUtilAplicacion.tituloCorto}</h1>
+      </div>
+      <div class="ui-grid-col-4"/>
+    </div>
+    <div class="ui-grid-row janal-grid-rows margin-fecha">
+      <div class="ui-grid-col-4 margin-fecha">
+        <span id="reloj" class="fecha lg-pantalla"></span>
+        <span class="fecha xs-pantalla Fs14">#{kajoolUtilAplicacion.currentDate}</span>
+      </div>
+      <div class="ui-grid-col-4 margin-desarrollo" style="text-align: center;">
+        <p:outputLabel styleClass="janal-etapa lg-pantalla" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
+        <p:outputLabel styleClass="janal-etapa xs-pantalla Fs14" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
+      </div>
+      <div class="ui-grid-col-4 margin-version" style="text-align: right;">
+        <span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}</span>
+        <span id="version" class="version xs-pantalla Fs14">#{kajoolUtilAplicacion.version}</span>
+      </div>
+    </div>
+  </div>
+</html>

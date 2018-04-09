@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Administración de perfiles del grupo: #{kajoolMantenimientoGruposperfilesPerfilesFiltro.attrs.gruposDto.descripcion}"/>
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'descripcion'				 : {validaciones: 'requerido', mascara: 'libre', grupo: 'busqueda'},
+        'modificaDescripcion': {validaciones: 'requerido', mascara: 'libre', grupo: 'modifica'},
+        'agregarDescripcion' : {validaciones: 'requerido', mascara: 'libre', grupo: 'agrega'}
+      };
+    </script>
+  </ui:define>
+  <ui:define name="contenido" >
+    <p:dialog id="confirmaCambiar" widgetVar="dialogoEstatus" header="Confirmación" showEffect="clip" closable="false" width="550">
+      <p:outputLabel value="¿Desea cambiar el acceso a #{kajoolMantenimientoGruposperfilesPerfilesFiltro.attrs.seleccionado.descripcion}?" />
+      <div class="janal-line-button">
+        <p:separator/>
+        <p:commandButton value="Aceptar" icon="fa fa-check" process="@this,:datos:tabla" update=":datos:tabla,:datos:confirmaCambiar" actionListener="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doCambiarEstatus()}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); PF('dialogoEstatus').hide()" />
+        <p:commandButton value="Cancelar" icon="fa fa-remove" process="@this" oncomplete="janal.desbloquear(); PF('dialogoEstatus').hide()" />
+      </div>
+    </p:dialog>
+    <p:dialog id="agregar" widgetVar="wAgregar" header="Agregar perfil:" showEffect="clip" closable="false" width="550">
+			<p:outputLabel for="agregarDescripcion" value="Perfil:  " />
+			<p:inputText  id="agregarDescripcion" value="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.attrs.dto.descripcion}" styleClass="Container70 Fnone"/>
+      <div class="janal-line-button">
+        <p:separator/>
+        <p:commandButton value="Aceptar" icon="fa fa-check" process="@this agregarDescripcion" update=":datos:tabla" actionListener="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doEvento('AGREGAR')}" onstart="return janal.partial('agrega');" oncomplete="janal.desbloquear(); PF('wAgregar').hide()" />
+        <p:commandButton value="Cancelar" icon="fa fa-remove" process="@this" oncomplete="janal.desbloquear(); PF('wAgregar').hide()" />
+      </div>
+    </p:dialog>
+    <p:dialog id="modificar" widgetVar="wModificar" header="Modificar perfil:" showEffect="clip" closable="false" width="550">
+      <p:outputLabel for="modificaDescripcion" value="Perfil:  " />
+      <p:inputText  id="modificaDescripcion" value="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.attrs.modificaDescripcion}" styleClass="Container70 Fnone"/>
+      <div class="janal-line-button">
+        <p:separator/>
+        <p:commandButton value="Aceptar" icon="fa fa-check" process="@this modificaDescripcion" update=":datos:tabla" actionListener="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doEvento('MODIFICAR')}" onstart="return janal.partial('modifica')" oncomplete="janal.desbloquear(); PF('wModificar').hide()" />
+        <p:commandButton value="Cancelar" icon="fa fa-remove" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); PF('wModificar').hide()" />
+      </div>
+    </p:dialog>
+    <p:contextMenu for="tabla" id="menuTabla">       			
+      <p:menuitem value="Eliminar" icon="fa fa-trash" update=":datos:confirmacion :datos:tabla" oncomplete="janal.bloquear();PF('dialogoConfirmacion').show();" process="@this tabla"/>
+      <p:menuitem value="Modificar" icon="fa fa-edit" actionListener="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doSeleccion}" update="modificar" oncomplete="janal.bloquear();PF('wModificar').show();" process="@this tabla"/>
+      <p:menuitem value="Opciones de menú" action="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doIrOpcionesMenu}"  icon="fa fa-th-list" ajax="false"  />
+      <p:menuitem value="Opciones de encabezado" action="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doIrOpcionesEncabezado}"  icon="fa fa-th-list" ajax="false"  />
+      <p:menuitem value="Pagina inicial" action="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doIrPaginaInicial}"  icon="fa fa-home" ajax="false"  />
+    </p:contextMenu>
+    <div class="janal-content-table ui-grid ui-grid-responsive">
+      <p:fieldset legend="Buscar por" toggleable="true" collapsed="false" styleClass="Responsive100">
+        <p:panelGrid columns="3" layout="grid" columnClasses="janal-wid-col-90,Wid40,janal-wid-col-40">
+          <p:outputLabel for="descripcion" value="Descripcion:"/>
+          <p:inputText id="descripcion" styleClass="Container90" value="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.attrs.descripcion}" />		
+          <p:commandButton id="buscar" icon="fa fa-search" actionListener="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doLoad}" onstart="return janal.partial('busqueda');" process="@this descripcion" update="tabla" title="Busqueda General"/>
+        </p:panelGrid>
+      </p:fieldset>
+    </div>
+    <p:dataTable lazy="true" id="tabla" reflow="true" styleClass="janal-content-table" style="width: 100%"  var="row" value="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.lazyModel.rowCount gt TC_JANAL_.lazyModel.pageSize}" selection="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.attrs.seleccionado}">
+      <f:facet name="header">
+        <p:menuButton value="Opciones" id="accionesTabla">
+          <p:menuitem value="Agregar perfil" icon="fa fa-plus" update=":datos:tabla" oncomplete="janal.bloquear();PF('wAgregar').show();" process="@this"/>
+        </p:menuButton>
+      </f:facet>
+      <p:column headerText="Descripcion" sortBy="#{row.descripcion}">
+        <h:outputText value="#{row.descripcion}"/>
+      </p:column>
+      <p:column headerText="Acceso" styleClass="janal-column-center" sortBy="#{row.acceso}">
+        <h:outputText value="#{row.acceso eq '1'? 'Si':'No'}"/>
+      </p:column>
+      <p:column headerText="Usuarios" styleClass="janal-column-right" sortBy="#{row.usuarios}">
+        <h:outputText value="#{row.usuarios}"/>
+      </p:column>
+			<f:facet name="footer">
+        <p:column>
+					Total [#{kajoolMantenimientoGruposperfilesPerfilesFiltro.lazyModel.rowCount == null ? '0' : kajoolMantenimientoGruposperfilesPerfilesFiltro.lazyModel.rowCount}] registros
+        </p:column>
+      </f:facet>
+    </p:dataTable> 				
+    <ui:param name="componenteBloqueo" value="tabla"/>
+    <ui:param name="textoConfirmacion" value="¿Está seguro de eliminar el perfil #{kajoolMantenimientoGruposperfilesPerfilesFiltro.attrs.seleccionado.descripcion} ?" />
+    <ui:param name="accionConfirmacion" value="#{kajoolMantenimientoGruposperfilesPerfilesFiltro}" />
+    <ui:param name="renderedConfirmacion" value="true" />
+    <ui:param name="eventoConfirmacion" value="doEliminar"/>
+  </ui:define>	
+  <ui:param name="componenteBloqueo" value="aceptar,tabla, accionesTabla"/>
+  <ui:define name ="acciones">
+    <p:commandButton id="aceptar" icon="fa fa-mail-reply" action="/Paginas/Mantenimiento/GruposPerfiles/Grupos/filtro?faces-redirect=true" process="@this" value="Regresar" />
+  </ui:define>
+</ui:composition>

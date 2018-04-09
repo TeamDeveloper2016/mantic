@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html">	
+  <script type="text/javascript">
+    $(function() {
+      janal.fecha();
+      $('#banner').addClass('ui-panelgrid');
+      $('#banner').addClass('ui-widget');
+      $('#banner tr:eq(0)').addClass('ui-widget-content');
+    });
+  </script>
+  <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+    <div class="ui-grid-row janal-grid-row">
+      <div class="ui-grid-col-4 lg-pantalla janal-header-sedesol"/>
+      <div class="ui-grid-col-4 xs-pantalla janal-header-kajool"/>
+      <div class="ui-grid-col-4">
+        <h1 class="titulo-proyecto janal-header-title">#{kajoolUtilAplicacion.tituloSistema}</h1>
+      </div>
+      <div class="ui-grid-col-4 lg-pantalla">
+        <p:graphicImage library="janal" name="img/sistema/logo-kajool.svg" width="43" style="float: right;"/>
+      </div>  
+      <div class="ui-grid-col-4 xs-pantalla">
+        <p:graphicImage library="janal" name="img/sistema/logo-sedesol.png" styleClass="janal-logo-mini"/>
+      </div>
+    </div>
+    <div class="ui-grid-row janal-grid-rows">
+      <div class="ui-grid-col-4 margin-fecha">
+        <span id="reloj" class="fecha janal-text-one-line lg-pantalla"></span>
+        <span class="fecha janal-text-one-line xs-pantalla Fs14">#{kajoolUtilAplicacion.currentDate}</span>
+      </div>
+      <div class="ui-grid-col-4 margin-desarrollo" style="text-align: center;">
+        <p:outputLabel styleClass="janal-etapa lg-pantalla" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
+        <p:outputLabel styleClass="janal-etapa xs-pantalla Fs14" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
+      </div>
+      <div class="ui-grid-col-4 margin-version" style="text-align: right;">
+        <span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}</span>
+        <span id="version" class="version xs-pantalla Fs14">#{kajoolUtilAplicacion.version}</span>
+      </div>
+    </div>
+  </div>
+  <p:notificationBar id="lockNotification" position="top" effect="slide" styleClass="jana-bar-top" widgetVar="notification" effectSpeed="slow">
+    <span title="Cerrar" style="position: absolute; top: 10px; right: 80px; cursor: pointer;" onclick="PF('notification').hide();"><i class="fa fa-lg fa-close"/></span>
+    <p:panelGrid layout="grid" columns="2" columnClasses="janal-wid-col-200">
+      <h:outputText value="Aplicación KAJOOL" styleClass="Fs20"/>
+      <h:outputText value="#{kajoolUtilAplicacion.notificacion}" escape="false" styleClass="Fs14"/>
+    </p:panelGrid>
+  </p:notificationBar>      
+</html>

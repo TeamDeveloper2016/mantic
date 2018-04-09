@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 3/09/2015
+ time 09:39:54 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Mensajes de perfiles"/>
+  <ui:define name="librerias">
+    <script type="text/javascript">
+        Janal.Control.fields = {
+          'nombre': {validaciones: 'requerido', mascara: 'libre', mensaje: 'El campo Nombre es requerido', grupo:'uno|dos'},
+          'idGrupo': {validaciones: 'requerido', mascara: 'libre', mensaje: 'El campo Grupo es requerido', grupo:'uno'},
+          'idPerfil': {validaciones: 'requerido', mascara: 'libre', mensaje: 'El campo Perfil', grupo:'uno'},
+          'vigenciaIni': {validaciones: 'requerido', mascara: 'libre', mensaje: 'El campo Fecha Inicial es obligatorio', grupo:'uno|dos'},
+          'vigenciaFin': {validaciones: 'requerido', mascara: 'libre', mensaje: 'El campo Fecha Final es obligatorio', grupo:'uno|dos'},
+          'urlSeguimiento': {validaciones: 'requerido', mascara: 'libre', mensaje: 'El campo URL es obligatorio', grupo:'uno|dos'},
+          'descripcion': {validaciones: 'requerido', mascara: 'libre', mensaje: 'El campo Mensaje es obligatorio', grupo:'uno|dos'},
+          'idPrioridad': {validaciones: 'requerido', mascara: 'libre', mensaje: 'El campo Prioridad es obligatorio', grupo:'uno'}
+      };
+    </script>
+  </ui:define>
+  <ui:define name="contenido">	
+    <p:panelGrid columns="2" columnClasses="ui-grid-col-2,ui-grid-col-10" layout="grid">
+      <h:outputLabel for="nombre" value="Nombre:"/>
+      <p:inputText id="nombre" styleClass="Wid70" value="#{kajoolMensajesPerfilesAgregar.attrs.dto.nombre}" disabled="#{kajoolMensajesPerfilesAgregar.attrs.deshabilitar}"/>
+      <p:outputLabel for="idGrupo" value="Grupo:"/>
+      <p:selectOneMenu id="idGrupo" value="#{kajoolMensajesPerfilesAgregar.attrs.idGrupo}" disabled="#{kajoolMensajesPerfilesAgregar.attrs.deshabilitar}">
+        <f:selectItem itemValue="" itemLabel="Seleccione"/>
+        <f:selectItems value="#{kajoolMensajesPerfilesAgregar.attrs.grupos}"/>
+        <p:ajax event="change" listener="#{kajoolMensajesPerfilesAgregar.doPerfiles()}" process="@this" update="idPerfil"/>
+      </p:selectOneMenu>
+      <h:outputLabel value="Perfil:" for="idPerfil"/>
+      <p:selectOneMenu id="idPerfil" value="#{kajoolMensajesPerfilesAgregar.attrs.idPerfil}" disabled="#{kajoolMensajesPerfilesAgregar.attrs.deshabilitar}">
+        <f:selectItem itemValue="" itemLabel="Seleccione"/>
+        <f:selectItems value="#{kajoolMensajesPerfilesAgregar.attrs.perfiles}"/>
+      </p:selectOneMenu>
+      <h:outputLabel for="vigenciaIni" value="Fecha inicial:"/>
+      <p:calendar id="vigenciaIni" value="#{kajoolMensajesPerfilesAgregar.attrs.dto.vigenciaIni}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" />
+      <h:outputLabel for="vigenciaFin" value="Fecha final:"/>
+      <p:calendar id="vigenciaFin" value="#{kajoolMensajesPerfilesAgregar.attrs.dto.vigenciaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" />
+      <h:outputLabel for="urlSeguimiento" value="URL seguimiento:"/>
+      <p:inputText id="urlSeguimiento" styleClass="Wid70" value="#{kajoolMensajesPerfilesAgregar.attrs.dto.urlSeguimiento}"  disabled="#{kajoolMensajesPerfilesAgregar.attrs.deshabilitar}"/>
+      <h:outputLabel for="descripcion" value="Mensaje:"/>
+      <p:editor id="descripcion" value="#{kajoolMensajesPerfilesAgregar.attrs.dto.descripcion}" widgetVar="editor"  disabled="#{kajoolMensajesPerfilesAgregar.attrs.deshabilitar}"/>
+      <p:spacer width="1"/>
+      <p:panelGrid>
+        <p:commandButton id="limpiar" value="Limpiar" process="@this" title="Limpiar" onstart="PF('editor').clear(); return true;" icon="fa fa-remove" disabled="#{kajoolMensajesPerfilesAgregar.attrs.deshabilitar}"/>
+      </p:panelGrid>
+      <h:outputLabel value="Prioridad:" for="idPrioridad"/>
+      <p:selectOneMenu id="idPrioridad" value="#{kajoolMensajesPerfilesAgregar.attrs.idPrioridad}" disabled="#{kajoolMensajesPerfilesAgregar.attrs.deshabilitar}">
+        <f:selectItem itemValue="" itemLabel="Seleccione"/>
+        <f:selectItems value="#{kajoolMensajesPerfilesAgregar.attrs.prioridades}"/>
+      </p:selectOneMenu>
+    </p:panelGrid>
+    <p:separator/>
+  </ui:define>
+  <ui:param name="componenteBloqueo" value="aceptar,cancelar,idGrupo,idPerfil,limpiar,vigenciaIni,vigenciaFin"/>
+  <ui:define name="acciones" >
+    <p:commandButton id="aceptar" icon="fa fa-check" update="mensaje" value="Aceptar" action="#{kajoolMensajesPerfilesAgregar.doAceptar}" process="@this nombre idGrupo idPerfil vigenciaIni vigenciaFin urlSeguimiento descripcion idPrioridad" onstart="return janal.execute(true);"/>
+    <p:commandButton id="cancelar" icon="fa fa-remove" value="Cancelar" action="filtro?faces-redirect=true" ajax="false"/>
+  </ui:define>
+</ui:composition>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 12/10/2016
+ time 01:56:07 PM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Recursos disponibles para descargar"/>
+  <ui:define name="librerias">		
+    <script type="text/javascript">      
+      Janal.Control.fields = {
+				nombre     : {validaciones: 'requerido', mascara: 'libre'},								
+				descripcion: {validaciones: 'requerido', mascara: 'libre'},																				
+				descarga   : {validaciones: 'requerido', mascara: 'libre'}
+			};
+      
+      function start() {
+        janal.bloquear();
+        PF('status').show();
+      }
+
+      function stop() {
+        PF('status').hide();
+        janal.desbloquear();
+      }
+    </script>    
+  </ui:define>
+  <ui:define name="contenido">
+    <p:dialog modal="true" widgetVar="status" header="Descargando ..." draggable="false" closable="false" resizable="false">
+      <p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
+    </p:dialog>    
+    <div class="Container100">
+      <div class="ContainerIndent">
+        <div class="Container">
+          <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolMantenimientoInsumosFiltro.lazyModel}" paginator="#{kajoolMantenimientoInsumosFiltro.lazyModel.rowCount gt kajoolMantenimientoInsumosFiltro.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" selectionMode="single" selection="#{kajoolMantenimientoInsumosFiltro.attrs.selected}" reflow="true">								
+            <f:facet name="header">
+              <p:menuButton value="Opciones">
+                <p:menuitem id="agregar" icon="fa fa-plus" value="Agregar" onstart="return janal.bloquear();" actionListener="#{kajoolMantenimientoInsumosFiltro.doLoadDialogo('AGREGAR')}" oncomplete="PF('dlgInsumo').show();" rendered="#{kajoolMantenimientoInsumosFiltro.attrs.admin}" update="dialogoInsumo"/>
+                <p:separator rendered="#{kajoolMantenimientoInsumosFiltro.attrs.admin}"/>
+                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+              </p:menuButton>
+            </f:facet>
+            <p:column styleClass="janal-wid-col-50 Responsive" sortBy="#{row.orden}">
+              <f:facet name="header">
+                <h:outputText value="No."/>
+              </f:facet>
+              <h:outputText value="#{row.orden}"/>
+            </p:column>
+            <p:column styleClass="janal-wid-col-150 Responsive" sortBy="#{row.nombre}">
+              <f:facet name="header">
+                <h:outputText value="Nombre"/>
+              </f:facet>
+              <h:outputText value="#{row.nombre}"/>
+            </p:column>
+            <p:column styleClass="Responsive" sortBy="#{row.descripcion}">
+              <f:facet name="header">
+                <h:outputText value="Descripción"/>
+              </f:facet>
+              <h:outputText value="#{row.descripcion}" escape="false"/>
+            </p:column>
+            <p:column styleClass="janal-column-center janal-wid-col-80 Responsive" sortBy="#{row.version}">
+              <f:facet name="header">
+                <h:outputText value="Versión"/>
+              </f:facet>
+              <h:outputText value="#{row.version}"/>
+            </p:column>
+            <p:column styleClass="janal-column-center janal-wid-col-150 Responsive" sortBy="#{row.registro}">
+              <f:facet name="header">
+                <h:outputText value="Fecha"/>
+              </f:facet>
+              <h:outputText value="#{row.registro}" />
+            </p:column>
+            <p:column styleClass="janal-column-center janal-wid-col-80 Responsive">
+              <f:facet name="header">
+                <h:outputText value="Descargar"/>
+              </f:facet>
+              <p:commandButton ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" icon="fa fa-download" process="@this tabla" title="#{row.descarga}" disabled="#{row.disponible.toLong() eq 2}">
+                <f:setPropertyActionListener value="#{row}" target="#{kajoolMantenimientoInsumosFiltro.attrs.selected}" />
+                <p:fileDownload value="#{kajoolMantenimientoInsumosFiltro.file}" />
+              </p:commandButton>                  
+            </p:column>
+            <f:facet name="footer">
+              Total [#{kajoolMantenimientoInsumosFiltro.lazyModel.rowCount}] registros
+            </f:facet>
+          </p:dataTable>
+          <p:contextMenu widgetVar="janalContextMenu" for="tabla">
+            <p:menuitem id="modificar" icon="fa fa-fw fa-edit" onstart="return janal.bloquear();" actionListener="#{kajoolMantenimientoInsumosFiltro.doLoadDialogo('MODIFICAR')}" process="@this tabla" oncomplete="PF('dlgInsumo').show();" value="Modificar" update="dialogoInsumo" rendered="#{kajoolMantenimientoInsumosFiltro.attrs.admin}"/>
+            <p:separator rendered="#{kajoolMantenimientoInsumosFiltro.attrs.admin}"/>
+            <p:menuitem id="eliminar" icon="fa fa-fw fa-remove" onstart="return janal.bloquear();" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" value="Eliminar" rendered="#{kajoolMantenimientoInsumosFiltro.attrs.admin}"/>            
+          </p:contextMenu>
+          <h:commandLink id="dataPdf">
+            <p:dataExporter type="pdf" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}" />
+          </h:commandLink>
+          <h:commandLink id="dataXls">
+            <p:dataExporter type="xls" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>
+          </h:commandLink>
+          <p:dialog id="dialogoInsumo" widgetVar="dlgInsumo" header="#{kajoolMantenimientoInsumosFiltro.attrs.tipoAccion} insumo" resizable="false" closable="false" position="center" width="55%" dynamic="true">
+            <h:panelGrid columns="2">
+              <label for="nombre">Nombre:</label>
+              <p:inputText id="nombre" value="#{kajoolMantenimientoInsumosFiltro.attrs.insumoDto.nombre}" style="width: 200px"/>
+              <label for="descripcion">Descripción:</label>
+              <p:inputTextarea id="descripcion" value="#{kajoolMantenimientoInsumosFiltro.attrs.insumoDto.descripcion}" style="width: 600px"/>              
+              <label for="descarga">Archivo:</label>
+              <p:inputText id="descarga" value="#{kajoolMantenimientoInsumosFiltro.attrs.insumoDto.descarga}" placeholder="Ej. xoc-0.0.0.1.apk" style="width: 200px"/>              
+              <label for="activar">Activar:</label>
+              <p:selectBooleanCheckbox id="activar" value="#{kajoolMantenimientoInsumosFiltro.attrs.activar}"/>              
+            </h:panelGrid>
+            <hr class="ui-widget-content"/>
+            <div class="janal-line-button">
+              <p:commandButton id="aceptarInsumo" icon="ui-icon-check" value="Aceptar" onstart="return janal.execute();" process="@this dialogoInsumo" actionListener="#{kajoolMantenimientoInsumosFiltro.doAccion}" update="tabla" oncomplete="PF('dlgInsumo').hide(); janal.desbloquear();"/>
+              <p:commandButton id="cancelarInsumo" icon="ui-icon-close" value="Cancelar" onstart="PF('dlgInsumo').hide();" oncomplete="janal.desbloquear();"/>
+            </div>  
+          </p:dialog>
+        </div>
+      </div>
+    </div>    		
+  </ui:define>
+  <ui:param name="componenteBloqueo" value="tabla"/>
+  <ui:param name="tituloConfirmacion" value="Eliminar insumo" />
+	<ui:param name="textoConfirmacion" value="¿ Deseas continuar con la eliminación del insumo ?" />
+	<ui:param name="accionConfirmacion" value="#{kajoolMantenimientoInsumosFiltro}"/>
+  <ui:param name="eventoConfirmacion" value="doEliminar"/>
+  <ui:param name="renderedConfirmacion" value="true"/>	
+  <ui:param name="updateComponent" value=":datos:tabla"/>	
+	<ui:define name="detalleConfirmacion">
+		<h:panelGrid columns="2">
+			<label class="una-sola-linea">Nombre:</label>
+			<h:outputText value="#{kajoolMantenimientoInsumosFiltro.attrs.selected.nombre}"/>						
+			<label class="una-sola-linea">Versión:</label>
+			<h:outputText value="#{kajoolMantenimientoInsumosFiltro.attrs.selected.version}"/>						
+		</h:panelGrid>
+  </ui:define>
+</ui:composition>

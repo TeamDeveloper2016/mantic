@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 12/10/2016
+ time 01:56:07 PM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Listado de cuentas para el aplicativo móvil"/>
+  <ui:define name="librerias">		
+    <script type="text/javascript">
+      function stop() {
+        PF('status').hide();
+        janal.desbloquear();
+      }
+    </script>    
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="Container100">
+      <div class="ContainerIndent">
+        <p:panel>
+          <p:panelGrid layout="grid" columns="2" columnClasses="janal-wid-col-120,ui-grid-col-3">
+            <label for="entidad">Entidad:</label> 
+            <p:selectOneMenu id="entidad" value="#{kajoolMantenimientoInsumosCuentas.attrs.entidad}" converter="javax.faces.Long">
+              <p:ajax event="change" listener="#{kajoolMantenimientoInsumosCuentas.doLoad}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" process="@this entidad" update="tabla"/>
+              <f:selectItems value="#{kajoolMantenimientoInsumosCuentas.entidades}"/>
+            </p:selectOneMenu>
+          </p:panelGrid>
+          <p:spacer width="20"/>
+          <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolMantenimientoInsumosCuentas.lazyModel}" paginator="#{kajoolMantenimientoInsumosCuentas.lazyModel.rowCount gt kajoolMantenimientoInsumosCuentas.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" selectionMode="single" selection="#{kajoolMantenimientoInsumosCuentas.attrs.selected}" reflow="true">								
+            <f:facet name="header">
+              <p:menuButton value="Opciones">
+                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+              </p:menuButton>
+            </f:facet>
+            <p:column styleClass="janal-wid-col-80 Responsive">
+              <f:facet name="header">
+                <h:outputText value="No."/>
+              </f:facet>
+              <h:outputText value="#{index+ 1}"/>
+            </p:column>
+            <p:column styleClass="Responsive" sortBy="#{row.cuenta}">
+              <f:facet name="header">
+                <h:outputText value="Cuenta"/>
+              </f:facet>
+              <h:outputText value="#{row.cuenta}"/>
+            </p:column>
+            <p:column styleClass="Responsive" sortBy="#{row.contrasenia}">
+              <f:facet name="header">
+                <h:outputText value="Contraseña"/>
+              </f:facet>
+              <h:outputText value="#{row.contrasenia}" escape="false"/>
+            </p:column>
+            <p:column styleClass="janal-column-center janal-wid-col-200 Responsive">
+              <f:facet name="header">
+                <h:outputText value="Fecha"/>
+              </f:facet>
+              <h:outputText value="#{row.registro}" />
+            </p:column>
+            <f:facet name="footer">
+              Total [#{kajoolMantenimientoInsumosCuentas.lazyModel.rowCount}] registros
+            </f:facet>
+          </p:dataTable>
+        </p:panel>   
+        <h:commandLink id="dataPdf">
+          <p:dataExporter type="pdf" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}" />
+        </h:commandLink>
+        <h:commandLink id="dataXls">
+          <p:dataExporter type="xls" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>
+        </h:commandLink>	
+      </div>
+    </div>    		
+  </ui:define>
+  <ui:param name="componenteBloqueo" value="tabla"/>
+</ui:composition>

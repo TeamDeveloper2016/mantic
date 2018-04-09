@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 14/08/2015
+ time 11:30:04 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/filtro.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+  <ui:param name="titulo" value="Bienvenido" />
+  <ui:define name="librerias">
+    <h:outputScript library="janal" name="core/jquery.underscore.min-1.3.3.js"/>
+    <h:outputScript library="janal" name="highcharts/js/highcharts.js"/>    
+    <script type="text/javascript">
+      
+      $(document).ready(function(){
+        updateFechas();
+      });
+      
+      function updateFechas(){
+        $('#vigenciaInicial_input').width('23%');
+        $('#vigenciaFin_input').width('23%');
+      };
+      
+      function loadChart(id, json) {
+        if(json!== '')
+          $('#'+id).highcharts(JSON.parse(json));
+      };
+     
+      function skinChart() {
+        this.cfg.shadow = false;
+        this.cfg.seriesColors = ['#dae8ef', '#27aae1'];
+        this.cfg.grid = {
+          background: '#f3f5f7',
+          borderColor: '#e5ebf0',
+          gridLineColor: '#e5ebf0',
+          shadow: false
+        };
+        this.cfg.axesDefaults = {
+          rendererOptions: {
+            textColor: '#9fadb5'
+          }
+        };
+        this.cfg.seriesDefaults = {
+          shadow: false,
+          markerOptions: {
+            shadow: false
+          }
+        };
+      };
+
+      function skinPie() {
+        this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+        this.cfg.grid = {
+          background: '#ffffff',
+          borderColor: '#eaeaea',
+          gridLineColor: '#e5ebf0',
+          shadow: false,
+          borderWidth: 0
+        };
+        this.cfg.seriesDefaults.shadow = false;
+      };
+    </script>
+    <style type="text/css">
+      .jqplot-target, .jqplot-axis {
+        color: #9fadb5;
+      }
+      .jqplot-title {
+        display: none;
+      }
+    </style>
+  </ui:define>
+  <ui:define name="contenido">
+    <!-- SECTION 1 -->
+    <div class="Container100">
+      <div class="ContainerIndent">
+        <div class="Container25 Responsive">
+          <div class="ContainerIndent">
+            <p:panel style="min-height: 330px;">
+              <i class="icon-user-2 Fs50 Fleft Wid25 hardblue TexAlCenter"></i>
+              <div class="Fs24 Fright MarTop10 leaden Wid70">Bienvenido, <span class="hardblue">#{sessionScope.autentifica.empleado.cuenta}</span></div>
+              <div class="Fs12 Fright leaden Wid70">Tu tienes <span class="red">#{kajoolBienvenida.attrs.mensajesNoLeidos} mensajes sin leer</span> y <span class="red"> #{kajoolBienvenida.attrs.contadoresMes.totalPendientes} capturas pendientes</span> !</div>
+              <div class="EmptyBox10"></div>
+              <p:separator styleClass="Wid100"/>
+              <div class="EmptyBox10"></div>
+              <div class="Fs16 Fright">
+                <a href="#{kajoolBienvenida.attrs.pathCaptura}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-pencil-squared hardblue"> Captura (#{kajoolBienvenida.attrs.contadoresMes.totalPendientes})</i></a>
+                <a href="#{kajoolBienvenida.attrs.pathMensajes}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-bell-alt hardblue"> Mensajes (#{kajoolBienvenida.attrs.mensajesNoLeidos})</i></a>
+                <a href="#{kajoolBienvenida.attrs.pathConfiguracion}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-cog-alt hardblue"> Configuración</i></a>
+              </div>
+              <div class="EmptyBox10"></div>
+              <p:separator styleClass="Wid100"/>
+              <div class="EmptyBox10"></div>
+              <span class="janal-help-icon janal-help-1 fa fa-lg fa-fw fa-question-circle Fright" onclick="countHelp(1);"/>
+              <pe:tooltip for="@(.janal-help-1)" showEvent="click">
+                <h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(1)}" styleClass="Fs15" escape="false"/>
+              </pe:tooltip>
+              <i class="icon-key softgray MarRight10 Fs14 Fright">Último acceso</i>
+              <i class="softgray MarRight10 Fs14 Fright">#{sessionScope.autentifica.ultimoAcceso}</i>
+              <div class="EmptyBox10"></div>
+              <p:separator styleClass="Wid100"/>
+            </p:panel>
+          </div>
+        </div>
+        <div class="Container25 Responsive">
+          <div class="ContainerIndent">
+            <p:panel style="min-height: 330px;">
+              <i class="icon-sitemap Fs50 Fleft Wid25 red TexAlCenter"></i>
+              <div class="Fs24 Fright MarTop10 leaden Wid70">Equipo de trabajo</div>
+              <div class="Fs18 Fright leaden Wid70">Plantilla de <span class="red">#{kajoolBienvenida.attrs.contadoresGenerales.total}</span> personas</div>
+              <div class="Fs12 Fright leaden Wid70">Perfiles que llevaran a cabo actividades en el desarrollo del operativo</div>
+              <div class="EmptyBox10"></div>
+              <p:separator styleClass="Wid100"></p:separator>
+              <div class="EmptyBox10"></div>
+              <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Administrador<br/><span class="Fs20 orange">#{kajoolBienvenida.attrs.contadoresGenerales.admin}</span></div>
+              <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Consultor<br/><span class="Fs20 orange">#{kajoolBienvenida.attrs.contadoresGenerales.consultor}</span></div>
+              <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Responsable estatal<br/><span class="Fs20 red">#{kajoolBienvenida.attrs.contadoresGenerales.respEstatal}</span></div>
+              <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Capturista<br/><span class="Fs20 hardblue">#{kajoolBienvenida.attrs.contadoresGenerales.capturista}</span></div>
+              <div class="EmptyBox10"></div>
+              <p:separator styleClass="Wid100"></p:separator>              
+            </p:panel>
+          </div>
+        </div>
+        <div class="Container25 Responsive">
+          <div class="ContainerIndent">
+            <p:panel id="panelMes" style="min-height: 330px;">
+              <i class="icon-calendar Fs50 Fleft Wid25 orange TexAlCenter"></i>
+              <div class="Fs24 Fright MarTop10 leaden Wid70">Reporte por fecha</div>
+              <div class="Fs12 Fright leaden Wid70">Porcentaje de captura por fecha con respecto al total de viviendas: <span class="red">#{kajoolBienvenida.attrs.contadoresMes.porcCompletos}%</span></div>
+              <div class="EmptyBox10"></div>
+              <p:separator styleClass="Wid100"></p:separator>
+              <div class="Wid100 TexAlCenter Responsive">                
+                <p:calendar id="vigenciaInicial" value="#{kajoolBienvenida.attrs.vigenciaInicial}" pattern="dd/MM/yyyy" showOn="button" locale="es" effect="explode" converter="janal.convertidor.Fecha">
+                  <p:ajax event="dateSelect" onstart="janal.bloquear();" listener="#{kajoolBienvenida.doLoadContadoresMeses}" process="@this" update="panelMes" oncomplete="janal.desbloquear();updateFechas();"/>
+                </p:calendar>
+                <label> a </label>
+                <p:calendar id="vigenciaFin" value="#{kajoolBienvenida.attrs.vigenciaFin}" pattern="dd/MM/yyyy" showOn="button" locale="es" effect="explode" converter="janal.convertidor.Fecha">
+                  <p:ajax event="dateSelect" onstart="janal.bloquear();" listener="#{kajoolBienvenida.doLoadContadoresMeses}" process="@this" update="panelMes" oncomplete="janal.desbloquear();updateFechas();"/>
+                </p:calendar>
+              </div>
+              <p:separator styleClass="Wid100"></p:separator>
+              <div class="EmptyBox10"></div>
+              <div class="Fs12 Fright leaden Wid100 TexAlCenter Responsive">Cuestionarios capturados<br/><span class="Fs24 hardblue">#{kajoolBienvenida.attrs.contadoresMes.totalCapturados}</span></div>              
+              <div class="Fs12 Fright leaden Wid100 TexAlCenter Responsive">Cuestionarios sin captura<br/><span class="Fs24 red">#{kajoolBienvenida.attrs.contadoresMes.totalPendientes}</span></div>              
+              <div class="EmptyBox10"></div>
+              <p:separator styleClass="Wid100"></p:separator>              
+            </p:panel>
+          </div>
+        </div>        
+        <div class="Container25 Responsive">
+            <div class="ContainerIndent">
+              <p:panel style="min-height:330px;">
+                <div class="Container100 Responsive Fs20">
+                  <i class="icon-chart-bar"></i> #{kajoolBienvenida.attrs.jsonNacional.titulo}
+                </div>
+                <div class="Container100">
+                  <div id="kajool-chart-avance-nacional"></div>
+                  <script type="text/javascript">
+                    $(document).ready(function(){loadChart('kajool-chart-avance-nacional','#{kajoolBienvenida.attrs.jsonNacional.json}');});
+                  </script>
+                </div>
+              </p:panel>
+            </div>
+          </div>
+        <div class="EmptyBox10"></div>
+      </div>
+    </div>
+    <div class="Container100" style="#{kajoolBienvenida.attrs.isAdmin ? ' ' : 'display:none'}">
+      <div class="ContainerIndent">
+        <div class="EmptyBox10"></div>        
+          <div class="Container100 Responsive">
+            <div class="ContainerIndent">
+              <p:panel style="min-height:400px;">
+                <div class="Container100 Responsive Fs20">
+                  <i class="icon-chart-bar"></i> #{kajoolBienvenida.attrs.tituloGeneralNacional}
+                </div>
+                <div class="Container100">
+                  <div id="kajool-chart-avance-general-nacional"></div>
+                  <script type="text/javascript">
+                    $(document).ready(function(){loadChart('kajool-chart-avance-general-nacional','#{kajoolBienvenida.attrs.jsonGeneralNacional}');});
+                  </script>
+                </div>
+              </p:panel>
+            </div>
+          </div>
+      </div>
+    </div>
+    <!-- SECTION 1 -->
+    <div class="Container100 BorBotLeaden">
+      <div class="ContainerIndent">
+        <div class="EmptyBox10"></div>
+        <c:forEach items="#{kajoolBienvenida.attrs.jsons}" var="prop" varStatus="index">													
+          <div class="Container50 Responsive">
+            <div class="ContainerIndent">
+              <p:panel style="min-height:400px;">
+                <div class="Container100 Responsive Fs20">
+                  <i class="icon-chart-bar"></i> #{prop.titulo}
+                </div>
+                <div class="Container100">
+                  <div id="kajool-chart-avance-#{prop.id}"></div>
+                  <script type="text/javascript">
+                    $(document).ready(function(){loadChart('kajool-chart-avance-#{prop.id}','#{prop.json}');});
+                  </script>
+                </div>
+              </p:panel>
+            </div>
+          </div>
+        </c:forEach>	
+        <div class="Container50 Responsive">
+          <div class="ContainerIndent">
+            <p:panel style="min-height:400px;">
+              <div class="Container40 Responsive Fs20">
+                <i class="icon-doc-text"></i> #{kajoolBienvenida.attrs.titulotabla}
+              </div>
+              <div class="Container60 Responsive Fs12">                  
+                <p:selectOneMenu id="entidad" label="Entidad" value="#{kajoolBienvenida.attrs.entidad}" styleClass="Wid70 Fright" rendered="#{kajoolBienvenida.attrs.isAdmin}">
+                  <p:ajax event="change" onstart="janal.bloquear();" listener="#{kajoolBienvenida.doLoad}" process="@this" update="form:tabla" oncomplete="janal.desbloquear();"/>
+                  <f:selectItems value="#{kajoolBienvenida.entidades}"/>
+                </p:selectOneMenu>                
+              </div>
+              <div class="EmptyBox10"></div>
+              <div class="Container100">
+                <h:form id="form">
+                  <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolBienvenida.lazyModel}" paginator="#{kajoolBienvenida.lazyModel.rowCount gt kajoolBienvenida.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolBienvenida.attrs.selected}" reflow="true" rendered="#{!kajoolBienvenida.attrs.isTablaGeneral}">
+                    <f:facet name="header">
+                      <p:menuButton value="Opciones">
+                        <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                        <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                      </p:menuButton>
+                    </f:facet>
+                    <p:column styleClass="janal-column-left ColWid10 Responsive" >
+                      <f:facet name="header">
+                        <h:outputText value="Nombre"/>
+                      </f:facet>
+                      <h:outputText value="#{row.nombreCompleto}"  />
+                    </p:column>                                                            
+                    <p:column styleClass="janal-column-right ColWid5 Responsive" >
+                      <f:facet name="header">
+                        <h:outputText value="Folios"/>
+                      </f:facet>
+                      <h:outputText value="#{row.total}" />
+                    </p:column>                    
+                    <p:column styleClass="janal-column-right ColWid5 Responsive">
+                      <f:facet name="header">
+                        <h:outputText value="Avance"/>
+                      </f:facet>
+                      <h:outputText value="#{row.completos}" />
+                    </p:column>                    
+                    <p:column styleClass="janal-column-right ColWid5 Responsive" >
+                      <f:facet name="header">
+                        <h:outputText value="Porcentaje"/>
+                      </f:facet>
+                      <h:outputText value="#{row.porcentaje}%" />
+                    </p:column>                    
+                    <f:facet name="footer">
+                      Total [#{kajoolBienvenida.lazyModel.rowCount}] registros
+                    </f:facet>
+                  </p:dataTable>
+                  <h:commandLink id="dataPdf">
+                    <p:dataExporter type="pdf" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}" />
+                  </h:commandLink>
+                  <h:commandLink id="dataXls">
+                    <p:dataExporter type="xls" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>
+                  </h:commandLink>	                  
+                  <p:dataTable lazy="true" id="tablaCapturista" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolBienvenida.lazyModel}" paginator="#{kajoolBienvenida.lazyModel.rowCount gt kajoolBienvenida.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolBienvenida.attrs.selected}" reflow="true" rendered="#{kajoolBienvenida.attrs.isTablaGeneral}">
+                    <f:facet name="header">
+                      <p:menuButton value="Opciones">
+                        <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdfCapturista', 'tablaCapturista')" oncomplete="janal.desbloquear()"/>
+                        <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXlsCapturista', 'tablaCapturista')" oncomplete="janal.desbloquear()"/>
+                      </p:menuButton>
+                    </f:facet>
+                    <p:column styleClass="janal-column-right ColWid10 Responsive">
+                      <f:facet name="header">
+                        <h:outputText value="Folio"/>
+                      </f:facet>
+                      <h:outputText value="#{row.folio}"  />
+                    </p:column>                    
+                    <p:column styleClass="janal-column-right ColWid10 Responsive" >
+                      <f:facet name="header">
+                        <h:outputText value="Control"/>
+                      </f:facet>
+                      <h:outputText value="#{row.control}"/>
+                    </p:column>
+                    <p:column styleClass="TextAlCenter ColWid10 Responsive"  >
+                      <f:facet name="header">
+                        <h:outputText value="Estatus"/>
+                      </f:facet>
+                      <h:outputText value="#{row.estatus}" />
+                    </p:column>                    
+                    <f:facet name="footer">
+                      Total [#{kajoolBienvenida.lazyModel.rowCount}] registros
+                    </f:facet>
+                  </p:dataTable>
+                  <h:commandLink id="dataPdfCapturista">
+                    <p:dataExporter type="pdf" target="tablaCapturista" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}" />
+                  </h:commandLink>
+                  <h:commandLink id="dataXlsCapturista">
+                    <p:dataExporter type="xls" target="tablaCapturista" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>
+                  </h:commandLink>	                  
+                </h:form>
+              </div>
+            </p:panel>
+          </div>
+        </div>
+        <div class="EmptyBox20"></div>
+      </div>
+    </div>
+  </ui:define>
+</ui:composition>

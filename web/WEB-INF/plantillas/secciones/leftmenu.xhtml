@@ -1,0 +1,47 @@
+<ui:composition
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:ps="http://primefaces.org/sentinel"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:p="http://primefaces.org/ui">
+  <h:outputScript library="janal" name="js/jquery.janal.menu-2.0.1.js"/>
+  <h:outputScript library="sentinel" name="js/jquery.sentinel.layout-1.0.1.js"/>
+  <h:outputScript library="sentinel" name="js/jquery.sentinel.menu-1.0.0.js"/>
+  <h:outputScript library="janal" name="mmenu/js/jquery.mmenu.min.js"/>
+  <h:outputScript library="janal" name="mmenu/js/jquery.mmenu.searchfield.min.js"/>
+  <h:outputScript library="janal" name="mmenu/js/jquery.mmenu.counters.min.js"/>
+  <h:outputScript library="janal" name="mmenu/js/jquery.mmenu.navbars.min.js"/>
+  <h:outputStylesheet library="janal" name="mmenu/css/jquery.mmenu.css"/>	
+  <h:outputStylesheet library="janal" name="mmenu/css/jquery.mmenu.effects.css"/>	
+  <h:outputStylesheet library="janal" name="mmenu/css/jquery.mmenu.searchfield.css"/>	
+  <h:outputStylesheet library="janal" name="mmenu/css/jquery.mmenu.counters.css"/>	
+  <h:outputStylesheet library="janal" name="mmenu/css/jquery.mmenu.navbars.css"/>	
+  <h:outputStylesheet library="janal" name="mmenu/css/jquery.mmenu.themes-1.0.1.min.css"/>	
+  <div id="menuSentinel" class="NoDisplay" style="#{kajoolUtilAplicacion.directivo? 'display:none' : ''}">
+    <div id="layout-menubar" class="Unselectable fontRegular">
+      <div class="layout-menubarinner-box" id="buttonArea">
+        <a href="#" id="layout-menubar-resize" class="BordRad3" ><i class="icon-th-list-2"/></a>
+        <a href="#" id="layout-menubar-resize2" class="BordRad3"><i class="icon-menu"/></a>
+      </div>
+      <div class="layout-menubarinner-box" id="searchArea">
+        <i class="icon-search floatLeft gray"/>
+        <input type="text" class="layout-menubar-search floatLeft Animated05" placeholder="Buscar"/>
+        <div id="noResults" class="Fs30 DispNone">
+          <p:outputLabel value="No hay resultados"/>
+        </div>
+      </div>
+      <ps:menu id="sm_leftmenu" model="#{kajoolMenuGaleryMenu.sentinel}"/>				
+    </div>
+  </div>
+  <div id="panelMmenu" class="NoDisplay">	
+    <div id="layout-menubar" class="Unselectable fontRegular slimmenu">
+      <div class="layout-menubarinner-box" id="buttonArea">
+        <a href="#" class="BordRad3" onclick="mmenu.open();"><i class="icon-menu-1" style="color: white"/></a>
+      </div>
+      <nav id="collapseMenu">
+        <h:outputText value="#{kajoolMenuGaleryMenu.mmenu}" escape="false"/>
+      </nav>
+    </div>
+  </div>
+</ui:composition>

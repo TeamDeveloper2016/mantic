@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+	<f:view contentType="text/html">
+		<h:head>
+			<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+			<meta http-equiv="X-UA-Compatible" content="IE=10; IE=9; IE=8; IE=7; IE=EDGE" />
+			<link rel="shortcut icon" type="image/png" href="#{kajoolUtilAplicacion.defaultResourceImg}/sistema/favicon.png.jsf?ln=janal"/>			
+      <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryJs}"/>
+      <h:outputText escape="false" value="#{kajoolUtilAplicacion.defaultScripts}"/>
+			<h:outputScript library="sentinel" name="js/jquery.sentinel.layout-1.0.1.js"/>
+			<h:outputStylesheet library="sentinel" name="css/font-icon-layout.css"/>
+			<h:outputStylesheet library="sentinel" name="css/sentinel-layout.css"/>
+			<h:outputStylesheet library="sentinel" name="css/core-layout.css"/>	
+      <h:outputStylesheet library="janal" name="#{kajoolUtilAplicacion.defaultCss}"/>			
+      <ui:insert name="librerias"/>
+		</h:head>
+		<h:body class="ui-widget-content" onload="janal.align();">	
+			<p:layout fullPage="true">
+				<p:layoutUnit position="north" style="border:0;width:100%">
+					<ui:include src="/WEB-INF/plantillas/secciones/encabezado.xhtml"/>					
+				</p:layoutUnit>
+				<p:layoutUnit id="principal" position="center" size="100%" style="border:0;" styleClass="sticky-wrapper" gutter="0">
+					<h:form id="datos" prependId="false">
+						<p:growl id="mensaje" showDetail="true" sticky="true" widgetVar="mensajes" autoUpdate="true" escape="false"/>
+						<div id="toggleable" class="ui-panel ui-widget ui-widget-content ui-corner-all" style="margin-bottom:5px" data-widget="panel">
+							<div id="toggleable_header" class="ui-panel-titlebar ui-widget-header ui-helper-clearfix ui-corner-all">
+								<span class="ui-panel-title">#{titulo}</span>
+								<div class="ajax">
+									<p:ajaxStatus style="width:16px;height:16px;" id="ajaxStatusPanel">
+										<f:facet name="start">
+											<h:graphicImage library="janal" name="icon/ajax-loader.gif"/>
+										</f:facet>
+										<f:facet name="complete">
+											<h:outputText value=""/>
+										</f:facet>
+									</p:ajaxStatus>
+								</div>
+							</div>
+						</div>	
+						<ui:include src="/WEB-INF/plantillas/secciones/topbar.xhtml"/>	
+						<p:panel id="panelPrincipal" styleClass="cuerpo" toggleable="true">
+							<p:focus context="panelPrincipal"/>
+							<div id="cuerpo" class="contenido">
+								<ui:include src="/WEB-INF/plantillas/secciones/leftmenu.xhtml"/>
+								<div id="layout-portlets-cover" class="fontRegular">
+									<ui:insert name="contenido"/>
+								</div>
+								<p:dialog id="confirmacion" widgetVar="dialogoConfirmacion" header="#{empty tituloConfirmacion? 'Confirmación': tituloConfirmacion}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" resizable="false" onHide="#{empty onHideDlg? 'janal.desbloquear();': onHideDlg}">
+									<h:outputText value="#{textoConfirmacion}" escape="false"/>
+									<ui:insert name="detalleConfirmacion" />
+									<hr class="ui-widget-content"/>
+									<div class="janal-line-button">
+										<p:commandButton id="confirmar" process="@form" update="#{empty updateComponent ? 'tabla' : updateComponent }"  value="Aceptar" action="#{accionConfirmacion[eventoConfirmacion]}" oncomplete="PF('dialogoConfirmacion').hide();" rendered="#{empty renderedConfirmacion? false: renderedConfirmacion}"/>
+										<p:commandButton process="@none"  value="#{renderedConfirmacion?'Cancelar':'Regresar'}" oncomplete="PF('dialogoConfirmacion').hide();"/>
+									</div>
+								</p:dialog>
+							</div>							
+						</p:panel>
+						<p:blockUI block="principal" widgetVar="bloqueo" trigger="#{empty componenteBloqueo? 'tabla': componenteBloqueo}">
+							¡  Espere por favor !<br/><br/><br/>
+							<i class="fa fa-spinner fa-spin fa-2x"></i>
+						</p:blockUI>							
+					</h:form>
+					<ui:include src="/WEB-INF/plantillas/secciones/perfil.xhtml"/>
+					<ui:insert name="dialogos"/>
+				</p:layoutUnit>
+				<p:layoutUnit id="templateBottom" position="south" resizable="false">
+				</p:layoutUnit>
+			</p:layout>
+		</h:body>
+	</f:view>
+</html>

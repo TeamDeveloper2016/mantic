@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+								template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Opción de cambio de contraseña" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields= {
+        'actual'  : {validaciones: 'requerido|acceso|igual-a({"cual": "anterior"})', mascara: 'libre', mensaje: 'La contraseña actual es incorrecta. !'},
+        'nueva'   : {validaciones: 'requerido|acceso|igual-a({"cual": "ratifica"})', mascara: 'libre', mensaje: 'La contraseña nueva no coincide. !'},
+        'ratifica': {validaciones: 'requerido|acceso|igual-a({"cual": "nueva"})', mascara: 'libre', mensaje: 'La contraseña nueva no coincide. !'}
+       };		
+     </script>
+  </ui:define>
+	<ui:define name="contenido">
+    <h:panelGrid columns="1" styleClass="janal-content-table">
+      <p:fieldset legend="Contraseña actual" styleClass="Responsive100">
+        <p:panelGrid layout="grid" columns="2" columnClasses="ui-grid-col-2 janal-wid-col-100,ui-grid-col-3">
+          <label for="nombre">Nombre:</label>
+          <p:inputText id="nombre" value="#{kajoolUsuariosContrasenia.attrs.usuario}" readonly="true" styleClass="Container100 Fnone MarAuto"/>
+          <label for="cuenta">Cuenta:</label>
+          <p:inputText id="cuenta" value="#{kajoolUsuariosContrasenia.attrs.cuenta}" readonly="true" styleClass="Container50 Fnone MarAuto"/>
+          <label>Perfil:</label>
+          <p:inputText value="#{kajoolUsuariosContrasenia.attrs.perfil}" readonly="true" styleClass="Container100 Fnone MarAuto"/>
+          <label for="actual">Contraseña:</label>
+          <p:password id="actual" value="#{kajoolUsuariosContrasenia.attrs.actual}" size="35"/>
+        </p:panelGrid>  
+      </p:fieldset>
+      <p:spacer height="5"/>
+      <p:fieldset legend="Contraseña  nueva" styleClass="Responsive100">
+        <p:panelGrid layout="grid" columns="2" columnClasses="ui-grid-col-2 janal-wid-col-100,ui-grid-col-3">
+          <label for="nueva">Contraseña:</label>
+          <p:password id="nueva" value="#{kajoolUsuariosContrasenia.attrs.nueva}" size="35"/>
+          <label for="ratifica">Ratificar:</label>
+          <p:password id="ratifica" value="#{kajoolUsuariosContrasenia.attrs.ratifica}" size="35"/>
+        </p:panelGrid>
+      </p:fieldset> 
+    </h:panelGrid>  
+    <h:inputHidden id="anterior" value="#{kajoolUsuariosContrasenia.attrs.anterior}"/>
+	</ui:define>
+	<ui:define name="acciones">
+    <p:commandButton id="aceptar" icon="fa fa-check" value="Aceptar" action="#{kajoolUsuariosContrasenia.doAceptar}" process="@this,actual,nueva,ratifica" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+	</ui:define>
+</ui:composition>

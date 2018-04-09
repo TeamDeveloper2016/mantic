@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 11/10/2016
+ time 02:10:23 PM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Reasignación de cargas de trabajo" />
+  <ui:define name="librerias">
+    <script type="text/javascript">																
+      Janal.Control.fields = {
+        entidad          : { validaciones: 'requerido', mascara: 'libre', mensaje: 'Selecciona entidad'                 , grupo: 'coordinacion'},
+				curpOrigen       : { validaciones: 'requerido', mascara: 'curp' , mensaje: 'Captura la curp del usuario origen' ,	grupo: 'claveOrigen'},
+				curpDestino      : { validaciones: 'requerido', mascara: 'curp' , mensaje: 'Captura la curp del usuario destino',	grupo: 'claveDestino'},
+				criterio         : { validaciones: 'requerido', mascara: 'libre', mensaje: 'Captura el criterio de busqueda'    ,	grupo: 'criterioBusqueda'},
+				usuarioEncontrado: { validaciones: 'requerido', mascara: 'libre', mensaje: 'Es necesario seleccionar un usuario', grupo: 'usuario'}					
+      };						
+      									
+			function refresh(){ $("#refrescar").click();};      			
+			
+			function onHideDialog(){
+				var ok= true;
+				ok= janal.partial('usuario');
+				if(ok)
+					PF('dialogoBusquedaUsuario').hide();
+				return ok;
+			};
+    </script>		
+		<style type="text/css">
+      .ui-picklist .ui-picklist-list {
+        width: 355px !important;
+        height: 200px !important;
+      }
+      .ui-picklist .ui-picklist-filter {
+        width: 94% !important;
+      }
+			.ui-picklist-button-add-all{
+				display: none !important
+			}
+			.ui-picklist-button-remove-all{
+				display: none !important
+			}
+    </style>
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="Container100">
+      <div class="ContainerIndent">
+        <div class="Container100 Responsive">
+          <div class="ContainerIndent">
+            <p:panel style="min-height:400px;">
+              <div class="Container5 Responsive Fs20">
+                Entidad:
+              </div>
+              <div class="Container Responsive Fs12">
+                <p:selectOneMenu id="coordinacion" value="#{kajoolReasignacionCargasTrabajoFiltro.attrs.entidad}" style="width: 305px">											
+                  <p:ajax event="change" listener="#{kajoolReasignacionCargasTrabajoFiltro.doLimpiar}" onstart="return janal.bloquear();" process="@this" update="@this, aceptar, :datos:tabla, totala, totalb, nombreOrigen, curpOrigen, curpDestino, nombreDestino" oncomplete="janal.desbloquear();"/>
+                  <f:selectItems value="#{kajoolReasignacionCargasTrabajoFiltro.entidades}"/>														
+                </p:selectOneMenu>	
+              </div>
+              <div class="Container40 ContainerIndent Responsive Fs18 ">                
+                  <a class="DispInlBlock Wid100 Fleft Fs20 MarRight20"><i class="icon-user-2 orange">   Capturista (A)</i></a>                                 
+                  <p:inputText id="curpOrigen" value="#{kajoolReasignacionCargasTrabajoFiltro.attrs.curpOrigen}" style="width: 70%" placeholder="CURP    Ej.   AAAA920313HCMLNS09"/>
+                  <p:commandButton icon="fa fa-search" id="origen" actionListener="#{kajoolReasignacionCargasTrabajoFiltro.doConsultar}" process="@this, curpOrigen, coordinacion" update=":datos:tabla, nombreOrigen, totala, " onstart="return janal.partial('claveOrigen')" oncomplete="janal.desbloquear()"/>
+                  <p:commandButton id="usOrigen" icon="fa fa-user" actionListener="#{kajoolReasignacionCargasTrabajoFiltro.doAsignaUsuario}" process="@this, coordinacion" update=":datos:tabla, nombreOrigen, totala, busquedaUsuario" oncomplete="janal.bloquear();PF('dialogoBusquedaUsuario').show();" title="Busqueda por nombre"/><br/>
+                  <div class="EmptyBox5"></div>
+                  <p:separator styleClass="Wid100"></p:separator>
+                  <div class="EmptyBox5"></div>
+                  <div class="Container100 Responsive Fs18">                
+                    <label for="nombreOrigen">Nombre:</label>
+                    <h:outputText class="hardblue" id="nombreOrigen" value="#{kajoolReasignacionCargasTrabajoFiltro.attrs.nombreOrigen}"/><br/>
+                    <label for="totala">Total:</label>
+                    <h:outputText id="totala" value="#{kajoolReasignacionCargasTrabajoFiltro.attrs.totala}"/>                                               
+                  </div>                  
+              </div>              
+              <div class="Container40 ContainerIndent Responsive Fs18">
+                  <a class="DispInlBlock Wid100 Fleft Fs20 MarRight20"><i class="icon-user-2 orange">   Capturista (B)</i></a>                                  
+                  <p:inputText id="curpDestino" value="#{kajoolReasignacionCargasTrabajoFiltro.attrs.curpDestino}" style="width: 70%" placeholder="CURP    Ej.   AAAA920313HCMLNS09"/>
+              		<p:commandButton id="destino" icon="fa fa-search" actionListener="#{kajoolReasignacionCargasTrabajoFiltro.doConsultar}" process="@this, curpDestino, coordinacion" update=":datos:tabla, nombreDestino, totalb" onstart="return janal.partial('claveDestino')" oncomplete="janal.desbloquear()"/>
+                	<p:commandButton id="usDestino" icon="fa fa-user" actionListener="#{kajoolReasignacionCargasTrabajoFiltro.doAsignaUsuario}" process="@this, coordinacion" update=":datos:tabla, nombreDestino, totalb, busquedaUsuario" oncomplete="janal.bloquear();PF('dialogoBusquedaUsuario').show();" title="Busqueda por nombre"/><br/>
+                  <div class="EmptyBox5"></div>
+                  <p:separator styleClass="Wid100"></p:separator>
+                  <div class="EmptyBox5"></div>
+                  <div class="Container40  Responsive Fs18">
+                    <label for="nombreDestino">Nombre:</label>
+                    <h:outputText class="hardblue" id="nombreDestino" value="#{kajoolReasignacionCargasTrabajoFiltro.attrs.nombreDestino}"/><br/>
+                    <label for="totalb">Total:</label>
+                    <h:outputText id="totalb" value="#{kajoolReasignacionCargasTrabajoFiltro.attrs.totalb}"/>
+                  </div>                  
+              </div>
+              <div class="EmptyBox10"></div>              
+              <div class="Container">
+                <p:pickList id="tabla" value="#{kajoolReasignacionCargasTrabajoFiltro.model}" converter="janal.convertidor.SelectionItem" var="itemSelection" itemValue="#{itemSelection}"
+                  itemLabel="#{itemSelection.item}" showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains">							
+                  <f:facet name="sourceCaption">Muestra (Control - Folio)</f:facet>
+                  <f:facet name="targetCaption">Muestra (Control - Folio)</f:facet>
+                  <p:column style="width: 100%">
+                    #{itemSelection.item}
+                  </p:column>  	
+                  <p:ajax event="transfer" listener="#{kajoolReasignacionCargasTrabajoFiltro.onTransfer}" process="@this" update="aceptar, refrescar, confirmacion, totala, totalb" oncomplete="janal.desbloquear()"/>
+                </p:pickList>
+              </div>
+              <hr class="ui-widget-content"/>
+              <div class="alinear-derecha" style="text-align: right">
+                <p:commandButton id="limpirar" icon="fa fa-trash" value="Limpiar" actionListener="#{kajoolReasignacionCargasTrabajoFiltro.doLimpiar}" update="@this, aceptar, :datos:tabla, totala, totalb, nombreOrigen, curpOrigen, curpDestino, nombreDestino, refrescar" onstart="janal.bloquear()" oncomplete="janal.desbloquear();"/>     		
+                <p:commandButton id="refrescar" icon="fa fa-refresh" value="Refrescar" actionListener="#{kajoolReasignacionCargasTrabajoFiltro.doRefrescar}" update="@this, aceptar, :datos:tabla, totala, totalb" disabled="#{kajoolReasignacionCargasTrabajoFiltro.attrs.habilitarRefresh}" onstart="janal.bloquear()" oncomplete="janal.desbloquear();"/>     		
+                <p:commandButton id="aceptar" icon="fa fa-check" value="Aceptar" onstart="janal.bloquear()" oncomplete="janal.bloquear();PF('dialogoConfirmacion').show();" update=":datos:confirmacion" disabled="#{kajoolReasignacionCargasTrabajoFiltro.attrs.habilitar}"/>
+                <p:commandLink id="reiniciar" actionListener="#{kajoolReasignacionCargasTrabajoFiltro.doReiniciarCargas}" update="@this, aceptar, :datos:tabla, totala, totalb"/>			
+              </div>
+            </p:panel>
+          </div>
+        </div>
+      </div>
+    </div>						
+		<p:dialog id="busquedaUsuario" widgetVar="dialogoBusquedaUsuario"   onHide="janal.desbloquear()" closable="false" draggable="false" resizable="false" header="Busqueda usuario">			
+			<h:panelGrid columns="3">
+				<h:outputText value="Buscar por CURP, nombre:"/>
+				<p:inputText id="criterio" value="#{kajoolReasignacionCargasTrabajoFiltro.attrs.criterio}"/>
+				<p:commandButton id="busqueda" icon="fa fa-search" actionListener="#{kajoolReasignacionCargasTrabajoFiltro.doBuscarUsuario}" process="@this, criterio" update="usuarioEncontrado, totalUsuarios" onstart="return janal.partial('criterioBusqueda')"/>
+			</h:panelGrid>
+			<h:panelGrid columns="2">
+				<h:outputText value="Usuarios:"/>
+				<p:selectOneMenu id="usuarioEncontrado" value="#{kajoolReasignacionCargasTrabajoFiltro.usuarioEncontrado}" var="item" converter="janal.convertidor.Entity" style="width: 400px">																
+					<f:selectItems value="#{kajoolReasignacionCargasTrabajoFiltro.usuariosEncontrados}" var="element" itemValue="#{element.key}" itemLabel="#{element.nombreCompleto}"/>											
+					<p:column>
+						<h:outputText styleClass="una-sola-linea" value="#{item.curp}"/>
+					</p:column>
+					<p:column>
+						<h:outputText styleClass="una-sola-linea" value="#{item.nombreCompleto}"/>
+					</p:column>
+				</p:selectOneMenu>	
+			</h:panelGrid>			
+			<h:panelGrid columns="1">			
+				<h:outputText id="totalUsuarios" value="Total de usuarios encontrados[#{kajoolReasignacionCargasTrabajoFiltro.usuariosEncontrados.size()}]"/>
+			</h:panelGrid>			
+			<hr class="ui-widget-content"/>
+      <div class="alinear-derecha" style="text-align: right">			
+				<p:commandButton id="aceptarUsuario" value="Aceptar" actionListener="#{kajoolReasignacionCargasTrabajoFiltro.doAceptarUsuario}" process="@this, usuarioEncontrado" update="#{kajoolReasignacionCargasTrabajoFiltro.attrs.update}" onstart="return onHideDialog()"/>
+				<p:commandButton id="cancelarUsuario" value="Cancelar" oncomplete="PF('dialogoBusquedaUsuario').hide();"/>
+			</div>	
+		</p:dialog>
+  </ui:define>
+	<ui:param name="componenteBloqueo" value="tabla, origen, destino"/>
+	<ui:param name="tituloConfirmacion" value="Reasignación de folios" />
+	<ui:param name="textoConfirmacion" value="Una vez realizados los movimientos no se podran revertir. ¿ Deseas continuar ?" />
+	<ui:param name="accionConfirmacion" value="#{kajoolReasignacionCargasTrabajoFiltro}"/>
+  <ui:param name="eventoConfirmacion" value="doLoad"/>
+  <ui:param name="renderedConfirmacion" value="true"/>	
+  <ui:param name="updateComponent" value=":datos:tabla, curpOrigen, curpDestino, nombreOrigen, nombreDestino, totala, totalb"/>	
+	<ui:define name="detalleConfirmacion">
+		<h:panelGrid columns="2">
+			<label class="una-sola-linea">Total de movimientos a realizar:</label>
+			<h:outputText value="#{kajoolReasignacionCargasTrabajoFiltro.attrs.contadorMovimientos}"/>						
+		</h:panelGrid>
+	</ui:define>	
+</ui:composition>

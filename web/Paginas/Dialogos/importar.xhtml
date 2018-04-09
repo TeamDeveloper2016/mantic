@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 29/01/2013
+ time 05:39:35 PM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui" >
+  <script  type="text/javascript">
+    function validateDialog(validar){
+      if(validar){
+        $('##{dialogo}-datos').hide();
+        janal.desbloquear();
+      }
+      return validar;
+    }
+  </script>
+      <style type="text/css">
+      .ui-fileupload {
+        width: 800px;
+        margin: 0 auto;
+      }
+    </style>
+  <h:form id="#{dialogo}-datos" prependId="true" enctype="multipart/form-data" >
+    <p:dialog id="#{dialogo}-lock" widgetVar="#{dialogo}" header="#{archivo.titulo}"  width="900" height="300" position="260,250"    onHide="janal.desbloquear();" closable="false" dynamic="true" >
+      <h:panelGrid columns="1" styleClass="janal-content-table" id="contenidoTabla">
+        <p:fileUpload fileUploadListener="#{archivo.doFileUpload}"
+                      mode="advanced"
+                      update=":#{dialogo}-datos:contenidoTabla :#{dialogo}-datos:tabla"
+                      label="Selecciona"
+                      uploadLabel="Importar"
+                      cancelLabel="Cancelar"
+                      sizeLimit="3145728"
+                      multiple="#{archivo.multiple}"
+                      allowTypes="#{archivo.formatos}"
+                      invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !"
+                      invalidFileMessage="Solo se permiten archivos en formato #{archivo.formatos}"
+                      />
+        <p:spacer/>
+        <p:dataTable style="width: 800px;" styleClass="janal-content-table" id="tabla" var="row" value="#{archivo.archivos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" selection="#{kajoolDialogosImportar.seleccionado}" rowKey="#{kajoolDialogosImportar.seleccionado.size}">
+          <f:facet name="header"  >
+            <div class="janal-column-center">  Archivos cargados</div>
+          </f:facet>
+          <p:column  headerText="No." styleClass="janal-column-right"> #{rowIndex+1} </p:column>
+          <p:column headerText="Icono" styleClass="janal-column-center"> <p:graphicImage library="janal" name="#{row.format.image}"/> </p:column>
+          <p:column headerText="Nombre">    #{row.name} </p:column>
+          <p:column headerText="Contenido"> #{row.content} </p:column>
+          <p:column headerText="Tamaño bytes" styleClass="janal-column-right"> #{row.size} </p:column>
+        </p:dataTable>
+        <p:contextMenu for="tabla">
+          <p:menuitem value="Eliminar"  icon="fa fa-trash"  update=":#{dialogo}-datos:tabla" process="@this :#{dialogo}-datos:tabla " action="#{archivo.doEliminarLista(kajoolDialogosImportar.seleccionado)}"/>
+        </p:contextMenu>
+      </h:panelGrid>
+      <hr class="ui-widget-content"/>
+      <div class="janal-line-button">
+        <h:panelGrid columns="2" styleClass="janal-column-right" style="float:right;">
+          <p:commandButton value="Aceptar" icon="fa fa-check" process="@this" actionListener="#{archivo.doAceptar}" update="#{archivo.update}">
+						<f:attribute name="movimiento" value="#{bean.seleccionado}"/>
+					</p:commandButton>
+          <p:commandButton process="@this" update="" actionListener="#{archivo.doLimpiarArchivos}" value="Cancelar" oncomplete="PF('#{dialogo}').hide(); janal.desbloquear();" />
+        </h:panelGrid>
+      </div>
+      <p:blockUI block="#{dialogo}-lock" widgetVar="lock" trigger="#{dialogo}-datos">
+        ¡  Espere por favor !<br/><br/><br/>
+        <i class="fa fa-spinner fa-spin fa-2x"></i>
+      </p:blockUI>
+    </p:dialog>
+  </h:form>	
+</ui:composition>

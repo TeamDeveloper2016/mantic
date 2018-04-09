@@ -1,0 +1,26 @@
+package mx.org.kaana.{proyectomin}.excepciones;
+
+import java.util.Map;
+import mx.org.kaana.{proyectomin}.enums.EExcepciones;
+import mx.org.kaana.libs.pagina.BaseException;
+
+/**
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
+ *@date {fecha}
+ *@time {hora}
+ *@author {autor} <{cuenta}@kaana.org.mx>
+ */
+
+public class {proyectoCapital}Exception extends BaseException {	
+
+	private static final String {proyecto}= "{proyectomin}";
+
+  public {proyectoCapital}Exception(EExcepciones excepcion) {
+    super({proyecto}, excepcion.getKey());
+  }
+
+  public {proyectoCapital}Exception(EExcepciones excepcion, Map<String, Object> params){
+    super({proyecto}, excepcion.getKey(), params);
+  }
+}

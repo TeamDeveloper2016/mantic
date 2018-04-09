@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Pagina que agrupa un conjunto de componente en dos grupos" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields= {
+        'libre': {validaciones: 'requerido', mascara: '{"mask": "999", "type": "reverse"}',grupo: 'uno'},
+        'fecha': {validaciones: 'requerido|fecha-menor({"cual": "registro"})', mascara: 'fecha', grupo: 'uno'},
+        'opcion': {validaciones: 'requerido', mascara: 'libre', grupo: 'uno'},
+        'registro': {validaciones: 'requerido|fecha-mayor({"cual": "fecha"})', mascara: 'registro', grupo: 'uno'},
+        'multiple': {validaciones: 'requerido', mascara: 'libre', grupo: 'uno|hola'},
+        'entero': {validaciones: 'requerido|min-caracteres({"cuantos": 2})', mascara: 'entero', grupo: 'hola'},
+        'letras': {validaciones: 'requerido', mascara: 'letras', grupo: 'hola'},
+        'texto' : {validaciones: 'requerido', mascara: 'texto', grupo: 'hola'},
+        'unico': {validaciones: 'requerido', mascara: 'libre', grupo: 'hola'},
+        'tabla_selections': {validaciones: 'requerido', mascara: 'no-aplica'}
+      };
+      function execute() {
+        var custom= [
+          {summary: 'Error uno:', detail: 'Este es un mensaje particular'},
+          {summary: 'Error dos:', detail: 'Este es un mensaje particular'}
+        ];
+        janal.display(PF('display').value);
+        if(janal.execute(custom))
+          janal.show([{summary: 'Validación', detail: 'Ok :)'}]);
+      }
+      function partial(group, custom) {
+        janal.display(PF('display').value);
+        if(janal.partial(group, custom))
+          janal.show([{summary: 'Validación', detail: 'Ok :)'}]);
+      }
+    </script>
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-content-table">
+      <p:panelGrid columns="2" class="ui-grid-responsive" columnClasses="ui-grid-col-2,ui-grid-col-10" layout="grid">
+        <p:outputLabel for="desplegado" value="Como desea ver los mensajes de error:" styleClass="janal-text-one-line"/>
+        <p:selectOneMenu id="desplegado" widgetVar="display">
+          <f:selectItem itemLabel="Agrupados en uno solo" itemValue="growl"/>
+          <f:selectItem itemLabel="En la parte superior" itemValue="inline"/>
+          <f:selectItem itemLabel="Errores individuales" itemValue="classic"/>
+          <f:selectItem itemLabel="Errores de dedo" itemValue="noexiste"/>
+        </p:selectOneMenu>
+      </p:panelGrid>
+      <h:panelGrid columns="2">
+        <p:panel header="Grupo de componentes que tienen como nombre agrupador 'uno'">
+          <h:panelGrid columns="2">
+            <p:outputLabel for="libre" value="Libre: "/>
+            <p:inputText id="libre"/>
+            <p:spacer width="1px"/>
+            <h:outputText value="'libre':{ ... mascara: {&quot;mask&quot;: &quot;99&quot;, &quot;type&quot;: &quot;reverse&quot;} ...}"/>
+            <p:outputLabel for="fecha" styleClass="janal-text-one-line" value="Fecha:"/>
+            <p:calendar id="fecha" showOn="button" pattern="dd/MM/yyyy" locale="es" readonlyInput="true"/>
+            <p:outputLabel for="opcion" value="Opcion:"/>
+            <p:selectOneMenu id="opcion">
+              <f:selectItem itemLabel="Seleccione" itemValue="-1"/>
+              <f:selectItems value="#{kajoolPlantillasFormulariosCaptura.personas}" var="item" itemLabel="#{item.nombres}"/>
+            </p:selectOneMenu>
+            <p:outputLabel for="registro" styleClass="janal-text-one-line" value="Registro:"/>
+            <p:calendar id="registro" showOn="button" pattern="dd/MM/yyyy" locale="es" readonlyInput="true"/>
+            <p:outputLabel for="multiple" value="Multiple:"/>
+            <p:selectManyCheckbox id="multiple" layout="grid" columns="6">
+              <f:selectItems value="#{kajoolPlantillasFormulariosCaptura.personas}" var="item" itemLabel="#{item.nombres}"/>
+            </p:selectManyCheckbox>
+          </h:panelGrid>
+          <h:outputText styleClass="janal-text-one-line" value="Nota: El componente llamado 'Libre' la mascara se crea al vuelo, no es necesario crear la mascara de captura"/>
+        </p:panel>
+        <p:panel header="Grupo de componentes que tienen como nombre agrupador 'hola'">
+          <h:panelGrid columns="1">
+            <h:panelGrid columns="2">
+              <p:outputLabel for="entero" value="Entero: "/>
+              <p:inputText id="entero"/>
+              <p:outputLabel for="letras" value="Letras: "/>
+              <p:inputText id="letras" size="80"/>
+              <p:outputLabel for="unico" value="Unico:"/>
+              <p:selectOneRadio id="unico" layout="grid" columns="6">
+                <f:selectItems value="#{kajoolPlantillasFormulariosCaptura.personas}" var="item" itemLabel="#{item.nombres}"/>
+              </p:selectOneRadio>
+            </h:panelGrid>
+            <p:outputLabel for="texto" value="Texto: "/>
+            <p:inputTextarea id="texto" rows="2" cols="89"/>
+            <h:outputText styleClass="janal-text-one-line" value="Nota: Si un componente va a pertenecer a dos grupos se especifica asi 'uno|hola', observar el componente llamado 'Multiple'"/>
+          </h:panelGrid>
+        </p:panel>
+      </h:panelGrid>
+      <h:outputLabel for="tabla_selections" value="*Folios:" style="display:none"/>
+      <h:inputHidden id="tabla_selections" />
+      <p:dataTable id="tabla" var="row" rowIndexVar="index" value="#{kajoolPlantillasFormulariosCaptura.personas}" paginator="false">
+        <f:facet name="header">
+          Esto es un ejemplo de una tabla donde se tiene que se seleccionar almenos un elemento, en el cual no existe una etiqueta label para definir el nombre
+        </f:facet>
+        <p:column headerText="No.">
+          <p:outputLabel value="#{index+ 1}.-"/>
+        </p:column>
+        <p:column headerText="Nombre" styleClass="tabla_selections">
+          <p:outputLabel value="#{row.nombres}"/>
+        </p:column>
+        <p:column headerText="Paterno">
+          <p:outputLabel value="#{row.nombres}"/>
+        </p:column>
+        <p:column headerText="Materno">
+          <p:outputLabel value="#{row.nombres}"/>
+        </p:column>
+      </p:dataTable>
+    </div>
+  </ui:define>
+  <ui:define name="acciones">
+    <p:commandButton id="completo" type="button" value="Completo" onclick="execute()"/>
+    <p:commandButton id="parcialUno" type="button" value="Parcial uno" onclick="partial('uno', [{summary: 'Error uno:', detail: 'Este es un mensaje particular'}])"/>
+    <p:commandButton id="parcialHola" type="button" value="Parcial hola" onclick="partial('hola', [{summary: 'Error hola:', detail: 'Este es un mensaje particular'}])"/>
+    <p:commandButton id="dosGrupos" type="button" value="Dos grupos" onclick="partial('uno hola', [{summary: 'Error dos:', detail: 'Este es un mensaje particular'}])"/>
+    <p:commandButton id="limpiar" type="button" value="Limpiar" onclick="janal.clean()"/>
+    <p:commandButton id="aplicar" type="button" value="Aplicar" onclick="janal.reset()"/>
+  </ui:define>
+	<ui:param name="componenteBloqueo" value="completo parcialUno parcialHola limpiar aplicar"/>
+</ui:composition>

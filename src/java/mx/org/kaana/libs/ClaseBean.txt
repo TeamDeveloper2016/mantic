@@ -1,0 +1,21 @@
+package {paqueteBean};
+
+import java.io.Serializable;
+{importsBean}
+/**
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
+ *@date {fecha}
+ *@time {hora}
+ *@author {autor} <{correo}>
+ */
+
+public class {nombreBean} implements Serializable {
+
+{atributosBean}
+
+{gettersBean}
+
+{settersBean}
+
+}

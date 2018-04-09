@@ -1,0 +1,71 @@
+package {paquete};
+
+/**
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
+ *@date {fecha}
+ *@time {hora}
+ *@author {autor} <{correo}>
+ */
+
+import java.util.List;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import javax.annotation.PostConstruct;
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ViewScoped;
+import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.pagina.JsfUtilities;
+import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+{imports}
+
+@ManagedBean(name="{backing}")
+@ViewScoped
+public class {nombreAccion} implements Serializable {
+
+	private static final Log LOG = LogFactory.getLog({nombreAccion}.class);
+	private {nombreBean} bean;
+	private EAccion accion;
+{atributos}
+
+  public {nombreBean} getBean(){
+    return this.bean;
+  }
+
+{getters}
+
+	@PostConstruct
+	protected void init() {
+{params}
+		try{
+			this.accion = (EAccion) JsfUtilities.getFlashAttribute("accion");
+{inicializaciones}
+			this.bean		= ({nombreBean}) (this.accion.equals(EAccion.AGREGAR)? new {nombreBean}(): ((Entity)JsfUtilities.getFlashAttribute("seleccionado")).getKey());
+			LOG.debug(JsfUtilities.getFacesContext().getCurrentPhaseId());
+		} // try
+		catch(Exception e) {
+			JsfUtilities.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+{clearParams}
+	} // init
+
+	public String doAceptar() {
+		//Transaccion transaccion	= null;
+		try {
+			//transaccion= new Transaccion(this.dto);
+			//transaccion.ejecutar(this.accion);
+		} // try
+		catch(Exception e) {
+			JsfUtilities.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+		return "filtro";
+	} // doAceptar
+}

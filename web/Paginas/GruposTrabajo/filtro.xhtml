@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Administración de grupos de trabajo" />
+  <ui:define name="librerias">
+  </ui:define>
+  <ui:define name="contenido">		
+    <h:panelGrid columns="1" styleClass="tabla-filtro">
+			<h:panelGrid columns="3" styleClass="sin-lineas">
+				<p:outputLabel value="Entidad:" for="entidad"/>
+				<p:selectOneMenu id="entidad" value="#{kajoolGruposTrabajoFiltro.attrs.listaEntidades}" var="item" converter="janal.convertidor.Entity" styleClass="contenido-select-350">
+					<p:ajax event="change" process="@this" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+					<f:selectItems value="#{kajoolGruposTrabajoFiltro.attrs.idEntidad}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>    							
+					<p:column>
+						<h:outputText value="#{item.clave}"/>
+					</p:column>
+					<p:column>
+						<h:outputText value="#{item.descripcion}"/>
+					</p:column>
+				</p:selectOneMenu>
+			</h:panelGrid>
+			<h:panelGrid columns="3" styleClass="sin-lineas">
+				<p:outputLabel value="Perfil:" for="perfil"/>
+				<p:selectOneMenu id="perfil" value="#{kajoolGruposTrabajoFiltro.attrs.listaPerfiles}" styleClass="contenido-select-350">
+					<f:selectItems value="#{kajoolGruposTrabajoFiltro.attrs.idPerfil}" />
+				</p:selectOneMenu>				
+			</h:panelGrid>
+			<h:panelGrid columns="3" styleClass="sin-lineas" >
+				<p:outputLabel value="Nombre:" for="nombre"/>
+				<p:inputText id="nombre" value="#{kajoolGruposTrabajoFiltro.attrs.nombre}" size="80" />
+				<p:commandButton id="buscarNombre" actionListener="#{kajoolGruposTrabajoFiltro.doLoad()}"  onstart="return janal.partial('nombre');" process="@this,nombre" update=":datos:tabla" icon="icono-buscar" title="Buscar por nombre"/>
+			</h:panelGrid>
+    </h:panelGrid>
+		<p:contextMenu id="contextMenu" widgetVar="kajoolContextMenu" for="tabla">			
+			<p:menuitem rendered="#{kajoolGruposTrabajoFiltro.attrs.seleccionado.activo == '1'}" icon="icono-cancelar" value="Bloquear" process="@this tabla" actionListener="#{kajoolGruposTrabajoFiltro.doConfigMensaje(kajoolGruposTrabajoFiltro.attrs.seleccionado)}" update=":datos:tabla :datos:confirmacion"  onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.bloquear();PF('dialogoConfirmacion').show();"/>
+			<p:menuitem rendered="#{kajoolGruposTrabajoFiltro.attrs.seleccionado.activo == '0'}" icon="icono-candado" value="Activar"  process="@this tabla" actionListener="#{kajoolGruposTrabajoFiltro.doConfigMensaje(kajoolGruposTrabajoFiltro.attrs.seleccionado)}" update=":datos:tabla :datos:confirmacion" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.bloquear();PF('dialogoConfirmacion').show();"/>
+			<p:separator/>
+			<p:menuitem action="#{kajoolGruposTrabajoFiltro.doEvento('MODIFICAR')}" icon="icono-modificar" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />			
+			<p:menuitem action="#{kajoolGruposTrabajoFiltro.doEvento('ELIMINAR')}" icon="icono-eliminar" ajax="false" value="Eliminar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />			
+		</p:contextMenu>
+		<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{kajoolGruposTrabajoFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kajoolGruposTrabajoFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{kajoolGruposTrabajoFiltro.lazyModel.rowCount gt kajoolGruposTrabajoFiltro.lazyModel.pageSize}" rowIndexVar="index" >
+			<p:ajax event="contextMenu" process="@this" update="contextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);"/>
+			<f:facet name="header" class="alinear-derecha">
+				<p:menuButton   value="Opciones">
+					<p:menuitem  value="Agregar" action="#{kajoolGruposTrabajoFiltro.doEvento('AGREGAR')}"   ajax="false"  icon="icono-agregar" title="Agregar usuario" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />										
+				</p:menuButton>
+			</f:facet>
+			<p:column styleClass="alinear-derecha contenido-chico">
+				<f:facet name="header">
+					<h:outputText value="Índice"/>
+				</f:facet>
+				<h:outputText value="#{index+1}"/>
+			</p:column>			
+			<p:column styleClass="contenido-registro">
+				<f:facet name="header">
+					<h:outputText value="Entidad"/>
+				</f:facet>
+				<h:outputText value="#{filtro['descEntidad']}"/>
+			</p:column>			
+			<p:column styleClass="contenido-registro">
+				<f:facet name="header">
+					<h:outputText value="Perfil" />
+				</f:facet>
+				<h:outputText value="#{filtro['descPerfil']}"/>
+			</p:column>
+			<p:column styleClass="contenido-mediano">
+				<f:facet name="header">
+					<h:outputText value="Usuario"/>
+				</f:facet>
+				<h:outputText value="#{filtro['nombres']} #{filtro['apellidoPat']} #{filtro['apellidoMat']}"/>
+			</p:column>			
+			<p:column styleClass="alinear-centro" style="width:45px">
+				<f:facet name="header">
+					<h:outputText value="Estatus"/>
+				</f:facet>
+				<p:graphicImage library="janal" title="#{filtro['activo'] == '1'? 'Activo': 'Bloqueado'}" name="icon/acciones/#{filtro['activo'] == '1'? 'circulo-verde': 'circulo-rojo'}.png"  alt="#{filtro['activo'] == '1'? 'Usuario activo': 'Usuario bloqueado'}"/>
+			</p:column>        				
+			<p:column headerText="Touch" width="35" styleClass="alinear-centro" rendered="#{util.isMobile}">
+				<span class="ui-icon ui-icon-lightbulb janal-context-menu" data-ri="#{index}" title="Acciones"/>
+			</p:column>
+			<f:facet name="footer">
+				<h:outputText value="Total [#{kajoolGruposTrabajoFiltro.lazyModel==null?0:kajoolGruposTrabajoFiltro.lazyModel.rowCount}] registros"/>
+			</f:facet>
+		</p:dataTable>
+    <!-- Dialogo para confirmacion de activacion de usuario -->
+		<ui:param name="textoConfirmacion" value="¿Está seguro de #{kajoolGruposTrabajoFiltro.attrs.mensajeAlerta} ?" />
+		<ui:param name="accionConfirmacion" value="#{kajoolGruposTrabajoFiltro}"/>
+		<ui:param name="updateComponent" value=":datos:tabla :datos:confirmacion"/>
+		<ui:param name="eventoConfirmacion" value="doActivarUsuario"	/>	
+		<ui:param name="renderedConfirmacion" value="true"/>	
+		<!-- Dialogo para eliminación de usuario -->
+		<p:dialog id="dialogEliminar" header="Eliminación" showEffect="clip" hideEffect="bounce" widgetVar="confirmEliminacion" dynamic="true" maximizable="false" minimizable="false" >
+			<h:outputText value="¿Está seguro de eliminar el usuario ?" />
+			<h:panelGrid columns="2">				
+				<h:outputText value="Entidad:"/>
+				<h:outputText value="#{kajoolGruposTrabajoFiltro.attrs.seleccionado.descEntidad}" />
+				<h:outputText value="Perfil:"/>
+				<h:outputText value="#{kajoolGruposTrabajoFiltro.attrs.seleccionado.descPerfil}" />
+				<h:outputText value="Cuenta:"/>
+				<h:outputText value="#{kajoolGruposTrabajoFiltro.attrs.seleccionado.cuenta}" />
+			</h:panelGrid>
+			<hr class="ui-widget-content"/>
+			<div class="pie-pagina">
+				<p:commandButton process="@form" update=":datos:tabla :datos:confirmacion"  value="Eliminar" actionListener="#{kajoolGruposTrabajoFiltro.doEvento('ELIMINAR')}" onstart="PF('confirmEliminacion').hide()" oncomplete="janal.desbloquear();"  />
+				<p:commandButton process="@none"  value="Cancelar" onstart="PF('confirmEliminacion').hide(); return true;"  oncomplete="janal.desbloquear();"/>
+			</div>
+		</p:dialog>
+  </ui:define>
+  <ui:param name="componenteBloqueo" value="perfil,buscarNombre,tabla,entidad"/>
+</ui:composition>

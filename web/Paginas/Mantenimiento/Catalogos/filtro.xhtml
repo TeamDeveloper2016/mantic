@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ * @project Team Developer 2016 <team.developer@kaana.org.mx>
+ * @company KAANA
+ * @date 10/09/2015
+ * @time 13:06:25 PM
+ * @author KAJOOL (Control system polls)
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:fn="http://xmlns.jcp.org/jsp/jstl/functions"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Mantenimiento general a catálogos del sistema"/>
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {};
+      function dinamico(xhr, status, args) {
+        janal.update($.parseJSON(args.mascaras));
+      } // dinamico
+    </script>
+  </ui:define>
+  <ui:define name="contenido">
+    <p:fieldset legend="Selección de catálogo" collapsed="false" toggleable="true" styleClass="Responsive100" rendered="#{kajoolDinamicosFiltro.attrs.showCatalogos}">
+      <p:panelGrid columns="2" layout="grid" columnClasses="janal-wid-10">
+        <p:outputLabel value="Catálogos:" for="idCatalogo"/>
+        <p:selectOneMenu id="idCatalogo" value="#{kajoolDinamicosFiltro.attrs.idCatalogo}" converter="javax.faces.Long">
+          <f:selectItem itemValue="" itemLabel="Seleccione"/>
+          <f:selectItems value="#{kajoolDinamicosFiltro.attrs.catalogos}"/>
+          <p:ajax event="change" listener="#{kajoolDinamicosFiltro.doRefresh()}" process="@this" update="criterio grid boton filtrar tabla" oncomplete="dinamico(xhr, status, args);"/>
+        </p:selectOneMenu>
+      </p:panelGrid>
+    </p:fieldset>
+    <p:fieldset id="criterio" legend="Criterios de búsqueda" collapsed="false" toggleable="true" styleClass="Responsive100">
+       <p:panelGrid binding="#{kajoolDinamicosFiltro.grid}" id="grid" layout="grid" columnClasses="janal-wid-10,janal-wid-10"/>
+    </p:fieldset>
+    <p:panelGrid id="boton" columns="1" layout="grid" styleClass="Responsive100">
+      <p:commandButton id="filtrar" icon="fa fa-search" value="Filtrar" actionListener="#{kajoolDinamicosFiltro.doLoad}" process="@this #{kajoolDinamicosFiltro.namesFields}" update="tabla" styleClass="Fright" rendered="#{not empty kajoolDinamicosFiltro.criterios}"/>
+    </p:panelGrid>
+    <p:dataTable id="tabla" var="row" value="#{kajoolDinamicosFiltro.lazyModel}" paginator="true" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" selection="#{kajoolDinamicosFiltro.attrs.selected}" lazy="true" reflow="true">
+      <f:facet name="header">				
+        <p:menuButton value="Opciones">
+          <p:menuitem value="Agregar" icon="fa fa-plus" title="Agregar" action="accion?faces-redirect=true" actionListener="#{kajoolDinamicosFiltro.doEvento('AGREGAR')}"/>
+        </p:menuButton>				
+      </f:facet>
+      <p:columns value="#{kajoolDinamicosFiltro.columns}" var="column" columnIndexVar="colIndex" sortBy="#{row[column.property]}" styleClass="#{column.align}">
+        <f:facet name="header">
+          <h:outputText value="#{column.header}" />
+        </f:facet>
+        <h:outputText value="#{row[column.property]}"/>
+      </p:columns>
+    </p:dataTable>
+    <p:contextMenu for="tabla">
+      <p:menuitem value="Consultar" icon="fa fa-search" oncomplete="PF('wpreguntar').show()" process="@this tabla" update="preguntar" actionListener="#{kajoolDinamicosFiltro.doAccion(false)}"/>
+      <p:menuitem value="Modificar" icon="fa fa-edit" action="accion?faces-redirect=true" actionListener="#{kajoolDinamicosFiltro.doEvento('MODIFICAR')}" process="@this tabla"/>
+      <p:menuitem value="Eliminar" icon="fa fa-trash" oncomplete="PF('wpreguntar').show()" process="@this tabla" update="preguntar" actionListener="#{kajoolDinamicosFiltro.doAccion(true)}"/>
+    </p:contextMenu>
+    <p:dialog id="preguntar" header="Confirmación" widgetVar="wpreguntar" minHeight="120" minWidth="400" dynamic="true" width="400">
+      <center>
+        <h:outputText value="¿Esta seguro de eliminar el registro seleccionado?" rendered="#{kajoolDinamicosFiltro.eliminar}"/>
+      </center>
+      <p:panelGrid binding="#{kajoolDinamicosFiltro.detalle}" layout="grid" columnClasses="janal-wid-40"/>
+      <hr class="ui-widget-content"/>
+      <div class="janal-line-button">
+        <p:commandButton value="Aceptar" icon="fa fa-check" actionListener="#{kajoolDinamicosFiltro.doEvento('ELIMINAR')}" oncomplete="PF('wpreguntar').hide()" update="tabla" rendered="#{kajoolDinamicosFiltro.eliminar}"/>
+        <p:commandButton type="button" value="Cancelar" icon="fa fa-remove" onclick="PF('wpreguntar').hide();"/>
+      </div>
+    </p:dialog>
+    <p:dialog id="buscar" header="Buscar por ..." widgetVar="wbuscar" minHeight="120" minWidth="550" dynamic="true" width="550">
+      <p:panelGrid columns="3">
+        <p:outputLabel for="pivote" value="#{kajoolDinamicosFiltro.attrs.buscar.criterio.titulo}:" styleClass="janal-text-one-line"/>
+        <p:inputText id="pivote" size="50" value="#{kajoolDinamicosFiltro.attrs.buscar.value}"/>
+        <p:commandButton icon="fa fa-search" actionListener="#{kajoolDinamicosFiltro.doEvento('LISTAR')}" process="@this pivote" update="encontrados"/>
+        <p:outputLabel for="encontrados" value="Encontrado(s):"/>
+        <p:selectOneMenu id="encontrados" value="#{kajoolDinamicosFiltro.attrs.buscar.selected}" converter="javax.faces.Long">
+          <f:selectItems value="#{kajoolDinamicosFiltro.attrs.buscar.items}"/>
+        </p:selectOneMenu>
+        <p:spacer/>
+      </p:panelGrid>
+      <hr class="ui-widget-content"/>
+      <div class="janal-line-button">
+        <p:commandButton value="Aceptar" icon="fa fa-check" actionListener="#{kajoolDinamicosFiltro.doEvento('ASIGNAR')}" oncomplete="PF('wbuscar').hide()" update="grid #{kajoolDinamicosFiltro.attrs.buscar.criterio.id}"/>
+        <p:commandButton type="button" value="Cancelar" icon="fa fa-remove" onclick="PF('wbuscar').hide();"/>
+      </div>
+    </p:dialog>
+  </ui:define>
+  <ui:param name="componenteBloqueo" value="filtrar tabla"/>
+</ui:composition>

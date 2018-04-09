@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+    Document   : job-kajool.xml
+    Created on : 22 de abril 2014, 12:40 PM
+    Author     : inegi
+    Description:
+        Relacion de tareas que se ejecutan al arrancar la aplicacion cuando sean proyectos  en la cual se requiere de ejecutar el job desde que arranque la aplicacion 
+-->
+<tareas>  	     
+   <tarea id="kajool" load="true">
+     <clase expresion="0 1/10 * * * ?" id="test" description="Job demo" load="true" pruebas="*" produccion="/weblogic/Oracle/Middleware/Oracle_Home/user_projects/domains/WLS_PRO12/servers/" >mx.org.inegi.jobs.Demo</clase>     				
+   </tarea>    
+    
+</tareas>

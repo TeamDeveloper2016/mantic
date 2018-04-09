@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date Mar 23, 2015
+ time 9:57:58 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Tablas temporales" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+				'nombre' : { validaciones : 'requerido|max-caracteres({"cuantos":30})', mascara : 'libre',  grupo : 'principal'},
+				'proceso': { validaciones : 'requerido', mascara : 'nombre-dto',  grupo : 'principal'},
+				'xml'		 : { validaciones : 'requerido', mascara : 'nombre-dto',  grupo : 'principal'},
+				'orden'	 : { validaciones : 'requerido', mascara : 'numero', grupo : 'principal'},
+				'campo'	 : { validaciones : 'requerido|max-caracteres({"cuantos":19})', mascara : 'libre' , grupo : 'validaCampo'}
+      };
+			function limpiarCampo(){
+				$("#campo").val("");
+				$( "#campo" ).focus();
+			}
+    </script>
+    <style type="text/css">
+    </style>
+  </ui:define>
+  <ui:define name="contenido">
+		<p:panelGrid columns="2" layout="grid" styleClass="ui-grid-responsive" columnClasses="ui-grid-col-2,ui-grid-col-2">
+			<label for="nombre">Nombre tabla:</label>
+			<p:inputText id="nombre" value ="#{kajoolMantenimientoIndicadoresAdministracionAgregarTemporal.dtoTablaTemporal.nombreTabla}"/>
+			<label for="proceso">Id proceso:</label>
+			<p:inputText id="proceso" value ="#{kajoolMantenimientoIndicadoresAdministracionAgregarTemporal.dtoTablaTemporal.proceso}"/>
+			<label for="xml">Id xml:</label>
+			<p:inputText id="xml" value ="#{kajoolMantenimientoIndicadoresAdministracionAgregarTemporal.dtoTablaTemporal.idXml}"/>
+			<label for="orden">Orden:</label>
+			<p:spinner id="orden" value="#{kajoolMantenimientoIndicadoresAdministracionAgregarTemporal.dtoTablaTemporal.orden}" min="1" max="5" />
+			<label for="tablaPrincipal">Tabla principal:</label>
+			<p:selectBooleanCheckbox id="tablaPrincipal" value="#{kajoolMantenimientoIndicadoresAdministracionAgregarTemporal.attrs.tablaPrincipal}"/>
+		</p:panelGrid>
+		<p:fieldset legend="Campos">
+			<p:panelGrid columns="3" layout="grid" styleClass="ui-grid-responsive" columnClasses="ui-grid-col-1,ui-grid-col-2,ui-grid-col-1">
+				<label for="campo">Campo:</label>
+				<p:inputText id="campo" value ="#{kajoolMantenimientoIndicadoresAdministracionAgregarTemporal.attrs.campo}"/>
+				<p:commandButton id="agregarCampo" icon="fa fa-plus" update="tabla" process="@this,campo" onstart="return janal.partial('validaCampo')" oncomplete="limpiarCampo()">
+					<p:collector value="#{kajoolMantenimientoIndicadoresAdministracionAgregarTemporal.attrs.campo}" addTo="#{kajoolMantenimientoIndicadoresAdministracionAgregarTemporal.listaCampos}" unique="true"/>
+				</p:commandButton>
+			</p:panelGrid>
+			<p:dataTable id="tabla" var="fila" rowIndexVar="index" value="#{kajoolMantenimientoIndicadoresAdministracionAgregarTemporal.listaCampos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="janal-wid-30" reflow="true">
+				<p:column headerText="Campo" >
+					#{fila}
+				</p:column>
+				<p:column headerText="Accion" styleClass="janal-column-center janal-wid-20">
+					<p:commandButton icon="fa fa-trash" update="tabla" process="tabla">
+						<p:collector value="#{fila}" removeFrom="#{kajoolMantenimientoIndicadoresAdministracionAgregarTemporal.listaCampos}" unique="true"/>
+					</p:commandButton>
+				</p:column>
+			</p:dataTable>
+		</p:fieldset>
+  </ui:define>
+  <ui:define name="acciones">
+    <p:commandButton id="aceptar" value="Aceptar" action="#{kajoolMantenimientoIndicadoresAdministracionAgregarTemporal.doAceptar}" onstart="return janal.partial('principal')" process="@form" />
+    <p:commandButton id="cancelar" value="Cancelar" action="#{kajoolMantenimientoIndicadoresAdministracionAgregarTemporal.doRegresar}" immediate="true" ajax="false" process="@this" />
+  </ui:define>
+	<ui:param name="componenteBloqueo" value="aceptar,agregarCampo"/>
+</ui:composition>

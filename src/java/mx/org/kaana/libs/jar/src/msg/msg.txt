@@ -1,0 +1,10 @@
+#
+# @company KAANA
+# @project KAJOOL (Control system polls)
+# @date {fecha}
+# @time {hora}
+# @author {autor} <{cuenta}@kaana.org.mx>
+#
+
+{proyectomin}= Excepcion {proyecto}.
+

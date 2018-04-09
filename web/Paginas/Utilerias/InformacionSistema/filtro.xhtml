@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 14/08/2015
+ time 11:30:04 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Información del sistema" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      function skinChart() {
+        this.cfg.shadow = false;
+        this.cfg.seriesColors = ['#dae8ef', '#27aae1'];
+        this.cfg.grid = {
+          background: '#f3f5f7',
+          borderColor: '#e5ebf0',
+          gridLineColor: '#e5ebf0',
+          shadow: false
+        };
+        this.cfg.axesDefaults = {
+          rendererOptions: {
+            textColor: '#9fadb5'
+          }
+        };
+        this.cfg.seriesDefaults = {
+          shadow: false,
+          markerOptions: {
+            shadow: false
+          }
+        }
+      }
+
+      function skinPie() {
+        this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+        this.cfg.grid = {
+          background: '#ffffff',
+          borderColor: '#eaeaea',
+          gridLineColor: '#e5ebf0',
+          shadow: false,
+          borderWidth: 0
+        };
+        this.cfg.seriesDefaults.shadow = false;
+      }
+    </script>
+    <style type="text/css">
+      .jqplot-target, .jqplot-axis {
+        color: #9fadb5;
+      }
+      .jqplot-title {
+        display: none;
+      }
+    </style>
+  </ui:define>
+  <ui:define name="contenido">
+    <!-- SECTION 1 -->
+    <div class="Container100">
+      <div class="ContainerIndent">
+        <div class="Container30 Responsive">
+          <div class="ContainerIndent">
+            <p:panel style="min-height: 500px;">
+              <i class="icon-cog Fs50 Fleft Wid25 hardblue TexAlCenter"></i>
+              <div class="Fs40 Fright MarTop10 leaden Wid70">Generales</div>
+              <p:separator styleClass="Wid100"/>
+              <div class="EmptyBox10"></div>
+              <div class="Fs16">
+                <a class="DispInlBlock Wid100 Fleft Fs16 MarRight20"><i class="icon-check leaden">Sistema operativo: </i><i class="hardblue"> #{kajoolMantenimientoUtileriasSistemaFiltro.systemInformation.osVersion}</i></a>
+                <a class="DispInlBlock Wid100 Fleft Fs16 MarRight20"><i class="icon-check leaden">Java: </i><i class="hardblue"> #{kajoolMantenimientoUtileriasSistemaFiltro.systemInformation.javaVersion}</i></a>
+                <a class="DispInlBlock Wid100 Fleft Fs16 MarRight20"><i class="icon-check leaden">Hibernate: </i><i class="hardblue"> #{kajoolMantenimientoUtileriasSistemaFiltro.systemInformation.hibernateVersion}</i></a>
+                <a class="DispInlBlock Wid100 Fleft Fs16 MarRight20"><i class="icon-check leaden">JSF: </i><i class="hardblue"> #{kajoolMantenimientoUtileriasSistemaFiltro.systemInformation.jsfVersion}</i></a>
+                <a class="DispInlBlock Wid100 Fleft Fs16 MarRight20"><i class="icon-check leaden">Primefaces: </i><i class="hardblue"> #{kajoolMantenimientoUtileriasSistemaFiltro.systemInformation.primeVersion}</i></a>
+                <a class="DispInlBlock Wid100 Fleft Fs16 MarRight20"><i class="icon-check leaden">Primefaces extensions: </i><i class="hardblue"> #{kajoolMantenimientoUtileriasSistemaFiltro.systemInformation.extensionsVersion}</i></a>
+                <a class="DispInlBlock Wid100 Fleft Fs16 MarRight20"><i class="icon-check leaden">Jasper report: </i><i class="hardblue"> #{kajoolMantenimientoUtileriasSistemaFiltro.systemInformation.jasperReport}</i></a>
+                <a class="DispInlBlock Wid100 Fleft Fs16 MarRight20"><i class="icon-check leaden">Quartz: </i><i class="hardblue"> #{kajoolMantenimientoUtileriasSistemaFiltro.systemInformation.quartz}</i></a>
+                <a class="DispInlBlock Wid100 Fleft Fs16 MarRight20"><i class="icon-check leaden">Path: </i><i class="hardblue Fs12"> #{kajoolMantenimientoUtileriasSistemaFiltro.systemInformation.path}</i></a>
+                <a class="DispInlBlock Wid100 Fleft Fs16 MarRight20"><i class="icon-check leaden">Path nas: </i><i class="hardblue"> #{kajoolMantenimientoUtileriasSistemaFiltro.systemInformation.pathNas}</i></a>
+                <a class="DispInlBlock Wid100 Fleft Fs16 MarRight20"><i class="icon-check leaden">Inicio aplicación: </i><i class="hardblue"> #{kajoolMantenimientoUtileriasSistemaFiltro.systemInformation.date}</i></a>
+                <a class="DispInlBlock Wid100 Fleft Fs16 MarRight20"><i class="icon-check leaden">Browser: </i><i class="hardblue"> #{kajoolMantenimientoUtileriasSistemaFiltro.systemInformation.browser}</i></a>
+              </div>
+            </p:panel>
+          </div>
+        </div>
+        <div class="Container30 Responsive">
+          <div class="ContainerIndent">
+            <p:panel style="min-height: 500px;">
+              <i class="icon-database Fs50 Fleft Wid25 orange TexAlCenter"></i>
+              <div class="Fs40 Fright MarTop10 leaden Wid70">Base de datos</div>
+              <p:separator styleClass="Wid100"/>
+              <div class="EmptyBox10"></div>
+              <div class="Fs16">
+                <a class="DispInlBlock Wid100 Fleft Fs16 MarRight20"><i class="icon-check leaden">Versión: </i><i class="hardblue"> #{kajoolMantenimientoUtileriasSistemaFiltro.systemInformation.dataBaseInfo}</i></a>
+              </div>  
+              <div class="EmptyBox10"></div>
+            </p:panel>
+          </div>
+        </div>
+        <div class="Container30 Responsive">
+          <div class="ContainerIndent">
+            <p:panel style="min-height: 500px;">
+              <i class="icon-desktop Fs50 Fleft Wid25 orange TexAlCenter"></i>
+              <div class="Fs40 Fright MarTop10 leaden Wid70">Propiedades</div>
+              <p:separator styleClass="Wid100"/>
+              <div class="EmptyBox10"></div>
+              <div class="Fs16">
+                <c:forEach items="#{kajoolMantenimientoUtileriasSistemaFiltro.systemInformation.properties}" var="prop" varStatus="index">													
+                  <a class="DispInlBlock Wid100 Fleft Fs16 MarRight20"><i class="icon-check leaden">#{prop.nombre}: </i><i class="orange">#{prop.descripcion}</i></a>
+                </c:forEach>	
+              </div>
+              <div class="EmptyBox10"></div>
+            </p:panel>
+          </div>
+        </div>
+        <div class="Container40 Responsive">
+          <div class="ContainerIndent">
+            <p:panel style="min-height: 250px;">
+              <i class="icon-laptop Fs50 Fleft Wid25 orange TexAlCenter"></i>
+              <div class="Fs40 Fright MarTop10 leaden Wid70">Memoria JVM</div>
+              <p:separator styleClass="Wid100"/>
+              <div class="Container100">
+                <div class="Container70">
+                  <p:chart type="metergauge" id="memory" model="#{kajoolMantenimientoUtileriasSistemaFiltro.memory}" style="height:180px" responsive="true"/>
+                </div>
+                <div class="Container30">
+                  <div class="EmptyBox50"></div>
+                  <c:forEach items="#{kajoolMantenimientoUtileriasSistemaFiltro.systemInformation.memoryInfo}" var="item" varStatus="index">
+                    <div class="TexAlLeft">
+                      <i class="icon-check leaden"><h:outputLabel value="#{item.descripcion} #{item.espacioAsignado} #{item.unidadMedida}" class="TexAlCenter"/></i>
+                    </div>
+                  </c:forEach>
+                </div>
+              </div>
+            </p:panel>
+          </div>  
+        </div>
+        <div class="Container40 Responsive">
+          <div class="ContainerIndent">
+            <p:panel style="min-height:250px;">
+              <i class="icon-github-circled-1 Fs50 Fleft Wid25 hardblue TexAlCenter"></i>
+              <div class="Fs40 Fright MarTop10 leaden Wid70">Disco Local</div>
+              <p:separator styleClass="Wid100"/>
+              <div class="Container100">
+                <div class="Container70">
+                  <p:chart type="metergauge" id="disk" model="#{kajoolMantenimientoUtileriasSistemaFiltro.disk}" style="height:180px" responsive="true"/>
+                </div>
+                <div class="Container30">
+                  <div class="EmptyBox50"></div>
+                  <c:forEach items="#{kajoolMantenimientoUtileriasSistemaFiltro.systemInformation.diskInfo}" var="item" varStatus="index">
+                    <div class="Container100 TexAlLeft">
+                      <i class="icon-check leaden"><h:outputLabel value="#{item.descripcion} #{item.espacioAsignado} #{item.unidadMedida}" class="TexAlCenter"/></i>
+                    </div>
+                  </c:forEach>
+                </div>                                
+              </div>
+            </p:panel>
+          </div>
+        </div>
+        <div class="EmptyBox10"></div>
+      </div>
+    </div>
+  </ui:define>
+</ui:composition>

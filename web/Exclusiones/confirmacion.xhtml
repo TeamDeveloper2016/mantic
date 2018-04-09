@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project kajoolMantenimientoGruposperfilesGruposFiltro
+ date 21/10/2016
+ time 10:36:43 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:p="http://primefaces.org/ui"
+  template="/WEB-INF/plantillas/ingreso.xhtml">
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.errors= 2;
+			Janal.Control.fields = {
+				nueva      : {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresar'},
+				confirma   : {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresar'}
+			};            		
+    </script>
+  </ui:define>
+  <ui:define name="contenido">  	
+    <div class="janal-content-center">
+      <div class="Container100 TexAlCenter Animated05 BoxSizeBorder TabBtn left TabBtnActiveLeft" role="1">
+        <div class="Container100 Fnone MarAuto"><i class="icon-lock"></i>Confirmar</div>
+      </div>
+      <div id="tab_1" class="Container90 Fnone MarAuto TexAlCenter TabContent">										
+        <p:panelGrid layout="grid" columns="1" id="gridCuenta">
+          <p:spacer height="1"/>
+          <p:outputLabel value="Cuenta:" styleClass="Fs16"/>
+          <h:outputText value="#{kajoolAccesoConfirmacionFiltro.cliente.cuenta}" styleClass="Container80 Fnone MarAuto Fs18 FontBold"/>
+					<p:outputLabel for="nueva" value="Nueva contraseña:" styleClass="Fs16"/>
+          <p:password placeholder="contraseña nueva" id="nueva" tabindex="2" value="#{kajoolAccesoConfirmacionFiltro.cliente.nueva}" styleClass="Container80 Fnone MarAuto Fs18"/>								
+					<p:outputLabel for="confirma" value="Confirmar contraseña:" styleClass="Fs16"/>
+          <p:password placeholder="confirmar contraseña" id="confirma" tabindex="2" value="#{kajoolAccesoConfirmacionFiltro.cliente.confirma}" styleClass="Container80 Fnone MarAuto Fs18"/>								
+					<p:panelGrid columns="2" layout="grid" styleClass="Container90 Fnone MarAuto Fs18">						
+            <p:commandButton id="regresar" icon="fa fa-lg fa-reply" value="Regresar" action="#{kajoolAccesoConfirmacionFiltro.doRegresar()}"/>					
+						<p:commandButton id="aceptar" icon="fa fa-lg fa-lock" value="Confirmar" onstart="return janal.partial('ingresar');" action="#{kajoolAccesoConfirmacionFiltro.doConfirmar()}" update="@this nueva confirma gridCuenta"/>					
+					</p:panelGrid>
+          <p:spacer height="1"/>
+        </p:panelGrid>		
+      </div>
+    </div>
+  </ui:define>
+  <ui:param name="componenteBloqueo" value="aceptar"/>
+</ui:composition>

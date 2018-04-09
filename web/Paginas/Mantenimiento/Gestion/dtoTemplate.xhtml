@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Generación de modelo de clases DTO´s, para el acceso a datos con hibernate" />
+  <ui:define name="librerias">
+    <h:outputStylesheet library="janal" name="css/codemirror.css" />
+		<h:outputScript library="janal" name="mirror/codemirror-4.11.min.js" target="head" />
+    <h:outputScript library="janal" name="mirror/clike-4.11.js" target="head" />    
+    <h:outputScript library="janal" name="mirror/vbscript-4.11.js" target="head" />
+    <h:outputScript library="janal" name="mirror/htmlmixed-4.11.js" target="head" />
+    <h:outputScript library="janal" name="mirror/runmode-4.11.js" target="head" />
+    <h:outputScript library="janal" name="mirror/xml-4.11.js" target="head" />
+    <h:outputScript library="janal" name="mirror/css-4.11.js" target="head" />
+    <h:outputScript library="janal" name="mirror/javascript-4.11.js" target="head" />
+    <script type="text/javascript">
+			Janal.Control.fields = {
+				'fuentes\\:encuesta_input': {validaciones: 'requerido', mascara: 'libre', mensaje: 'La encuesta es requerido',            grupo:'sencillo'},//solo tabla				
+  		  'fuentes\\:nombreTabla':    {validaciones: 'requerido', mascara: 'libre', mensaje: 'El nombre de la tabla es requerido',  grupo: 'sencillo'}, // solo tabla
+				'fuentes\\:tablaSinonimo':  {validaciones: 'requerido', mascara: 'libre', mensaje: 'El sinonimo de la tabla es requerido',grupo: 'sinonimos'}, // sinonimos
+				'fuentes\\:llaveSinonimo':  {validaciones: 'requerido', mascara: 'libre', mensaje: 'El sinonimo de la llave es requerido',grupo: 'sinonimos'}, //sinonimos
+				'fuentes\\:nombreDto':      {validaciones: 'requerido', mascara: 'libre', mensaje: 'El nombre del dto es requerido',      grupo:'consultas'}, // consulta
+				'fuentes\\:consultaXml':    {validaciones: 'requerido', mascara: 'libre', mensaje: 'La consulta es requerida',            grupo:'consultas'}, // consulta
+				'fuentes\\:paquete':        {validaciones: 'requerido', mascara: 'libre', mensaje: 'El paquete es requerido',            grupo:'sinonimos'}, // sinonimos
+				'fuentes\\:encuesta':       {validaciones: 'requerido', mascara: 'libre', mensaje: 'El nombre del proyeto es requerido',            grupo:'sinonimos'} // sinonimos
+			};					
+
+      function descargar(){
+				$("#fuentes\\:resultados\\:generado").click();
+			};
+
+      function refrescar(){
+				window.editor.refresh();
+			};
+			
+			function reload(textArea1,textArea2) {
+        $('#fuentes\\:resultados').attr('style', '');
+				$(".CodeMirror" ).remove();
+				$(".CodeMirror" ).empty();
+				if(document.getElementById(textArea1)!== null) {
+					generateCodeMirror (textArea1,"clike");
+				}
+				if(document.getElementById(textArea2)!== null){
+					generateCodeMirror (textArea2,"htmlmixed");
+				} // if
+			}
+			
+			function generateCodeMirror (id,modo){
+				window.editor = CodeMirror.fromTextArea(document.getElementById(id),{
+          mode        : modo,
+          lineNumbers : true,
+          readOnly    : true,
+          lineWrapping: true});
+      };
+
+			function aplicarValidaciones(){
+				seleccion= $('#tabSeleccionado').val()=== 'Por tabla'?$('#fuentes\\:sinonimo_input option:selected').val():'3';
+				regresar = false;
+				switch(seleccion) {
+					case '1':
+						regresar=janal.partial('sinonimos');
+					break;	
+					case '3':
+						regresar=janal.partial('consultas');
+					break;
+					case '4':
+						regresar=janal.partial('sencillo|sinonimos');
+					break;
+					default:
+						regresar=janal.partial('sencillo');
+					break;	
+				}// switch			
+				return regresar;
+			}//function aplicarValidaciones	
+
+      function checkDialog() {
+        var value= $('input[id~="tablaDialogo-texto"]').val();
+        var ok   = value!== null? value.trim().length> 0? true: false: false;
+        if(!ok) {
+          PF('mensajes').removeAll();
+          PF('mensajes').show([{summary:'Error', detail: 'Se requiere parcialmente un(a) #{kajoolTemplateMotorGeneracion.busquedaTablas.alias}', severity: 2}]);
+        } // if
+        return ok;
+      }
+
+      function descargarHide(){
+       return true;
+      }
+      function validateDialog() {
+        var ok= $('select[id~="tablaDialogo-registros_input"]').val()!== null;
+        if(!ok) {
+          PF('mensajes').removeAll();
+          PF('mensajes').show([{summary:'Error', detail: 'No se ha seleccionado un(a) #{kajoolTemplateMotorGeneracion.busquedaTablas.titulo}', severity: 2}]);
+        } // if
+        return ok;
+      }
+    </script>
+    <style type="text/css">
+      .criterios {
+        margin-bottom: 10px;
+        margin-top: 10px;
+        border: 0px;
+        margin-left: 10%;
+
+      }
+      .td-label {width: 15%;}
+
+      .td-label-consulta {width: 100px;}
+
+      .td-xml {width:85%;}
+    </style>
+  </ui:define>
+  <ui:define name="contenido">		
+    <h:panelGrid columns="1" styleClass="janal-content-table" style="width:100%;">
+      <label>Seleccione la fuente de donde se generarán los archivos.</label>
+			<h:inputHidden id="tabSeleccionado" value="#{kajoolTemplateMotorGeneracion.attrs.tabSeleccionado}" />
+      <p:tabView id="fuentes" dynamic="true" style="width:100%;">
+				<p:ajax event="tabChange" listener="#{kajoolTemplateMotorGeneracion.onTabChange}" update=":datos:tabSeleccionado"/>
+        <p:tab id="tabTabla" title="Por tabla">
+          <h:panelGrid columns="2" id="tabContenido" styleClass="sin-lineas" width="100%">
+            <p:spacer/>
+            <h:panelGrid columns="1" styleClass="sin-lineas" style="float: right;">
+              <f:facet name="header">
+                <h:panelGrid columns="1" styleClass="sin-lineas" style="float:right;width:100%">
+                  <p:commandButton id="tabla" actionListener="#{kajoolTemplateMotorGeneracion.doGenerarTabla}" process=":datos:fuentes" onstart="return aplicarValidaciones();" update="resultados" icon="ui-icon-plusthick" title="Generar archivos" oncomplete="reload('fuentes:resultados:resultadoDto','fuentes:resultados:resultadoXml');janal.desbloquear();"/>
+                </h:panelGrid>
+              </f:facet>
+            </h:panelGrid>
+            <p:spacer/>
+            <h:panelGrid columns="3">
+              <label for="paquete">Paquete:</label>
+              <p:inputText id="paquete" value="#{kajoolTemplateMotorGeneracion.attrs.detalleMotor.paquete}" size="120" />
+              <p:spacer/>
+              <label for="encuesta">Proyecto:</label>
+              <p:inputText id="encuesta" value="#{kajoolTemplateMotorGeneracion.attrs.detalleMotor.encuestaSeleccionadaTexto}" size="50">
+                <p:ajax event="keyup" update="paquete" process="@this paquete" listener="#{kajoolTemplateMotorGeneracion.doActualizarPaquete}"/>
+              </p:inputText>
+              <p:spacer/>
+              <label for="sinonimo">Sinónimo:</label>
+              <p:selectOneMenu id="sinonimo" value="#{kajoolTemplateMotorGeneracion.attrs.detalleMotor.esSinonimo}">
+                <p:ajax update="fuentes:tabContenido" listener="#{kajoolTemplateMotorGeneracion.onCambiarSinonimo}" process="@this" />                									
+								<f:selectItem itemLabel="Si" itemValue="1" />
+                <f:selectItem itemLabel="No" itemValue="0" />								
+              </p:selectOneMenu>
+              <p:spacer rendered="#{!kajoolTemplateMotorGeneracion.attrs.detalleMotor.sinonimo}"/>
+              <h:outputText id="nombreTablaOut" value="Tabla:" rendered="#{!kajoolTemplateMotorGeneracion.attrs.detalleMotor.sinonimo}"/>
+							<h:panelGrid id="sinonimoNo" columns="2" styleClass="sin-lineas" rendered="#{!kajoolTemplateMotorGeneracion.attrs.detalleMotor.sinonimo}">
+								<p:inputText id="nombreTabla" readonly="true" size="80" value="#{kajoolTemplateMotorGeneracion.attrs.detalleMotor.nombreTabla}"/>
+								<p:commandButton process="@this"  icon="ui-icon-search" title="Buscar tablas de base de datos" oncomplete="janal.bloquear();PF('tablaDialogo').show();" >
+									<f:setPropertyActionListener target="#{kajoolTemplateMotorGeneracion.busqueda}" value="#{kajoolTemplateMotorGeneracion.busquedaTablas}" />
+								</p:commandButton>
+							</h:panelGrid>
+              <p:spacer/>
+              <h:outputLabel  for="tablaSinonimo" id="tablaSinonimoOut" value="Tabla (Sinónimo):" rendered="#{kajoolTemplateMotorGeneracion.attrs.detalleMotor.sinonimo}"/>
+							<p:inputText id="tablaSinonimo" size="120" value="#{kajoolTemplateMotorGeneracion.attrs.detalleMotor.tablaSinonimo}" readonly="#{kajoolTemplateMotorGeneracion.attrs.soloLecturaSinonimo}" rendered="#{kajoolTemplateMotorGeneracion.attrs.detalleMotor.sinonimo}"/>
+							<p:spacer/>
+              <h:outputLabel for="llaveSinonimo" id="llaveSinonimoOut" value="Llave (Sinónimo):" rendered="#{kajoolTemplateMotorGeneracion.attrs.detalleMotor.sinonimo}"/>
+							<p:inputText id="llaveSinonimo" size="120" value="#{kajoolTemplateMotorGeneracion.attrs.detalleMotor.llaveSinonimo}" readonly="#{kajoolTemplateMotorGeneracion.attrs.soloLecturaSinonimo}" rendered="#{kajoolTemplateMotorGeneracion.attrs.detalleMotor.sinonimo}"/>
+						</h:panelGrid>
+          </h:panelGrid>
+          <p:spacer height="50px;" />
+          <p:tabView id="resultados" dynamic="true" onTabShow="refrescar();" style="display:none;">
+            <p:ajax event="tabChange" listener="#{kajoolTemplateMotorGeneracion.onTabChange}"/>
+            <p:tab title="Dto">
+              <p:inputTextarea id="resultadoDto" value="#{kajoolTemplateMotorGeneracion.attrs.detalleMotor.resultadoDto}" style="width: 98%; height: 1000px;" readonly="true"/>
+            </p:tab>
+            <p:tab title="Xml">
+              <p:inputTextarea id="resultadoXml" value="#{kajoolTemplateMotorGeneracion.attrs.detalleMotor.resultadoXML}" style="width: 98%; height: 1000px;" readonly="true"/>
+            </p:tab>
+            <p:tab title="Descargar" titleStyle="float:right;">
+              <p:panel visible="false">
+                <p:commandLink id="generado" title="Click para descargar el archivo" ajax="false" >
+                  <p:fileDownload value="#{kajoolTemplateMotorGeneracion.descargar}" />
+                </p:commandLink>
+              </p:panel>
+            </p:tab>
+          </p:tabView >
+        </p:tab>
+      </p:tabView>
+    </h:panelGrid>
+    <p:dialog id="tablaDialogo-lock" widgetVar="tablaDialogo" header="Buscar [#{kajoolTemplateMotorGeneracion.busquedaTablas.titulo}]" width="600" height="145" position="260,250"  onHide="janal.desbloquear();" >
+			<h:panelGrid id="tablaDialogo-panel" columns="2">
+				<label for="tablaDialogo-texto" class="janal-text-one-line">Buscar #{kajoolTemplateMotorGeneracion.busquedaTablas.alias}:</label>
+        <h:panelGrid columns="2">
+          <p:inputText value="#{kajoolTemplateMotorGeneracion.busquedaTablas.seleccionado.label}" id="tablaDialogo-texto"/>
+          <p:commandButton id="tablaDialogo-find" icon="ui-icon-search" update="tablaDialogo-registros tablaDialogo-totales" actionListener="#{kajoolTemplateMotorGeneracion.doBusqueda}" process="@this tablaDialogo-texto" onstart="return checkDialog();" />
+        </h:panelGrid>
+				<label>Encontrados:</label>
+        <p:selectOneMenu id="tablaDialogo-registros" value="#{kajoolTemplateMotorGeneracion.busquedaTablas.seleccionado.value}" valueChangeListener="#{kajoolTemplateMotorGeneracion.doCambiar}">
+          <f:selectItems value="#{kajoolTemplateMotorGeneracion.busquedaTablas.resultado}"/>
+				</p:selectOneMenu>
+			</h:panelGrid>
+			<h:panelGrid columns="2">
+				<h:outputLabel id="tablaDialogo-totales" value="Total de registros encontrados [#{kajoolTemplateMotorGeneracion.busquedaTablas.total}] desplegados [#{kajoolTemplateMotorGeneracion.busquedaTablas.encontrados}]" />
+			</h:panelGrid>
+			<hr class="ui-widget-content"/>
+      <div class="janal-line-button">
+        <h:panelGrid columns="2" styleClass="janal-column-right" style="float:right;">
+          <p:commandButton process="@this tablaDialogo-registros" update="tablaDialogo-registros :datos:fuentes:nombreTabla" value="Aceptar" onstart="return validateDialog();" oncomplete="PF('tablaDialogo').hide();#{metodoRemoto}" actionListener="#{kajoolTemplateMotorGeneracion.doAsignar}"/>
+          <p:commandButton process="@this" update="tablaDialogo-registros" value="Cancelar" oncomplete="PF('tablaDialogo').hide(); janal.desbloquear();" actionListener="#{kajoolTemplateMotorGeneracion.doLimpiar}"/>
+        </h:panelGrid>
+      </div>
+		</p:dialog>
+  </ui:define>
+  <ui:param name="componenteBloqueo" value="datos:fuentes:tabla"/>
+</ui:composition>

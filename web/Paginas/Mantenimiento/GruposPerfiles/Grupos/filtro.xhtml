@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Administración de grupos" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'descripcion': {validaciones: 'requerido', mascara: 'libre'}
+      };
+    </script>
+  </ui:define>
+  <ui:define name="contenido" >
+    <p:contextMenu widgetVar="kajoolContextMenu" for="tabla">
+      <p:menuitem value="Eliminar"  icon="fa fa-trash" update=":datos:confirmacion tabla" oncomplete="janal.bloquear();PF('dialogoConfirmacion').show()" process="@this tabla"/>
+      <p:menuitem value="Modificar" icon="fa fa-edit" action="#{kajoolMantenimientoGruposperfilesGruposFiltro.doEvento('MODIFICAR')}" update=":datos:tabla" process="@this tabla"/>
+      <p:menuitem value="Perfiles del grupo" icon="fa fa-group" action="#{kajoolMantenimientoGruposperfilesGruposFiltro.doIrPerfiles}" process="@this tabla"/>
+      <p:menuitem value="Opciones Menú" icon="fa fa-th-list" action="#{kajoolMantenimientoGruposperfilesGruposFiltro.doIrOpcionesMenu}" update=":datos:tabla" process="@this tabla"/>
+    </p:contextMenu>
+		<div class="janal-content-table">
+      <p:fieldset legend="Buscar por" toggleable="true" collapsed="false" styleClass="Responsive100">
+        <p:panelGrid columns="3" layout="grid" columnClasses="janal-wid-col-90,Wid40,janal-wid-col-40">
+          <p:outputLabel for="descripcion" value="Descripción:"/>
+          <p:inputText id="descripcion" styleClass="Container90" value="#{kajoolMantenimientoGruposperfilesGruposFiltro.attrs.descripcion}"/>		
+          <p:commandButton id="buscar" icon="fa fa-search" actionListener="#{kajoolMantenimientoGruposperfilesGruposFiltro.doLoad}" onstart="return janal.execute();" process="@this descripcion" update="tabla" title="Busqueda General"/>
+        </p:panelGrid>
+      </p:fieldset>
+		</div>
+    <p:dataTable lazy="true" id="tabla" styleClass="janal-content-table"  widgetVar="kajoolTable" var="row" rowIndexVar="index" value="#{kajoolMantenimientoGruposperfilesGruposFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{kajoolMantenimientoGruposperfilesGruposFiltro.lazyModel.rowCount gt kajoolMantenimientoGruposperfilesGruposFiltro.lazyModel.pageSize}" selection="#{kajoolMantenimientoGruposperfilesGruposFiltro.attrs.seleccionado}" reflow="true">
+      <f:facet name="header">
+          <p:menuButton value="Opciones">
+            <p:menuitem value="Agregar" action="#{kajoolMantenimientoGruposperfilesGruposFiltro.doEvento('AGREGAR')}" icon="fa fa-plus" title="Agregar grupo" ajax="false" />
+          </p:menuButton>
+      </f:facet>
+      <p:column headerText="Clave" sortBy="#{row.clave}">
+        <h:outputText value="#{row.clave}"/>
+      </p:column>
+      <p:column headerText="Descripcion" sortBy="#{row.descripcion}">
+        <h:outputText value="#{row.descripcion}" />
+      </p:column>
+      <p:column headerText="Perfiles" styleClass="janal-column-right" sortBy="#{row.perfiles}">
+        <h:outputText value="#{row.perfiles}"/>
+      </p:column>
+      <f:facet name="footer">
+        <p:column>
+					Total [#{kajoolMantenimientoGruposperfilesGruposFiltro.lazyModel.rowCount == null ? '0' : kajoolMantenimientoGruposperfilesGruposFiltro.lazyModel.rowCount}] registros
+        </p:column>
+      </f:facet>
+    </p:dataTable>
+  </ui:define>
+  <ui:param name="componenteBloqueo" value="tabla,buscar"/>
+  <ui:param name="textoConfirmacion" value="¿Está seguro de eliminar el grupo #{kajoolMantenimientoGruposperfilesGruposFiltro.attrs.seleccionado.descripcion} ?" />
+  <ui:param name="accionConfirmacion" value="#{kajoolMantenimientoGruposperfilesGruposFiltro}" />
+  <ui:param name="renderedConfirmacion" value="true" />
+  <ui:param name="eventoConfirmacion" value="doEliminar"/>
+</ui:composition>

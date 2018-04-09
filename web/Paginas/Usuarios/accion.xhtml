@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+								template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{kajoolUsuariosAccion.attrs.titulo}" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      //<![CDATA[
+      Janal.Control.fields = {
+        'nombres'        : { validaciones: 'requerido', mascara: 'libre'},
+        'primerApellido' : { validaciones: 'requerido', mascara: 'libre'},
+        'segundoApellido': { validaciones: 'libre', mascara: 'libre'}, 				
+        'curp'  				 : { validaciones: 'requerido|curp', mascara: 'curp', mensaje: 'La CURP es requerida', grupo: 'curp'},
+				'correo' 				 : { validaciones: 'requerido', mascara: 'libre', mensaje: 'El correo electronico es requerido'},
+				'entidad'  			 : { validaciones: 'requerido', mascara: 'libre', mensaje: 'La entidad es requerida'},
+				'perfilUsuario'  : { validaciones: 'requerido', mascara: 'libre', mensaje: 'El perfil es requerido'}
+       };		
+       
+       function checkEmptyValue() {
+         return ($.trim($('#nombres').val()).length> 0) && ($.trim($('#primerApellido').val()).length> 0 || $.trim($('#segundoApellido').val()).length> 0);
+       }
+      //]]>
+     </script>
+  </ui:define>
+	<ui:define name="contenido">
+		<div class="tabla-filtro">
+      <p:panelGrid layout="grid" columns="2" columnClasses="ui-grid-col-2 janal-wid-col-130,ui-grid-col-2">
+				<label for="curp">CURP:</label>
+  			<p:inputText id="curp" value="#{kajoolUsuariosAccion.attrs.tcJanalEmpleadoDto.curp}" size="30">
+          <p:ajax event="blur" listener="#{kajoolUsuariosAccion.doSearch}" onstart="return $.trim($('#curp').val()).length> 0;" process="@this esperada entidad perfilUsuario cancelar nombres primerApellido segundoApellido curp idSexo correo" update="nombres primerApellido segundoApellido idSexo correo esperada"/>
+        </p:inputText>
+				<label for="nombres">Nombre:</label>
+        <p:inputText id="nombres" value="#{kajoolUsuariosAccion.attrs.tcJanalEmpleadoDto.nombres}" size="80" readonly="#{kajoolUsuariosAccion.lockField}">
+          <p:ajax event="blur" update="esperada" onstart="return checkEmptyValue();" process="@this primerApellido segundoApellido" listener="#{kajoolUsuariosAccion.doCuenta}" disabled="#{kajoolUsuariosAccion.lockField}" />
+        </p:inputText>  
+				<label for="primerApellido">Primer apellido:</label>
+				<p:inputText id="primerApellido" value="#{kajoolUsuariosAccion.attrs.tcJanalEmpleadoDto.primerApellido}" size="80"  readonly="#{kajoolUsuariosAccion.lockField}">
+          <p:ajax event="blur" update="esperada" onstart="return checkEmptyValue();" process="@this nombres segundoApellido" listener="#{kajoolUsuariosAccion.doCuenta}" disabled="#{kajoolUsuariosAccion.lockField}" />
+        </p:inputText>  
+				<label for="segundoApellido">Segundo apellido:</label>
+				<p:inputText id="segundoApellido" value="#{kajoolUsuariosAccion.attrs.tcJanalEmpleadoDto.segundoApellido}" size="80" readonly="#{kajoolUsuariosAccion.lockField}">
+          <p:ajax event="blur" update="esperada" onstart="return checkEmptyValue();"  process="@this nombres primerApellido" listener="#{kajoolUsuariosAccion.doCuenta}" disabled="#{kajoolUsuariosAccion.lockField}" />
+        </p:inputText>  
+        <label class="una-sola-linea">Cuenta de acceso:</label>						
+        <p:inputText id="esperada" value="#{kajoolUsuariosAccion.attrs.tcJanalEmpleadoDto.cuenta}" size="50" readonly="true" />
+				<label for="idSexo">Sexo:</label>						
+        <p:selectOneMenu id="idSexo" value="#{kajoolUsuariosAccion.attrs.tcJanalEmpleadoDto.idSexo}" disabled="#{kajoolUsuariosAccion.lockField}">				
+					<f:selectItem itemValue="1" itemLabel="Hombre"/>
+					<f:selectItem itemValue="2" itemLabel="Mujer"/>
+				</p:selectOneMenu>				
+				<label for="correo">Correo:</label>
+				<p:inputText id="correo" value="#{kajoolUsuariosAccion.attrs.tcJanalEmpleadoDto.correo}" size="40" readonly="#{kajoolUsuariosAccion.lockField}"/>			
+				<h:outputLabel for="entidad" value="Entidad:"/>
+        <p:selectOneMenu id="entidad" value="#{kajoolUsuariosAccion.attrs.tcJanalUsuarioDto.idEntidad}">
+          <f:selectItems value="#{kajoolUsuariosAccion.attrs.listaEntidades}"/>
+        </p:selectOneMenu>
+				<p:outputLabel value="Perfil:" for="perfilUsuario"/>
+				<p:selectOneMenu id="perfilUsuario" value="#{kajoolUsuariosAccion.attrs.tcJanalUsuarioDto.idPerfil}">
+					<f:selectItems value="#{kajoolUsuariosAccion.attrs.listaPerfiles}" />
+				</p:selectOneMenu>				
+			</p:panelGrid>	
+		</div>
+	</ui:define>
+	<ui:param name="componenteBloqueo"  value="entidad perfilUsuario cancelar nombres primerApellido segundoApellido curp idSexo correo"/>
+	<ui:define name="acciones">
+    <p:commandButton id="aceptar" icon="fa fa-check" value="Aceptar" action="#{kajoolUsuariosAccion.doAceptar}" process="@this entidad perfilUsuario cancelar nombres primerApellido segundoApellido curp idSexo correo esperada" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+    <p:commandButton id="cancelar" icon="fa fa-remove" value="Cancelar" action="filtro" immediate="true" ajax="false" />
+	</ui:define>
+  <ui:param name="tituloConfirmacion" value="Confirmar datos del usuario"/>
+  <ui:param name="textoConfirmacion" value="#{kajoolUsuariosAccion.attrs.texto}"/>
+  <ui:param name="updateComponent" value="esperada entidad perfilUsuario cancelar nombres primerApellido segundoApellido curp idSexo correo"/>
+  <ui:param name="accionConfirmacion" value="#{kajoolUsuariosAccion}"/>
+  <ui:param name="eventoConfirmacion" value="doUpdateEmpleado"/>
+  <ui:param name="renderedConfirmacion" value="true"/>
+  <ui:param name="onHideDlg" value="true"/>
+  <ui:define name="detalleConfirmacion">
+    <p:panelGrid layout="grid" columns="2" columnClasses="ui-grid-col-2 janal-wid-col-130,ui-grid-col-2">       
+      <label>CURP:</label>
+      <p:inputText value="#{kajoolUsuariosAccion.attrs.empleado.curp}" size="30" readonly="true"/>
+      <label>Nombre:</label>
+      <p:inputText value="#{kajoolUsuariosAccion.attrs.empleado.nombres}" size="80" readonly="true"/>
+      <label>Primer apellido:</label>
+      <p:inputText value="#{kajoolUsuariosAccion.attrs.empleado.primerApellido}" size="80"  readonly="true"/>
+      <label>Segundo apellido:</label>
+      <p:inputText value="#{kajoolUsuariosAccion.attrs.empleado.segundoApellido}" size="80" readonly="true"/>
+      <label class="una-sola-linea">Cuenta de acceso:</label>						
+      <p:inputText value="#{kajoolUsuariosAccion.attrs.empleado.cuenta}" size="50" readonly="true"/>
+      <label>Correo:</label>
+      <p:inputText value="#{kajoolUsuariosAccion.attrs.empleado.correo}" size="40" readonly="true"/>			
+    </p:panelGrid>  
+  </ui:define>    
+</ui:composition>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date Mar 25, 2015
+ time 3:10:18 PM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Tablas temporales"/>
+  <ui:define name="contenido">
+		<p:panelGrid columns="2" styleClass="ui-grid-responsive" layout="grid" columnClasses="ui-grid-col-2,ui-grid-col-2">
+			<label>Indicador de avance:</label>
+			<p:inputText value="#{kajoolMantenimientoIndicadoresAdministracionFiltroTemporal.attrs.nombreIndicador}" disabled="true"/>
+		</p:panelGrid>
+		<p:contextMenu id="menuContexto" for="tabla" styleClass="janal-context-menu">
+			<p:menuitem id="modificar" icon="fa fa-edit" value="Modificar" process="@this,tabla" action="#{kajoolMantenimientoIndicadoresAdministracionFiltroTemporal.doModificar}"/>
+			<p:menuitem id="eliminar" icon="fa fa-trash" value="Eliminar" onstart="janal.bloquear();PF('dialogoConfirmacion').show()"/>
+		</p:contextMenu>
+		<p:dataTable lazy="true" id="tabla" var="fila" rowIndexVar="index" value="#{kajoolMantenimientoIndicadoresAdministracionFiltroTemporal.lazyModel}" paginator="#{kajoolMantenimientoIndicadoresAdministracionFiltroTemporal.lazyModel.rowCount gt kajoolMantenimientoIndicadoresAdministracionFiltroTemporal.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"
+								 emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="tabla-filtro" selection="#{kajoolMantenimientoIndicadoresAdministracionFiltroTemporal.attrs.seleccionado}" selectionMode="single" reflow="true">
+			<f:facet name="header">
+				<p:menuButton value="Opciones">
+					<p:menuitem id="agregar" icon="fa fa-plus" value="Agregar" process="@this" action="#{kajoolMantenimientoIndicadoresAdministracionFiltroTemporal.doAgregar}"/>
+				</p:menuButton>
+			</f:facet>
+			<p:column headerText="Nombre" >
+				#{fila['nombreTabla']}
+			</p:column>
+			<p:column headerText="Campos">
+				#{fila['campos']}
+			</p:column>
+			<p:column headerText="Proceso" >
+				#{fila['proceso']}
+			</p:column>
+			<p:column headerText="Xml" >
+				#{fila['idXml']}
+			</p:column>
+			<p:column headerText="Orden" styleClass="janal-column-center janal-wid-10">
+				#{fila['orden']}
+			</p:column>
+			<f:facet name="footer">
+				Total [#{kajoolMantenimientoIndicadoresAdministracionFiltroTemporal.lazyModel==null?0:kajoolMantenimientoIndicadoresAdministracionFiltroTemporal.lazyModel.rowCount}] registros
+			</f:facet>
+		</p:dataTable>
+		<div class="janal-line-button">
+			<p:commandButton id="cancelar" value="Regresar" action="#{kajoolMantenimientoIndicadoresAdministracionFiltroTemporal.doRegresar}" immediate="true" ajax="false" process="@this" />
+		</div>
+	</ui:define>
+	<ui:param name="textoConfirmacion" value="¿Desea eliminar la tabla temporal?"/>
+	<ui:param name="updateComponent" value="tabla"/>
+	<ui:param name="accionConfirmacion" value="#{kajoolMantenimientoIndicadoresAdministracionFiltroTemporal}"/>
+	<ui:param name="eventoConfirmacion" value="doEliminar"/>
+	<ui:param name="renderedConfirmacion" value="true"/>
+</ui:composition>

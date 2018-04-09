@@ -1,0 +1,347 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/temporal.xhtml">
+  <ui:param name="titulo" value="Ejemplo de una pagina responsiva" />
+  <ui:define name="contenido">
+    <style type="text/css">
+      .ui-panel {
+        margin-top:20px
+      }
+    </style>
+    <div class="ContainerIndent">
+      <p:panel>
+        <div class="Container">
+          <p:fieldset toggleable="true" legend="InputText">
+            <p:panelGrid columns="3" layout="grid" style="border:0px none;background:none">
+              <p:inputText styleClass="Wid90" placeholder="Name"/>
+              <p:inputText styleClass="Wid90" placeholder="Email"/>
+              <p:inputText styleClass="Wid90" placeholder="Phone"/>
+              <p:inputText styleClass="Wid90" placeholder="Disabled" disabled="true"/>
+              <p:inputText styleClass="Wid90" placeholder="Address"/>
+              <p:inputText styleClass="Wid90" placeholder="Id"/>
+            </p:panelGrid>
+          </p:fieldset>
+        </div>
+      </p:panel>
+      <p:panel>
+        <div class="Container">
+          <div class="Container100"><div class="ContainerIndent"><h:outputText value="Textarea" styleClass="FontBold Fs18 hardblue"></h:outputText></div></div>
+          <div class="Container100"><div class="ContainerIndent"><p:inputTextarea rows="5" cols="40" placeholder="Textarea"/></div></div>
+        </div>
+      </p:panel>
+      <p:panel>
+        <div class="Container">
+          <div class="Container100"><div class="ContainerIndent"><h:outputText value="AutoComplete Sample" styleClass="FontBold Fs18 hardblue"></h:outputText></div></div>
+          <div class="Container100">
+            <div class="ContainerIndent">
+              <h:panelGrid columns="2" cellpadding="5">
+                <p:outputLabel value="Simple:" for="acSimple" />
+                <p:autoComplete id="acSimple" />
+
+                <p:outputLabel value="DropDown:" for="dd" />
+                <p:autoComplete id="dd" dropdown="true" />
+
+                <p:outputLabel value="Group:" for="group" />
+                <p:autoComplete id="group" scrollHeight="250"/>
+              </h:panelGrid>
+            </div>
+          </div>
+        </div>
+      </p:panel>
+
+      <p:panel>
+        <div class="ContainerIndent">
+          <h:outputText value="Checkboxes" styleClass="FontBold Fs18 hardblue"></h:outputText>
+          <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+            <p:outputLabel value="SelectManyCheckbox:" />
+            <p:selectManyCheckbox>
+              <f:selectItem itemLabel="Xbox One" itemValue="Xbox One" />
+              <f:selectItem itemLabel="PS4" itemValue="PS+" />
+              <f:selectItem itemLabel="Wii U" itemValue="Wii U" />
+            </p:selectManyCheckbox>
+          </h:panelGrid>
+        </div>
+        <div class="ContainerIndent">
+          <p:selectBooleanCheckbox value="accept" itemLabel="First PrimeFaces Checkbox"/>
+        </div>
+        <div class="ContainerIndent">
+          <p:selectBooleanCheckbox value="accept" itemLabel="Second PrimeFaces Checkbox"/>
+        </div>
+      </p:panel>
+
+      <p:panel>
+        <div class="ContainerIndent">
+          <h:outputText value="RadioButtons" styleClass="FontBold Fs18 hardblue"></h:outputText>
+          <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+            <p:outputLabel value="Console:" />
+            <p:selectOneRadio>
+              <f:selectItem itemLabel="Xbox One" itemValue="Xbox One" />
+              <f:selectItem itemLabel="PS4" itemValue="PS+" />
+              <f:selectItem itemLabel="Wii U" itemValue="Wii U" />
+            </p:selectOneRadio>
+          </h:panelGrid>
+        </div>
+      </p:panel>
+
+      <p:panel>
+        <div class="ContainerIndent"><h:outputText value="SelectOneMenu" styleClass="FontBold Fs18 hardblue"></h:outputText></div>
+
+        <div class="ContainerIndent">
+          <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+            <p:outputLabel for="console" value="Basic:" />
+            <p:selectOneMenu id="console" style="min-width:200px; width:315px;">
+              <f:selectItem itemLabel="Select One" itemValue="" />
+              <f:selectItem itemLabel="Xbox One" itemValue="Xbox One" />
+              <f:selectItem itemLabel="PS4" itemValue="PS4" />
+              <f:selectItem itemLabel="Wii U" itemValue="Wii U" />
+            </p:selectOneMenu>
+
+            <p:outputLabel for="car" value="Grouping: " />
+            <p:selectOneMenu id="car" style="min-width:200px; width:315px;">
+              <f:selectItem itemLabel="Select One" itemValue="" />
+              <f:selectItems value="#{kajoolBienvenida.countries}" />
+            </p:selectOneMenu>
+
+            <p:outputLabel for="city" value="Editable: " />
+            <p:selectOneMenu id="city" effect="fold" editable="true" style="min-width:200px; width:315px;">
+              <f:selectItem itemLabel="Select One" itemValue="" />
+              <f:selectItem itemLabel="Xbox One" itemValue="Xbox One" />
+              <f:selectItem itemLabel="PS4" itemValue="PS4" />
+              <f:selectItem itemLabel="Wii U" itemValue="Wii U" />
+            </p:selectOneMenu>
+
+          </h:panelGrid>
+        </div>
+      </p:panel>
+
+      <p:panel>
+        <div class="ContainerIndent"><h:outputText value="Keyboard And Password Sample" styleClass="FontBold Fs18 hardblue"></h:outputText></div>
+        <div class="Container">
+          <div class="Container100"><div class="ContainerIndent"><p:keyboard styleClass="Wid90" placeholder="Keyboard"/></div></div>
+          <div class="Container100"><div class="ContainerIndent"><p:password feedback="true" styleClass="Wid90" placeholder="Password"/></div></div>
+        </div>
+      </p:panel>
+
+      <p:panel>
+        <div class="ContainerIndent"><h:outputText value="MultiSelectListBox Sample" styleClass="FontBold Fs18 hardblue"></h:outputText></div>
+        <div class="Container">
+          <div class="Container100">
+            <div class="ContainerIndent">
+              <p:multiSelectListbox effect="slide" header="Categories" showHeaders="true">
+                <f:selectItems value="#{kajoolBienvenida.countries}" />
+              </p:multiSelectListbox>
+            </div>
+          </div>
+        </div>
+      </p:panel>
+
+      <p:panel>
+        <div class="ContainerIndent"><h:outputText value="SelectCheckBoxMenu" styleClass="FontBold Fs18 hardblue"></h:outputText></div>
+        <div class="ContainerIndent">
+          <p:selectCheckboxMenu label="Cities" filter="true" filterMatchMode="startsWith" style="width:300px;">
+            <f:selectItem itemLabel="Option 1" itemValue="1" />
+            <f:selectItem itemLabel="Option 2" itemValue="2" />
+            <f:selectItem itemLabel="Option 3" itemValue="3" />
+          </p:selectCheckboxMenu>
+        </div>
+      </p:panel>
+
+      <p:panel>
+        <div class="Container">
+          <div class="Container100"><div class="ContainerIndent"><h:outputText value="Input Switch Sample" styleClass="FontBold Fs18 hardblue"></h:outputText></div></div>
+          <div class="Container100"><div class="ContainerIndent"><p:inputSwitch /></div></div>
+        </div>
+      </p:panel>
+
+      <p:panel>
+        <div class="ContainerIndent"><h:outputText value="SelectOneListBox" styleClass="FontBold Fs18 hardblue"></h:outputText></div>
+        <div class="ContainerIndent">
+          <p:selectOneListbox>
+            <f:selectItem itemLabel="Option 1" itemValue="1" />
+            <f:selectItem itemLabel="Option 2" itemValue="2" />
+            <f:selectItem itemLabel="Option 3" itemValue="3" />
+          </p:selectOneListbox>
+        </div>
+      </p:panel>
+
+      <p:panel>
+        <div class="ContainerIndent"><h:outputText value="SelectManyMenu" styleClass="FontBold Fs18 hardblue"></h:outputText></div>
+        <div class="ContainerIndent">
+          <p:selectManyMenu showCheckbox="true">
+            <f:selectItem itemLabel="Option 1" itemValue="1" />
+            <f:selectItem itemLabel="Option 2" itemValue="2" />
+            <f:selectItem itemLabel="Option 3" itemValue="3" />
+          </p:selectManyMenu>
+        </div>
+      </p:panel>
+
+      <p:panel>
+        <div class="Container">
+          <div class="Container100"><div class="ContainerIndent"><h:outputText value="Spinner" styleClass="FontBold Fs18 hardblue"></h:outputText></div></div>
+          <div class="Container100">
+            <div class="ContainerIndent">
+              <p:spinner />
+            </div>
+          </div>
+        </div>
+      </p:panel>
+
+      <p:panel>
+        <div class="Container">
+          <div class="Container100"><div class="ContainerIndent"><h:outputText value="Sliders" styleClass="FontBold Fs18 hardblue"></h:outputText></div></div>
+          <div class="Container100">
+            <div class="ContainerIndent">
+              <h:panelGrid columns="1" style="margin-bottom: 10px">
+                <p:inputText id="slider" />
+                <p:slider for="slider"/>
+              </h:panelGrid>
+            </div>
+          </div>
+          <div class="Container100">
+            <div class="ContainerIndent">
+              <h:panelGrid columns="1" style="margin-bottom: 10px">
+                <p:inputText id="txt4" />
+                <p:slider for="txt4" type="vertical" />
+              </h:panelGrid>
+            </div>
+          </div>
+          <div class="Container100">
+            <div class="ContainerIndent">
+              <h:panelGrid columns="1" style="margin-bottom: 10px">
+                <h:outputText id="displayRange" value="Values" />
+                <p:slider for="txt6,txt7" display="displayRange" style="width: 200px" range="true" displayTemplate="Between {min} and {max}" minValue="0" maxValue="100"/>
+              </h:panelGrid>
+              <h:inputHidden id="txt6" value="20"/>
+              <h:inputHidden id="txt7" value="80"/>
+            </div>
+          </div>
+        </div>
+      </p:panel>
+
+      <p:panel>
+        <div class="Container">
+          <div class="Container100"><div class="ContainerIndent"><h:outputText value="Rating" styleClass="FontBold Fs18 hardblue"></h:outputText></div></div>
+          <div class="Container100">
+            <div class="ContainerIndent">
+
+              <h:panelGrid columns="2" cellpadding="5">
+                <h:outputText value="Basic:" />
+                <p:rating />
+
+                <h:outputText value="Callback:" />
+                <p:rating stars="10" cancel="false" onRate="alert('You rated ' + value)" />
+
+                <h:outputText value="Disabled"/>
+                <p:rating disabled="true" />
+              </h:panelGrid>
+            </div>
+          </div>
+        </div>
+      </p:panel>
+
+      <p:panel>
+        <div class="Container">
+          <div class="Container100"><div class="ContainerIndent"><h:outputText value="Calendar" styleClass="FontBold Fs18 hardblue"></h:outputText></div></div>
+          <div class="Container100">
+            <div class="ContainerIndent">
+
+              <h:panelGrid columns="2" cellpadding="5">
+                <p:outputLabel for="inline" value="Inline:" />
+                <p:calendar id="inline"  mode="inline" />
+
+                <p:outputLabel for="popup" value="Popup:" />
+                <p:calendar id="popup" />
+
+                <p:outputLabel for="multi" value="Multiple:" />
+                <p:calendar id="multi" pages="3" />
+
+                <p:outputLabel for="effect" value="Effect:" />
+                <p:calendar id="effect" effect="fold" />
+
+                <p:outputLabel for="datetime" value="Datetime:" />
+                <p:calendar id="datetime" pattern="MM/dd/yyyy HH:mm:ss" />
+
+                <p:outputLabel for="time" value="Time:" />
+                <p:calendar id="time" pattern="HH:mm a" timeOnly="true"  />
+
+                <p:outputLabel for="button" value="Button:" />
+                <p:calendar id="button" showOn="button" />
+
+              </h:panelGrid>
+
+            </div>
+          </div>
+
+        </div>
+      </p:panel>
+      <p:panel>
+        <div class="ContainerIndent"><h:outputText value="Buttons" styleClass="FontBold Fs18 hardblue"></h:outputText></div>
+        <div class="ContainerIndent">
+            <h:panelGrid columns="2" cellpadding="5">
+              <h:outputText value="SelectBooleanButton:" />
+              <p:selectBooleanButton onLabel="Yes" offLabel="No" style="width:60px" />
+
+              <h:outputText value="SelectOneButton:" />
+              <p:selectOneButton>
+                <f:selectItem itemLabel="Xbox One" itemValue="Xbox One" />
+                <f:selectItem itemLabel="PS4" itemValue="PS4" />
+                <f:selectItem itemLabel="Wii U" itemValue="Wii U" />
+              </p:selectOneButton>
+
+              <h:outputText value="SelectManyButton:" />
+              <p:selectManyButton>
+                <f:selectItem itemLabel="b" itemValue="b"/>
+                <f:selectItem itemLabel="u" itemValue="u" />
+                <f:selectItem itemLabel="i" itemValue="i" />
+              </p:selectManyButton>
+
+              <h:outputText value="Button" />
+              <p:button value="Bookmark" icon="fa fa-star Fs16 white"/>
+
+              <h:outputText value="CommandButton:" />
+              <p:commandButton value="With Icon" icon="fa fa-home Fs16 white" />
+
+              <h:outputText value="CommandButton:" />
+              <p:commandButton value="With Icon (Right Side)" icon="fa fa-eyedropper Fs16 white" iconPos="right"/>
+
+              <h:outputText value="CommandLink:" />
+              <p:commandLink value="commandLink"/>
+
+              <h:outputText value="Link:" />
+              <p:link value="Bookmark"/>
+
+              <h:outputText value="SplitButton:" />
+              <p:splitButton value="Save" icon="ui-icon-check fa fa-check white Fs14">
+                <p:menuitem value="Update" icon="ui-icon-default" />
+                <p:menuitem value="Delete" icon="ui-icon-default" />
+                <p:separator />
+                <p:menuitem value="Homepage" url="#" icon="ui-icon-default" />
+              </p:splitButton>
+
+              <h:outputText value="Color Buttons" />
+              <h:outputText value="" />
+              <h:outputText value="Default Button" />
+              <p:button value="Default Theme Button"/>
+              <h:outputText value="Green Button" />
+              <p:button value="Green Button" styleClass="GreenButton"/>
+              <h:outputText value="Red Button" />
+              <p:button value="Red Button" styleClass="RedButton"/>
+              <h:outputText value="Orange Button" />
+              <p:button value="Orange Button" styleClass="OrangeButton"/>
+              <h:outputText value="Purple Button" />
+              <p:button value="Purple Button" styleClass="PurpleButton"/>
+              <h:outputText value="Cyan Button" />
+              <p:button value="Cyan Button" styleClass="CyanButton"/>
+              <h:outputText value="Brown Button" />
+              <p:button value="Brown Button" styleClass="BrownButton"/>
+              <h:outputText value="Gray Button" />
+              <p:button value="Gray Button" styleClass="GrayButton"/>
+            </h:panelGrid>
+        </div>
+      </p:panel>
+    </div>
+  </ui:define>
+</ui:composition>

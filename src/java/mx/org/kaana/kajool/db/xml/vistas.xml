@@ -1,0 +1,2872 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+    Relación de consultas para las vistas de KAJOOL
+-->
+<process>
+  <dml>
+    <unit id="VistaTcJanalUsuariosDto">
+      <select id="acceso">
+        select
+					tc_janal_usuarios.id_usuario,  cuenta, contrasenia, tc_janal_usuarios.registro, tc_janal_perfiles.descripcion AS descripcion_perfil, tc_janal_usuarios.id_perfil,
+          tc_janal_grupos.descripcion AS descripcion_grupo, tc_janal_empleados.estilo, tc_janal_perfiles.id_menu, tc_janal_empleados.id_empleado, nombres, primer_apellido,
+				  segundo_apellido, id_sexo, tc_janal_usuarios.id_entidad, tc_janal_grupos.id_grupo, tc_janal_grupos.clave as clave_grupo, upper(tc_janal_entidades.descripcion) as entidad
+        from
+          tc_janal_usuarios
+        inner join
+          tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+        inner join
+          tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+				inner join
+				  tc_janal_empleados on tc_janal_empleados.id_empleado=tc_janal_usuarios.id_empleado
+        inner join 
+          tc_janal_entidades on tc_janal_usuarios.id_entidad = tc_janal_entidades.id_entidad
+        where
+          cuenta = '{cuenta}' and tc_janal_usuarios.activo=1
+      </select>
+      <select id="recuperar">
+        select
+          tc_janal_empleados.id_empleado as id_key
+        from
+				  tc_janal_usuarios
+				inner join tc_janal_empleados on tc_janal_usuarios.id_empleado=tc_janal_empleados.id_empleado
+        where
+          cuenta='{cuenta}' and activo=1 and curp = '{curp}'
+      </select>
+
+      <select id="centroTrabajo">
+        select
+          tc_kajool_escuelas.id_escuela,tc_kajool_escuelas.clave,tc_kajool_escuelas.nombres,tc_kajool_escuelas.id_servicio_educativo
+        from
+          tr_kajool_responsables_esc
+        inner join
+          tc_kajool_escuelas  on  tc_kajool_escuelas.id_escuela=tr_kajool_responsables_esc.id_escuela
+        where
+          tr_kajool_responsables_esc.id_empleado={idEmpleado}
+      </select>
+			<select id="detalleUsuarioPerfil">
+				select 					
+          tc_janal_usuarios.id_usuario,
+					tc_janal_empleados.cuenta,
+					tc_janal_empleados.contrasenia,
+					tc_janal_usuarios.registro,
+					tc_janal_perfiles.descripcion AS descripcion_perfil,
+					tc_janal_usuarios.id_perfil,
+					tc_janal_empleados.id_empleado,
+					tc_janal_empleados.nombres,
+					IFNULL(tc_janal_empleados.primer_apellido,'') primer_apellido,
+					IFNULL(tc_janal_empleados.segundo_apellido,'') segundo_apellido,					
+					tc_janal_empleados.id_sexo,										
+					tc_janal_grupos.descripcion AS descripcion_grupo,					
+					tc_janal_empleados.estilo,
+					tc_janal_perfiles.id_menu,
+				  tc_janal_usuarios.id_entidad,
+          tc_janal_grupos.id_grupo, tc_janal_grupos.clave as clave_grupo
+        from 					
+          tc_janal_usuarios
+        inner join
+          tc_janal_empleados ON tc_janal_usuarios.id_empleado = tc_janal_empleados.id_empleado
+				inner join
+          tc_janal_perfiles ON tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+        inner join
+          tc_janal_grupos ON tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+        where
+          tc_janal_usuarios.id_usuario= {idUsuario}
+        and
+          tc_janal_empleados.cuenta='{cuenta}'
+        and
+          tc_janal_usuarios.id_perfil= {idPerfil}
+			</select>
+			<select id="mensajes">
+        select
+          tc_janal_usuarios.id_usuario id_key,
+          concat(tc_kajool_personas.curp, tc_kajool_personas.nombres,' ',tc_kajool_personas.primer_apellido,' ',tc_kajool_personas.segundo_apellido) usuario,
+          tc_janal_perfiles.descripcion perfil, tc_janal_grupos.clave grupo
+        from
+          tc_janal_usuarios
+        inner join
+          tc_kajool_empleados on tc_kajool_empleados.id_empleado= tc_janal_usuarios.id_empleado
+        inner join
+          tc_kajool_personas on tc_kajool_personas.id_empleado = tc_kajool_empleados.id_empleado
+        inner join
+          tc_janal_perfiles on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
+        inner join
+          tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+        where
+          curp like '{curp}%' and tc_janal_grupos.id_grupo in ({idGrupo}) and tc_janal_usuarios.id_perfil in ({idPerfil})
+			</select>
+    </unit>
+    <unit id="VistaGruposDto">
+      <select id="row">
+       select
+          tc_janal_grupos.id_grupo as id_key,
+          tc_janal_grupos.clave,
+          tc_janal_grupos.descripcion,
+          count (tc_janal_perfiles.id_perfil) perfiles
+        from
+          tc_janal_grupos
+        left join
+          tc_janal_perfiles on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+        where
+          tc_janal_grupos.descripcion like '%{descripcion}%'
+        group by
+          tc_janal_grupos.id_grupo,
+          tc_janal_grupos.clave,
+          tc_janal_grupos.descripcion
+        {sortOrder}
+      </select>
+			<select id="perfilesGrupos">
+				select
+					tc_janal_perfiles.id_perfil as id_key_perfil,
+					tc_janal_perfiles.descripcion
+				from
+					tc_janal_grupos
+				inner join
+					tc_janal_perfiles on tc_janal_perfiles.id_grupo = tc_janal_grupos.id_grupo
+				where
+					tc_janal_grupos.id_grupo = {idGrupo}
+				order by
+					tc_janal_perfiles.descripcion
+			</select>
+		</unit>
+    <unit id="VistaPerfilesDto">
+      <select id="row">
+        select
+          tc_janal_perfiles.id_perfil as id_key_perfil,
+          tc_janal_perfiles.descripcion,
+          tc_janal_perfiles.acceso,
+          count(tc_janal_usuarios.id_perfil) usuarios
+        from
+          tc_janal_perfiles
+          left join
+          tc_janal_usuarios
+        on
+          tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
+        where
+          tc_janal_perfiles.id_grupo= {idGrupo}
+        and
+          tc_janal_perfiles.descripcion like '%{descripcion}%'
+        group by
+          tc_janal_perfiles.id_perfil,
+          tc_janal_perfiles.descripcion,
+          tc_janal_perfiles.acceso
+        {sortOrder}
+       </select>
+	</unit>	
+		<unit id="VistaPerfilesMenusDto">
+       <select id="row">
+				 select
+           menus.id_menu,
+           menus.descripcion,
+           menus.clave,
+           menus.nivel,
+           menus.publicar,
+           id_menu_perfil,
+           menus.id_menu_grupo,
+           ifnull(id_menu_perfil, 0) as id_seleccion
+        from
+          (select
+            tc_janal_menus.id_menu,
+            tc_janal_menus.descripcion,
+            tc_janal_menus.clave,
+            tc_janal_menus.nivel ,
+            tc_janal_menus.publicar,
+            tr_janal_menus_grupos.id_menu_grupo,
+            tr_janal_menus_grupos.id_grupo
+           from
+             tc_janal_menus
+           inner join
+             tr_janal_menus_grupos on tc_janal_menus.id_menu = tr_janal_menus_grupos.id_menu and tr_janal_menus_grupos.id_grupo = {idGrupo}
+           ) menus
+        left join
+         (select
+            tr_janal_menus_perfiles.id_perfil,
+            tr_janal_menus_perfiles.id_menu_grupo,
+            tr_janal_menus_perfiles.id_menu_perfil
+          from
+            tr_janal_menus_perfiles
+          inner join tr_janal_menus_grupos on tr_janal_menus_perfiles.id_menu_grupo = tr_janal_menus_grupos.id_menu_grupo
+         )  perfiles
+        on menus.id_menu_grupo = perfiles.id_menu_grupo
+        and perfiles.id_perfil = {idPerfil} order by clave
+       </select>
+        <select id="seleccionados">
+				select
+           menus.id_menu,
+           menus.descripcion,
+           menus.clave,
+           menus.nivel,
+           id_menu_perfil,
+           menus.publicar,
+           menus.id_menu_grupo,
+           ifnull(id_menu_perfil, 0) as id_seleccion
+        from
+          (select
+            tc_janal_menus.id_menu,
+            tc_janal_menus.descripcion ,
+            tc_janal_menus.clave,
+            tc_janal_menus.nivel ,
+            tc_janal_menus.publicar,
+            tr_janal_menus_grupos.id_menu_grupo,
+            tr_janal_menus_grupos.id_grupo
+           from
+             tc_janal_menus
+           inner join
+             tr_janal_menus_grupos on tc_janal_menus.id_menu = tr_janal_menus_grupos.id_menu
+            where
+             tr_janal_menus_grupos.id_grupo = {idGrupo}
+           ) menus
+        left join
+         (select
+            tr_janal_menus_perfiles.id_perfil,
+            tr_janal_menus_perfiles.id_menu_grupo,
+            tr_janal_menus_perfiles.id_menu_perfil
+          from
+            tr_janal_menus_perfiles
+          inner join tr_janal_menus_grupos on tr_janal_menus_perfiles.id_menu_grupo = tr_janal_menus_grupos.id_menu_grupo
+         )  perfiles
+        on menus.id_menu_grupo = perfiles.id_menu_grupo
+        where
+          perfiles.id_perfil = {idPerfil} order by clave
+       </select>
+        <select id="paginaInicial">
+          select
+               menus.id_menu id_key, menus.clave, menus.descripcion,menus.ruta, menus.nivel, menus.ispagina, tc_janal_perfiles.id_menu
+          from
+              (select
+               if(instr(tc_janal_menus.ruta,'.jsf')= 0,'0','1') ispagina,  tc_janal_menus.*
+               from tc_janal_menus) menus
+          inner join
+              tr_janal_menus_grupos on tr_janal_menus_grupos .id_menu = menus.id_menu and tr_janal_menus_grupos.id_grupo={idGrupo}
+          inner join
+              tr_janal_menus_perfiles on tr_janal_menus_perfiles.id_menu_grupo=tr_janal_menus_perfiles.id_menu_grupo and tr_janal_menus_perfiles.id_perfil = {idPerfil}
+          left join
+              tc_janal_perfiles on tc_janal_perfiles.id_menu = menus.id_menu
+          where
+              menus.ispagina=1
+          order by
+              menus.clave
+        </select>
+        <select id="paginaInicialAsignada">
+          select
+              tc_janal_perfiles.id_perfil, tc_janal_perfiles.id_menu,tc_janal_menus.descripcion, tc_janal_menus.ruta
+          from
+              tc_janal_perfiles
+          inner join
+              tc_janal_menus on tc_janal_perfiles.id_menu = tc_janal_menus.id_menu
+          where
+              tc_janal_perfiles.id_grupo={idGrupo} and tc_janal_perfiles.id_perfil={idPerfil}
+      </select>
+			<select id="menuPerfil">				
+					select
+            tc_janal_menus.*
+          from
+            tr_janal_menus_perfiles
+          inner join
+            tr_janal_menus_grupos on tr_janal_menus_perfiles.id_menu_grupo = tr_janal_menus_grupos.id_menu_grupo
+          inner join
+            tc_janal_menus on tr_janal_menus_grupos.id_menu = tc_janal_menus.id_menu
+          where
+            tr_janal_menus_perfiles.id_perfil= {idPerfil}			
+					order by
+					  clave
+			</select>
+			<select id="menuEncabezado">				
+				select
+					tc_janal_menus_encabezado.id_menu_encabezado id_menu,
+					tc_janal_menus_encabezado.*
+				from
+					tc_janal_menus_encabezado
+				inner join
+					tr_janal_menus_enc_perfil on tr_janal_menus_enc_perfil.id_menu_encabezado= tc_janal_menus_encabezado.id_menu_encabezado
+				where
+					tc_janal_menus_encabezado.publicar= {publicar}
+					and tr_janal_menus_enc_perfil.id_perfil= {idPerfil}
+				order by
+					clave
+			</select>
+     </unit>
+		<!--   Mensajes del sistema   -->
+     <unit id="VistaGruposMenusDto">
+      <select id="row">
+        select
+           tc_janal_menus.id_menu,
+           tc_janal_menus.descripcion,
+           tc_janal_menus.clave,
+           tc_janal_menus.nivel ,
+           tc_janal_menus.publicar,
+           tr_janal_menus_grupos.id_menu_grupo,
+           ifnull(tr_janal_menus_grupos.id_grupo,0)  as id_seleccion
+         from
+           tc_janal_menus
+         left join
+           tr_janal_menus_grupos on tc_janal_menus.id_menu = tr_janal_menus_grupos.id_menu
+           and tr_janal_menus_grupos.id_grupo = {idGrupo}
+         order by tc_janal_menus.clave
+       </select>
+       <select id="seleccionados">
+				 select
+           tc_janal_menus.id_menu,
+           tc_janal_menus.descripcion,
+           tc_janal_menus.clave,
+           tc_janal_menus.nivel ,
+           tc_janal_menus.publicar,
+           tr_janal_menus_grupos.id_menu_grupo,
+           ifnull(tr_janal_menus_grupos.id_menu_grupo,0)  as id_seleccion
+         from
+           (select * from tc_janal_menus where clave like '%') tc_janal_menus
+         left join
+           tr_janal_menus_grupos on tc_janal_menus.id_menu = tr_janal_menus_grupos.id_menu
+          where
+           id_grupo = {idGrupo} and tr_janal_menus_grupos.id_menu_grupo is not null
+         order by
+           tc_janal_menus.clave
+       </select>
+			 <select id="maxClaveMenu">
+				 select max(to_number(substr(clave,0,2)) + 1) clave from tc_janal_menus where nivel = 1
+			 </select>
+     </unit>
+     <unit id="VistaTrJanalMensajesUsuariosDto">
+       <select id="mensajesUsuario">
+         select
+           tc_janal_mensajes.id_mensaje as id_key, tc_janal_mensajes.nombre, tc_janal_mensajes.descripcion, tc_janal_mensajes.vigencia_ini, tc_janal_mensajes.vigencia_fin,
+           tr_janal_mensajes_usuarios.id_mensaje_usuario, tc_janal_mensajes.registro
+         from
+           tr_janal_mensajes_usuarios
+         inner join
+           tc_janal_mensajes on tc_janal_mensajes.id_mensaje = tr_janal_mensajes_usuarios.id_mensaje
+         where
+           tr_janal_mensajes_usuarios.id_usuario={idUsuario}
+         and
+           tc_janal_mensajes.id_tipo_mensaje=5
+         order by
+           tc_janal_mensajes.registro desc
+       </select>
+       <select id="notificacion">
+         select
+					tr_janal_mensajes_usuarios.id_mensaje_usuario as id_key,
+					tr_janal_mensajes_usuarios.id_mensaje_usuario,
+					tc_janal_mensajes.descripcion,
+					tc_janal_mensajes.nombre,
+					tc_janal_mensajes.registro,
+					ifnull(tc_janal_mensajes.periodo,0) periodo,
+					ifnull(tc_janal_mensajes.periodo_repite,0) periodo_repite,
+					tc_janal_mensajes.id_prioridad, tc_janal_mensajes.fecha_repite,
+					concat(tc_janal_empleados.nombres,' ',tc_janal_empleados.primer_apellido,' ',tc_janal_empleados.segundo_apellido) nombre_empleado,
+					tc_janal_prioridades.descripcion prioridad,
+					tc_janal_booleanos.id_booleano,
+					tc_janal_booleanos.descripcion leido
+				from
+					tr_janal_mensajes_usuarios
+				inner join
+					tc_janal_mensajes on tc_janal_mensajes.id_mensaje = tr_janal_mensajes_usuarios.id_mensaje
+				inner join
+					tc_janal_usuarios on tc_janal_usuarios.id_usuario = tr_janal_mensajes_usuarios.id_usuario
+				inner join
+					tc_janal_empleados on tc_janal_empleados.id_empleado= tc_janal_usuarios.id_empleado        
+				inner join
+					tc_janal_prioridades on tc_janal_prioridades.id_prioridad = tc_janal_mensajes.id_prioridad
+				inner join
+					tc_janal_booleanos on tr_janal_mensajes_usuarios.id_booleano = tc_janal_booleanos.id_booleano
+				where
+					tc_janal_usuarios.id_usuario = {idUsuario}
+				and
+					tr_janal_mensajes_usuarios.id_booleano in ({idBooleano})
+				and
+					tc_janal_mensajes.id_prioridad in ({idPrioridad})
+        and
+          tc_janal_mensajes.descripcion like '%{mensaje}%'
+				and
+          (str_to_date(date_format(now(), '%d/%c/%Y %H:%i'), '%d/%c/%Y %H:%i')
+        between
+          str_to_date(date_format(tc_janal_mensajes.vigencia_ini, '%d/%c/%Y %H:%i'), '%d/%c/%Y %H:%i')
+        and
+          str_to_date(date_format(tc_janal_mensajes.vigencia_fin, '%d/%c/%Y %H:%i'), '%d/%c/%Y %H:%i'))
+				{sortOrder}
+      </select>
+      <select id="contadorNoLeidos">
+        select
+          count(*) cantidad
+        from
+          tr_janal_mensajes_usuarios
+        inner join
+          tc_janal_mensajes on tc_janal_mensajes.id_mensaje = tr_janal_mensajes_usuarios.id_mensaje
+        where
+          tr_janal_mensajes_usuarios.id_usuario={idUsuario} and id_booleano=2
+        and
+          (str_to_date(date_format(now(), '%d/%c/%Y %H:%i'), '%d/%c/%Y %H:%i')
+        between
+          str_to_date(date_format(tc_janal_mensajes.vigencia_ini, '%d/%c/%Y %H:%i'), '%d/%c/%Y %H:%i')
+        and
+          str_to_date(date_format(tc_janal_mensajes.vigencia_fin, '%d/%c/%Y %H:%i'), '%d/%c/%Y %H:%i'))
+        order by
+          tc_janal_mensajes.registro desc
+       </select>
+     </unit>
+    <unit id="VistaTrJanalMensajesGruposDto">
+      <select id="row">
+        select
+          tc_janal_mensajes.nombre as nombre,
+          tc_janal_mensajes.descripcion as descc,
+          tc_janal_mensajes.url_seguimiento as url,
+          tc_janal_mensajes.vigencia_ini as ini,
+          tc_janal_mensajes.vigencia_fin as fin,
+          tc_janal_prioridades.descripcion as prioridad,
+          tr_janal_mensajes_grupos.id_mensaje_grupo as idMensajeGrupo,
+          tc_janal_mensajes.id_mensaje as id_key_mensaje
+        from
+          tr_janal_mensajes_grupos
+        inner join
+          tc_janal_mensajes
+        on
+          tr_janal_mensajes_grupos.id_mensaje=tc_janal_mensajes.id_mensaje
+        inner join
+          tc_janal_prioridades
+        on
+          tc_janal_mensajes.id_prioridad=tc_janal_prioridades.id_prioridad
+        where
+          tc_janal_mensajes.id_tipo_mensaje=2
+        and
+          tr_janal_mensajes_grupos.id_grupo={idGrupo}
+        and
+          tc_janal_mensajes.descripcion like '%{descripcion}%'
+        {sortOrder}
+      </select>
+    </unit>
+
+    <unit id="VistaMensajesPerfiles">
+      <select id="row">
+        select
+        tc_janal_mensajes.id_mensaje as id_key, tc_janal_grupos.descripcion, tc_janal_perfiles.descripcion descripcion_perfil, tc_janal_mensajes.descripcion descripcion_mensaje, tc_janal_mensajes.vigencia_ini, tc_janal_mensajes.vigencia_fin
+        from
+        tc_janal_mensajes
+        inner join
+        tr_janal_mensajes_perfiles on tc_janal_mensajes.id_mensaje=tr_janal_mensajes_perfiles.id_mensaje
+        inner join
+        tc_janal_perfiles on tr_janal_mensajes_perfiles.id_perfil=tc_janal_perfiles.id_perfil
+        inner join
+        tc_janal_grupos on tc_janal_perfiles.id_grupo=tc_janal_grupos.id_grupo
+        where
+        tr_janal_mensajes_perfiles.id_perfil={idPerfil}
+        {sortOrder}
+      </select>
+    </unit>
+
+    <unit id="VistaAccesoCentroTrabajo">
+      <select id="escuelasResponsable">
+          select
+            tc_kajool_escuelas.id_escuela as id_key,
+            clave, nombres, tc_kajool_escuelas.id_servicio_educativo
+          from
+            tc_kajool_escuelas
+          inner join
+            tr_kajool_responsables_esc on tr_kajool_responsables_esc.id_escuela = tc_kajool_escuelas.id_escuela
+          inner join
+            tc_kajool_empleados on tc_kajool_empleados.id_empleado = tr_kajool_responsables_esc.id_empleado
+          where
+            id_empleado={idEmpleado}
+        </select>
+        <select id="escuelaSesion">
+          select tc_kajool_escuelas.id_escuela as id_key,
+                 tc_kajool_turnos.clave as clave,
+                 tc_kajool_sostenimientos.descripcion as descripcion,
+                 tc_kajool_personas.nombres as nombres,
+                 tc_kajool_personas.primer_apellido as primerApellido,
+                 tc_kajool_personas.segundo_apellido as segundoApellido
+          from
+                 tc_kajool_escuelas
+          inner join
+            tr_kajool_responsables_esc
+                on tr_kajool_responsables_esc.id_escuela=tc_kajool_escuelas.id_escuela
+         inner join
+            tc_kajool_empleados
+                on tc_kajool_empleados.id_empleado=tr_kajool_responsables_esc.id_empleado
+        inner join
+            tc_kajool_personas
+                on tc_kajool_empleados.id_empleado=tc_kajool_personas.id_empleado
+        inner join
+            tc_kajool_turnos
+                on tc_kajool_escuelas.id_turno=tc_kajool_turnos.id_turno
+        inner  join
+            tc_kajool_sostenimientos
+                on tc_kajool_sostenimientos.id_sostenimiento=tc_kajool_escuelas.id_sostenimiento
+        </select>
+      </unit>
+			
+	 <!-- Inicio usuarios -->
+		<unit id="VistaUsuariosDto">
+			<select id="row">
+				select
+			  	tc_janal_usuarios.id_usuario as id_key_usuario,
+				  if(isnull(tc_janal_empleados.nombres), ' ', tc_janal_empleados.nombres) nombres,
+					if(isnull(tc_janal_empleados.primer_apellido), ' ', tc_janal_empleados.primer_apellido) primer_apellido,
+					if(isnull(tc_janal_empleados.segundo_apellido), ' ', tc_janal_empleados.segundo_apellido) segundo_apellido,
+				  tc_janal_perfiles.descripcion desc_perfil,				
+					tc_janal_entidades.descripcion desc_entidad,
+				  tc_janal_usuarios.activo,				
+				  lower(tc_janal_empleados.cuenta) cuenta				  				
+				from
+				  tc_janal_usuarios
+				inner join				
+          tc_janal_entidades on tc_janal_entidades.id_entidad = tc_janal_usuarios.id_entidad
+				inner join 				
+				  tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+        inner join				
+				  tc_janal_empleados on tc_janal_usuarios.id_empleado = tc_janal_empleados.id_empleado				
+				inner join
+				  tc_janal_grupos on tc_janal_perfiles.id_grupo= tc_janal_grupos.id_grupo		
+				where
+				{condicion}		
+				{sortOrder}
+			</select>
+			<select id="perfilUsuario">
+				select
+					tc_janal_usuarios.id_usuario as id_key,
+					concat(nombres,' ',primer_apellido,' ',segundo_apellido) nombre_completo,
+					tc_janal_perfiles.descripcion as nombre_perfil,
+					tc_janal_empleados.id_empleado
+				from
+					tc_janal_usuarios
+				inner join
+					tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+				inner join
+					tc_janal_perfiles on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
+				where
+					tc_janal_usuarios.id_usuario= {idUsuario}
+			</select>			
+			<select id="findIdPersona">
+				select
+					tc_janal_empleados.id_empleado as id_key,
+					tc_janal_empleados.id_empleado,
+					tc_janal_usuarios.id_usuario,
+					tc_janal_empleados.cuenta,
+					tc_janal_empleados.contrasenia
+				from
+					tc_janal_empleados
+				inner join
+					tc_janal_usuarios on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado				
+				where
+					tc_janal_empleados.id_empleado = {idEmpleado}
+			</select>
+		</unit>
+		<unit id="VistaDelegaPrivilegiosDto">
+			<select id="usuariosConDelega">
+				select
+					id_usuario_delega as id_key,
+					tr_janal_usuarios_delega.id_usuario,
+					tr_janal_usuarios_delega.id_empleado,
+					tr_janal_usuarios_delega.vigencia_ini,
+					tr_janal_usuarios_delega.vigencia_fin,
+					tr_janal_usuarios_delega.registro,
+					if(tr_janal_usuarios_delega.activo=1,'Activo','Desactivado') estatus,
+					tr_janal_usuarios_delega.activo,
+					tr_janal_usuarios_delega.login,
+					tr_janal_usuarios_delega.contrasenia,					
+					tc_janal_empleados.primer_apellido,
+					tc_janal_empleados.segundo_apellido,
+					tc_janal_empleados.nombres,
+					concat(primer_apellido,' ',segundo_apellido,' ',nombres) nombre_completo,
+					tc_janal_perfiles.descripcion nombre_perfil,
+				  tc_janal_usuarios.id_entidad
+				from
+					tr_janal_usuarios_delega
+        inner join           					
+					tc_janal_usuarios on tr_janal_usuarios_delega.id_usuario = tc_janal_usuarios.id_usuario
+				inner join
+				  tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+				inner join
+					tc_janal_perfiles on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
+				where
+					tr_janal_usuarios_delega.id_usuario= {idUsuario}					
+				and
+					(now() &gt;= tr_janal_usuarios_delega.vigencia_ini and now() &lt;= tr_janal_usuarios_delega.vigencia_fin)		
+				and
+					(concat(nombres,' ',primer_apellido,' ',segundo_apellido) like '%{parametro}%' or curp like '%{parametro}%' or login like '%{parametro}%')
+				{sortOrder}
+			</select>
+			<select id="usuariosDelega">
+        select
+          concat(nombres,' ',primer_apellido,' ',segundo_apellido) nombre,
+          tc_janal_empleados.cuenta
+        from
+          tc_janal_usuarios
+        inner join
+          tr_janal_usuarios_delega on tr_janal_usuarios_delega.id_usuario = tc_janal_usuarios.id_usuario
+        inner join
+          tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+        where
+          tr_janal_usuarios_delega.id_usuario= {idUsuario}
+        group by
+          nombre, cuenta
+			</select>
+			<select id="gruposDelegados">
+			  select
+				  distinct(tc_janal_grupos.id_grupo) as id_key,
+					tc_janal_grupos.descripcion, 	
+          tc_janal_grupos.clave,					
+					tc_janal_usuarios.id_usuario
+				from				
+				  tc_janal_grupos
+				inner join
+				  tc_janal_perfiles on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+				inner join
+				  tc_janal_usuarios on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+        inner join
+          tr_janal_usuarios_delega on tc_janal_usuarios.id_usuario = tr_janal_usuarios_delega.id_usuario
+        inner join
+          tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+				where
+				  tr_janal_usuarios_delega.id_usuario= {idUsuario} and
+          tc_janal_empleados.cuenta = '{cuenta}' and
+				  tc_janal_perfiles.acceso=1 and
+				  tc_janal_usuarios.activo=1
+			</select>
+			<select id="gruposDelegadosActivos">
+					select
+				  distinct(tc_janal_grupos.id_grupo) as id_key,
+					tc_janal_grupos.descripcion, 	
+          tc_janal_grupos.clave,					
+					tc_janal_usuarios.id_usuario
+				from				
+				  tc_janal_grupos
+				inner join
+				  tc_janal_perfiles on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+				inner join
+				  tc_janal_usuarios on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+        inner join
+          tr_janal_usuarios_delega on tc_janal_usuarios.id_usuario = tr_janal_usuarios_delega.id_usuario
+        inner join
+          tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+				where
+				  tr_janal_usuarios_delega.id_usuario= {idUsuario} and
+          tc_janal_usuarios.cuenta = '{cuenta}' and
+				  tc_janal_perfiles.acceso=1 and
+				  tc_janal_usuarios.activo=1 and
+					tc_janal_grupos.id_grupo in ({gruposActivos})
+				</select>
+				<select id="perfilesDelegados">
+					select
+						tc_janal_usuarios.id_perfil as id_key,
+						tc_janal_usuarios.id_perfil,
+						tc_janal_perfiles.descripcion, 	
+						tc_janal_perfiles.id_menu,
+						tc_janal_usuarios.id_usuario,
+						concat(nombres,' ',primer_apellido,' ',segundo_apellido) usuario_perfil
+					from
+						tc_janal_usuarios
+					inner join
+						tr_janal_usuarios_delega on tc_janal_usuarios.id_usuario = tr_janal_usuarios_delega.id_usuario					
+          inner join
+            tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+					inner join
+						tc_janal_perfiles on tc_janal_usuarios.id_perfil=tc_janal_perfiles.id_perfil
+					inner join
+						tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo					
+          where 						
+						tc_janal_empleados.cuenta= '{cuenta}'
+						and tr_janal_usuarios_delega.id_usuario = {idUsuario}
+						and tc_janal_grupos.id_grupo= {idGrupo}
+						and tc_janal_usuarios.activo=1
+						and tc_janal_perfiles.acceso=1
+						and tr_janal_usuarios_delega.activo= 1
+						and (now() &gt;= tr_janal_usuarios_delega.vigencia_ini and now() &lt;= tr_janal_usuarios_delega.vigencia_fin)
+          order by	
+            tc_janal_perfiles.descripcion
+			</select>			
+			<select id="detalleUsuarioDelega">
+				select
+					tr_janal_usuarios_delega.id_usuario_delega AS id_key,
+          tc_janal_usuarios.id_usuario,
+					tc_janal_empleados.cuenta,
+					tc_janal_empleados.contrasenia,
+					tc_janal_usuarios.registro,
+					tc_janal_perfiles.descripcion AS descripcion_perfil,
+					tc_janal_usuarios.id_perfil,
+					tc_janal_empleados.id_empleado,
+					tc_janal_empleados.nombres,
+					IFNULL(tc_janal_empleados.primer_apellido,'') primer_apellido,
+					IFNULL(tc_janal_empleados.segundo_apellido,'') segundo_apellido,					
+					tc_janal_empleados.id_sexo,										
+					tc_janal_grupos.descripcion AS descripcion_grupo,																				
+					tc_janal_empleados.estilo,
+					tc_janal_perfiles.id_menu
+        from
+					tr_janal_usuarios_delega
+        inner join
+          tc_janal_usuarios ON tr_janal_usuarios_delega.id_usuario = tc_janal_usuarios.id_usuario
+        inner join
+          tc_janal_empleados ON tc_janal_usuarios.id_empleado = tc_janal_empleados.id_empleado
+				inner join
+          tc_janal_perfiles ON tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+        inner join
+          tc_janal_grupos ON tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+        where
+          tr_janal_usuarios_delega.id_usuario= {idUsuario}
+        and
+          tc_janal_empleados.cuenta='{cuenta}'
+        and
+          tc_janal_usuarios.id_perfil= {idPerfil}
+			</select>
+			<select id="delegaActivo">
+				select
+					tr_janal_usuarios_delega.id_usuario_delega id_key,
+					tr_janal_usuarios_delega.id_usuario_delega,
+					tr_janal_usuarios_delega.login,
+					tr_janal_usuarios_delega.contrasenia,
+					tr_janal_usuarios_delega.id_empleado,	
+					tr_janal_usuarios_delega.id_usuario,						
+					tc_janal_usuarios.id_perfil,
+					tc_janal_usuarios.id_empleado empleado_origen,
+					tc_janal_empleados.cuenta
+        from
+					tr_janal_usuarios_delega
+        inner join
+					tc_janal_usuarios on tr_janal_usuarios_delega.id_usuario= tc_janal_usuarios.id_usuario
+				inner join tc_janal_empleados on tc_janal_empleados.id_empleado=tc_janal_usuarios.id_empleado
+        where
+					tr_janal_usuarios_delega.login = '{cuenta}'
+        and
+					tr_janal_usuarios_delega.activo= 1
+        and
+					(now() &gt;= tr_janal_usuarios_delega.vigencia_ini and now() &lt;= tr_janal_usuarios_delega.vigencia_fin)
+			</select>
+		</unit>
+		<!-- Fin usuarios -->
+		<unit id="VistaGruposAccesoDto">
+			<select id="row">
+				select
+				  distinct(tc_janal_grupos.id_grupo) as id_key,
+					tc_janal_grupos.descripcion, 	
+          tc_janal_grupos.clave,					
+					tc_janal_usuarios.id_usuario
+				from				
+				  tc_janal_grupos
+				inner join
+				  tc_janal_perfiles on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+				inner join
+				  tc_janal_usuarios on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+				where
+				  tc_janal_usuarios.id_usuario= {idUsuario} and
+				  tc_janal_perfiles.acceso=1 and
+				  tc_janal_usuarios.activo=1
+			</select>
+			<select id="gruposActivos">
+				select
+				  distinct(tc_janal_grupos.id_grupo) as id_key,
+					tc_janal_grupos.descripcion, 	
+          tc_janal_grupos.clave,					
+					tc_janal_usuarios.id_usuario
+				from				
+				  tc_janal_grupos
+				inner join
+				  tc_janal_perfiles on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+				inner join
+				  tc_janal_usuarios on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+				where
+				  tc_janal_usuarios.id_usuario= {idUsuario} and
+				  tc_janal_perfiles.acceso=1 and
+				  tc_janal_usuarios.activo=1 and
+					tc_janal_grupos.id_grupo in ({gruposActivos})
+			</select>
+			<select id="perfiles">
+				 select
+					tc_janal_perfiles.id_perfil id_key,
+					tc_janal_perfiles.descripcion,
+					tc_janal_perfiles.id_menu,
+					tc_janal_empleados.cuenta,
+				  tc_janal_usuarios.id_usuario,
+	        concat(nombres,' ',primer_apellido,' ',segundo_apellido) usuario_perfil,
+          tc_janal_entidades.descripcion entidad
+				 from
+					tc_janal_grupos
+				 inner join
+					tc_janal_perfiles on tc_janal_perfiles.id_grupo = tc_janal_grupos.id_grupo
+				 inner join
+					tc_janal_usuarios on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil				
+				 inner join
+			    tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado			
+         inner join 
+          tc_janal_entidades on tc_janal_usuarios.id_entidad = tc_janal_entidades.id_entidad
+				 WHERE
+					tc_janal_empleados.id_empleado= {idEmpleado}				 					
+					and tc_janal_grupos.id_grupo= {idGrupo}
+					and tc_janal_usuarios.activo=1
+					and tc_janal_perfiles.acceso=1										
+			</select>
+		</unit>
+		<unit id="VistaPrivilegiosDto">
+			<select id="row">
+        select
+         tc_kajool_empleados.numero_empleado
+        from
+         tc_janal_usuarios
+				inner join
+				 tc_kajool_empleados on tc_janal_usuarios.id_empleado = tc_kajool_empleados.id_empleado
+        where
+         cuenta = '{cuenta}'
+      </select>
+			<select id="delega">
+        select
+					*
+				from
+					tr_janal_usuarios_delega
+				where
+					login = '{login}'
+				  and activo= 1
+				  and (now() &gt;= vigencia_ini and now() &lt;= vigencia_fin)
+      </select>
+		</unit>
+		<unit id="VistaTelefonosDto">
+			<select id="row">	
+ 				 select
+					tr_kajool_personas_tipos_telefo.id_empleado_tipo_telefono id_key, tr_kajool_personas_tipos_telefo.*, tc_kajool_tipos_telefonos.descripcion
+				 from
+					tr_kajool_personas_tipos_telefo
+				 inner join
+					tc_kajool_tipos_telefonos on tr_kajool_personas_tipos_telefo.id_tipo_telefono = tc_kajool_tipos_telefonos.id_tipo_telefono
+				 where
+					tr_kajool_personas_tipos_telefo.id_empleado={idEmpleado}
+			</select>
+		</unit>
+		<unit id="VistaUrlsDto">
+			<select id="row">	
+ 				 select
+					tr_kajool_personas_tipos_urls.id_empleado_tipo_url id_key, tr_kajool_personas_tipos_urls.*, tc_kajool_tipos_urls.descripcion
+				 from
+					tr_kajool_personas_tipos_urls
+				 inner join
+					tc_kajool_tipos_urls on tr_kajool_personas_tipos_urls.id_tipo_url = tc_kajool_tipos_urls.id_tipo_url
+				 where
+					tr_kajool_personas_tipos_urls.id_empleado={idEmpleado}
+			</select>
+		</unit>
+    <unit id="VistaPersonasDicapaDto">
+      <select id="row">	
+        select
+          tr_kajool_personas_discapa.id_empleado_tipo_discapacidad as id_key,
+          tc_kajool_tipos_discapacidad.id_tipo_discapacidad,
+          tc_kajool_tipos_discapacidad.descripcion,
+          tr_kajool_personas_discapa.id_empleado
+        from
+          tr_kajool_personas_discapa
+        inner join
+          tc_kajool_tipos_discapacidad on tc_kajool_tipos_discapacidad.id_tipo_discapacidad = tr_kajool_personas_discapa.id_tipo_discapacidad
+        where
+          tr_kajool_personas_discapa.id_empleado={idEmpleado}
+      </select>
+    </unit>
+    <unit id="VistaPersonasLenguasDto">
+      <select id="row">	
+        select
+          tr_kajool_personas_lenguas.id_empleado_lengua as id_key,
+          tr_kajool_personas_lenguas.id_empleado,
+          tr_kajool_personas_lenguas.id_lengua,
+          tc_kajool_lenguas.descripcion
+        from
+          tr_kajool_personas_lenguas
+        inner join
+          tc_kajool_lenguas on tc_kajool_lenguas.id_lengua = tr_kajool_personas_lenguas.id_lengua
+        where
+          tr_kajool_personas_lenguas.id_empleado={idEmpleado}
+      </select>
+    </unit>
+    <unit id="VistaEntidadesMunicipiosDto">
+      <select id="row">
+         select
+          tc_kajool_codigos_postales.id_codigo_postal id_key,tc_janal_municipios.id_municipio, tc_janal_entidades.id_entidad
+         from
+          tc_kajool_codigos_postales
+         inner join
+          tc_janal_municipios on tc_janal_municipios.id_municipio = tc_kajool_codigos_postales.id_municipio
+         inner join
+          tc_janal_entidades on tc_janal_municipios.id_entidad = tc_janal_entidades.id_entidad
+         where
+          tc_kajool_codigos_postales.id_codigo_postal={idCodigoPostal}
+      </select>
+    </unit>
+    <unit id="VistaEscuelasEscalasDto">
+      <select id="row">
+        select
+          tc_kajool_escuelas_escalas.id_escuela_escala as id_key,
+          tc_kajool_escuelas_escalas.rango,
+          tc_kajool_tipos_escalas.descripcion,
+          tc_kajool_tipos_escalas.id_tipo_escala
+        from
+          tc_kajool_tipos_escalas
+        inner join
+          tc_kajool_escuelas_escalas on tc_kajool_tipos_escalas.id_tipo_escala = tc_kajool_escuelas_escalas.id_tipo_escala
+        inner join
+          tr_kajool_mapas_escuelas on tr_kajool_mapas_escuelas.id_mapa_escuela = tc_kajool_escuelas_escalas.id_mapa_escuela
+        where
+          tr_kajool_mapas_escuelas.id_mapa_escuela= {idMapaEscuela}
+        order by
+          id_tipo_escala
+      </select>
+    </unit>
+    <unit id="VistaDatosGeneralesDto">
+      <select id="row">
+           select
+            tc_kajool_escuelas.id_escuela id_key, tc_kajool_escuelas.clave, tc_kajool_escuelas.nombres, tc_janal_municipios.descripcion municipio, tc_janal_entidades.descripcion entidad,
+            concat(tc_kajool_inmuebles.nomvial_m,' ',ifnull(tc_kajool_inmuebles.numext1_m, 's/n'),' ',tc_kajool_inmuebles.colonia) domicilio,
+            tc_kajool_inmuebles.entreca_m entre_calle,tc_kajool_inmuebles.ycalle_m ycalle,tc_kajool_turnos.clave turno,tc_kajool_sostenimientos.descripcion control,
+            ifnull(conteo_alumnos.alumnos,0) alumnos, ifnull(conteo_personal.personal,0) personal
+           from
+            tc_kajool_escuelas
+           inner join
+            tc_kajool_inmuebles on tc_kajool_inmuebles.id_escuela = tc_kajool_escuelas.id_escuela
+           inner join
+            tc_janal_entidades on tc_kajool_inmuebles.ent_m= tc_janal_entidades.clave
+           inner join
+            tc_janal_municipios on tc_kajool_inmuebles.mun_m= tc_janal_municipios.clave and tc_janal_entidades.id_entidad=tc_janal_municipios.id_entidad
+           inner join
+            tc_kajool_turnos on tc_kajool_turnos.id_turno = tc_kajool_escuelas.id_turno
+           inner join
+            tc_kajool_sostenimientos on tc_kajool_sostenimientos.id_sostenimiento = tc_kajool_escuelas.id_sostenimiento
+           left join
+            (select id_escuela, count(*) alumnos from tc_kajool_alumnos where id_escuela={idEscuela} group by id_escuela) conteo_alumnos on conteo_alumnos.id_escuela= tc_kajool_escuelas.id_escuela
+           left join
+            (select id_escuela, count(*) personal from tc_kajool_empleados where id_escuela={idEscuela} group by id_escuela) conteo_personal on conteo_personal.id_escuela= tc_kajool_escuelas.id_escuela
+           where
+            tc_kajool_escuelas.id_escuela={idEscuela}
+        </select>
+        <select id="responsable">
+           select
+            tc_kajool_personas.id_empleado id_key, tc_kajool_escuelas.id_escuela,
+            concat(tc_kajool_personas.nombres,' ',tc_kajool_personas.primer_apellido,' ',tc_kajool_personas.segundo_apellido) nombre, tc_kajool_personas.curp, tc_kajool_personas.domicilio
+           from
+            tc_kajool_escuelas
+           inner join
+            tr_kajool_responsables_esc on tr_kajool_responsables_esc.id_responsable_escuela = tc_kajool_escuelas.id_responsable
+           inner join
+            tc_kajool_empleados on tc_kajool_empleados.id_empleado=tr_kajool_responsables_esc.id_empleado
+           inner join
+             tc_kajool_personas on tc_kajool_empleados.id_empleado=tc_kajool_personas.id_empleado
+           where
+            tc_kajool_escuelas.id_escuela={idEscuela}
+        </select>
+        <select id="telefonosResponsable">
+           select
+            concat(tc_kajool_tipos_telefonos.descripcion,': (',tr_kajool_personas_tipos_telefo.lada,')-',tr_kajool_personas_tipos_telefo.telefono,
+            if(ifnull(extension,'')='', '', concat(' Ext. ',extension))) telefono
+           from
+            tr_kajool_personas_tipos_telefo
+           inner join
+            tc_kajool_tipos_telefonos on tr_kajool_personas_tipos_telefo.id_tipo_telefono =tc_kajool_tipos_telefonos.id_tipo_telefono
+           where
+            id_empleado={idEmpleado}
+        </select>
+        <select id="urlsResponsable">
+           select
+            concat(tc_kajool_tipos_urls.descripcion,': ',tr_kajool_personas_tipos_urls.url) url
+           from
+            tr_kajool_personas_tipos_urls
+           inner join
+            tc_kajool_tipos_urls on tr_kajool_personas_tipos_urls.id_tipo_url =tc_kajool_tipos_urls.id_tipo_url
+           where
+            id_empleado={idEmpleado}
+        </select>
+      </unit>
+			<unit id="VistaContadorAyudasDto">
+				<select id="row">
+					select
+						tc_kajool_ayudas.id_ayuda as id_Key,
+						tc_kajool_ayudas.clave,
+						count(tc_kajool_ayudas.clave) as total,
+						row_number()over(order by tc_kajool_ayudas.clave asc) renglon
+					from
+						tc_kajool_ayudas
+					inner join
+						tc_kajool_contador_ayudas
+					on
+						tc_kajool_ayudas.id_ayuda = tc_kajool_contador_ayudas.id_ayuda
+					where
+					 {condicion}
+					group by
+						tc_kajool_contador_ayudas.id_ayuda, tc_kajool_ayudas.id_ayuda, tc_kajool_ayudas.clave
+				</select>
+			</unit>
+			
+			<unit id="VistaIndicadoresDirectivos">
+				<select id="nacionalDinamico">
+					select
+						total, porcentaje total_porcentaje, id_campo, {tabla}.descripcion descripcion, {tabla}.descripcion categoria,
+						1 id_key, 'Nacional' corte
+					from
+						tr_janal_detalles_avances
+					inner join
+						{tabla} on {tabla}.{campo}= tr_janal_detalles_avances.id_campo
+					inner join
+						tr_janal_estatus_avances on tr_janal_estatus_avances.id_estatus_avance= tr_janal_detalles_avances.id_campo
+					where
+						tr_janal_detalles_avances.id_bitacora_avance= {idBitacoraAvance}
+						and tr_janal_estatus_avances.id_definicion_avance= {idSepDefinicionAvance}
+						and nivel= {nivel}
+					order by tr_janal_estatus_avances.orden
+				</select>
+				<select id="organizacion">
+					select
+						total, porcentaje total_porcentaje, id_campo, {tabla}.descripcion descripcion, {tabla}.descripcion categoria,
+						tr_janal_detalles_avances.id_organizacion id_key, rh_tc_uni_ejecutoras.descripcion corte
+					from
+						tr_janal_detalles_avances
+					inner join
+						{tabla} on {tabla}.{campo}= tr_janal_detalles_avances.id_campo
+					inner join
+						rh_tc_uni_ejecutoras on rh_tc_uni_ejecutoras.id_organizacion= tr_janal_detalles_avances.id_organizacion
+					inner join
+						tr_janal_estatus_avances on tr_janal_estatus_avances.id_estatus_avance= tr_janal_detalles_avances.id_campo
+					where
+						tr_janal_detalles_avances.id_bitacora_avance= {idBitacoraAvance}
+						and tr_janal_detalles_avances.id_organizacion= {idOrganizacion}
+						and tr_janal_estatus_avances.id_definicion_avance= {idSepDefinicionAvance}
+						and nivel= {nivel}
+					order by
+						tr_janal_detalles_avances.id_organizacion, tr_janal_estatus_avances.orden
+				</select>
+				<select id="organizacionDinamico">
+					select
+						total, porcentaje total_porcentaje, id_campo, {tabla}.descripcion descripcion,
+						tr_janal_detalles_avances.id_organizacion id_key, rh_tc_uni_ejecutoras.descripcion corte
+					from
+						tr_janal_detalles_avances
+					inner join
+						{tabla} on {tabla}.{campo}= tr_janal_detalles_avances.id_campo
+					inner join
+						rh_tc_uni_ejecutoras on rh_tc_uni_ejecutoras.id_organizacion= tr_janal_detalles_avances.id_organizacion
+					inner join
+						tr_janal_estatus_avances on tr_janal_estatus_avances.id_estatus_avance= tr_janal_detalles_avances.id_campo
+					where
+						tr_janal_detalles_avances.id_bitacora_avance= {idBitacoraAvance}
+						and tr_janal_estatus_avances.id_definicion_avance= {idSepDefinicionAvance}
+						and nivel= {nivel}
+					order by
+						tr_janal_detalles_avances.id_organizacion, tr_janal_estatus_avances.orden
+				</select>
+				<select id="entidad">
+					select
+						total, porcentaje total_porcentaje, id_campo, {tabla}.descripcion descripcion, {tabla}.descripcion categoria,
+						tr_janal_detalles_avances.id_entidad id_key, rh_tc_entidades.descripcion corte
+					from
+						tr_janal_detalles_avances
+					inner join
+						{tabla} on {tabla}.{campo}= tr_janal_detalles_avances.id_campo
+					inner join
+						 rh_tc_entidades on rh_tc_entidades.id_entidad= tr_janal_detalles_avances.id_entidad
+					inner join
+						tr_janal_estatus_avances on tr_janal_estatus_avances.id_estatus_avance= tr_janal_detalles_avances.id_campo
+					where
+						tr_janal_detalles_avances.id_entidad= {idEntidad}
+						and tr_janal_detalles_avances.id_bitacora_avance= {idBitacoraAvance}
+						and tr_janal_estatus_avances.id_definicion_avance= {idSepDefinicionAvance}
+						and nivel= {nivel}
+					order by
+						tr_janal_detalles_avances.id_entidad, tr_janal_estatus_avances.orden
+				</select>
+				<select id="entidadDinamico">
+					select
+						total, porcentaje total_porcentaje, id_campo, {tabla}.descripcion descripcion,
+						tr_janal_detalles_avances.id_entidad id_key, rh_tc_entidades.descripcion corte
+					from
+						tr_janal_detalles_avances
+					inner join
+						{tabla} on {tabla}.{campo}= tr_janal_detalles_avances.id_campo
+					inner join
+						 rh_tc_entidades on rh_tc_entidades.id_entidad= tr_janal_detalles_avances.id_entidad
+					inner join
+						tr_janal_estatus_avances on tr_janal_estatus_avances.id_estatus_avance= tr_janal_detalles_avances.id_campo
+					where
+						tr_janal_detalles_avances.id_organizacion= {idOrganizacion}
+						and tr_janal_detalles_avances.id_bitacora_avance= {idBitacoraAvance}
+						and tr_janal_estatus_avances.id_definicion_avance= {idSepDefinicionAvance}
+						and nivel= {nivel}
+					order by
+						tr_janal_detalles_avances.id_entidad, tr_janal_estatus_avances.orden
+				</select>
+				<select id="oficina">
+					select
+						total, porcentaje total_porcentaje, id_campo, {tabla}.descripcion descripcion, {tabla}.descripcion categoria,
+						tr_janal_detalles_avances.id_entidad_oficina id_key, tc_oficinas.descripcion corte
+					from
+						tr_janal_detalles_avances
+					inner join
+						{tabla} on {tabla}.{campo}= tr_janal_detalles_avances.id_campo
+					inner join
+						tc_oficinas on tc_oficinas.id_oficina= tr_janal_detalles_avances.id_entidad_oficina
+					inner join
+						tr_janal_estatus_avances on tr_janal_estatus_avances.id_estatus_avance= tr_janal_detalles_avances.id_campo
+					where
+						tr_janal_detalles_avances.id_entidad_oficina= {idEntidadOficina}
+						and tr_janal_detalles_avances.id_bitacora_avance= {idBitacoraAvance}
+						and tr_janal_estatus_avances.id_definicion_avance= {idSepDefinicionAvance}
+						and nivel= {nivel}
+					order by
+						tr_janal_detalles_avances.id_entidad_oficina, tr_janal_estatus_avances.orden
+				</select>
+				<select id="oficinaDinamico">
+					select
+						total, porcentaje total_porcentaje, id_campo, {tabla}.descripcion descripcion,
+						tr_janal_detalles_avances.id_entidad_oficina id_key, tc_oficinas.descripcion corte
+					from
+						tr_janal_detalles_avances
+					inner join
+						{tabla} on {tabla}.{campo}= tr_janal_detalles_avances.id_campo
+					inner join
+						tc_oficinas on tc_oficinas.id_oficina= tr_janal_detalles_avances.id_entidad_oficina
+					inner join
+						tr_janal_estatus_avances on tr_janal_estatus_avances.id_estatus_avance= tr_janal_detalles_avances.id_campo
+					where
+						tr_janal_detalles_avances.id_entidad= {idEntidad}
+						and tr_janal_detalles_avances.id_bitacora_avance= {idBitacoraAvance}
+						and tr_janal_estatus_avances.id_definicion_avance= {idSepDefinicionAvance}
+						and nivel= {nivel}
+					order by
+						tr_janal_detalles_avances.id_entidad_oficina, tr_janal_estatus_avances.orden
+				</select>
+				<select id="municipio">
+					select
+						total, porcentaje total_porcentaje, id_campo, {tabla}.descripcion descripcion, {tabla}.descripcion categoria,
+						tr_janal_detalles_avances.id_municipio id_key, rh_tc_municipios.descripcion corte
+					from
+						tr_janal_detalles_avances
+					inner join
+						{tabla} on {tabla}.{campo}= tr_janal_detalles_avances.id_campo
+					inner join
+						rh_tc_municipios on rh_tc_municipios.id_municipio= tr_janal_detalles_avances.id_municipio
+					inner join
+						tr_janal_estatus_avances on tr_janal_estatus_avances.id_estatus_avance= tr_janal_detalles_avances.id_campo
+					where
+						tr_janal_detalles_avances.id_municipio= {idMunicipio}
+						and tr_janal_detalles_avances.id_bitacora_avance= {idBitacoraAvance}
+						and tr_janal_estatus_avances.id_definicion_avance= {idSepDefinicionAvance}
+						and nivel= {nivel}
+					order by
+						tr_janal_detalles_avances.id_municipio, tr_janal_estatus_avances.orden
+				</select>
+				<select id="municipioDinamico">
+					select
+						total, porcentaje total_porcentaje, id_campo, {tabla}.descripcion descripcion,
+						tr_janal_detalles_avances.id_municipio id_key, rh_tc_municipios.descripcion corte
+					from
+						tr_janal_detalles_avances
+					inner join
+						{tabla} on {tabla}.{campo}= tr_janal_detalles_avances.id_campo
+					inner join
+						rh_tc_municipios on rh_tc_municipios.id_municipio= tr_janal_detalles_avances.id_municipio
+					inner join
+						tr_janal_estatus_avances on tr_janal_estatus_avances.id_estatus_avance= tr_janal_detalles_avances.id_campo
+					where
+						tr_janal_detalles_avances.id_entidad= {idEntidad}
+						and tr_janal_detalles_avances.id_bitacora_avance= {idBitacoraAvance}
+						and tr_janal_estatus_avances.id_definicion_avance= {idSepDefinicionAvance}
+						and nivel= {nivel}
+					order by
+						tr_janal_detalles_avances.id_municipio, tr_janal_estatus_avances.orden
+				</select>
+				<select id="organizacionGrupo">
+					 select
+						total, porcentaje total_porcentaje, id_campo, {tabla}.descripcion descripcion, {tabla}.descripcion categoria,
+						tr_janal_detalles_avances.id_organizacion_grupo id_key, rh_tc_localidades.descripcion corte
+					from
+						tr_janal_detalles_avances
+					inner join
+						 {tabla} on {tabla}.{campo}= tr_janal_detalles_avances.id_campo
+					inner join
+						 rh_tc_localidades on rh_tc_localidades.id_organizacion_grupo= tr_janal_detalles_avances.id_organizacion_grupo
+					inner join
+						tr_janal_estatus_avances on tr_janal_estatus_avances.id_estatus_avance= tr_janal_detalles_avances.id_campo				
+					where
+						tr_janal_detalles_avances.id_organizacion_grupo= {idOrganizacionGrupo}
+						and tr_janal_detalles_avances.id_bitacora_avance= {idBitacoraAvance}
+						and tr_janal_estatus_avances.id_definicion_avance= {idSepDefinicionAvance}
+						and nivel= {nivel}
+					order by
+						tr_janal_detalles_avances.id_organizacion_grupo, tr_janal_estatus_avances.orden
+				</select>
+				<select id="localidadDinamico">
+					select
+						total, porcentaje total_porcentaje, id_campo, {tabla}.descripcion descripcion,
+						tr_janal_detalles_avances.id_organizacion_grupo id_key, rh_tc_localidades.descripcion corte
+					from
+						tr_janal_detalles_avances
+					inner join
+						 {tabla} on {tabla}.{campo}= tr_janal_detalles_avances.id_campo
+					inner join
+						 rh_tc_localidades on rh_tc_localidades.id_organizacion_grupo= tr_janal_detalles_avances.id_organizacion_grupo
+					inner join
+						tr_janal_estatus_avances on tr_janal_estatus_avances.id_estatus_avance= tr_janal_detalles_avances.id_campo
+					where
+						tr_janal_detalles_avances.id_municipio= {idMunicipio}
+						and tr_janal_detalles_avances.id_bitacora_avance= {idBitacoraAvance}
+						and tr_janal_estatus_avances.id_definicion_avance= {idSepDefinicionAvance}
+						and nivel= {nivel}
+					order by
+						tr_janal_detalles_avances.id_organizacion_grupo, tr_janal_estatus_avances.orden
+				</select>
+				<select id="estatusAplican">
+					select
+						tc_janal_estatus_avances.*
+					from
+						tc_janal_estatus_avances
+					inner join
+						tr_janal_estatus_avances on tr_janal_estatus_avances.id_estatus_avance= tc_janal_estatus_avances.id_estatus_avance
+					where
+						tr_janal_estatus_avances.id_definicion_avance= {idDefinicionAvance}
+					order by
+						tr_janal_estatus_avances.orden
+				</select>
+				<select id="indicadoresGrupos">
+					select
+						tc_janal_grupos.id_grupo id_key_grupo,
+						tc_janal_grupos.clave,
+						count(tc_janal_definiciones_avances.id_definicion_avance) total
+					from
+						tc_janal_grupos
+					left join
+						tc_janal_definiciones_avances on tc_janal_definiciones_avances.id_grupo= tc_janal_grupos.id_grupo
+					group by
+						tc_janal_grupos.id_grupo, tc_janal_grupos.clave
+					{sortOrder}
+				</select>
+				<select id="indicadoresEstatus">
+					select
+						tc_janal_definiciones_avances.id_definicion_avance id_key_definicion_avance,
+						tc_janal_definiciones_avances.descripcion,
+						tr_janal_bitacoras_avances.inicio
+					from
+						tc_janal_definiciones_avances
+					inner join
+						tr_janal_bitacoras_avances on tr_janal_bitacoras_avances.id_definicion_avance= tc_janal_definiciones_avances.id_definicion_avance
+					left join
+						tr_rel_perfiles_avances on tr_rel_perfiles_avances.id_definicion_avance= tc_janal_definiciones_avances.id_definicion_avance
+					where
+						tc_janal_definiciones_avances.id_grupo= {idGrupo}
+						and tc_janal_definiciones_avances.activo= {activo}
+						and tr_janal_bitacoras_avances.estatus= {estatus}
+						and ('{inicio}' = 'null' or '{inicio}' = date_format(tr_janal_bitacoras_avances.inicio, '%d/%c/%Y'))
+						and ('{idPerfil}' = 'null' or tr_rel_perfiles_avances.id_perfil= {idPerfil})
+					order by
+						tc_janal_definiciones_avances.orden
+				</select>
+			</unit>
+			
+		<unit id="VistaAvanceIndicadores">
+			<insert id="executeDetallesAvances">
+				insert into tr_detalles_avances (id_detalle_avance, id_bitacora_avance, total, porcentaje, id_organizacion, id_entidad, id_municipio, id_organizacion_grupo, id_campo, nivel)
+					select
+						seq_tr_detalles_avances.NEXTVAL,
+            {idBitacoraAvance},
+            {nombreEstatus},
+            porcentaje_{nombreEstatus},
+            ifnull(id_organizacion, 100),
+            ifnull(id_entidad, 1),
+            ifnull(id_municipio, 1),
+            ifnull(id_organizacion_grupo, 1), estatus_{nombreEstatus}, {nivel}
+					from
+						{tablaTemporal}
+					where
+						{condicion}
+			</insert>
+		</unit>
+		
+		<unit id="VistaGruposPrivilegiosPerfilesDto">		
+			<select id="perfilesGrupo">
+				select
+					tc_janal_perfiles.id_perfil as id_key_perfil,
+					tc_janal_perfiles.descripcion
+				from
+					tc_janal_grupos
+				inner join
+					tc_janal_perfiles on tc_janal_perfiles.id_grupo = tc_janal_grupos.id_grupo
+				where
+					tc_janal_grupos.id_grupo= {idGrupo}
+				order by
+					tc_janal_perfiles.descripcion
+			</select>
+		</unit>	
+		
+		<unit id="VistaBitacorasAvances">
+			<select id="row">
+				select
+					tr_janal_bitacoras_avances.id_bitacora_avance id_key,
+          tc_janal_definiciones_avances.*,
+          tr_janal_bitacoras_avances.fin
+				from
+					tr_janal_bitacoras_avances
+				inner join
+					tc_janal_definiciones_avances on tc_janal_definiciones_avances.id_definicion_avance= tr_janal_bitacoras_avances.id_definicion_avance
+				where
+          tc_janal_definiciones_avances.id_grupo= {idGrupo}
+          and tc_janal_definiciones_avances.activo= {activo}
+				  and tr_janal_bitacoras_avances.estatus in ({estatus})
+					and ('{fecha}' = 'null' or '{fecha}' = date_format(tr_janal_bitacoras_avances.fin, '%d/%c/%Y'))
+				{sortOrder}
+			</select>
+    </unit>
+		<unit id="VistaGdoGpoDto">
+			<select id="row">
+				select
+          tr_kajool_escuelas_gdo_gpo.id_escuela_gdo_gpo as id_key,
+          concat(tr_kajool_escuelas_gdo_gpo.grado,'-',tr_kajool_escuelas_gdo_gpo.grupo) as grupo,
+          tc_kajool_ciclos_escolares.descripcion,
+          concat(tc_kajool_mapa_curricular.clave,'-',tc_kajool_mapa_curricular.descripcion) as mapa,
+          tr_kajool_escuelas_gdo_gpo.maximo_alumnos
+        from
+          tr_kajool_escuelas_gdo_gpo
+        inner join
+          tc_kajool_mapas_ciclos on tr_kajool_escuelas_gdo_gpo.id_mapa_ciclo = tc_kajool_mapas_ciclos.id_mapa_ciclo
+        inner join
+          tr_kajool_mapas_escuelas on tr_kajool_mapas_escuelas.id_mapa_escuela = tc_kajool_mapas_ciclos.id_mapa_escuela
+        inner join
+          tc_kajool_ciclos_escolares on tc_kajool_mapas_ciclos.id_ciclo_escolar = tc_kajool_ciclos_escolares.id_ciclo_escolar
+        inner join
+          tc_kajool_mapa_curricular on tr_kajool_mapas_escuelas.id_mapa_curricular = tc_kajool_mapa_curricular.id_mapa_curricular
+        where
+          tc_kajool_mapas_ciclos.id_ciclo_escolar={idCicloEscolar}
+        and
+          tc_kajool_mapas_ciclos.id_mapa_ciclo={idMapaCiclo}
+        and
+          (tc_kajool_mapa_curricular.id_tipo_mapa=2 or tc_kajool_mapa_curricular.id_tipo_mapa=3)
+        order by
+          tc_kajool_ciclos_escolares.descripcion
+			</select>
+		</unit>
+		<unit id="VistaPeriodosMapasEscuelaDto">
+			<select id="row">
+        select distinct
+          tc_kajool_periodos.id_periodo as id_key,
+          tc_kajool_periodos.consecutivo,
+          tc_kajool_mapa_curricular.descripcion
+        from
+          tc_kajool_mapas_ciclos
+        inner join
+          tr_kajool_mapas_escuelas on tr_kajool_mapas_escuelas.id_mapa_escuela = tc_kajool_mapas_ciclos.id_mapa_escuela
+        inner join
+          tc_kajool_mapa_curricular on tr_kajool_mapas_escuelas.id_mapa_curricular = tc_kajool_mapa_curricular.id_mapa_curricular
+        inner join
+          tc_kajool_mapa_detalle on tc_kajool_mapa_detalle.id_mapa_curricular = tc_kajool_mapa_curricular.id_mapa_curricular
+        inner join
+          tc_kajool_periodos on tc_kajool_periodos.id_periodo = tc_kajool_mapa_detalle.id_periodo
+        where
+          tc_kajool_mapas_ciclos.id_mapa_ciclo={idMapaCiclo}
+        and
+          tr_kajool_mapas_escuelas.id_escuela={idEscuela}
+        and
+        (tc_kajool_mapa_curricular.id_tipo_mapa=2 or tc_kajool_mapa_curricular.id_tipo_mapa=3)
+        order by
+        tc_kajool_periodos.consecutivo
+			</select>
+		</unit>
+    <unit id="VistaPerfilesMenusEncabezadoDto">
+      <select id="row">
+        select
+          tr_janal_menus_enc_perfil.id_menu_enc_perfil id_key, tr_janal_menus_enc_perfil.id_perfil, tc_janal_menus_encabezado.id_menu_encabezado, tc_janal_menus_encabezado.clave,
+          tc_janal_menus_encabezado.descripcion, tc_janal_menus_encabezado.nivel, ifnull(tr_janal_menus_enc_perfil.id_menu_encabezado,0) id_seleccion
+        from
+            tc_janal_menus_encabezado
+        left join
+            tr_janal_menus_enc_perfil on tr_janal_menus_enc_perfil.id_menu_encabezado =tc_janal_menus_encabezado.id_menu_encabezado and tr_janal_menus_enc_perfil.id_perfil={idPerfil}
+         order by
+           tc_janal_menus_encabezado.clave
+      </select>
+      <select id="seleccionados">
+        select
+          tr_janal_menus_enc_perfil.id_menu_enc_perfil id_key, tr_janal_menus_enc_perfil.id_perfil, tc_janal_menus_encabezado.id_menu_encabezado, tc_janal_menus_encabezado.clave,
+          tc_janal_menus_encabezado.descripcion, tc_janal_menus_encabezado.nivel, ifnull(tr_janal_menus_enc_perfil.id_menu_encabezado,0) id_seleccion
+        from
+         tc_janal_menus_encabezado
+        left join
+         tr_janal_menus_enc_perfil on tr_janal_menus_enc_perfil.id_menu_encabezado =tc_janal_menus_encabezado.id_menu_encabezado
+        where
+         tr_janal_menus_enc_perfil.id_perfil={idPerfil} and tr_janal_menus_enc_perfil.id_menu_encabezado is not null
+      </select>
+    </unit>
+    <unit id="VistaTrKajoolAvancesCargaDto">
+      <select id="registros">
+        select
+          id_kajool_carga as id_key,
+          tr_kajool_avances_carga.nombre_archivo,
+          tc_kajool_estatus_carga.descripcion estatus,
+          tr_kajool_avances_carga.registro,
+          tc_kajool_tipos_cargas.descripcion tipo_carga,
+          concat(tc_kajool_personas.nombres,' ',tc_kajool_personas.primer_apellido,' ',tc_kajool_personas.segundo_apellido) usuario
+        from
+          tr_kajool_avances_carga
+        inner join
+          tc_kajool_estatus_carga on tc_kajool_estatus_carga.id_estatus_carga=tr_kajool_avances_carga.id_estatus_carga
+        inner join
+          tc_kajool_tipos_cargas on tc_kajool_tipos_cargas.id_tipo_carga = tr_kajool_avances_carga.id_tipo_carga
+        inner join
+          tc_janal_usuarios on tc_janal_usuarios.id_usuario = tr_kajool_avances_carga.id_usuario
+        inner join
+          tc_kajool_empleados on tc_kajool_empleados.id_empleado = tc_janal_usuarios.id_empleado
+        inner join
+          tc_kajool_personas on tc_kajool_empleados.id_empleado = tc_kajool_personas.id_empleado
+        where
+          tr_kajool_avances_carga.id_escuela={idEscuela} and tc_kajool_tipos_cargas.id_tipo_carga={idTipoCarga}
+        order by
+          registro desc
+      </select>
+    </unit>
+    <unit id="VistaInformacionDb">
+      <select id="descripcion">
+        select version() as descripcion
+      </select>
+    </unit>
+		<unit id="VistaOficinasGruposTrabajoDto">
+			<select id="row">
+			  select
+					tc_janal_usuarios.id_usuario id_key,tc_janal_entidades.descripcion desc_entidad,
+					tc_janal_perfiles.descripcion desc_perfil,nombres,primer_apellido,segundo_apellido,activo,
+				  tc_janal_usuarios.cuenta
+				from
+					tc_janal_usuarios
+				inner join tc_janal_entidades on tc_janal_usuarios.id_entidad=tc_janal_entidades.id_entidad
+				inner join tc_janal_perfiles on tc_janal_usuarios.id_perfil=tc_janal_perfiles.id_perfil
+				inner join tc_janal_empleados on tc_janal_empleados.id_empleado=tc_janal_usuarios.id_empleado	
+				where
+				  tc_janal_entidades.id_entidad= {idEntidad}				
+				order by
+				  tc_janal_entidades.clave
+			</select>			
+		</unit>
+		<unit id="VistaMantenimientoPerfilesDto">
+			<select id="row">
+				select
+				 tc_janal_perfiles.id_perfil as id_key_perfil,tc_janal_perfiles.descripcion,count(tc_janal_usuarios.id_perfil) usuarios
+				from
+				 tc_janal_perfiles
+        left join
+          tc_janal_usuarios on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
+				where
+				  tc_janal_perfiles.id_grupo={idGrupo}
+				group by
+				  tc_janal_perfiles.id_perfil, tc_janal_perfiles.descripcion
+			</select>
+
+			<select id="filtroDescripcion">
+        select
+				 tc_janal_perfiles.id_perfil as id_key_perfil,tc_janal_perfiles.descripcion,  count(tc_janal_usuarios.id_perfil) usuarios
+				from
+				 tc_janal_perfiles
+        left join
+          tc_janal_usuarios on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
+				where
+				    tc_janal_perfiles.id_grupo={idGrupo} and tc_janal_perfiles.descripcion like  '%{descripcion}%'
+				group by
+				  tc_janal_perfiles.id_perfil,tc_janal_perfiles.descripcion				
+			</select>
+				
+			<select id="filtroMantenimientoPerfilesDescripcion">
+				select
+					tc_janal_perfiles.id_perfil as id_key_perfil,
+					tc_janal_perfiles.descripcion as nombre,
+					tc_janal_perfiles.acceso,
+					count(tc_janal_usuarios.id_perfil) usuarios
+				from
+					tc_janal_perfiles
+        left join
+          tc_janal_usuarios on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
+				where
+				  tc_janal_perfiles.id_grupo={idGrupo}
+				group by
+				  tc_janal_perfiles.id_perfil,
+          tc_janal_perfiles.acceso,
+          tc_janal_perfiles.descripcion		
+			</select>
+				
+			<select id="filtroOpcionMenu">
+				select
+				rownum,tc_janal_menus.*
+				from
+				tc_janal_menus
+				inner join
+				tr_modulos_grupos  on tc_janal_menus.id_menu=tr_modulos_grupos.id_menu
+				inner join
+				tr_modulos_perfiles on tr_modulos_perfiles.id_modulo_grupo=tr_modulos_grupos.id_modulo_grupo
+				where
+				{condicion}
+				order by
+				tc_janal_menus.clave
+			</select>
+			<select id="jerarquiaMostrarDisponibles">
+				select
+					tc_janal_perfiles.id_perfil id_key_perfil, tc_janal_perfiles.id_grupo, tc_janal_perfiles.descripcion, acceso
+				from
+					tc_janal_perfiles
+				where
+					id_grupo= {idGrupo}
+				and
+					id_perfil  not in  (
+						select
+							tr_janal_perfiles_jerarquias.id_perfil_alta
+						from
+							tr_janal_perfiles_jerarquias where id_perfil={idPerfil} )
+			</select>
+			<select id="jerarquiaMostrarAsignados">
+				select
+					tc_janal_perfiles.id_perfil id_key_perfil, tc_janal_perfiles.descripcion
+				from
+					tr_janal_perfiles_jerarquias
+				inner join
+				  tc_janal_perfiles on tr_janal_perfiles_jerarquias.id_perfil_alta = tc_janal_perfiles.id_perfil
+				where
+					tr_janal_perfiles_jerarquias.id_perfil ={idPerfil}
+				order by
+					tr_janal_perfiles_jerarquias.orden
+			</select>
+			<select id="paginaInicial">
+				select
+					tc_janal_perfiles.id_menu, menus.id_menu id_key, menus.clave, menus.des,menus.ruta, menus.nivel, menus.ispagina
+				from
+					(select
+							decode(instr(tc_janal_menus.ruta,'.jsf'),'0','0','1') ispagina,  tc_janal_menus.*
+					 from tc_janal_menus) menus
+				inner join
+					tr_modulos_grupos on tr_modulos_grupos.id_menu = menus.id_menu and tr_modulos_grupos.id_grupo={idGrupo}
+				inner join
+					tr_modulos_perfiles on tr_modulos_perfiles.id_modulo_grupo=tr_modulos_grupos.id_modulo_grupo and tr_modulos_perfiles.id_perfil = {idPerfil}
+				left join
+					tc_janal_perfiles on tc_janal_perfiles.id_menu = menus.id_menu
+				where
+					menus.ispagina=1
+				order by
+					menus.clave
+			</select>
+			<select id="paginaInicialAsignada">
+				select
+					tc_janal_perfiles.id_perfil, tc_janal_perfiles.id_menu,tc_janal_menus.des, tc_janal_menus.ruta
+				from
+					tc_janal_perfiles
+				inner join
+					tc_janal_menus on tc_janal_perfiles.id_menu = tc_janal_menus.id_menu
+				where
+					tc_janal_perfiles.id_grupo={idGrupo} and tc_janal_perfiles.id_perfil={idPerfil}
+			</select>
+		</unit>
+
+    <unit id="VistaCargasTrabajoDto">
+      <select id="cargasTrabajo">
+        select
+          tc_janal_entidades.id_entidad AS id_key,
+          tc_janal_entidades.siglas,
+          tc_janal_entidades.clave,
+          tc_janal_entidades.descripcion
+        from
+          tc_janal_grupos
+        inner join
+          tr_janal_entidades_grupo on tc_janal_grupos.id_grupo = tr_janal_entidades_grupo.id_grupo
+        inner join
+          tc_janal_entidades on tr_janal_entidades_grupo.id_entidad = tc_janal_entidades.id_entidad
+        where
+          {condicion}
+      </select>
+      <select id="responsables">
+        select	
+          tc_janal_usuarios.id_usuario AS id_key,
+          cuenta,
+          contrasenia,
+          tc_janal_usuarios.registro,
+          tc_janal_perfiles.descripcion AS descripcion_perfil,
+          tc_janal_usuarios.id_perfil,
+          tc_janal_empleados.id_empleado,
+          tc_janal_empleados.nombres,
+          IFNULL(tc_janal_empleados.primer_apellido,'') primer_apellido,
+          IFNULL(tc_janal_empleados.segundo_apellido,'') segundo_apellido,
+          CONCAT (tc_janal_empleados.nombres, ' ', IFNULL(tc_janal_empleados.primer_apellido,''), ' ', IFNULL(tc_janal_empleados.segundo_apellido,'')) nombre_completo,
+          tc_janal_empleados.id_sexo,
+          tc_janal_empleados.curp,
+          tc_janal_grupos.descripcion AS descripcion_grupo,
+          tc_janal_empleados.estilo,
+          tc_janal_perfiles.id_menu,
+          tc_janal_grupos.id_grupo,
+          tc_janal_grupos.clave AS clave_grupo
+        from
+          tc_janal_usuarios
+        inner join
+          tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+        inner join
+          tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+        inner join
+          tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+        where
+          tc_janal_grupos.id_grupo= {idGrupo}
+        and
+          tc_janal_usuarios.id_entidad= {entidad}
+        and
+          tc_janal_perfiles.id_perfil= {idResponsable}
+      </select>
+      <select id="capturistas">
+        select	
+          tc_janal_usuarios.id_usuario AS id_key,
+          cuenta,
+          contrasenia,
+          tc_janal_usuarios.registro,
+          tc_janal_perfiles.descripcion AS descripcion_perfil,
+          tc_janal_usuarios.id_perfil,
+          tc_janal_empleados.id_empleado,
+          tc_janal_empleados.nombres,
+          IFNULL(tc_janal_empleados.primer_apellido,'') primer_apellido,
+          IFNULL(tc_janal_empleados.segundo_apellido,'') segundo_apellido,
+          CONCAT (tc_janal_empleados.nombres, ' ', IFNULL(tc_janal_empleados.primer_apellido,''), ' ', IFNULL(tc_janal_empleados.segundo_apellido,'')) nombre_completo,
+          tc_janal_empleados.id_sexo,
+          tc_janal_empleados.curp,
+          tc_janal_grupos.descripcion AS descripcion_grupo,
+          tc_janal_empleados.estilo,
+          tc_janal_perfiles.id_menu,
+          tc_janal_grupos.id_grupo,
+          tc_janal_grupos.clave AS clave_grupo
+        from
+          tc_janal_usuarios
+        inner join
+          tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+        inner join
+          tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+        inner join
+          tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+        where
+          tc_janal_grupos.id_grupo= {idGrupo}
+        and
+          tc_janal_usuarios.id_entidad= {entidad}
+        and
+          tc_janal_perfiles.id_perfil= {idCapturista}
+      </select>
+      <select id="capturistasCuestionarios">
+        select	
+          tc_janal_usuarios.id_usuario AS id_key,
+          cuenta,
+          contrasenia,
+          tc_janal_usuarios.registro,
+          tc_janal_perfiles.descripcion AS descripcion_perfil,
+          tc_janal_usuarios.id_perfil,
+          tc_janal_empleados.id_empleado,
+          tc_janal_empleados.nombres,
+          IFNULL(tc_janal_empleados.primer_apellido,'') primer_apellido,
+          IFNULL(tc_janal_empleados.segundo_apellido,'') segundo_apellido,
+          CONCAT (tc_janal_empleados.nombres, ' ', IFNULL(tc_janal_empleados.primer_apellido,''), ' ', IFNULL(tc_janal_empleados.segundo_apellido,'')) nombre_completo,
+          tc_janal_empleados.id_sexo,
+          tc_janal_empleados.curp,
+          tc_janal_grupos.descripcion AS descripcion_grupo,
+          tc_janal_empleados.estilo,
+          tc_janal_perfiles.id_menu,
+          tc_janal_grupos.id_grupo,
+          tc_janal_grupos.clave AS clave_grupo
+        from
+          tc_janal_usuarios
+        inner join
+          tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+        inner join
+          tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+        inner join
+          tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+        where
+          tc_janal_grupos.id_grupo= {idGrupo}
+        and
+          tc_janal_usuarios.id_entidad= {entidad}
+        and
+          tc_janal_perfiles.id_perfil= {idCapturista}
+        {condicionUsuario}
+      </select>
+      <select id="controles">
+        select
+          cast(tc_janal_muestras.control as decimal) as id_key,
+          tc_janal_muestras.control
+        from
+          tc_janal_muestras
+        inner join
+          tc_janal_grupos on tc_janal_muestras.id_grupo = tc_janal_grupos.id_grupo
+        where
+          tc_janal_grupos.id_grupo= {idGrupo}
+        and
+          tc_janal_muestras.id_entidad= {entidad}
+        group by
+          tc_janal_muestras.control
+      </select>
+      <select id="disponibles">
+        select
+          tc_janal_muestras.id_muestra AS id_key,
+          tc_janal_muestras.control,
+          tc_janal_muestras.folio,
+          tc_janal_muestras.dominio,
+          tc_janal_muestras.upm,
+          tc_janal_estatus.descripcion
+        from
+          tc_janal_muestras
+        inner join tr_janal_movimientos
+           on tc_janal_muestras.id_movimiento = tr_janal_movimientos.id_movimiento
+        inner join
+          tc_janal_estatus on tr_janal_movimientos.id_estatus = tc_janal_estatus.id_estatus
+        where
+          tc_janal_muestras.id_grupo= {idGrupo}
+        and
+          tc_janal_estatus.id_estatus= {idEstatus}
+        and
+          tc_janal_muestras.control like '%{controlBusqueda}%'
+        and
+          tc_janal_muestras.id_entidad= {entidad}
+      </select>
+      <select id="asignados">
+        select
+          tc_janal_muestras.id_muestra as id_key,
+          tc_janal_muestras.control,
+          tc_janal_muestras.folio,
+          tc_janal_muestras.dominio,
+          tc_janal_muestras.upm,
+          tc_janal_estatus.descripcion
+        from
+          tc_janal_muestras
+        inner join
+          tr_janal_movimientos on tc_janal_muestras.id_movimiento = tr_janal_movimientos.id_movimiento
+        inner join
+          tc_janal_estatus on tr_janal_movimientos.id_estatus = tc_janal_estatus.id_estatus
+        where
+          tc_janal_muestras.id_grupo= {idGrupo}
+        and
+          tc_janal_estatus.id_estatus &gt; {idEstatus}
+        and
+          tc_janal_muestras.control like '%{controlBusqueda}%'
+        and
+          tc_janal_muestras.id_entidad= {entidad}
+        and
+          tr_janal_movimientos.id_usuario= {idUsuario}        
+      </select>
+    </unit>
+    <unit id="VistaReasignacionCargasTrabajoDto">
+      <select id="busquedaUsuario">
+        select
+          tc_janal_usuarios.id_usuario AS id_key,
+          cuenta,
+          contrasenia,
+          tc_janal_usuarios.registro,
+          tc_janal_perfiles.descripcion AS descripcion_perfil,
+          tc_janal_usuarios.id_perfil,
+          tc_janal_empleados.id_empleado,
+          tc_janal_empleados.nombres,
+          IFNULL(tc_janal_empleados.primer_apellido,'') primer_apellido,
+          IFNULL(tc_janal_empleados.segundo_apellido,'') segundo_apellido,
+          CONCAT (tc_janal_empleados.nombres, ' ', IFNULL(tc_janal_empleados.primer_apellido,''), ' ', IFNULL(tc_janal_empleados.segundo_apellido,'')) nombre_completo,
+          tc_janal_empleados.id_sexo,
+          tc_janal_empleados.curp,
+          tc_janal_grupos.descripcion AS descripcion_grupo,
+          tc_janal_empleados.estilo,
+          tc_janal_perfiles.id_menu,
+          tc_janal_grupos.id_grupo,
+          tc_janal_grupos.clave AS clave_grupo
+        from
+          tc_janal_usuarios
+        inner join
+          tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+        inner join
+          tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+        inner join
+          tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+        where
+          tc_janal_grupos.id_grupo= {idGrupo}
+        and
+          tc_janal_usuarios.id_entidad= {entidad}
+        and
+          tc_janal_perfiles.id_perfil= {idCapturista}
+        and
+          (tc_janal_empleados.curp like '%{criterio}%' or tc_janal_empleados.nombres like '%{criterio}%' or tc_janal_empleados.primer_apellido like  '%{criterio}%' or tc_janal_empleados.segundo_apellido like '%{criterio}%')
+      </select>
+      <select id="busquedaUsuarioCurp">
+        select
+          tc_janal_usuarios.id_usuario AS id_key,
+          cuenta,
+          contrasenia,
+          tc_janal_usuarios.registro,
+          tc_janal_perfiles.descripcion AS descripcion_perfil,
+          tc_janal_usuarios.id_perfil,
+          tc_janal_empleados.id_empleado,
+          tc_janal_empleados.nombres,
+          IFNULL(tc_janal_empleados.primer_apellido,'') primer_apellido,
+          IFNULL(tc_janal_empleados.segundo_apellido,'') segundo_apellido,
+          CONCAT (tc_janal_empleados.nombres, ' ', IFNULL(tc_janal_empleados.primer_apellido,''), ' ', IFNULL(tc_janal_empleados.segundo_apellido,'')) nombre_completo,
+          tc_janal_empleados.id_sexo,
+          tc_janal_empleados.curp,
+          tc_janal_grupos.descripcion AS descripcion_grupo,
+          tc_janal_empleados.estilo,
+          tc_janal_perfiles.id_menu,
+          tc_janal_grupos.id_grupo,
+          tc_janal_grupos.clave AS clave_grupo
+        from
+          tc_janal_usuarios
+        inner join
+          tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+        inner join
+          tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+        inner join
+          tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+        where
+          tc_janal_grupos.id_grupo= {idGrupo}
+        and
+          tc_janal_usuarios.id_entidad= {entidad}
+        and
+          tc_janal_perfiles.id_perfil= {idCapturista}
+        and
+          tc_janal_empleados.curp = '{curp}'
+      </select>
+      <select id="reasignacion">
+        select
+          tc_janal_muestras.id_muestra as id_key,
+          tc_janal_muestras.control,
+          tc_janal_muestras.folio,
+          tc_janal_muestras.dominio,
+          tc_janal_muestras.upm,
+          tc_janal_estatus.descripcion
+        from
+          tc_janal_muestras
+        inner join
+          tr_janal_movimientos on tc_janal_muestras.id_movimiento = tr_janal_movimientos.id_movimiento
+        inner join
+          tc_janal_estatus on tr_janal_movimientos.id_estatus = tc_janal_estatus.id_estatus
+        where
+          tc_janal_muestras.id_grupo= {idGrupo}
+        and
+          tc_janal_muestras.id_entidad= {entidad}
+        and
+          tr_janal_movimientos.id_usuario= {idUsuario}
+      </select>
+      <select id="estatusActualMuestra">
+				select 					
+					tr_janal_movimientos.id_estatus,
+          tr_janal_movimientos.id_supervisa
+				from
+					tc_janal_muestras
+				inner join
+					tr_janal_movimientos on tc_janal_muestras.id_movimiento = tr_janal_movimientos.id_movimiento
+				where
+					tc_janal_muestras.id_muestra= {idMuestra}				
+			</select>	
+    </unit>
+    <unit id="VistaIndicadoresPerfilesDto">
+      <select id="avanceEstatal">
+        select
+          id_entidad as id_key,
+          CONCAT(entidad,' (',completos,' viv.)') entidad, 	
+          completos,
+          if(total is null, 0, total) total,
+          round(((completos * 100)/ if(total is null, 1, total)),2) porcentaje
+        from(
+        select
+          tc_janal_entidades.id_entidad,
+          descripcion as entidad,
+          total,
+          sum(case when completos is null then 0 else completos end) completos
+        from(
+          select
+            tc_janal_muestras.id_entidad,
+            total,
+            case when tr_janal_movimientos.id_estatus in (3,4,6) then 1 else 0 end completos
+          from
+            tc_janal_muestras
+          inner join
+            tr_janal_movimientos ON tc_janal_muestras.id_movimiento = tr_janal_movimientos.id_movimiento
+          inner join
+            tc_janal_estatus ON tr_janal_movimientos.id_estatus = tc_janal_estatus.id_estatus
+          inner join  
+            (select 
+              id_entidad,
+              COUNT(*) total
+             from 
+                 tc_janal_muestras
+             group by
+                id_entidad) total_muestra on  total_muestra.id_entidad = tc_janal_muestras.id_entidad
+          where
+            tc_janal_muestras.id_grupo= {idGrupo}
+          ) principal
+        left join
+          tr_janal_entidades_grupo on principal.id_entidad = tr_janal_entidades_grupo.id_entidad and id_grupo= {idGrupo}
+        inner join
+          tc_janal_entidades on tr_janal_entidades_grupo.id_entidad = tc_janal_entidades.id_entidad
+        group by
+          clave, descripcion) sumatorias
+      </select>
+      <select id="nacional">
+        select                              
+          captura_completa, 
+          sin_captura,
+          round(((captura_completa * 100) / total),2) por_captura_completa,
+          round(((sin_captura * 100)  / total),2) por_sin_captura
+        from(
+        select                    
+          sum(case when completos is null then 0 else completos end) captura_completa,
+          sum(case when sin_captura is null then 0 else sin_captura end) sin_captura,
+          sum(case when total is null then 0 else total end) total
+        from(
+          select
+            tc_janal_muestras.id_entidad,
+            case when tr_janal_movimientos.id_estatus in (3,4,6) then 1 else 0 end completos,
+            case when tr_janal_movimientos.id_estatus in (1,2,5) then 1 else 0 end sin_captura,
+            case when tr_janal_movimientos.id_estatus in (1,2,3,4,5,6) then 1 else 0 end total
+          from
+            tc_janal_muestras
+          inner join
+            tr_janal_movimientos on tc_janal_muestras.id_movimiento = tr_janal_movimientos.id_movimiento
+          inner join
+            tc_janal_estatus on tr_janal_movimientos.id_estatus = tc_janal_estatus.id_estatus
+          where
+            tc_janal_muestras.id_grupo= {idGrupo}
+          ) principal        
+        ) sumatorias
+      </select>
+      <select id="estatal">
+        select                              
+          captura_completa, 
+          sin_captura,
+          round(((captura_completa * 100) / total),2) por_captura_completa,
+          round(((sin_captura * 100)  / total),2) por_sin_captura
+        from(
+        select                    
+          sum(case when completos is null then 0 else completos end) captura_completa,
+          sum(case when sin_captura is null then 0 else sin_captura end) sin_captura,
+          sum(case when total is null then 0 else total end) total
+        from(
+          select
+            tc_janal_muestras.id_entidad,
+            case when tr_janal_movimientos.id_estatus in (3,4,6) then 1 else 0 end completos,
+            case when tr_janal_movimientos.id_estatus in (1,2,5) then 1 else 0 end sin_captura,
+            case when tr_janal_movimientos.id_estatus in (1,2,3,4,5,6) then 1 else 0 end total
+          from
+            tc_janal_muestras
+          inner join
+            tr_janal_movimientos on tc_janal_muestras.id_movimiento = tr_janal_movimientos.id_movimiento
+          inner join
+            tc_janal_estatus on tr_janal_movimientos.id_estatus = tc_janal_estatus.id_estatus
+          where
+            tc_janal_muestras.id_grupo= {idGrupo}
+          and 
+            tc_janal_muestras.id_entidad= {idEntidad}
+          ) principal        
+        ) sumatorias
+      </select>
+      <select id="avanceCapturistas">
+        select 
+          tc_janal_usuarios.id_usuario as id_key,
+          tc_janal_usuarios.id_perfil,
+          tc_janal_perfiles.descripcion perfil,
+          concat(nombres, ' ', primer_apellido, ' ', segundo_apellido) as nombre_completo,
+          curp,
+          cuenta, 
+          completos, 
+          incompletos, total,
+          ((completos*100)/total)porcentaje
+        from 
+          tc_janal_usuarios
+        inner join 
+          (select 
+              id_usuario,
+              sum(completos) completos,
+              sum(incompletos) incompletos, 
+              sum(completos) + sum(incompletos) total 
+            from(
+            select 
+               id_usuario,
+               case when id_estatus in (3,4,6) then 1 else 0 end completos,
+               case when id_estatus not in (3,4,6) then 1 else 0 end incompletos
+            from
+              tc_janal_muestras
+            inner join 
+              tr_janal_movimientos on tc_janal_muestras.id_movimiento = tr_janal_movimientos.id_movimiento
+            ) principal group by id_usuario) totales on tc_janal_usuarios.id_usuario = totales.id_usuario
+        inner join 
+          tc_janal_perfiles on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
+        inner join 
+          tc_janal_empleados on tc_janal_usuarios.id_empleado = tc_janal_empleados.id_empleado
+        inner join 
+          tc_janal_entidades on tc_janal_usuarios.id_entidad = tc_janal_entidades.id_entidad
+        where 
+          tc_janal_perfiles.id_grupo= {idGrupo}
+        and 
+          tc_janal_perfiles.id_perfil= {idPerfilCapturista}
+        and 
+          tc_janal_entidades.id_entidad= {idEntidad}
+        and 
+          tc_janal_usuarios.activo=1
+        order by 
+          porcentaje desc
+      </select>
+      <select id="foliosSinCaptura">
+        select 
+          tc_janal_muestras.id_muestra as id_key, 
+          tc_janal_muestras.folio,
+          tc_janal_muestras.control,
+          tc_janal_muestras.dominio,
+          tc_janal_estatus.descripcion as estatus
+        from 
+          tc_janal_muestras
+        inner join 
+          tr_janal_movimientos on tc_janal_muestras.id_movimiento = tr_janal_movimientos.id_movimiento
+        inner join 
+          tc_janal_estatus on tr_janal_movimientos.id_estatus = tc_janal_estatus.id_estatus
+        where
+          tc_janal_muestras.id_entidad= {idEntidad}
+        and 
+          tr_janal_movimientos.id_usuario= {idUsuario}
+        and 
+          tr_janal_movimientos.id_estatus not in ({folioCompleto})
+      </select>      
+      <select id="viviendasPorEstatusNacional">
+        select
+          concat(descripcion,' (',total,' viv.)') descripcion,
+          total,
+          round(((total * 100 / (select count(*) from tc_janal_muestras where 
+          tc_janal_muestras.id_grupo= {idGrupo} ))),2) porcentaje  
+        from(        
+          select 
+            descripcion, count(*) total
+          from (
+            select   	    
+              case when tc_janal_resultados.clave in (0,2) then 'CON ENTREVISTA' 
+              when tc_janal_resultados.clave in (1,9) then 'AUSENCIA' 
+              when tc_janal_resultados.clave in (3) then 'NEGATIVA' 
+              when tc_janal_resultados.clave in (4,7) then 'NO LOCALIZADO' 
+              when tc_janal_resultados.clave in (5) then 'NO RECIBE APOYOS' 
+              when tc_janal_resultados.clave in (6) then 'NO HABITADA' 
+              when tc_janal_resultados.clave in (8) then 'PROBLEMAS DE ACCESO' 
+              else 'SIN CAPTURA' end descripcion           
+            from(
+              select 
+                tc_janal_muestras.id_muestra,
+                (select max(visita)visita from tr_janal_visitas where id_muestra=id_muestra_pivote) visita
+              from 
+                tc_janal_muestras
+              inner join  
+                (select 
+                  tc_janal_muestras.id_muestra id_muestra_pivote  
+                from
+                  tc_janal_muestras
+                inner join 
+                  tr_janal_movimientos on tc_janal_muestras.id_movimiento = tr_janal_movimientos.id_movimiento
+                where 
+                  tc_janal_muestras.id_grupo= {idGrupo}
+                ) muestra on tc_janal_muestras.id_muestra = muestra.id_muestra_pivote
+            ) ultima_visita
+          left join
+            tr_janal_visitas on ultima_visita.id_muestra = tr_janal_visitas.id_muestra and ultima_visita.visita = tr_janal_visitas.visita
+          left join 
+            tc_janal_resultados on tr_janal_visitas.id_resultado = tc_janal_resultados.id_resultado) totales
+          group by 
+            descripcion        
+         ) porcentajes
+      </select>
+      <select id="viviendasPorEstatus">
+        select
+          concat(descripcion,' (',total,' viv.)') descripcion,
+          total,
+          round(((total * 100 / (select count(*) from tc_janal_muestras where 
+          tc_janal_muestras.id_grupo= {idGrupo}
+        and 
+          tc_janal_muestras.id_entidad= {idEntidad}))),2) porcentaje  
+        from(        
+          select 
+            descripcion, count(*) total
+          from (
+            select   	    
+              case when tc_janal_resultados.clave in (0,2) then 'CON ENTREVISTA' 
+              when tc_janal_resultados.clave in (1,9) then 'AUSENCIA' 
+              when tc_janal_resultados.clave in (3) then 'NEGATIVA' 
+              when tc_janal_resultados.clave in (4,7) then 'NO LOCALIZADO' 
+              when tc_janal_resultados.clave in (5) then 'NO RECIBE APOYOS' 
+              when tc_janal_resultados.clave in (6) then 'NO HABITADA' 
+              when tc_janal_resultados.clave in (8) then 'PROBLEMAS DE ACCESO' 
+              else 'SIN CAPTURA' end descripcion           
+            from(
+              select 
+                tc_janal_muestras.id_muestra,
+                (select max(visita)visita from tr_janal_visitas where id_muestra=id_muestra_pivote) visita
+              from 
+                tc_janal_muestras
+              inner join  
+                (select 
+                  tc_janal_muestras.id_muestra id_muestra_pivote  
+                from
+                  tc_janal_muestras
+                inner join 
+                  tr_janal_movimientos on tc_janal_muestras.id_movimiento = tr_janal_movimientos.id_movimiento
+                where 
+                  tc_janal_muestras.id_grupo= {idGrupo}
+                and 
+                  tc_janal_muestras.id_entidad= {idEntidad}                
+                ) muestra on tc_janal_muestras.id_muestra = muestra.id_muestra_pivote
+            ) ultima_visita
+          left join
+            tr_janal_visitas on ultima_visita.id_muestra = tr_janal_visitas.id_muestra and ultima_visita.visita = tr_janal_visitas.visita
+          left join 
+            tc_janal_resultados on tr_janal_visitas.id_resultado = tc_janal_resultados.id_resultado) totales
+          group by 
+            descripcion        
+         ) porcentajes
+      </select>
+      <select id="viviendasPorEstatusUsuario">
+        select
+          concat(descripcion,' (',total,' viv.)') descripcion,
+          total,
+          round(((total * 100 / (select count(*) from tc_janal_muestras inner join 
+          tr_janal_movimientos on tc_janal_muestras.id_movimiento = tr_janal_movimientos.id_movimiento where 
+          tc_janal_muestras.id_grupo= {idGrupo}
+        and 
+          tc_janal_muestras.id_entidad= {idEntidad}
+		    and 
+          tr_janal_movimientos.id_usuario= {idUsuario}))),2) porcentaje  
+        from(        
+          select 
+            descripcion, count(*) total
+          from (
+            select   	    
+              case when tc_janal_resultados.clave in (0,2) then 'CON ENTREVISTA' 
+              when tc_janal_resultados.clave in (1,9) then 'AUSENCIA' 
+              when tc_janal_resultados.clave in (3) then 'NEGATIVA' 
+              when tc_janal_resultados.clave in (4,7) then 'NO LOCALIZADO' 
+              when tc_janal_resultados.clave in (5) then 'NO RECIBE APOYOS' 
+              when tc_janal_resultados.clave in (6) then 'NO HABITADA' 
+              when tc_janal_resultados.clave in (8) then 'PROBLEMAS DE ACCESO' 
+              else 'SIN CAPTURA' end descripcion           
+            from(
+              select 
+                tc_janal_muestras.id_muestra,
+                (select max(visita)visita from tr_janal_visitas where id_muestra=id_muestra_pivote) visita
+              from 
+                tc_janal_muestras
+              inner join  
+                (select 
+                  tc_janal_muestras.id_muestra id_muestra_pivote  
+                from
+                  tc_janal_muestras
+                inner join 
+                  tr_janal_movimientos on tc_janal_muestras.id_movimiento = tr_janal_movimientos.id_movimiento
+                where 
+                  tc_janal_muestras.id_grupo= {idGrupo}
+                and 
+                  tc_janal_muestras.id_entidad= {idEntidad}
+                and 
+                  tr_janal_movimientos.id_usuario= {idUsuario}
+                ) muestra on tc_janal_muestras.id_muestra = muestra.id_muestra_pivote
+            ) ultima_visita
+          left join
+            tr_janal_visitas on ultima_visita.id_muestra = tr_janal_visitas.id_muestra and ultima_visita.visita = tr_janal_visitas.visita
+          left join 
+            tc_janal_resultados on tr_janal_visitas.id_resultado = tc_janal_resultados.id_resultado) totales
+          group by 
+            descripcion        
+         ) porcentajes
+      </select>
+    </unit>
+    <unit id="VistaIndicadorDto">
+      <select id="totales">
+        select
+          id_entidad as id_key,
+          clave, 
+          descripcion, 	
+          total,
+          disponibles,
+          asignados,
+          sin_captura,	 	
+          parciales,
+          completos, 	  	
+          case when round(((completos/ total) * 100),2) is null then 0 else
+          round(((completos/ total) * 100),2) end porc_completos
+        from(
+        select
+          tc_janal_entidades.id_entidad,
+          clave,
+          descripcion,
+          sum(case when disponibles is null then 0 else disponibles end) disponibles,
+          sum(case when asignados is null then 0 else asignados end) asignados,
+          sum(case when completos is null then 0 else completos end) completos,
+          sum(case when parciales is null then 0 else parciales end) parciales,
+          sum(case when sin_captura is null then 0 else sin_captura end) sin_captura,
+          sum(case when disponibles is null then 0 else disponibles end) +
+          sum(case when asignados is null then 0 else asignados end) +
+          sum(case when completos is null then 0 else completos end) +
+          sum(case when parciales is null then 0 else parciales end) +
+          sum(case when sin_captura is null then 0 else sin_captura end) total
+        from(
+          select
+            tc_janal_muestras.id_entidad,
+            case when tr_janal_movimientos.id_estatus=1 then 1 else 0 end disponibles,
+            case when tr_janal_movimientos.id_estatus=2 then 1 else 0 end asignados,
+            case when tr_janal_movimientos.id_estatus in (3,6) then 1 else 0 end completos,
+            case when tr_janal_movimientos.id_estatus=4 then 1 else 0 end parciales,
+            case when tr_janal_movimientos.id_estatus=5 then 1 else 0 end sin_captura
+          from
+            tc_janal_muestras
+          inner join
+            tr_janal_movimientos on tc_janal_muestras.id_movimiento = tr_janal_movimientos.id_movimiento
+          inner join
+            tc_janal_estatus on tr_janal_movimientos.id_estatus = tc_janal_estatus.id_estatus
+          where
+            tc_janal_muestras.id_grupo= {idGrupo}
+          ) principal
+        right join
+          tr_janal_entidades_grupo on principal.id_entidad = tr_janal_entidades_grupo.id_entidad and id_grupo= {idGrupo}
+        inner join
+          tc_janal_entidades on tr_janal_entidades_grupo.id_entidad = tc_janal_entidades.id_entidad
+        group by
+          clave, descripcion) sumatorias
+      </select>
+    </unit>		
+    <unit id="VistaCapturaDto">
+      <select id="captura">
+        select
+            tc_janal_muestras.id_muestra as id_key,
+            tc_janal_entidades.clave,
+            tc_janal_entidades.siglas,
+            tc_janal_entidades.descripcion,
+            tc_janal_muestras.folio,
+            tc_janal_muestras.dominio,
+            tc_janal_muestras.control,
+            tc_janal_muestras.upm,
+            tc_janal_muestras.prog,
+            tc_janal_muestras.viv_sel,
+            tr_janal_movimientos.id_movimiento,
+            tr_janal_movimientos.id_usuario,
+            tr_janal_movimientos.id_supervisa,
+            tc_janal_estatus.descripcion estatus,
+            tc_janal_estatus.id_estatus
+          from
+            tc_janal_muestras
+          inner join
+            tr_janal_movimientos on tc_janal_muestras.id_movimiento = tr_janal_movimientos.id_movimiento
+          inner join
+						tc_janal_usuarios on tr_janal_movimientos.id_usuario=tc_janal_usuarios.id_usuario
+					inner join 
+            tc_janal_estatus on tr_janal_movimientos.id_estatus = tc_janal_estatus.id_estatus
+          inner join
+            tr_janal_entidades_grupo on tc_janal_muestras.id_entidad = tr_janal_entidades_grupo.id_entidad
+          inner join
+            tc_janal_entidades on tr_janal_entidades_grupo.id_entidad = tc_janal_entidades.id_entidad
+          where
+            tc_janal_muestras.id_grupo= {idGrupo}
+          and
+            tc_janal_muestras.id_entidad = {entidad}
+          {condicionUsuario}
+          and
+            tc_janal_muestras.folio like '%{folio}%'
+          and
+            tc_janal_muestras.control like '%{control}%'
+          and
+            tc_janal_estatus.id_estatus  &gt; {idEstatus}
+          order by
+            tc_janal_muestras.upm, tc_janal_muestras.folio
+      </select>
+      <select id="estatus">
+        select
+          tc_janal_resultados.descripcion,
+          tc_janal_resultados.clave
+        from  
+          tr_janal_visitas
+        inner join 
+          tc_janal_resultados on tc_janal_resultados.id_resultado = tr_janal_visitas.id_resultado            
+        where
+          tr_janal_visitas.id_muestra= {idMuestra}
+        order by 
+          id_visita desc          
+      </select>
+    </unit>
+    <unit id="VistaContadoresBienvenidaDto">
+      <select id="nacional">
+        select
+          id_key, 
+          sum(admin_encuesta) admin_encuesta,
+          sum(admin) admin,
+          sum(resp_estatal) resp_estatal,
+          sum(consultor) consultor,
+          sum(capturista) capturista,
+          (SUM(admin)+
+            SUM(resp_estatal)+SUM(consultor)+
+            SUM(capturista)) total
+        from(
+          select
+            tc_janal_proyectos.id_grupo as id_key,
+            case when tc_janal_perfiles.id_perfil=1 then 1 else 0 end admin_encuesta,
+            case when tc_janal_perfiles.id_perfil=2 then 1 else 0 end admin,
+            case when tc_janal_perfiles.id_perfil=3 then 1 else 0 end resp_estatal,
+            case when tc_janal_perfiles.id_perfil=5 then 1 else 0 end consultor,
+            case when tc_janal_perfiles.id_perfil=4 then 1 else 0 end capturista            
+          from 
+            tc_janal_proyectos
+          inner join 
+            tc_janal_perfiles on tc_janal_proyectos.id_grupo = tc_janal_perfiles.id_grupo
+          inner join 
+            tc_janal_usuarios on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+          where 
+            tc_janal_proyectos.id_grupo= {idGrupo} ) principal
+      </select>
+      <select id="estatal">
+        select
+          id_key, 
+          sum(admin_encuesta) admin_encuesta,
+          sum(admin) admin,
+          sum(resp_estatal) resp_estatal,
+          sum(consultor) consultor,
+          sum(capturista) capturista,
+          (SUM(admin)+
+            SUM(resp_estatal)+SUM(consultor)+
+            SUM(capturista)) total
+        from(
+          select
+            tc_janal_proyectos.id_grupo as id_key,
+            case when tc_janal_perfiles.id_perfil=1 then 1 else 0 end admin_encuesta,
+            case when tc_janal_perfiles.id_perfil=2 then 1 else 0 end admin,
+            case when tc_janal_perfiles.id_perfil=3 then 1 else 0 end resp_estatal,
+            case when tc_janal_perfiles.id_perfil=5 then 1 else 0 end consultor,
+            case when tc_janal_perfiles.id_perfil=4 then 1 else 0 end capturista
+          from 
+            tc_janal_proyectos
+          inner join 
+            tc_janal_perfiles on tc_janal_proyectos.id_grupo = tc_janal_perfiles.id_grupo
+          inner join 
+            tc_janal_usuarios on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+          where 
+            tc_janal_proyectos.id_grupo= {idGrupo} 
+          and 
+            tc_janal_usuarios.id_entidad= {idEntidad}) principal
+      </select>      
+    </unit>
+    <unit id="VistaContadoresBienvenidaMensualesDto">
+      <select id="nacional">
+        select
+          1 id_key,
+          if(total_pendientes is null,0,total_pendientes)total_pendientes,
+          if(total_capturados is null,0,total_capturados)total_capturados,
+          case when round((( total_capturados * 100) / total),2) is null then 0 else
+          round((( total_capturados * 100) / total),2) end porc_completos
+        from(
+        select                    
+          sum(case when completos is null then 0 else completos end) +
+          sum(case when parciales is null then 0 else parciales end) +                    
+          sum(case when liberados is null then 0 else liberados end) total_capturados,
+
+          sum(case when disponibles is null then 0 else disponibles end) +
+          sum(case when asignados is null then 0 else asignados end) +                    
+          sum(case when sin_captura is null then 0 else sin_captura end) total_pendientes,
+        
+          sum(case when disponibles is null then 0 else disponibles end) +
+          sum(case when asignados is null then 0 else asignados end) +
+          sum(case when completos is null then 0 else completos end) +
+          sum(case when parciales is null then 0 else parciales end) +
+          sum(case when liberados is null then 0 else liberados end) +
+          sum(case when sin_captura is null then 0 else sin_captura end) total
+        from(
+          select            
+            case when tr_janal_movimientos.id_estatus=1 then 1 else 0 end disponibles,
+            case when tr_janal_movimientos.id_estatus=2 then 1 else 0 end asignados,
+            case when tr_janal_movimientos.id_estatus=3 then 1 else 0 end completos,
+            case when tr_janal_movimientos.id_estatus=4 then 1 else 0 end parciales,
+            case when tr_janal_movimientos.id_estatus=5 then 1 else 0 end sin_captura,
+            case when tr_janal_movimientos.id_estatus=6 then 1 else 0 end liberados
+          from
+            tc_janal_muestras
+          inner join
+            tr_janal_movimientos on tc_janal_muestras.id_movimiento = tr_janal_movimientos.id_movimiento
+          inner join
+            tc_janal_estatus on tr_janal_movimientos.id_estatus = tc_janal_estatus.id_estatus
+          where
+            tc_janal_muestras.id_grupo= {idGrupo} 
+          and         
+            year(tr_janal_movimientos.registro)&gt;={anio} and year(tr_janal_movimientos.registro)&lt;={anioFin} 
+          and 
+            month(tr_janal_movimientos.registro)&gt;={mesSeleccion} and month(tr_janal_movimientos.registro)&lt;={mesSeleccionFin}
+          and 
+            day(tr_janal_movimientos.registro)&gt;={dia} and day(tr_janal_movimientos.registro)&lt;={diaFin}
+          ) principal
+        ) sumatorias
+      </select>
+      <select id="entidad">
+        select
+          1 id_key,
+          if(total_pendientes is null,0,total_pendientes)total_pendientes,
+          if(total_capturados is null,0,total_capturados)total_capturados,
+          case when round((( total_capturados * 100) / total),2) is null then 0 else
+          round((( total_capturados * 100) / total),2) end porc_completos
+        from(
+        select                    
+          sum(case when completos is null then 0 else completos end) +
+          sum(case when parciales is null then 0 else parciales end) +                    
+          sum(case when liberados is null then 0 else liberados end) total_capturados,
+
+          sum(case when disponibles is null then 0 else disponibles end) +
+          sum(case when asignados is null then 0 else asignados end) +                    
+          sum(case when sin_captura is null then 0 else sin_captura end) total_pendientes,
+        
+          sum(case when disponibles is null then 0 else disponibles end) +
+          sum(case when asignados is null then 0 else asignados end) +
+          sum(case when completos is null then 0 else completos end) +
+          sum(case when parciales is null then 0 else parciales end) +
+          sum(case when liberados is null then 0 else liberados end) +
+          sum(case when sin_captura is null then 0 else sin_captura end) total
+        from(
+          select            
+            case when tr_janal_movimientos.id_estatus=1 then 1 else 0 end disponibles,
+            case when tr_janal_movimientos.id_estatus=2 then 1 else 0 end asignados,
+            case when tr_janal_movimientos.id_estatus=3 then 1 else 0 end completos,
+            case when tr_janal_movimientos.id_estatus=4 then 1 else 0 end parciales,
+            case when tr_janal_movimientos.id_estatus=5 then 1 else 0 end sin_captura,
+            case when tr_janal_movimientos.id_estatus=6 then 1 else 0 end liberados
+          from
+            tc_janal_muestras
+          inner join
+            tr_janal_movimientos on tc_janal_muestras.id_movimiento = tr_janal_movimientos.id_movimiento
+          inner join
+            tc_janal_estatus on tr_janal_movimientos.id_estatus = tc_janal_estatus.id_estatus
+          where
+            tc_janal_muestras.id_grupo= {idGrupo}
+          and 
+            tc_janal_muestras.id_entidad= {idEntidad}          
+          and         
+            year(tr_janal_movimientos.registro)&gt;={anio} and year(tr_janal_movimientos.registro)&lt;={anioFin} 
+          and 
+            month(tr_janal_movimientos.registro)&gt;={mesSeleccion} and month(tr_janal_movimientos.registro)&lt;={mesSeleccionFin}
+          and 
+            day(tr_janal_movimientos.registro)&gt;={dia} and day(tr_janal_movimientos.registro)&lt;={diaFin}
+          ) principal
+        ) sumatorias
+      </select>
+      <select id="usuario">
+        select
+          1 id_key,
+          if(total_pendientes is null,0,total_pendientes)total_pendientes,
+          if(total_capturados is null,0,total_capturados)total_capturados,
+          case when round((( total_capturados * 100) / total),2) is null then 0 else
+          round((( total_capturados * 100) / total),2) end porc_completos
+        from(
+        select                    
+          sum(case when completos is null then 0 else completos end) +
+          sum(case when parciales is null then 0 else parciales end) +                    
+          sum(case when liberados is null then 0 else liberados end) total_capturados,
+
+          sum(case when disponibles is null then 0 else disponibles end) +
+          sum(case when asignados is null then 0 else asignados end) +                    
+          sum(case when sin_captura is null then 0 else sin_captura end) total_pendientes,
+        
+          sum(case when disponibles is null then 0 else disponibles end) +
+          sum(case when asignados is null then 0 else asignados end) +
+          sum(case when completos is null then 0 else completos end) +
+          sum(case when parciales is null then 0 else parciales end) +
+          sum(case when liberados is null then 0 else liberados end) +
+          sum(case when sin_captura is null then 0 else sin_captura end) total
+        from(
+          select            
+            case when tr_janal_movimientos.id_estatus=1 then 1 else 0 end disponibles,
+            case when tr_janal_movimientos.id_estatus=2 then 1 else 0 end asignados,
+            case when tr_janal_movimientos.id_estatus=3 then 1 else 0 end completos,
+            case when tr_janal_movimientos.id_estatus=4 then 1 else 0 end parciales,
+            case when tr_janal_movimientos.id_estatus=5 then 1 else 0 end sin_captura,
+            case when tr_janal_movimientos.id_estatus=6 then 1 else 0 end liberados
+          from
+            tc_janal_muestras
+          inner join
+            tr_janal_movimientos on tc_janal_muestras.id_movimiento = tr_janal_movimientos.id_movimiento
+          inner join
+            tc_janal_estatus on tr_janal_movimientos.id_estatus = tc_janal_estatus.id_estatus
+          where
+            tc_janal_muestras.id_grupo= {idGrupo}
+          and 
+            tc_janal_muestras.id_entidad= {idEntidad}
+          and 
+	          tr_janal_movimientos.id_usuario= {idUsuario} 
+          and         
+            year(tr_janal_movimientos.registro)&gt;={anio} and year(tr_janal_movimientos.registro)&lt;={anioFin} 
+          and 
+            month(tr_janal_movimientos.registro)&gt;={mesSeleccion} and month(tr_janal_movimientos.registro)&lt;={mesSeleccionFin}
+          and 
+            day(tr_janal_movimientos.registro)&gt;={dia} and day(tr_janal_movimientos.registro)&lt;={diaFin}
+          ) principal
+        ) sumatorias
+      </select>
+    </unit>
+    <unit id="VistaCuestionariosDto">
+      <select id="row">
+        select
+            tc_janal_muestras.id_muestra as id_key,
+            tc_janal_entidades.clave,
+            tc_janal_entidades.siglas,
+            tc_janal_entidades.descripcion,
+            tc_janal_muestras.folio,
+            tc_janal_muestras.dominio,
+            tc_janal_muestras.control,
+            tc_janal_muestras.upm,
+            tc_janal_muestras.prog,
+            tc_janal_muestras.viv_sel,
+            tr_janal_movimientos.id_movimiento,
+            tr_janal_movimientos.id_usuario,
+            tr_janal_movimientos.id_supervisa,
+            tc_janal_estatus.descripcion estatus,
+            tc_janal_estatus.id_estatus
+          from
+            tc_janal_muestras
+          inner join
+            tr_janal_movimientos on tc_janal_muestras.id_movimiento = tr_janal_movimientos.id_movimiento
+          inner join
+            tc_janal_estatus on tr_janal_movimientos.id_estatus = tc_janal_estatus.id_estatus
+          inner join
+            tr_janal_entidades_grupo on tc_janal_muestras.id_entidad = tr_janal_entidades_grupo.id_entidad
+          inner join
+            tc_janal_entidades on tr_janal_entidades_grupo.id_entidad = tc_janal_entidades.id_entidad
+          where
+            tc_janal_muestras.id_grupo= {idGrupo}
+          and
+            tc_janal_muestras.id_entidad = {entidad}
+          {condicionUsuario}
+          and
+            tc_janal_muestras.folio like '%{folio}%'
+          and
+            tc_janal_muestras.control like '%{control}%'
+          and
+            tc_janal_estatus.id_estatus  &gt; {idEstatus}
+          order by
+            tc_janal_entidades.clave,
+            tc_janal_muestras.control
+      </select>
+      <select id="nacional">
+        select
+            tc_janal_muestras.id_muestra as id_key,
+            tc_janal_entidades.clave,
+            tc_janal_entidades.siglas,
+            tc_janal_entidades.descripcion,
+            tc_janal_muestras.folio,
+            tc_janal_muestras.dominio,
+            tc_janal_muestras.control,
+            tc_janal_muestras.upm,
+            tc_janal_muestras.prog,
+            tc_janal_muestras.viv_sel,
+            tr_janal_movimientos.id_movimiento,
+            tr_janal_movimientos.id_usuario,
+            tr_janal_movimientos.id_supervisa,
+            tc_janal_estatus.descripcion estatus,
+            tc_janal_estatus.id_estatus
+          from
+            tc_janal_muestras
+          inner join
+            tr_janal_movimientos on tc_janal_muestras.id_movimiento = tr_janal_movimientos.id_movimiento
+          inner join
+            tc_janal_estatus on tr_janal_movimientos.id_estatus = tc_janal_estatus.id_estatus
+          inner join
+            tr_janal_entidades_grupo on tc_janal_muestras.id_entidad = tr_janal_entidades_grupo.id_entidad
+          inner join
+            tc_janal_entidades on tr_janal_entidades_grupo.id_entidad = tc_janal_entidades.id_entidad
+          where
+            tc_janal_muestras.id_grupo= {idGrupo}          
+          and
+            tc_janal_muestras.folio like '%{folio}%'
+          and
+            tc_janal_muestras.control like '%{control}%'
+          and
+            tc_janal_estatus.id_estatus  &gt; {idEstatus}
+          order by
+            tc_janal_entidades.clave,
+            tc_janal_muestras.control
+      </select>
+    </unit>		
+		<unit id="VistaEnviosDto">
+			<select id="row">
+				select
+					id_bitacora_movil as id_key,
+					id_familia,
+					concat(nombre, ' ', ap_materno, ' ', ap_materno) nombre_completo,
+					registro,
+					registro_integracion,
+					cuenta,
+					tc_janal_estatus.id_estatus
+				from
+					tc_janal_muestras
+				inner join tr_janal_bitacora_movil on tc_janal_muestras.id_muestra=tr_janal_bitacora_movil.id_muestra
+				inner join tc_janal_estatus on tc_janal_estatus.id_estatus=tr_janal_bitacora_movil.id_estatus
+				where
+				  cuenta like '%{cuenta}%'
+				order by
+					registro desc
+			</select>
+		</unit>		
+    <unit id="VistaCapturaCuestionariosDto">      
+      <select id="todos">
+        select 
+          tc_janal_muestras.id_muestra as id_key,
+          id_familia,
+					ent,
+				  cve_mun as mun,
+				  loc,
+          folio,
+          concat(nombre,' ',ap_paterno,' ',ap_materno) nombres          
+        from 
+          tc_janal_muestras
+				left join 
+          tr_janal_visitas on tc_janal_muestras.id_muestra=tr_janal_visitas.id_muestra and tr_janal_visitas.id_visita in (select id_visita from (select id_muestra,max(id_visita) as id_visita	from tr_janal_visitas group by id_muestra) as visitas)          
+        where 
+				  ((tr_janal_visitas.id_resultado= {idResultado}) or (-1= {idResultado})) and 
+          ((tc_janal_muestras.id_entidad= {idEntidad}) or (-1= {idEntidad})) and
+          tc_janal_muestras.upm like '%{upm}%'
+				order by
+           ent,id_familia
+      </select>
+			<select id="trJanalVisitas">
+				select
+          tr_janal_visitas.id_visita as id_key,								  
+					tc_janal_muestras.id_familia,
+					cast(tc_janal_muestras.consecutivo as char(6)) as consecutiv,					
+          tc_janal_muestras.upm	as cve_upm,				
+					tr_janal_visitas.visita,					
+				  tr_janal_visitas.nom_ent,
+					tr_janal_visitas.fecha,
+					date_format(tr_janal_visitas.hr_ini, '%H:%i') as hr_ini,
+					date_format(tr_janal_visitas.hr_ter, '%H:%i') as hr_ter,
+					cast(tc_janal_resultados.clave as decimal) as res,
+				  tc_janal_muestras.rectif as recertific
+				from
+				  tr_janal_visitas				
+        inner join 
+          tc_janal_muestras on tr_janal_visitas.id_muestra = tc_janal_muestras.id_muestra
+				inner join 
+          tc_janal_resultados on tr_janal_visitas.id_resultado=tc_janal_resultados.id_resultado
+        where 
+				  ((tr_janal_visitas.id_resultado= {idResultado}) or (-1= {idResultado})) and 
+          ((tc_janal_muestras.id_entidad= {idEntidad}) or (-1= {idEntidad})) and
+          tc_janal_muestras.upm like '%{upm}%'
+				order by
+           tc_janal_muestras.ent,tc_janal_muestras.id_familia,tr_janal_visitas.visita
+			</select>
+      <select id="trJanalCaratula">
+        select   
+				  tr_janal_caratula.id_caratula as id_key,    
+          tc_janal_muestras.id_familia,					
+          tr_janal_caratula.consecutiv	,
+          tr_janal_caratula.cve_upm	,         
+          tr_janal_caratula.folio_cuest	,
+          tr_janal_caratula.t_cuest	,
+          tr_janal_caratula.nom_tit	,
+          tr_janal_caratula.pat_tit	,
+          tr_janal_caratula.mat_tit	,
+          tr_janal_caratula.calle	,
+          tr_janal_caratula.num_ext	,
+          tr_janal_caratula.num_int	,
+          tr_janal_caratula.colonia	,
+          tr_janal_caratula.cp	,
+          tr_janal_caratula.telef	,
+          tr_janal_caratula.referencia	,
+          tr_janal_caratula.entre_ca1	,
+          tr_janal_caratula.entre_ca2	,
+          tr_janal_caratula.calle_atra,          
+					tr_janal_caratula.ent,
+					tr_janal_caratula.mun,
+					tr_janal_caratula.loc,
+					tc_janal_muestras.rectif as recertific
+        from 
+          tr_janal_caratula
+        inner join 
+          tc_janal_muestras on tr_janal_caratula.id_muestra = tc_janal_muestras.id_muestra
+        left join 
+          tr_janal_visitas on tc_janal_muestras.id_muestra=tr_janal_visitas.id_muestra and tr_janal_visitas.id_visita in (select id_visita from (select id_muestra,max(id_visita) as id_visita	from tr_janal_visitas group by id_muestra) as visitas)          
+        where 
+					((tr_janal_visitas.id_resultado= {idResultado}) or (-1= {idResultado})) and 
+          ((tc_janal_muestras.id_entidad= {idEntidad}) or (-1= {idEntidad})) and
+          tc_janal_muestras.upm like '%{upm}%'
+				order by
+           tc_janal_muestras.ent,tc_janal_muestras.id_familia
+      </select>
+      <select id="trJanalPersonas">
+        select        
+				  tr_janal_personas.id_persona as id_key,    
+          tc_janal_muestras.id_familia,
+					tr_janal_personas.consecutiv,
+          tr_janal_personas.cve_upm	,
+					tr_janal_personas.id_persona as id_per,
+					tr_janal_personas.folio_cuest,          					
+          tr_janal_personas.rg,
+          tr_janal_personas.a_paterno,
+          tr_janal_personas.a_materno,
+          tr_janal_personas.nombre	,
+          tr_janal_personas.c_resid	,
+          tr_janal_personas.sexo	,
+          cast(tr_janal_personas.edad as decimal)as edad,
+          tr_janal_personas.esc	,
+          tr_janal_personas.parent	,
+          tr_janal_personas.v_resid	,
+          tr_janal_personas.alim	,
+          tr_janal_personas.salud	,
+          tr_janal_personas.educ	,
+          tr_janal_personas.otros	,
+          tr_janal_personas.ninguno	,
+          cast(tr_janal_personas.a_apoyo	as decimal) as a_apoyo,
+          tr_janal_personas.activo,
+          tr_janal_personas.filter_1 as informante,
+					tc_janal_muestras.rectif as recertific
+        from 
+          tr_janal_personas
+        inner join 
+          tc_janal_muestras on tr_janal_personas.id_muestra = tc_janal_muestras.id_muestra
+        left join 
+          tr_janal_visitas on tc_janal_muestras.id_muestra=tr_janal_visitas.id_muestra and tr_janal_visitas.id_visita in (select id_visita from (select id_muestra,max(id_visita) as id_visita	from tr_janal_visitas group by id_muestra) as visitas)          
+        where 					
+          activo in ('1','3') and
+					((tr_janal_visitas.id_resultado= {idResultado}) or (-1= {idResultado})) and 
+          ((tc_janal_muestras.id_entidad= {idEntidad}) or (-1= {idEntidad})) and
+          tc_janal_muestras.upm like '%{upm}%'
+				order by
+           tc_janal_muestras.ent,tc_janal_muestras.id_familia,rg
+      </select>
+      <select id="trJanalFamilias">
+        select   
+				  tr_janal_familias.id_familia as id_key, 
+          tc_janal_muestras.id_familia,
+					tr_janal_familias.consecutiv,
+          tr_janal_familias.cve_upm,
+					tr_janal_familias.folio_cuest,	
+          cast(tr_janal_familias.mp_fr_re as char(1)) as mp_fr_re,
+          cast(tr_janal_familias.mp_asist as char(1)) as mp_asist,
+          cast(tr_janal_familias.mp_inf	as char(1)) as mp_inf,
+				  cast(tr_janal_familias.t_salud as char(1)) as t_salud,
+          cast(tr_janal_familias.t_alim as char(1)) as t_alim,
+          cast(tr_janal_familias.t_adic as char(1)) as t_adic,
+          cast(tr_janal_familias.t_planfa as char(1)) as t_planfa,
+          cast(tr_janal_familias.t_edu as char(1)) as t_edu,
+          cast(tr_janal_familias.t_progra as char(1)) as t_progra,
+          cast(tr_janal_familias.t_otros as char(1)) as t_otros,
+					tr_janal_familias.t_especi,
+          cast(tr_janal_familias.mp_tmpo as char(1)) as mp_tmpo,
+          cast(tr_janal_familias.mp_trto as char(1)) as mp_trto,
+          cast(tr_janal_familias.a_mejora as char(1)) as a_mejora,
+          cast(tr_janal_familias.a_sat as char(1)) as a_sat,
+          cast(tr_janal_familias.a_oprt as char(1)) as a_oprt,
+          cast(tr_janal_familias.a_sat_t as char(1)) as a_sat_t,
+          cast(tr_janal_familias.a_otorga as char(1)) as a_otorga,
+          cast(tr_janal_familias.a_esc_be as decimal) as a_esc_be,
+          cast(tr_janal_familias.s_c_fv as char(1)) as s_c_fv,
+          cast(tr_janal_familias.s_pl_fv_a as char(1)) as s_pl_fv_a,
+          cast(tr_janal_familias.s_sat_c as char(1)) as s_sat_c,
+          cast(tr_janal_familias.s_oprt_m as char(1)) as s_oprt_m,	
+          cast(tr_janal_familias.s_s_t_c as char(1)) as s_s_t_c,
+          cast(tr_janal_familias.s_s_pla as char(1)) as s_s_pla,
+          cast(tr_janal_familias.s_s_t_pl as char(1)) as s_s_t_pl,
+          cast(tr_janal_familias.s_otroga as char(1)) as s_otorga,
+          cast(tr_janal_familias.s_p_fv_s as char(1)) as s_p_fv_s,
+          cast(tr_janal_familias.s_p_emb as char(1)) as s_p_emb,
+          cast(tr_janal_familias.s_p_adic as char(1)) as s_p_adic,
+          cast(tr_janal_familias.s_esc_c as decimal) as s_esc_c,
+          cast(tr_janal_familias.s_esc_m as decimal) as s_esc_m,
+          cast(tr_janal_familias.s_esc_as as decimal) as s_esc_as,
+          cast(tr_janal_familias.am_alim as char(1)) as am_alim,
+          cast(tr_janal_familias.am_oport as char(1)) as am_oport,
+          cast(tr_janal_familias.am_salud as char(1)) as am_salud,
+          cast(tr_janal_familias.am_otorg as char(1)) as am_otorg,
+          cast(tr_janal_familias.am_sat as char(1)) as am_sat,
+          cast(tr_janal_familias.am_esc as decimal) as am_esc,
+          cast(tr_janal_familias.e_nivel as char(1)) as e_nivel,
+          cast(tr_janal_familias.e_cont as char(1)) as e_cont,
+          cast(tr_janal_familias.e_conc as char(1)) as e_conc,
+          cast(tr_janal_familias.e_trto_t as char(1)) as e_trto_t,
+          cast(tr_janal_familias.e_oport as char(1)) as e_oport,
+          cast(tr_janal_familias.e_otorga as char(1)) as e_otorga,
+          cast(tr_janal_familias.e_sat as char(1)) as e_sat,
+          cast(tr_janal_familias.e_empleo as char(1)) as e_empleo,	
+          cast(tr_janal_familias.e_esc_e as decimal) as e_esc_e,
+          cast(tr_janal_familias.at_pp as char(1)) as at_pp,
+          cast(tr_janal_familias.at_pp_sat as char(1)) as at_pp_sat,	
+          cast(tr_janal_familias.at_pp_cap as char(1)) as at_pp_cap,
+          cast(tr_janal_familias.cap_t as char(1)) as cap_t,
+          cast(tr_janal_familias.cap_t_sat as char(1)) as cap_t_sat,
+          cast(tr_janal_familias.cap_t_cap as char(1)) as cap_t_cap,
+          cast(tr_janal_familias.or_fi as char(1)) as or_fi,
+          cast(tr_janal_familias.or_fi_sat as char(1)) as or_fi_sat,
+          cast(tr_janal_familias.or_fi_pf as char(1)) as or_fi_pf,
+          cast(tr_janal_familias.ap_soc as char(1)) as ap_soc,
+          cast(tr_janal_familias.ap_soc_sat as char(1)) as ap_soc_sat,
+          cast(tr_janal_familias.ap_soc_nv as char(1)) as ap_soc_nv,
+					tc_janal_muestras.rectif as recertific
+        from 
+          tr_janal_familias        
+        inner join 
+          tc_janal_muestras on tr_janal_familias.id_muestra = tc_janal_muestras.id_muestra
+        left join 
+          tr_janal_visitas on tc_janal_muestras.id_muestra=tr_janal_visitas.id_muestra and tr_janal_visitas.id_visita in (select id_visita from (select id_muestra,max(id_visita) as id_visita	from tr_janal_visitas group by id_muestra) as visitas)          
+        where 
+					((tr_janal_visitas.id_resultado= {idResultado}) or (-1= {idResultado})) and 
+          ((tc_janal_muestras.id_entidad= {idEntidad}) or (-1= {idEntidad})) and
+          tc_janal_muestras.upm like '%{upm}%'
+				order by
+           tc_janal_muestras.ent,tc_janal_muestras.id_familia
+      </select>
+      <select id="trJanalModulo">
+        select 
+				  tr_janal_modulo.id_modulo as id_key, 
+          tc_janal_muestras.id_familia,
+					tr_janal_modulo.consecutiv,
+          tr_janal_modulo.cve_upm, 
+				  tr_janal_modulo.folio_cuest,             					
+          cast(tr_janal_modulo.pro_des as char(1)) as pro_des,
+          cast(tr_janal_modulo.gr_trab as char(1)) as gr_trab,
+          cast(tr_janal_modulo.gr_apo as char(1)) as gr_apo,
+          cast(tr_janal_modulo.gr_pro_opo as char(1)) as gr_pro_opo,
+          cast(tr_janal_modulo.gr_apo_mej as char(1)) as gr_apo_mej,
+					tc_janal_muestras.rectif as recertific
+        from 
+          tr_janal_modulo
+        inner join 
+          tc_janal_muestras on tr_janal_modulo.id_muestra = tc_janal_muestras.id_muestra
+        left join 
+          tr_janal_visitas on tc_janal_muestras.id_muestra=tr_janal_visitas.id_muestra and tr_janal_visitas.id_visita in (select id_visita from (select id_muestra,max(id_visita) as id_visita	from tr_janal_visitas group by id_muestra) as visitas)          
+        where 
+					((tr_janal_visitas.id_resultado= {idResultado}) or (-1= {idResultado})) and 
+          ((tc_janal_muestras.id_entidad= {idEntidad}) or (-1= {idEntidad})) and
+          tc_janal_muestras.upm like '%{upm}%'
+				order by
+           tc_janal_muestras.ent,tc_janal_muestras.id_familia
+      </select>
+			<select id="tcJanalEntidades">
+				select 
+				  cast(concat(ent) as signed) as id_key,
+					ent,
+          upper(entidad) as descripcion
+				from
+					tc_janal_muestras 
+        left join 
+          tr_janal_visitas on tc_janal_muestras.id_muestra=tr_janal_visitas.id_muestra and tr_janal_visitas.id_visita in (select id_visita from (select id_muestra,max(id_visita) as id_visita	from tr_janal_visitas group by id_muestra) as visitas)          
+        where 
+					((tr_janal_visitas.id_resultado= {idResultado}) or (-1= {idResultado})) and 
+          ((tc_janal_muestras.id_entidad= {idEntidad}) or (-1= {idEntidad})) and
+          tc_janal_muestras.upm like '%{upm}%'
+				group by
+					ent,entidad
+				order by
+					ent
+			</select>
+			<select id="tcJanalMunicipios">
+				select 
+				  cast(concat(ent,cve_mun) as signed) as id_key,
+					ent,
+          cve_mun as mun,
+          upper(mun) as descripcion
+				from
+					tc_janal_muestras 
+        left join 
+          tr_janal_visitas on tc_janal_muestras.id_muestra=tr_janal_visitas.id_muestra and tr_janal_visitas.id_visita in (select id_visita from (select id_muestra,max(id_visita) as id_visita	from tr_janal_visitas group by id_muestra) as visitas)          
+        where 
+					((tr_janal_visitas.id_resultado= {idResultado}) or (-1= {idResultado})) and 
+          ((tc_janal_muestras.id_entidad= {idEntidad}) or (-1= {idEntidad})) and
+          tc_janal_muestras.upm like '%{upm}%'
+				group by
+				  ent,cve_mun,mun
+				order by
+				  ent,cve_mun
+			</select>
+			<select id="tcJanalLocalidades">
+				select 
+				  cast(concat(ent,cve_mun,loc) as signed) as id_key,
+					ent,
+          cve_mun as mun,
+          loc,
+          upper(localidad) as descripcion
+				from
+					tc_janal_muestras 
+       left join 
+          tr_janal_visitas on tc_janal_muestras.id_muestra=tr_janal_visitas.id_muestra and tr_janal_visitas.id_visita in (select id_visita from (select id_muestra,max(id_visita) as id_visita	from tr_janal_visitas group by id_muestra) as visitas)          
+        where 
+					((tr_janal_visitas.id_resultado= {idResultado}) or (-1= {idResultado})) and 
+          ((tc_janal_muestras.id_entidad= {idEntidad}) or (-1= {idEntidad})) and
+          tc_janal_muestras.upm like '%{upm}%'
+				group by
+				  ent,cve_mun,loc,localidad
+				order by
+					ent,cve_mun,loc
+			</select>
+    </unit>			
+  </dml>
+</process>

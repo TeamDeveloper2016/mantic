@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Mensaje a usuario: #{kajoolMensajesUsuariosAgregar.attrs.usuario}"/>
+  <ui:define name="librerias">
+    <script type="text/javascript">
+        Janal.Control.fields = {
+          'nombre':         {validaciones: 'requerido', mascara: 'libre', mensaje: 'Nombre requerido para agregar', grupo:'uno|dos'},
+          'vigenciaIni':    {validaciones: 'requerido|fecha-menor({"cual":"vigenciaFin"})', mascara: 'libre', mensaje: 'Vigencia inicial debe ser menor o igual a la final para agregar', grupo:'uno|dos'},
+				  'vigenciaFin':    {validaciones: 'requerido|fecha-mayor({"cual":"vigenciaIni"})', mascara: 'libre', mensaje: 'Vigencia final debe de ser mayor o igual a la incial para agregar', grupo:'uno|dos'},
+          'urlSeguimiento': {validaciones: 'requerido', mascara: 'libre', mensaje: 'URL seguimiento requerida para continuar', grupo:'uno|dos'},
+          'descripcion':    {validaciones: 'requerido', mascara: 'libre', mensaje: 'Descripcion requerida para continuar', grupo:'uno|dos'},
+          'idPrioridad':    {validaciones: 'requerido', mascara: 'libre', mensaje: 'Prioridad requerida para continuar', grupo:'uno'}
+      };
+    </script>
+  </ui:define>
+  <ui:define name="contenido">	
+    <p:panelGrid columns="2" class="ui-grid-responsive" columnClasses="ui-grid-col-2, ui-grid-col-10" layout="grid">
+      <h:outputLabel for="nombre" value="Nombre:"/>
+      <p:inputText id="nombre" value="#{kajoolMensajesUsuariosAgregar.attrs.dto.nombre}" styleClass="Container50"/>
+      <h:outputLabel for="vigenciaIni" value="Vigencia inicial:"/>
+      <p:calendar id="vigenciaIni" styleClass="Wid100" value="#{kajoolMensajesUsuariosAgregar.attrs.dto.vigenciaIni}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+      <h:outputLabel for="vigenciaFin" value="Vigencia final:"/>
+      <p:calendar id="vigenciaFin" styleClass="Wid100" value="#{kajoolMensajesUsuariosAgregar.attrs.dto.vigenciaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+      <h:outputLabel for="urlSeguimiento" value="URL seguimiento:"/>
+      <p:inputText id="urlSeguimiento" value="#{kajoolMensajesUsuariosAgregar.attrs.dto.urlSeguimiento}" styleClass="Container50"/>
+      <h:outputLabel for="descripcion" value="Mensaje:"/>
+      <p:editor id="descripcion" widgetVar="editorWidget" value="#{kajoolMensajesUsuariosAgregar.attrs.dto.descripcion}" />
+      <p:spacer/>
+			<p:commandButton value="Limpiar" onclick="PF('editorWidget').clear();" icon="ui-icon-close"/>
+      <h:outputLabel value="Prioridad:" for="idPrioridad"/>
+      <p:selectOneMenu id="idPrioridad" value="#{kajoolMensajesUsuariosAgregar.attrs.idPrioridad}"  styleClass="Container30">
+        <f:selectItem itemValue="" itemLabel="Seleccione"/>
+        <f:selectItems value="#{kajoolMensajesUsuariosAgregar.attrs.prioridades}"/>
+      </p:selectOneMenu>
+    </p:panelGrid>
+  </ui:define>
+   <ui:define name ="acciones" >
+    <p:commandButton id="aceptar" icon="fa fa-check" onstart="return janal.execute(true);" update="mensaje" process="@this nombre vigenciaIni vigenciaFin descripcion idPrioridad urlSeguimiento" action="#{kajoolMensajesUsuariosAgregar.doAceptar}" value="Aceptar" />
+    <p:commandButton  id="cancelar" icon="fa fa-remove" value="Cancelar" ajax="false"  action="filtro"/>
+  </ui:define>
+</ui:composition>

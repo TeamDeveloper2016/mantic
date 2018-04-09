@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date Jul 28, 2014
+ time 10:18:41 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/accion.xhtml"
+                xmlns:c="http://java.sun.com/jsp/jstl/core">
+  <ui:define name="librerias">
+    <h:outputScript library="janal" name="core/jquery.janal.sticky.min-1.0.0.js"/>
+  </ui:define>
+  <ui:param name="titulo" value="Indicadores" />
+  <ui:define name="contenido">	
+		<div class="tabla-filtro">
+      <label class="una-sola-linea" style="font-weight:bold;color:blue"><i class="fa fa-lg fa-info-circle"/>Clic sobre la fila y despues clic derecho del ratón sobre la misma fila para graficar los datos</label>
+    </div>
+    <p:treeTable id="tabla" value="#{kajoolMantenimientoIndicadoresAvanceAvance.lazyModel}" var="fila" styleClass="sticky tabla-filtro" selection="#{kajoolMantenimientoIndicadoresAvanceAvance.seleccionado}" selectionMode="single">
+      <p:ajax event="expand" listener="#{kajoolMantenimientoIndicadoresAvanceAvance.onNodeExpand}" update=":datos:tabla" process="@this :datos:tabla" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+      <p:ajax event="select" update=":datos:tabla" process="@this"/>
+      <p:ajax event="unselect" update=":datos:tabla" process="@this"/>
+      <f:facet name="header">
+        #{kajoolMantenimientoIndicadoresAvanceAvance.definicionAvance.descripcion}
+      </f:facet>
+      <p:column headerText="Corte al #{kajoolMantenimientoIndicadoresAvanceAvance.definicionAvance.registroFin}">
+        #{fila.descripcion}
+      </p:column>
+      <c:forEach var="columna" items="#{kajoolMantenimientoIndicadoresAvanceAvance.columnas}" varStatus="status">
+        <p:column styleClass="alinear-centro">
+          <f:facet name="header">			
+            <h:outputText value="#{columna.etiqueta}"/>
+          </f:facet>
+          <h:outputText title="#{fila.columnas[status.index].porcentaje}%" value="#{fila.columnas[status.index].total}">
+						<f:convertNumber pattern="#,##,##0"/>
+					</h:outputText>
+        </p:column>
+      </c:forEach>
+      <p:column styleClass="alinear-izquierda, una-sola-linea" headerText="Indicador (#{kajoolMantenimientoIndicadoresAvanceAvance.definicionAvance.indicador})">
+        <p:graphicImage library="janal" name="icon/tableros/1.png" rendered="#{fila.avance ge 5.0}" title="#{fila.avance}%"/>
+        <p:graphicImage library="janal" name="icon/tableros/2.png" rendered="#{fila.avance ge 10.0}" title="#{fila.avance}%"/>
+        <p:graphicImage library="janal" name="icon/tableros/3.png" rendered="#{fila.avance ge 15.0}" title="#{fila.avance}%"/>
+        <p:graphicImage library="janal" name="icon/tableros/4.png" rendered="#{fila.avance ge 20.0}" title="#{fila.avance}%"/>
+        <p:graphicImage library="janal" name="icon/tableros/5.png" rendered="#{fila.avance ge 25.0}" title="#{fila.avance}%"/>
+        <p:graphicImage library="janal" name="icon/tableros/6.png" rendered="#{fila.avance ge 30.0}" title="#{fila.avance}%"/>
+        <p:graphicImage library="janal" name="icon/tableros/7.png" rendered="#{fila.avance ge 35.0}" title="#{fila.avance}%"/>
+        <p:graphicImage library="janal" name="icon/tableros/8.png" rendered="#{fila.avance ge 40.0}" title="#{fila.avance}%"/>
+        <p:graphicImage library="janal" name="icon/tableros/9.png" rendered="#{fila.avance ge 45.0}" title="#{fila.avance}%"/>
+        <p:graphicImage library="janal" name="icon/tableros/10.png" rendered="#{fila.avance ge 50.0}" title="#{fila.avance}%"/>
+        <p:graphicImage library="janal" name="icon/tableros/11.png" rendered="#{fila.avance ge 55.0}" title="#{fila.avance}%"/>
+        <p:graphicImage library="janal" name="icon/tableros/12.png" rendered="#{fila.avance ge 60.0}" title="#{fila.avance}%"/>
+        <p:graphicImage library="janal" name="icon/tableros/13.png" rendered="#{fila.avance ge 65.0}" title="#{fila.avance}%"/>
+        <p:graphicImage library="janal" name="icon/tableros/14.png" rendered="#{fila.avance ge 70.0}" title="#{fila.avance}%"/>
+        <p:graphicImage library="janal" name="icon/tableros/15.png" rendered="#{fila.avance ge 75.0}" title="#{fila.avance}%"/>
+        <p:graphicImage library="janal" name="icon/tableros/16.png" rendered="#{fila.avance ge 80.0}" title="#{fila.avance}%"/>
+        <p:graphicImage library="janal" name="icon/tableros/17.png" rendered="#{fila.avance ge 85.0}" title="#{fila.avance}%"/>
+        <p:graphicImage library="janal" name="icon/tableros/18.png" rendered="#{fila.avance ge 90.0}" title="#{fila.avance}%"/>
+        <p:graphicImage library="janal" name="icon/tableros/19.png" rendered="#{fila.avance ge 95.0}" title="#{fila.avance}%"/>
+        <p:graphicImage library="janal" name="icon/tableros/20.png" rendered="#{fila.avance ge 100.0}" title="#{fila.avance}%"/>
+        #{fila.avance}%
+      </p:column>					
+		</p:treeTable>
+    <p:contextMenu for="tabla" id="generarGrafica">
+      <p:menuitem value="Generar gráfica" action="#{kajoolMantenimientoIndicadoresAvanceAvance.toGrafica}" ajax="false" immediate="true" icon="icono-grafica"/>
+    </p:contextMenu>
+    <h:inputHidden id="idSepDefincionAvance" value="#{kajoolMantenimientoIndicadoresAvanceAvance.definicionAvance.idSepDefinicionAvance}"/>
+    <h:inputHidden id="tablaDefinicion" value="#{kajoolMantenimientoIndicadoresAvanceAvance.definicionAvance.tabla}"/>
+    <h:inputHidden id="campoDefinicion" value="#{kajoolMantenimientoIndicadoresAvanceAvance.definicionAvance.campo}"/>
+    <h:inputHidden id="estatusIndicador" value="#{kajoolMantenimientoIndicadoresAvanceAvance.definicionAvance.indicador}"/>
+    <h:inputHidden id="descripcion" value="#{kajoolMantenimientoIndicadoresAvanceAvance.definicionAvance.descripcion}"/>
+    <h:inputHidden id="estatusAplican" value="#{kajoolMantenimientoIndicadoresAvanceAvance.definicionAvance.estatusAplican}"/>
+		<h:inputHidden id="corte" value="#{kajoolMantenimientoIndicadoresAvanceAvance.definicionAvance.corte}"/>
+    <h:inputHidden id="registroFin" value="#{kajoolMantenimientoIndicadoresAvanceAvance.definicionAvance.registroFin}"/>
+  </ui:define>
+  <ui:define name="acciones">
+    <p:commandButton id="aceptar" rendered="false" />
+    <p:commandButton id="cancelar" value="Regresar" action="#{kajoolMantenimientoIndicadoresAvanceAvance.doRegresar}" immediate="true" ajax="false" process="@this"/>
+  </ui:define>
+</ui:composition>

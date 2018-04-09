@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/temporal.xhtml">
+  <ui:param name="titulo" value="Alumnos del plantel" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+			Janal.Control.fields = {
+				busqueda: {validaciones: 'requerido', mascara: 'libre'}
+			};
+    </script>
+  </ui:define>
+  <ui:define name="contenido">			
+		<p:fieldset legend="Buscar por" toggleable="true" collapsed="false" styleClass="Responsive100">
+      <p:panelGrid columns="3" layout="grid" columnClasses="janal-wid-10,Wid40,janal-wid-5">
+        <h:outputLabel for="busqueda" value="CURP:"/>
+        <p:inputText id="busqueda" value="" size="80" styleClass="Container100 Fnone MarAuto Fs14"/>
+        <p:commandButton id="buscar" icon="fa fa-search" update="busqueda" process="@this busqueda" onstart="return janal.execute();" ajax="true"/>
+      </p:panelGrid>
+    </p:fieldset>
+    <div style="height:800px"></div>
+  </ui:define>
+	<ui:define name="acciones">
+    <p:commandButton id="cancelar" value="Regresar" icon="fa fa-mail-reply" ajax="false"/>
+  </ui:define>
+</ui:composition>

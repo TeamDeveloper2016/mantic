@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+  <h:form id="buzonSugerencias" prependId="false">
+    <script type="text/javascript">
+        Janal.Control.fieldsBuzon = {
+          'idModulo'        : {validaciones: 'requerido', mascara: 'libre'},
+          'idProblematica'  : {validaciones: 'requerido', mascara: 'libre'},
+          'descripcionBuzon': {validaciones: 'requerido', mascara: 'libre'}
+        };
+    </script>
+    <p:dialog id="dialogoBuzonSugerencias" dynamic="true" widgetVar="wDialogoBuzonSugerencias" header="Buzón de quejas, sugerencias, comentarios y felicitaciones" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false"  onHide="janal.prepare('datos',Janal.Control.fields); janal.desbloquear();">
+      <h:panelGrid columns="2">							
+        <p:outputLabel for="idModulo" value="Modulo:"/>
+        <p:selectOneMenu id="idModulo" value="#{kajoolMenuGaleryMenu.trJanalBuzonDto.idModulo}">
+          <f:selectItem itemValue="" itemLabel="Seleccione"/>
+          <f:selectItems value="#{kajoolMenuGaleryMenu.modulos}"/>
+          <p:ajax event="change" process="@this"/>
+        </p:selectOneMenu>
+        <p:outputLabel for="idProblematica" value="Tipo:"/>
+        <p:selectOneMenu id="idProblematica" value="#{kajoolMenuGaleryMenu.trJanalBuzonDto.idProblematica}">
+          <f:selectItem itemValue="" itemLabel="Seleccione"/>
+          <f:selectItems value="#{kajoolMenuGaleryMenu.problematicas}"/>
+          <p:ajax event="change" process="@this"/>
+        </p:selectOneMenu>
+      </h:panelGrid>
+      <h:panelGrid columns="1">							
+        <p:outputLabel for="descripcionBuzon" value="Descripción:"/>
+        <p:inputTextarea id="descripcionBuzon" value="#{kajoolMenuGaleryMenu.trJanalBuzonDto.descripcion}" cols="100" rows="5"/>
+      </h:panelGrid>
+      <hr class="ui-widget-content"/>
+      <div class="janal-line-button">
+        <p:commandButton value="Aceptar" onstart="return janal.execute(false);" oncomplete="PF('wDialogoBuzonSugerencias').hide();" actionListener="#{kajoolMenuGaleryMenu.doGuardarBuzon}" process="@this idProblematica idModulo descripcionBuzon" onsuccess="janal.desbloquear();"/>
+        <p:commandButton process="@none"  value="Cerrar" oncomplete="PF('wDialogoBuzonSugerencias').hide();"/>
+      </div>
+    </p:dialog>
+  </h:form>
+</html>

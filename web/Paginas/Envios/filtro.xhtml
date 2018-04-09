@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 12/10/2016
+ time 01:56:07 PM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Bitacora de envios realizados por los entrevistadores"/>
+  <ui:define name="librerias">		
+    <script type="text/javascript">
+			Janal.Control.fields = {        
+        cuenta: { validaciones: 'libre'   , mascara: 'libre'}        
+      };		
+		</script>
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="Container100">
+      <div class="ContainerIndent">
+        <p:panel>
+          <p:panelGrid layout="grid" columns="3" columnClasses="ui-grid-col-2 janal-wid-col-60,ui-grid-col-2 janal-wid-col-180, janal-wid-col-40">                                
+            <label for="cuenta">Cuenta:</label> 
+            <p:inputText id="cuenta" value="#{kajoolEnviosFiltro.attrs.cuenta}"/>
+            <p:commandButton id="buscar" actionListener="#{kajoolEnviosFiltro.doLoad}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" process="@this cuenta" update="tabla" icon="fa fa-search"/>
+          </p:panelGrid>
+        </p:panel>  
+        <p:spacer height="20"/>        
+        <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolEnviosFiltro.lazyModel}" paginator="#{kajoolEnviosFiltro.lazyModel.rowCount gt kajoolEnviosFiltro.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" selectionMode="single" selection="#{kajoolEnviosFiltro.attrs.selected}" reflow="true">								
+          <f:facet name="header">
+            <p:menuButton value="Opciones">
+							<p:menuitem id="todos" icon="fa-mobile-phone" value="Integrar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.bloquear();PF('dialogoConfirmacion').show();"/>
+              <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+              <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+            </p:menuButton>
+          </f:facet>
+          <p:column styleClass="janal-column-rigth janal-wid-col-80 Responsive" headerText="Familia">
+            <h:outputText value="#{row.idFamilia}"  />
+          </p:column>
+          <p:column styleClass="Responsive" headerText="Nombre">
+            <h:outputText value="#{row.nombreCompleto}" />
+          </p:column>
+					<p:column styleClass="janal-column-left janal-wid-col-100 Responsive" headerText="Cuenta">
+            <h:outputText value="#{row.cuenta}" />
+          </p:column>          
+          <p:column styleClass="janal-column-center janal-wid-col-150 Responsive" headerText="Registro">
+            <h:outputText value="#{row.registro}"/>
+          </p:column>
+          <p:column styleClass="janal-column-center janal-wid-col-150 Responsive" headerText="Integración">
+            <h:outputText value="#{row.registroIntegracion}" />
+          </p:column>          
+          <p:column styleClass="janal-column-center janal-wid-col-80 Responsive" headerText="Estatus">
+            <p:graphicImage library="janal" name="icon/acciones/#{kajoolEnviosFiltro.doSemaforo(row.idEstatus)}.png"  alt="#{kajoolEnviosFiltro.doSemaforo(row.idEstatus)}"/>
+          </p:column>          
+          <p:column headerText="Integrar" styleClass="janal-column-center janal-wid-col-50">
+            <p:commandButton icon="fa fa-lg fa-edit" title="Cuestionario" onstart="janal.bloquear();" action="#{kajoolEnviosFiltro.doIntegrar}" process="@this, tabla" ajax="false">
+              <f:setPropertyActionListener value="#{row}" target="#{kajoolEnviosFiltro.attrs.selected}"/>
+           </p:commandButton>
+          </p:column>
+          <f:facet name="footer">
+            Total [#{kajoolEnviosFiltro.lazyModel.rowCount}] registros
+          </f:facet>
+        </p:dataTable>
+        <h:commandLink id="dataPdf">
+          <p:dataExporter type="pdf" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}" />
+        </h:commandLink>
+        <h:commandLink id="dataXls">
+          <p:dataExporter type="xls" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>
+        </h:commandLink>	        
+      </div>
+    </div>    
+		<!-- Dialogo para confirmacion de integración de envios -->
+		<ui:param name="textoConfirmacion" value="¿Está seguro de integrar todos los envíos?" />
+		<ui:param name="accionConfirmacion" value="#{kajoolEnviosFiltro}"/>
+		<ui:param name="updateComponent" value=":datos:tabla :datos:confirmacion"/>
+		<ui:param name="eventoConfirmacion" value="doIntegrarTodos"	/>	
+		<ui:param name="renderedConfirmacion" value="true"/>			
+  </ui:define>
+	<ui:param name="componenteBloqueo" value="tabla"/>
+</ui:composition>

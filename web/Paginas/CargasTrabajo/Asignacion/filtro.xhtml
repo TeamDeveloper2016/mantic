@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 9/10/2016
+ time 08:26:38 PM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Cargas de trabajo" />
+  <ui:define name="librerias">
+    <style type="text/css">
+      .ui-picklist .ui-picklist-list {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: auto;
+        height: 200px;
+        width: 355px;
+      }
+      .ui-picklist .ui-picklist-filter {
+        width: 94% !important;
+      }
+    </style>
+    <script type="text/javascript">		
+			Janal.Control.fields = {
+				entidad    : {validaciones: 'requerido', mascara: 'libre'},								
+				capturista : {validaciones: 'requerido', mascara: 'libre'},																				
+				control    : {validaciones: 'libre',     mascara: 'libre'}
+			};
+		</script>
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="Container100">
+      <div class="ContainerIndent">
+        <div class="Container100 Responsive">
+          <div class="ContainerIndent">
+            <p:panel style="min-height:400px;">							
+							<p:panelGrid class="Container Responsive" columns="2">              
+								<p:outputLabel value="Entidad:" for="entidad" class="Fs20"/>							
+                <p:selectOneMenu id="entidad" value="#{kajoolAsignacionCargasTrabajoFiltro.attrs.entidad}">
+                  <p:ajax event="change" listener="#{kajoolAsignacionCargasTrabajoFiltro.doActualizaCapturistas}" update="capturista control :datos:tabla" process="@this"/>
+                  <f:selectItems value="#{kajoolAsignacionCargasTrabajoFiltro.entidades}"/>
+                </p:selectOneMenu>              								
+								<p:outputLabel value="Capturista:" for="capturista" class="Fs20"/>                                                              
+                <p:selectOneMenu id="capturista" value="#{kajoolAsignacionCargasTrabajoFiltro.attrs.capturista}" >
+                  <f:selectItems value="#{kajoolAsignacionCargasTrabajoFiltro.capturistas}"/>
+                  <p:ajax event="change" update="tabla" listener="#{kajoolAsignacionCargasTrabajoFiltro.doLoad}" process="@this"/>
+                </p:selectOneMenu> 				              
+								<p:outputLabel value="Control:" for="control" class="Fs20"/>                                                                              
+                <p:selectOneMenu id="control" value="#{kajoolAsignacionCargasTrabajoFiltro.attrs.control}" >
+                  <f:selectItems value="#{kajoolAsignacionCargasTrabajoFiltro.controles}"/>
+                  <p:ajax event="change" update=":datos:tabla" listener="#{kajoolAsignacionCargasTrabajoFiltro.doLoad}"/>
+                </p:selectOneMenu>
+							</p:panelGrid>
+              <div class="EmptyBox10"></div>
+              <div class="Container">
+                <p:pickList id="tabla" value="#{kajoolAsignacionCargasTrabajoFiltro.selectionItems}" var="filtro" itemValue="#{filtro}" converter="janal.convertidor.PickList" filterMatchMode="contains" itemLabel="#{filtro.label}" showSourceFilter="true" showTargetFilter="true">				
+                  <p:ajax event="transfer" onstart="return janal.execute();" listener="#{kajoolAsignacionCargasTrabajoFiltro.onTransfer}" update="@this tabla" process="@this  capturista"/>
+                  <f:facet name="sourceCaption">
+                    <p:row id="row1">
+                      <h:panelGrid columns="1" style="height: 25px">
+                        <h:outputText  value="Fuente [#{kajoolAsignacionCargasTrabajoFiltro.attrs.sizeDisponibles}]" styleClass="alinear-centro"/>
+                      </h:panelGrid>	
+                    </p:row>
+                    <p:row id="row2">
+                      <h:panelGrid>
+                        <h:outputText  style="width: 50%" value="Control - Folio" />
+                      </h:panelGrid>		
+                    </p:row>
+                  </f:facet>
+                  <f:facet name="targetCaption">
+                    <p:row id="row3">
+                      <h:panelGrid columns="2" style="height: 25px">
+                        <h:outputText value="Destino [#{kajoolAsignacionCargasTrabajoFiltro.attrs.sizeAsignados}]" styleClass="alinear-centro"/>
+                        <p:commandButton icon="ui-icon-print" action="#{kajoolAsignacionCargasTrabajoFiltro.doImprimir}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" ajax="false" immediate="true" title="Generar"/>
+                      </h:panelGrid>
+                    </p:row>
+                    <p:row id="row4">
+                      <h:panelGrid>
+                        <h:outputText  style="width: 50%" value="Control - Folio" />
+                      </h:panelGrid>		
+                    </p:row>
+                  </f:facet>
+                  <p:column style="width: 50%">
+                    #{filtro.label}
+                  </p:column>
+                </p:pickList>
+              </div>
+            </p:panel>
+          </div>
+        </div>
+      </div>
+    </div>    
+	</ui:define>
+	<ui:param name="componenteBloqueo" value="tabla control  capturista entidad"/>
+</ui:composition>

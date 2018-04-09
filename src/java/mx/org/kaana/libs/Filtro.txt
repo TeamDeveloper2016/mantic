@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date {fecha}
+ time {hora}
+ author {autor} <{correo}>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="{titulo}" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+			Janal.Control.fields = {
+{validaciones}
+			};
+		</script>
+  </ui:define>
+  <ui:define name="contenido">	
+		<div class="janal-content-table">
+			<h:panelGrid columns="3">
+{criterios}
+				<p:commandButton id="busqueda" actionListener="#{{backing}.doLoad}" update="tabla" process="@this {idsCriterios}"  icon="icono-buscar" oncomplete="overrideContextMenu()"/>
+			</h:panelGrid>
+		</div>
+    <p:dataTable lazy="true" widgetVar="kajoolTable" id="tabla" var="row" rowIndexVar="index" value="#{{backing}.lazyModel}" paginator="#{{backing}.lazyModel.rowCount gt {backing}.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="janal-content-table" selectionMode="single" selection="#{{backing}.attrs.selected}">
+      <f:facet name="header">
+        <p:menuButton value="Opciones">
+					<p:menuitem id="agregar" icon="icono-agregar" value="Agregar" action="#{{backing}.doEvento('AGREGAR')}" update="@form"/>
+					<p:separator/>
+					<p:menuitem id="pdf" icon="icono-pdf" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear();"/>
+					<p:menuitem id="xls" icon="icono-xls" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear();"/>
+				</p:menuButton>
+			</f:facet>
+{columnas}
+
+      <p:column headerText="Touch" width="35" styleClass="janal-column-center" rendered="#{util.isMobile}">
+        <span class="ui-icon ui-icon-lightbulb janal-context-menu" data-ri="#{index}" title="Acciones"/>
+      </p:column>
+			<f:facet name="footer">
+				Total [#{{backing}.lazyModel.rowCount == null ? '0' : {backing}.lazyModel.rowCount}] registros
+      </f:facet>
+    </p:dataTable>
+		<h:commandLink id="dataPdf">
+			<p:dataExporter type="pdf" target="tabla" fileName="#{util.nameFile}" pageOnly="false" preProcessor="#{util.doPreProcessPdf}"/>
+		</h:commandLink>
+		<h:commandLink id="dataXls">
+			<p:dataExporter type="xls" target="tabla" fileName="#{util.nameFile}" pageOnly="false"/>
+		</h:commandLink>
+		<p:contextMenu widgetVar="kajoolContextMenu" for="tabla">
+			<p:menuitem id="modificar" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" process="@this, tabla" icon="icono-modificar" action="#{{backing}.doEvento('MODIFICAR')}" update="@form"/>
+			<p:menuitem id="eliminar" value="Eliminar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" process="@this, tabla" icon="icono-eliminar" action="#{{backing}.doEvento('ELIMINAR')}" update="@form"/>
+		</p:contextMenu>
+  </ui:define>
+	<ui:param name="componenteBloqueo" value="tabla busqueda {idsCriterios}"/>
+</ui:composition>

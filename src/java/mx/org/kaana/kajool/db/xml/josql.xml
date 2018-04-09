@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!--
+    Consultas utilizadas con JoSQL para KAJOOL 
+-->
+
+<process>	
+	<dml>
+	  <unit id="VistaProyectosAcceso">
+      <select id="perfiles">
+       select 
+          *
+        from
+          mx.org.kaana.kajool.procesos.acceso.beans.Empleado
+        where
+          idPerfil={idPerfil}
+      </select>
+    </unit> 	
+	</dml>
+</process>

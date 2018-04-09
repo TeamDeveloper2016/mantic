@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:p="http://primefaces.org/ui"
+  template="/WEB-INF/plantillas/ingreso.xhtml">
+  <ui:define name="librerias">
+    <script type="text/javascript">
+			$(document).ready(function() {
+				$("#cuentaRecuperar").removeAttr("style");
+				$("#nuevaContrasenia").removeAttr("style");
+				$("#nuevaContraseniaConfirmar").removeAttr("style");
+			});
+			Janal.Control.fields = {
+				'nuevaContraseniaConfirmar': {validaciones: 'requerido', mascara: 'libre', mensaje: 'Vuelva a introducir la nueva contraseña', grupo: 'recuperarContrasenia'},
+				'cuentaRecuperar': {validaciones: 'requerido', mascara: 'libre', mensaje: 'Cuenta requerida para recuperar', grupo: 'recuperarContrasenia'},
+				'nuevaContrasenia': {validaciones: 'requerido|igual-a({"cual":"nuevaContraseniaConfirmar"})', mascara: 'libre', mensaje: 'Contraseñas deben coincidir', grupo: 'recuperarContrasenia'}
+			};			
+    </script>
+  </ui:define>
+  <ui:define name="contenido">  		
+    <div class="Container100 TexAlCenter Animated05 BoxSizeBorder TabBtn left TabBtnActiveLeft" role="1">
+			Recuperar contraseña
+		</div>
+		<div class="Container100 Fnone MarAuto TexAlCenter TabContent"  id="tab_1">										
+			<p:panelGrid layout="grid" columns="1">
+				<p:spacer width="3%"/>
+				<p:inputText id="cuentaRecuperar" value="#{kajoolRecuperar.cliente.cuenta}" placeholder="Cuenta" tabindex="1" styleClass="Container80 Fnone MarAuto Fs18"/>
+				<p:password id="nuevaContrasenia" value="#{kajoolRecuperar.cliente.contrasenia}" placeholder="Nueva contraseña" tabindex="2" promptLabel="Ingrese su nueva contraseña" styleClass="Container80 Fnone MarAuto Fs18"/>
+				<p:password id="nuevaContraseniaConfirmar" placeholder="Confirmar contraseña" tabindex="2" promptLabel="Ingrese su nueva contraseña nuevamente" styleClass="Container80 Fnone MarAuto Fs18"/>
+        <div class="Responsive100 Wid25">
+          <p:captcha id="captcha" theme="clean" required="true" language="es" label="Captcha" />
+        </div>
+        <p:commandButton id="recuperar" tabindex="3" value="Aceptar" onstart="return janal.partial('recuperarContrasenia')" actionListener="#{kajoolRecuperar.doRecuperar('MODIFICAR')}" process="@this cuentaRecuperar nuevaContrasenia nuevaContraseniaConfirmar"/>
+			</p:panelGrid>										
+		</div>
+  </ui:define>
+  <ui:param name="componenteBloqueo" value="recuperar"/>
+</ui:composition>

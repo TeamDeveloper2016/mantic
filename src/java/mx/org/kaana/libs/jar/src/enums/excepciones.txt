@@ -1,0 +1,18 @@
+package mx.org.kaana.{proyectomin}.enums;
+
+/**
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
+ *@date {fecha}
+ *@time {hora}
+ *@author {autor} <{cuenta}@kaana.org.mx>
+ */
+
+public enum EExcepciones {
+
+	{proyecto};
+	
+  public String getKey() {
+    return this.name().toLowerCase();
+  }
+}

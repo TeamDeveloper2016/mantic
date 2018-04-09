@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ * @project Team Developer 2016 <team.developer@kaana.org.mx>
+ * @company KAANA
+ * @date 10/09/2015
+ * @time 13:06:25 PM
+ * @author KAJOOL (Control system polls)
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Mantenimiento general a catálogos del sistema"/>
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields= #{kajoolDinamicosAccion.fields};
+    </script>
+  </ui:define>
+  <ui:define name="contenido">
+    <p:fieldset legend="Datos del catálogo" collapsed="false" toggleable="true" styleClass="Responsive100">
+       <p:panelGrid binding="#{kajoolDinamicosAccion.grid}" id="grid" layout="grid" columns="3" columnClasses="janal-wid-10">
+       </p:panelGrid>
+    </p:fieldset>
+    <p:dialog id="buscar" header="Buscar por ..." widgetVar="wbuscar" minHeight="120" minWidth="550" dynamic="true" width="550">
+      <p:panelGrid columns="3">
+        <p:outputLabel for="pivote" value="#{kajoolDinamicosAccion.attrs.buscar.criterio.titulo}:" styleClass="janal-text-one-line"/>
+        <p:inputText id="pivote" size="50" value="#{kajoolDinamicosAccion.attrs.buscar.value}"/>
+        <p:commandButton icon="fa fa-search" actionListener="#{kajoolDinamicosAccion.doEvento('LISTAR')}" process="@this pivote" update="encontrados"/>
+        <p:outputLabel for="encontrados" value="Encontrado(s):"/>
+        <p:selectOneMenu id="encontrados" value="#{kajoolDinamicosAccion.attrs.buscar.selected}" converter="javax.faces.Long">
+          <f:selectItems value="#{kajoolDinamicosAccion.attrs.buscar.items}"/>
+        </p:selectOneMenu>
+        <p:spacer/>
+      </p:panelGrid>
+      <hr class="ui-widget-content"/>
+      <div class="janal-line-button">
+        <p:commandButton value="Aceptar" icon="fa fa-check" actionListener="#{kajoolDinamicosAccion.doEvento('ASIGNAR')}" oncomplete="PF('wbuscar').hide()" update="grid #{kajoolDinamicosFiltro.attrs.buscar.criterio.id}"/>
+        <p:commandButton value="Cancelar" icon="fa fa-remove" oncomplete="PF('wbuscar').hide();"/>
+      </div>
+    </p:dialog>
+  </ui:define>
+  <ui:define name="acciones">
+    <p:commandButton id="aceptar" icon="fa fa-check" value="Aceptar" actionListener="#{kajoolDinamicosAccion.doAceptar}" process="@this #{kajoolDinamicosAccion.names}" onstart="janal.execute();"/>
+    <p:commandButton icon="fa fa-remove" value="Cancelar" action="filtro?faces-redirect=true" immediate="true"/>
+  </ui:define>
+  <ui:param name="componenteBloqueo" value="aceptar"/>
+</ui:composition>

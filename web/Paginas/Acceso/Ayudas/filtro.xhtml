@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Ayudas del sistema" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+      };
+    </script>
+  </ui:define>
+  <ui:define name="contenido">	
+    <p:fieldset legend="Buscar por"  toggleable="true" collapsed="false" styleClass="Responsive100">
+      <p:panelGrid columns="2" layout="grid" columnClasses="janal-wid-10,Wid40" >
+        <p:panelGrid columns="3">
+          <p:outputLabel for="busqueda" value="Ayuda: "/>
+          <span  class="janal-help-icon janal-help-173 fa fa-lg fa-fw fa-question-circle Fright" onclick="countHelp(173);"/>
+          <pe:tooltip for="@(.janal-help-173)" showEvent="click">
+            <p:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(173)}" styleClass="Fs18" escape="false"/>
+          </pe:tooltip>
+        </p:panelGrid>
+        <p:selectOneMenu id="busqueda" value="#{kajoolAccesoAyudasFiltro.attrs.idAyuda}" filter="true" filterMatchMode="startsWith" >
+          <f:selectItems value="#{kajoolAccesoAyudasFiltro.attrs.ayudas}"/>
+          <p:ajax event="change" listener="#{kajoolAccesoAyudasFiltro.doMostrar()}" process="@this" update="tabla" />
+        </p:selectOneMenu>
+      </p:panelGrid>
+    </p:fieldset>
+    <p:dataTable lazy="true" id="tabla" reflow="true" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolAccesoAyudasFiltro.lazyModel}" paginator="#{kajoolAccesoAyudasFiltro.lazyModel.rowCount gt kajoolAccesoAyudasFiltro.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolAccesoAyudasFiltro.attrs.selected}">
+      <f:facet name="header" >
+        <p:menuButton value="Opciones" >
+          <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+          <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+        </p:menuButton>
+      </f:facet>
+      <p:column styleClass="TexAlRight Wid10">
+				<f:facet name="header">
+					<h:outputText value="Índice"/>
+				</f:facet>
+				<h:outputText value="#{row.renglon}"/>
+			</p:column>			
+      <p:column>
+				<f:facet name="header">
+					<h:outputText value="Ayuda"/>
+				</f:facet>
+				<h:outputText value="#{row.clave}"/>
+			</p:column>			
+      <p:column styleClass="TexAlRight" >
+				<f:facet name="header">
+					<h:outputText value="Total"/>
+				</f:facet>
+				<h:outputText value="#{row.total}"/>
+			</p:column>			      
+      <f:facet name="footer">
+        Total [#{kajoolAccesoAyudasFiltro.lazyModel.rowCount == null ? '0' : kajoolAccesoAyudasFiltro.lazyModel.rowCount}] de registros
+      </f:facet>
+    </p:dataTable>
+  </ui:define>
+</ui:composition>

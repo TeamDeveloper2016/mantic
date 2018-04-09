@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/plantillas/perfil.xhtml">
+	<ui:param name="titulo" value="Seleccione el perfil de acceso para la cuenta #{kajoolAccesoPerfilFiltro.attrs.cuenta}"/>
+	<ui:define name="contenido">		
+		<p:spacer/>
+		<p:treeTable id="tabla" value="#{kajoolAccesoPerfilFiltro.root}" var="perfil" styleClass="janal-content-table" rendered="#{kajoolAccesoPerfilFiltro.attrs.mostrarTreeProyectos}">
+			<p:ajax event="expand" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+			<p:ajax event="collapse" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+			<p:column headerText="Grupos a los que se tiene permiso" styleClass="zoomooz">
+				<h:outputText  value="#{perfil.nombre}"/>
+			</p:column>
+			<p:column class="janal-wid-col-20" headerText="Opciones"> 	
+				<p:commandButton  title="#{perfil.nombre}" class="Fright" icon="fa fa-user" action="#{kajoolAccesoPerfilFiltro.doActualizarValores}" ajax="false" rendered="#{perfil.ultimoNivel}" onclick="return janal.bloquear();" oncomplete="janal.desbloquear();">
+					<f:setPropertyActionListener value="#{perfil}" target="#{kajoolAccesoPerfilFiltro.grupoPerfil}" />
+				</p:commandButton>
+			</p:column>
+		</p:treeTable>
+		<p:spacer/>
+		<p:treeTable id="tablaDelega" value="#{kajoolAccesoPerfilFiltro.rootDelega}" var="perfil" styleClass="janal-content-table" rendered="#{kajoolAccesoPerfilFiltro.attrs.delega}">
+			<p:ajax event="expand" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+			<p:ajax event="collapse" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+			<p:column headerText="Perfiles que se te delegara responsabilidad" styleClass="zoomooz">
+				<h:outputText  value="#{perfil.nombre}"/>
+			</p:column>
+			<p:column class="janal-wid-col-20" headerText="Opciones"> 	
+				<p:commandButton  title="#{perfil.nombre}" class="Fright" icon="fa fa-user" action="#{kajoolAccesoPerfilFiltro.doActualizarValores}" ajax="false" rendered="#{perfil.ultimoNivel}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
+					<f:setPropertyActionListener value="#{perfil}" target="#{kajoolAccesoPerfilFiltro.grupoPerfil}" />
+				</p:commandButton>
+			</p:column>
+		</p:treeTable>
+	</ui:define>
+</ui:composition>

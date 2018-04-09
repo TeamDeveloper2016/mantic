@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ * @company KAANA
+ * @project KAJOOL (Control system polls)
+ * @date 9/09/2015
+ * @time 03:22:02 PM
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="http://java.sun.com/jsf/facelets" 
+                xmlns:h="http://java.sun.com/jsf/html" 
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui" 
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Exportación de cuestionarios"/>
+  <ui:define name="librerias">		
+    <script type="text/javascript">
+			Janal.Control.fields = {
+        cuestionario: { validaciones: 'requerido', mascara: 'libre'},         
+        entidad     : { validaciones: 'requerido', mascara: 'libre'},          
+        upm         : { validaciones: 'requerido', mascara: 'libre'}          
+      };		
+		</script>
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="Container100">
+      <div class="ContainerIndent">
+        <p:panel style="min-height: 300px">
+          <p:panelGrid columns="4" layout="grid" columnClasses="janal-wid-col-100, janal-wid-col-380, janal-wid-col-40, janal-wid-col-40">
+            <label for="cuestionario">Cuestionario:</label> 
+            <p:selectOneMenu id="cuestionario" value="#{kajoolExplotacionFiltro.attrs.cuestionario}" style="width: 350px">					
+              <f:selectItems value="#{kajoolExplotacionFiltro.listaTablas}"/>					          					                    
+              <p:ajax event="change" listener="#{kajoolExplotacionFiltro.doLoad}" process="@this entidad upm cuestionario" update="tabla"/>
+            </p:selectOneMenu>
+            <p:commandButton id="dbf" title="Exportar DBF" icon="fa fa-cloud-download" action="#{kajoolExplotacionFiltro.doExportarFdDbf}"  process="@this resultado entidad upm cuestionario"  ajax="false"/>				
+            <p:commandButton id="txt" title="Exportar TXT" icon="fa fa-download" action="#{kajoolExplotacionFiltro.doExportarFdTexto}"  process="@this resultado entidad upm cuestionario"  ajax="false"/>				
+						<label for="resultado">Resultado:</label> 
+            <p:selectOneMenu id="resultado" value="#{kajoolExplotacionFiltro.attrs.idResultado}">
+               <p:ajax event="change" listener="#{kajoolExplotacionFiltro.doLoad}" process="@this entidad upm cuestionario resultado" update="tabla"/>
+               <f:selectItem itemLabel="TODAS" itemValue="-1"/>
+               <f:selectItems value="#{kajoolExplotacionFiltro.resultados}"/>
+            </p:selectOneMenu>
+            <p:spacer width="1"/>
+            <p:spacer width="1"/>
+            <label for="entidad">Entidad:</label> 
+            <p:selectOneMenu id="entidad" value="#{kajoolExplotacionFiltro.attrs.idEntidad}">
+               <p:ajax event="change" listener="#{kajoolExplotacionFiltro.doLoad}" process="@this entidad upm cuestionario" update="tabla"/>
+               <f:selectItem itemLabel="NACIONAL" itemValue="-1"/>
+               <f:selectItems value="#{kajoolExplotacionFiltro.entidades}"/>
+            </p:selectOneMenu>
+            <p:spacer width="1"/>
+            <p:spacer width="1"/>
+            <label for="upm">UPM:</label> 
+            <p:inputText id="upm" value="#{kajoolExplotacionFiltro.attrs.upm}">
+              <p:ajax event="blur" listener="#{kajoolExplotacionFiltro.doLoad}" onstart="return ($.trim($('#upm').val()).length> 0)" process="@this entidad upm cuestionario" update="tabla"/>
+            </p:inputText>
+            <p:spacer width="1"/>
+            <p:spacer width="1"/>
+          </p:panelGrid>  
+          <div class="EmptyBox10"/>
+          <p:dataTable lazy="true" widgetVar="iktanTable" id="tabla" var="row" rowIndexVar="index" value="#{kajoolExplotacionFiltro.lazyModel}" paginator="#{kajoolExplotacionFiltro.lazyModel.rowCount gt kajoolExplotacionFiltro.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="tabla-filtro" selectionMode="single" selection="#{kajoolExplotacionFiltro.attrs.selected}" draggableColumns="true"  reflow="true">
+            <f:facet name="header">          
+              <p:menuButton value="Opciones">                
+                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+              </p:menuButton>
+            </f:facet>  
+            <p:columns value="#{kajoolExplotacionFiltro.selecteds}" var="column"  class="#{column.css}" sortBy="#{column.property}">				
+              <f:facet name="header">  
+                  <h:outputText value="#{column.header}"/>  
+              </f:facet>  
+              <h:outputText value="#{row[column.property]}"/>
+            </p:columns>
+            <f:facet name="footer"> 
+              <h:outputText value="Total [#{kajoolExplotacionFiltro.lazyModel.rowCount == null ? '0' : kajoolExplotacionFiltro.lazyModel.rowCount}] registros"/>
+            </f:facet> 
+          </p:dataTable>
+          <h:commandLink id="dataPdf">
+            <p:dataExporter type="pdf" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}" />
+          </h:commandLink>
+          <h:commandLink id="dataXls">
+            <p:dataExporter type="xls" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>
+          </h:commandLink>
+        </p:panel>
+      </div>
+    </div>		     
+  </ui:define>		
+	<ui:param name="componenteBloqueo" value="tabla"/>
+</ui:composition>

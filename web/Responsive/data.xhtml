@@ -1,0 +1,263 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/temporal.xhtml">
+  <ui:param name="titulo" value="Ejemplo de una pagina responsiva" />
+  <ui:define name="contenido">
+    <div class="ContainerIndent">
+      <p:panel>
+        <p:dataTable var="car" value="#{kajoolBienvenida.cars}" rows="12" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="6,12,16" reflow="true" selectionMode="single" rowKey="#{car.id}">
+            <f:facet name="header">
+              DataTable Header
+             <p:menuButton value="Opciones">
+               <p:menuitem id="agregar" icon="fa fa-plus" value="Agregar" action="/Paginas/Planes/MapaCurricular/detalle" process="@this" ajax="false"/>
+             </p:menuButton>
+            </f:facet>
+              <p:column headerText="Id" sortBy="#{car.id}">
+                 <h:outputText value="#{car.id}" />
+              </p:column>
+              <p:column headerText="Year" sortBy="#{car.year}">
+                 <h:outputText value="#{car.year}" />
+              </p:column>
+              <p:column headerText="Brand" sortBy="#{car.brand}">
+                 <h:outputText value="#{car.brand}" />
+              </p:column>
+              <p:column headerText="Color" sortBy="#{car.color}">
+                 <h:outputText value="#{car.color}" />
+              </p:column>
+            <f:facet name="footer">DataTable Footer</f:facet>
+          </p:dataTable>
+
+          <div class="EmptyBox30"></div>
+          <p:dataGrid var="car" value="#{kajoolBienvenida.cars}" columns="3" layout="grid"
+                      rows="12" paginator="true" id="cars"
+                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                      rowsPerPageTemplate="6,12,16">
+
+            <f:facet name="header">
+              DataGrid
+            </f:facet>
+
+            <p:panel header="#{car.id}" style="text-align:center">
+              <h:panelGrid columns="1" style="width:100%">
+                <h:outputText value="#{car.brand}" />
+                <h:outputText value="#{car.year}" />
+                <h:outputText value="#{car.color}" />
+              </h:panelGrid>
+            </p:panel>
+            <f:facet name="footer">DataGrid Footer</f:facet>
+          </p:dataGrid>
+
+          <div class="EmptyBox30"></div>
+
+          <p:dataList value="#{kajoolBienvenida.cars}" var="car" type="ordered" rows="10" paginator="true">
+            <f:facet name="header">
+              DataList
+            </f:facet>
+            #{car.brand}, #{car.year}, #{car.color}
+            <f:facet name="footer">DataList Footer</f:facet>
+          </p:dataList>
+
+          <div class="EmptyBox30"></div>
+
+
+          <span class="FontBold Fs18 hardblue">PickList</span>
+          <div class="EmptyBox10"></div>
+          <p:pickList id="pickList" value="#{kajoolBienvenida.cities}" var="cities" itemLabel="#{cities}" itemValue="#{cities}"
+                      showSourceControls="true" showTargetControls="true" showSourceFilter="true" showTargetFilter="true">
+            <f:facet name="sourceCaption">Source</f:facet>
+            <f:facet name="targetCaption">Target</f:facet>
+          </p:pickList>
+
+          <div class="EmptyBox30"></div>
+
+          <span class="FontBold Fs18 hardblue">OrderList</span>
+          <div class="EmptyBox10"></div>
+          <p:orderList value="#{kajoolBienvenida.countries}" var="city" controlsLocation="left" itemLabel="#{city}" itemValue="#{city}">
+            <f:facet name="caption">Order List</f:facet>
+          </p:orderList>
+
+          <div class="EmptyBox30"></div>
+
+          <span class="FontBold Fs18 hardblue">Carousel</span>
+          <div class="EmptyBox10"></div>
+          <p:carousel value="#{kajoolBienvenida.cars}" headerText="Carousel" var="car" itemStyleClass="carItem" itemStyle="width:200px;height:150px;text-align:center">
+            <h:panelGrid columns="2" style="width:100%">
+
+              <h:outputText value="Id:" />
+              <h:outputText value="#{car.id}" />
+
+              <h:outputText value="Year" />
+              <h:outputText value="#{car.year}" />
+
+              <h:outputText value="Color:" />
+              <h:outputText value="#{car.color}"/>
+
+              <h:outputText value="Price" />
+              <h:outputText value="\$#{car.price}" />
+            </h:panelGrid>
+
+            <f:facet name="footer">
+              Carousel Footer
+            </f:facet>
+          </p:carousel>
+          <style type="text/css">
+            .carItem {
+              width:200px;
+              height:200px;
+              text-align:center;
+            }
+
+            .carouselAdvanced .carItem {
+              width: 250px;
+              height: 195px;
+            }
+
+            .value {
+              font-weight: bold;
+            }
+
+            .ui-carousel {
+              display: block;
+              margin-bottom: 20px;
+            }
+          </style>
+
+          <div class="EmptyBox30"></div>
+
+          <span class="FontBold Fs18 hardblue">Schedule</span>
+          <div class="EmptyBox10"></div>
+          <p:schedule id="schedule" value="#{kajoolBienvenida.eventModel}" />
+
+          <div class="EmptyBox30"></div>
+
+          <span class="FontBold Fs18 hardblue">Tree (Single And Checkbox)</span>
+          <div class="EmptyBox30"></div>
+
+          <p:panelGrid columns="2" layout="grid" style="border:0px none;background:none">
+            <p:tree value="#{kajoolBienvenida.root1}" var="doc"
+                    selectionMode="single">
+              <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+                <h:outputText value="#{doc.name}"/>
+              </p:treeNode>
+              <p:treeNode type="document" icon="ui-icon-document">
+                <h:outputText value="#{doc.name}" />
+              </p:treeNode>
+              <p:treeNode type="picture" icon="ui-icon-image">
+                <h:outputText value="#{doc.name}" />
+              </p:treeNode>
+              <p:treeNode type="mp3" icon="ui-icon-video">
+                <h:outputText value="#{doc.name}" />
+              </p:treeNode>
+              <p:treeNode type="mp3" icon="ui-icon-music">
+                <h:outputText value="#{doc.name}" />
+              </p:treeNode>
+            </p:tree>
+
+            <p:tree value="#{kajoolBienvenida.root2}" var="doc"
+                    selectionMode="checkbox">
+              <p:treeNode icon="ui-icon-note">
+                <h:outputText value="#{doc.name}"/>
+              </p:treeNode>
+              <p:treeNode type="document" icon="ui-icon-document">
+                <h:outputText value="#{doc.name}" />
+              </p:treeNode>
+              <p:treeNode type="picture" icon="ui-icon-image">
+                <h:outputText value="#{doc.name}" />
+              </p:treeNode>
+              <p:treeNode type="mp3" icon="ui-icon-video">
+                <h:outputText value="#{doc.name}" />
+              </p:treeNode>
+              <p:treeNode type="mp3" icon="ui-icon-music">
+                <h:outputText value="#{doc.name}" />
+              </p:treeNode>
+            </p:tree>
+          </p:panelGrid>
+
+
+          <div class="EmptyBox30"></div>
+
+          <span class="FontBold Fs18 hardblue">Tree DragDrop)</span>
+
+
+          <h:panelGrid columns="3">
+            <p:tree id="tree5" value="#{kajoolBienvenida.root1}" var="node" selectionMode="single"
+                    draggable="true" droppable="true" dragdropScope="demo">
+              <p:treeNode>
+                <h:outputText value="#{node}" />
+              </p:treeNode>
+            </p:tree>
+
+            <p:graphicImage alt="Transfer" name="primefaces-sentinel/images/left-right-arrow-gray.svg" style="width:50px;"/>
+
+            <p:tree id="tree6" value="#{kajoolBienvenida.root2}" var="node" selectionMode="single"
+                    draggable="true" droppable="true" dragdropScope="demo">
+              <p:treeNode>
+                <h:outputText value="#{node}" />
+              </p:treeNode>
+            </p:tree>
+          </h:panelGrid>
+
+          <div class="EmptyBox30"></div>
+
+          <span class="FontBold Fs18 hardblue">TreeTable</span>
+          <div class="EmptyBox10"></div>
+          <p:treeTable value="#{kajoolBienvenida.root1}" var="document" selectionMode="single" style="margin-top:0">
+            <f:facet name="header">
+              Single
+            </f:facet>
+            <p:column headerText="Name" sortBy="#{document.name}">
+              <h:outputText value="#{document.name}" />
+            </p:column>
+            <p:column headerText="Size">
+              <h:outputText value="#{document.size}" />
+            </p:column>
+            <p:column headerText="Type">
+              <h:outputText value="#{document.type}" />
+            </p:column>
+            <f:facet name="footer">TreeTable Footer</f:facet>
+          </p:treeTable>
+
+          <div class="EmptyBox30"></div>
+
+          <p:treeTable value="#{kajoolBienvenida.root2}" var="document" selectionMode="checkbox" selection="#{kajoolBienvenida.selectedNodes1}">
+            <f:facet name="header">
+              Checkbox
+            </f:facet>
+            <p:column headerText="Name">
+              <h:outputText value="#{document.name}" />
+            </p:column>
+            <p:column headerText="Size">
+              <h:outputText value="#{document.size}" />
+            </p:column>
+            <p:column headerText="Type">
+              <h:outputText value="#{document.type}" />
+            </p:column>
+          </p:treeTable>
+
+          <div class="EmptyBox30"></div>
+
+          <span class="FontBold Fs18 hardblue">Horizontal Tree</span>
+          <div class="EmptyBox30"></div>
+
+          <p:tree value="#{treeSelectionView.root1}" var="doc" orientation="horizontal"
+                  selectionMode="single">
+            <p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+              <h:outputText value="#{doc.name}"/>
+            </p:treeNode>
+            <p:treeNode type="document" icon="ui-icon-document">
+              <h:outputText value="#{doc.name}" />
+            </p:treeNode>
+            <p:treeNode type="picture" icon="ui-icon-image">
+              <h:outputText value="#{doc.name}" />
+            </p:treeNode>
+            <p:treeNode type="mp3" icon="ui-icon-video">
+              <h:outputText value="#{doc.name}" />
+            </p:treeNode>
+          </p:tree>
+      </p:panel>
+    </div>
+  </ui:define>
+</ui:composition>

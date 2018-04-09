@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Recargar el archivo de configuración del sistema" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+			Janal.Control.fields = {				
+				cfg: {validaciones: 'requerido', mascara: 'libre'},
+				sql: {validaciones: 'requerido', mascara: 'libre'},
+				msg: {validaciones: 'requerido', mascara: 'libre'},
+				hlp: {validaciones: 'requerido', mascara: 'libre'}
+			};		
+    </script>    
+  </ui:define>
+  <ui:define name="contenido">		
+    <p:fieldset legend="Selecciona el archivo de configuración"> 
+      <p:panelGrid columns="2" layout="grid" columnClasses="janal-wid-col-200">
+        <p:outputLabel for="cfg" value="Archivo de propiedades: "/>
+        <p:selectBooleanCheckbox id="cfg" value="#{kajoolMantenimientoConfiguracionFiltro.attrs.cfg}">
+          <p:ajax listener="#{kajoolMantenimientoConfiguracionFiltro.doReloadCFG}" onstart="return $('#cfg_input').is(':checked');" update="cfg" process="@this" />
+        </p:selectBooleanCheckbox>  
+        <p:outputLabel for="sql" value="Sentencias SQL: "/>
+        <p:selectBooleanCheckbox id="sql" value="#{kajoolMantenimientoConfiguracionFiltro.attrs.sql}">
+          <p:ajax listener="#{kajoolMantenimientoConfiguracionFiltro.doReloadSQL}" onstart="return $('#sql_input').is(':checked');" update="sql" process="@this" />
+        </p:selectBooleanCheckbox>  
+        <p:outputLabel for="msg" value="Mensajes del sistema: "/>
+        <p:selectBooleanCheckbox id="msg" value="#{kajoolMantenimientoConfiguracionFiltro.attrs.msg}">
+          <p:ajax listener="#{kajoolMantenimientoConfiguracionFiltro.doReloadMSG}" onstart="return $('#msg_input').is(':checked');" update="msg" process="@this" />
+        </p:selectBooleanCheckbox>  
+        <p:outputLabel for="hlp" value="Mensajes de ayudas: "/>
+        <p:selectBooleanCheckbox id="hlp" value="#{kajoolMantenimientoConfiguracionFiltro.attrs.hlp}">
+          <p:ajax listener="#{kajoolMantenimientoConfiguracionFiltro.doReloadHLP}" onstart="return $('#hlp_input').is(':checked');" update="hlp" process="@this" />
+        </p:selectBooleanCheckbox>  
+      </p:panelGrid>
+    </p:fieldset>  
+  </ui:define>
+	<ui:param name="componenteBloqueo" value="cfg sql msg hlp"/>
+</ui:composition>

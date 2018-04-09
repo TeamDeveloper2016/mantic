@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Usuarios disponibles para envío de mensajes"/>
+  <ui:define name="contenido">
+    <p:fieldset legend="Buscar por" toggleable="true" collapsed="false" styleClass="Responsive100">
+      <p:panelGrid columns="3" layout="grid" columnClasses="janal-wid-20,Wid40,janal-wid-5">
+        <p:outputLabel for="grupo" value="Grupo:"/>
+        <p:selectOneMenu id="grupo" value="#{kajoolMensajesUsuariosFiltro.attrs.grupo}">
+          <p:ajax event="change" listener="#{kajoolMensajesUsuariosFiltro.doPerfiles()}" process="@this" update="perfiles"/>
+          <f:selectItem itemValue=" " itemLabel="TODOS"/>
+          <f:selectItems value="#{kajoolMensajesUsuariosFiltro.attrs.grupos}"/>
+        </p:selectOneMenu>
+        <p:spacer/>
+        <p:outputLabel for="perfiles" value="Perfil:"/>
+        <p:selectOneMenu id="perfiles" value="#{kajoolMensajesUsuariosFiltro.attrs.perfil}">
+          <f:selectItem itemValue=" " itemLabel="TODOS"/>
+          <f:selectItems value="#{kajoolMensajesUsuariosFiltro.attrs.perfiles}"/>
+        </p:selectOneMenu>
+        <p:spacer/>
+        <p:outputLabel for="curp" value="Curp:"/>
+        <p:inputText id="curp" value="#{kajoolMensajesUsuariosFiltro.attrs.curp}"/>
+        <p:commandButton id="buscar" icon="fa fa-search" actionListener="#{kajoolMensajesUsuariosFiltro.doLoad()}" process="@this grupo perfiles curp" update="tabla"/>
+      </p:panelGrid>
+    </p:fieldset>
+    <p:spacer height="1px"/>
+    <p:dataTable id="tabla" var="row" value="#{kajoolMensajesUsuariosFiltro.lazyModel}" selection="#{kajoolMensajesUsuariosFiltro.attrs.seleccion}" paginator="#{kajoolMensajesUsuariosFiltro.lazyModel.rowCount gt kajoolMensajesUsuariosFiltro.lazyModel.pageSize}" rows="#{Constantes.REGISTROS_POR_PAGINA}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single"  lazy="true" reflow="true" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}">
+      <p:column headerText="Curp">
+        <h:outputText value="#{row.curp}"/>
+      </p:column>
+      <p:column headerText="Usuario">
+        <h:outputText value="#{row.usuario}"/>
+      </p:column>
+      <p:column headerText="Perfil">
+        <h:outputText value="#{row.perfil}"/>
+      </p:column>
+      <p:column headerText="Grupo">
+        <h:outputText value="#{row.grupo}"/>
+      </p:column>
+    </p:dataTable>
+    <p:contextMenu for="tabla">
+      <p:menuitem value="Ver mensajes enviados" icon="fa fa-search" ajax="false" action="#{kajoolMensajesUsuariosFiltro.doVerDetalle}"/>
+    </p:contextMenu>
+  </ui:define>
+  <ui:param name="componenteBloqueo" value="grupo perfiles buscar"/>
+</ui:composition>

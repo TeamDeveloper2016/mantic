@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui"
+    template="/WEB-INF/plantillas/salir.xhtml">
+    <ui:define name="contenido">
+      <p:remoteCommand name="testAutoRun" action="#{kajoolAccesoInvalidar.clean()}" autoRun="true" />
+      <div id="login-box" class="Container80 MaxWid500 Fnone MarAuto BordRad10" style="border: transparent;">
+        <div class="janal-content-center">
+          <div class="Container90 Fnone MarAuto TexAlCenter TabContent">
+            <p:panelGrid layout="grid" columns="1">
+              <p:graphicImage library="janal" name="img/sistema/usuario-bloqueo.svg" class="Wid50"/>
+              <span class=" softblue Fs30 Wid100 DispBlock lg-pantalla">¡Usuario no autenticado!</span>
+              <span class=" softblue Fs20 Wid100 DispBlock xs-pantalla">¡Usuario no autenticado!</span>
+              <div class="EmptyBox20"/>
+              <p:button value="Regresar al acceso" icon="fa fa-lg fa-user" styleClass="janal-button-alone" href="/indice.jsf?faces-redirect=true"/> 
+            </p:panelGrid>   
+          </div>  
+        </div>  
+      </div>    
+    </ui:define>
+</ui:composition>
+

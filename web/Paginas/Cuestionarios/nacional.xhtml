@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 14/11/2016
+ time 10:15:03 PM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Cuestionarios"/>
+  <ui:define name="librerias">		
+    <script type="text/javascript">
+			Janal.Control.fields = {        
+        folio  : { validaciones: 'entero'   , mascara: 'numero'},
+        control: { validaciones: 'entero'   , mascara: 'numero'}
+      };		
+		</script>
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="Container100">
+      <div class="ContainerIndent">
+        <p:panel>
+          <p:panelGrid layout="grid" columns="3" columnClasses="ui-grid-col-2 janal-wid-col-80,ui-grid-col-2,janal-wid-col-40">            
+            <label for="control">Control:</label> 
+            <p:inputText id="control" value="#{kajoolCuestionariosNacional.attrs.control}"/>
+            <p:spacer width="1"/>
+            <label for="folio">Folio:</label> 
+            <p:inputText id="folio" value="#{kajoolCuestionariosNacional.attrs.folio}"/>
+            <p:commandButton id="buscar" actionListener="#{kajoolCuestionariosNacional.doLoad}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" process="@this control folio" update=":datos:tabla" icon="fa fa-search"/>
+          </p:panelGrid>  
+        </p:panel>
+        <p:spacer height="10"/>
+        <div class="Container">
+          <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolCuestionariosNacional.lazyModel}" paginator="#{kajoolCuestionariosNacional.lazyModel.rowCount gt kajoolCuestionariosNacional.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" selectionMode="single" selection="#{kajoolCuestionariosNacional.attrs.selected}" reflow="true">								
+            <f:facet name="header">
+              <p:menuButton value="Opciones">
+                <p:menuitem value="Cuestionarios" action="#{kajoolCuestionariosNacional.doReportes()}" icon="fa fa-file-pdf-o" title="Cuestionarios" ajax="false" />
+                <p:separator/>
+                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+              </p:menuButton>
+            </f:facet>
+            <p:column styleClass="janal-column-center ColWid5 Responsive" headerText="Clave" >
+              <h:outputText value="#{row.clave}"  />
+            </p:column>
+            <p:column styleClass="janal-column-center ColWid5 Responsive" headerText="Siglas" >
+              <h:outputText value="#{row.siglas}" />
+            </p:column>
+            <p:column styleClass="ColWid20 Responsive" headerText="Descripción" >
+              <h:outputText value="#{row.descripcion}"/>
+            </p:column>
+            <p:column styleClass="janal-column-center ColWid10 Responsive" headerText="Control" >
+              <h:outputText value="#{row.control}" />
+            </p:column>
+            <p:column styleClass="janal-column-center ColWid10 Responsive" headerText="Folio" >
+              <h:outputText value="#{row.folio}" />
+            </p:column>
+            <p:column styleClass="ColWid10 Responsive" headerText="Estatus" >
+              <h:outputText value="#{row.estatus}" />
+            </p:column>
+            <p:column style="width:32px;text-align: center" headerText="Reporte">
+              <p:commandButton icon="fa fa-file-pdf-o" title="Reporte" onstart="janal.bloquear();" action="#{kajoolCuestionariosNacional.doImprimir}" process="@this" ajax="false">
+                <f:setPropertyActionListener value="#{row}" target="#{kajoolCuestionariosNacional.attrs.selected}"/>
+             </p:commandButton>
+            </p:column>
+            <f:facet name="footer">
+              Total [#{kajoolCuestionariosNacional.lazyModel.rowCount}] registros
+            </f:facet>
+          </p:dataTable>
+          <h:commandLink id="dataPdf">
+            <p:dataExporter type="pdf" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}" />
+          </h:commandLink>
+          <h:commandLink id="dataXls">
+            <p:dataExporter type="xls" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>
+          </h:commandLink>	
+        </div>
+      </div>
+    </div>    		
+  </ui:define>
+	<ui:param name="componenteBloqueo" value="tabla"/>
+</ui:composition>

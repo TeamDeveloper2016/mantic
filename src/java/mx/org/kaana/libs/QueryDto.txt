@@ -1,0 +1,126 @@
+package {paquete}.dto;
+
+import java.io.Serializable;
+import java.sql.Blob;
+import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import javax.persistence.*;
+import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
+
+@Entity
+public class {nombreClaseDto} implements IBaseDto, Serializable {llaveInicial}
+	
+  private static final long serialVersionUID=1L;
+  {atributos}
+
+  public {nombreClaseDto}() {llaveInicial}
+    this(new Long(-1L));
+  {llaveCierre}
+
+  public {nombreClaseDto}(Long key) {llaveInicial}
+    this({valoresInicio});
+    setKey(key);
+  {llaveCierre}
+
+  public {nombreClaseDto}({tipoNombreVariables}) {llaveInicial}
+    {setVariables}
+  {llaveCierre}
+	
+  {setyget}
+	
+  @Transient
+  @Override
+  public Long getKey() {llaveInicial}
+    return get{PkTypeClass}();
+  {llaveCierre}
+
+  @Override
+  public void setKey(Long key) {llaveInicial}
+ 		this.{PkTypeVariable} = key;
+  {llaveCierre}
+
+  @Override
+  public String toString() {llaveInicial}
+    StringBuilder regresar= new StringBuilder();
+    regresar.append("[");
+{metodoToString}
+    regresar.append("]");
+  	return regresar.toString();
+  {llaveCierre}
+
+  @Override
+  public Map<String,Object> toMap() {llaveInicial}
+    Map regresar = new HashMap();
+{metodoToMap}
+  	return regresar;
+  {llaveCierre}
+
+  @Override
+  public Object[] toArray() {llaveInicial}
+    Object[] regresar = new Object[]{llaveInicial}
+    {metodoToArray}
+    {llaveCierre};
+    return regresar;
+  {llaveCierre}
+
+  @Override
+  public Object toValue(String name) {llaveInicial}
+    return Methods.getValue(this, name);
+  {llaveCierre}
+
+  @Override
+  public String toAllKeys() {llaveInicial}
+    StringBuilder regresar= new StringBuilder();
+    regresar.append("|");
+    regresar.append("{PkTypeVariable}~");
+    regresar.append(get{PkTypeClass}());
+    regresar.append("|");
+    return regresar.toString();
+  {llaveCierre}
+
+  @Override
+  public String toKeys() {llaveInicial}
+    StringBuilder regresar= new StringBuilder();
+    regresar.append(get{PkTypeClass}());
+    return regresar.toString();
+  {llaveCierre}
+
+  @Override
+  public Class toHbmClass() {llaveInicial}
+    return {nombreClaseDto}.class;
+  {llaveCierre}
+
+  @Override
+  public boolean isValid() {llaveInicial}
+    return get{PkTypeClass}()!= null && get{PkTypeClass}()!=-1L;
+  {llaveCierre}
+
+  @Override
+  public boolean equals(Object obj) {llaveInicial}
+    if (obj == null) {llaveInicial}
+      return false;
+    {llaveCierre}
+    if (getClass() != obj.getClass()) {llaveInicial}
+      return false;
+    {llaveCierre}
+    final {nombreClaseDto} other = ({nombreClaseDto}) obj;
+    if (get{PkTypeClass}() != other.{PkTypeVariable} && (get{PkTypeClass}() == null || !get{PkTypeClass}().equals(other.{PkTypeVariable}))) {llaveInicial}
+      return false;
+    {llaveCierre}
+    return true;
+  {llaveCierre}
+
+  @Override
+  public int hashCode() {llaveInicial}
+    int hash = 7;
+    hash = 67 * hash + (get{PkTypeClass}() != null ? get{PkTypeClass}().hashCode() : 0);
+    return hash;
+  {llaveCierre}
+
+{llaveCierre}

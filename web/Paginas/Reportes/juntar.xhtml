@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ * @company KAANA
+ * @project KAJOOL (Control system polls)
+ * @date 14/11/2016
+ * @time 11:40:08 PM
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="http://java.sun.com/jsf/facelets" 
+                xmlns:h="http://java.sun.com/jsf/html" 
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui" 
+                template="/WEB-INF/plantillas/monitoreo.xhtml">
+  <ui:param name="titulo" value="Reporte" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      $(function() {
+				#{kajoolReportesJuntar.automatico};
+			});
+    </script>
+  </ui:define>
+	<ui:define name="acciones">
+    <p:commandButton id="aceptar" icon="fa fa-check" value="Aceptar" onstart="return start(#{kajoolReportesJuntar.total})" oncomplete="download(xhr, status, args)" actionListener="#{kajoolReportesJuntar.doAceptar}" process="@form" update=":datos:confirmacion" widgetVar="procesar" />
+    <p:commandButton id="cancelar" icon="fa fa-remove" value="Cancelar" action="#{kajoolReportesJuntar.doCancelar}" immediate="true" ajax="false" oncomplete="progreso.cancel()" /> 
+	</ui:define>
+  <ui:param name="renderedConfirmacion" value="#{kajoolReportesJuntar.ver}"/>
+  <ui:param name="eventoProgreso" value="doCompleto"/>
+  <ui:param name="eventoConfirmacion" value="doExportar"/>
+  <ui:param name="accionConfirmacion" value="#{kajoolReportesJuntar}" />
+	<ui:define name="detalleConfirmacion">
+		<h:panelGrid columns="2">
+      <label for="generado">Archivo generado:</label>				
+			<p:commandLink id="generado" title="Click para descargar el archivo" ajax="false">
+ 				<p:fileDownload value="#{kajoolReportesJuntar.descargar}" /> 
+				<div class="alinear-centro">
+  				<h:panelGrid columns="1">
+						<p:graphicImage library="janal" name="#{kajoolReportesJuntar.idFormato.image}" styleClass="alinear-centro"/>
+						<h:outputFormat value="#{kajoolReportesJuntar.archivo}"/>
+  				</h:panelGrid>	
+			  </div>
+			</p:commandLink>
+		</h:panelGrid>
+	</ui:define>
+</ui:composition>
+

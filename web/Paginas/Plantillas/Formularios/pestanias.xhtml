@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date Jul 4, 2014
+ time 12:07:55 PM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Refrescar componentes que estan en un tabview" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      // el metodo de janal.refresh() sirve para actualizar los componentes de forma parcial
+      // ej. janal.refresh() son todos los componentes
+      // ej. janal.refresh(['id', 'id']) son algunos componentes
+      // ej. janal.refresh(['id', 'grupo']) son algunos componentes o un grupo de componentes
+      // ej. janal.refresh('id grupo id') son algunos componentes o un grupo de componentes
+
+      Janal.Control.fields= {
+        'pestania\\:entero': { validaciones: 'requerido|entero', mascara: 'entero', grupo: 'tabview_0'},
+        'pestania\\:opcion': { validaciones: 'requerido', mascara: 'libre', grupo: 'tabview_0'},
+        'pestania\\:multiple': { validaciones: 'requerido', mascara: 'libre', grupo: 'tabview_0'},
+        'pestania\\:tabla_selections': { validaciones: 'requerido', mascara: 'libre', grupo: 'tabview_0'},
+        'pestania\\:libre': { validaciones: 'requerido', mascara: '{"mask": "99", "type": "reverse"}', grupo: 'tabview_1'},
+        'pestania\\:fecha': { validaciones: 'requerido|fecha-menor({"cual": "registro"})', mascara: 'fecha', grupo: 'tabview_1'},
+        'pestania\\:folio_selections': { validaciones: 'requerido', mascara: 'libre', grupo: 'tabview_1'}
+      };
+      function execute() {
+       alert('entero: '+ janal.value('pestania\\:entero')+ '\nmultiple: '+ janal.value('pestania\\:multiple')+ '\nopcion: '+ janal.value('pestania\\:opcion'));
+      }
+      function partial(group, custom) {
+        if(janal.partial(group, custom))
+          janal.show([{summary: 'Validación', detail: 'Ok'}]);
+      }
+      function refresh(index) {
+        janal.refresh('tabview_'+ index);
+        janal.show([{summary: 'Tabview', detail: 'tab: '+ index}]);
+      }
+		</script>
+  </ui:define>
+  <ui:define name="contenido">	
+    <p:tabView cache="true" id="pestania">
+      <p:ajax event="tabChange" update="@this" oncomplete="refresh(janal.tabView('pestania'))"/>
+      <p:tab title="Tablas [tabview_0]">
+        <h:panelGrid columns="2">
+          <p:outputLabel for="entero" value="Entero: "/>
+          <p:inputText id="entero"/>
+          <p:outputLabel for="opcion" value="Opcion:"/>
+          <p:selectOneMenu id="opcion">
+            <f:selectItem itemLabel="Seleccione una opción" itemValue="-1"/>
+            <f:selectItems value="#{kajoolPlantillasFormulariosCaptura.personas}" var="item" itemLabel="#{item.nombres}"/>
+          </p:selectOneMenu>
+          <p:outputLabel for="multiple" value="Multiple:"/>
+          <p:selectManyCheckbox id="multiple" layout="grid" columns="6">
+            <f:selectItems value="#{kajoolPlantillasFormulariosCaptura.personas}" var="item" itemLabel="#{item.nombres}"/>
+          </p:selectManyCheckbox>
+        </h:panelGrid>
+        <h:outputLabel for="pestania:tabla_selections" value="Folios:" style="display:none"/>
+        <h:inputHidden id="tabla_selections" value=""/>
+        <p:dataTable id="tabla_" var="row" rowIndexVar="index" value="#{kajoolPlantillasFormulariosCaptura.personas}" paginator="false">
+          <f:facet name="header">
+            Esto es un ejemplo de una tabla donde se tiene que se seleccionar almenos un elemento
+          </f:facet>
+          <p:column headerText="No." styleClass="tabla_selections">
+            <p:outputLabel value="#{index+ 1}.-"/>
+          </p:column>
+          <p:column headerText="Persona">
+            <p:outputLabel value="#{row.nombres}"/>
+          </p:column>
+        </p:dataTable>
+      </p:tab>
+      <p:tab title="Componentes [tabview_1]">
+        <h:panelGrid columns="2">
+          <p:outputLabel for="libre" value="Libre: "/>
+          <p:inputText id="libre"/>
+          <p:outputLabel for="fecha" styleClass="janal-text-one-line" value="Fecha:"/>
+          <p:calendar id="fecha" showOn="button" pattern="dd/MM/yyyy" locale="es" readonlyInput="true"/>
+        </h:panelGrid>
+        <h:outputLabel for="pestania:folios_selections" value="Folios:" style="display:none"/>
+        <h:inputHidden id="folios_selections" value=""/>
+        <p:dataTable id="folios_" var="row" rowIndexVar="index" value="#{kajoolPlantillasFormulariosCaptura.personas}" paginator="false">
+          <f:facet name="header">
+            Esto es un ejemplo de una tabla donde se tiene que se seleccionar almenos un elemento
+          </f:facet>
+          <p:column headerText="No." styleClass="folios_selections">
+            <p:outputLabel value="#{index+ 1}.-"/>
+          </p:column>
+          <p:column headerText="Persona">
+            <p:outputLabel value="#{row.nombres}"/>
+          </p:column>
+        </p:dataTable>
+      </p:tab>
+    </p:tabView>
+  </ui:define>
+  <ui:define name="acciones">
+    <p:commandButton id="recuperar" value="Recuperar valor" process="@form" onclick="execute();" type="button"/>
+    <p:commandButton id="completo" value="Completo" process="@form" onclick="janal.execute(true);" type="button"/>
+    <p:commandButton id="uno" value="Grupo uno" process="@form" onclick="partial('tabview_0', true);" type="button"/>
+    <p:commandButton id="dos" value="Grupo dos" process="@form" onclick="partial('tabview_1', [{summary: 'Error dos:', detail: 'Este es un mensaje particular'}], true);" type="button"/>
+    <p:commandButton id="cancelar" value="Refrescar" process="@form" onclick="janal.refresh('libre dos');" type="button"/>
+  </ui:define>
+	<ui:param name="componenteBloqueo" value="recuperar"/>
+</ui:composition>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date Jul 5, 2013
+ time 8:59:11 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:ui="http://java.sun.com/jsf/facelets"
+	  xmlns:h="http://java.sun.com/jsf/html"
+	  xmlns:f="http://java.sun.com/jsf/core"
+	  xmlns:p="http://primefaces.org/ui">
+<f:view contentType="text/html">
+<h:head>
+   	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+      <meta http-equiv="X-UA-Compatible" content="IE=EDGE; IE=10; IE=9;"/>
+      <link rel="shortcut icon" type="image/ico" href="#{kajoolUtilAplicacion.defaultResourceImg}/sistema/favicon.ico.jsf?ln=janal"/>
+      <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryJs}"/>
+      <h:outputText escape="false" value="#{kajoolUtilAplicacion.defaultScripts}"/>
+      <h:outputScript library="sentinel" name="js/jquery.sentinel.layout-1.0.1.js"/>
+      <h:outputText escape="false" value="#{kajoolUtilAplicacion.defaultCss}"/>
+      <ui:insert name="librerias"/>
+</h:head>
+  <h:body class="ui-widget-content">			
+			<p:layout fullPage="true">
+         <p:layoutUnit position="north" style="border:0;" resizable="false" gutter="0">
+					<ui:include src="/WEB-INF/plantillas/secciones/encabezado.xhtml"/>
+        </p:layoutUnit>
+        <p:layoutUnit id="principal" position="center" size="100%" style="border:0;" resizable="false" styleClass="sticky-wrapper" gutter="0">
+          <ui:include src="/WEB-INF/plantillas/secciones/topbar.xhtml"/>												
+          <ui:include src="/WEB-INF/plantillas/secciones/leftmenu.xhtml"/>
+          <div id="layout-portlets-cover" class="janal-content-center">
+            <h:form id="datos" prependId="false">
+              <p:growl id="mensaje" showSummary="false" showDetail="true" sticky="false" widgetVar="mensajes" autoUpdate="true" escape="false" life="15000"/>	
+              <div id="freeze"/>
+              <div id="sticky-menu" class="ui-panel ui-widget ui-widget-content ui-corner-all lg-pantalla janal-content-header Responsive100">
+                <div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header" style="display: -webkit-box;">
+                  <h:panelGrid id="iktan-slide-menu">
+                    <a href="#" class="BordRad3" onclick="mmenu.open('#{kajoolTemaActivo.name}');">
+                      <i class="fa fa-lg icon-menu-1" style="color: white"/>
+                    </a>
+                  </h:panelGrid>  
+                  <span class="ui-panel-title Fs18 lg-pantalla">
+                    #{titulo}
+                  </span>
+                  <span class="ui-panel-title Fs16 xs-pantalla">
+                    #{kajoolUtilAplicacion.toTitle(titulo, 35)}
+                  </span>
+                  <div class="janal-icon-ajax">
+                    <p:ajaxStatus style="width:16px;height:16px;">
+                      <f:facet name="start">
+                        <i class="fa fa-spinner fa-spin fa-2x"/>
+                      </f:facet>
+                      <f:facet name="complete">
+                        <h:outputText value="" />
+                      </f:facet>
+                    </p:ajaxStatus>
+                  </div>
+                </div>
+              </div>
+              <script type="text/javascript">$(function(){PrimeFaces.cw("CustomSticky","widget_freeze",{id:"freeze",widgetVar:"widget_freeze",source:'#principal div.ui-layout-unit-content',margin:103,target:"sticky-menu"});});</script>
+              <p:panel toggleable="true" styleClass="sticky-body" style="border:0px;">
+                <p:focus context="principal"/>														
+                <ui:insert name="contenido"/>
+                <hr class="ui-widget-content" style="#{empty lineaSeparacion? '': 'display:none'}"/>
+                <div class="janal-line-button">
+                  <ui:insert name="acciones"/>
+                </div>
+                <p:dialog id="confirmacion" widgetVar="dialogoConfirmacion" header="#{empty tituloConfirmacion? 'Confirmación': tituloConfirmacion}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false"  onHide="#{empty onHideDlg? 'janal.desbloquear();': onHideDlg}">
+                  <h:outputText value="#{textoConfirmacion}" escape="false"/>
+                  <ui:insert name="detalleConfirmacion" />
+                  <hr class="ui-widget-content"/>
+                  <div class="janal-line-button">
+                    <p:commandButton id="confirmar" icon="fa fa-check" process="@form" update="#{empty updateComponent ? 'tabla' : updateComponent }"  value="Aceptar" action="#{accionConfirmacion[eventoConfirmacion]}" oncomplete="PF('dialogoConfirmacion').hide();" rendered="#{empty renderedConfirmacion? false: renderedConfirmacion}"/>
+                    <p:commandButton process="@none" icon="fa fa-remove" value="#{renderedConfirmacion?'Cancelar':'Regresar'}" oncomplete="PF('dialogoConfirmacion').hide();"/>
+                  </div>
+                </p:dialog>
+              </p:panel>
+              <p:spacer id="temporal" width="1px" height="1px"/>
+              <p:blockUI block="principal" widgetVar="bloqueo" trigger="#{empty componenteBloqueo? 'temporal': componenteBloqueo}">
+                ¡  Espere por favor !<br/><br/><br/>
+                <i class="fa fa-spinner fa-spin fa-2x"></i>
+              </p:blockUI>									
+            </h:form>
+          </div>
+					<ui:include src="/WEB-INF/plantillas/secciones/perfil.xhtml"/>
+          <ui:insert name="dialogos"/>
+        </p:layoutUnit>
+			</p:layout>
+		</h:body>
+	</f:view>
+</html>

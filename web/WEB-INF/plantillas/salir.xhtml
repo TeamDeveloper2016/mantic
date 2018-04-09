@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:ui="http://java.sun.com/jsf/facelets"
+  xmlns:h="http://java.sun.com/jsf/html"
+  xmlns:f="http://java.sun.com/jsf/core"
+  xmlns:p="http://primefaces.org/ui">
+  <f:view contentType="text/html">
+    <h:head>
+      <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+      <meta http-equiv="X-UA-Compatible" content="IE=EDGE; IE=10; IE=9;" />
+      <link rel="shortcut icon" type="image/ico" href="#{kajoolUtilAplicacion.defaultResourceImg}/sistema/favicon.ico.jsf?ln=janal"/>
+      <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryJs}"/>
+			<h:outputText escape="false" value="#{kajoolUtilAplicacion.defaultScripts}"/>
+      <h:outputText escape="false" value="#{kajoolUtilAplicacion.defaultCss}"/>
+			<ui:insert name="librerias"/>      			
+    </h:head>
+    <h:body >
+      <p:layout fullPage="true">
+        <p:layoutUnit position="north" style="border:0; width:100%" gutter="0">
+          <ui:include src="/WEB-INF/plantillas/secciones/ingreso.xhtml" />
+        </p:layoutUnit>
+        <p:layoutUnit  position="center" size="100%" style="border:0; width:100%" gutter="0" styleClass="sticky-wrapper">
+          <h:form id="datos" prependId="false" >
+            <div class="janal-icon-ajax">
+              <p:ajaxStatus style="width:16px;height:16px;">
+                <f:facet name="start">
+                  <i class="fa fa-spinner fa-spin fa-2x"/>
+                </f:facet>
+                <f:facet name="complete">
+                  <h:outputText value="" />
+                </f:facet>
+              </p:ajaxStatus>
+            </div>
+            <div class="Container100 MarAuto">
+              <div class="MarAuto TexAlCenter">
+                <ui:insert name="contenido"/>
+              </div>
+            </div>
+          </h:form>
+        </p:layoutUnit>
+      </p:layout>
+    </h:body>
+  </f:view>
+</html>

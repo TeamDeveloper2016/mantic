@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+    Relación de consultas para la generacion de reportes para {proyecto}
+-->
+<process>
+  <model>
+  </model>
+
+  <dml>
+  </dml>
+</process>

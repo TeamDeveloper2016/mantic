@@ -1,0 +1,58 @@
+@pathStart: "../../../javax.faces.resource/img/";
+@pathEnd: ".jsf?ln=default";
+@png: ".png";
+@sizeFont: 12px;
+
+.icon-style(@icon) {width: 16px; height: 16px; padding: 0px 5px !important; background: url("@{pathStart}@{icon}@{png}@{pathEnd}") no-repeat !important;}
+
+.ui-icon-style(@icon) {background-image: url("@{pathStart}@{icon}@{png}@{pathEnd}") !important;}
+
+.ui-icon-graphic(@icon) {background-position: center; .ui-icon-style(@icon);}
+
+.margin-total(@left:auto, @right:auto) {margin-left: @left; margin-right: @right;}
+
+.font-style(@size, @weight:normal) {font-size:@size !important;font-weight:@weight !important;}
+
+body {.font-style(@sizeFont); font-family:Arial,sans-serif; color: #616161;}
+
+h1, h2, h3 {margin-top: 0;}
+
+h1 {font-size: 1em; font-weight: normal; margin-left: 10px; margin-right: 10px; padding: 4px 10px 10px 4px; height: 10px;}
+
+.ui-widget {.font-style(@sizeFont);}
+
+.ui-datatable .ui-datatable-header {text-align: right !important;}
+
+.sin-lineas div.ui-datagrid-content, .sin-lineas td.ui-panelgrid-cell, .sin-lineas td, .sin-lineas tr {border-color: transparent;padding: 0px;}
+
+.solo-lineas-externas {width: 99.7%; padding: 0px;}
+
+.solo-lineas-externas tr td {border-width: 0px;}
+
+.alinear-derecha {text-align: right;}
+
+.alinear-izquierda {text-align: left;}
+
+.alinear-centro {text-align: center; .margin-total;}
+
+.error-campo {color : #FF9037; float : left;}
+
+.aviso-texto {font-weight: bold; color: orange;}
+
+//Iconos  
+.icono-agregar {.icon-style("agregar")}
+.icono-modificar {.icon-style("modificar")}
+.icono-eliminar {.icon-style("eliminar")}
+.icono-buscar {.icon-style("buscar")}
+
+//ui-state.default
+.ui-state-default .icono-agregar {.ui-icon-style("agregar")}
+.ui-state-default .icono-modificar {.ui-icon-style("modificar")}
+.ui-state-default .icono-eliminar {.ui-icon-style("eliminar")}
+.ui-state-default .icono-buscar {.ui-icon-style("buscar")}
+
+div.ajax {position:relative; float:right; margin-right:5px;}
+
+.pie-pagina {padding-top: 0px; margin-top: 2px; margin-bottom: 0px; text-shadow: inherit; text-align: right; width: 100%; alignment-baseline: central; alignment-adjust: central;}
+
+

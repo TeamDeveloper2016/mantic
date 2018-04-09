@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date Jul 3, 2014
+ time 4:23:48 PM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Actualización de las mascaras y reglas de validación cuando se refresca una tabla con los botones de la paginación" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+			Janal.Control.fields= {
+				'entero': {validaciones: 'requerido|entero', mascara: 'entero'},
+				'cadena': {validaciones: 'requerido|letras', mascara: 'letras'}
+			};
+		</script>
+  </ui:define>
+  <ui:define name="contenido">	
+		<div class="janal-content-table">
+      <p:fieldset legend="Buscar por" toggleable="true" collapsed="false" styleClass="Responsive100">
+        <p:panelGrid columns="3" layout="grid" columnClasses="janal-wid-20,Wid40,janal-wid-5">
+          <label for="cadena">Cadena: </label>
+          <p:inputText id="cadena" value="#{kajoolPlantillasFormulariosTabla.attrs.cadena}"/>
+          <p:commandButton id="busqueda" actionListener="#{kajoolPlantillasFormulariosTabla.doLoad}" update="tabla" process="@this cadena"  icon="fa fa-search" />
+        </p:panelGrid>
+      </p:fieldset>
+		</div>
+    <p:dataTable lazy="true" widgetVar="kajoolTable" id="tabla" var="row" rowIndexVar="index" value="#{kajoolPlantillasFormulariosTabla.lazyModel}" paginator="true" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolPlantillasFormulariosTabla.attrs.selected}">
+			<p:ajax event="page" oncomplete="janal.refresh(['entero']);" />
+			<f:facet name="header">
+        <p:menuButton value="Opciones">
+					<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+					<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+				</p:menuButton>
+      </f:facet>
+      <p:column>
+				<f:facet name="header">
+					<h:outputText value="Cadena"/>
+				</f:facet>
+        <h:outputText value="#{row['cadena']}" />
+      </p:column>
+      <p:column styleClass="janal-column-center entero">
+				<f:facet name="header">
+					<h:outputText value="Entero"/>
+				</f:facet>
+				<p:inputText id="entero" value="#{row['entero']}"/>
+      </p:column>
+      <p:column styleClass="janal-column-right">
+				<f:facet name="header">
+					<h:outputText value="Flotante"/>
+				</f:facet>
+				<h:outputText value="#{row['flotante']}"/>
+      </p:column>
+      <p:column styleClass="janal-column-center">
+				<f:facet name="header">
+					<h:outputText value="Registro"/>
+				</f:facet>
+				<h:outputText value="#{row['registro']}"/>
+      </p:column>
+			<f:facet name="footer">
+				 Total [#{kajoolPlantillasFormulariosTabla.lazyModel.rowCount}] registros
+      </f:facet>
+    </p:dataTable>
+		<h:commandLink id="dataPdf">
+      <p:dataExporter type="pdf" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}" />
+    </h:commandLink>
+    <h:commandLink id="dataXls">
+      <p:dataExporter type="xls" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>
+    </h:commandLink>
+  </ui:define>
+	<ui:define name="acciones">
+    <p:commandButton id="aceptar" icon="fa fa-check" type="button" value="Aceptar" onclick="janal.execute()"/>
+	</ui:define>
+	<ui:param name="componenteBloqueo" value="tabla busqueda aceptar"/>
+</ui:composition>
+				

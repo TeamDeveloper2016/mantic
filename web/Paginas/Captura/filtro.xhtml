@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 12/10/2016
+ time 01:56:07 PM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Captura de cuestionarios"/>
+  <ui:define name="librerias">		
+    <script type="text/javascript">
+			Janal.Control.fields = {
+        entidad				: { validaciones: 'requerido', mascara: 'libre'},
+        folio					: { validaciones: 'entero'   , mascara: 'numero'},
+        control				: { validaciones: 'entero'   , mascara: 'numero'},
+				fecha					: { validaciones: 'requerido' , mascara: 'libre', mensaje: 'La fecha es requerida'},
+				horaInicio		: { validaciones: 'requerido|hora-menor({"cual": "horaTermino"})' , mascara: 'libre'},
+				horaTermino		: { validaciones: 'requerido|hora-mayor({"cual": "horaInicio"})' , mascara: 'libre'},
+				observaciones	: { validaciones: 'requerido' , mascara: 'libre', mensaje: 'Las observaciones son requeridas'}
+      };		
+		</script>
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="Container100">
+      <div class="ContainerIndent">
+        <p:panel>
+          <p:panelGrid layout="grid" columns="3" columnClasses="ui-grid-col-2 janal-wid-col-80,ui-grid-col-2,janal-wid-col-40">
+            <label for="entidad">Entidad:</label> 
+            <p:selectOneMenu id="entidad" value="#{kajoolCapturaFiltro.attrs.entidad}" converter="javax.faces.Long">
+							<p:ajax event="change" listener="#{kajoolCapturaFiltro.doActualizaCapturistas}" update="capturista folio control :datos:tabla" process="@this entidad"/>
+              <f:selectItems value="#{kajoolCapturaFiltro.entidades}"/>
+            </p:selectOneMenu>
+            <p:spacer height="1"/>
+						<label for="capturista">Capturista:</label> 
+            <p:selectOneMenu id="capturista" value="#{kajoolCapturaFiltro.attrs.capturista}">
+              <p:ajax event="change" listener="#{kajoolCapturaFiltro.doLoad}" update="folio control :datos:tabla" process="@this entidad"/>
+              <f:selectItems value="#{kajoolCapturaFiltro.capturistas}"/>
+            </p:selectOneMenu>
+						<p:spacer height="1"/>
+            <label for="control">Control:</label> 
+            <p:inputText id="control" value="#{kajoolCapturaFiltro.attrs.control}"/>
+            <p:spacer height="1"/>
+            <label for="folio">Folio:</label> 
+            <p:inputText id="folio" value="#{kajoolCapturaFiltro.attrs.folio}"/>
+            <p:commandButton id="buscar" actionListener="#{kajoolCapturaFiltro.doLoad}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" process="@this entidad control folio" update="tabla" icon="fa fa-search"/>
+          </p:panelGrid>
+        </p:panel>  
+        <p:spacer height="20"/>
+        <p:contextMenu widgetVar="kajoolContextMenu" for="tabla">
+          <p:menuitem id="captura" value="Capturar" onstart="janal.bloquear();" action="#{kajoolCapturaFiltro.doCaptura}" process="@this, tabla" icon="icono-modificar" ajax="false"/>
+        </p:contextMenu>
+        <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolCapturaFiltro.lazyModel}" paginator="#{kajoolCapturaFiltro.lazyModel.rowCount gt kajoolCapturaFiltro.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" selectionMode="single" selection="#{kajoolCapturaFiltro.attrs.selected}" reflow="true">								
+          <f:facet name="header">
+            <p:menuButton value="Opciones">
+              <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+              <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+            </p:menuButton>
+          </f:facet>          
+          <p:column styleClass="janal-column-center janal-wid-col-30 Responsive">
+            <f:facet name="header">
+              <h:outputText value="No."/>
+            </f:facet>
+            <h:outputText value="#{index+ 1}"/>
+          </p:column>			
+          <p:column styleClass="janal-column-center janal-wid-col-30 Responsive">
+            <f:facet name="header">
+              <h:outputText value="Clave"/>
+            </f:facet>
+            <h:outputText value="#{row.clave}"  />
+          </p:column>			
+          <p:column styleClass="janal-column-center janal-wid-col-40 Responsive">
+            <f:facet name="header">
+              <h:outputText value="Siglas"/>
+            </f:facet>
+            <h:outputText value="#{row.siglas}" />
+          </p:column>			
+          <p:column styleClass="janal-wid-col-220 Responsive">
+            <f:facet name="header">
+              <h:outputText value="Descripción"/>
+            </f:facet>
+            <h:outputText value="#{row.descripcion}"/>
+          </p:column>			
+          <p:column styleClass="janal-column-center janal-wid-col-50 Responsive">
+            <f:facet name="header">
+              <h:outputText value="Control"/>
+            </f:facet>
+            <h:outputText value="#{row.control}" />
+          </p:column>			
+          <p:column styleClass="janal-column-center janal-wid-col-50 Responsive">
+            <f:facet name="header">
+              <h:outputText value="Folio"/>
+            </f:facet>
+            <h:outputText value="#{row.folio}" />
+          </p:column>			
+          <p:column styleClass="Responsive">
+            <f:facet name="header">
+              <h:outputText value="Código de resultado"/>
+            </f:facet>
+            <h:outputText value="#{kajoolCapturaFiltro.doEstatus(row)}" />
+          </p:column>			
+          <p:column styleClass="janal-column-center janal-wid-col-50 Responsive">
+            <f:facet name="header">
+              <h:outputText value="Estatus"/>
+            </f:facet>
+            <p:graphicImage library="janal" name="icon/acciones/#{kajoolCapturaFiltro.doSemaforo(row.idEstatus)}.png"  alt="#{kajoolCapturaFiltro.doSemaforo(row.idEstatus)}"/>
+          </p:column>			
+          <p:column styleClass="janal-column-center janal-wid-col-50 Responsive">
+            <f:facet name="header">
+              <h:outputText value="Estatus"/>
+            </f:facet>
+            <p:graphicImage library="janal" name="icon/acciones/#{kajoolCapturaFiltro.doSemaforo(row.idEstatus)}.png"  alt="#{kajoolCapturaFiltro.doSemaforo(row.idEstatus)}"/>
+          </p:column>			                                                                                
+          <p:column styleClass="janal-column-center janal-wid-col-40">
+            <f:facet name="header">
+              <h:outputText value="Visitas"/>
+            </f:facet>
+            <p:commandButton icon="fa fa-lg fa-home" onstart="janal.bloquear();" process="@this, tabla" update="dialogoVisitas" action="#{kajoolCapturaFiltro.loadVisitas(false)}" oncomplete="PF('dlgVisitas').show()">						
+              <f:setPropertyActionListener value="#{row}" target="#{kajoolCapturaFiltro.attrs.selected}"/>
+						</p:commandButton>
+          </p:column>
+          <p:column styleClass="janal-column-center janal-wid-col-40">
+            <f:facet name="header">
+              <h:outputText value="Cues"/>
+            </f:facet>
+            <p:commandButton icon="fa fa-lg fa-edit" title="Cuestionario" onstart="janal.bloquear();" action="#{kajoolCapturaFiltro.doCaptura}" process="@this, tabla" ajax="false">
+              <f:setPropertyActionListener value="#{row}" target="#{kajoolCapturaFiltro.attrs.selected}"/>
+           </p:commandButton>
+          </p:column>
+          <f:facet name="footer">
+            Total [#{kajoolCapturaFiltro.lazyModel.rowCount}] registros
+          </f:facet>
+        </p:dataTable>
+        <h:commandLink id="dataPdf">
+          <p:dataExporter type="pdf" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}" />
+        </h:commandLink>
+        <h:commandLink id="dataXls">
+          <p:dataExporter type="xls" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>
+        </h:commandLink>	
+        <p:dialog id="dialogoVisitas" widgetVar="dlgVisitas" header="Visitas del consecutivo #{kajoolCapturaFiltro.attrs.selected.folio}" closable="false" resizable="false" width="70%" dynamic="true" closeOnEscape="true">
+          <p:ajax event="close" listener="#{kajoolCapturaFiltro.doLoad}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" process="@this entidad control folio" update="tabla" />
+          <p:dataTable lazy="true" id="tablaVisitas" var="row" widgetVar="kajoolTable" value="#{kajoolCapturaFiltro.lazyModelVisitas}" rowIndexVar="index" paginator="#{kajoolCapturaFiltro.lazyModelVisitas.rowCount gt kajoolCapturaFiltro.lazyModelVisitas.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" selectionMode="single" selection="#{kajoolCapturaFiltro.attrs.selectedVisita}" reflow="true">								
+            <f:facet name="header">
+              <p:menuButton value="Opciones">
+                <p:menuitem id="agregarVisita" icon="fa fa-plus" value="Agregar visita" process="@this tabla tablaVisitas" oncomplete="PF('dlgCaptura').show();" update="dialogoCaptura"/>                      
+              </p:menuButton>
+            </f:facet>
+            <p:column class="janal-wid-col-15 janal-column-center Responsive">
+              <f:facet name="header">
+                <h:outputText value="No."/>
+              </f:facet>
+              <h:outputText value="#{row.visita}"  />
+            </p:column>
+            <p:column  class="janal-wid-col-200 janal-column-left Responsive">
+              <f:facet name="header">
+                <h:outputText value="Entrevistador"/>
+              </f:facet>
+              <h:outputText value="#{row.Entrevistador}" />
+            </p:column>
+            <p:column class="janal-wid-col-100 janal-column-center Responsive">
+              <f:facet name="header">
+                <h:outputText value="Fecha"/>
+              </f:facet>
+              <h:outputText value="#{row.fecha}"/>
+            </p:column>
+            <p:column class="janal-wid-col-100 janal-column-center Responsive">
+              <f:facet name="header">
+                <h:outputText value="Inicio"/>
+              </f:facet>
+              <h:outputText value="#{row.hrIni}" />
+            </p:column>
+            <p:column class="janal-wid-col-100 janal-column-center Responsive">
+              <f:facet name="header">
+                <h:outputText value="Fin"/>
+              </f:facet>
+              <h:outputText value="#{row.hrTer}" />
+            </p:column>
+            <p:column class="janal-wid-col-100 janal-column-center Responsive">
+              <f:facet name="header">
+                <h:outputText value="Resultado"/>
+              </f:facet>
+              <h:outputText value="#{row.idResultado}" />
+            </p:column>                  
+            <p:column class="Responsive">
+              <f:facet name="header">
+                <h:outputText value="Observaciones"/>
+              </f:facet>
+              <h:outputText value="#{row.observaciones}" />
+            </p:column>                  
+            <f:facet name="footer">
+              Total [0] registros
+            </f:facet>
+          </p:dataTable>
+          <hr class="ui-widget-content"/>
+          <div class="janal-line-button">                  
+            <p:commandButton id="cancelarVisita" icon="fa fa-close" value="Cerrar" onstart="janal.desbloquear();" oncomplete="PF('dlgVisitas').hide();"/>
+          </div>
+        </p:dialog>
+        <p:dialog id="dialogoCaptura" widgetVar="dlgCaptura" header="Captura de visita para el consecutivo #{kajoolCapturaFiltro.attrs.selected.folio}" closable="false" resizable="false" position="center" width="60%" dynamic="true" closeOnEscape="true">
+          <p:panelGrid columns="2" layout="grid" columnClasses="janal-wid-col-120 ui-grid-col-2, ui-grid-col-2">
+            <label>Respuesta:</label>
+            <p:selectOneMenu id="respuestas" value="#{kajoolCapturaFiltro.attrs.respuesta}" class="janal-wid-col-650">                                        							
+              <f:selectItem itemValue="2" itemLabel="Ausencia de informante adecuado al momento de la visita"/>                 							
+              <f:selectItem itemValue="6" itemLabel="Se negó a dar información"/>
+              <f:selectItem itemValue="8" itemLabel="La persona titular del Programa en el hogar no vive en el domicilio y no se localizó"/>
+              <f:selectItem itemValue="3" itemLabel="La persona titular del Programa en el hogar vive en el domicilio pero dijo que no recibe ni recibió apoyo(s) "/>
+              <f:selectItem itemValue="5" itemLabel="Vivienda deshabitada o de uso temporal"/>
+              <f:selectItem itemValue="7" itemLabel="No existe o no se localizó el domicilio"/>                  
+              <f:selectItem itemValue="9" itemLabel="Problemas de acceso al área"/>
+							<f:selectItem itemValue="10" itemLabel="Nadie en casa"/>
+            </p:selectOneMenu>
+						<p:outputLabel for="fecha" value="Fecha:" />
+						<p:calendar id="fecha" value="#{kajoolCapturaFiltro.attrs.fecha}" pattern="dd/MM/yyyy"/>
+						<p:outputLabel for="horaInicio" value="Hora de inicio:"  />
+						<p:calendar id="horaInicio" value="#{kajoolCapturaFiltro.attrs.horaInicio}" pattern="HH:mm" timeOnly="true"/>
+						<p:outputLabel for="horaTermino" value="Hora de termino:" />
+						<p:calendar id="horaTermino" value="#{kajoolCapturaFiltro.attrs.horaTermino}" pattern="HH:mm" timeOnly="true"/>						
+            <p:outputLabel for="observaciones" value="Observaciones:" />
+            <p:inputTextarea id="observaciones" value="#{kajoolCapturaFiltro.attrs.observaciones}" autoResize="true" cols="95" maxlength="500"/>                  
+          </p:panelGrid>
+          <hr class="ui-widget-content"/>
+          <div class="janal-line-button">
+            <p:commandButton id="aceptaCaptura" update="tablaVisitas tabla" icon="fa fa-check" value="Aceptar"  onstart="return janal.execute();" oncomplete="PF('dlgCaptura').hide();" actionListener="#{kajoolCapturaFiltro.doAgregarVisita}"/>
+            <p:commandButton id="cancelarCaptura" icon="fa fa-close" value="Cancelar" onstart="PF('dlgCaptura').hide();"/>            
+          </div>
+        </p:dialog>
+      </div>
+    </div>    		
+  </ui:define>
+	<ui:param name="componenteBloqueo" value="tabla tablaVisitas buscar"/>
+</ui:composition>

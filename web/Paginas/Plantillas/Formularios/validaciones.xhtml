@@ -1,0 +1,683 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Sistema de Seguimiento y Control de proyectos estadísticos)
+ date Jul 4, 2014
+ time 12:07:55 PM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Validaciones que se encuentra disponibles en Kajool" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+			Janal.Control.fields = {
+				'requerido': {validaciones: 'requerido', mascara: 'libre'},
+				'maxValor': {validaciones: 'max-valor({"cuanto": 5})', mascara: 'libre'},
+				'minValor': {validaciones: 'min-valor({"cuanto": 3})', mascara: 'libre'},
+				'entero': {validaciones: 'entero', mascara: 'libre'},
+				'enteroSigno': {validaciones: 'entero-signo', mascara: 'libre'},
+				'valorSimple': {validaciones: 'valor-simple', mascara: 'libre'},
+				'telefono': {validaciones: 'telefono', mascara: 'libre'},
+				'contienea': {validaciones: 'contiene-a', mascara: 'libre'},
+				'moneda': {validaciones: 'moneda', mascara: 'libre'},
+				'monedaDecimal': {validaciones: 'moneda-decimal', mascara: 'libre'},
+				'flotante': {validaciones: 'flotante', mascara: 'libre'},
+				'flotanteSigno': {validaciones: 'flotante-signo', mascara: 'libre'},
+				'rangoValor': {validaciones: 'rango({"min":2,"max":5})', mascara: 'libre'},
+				'noPermitir': {validaciones: 'no-permitir({"valor":5})', mascara: 'libre'},
+				'comodin': {validaciones: 'comodin({"expresion":"hola"})', mascara: 'libre'},
+				'ipv4': {validaciones: 'ipv4', mascara: 'libre'},
+				'ipv6': {validaciones: 'ipv6', mascara: 'libre'},
+				'estaEns': {validaciones: 'esta-en({"valores":"1,2,3,4-8,9"})', mascara: 'libre'}
+			};
+
+			Janal.Control.alfanumericas = {
+				'vocales': {validaciones: 'vocales', mascara: 'libre'},
+				'secuenciaPalabra': {validaciones: 'secuencia-palabra', mascara: 'libre'},
+				'minusculas': {validaciones: 'minusculas', mascara: 'libre'},
+				'mayusculas': {validaciones: 'mayusculas', mascara: 'libre'},
+				'asterisco': {validaciones: 'asterisco', mascara: 'libre'},
+				'letras': {validaciones: 'letras', mascara: 'libre'},
+				'longitud': {validaciones: 'longitud({"min":5,"max":10})', mascara: 'libre'},
+				'textos': {validaciones: 'texto', mascara: 'libre'},
+				'curp': {validaciones: 'curp', mascara: 'libre'},
+				'maxCaracteres': {validaciones: 'max-caracteres({"cuantos": 5})', mascara: 'libre'},
+				'minCaracteres': {validaciones: 'min-caracteres({"cuantos": 4})', mascara: 'libre'},
+				'rfc': {validaciones: 'rfc', mascara: 'libre'},
+				'textoEspecial': {validaciones: 'texto-especial', mascara: 'libre'},
+				'boleano': {validaciones: 'boleano', mascara: 'libre'},
+				'resultado-entrevista-modulo': {validaciones: 'resultado-entrevista-modulo', mascara: 'libre'},
+				'resultado-entrevista-basico': {validaciones: 'resultado-entrevista-basico', mascara: 'libre'}
+			};
+
+			Janal.Control.validacionesFechas = {
+				'fecha': {validaciones: 'fecha', mascara: 'libre'},
+				'registro': {validaciones: 'registro', mascara: 'libre'},
+				'horas': {validaciones: 'hora', mascara: 'libre'},
+				'horaCompleta': {validaciones: 'hora-completa', mascara: 'libre'}
+			};
+
+			Janal.Control.fechasComparativas = {
+				'fechaInicial': {validaciones: 'fecha-menor({"cual":"fechaFinal"})', mascara: 'libre'},
+				'fechaFinal': {validaciones: 'fecha-mayor({"cual":"fechaInicial"})', mascara: 'libre'}
+			};
+
+			Janal.Control.comparativas = {
+				'comparativo': {validaciones: 'requerido', mascara: 'libre'},
+				'igualA': {validaciones: 'igual-a({"cual":"compararA"})', mascara: 'libre'},
+				'menorA': {validaciones: 'menor-a({"cual":"compararA"})', mascara: 'libre'},
+				'mayorA': {validaciones: 'mayor-a({"cual":"compararA"})', mascara: 'libre'}
+			};
+			function change() {
+				switch (PF('accordion').cfg.active) {
+					case 0: // validaciones numericas
+						janal.update(Janal.Control.fields);
+						break;
+					case 1: // validaciones de fechas
+						janal.update(Janal.Control.validacionesFechas);
+						break;
+					case 2: // validaciones alfanumericas
+						janal.update(Janal.Control.alfanumericas);
+						break;
+					case 3 : // validaciones de fechas comparativas
+						janal.update(Janal.Control.fechasComparativas);
+						break;
+					case 4: // validaciones de comparativas de enteros
+						janal.update(Janal.Control.comparativas);
+						break;
+				} // switch
+			} // change
+		</script>
+  </ui:define>
+  <ui:define name="contenido">	
+		<div>
+      <p:accordionPanel activeIndex="-5" widgetVar="accordion">
+				<p:ajax event="tabChange" oncomplete="change()" />
+				<p:tab title="Validaciones numéricas">
+					<h:panelGrid columns="5">
+						<p:column>
+							<label for="requerido" class="janal-text-one-line">Requerido</label>
+							<p:inputText id="requerido" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="entero" class="janal-text-one-line">Entero:</label>
+							<p:inputText id="entero" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Función que valida que la longitud del valor del elemento contenga al menos un caracter<br/>
+							Validaci&#243;n:<strong> requerido</strong><br/>
+							<strong>ej</strong>: cadena insertada
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que el valor del elemento sea solo números enteros.<br/>
+							Validaci&#243;n:<strong> entero</strong><br/>
+							<strong>ej</strong>: 1234
+						</p>
+						<p:spacer/>
+						<p:column>
+							<label for="enteroSigno" class="janal-text-one-line" >Entero signo: </label>
+							<p:inputText id="enteroSigno" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="flotante" class="janal-text-one-line" >Flotante:</label>
+							<p:inputText id="flotante" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que el valor del elemento sea solo números enteros con signo (+ | -)<br/>
+							Validaci&#243;n:<strong> entero-signo</strong><br/>
+							<strong>ej</strong>: -1234 | 1234
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que el valor del elemento sea solo números de coma flotante<br/>
+							Validaci&#243;n: <strong> flotante</strong><br/>
+							<strong>ej</strong>: 123,123,000
+						</p>
+						<p:spacer/>
+						<p:column>
+							<label for="flotanteSigno" class="janal-text-one-line" >Flotante con signo:</label>
+							<p:inputText id="flotanteSigno" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="rangoValor" class="janal-text-one-line" >Rango: </label>
+							<p:inputText id="rangoValor" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que el valor del elemento sea solo numeros de coma flotante con signo (+,-).<br/>
+							Validaci&#243;n:<strong> flotante-signo</strong><br/>
+							<strong>ej</strong>: -123,123,000 | 123,123,000
+
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida si el valor del elemento este dentro de un rango especificado.<br/>
+							Validaci&#243;n:<strong> rango({"min":2,"max":5}) </strong> <br/>
+							Params:<br/>
+							&#160;&#160;min: Valor mínimo aceptado<br/>
+							&#160;&#160;max: Valor máximo aceptado<br/>
+							<strong>ej</strong>: Dado min= 2 y max= 5, los valores posibles aceptados para captura son: 2, 3, 4 y 5
+						</p>
+						<p:spacer/>
+
+						<p:column>
+							<label for="minValor" class="janal-text-one-line" >Valor minimo: </label>
+							<p:inputText id="minValor" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="maxValor" class="janal-text-one-line" >Valor maximo: </label>
+							<p:inputText id="maxValor" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que el valor del n&#250;mero escrito en el elemento sea igual o mayor al especificado en esta
+							funci&#243;n.<br/>
+							Validaci&#243;n:<strong> min-valor({"cuanto": 3})</strong><br/>
+							Params:<br/>
+							&#160;&#160;cuanto: Valor mínimo aceptado<br/>
+							<strong>ej</strong>: Dado cuanto=3, el valor m&#237;nimo aceptado es 3
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que el valor del n&#250;mero escrito en el elemento sea igual o menor al especificado en esta
+							funci&#243;n.<br/>
+							Validaci&#243;n:<strong> max-valor({"cuanto": 5})</strong><br/>
+							Params:<br/>
+							&#160;&#160;cuanto: Valor máximo aceptado<br/>
+							<strong>ej</strong>: Dado cuanto=5, los n&#250;meros posibles aceptados son: 1 | 2 | 3 | 4 | 5
+						</p>
+						<p:spacer/>
+
+						<p:column>
+							<label for="comodin" class="janal-text-one-line" >Comodin: </label>
+							<p:inputText id="comodin" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="estaEns" class="janal-text-one-line" >Esta en: </label>
+							<p:inputText id="estaEns" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida si una expresion dada es correcta<br/>
+							Validaci&#243;n :<strong> comodin({"expresion":"5=5"})</strong><br/>
+							Params:<br/>
+							&#160;&#160;expresion: Expresión a evaluar<br/>
+							<strong>ej</strong>: Dado expresion:2=2
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Función que valida que el valor del elemento se
+							encuentre dentro de un rango de valores<br/>
+							Validaci&#243;n:<strong> esta-en({"cuantos":"1,2,3,4-7,8"})</strong><br/>
+							Params:<br/>
+							&#160;&#160;cuantos: Valores posibles aceptados separados por comas, puede haber<br/>
+							&#160;&#160; un rango dentro de cada elemento del arreglo separado por un menos(-). <br/>
+							<strong>ej</strong>: Dado cuantos="1,2,3,4-7,8" un valor válido es 6
+						</p>
+						<p:spacer/>
+						<p:column>
+							<label for="moneda" class="janal-text-one-line" >Moneda: </label>
+							<p:inputText id="moneda" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="monedaDecimal" class="janal-text-one-line" >Moneda decimal: </label>
+							<p:inputText id="monedaDecimal" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida  que el valor en el elemento sea un formato de moneda correcto<br/>
+							Validaci&#243;n:<strong> moneda</strong><br/>
+							<strong>ej</strong>: $1,500
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida  que el valor en el elemento sea un formato de moneda correcto
+							con punto flotante<br/>
+							Validaci&#243;n:<strong> moneda-decimal</strong><br/>
+							<strong>ej</strong>: $1,500.50
+						</p>
+						<p:spacer/>
+						<p:column>
+
+							<label for="valorSimple" class="janal-text-one-line" >Valor simple: </label>
+							<p:inputText id="valorSimple" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="noPermitir" class="janal-text-one-line" >No permitir: </label>
+							<p:inputText id="noPermitir" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que el valor del elemento sea solo n&#250;meros enteros decimales y con signo.<br/>
+							Validaci&#243;n:<strong> valor-simple</strong><br/>
+							<strong>ej</strong>: 1234.4321
+
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que el valor del elemento no contenga un caracter dado.<br/>
+							Validaci&#243;n:<strong>no-permitir({"valor":5})</strong><br/>
+							Params:<br/>
+							&#160;&#160;valor: Valor que contendrá el elemento<br/>
+							<strong>ej</strong>: Dado valor=5, el valor del elemento no deberá contener un 5
+						</p>
+						<p:spacer/>
+						<p:column>
+							<label for="ipv4" class="janal-text-one-line" >ipv4: </label>
+							<p:inputText id="ipv4" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="ipv6" class="janal-text-one-line" >ipv6: </label>
+							<p:inputText id="ipv6" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripción: Función que valida que el valor sea una ipv4 válida<br/>
+							Validaci&#243;n: <strong> ipv4</strong><br/>
+							<strong>ej</strong>: 127.0.0.1
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripcion: Función que valida que el valor sea una ipv6 válida
+							<br/>
+							Validaci&#243;n: <strong> ipv6</strong><br/>
+							<strong>ej</strong>: 2001:0db8:85a3:0000:0000:8a2e:0370:7334
+
+						</p>
+						<p:spacer/>
+						<p:column>
+							<label for="telefono" class="janal-text-one-line" >Teléfono: </label>
+							<p:inputText id="telefono" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<p:spacer/><p:spacer/>
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Función que valida que el valor del elemento sea un número telefónico válido<br/>
+							Validaci&#243;n:<strong> telefono</strong><br/>
+							<strong>ej</strong>: (449)123-12-34
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							<p:spacer/>
+						</p>
+						<p:spacer/>
+					</h:panelGrid>
+					<p:separator/>
+					<div style="float:right">
+						<p:commandButton id="aceptarNumeros" value="Aceptar" onclick="janal.execute();" type="button"/>
+					</div>
+				</p:tab>
+				<p:tab title="Validaciones de fecha">
+					<h:panelGrid columns="5">
+						<p:column>
+							<label for="horas" class="janal-text-one-line" >Hora: </label>
+							<p:inputText id="horas" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="fecha" class="janal-text-one-line" >Fecha: </label>
+							<p:calendar id="fecha" showOn="button" pattern="dd/MM/yyyy" locale="es" readonlyInput="true"/>
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida el valor del elemento sea un formato de hora válido<br/>
+							El formato debe ser hh:mm<br/>
+							Validaci&#243;n:<strong> hora</strong><br/>
+							<strong>ej</strong>: 20:30
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que el valor del elemento sea una formato de fecha válido.<br/>
+							Validaci&#243;n:<strong> fecha</strong><br/>
+							El formato de fecha aceptado es dd/mm/yyyy<br/>
+							<strong>ej</strong>: 16/05/2000
+						</p>
+						<p:spacer/>
+						<p:column>
+							<p:outputLabel for="registro" styleClass="janal-text-one-line" value="Registro:"/>
+							<p:calendar id="registro" showOn="button" pattern="dd/MM/yyyy hh:mm:ss" locale="es" readonlyInput="true"/>
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="horaCompleta" class="janal-text-one-line" >Hora completa: </label>
+							<p:inputText id="horaCompleta" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida  que el valor en el elemento sea formato de fecha
+							y hora válido<br/>
+							el formato debe ser el siguiente:<br/>
+							dd/mm/aaaa hh:mm:ss (debe haber un espacio
+							entre la fecha y la hora).<br/>
+							Validaci&#243;n:<strong> registro</strong><br/>
+							<strong>ej</strong>: 18/06/2000 14:30:40
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida el valor en el elemento sea un formato de hora válido<br/>
+							El formato debe ser hh:mm:ss<br/>
+							Validaci&#243;n:<strong> hora-completa</strong><br/>
+							<strong>ej</strong>: 14:30:45
+						</p>
+						<p:spacer/>
+					</h:panelGrid>
+					<p:separator/>
+					<div style="float:right">
+						<p:commandButton id="aceptarFechas" value="Aceptar" onclick="janal.execute();" type="button"/>
+					</div>
+				</p:tab>
+				<p:tab title="Validaciones alfanuméricas">
+					<h:panelGrid columns="5">
+						<p:column>
+							<label for="minusculas" class="janal-text-one-line" >Minusculas: </label>
+							<p:inputText id="minusculas" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="mayusculas" class="janal-text-one-line" >Mayusculas: </label>
+							<p:inputText id="mayusculas" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que el valor del elemento sea solo letras minúsculas.<br/>
+							Validaci&#243;n:<strong> minusculas</strong><br/>
+							<strong>ej</strong>: kajool | ejemplo
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que el valor del elemento sea solo letras mayúsculas.<br/>
+							Validaci&#243;n:<strong> mayusculas</strong><br/>
+							<strong>ej</strong>: KAJOOL | EJEMPLO
+						</p>
+						<p:spacer/>
+
+
+						<p:column>
+							<label for="textos" class="janal-text-one-line" >Texto: </label>
+							<p:inputText id="textos" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="curp" class="janal-text-one-line" >Curp:</label>
+							<p:inputText id="curp" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que el valor del elemento sea solo letras, el texto puede contener escritura con acentos.<br/>
+							Validaci&#243;n:<strong> texto</strong><br/>
+							Caracteres aceptados:[A-Z], [a-z], &#225;, &#233;, &#237;, &#243;, &#250;, &#328;, &#193;, &#201;, &#205;, &#211;, &#218;, &#209;, espacio, (,) (.) (;)<br/>
+							<strong>ej</strong>: Kajool | KAJOOL | MAY&#218;SCULAS | MIN&#218;SCULAS | NI&#209;O | ni&#328;o
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que el valor del elemento sea un formato de CURP válida.<br/>
+							Validaci&#243;n:<strong> curp</strong><br/>
+							<strong>ej</strong>: ABCD910625MASRXM01
+						</p>
+						<p:spacer/>
+						<p:column>
+							<label for="rfc" class="janal-text-one-line" >RFC: </label>
+							<p:inputText id="rfc" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="textoEspecial" class="janal-text-one-line" >Texto especial:</label>
+							<p:inputText id="textoEspecial" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que el valor del elemento sea un formato de RFC válido.<br/>
+							Validaci&#243;n:<strong> rfc</strong><br/>
+							<strong>ej</strong>: CUPU8008255
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que el valor del elemento sea solo texto, incluyendo algunas variaciones de la funci&#243;n <strong>texto</strong><br/>
+							Validaci&#243;n:<strong> texto-especial</strong><br/>
+							Caracteres aceptados: [A-Z],[a-z],&#225;, &#233;, &#237;, &#243;, &#250;, &#328;, &#193;, &#201;, &#205;, &#211;, &#218;, &#209;,espacio, (,)(.) (;), @, [,]<br/>
+							<strong>ej</strong>: Kajool | KAJOOL | MAY&#218;SCULAS | MIN&#218;SCULAS | NI&#209;O | ni&#328;o | correo@correo.com
+						</p>
+						<p:spacer/>
+
+						<p:column>
+							<label for="letras" class="janal-text-one-line" >letras:</label>
+							<p:inputText id="letras" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+
+							<label for="boleano" class="janal-text-one-line" >S/N: </label>
+							<p:inputText id="boleano" />
+
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que el valor del elemento sea solo letras mayúsculas y minúsculas.<br/>
+							Validaci&#243;n:<strong> letras</strong><br/>
+							<strong>ej</strong>: Kajool | KAJOOL | kajool
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que el valor del elemento sea S (si) &#243; N (no).<br/>
+							Validaci&#243;n:<strong> boleano</strong><br/>
+							<strong>ej</strong>: S | N
+						</p>
+						<p:spacer/>
+						<p:column>
+							<label for="minCaracteres" class="janal-text-one-line" >Minimo de caracteres: </label>
+							<p:inputText id="minCaracteres" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="maxCaracteres" class="janal-text-one-line" >Maximo de caracteres: </label>
+							<p:inputText id="maxCaracteres" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que la longitud del valor del elemento contenga al menos un determinado número de caracteres.<br/>
+							Validaci&#243;n:<strong> min-caracteres({"cuantos": 4})</strong><br/>
+							Params: <br/>
+							&#160;&#160;cuantos: Longitud mínima del valor del elemento<br/>
+							<strong>ej</strong>: Dado cuantos=4, una cadena v&#225;lida aceptada es: Hola
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que la longitud del valor del elemento contenga como máximo un determinado número de caracteres<br/>
+							Validaci&#243;n:<strong> max-caracteres({"cuantos": 5})</strong><br/>
+							Params: <br/>
+							&#160;&#160;cuantos: Longitud máxima del valor del elemento<br/>
+							<strong>ej</strong>: Dado cuantos=5, una cadena v&#225;lida aceptada es: Kajool
+						</p>
+						<p:spacer/>
+						<p:column>
+							<label for="asterisco" class="janal-text-one-line" >Asterisco: </label>
+							<p:inputText id="asterisco" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="vocales" class="janal-text-one-line" >Vocales: </label>
+							<p:inputText id="vocales" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Funci&#243;n que valida que el valor en el elemento no contenga asteriscos (*).<br/>
+							Validaci&#243;n:<strong> asterisco</strong><br/>
+							<strong>ej</strong>: Esto es una cadena sin asteriscos
+
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Función que valida que el valor del elemento sea solo vocales.<br/>
+							Validación: <strong> vocales</strong><br/>
+							<strong>ej</strong>: aeiou
+						</p>
+						<p:spacer/>
+
+						<p:column>
+							<label for="contienea">Contiene a: </label>
+							<p:inputText id="contienea"/>
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="secuenciaPalabra" class="janal-text-one-line" >Secuencia palabra: </label>
+							<p:inputText id="secuenciaPalabra" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n:<br/>
+							Validaci&#243;n:<strong> contiene-a</strong><br/>
+							<strong>ej</strong>:
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: <br/>
+							Validaci&#243;n:<strong> secuencia-palabra</strong><br/>
+							<strong>ej</strong>:
+						</p>
+						<p:spacer/>
+						<p:column>
+							<label for="resultado-entrevista-modulo" class="janal-text-one-line" >Resultado entrevista modulo: </label>
+							<p:inputText id="resultado-entrevista-modulo" />
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<label for="resultado-entrevista-basico" class="janal-text-one-line" >Resultado entrevista básico </label>
+							<p:inputText id="resultado-entrevista-basico" />
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Función que valida que el valor del elemento sea un resultado válido de entrevista de módulo<br/>
+							Validaci&#243;n:<strong> resultado-entrevista-modulo</strong><br/>
+							<strong>ej</strong>: 01|02|A1|A2|A3|A4|A5|A6|A7
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Función que valida que el valor del elemento sea un resultado válido de entrevista básica<br/>
+							Validaci&#243;n:<strong> resultado-entrevista-basico</strong><br/>
+							<strong>ej</strong>: 01|02|A1|A2|A3|A4|A5|A6|A7|B1|B2|B3|C1|C2|C3|C4
+						</p>
+						<p:spacer/>
+						<p:column>
+							<label for="longitud" class="janal-text-one-line" >Longitud:  </label>
+							<p:inputText id="longitud"/>
+						</p:column>
+						<p:spacer/>
+						<p:spacer/>
+						<p:column>
+							<p:spacer/><p:spacer/>
+						</p:column>
+						<p:spacer/>
+						<p>
+							Descripci&#243;n: Función que valida que la longitud del valor del elemento se encuentre dentro de un rango específico.<br/>
+							Validación: <strong> longitud({"min":5,"max":10})</strong><br/>
+							Params:<br/>
+							&#160;&#160;min: Longitud mínima del valor del elemento<br/>
+							&#160;&#160;max: Longitud máxima del valor del elemento<br/>
+							<strong>ej</strong>: Dado min=5 y max=10 un valor del elemento válido es: Kajool
+						</p>
+						<p:spacer/>
+						<p:spacer/>
+						<p>
+							<p:spacer/>
+						</p>
+						<p:spacer/>
+					</h:panelGrid>
+					<p:separator/>
+					<div style="float:right">
+						<p:commandButton id="aceptarAlfanumerico" value="Aceptar" onclick="janal.execute();" type="button"/>
+					</div>
+				</p:tab>
+				<p:tab title="Validaciones para comparación de fechas" id="comparacionFechas">
+					<h:panelGrid columns="2">
+						<p:outputLabel value="Fecha menor: " for="fechaInicial"/>
+						<p:calendar id="fechaInicial" showOn="button" pattern="dd/MM/yyyy" locale="es" readonlyInput="true"/>
+
+						<p:outputLabel value="Fecha mayor: " for="fechaFinal"/>
+						<p:calendar id="fechaFinal" showOn="button" pattern="dd/MM/yyyy" locale="es" readonlyInput="true"/>
+
+					</h:panelGrid>
+					<p:separator/>
+					<div style="float:right">
+						<p:commandButton id="aceptarFechasComparativas" value="Aceptar" onclick="janal.execute();" type="button"/>
+					</div>
+				</p:tab>
+				<p:tab title="Validaciones para comparación de valores" id="comparaciones" >
+					<h:panelGrid columns="2">
+						<p:outputLabel value="Igual a: " for="igualA"/>
+						<p:inputText id="igualA" />
+						<p:outputLabel value="Menor a: " for="menorA"/>
+						<p:inputText id="menorA" />
+						<p:outputLabel value="Mayor a: " for="mayorA"/>
+						<p:inputText id="mayorA" />
+						<p:outputLabel value="Campo a comparar: " for="compararA"/>
+						<p:inputText id="compararA" />
+					</h:panelGrid>
+					<p:separator/>
+					<div style="float:right">
+						<p:commandButton id="aceptarComparaciones" value="Aceptar" onclick="janal.execute();" type="button"/>
+					</div>
+				</p:tab>
+			</p:accordionPanel>
+		</div>
+    <p:dataTable id="tabla" style="display:none"></p:dataTable>
+  </ui:define>
+</ui:composition>

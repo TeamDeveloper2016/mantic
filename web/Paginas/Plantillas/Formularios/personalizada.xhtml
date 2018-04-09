@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Pagina que explica como asignar una validación personalizada siguiendo el modelo de validación de kajool" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.Validations.prototype.lazy= function() {
+        this.add('comparacion', function(value, element, params) {
+          if (janal.empty(value))
+            return true;
+          else
+            if(typeof(params)=== 'undefined' || typeof(params.uno)=== 'undefined' || typeof(params.dos)=== 'undefined')
+              return false;
+            else {
+              var uno= parseInt(janal.cleanToken(janal.value(params.uno), 10));
+              var dos= parseFloat(janal.cleanToken(janal.value(params.dos), 10));
+              return parseInt(janal.cleanToken(value), 10)=== (uno+ dos);
+            } // else
+        }, function (params, element) {
+          return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser igual a la suma de entero+ flotante ('+ janal.value(params.uno)+ '+ '+ janal.value(params.dos)+ ').';
+        });
+
+        this.add('multiplo', function(value, element, params) {
+          if (janal.empty(value))
+            return true;
+          else
+            if(typeof(params.quien)=== 'undefined')
+              return false;
+            else {
+              return (parseInt(janal.cleanToken(value), 10)% params.quien)=== 0;
+            } // else
+        }, function(params, element) {
+          return 'El valor '+ janal.value($(element).attr('id'))+ ' no es multiplo de '+ params.quien+ '.';
+        });
+      };
+
+      var customMask= {mask: '999', type: 'reverse'};
+
+      Janal.Control.fields= {
+        total: { validaciones: 'requerido|entero|comparacion({"uno": "entero", "dos": "flotante"})', mascara: customMask},
+        entero: { validaciones: 'requerido|entero|multiplo({"quien": 5})', mascara: 'entero'},
+        flotante: { validaciones: 'requerido|flotante', mascara: 'flotante'}
+      };
+
+      function execute() {
+        if(janal.execute())
+          janal.show([{summary: 'Validación', detail: 'Ok'}]);
+      }
+    </script>
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-content-table">
+      <h:panelGrid columns="3">
+        <p:outputLabel for="total" value="Total: "/>
+        <p:inputText id="total" value="10"/>
+        <h:outputText value="&quot;field&quot;: { ... , validaciones: &quot;requerido|comparacion({&quot;uno&quot;: &quot;entero&quot;, &quot;dos&quot;: &quot;flotante&quot;})&quot; ... } la validacion consiste en total= entero+ flotante"/>
+        <p:outputLabel for="entero" value="Entero: "/>
+        <p:inputText id="entero" value="5"/>
+        <h:outputText value="&quot;field&quot;: { ... , validaciones: &quot;requerido|entero|multiplo({&quot;quien&quot;: 5})&quot; ... } la validacion consiste en (entero % 5) residuo = 0"/>
+        <p:outputLabel for="flotante" value="Flotante: "/>
+        <p:inputText id="flotante" value="5"/>
+      </h:panelGrid>
+    </div>
+  </ui:define>
+  <ui:define name="acciones">
+    <p:commandButton id="completo" value="Completo" process="@form" onclick="execute()" type="button"/>
+  </ui:define>
+	<ui:param name="componenteBloqueo" value="completo"/>
+</ui:composition>

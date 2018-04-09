@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ * @company KAANA
+ * @project KAJOOL (Control system polls)
+ * @date 9/09/2015
+ * @time 03:22:02 PM
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/monitoreo.xhtml">
+	<ui:param name="titulo" value="Seleccione el formato para el reporte" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+			Janal.Control.fields = {
+				'idTitulos': {validaciones: 'requerido', mascara: 'libre'},
+				'idFormato': {validaciones: 'requerido', mascara: 'libre'}
+			};
+			$(function() {
+			#{kajoolReportesGenerar.automatico};
+			});
+    </script>
+  </ui:define>
+  <ui:define name="contenido">	
+		<p:fieldset legend="Seleccionar el tipo de formato" toggleable="true" collapsed="false" styleClass="Responsive100">
+			<p:panelGrid id="definicionReporte" columns="2"  layout="grid" columnClasses="janal-wid-10,janal-wid-20">
+				<label for="idTitulos">Titulos</label>
+				<p:selectOneMenu id="idTitulos" value="#{kajoolReportesGenerar.idTitulos}">
+					<f:selectItem itemLabel="Si" itemValue="0"/>
+					<f:selectItem itemLabel="No" itemValue="1"/>
+				</p:selectOneMenu>
+				<label for="idFormato">Formato</label>
+				<p:selectOneMenu id="idFormato" value="#{kajoolReportesGenerar.idFormato}" effect="fade" var="element" style="width:380px">
+					<p:ajax event="change" listener="#{kajoolReportesGenerar.doSeleccionarReporte}" update="paginacion" />
+					<f:selectItems value="#{kajoolReportesGenerar.formatos}"/>
+					<p:column styleClass="alinear-centro">
+						<p:graphicImage library="janal" name="#{element.image}"/>
+					</p:column>
+					<p:column>
+						#{element}
+					</p:column> 					
+					<p:column>
+						#{element.company}
+					</p:column> 					
+				</p:selectOneMenu>
+				<label>Registros:</label>
+				<h:outputFormat value="#{kajoolReportesGenerar.total}" />
+				<label>Paginación:</label>
+				<p:selectBooleanCheckbox id="paginacion" value="#{kajoolReportesGenerar.paginacionXls}" disabled="#{kajoolReportesGenerar.habilitarXls}"  />
+			</p:panelGrid>
+		</p:fieldset>
+  </ui:define>
+	<div class="janal-line-button">
+		<p:separator/>
+		<ui:define name="acciones">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" onstart="return start(#{kajoolReportesGenerar.total})" oncomplete="download(xhr, status, args)" actionListener="#{kajoolReportesGenerar.doAceptar}" process="@form" update=":datos:confirmacion" widgetVar="procesar" disabled="#{kajoolReportesGenerar.total &gt; 0? 'false': 'true'}"/>
+      <p:commandButton id="cancelar" value="Cancelar" process="@this" icon="fa fa-remove"  action="#{kajoolReportesGenerar.doCancelar}" immediate="true" ajax="false" oncomplete="progreso.cancel()" />
+		</ui:define>
+	</div>
+  <ui:param name="renderedConfirmacion" value="#{kajoolReportesGenerar.ver}"/>
+  <ui:param name="eventoProgreso" value="doCompleto"/>
+  <ui:param name="eventoConfirmacion" value="doExportar"/>
+  <ui:param name="accionConfirmacion" value="#{kajoolReportesGenerar}" />
+	<ui:define name="detalleConfirmacion">
+		<h:panelGrid columns="2">
+      <label for="generado">Archivo generado:</label>				
+			<p:commandLink id="generado" title="Click para descargar el archivo" ajax="false">
+				<p:fileDownload value="#{kajoolReportesGenerar.descargar}" />
+				<div class="alinear-centro">
+					<h:panelGrid columns="1">
+						<p:graphicImage id="icono" library="janal" name="#{kajoolReportesGenerar.idFormato.image}" styleClass="alinear-centro"/>
+						<h:outputFormat value="#{kajoolReportesGenerar.archivo}"/>
+					</h:panelGrid>	
+				</div>
+			</p:commandLink>
+		</h:panelGrid>
+	</ui:define>
+</ui:composition>

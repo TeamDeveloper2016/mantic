@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date Jul 28, 2014
+ time 10:53:41 AM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Definiciones avance" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+		</script>
+	</ui:define>
+  <ui:define name="contenido">
+		<p:panelGrid columns="1" class="ui-grid-responsive" layout="grid" columnClasses="janal-wid-70">
+			<p:calendar value="#{kajoolMantenimientoIndicadoresAvanceFiltro.fecha}" id="fecha" mode="inline" pages="4" pattern="dd/MM/yyyy" locale="es" mindate="#{kajoolMantenimientoIndicadoresAvanceFiltro.attrs.fechaInicio}" maxdate="#{kajoolMantenimientoIndicadoresAvanceFiltro.attrs.fechaFin}" pagedate="#{kajoolMantenimientoIndicadoresAvanceFiltro.attrs.fechaInicio}">
+				<p:ajax event="dateSelect" listener="#{kajoolMantenimientoIndicadoresAvanceFiltro.doArmarParams}" process="@this" update="tabla"/>
+			</p:calendar>
+		</p:panelGrid>
+		<p:contextMenu for="tabla">
+			<p:menuitem value="Ver avance" action="#{kajoolMantenimientoIndicadoresAvanceFiltro.doAvance}" onstart="return janal.execute();" process="tabla"/>
+		</p:contextMenu>
+    <p:dataTable value="#{kajoolMantenimientoIndicadoresAvanceFiltro.lazyModel}" selection="#{kajoolMantenimientoIndicadoresAvanceFiltro.attrs.seleccionado}" selectionMode="single" lazy="true" id="tabla" var="fila" rowIndexVar="index"  paginator="#{kajoolMantenimientoIndicadoresAvanceFiltro.lazyModel.rowCount gt kajoolMantenimientoIndicadoresAvanceFiltro.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="tabla-filtro" reflow="true">
+			<f:facet name="header">
+				<div class="TexAlCenter">
+				Fecha actual seleccionada: #{kajoolMantenimientoIndicadoresAvanceFiltro.fechaFormato}
+				</div>
+			</f:facet>
+      <p:column headerText="Nombre" sortBy="#{fila.descripcion}">
+        #{fila.descripcion}
+      </p:column>
+      <p:column headerText="Generado" styleClass="alinear-centro contenido-registro" sortBy="#{fila.fin}">
+        #{fila.fin}
+      </p:column>
+			<f:facet name="footer">
+				Total [#{kajoolMantenimientoIndicadoresAvanceFiltro.lazyModel==null?0:kajoolMantenimientoIndicadoresAvanceFiltro.lazyModel.rowCount}] registros
+			</f:facet>
+    </p:dataTable>
+    </ui:define>
+</ui:composition>

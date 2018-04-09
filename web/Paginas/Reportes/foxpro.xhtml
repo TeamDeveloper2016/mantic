@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ * @company KAANA
+ * @project KAJOOL (Control system polls)
+ * @date 9/09/2015
+ * @time 03:22:02 PM
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="http://java.sun.com/jsf/facelets" 
+                xmlns:h="http://java.sun.com/jsf/html" 
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui" 
+                template="/WEB-INF/plantillas/monitoreo.xhtml">
+  <ui:param name="titulo" value="Exportación" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      $(function() {
+				#{kajoolReportesFoxpro.automatico};
+			});
+    </script>
+  </ui:define>
+	<ui:define name="acciones">
+    <div style="display:none">
+      <p:commandButton id="aceptar" value="Aceptar" onstart="return start(#{kajoolReportesFoxpro.total})" oncomplete="download(xhr, status, args)" actionListener="#{kajoolReportesFoxpro.doAceptar}" process="@form" update=":datos:confirmacion" widgetVar="procesar"/>
+    </div>
+    <p:commandButton id="cancelar" icon="fa fa-reply" value="Regresar" action="#{kajoolReportesFoxpro.doCancelar}" immediate="true" ajax="false" oncomplete="PF('progreso').cancel()" /> 
+	</ui:define>
+  <ui:param name="renderedConfirmacion" value="#{kajoolReportesFoxpro.ver}"/>
+  <ui:param name="eventoProgreso" value="doCompleto"/>
+  <ui:param name="eventoConfirmacion" value="doExportar"/>
+  <ui:param name="accionConfirmacion" value="#{kajoolReportesFoxpro}" />
+	<ui:define name="detalleConfirmacion">
+		<h:panelGrid columns="2">
+      <label for="generado">Archivo generado:</label>				
+			<p:commandLink id="generado" title="Click para descargar el archivo" ajax="false">
+ 				<p:fileDownload value="#{kajoolReportesFoxpro.descargar}"  /> 
+				<div class="alinear-centro">
+  				<h:panelGrid columns="1">
+						<p:graphicImage id="icono" library="janal" name="#{kajoolReportesFoxpro.idFormato.image}" styleClass="alinear-centro"/>
+						<h:outputFormat value="#{kajoolReportesFoxpro.archivo}"/>
+  				</h:panelGrid>	
+			  </div>
+			</p:commandLink>
+		</h:panelGrid>
+	</ui:define>
+</ui:composition>
+

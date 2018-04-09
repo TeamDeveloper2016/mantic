@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+ company KAANA
+ project KAJOOL (Control system polls)
+ date 16/01/2015
+ time 06:19:27 PM
+ author Team Developer 2016 <team.developer@kaana.org.mx>
+-->
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Empleados delegados" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+			Janal.Control.fields = {
+				'parametro'  : { validaciones : 'libre', mascara: 'libre',  mensaje : 'Selecciona un usuario'}
+			};
+		</script>
+  </ui:define>
+  <ui:define name="contenido">	
+		<div class="tabla-filtro">
+			<h:panelGrid columns="2">
+				<label for="usuario">Usuario:</label>
+				<p:outputLabel id="usuario" value="#{kajoolGruposTrabajoDelegar.attrs.usuario.nombreCompleto}" class="una-sola-linea"/>				
+				<label for="perfil">Perfil:</label>
+				<p:outputLabel id="perfil" value="#{kajoolGruposTrabajoDelegar.attrs.usuario.nombrePerfil}" class="una-sola-linea"/>				
+			</h:panelGrid>
+		</div>
+    <p:dataTable lazy="true" id="tabla" var="row" rowIndexVar="index" value="#{kajoolGruposTrabajoDelegar.lazyModel}" paginator="#{kajoolGruposTrabajoDelegar.lazyModel.rowCount gt kajoolGruposTrabajoDelegar.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="tabla-filtro" selectionMode="single" selection="#{kajoolGruposTrabajoDelegar.attrs.seleccionado}">
+      <f:facet name="header">
+        <p:menuButton value="Opciones">
+					<p:menuitem id="agregar" icon="icono-agregar" value="Agregar" onstart="janal.bloquear();" oncomplete="PF('dialogoAgregar').show();" process="@this, tabla" update=":datos:dlgAgregar"/>
+					<p:separator/>
+					<p:menuitem id="pdf" icon="icono-pdf" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+					<p:menuitem id="xls" icon="icono-xls" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+				</p:menuButton>
+      </f:facet>
+			<p:column styleClass="alinear-centro">
+				<f:facet name="header">
+					<h:outputText value="CURP"/>
+				</f:facet>
+        <h:outputText value="#{row['curp']}" />
+      </p:column>
+      <p:column>
+				<f:facet name="header">
+					<h:outputText value="Nombre"/>
+				</f:facet>
+        <h:outputText value="#{row['nombreCompleto']}" />
+      </p:column>
+      <p:column>
+				<f:facet name="header">
+					<h:outputText value="Login"/>
+				</f:facet>
+        <h:outputText value="#{row['login']}" />
+      </p:column>
+      <p:column style="width: 70px">
+				<f:facet name="header">
+					<h:outputText value="Estatus"/>
+				</f:facet>
+        <h:outputText value="#{row['estatus']}" />
+      </p:column>
+      <p:column styleClass="alinear-centro" style="width: 120px">
+				<f:facet name="header">
+					<h:outputText value="Vigencia inicial"/>
+				</f:facet>
+        <h:outputText value="#{row['vigenciaInicial']}" />
+      </p:column>
+      <p:column styleClass="alinear-centro" style="width: 120px">
+				<f:facet name="header">
+					<h:outputText value="Vigencia final"/>
+				</f:facet>
+        <h:outputText value="#{row['vigenciaFinal']}" />
+      </p:column>
+      <p:column styleClass="alinear-centro">
+				<f:facet name="header">
+					<h:outputText value="Registro"/>
+				</f:facet>
+        <h:outputText value="#{row['registro']}" />
+      </p:column>
+			<f:facet name="footer">
+				 <h:outputText value="Total [#{kajoolGruposTrabajoDelegar.lazyModel==null?0:kajoolGruposTrabajoDelegar.lazyModel.rowCount}] registros"/>
+      </f:facet>
+    </p:dataTable>
+		<p:contextMenu id="menu" for="tabla">			
+			<p:menuitem id="eliminar" value="Eliminar" onstart="return janal.bloquear();" oncomplete="PF('dialogoConfirmacion').show();" process="@this, tabla"  update="confirmacion" icon="icono-eliminar"/>
+		</p:contextMenu>
+		<p:dialog id="dlgAgregar" widgetVar="dialogoAgregar" header="Agregar empleado delega" resizable="false" closable="false">
+			<h:panelGrid columns="3">
+				<label for="parametro" class="una-sola-linea">Busqueda por rfc, nombre completo:</label>
+				<p:inputText id="parametro" value="#{kajoolGruposTrabajoDelegar.attrs.parametro}"/>
+				<p:commandButton id="buscarDelega" icon="icono-buscar" process="@this, parametro" update="encontrados" actionListener="#{kajoolGruposTrabajoDelegar.doBuscarEmpleados}"/>
+			</h:panelGrid>
+		  <h:panelGrid columns="2">
+				<label for="encontrados">Encontrados:</label>
+				<p:selectOneMenu id="encontrados" value="#{kajoolGruposTrabajoDelegar.attrs.empleadoDelega}" var="item" converter="janal.convertidor.Entity" style="width: 305px">											
+					<f:selectItems value="#{kajoolGruposTrabajoDelegar.empleados}" var="element" itemValue="#{element.key}" itemLabel="#{element.nombreCompleto}"/>						
+					<p:column>
+						<h:outputText value="#{item.rfc}"/>
+					</p:column>
+					<p:column>
+						<h:outputText value="#{item.nombreCompleto}"/>
+					</p:column>				
+				</p:selectOneMenu>
+			</h:panelGrid>
+			<hr class="ui-widget-content"/>
+			<div class="pie-pagina">
+				<p:commandButton id="agregarEmpleado" process="@this, encontrados" update="tabla, encontrados, parametro" value="Aceptar" actionListener="#{kajoolGruposTrabajoDelegar.doAgregarEmpleado}" onstart="PF('dialogoAgregar').hide();" oncomplete="janal.desbloquear();"/>
+				<p:commandButton value="Cancelar" onstart="PF('dialogoAgregar').hide();" oncomplete="janal.desbloquear();"/>
+			</div>
+		</p:dialog>
+  </ui:define>
+	<ui:define name="acciones">
+    <p:commandButton id="cancelar" value="Cancelar" action="filtro" immediate="true" ajax="false" />
+	</ui:define>
+	<ui:param name="componenteBloqueo" value="tabla"/>
+	<ui:param name="tituloConfirmacion" value="Eliminar usuario" />
+	<ui:param name="textoConfirmacion" value="¿ Deseas continuar con la eliminación del empleado delegado ?" />
+	<ui:param name="accionConfirmacion" value="#{kajoolGruposTrabajoDelegar}"/>
+  <ui:param name="eventoConfirmacion" value="doEliminar"/>
+  <ui:param name="renderedConfirmacion" value="true"/>	
+  <ui:param name="updateComponent" value=":datos:tabla"/>	
+	<ui:define name="detalleConfirmacion">
+		<h:panelGrid columns="2">
+			<label class="una-sola-linea">CURP:</label>
+			<h:outputText value="#{kajoolGruposTrabajoDelegar.attrs.seleccionado.curp}" class="una-sola-linea"/>						
+			<label class="una-sola-linea">Nombre:</label>
+			<h:outputText value="#{kajoolGruposTrabajoDelegar.attrs.seleccionado.nombreCompleto}" class="una-sola-linea"/>						
+		</h:panelGrid>
+	</ui:define>	
+</ui:composition>

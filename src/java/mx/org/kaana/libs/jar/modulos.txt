@@ -1,0 +1,8 @@
+	<!-- Segmento de codigo que hay que agregar al archivo de modulos.xml para el registro de sus propiedades. -->
+
+	<module id="{proyectomin}" load="true" mapping="true" backing="true" dto="mx.org.kaana.{proyectomin}.db.dto" msg="/mx/org/kajool/{proyectomin}/msg">
+			 <file-xml>mx/org/kajool/{proyectomin}/db/xml/{proyectomin}.xml</file-xml>
+			 <file-xml>mx/org/kajool/{proyectomin}/db/xml/vistas.xml</file-xml>
+			 <file-xml>mx/org/kajool/{proyectomin}/db/xml/foxpro.xml</file-xml>
+			 <file-xml>mx/org/kajool/{proyectomin}/db/xml/ireport.xml</file-xml>
+	</module>
