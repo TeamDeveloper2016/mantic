@@ -87,5 +87,4 @@ public class {nombreFiltro} extends IBaseFilter implements Serializable {
 		} // catch
 		return "agregar";
 	} // doEvento
-
 }
