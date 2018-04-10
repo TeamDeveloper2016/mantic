@@ -58,27 +58,27 @@ public class Dml {
     modulus= null;
   }
 
-  public static Dml getInstance() {
+    public static Dml getInstance() {
     synchronized (mutex) {
       if (instance == null) {
         try  {
           instance = new Dml();
-        } // try
+        } // try 
         catch (Exception e)  {
           Error.mensaje(e);
         } // catch
       } // if
-    }
+    } 
     return instance;
   }
-
+  
   public void reload(){
     try  {
-      instance= new Dml();
+      instance= new Dml();  
     } // try
     catch (Exception e) {
       Error.mensaje(e);
-    } // catch
+    } // catch    
   }
 
   public String getDelete(String subModulo, String id, Map parametros) throws XPathExpressionException {
@@ -93,7 +93,7 @@ public class Dml {
   public String getDelete(String subModulo, String id, String parametros) throws XPathExpressionException {
     return getDelete(subModulo, id, parametros, Constantes.SEPARADOR.charAt(0));
   }
-
+  
   public String getInsert(String subModulo, String id, Map parametros) throws XPathExpressionException {
     return evaluate(EXP_INI.concat(subModulo).concat(INS_EXP).concat(id).concat("']"), parametros);
   }
@@ -155,28 +155,34 @@ public class Dml {
   public String getDML(String subModulo, String id, String parametros, ESql kind) throws XPathExpressionException {
     return getDML(subModulo, id, parametros, Constantes.SEPARADOR.charAt(0), kind);
   }
-
+   
   private String command(String expresion) throws XPathExpressionException {
     XPathFactory xPFabrica = XPathFactory.newInstance();
     XPath xPath = xPFabrica.newXPath();
     String sql  = xPath.evaluate(expresion, getDocumento());
     if(sql== null) sql= "";
-    if(sql.length()> 0)
+    if(sql.length()> 0) 
       LOG.debug("DML (".concat(sql).concat(")"));
     return sql;
   }
-
-  public boolean isKajool() throws XPathExpressionException {
-	  return !Cadena.isVacio(Configuracion.getInstance().getPropiedad("sistema.procesar"));
+  
+  public boolean isKajool () throws XPathExpressionException {
+    String propiedad = Configuracion.getInstance().getPropiedad("sistema.kajool");
+    boolean regresar = !Cadena.isVacio(propiedad);
+    if (regresar)
+      regresar=Boolean.valueOf(propiedad);
+	  return regresar;
 	}
 	
-
+ 
   private String evaluate(String expresion, Map parametros) throws XPathExpressionException {
     String sql= command(expresion);
     LOG.info("EXpresion".concat(expresion));
-    if(expresion.indexOf("TrSentenciasXmlDto")==-1) //&& Configuracion.getInstance().isEtapaProduccion())
-      if (isKajool())
-        guardarSentenciaXml(expresion);
+    if(expresion.indexOf("TrSentenciasXmlDto")==-1){ //&& Configuracion.getInstance().isEtapaProduccion())
+      if (isKajool()){
+        //guardarSentenciaXml(expresion);
+      }  
+    }  
     if(sql.length()> 0) {
       sql= Cadena.replaceParams(sql, parametros);
       LOG.debug("DML (".concat(sql).concat(")"));
@@ -185,11 +191,11 @@ public class Dml {
       LOG.warn("La sentencia se encuentra vacia ".concat(expresion));
     return sql;
   }
-
+  
   public String selectSQL(String subModulo, String id) throws XPathExpressionException {
     return command(EXP_INI.concat(subModulo).concat(SEL_EXP).concat(id).concat("']"));
   }
-
+   
   public Document getDocumento() {
     return documento;
   }
@@ -201,7 +207,7 @@ public class Dml {
   public boolean isNulosComoString() {
     return nulosComoString;
   }
-
+  
   public boolean exists(String subModulo, String id) throws XPathExpressionException {
     if(command(EXP_INI.concat(subModulo).concat(SEL_EXP).concat(id).concat("']")).length()<= 0)
       if(command(EXP_INI.concat(subModulo).concat(INS_EXP).concat(id).concat("']")).length()<= 0)
@@ -221,8 +227,8 @@ public class Dml {
   @Override
   public void finalize() {
     this.documento= null;
-  }
-
+  }  
+  
   private void guardarSentenciaXml(String expresion){
     Map <String, Object> params= new HashMap();
     try {
@@ -254,7 +260,7 @@ public class Dml {
       params.put("identificador", dato[2]);
       if(DaoFactory.getInstance().toEntity("TrSentenciasXmlDto", "identically", params)==null)
         DaoFactory.getInstance().execute(getInsert("TrSentenciasXmlDto", "guardar", params));
-    } // try
+    } // try 
     catch (Exception e) {
       Error.mensaje(e);
     } // catch
@@ -262,13 +268,4 @@ public class Dml {
       Methods.clean(params);
     }//finally
   }//guardarSentenciaXml
-
-  public static void main(String ... args) throws Exception {
-    Dml dml= Dml.getInstance();
-    Map param = new HashMap();
-    param.put("condicion","demostracion");
-    param.put("idMuestra",75600);
-    String sql= dml.getSelect("TcTiposDatosDto", "row", param);
-    LOG.info("DML [".concat(sql).concat("]"));
-  }
 }
