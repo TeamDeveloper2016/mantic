@@ -14,14 +14,12 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/plantillas/filtro.xhtml">
   <ui:param name="titulo" value="Administrador de indicadores" />
-	<ui:define name="librerias">
-		<script type="text/javascript">
-		</script>
-	</ui:define>
+  <ui:define name="librerias">
+    <script type="text/javascript">
+    </script>
+  </ui:define>
   <ui:define name="contenido">
-		<p:contextMenu for="tabla">
-			<p:menuitem value="Indicadores" action="#{kajoolMantenimientoIndicadoresAdministracionFiltro.doIndicador}" process="@this,tabla" icon="fa fa-list-alt"/>
-		</p:contextMenu>
+
     <p:dataTable value="#{kajoolMantenimientoIndicadoresAdministracionFiltro.lazyModel}" selection="#{kajoolMantenimientoIndicadoresAdministracionFiltro.attrs.seleccionado}" selectionMode="single" lazy="true" id="tabla" var="fila" rowIndexVar="index"  paginator="#{kajoolMantenimientoIndicadoresAdministracionFiltro.lazyModel.rowCount gt kajoolMantenimientoIndicadoresAdministracionFiltro.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="janal-content-table" reflow="true">
       <p:column headerText="Grupo" sortBy="#{fila.clave}">
         #{fila.clave}
@@ -29,9 +27,12 @@
       <p:column headerText="Indicadores" styleClass="janal-column-right" sortBy="#{fila.total}">
         #{fila.total}
       </p:column>
-			<f:facet name="footer">
-				Total [#{kajoolMantenimientoIndicadoresAdministracionFiltro.lazyModel==null?0:kajoolMantenimientoIndicadoresAdministracionFiltro.lazyModel.rowCount}] registros
-			</f:facet>
+      <f:facet name="footer">
+        Total [#{kajoolMantenimientoIndicadoresAdministracionFiltro.lazyModel==null?0:kajoolMantenimientoIndicadoresAdministracionFiltro.lazyModel.rowCount}] registros
+      </f:facet>
     </p:dataTable>
-    </ui:define>
+    <p:contextMenu for="tabla">
+      <p:menuitem value="Indicadores" action="#{kajoolMantenimientoIndicadoresAdministracionFiltro.doIndicador}" process="@this,tabla" icon="fa fa-list-alt"/>
+    </p:contextMenu>
+  </ui:define>
 </ui:composition>
