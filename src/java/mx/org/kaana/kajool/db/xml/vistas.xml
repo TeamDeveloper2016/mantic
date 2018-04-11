@@ -9,7 +9,7 @@
         select
 					tc_janal_usuarios.id_usuario,  cuenta, contrasenia, tc_janal_usuarios.registro, tc_janal_perfiles.descripcion AS descripcion_perfil, tc_janal_usuarios.id_perfil,
           tc_janal_grupos.descripcion AS descripcion_grupo, tc_janal_empleados.estilo, tc_janal_perfiles.id_menu, tc_janal_empleados.id_empleado, nombres, primer_apellido,
-				  segundo_apellido, id_sexo, tc_janal_usuarios.id_entidad, tc_janal_grupos.id_grupo, tc_janal_grupos.clave as clave_grupo, upper(tc_janal_entidades.descripcion) as entidad
+				  segundo_apellido, id_tipo_sexo, tc_janal_usuarios.id_entidad, tc_janal_grupos.id_grupo, tc_janal_grupos.clave as clave_grupo, upper(tc_janal_entidades.descripcion) as entidad
         from
           tc_janal_usuarios
         inner join
@@ -55,7 +55,7 @@
 					tc_janal_empleados.nombres,
 					IFNULL(tc_janal_empleados.primer_apellido,'') primer_apellido,
 					IFNULL(tc_janal_empleados.segundo_apellido,'') segundo_apellido,					
-					tc_janal_empleados.id_sexo,										
+					tc_janal_empleados.id_tipo_sexo,										
 					tc_janal_grupos.descripcion AS descripcion_grupo,					
 					tc_janal_empleados.estilo,
 					tc_janal_perfiles.id_menu,
@@ -685,7 +685,7 @@
 					tc_janal_empleados.nombres,
 					IFNULL(tc_janal_empleados.primer_apellido,'') primer_apellido,
 					IFNULL(tc_janal_empleados.segundo_apellido,'') segundo_apellido,					
-					tc_janal_empleados.id_sexo,										
+					tc_janal_empleados.id_tipo_sexo,										
 					tc_janal_grupos.descripcion AS descripcion_grupo,																				
 					tc_janal_empleados.estilo,
 					tc_janal_perfiles.id_menu
@@ -1307,7 +1307,7 @@
           IFNULL(tc_janal_empleados.primer_apellido,'') primer_apellido,
           IFNULL(tc_janal_empleados.segundo_apellido,'') segundo_apellido,
           CONCAT (tc_janal_empleados.nombres, ' ', IFNULL(tc_janal_empleados.primer_apellido,''), ' ', IFNULL(tc_janal_empleados.segundo_apellido,'')) nombre_completo,
-          tc_janal_empleados.id_sexo,
+          tc_janal_empleados.id_tipo_sexo,
           tc_janal_empleados.curp,
           tc_janal_grupos.descripcion AS descripcion_grupo,
           tc_janal_empleados.estilo,
@@ -1342,7 +1342,7 @@
           IFNULL(tc_janal_empleados.primer_apellido,'') primer_apellido,
           IFNULL(tc_janal_empleados.segundo_apellido,'') segundo_apellido,
           CONCAT (tc_janal_empleados.nombres, ' ', IFNULL(tc_janal_empleados.primer_apellido,''), ' ', IFNULL(tc_janal_empleados.segundo_apellido,'')) nombre_completo,
-          tc_janal_empleados.id_sexo,
+          tc_janal_empleados.id_tipo_sexo,
           tc_janal_empleados.curp,
           tc_janal_grupos.descripcion AS descripcion_grupo,
           tc_janal_empleados.estilo,
@@ -1377,7 +1377,7 @@
           IFNULL(tc_janal_empleados.primer_apellido,'') primer_apellido,
           IFNULL(tc_janal_empleados.segundo_apellido,'') segundo_apellido,
           CONCAT (tc_janal_empleados.nombres, ' ', IFNULL(tc_janal_empleados.primer_apellido,''), ' ', IFNULL(tc_janal_empleados.segundo_apellido,'')) nombre_completo,
-          tc_janal_empleados.id_sexo,
+          tc_janal_empleados.id_tipo_sexo,
           tc_janal_empleados.curp,
           tc_janal_grupos.descripcion AS descripcion_grupo,
           tc_janal_empleados.estilo,
@@ -1415,7 +1415,7 @@
           IFNULL(tc_janal_empleados.primer_apellido,'') primer_apellido,
           IFNULL(tc_janal_empleados.segundo_apellido,'') segundo_apellido,
           CONCAT (tc_janal_empleados.nombres, ' ', IFNULL(tc_janal_empleados.primer_apellido,''), ' ', IFNULL(tc_janal_empleados.segundo_apellido,'')) nombre_completo,
-          tc_janal_empleados.id_sexo,
+          tc_janal_empleados.id_tipo_sexo,
           tc_janal_empleados.curp,
           tc_janal_grupos.descripcion AS descripcion_grupo,
           tc_janal_empleados.estilo,
@@ -1452,7 +1452,7 @@
           IFNULL(tc_janal_empleados.primer_apellido,'') primer_apellido,
           IFNULL(tc_janal_empleados.segundo_apellido,'') segundo_apellido,
           CONCAT (tc_janal_empleados.nombres, ' ', IFNULL(tc_janal_empleados.primer_apellido,''), ' ', IFNULL(tc_janal_empleados.segundo_apellido,'')) nombre_completo,
-          tc_janal_empleados.id_sexo,
+          tc_janal_empleados.id_tipo_sexo,
           tc_janal_empleados.curp,
           tc_janal_grupos.descripcion AS descripcion_grupo,
           tc_janal_empleados.estilo,
