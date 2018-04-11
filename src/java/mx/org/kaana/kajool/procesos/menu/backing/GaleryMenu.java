@@ -263,7 +263,7 @@ public class GaleryMenu implements Serializable {
     try {
       discoLocal= new ArrayList<>();
       this.disk= new MeterGaugeChartModel();
-      path= JsfBase.getApplication().getRealPath(File.separator);
+      path= JsfBase.getApplication().getRealPath("");
       disco= new File(path);
       this.systemInfo.put("path", path);
       espacioDisponible= byteToGigabyte(disco.getFreeSpace());
