@@ -25,10 +25,10 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 
 public final class UIEntity {
 	
-  private UIEntity() {
+ private UIEntity() {
   }
 
-  public static List<UISelectEntity> build(List<IBaseDto> dtos, List<Columna> formato) {
+  public static List<UISelectEntity> build(List<? extends IBaseDto> dtos, List<Columna> formato) {
     List<UISelectEntity> regresar= new ArrayList<UISelectEntity>();
     Entity entity            = null;
     if (dtos!= null && dtos.size()>0)  {
@@ -36,15 +36,16 @@ public final class UIEntity {
         if(!(item instanceof Entity)) {
           entity= new Entity();
           Map<String, Object> fields= item.toMap();
-          for (String field : fields.keySet())
+          for (String field : fields.keySet()) 
             entity.put(field, new Value(field, fields.get(field)));
-        } // if
+        } // if  
         else
           entity= (Entity)item;
-        for (Columna column : formato)
+        for (Columna column : formato) 
           if(entity.containsKey(column.getName())) {
-            Value value= new Value(column.getName(), entity.get(column.getName()));
+            Value value= new Value(column.getName(), entity.get(column.getName()));          
             value.setData(Global.format(column.getFormat(), value.getData()));
+            entity.put(column.getName(), value);          
           } // if
           else
             throw new RuntimeException("No existe la columna "+ column.getName()+ " en la lista de items.");
@@ -52,26 +53,26 @@ public final class UIEntity {
       } // for
     } // if
     Methods.clean(dtos);
-    return regresar;
-  }
-
-  public static List<UISelectEntity> build(List<IBaseDto> dtos) {
+    return regresar;    
+  } 
+  
+  public static List<UISelectEntity> build(List<? extends IBaseDto> dtos) {
     return build(dtos, Collections.EMPTY_LIST);
   }
-
+  
   public static List<UISelectEntity> build(Class dto, Long records) {
     List<UISelectEntity> regresar= null;
     List<IBaseDto> dtos        = null;
     try {
-      dtos    = DaoFactory.getInstance().findAll(dto, records);
+      dtos    = DaoFactory.getInstance().findAll(dto, records);   
       regresar= build(dtos, Collections.EMPTY_LIST);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
-    } // catch
+    } // catch 
     finally {
       Methods.clean(dtos);
-    } // finally
+    } // finally  
     return regresar;
   }
 	
@@ -83,42 +84,42 @@ public final class UIEntity {
     List<UISelectEntity> regresar= null;
     List<IBaseDto> dtos      = null;
     try {
-      dtos    = DaoFactory.getInstance().findViewCriteria(dto, params, records);
+      dtos    = DaoFactory.getInstance().findViewCriteria(dto, params, records);   
       regresar= build(dtos, formato);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
-    } // catch
+    } // catch 
     finally {
       Methods.clean(dtos);
-    } // finally
+    } // finally  
     return regresar;
   }
-
+      
   public static List<UISelectEntity> build(Class dto, Map params, List<Columna> formato) {
 		return build(dto, params, formato, Constantes.SQL_MAXIMO_REGISTROS);
 	}
 	
   public static List<UISelectEntity> build(Class dto, Map params) {
     return build(dto, params, Collections.EMPTY_LIST);
-  }
-
+  }  
+  
   public static List<UISelectEntity> build(String proceso, String id, Map params, List<Columna> formato, Long records) {
     List<UISelectEntity> regresar= null;
     List<IBaseDto> dtos        = null;
     try {
-      dtos    = DaoFactory.getInstance().toEntitySet(proceso, id, params, records);
+      dtos    = DaoFactory.getInstance().toEntitySet(proceso, id, params, records);   
       regresar= build(dtos, formato);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
-    } // catch
+    } // catch 
     finally {
       Methods.clean(dtos);
-    } // finally
+    } // finally  
     return regresar;
   }
-
+  
   public static List<UISelectEntity> build(String proceso, String id, Map params, List<Columna> formato) {
 		return build(proceso, id, params, formato, Constantes.SQL_MAXIMO_REGISTROS);
 	}
@@ -131,18 +132,18 @@ public final class UIEntity {
 		Map<String, Object> params= new HashMap<String, Object>();
 		params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
     return build(proceso, id, params);
-  }
-
+  } 
+  
   public static List<UISelectEntity> build(String proceso, Map params) {
     return build(proceso, Constantes.DML_SELECT, params);
-  }
-
+  } 
+    
   public static List<UISelectEntity> build(String proceso, Map params, List<Columna> formato) {
     return build(proceso, Constantes.DML_SELECT, params, formato);
-  }
-
+  } 
+    
   public static List<UISelectEntity> build(String proceso, Map params, String fields, List<Columna> formato) {
     return build(proceso, Constantes.DML_SELECT, params, formato);
-  }
-	
+  } 
+		
 }
