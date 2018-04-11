@@ -20,11 +20,11 @@
             };
             //<![CDATA[
             function validar() {
-                var ok = janal.partial('recuperar');
-                var captcha = captcha.validarCaptcha();
-                if (!captcha)
-                    janal.show([{summary: 'Captcha', detail: 'El orden de las letras es incorrecto.'}]);
-                return ok && captcha;
+              var ok = janal.partial('recuperar');
+              var captcha = captcha.validarCaptcha();
+              if (!captcha)
+                  janal.show([{summary: 'Captcha', detail: 'El orden de las letras es incorrecto.'}]);
+              return ok && captcha;
             } // validar			
             //]]>
         </script>
