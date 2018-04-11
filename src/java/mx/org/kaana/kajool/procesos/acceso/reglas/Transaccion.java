@@ -5,7 +5,7 @@ import java.util.Map;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.dto.TrJanalSesionesDto;
+import mx.org.kaana.kajool.db.dto.TcJanalSesionesDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
@@ -48,7 +48,7 @@ public class Transaccion extends IBaseTnx {
   } // ejecutar
 	
   private boolean insert(Session sn) throws Exception {
-		TrJanalSesionesDto dto = new TrJanalSesionesDto();
+		TcJanalSesionesDto dto = new TcJanalSesionesDto();
 		Autentifica autentifica= JsfBase.getAutentifica();
     dto.setSesion(JsfBase.getSessionId());
     dto.setPath(Especial.getInstance().getPath());
@@ -68,7 +68,7 @@ public class Transaccion extends IBaseTnx {
 			params.put("path", Especial.getInstance().getPath().endsWith("\\")? Especial.getInstance().getPath().concat("\\"): Especial.getInstance().getPath());
 			params.put("sesion", this.session);
 			params.put("inicio", Especial.getInstance().getRegistro());
-			regresar= DaoFactory.getInstance().execute(ESql.UPDATE, sn, "TrJanalSesionesDto", "updateRegistroFin", params)> afectados;			
+			regresar= DaoFactory.getInstance().execute(ESql.UPDATE, sn, "TcJanalSesionesDto", "updateRegistroFin", params)> afectados;			
 		} // try
 		catch (Exception e) {
 			throw e;
