@@ -34,8 +34,8 @@ public class TcJanalEmpleadosDto implements IBaseDto, Serializable {
   private String segundoApellido;
   @Column (name="CURP")
   private String curp;
-	@Column (name="ID_SEXO")
-  private Long idSexo;
+	@Column (name="ID_TIPO_SEXO")
+  private Long idTipoSexo;
 	@Column (name="CONTRASENIA")
   private String contrasenia;
 	@Column (name="CUENTA")
@@ -56,12 +56,12 @@ public class TcJanalEmpleadosDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcJanalEmpleadosDto(Long idEmpleado, String nombres, String primerApellido, String segundoApellido, String curp, Long idSexo, String correo, String estilo, String cuenta, String contrasenia) {
+  public TcJanalEmpleadosDto(Long idEmpleado, String nombres, String primerApellido, String segundoApellido, String curp, Long idTipoSexo, String correo, String estilo, String cuenta, String contrasenia) {
     setIdEmpleado(idEmpleado);
 		setNombres(nombres);
 		setPrimerApellido(primerApellido);
 		setSegundoApellido(segundoApellido);
-		setIdSexo(idSexo);
+		setIdTipoSexo(idTipoSexo);
 		setCurp(curp);
 		setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 		setCuenta(cuenta);
@@ -150,12 +150,12 @@ public class TcJanalEmpleadosDto implements IBaseDto, Serializable {
 		this.curp=curp;
 	}
 
-	public Long getIdSexo() {
-		return idSexo;
+	public Long getIdTipoSexo() {
+		return idTipoSexo;
 	}
 
-	public void setIdSexo(Long idSexo) {
-		this.idSexo=idSexo;
+	public void setIdTipoSexo(Long idTipoSexo) {
+		this.idTipoSexo=idTipoSexo;
 	}
 
   @Transient
@@ -183,7 +183,7 @@ public class TcJanalEmpleadosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCurp());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdSexo());				
+		regresar.append(getIdTipoSexo());				
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCuenta());				
 		regresar.append(Constantes.SEPARADOR);
@@ -206,7 +206,7 @@ public class TcJanalEmpleadosDto implements IBaseDto, Serializable {
 		regresar.put("primerApellido", getPrimerApellido());
 		regresar.put("segundoApellido", getSegundoApellido());
 		regresar.put("curp", getCurp());
-		regresar.put("idSexo", getIdSexo());
+		regresar.put("idTipoSexo", getIdTipoSexo());
 		regresar.put("cuenta", getCuenta());
 		regresar.put("contrasenia", getContrasenia());
 		regresar.put("correo", getCorreo());
@@ -218,7 +218,7 @@ public class TcJanalEmpleadosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdEmpleado(), getNombres(), getPrimerApellido(), getSegundoApellido(), getIdSexo(), getCurp(), getCuenta(), getContrasenia(), getEstilo(), getCorreo()
+    getIdEmpleado(), getNombres(), getPrimerApellido(), getSegundoApellido(), getIdTipoSexo(), getCurp(), getCuenta(), getContrasenia(), getEstilo(), getCorreo()
     };
     return regresar;
   }
