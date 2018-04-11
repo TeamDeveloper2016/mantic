@@ -29,12 +29,14 @@ public class Acceso {
     tcJanalGrups.setIdUsuario(1L);
     //DaoFactory.getInstance().insert(tcJanalGrups);
     
-    System.out.println(BouncyEncryption.decrypt(password));/*
-    System.out.println(BouncyEncryption.encrypt("castilla"));
-    System.out.println(BouncyEncryption.encrypt("tirso"));
+    System.out.println(BouncyEncryption.decrypt(password));
+		/*	
+    System.out.println(BouncyEncryption.encrypt("davalos"));
+    System.out.println(BouncyEncryption.encrypt("ramirez"));
     System.out.println(BouncyEncryption.encrypt("jimenez"));
-    System.out.println(BouncyEncryption.encrypt("vicencio"));  
-    */
-
+    System.out.println(BouncyEncryption.encrypt("alvarez"));  
+    System.out.println(BouncyEncryption.encrypt("vazquez"));  
+    System.out.println(BouncyEncryption.encrypt("mantic2018"));  
+   */
   }
 }
