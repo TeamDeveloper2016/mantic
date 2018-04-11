@@ -77,7 +77,7 @@ public class Sentinel extends IBaseMenu implements Serializable {
       } // if
       else {
         getMenu().append("<li class=\"Fleft BordRadHalf TexAlCenter\"><i class=\"");
-        //getMenu().append(JsfBase.getAutentifica().getEmpleado().getIdSexo.equals(1L) ? "icon-user-male" : "icon-user-female");
+        //getMenu().append(JsfBase.getAutentifica().getEmpleado().getIdTipoSexo.equals(1L) ? "icon-user-male" : "icon-user-female");
         getMenu().append(true ? "icon-user-male" : "icon-user-female");
         getMenu().append("\"></i>");
         getMenu().append("<ul class=\"layout-header-widgets-submenu BordRad5 shadows janal-text-white Animated05\">");
@@ -101,7 +101,7 @@ public class Sentinel extends IBaseMenu implements Serializable {
       regresar = new StringBuilder();
       context = JsfBase.getFacesContext().getExternalContext().getRequestContextPath();
       regresar.append("<li class=\"Fleft BordRadHalf TexAlCenter\"><i class=\"");
-      //regresar.append(JsfBase.getAutentifica().getEmpleado().getIdSexo().equals(1L) ? "icon-user-male" : "icon-user-female");
+      //regresar.append(JsfBase.getAutentifica().getEmpleado().getIdTipoSexo().equals(1L) ? "icon-user-male" : "icon-user-female");
       regresar.append(true ? "icon-user-male" : "icon-user-female");
       regresar.append("\"></i>");
       regresar.append("<span id=\"contadorMensajes\" class=\"alertBubble BordRad10 Fs9\"");
