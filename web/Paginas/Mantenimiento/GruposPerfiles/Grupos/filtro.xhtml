@@ -14,12 +14,7 @@
     </script>
   </ui:define>
   <ui:define name="contenido" >
-    <p:contextMenu widgetVar="kajoolContextMenu" for="tabla">
-      <p:menuitem value="Eliminar"  icon="fa fa-trash" update=":datos:confirmacion tabla" oncomplete="janal.bloquear();PF('dialogoConfirmacion').show()" process="@this tabla"/>
-      <p:menuitem value="Modificar" icon="fa fa-edit" action="#{kajoolMantenimientoGruposperfilesGruposFiltro.doEvento('MODIFICAR')}" update=":datos:tabla" process="@this tabla"/>
-      <p:menuitem value="Perfiles del grupo" icon="fa fa-group" action="#{kajoolMantenimientoGruposperfilesGruposFiltro.doIrPerfiles}" process="@this tabla"/>
-      <p:menuitem value="Opciones Menú" icon="fa fa-th-list" action="#{kajoolMantenimientoGruposperfilesGruposFiltro.doIrOpcionesMenu}" update=":datos:tabla" process="@this tabla"/>
-    </p:contextMenu>
+   
 		<div class="janal-content-table">
       <p:fieldset legend="Buscar por" toggleable="true" collapsed="false" styleClass="Responsive100">
         <p:panelGrid columns="3" layout="grid" columnClasses="janal-wid-col-90,Wid40,janal-wid-col-40">
@@ -50,6 +45,12 @@
         </p:column>
       </f:facet>
     </p:dataTable>
+     <p:contextMenu widgetVar="kajoolContextMenu" for="tabla">
+      <p:menuitem value="Eliminar"  icon="fa fa-trash" update=":datos:confirmacion tabla" oncomplete="janal.bloquear();PF('dialogoConfirmacion').show()" process="@this tabla"/>
+      <p:menuitem value="Modificar" icon="fa fa-edit" action="#{kajoolMantenimientoGruposperfilesGruposFiltro.doEvento('MODIFICAR')}" update=":datos:tabla" process="@this tabla"/>
+      <p:menuitem value="Perfiles del grupo" icon="fa fa-group" action="#{kajoolMantenimientoGruposperfilesGruposFiltro.doIrPerfiles}" process="@this tabla"/>
+      <p:menuitem value="Opciones Menú" icon="fa fa-th-list" action="#{kajoolMantenimientoGruposperfilesGruposFiltro.doIrOpcionesMenu}" update=":datos:tabla" process="@this tabla"/>
+    </p:contextMenu>
   </ui:define>
   <ui:param name="componenteBloqueo" value="tabla,buscar"/>
   <ui:param name="textoConfirmacion" value="¿Está seguro de eliminar el grupo #{kajoolMantenimientoGruposperfilesGruposFiltro.attrs.seleccionado.descripcion} ?" />

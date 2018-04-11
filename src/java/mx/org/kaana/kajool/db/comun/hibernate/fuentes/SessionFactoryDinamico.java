@@ -44,8 +44,10 @@ public final class SessionFactoryDinamico {
   private static final String DEFAULT_DIALECT = "org.hibernate.dialect.Oracle10gDialect";
   private static final String DEFAULT_DRIVER = "oracle.jdbc.driver.OracleDriver";
   private static final String DEFAULT_BATCH_SIZE = "20";
+  private static final String TOMCAT_DATASOURCE_PREFIX = "java://comp/env/";
 
   private static Object mutex;
+
   private static SessionFactoryDinamico instance;
   private Map<Long, SessionFactory> fuentes;
 
@@ -147,9 +149,9 @@ public final class SessionFactoryDinamico {
     SessionFactory sessionFactoryDinamico = null;
     try {
       lectorPlantilla = new LectorPlantilla(jndi);
-      configuration = new Configuration();
+      configuration   = new Configuration();
       configuration.configure(lectorPlantilla.construir(params));
-      if (!dtos.isEmpty()) {
+      if (dtos != null && !dtos.isEmpty()) {
         for (Class dto : dtos) {
           configuration.addAnnotatedClass(dto);
         }
@@ -167,11 +169,18 @@ public final class SessionFactoryDinamico {
   public void load(Long idFuenteDatos) throws Exception {
     List<Class> dtos = null;
     Map params = null;
+    boolean dataSource = false;
     try {
       if (!this.fuentes.containsKey(idFuenteDatos)) {
         if (Dml.getInstance().isKajool()) {
           dtos = loadDtos(idFuenteDatos);
-          registry(dtos, readParams(idFuenteDatos), idFuenteDatos);
+          params = readParams(idFuenteDatos);
+          dataSource = params.get(KEY_HIBERNATE_JNDI) != null && params.get(KEY_HIBERNATE_JNDI).toString() != null && !(params.get(KEY_HIBERNATE_JNDI).equals(""));
+          if (dataSource && (getClass().getResource("/").getPath().contains("build"))) {
+            params.put("batchSize", DEFAULT_BATCH_SIZE);
+            params.put(KEY_HIBERNATE_JNDI, TOMCAT_DATASOURCE_PREFIX.concat(params.get(KEY_HIBERNATE_JNDI).toString()));
+          }
+          registry(dtos, params, idFuenteDatos, dataSource);
         }// if
         else {
           params = loadParamsProperties(idFuenteDatos);
@@ -186,8 +195,40 @@ public final class SessionFactoryDinamico {
     } // try
     catch (Exception e) {
       throw new RuntimeException(e);
-    } // catch
-  }
+    } // catch  
+  } // load
+
+  public void load(Long idFuenteDatos, boolean properties) throws Exception {
+    List<Class> dtos = null;
+    Map params = null;
+    boolean dataSource = false;
+    try {
+      if (!this.fuentes.containsKey(idFuenteDatos)) {
+        if (!properties) {
+          dtos = loadDtos(idFuenteDatos);
+          params = readParams(idFuenteDatos);
+          dataSource = params.get(KEY_HIBERNATE_JNDI) != null && params.get(KEY_HIBERNATE_JNDI).toString() != null && !(params.get(KEY_HIBERNATE_JNDI).equals(""));
+          if (dataSource && (getClass().getResource("/").getPath().contains("build"))) {
+            params.put("batchSize", DEFAULT_BATCH_SIZE);
+            params.put(KEY_HIBERNATE_JNDI, TOMCAT_DATASOURCE_PREFIX.concat(params.get(KEY_HIBERNATE_JNDI).toString()));
+          }
+          registry(dtos, params, idFuenteDatos, dataSource);
+        }// if
+        else {
+          params = loadParamsProperties(idFuenteDatos);
+          if (!params.isEmpty()) {
+            if (params.containsKey(KEY_HIBERNATE_MAPPING_DTO)) {
+              dtos = loadDtos(params.get(KEY_HIBERNATE_MAPPING_DTO).toString());
+            }
+            registry(dtos, params, idFuenteDatos, params.containsKey(KEY_HIBERNATE_JNDI));
+          } // if		
+        } // else
+      } // if		
+    } // try
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    } // catch  
+  } // load
 
   private List<Class> loadDtos(String mappingDto) throws IOException {
     return new ArrayList(ClassFinder.findClassesMapping(mappingDto));
@@ -206,7 +247,7 @@ public final class SessionFactoryDinamico {
       if (clases != null && !clases.isEmpty()) {
         for (Entity clase : clases) {
           regresar.add(Class.forName(clase.toString("clase")));
-        }
+        } // for
       } // for
     } // try
     catch (Exception e) {
@@ -217,5 +258,4 @@ public final class SessionFactoryDinamico {
     } // finally
     return regresar;
   }
-
 }
