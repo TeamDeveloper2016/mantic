@@ -14,12 +14,12 @@
    id="Capa_1"
    x="0px"
    y="0px"
-   viewBox="0 0 63.599854 68.651604"
+   viewBox="0 0 43.59985 48.6516"
    xml:space="preserve"
    inkscape:version="0.91 r13725"
    sodipodi:docname="logo-ingreso.svg"
-   width="63.599854"
-   height="68.651604"><metadata
+   width="43.59985"
+   height="48.6516"><metadata
      id="metadata3397"><rdf:RDF><cc:Work
          rdf:about=""><dc:format>image/svg+xml</dc:format><dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" /><dc:title></dc:title></cc:Work></rdf:RDF></metadata><defs
@@ -42,8 +42,8 @@
      id="namedview3393"
      showgrid="false"
      inkscape:zoom="9.6363636"
-     inkscape:cx="23.407338"
-     inkscape:cy="25.590517"
+     inkscape:cx="7.7375266"
+     inkscape:cy="31.438026"
      inkscape:window-x="1358"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
@@ -58,9 +58,9 @@
 	.st1{fill:#2992C5;}
 </style><g
      id="g3339"
-     transform="translate(-0.92285131,-0.93891225)"><g
+     transform="translate(-0.92285131,-20.938916)"><g
        id="g3355"
-       transform="translate(-6.9528301,-9.4433963)"><path
+       transform="translate(-17.122641,12.037736)"><path
          class="st1"
          d="m 33.6,36 0,-5.7 c 0,-0.3 -0.1,-0.5 -0.4,-0.6 l -4.9,-2.8 c -0.5,-0.3 -1.1,0.1 -1.1,0.6 l 0,5.7 c 0,0.3 0.1,0.5 0.4,0.6 l 4.9,2.8 c 0.5,0.4 1.1,0 1.1,-0.6 z"
          id="path3357"
@@ -172,20 +172,4 @@
          id="tspan3411"
          x="8.6132078"
          y="80.632072" /></text>
-<text
-       xml:space="preserve"
-       style="font-style:normal;font-weight:normal;font-size:15px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#2992c5;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       x="-2.4803734e-007"
-       y="69.21698"
-       id="text3413"
-       sodipodi:linespacing="125%"><tspan
-         sodipodi:role="line"
-         id="tspan3415"
-         x="-2.4803734e-007"
-         y="69.21698"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;font-size:22.5px;font-family:Impact;-inkscape-font-specification:'Impact Condensed';fill:#2992c5;fill-opacity:1;stroke:none;stroke-linecap:round;stroke-opacity:1"><tspan
-   style="fill:#5a5b5e;fill-opacity:1"
-   id="tspan5699">K</tspan>AJOO<tspan
-   style="fill:#5a5b5e;fill-opacity:1"
-   id="tspan5707">L</tspan></tspan></text>
 </g></svg>
