@@ -19,7 +19,7 @@
     </prefer-application-resources>
     <show-archived-real-path-enabled>true</show-archived-real-path-enabled>
   </container-descriptor>
-  <context-root>/MANTIC</context-root>
+  <context-root>/mantic</context-root>
   <resource-description>
     <jndi-name>ManticDS</jndi-name>
     <res-ref-name>jdbc/manticDS</res-ref-name>
