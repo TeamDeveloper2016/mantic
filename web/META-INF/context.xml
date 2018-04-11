@@ -8,7 +8,7 @@
   <!-- DEVELOMENT -->
     <!--<Resource auth="Container" driverClassName="org.mariadb.jdbc.Driver" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/manticDS" password="mantic" type="javax.sql.DataSource" url="jdbc:mariadb://localhost:3306/mantic?zeroDateTimeBehavior=convertToNull" username="mantic"/>-->
   <!-- TRAINING -->
-    <!--<Resource auth="Container" driverClassName="org.mariadb.jdbc.Driver" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/manticDS" password="tester2018" type="javax.sql.DataSource" url="jdbc:mariadb://173.243.120.231:3306/bonanzaj_training?zeroDateTimeBehavior=convertToNull" username="bonanzaj_tester"/>-->
+    <!--<Resource auth="Container" driverClassName="org.mariadb.jdbc.Driver" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/manticDS" password="tester2018" type="javax.sql.DataSource" url="jdbc:mysql://173.243.120.231:3306/bonanzaj_training?zeroDateTimeBehavior=convertToNull" username="bonanzaj_tester"/>-->
   <!-- PRODUCTION -->
-    <!--<Resource auth="Container" driverClassName="org.mariadb.jdbc.Driver" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/manticDS" password="master2018" type="javax.sql.DataSource" url="jdbc:mariadb://173.243.120.231:3306/bonanzaj_production?zeroDateTimeBehavior=convertToNull" username="bonanzaj_master"/>-->
+    <!--<Resource auth="Container" driverClassName="org.mariadb.jdbc.Driver" maxActive="100" maxIdle="30" maxWait="10000" name="jdbc/manticDS" password="master2018" type="javax.sql.DataSource" url="jdbc:mysql://173.243.120.231:3306/bonanzaj_production?zeroDateTimeBehavior=convertToNull" username="bonanzaj_master"/>-->
 </Context>
