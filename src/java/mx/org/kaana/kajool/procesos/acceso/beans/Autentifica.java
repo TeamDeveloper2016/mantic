@@ -330,7 +330,7 @@ public class Autentifica implements Serializable {
     try {
       params= new HashMap<>();
       params.put("idUsuario", this.getEmpleado().getIdUsuario());
-      fecha= DaoFactory.getInstance().toField("TrJanalSesionesDto", "ultimoAcceso", params, "registroInicio").toTimestamp();
+      fecha= DaoFactory.getInstance().toField("TcJanalSesionesDto", "ultimoAcceso", params, "registroInicio").toTimestamp();
       if(fecha!= null)
         this.ultimoAcceso= Fecha.formatear(Fecha.DIA_FECHA_HORA, fecha);
     } // try
