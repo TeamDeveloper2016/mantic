@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+    <ui:param name="titulo" value="Accion" />
+    <ui:define name="librerias">
+        <script type="text/javascript">
+            Janal.Control.fields = {
+                'nombreSeleccionado': {validaciones: 'requerido', mascara: 'libre'},
+                'unidades': {validaciones: 'requerido', mascara: 'libre', mensaje: 'Unidad Ejecutora Requerido'},
+                'ambitos': {validaciones: 'requerido', mascara: 'libre', mensaje: 'Ambito Requerido '},
+                'entidades': {validaciones: 'requerido', mascara: 'libre', mensaje: 'Seleccionar las entidades'},
+                'perfil': {validaciones: 'requerido', mascara: 'libre', mensaje: 'Seleccionar el perfil'},
+                'oficinas': {validaciones: 'requerido', mascara: 'libre', mensaje: 'Seleccionar oficina'}
+            };          
+        </script>
+        <style type="text/css">
+            .items-selectonemenu-unidades {
+                overflow: auto;
+                width: 850px !important;
+            }
+        </style>
+    </ui:define>
+    <ui:define name="contenido">        
+        <p:panelGrid columns="2" layout="grid" columnClasses="janal-wid-10, janal-wid-80">
+            <p:outputLabel for="nombreSeleccionado" value="Usuario:"/>
+            <p:selectOneMenu id="nombreSeleccionado" styleClass="janal-wid-100">
+                <f:selectItem itemLabel="JORGE ALBERTO VAZQUEZ SERAFIN" itemValue="0"/>
+                <f:selectItem itemLabel="ALEJANDRO JIMENEZ GARCIA" itemValue="1"/>					
+            </p:selectOneMenu>              
+            <label for="ambitos">Ámbito:</label>
+            <p:selectOneMenu id="ambitos" styleClass="janal-wid-100">
+                <f:selectItem itemLabel="CENTRAL" itemValue="0"/>
+                <f:selectItem itemLabel="REGIONAL" itemValue="1"/>					
+                <f:selectItem itemLabel="ESTATAL" itemValue="2"/>					
+                <f:selectItem itemLabel="OFICINA" itemValue="3"/>					
+            </p:selectOneMenu>
+            <label class="una-sola-linea" for="unidades">Unidad ejecutora:</label>
+            <p:selectOneMenu id="unidades" panelStyleClass="items-selectonemenu-unidades" styleClass="janal-wid-100" >
+                <f:selectItem itemLabel="DIRECCION REGIONAL" itemValue="0"/>                
+            </p:selectOneMenu>
+            <label for="entidades">Entidad:</label>
+            <p:selectOneMenu id="entidades"  styleClass="janal-wid-100">
+                <f:selectItem itemLabel="AGUASCALIENTES" itemValue="0"/>
+                <f:selectItem itemLabel="BAJA CALIFORNIA" itemValue="1"/>					
+                <f:selectItem itemLabel="BAJA CALIFORNIA SUR" itemValue="2"/>					
+                <f:selectItem itemLabel="CAMPECHE" itemValue="3"/>					
+            </p:selectOneMenu>
+
+            <label for="oficinas">Oficina:</label>
+            <p:selectOneMenu id="oficinas" styleClass="janal-wid-100">
+                <f:selectItem itemLabel="AGUASCALIENTES" itemValue="0"/>
+                <f:selectItem itemLabel="BAJA CALIFORNIA" itemValue="1"/>					
+                <f:selectItem itemLabel="BAJA CALIFORNIA SUR" itemValue="2"/>					
+                <f:selectItem itemLabel="CAMPECHE" itemValue="3"/>					
+            </p:selectOneMenu>
+
+            <label for="jerarquia" class="una-sola-linea">Perfil de acceso:</label>
+            <p:selectOneMenu id="jerarquia" styleClass="janal-wid-100">
+                <f:selectItem itemLabel="ADMINISTRADOR DE ENCUESTA" itemValue="0"/>
+                <f:selectItem itemLabel="ADMINISTRADOR" itemValue="1"/>					
+            </p:selectOneMenu>
+
+            <label for="claveUsuario" class="una-sola-linea">Clave de usuario:</label>
+            <p:selectOneMenu  id="claveUsuario" styleClass="janal-wid-100">
+                <f:selectItem itemLabel="000" itemValue="0"/>
+                <f:selectItem itemLabel="001" itemValue="1"/>					
+            </p:selectOneMenu>
+            <h:outputText value="Notificar por correo: " />
+            <p:selectBooleanButton id="enviarCorreo" onLabel="Si" offLabel="No" onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:60px">
+            </p:selectBooleanButton>
+        </p:panelGrid>	        
+    </ui:define>    
+    <ui:define name="acciones">
+        <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this" action="filtro" ajax="false"/>
+        <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="filtro" ajax="false" immediate="true"/>
+    </ui:define>
+
+</ui:composition>
