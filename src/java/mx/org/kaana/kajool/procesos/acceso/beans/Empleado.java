@@ -29,7 +29,7 @@ public class Empleado implements Serializable, IBaseDto {
 	private String nombres;
 	private String primerApellido;
 	private String segundoApellido;	
-	private Long idSexo;
+	private Long idTipoSexo;
 	private Long idEntidad;
   private Long idGrupo;
   private String claveGrupo;
@@ -39,7 +39,7 @@ public class Empleado implements Serializable, IBaseDto {
     this (null,null,null,null,null,null,null,null,null,null,null,null,null,null, null, null, null);
   }
 
-  public Empleado(Long idUsuario, String cuenta, String contrasenia, Long idPerfil, String descripcionPerfil, String descripcionGrupo, String estilo, Long idMenu, Long idEmpleado, String nombres, String primerApellido, String segundoApellido, Long idSexo, Long idEntidad, Long idGrupo, String claveGrupo, String entidad) {
+  public Empleado(Long idUsuario, String cuenta, String contrasenia, Long idPerfil, String descripcionPerfil, String descripcionGrupo, String estilo, Long idMenu, Long idEmpleado, String nombres, String primerApellido, String segundoApellido, Long idTipoSexo, Long idEntidad, Long idGrupo, String claveGrupo, String entidad) {
     this.idUsuario        = idUsuario;
     this.cuenta           = cuenta;
     this.contrasenia      = contrasenia;
@@ -52,7 +52,7 @@ public class Empleado implements Serializable, IBaseDto {
 		this.nombres					= nombres;
 		this.primerApellido   = primerApellido;
 		this.segundoApellido  = segundoApellido;
-		this.idSexo						= idSexo;
+		this.idTipoSexo						= idTipoSexo;
 		this.idEntidad        = idEntidad;
     this.idGrupo          = idGrupo;
     this.claveGrupo       = claveGrupo;
@@ -171,12 +171,12 @@ public class Empleado implements Serializable, IBaseDto {
 		this.segundoApellido= segundoApellido;
 	}
 
-	public Long getIdSexo() {
-		return idSexo;
+	public Long getIdTipoSexo() {
+		return idTipoSexo;
 	}
 
-	public void setIdSexo(Long idSexo) {
-		this.idSexo= idSexo;
+	public void setIdTipoSexo(Long idTipoSexo) {
+		this.idTipoSexo= idTipoSexo;
 	}
 	
   public Long getIdGrupo() {
