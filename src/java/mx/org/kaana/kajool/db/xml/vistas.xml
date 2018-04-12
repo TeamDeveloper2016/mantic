@@ -7,18 +7,18 @@
     <unit id="VistaTcJanalUsuariosDto">
       <select id="acceso">
         select
-					tc_janal_usuarios.id_usuario,  cuenta, contrasenia, tc_janal_usuarios.registro, tc_janal_perfiles.descripcion AS descripcion_perfil, tc_janal_usuarios.id_perfil,
-          tc_janal_grupos.descripcion AS descripcion_grupo, tc_janal_empleados.estilo, tc_janal_perfiles.id_menu, tc_janal_empleados.id_empleado, nombres, primer_apellido,
-				  segundo_apellido, id_tipo_sexo, tc_janal_usuarios.id_entidad, tc_janal_grupos.id_grupo, tc_janal_grupos.clave as clave_grupo, upper(tc_janal_entidades.descripcion) as entidad
+	  tc_janal_usuarios.id_usuario,  cuenta, contrasenia, tc_janal_usuarios.registro, tc_janal_perfiles.descripcion AS descripcion_perfil, tc_janal_usuarios.id_perfil,
+          tc_janal_grupos.descripcion AS descripcion_grupo, tc_mantic_personas.estilo, tc_janal_perfiles.id_menu, tc_mantic_personas.id_persona AS id_empleado, nombres, paterno primer_apellido,
+	  materno segundo_apellido, id_tipo_sexo, tc_janal_usuarios.id_entidad, tc_janal_grupos.id_grupo, tc_janal_grupos.clave AS clave_grupo, UPPER(tc_janal_entidades.descripcion) AS entidad
         from
           tc_janal_usuarios
         inner join
           tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
         inner join
           tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
-				inner join
-				  tc_janal_empleados on tc_janal_empleados.id_empleado=tc_janal_usuarios.id_empleado
-        inner join 
+	inner join
+	  tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
+        inner join
           tc_janal_entidades on tc_janal_usuarios.id_entidad = tc_janal_entidades.id_entidad
         where
           cuenta = '{cuenta}' and tc_janal_usuarios.activo=1
