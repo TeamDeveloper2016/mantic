@@ -18,6 +18,17 @@
   <h:outputStylesheet library="janal" name="mmenu/css/jquery.mmenu.counters.css"/>	
   <h:outputStylesheet library="janal" name="mmenu/css/jquery.mmenu.navbars.css"/>	
   <h:outputStylesheet library="janal" name="mmenu/css/jquery.mmenu.themes-1.0.1.min.css"/>	
+	<style>
+		.mm-noresultsmsg,
+		.mm-search input,
+		.mm-title {
+			font-size: 18px;font-family: titillium_webregular;
+		}
+		.mm-close {
+			font-size: 32px;font-family: titillium_webregular;
+			font-weight: bold; 
+		}
+	</style>
   <div id="menuSentinel" class="NoDisplay" style="#{kajoolUtilAplicacion.directivo? 'display:none' : ''}">
     <div id="layout-menubar" class="Unselectable fontRegular">
       <div class="layout-menubarinner-box" id="buttonArea">
@@ -28,7 +39,7 @@
         <i class="icon-search floatLeft gray"/>
         <input type="text" class="layout-menubar-search floatLeft Animated05" placeholder="Buscar"/>
         <div id="noResults" class="Fs30 DispNone">
-          <p:outputLabel value="No hay resultados"/>
+          <p:outputLabel value="No hay resultados" style="font-size: 18px;font-family: titillium_webregular;"/>
         </div>
       </div>
       <ps:menu id="sm_leftmenu" model="#{kajoolMenuGaleryMenu.sentinel}"/>				
@@ -37,7 +48,8 @@
   <div id="panelMmenu" class="NoDisplay">	
     <div id="layout-menubar" class="Unselectable fontRegular slimmenu">
       <div class="layout-menubarinner-box" id="buttonArea">
-        <a href="#" class="BordRad3" onclick="mmenu.open();"><i class="icon-menu-1" style="color: white"/></a>
+        <a href="#" class="BordRad3" onclick="mmenu.open();">
+				<i class="icon-menu-1" style="color: white"/></a>
       </div>
       <nav id="collapseMenu">
         <h:outputText value="#{kajoolMenuGaleryMenu.mmenu}" escape="false"/>

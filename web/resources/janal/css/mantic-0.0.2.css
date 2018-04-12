@@ -77,10 +77,8 @@ div.ui-panelgrid-content {
   border-top: 0px !important;
   border-color: transparent;
   border-width: 0px;
-  padding: 0px;
-  top: 104px;
-  right: 35px;
-}
+  margin-top: -38px;
+ }
 .janal-icon-ajax {
   position:relative;
   float:right;
@@ -109,7 +107,11 @@ div.ui-panelgrid-content {
   margin-bottom: 10px !important;
 }
 .janal-content-header {
-  margin: 0px 5px 0px 5px !important;
+  margin: 0px !important;
+	border: 0px;
+}
+.janal-header-page {
+	z-index: 1 !important;
 }
 .janal-line-button {
   padding-top: 0px;
@@ -206,8 +208,8 @@ div.ui-panelgrid-content {
   font-size: 22px;
   position: relative;
   font-weight: normal;
-  text-align: center !important;
   white-space: nowrap;
+	margin: 0px;
 }
 .janal-header-acronym {
   font-size: 14px;
@@ -342,13 +344,13 @@ div.ui-panelgrid-content {
     margin: -20px;
   }
   .ui-sticky {top: 89px !important;}
-  .layout-header-widgets {top: 11px;}
+  .layout-header-widgets {top: 34px;}
   .janal-logo-kajool {
     height: 60px;
     width: 80px;
     text-align: center;  
   }
-  .janal-logo-mini {height: 45px;float: right; margin-top: -41px;}
+  .janal-logo-mini {height: 53px;float: right; margin-top: -41px;}
   .janal-grid-row {margin: 0px 0px -10px !important;}
   .xs-pantalla{display:block;}
   .lg-pantalla{display: none;}

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+			xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">		
+  <script type="text/javascript">
+    $(function() {
+      janal.fecha();
+      $('#banner').addClass('ui-panelgrid');
+      $('#banner').addClass('ui-widget');
+      $('#banner tr:eq(0)').addClass('ui-widget-content');
+    });
+  </script>
+  <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+    <div class="ui-grid-row janal-grid-row">
+      <div class="ui-grid-col-4 janal-header-sedesolx" style="display:block"/>
+      <div class="ui-grid-col-4">
+        <h1 class="titulo-proyecto janal-header-title">#{kajoolUtilAplicacion.tituloSistema}</h1>
+        <h1 class="titulo-siglas janal-header-acronym">#{kajoolUtilAplicacion.tituloCorto}</h1>
+      </div>
+      <div class="ui-grid-col-4"/>
+    </div>
+    <div class="ui-grid-row janal-grid-rows margin-fecha">
+      <div class="ui-grid-col-4 margin-fecha">
+        <span id="reloj" class="fecha lg-pantalla"></span>
+        <span class="fecha xs-pantalla Fs14">#{kajoolUtilAplicacion.currentDate}</span>
+      </div>
+      <div class="ui-grid-col-4 margin-desarrollo" style="text-align: center;">
+        <p:outputLabel styleClass="janal-etapa lg-pantalla" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
+        <p:outputLabel styleClass="janal-etapa xs-pantalla Fs14" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
+      </div>
+      <div class="ui-grid-col-4 margin-version" style="text-align: right;">
+        <span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}</span>
+        <span id="version" class="version xs-pantalla Fs14">#{kajoolUtilAplicacion.version}</span>
+      </div>
+    </div>
+  </div>
+	<div id="sticky-menu" class="ui-panel ui-widget ui-widget-content ui-corner-all janal-content-header Responsive100 lg-pantalla">
+		<div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header">
+			<span class="ui-panel-title Fs18 lg-pantalla">#{titulo}</span>
+				<div id="layout-header" class="Unselectable fontRegular janal-top-menu">
+					<ul id="sm-topmenu" class="layout-header-widgets janal-text-white Fs14">
+						<li class="Fleft BordRadHalf TexAlCenter" tabindex="0"><i class="icon-home-1"></i>
+							<ul class="layout-header-widgets-submenu BordRad5 shadows janal-text-white Animated05" style="display: none;">
+								<li class="Animated05">
+									<a href="/KAJOOL/Paginas/Escuelas/datosGenerales.jsf?id=93&amp;opcionRama=0302010000" class="janal-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Escuelas/datosGenerales.jsf?id=93&amp;opcionRama=0302010000">
+										<i class="icon-info janal-text-one-line"></i>Datos generales</a>
+								</li>
+								<li class="Animated05">
+									<a href="/KAJOOL/Paginas/Escuelas/Georreferencia/filtro.jsf?id=94&amp;opcionRama=0302020000" class="janal-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Escuelas/Georreferencia/filtro.jsf?id=94&amp;opcionRama=0302020000">
+										<i class="icon-location janal-text-one-line"></i>Georeferencia</a>
+								</li>
+								<li class="Animated05"><a href="/KAJOOL/Paginas/Escuelas/filtro.jsf?id=95&amp;opcionRama=0302030000" class="janal-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Escuelas/filtro.jsf?id=95&amp;opcionRama=0302030000"><i class="icon-home-1 janal-text-one-line"></i>Escuela(s)</a></li><li class="Animated05"><a href="/KAJOOL/Paginas/Planes/Mapas/Ciclos/filtro.jsf?id=96&amp;opcionRama=0302040000" class="janal-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Planes/Mapas/Ciclos/filtro.jsf?id=96&amp;opcionRama=0302040000"><i class="icon-sitemap janal-text-one-line"></i>Mapas curriculares</a></li><li class="Animated05"><a href="/KAJOOL/Paginas/Escuelas/GradosGrupos/Conformacion/filtro.jsf?id=97&amp;opcionRama=0302050000" class="janal-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Escuelas/GradosGrupos/Conformacion/filtro.jsf?id=97&amp;opcionRama=0302050000"><i class="icon-cubes janal-text-one-line"></i>Grados/Grupos</a></li><li class="Animated05"><a href="/KAJOOL/Paginas/Contenedor/enConstruccion.jsf?id=101&amp;opcionRama=0302090000" class="janal-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Contenedor/enConstruccion.jsf?id=101&amp;opcionRama=0302090000"><i class="icon-pencil kajool-text-one-line"></i>Escala de evaluación</a></li></ul></li><li class="Fleft BordRadHalf TexAlCenter" tabindex="0"><i class="icon-users-2"></i><ul class="layout-header-widgets-submenu BordRad5 shadows kajool-text-white Animated05" style="display: none;"><li class="Animated05"><a href="/KAJOOL/Paginas/Personal/filtro.jsf?id=103&amp;opcionRama=0303010000" class="kajool-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Personal/filtro.jsf?id=103&amp;opcionRama=0303010000"><i class="icon-users-outline kajool-text-one-line"></i>Listado de personal</a></li><li class="Animated05"><a href="/KAJOOL/Paginas/Personal/Carga/lote.jsf?id=104&amp;opcionRama=0303020000" class="kajool-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Personal/Carga/lote.jsf?id=104&amp;opcionRama=0303020000"><i class="fa fa-save kajool-text-one-line"></i>Carga por lote</a></li><li class="Animated05"><a href="/KAJOOL/Paginas/Escuelas/Personas/individual.jsf?identificador=nuevo&amp;tipo=personal&amp;id=105&amp;opcionRama=0303030000" class="kajool-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Escuelas/Personas/individual.jsf?identificador=nuevo&amp;tipo=personal&amp;id=105&amp;opcionRama=0303030000"><i class="fa fa-male kajool-text-one-line"></i>Captura individual</a></li><li class="Animated05"><a href="/KAJOOL/Paginas/Personal/Funciones/filtro.jsf?id=106&amp;opcionRama=0303040000" class="kajool-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Personal/Funciones/filtro.jsf?id=106&amp;opcionRama=0303040000"><i class="icon-user-md kajool-text-one-line"></i>Funciones</a></li><li class="Animated05"><a href="/KAJOOL/Paginas/Personal/Plazas/filtro.jsf?id=107&amp;opcionRama=0303050000" class="kajool-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Personal/Plazas/filtro.jsf?id=107&amp;opcionRama=0303050000"><i class="icon-inbox kajool-text-one-line"></i>Plazas</a></li><li class="Animated05"><a href="/KAJOOL/Paginas/Contenedor/enConstruccion.jsf?id=108&amp;opcionRama=0303060000" class="kajool-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Contenedor/enConstruccion.jsf?id=108&amp;opcionRama=0303060000"><i class="icon-graduation-cap kajool-text-one-line"></i>Situación académica</a></li><li class="Animated05"><a href="/KAJOOL/Paginas/Contenedor/enConstruccion.jsf?id=110&amp;opcionRama=0303080000" class="kajool-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Contenedor/enConstruccion.jsf?id=110&amp;opcionRama=0303080000"><i class="icon-book kajool-text-one-line"></i>Materias a impartir</a></li></ul></li><li class="Fleft BordRadHalf TexAlCenter" tabindex="0"><i class="icon-users"></i><ul class="layout-header-widgets-submenu BordRad5 shadows kajool-text-white Animated05" style="display: none;"><li class="Animated05"><a href="/KAJOOL/Paginas/Alumnos/filtro.jsf?id=112&amp;opcionRama=0304010000" class="kajool-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Alumnos/filtro.jsf?id=112&amp;opcionRama=0304010000"><i class="icon-users-outline kajool-text-one-line"></i>Listado de alumnos</a></li><li class="Animated05"><a href="/KAJOOL/Paginas/Alumnos/Carga/lote.jsf?id=113&amp;opcionRama=0304020000" class="kajool-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Alumnos/Carga/lote.jsf?id=113&amp;opcionRama=0304020000"><i class="fa fa-save kajool-text-one-line"></i>Carga por lote</a></li><li class="Animated05"><a href="/KAJOOL/Paginas/Escuelas/Personas/individual.jsf?identificador=nuevo&amp;tipo=alumno&amp;id=114&amp;opcionRama=0304030000" class="kajool-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Escuelas/Personas/individual.jsf?identificador=nuevo&amp;tipo=alumno&amp;id=114&amp;opcionRama=0304030000"><i class="fa fa-child kajool-text-one-line"></i>Captura individual</a></li><li class="Animated05"><a href="/KAJOOL/Paginas/Alumnos/GradosGrupos/filtro.jsf?id=129&amp;opcionRama=0304040000" class="kajool-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Alumnos/GradosGrupos/filtro.jsf?id=129&amp;opcionRama=0304040000"><i class="fa fa-group kajool-text-one-line"></i>Formar grupo</a></li><li class="Animated05"><a href="/KAJOOL/Paginas/Contenedor/enConstruccion.jsf?id=115&amp;opcionRama=0304050000" class="kajool-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Contenedor/enConstruccion.jsf?id=115&amp;opcionRama=0304050000"><i class="icon-folder-open kajool-text-one-line"></i>Expediente</a></li><li class="Animated05"><a href="/KAJOOL/Paginas/Contenedor/enConstruccion.jsf?id=116&amp;opcionRama=0304060000" class="kajool-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Contenedor/enConstruccion.jsf?id=116&amp;opcionRama=0304060000"><i class="icon-graduation-cap kajool-text-one-line"></i>Calificaciones</a></li><li class="Animated05"><a href="/KAJOOL/Paginas/Alumnos/Manual/becas.jsf?id=125&amp;opcionRama=0304070000" class="kajool-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Alumnos/Manual/becas.jsf?id=125&amp;opcionRama=0304070000"><i class="icon-dollar kajool-text-one-line"></i>Becas</a></li></ul></li><li class="Fleft BordRadHalf TexAlCenter" tabindex="0"><i class="icon-sitemap"></i><ul class="layout-header-widgets-submenu BordRad5 shadows kajool-text-white Animated05" style="display: none;"><li class="Animated05"><a href="/KAJOOL/Paginas/Contenedor/enConstruccion.jsf?id=122&amp;opcionRama=0306010000" class="kajool-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Contenedor/enConstruccion.jsf?id=122&amp;opcionRama=0306010000"><i class="icon-list-numbered kajool-text-one-line"></i>Mapas curriculares</a></li><li class="Animated05"><a href="/KAJOOL/Paginas/Contenedor/enConstruccion.jsf?id=1&amp;opcionRama=0306020000" class="kajool-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Contenedor/enConstruccion.jsf?id=1&amp;opcionRama=0306020000"><i class="icon-flow-merge kajool-text-one-line"></i>Componentes</a></li><li class="Animated05"><a href="/KAJOOL/Paginas/Contenedor/enConstruccion.jsf?id=123&amp;opcionRama=0306030000" class="kajool-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Contenedor/enConstruccion.jsf?id=123&amp;opcionRama=0306030000"><i class="icon-book kajool-text-one-line"></i>Materias</a></li><li class="Animated05"><a href="/KAJOOL/Paginas/Contenedor/enConstruccion.jsf?id=124&amp;opcionRama=0306040000" class="kajool-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Contenedor/enConstruccion.jsf?id=124&amp;opcionRama=0306040000"><i class="icon-plus kajool-text-one-line"></i>Creación</a></li></ul></li>
+						<li class="Fleft BordRadHalf TexAlCenter" tabindex="0"><i class="icon-user-male"></i>
+							<ul class="layout-header-widgets-submenu BordRad5 shadows janal-text-white Animated05" style="display: none;">
+								<li class="Animated05">
+									<a href="#" class="janal-text-white Unselectable" onclick="janal.bloquear();PF('dialogoPerfil').show();" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Contenedor/bienvenida.jsf#"><i class="icon-info-circled-alt"></i>Usuario</a>
+								</li>
+								<li class="Animated05">
+									<a href="/KAJOOL/Paginas/Contenedor/enConstruccion.jsf" class="janal-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Contenedor/enConstruccion.jsf"><i class="fa fa-group"></i>Perfiles</a>
+								</li>
+								<li class="Animated05">
+									<a href="/KAJOOL/Paginas/Mantenimiento/Temas/disponibles.jsf" class="janal-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Mantenimiento/Temas/disponibles.jsf"><i class="icon-brush"></i>Temas</a>
+								</li>
+								<li class="Animated05">
+									<a href="/KAJOOL/Paginas/Contenedor/enConstruccion.jsf" class="janal-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Paginas/Contenedor/enConstruccion.jsf"><i class="icon-mail"></i>Mensajes</a>
+								</li>
+								<li class="Animated05">
+									<a href="/KAJOOL/Exclusiones/salir.jsf" class="janal-text-white Unselectable" rollapp-href="http://localhost:8084/KAJOOL/Exclusiones/salir.jsf"><i class="icon-logout"></i>Salir</a>
+								</li>
+							</ul>
+						</li>
+					</ul>    	
+					<ul id="sm-mobiletopmenu" class="layout-header-widgets janal-text-white Fs14">
+						<li class="Fleft BordRadHalf TexAlCenter Animated05 DisplayOnResponsive"><i class="icon-th-1"></i></li>
+					</ul>
+				</div>
+			<div class="janal-icon-ajax">
+				<p:ajaxStatus style="width:16px;height:16px;">
+					<f:facet name="start">
+					 <i class="fa fa-spinner fa-spin fa-2x"/>
+					</f:facet>
+					<f:facet name="complete">
+						<h:outputText value="" />
+					</f:facet>
+				</p:ajaxStatus>
+			</div>
+		</div>
+	</div>
+</html>
