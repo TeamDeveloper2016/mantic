@@ -25,11 +25,12 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.dto.TrJanalUsuariosDelegaDto;
-import mx.org.kaana.kajool.db.dto.TcJanalEmpleadosDto;
+
 import mx.org.kaana.kajool.db.dto.TcJanalUsuariosDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.GestorSQL;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import org.apache.log4j.Logger;
 
 public class Transaccion extends IBaseTnx {
@@ -187,14 +188,14 @@ public class Transaccion extends IBaseTnx {
 	
 	private Long addEmpleado(Session sesion, Long idEmpleado) throws Exception{
 		Long regresar                = -1L;
-		TcJanalEmpleadosDto empleado = null;						
-		TcJanalEmpleadosDto duplicado= null;						
+		TcManticPersonasDto empleado = null;						
+		TcManticPersonasDto duplicado= null;						
 		TcJanalUsuariosDto usuario   = null;
 		try {
 			usuario= (TcJanalUsuariosDto) DaoFactory.getInstance().findById(sesion, TcJanalUsuariosDto.class, this.idKey);
 			if(usuario!= null){
 				//empleado= (TcJanalEmpleadosDto) DaoFactory.getInstance().findById(sesion, TcJanalEmpleadosDto.class, usuario.getIdEmpleado());
-				duplicado= new TcJanalEmpleadosDto();				
+				duplicado= new TcManticPersonasDto();				
 				duplicado.setIdEmpleado(idEmpleado);
 				duplicado.setIdEmpleado(this.idKey);				
 				duplicado.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));				

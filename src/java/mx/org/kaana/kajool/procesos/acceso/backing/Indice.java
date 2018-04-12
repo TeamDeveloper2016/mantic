@@ -77,7 +77,7 @@ public class Indice extends IBaseFilter implements Serializable {
       acceso = new Acceso(getCliente());
       acceso.valida();
       params.put(Constantes.SQL_CONDICION, "cuenta='".concat(getCliente().getCuenta()).concat("'"));
-      value = DaoFactory.getInstance().toField("TcJanalEmpleadosDto", "row", params, "curp");
+      value = DaoFactory.getInstance().toField("TcManticPersonasDto", "row", params, "curp");
       if ((value.getData() != null) && (getCliente().getContrasenia().equals(value.toString().substring(0, 10)))) {
         JsfBase.setFlashAttribute("cliente", getCliente());
         regresar = "/Exclusiones/confirmacion.jsf".concat(Constantes.REDIRECIONAR);

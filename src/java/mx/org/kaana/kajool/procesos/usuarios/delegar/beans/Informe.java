@@ -1,8 +1,7 @@
 package mx.org.kaana.kajool.procesos.usuarios.delegar.beans;
 
 import java.io.Serializable;
-import mx.org.kaana.libs.formato.Fecha;
-import mx.org.kaana.kajool.db.dto.TcJanalEmpleadosDto;
+
 
 /**
  *@company KAANA

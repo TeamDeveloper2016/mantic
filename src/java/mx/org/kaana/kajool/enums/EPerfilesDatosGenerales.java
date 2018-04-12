@@ -10,7 +10,7 @@ package mx.org.kaana.kajool.enums;
 public enum EPerfilesDatosGenerales {
 
 	PERSONA(""),
-	EMPLEADO("mx.org.kaana.personal.db.dto.TcJanalEmpleadosDto"),
+	EMPLEADO("mx.org.kaana.personal.db.dto.TcManticPersonasDto"),
 	ALUMNO("mx.org.kaana.alumnos.db.dto.TcJanalAlumnosDto");
 	
 	private String ruta;

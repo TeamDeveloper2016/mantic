@@ -7,30 +7,31 @@
     <unit id="VistaTcJanalUsuariosDto">
       <select id="acceso">
         select
-					tc_janal_usuarios.id_usuario,  cuenta, contrasenia, tc_janal_usuarios.registro, tc_janal_perfiles.descripcion AS descripcion_perfil, tc_janal_usuarios.id_perfil,
-          tc_janal_grupos.descripcion AS descripcion_grupo, tc_janal_empleados.estilo, tc_janal_perfiles.id_menu, tc_janal_empleados.id_empleado, nombres, primer_apellido,
-				  segundo_apellido, id_tipo_sexo, tc_janal_usuarios.id_entidad, tc_janal_grupos.id_grupo, tc_janal_grupos.clave as clave_grupo, upper(tc_janal_entidades.descripcion) as entidad
+		  tc_janal_usuarios.id_usuario,  tc_mantic_personas.cuenta, tc_mantic_personas.contrasenia, tc_janal_usuarios.registro, tc_janal_perfiles.descripcion as descripcion_perfil, tc_janal_usuarios.id_perfil,
+          tc_janal_grupos.descripcion AS descripcion_grupo, tc_mantic_personas.estilo, tc_janal_perfiles.id_menu, tc_janal_usuarios.id_empleado, tc_mantic_personas.nombres, tc_mantic_personas.paterno,
+		  tc_mantic_personas.materno, tc_mantic_personas.id_tipo_sexo, tc_janal_usuarios.id_entidad, tc_janal_grupos.id_grupo, tc_janal_grupos.clave as clave_grupo, upper(tc_janal_entidades.descripcion) as entidad
         from
           tc_janal_usuarios
         inner join
           tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
         inner join
           tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
-				inner join
-				  tc_janal_empleados on tc_janal_empleados.id_empleado=tc_janal_usuarios.id_empleado
+		inner join
+		  tc_mantic_personas on tc_mantic_personas.id_persona=tc_janal_usuarios.id_empleado
         inner join 
           tc_janal_entidades on tc_janal_usuarios.id_entidad = tc_janal_entidades.id_entidad
         where
-          cuenta = '{cuenta}' and tc_janal_usuarios.activo=1
+          tc_mantic_personas.cuenta = '{cuenta}' and tc_janal_usuarios.activo=1
       </select>
       <select id="recuperar">
         select
-          tc_janal_empleados.id_empleado as id_key
+          tc_mantic_personas.id_persona  as id_key
         from
-				  tc_janal_usuarios
-				inner join tc_janal_empleados on tc_janal_usuarios.id_empleado=tc_janal_empleados.id_empleado
+		  tc_janal_usuarios
+		inner join 
+          tc_mantic_personas on tc_janal_usuarios.id_empleado=tc_mantic_personas.id_persona
         where
-          cuenta='{cuenta}' and activo=1 and curp = '{curp}'
+          tc_mantic_personas.cuenta='{cuenta}' and activo=1 and tc_mantic_personas.curp = '{curp}'
       </select>
 
       <select id="centroTrabajo">
@@ -46,25 +47,25 @@
 			<select id="detalleUsuarioPerfil">
 				select 					
           tc_janal_usuarios.id_usuario,
-					tc_janal_empleados.cuenta,
-					tc_janal_empleados.contrasenia,
+					tc_mantic_personas.cuenta,
+					tc_mantic_personas.contrasenia,
 					tc_janal_usuarios.registro,
 					tc_janal_perfiles.descripcion AS descripcion_perfil,
 					tc_janal_usuarios.id_perfil,
-					tc_janal_empleados.id_empleado,
-					tc_janal_empleados.nombres,
-					IFNULL(tc_janal_empleados.primer_apellido,'') primer_apellido,
-					IFNULL(tc_janal_empleados.segundo_apellido,'') segundo_apellido,					
-					tc_janal_empleados.id_tipo_sexo,										
+					tc_mantic_personas.id_persona,
+					tc_mantic_personas.nombres,
+					IFNULL(tc_mantic_personas.paterno,'') primer_apellido,
+					IFNULL(tc_mantic_personas.materno,'') segundo_apellido,					
+					tc_mantic_personas.id_tipo_sexo,										
 					tc_janal_grupos.descripcion AS descripcion_grupo,					
-					tc_janal_empleados.estilo,
+					tc_mantic_personas.estilo,
 					tc_janal_perfiles.id_menu,
 				  tc_janal_usuarios.id_entidad,
           tc_janal_grupos.id_grupo, tc_janal_grupos.clave as clave_grupo
         from 					
           tc_janal_usuarios
         inner join
-          tc_janal_empleados ON tc_janal_usuarios.id_empleado = tc_janal_empleados.id_empleado
+          tc_mantic_personas ON tc_janal_usuarios.id_empleado = tc_mantic_personas.id_persona
 				inner join
           tc_janal_perfiles ON tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
         inner join
@@ -72,7 +73,7 @@
         where
           tc_janal_usuarios.id_usuario= {idUsuario}
         and
-          tc_janal_empleados.cuenta='{cuenta}'
+          tc_mantic_personas.cuenta='{cuenta}'
         and
           tc_janal_usuarios.id_perfil= {idPerfil}
 			</select>
@@ -351,7 +352,7 @@
 					ifnull(tc_janal_mensajes.periodo,0) periodo,
 					ifnull(tc_janal_mensajes.periodo_repite,0) periodo_repite,
 					tc_janal_mensajes.id_prioridad, tc_janal_mensajes.fecha_repite,
-					concat(tc_janal_empleados.nombres,' ',tc_janal_empleados.primer_apellido,' ',tc_janal_empleados.segundo_apellido) nombre_empleado,
+					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno,' ',tc_mantic_personas.materno) nombre_empleado,
 					tc_janal_prioridades.descripcion prioridad,
 					tc_janal_booleanos.id_booleano,
 					tc_janal_booleanos.descripcion leido
@@ -362,7 +363,7 @@
 				inner join
 					tc_janal_usuarios on tc_janal_usuarios.id_usuario = tr_janal_mensajes_usuarios.id_usuario
 				inner join
-					tc_janal_empleados on tc_janal_empleados.id_empleado= tc_janal_usuarios.id_empleado        
+					tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_empleado        
 				inner join
 					tc_janal_prioridades on tc_janal_prioridades.id_prioridad = tc_janal_mensajes.id_prioridad
 				inner join
@@ -497,13 +498,13 @@
 			<select id="row">
 				select
 			  	tc_janal_usuarios.id_usuario as id_key_usuario,
-				  if(isnull(tc_janal_empleados.nombres), ' ', tc_janal_empleados.nombres) nombres,
-					if(isnull(tc_janal_empleados.primer_apellido), ' ', tc_janal_empleados.primer_apellido) primer_apellido,
-					if(isnull(tc_janal_empleados.segundo_apellido), ' ', tc_janal_empleados.segundo_apellido) segundo_apellido,
+				  if(isnull(tc_mantic_personas.nombres), ' ', tc_mantic_personas.nombres) nombres,
+					if(isnull(tc_mantic_personas.paterno), ' ', tc_mantic_personas.paterno) primer_apellido,
+					if(isnull(tc_mantic_personas.materno), ' ', tc_mantic_personas.materno) segundo_apellido,
 				  tc_janal_perfiles.descripcion desc_perfil,				
 					tc_janal_entidades.descripcion desc_entidad,
 				  tc_janal_usuarios.activo,				
-				  lower(tc_janal_empleados.cuenta) cuenta				  				
+				  lower(tc_mantic_personas.cuenta) cuenta				  				
 				from
 				  tc_janal_usuarios
 				inner join				
@@ -511,7 +512,7 @@
 				inner join 				
 				  tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
         inner join				
-				  tc_janal_empleados on tc_janal_usuarios.id_empleado = tc_janal_empleados.id_empleado				
+				  tc_mantic_personas on tc_janal_usuarios.id_empleado = tc_mantic_personas.id_persona				
 				inner join
 				  tc_janal_grupos on tc_janal_perfiles.id_grupo= tc_janal_grupos.id_grupo		
 				where
@@ -523,11 +524,11 @@
 					tc_janal_usuarios.id_usuario as id_key,
 					concat(nombres,' ',primer_apellido,' ',segundo_apellido) nombre_completo,
 					tc_janal_perfiles.descripcion as nombre_perfil,
-					tc_janal_empleados.id_empleado
+					tc_mantic_personas.id_persona
 				from
 					tc_janal_usuarios
 				inner join
-					tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
 				inner join
 					tc_janal_perfiles on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
 				where
@@ -535,17 +536,17 @@
 			</select>			
 			<select id="findIdPersona">
 				select
-					tc_janal_empleados.id_empleado as id_key,
-					tc_janal_empleados.id_empleado,
+					tc_mantic_personas.id_persona as id_key,
+					tc_mantic_personas.id_persona,
 					tc_janal_usuarios.id_usuario,
-					tc_janal_empleados.cuenta,
-					tc_janal_empleados.contrasenia
+					tc_mantic_personas.cuenta,
+					tc_mantic_personas.contrasenia
 				from
-					tc_janal_empleados
+					tc_mantic_personas
 				inner join
-					tc_janal_usuarios on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado				
+					tc_janal_usuarios on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado				
 				where
-					tc_janal_empleados.id_empleado = {idEmpleado}
+					tc_mantic_personas.id_persona = {idEmpleado}
 			</select>
 		</unit>
 		<unit id="VistaDelegaPrivilegiosDto">
@@ -561,10 +562,10 @@
 					tr_janal_usuarios_delega.activo,
 					tr_janal_usuarios_delega.login,
 					tr_janal_usuarios_delega.contrasenia,					
-					tc_janal_empleados.primer_apellido,
-					tc_janal_empleados.segundo_apellido,
-					tc_janal_empleados.nombres,
-					concat(primer_apellido,' ',segundo_apellido,' ',nombres) nombre_completo,
+					tc_mantic_personas.paterno,
+					tc_mantic_personas.materno,
+					tc_mantic_personas.nombres,
+					concat(paterno,' ',materno,' ',nombres) nombre_completo,
 					tc_janal_perfiles.descripcion nombre_perfil,
 				  tc_janal_usuarios.id_entidad
 				from
@@ -572,7 +573,7 @@
         inner join           					
 					tc_janal_usuarios on tr_janal_usuarios_delega.id_usuario = tc_janal_usuarios.id_usuario
 				inner join
-				  tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+				  tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
 				inner join
 					tc_janal_perfiles on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
 				where
@@ -586,13 +587,13 @@
 			<select id="usuariosDelega">
         select
           concat(nombres,' ',primer_apellido,' ',segundo_apellido) nombre,
-          tc_janal_empleados.cuenta
+          tc_mantic_personas.cuenta
         from
           tc_janal_usuarios
         inner join
           tr_janal_usuarios_delega on tr_janal_usuarios_delega.id_usuario = tc_janal_usuarios.id_usuario
         inner join
-          tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
         where
           tr_janal_usuarios_delega.id_usuario= {idUsuario}
         group by
@@ -613,10 +614,10 @@
         inner join
           tr_janal_usuarios_delega on tc_janal_usuarios.id_usuario = tr_janal_usuarios_delega.id_usuario
         inner join
-          tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
 				where
 				  tr_janal_usuarios_delega.id_usuario= {idUsuario} and
-          tc_janal_empleados.cuenta = '{cuenta}' and
+          tc_mantic_personas.cuenta = '{cuenta}' and
 				  tc_janal_perfiles.acceso=1 and
 				  tc_janal_usuarios.activo=1
 			</select>
@@ -635,7 +636,7 @@
         inner join
           tr_janal_usuarios_delega on tc_janal_usuarios.id_usuario = tr_janal_usuarios_delega.id_usuario
         inner join
-          tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
 				where
 				  tr_janal_usuarios_delega.id_usuario= {idUsuario} and
           tc_janal_usuarios.cuenta = '{cuenta}' and
@@ -656,13 +657,13 @@
 					inner join
 						tr_janal_usuarios_delega on tc_janal_usuarios.id_usuario = tr_janal_usuarios_delega.id_usuario					
           inner join
-            tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+            tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
 					inner join
 						tc_janal_perfiles on tc_janal_usuarios.id_perfil=tc_janal_perfiles.id_perfil
 					inner join
 						tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo					
           where 						
-						tc_janal_empleados.cuenta= '{cuenta}'
+						tc_mantic_personas.cuenta= '{cuenta}'
 						and tr_janal_usuarios_delega.id_usuario = {idUsuario}
 						and tc_janal_grupos.id_grupo= {idGrupo}
 						and tc_janal_usuarios.activo=1
@@ -676,25 +677,25 @@
 				select
 					tr_janal_usuarios_delega.id_usuario_delega AS id_key,
           tc_janal_usuarios.id_usuario,
-					tc_janal_empleados.cuenta,
-					tc_janal_empleados.contrasenia,
+					tc_mantic_personas.cuenta,
+					tc_mantic_personas.contrasenia,
 					tc_janal_usuarios.registro,
 					tc_janal_perfiles.descripcion AS descripcion_perfil,
 					tc_janal_usuarios.id_perfil,
-					tc_janal_empleados.id_empleado,
-					tc_janal_empleados.nombres,
-					IFNULL(tc_janal_empleados.primer_apellido,'') primer_apellido,
-					IFNULL(tc_janal_empleados.segundo_apellido,'') segundo_apellido,					
-					tc_janal_empleados.id_tipo_sexo,										
+					tc_mantic_personas.id_persona,
+					tc_mantic_personas.nombres,
+					IFNULL(tc_mantic_personas.paterno,'') primer_apellido,
+					IFNULL(tc_mantic_personas.materno,'') segundo_apellido,					
+					tc_mantic_personas.id_tipo_sexo,										
 					tc_janal_grupos.descripcion AS descripcion_grupo,																				
-					tc_janal_empleados.estilo,
+					tc_mantic_personas.estilo,
 					tc_janal_perfiles.id_menu
         from
 					tr_janal_usuarios_delega
         inner join
           tc_janal_usuarios ON tr_janal_usuarios_delega.id_usuario = tc_janal_usuarios.id_usuario
         inner join
-          tc_janal_empleados ON tc_janal_usuarios.id_empleado = tc_janal_empleados.id_empleado
+          tc_mantic_personas ON tc_janal_usuarios.id_empleado = tc_mantic_personas.id_persona
 				inner join
           tc_janal_perfiles ON tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
         inner join
@@ -702,28 +703,28 @@
         where
           tr_janal_usuarios_delega.id_usuario= {idUsuario}
         and
-          tc_janal_empleados.cuenta='{cuenta}'
+          tc_mantic_personas.cuenta='{cuenta}'
         and
           tc_janal_usuarios.id_perfil= {idPerfil}
 			</select>
 			<select id="delegaActivo">
-				select
-					tr_janal_usuarios_delega.id_usuario_delega id_key,
-					tr_janal_usuarios_delega.id_usuario_delega,
-					tr_janal_usuarios_delega.login,
-					tr_janal_usuarios_delega.contrasenia,
-					tr_janal_usuarios_delega.id_empleado,	
-					tr_janal_usuarios_delega.id_usuario,						
-					tc_janal_usuarios.id_perfil,
-					tc_janal_usuarios.id_empleado empleado_origen,
-					tc_janal_empleados.cuenta
-        from
-					tr_janal_usuarios_delega
-        inner join
-					tc_janal_usuarios on tr_janal_usuarios_delega.id_usuario= tc_janal_usuarios.id_usuario
-				inner join tc_janal_empleados on tc_janal_empleados.id_empleado=tc_janal_usuarios.id_empleado
-        where
-					tr_janal_usuarios_delega.login = '{cuenta}'
+		      select
+			    tr_janal_usuarios_delega.id_usuario_delega id_key,
+			    tr_janal_usuarios_delega.id_usuario_delega,
+		        tr_janal_usuarios_delega.login,
+		        tr_janal_usuarios_delega.contrasenia,
+			    tr_janal_usuarios_delega.id_empleado,	
+			    tr_janal_usuarios_delega.id_usuario,						
+			    tc_janal_usuarios.id_perfil,
+			    tc_janal_usuarios.id_empleado empleado_origen,
+				tc_mantic_personas.cuenta
+              from
+			    tr_janal_usuarios_delega
+               inner join
+			     tc_janal_usuarios on tr_janal_usuarios_delega.id_usuario= tc_janal_usuarios.id_usuario
+			   inner join tc_mantic_personas on tc_mantic_personas.id_persona=tc_janal_usuarios.id_empleado
+              where
+				tr_janal_usuarios_delega.login = '{cuenta}'
         and
 					tr_janal_usuarios_delega.activo= 1
         and
@@ -772,7 +773,7 @@
 					tc_janal_perfiles.id_perfil id_key,
 					tc_janal_perfiles.descripcion,
 					tc_janal_perfiles.id_menu,
-					tc_janal_empleados.cuenta,
+					tc_mantic_personas.cuenta,
 				  tc_janal_usuarios.id_usuario,
 	        concat(nombres,' ',primer_apellido,' ',segundo_apellido) usuario_perfil,
           tc_janal_entidades.descripcion entidad
@@ -783,11 +784,11 @@
 				 inner join
 					tc_janal_usuarios on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil				
 				 inner join
-			    tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado			
+			    tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado			
          inner join 
           tc_janal_entidades on tc_janal_usuarios.id_entidad = tc_janal_entidades.id_entidad
 				 WHERE
-					tc_janal_empleados.id_empleado= {idEmpleado}				 					
+					tc_mantic_personas.id_persona= {idEmpleado}				 					
 					and tc_janal_grupos.id_grupo= {idGrupo}
 					and tc_janal_usuarios.activo=1
 					and tc_janal_perfiles.acceso=1										
@@ -1156,7 +1157,7 @@
 					tc_janal_usuarios
 				inner join tc_janal_entidades on tc_janal_usuarios.id_entidad=tc_janal_entidades.id_entidad
 				inner join tc_janal_perfiles on tc_janal_usuarios.id_perfil=tc_janal_perfiles.id_perfil
-				inner join tc_janal_empleados on tc_janal_empleados.id_empleado=tc_janal_usuarios.id_empleado	
+				inner join tc_mantic_personas on tc_mantic_personas.id_persona=tc_janal_usuarios.id_empleado	
 				where
 				  tc_janal_entidades.id_entidad= {idEntidad}				
 				order by
@@ -1302,22 +1303,22 @@
           tc_janal_usuarios.registro,
           tc_janal_perfiles.descripcion AS descripcion_perfil,
           tc_janal_usuarios.id_perfil,
-          tc_janal_empleados.id_empleado,
-          tc_janal_empleados.nombres,
-          IFNULL(tc_janal_empleados.primer_apellido,'') primer_apellido,
-          IFNULL(tc_janal_empleados.segundo_apellido,'') segundo_apellido,
-          CONCAT (tc_janal_empleados.nombres, ' ', IFNULL(tc_janal_empleados.primer_apellido,''), ' ', IFNULL(tc_janal_empleados.segundo_apellido,'')) nombre_completo,
-          tc_janal_empleados.id_tipo_sexo,
-          tc_janal_empleados.curp,
+          tc_mantic_personas.id_persona,
+          tc_mantic_personas.nombres,
+          IFNULL(tc_mantic_personas.paterno,'') primer_apellido,
+          IFNULL(tc_mantic_personas.materno,'') segundo_apellido,
+          CONCAT (tc_mantic_personas.nombres, ' ', IFNULL(tc_mantic_personas.paterno,''), ' ', IFNULL(tc_mantic_personas.materno,'')) nombre_completo,
+          tc_mantic_personas.id_tipo_sexo,
+          tc_mantic_personas.curp,
           tc_janal_grupos.descripcion AS descripcion_grupo,
-          tc_janal_empleados.estilo,
+          tc_mantic_personas.estilo,
           tc_janal_perfiles.id_menu,
           tc_janal_grupos.id_grupo,
           tc_janal_grupos.clave AS clave_grupo
         from
           tc_janal_usuarios
         inner join
-          tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
         inner join
           tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
         inner join
@@ -1337,22 +1338,22 @@
           tc_janal_usuarios.registro,
           tc_janal_perfiles.descripcion AS descripcion_perfil,
           tc_janal_usuarios.id_perfil,
-          tc_janal_empleados.id_empleado,
-          tc_janal_empleados.nombres,
-          IFNULL(tc_janal_empleados.primer_apellido,'') primer_apellido,
-          IFNULL(tc_janal_empleados.segundo_apellido,'') segundo_apellido,
-          CONCAT (tc_janal_empleados.nombres, ' ', IFNULL(tc_janal_empleados.primer_apellido,''), ' ', IFNULL(tc_janal_empleados.segundo_apellido,'')) nombre_completo,
-          tc_janal_empleados.id_tipo_sexo,
-          tc_janal_empleados.curp,
+          tc_mantic_personas.id_persona,
+          tc_mantic_personas.nombres,
+          IFNULL(tc_mantic_personas.paterno,'') primer_apellido,
+          IFNULL(tc_mantic_personas.materno,'') segundo_apellido,
+          CONCAT (tc_mantic_personas.nombres, ' ', IFNULL(tc_mantic_personas.paterno,''), ' ', IFNULL(tc_mantic_personas.materno,'')) nombre_completo,
+          tc_mantic_personas.id_tipo_sexo,
+          tc_mantic_personas.curp,
           tc_janal_grupos.descripcion AS descripcion_grupo,
-          tc_janal_empleados.estilo,
+          tc_mantic_personas.estilo,
           tc_janal_perfiles.id_menu,
           tc_janal_grupos.id_grupo,
           tc_janal_grupos.clave AS clave_grupo
         from
           tc_janal_usuarios
         inner join
-          tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
         inner join
           tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
         inner join
@@ -1372,22 +1373,22 @@
           tc_janal_usuarios.registro,
           tc_janal_perfiles.descripcion AS descripcion_perfil,
           tc_janal_usuarios.id_perfil,
-          tc_janal_empleados.id_empleado,
-          tc_janal_empleados.nombres,
-          IFNULL(tc_janal_empleados.primer_apellido,'') primer_apellido,
-          IFNULL(tc_janal_empleados.segundo_apellido,'') segundo_apellido,
-          CONCAT (tc_janal_empleados.nombres, ' ', IFNULL(tc_janal_empleados.primer_apellido,''), ' ', IFNULL(tc_janal_empleados.segundo_apellido,'')) nombre_completo,
-          tc_janal_empleados.id_tipo_sexo,
-          tc_janal_empleados.curp,
+          tc_mantic_personas.id_persona,
+          tc_mantic_personas.nombres,
+          IFNULL(tc_mantic_personas.paterno,'') primer_apellido,
+          IFNULL(tc_mantic_personas.materno,'') segundo_apellido,
+          CONCAT (tc_mantic_personas.nombres, ' ', IFNULL(tc_mantic_personas.paterno,''), ' ', IFNULL(tc_mantic_personas.materno,'')) nombre_completo,
+          tc_mantic_personas.id_tipo_sexo,
+          tc_mantic_personas.curp,
           tc_janal_grupos.descripcion AS descripcion_grupo,
-          tc_janal_empleados.estilo,
+          tc_mantic_personas.estilo,
           tc_janal_perfiles.id_menu,
           tc_janal_grupos.id_grupo,
           tc_janal_grupos.clave AS clave_grupo
         from
           tc_janal_usuarios
         inner join
-          tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
         inner join
           tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
         inner join
@@ -1410,22 +1411,22 @@
           tc_janal_usuarios.registro,
           tc_janal_perfiles.descripcion AS descripcion_perfil,
           tc_janal_usuarios.id_perfil,
-          tc_janal_empleados.id_empleado,
-          tc_janal_empleados.nombres,
-          IFNULL(tc_janal_empleados.primer_apellido,'') primer_apellido,
-          IFNULL(tc_janal_empleados.segundo_apellido,'') segundo_apellido,
-          CONCAT (tc_janal_empleados.nombres, ' ', IFNULL(tc_janal_empleados.primer_apellido,''), ' ', IFNULL(tc_janal_empleados.segundo_apellido,'')) nombre_completo,
-          tc_janal_empleados.id_tipo_sexo,
-          tc_janal_empleados.curp,
+          tc_mantic_personas.id_persona,
+          tc_mantic_personas.nombres,
+          IFNULL(tc_mantic_personas.paterno,'') primer_apellido,
+          IFNULL(tc_mantic_personas.materno,'') segundo_apellido,
+          CONCAT (tc_mantic_personas.nombres, ' ', IFNULL(tc_mantic_personas.paterno,''), ' ', IFNULL(tc_mantic_personas.materno,'')) nombre_completo,
+          tc_mantic_personas.id_tipo_sexo,
+          tc_mantic_personas.curp,
           tc_janal_grupos.descripcion AS descripcion_grupo,
-          tc_janal_empleados.estilo,
+          tc_mantic_personas.estilo,
           tc_janal_perfiles.id_menu,
           tc_janal_grupos.id_grupo,
           tc_janal_grupos.clave AS clave_grupo
         from
           tc_janal_usuarios
         inner join
-          tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
         inner join
           tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
         inner join
@@ -1437,7 +1438,7 @@
         and
           tc_janal_perfiles.id_perfil= {idCapturista}
         and
-          (tc_janal_empleados.curp like '%{criterio}%' or tc_janal_empleados.nombres like '%{criterio}%' or tc_janal_empleados.primer_apellido like  '%{criterio}%' or tc_janal_empleados.segundo_apellido like '%{criterio}%')
+          (tc_mantic_personas.curp like '%{criterio}%' or tc_mantic_personas.nombres like '%{criterio}%' or tc_mantic_personas.paterno like  '%{criterio}%' or tc_mantic_personas.materno like '%{criterio}%')
       </select>
       <select id="busquedaUsuarioCurp">
         select
@@ -1447,22 +1448,22 @@
           tc_janal_usuarios.registro,
           tc_janal_perfiles.descripcion AS descripcion_perfil,
           tc_janal_usuarios.id_perfil,
-          tc_janal_empleados.id_empleado,
-          tc_janal_empleados.nombres,
-          IFNULL(tc_janal_empleados.primer_apellido,'') primer_apellido,
-          IFNULL(tc_janal_empleados.segundo_apellido,'') segundo_apellido,
-          CONCAT (tc_janal_empleados.nombres, ' ', IFNULL(tc_janal_empleados.primer_apellido,''), ' ', IFNULL(tc_janal_empleados.segundo_apellido,'')) nombre_completo,
-          tc_janal_empleados.id_tipo_sexo,
-          tc_janal_empleados.curp,
+          tc_mantic_personas.id_persona,
+          tc_mantic_personas.nombres,
+          IFNULL(tc_mantic_personas.paterno,'') primer_apellido,
+          IFNULL(tc_mantic_personas.materno,'') segundo_apellido,
+          CONCAT (tc_mantic_personas.nombres, ' ', IFNULL(tc_mantic_personas.paterno,''), ' ', IFNULL(tc_mantic_personas.materno,'')) nombre_completo,
+          tc_mantic_personas.id_tipo_sexo,
+          tc_mantic_personas.curp,
           tc_janal_grupos.descripcion AS descripcion_grupo,
-          tc_janal_empleados.estilo,
+          tc_mantic_personas.estilo,
           tc_janal_perfiles.id_menu,
           tc_janal_grupos.id_grupo,
           tc_janal_grupos.clave AS clave_grupo
         from
           tc_janal_usuarios
         inner join
-          tc_janal_empleados on tc_janal_empleados.id_empleado = tc_janal_usuarios.id_empleado
+          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
         inner join
           tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
         inner join
@@ -1474,7 +1475,7 @@
         and
           tc_janal_perfiles.id_perfil= {idCapturista}
         and
-          tc_janal_empleados.curp = '{curp}'
+          tc_mantic_personas.curp = '{curp}'
       </select>            
     </unit>        		   
     <unit id="VistaContadoresBienvenidaDto">

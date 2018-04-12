@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.dto.TcJanalEmpleadosDto;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 
 /**
  * @company KAANA
@@ -167,11 +167,11 @@ public class RandomCuenta {
   private boolean toSearch(String cuenta) {
     boolean regresar = false;
     Map<String, Object> params = null;
-    List<TcJanalEmpleadosDto> listaTrUsuariosDto;
+    List<TcManticPersonasDto> listaTrUsuariosDto;
     try {
       params = new HashMap<String, Object>();
       params.put("cuenta", cuenta);
-      listaTrUsuariosDto = DaoFactory.getInstance().findViewCriteria(TcJanalEmpleadosDto.class, params, "findUsuario");
+      listaTrUsuariosDto = DaoFactory.getInstance().findViewCriteria(TcManticPersonasDto.class, params, "findUsuario");
       regresar = !listaTrUsuariosDto.isEmpty();
 /*      
       for (TcJanalEmpleadosDto usuario : listaTrUsuariosDto) {
