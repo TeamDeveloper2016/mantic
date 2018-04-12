@@ -117,35 +117,6 @@
           <div id="layout-portlets-cover" class="janal-content-center">
             <h:form id="datos" prependId="false">
               <p:growl id="mensaje" showSummary="false" showDetail="true" sticky="false" widgetVar="mensajes" autoUpdate="true" escape="false" life="15000"/>	
-              <div id="freeze"/>
-              <div id="sticky-menu" class="ui-panel ui-widget ui-widget-content ui-corner-all lg-pantalla janal-content-header Responsive100">
-                <div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header" style="display: -webkit-box;">
-                  <h:panelGrid id="iktan-slide-menu">
-                    <a href="#" class="BordRad3" onclick="mmenu.open('#{kajoolTemaActivo.name}');">
-                      <i class="fa fa-lg icon-menu-1" style="color: white"/>
-                    </a>
-                  </h:panelGrid>  
-                  <span class="ui-panel-title Fs18 lg-pantalla">
-                    #{titulo}
-                  </span>
-                  <span class="ui-panel-title Fs16 xs-pantalla">
-                    #{kajoolUtilAplicacion.toTitle(titulo, 35)}
-                  </span>
-                  <div class="janal-icon-ajax">
-                    <p:ajaxStatus style="width:16px;height:16px;">
-                      <f:facet name="start">
-                        <p:graphicImage library="janal" name="icon/ajax-loader.gif" />
-                      </f:facet>
-                      <f:facet name="complete">
-                        <h:outputText value="" />
-                      </f:facet>
-                    </p:ajaxStatus>
-                  </div>
-                </div>
-              </div>
-              <script type="text/javascript">$(function() {
-									PrimeFaces.cw("CustomSticky", "widget_freeze", {id: "freeze", widgetVar: "widget_freeze", source: '#principal div.ui-layout-unit-content', margin: 127, target: "sticky-menu"});
-								});</script>
               <p:panel toggleable="true" styleClass="sticky-body" style="border:0px;">
                 <p:focus context="principal"/>														
                 <ui:insert name="contenido"/>
