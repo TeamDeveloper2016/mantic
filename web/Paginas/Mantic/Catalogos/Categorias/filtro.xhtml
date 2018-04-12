@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+	<ui:param name="titulo" value="Categorias" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {
+        nombre     : {validaciones: 'libre', mascara: 'libre'},
+        descripcion: {validaciones: 'libre', mascara: 'libre'}        
+      };
+		</script>		
+	</ui:define>
+	<ui:define name="contenido">        
+		<p:panelGrid columns="3" layout="grid" columnClasses="janal-wid, janal-wid-3, janal-wid-100">          
+			<p:panel header="Busqueda:" >
+				<h:panelGrid styleClass="janal-wid-100">
+					<p:outputLabel for="nombre" value="Nombre:"/>
+					<p:inputText id="nombre" value="#{manticCatalogosCategoriasFiltro.attrs.nombre}" styleClass="janal-wid-90"/>              
+					<p:outputLabel for="descripcion"  value="Descripción:"/>
+					<p:inputText id="descripcion" value="#{manticCatalogosCategoriasFiltro.attrs.descripcion}" styleClass="janal-wid-90"/>               
+				</h:panelGrid>
+				<p:separator/>
+				<div class="janal-align-right">
+					<p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.bloquear();" process="@this nombre descripcion" actionListener="#{manticCatalogosCategoriasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+				</div>
+			</p:panel>
+			<p:spacer/>
+			<h:panelGrid columns="1" styleClass="janal-wid-100">
+				<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosCategoriasFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosCategoriasFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosCategoriasFiltro.lazyModel.rowCount gt manticCatalogosCategoriasFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+					<f:facet name="header">
+						<p:menuButton   value="Opciones">
+							<p:menuitem  value="Agregar" action="#{manticCatalogosCategoriasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar usuario" onstart="return janal.bloquear()"/>						
+							<p:separator/>
+							<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+							<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+						</p:menuButton>
+					</f:facet>						
+					<p:column class="janal-column-left janal-wid-30 MarAuto Responsive">
+						<f:facet name="header">
+							<h:outputText value="Nombre"/>
+						</f:facet>
+						<h:outputText value="#{filtro['traza']}"/>
+					</p:column>
+					<p:column class="janal-column-left MarAuto Responsive">
+						<f:facet name="header">
+							<h:outputText value="Descripcion"/>
+						</f:facet>
+						<h:outputText value="#{filtro['descripcion']}"/>
+					</p:column>					
+					<f:facet name="footer">
+						Total [#{manticCatalogosCategoriasFiltro.lazyModel==null?0:manticCatalogosCategoriasFiltro.lazyModel.rowCount}] registros
+					</f:facet>
+				</p:dataTable>
+				<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+					<p:menuitem action="#{manticCatalogosCategoriasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+					<p:menuitem icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+				</p:contextMenu>
+			</h:panelGrid>          
+		</p:panelGrid>                
+	</ui:define>    
+</ui:composition>
