@@ -43,37 +43,39 @@
         and lower(materno)= lower('{materno}')
       </select>
     </unit>    
-    <unit id="TcManticCategoriasDto">
+		<unit id="TcManticCategoriasDto">
       <select id="row">
         select 
-        tc_mantic_categorias.id_categoria as id_key,
-        tc_mantic_categorias.*
+          tc_mantic_categorias.id_categoria as id_key,
+          tc_mantic_categorias.*
         from
-        tc_mantic_categorias
+          tc_mantic_categorias
         where 
-        {condicion}
+          {condicion}
       </select>
       <select id="identically">
         select      
-        *
+          *
         from      
-        tc_mantic_categorias
+          tc_mantic_categorias
         where      
-        clave = '{clave}'
-        order by
-        clave
+          clave = '{clave}'
+				order by
+					clave, nivel
       </select>			
-      <select id="find">
-        select 
-        tc_mantic_categorias.id_categoria as id_key,
-        tc_mantic_categorias.*
-        from
-        tc_mantic_categorias
-        where 
-        nombre like '%{nombre}%'
-        and 
-        descripcion like '%{descripcion}%'
-      </select>			
-    </unit>
+			<select id="find">
+				select 
+				  tc_mantic_categorias.id_categoria as id_key,
+					tc_mantic_categorias.*
+				from
+					tc_mantic_categorias
+				where 
+					nombre like '%{nombre}%'
+				and 
+					descripcion like '%{descripcion}%'
+				order by 
+					clave, nivel
+			</select>
+		</unit>			
   </dml>    
 </process>
