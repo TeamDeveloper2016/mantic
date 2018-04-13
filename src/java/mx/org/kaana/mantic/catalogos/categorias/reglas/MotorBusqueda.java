@@ -9,7 +9,6 @@ import java.io.Serializable;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.dto.TcManticCategoriasDto;
 import mx.org.kaana.libs.cfg.Detalle;
-import mx.org.kaana.libs.recurso.Configuracion;
 
 /**
  *
@@ -41,7 +40,8 @@ public class MotorBusqueda implements Serializable{
 		try {
 			categoria= new Categoria();
 			dto= toCategoria();
-			regresar= categoria.getFather(dto.getClave()).getIdCategoria();			
+			if(dto.getNivel() > 1L)
+				regresar= categoria.getFather(dto.getClave()).getIdCategoria();			
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -87,4 +87,19 @@ public class MotorBusqueda implements Serializable{
 		} // catch		
 		return regresar.toString();
 	} // doCompletarClave
+	
+	public boolean isChild() throws Exception{
+		boolean regresar         = false;
+		Categoria categoria      = null;
+		TcManticCategoriasDto dto= null;
+		try {
+			dto= toCategoria();
+			categoria= new Categoria();
+			regresar= categoria.isChild(dto.getClave(), dto.getNivel().intValue());
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // getChilds
 }
