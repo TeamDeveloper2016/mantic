@@ -13,7 +13,7 @@ public class Transaccion extends IBaseTnx{
 
 	public Transaccion(TcManticCategoriasDto dto) {
 		this.dto = dto;
-	}
+	} // Transaccion
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
@@ -26,11 +26,14 @@ public class Transaccion extends IBaseTnx{
 				case MODIFICAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.dto)>= 1L;
 					break;
+				case ELIMINAR:
+					regresar= DaoFactory.getInstance().delete(sesion, TcManticCategoriasDto.class, this.dto.getKey())>= 1L;
+					break;
 			} // switch
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
 		return regresar;
-	}
+	} // ejecutar
 }
