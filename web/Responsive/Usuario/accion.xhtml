@@ -75,8 +75,7 @@
 							<f:selectItem itemLabel="001" itemValue="1"/>					
             </p:selectOneMenu>
             <h:outputText value="Notificar por correo: " />
-            <p:selectBooleanButton id="enviarCorreo" onLabel="Si" offLabel="No" onIcon="ui-icon-check" offIcon="ui-icon-close" style="width:60px">
-            </p:selectBooleanButton>
+            <p:selectBooleanButton id="enviarCorreo" onLabel="Si" offLabel="No" onIcon="ui-icon-check" offIcon="ui-icon-close" styleClass="janal-text-white"/>
 					</p:panelGrid>
 				</div>
 			</div>
@@ -84,13 +83,12 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this" action="filtro" ajax="false"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="filtro" ajax="false" immediate="true"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this" action="filtro" ajax="false" styleClass="janal-text-white"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="filtro" ajax="false" immediate="true" styleClass="janal-text-white"/>
 		</div>
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" icon="fa fa-check" process="@this" action="filtro" ajax="false"/>
-			<p:commandButton id="cancelarIcon" icon="fa fa-close" process="@this" action="filtro" ajax="false" immediate="true"/>
+			<p:commandButton id="aceptarIcon" icon="fa fa-check" process="@this" action="filtro" ajax="false" styleClass="janal-text-whitec"/>
+			<p:commandButton id="cancelarIcon" icon="fa fa-close" process="@this" action="filtro" ajax="false" immediate="true" styleClass="janal-text-white"/>
 		</div>
-		
 	</ui:define>
 </ui:composition>
