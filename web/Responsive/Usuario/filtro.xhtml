@@ -6,44 +6,66 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
-                template="/WEB-INF/plantillas/filtro.xhtml">
+                template="/WEB-INF/plantillas/filtroResponsive.xhtml">
     <ui:param name="titulo" value="Filtro" />
     <ui:define name="librerias">
         <script type="text/javascript">
+					function showPanelFind(id){
+						if($('#'+id).hasClass('lg-pantalla')){
+							$('#'+id).removeClass('lg-pantalla');
+							$('#'+id).addClass('xs-pantalla');
+						} // if
+						else{
+							$('#'+id).removeClass('xs-pantalla');
+							$('#'+id).addClass('lg-pantalla');
+						} // else
+					} // showPanelFind
         </script>
         <style type="text/css">            
         </style>
     </ui:define>
     <ui:define name="contenido">        
-        <p:panelGrid columns="3" layout="grid" columnClasses="janal-wid, janal-wid-3, janal-wid-90">          
-          <p:panel header="Busqueda:" >
+			<div class="janal-align-right xs-pantalla">
+				<p:commandButton icon="fa fa-search" onstart="showPanelFind('panelBusqueda');"/>
+				<p:spacer height="5px"/>		
+			</div>			
+			<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+				<div class="ui-grid-row janal-grid-row">
+					<div class="ui-grid-col-3">
+						<p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla">
               <h:panelGrid styleClass="janal-wid-100">
-                <p:outputLabel for="nombre" value="Nombre:"/>
-                <p:inputText id="nombre" styleClass="janal-wid-90"/>              
-                <p:outputLabel for="color" value="Color:"/>
-                <p:inputText id="color" styleClass="janal-wid-90"/>              
-                <p:outputLabel for="año" value="Año:"/>
-                <p:inputText id="año" styleClass="janal-wid-90"/>   
-                <p:outputLabel for="calculadora" value="Calculadora:"/>
-                <p:inputText id="calculadora">  
+                <p:outputLabel for="nombreSentinel" value="Nombre:"/>
+                <p:inputText id="nombreSentinel" styleClass="janal-wid-100-txt"/>              
+                <p:outputLabel for="colorSentinel" value="Color:"/>
+                <p:inputText id="colorSentinel" styleClass="janal-wid-100-txt"/>              
+                <p:outputLabel for="añoSentinel" value="Año:"/>
+                <p:inputText id="añoSentinel" styleClass="janal-wid-100-txt"/>   
+                <p:outputLabel for="calculadoraSentinel" value="Calculadora:"/>
+                <p:inputText id="calculadoraSentinel" styleClass="janal-wid-100-txt">  
                     <pe:calculator/>  
                 </p:inputText>   
               </h:panelGrid>
               <p:separator/>
-              <div class="janal-align-right">
-                <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter"  oncomplete="janal.desbloquear()"/>
+              <div class="janal-align-right lg-pantalla">
+                <p:commandButton id="buscarSentinel" value="Buscar" icon="fa fa-filter"  oncomplete="janal.desbloquear()"/>
               </div>
-          </p:panel>
-          <p:spacer/>
-          <h:panelGrid columns="1" styleClass="janal-wid-100">
-            <p:dataTable var="car" value="#{kajoolBienvenida.cars}" rows="6" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="6,12,16" reflow="true" selectionMode="single" rowKey="#{car.id}">
-              <f:facet name="header">
-                  <h:panelGrid columns="2">
-                      <p:outputLabel value="Filtro" styleClass="janal-align-left"/>
-                      <p:menuButton value="Opciones">
-                          <p:menuitem id="agregar" icon="fa fa-plus" value="Agregar" action="accion" process="@this" ajax="false" immediate="true"/>
-                      </p:menuButton>
-                  </h:panelGrid>                           
+              <div class="janal-align-right xs-pantalla">
+                <p:commandButton id="buscarSentinelIcon" icon="fa fa-filter"  oncomplete="janal.desbloquear()"/>
+              </div>
+						</p:panel>
+					</div>
+					<p:spacer/>
+					<div class="ui-grid-col-9">
+						<p:dataTable var="car" value="#{kajoolBienvenida.cars}" rows="6" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="6,12,16" reflow="true" selectionMode="single" rowKey="#{car.id}">
+              <f:facet name="header">         
+								<div class="lg-pantalla">
+									<p:menuButton value="Opciones">
+										<p:menuitem id="agregar" icon="fa fa-plus" value="Agregar" action="accion" process="@this" ajax="false" immediate="true"/>
+									</p:menuButton>
+								</div>
+								<div class="xs-pantalla">
+									<p:commandButton id="agregarIcon" icon="fa fa-plus" action="accion" process="@this" ajax="false" immediate="true"/>
+								</div>                       
               </f:facet>
                 <p:column headerText="Id" sortBy="#{car.id}">
                    <h:outputText value="#{car.id}" />
@@ -59,7 +81,8 @@
                 </p:column>
               <f:facet name="footer">DataTable Footer</f:facet>
             </p:dataTable>
-          </h:panelGrid>          
-        </p:panelGrid>                
+					</div>
+				</div>
+			</div>			
     </ui:define>    
 </ui:composition>
