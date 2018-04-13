@@ -52,6 +52,8 @@
           tc_mantic_categorias
         where 
           {condicion}
+				order by 
+					clave, nivel
       </select>
       <select id="identically">
         select      
