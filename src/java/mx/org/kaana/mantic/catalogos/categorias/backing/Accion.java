@@ -104,7 +104,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				idCategoriaParent= Long.valueOf(this.attrs.get("parentNodo").toString());			
 				if(!idCategoria.equals(idCategoriaParent)){												
 					regresar.setClave(toClave(idCategoria));		
-					regresar.setNivel(parent.getNivel() + 1L);					
+					regresar.setNivel(parent!= null ? parent.getNivel() + 1L : 1L);							
 				} // if								
 			} // if													
 			regresar.setIdUsuario(JsfBase.getIdUsuario());									
