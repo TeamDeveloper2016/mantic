@@ -72,9 +72,9 @@
 				from
 					tc_mantic_categorias
 				where 
-					nombre like '%{nombre}%'
+					lower(nombre) like lower('%{nombre}%')
 				and 
-					descripcion like '%{descripcion}%'
+					lower(descripcion) like lower('%{descripcion}%')
 				order by 
 					clave, nivel
 			</select>
