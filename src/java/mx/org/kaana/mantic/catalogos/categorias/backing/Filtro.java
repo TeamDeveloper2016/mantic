@@ -8,8 +8,10 @@ import mx.org.kaana.libs.formato.Error;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.dto.TcManticCategoriasDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
@@ -17,6 +19,8 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.categorias.reglas.MotorBusqueda;
+import mx.org.kaana.mantic.catalogos.categorias.reglas.Transaccion;
 
 @ManagedBean(name="manticCatalogosCategoriasFiltro")
 @ViewScoped
@@ -68,4 +72,27 @@ public class Filtro extends Comun implements Serializable{
 		} // catch
 		return "accion".concat(Constantes.REDIRECIONAR);
 	} // doAccion
+	
+	public void doEliminar(){
+		Transaccion transaccion= null;
+		Entity categoria       = null;
+		MotorBusqueda motor    = null;
+		try {
+			categoria= (Entity) this.attrs.get("seleccionado");
+			motor= new MotorBusqueda(categoria.getKey());
+			if(motor.isChild()){
+				transaccion= new Transaccion(new TcManticCategoriasDto(categoria.getKey()));
+				if(transaccion.ejecutar(EAccion.ELIMINAR))
+					JsfBase.addMessage("Eliminar categoría", "La categoría se ha eliminado correctamente.", ETipoMensaje.ERROR);
+				else
+					JsfBase.addMessage("Eliminar categoría", "Ocurrió un error al eliminar la categoría.", ETipoMensaje.ERROR);					
+			} // if
+			else
+				JsfBase.addMessage("Eliminar categoría", "No es posible eliminar la categoría, contiene dependencias.", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // doEliminar
 }
