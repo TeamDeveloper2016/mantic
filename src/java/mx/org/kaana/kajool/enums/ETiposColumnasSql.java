@@ -1,14 +1,12 @@
 package mx.org.kaana.kajool.enums;
 
 /**
- *@company KAANA
- *@project KAJOOL (Control system polls)
- *@date Jul 2, 2012
- *@time 4:24:52 PM
- *@author Team Developer 2016 <team.developer@kaana.org.mx>
+ * @company KAANA
+ * @project KAJOOL (Control system polls)
+ * @date Jul 2, 2012
+ * @time 4:24:52 PM
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-
-
 public enum ETiposColumnasSql {
 
   //ORACLE
@@ -16,22 +14,23 @@ public enum ETiposColumnasSql {
   VARCHAR2("VARCHAR"),
   TIMESTAMP("TIMESTAMP"),
   DATE("DATE"),
-	BLOB("BLOB"),
+  BLOB("BLOB"),
   DOUBLE("DOUBLE"),
-
   //MYSQL
-   VARCHAR("VARCHAR"),
-   INT("INT"),
-   INTEGER("INTEGER");
+  VARCHAR("VARCHAR"),
+  INT("INT"),
+  INTEGER("INTEGER"),
+  DECIMAL("DECIMAL");
 
-   private String tipo;
+  private String tipo;
 
-   private ETiposColumnasSql(String tipo) {
-     this.tipo = tipo;
-   }
+  private ETiposColumnasSql(String tipo) {
+    this.tipo = tipo;
+  }
 
-   public String getTipo() {
-     return this.tipo;
-   }
+  public String getTipo() {
+    return this.tipo;
+  }
 
+  
 }
