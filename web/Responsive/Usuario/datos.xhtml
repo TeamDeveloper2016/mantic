@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Grid" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+		</script>
+		<style type="text/css">           
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="janal-column-right">
+			<p:commandButton icon="fa fa-save" styleClass="janal-text-white"/>                        
+			<p:commandButton icon="fa fa-check" styleClass="janal-text-white"/>                        
+			<p:commandButton icon="fa fa-close" styleClass="janal-text-white"/>                        
+			<p:commandButton icon="fa fa-gear" styleClass="janal-text-white"/>                        
+		</div>        
+		<p:spacer height="15px"/>
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView>
+            <p:tab title="General" >
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								
+								<p:outputLabel for="nombre" value="Nombre:"/>
+								<p:inputText id="nombre" styleClass="janal-wid-100-txt"/>                    
+								<p:outputLabel for="apellido" value="Apellido:"/>
+								<p:inputText id="apellido" styleClass="janal-wid-100-txt"/>                    
+								<p:outputLabel for="email" value="E-mail"/>
+								<p:inputText id="email" styleClass="janal-wid-100-txt"/>                    
+								<p:outputLabel for="telefono" value="Telefono:"/>
+								<p:selectOneMenu id="telefono" styleClass="janal-wid-100-txt">
+									<f:selectItem itemLabel="Casa" itemValue="0"/>
+									<f:selectItem itemLabel="Móvil" itemValue="1"/>
+									<f:selectItem itemLabel="Trabajo" itemValue="2"/>
+								</p:selectOneMenu>    								                
+								<p:outputLabel for="sexo" value="Sexo:"/>
+								<p:selectOneRadio id="sexo">
+									<f:selectItem itemLabel="H" itemValue="0"/>
+									<f:selectItem itemLabel="M" itemValue="1"/>
+								</p:selectOneRadio>
+              </p:panelGrid>
+						</p:tab>
+						<p:tab title="Afiliación">
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								
+								<p:outputLabel for="empresa" value="Empresa:"/>
+								<p:inputText id="empresa" styleClass="janal-wid-100-txt"/>                    
+								<p:outputLabel for="sitio" value="Sitio web:"/>
+								<p:inputText id="sitio" styleClass="janal-wid-100-txt"/>                    
+								<p:outputLabel for="estatus" value="Estatus:"/>
+								<p:inputText id="estatus" styleClass="janal-wid-100-txt"/> 
+								<p:outputLabel for="estatus" value="Estatus:"/>
+								<p:selectManyCheckbox id="basic">
+									<f:selectItem itemLabel="Xbox One" itemValue="Xbox One" />
+									<f:selectItem itemLabel="PS4" itemValue="PS4" />
+									<f:selectItem itemLabel="Wii U" itemValue="Wii U" />
+								</p:selectManyCheckbox>
+								<p:outputLabel for="observaciones" value="Observaciones:"/>
+								<p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt"/>   								
+								<p:outputLabel for="popupLine" value="Fecha:" />
+								<p:calendar id="popupLine" styleClass="janal-wid-100-txt" mode="inline"/>
+							</p:panelGrid>
+            </p:tab>
+						<p:tab title="Correo">
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								
+								<p:outputLabel for="correo" value="Correo:"/>
+								<p:editor id="correo" styleClass="janal-wid-100-txt" height="200"/>                    																
+							</p:panelGrid>
+            </p:tab>
+            <p:tab title="Tabla">
+							<h:panelGrid columns="1" styleClass="janal-wid-100">
+                <p:dataTable var="car" value="#{kajoolBienvenida.cars}" rows="6" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="6,12,16" reflow="true" selectionMode="single" rowKey="#{car.id}">
+                  <f:facet name="header">                      
+                    <p:menuButton value="Opciones">
+											<p:menuitem id="agregar" icon="fa fa-plus" value="Agregar" action="accion" process="@this" ajax="false" immediate="true"/>
+                    </p:menuButton>                                            
+                  </f:facet>
+									<p:column headerText="Id" sortBy="#{car.id}">
+										<h:outputText value="#{car.id}" />
+									</p:column>
+									<p:column headerText="Año" sortBy="#{car.year}">
+										<h:outputText value="#{car.year}" />
+									</p:column>
+									<p:column headerText="Nombre" sortBy="#{car.brand}">
+										<h:outputText value="#{car.brand}" />
+									</p:column>
+									<p:column headerText="Color" sortBy="#{car.color}">
+										<h:outputText value="#{car.color}" />
+									</p:column>
+                  <f:facet name="footer">DataTable Footer</f:facet>
+                </p:dataTable>
+              </h:panelGrid>      
+            </p:tab>
+					</p:tabView>
+				</div>					
+			</div>				
+		</div>								
+	</ui:define>    
+	<ui:define name="acciones">
+		<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this" action="filtro" ajax="false" styleClass="janal-text-white"/>
+		<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="filtro" ajax="false" immediate="true" styleClass="janal-text-white"/>
+	</ui:define>
+</ui:composition>
