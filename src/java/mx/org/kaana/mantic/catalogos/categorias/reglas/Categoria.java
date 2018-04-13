@@ -26,7 +26,7 @@ import mx.org.kaana.kajool.db.dto.TcManticCategoriasDto;
 
 public class Categoria extends Maestro implements IArbol, Serializable {
 
-  private static final long serialVersionUID=-6669091050872534236L;
+  private static final long serialVersionUID= -6669091050872534236L;
 
   public Categoria() {
     super(
@@ -38,12 +38,12 @@ public class Categoria extends Maestro implements IArbol, Serializable {
       new Detalle(3, 2, 2, "0", "[1..99]", ""),
       new Detalle(4, 2, 2, "0", "[1..99]", ""),
       new Detalle(5, 2, 2, "0", "[1..99]", ""))));
-  }
+  } // Categoria
 
   @Override
   public List<TcManticCategoriasDto> toFather(String value) throws Exception {
-    List<TcManticCategoriasDto> regresar=new ArrayList<TcManticCategoriasDto>();
-    Map<String, Object> params    =new HashMap<String, Object>();
+    List<TcManticCategoriasDto> regresar= new ArrayList<>();
+    Map<String, Object> params          = new HashMap<>();
     String[] list=uniqueKey(toCodeAll(value), value);
     for (String clave : list) {
       params.put("clave", clave);
@@ -53,21 +53,21 @@ public class Categoria extends Maestro implements IArbol, Serializable {
       } // if
     } // for
     return regresar;
-  }
+  } // tofather
 
   private List<TcManticCategoriasDto> toChildren(String value, int level, int child) throws Exception {
-    Map<String, Object> params=new HashMap<String, Object>();
+    Map<String, Object> params=new HashMap<>();
     value=toOnlyKey(value, level+child);
     params.put(Constantes.SQL_CONDICION, "clave like '".concat(value).concat("%'".concat(" and nivel="+(level+child))).concat(" "));
     List<TcManticCategoriasDto> regresar=(List) DaoFactory.getInstance().findViewCriteria(TcManticCategoriasDto.class, params, Constantes.SQL_TODOS_REGISTROS);
     params.clear();
     return regresar;
-  }
+  } // toChildren
 
   @Override
   public List<TcManticCategoriasDto> toChildren(String value, int level) throws Exception {
     return toChildren(value, level, 0);
-  }
+  } // toChildren
 
   @Override
   public boolean isChild(String value, int level) throws Exception {
@@ -75,20 +75,20 @@ public class Categoria extends Maestro implements IArbol, Serializable {
     boolean regresar          =list.isEmpty();
     list.clear();
     return regresar;
-  }
+  } // isChild
 
   private PageRecords toChildren(String value, int level, int child, int first, int records) throws Exception {
-    Map<String, Object> params=new HashMap<String, Object>();
+    Map<String, Object> params=new HashMap<>();
     value=toOnlyKey(value, level+child);
     params.put(Constantes.SQL_CONDICION, "clave like '".concat(value).concat("%'".concat(" and nivel="+(level+child))).concat(" "));
     PageRecords regresar=DaoFactory.getInstance().findPage(TcManticCategoriasDto.class, params, first, records);
     params.clear();
     return regresar;
-  }
+  } // toChildren
 
   public PageRecords toChildren(String value, int level, int first, int records) throws Exception {
     return toChildren(value, level, 0, first, records);
-  }
+  } // toChildren
 
   public int toCountChildren(String value, int level) throws Exception {
     int regresar              =0;
@@ -102,24 +102,24 @@ public class Categoria extends Maestro implements IArbol, Serializable {
       // y realizar una reclasificacion de la llave
     } // if		
     return regresar;
-  }
+  } // toCountChildren
 
   public String toNextKey(String value, int level, int increment) throws Exception {
     int child=toCountChildren(value, level);
     String tK=toOnlyKey(value, level);
     return toCode(tK+(child+increment));
-  }
+  } // toNextKey
 
   public String toNextKey(String value, int level) throws Exception {
     return toNextKey(value, level, 1);
-  }
+  } // toNextKey
 
   public String toForceNextKey(String value, int level) throws Exception {
-    StringBuilder regresar = new StringBuilder();
-    String parteIzq        = null;
-    String parteDer        = null;
-    String parteCen        = null;
-    int incremento         = 0;
+    StringBuilder regresar= new StringBuilder();
+    String parteIzq       = null;
+    String parteDer       = null;
+    String parteCen       = null;
+    int incremento        = 0;
     parteIzq = value.substring(0, (level*2)-2);
     parteCen = value.substring((level*2)-2, (level*2));
     parteDer = value.substring((level*2));
@@ -131,20 +131,20 @@ public class Categoria extends Maestro implements IArbol, Serializable {
     regresar.append(String.valueOf(incremento));
     regresar.append(parteDer);
     return regresar.toString();
-  }
+  } // toForceNextKey
 
   private List<TcManticCategoriasDto> toAllChildren(String value, int level, int child) throws Exception {
-    Map<String, Object> params=new HashMap<String, Object>();
+    Map<String, Object> params= new HashMap<>();
     value=toOnlyKey(value, level+child);
     params.put(Constantes.SQL_CONDICION, "clave like '".concat(value).concat("%'".concat(" and nivel>="+(level+child))).concat(" "));
     List<TcManticCategoriasDto> regresar=(List) DaoFactory.getInstance().findViewCriteria(TcManticCategoriasDto.class, params, Constantes.SQL_TODOS_REGISTROS);
     params.clear();
     return regresar;
-  }
+  } // toAllChildren
 
   public List<TcManticCategoriasDto> toAllChildren(String value, int level) throws Exception {
     return toAllChildren(value, level, 0);
-  }
+  } // toAllChildren
 
   public TcManticCategoriasDto getFather(String value) throws Exception {
     TcManticCategoriasDto regresar=null;
@@ -161,5 +161,5 @@ public class Categoria extends Maestro implements IArbol, Serializable {
       } // else
     } // if	
     return regresar;
-  }
+  } // getFather
 }
