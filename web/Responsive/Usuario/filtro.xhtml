@@ -47,10 +47,10 @@
               </h:panelGrid>
               <p:separator/>
               <div class="janal-align-right lg-pantalla">
-                <p:commandButton id="buscarSentinel" value="Buscar" icon="fa fa-filter"  oncomplete="janal.desbloquear()"/>
+                <p:commandButton id="buscarSentinel" value="Buscar" icon="fa fa-filter"  oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
               </div>
               <div class="janal-align-right xs-pantalla">
-                <p:commandButton id="buscarSentinelIcon" icon="fa fa-filter"  oncomplete="janal.desbloquear()"/>
+                <p:commandButton id="buscarSentinelIcon" icon="fa fa-filter"  oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
               </div>
 						</p:panel>
 					</div>
@@ -59,12 +59,12 @@
 						<p:dataTable var="car" value="#{kajoolBienvenida.cars}" rows="6" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="6,12,16" reflow="true" selectionMode="single" rowKey="#{car.id}">
               <f:facet name="header">         
 								<div class="lg-pantalla">
-									<p:menuButton value="Opciones">
+									<p:menuButton value="Opciones" styleClass="janal-text-white">
 										<p:menuitem id="agregar" icon="fa fa-plus" value="Agregar" action="accion" process="@this" ajax="false" immediate="true"/>
 									</p:menuButton>
 								</div>
 								<div class="xs-pantalla">
-									<p:commandButton id="agregarIcon" icon="fa fa-plus" action="accion" process="@this" ajax="false" immediate="true"/>
+									<p:commandButton id="agregarIcon" icon="fa fa-plus" action="accion" process="@this" ajax="false" immediate="true" styleClass="janal-text-white"/>
 								</div>                       
               </f:facet>
                 <p:column headerText="Id" sortBy="#{car.id}">

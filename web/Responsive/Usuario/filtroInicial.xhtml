@@ -26,12 +26,11 @@
                 <p:inputText id="calculadoraInicial">  
                     <pe:calculator/>  
                 </p:inputText>                 
-                <p:commandButton id="buscarInicial" value="Buscar" icon="fa fa-filter"  oncomplete="janal.desbloquear()"/>                                                   
+                <p:commandButton id="buscarInicial" value="Buscar" icon="fa fa-filter"  oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>                                                   
         </p:panelGrid>
-        
             <p:dataTable var="car" value="#{kajoolBienvenida.cars}" rows="6" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="6,12,16" reflow="true" selectionMode="single" rowKey="#{car.id}">
               <f:facet name="header">                  
-                      <p:menuButton value="Opciones">
+                      <p:menuButton value="Opciones" styleClass="janal-text-white">
                           <p:menuitem id="agregar" icon="fa fa-plus" value="Agregar" action="accion" process="@this" ajax="false" immediate="true"/>
                       </p:menuButton>                  
               </f:facet>
