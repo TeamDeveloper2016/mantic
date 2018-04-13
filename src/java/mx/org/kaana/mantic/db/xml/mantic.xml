@@ -78,6 +78,421 @@
 				order by 
 					clave, nivel
 			</select>
-		</unit>			
+		</unit>	
+         <unit id="TrManticArticuloPrecioSugeridoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_articulo_precio_sugerido
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_articulo_precio_sugerido
+        where      
+          id_proveedor = {idProveedor} and precio = {precio} and descuento = {descuento} and id_articulo = {idArticulo} and id_articulo_precio_sugerido = {idArticuloPrecioSugerido}
+      </select>
+    </unit>
+    
+     <unit id="TrManticAlmacenDomicilioDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_almacen_domicilio
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_almacen_domicilio
+        where      
+          id_almacen_domicilio = {idAlmacenDomicilio} and id_almacen = {idAlmacen} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
+      </select>
+    </unit>
+    
+    <unit id="TrManticAlmacenTipoContactoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_almacen_tipo_contacto
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_almacen_tipo_contacto
+        where      
+          id_almacen = {idAlmacen} and id_almacen_tipo_contacto = {idAlmacenTipoContacto} and id_tipo_contacto = {idTipoContacto}
+      </select>
+    </unit>
+    <unit id="TrManticArticuloClienteDescuentoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_articulo_cliente_descuento
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_articulo_cliente_descuento
+        where      
+          vigencia_final = {vigenciaFinal} and vigencia_inicial = {vigenciaInicial} and id_persona = {idPersona} and id_articulo_cliente_descuentio = {idArticuloClienteDescuentio} and porcentaje = {porcentaje} and id_articulo = {idArticulo}
+      </select>
+    </unit>
+    
+    <unit id="TrManticArticuloCodigoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_articulo_codigo
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_articulo_codigo
+        where      
+          codigo = '{codigo}' and id_articulo_codigo = {idArticuloCodigo} and id_articulo = {idArticulo}
+      </select>
+    </unit>
+    
+     <unit id="TrManticArticuloPresentacionDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_articulo_presentacion
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_articulo_presentacion
+        where      
+          id_articulo_presentacion = {idArticuloPresentacion} and id_articulo = {idArticulo} and id_presentacion_unidad_medida = {idPresentacionUnidadMedida}
+      </select>
+    </unit>
+    
+     <unit id="TrManticArticuloProveedorDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_articulo_proveedor
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_articulo_proveedor
+        where      
+          id_proveedor = {idProveedor} and id_proveedor_persona = {idProveedorPersona} and id_articulo_proveedor = {idArticuloProveedor} and id_articulo = {idArticulo} and registro = {registro}
+      </select>
+    </unit>
+    
+     <unit id="TrManticArticuloTipoVentaDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_articulo_tipo_venta
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_articulo_tipo_venta
+        where      
+          id_articulo_tipo_venta = {idArticuloTipoVenta} and id_articulo = {idArticulo} and id_tipo_venta = {idTipoVenta}
+      </select>
+    </unit>
+    
+     <unit id="TrManticArticulosPreciosOfertadosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_articulos_precios_ofertados
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_articulos_precios_ofertados
+        where      
+          id_proveedor = {idProveedor} and precio = {precio} and id_articulo_precio_ofertado = {idArticuloPrecioOfertado} and descuento = {descuento} and id_articulo = {idArticulo}
+      </select>
+    </unit>
+    
+     <unit id="TrManticClientesRepresentantesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_clientes_representantes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_clientes_representantes
+        where      
+          id_cliente = {idCliente} and id_cliente_representante = {idClienteRepresentante} and id_representante = {idRepresentante} and id_principal = {idPrincipal}
+      </select>
+    </unit>
+    
+    <unit id="TrManticEmpaqueUnidadMedidaDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_empaque_unidad_medida
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_empaque_unidad_medida
+        where      
+          id_unidad_medida = {idUnidadMedida} and id_empaque_unidad_medida = {idEmpaqueUnidadMedida} and id_empaque = {idEmpaque}
+      </select>
+    </unit>
+    
+     <unit id="TrManticEmpresaDomicilioDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_empresa_domicilio
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_empresa_domicilio
+        where      
+          id_usuario = {idUsuario} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal} and id_empresa_domicilio = {idEmpresaDomicilio} and id_empresa = {idEmpresa}
+      </select>
+    </unit>
+    <unit id="TrManticEmpresaPersonalDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_empresa_personal
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_empresa_personal
+        where      
+          id_persona = {idPersona} and id_puesto = {idPuesto} and id_empresa_persona = {idEmpresaPersona} and id_empresa = {idEmpresa}
+      </select>
+    </unit>
+    
+    <unit id="TrManticEmpresaTipoContactoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_empresa_tipo_contacto
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_empresa_tipo_contacto
+        where      
+          id_empresa_tipo_contacto = {idEmpresaTipoContacto} and id_empresa = {idEmpresa} and id_tipo_contacto = {idTipoContacto}
+      </select>
+    </unit>
+    
+     <unit id="TrManticOrdenCompraCargoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_orden_compra_cargo
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_orden_compra_cargo
+        where      
+          id_orden_compra = {idOrdenCompra} and id_orden_compra_cargo = {idOrdenCompraCargo} and porcentaje = {porcentaje} and importe = {importe} and id_cargo_compra = {idCargoCompra}
+      </select>
+    </unit>
+    
+     <unit id="TrManticPersonaDomicilioDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_persona_domicilio
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_persona_domicilio
+        where      
+          id_persona = {idPersona} and id_persona_domicilio = {idPersonaDomicilio} and id_usuario = {idUsuario} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
+      </select>
+    </unit>
+    
+    <unit id="TrManticPersonaTipoContactoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_persona_tipo_contacto
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_persona_tipo_contacto
+        where      
+          id_persona = {idPersona} and id_persona_tipo_contacto = {idPersonaTipoContacto} and id_tipo_contacto = {idTipoContacto}
+      </select>
+    </unit>
+    
+     <unit id="TrManticProveedorDomicilioDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_proveedor_domicilio
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_proveedor_domicilio
+        where      
+          id_proveedor = {idProveedor} and id_proveedor_domicilio = {idProveedorDomicilio} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
+      </select>
+    </unit>
+    
+     <unit id="TrManticProveedorPagoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_proveedor_pago
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_proveedor_pago
+        where      
+          id_proveedor_pago = {idProveedorPago} and id_proveedor = {idProveedor} and id_tipo_pago = {idTipoPago}
+      </select>
+    </unit>
+    
+    <unit id="TrManticProveedorPersonaDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_proveedor_persona
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_proveedor_persona
+        where      
+          id_proveedor = {idProveedor} and id_persona = {idPersona} and id_proveedor_persona = {idProveedorPersona} and id_responsable = {idResponsable}
+      </select>
+    </unit>
+    
+    <unit id="TrManticProveedorTipoContactoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_proveedor_tipo_contacto
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_proveedor_tipo_contacto
+        where      
+          id_proveedor = {idProveedor} and id_proveedor_tipo_contacto = {idProveedorTipoContacto} and id_tipo_contacto = {idTipoContacto}
+      </select>
+    </unit>
+    
+    <unit id="TrManticProveedoresAgentesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_proveedores_agentes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_proveedores_agentes
+        where      
+          id_proveedor = {idProveedor} and id_proveedor_agente = {idProveedorAgente} and id_principal = {idPrincipal} and id_agente = {idAgente}
+      </select>
+    </unit>
   </dml>    
 </process>
