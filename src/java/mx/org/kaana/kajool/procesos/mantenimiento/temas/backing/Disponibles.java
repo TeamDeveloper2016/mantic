@@ -71,7 +71,7 @@ public class Disponibles implements Serializable {
     TcManticPersonasDto persona = null;
     try {
       dto = (TcJanalUsuariosDto) DaoFactory.getInstance().findById(TcJanalUsuariosDto.class, JsfBase.getIdUsuario());
-      persona = (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, dto.getIdEmpleado());
+      persona = (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, dto.getIdPersona());
       persona.setEstilo(getTemaActivo().getName());
       transaccion = new Transaccion(persona);
       transaccion.ejecutar(EAccion.MODIFICAR);

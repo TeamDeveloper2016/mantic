@@ -129,7 +129,7 @@
         from
 					tc_janal_usuarios
         where
-					id_perfil = {idPerfil} and id_empleado = {idEmpleado} and id_entidad= {idEntidad}
+					id_perfil = {idPerfil} and id_persona = {idPersona}
       </select>			
 			<select id="findIds">
         select

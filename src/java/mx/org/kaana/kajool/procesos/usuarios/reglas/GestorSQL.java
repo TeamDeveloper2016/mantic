@@ -21,15 +21,15 @@ public class GestorSQL implements Serializable {
 
   private static final long serialVersionUID = -5143559192605075233L;
   private Long idUsuario;
-  private Long idEmpleado;
+  private Long idPersona;
 
-  public GestorSQL(Long idEmpleado) {
-    this(null, idEmpleado);
+  public GestorSQL(Long idPersona) {
+    this(null, idPersona);
   } // GestorSQL
 
-  public GestorSQL(Long idUsuario, Long idEmpleado) {
+  public GestorSQL(Long idUsuario, Long idPersona) {
     this.idUsuario = idUsuario;
-    this.idEmpleado = idEmpleado;
+    this.idPersona = idPersona;
   } // GestorSQL
 
   public Entity toDetalleUsuario() throws Exception {
@@ -49,17 +49,17 @@ public class GestorSQL implements Serializable {
     return regresar;
   } // toDetalleUsuario
 
-  public boolean validaUsuarioDelega(Session sesion, Long idEmpleado) throws Exception {
-    Entity usuariosDelega = getUsuarioDelega(sesion, idEmpleado);
+  public boolean validaUsuarioDelega(Session sesion, Long idPersona) throws Exception {
+    Entity usuariosDelega = getUsuarioDelega(sesion, idPersona);
     return usuariosDelega == null;
   } // validaUsuarioDelega
 
-  private Entity getUsuarioDelega(Session sesion, Long idEmpleado) throws Exception {
+  private Entity getUsuarioDelega(Session sesion, Long idPersona) throws Exception {
     Entity regresar = null;
     Map<String, Object> params = null;
     try {
       params = new HashMap<>();
-      params.put(Constantes.SQL_CONDICION, "id_empleado= ".concat(idEmpleado.toString()).concat(" and id_usuario= ").concat(this.idUsuario.toString()));
+      params.put(Constantes.SQL_CONDICION, "id_empleado= ".concat(idPersona.toString()).concat(" and id_usuario= ").concat(this.idUsuario.toString()));
       regresar = (Entity) DaoFactory.getInstance().toEntity(sesion, "TrJanalUsuariosDelegaDto", params);
     } // try
     catch (Exception e) {
@@ -71,11 +71,11 @@ public class GestorSQL implements Serializable {
     return regresar;
   } // getUsuarioDelega	
 
-  public Long getIdUsuarioDelega(Session sesion, Long idEmpleado) throws Exception {
+  public Long getIdUsuarioDelega(Session sesion, Long idPersona) throws Exception {
     Long regresar = -1L;
     Entity usuariosDelega = null;
     try {
-      usuariosDelega = getUsuarioDelega(sesion, idEmpleado);
+      usuariosDelega = getUsuarioDelega(sesion, idPersona);
       if (usuariosDelega != null) {
         regresar = usuariosDelega.toLong("idUsuarioDelega");
       }
@@ -91,8 +91,8 @@ public class GestorSQL implements Serializable {
     Map<String, Object> params = null;
     try {
       params = new HashMap<>();
-      params.put(Constantes.SQL_CONDICION, "id_empleado= " + this.idEmpleado);
-      regresar = (Entity) DaoFactory.getInstance().toEntity(sesion, "TcJanalEmpleadosDto", params);
+      params.put(Constantes.SQL_CONDICION, "id_persona= " + this.idPersona);
+      regresar = (Entity) DaoFactory.getInstance().toEntity(sesion, "TcJanalPersonasDto", params);
     } // try
     catch (Exception e) {
       throw e;
@@ -103,7 +103,7 @@ public class GestorSQL implements Serializable {
   public TcManticPersonasDto toEmpleado() throws Exception {
     TcManticPersonasDto regresar = null;
     try {
-      regresar = (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, this.idEmpleado);
+      regresar = (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, this.idPersona);
     } // try
     catch (Exception e) {
       throw e;
@@ -133,7 +133,7 @@ public class GestorSQL implements Serializable {
     Map<String, Object> params = null;
     try {
       params = new HashMap<>();
-      params.put("idEmpleado", this.idEmpleado);
+      params.put("idPersona", this.idPersona);
       regresar = (Entity) DaoFactory.getInstance().toEntity("VistaUsuariosDto", "findIdPersona", params);
     } // try
     catch (Exception e) {

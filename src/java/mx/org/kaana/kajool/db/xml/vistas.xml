@@ -7,9 +7,9 @@
     <unit id="VistaTcJanalUsuariosDto">
       <select id="acceso">
         select
-	  tc_janal_usuarios.id_usuario,  cuenta, contrasenia, tc_janal_usuarios.registro, tc_janal_perfiles.descripcion AS descripcion_perfil, tc_janal_usuarios.id_perfil,
-          tc_janal_grupos.descripcion AS descripcion_grupo, tc_mantic_personas.estilo, tc_janal_perfiles.id_menu, tc_mantic_personas.id_persona AS id_empleado, nombres, paterno primer_apellido,
-	  materno segundo_apellido, id_tipo_sexo, tc_janal_usuarios.id_entidad, tc_janal_grupos.id_grupo, tc_janal_grupos.clave AS clave_grupo, UPPER(tc_janal_entidades.descripcion) AS entidad
+	        tc_janal_usuarios.id_usuario,  cuenta, contrasenia, tc_janal_usuarios.registro, tc_janal_perfiles.descripcion as descripcion_perfil, tc_janal_usuarios.id_perfil,
+          tc_janal_grupos.descripcion as descripcion_grupo, tc_mantic_personas.estilo, tc_janal_perfiles.id_menu, tc_mantic_personas.id_persona as id_empleado, nombres, paterno primer_apellido,
+	        materno segundo_apellido, id_tipo_sexo, tc_janal_grupos.id_grupo, tc_janal_grupos.clave as clave_grupo
         from
           tc_janal_usuarios
         inner join
@@ -18,9 +18,7 @@
           tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
 	    inner join
 	      tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
-        inner join
-          tc_janal_entidades on tc_janal_usuarios.id_entidad = tc_janal_entidades.id_entidad
-        where
+      where
           tc_mantic_personas.cuenta = '{cuenta}' and tc_janal_usuarios.activo=1
       </select>
       <select id="recuperar">
@@ -33,43 +31,31 @@
         where
           tc_mantic_personas.cuenta='{cuenta}' and activo=1 and tc_mantic_personas.curp = '{curp}'
       </select>
-
-      <select id="centroTrabajo">
-        select
-          tc_kajool_escuelas.id_escuela,tc_kajool_escuelas.clave,tc_kajool_escuelas.nombres,tc_kajool_escuelas.id_servicio_educativo
-        from
-          tr_kajool_responsables_esc
-        inner join
-          tc_kajool_escuelas  on  tc_kajool_escuelas.id_escuela=tr_kajool_responsables_esc.id_escuela
-        where
-          tr_kajool_responsables_esc.id_empleado={idEmpleado}
-      </select>
-			<select id="detalleUsuarioPerfil">
+     	<select id="detalleUsuarioPerfil">
 				select 					
           tc_janal_usuarios.id_usuario,
 					tc_mantic_personas.cuenta,
 					tc_mantic_personas.contrasenia,
 					tc_janal_usuarios.registro,
-					tc_janal_perfiles.descripcion AS descripcion_perfil,
+					tc_janal_perfiles.descripcion as descripcion_perfil,
 					tc_janal_usuarios.id_perfil,
 					tc_mantic_personas.id_persona,
 					tc_mantic_personas.nombres,
-					IFNULL(tc_mantic_personas.paterno,'') primer_apellido,
-					IFNULL(tc_mantic_personas.materno,'') segundo_apellido,					
+					ifnull(tc_mantic_personas.paterno,'') primer_apellido,
+					ifnull(tc_mantic_personas.materno,'') segundo_apellido,					
 					tc_mantic_personas.id_tipo_sexo,										
-					tc_janal_grupos.descripcion AS descripcion_grupo,					
+					tc_janal_grupos.descripcion as descripcion_grupo,					
 					tc_mantic_personas.estilo,
 					tc_janal_perfiles.id_menu,
-				  tc_janal_usuarios.id_entidad,
           tc_janal_grupos.id_grupo, tc_janal_grupos.clave as clave_grupo
         from 					
           tc_janal_usuarios
         inner join
-          tc_mantic_personas ON tc_janal_usuarios.id_empleado = tc_mantic_personas.id_persona
+          tc_mantic_personas on tc_janal_usuarios.id_empleado = tc_mantic_personas.id_persona
 				inner join
-          tc_janal_perfiles ON tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+          tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
         inner join
-          tc_janal_grupos ON tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+          tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
         where
           tc_janal_usuarios.id_usuario= {idUsuario}
         and
@@ -502,13 +488,10 @@
 					if(isnull(tc_mantic_personas.paterno), ' ', tc_mantic_personas.paterno) primer_apellido,
 					if(isnull(tc_mantic_personas.materno), ' ', tc_mantic_personas.materno) segundo_apellido,
 				  tc_janal_perfiles.descripcion desc_perfil,				
-					tc_janal_entidades.descripcion desc_entidad,
 				  tc_janal_usuarios.activo,				
 				  lower(tc_mantic_personas.cuenta) cuenta				  				
 				from
 				  tc_janal_usuarios
-				inner join				
-          tc_janal_entidades on tc_janal_entidades.id_entidad = tc_janal_usuarios.id_entidad
 				inner join 				
 				  tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
         inner join				
@@ -546,7 +529,7 @@
 				inner join
 					tc_janal_usuarios on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado				
 				where
-					tc_mantic_personas.id_persona = {idEmpleado}
+					tc_mantic_personas.id_persona = {idPersona}
 			</select>
 		</unit>
 		<unit id="VistaDelegaPrivilegiosDto">
@@ -566,8 +549,7 @@
 					tc_mantic_personas.materno,
 					tc_mantic_personas.nombres,
 					concat(paterno,' ',materno,' ',nombres) nombre_completo,
-					tc_janal_perfiles.descripcion nombre_perfil,
-				  tc_janal_usuarios.id_entidad
+					tc_janal_perfiles.descripcion nombre_perfil
 				from
 					tr_janal_usuarios_delega
         inner join           					
@@ -675,19 +657,19 @@
 			</select>			
 			<select id="detalleUsuarioDelega">
 				select
-					tr_janal_usuarios_delega.id_usuario_delega AS id_key,
+					tr_janal_usuarios_delega.id_usuario_delega as id_key,
           tc_janal_usuarios.id_usuario,
 					tc_mantic_personas.cuenta,
 					tc_mantic_personas.contrasenia,
 					tc_janal_usuarios.registro,
-					tc_janal_perfiles.descripcion AS descripcion_perfil,
+					tc_janal_perfiles.descripcion as descripcion_perfil,
 					tc_janal_usuarios.id_perfil,
 					tc_mantic_personas.id_persona,
 					tc_mantic_personas.nombres,
-					IFNULL(tc_mantic_personas.paterno,'') primer_apellido,
-					IFNULL(tc_mantic_personas.materno,'') segundo_apellido,					
+					ifnull(tc_mantic_personas.paterno,'') primer_apellido,
+					ifnull(tc_mantic_personas.materno,'') segundo_apellido,					
 					tc_mantic_personas.id_tipo_sexo,										
-					tc_janal_grupos.descripcion AS descripcion_grupo,																				
+					tc_janal_grupos.descripcion as descripcion_grupo,																				
 					tc_mantic_personas.estilo,
 					tc_janal_perfiles.id_menu
         from
@@ -775,8 +757,7 @@
 					tc_janal_perfiles.id_menu,
 					tc_mantic_personas.cuenta,
 				  tc_janal_usuarios.id_usuario,
-	        concat(nombres,' ',primer_apellido,' ',segundo_apellido) usuario_perfil,
-          tc_janal_entidades.descripcion entidad
+	        concat(nombres,' ',primer_apellido,' ',segundo_apellido) usuario_perfil
 				 from
 					tc_janal_grupos
 				 inner join
@@ -785,91 +766,13 @@
 					tc_janal_usuarios on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil				
 				 inner join
 			    tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado			
-         inner join 
-          tc_janal_entidades on tc_janal_usuarios.id_entidad = tc_janal_entidades.id_entidad
-				 WHERE
-					tc_mantic_personas.id_persona= {idEmpleado}				 					
+         where
+					tc_mantic_personas.id_persona= {idPersona}				 					
 					and tc_janal_grupos.id_grupo= {idGrupo}
 					and tc_janal_usuarios.activo=1
 					and tc_janal_perfiles.acceso=1										
 			</select>
 		</unit>
-		<unit id="VistaPrivilegiosDto">
-			<select id="row">
-        select
-         tc_kajool_empleados.numero_empleado
-        from
-         tc_janal_usuarios
-				inner join
-				 tc_kajool_empleados on tc_janal_usuarios.id_empleado = tc_kajool_empleados.id_empleado
-        where
-         cuenta = '{cuenta}'
-      </select>
-			<select id="delega">
-        select
-					*
-				from
-					tr_janal_usuarios_delega
-				where
-					login = '{login}'
-				  and activo= 1
-				  and (now() &gt;= vigencia_ini and now() &lt;= vigencia_fin)
-      </select>
-		</unit>
-		<unit id="VistaTelefonosDto">
-			<select id="row">	
- 				 select
-					tr_kajool_personas_tipos_telefo.id_empleado_tipo_telefono id_key, tr_kajool_personas_tipos_telefo.*, tc_kajool_tipos_telefonos.descripcion
-				 from
-					tr_kajool_personas_tipos_telefo
-				 inner join
-					tc_kajool_tipos_telefonos on tr_kajool_personas_tipos_telefo.id_tipo_telefono = tc_kajool_tipos_telefonos.id_tipo_telefono
-				 where
-					tr_kajool_personas_tipos_telefo.id_empleado={idEmpleado}
-			</select>
-		</unit>
-		<unit id="VistaUrlsDto">
-			<select id="row">	
- 				 select
-					tr_kajool_personas_tipos_urls.id_empleado_tipo_url id_key, tr_kajool_personas_tipos_urls.*, tc_kajool_tipos_urls.descripcion
-				 from
-					tr_kajool_personas_tipos_urls
-				 inner join
-					tc_kajool_tipos_urls on tr_kajool_personas_tipos_urls.id_tipo_url = tc_kajool_tipos_urls.id_tipo_url
-				 where
-					tr_kajool_personas_tipos_urls.id_empleado={idEmpleado}
-			</select>
-		</unit>
-    <unit id="VistaPersonasDicapaDto">
-      <select id="row">	
-        select
-          tr_kajool_personas_discapa.id_empleado_tipo_discapacidad as id_key,
-          tc_kajool_tipos_discapacidad.id_tipo_discapacidad,
-          tc_kajool_tipos_discapacidad.descripcion,
-          tr_kajool_personas_discapa.id_empleado
-        from
-          tr_kajool_personas_discapa
-        inner join
-          tc_kajool_tipos_discapacidad on tc_kajool_tipos_discapacidad.id_tipo_discapacidad = tr_kajool_personas_discapa.id_tipo_discapacidad
-        where
-          tr_kajool_personas_discapa.id_empleado={idEmpleado}
-      </select>
-    </unit>
-    <unit id="VistaPersonasLenguasDto">
-      <select id="row">	
-        select
-          tr_kajool_personas_lenguas.id_empleado_lengua as id_key,
-          tr_kajool_personas_lenguas.id_empleado,
-          tr_kajool_personas_lenguas.id_lengua,
-          tc_kajool_lenguas.descripcion
-        from
-          tr_kajool_personas_lenguas
-        inner join
-          tc_kajool_lenguas on tc_kajool_lenguas.id_lengua = tr_kajool_personas_lenguas.id_lengua
-        where
-          tr_kajool_personas_lenguas.id_empleado={idEmpleado}
-      </select>
-    </unit>
     <unit id="VistaEntidadesMunicipiosDto">
       <select id="row">
          select
@@ -884,89 +787,7 @@
           tc_kajool_codigos_postales.id_codigo_postal={idCodigoPostal}
       </select>
     </unit>
-    <unit id="VistaEscuelasEscalasDto">
-      <select id="row">
-        select
-          tc_kajool_escuelas_escalas.id_escuela_escala as id_key,
-          tc_kajool_escuelas_escalas.rango,
-          tc_kajool_tipos_escalas.descripcion,
-          tc_kajool_tipos_escalas.id_tipo_escala
-        from
-          tc_kajool_tipos_escalas
-        inner join
-          tc_kajool_escuelas_escalas on tc_kajool_tipos_escalas.id_tipo_escala = tc_kajool_escuelas_escalas.id_tipo_escala
-        inner join
-          tr_kajool_mapas_escuelas on tr_kajool_mapas_escuelas.id_mapa_escuela = tc_kajool_escuelas_escalas.id_mapa_escuela
-        where
-          tr_kajool_mapas_escuelas.id_mapa_escuela= {idMapaEscuela}
-        order by
-          id_tipo_escala
-      </select>
-    </unit>
-    <unit id="VistaDatosGeneralesDto">
-      <select id="row">
-           select
-            tc_kajool_escuelas.id_escuela id_key, tc_kajool_escuelas.clave, tc_kajool_escuelas.nombres, tc_janal_municipios.descripcion municipio, tc_janal_entidades.descripcion entidad,
-            concat(tc_kajool_inmuebles.nomvial_m,' ',ifnull(tc_kajool_inmuebles.numext1_m, 's/n'),' ',tc_kajool_inmuebles.colonia) domicilio,
-            tc_kajool_inmuebles.entreca_m entre_calle,tc_kajool_inmuebles.ycalle_m ycalle,tc_kajool_turnos.clave turno,tc_kajool_sostenimientos.descripcion control,
-            ifnull(conteo_alumnos.alumnos,0) alumnos, ifnull(conteo_personal.personal,0) personal
-           from
-            tc_kajool_escuelas
-           inner join
-            tc_kajool_inmuebles on tc_kajool_inmuebles.id_escuela = tc_kajool_escuelas.id_escuela
-           inner join
-            tc_janal_entidades on tc_kajool_inmuebles.ent_m= tc_janal_entidades.clave
-           inner join
-            tc_janal_municipios on tc_kajool_inmuebles.mun_m= tc_janal_municipios.clave and tc_janal_entidades.id_entidad=tc_janal_municipios.id_entidad
-           inner join
-            tc_kajool_turnos on tc_kajool_turnos.id_turno = tc_kajool_escuelas.id_turno
-           inner join
-            tc_kajool_sostenimientos on tc_kajool_sostenimientos.id_sostenimiento = tc_kajool_escuelas.id_sostenimiento
-           left join
-            (select id_escuela, count(*) alumnos from tc_kajool_alumnos where id_escuela={idEscuela} group by id_escuela) conteo_alumnos on conteo_alumnos.id_escuela= tc_kajool_escuelas.id_escuela
-           left join
-            (select id_escuela, count(*) personal from tc_kajool_empleados where id_escuela={idEscuela} group by id_escuela) conteo_personal on conteo_personal.id_escuela= tc_kajool_escuelas.id_escuela
-           where
-            tc_kajool_escuelas.id_escuela={idEscuela}
-        </select>
-        <select id="responsable">
-           select
-            tc_kajool_personas.id_empleado id_key, tc_kajool_escuelas.id_escuela,
-            concat(tc_kajool_personas.nombres,' ',tc_kajool_personas.primer_apellido,' ',tc_kajool_personas.segundo_apellido) nombre, tc_kajool_personas.curp, tc_kajool_personas.domicilio
-           from
-            tc_kajool_escuelas
-           inner join
-            tr_kajool_responsables_esc on tr_kajool_responsables_esc.id_responsable_escuela = tc_kajool_escuelas.id_responsable
-           inner join
-            tc_kajool_empleados on tc_kajool_empleados.id_empleado=tr_kajool_responsables_esc.id_empleado
-           inner join
-             tc_kajool_personas on tc_kajool_empleados.id_empleado=tc_kajool_personas.id_empleado
-           where
-            tc_kajool_escuelas.id_escuela={idEscuela}
-        </select>
-        <select id="telefonosResponsable">
-           select
-            concat(tc_kajool_tipos_telefonos.descripcion,': (',tr_kajool_personas_tipos_telefo.lada,')-',tr_kajool_personas_tipos_telefo.telefono,
-            if(ifnull(extension,'')='', '', concat(' Ext. ',extension))) telefono
-           from
-            tr_kajool_personas_tipos_telefo
-           inner join
-            tc_kajool_tipos_telefonos on tr_kajool_personas_tipos_telefo.id_tipo_telefono =tc_kajool_tipos_telefonos.id_tipo_telefono
-           where
-            id_empleado={idEmpleado}
-        </select>
-        <select id="urlsResponsable">
-           select
-            concat(tc_kajool_tipos_urls.descripcion,': ',tr_kajool_personas_tipos_urls.url) url
-           from
-            tr_kajool_personas_tipos_urls
-           inner join
-            tc_kajool_tipos_urls on tr_kajool_personas_tipos_urls.id_tipo_url =tc_kajool_tipos_urls.id_tipo_url
-           where
-            id_empleado={idEmpleado}
-        </select>
-      </unit>
-			<unit id="VistaContadorAyudasDto">
+		<unit id="VistaContadorAyudasDto">
 				<select id="row">
 					select
 						tc_kajool_ayudas.id_ayuda as id_Key,
@@ -985,7 +806,6 @@
 						tc_kajool_contador_ayudas.id_ayuda, tc_kajool_ayudas.id_ayuda, tc_kajool_ayudas.clave
 				</select>
 			</unit>
-			
 			<unit id="VistaIndicadoresDirectivos">												
 				<select id="indicadoresGrupos">
 					select
@@ -1037,60 +857,6 @@
 			</select>
 		</unit>	
 				
-		<unit id="VistaGdoGpoDto">
-			<select id="row">
-				select
-          tr_kajool_escuelas_gdo_gpo.id_escuela_gdo_gpo as id_key,
-          concat(tr_kajool_escuelas_gdo_gpo.grado,'-',tr_kajool_escuelas_gdo_gpo.grupo) as grupo,
-          tc_kajool_ciclos_escolares.descripcion,
-          concat(tc_kajool_mapa_curricular.clave,'-',tc_kajool_mapa_curricular.descripcion) as mapa,
-          tr_kajool_escuelas_gdo_gpo.maximo_alumnos
-        from
-          tr_kajool_escuelas_gdo_gpo
-        inner join
-          tc_kajool_mapas_ciclos on tr_kajool_escuelas_gdo_gpo.id_mapa_ciclo = tc_kajool_mapas_ciclos.id_mapa_ciclo
-        inner join
-          tr_kajool_mapas_escuelas on tr_kajool_mapas_escuelas.id_mapa_escuela = tc_kajool_mapas_ciclos.id_mapa_escuela
-        inner join
-          tc_kajool_ciclos_escolares on tc_kajool_mapas_ciclos.id_ciclo_escolar = tc_kajool_ciclos_escolares.id_ciclo_escolar
-        inner join
-          tc_kajool_mapa_curricular on tr_kajool_mapas_escuelas.id_mapa_curricular = tc_kajool_mapa_curricular.id_mapa_curricular
-        where
-          tc_kajool_mapas_ciclos.id_ciclo_escolar={idCicloEscolar}
-        and
-          tc_kajool_mapas_ciclos.id_mapa_ciclo={idMapaCiclo}
-        and
-          (tc_kajool_mapa_curricular.id_tipo_mapa=2 or tc_kajool_mapa_curricular.id_tipo_mapa=3)
-        order by
-          tc_kajool_ciclos_escolares.descripcion
-			</select>
-		</unit>
-		<unit id="VistaPeriodosMapasEscuelaDto">
-			<select id="row">
-        select distinct
-          tc_kajool_periodos.id_periodo as id_key,
-          tc_kajool_periodos.consecutivo,
-          tc_kajool_mapa_curricular.descripcion
-        from
-          tc_kajool_mapas_ciclos
-        inner join
-          tr_kajool_mapas_escuelas on tr_kajool_mapas_escuelas.id_mapa_escuela = tc_kajool_mapas_ciclos.id_mapa_escuela
-        inner join
-          tc_kajool_mapa_curricular on tr_kajool_mapas_escuelas.id_mapa_curricular = tc_kajool_mapa_curricular.id_mapa_curricular
-        inner join
-          tc_kajool_mapa_detalle on tc_kajool_mapa_detalle.id_mapa_curricular = tc_kajool_mapa_curricular.id_mapa_curricular
-        inner join
-          tc_kajool_periodos on tc_kajool_periodos.id_periodo = tc_kajool_mapa_detalle.id_periodo
-        where
-          tc_kajool_mapas_ciclos.id_mapa_ciclo={idMapaCiclo}
-        and
-          tr_kajool_mapas_escuelas.id_escuela={idEscuela}
-        and
-        (tc_kajool_mapa_curricular.id_tipo_mapa=2 or tc_kajool_mapa_curricular.id_tipo_mapa=3)
-        order by
-        tc_kajool_periodos.consecutivo
-			</select>
-		</unit>
     <unit id="VistaPerfilesMenusEncabezadoDto">
       <select id="row">
         select
@@ -1115,55 +881,11 @@
          tr_janal_menus_enc_perfil.id_perfil={idPerfil} and tr_janal_menus_enc_perfil.id_menu_encabezado is not null
       </select>
     </unit>
-    <unit id="VistaTrKajoolAvancesCargaDto">
-      <select id="registros">
-        select
-          id_kajool_carga as id_key,
-          tr_kajool_avances_carga.nombre_archivo,
-          tc_kajool_estatus_carga.descripcion estatus,
-          tr_kajool_avances_carga.registro,
-          tc_kajool_tipos_cargas.descripcion tipo_carga,
-          concat(tc_kajool_personas.nombres,' ',tc_kajool_personas.primer_apellido,' ',tc_kajool_personas.segundo_apellido) usuario
-        from
-          tr_kajool_avances_carga
-        inner join
-          tc_kajool_estatus_carga on tc_kajool_estatus_carga.id_estatus_carga=tr_kajool_avances_carga.id_estatus_carga
-        inner join
-          tc_kajool_tipos_cargas on tc_kajool_tipos_cargas.id_tipo_carga = tr_kajool_avances_carga.id_tipo_carga
-        inner join
-          tc_janal_usuarios on tc_janal_usuarios.id_usuario = tr_kajool_avances_carga.id_usuario
-        inner join
-          tc_kajool_empleados on tc_kajool_empleados.id_empleado = tc_janal_usuarios.id_empleado
-        inner join
-          tc_kajool_personas on tc_kajool_empleados.id_empleado = tc_kajool_personas.id_empleado
-        where
-          tr_kajool_avances_carga.id_escuela={idEscuela} and tc_kajool_tipos_cargas.id_tipo_carga={idTipoCarga}
-        order by
-          registro desc
-      </select>
-    </unit>
     <unit id="VistaInformacionDb">
       <select id="descripcion">
         select version() as descripcion
       </select>
     </unit>
-		<unit id="VistaOficinasGruposTrabajoDto">
-			<select id="row">
-			  select
-					tc_janal_usuarios.id_usuario id_key,tc_janal_entidades.descripcion desc_entidad,
-					tc_janal_perfiles.descripcion desc_perfil,nombres,primer_apellido,segundo_apellido,activo,
-				  tc_janal_usuarios.cuenta
-				from
-					tc_janal_usuarios
-				inner join tc_janal_entidades on tc_janal_usuarios.id_entidad=tc_janal_entidades.id_entidad
-				inner join tc_janal_perfiles on tc_janal_usuarios.id_perfil=tc_janal_perfiles.id_perfil
-				inner join tc_mantic_personas on tc_mantic_personas.id_persona=tc_janal_usuarios.id_empleado	
-				where
-				  tc_janal_entidades.id_entidad= {idEntidad}				
-				order by
-				  tc_janal_entidades.clave
-			</select>			
-		</unit>
 		<unit id="VistaMantenimientoPerfilesDto">
 			<select id="row">
 				select
@@ -1278,206 +1000,6 @@
 					tc_janal_perfiles.id_grupo={idGrupo} and tc_janal_perfiles.id_perfil={idPerfil}
 			</select>
 		</unit>
-
-    <unit id="VistaCargasTrabajoDto">
-      <select id="cargasTrabajo">
-        select
-          tc_janal_entidades.id_entidad AS id_key,
-          tc_janal_entidades.siglas,
-          tc_janal_entidades.clave,
-          tc_janal_entidades.descripcion
-        from
-          tc_janal_grupos
-        inner join
-          tr_janal_entidades_grupo on tc_janal_grupos.id_grupo = tr_janal_entidades_grupo.id_grupo
-        inner join
-          tc_janal_entidades on tr_janal_entidades_grupo.id_entidad = tc_janal_entidades.id_entidad
-        where
-          {condicion}
-      </select>
-      <select id="responsables">
-        select	
-          tc_janal_usuarios.id_usuario AS id_key,
-          cuenta,
-          contrasenia,
-          tc_janal_usuarios.registro,
-          tc_janal_perfiles.descripcion AS descripcion_perfil,
-          tc_janal_usuarios.id_perfil,
-          tc_mantic_personas.id_persona,
-          tc_mantic_personas.nombres,
-          IFNULL(tc_mantic_personas.paterno,'') primer_apellido,
-          IFNULL(tc_mantic_personas.materno,'') segundo_apellido,
-          CONCAT (tc_mantic_personas.nombres, ' ', IFNULL(tc_mantic_personas.paterno,''), ' ', IFNULL(tc_mantic_personas.materno,'')) nombre_completo,
-          tc_mantic_personas.id_tipo_sexo,
-          tc_mantic_personas.curp,
-          tc_janal_grupos.descripcion AS descripcion_grupo,
-          tc_mantic_personas.estilo,
-          tc_janal_perfiles.id_menu,
-          tc_janal_grupos.id_grupo,
-          tc_janal_grupos.clave AS clave_grupo
-        from
-          tc_janal_usuarios
-        inner join
-          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
-        inner join
-          tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
-        inner join
-          tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
-        where
-          tc_janal_grupos.id_grupo= {idGrupo}
-        and
-          tc_janal_usuarios.id_entidad= {entidad}
-        and
-          tc_janal_perfiles.id_perfil= {idResponsable}
-      </select>
-      <select id="capturistas">
-        select	
-          tc_janal_usuarios.id_usuario AS id_key,
-          cuenta,
-          contrasenia,
-          tc_janal_usuarios.registro,
-          tc_janal_perfiles.descripcion AS descripcion_perfil,
-          tc_janal_usuarios.id_perfil,
-          tc_mantic_personas.id_persona,
-          tc_mantic_personas.nombres,
-          IFNULL(tc_mantic_personas.paterno,'') primer_apellido,
-          IFNULL(tc_mantic_personas.materno,'') segundo_apellido,
-          CONCAT (tc_mantic_personas.nombres, ' ', IFNULL(tc_mantic_personas.paterno,''), ' ', IFNULL(tc_mantic_personas.materno,'')) nombre_completo,
-          tc_mantic_personas.id_tipo_sexo,
-          tc_mantic_personas.curp,
-          tc_janal_grupos.descripcion AS descripcion_grupo,
-          tc_mantic_personas.estilo,
-          tc_janal_perfiles.id_menu,
-          tc_janal_grupos.id_grupo,
-          tc_janal_grupos.clave AS clave_grupo
-        from
-          tc_janal_usuarios
-        inner join
-          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
-        inner join
-          tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
-        inner join
-          tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
-        where
-          tc_janal_grupos.id_grupo= {idGrupo}
-        and
-          tc_janal_usuarios.id_entidad= {entidad}
-        and
-          tc_janal_perfiles.id_perfil= {idCapturista}
-      </select>
-      <select id="capturistasCuestionarios">
-        select	
-          tc_janal_usuarios.id_usuario AS id_key,
-          cuenta,
-          contrasenia,
-          tc_janal_usuarios.registro,
-          tc_janal_perfiles.descripcion AS descripcion_perfil,
-          tc_janal_usuarios.id_perfil,
-          tc_mantic_personas.id_persona,
-          tc_mantic_personas.nombres,
-          IFNULL(tc_mantic_personas.paterno,'') primer_apellido,
-          IFNULL(tc_mantic_personas.materno,'') segundo_apellido,
-          CONCAT (tc_mantic_personas.nombres, ' ', IFNULL(tc_mantic_personas.paterno,''), ' ', IFNULL(tc_mantic_personas.materno,'')) nombre_completo,
-          tc_mantic_personas.id_tipo_sexo,
-          tc_mantic_personas.curp,
-          tc_janal_grupos.descripcion AS descripcion_grupo,
-          tc_mantic_personas.estilo,
-          tc_janal_perfiles.id_menu,
-          tc_janal_grupos.id_grupo,
-          tc_janal_grupos.clave AS clave_grupo
-        from
-          tc_janal_usuarios
-        inner join
-          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
-        inner join
-          tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
-        inner join
-          tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
-        where
-          tc_janal_grupos.id_grupo= {idGrupo}
-        and
-          tc_janal_usuarios.id_entidad= {entidad}
-        and
-          tc_janal_perfiles.id_perfil= {idCapturista}
-        {condicionUsuario}
-      </select>                  
-    </unit>
-    <unit id="VistaReasignacionCargasTrabajoDto">
-      <select id="busquedaUsuario">
-        select
-          tc_janal_usuarios.id_usuario AS id_key,
-          cuenta,
-          contrasenia,
-          tc_janal_usuarios.registro,
-          tc_janal_perfiles.descripcion AS descripcion_perfil,
-          tc_janal_usuarios.id_perfil,
-          tc_mantic_personas.id_persona,
-          tc_mantic_personas.nombres,
-          IFNULL(tc_mantic_personas.paterno,'') primer_apellido,
-          IFNULL(tc_mantic_personas.materno,'') segundo_apellido,
-          CONCAT (tc_mantic_personas.nombres, ' ', IFNULL(tc_mantic_personas.paterno,''), ' ', IFNULL(tc_mantic_personas.materno,'')) nombre_completo,
-          tc_mantic_personas.id_tipo_sexo,
-          tc_mantic_personas.curp,
-          tc_janal_grupos.descripcion AS descripcion_grupo,
-          tc_mantic_personas.estilo,
-          tc_janal_perfiles.id_menu,
-          tc_janal_grupos.id_grupo,
-          tc_janal_grupos.clave AS clave_grupo
-        from
-          tc_janal_usuarios
-        inner join
-          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
-        inner join
-          tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
-        inner join
-          tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
-        where
-          tc_janal_grupos.id_grupo= {idGrupo}
-        and
-          tc_janal_usuarios.id_entidad= {entidad}
-        and
-          tc_janal_perfiles.id_perfil= {idCapturista}
-        and
-          (tc_mantic_personas.curp like '%{criterio}%' or tc_mantic_personas.nombres like '%{criterio}%' or tc_mantic_personas.paterno like  '%{criterio}%' or tc_mantic_personas.materno like '%{criterio}%')
-      </select>
-      <select id="busquedaUsuarioCurp">
-        select
-          tc_janal_usuarios.id_usuario AS id_key,
-          cuenta,
-          contrasenia,
-          tc_janal_usuarios.registro,
-          tc_janal_perfiles.descripcion AS descripcion_perfil,
-          tc_janal_usuarios.id_perfil,
-          tc_mantic_personas.id_persona,
-          tc_mantic_personas.nombres,
-          IFNULL(tc_mantic_personas.paterno,'') primer_apellido,
-          IFNULL(tc_mantic_personas.materno,'') segundo_apellido,
-          CONCAT (tc_mantic_personas.nombres, ' ', IFNULL(tc_mantic_personas.paterno,''), ' ', IFNULL(tc_mantic_personas.materno,'')) nombre_completo,
-          tc_mantic_personas.id_tipo_sexo,
-          tc_mantic_personas.curp,
-          tc_janal_grupos.descripcion AS descripcion_grupo,
-          tc_mantic_personas.estilo,
-          tc_janal_perfiles.id_menu,
-          tc_janal_grupos.id_grupo,
-          tc_janal_grupos.clave AS clave_grupo
-        from
-          tc_janal_usuarios
-        inner join
-          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
-        inner join
-          tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
-        inner join
-          tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
-        where
-          tc_janal_grupos.id_grupo= {idGrupo}
-        and
-          tc_janal_usuarios.id_entidad= {entidad}
-        and
-          tc_janal_perfiles.id_perfil= {idCapturista}
-        and
-          tc_mantic_personas.curp = '{curp}'
-      </select>            
-    </unit>        		   
     <unit id="VistaContadoresBienvenidaDto">
       <select id="nacional">
         select
@@ -1487,9 +1009,9 @@
           sum(resp_estatal) resp_estatal,
           sum(consultor) consultor,
           sum(capturista) capturista,
-          (SUM(admin)+
-            SUM(resp_estatal)+SUM(consultor)+
-            SUM(capturista)) total
+          (sum(admin)+
+            sum(resp_estatal)+sum(consultor)+
+            sum(capturista)) total
         from(
           select
             tc_janal_proyectos.id_grupo as id_key,
@@ -1515,9 +1037,9 @@
           sum(resp_estatal) resp_estatal,
           sum(consultor) consultor,
           sum(capturista) capturista,
-          (SUM(admin)+
-            SUM(resp_estatal)+SUM(consultor)+
-            SUM(capturista)) total
+          (sum(admin)+
+            sum(resp_estatal)+sum(consultor)+
+            sum(capturista)) total
         from(
           select
             tc_janal_proyectos.id_grupo as id_key,
@@ -1534,8 +1056,6 @@
             tc_janal_usuarios on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
           where 
             tc_janal_proyectos.id_grupo= {idGrupo} 
-          and 
-            tc_janal_usuarios.id_entidad= {idEntidad}) principal
       </select>      
     </unit>        					    			
   </dml>

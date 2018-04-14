@@ -309,18 +309,18 @@ public class Privilegios implements Serializable {
     return regresar;
   } // recuperarEncuestas
 
-  public List<GrupoPerfiles> toPerfiles(Long idGrupo, Long idEmpleado) throws Exception {
+  public List<GrupoPerfiles> toPerfiles(Long idGrupo, Long idPersona) throws Exception {
     List<GrupoPerfiles> regresar = null;
     Map<String, Object> params = null;
     List<Entity> perfiles = null;
     try {
       params = new HashMap<>();
       params.put("idGrupo", idGrupo);
-      params.put("idEmpleado", idEmpleado);
+      params.put("idPersona", idPersona);
       perfiles = DaoFactory.getInstance().toEntitySet("VistaGruposAccesoDto", "perfiles", params, Constantes.SQL_TODOS_REGISTROS);
       regresar = new ArrayList<>();
       for (Entity perfil : perfiles) {
-        regresar.add(new GrupoPerfiles(perfil.toLong("idKey"), " [ ".concat(perfil.toString("entidad").toUpperCase()).concat(" ] ").concat(perfil.toString("descripcion")), true, idGrupo, perfil.toString("cuenta"), idEmpleado, true, perfil.toString("usuarioPerfil"), perfil.toLong("idMenu"), perfil.toLong("idUsuario"), perfil.toString("entidad").toUpperCase(), perfil.toString("descripcion")));
+        regresar.add(new GrupoPerfiles(perfil.toLong("idKey"), " [ ".concat(perfil.toString("entidad").toUpperCase()).concat(" ] ").concat(perfil.toString("descripcion")), true, idGrupo, perfil.toString("cuenta"), idPersona, true, perfil.toString("usuarioPerfil"), perfil.toLong("idMenu"), perfil.toLong("idUsuario"), perfil.toString("entidad").toUpperCase(), perfil.toString("descripcion")));
       }
     } // try
     catch (Exception e) {

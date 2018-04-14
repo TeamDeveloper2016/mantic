@@ -34,46 +34,36 @@ public class TcJanalUsuariosDto implements IBaseDto, Serializable {
   private Long activo;
   @Column (name="REGISTRO")
   private Timestamp registro;	
-	@Column (name="ID_EMPLEADO")
-  private Long idEmpleado;
-	@Column (name="ID_ENTIDAD")
-  private Long idEntidad;
-
+	@Column (name="ID_PERSONA")
+  private Long idPersona;
+	
   public TcJanalUsuariosDto() {
     this(new Long(-1L));
   }
 
   public TcJanalUsuariosDto(Long key) {
-    this(null, null, null, null, null, null);
+    this(null, null, null, null, null);
     setKey(key);
   }
 
-  public TcJanalUsuariosDto(Long idPerfil, Long idUsuarioModifica, Long idUsuario, Long activo, Long idEmpleado, Long idEntidad) {
+  public TcJanalUsuariosDto(Long idPerfil, Long idUsuarioModifica, Long idUsuario, Long activo, Long idPersona) {
     setIdPerfil(idPerfil);
     setIdUsuarioModifica(idUsuarioModifica);
     setIdUsuario(idUsuario);
     setActivo(activo);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-		setIdEmpleado(idEmpleado);
+		setIdPersona(idPersona);
   }
 
-	public Long getIdEmpleado() {
-		return idEmpleado;
+	public Long getIdPersona() {
+		return idPersona;
 	}
 
-	public void setIdEmpleado(Long idEmpleado) {
-		this.idEmpleado=idEmpleado;
+	public void setIdPersona(Long idPersona) {
+		this.idPersona=idPersona;
 	}
 
-	public Long getIdEntidad() {
-		return idEntidad;
-	}
-
-	public void setIdEntidad(Long idEntidad) {
-		this.idEntidad=idEntidad;
-	}
-	
-  public void setIdPerfil(Long idPerfil) {
+	public void setIdPerfil(Long idPerfil) {
     this.idPerfil = idPerfil;
   }
 
@@ -149,15 +139,14 @@ public class TcJanalUsuariosDto implements IBaseDto, Serializable {
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("activo", getActivo());
 		regresar.put("registro", getRegistro());		
-		regresar.put("idEntidad", getIdEntidad());
-		regresar.put("idEmpleado", getIdEmpleado());
+		regresar.put("idPersona", getIdPersona());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdPerfil(), getIdEmpleado(), getIdEntidad(), getIdUsuarioModifica(), getIdUsuario(), getActivo(), getRegistro()
+    getIdPerfil(), getIdPersona(), getIdUsuarioModifica(), getIdUsuario(), getActivo(), getRegistro()
     };
     return regresar;
   }

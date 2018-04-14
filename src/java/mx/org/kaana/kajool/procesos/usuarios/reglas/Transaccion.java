@@ -52,7 +52,7 @@ public class Transaccion extends IBaseTnx {
           //Verificar si usuario ya existe
           this.attrs.put("idEmpleado", ((TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto")).getIdEmpleado());
           this.attrs.put("idPerfil", ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).getIdPerfil());
-          this.attrs.put("idEntidad", ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).getIdEntidad());
+          //this.attrs.put("idEntidad", ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).getIdEntidad());
           usuario = (TcJanalUsuariosDto) DaoFactory.getInstance().findIdentically(session, TcJanalUsuariosDto.class, ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).toMap());
           if (usuario != null && !usuario.getKey().equals(-1L)) { // usuario ya existe
             ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).setActivo(usuario.getActivo());
@@ -63,7 +63,7 @@ public class Transaccion extends IBaseTnx {
             //Almacenar nuevo usuario						
             ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).setActivo(1L);
             ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).setIdUsuarioModifica(JsfBase.getAutentifica().getEmpleado().getIdUsuario());
-            ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).setIdEmpleado(((TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto")).getIdEmpleado());
+            ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).setIdPersona(((TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto")).getIdPersona());
             regresar = DaoFactory.getInstance().insert(session, ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto"))) >= 1L;
           } // else
           break;

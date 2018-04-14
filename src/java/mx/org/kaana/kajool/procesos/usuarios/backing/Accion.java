@@ -88,7 +88,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   private void cargarUsuario(Long idUsuario) {
     try {
       this.attrs.put("tcJanalUsuarioDto", (TcJanalUsuariosDto) DaoFactory.getInstance().findById(TcJanalUsuariosDto.class, idUsuario));
-      this.attrs.put("tcJanalEmpleadoDto", (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).getIdEmpleado()));
+      this.attrs.put("tcJanalEmpleadoDto", (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).getIdPersona()));
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -136,7 +136,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       }
       this.attrs.put("listaEntidades", UISelect.build("VistaCargasTrabajoDto", "cargasTrabajo", this.attrs, "descripcion", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS));
-      ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).setIdEntidad((Long) UIBackingUtilities.toFirstKeySelectItem((List<UISelectItem>) this.attrs.get("listaEntidades")));
+      //((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).setIdEntidad((Long) UIBackingUtilities.toFirstKeySelectItem((List<UISelectItem>) this.attrs.get("listaEntidades")));
     } // try
     catch (Exception e) {
       throw e;
@@ -147,7 +147,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       this.attrs.put("idPerfil", JsfBase.getAutentifica().getEmpleado().getIdPerfil());
       this.attrs.put("listaPerfiles", UISelect.build("VistaMantenimientoPerfilesDto", "jerarquiaMostrarAsignados", this.attrs, "descripcion", EFormatoDinamicos.MAYUSCULAS));
-      ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).setIdEntidad((Long) UIBackingUtilities.toFirstKeySelectItem((List<UISelectItem>) this.attrs.get("listaEntidades")));
+      //((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).setIdEntidad((Long) UIBackingUtilities.toFirstKeySelectItem((List<UISelectItem>) this.attrs.get("listaEntidades")));
     } // try
     catch (Exception e) {
       throw e;

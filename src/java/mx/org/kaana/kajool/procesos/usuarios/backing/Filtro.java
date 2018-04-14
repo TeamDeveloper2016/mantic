@@ -240,7 +240,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     TcManticPersonasDto persona = null;
     try {
       usuario = (TcJanalUsuariosDto) DaoFactory.getInstance().findById(TcJanalUsuariosDto.class, this.seleccionado.toLong("idKeyUsuario"));
-      persona = (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, usuario.getIdEmpleado());
+      persona = (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, usuario.getIdPersona());
       this.attrs.put("idUsuario", this.seleccionado.toLong("idKeyUsuario"));
       this.attrs.put("tcJanalUsuarioDto", usuario);
       tx = new Transaccion(this.attrs);
@@ -306,8 +306,8 @@ public class Filtro extends IBaseFilter implements Serializable {
     TcManticPersonasDto persona = null;
     try {
       usuario = (TcJanalUsuariosDto) DaoFactory.getInstance().findById(TcJanalUsuariosDto.class, this.seleccionado.toLong("idKeyUsuario"));
-      persona = (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, usuario.getIdEmpleado());
-      this.attrs.put("idEmpleado", usuario.getIdEmpleado());
+      persona = (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, usuario.getIdPersona());
+      this.attrs.put("idPersona", usuario.getIdPersona());
       tx = new Transaccion(this.attrs);
       if (tx.ejecutar(EAccion.RESTAURAR)) {
         JsfBase.addMessage("La cuenta del usuario ".concat(persona.getCuenta()).concat(" ya fue resetada con exito."));
