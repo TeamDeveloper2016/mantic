@@ -3,7 +3,7 @@
  *
  * Created on 2 de diciembre de 2007, 08:53 PM
  *
- * Write by, alejandro.jimenez
+ * Write by, team.developer
  *
  */
 package mx.org.kaana.libs.parser.funciones;

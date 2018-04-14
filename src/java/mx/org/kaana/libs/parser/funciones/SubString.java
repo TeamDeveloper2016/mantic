@@ -2,7 +2,7 @@
  * SubCadena.java
  *
  * Created on 09 de diciembre de 2007, 02:27 PM
- * Write by, alejandro.jimenez
+ * Write by, team.developer
  *
  */
 package mx.org.kaana.libs.parser.funciones;

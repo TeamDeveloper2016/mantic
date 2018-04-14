@@ -2,7 +2,7 @@
  * Concatenar.java
  *
  * Created on 2 de diciembre de 2007, 11:26 PM
- * Write by, alejandro.jimenez
+ * Write by, team.developer
  *
  */
 

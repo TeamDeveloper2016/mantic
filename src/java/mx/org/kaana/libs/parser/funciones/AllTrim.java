@@ -2,7 +2,7 @@
  * Blancos.java
  *
  * Created on 2 de diciembre de 2007, 11:45 PM
- * Write by, alejandro.jimenez
+ * Write by, team.developer
  *
  */
 
