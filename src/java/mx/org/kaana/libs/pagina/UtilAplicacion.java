@@ -256,7 +256,7 @@ public class UtilAplicacion {
     Long regresar = 0L;
     Map<String, Object> params = new HashMap();
     try {
-      params.put("idUsuario", JsfBase.getAutentifica().getEmpleado().getIdUsuario());
+      params.put("idUsuario", JsfBase.getAutentifica().getPersona().getIdUsuario());
       regresar = DaoFactory.getInstance().toField("VistaTrJanalMensajesUsuariosDto", "contadorNoLeidos", params, "cantidad").toLong();
     } // try
     catch (Exception e) {

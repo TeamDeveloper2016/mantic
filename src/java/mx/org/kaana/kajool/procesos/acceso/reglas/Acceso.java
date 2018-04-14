@@ -2,7 +2,11 @@ package mx.org.kaana.kajool.procesos.acceso.reglas;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.http.HttpSession;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -19,6 +23,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.procesos.acceso.perfil.reglas.RegistroPerfil;
+import mx.org.kaana.libs.reflection.Methods;
 
 public class Acceso implements Serializable {
 
@@ -35,9 +40,34 @@ public class Acceso implements Serializable {
   }
 
   public String toForward() throws Exception {
-    Transaccion transaccion = new Transaccion();
-    transaccion.ejecutar(EAccion.AGREGAR);
-    return JsfBase.getAutentifica().redirectMenu();
+    String regresar = null;
+    Transaccion transaccion = null;
+    Map<String, Object> params = null;
+    Value value = null;
+    String temaActivo = null;
+    try {
+      params = new HashMap<String,Object>();
+      params.put(Constantes.SQL_CONDICION, "cuenta='".concat(getCliente().getCuenta()).concat("'"));
+      value = DaoFactory.getInstance().toField("TcManticPersonasDto", "row", params, "curp");
+      if ((value.getData() != null) && (getCliente().getContrasenia().equals(value.toString().substring(0, 10)))) {
+        regresar = "/Exclusiones/confirmacion.jsf".concat(Constantes.REDIRECIONAR);
+      } // if
+      else {
+        temaActivo = JsfBase.getAutentifica().getPersona().getEstilo();
+        transaccion = new Transaccion();
+        transaccion.ejecutar(EAccion.AGREGAR);
+        this.cliente.setTemaActivo( temaActivo != null ? temaActivo : Constantes.TEMA_INICIAL);        
+        regresar =  JsfBase.getAutentifica().redirectMenu();
+      } // else    
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+    finally {
+      Methods.clean(params);
+    }// finally
+   
+    return regresar;
   } // toForwardclean
 
   public void valida() throws Exception {
@@ -68,22 +98,22 @@ public class Acceso implements Serializable {
       }
       throw new AccesoDenegadoException();
     } // else
-  } // valida
+  } // valida  
 
   protected void agregarUsuariosSitio(HttpSession session, Autentifica autentifica) {
     Usuario usuario = null;
     UsuariosEnLinea usuarios = null;
     usuario = new Usuario(
-            autentifica.getEmpleado().getIdGrupo(),
-            autentifica.getEmpleado().getIdPerfil(),
-            autentifica.getEmpleado().getDescripcionPerfil(),
+            autentifica.getPersona().getIdGrupo(),
+            autentifica.getPersona().getIdPerfil(),
+            autentifica.getPersona().getDescripcionPerfil(),
             session.getId(),
-            autentifica.getEmpleado().getCuenta(),
-            autentifica.getEmpleado().getNombreCompleto(),
-            autentifica.getEmpleado().getIdEntidad(), null,
-            autentifica.getEmpleado().getEntidad(),
+            autentifica.getPersona().getCuenta(),
+            autentifica.getPersona().getNombreCompleto(),
+            null, null,
+            "",
             Calendar.getInstance(), 0, -1, false, null,
-            autentifica.getEmpleado().getClaveGrupo());
+            autentifica.getPersona().getClaveGrupo());
     usuarios = (UsuariosEnLinea) JsfBase.getUsuariosSitio();
     usuarios.addCuenta(session.getId(), usuario);
   } // agregarUsuariosSitio

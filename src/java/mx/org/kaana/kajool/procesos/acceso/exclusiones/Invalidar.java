@@ -1,43 +1,44 @@
 package mx.org.kaana.kajool.procesos.acceso.exclusiones;
 
+import java.io.Serializable;
 import java.util.Enumeration;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
 
 /**
- *@company KAANA
- *@project KAJOOL (Control system polls)
- *@date Aug 31, 2015
- *@time 11:15:53 AM
- *@author Team Developer 2016 <team.developer@kaana.org.mx>
+ * @company KAANA
+ * @project KAJOOL (Control system polls)
+ * @date Aug 31, 2015
+ * @time 11:15:53 AM
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-
-@ManagedBean(name="kajoolAccesoInvalidar")
+@Named(value = "kajoolAccesoInvalidar")
 @ViewScoped
-public class Invalidar {
+public class Invalidar implements Serializable {
 
-	public void clean() {
-    Autentifica autentifica  = null;
-    Enumeration attributes   = null;
-    HttpSession session      = null;
+  public void clean() {
+    Autentifica autentifica = null;
+    Enumeration attributes = null;
+    HttpSession session = null;
     try {
-      session    = JsfBase.getSession();
-      autentifica= JsfBase.getAutentifica();
-      if (autentifica!=null) {
-        JsfBase.getUsuariosSitio().deleteCuenta(session.getId(), autentifica.getEmpleado().getCuenta());
+      session = JsfBase.getSession();
+      autentifica = JsfBase.getAutentifica();
+      if (autentifica != null) {
+        JsfBase.getUsuariosSitio().deleteCuenta(session.getId(), autentifica.getPersona().getCuenta());
         //autentifica.cerrarSession();
-        attributes=session.getAttributeNames();
-        String elemento=null;
+        attributes = session.getAttributeNames();
+        String elemento = null;
         while (attributes.hasMoreElements()) {
-          elemento=attributes.nextElement().toString();
+          elemento = attributes.nextElement().toString();
           try {
-            if (elemento!=null)
+            if (elemento != null) {
               session.removeAttribute(elemento);
+            }
           } // try
           catch (Exception ex) {
             Error.mensaje(ex);
@@ -50,6 +51,6 @@ public class Invalidar {
     catch (Exception e) {
       Error.mensaje(e);
     } // catch
- }
-	
+  }
+
 }

@@ -119,8 +119,8 @@ public class Agregar extends IBaseAttribute implements Serializable{
     try {
       dto = (TcJanalMensajesDto) this.attrs.get("dto");
       dto.setIdPrioridad(Long.valueOf(this.attrs.get("idPrioridad").toString()));
-      dto.setIdUsuario(JsfBase.getAutentifica().getEmpleado().getIdUsuario());
-      dto.setIdUsuarioModifica(JsfBase.getAutentifica().getEmpleado().getIdUsuario());
+      dto.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
+      dto.setIdUsuarioModifica(JsfBase.getAutentifica().getPersona().getIdUsuario());
       dto.setFechaRepite(new java.sql.Date((Calendar.getInstance().getTimeInMillis())));
       dto.setActualizacion("n");
       dtoMensajesGrupos = (TrJanalMensajesGruposDto) this.attrs.get("dtoMensajesGrupos");

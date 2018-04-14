@@ -3,7 +3,6 @@ package mx.org.kaana.kajool.procesos.usuarios.reglas;
 import java.util.Map;
 import mx.org.kaana.libs.formato.BouncyEncryption;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -12,7 +11,6 @@ import static mx.org.kaana.kajool.enums.EAccion.ACTIVAR;
 import static mx.org.kaana.kajool.enums.EAccion.AGREGAR;
 import static mx.org.kaana.kajool.enums.EAccion.ELIMINAR;
 import static mx.org.kaana.kajool.enums.EAccion.MODIFICAR;
-import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import org.hibernate.Session;
@@ -40,17 +38,17 @@ public class Transaccion extends IBaseTnx {
     try {
       switch (accion) {
         case AGREGAR:
-          if (((TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto")).getIdEmpleado() == -1L) {
+          if (((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto")).getIdPersona() == -1L) {
             //Almacenar nueva persona
-            ((TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto")).setContrasenia(BouncyEncryption.encrypt(((TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto")).getCurp().substring(0, 10)));
-            ((TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto")).setEstilo("sentinel");
-            ((TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto")).setIdEmpleado(DaoFactory.getInstance().insert(session, ((TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto"))));
-            ((TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto")).setNombres(((TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto")).getNombres().toUpperCase());
-            ((TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto")).setPaterno(((TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto")).getPaterno().toUpperCase());
-            ((TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto")).setMaterno(((TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto")).getMaterno().toUpperCase());
+            ((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto")).setContrasenia(BouncyEncryption.encrypt(((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto")).getCurp().substring(0, 10)));
+            ((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto")).setEstilo("sentinel");
+            ((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto")).setIdEmpleado(DaoFactory.getInstance().insert(session, ((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto"))));
+            ((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto")).setNombres(((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto")).getNombres().toUpperCase());
+            ((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto")).setPaterno(((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto")).getPaterno().toUpperCase());
+            ((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto")).setMaterno(((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto")).getMaterno().toUpperCase());
           } // if
           //Verificar si usuario ya existe
-          this.attrs.put("idEmpleado", ((TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto")).getIdEmpleado());
+          this.attrs.put("idPersona", ((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto")).getIdPersona());
           this.attrs.put("idPerfil", ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).getIdPerfil());
           //this.attrs.put("idEntidad", ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).getIdEntidad());
           usuario = (TcJanalUsuariosDto) DaoFactory.getInstance().findIdentically(session, TcJanalUsuariosDto.class, ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).toMap());
@@ -62,41 +60,35 @@ public class Transaccion extends IBaseTnx {
           else {
             //Almacenar nuevo usuario						
             ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).setActivo(1L);
-            ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).setIdUsuarioModifica(JsfBase.getAutentifica().getEmpleado().getIdUsuario());
-            ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).setIdPersona(((TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto")).getIdPersona());
+            ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).setIdUsuarioModifica(JsfBase.getAutentifica().getPersona().getIdUsuario());
+            ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).setIdPersona(((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto")).getIdPersona());
             regresar = DaoFactory.getInstance().insert(session, ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto"))) >= 1L;
           } // else
           break;
         case MODIFICAR:
           //Verificar si usuario ya existe
-          this.attrs.put("idEmpleado", ((TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto")).getIdEmpleado());
+          this.attrs.put("idPersona", ((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto")).getIdPersona());
           this.attrs.put("idPerfil", ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).getIdPerfil());
-          regresar = DaoFactory.getInstance().update(session, ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto"))) >= 1L && DaoFactory.getInstance().update(session, ((TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto"))) >= 1L;
+          regresar = DaoFactory.getInstance().update(session, ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto"))) >= 1L && DaoFactory.getInstance().update(session, ((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto"))) >= 1L;
           break;
         case ELIMINAR:
-          Entity dto = (Entity) DaoFactory.getInstance().toEntity(session, "TrJanalMovimientosDto", "usuario", this.attrs);
-          if (dto == null || dto.isEmpty()) {
-            regresar = DaoFactory.getInstance().delete(session, ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto"))) >= 1L;
-          } // if
-          else {
-            JsfBase.addMessage("Administración de grupos de trabajo", "No se puede eliminar el registro ya que cuenta con carga de trabajo asignada", ETipoMensaje.INFORMACION);
-          } // else
-          break;
+          regresar = DaoFactory.getInstance().delete(session, ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto"))) >= 1L;
+        break;
         case ACTIVAR:
           regresar = DaoFactory.getInstance().update(session, TcJanalUsuariosDto.class, (Long) this.attrs.get("idUsuario"), this.attrs) >= 1L;
           break;
         case RESTAURAR:
-          empleado = (TcManticPersonasDto) DaoFactory.getInstance().findById(session, TcManticPersonasDto.class, (Long) this.attrs.get("idEmpleado"));
+          empleado = (TcManticPersonasDto) DaoFactory.getInstance().findById(session, TcManticPersonasDto.class, (Long) this.attrs.get("idPersona"));
           empleado.setContrasenia(BouncyEncryption.encrypt(empleado.getCurp().substring(0, 10)));
           regresar = DaoFactory.getInstance().update(session, empleado) >= 1;
           break;
         case REGISTRAR:
-          empleado = (TcManticPersonasDto) DaoFactory.getInstance().findById(session, TcManticPersonasDto.class, (Long) this.attrs.get("idEmpleado"));
+          empleado = (TcManticPersonasDto) DaoFactory.getInstance().findById(session, TcManticPersonasDto.class, (Long) this.attrs.get("idPersona"));
           empleado.setContrasenia(BouncyEncryption.encrypt((String) this.attrs.get("nueva")));
           regresar = DaoFactory.getInstance().update(session, empleado) >= 1;
           break;
         case COMPLEMENTAR:
-          empleado = (TcManticPersonasDto) DaoFactory.getInstance().findById(session, TcManticPersonasDto.class, (Long) this.attrs.get("idEmpleado"));
+          empleado = (TcManticPersonasDto) DaoFactory.getInstance().findById(session, TcManticPersonasDto.class, (Long) this.attrs.get("idPersona"));
           empleado.setContrasenia(BouncyEncryption.encrypt(this.attrs.get("nuevaContrasenia").toString()));
           regresar = DaoFactory.getInstance().update(session, empleado) >= 1;
           break;

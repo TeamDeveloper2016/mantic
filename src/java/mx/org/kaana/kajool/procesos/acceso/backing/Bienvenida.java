@@ -8,9 +8,9 @@ import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -20,10 +20,9 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.json.Decoder;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.kajool.procesos.acceso.beans.Car;
-import mx.org.kaana.kajool.procesos.acceso.beans.Empleado;
+import mx.org.kaana.kajool.procesos.acceso.beans.Persona;
 import mx.org.kaana.kajool.procesos.acceso.reglas.CarService;
 import mx.org.kaana.kajool.procesos.comun.Comun;
-import mx.org.kaana.kajool.procesos.enums.EEstatus;
 import mx.org.kaana.kajool.procesos.enums.EPerfiles;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Highcharts;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.HighchartsPie;
@@ -56,7 +55,7 @@ import org.primefaces.model.chart.LineChartModel;
  * @time 12:27:03 PM
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-@ManagedBean(name = "kajoolBienvenida")
+@Named(value = "kajoolBienvenida")
 @ViewScoped
 public class Bienvenida extends Comun implements Serializable {
 
@@ -96,9 +95,9 @@ public class Bienvenida extends Comun implements Serializable {
   @PostConstruct
   @Override
   protected void init() {
-    Empleado empleado= null;
+    Persona empleado= null;
     try {      
-      empleado= JsfBase.getAutentifica().getEmpleado();
+      empleado= JsfBase.getAutentifica().getPersona();
       this.attrs.put("isAdmin", JsfBase.isAdminEncuestaOrAdmin());
       this.attrs.put("titulotabla", EPerfiles.fromOrdinal(empleado.getIdPerfil()).getTituloTabla());
       this.attrs.put("isTablaGeneral", EPerfiles.CAPTURISTA.getKey().equals(empleado.getIdPerfil()));
@@ -155,19 +154,17 @@ public class Bienvenida extends Comun implements Serializable {
   @Override
   public void doLoad() {
     EPerfiles perfil   = null;    
-    Empleado empleado  = null;
+    Persona empleado  = null;
     List<Columna>campos= null;
     try {
       campos= new ArrayList<>();
       if(!Boolean.valueOf(this.attrs.get("isTablaGeneral").toString()))
         campos.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
-      empleado= JsfBase.getAutentifica().getEmpleado();
+      empleado= JsfBase.getAutentifica().getPersona();
       perfil= EPerfiles.fromOrdinal(empleado.getIdPerfil());      
       this.attrs.put("idGrupo", empleado.getIdGrupo());
       this.attrs.put("idPerfilCapturista", EPerfiles.CAPTURISTA.getKey());
-      this.attrs.put("idEntidad", JsfBase.isAdminEncuestaOrAdmin() ? this.attrs.get("entidad") : empleado.getIdEntidad());           
       this.attrs.put("idUsuario", JsfBase.getIdUsuario());
-      this.attrs.put("folioCompleto", EEstatus.COMPLETO.getKey() + "," + EEstatus.PARCIAL.getKey() + "," + EEstatus.LIBERADO_CAMPO.getKey());
       this.lazyModel= new FormatLazyModel(perfil.getVista(), perfil.getIdVista(), this.attrs, campos);
       UIBackingUtilities.resetDataTable();
     } // try
@@ -180,7 +177,7 @@ public class Bienvenida extends Comun implements Serializable {
     Highcharts charts    = null;
     BuildChart buildChart= null;
     try {
-      buildChart= new BuildChart(JsfBase.getAutentifica().getEmpleado().getIdPerfil(), Long.valueOf(this.attrs.get("idGrupo").toString()));
+      buildChart= new BuildChart(JsfBase.getAutentifica().getPersona().getIdPerfil(), Long.valueOf(this.attrs.get("idGrupo").toString()));
       charts    = buildChart.buildNacional();
       this.attrs.put("tituloGeneralNacional", charts.getTitle().getText());
       this.attrs.put("jsonGeneralNacional", Decoder.toJson(charts));
@@ -196,7 +193,7 @@ public class Bienvenida extends Comun implements Serializable {
     BuildChart buildChart  = null;
     try {
       jsons     = new ArrayList<>();
-      buildChart= new BuildChart(JsfBase.getAutentifica().getEmpleado().getIdPerfil(), Long.valueOf(this.attrs.get("idGrupo").toString()));
+      buildChart= new BuildChart(JsfBase.getAutentifica().getPersona().getIdPerfil(), Long.valueOf(this.attrs.get("idGrupo").toString()));
       charts    = buildChart.build();
       for(Highcharts chart: charts) {
         JsonChart json= new JsonChart(Cadena.eliminaCaracter(chart.getTitle().getText(), ' ').toLowerCase(), chart.getTitle().getText(), "");
@@ -216,7 +213,7 @@ public class Bienvenida extends Comun implements Serializable {
     JsonChart json       = null;
     BuildChart buildChart= null;
     try {
-      buildChart= new BuildChart(JsfBase.getAutentifica().getEmpleado().getIdPerfil(), JsfBase.getAutentifica().getEmpleado().getIdGrupo());
+      buildChart= new BuildChart(JsfBase.getAutentifica().getPersona().getIdPerfil(), JsfBase.getAutentifica().getPersona().getIdGrupo());
       chart= buildChart.buildPie();
       json= new JsonChart("avanceNacional", "Avance " + (((boolean)this.attrs.get("isTablaGeneral")) ? "estatal" : "nacional") + " de captura", Decoder.toJson(chart));
       this.attrs.put("jsonNacional", json);   
@@ -260,7 +257,7 @@ public class Bienvenida extends Comun implements Serializable {
         this.attrs.put("anioFin", fechaFin.substring(0, 4));
         this.attrs.put("mesSeleccionFin", fechaFin.substring(4, 6));
         this.attrs.put("diaFin", fechaFin.substring(6, 8));
-        perfil= EPerfiles.fromOrdinal(JsfBase.getAutentifica().getEmpleado().getIdPerfil());      
+        perfil= EPerfiles.fromOrdinal(JsfBase.getAutentifica().getPersona().getIdPerfil());      
         contadores= (Entity) DaoFactory.getInstance().toEntity("VistaContadoresBienvenidaMensualesDto", perfil.getIdVistaContadoresMes(), this.attrs);
         if(contadores!= null)
           this.attrs.put("contadoresMes", contadores);
@@ -295,7 +292,7 @@ public class Bienvenida extends Comun implements Serializable {
     EPerfiles perfil = null;   
     Entity contadores= null;
     try {
-      perfil= EPerfiles.fromOrdinal(JsfBase.getAutentifica().getEmpleado().getIdPerfil());
+      perfil= EPerfiles.fromOrdinal(JsfBase.getAutentifica().getPersona().getIdPerfil());
       contadores= (Entity) DaoFactory.getInstance().toEntity("VistaContadoresBienvenidaDto", perfil.getIdVistaContadores(), this.attrs);
       if(contadores!= null)
         this.attrs.put("contadoresGenerales", contadores);

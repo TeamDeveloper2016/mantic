@@ -69,7 +69,7 @@ public class Transaccion extends IBaseTnx {
         TrJanalMenusGruposDto dto = new TrJanalMenusGruposDto();
         dto.setIdGrupo(this.idGrupo);
         dto.setIdMenu(opcionMenu.getIdMenu());
-        dto.setIdUsuario(JsfBase.getAutentifica().getEmpleado().getIdUsuario());
+        dto.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
         DaoFactory.getInstance().insert(session, dto);
         session.flush();
       } // for
@@ -86,7 +86,7 @@ public class Transaccion extends IBaseTnx {
         TrJanalMenusPerfilesDto dto = new TrJanalMenusPerfilesDto();
         dto.setIdPerfil(this.idPerfil);
         dto.setIdMenuGrupo(opcionMenu.getIdMenuGrupo());
-        dto.setIdUsuario(JsfBase.getAutentifica().getEmpleado().getIdUsuario());
+        dto.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
         DaoFactory.getInstance().insert(session, dto);
       } // for
     } // try

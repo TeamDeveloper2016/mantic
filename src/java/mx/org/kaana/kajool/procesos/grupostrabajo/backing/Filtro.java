@@ -2,13 +2,11 @@ package mx.org.kaana.kajool.procesos.grupostrabajo.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
 import javax.faces.event.ActionEvent;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -20,7 +18,6 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.enums.EPerfiles;
-import mx.org.kaana.kajool.procesos.acceso.beans.CentroTrabajo;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.libs.formato.Error;
@@ -34,7 +31,7 @@ import mx.org.kaana.libs.pagina.UISelectItem;
  * @time 11:49:11 PM
  * @author Team Developer 2016 <team.developer@kaana.org.mx>@kaana.org.mx>
  */
-@ManagedBean(name = "kajoolGruposTrabajoFiltro")
+@Named(value = "kajoolGruposTrabajoFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
@@ -83,11 +80,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       fields.add("clave");
       fields.add("descripcion");
       this.attrs.put("sortOrder", "");
-      if (!JsfBase.getAutentifica().getEmpleado().getDescripcionPerfil().equals(EPerfiles.ADMINISTRADOR.getDescripcion())) {
-        this.attrs.put(Constantes.SQL_CONDICION, "id_pais=1 and id_entidad=".concat(JsfBase.getAutentifica().getEmpleado().getIdEntidad().toString()));
-      } else {
-        this.attrs.put(Constantes.SQL_CONDICION, "id_pais=1");
-      }
+      this.attrs.put(Constantes.SQL_CONDICION, "id_pais=1");
       this.attrs.put("listaEntidades", UISelect.build("TcJanalEntidadesDto", "mto", this.attrs, fields, " ", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("idEntidad", UIBackingUtilities.toFirstKeySelectItem((List<UISelectItem>) this.attrs.get("listaEntidades")));
     } // try

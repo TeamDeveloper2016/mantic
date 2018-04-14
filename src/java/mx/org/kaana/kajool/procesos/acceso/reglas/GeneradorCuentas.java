@@ -200,7 +200,7 @@ public class GeneradorCuentas implements Serializable{
 				usuarios= DaoFactory.getInstance().findViewCriteria(TcJanalUsuariosDto.class, params, "login");
 				regresar= !usuarios.isEmpty();
 				for (TcJanalUsuariosDto usuario : usuarios) {
-					//regresar= !usuario.getIdEmpleado().equals(this.idEmpleado);
+					//regresar= !usuario.getIdPersona().equals(this.idEmpleado);
 					if (regresar== false)
 						break;					
 				} // if

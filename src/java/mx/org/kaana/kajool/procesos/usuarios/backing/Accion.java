@@ -9,31 +9,27 @@ package mx.org.kaana.kajool.procesos.usuarios.backing;
  */
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelect;
-import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.db.dto.TcJanalUsuariosDto;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.kajool.enums.EPerfiles;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.RandomCuenta;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.Transaccion;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import org.primefaces.context.RequestContext;
 
-@ManagedBean(name = "kajoolUsuariosAccion")
+@Named(value = "kajoolUsuariosAccion")
 @ViewScoped
 public class Accion extends IBaseAttribute implements Serializable {
 
@@ -106,7 +102,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       empleado = (TcManticPersonasDto) DaoFactory.getInstance().findFirst(TcManticPersonasDto.class, "curp", params);
       if (empleado != null) {
         this.attrs.put("tcJanalEmpleadoDto", empleado);
-        params.put("idEmpleado", empleado.getIdEmpleado().toString());
+        params.put("idPersona", empleado.getIdPersona().toString());
         params.put("idPerfil", ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).getIdPerfil().toString());
         usuario = (TcJanalUsuariosDto) DaoFactory.getInstance().findFirst(TcJanalUsuariosDto.class, "identically", params);
         if (usuario != null) {
@@ -129,14 +125,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   protected void loadEntidades() {
     try {
-      if (JsfBase.getAutentifica().getEmpleado().getIdPerfil().equals(EPerfiles.CAPTURISTA.getIdPerfil())
-              || JsfBase.getAutentifica().getEmpleado().getIdPerfil().equals(EPerfiles.RESPONSABLE_ESTATAL.getIdPerfil())) {
-        this.attrs.put(Constantes.SQL_CONDICION, "tc_janal_entidades.id_entidad=".concat(JsfBase.getAutentifica().getEmpleado().getIdEntidad().toString()));
-      } else {
-        this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      }
-      this.attrs.put("listaEntidades", UISelect.build("VistaCargasTrabajoDto", "cargasTrabajo", this.attrs, "descripcion", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS));
-      //((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).setIdEntidad((Long) UIBackingUtilities.toFirstKeySelectItem((List<UISelectItem>) this.attrs.get("listaEntidades")));
+     
     } // try
     catch (Exception e) {
       throw e;
@@ -145,7 +134,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   protected void loadPerfiles() {
     try {
-      this.attrs.put("idPerfil", JsfBase.getAutentifica().getEmpleado().getIdPerfil());
+      this.attrs.put("idPerfil", JsfBase.getAutentifica().getPersona().getIdPerfil());
       this.attrs.put("listaPerfiles", UISelect.build("VistaMantenimientoPerfilesDto", "jerarquiaMostrarAsignados", this.attrs, "descripcion", EFormatoDinamicos.MAYUSCULAS));
       //((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).setIdEntidad((Long) UIBackingUtilities.toFirstKeySelectItem((List<UISelectItem>) this.attrs.get("listaEntidades")));
     } // try

@@ -30,11 +30,11 @@ public class Contrasenia extends IBaseAttribute implements Serializable {
 	@Override
 	protected void init() {		
     try {
-      this.attrs.put("usuario", JsfBase.getAutentifica().getEmpleado().getNombres()+ " "+ JsfBase.getAutentifica().getEmpleado().getPrimerApellido()+ " "+ (Cadena.isVacio(JsfBase.getAutentifica().getEmpleado().getSegundoApellido())? "": JsfBase.getAutentifica().getEmpleado().getSegundoApellido()));
-      this.attrs.put("cuenta", JsfBase.getAutentifica().getEmpleado().getCuenta());
-      this.attrs.put("perfil", JsfBase.getAutentifica().getEmpleado().getDescripcionPerfil());
+      this.attrs.put("usuario", JsfBase.getAutentifica().getPersona().getNombres()+ " "+ JsfBase.getAutentifica().getPersona().getPrimerApellido()+ " "+ (Cadena.isVacio(JsfBase.getAutentifica().getPersona().getSegundoApellido())? "": JsfBase.getAutentifica().getPersona().getSegundoApellido()));
+      this.attrs.put("cuenta", JsfBase.getAutentifica().getPersona().getCuenta());
+      this.attrs.put("perfil", JsfBase.getAutentifica().getPersona().getDescripcionPerfil());
       this.attrs.put("actual", "");
-      this.attrs.put("anterior", BouncyEncryption.decrypt(JsfBase.getAutentifica().getEmpleado().getContrasenia()));
+      this.attrs.put("anterior", BouncyEncryption.decrypt(JsfBase.getAutentifica().getPersona().getContrasenia()));
       this.attrs.put("nueva", "");			
       this.attrs.put("ratifica", "");	
     }
@@ -47,11 +47,11 @@ public class Contrasenia extends IBaseAttribute implements Serializable {
 	public void doAceptar() {
 		Transaccion tx=null;
 		try {
-			this.attrs.put("idEmpleado", JsfBase.getAutentifica().getEmpleado().getIdEmpleado());
+			this.attrs.put("idPersona", JsfBase.getAutentifica().getPersona().getIdPersona());
 			this.attrs.put("nueva", this.attrs.get("nueva"));
 			tx=new Transaccion(this.attrs);
 			if (tx.ejecutar(EAccion.REGISTRAR)) {
-				JsfBase.addMessage("La contraseña de ".concat(JsfBase.getAutentifica().getEmpleado().getCuenta()).concat(" se cambió con éxito."));
+				JsfBase.addMessage("La contraseña de ".concat(JsfBase.getAutentifica().getPersona().getCuenta()).concat(" se cambió con éxito."));
 			} // if
 			else {
 				JsfBase.addMessage("Error", "No se puedó cambiar la contraseña del usuario", ETipoMensaje.ERROR);

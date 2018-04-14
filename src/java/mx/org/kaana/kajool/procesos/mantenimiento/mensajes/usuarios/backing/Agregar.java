@@ -59,13 +59,13 @@ public class Agregar extends IBaseAttribute implements Serializable {
     try {
       dto = (TcJanalMensajesDto) this.attrs.get("dto");
       dto.setIdPrioridad(Long.valueOf(this.attrs.get("idPrioridad").toString()));
-      dto.setIdUsuario(JsfBase.getAutentifica().getEmpleado().getIdUsuario());
-      dto.setIdUsuarioModifica(JsfBase.getAutentifica().getEmpleado().getIdUsuario());
+      dto.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
+      dto.setIdUsuarioModifica(JsfBase.getAutentifica().getPersona().getIdUsuario());
       dto.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       dto.setIdTipoMensaje(ETiposMensajes.USUARIO.getKey());
       dto.setFechaRepite(new java.sql.Date((Calendar.getInstance().getTimeInMillis())));
       dto.setActualizacion("n");
-      Transaccion transaccion = new Transaccion(dto, Numero.getLong(this.attrs.get("idUsuario").toString()), JsfBase.getAutentifica().getEmpleado().getIdUsuario());
+      Transaccion transaccion = new Transaccion(dto, Numero.getLong(this.attrs.get("idUsuario").toString()), JsfBase.getAutentifica().getPersona().getIdUsuario());
       if (transaccion.ejecutar(EAccion.AGREGAR)) {
         JsfUtilities.addMessage("Se realizó la operación de forma correcta");
       } else {

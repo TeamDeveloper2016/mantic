@@ -129,7 +129,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     this.registro = registro;
   }
 
-  public Long getIdEmpleado() {
+  public Long getIdPersona() {
     return idPersona;
   }
 
@@ -143,11 +143,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
 
   public void setNombres(String nombres) {
     this.nombres = nombres;
-  }
-
-  public Long getIdPersona() {
-    return idPersona;
-  }
+  }  
 
   public void setIdPersona(Long idPersona) {
     this.idPersona = idPersona;
@@ -221,7 +217,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-    return getIdEmpleado();
+    return getIdPersona();
   }
 
   @Override
@@ -234,7 +230,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar = new StringBuilder();
     regresar.append("[");
-    regresar.append(getIdEmpleado());
+    regresar.append(getIdPersona());
     regresar.append(Constantes.SEPARADOR);
     regresar.append(getNombres());
     regresar.append(Constantes.SEPARADOR);
@@ -262,7 +258,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-    regresar.put("idEmpleado", getIdEmpleado());
+    regresar.put("idPersona", getIdPersona());
     regresar.put("nombres", getNombres());
     regresar.put("paterno", getPaterno());
     regresar.put("materno", getMaterno());
@@ -279,7 +275,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getIdEmpleado(), getNombres(), getPaterno(), getMaterno(), getIdTipoSexo(), getCurp(), getCuenta(), getContrasenia(), getEstilo(), getCorreo()
+      getIdPersona(), getNombres(), getPaterno(), getMaterno(), getIdTipoSexo(), getCurp(), getCuenta(), getContrasenia(), getEstilo(), getCorreo()
     };
     return regresar;
   }
@@ -294,7 +290,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     StringBuilder regresar = new StringBuilder();
     regresar.append("|");
     regresar.append("idEmpleado~");
-    regresar.append(getIdEmpleado());
+    regresar.append(getIdPersona());
     regresar.append("|");
     return regresar.toString();
   }
@@ -302,7 +298,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar = new StringBuilder();
-    regresar.append(getIdEmpleado());
+    regresar.append(getIdPersona());
     return regresar.toString();
   }
 
@@ -313,7 +309,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
 
   @Override
   public boolean isValid() {
-    return getIdEmpleado() != null && getIdEmpleado() != -1L;
+    return getIdPersona() != null && getIdPersona() != -1L;
   }
 
   @Override
@@ -325,7 +321,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
       return false;
     }
     final TcManticPersonasDto other = (TcManticPersonasDto) obj;
-    if (getIdEmpleado() != other.idPersona && (getIdPersona() == null || !getIdPersona().equals(other.idPersona))) {
+    if (getIdPersona() != other.idPersona && (getIdPersona() == null || !getIdPersona().equals(other.idPersona))) {
       return false;
     }
     return true;
@@ -334,7 +330,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdEmpleado() != null ? getIdEmpleado().hashCode() : 0);
+    hash = 67 * hash + (getIdPersona() != null ? getIdPersona().hashCode() : 0);
     return hash;
   }
 

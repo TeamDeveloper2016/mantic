@@ -138,7 +138,7 @@ public class Transaccion extends IBaseTnx {
 			gestor= new GestorSQL(this.idKey, keyPersona);
 			empleado= gestor.toEmpleado(sesion);
 			if (empleado!= null && !empleado.isEmpty()){				
-				keyEmpleado= empleado.toLong("idEmpleado");
+				keyEmpleado= empleado.toLong("idPersona");
 				if (gestor.validaUsuarioDelega(sesion, keyEmpleado))
 					regresar= addUsuarioDelega(sesion, keyEmpleado);				
 				else
@@ -194,7 +194,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			usuario= (TcJanalUsuariosDto) DaoFactory.getInstance().findById(sesion, TcJanalUsuariosDto.class, this.idKey);
 			if(usuario!= null){
-				//empleado= (TcJanalEmpleadosDto) DaoFactory.getInstance().findById(sesion, TcJanalEmpleadosDto.class, usuario.getIdEmpleado());
+				//empleado= (TcJanalEmpleadosDto) DaoFactory.getInstance().findById(sesion, TcJanalEmpleadosDto.class, usuario.getIdPersona());
 				duplicado= new TcManticPersonasDto();				
 				duplicado.setIdEmpleado(idEmpleado);
 				duplicado.setIdEmpleado(this.idKey);				

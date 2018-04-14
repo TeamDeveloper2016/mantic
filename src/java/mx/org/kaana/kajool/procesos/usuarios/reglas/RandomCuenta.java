@@ -175,7 +175,7 @@ public class RandomCuenta {
       regresar = !listaTrUsuariosDto.isEmpty();
 /*      
       for (TcJanalEmpleadosDto usuario : listaTrUsuariosDto) {
-        regresar = !usuario.getIdEmpleado().equals(this.idEmpleado);
+        regresar = !usuario.getIdPersona().equals(this.idEmpleado);
         if (regresar == false) {
           break;
         }

@@ -31,7 +31,7 @@ public class Agregar {
 
   public void agregar(EAccion accion) throws Exception{
     try {
-      this.tcJanalPerfilesDto.setIdUsuario(JsfBase.getAutentifica().getEmpleado().getIdUsuario());
+      this.tcJanalPerfilesDto.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
       this.tcJanalPerfilesDto.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 			this.tcJanalPerfilesDto.setIdMenu(24L);
       if(accion.equals(EAccion.AGREGAR))

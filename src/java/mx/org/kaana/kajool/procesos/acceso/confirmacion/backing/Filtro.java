@@ -4,9 +4,8 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.RequestScoped;
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -28,13 +27,12 @@ import mx.org.kaana.libs.formato.Error;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>@kaana.org.mx>
  */
 
-@ManagedBean(name="kajoolAccesoConfirmacionFiltro")
+@Named(value="kajoolAccesoConfirmacionFiltro")
 @RequestScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
 	
   private Cliente cliente;
-  @ManagedProperty(value="#{kajoolTemaActivo}")
   private TemaActivo temaActivo;
   private static final Log LOG=LogFactory.getLog(Filtro.class);	
 
@@ -71,12 +69,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 		  acceso= new Acceso(getCliente());							
 			if(getCliente().getNueva().equals(getCliente().getConfirma())) {
         acceso.valida();
-        params.put("idEmpleado", JsfBase.getAutentifica().getEmpleado().getIdEmpleado());
+        params.put("idPersona", JsfBase.getAutentifica().getPersona().getIdPersona());
         params.put("nuevaContrasenia", getCliente().getConfirma());
         transaccion= new Transaccion(params);
         if(transaccion.ejecutar(EAccion.COMPLEMENTAR)) {
           regresar= acceso.toForward();		
-          estilo  = JsfBase.getAutentifica().getEmpleado().getEstilo();
+          estilo  = JsfBase.getAutentifica().getPersona().getEstilo();
           this.temaActivo.setName(estilo!= null ? estilo : Constantes.TEMA_INICIAL);	
         } // IF
 			} // if
