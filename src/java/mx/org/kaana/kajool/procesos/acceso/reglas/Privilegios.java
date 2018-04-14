@@ -67,7 +67,7 @@ public class Privilegios implements Serializable {
     try {
       LOG.info("verificara perfiles ajenos al actual");
       params = new HashMap<>();
-      params.put(Constantes.SQL_CONDICION, "id_empleado=".concat(this.empleado.getIdEmpleado().toString()));
+      params.put(Constantes.SQL_CONDICION, "id_persona=".concat(this.empleado.getIdEmpleado().toString()));
       regresar = DaoFactory.getInstance().toSize("TcJanalUsuariosDto", Constantes.DML_SELECT, params);
     }// try
     catch (Exception e) {

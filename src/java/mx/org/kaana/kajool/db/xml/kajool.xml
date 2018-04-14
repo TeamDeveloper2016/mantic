@@ -305,24 +305,6 @@
         tc_janal_grupos
       </select>
     </unit>
-    <unit id="TrKajoolAvancesCargaDto">
-      <select id="row">
-        select
-        *
-        from
-        tr_kajool_avances_carga
-        where
-        {condicion}
-      </select>
-      <select id="identically">
-        select
-        *
-        from
-        tr_kajool_avances_carga
-        where
-        id_kajool_carga = {idKajoolCarga}
-      </select>
-    </unit>
     <unit id="TcJanalTiposMensajesDto">
       <select id="row">
         select
@@ -400,24 +382,6 @@
 				  id_pais
 			</select>
 		</unit>
-		<unit id="TcKajoolSexosDto">
-			<select id="row">
-				select
-          *
-        from
-          tc_kajool_sexos
-				where
-          {condicion}
-			</select>
-			<select id="comboSexo">
-				select
-          id_sexo id_key, descripcion
-        from
-          tc_kajool_sexos
-				where
-          {condicion}
-			</select>
-		</unit>
 		<unit id="TcJanalEntidadesDto">
 			<select id="row">
 				select
@@ -469,74 +433,6 @@
 				  id_municipio
 			</select>
 		</unit>
-		<unit id="TcKajoolCodigosPostalesDto">
-			<select id="row">
-				select
-          *
-        from
-          tc_kajool_codigos_postales
-				where
-          {condicion}
-			</select>
-			<select id="comboCodigosPostales">
-				select
-          id_codigo_postal id_key, descripcion
-        from
-          tc_kajool_codigos_postales
-				where
-          id_municipio= {idMunicipio}
-				order by
-				  id_codigo_postal
-			</select>
-		</unit>
-      <unit id="TrKajoolPersonasTiposUrlsDto">
-      <select id="row">
-        select
-          *
-        from
-          tr_kajool_personas_tipos_urls
-        where
-          {condicion}
-      </select>
-      <select id="identically">
-        select
-          *
-        from
-          tr_kajool_personas_tipos_urls
-        where
-          id_tipo_url = {idTipoUrl} and id_persona = {idEmpleado} and url = '{url}'
-      </select>
-      <delete id="rows">
-        delete from
-          tr_kajool_personas_tipos_urls
-        where
-          id_persona = {idEmpleado}
-      </delete>
-    </unit>
-    <unit id="TrKajoolPersonasTiposTelefoDto">
-      <select id="row">
-        select
-          *
-        from
-          tr_kajool_personas_tipos_telefo
-        where
-          {condicion}
-      </select>
-      <select id="identically">
-        select
-          *
-        from
-          tr_kajool_personas_tipos_telefo
-        where
-          id_persona = {idEmpleado} and id_tipo_telefono = {idTipoTelefono} and telefono = '{telefono}'
-      </select>
-      <delete id="rows">
-        delete from
-          tr_kajool_personas_tipos_telefo
-        where
-          id_persona = {idEmpleado}
-      </delete>
-    </unit>
     <unit id="TrJanalUsuariosDelegaDto">
       <select id="row">
         select
