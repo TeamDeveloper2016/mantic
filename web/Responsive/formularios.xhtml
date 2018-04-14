@@ -5,7 +5,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/plantillas/temporal.xhtml">
   <ui:param name="titulo" value="Ejemplo de una pagina responsiva" />
-  <ui:define name="contenido">
+	<ui:define name="librerias">		
     <style type="text/css">
       .ui-panel {
         margin-top:20px
@@ -26,6 +26,8 @@
 				width: -webkit-fill-available;
 			}
     </style>
+  </ui:define>	
+  <ui:define name="contenido">    
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">				
