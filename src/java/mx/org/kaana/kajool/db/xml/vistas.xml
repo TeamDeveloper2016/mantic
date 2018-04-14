@@ -17,7 +17,7 @@
         inner join
           tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
 	    inner join
-	      tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
+	      tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
       where
           tc_mantic_personas.cuenta = '{cuenta}' and tc_janal_usuarios.activo=1
       </select>
@@ -27,7 +27,7 @@
         from
 		  tc_janal_usuarios
 		inner join 
-          tc_mantic_personas on tc_janal_usuarios.id_empleado=tc_mantic_personas.id_persona
+          tc_mantic_personas on tc_janal_usuarios.id_persona=tc_mantic_personas.id_persona
         where
           tc_mantic_personas.cuenta='{cuenta}' and activo=1 and tc_mantic_personas.curp = '{curp}'
       </select>
@@ -51,7 +51,7 @@
         from 					
           tc_janal_usuarios
         inner join
-          tc_mantic_personas on tc_janal_usuarios.id_empleado = tc_mantic_personas.id_persona
+          tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
 				inner join
           tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
         inner join
@@ -71,7 +71,7 @@
         from
           tc_janal_usuarios
         inner join
-          tc_kajool_empleados on tc_kajool_empleados.id_empleado= tc_janal_usuarios.id_empleado
+          tc_kajool_empleados on tc_kajool_empleados.id_empleado= tc_janal_usuarios.id_persona
         inner join
           tc_kajool_personas on tc_kajool_personas.id_empleado = tc_kajool_empleados.id_empleado
         inner join
@@ -349,7 +349,7 @@
 				inner join
 					tc_janal_usuarios on tc_janal_usuarios.id_usuario = tr_janal_mensajes_usuarios.id_usuario
 				inner join
-					tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_empleado        
+					tc_mantic_personas on tc_mantic_personas.id_persona= tc_janal_usuarios.id_persona        
 				inner join
 					tc_janal_prioridades on tc_janal_prioridades.id_prioridad = tc_janal_mensajes.id_prioridad
 				inner join
@@ -495,7 +495,7 @@
 				inner join 				
 				  tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
         inner join				
-				  tc_mantic_personas on tc_janal_usuarios.id_empleado = tc_mantic_personas.id_persona				
+				  tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona				
 				inner join
 				  tc_janal_grupos on tc_janal_perfiles.id_grupo= tc_janal_grupos.id_grupo		
 				where
@@ -511,7 +511,7 @@
 				from
 					tc_janal_usuarios
 				inner join
-					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
 				inner join
 					tc_janal_perfiles on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
 				where
@@ -527,7 +527,7 @@
 				from
 					tc_mantic_personas
 				inner join
-					tc_janal_usuarios on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado				
+					tc_janal_usuarios on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona				
 				where
 					tc_mantic_personas.id_persona = {idPersona}
 			</select>
@@ -555,7 +555,7 @@
         inner join           					
 					tc_janal_usuarios on tr_janal_usuarios_delega.id_usuario = tc_janal_usuarios.id_usuario
 				inner join
-				  tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
+				  tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
 				inner join
 					tc_janal_perfiles on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil
 				where
@@ -575,7 +575,7 @@
         inner join
           tr_janal_usuarios_delega on tr_janal_usuarios_delega.id_usuario = tc_janal_usuarios.id_usuario
         inner join
-          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
+          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
         where
           tr_janal_usuarios_delega.id_usuario= {idUsuario}
         group by
@@ -596,7 +596,7 @@
         inner join
           tr_janal_usuarios_delega on tc_janal_usuarios.id_usuario = tr_janal_usuarios_delega.id_usuario
         inner join
-          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
+          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
 				where
 				  tr_janal_usuarios_delega.id_usuario= {idUsuario} and
           tc_mantic_personas.cuenta = '{cuenta}' and
@@ -618,7 +618,7 @@
         inner join
           tr_janal_usuarios_delega on tc_janal_usuarios.id_usuario = tr_janal_usuarios_delega.id_usuario
         inner join
-          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
+          tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
 				where
 				  tr_janal_usuarios_delega.id_usuario= {idUsuario} and
           tc_janal_usuarios.cuenta = '{cuenta}' and
@@ -639,7 +639,7 @@
 					inner join
 						tr_janal_usuarios_delega on tc_janal_usuarios.id_usuario = tr_janal_usuarios_delega.id_usuario					
           inner join
-            tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado
+            tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
 					inner join
 						tc_janal_perfiles on tc_janal_usuarios.id_perfil=tc_janal_perfiles.id_perfil
 					inner join
@@ -677,7 +677,7 @@
         inner join
           tc_janal_usuarios ON tr_janal_usuarios_delega.id_usuario = tc_janal_usuarios.id_usuario
         inner join
-          tc_mantic_personas ON tc_janal_usuarios.id_empleado = tc_mantic_personas.id_persona
+          tc_mantic_personas ON tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
 				inner join
           tc_janal_perfiles ON tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
         inner join
@@ -698,13 +698,13 @@
 			    tr_janal_usuarios_delega.id_empleado,	
 			    tr_janal_usuarios_delega.id_usuario,						
 			    tc_janal_usuarios.id_perfil,
-			    tc_janal_usuarios.id_empleado empleado_origen,
+			    tc_janal_usuarios.id_persona empleado_origen,
 				tc_mantic_personas.cuenta
               from
 			    tr_janal_usuarios_delega
                inner join
 			     tc_janal_usuarios on tr_janal_usuarios_delega.id_usuario= tc_janal_usuarios.id_usuario
-			   inner join tc_mantic_personas on tc_mantic_personas.id_persona=tc_janal_usuarios.id_empleado
+			   inner join tc_mantic_personas on tc_mantic_personas.id_persona=tc_janal_usuarios.id_persona
               where
 				tr_janal_usuarios_delega.login = '{cuenta}'
         and
@@ -765,7 +765,7 @@
 				 inner join
 					tc_janal_usuarios on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil				
 				 inner join
-			    tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_empleado			
+			    tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona			
          where
 					tc_mantic_personas.id_persona= {idPersona}				 					
 					and tc_janal_grupos.id_grupo= {idGrupo}
