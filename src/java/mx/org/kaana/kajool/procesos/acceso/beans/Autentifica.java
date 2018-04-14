@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,29 +26,29 @@ public class Autentifica implements Serializable {
 
   private static final long serialVersionUID = 8226041225011231930L;
   private static final Log LOG = LogFactory.getLog(Autentifica.class);
-  private Empleado empleado;
+  private Persona persona;
   private Monitoreo monitoreo;
-  private String paginaActual;
-  private CentroTrabajo escuela;
-  private List<UsuarioMenu> menu;
-  private List<UsuarioMenu> topMenu;
+  private String paginaActual;   
   private Credenciales credenciales;
   private EPaginasPrivilegios redirect;
-  private List<CentroTrabajo> escuelas;
+  private Sucursal empresa;
+  private List<Sucursal> sucursales;
+  private List<UsuarioMenu> topMenu;
+  private List<UsuarioMenu> menu;
   private String ultimoAcceso;
 
   public Autentifica() {
-    this(new Empleado());
+    this(new Persona());
   } // Autentifica
 
-  public Autentifica(Empleado persona) {
-    this(new Monitoreo(), persona, new CentroTrabajo(), new ArrayList<UsuarioMenu>(), new ArrayList<UsuarioMenu>(), EPaginasPrivilegios.DEFAULT, new Credenciales(), "/Paginas/Contenedor/bienvenida.jsf");
+  public Autentifica(Persona persona) {
+    this(new Monitoreo(), persona, new Sucursal(serialVersionUID), new ArrayList<UsuarioMenu>(), new ArrayList<UsuarioMenu>(), EPaginasPrivilegios.DEFAULT, new Credenciales(), "/Paginas/Contenedor/bienvenida.jsf");
   } // Autentifica
 
-  public Autentifica(Monitoreo monitoreo, Empleado empleado, CentroTrabajo escuela, List<UsuarioMenu> menu, List<UsuarioMenu> topMenu, EPaginasPrivilegios redirect, Credenciales credenciales, String paginaActual) {
+  public Autentifica(Monitoreo monitoreo, Persona persona, Sucursal empresa, List<UsuarioMenu> menu, List<UsuarioMenu> topMenu, EPaginasPrivilegios redirect, Credenciales credenciales, String paginaActual) {
     this.monitoreo = monitoreo;
-    this.empleado = empleado;
-    this.escuela = escuela;
+    this.persona = persona;
+    this.empresa = empresa;
     this.menu = menu;
     this.topMenu = topMenu;
     this.redirect = redirect;
@@ -55,6 +56,12 @@ public class Autentifica implements Serializable {
     this.paginaActual = paginaActual;
   }	// Autentifica
 
+  public Sucursal getEmpresa() {
+    return empresa;
+  }
+
+  
+  
   public String getPaginaActual() {
     return paginaActual;
   }
@@ -63,12 +70,12 @@ public class Autentifica implements Serializable {
     this.paginaActual = paginaActual;
   }
 
-  public Empleado getEmpleado() {
-    return empleado;
+  public Persona getPersona() {
+    return persona;
   }
 
-  public void setEmpleado(Empleado persona) {
-    this.empleado = persona;
+  public void setEmpleado(Persona persona) {
+    this.persona = persona;
   }
 
   public Monitoreo getMonitoreo() {
@@ -87,14 +94,7 @@ public class Autentifica implements Serializable {
     this.menu = menu;
   }
 
-  public CentroTrabajo getCentroTrabajo() {
-    return escuela;
-  }
-
-  public void setCentroTrabajo(CentroTrabajo centroTrabajo) {
-    this.escuela = centroTrabajo;
-  }
-
+  
   public EPaginasPrivilegios getRedirect() {
     return redirect;
   }
@@ -124,7 +124,7 @@ public class Autentifica implements Serializable {
   }
 
   private boolean verificaCredencial() throws Exception {
-    return verificaCredencial(this.empleado.getContrasenia());
+    return verificaCredencial(this.persona.getContrasenia());
   }
 
   private boolean verificaCredencial(String contrasenia) throws Exception {
@@ -135,7 +135,7 @@ public class Autentifica implements Serializable {
   private void procesarPermisos() throws Exception {
     Privilegios privilegios = null;
     try {
-      privilegios = new Privilegios(this.empleado);
+      privilegios = new Privilegios(this.persona);
       this.credenciales.setPerfilesDelega(privilegios.verificarDelega());
       this.credenciales.setPerfiles(privilegios.verificarPerfiles());
       validaRedirect();
@@ -156,7 +156,7 @@ public class Autentifica implements Serializable {
         this.credenciales.setMenuEncabezado(false);
       } // if
       else if (this.credenciales.getPerfiles().equals(1L)) {
-        loadEscuelas();
+        loadSucursales();
       } else {
         this.credenciales.setAccesoDelega(true);
         this.redirect = EPaginasPrivilegios.PERFILES;
@@ -167,16 +167,16 @@ public class Autentifica implements Serializable {
     } // catch		
   } // validaRedirect
 
-  public void loadEscuelas() throws Exception {
+  public void loadSucursales() throws Exception {
     Privilegios privilegios = null;
     try {
-      privilegios = new Privilegios(this.empleado);
-      //this.escuelas= privilegios.toEscuelas();
+      privilegios = new Privilegios(this.persona);
+      this.sucursales= privilegios.toSucursales();
       //if(this.escuelas.size()> 1)
       //	this.redirect= EPaginasPrivilegios.ESCUELAS;
       //else
       this.redirect = EPaginasPrivilegios.DEFAULT;
-      this.escuela = null;
+      this.empresa = sucursales.get(0);
       this.menu = privilegios.procesarModulosPerfil();
       this.topMenu = privilegios.procesarTopModulos();
       if (this.menu.isEmpty() && this.topMenu.isEmpty()) {
@@ -199,13 +199,13 @@ public class Autentifica implements Serializable {
       params = new HashMap<>();
       LOG.debug("[".concat(cuenta).concat("] Inicia la consulta sobre la vista VistaTcJanalUsuariosDto"));
       params.put("cuenta", cuenta);
-      this.empleado = (Empleado) DaoFactory.getInstance().toEntity(Empleado.class, "VistaTcJanalUsuariosDto", "acceso", params);
-      if (this.empleado != null) {
+      this.persona = (Persona) DaoFactory.getInstance().toEntity(Persona.class, "VistaTcJanalUsuariosDto", "acceso", params);
+      if (this.persona != null) {
         regresar = isAdministrador() || verificaCredencial();
         if (regresar) {
           procesarPermisos();
         } else {
-          this.empleado = null;
+          this.persona = null;
           LOG.info(" No tiene acceso al sistema, favor de verificar esta situación ");
         } // else
       }// if
@@ -213,7 +213,7 @@ public class Autentifica implements Serializable {
         regresar = isDelegaActivo();
       }
       if (regresar) {
-        //toUltimoAcceso();        
+        this.ultimoAcceso = Fecha.formatear(Fecha.DIA_FECHA_HORA, this.persona.getUltimoAcceso().equals(null)?new Timestamp(Calendar.getInstance().getTimeInMillis()):this.persona.getUltimoAcceso());        
       }
     } // try
     catch (Exception e) {
@@ -242,10 +242,10 @@ public class Autentifica implements Serializable {
             validaRedirect();
           } // if
           else {
-            this.empleado = privilegios.toEmpleado(delega.toLong("empleadoOrigen"), delega.toLong("idPerfil"), delega.toString("cuenta"));
-            regresar = this.empleado != null;
+            this.persona = privilegios.toPersona(delega.toLong("personaOrigen"), delega.toLong("idPerfil"), delega.toString("cuenta"));
+            regresar = this.persona != null;
             if (regresar) {
-              loadEscuelas();
+              loadSucursales();
               this.credenciales.setAccesoDelega(true);
             } // if
           } // else				
@@ -270,13 +270,13 @@ public class Autentifica implements Serializable {
   } // isAdministrador
 
   public boolean isFirmado() {
-    return (getEmpleado().getIdUsuario() != null || getEmpleado().getIdUsuario() > 0L);
+    return (getPersona().getIdUsuario() != null || getPersona().getIdUsuario() > 0L);
   } // isFirmado	
 
-  public void createEmpleadoDelega(Entity empleado) {
-    this.empleado = new Empleado();
-    this.empleado.setIdUsuario(empleado.toLong("idUsuario"));
-    this.empleado.setCuenta(empleado.toString("login"));
+  public void createEmpleadoDelega(Entity persona) {
+    this.persona = new Persona();
+    this.persona.setIdUsuario(persona.toLong("idUsuario"));
+    this.persona.setCuenta(persona.toString("login"));
     this.credenciales.setGrupoPerfiles(true);
     this.credenciales.setPerfilesDelega(0L);
     this.credenciales.setPerfiles(0L);
@@ -285,8 +285,8 @@ public class Autentifica implements Serializable {
   public void updateEmpleadoDelega(GrupoPerfiles seleccionado) throws Exception {
     Privilegios privilegios = null;
     try {
-      privilegios = new Privilegios(this.empleado);
-      this.empleado = privilegios.toEmpleadoDelega(seleccionado);
+      privilegios = new Privilegios(this.persona);
+      this.persona = privilegios.toPersonaDelega(seleccionado);
     } // try
     catch (Exception e) {
       throw e;
@@ -296,8 +296,8 @@ public class Autentifica implements Serializable {
   public void updateEmpleado(GrupoPerfiles seleccionado) throws Exception {
     Privilegios privilegios = null;
     try {
-      privilegios = new Privilegios(this.empleado);
-      this.empleado = privilegios.toEmpleado(seleccionado);
+      privilegios = new Privilegios(this.persona);
+      this.persona = privilegios.toPersona(seleccionado);
     } // try
     catch (Exception e) {
       throw e;
@@ -305,7 +305,7 @@ public class Autentifica implements Serializable {
   } // updateEmpleado
 
   public String redirectMenu() throws Exception {
-    return redirectMenu(this.empleado.getIdMenu()).concat(Constantes.REDIRECIONAR);
+    return redirectMenu(this.persona.getIdMenu()).concat(Constantes.REDIRECIONAR);
   } // toRedirectMenu
 
   public String redirectMenu(Long idMenu) throws Exception {
@@ -324,25 +324,5 @@ public class Autentifica implements Serializable {
       throw e;
     } // catch		
     return regresar;
-  } // toRedirectMenu
-
-  protected void toUltimoAcceso() {
-    Timestamp fecha = null;
-    Map<String, Object> params = null;
-    try {
-      params = new HashMap<>();
-      params.put("idUsuario", this.getEmpleado().getIdUsuario());
-      fecha = DaoFactory.getInstance().toField("TcJanalSesionesDto", "ultimoAcceso", params, "registroInicio").toTimestamp();
-      if (fecha != null) {
-        this.ultimoAcceso = Fecha.formatear(Fecha.DIA_FECHA_HORA, fecha);
-      }
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-    } // catch    
-    finally {
-      Methods.clean(params);
-    } // finally        
-  } // toultimoAcceso
-
+  } // toRedirectMenu  
 }

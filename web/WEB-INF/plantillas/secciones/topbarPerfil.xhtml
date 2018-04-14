@@ -6,7 +6,7 @@
     xmlns:ui="http://java.sun.com/jsf/facelets">   		
     <div id="layout-header" class="Unselectable fontRegular janal-top-menu">
     	<ul id="sm-topmenu" class="layout-header-widgets white Fs14">
-        <li class="Fleft BordRadHalf TexAlCenter"><i class="#{sessionScope.autentifica.empleado.idSexo== 1? 'icon-user-male': 'icon-user-female'}"></i>
+        <li class="Fleft BordRadHalf TexAlCenter"><i class="#{sessionScope.autentifica.persona.idSexo== 1? 'icon-user-male': 'icon-user-female'}"></i>
 					<ul class="layout-header-widgets-submenu BordRad5 shadows white Animated05">						
             <li class="Animated05">
               <a href="#{facesContext.externalContext.requestContextPath}/Exclusiones/salir.jsf" class="white Unselectable"><i class="icon-logout"></i>Salir</a>

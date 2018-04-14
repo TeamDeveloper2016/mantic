@@ -110,14 +110,14 @@ public class Agregar extends IBaseAttribute implements Serializable {
       dto = (TcJanalMensajesDto) this.attrs.get("dto");
       dtoPerfil = (TrJanalMensajesPerfilesDto) this.attrs.get("dtoPerfil");
       dto.setIdPrioridad(Long.valueOf(this.attrs.get("idPrioridad").toString()));
-      dto.setIdUsuario(JsfBase.getAutentifica().getEmpleado().getIdUsuario());
-      dto.setIdUsuarioModifica(JsfBase.getAutentifica().getEmpleado().getIdUsuario());
+      dto.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
+      dto.setIdUsuarioModifica(JsfBase.getAutentifica().getPersona().getIdUsuario());
       dto.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       dto.setIdTipoMensaje(ETiposMensajes.PERFIL.getKey());
       dto.setFechaRepite(new java.sql.Date((Calendar.getInstance().getTimeInMillis())));
       dto.setActualizacion("n");
       dtoPerfil.setIdPerfil(Long.valueOf(this.attrs.get("idPerfil").toString()));
-      dtoPerfil.setIdUsuario(JsfBase.getAutentifica().getEmpleado().getIdUsuario());
+      dtoPerfil.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
       dtoPerfil.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       Transaccion transaccion = new Transaccion(dto, dtoPerfil);
       if (transaccion.ejecutar(EAccion.AGREGAR)) {

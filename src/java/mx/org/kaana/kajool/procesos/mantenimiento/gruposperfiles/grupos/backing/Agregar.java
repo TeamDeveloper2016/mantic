@@ -58,7 +58,7 @@ public class Agregar extends IBaseAttribute implements Serializable {
   public String doAgregar() {
     String regresar = null;
     try {
-      ((TcJanalGruposDto) this.attrs.get("dto")).setIdUsuario(JsfBase.getAutentifica().getEmpleado().getIdUsuario());
+      ((TcJanalGruposDto) this.attrs.get("dto")).setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
       ((TcJanalGruposDto) this.attrs.get("dto")).setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       Transaccion transaccion = new Transaccion((TcJanalGruposDto) (this.attrs.get("dto")));
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {

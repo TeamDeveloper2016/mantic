@@ -37,7 +37,7 @@ public class RegistroPerfil implements Serializable {
     synchronized (sesion) {
       TreeBean tree = new TreeBean();
       tree.setReload(true);
-      tree.setTreeName("janal-" + this.autentifica.getEmpleado().getIdPerfil());
+      tree.setTreeName("janal-" + this.autentifica.getPersona().getIdPerfil());
       tree.populateJdbc(this.autentifica.getModulos());
       sesion.setAttribute("tree", tree);
     } // synchronized
@@ -47,7 +47,7 @@ public class RegistroPerfil implements Serializable {
     synchronized (session) {
       TreeBean tree = new TreeBean();
       tree.setReload(true);
-      tree.setTreeName("kajool encabezado-" + this.autentifica.getEmpleado().getIdPerfil());
+      tree.setTreeName("kajool encabezado-" + this.autentifica.getPersona().getIdPerfil());
       tree.populateJdbc(this.autentifica.getTopModulos());
       session.setAttribute("treeEncabezado", tree);
     } // synchronized
@@ -57,8 +57,8 @@ public class RegistroPerfil implements Serializable {
     TcJanalUsuariosDto usuario = null;
     TcManticPersonasDto empleado = null;
     try {
-      usuario = (TcJanalUsuariosDto) DaoFactory.getInstance().findById(TcJanalUsuariosDto.class, this.autentifica.getEmpleado().getIdUsuario());
-      empleado = (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, this.autentifica.getEmpleado().getIdEmpleado());
+      usuario = (TcJanalUsuariosDto) DaoFactory.getInstance().findById(TcJanalUsuariosDto.class, this.autentifica.getPersona().getIdUsuario());
+      empleado = (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, this.autentifica.getPersona().getIdPersona());
       this.temaActivo.setName(usuario != null && !Cadena.isVacio(empleado.getEstilo()) ? empleado.getEstilo() : Constantes.TEMA_INICIAL);
     } // try // try
     catch (Exception e) {

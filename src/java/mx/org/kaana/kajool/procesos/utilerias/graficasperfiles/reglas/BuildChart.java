@@ -176,7 +176,6 @@ public class BuildChart implements Serializable{
     try {
       params= new HashMap<>();
       params.put("idGrupo", this.idGrupo);
-      params.put("idEntidad", JsfBase.getAutentifica().getEmpleado().getIdEntidad());
       params.put("idUsuario", JsfBase.getIdUsuario());
       regresar= DaoFactory.getInstance().toEntitySet(vista, idXml, params, Constantes.SQL_TODOS_REGISTROS);
     } // try

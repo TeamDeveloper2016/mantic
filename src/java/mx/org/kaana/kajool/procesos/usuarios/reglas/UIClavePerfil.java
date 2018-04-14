@@ -159,7 +159,7 @@ public class UIClavePerfil implements Serializable {
 		Map<String, Object> params=new HashMap<String, Object>();
 		StringBuilder sb=new StringBuilder();
 		try {
-			params.put(Constantes.SQL_CONDICION, "id_perfil = ".concat(JsfBase.getAutentifica().getEmpleado().getIdPerfil().toString()));
+			params.put(Constantes.SQL_CONDICION, "id_perfil = ".concat(JsfBase.getAutentifica().getPersona().getIdPerfil().toString()));
 			List<TrJanalPerfilesJerarquiasDto> trJanalPerfilesJerarquiasDto=(List<TrJanalPerfilesJerarquiasDto>) DaoFactory.getInstance().findViewCriteria(TrJanalPerfilesJerarquiasDto.class, params);
 			for (TrJanalPerfilesJerarquiasDto trJanalPerfilJerarquiaDto : trJanalPerfilesJerarquiasDto) {
 				sb.append(trJanalPerfilJerarquiaDto.getIdPerfilAlta());

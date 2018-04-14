@@ -139,7 +139,7 @@ public class Empleado implements Serializable, IBaseDto {
 		return this.nombres.concat(" ").concat(this.primerApellido!= null? this.primerApellido: "").concat(" ").concat(this.segundoApellido!= null? this.segundoApellido: "");
 	}
 	
-	public Long getIdEmpleado() {
+	public Long getIdPersona() {
 		return idEmpleado;
 	}
 

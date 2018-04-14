@@ -90,7 +90,7 @@ public class GrupoPerfiles implements Serializable {
 		this.idGrupo= idGrupo;
 	}
 
-	public Long getIdEmpleado() {
+	public Long getIdPersona() {
 		return idEmpleado;
 	}
 

@@ -72,7 +72,7 @@ public class TrJanalUsuariosDelegaDto implements IBaseDto, Serializable {
 		setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 	}
 
-  public Long getIdEmpleado() {
+  public Long getIdPersona() {
     return idEmpleado;
   }
 
@@ -159,7 +159,7 @@ public class TrJanalUsuariosDelegaDto implements IBaseDto, Serializable {
 	public String toString() {
 		StringBuilder regresar=new StringBuilder();
 		regresar.append("[");
-		regresar.append(getIdEmpleado());
+		regresar.append(getIdPersona());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getContrasenia());
 		regresar.append(Constantes.SEPARADOR);
@@ -183,7 +183,7 @@ public class TrJanalUsuariosDelegaDto implements IBaseDto, Serializable {
 	@Override
 	public Map toMap() {
 		Map regresar=new HashMap();
-		regresar.put("idEmpleado", getIdEmpleado());
+		regresar.put("idPersona", getIdPersona());
 		regresar.put("numEmpleado", getContrasenia());
 		regresar.put("login", getLogin());
 		regresar.put("idUsuario", getIdUsuario());
@@ -198,7 +198,7 @@ public class TrJanalUsuariosDelegaDto implements IBaseDto, Serializable {
 	@Override
 	public Object[] toArray() {
 		Object[] regresar=new Object[]{
-			getIdEmpleado(), getContrasenia(), getLogin(), getIdUsuario(), getIdUsuarioDelega(), getVigenciaFin(), getActivo(), getVigenciaIni(), getRegistro()
+			getIdPersona(), getContrasenia(), getLogin(), getIdUsuario(), getIdUsuarioDelega(), getVigenciaFin(), getActivo(), getVigenciaIni(), getRegistro()
 		};
 		return regresar;
 	}

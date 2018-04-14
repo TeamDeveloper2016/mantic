@@ -225,7 +225,7 @@ public class PageFilter extends HttpServlet implements Filter {
         writer.print("<span>Usuario:Team Developer 2016 <team.developer@kaana.org.mx>@kaana.org.mx></span>");
         writer.print("</div>");
         UsuariosEnLinea users= (UsuariosEnLinea)application.getAttribute(Constantes.ATRIBUTO_USUARIOS_SITIO);
-        Usuario user         = (Usuario)users.getCuenta(session.getId(), autentifica.getEmpleado().getCuenta());
+        Usuario user         = (Usuario)users.getCuenta(session.getId(), autentifica.getPersona().getCuenta());
         if(lockUsers.isActivedAndMoreMessage() && !user.getMensaje().equals(lockUsers.toIndexMessage())) {
           user.setMensaje(lockUsers.toIndexMessage());
           writer.print("<script type=\"text/javascript\">");

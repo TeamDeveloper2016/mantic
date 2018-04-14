@@ -8,14 +8,14 @@
   <p:dialog id="perfil" widgetVar="dialogoPerfil" header="Perfil" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false"  onHide="janal.desbloquear()" resizable="false">    
     <p:panel>
       <i class="icon-user-2 Fs50 Fleft Wid25 hardblue"></i>
-      <div class="Fs24 Fright MarTop10 leaden Wid70">#{sessionScope.autentifica.empleado.nombreCompleto}</div>                          
+      <div class="Fs24 Fright MarTop10 leaden Wid70">#{sessionScope.autentifica.persona.nombreCompleto}</div>                          
       <p:separator styleClass="Wid100"/>
       <div class="EmptyBox10"></div>
       <div class="Fs18 leaden">
-        <a class="DispInlBlock Wid100 Fleft Fs16 MarRight20"><i class="hardblue">Cuenta: </i><i class="leaden"> #{sessionScope.autentifica.empleado.cuenta}</i></a>
+        <a class="DispInlBlock Wid100 Fleft Fs16 MarRight20"><i class="hardblue">Cuenta: </i><i class="leaden"> #{sessionScope.autentifica.persona.cuenta}</i></a>
       </div>                          
       <div class="Fs18 leaden">
-        <a class="DispInlBlock Wid100 Fleft Fs16 MarRight20"><i class="hardblue">Perfil: </i><i class="leaden"> #{sessionScope.autentifica.empleado.descripcionPerfil}</i></a>
+        <a class="DispInlBlock Wid100 Fleft Fs16 MarRight20"><i class="hardblue">Perfil: </i><i class="leaden"> #{sessionScope.autentifica.persona.descripcionPerfil}</i></a>
       </div>                          
       <div class="EmptyBox10"></div>
       <p:separator styleClass="Wid100"/>

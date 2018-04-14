@@ -29,7 +29,7 @@ public class Ayudas implements Serializable {
     Transaccion transaccion     = null;
     TcJanalContadorAyudasDto dto= null;
     try {
-      dto= new TcJanalContadorAyudasDto(idAyuda, JsfBase.getAutentifica().getEmpleado().getIdUsuario(), -1L);
+      dto= new TcJanalContadorAyudasDto(idAyuda, JsfBase.getAutentifica().getPersona().getIdUsuario(), -1L);
       transaccion= new Transaccion(dto);
       transaccion.ejecutar(EAccion.AGREGAR);
     } // try // try

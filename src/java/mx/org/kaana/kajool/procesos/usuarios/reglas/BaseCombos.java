@@ -179,8 +179,8 @@ public class BaseCombos implements Serializable {
 		String idXml="row";
 		try {
 			params=new HashMap<String, Object>();
-			if (JsfBase.getAutentifica().getEmpleado().getDescripcionGrupo()!=null&&JsfUtilities.getFlashAttribute("idAmbito").equals(EAmbitos.OFICINA.getKey().longValue())) {
-				params.put("idOrganizacionGrupo", JsfBase.getAutentifica().getEmpleado().getDescripcionGrupo());
+			if (JsfBase.getAutentifica().getPersona().getDescripcionGrupo()!=null&&JsfUtilities.getFlashAttribute("idAmbito").equals(EAmbitos.OFICINA.getKey().longValue())) {
+				params.put("idOrganizacionGrupo", JsfBase.getAutentifica().getPersona().getDescripcionGrupo());
 				idXml="oficinaUsuario";
 			} // if
 			params.put("idEntidad", this.entidad.getKey());

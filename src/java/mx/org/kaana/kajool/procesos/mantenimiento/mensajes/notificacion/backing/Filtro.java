@@ -51,7 +51,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("mensaje", "");
       this.attrs.put("prioridad", " ");
       this.attrs.put("estatus", " ");
-      this.attrs.put("idUsuario", JsfBase.getAutentifica().getEmpleado().getIdUsuario());
+      this.attrs.put("idUsuario", JsfBase.getAutentifica().getPersona().getIdUsuario());
 			LOG.debug(JsfBase.getFacesContext().getCurrentPhaseId());
       doLoad();
     } // try

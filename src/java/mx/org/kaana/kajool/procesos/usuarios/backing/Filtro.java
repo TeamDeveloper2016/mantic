@@ -269,7 +269,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   public void doLoad() {
     try {
-      this.attrs.put("validaDelega", JsfBase.isAdmin() || JsfBase.getAutentifica().getEmpleado().getIdUsuario().equals(this.seleccionado.getKey()));
+      this.attrs.put("validaDelega", JsfBase.isAdmin() || JsfBase.getAutentifica().getPersona().getIdUsuario().equals(this.seleccionado.getKey()));
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -296,7 +296,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   }
 
   public String doDelegarMismoUsuario() {
-    JsfBase.setFlashAttribute("idUsuario", JsfBase.getAutentifica().getEmpleado().getIdUsuario());
+    JsfBase.setFlashAttribute("idUsuario", JsfBase.getAutentifica().getPersona().getIdUsuario());
     return "delegar";
   }
 

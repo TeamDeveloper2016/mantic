@@ -7,8 +7,6 @@ import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.kajool.procesos.acceso.reglas.Acceso;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIMessage;
@@ -20,7 +18,6 @@ import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.procesos.mantenimiento.temas.backing.TemaActivo;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.Transaccion;
@@ -68,33 +65,17 @@ public class Indice extends IBaseFilter implements Serializable {
 
   public String doIngresar() {
     String regresar = null;
-    Acceso acceso = null;
-    String estilo = null;
-    Value value = null;
-    Map<String, Object> params = null;
-    try {
-      params = new HashMap();
+    Acceso acceso = null;  
+    try {     
       acceso = new Acceso(getCliente());
       acceso.valida();
-      params.put(Constantes.SQL_CONDICION, "cuenta='".concat(getCliente().getCuenta()).concat("'"));
-      value = DaoFactory.getInstance().toField("TcManticPersonasDto", "row", params, "curp");
-      if ((value.getData() != null) && (getCliente().getContrasenia().equals(value.toString().substring(0, 10)))) {
-        JsfBase.setFlashAttribute("cliente", getCliente());
-        regresar = "/Exclusiones/confirmacion.jsf".concat(Constantes.REDIRECIONAR);
-      } // if
-      else {
-        regresar = acceso.toForward();
-        estilo = JsfBase.getAutentifica().getEmpleado().getEstilo();
-        this.temaActivo.setName(estilo != null ? estilo : Constantes.TEMA_INICIAL);
-      } // if  
+      regresar = acceso.toForward();
+      this.temaActivo.setName(getCliente().getTemaActivo());     
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
-    } // catch	
-    finally {
-      Methods.clean(params);
-    }  // finally
+    } // catch	    
     return regresar;
   } // doIngresar
 
@@ -128,7 +109,7 @@ public class Indice extends IBaseFilter implements Serializable {
     boolean regresar = false;
     try {
       params = new HashMap();
-      params.put("idEmpleado", idEmpleado);
+      params.put("idPersona", idEmpleado);
       transaccion = new Transaccion(params);
       regresar = transaccion.ejecutar(EAccion.RESTAURAR);
     } // try

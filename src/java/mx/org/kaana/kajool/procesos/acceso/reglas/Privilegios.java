@@ -12,11 +12,12 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.dto.TcJanalMenusDto;
 import mx.org.kaana.kajool.enums.EPaginasPrivilegios;
-import mx.org.kaana.kajool.procesos.acceso.beans.CentroTrabajo;
-import mx.org.kaana.kajool.procesos.acceso.beans.Empleado;
+import mx.org.kaana.kajool.procesos.acceso.beans.Persona;
 import mx.org.kaana.kajool.procesos.acceso.beans.GrupoPerfiles;
+import mx.org.kaana.kajool.procesos.acceso.beans.Sucursal;
 import mx.org.kaana.kajool.procesos.acceso.beans.UsuarioMenu;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
+import mx.org.kaana.mantic.enums.ETipoEmpresa;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -32,25 +33,26 @@ public class Privilegios implements Serializable {
   private static final long serialVersionUID = -2036425611298445588L;
   private static final Log LOG = LogFactory.getLog(Privilegios.class);
 
-  private Empleado empleado;
+  private Persona persona;
 
   public Privilegios() {
     this(null);
   } // Privilegios	
 
-  public Privilegios(Empleado empleado) {
-    this.empleado = empleado;
+  public Privilegios(Persona empleado) {
+    this.persona = empleado;
   } // Privilegios
 
-  public List<CentroTrabajo> toEscuelas() throws Exception {
+  public List<Sucursal> toSucursales() throws Exception {
     Map<String, Object> params = null;
-    List<CentroTrabajo> regresar = null;
+    List<Sucursal> regresar = null;
     try {
-      LOG.info("verificara centros de trabajo");
+      LOG.info(" verificar acceso a sucursales");
       params = new HashMap<>();
-      params.put("idEmpleado", this.empleado.getIdUsuario());
-      regresar = (List<CentroTrabajo>) DaoFactory.getInstance().toEntitySet(CentroTrabajo.class, "VistaTcJanalUsuariosDto", "centroTrabajo", params);
-    }// try
+      params.put("idPersona", this.persona.getIdPersona());
+      params.put("idTipoEmpresa", ETipoEmpresa.SUCURSAL.getIdTipoEmpresa());
+      regresar = (List<Sucursal>) DaoFactory.getInstance().toEntitySet(Sucursal.class, "VistaTcJanalUsuariosDto", "sucursales", params);
+    }// try// try// try// try
     catch (Exception e) {
       throw e;
     }// catch
@@ -67,7 +69,7 @@ public class Privilegios implements Serializable {
     try {
       LOG.info("verificara perfiles ajenos al actual");
       params = new HashMap<>();
-      params.put(Constantes.SQL_CONDICION, "id_persona=".concat(this.empleado.getIdEmpleado().toString()));
+      params.put(Constantes.SQL_CONDICION, "id_persona=".concat(this.persona.getIdPersona().toString()));
       regresar = DaoFactory.getInstance().toSize("TcJanalUsuariosDto", Constantes.DML_SELECT, params);
     }// try
     catch (Exception e) {
@@ -84,7 +86,7 @@ public class Privilegios implements Serializable {
     Map<String, Object> params = null;
     try {
       params = new HashMap<>();
-      params.put("idEmpleado", this.empleado.getIdUsuario());
+      params.put("idPersona", this.persona.getIdPersona());
       regresar = DaoFactory.getInstance().toSize("TrJanalUsuariosDelegaDto", "vigente", params);
     } // try
     catch (Exception e) {
@@ -101,7 +103,7 @@ public class Privilegios implements Serializable {
     List<UsuarioMenu> regresar = null;
     try {
       params = new HashMap<>();
-      params.put("idPerfil", this.empleado.getIdPerfil());
+      params.put("idPerfil", this.persona.getIdPerfil());
       regresar = DaoFactory.getInstance().toEntitySet(UsuarioMenu.class, "VistaPerfilesMenusDto", "menuPerfil", params, Constantes.SQL_TODOS_REGISTROS);
     } // try
     catch (Exception e) {
@@ -119,7 +121,7 @@ public class Privilegios implements Serializable {
     try {
       params = new HashMap<>();
       params.put("publicar", "1");
-      params.put("idPerfil", this.empleado.getIdPerfil());
+      params.put("idPerfil", this.persona.getIdPerfil());
       regresar = DaoFactory.getInstance().toEntitySet(UsuarioMenu.class, "VistaPerfilesMenusDto", "menuEncabezado", params, Constantes.SQL_TODOS_REGISTROS);
     } // try
     catch (Exception e) {
@@ -131,19 +133,19 @@ public class Privilegios implements Serializable {
     return regresar;
   } // procesarModulosEncabezado
 
-  public Long getIdEmpleado(String cuenta) throws Exception {
+  public Long getIdPersona(String cuenta) throws Exception {
     Long regresar = -1L;
     Map<String, Object> params = null;
-    Entity empleado = null;
+    Entity persona = null;
     try {
       params = new HashMap<>();
       params.put("cuenta", cuenta);
-      empleado = (Entity) DaoFactory.getInstance().toEntity("TrJanalUsuariosDelegaDto", "findLoginActivo", params);
-      if (empleado == null) {
-        empleado = (Entity) DaoFactory.getInstance().toEntity("TcManticPersonasDto", "findUsuario", params);
+      persona = (Entity) DaoFactory.getInstance().toEntity("TrJanalUsuariosDelegaDto", "findLoginActivo", params);
+      if (persona == null) {
+        persona = (Entity) DaoFactory.getInstance().toEntity("TcManticPersonasDto", "findUsuario", params);
       }
-      if (empleado != null) {
-        regresar = empleado.toLong("idPersona");
+      if (persona != null) {
+        regresar = persona.toLong("idPersona");
       }
     } // try
     catch (Exception e) {
@@ -155,20 +157,20 @@ public class Privilegios implements Serializable {
     return regresar;
   } // getNumEmpleado
 
-  public Empleado toEmpleado(GrupoPerfiles grupoPerfil) throws Exception {
-    return toEmpleado(grupoPerfil.getIdUsuario(), grupoPerfil.getIdPerfil(), grupoPerfil.getCuenta());
+  public Persona toPersona(GrupoPerfiles grupoPerfil) throws Exception {
+    return toPersona(grupoPerfil.getIdUsuario(), grupoPerfil.getIdPerfil(), grupoPerfil.getCuenta());
   }
 
-  public Empleado toEmpleado(Long idUsuario, Long idPerfil, String cuenta) throws Exception {
-    Empleado regresar = null;
+  public Persona toPersona(Long idUsuario, Long idPerfil, String cuenta) throws Exception {
+    Persona regresar = null;
     Map<String, Object> params = null;
     try {
       params = new HashMap<>();
       params.put("idUsuario", idUsuario);
       params.put("idPerfil", idPerfil);
       params.put("cuenta", cuenta);
-      regresar = (Empleado) DaoFactory.getInstance().toEntity(Empleado.class, "VistaTcJanalUsuariosDto", "detalleUsuarioPerfil", params);
-    } // try
+      regresar = (Persona) DaoFactory.getInstance().toEntity(Persona.class, "VistaTcJanalUsuariosDto", "detalleUsuarioPerfil", params);
+    } // try // try
     catch (Exception e) {
       throw e;
     } // catch
@@ -178,16 +180,16 @@ public class Privilegios implements Serializable {
     return regresar;
   } // toEmpleado
 
-  public Empleado toEmpleadoDelega(GrupoPerfiles grupoPerfil) throws Exception {
-    Empleado regresar = null;
+  public Persona toPersonaDelega(GrupoPerfiles grupoPerfil) throws Exception {
+    Persona regresar = null;
     Map<String, Object> params = null;
     try {
       params = new HashMap<>();
       params.put("idUsuario", grupoPerfil.getIdUsuario());
       params.put("idPerfil", grupoPerfil.getIdPerfil());
       params.put("cuenta", grupoPerfil.getCuenta());
-      regresar = (Empleado) DaoFactory.getInstance().toEntity(Empleado.class, "VistaDelegaPrivilegiosDto", "detalleUsuarioDelega", params);
-    } // try
+      regresar = (Persona) DaoFactory.getInstance().toEntity(Persona.class, "VistaDelegaPrivilegiosDto", "detalleUsuarioDelega", params);
+    } // try // try
     catch (Exception e) {
       throw e;
     } // catch
@@ -202,7 +204,7 @@ public class Privilegios implements Serializable {
     Map<String, Object> params = null;
     try {
       params = new HashMap<>();
-      params.put("idUsuario", this.empleado.getIdUsuario());
+      params.put("idUsuario", this.persona.getIdUsuario());
       regresar = DaoFactory.getInstance().toEntitySet("VistaDelegaPrivilegiosDto", "usuariosDelega", params);
     } // try
     catch (Exception e) {
@@ -243,7 +245,7 @@ public class Privilegios implements Serializable {
       params = new HashMap<>();
       regresar = new ArrayList<>();
       params.put("cuenta", cuenta);
-      params.put("idUsuario", this.empleado.getIdUsuario());
+      params.put("idUsuario", this.persona.getIdUsuario());
       grupos = DaoFactory.getInstance().toEntitySet("VistaDelegaPrivilegiosDto", "gruposDelegados", params);
       if (!grupos.isEmpty()) {
         for (Entity grupo : grupos) {
@@ -292,7 +294,7 @@ public class Privilegios implements Serializable {
     Map<String, Object> params = null;
     try {
       params = new HashMap<>();
-      params.put("idUsuario", this.empleado.getIdUsuario());
+      params.put("idUsuario", this.persona.getIdUsuario());
       gruposUsuarios = DaoFactory.getInstance().toEntitySet("VistaGruposAccesoDto", params);
       regresar = new ArrayList<>();
       for (Entity grupo : gruposUsuarios) {
@@ -309,18 +311,18 @@ public class Privilegios implements Serializable {
     return regresar;
   } // recuperarEncuestas
 
-  public List<GrupoPerfiles> toPerfiles(Long idGrupo, Long idPersona) throws Exception {
+  public List<GrupoPerfiles> toPerfiles(Long idGrupo, Long idEmpleado) throws Exception {
     List<GrupoPerfiles> regresar = null;
     Map<String, Object> params = null;
     List<Entity> perfiles = null;
     try {
       params = new HashMap<>();
       params.put("idGrupo", idGrupo);
-      params.put("idPersona", idPersona);
+      params.put("idPersona", idEmpleado);
       perfiles = DaoFactory.getInstance().toEntitySet("VistaGruposAccesoDto", "perfiles", params, Constantes.SQL_TODOS_REGISTROS);
       regresar = new ArrayList<>();
       for (Entity perfil : perfiles) {
-        regresar.add(new GrupoPerfiles(perfil.toLong("idKey"), " [ ".concat(perfil.toString("entidad").toUpperCase()).concat(" ] ").concat(perfil.toString("descripcion")), true, idGrupo, perfil.toString("cuenta"), idPersona, true, perfil.toString("usuarioPerfil"), perfil.toLong("idMenu"), perfil.toLong("idUsuario"), perfil.toString("entidad").toUpperCase(), perfil.toString("descripcion")));
+        regresar.add(new GrupoPerfiles(perfil.toLong("idKey"), " [ ".concat(perfil.toString("entidad").toUpperCase()).concat(" ] ").concat(perfil.toString("descripcion")), true, idGrupo, perfil.toString("cuenta"), idEmpleado, true, perfil.toString("usuarioPerfil"), perfil.toLong("idMenu"), perfil.toLong("idUsuario"), perfil.toString("entidad").toUpperCase(), perfil.toString("descripcion")));
       }
     } // try
     catch (Exception e) {
