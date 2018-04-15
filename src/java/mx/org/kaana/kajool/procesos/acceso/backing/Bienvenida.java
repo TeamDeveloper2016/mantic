@@ -14,16 +14,19 @@ import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ESucursales;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.json.Decoder;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.kajool.procesos.acceso.beans.Car;
+import mx.org.kaana.kajool.procesos.acceso.beans.Dato;
 import mx.org.kaana.kajool.procesos.acceso.beans.Persona;
 import mx.org.kaana.kajool.procesos.acceso.reglas.CarService;
 import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.procesos.enums.EPerfiles;
+import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Chart;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Highcharts;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.HighchartsPie;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.JsonChart;
@@ -64,6 +67,7 @@ public class Bienvenida extends Comun implements Serializable {
   private DualListModel<String> cities;
   private LineChartModel lineModel;  
   private List<Car> cars;
+  private List<Dato> datos;
   private DefaultScheduleModel eventModel;
   private ScheduleModel lazyEventModel;
   private ScheduleEvent event = new DefaultScheduleEvent();
@@ -71,9 +75,18 @@ public class Bienvenida extends Comun implements Serializable {
   private TreeNode root2;
   private TreeNode selectedNode;
   private TreeNode[] selectedNodes1;
+	private List<UISelectItem> sucursales;
+
+	public List<UISelectItem> getSucursales() {
+		return sucursales;
+	}
 
   public List<Car> getCars() {
     return this.cars;
+  }
+	
+  public List<Dato> getDatos() {
+    return this.datos;
   }
 
   public LineChartModel getLineModel() {
@@ -106,11 +119,11 @@ public class Bienvenida extends Comun implements Serializable {
       this.attrs.put("pathMensajes", JsfBase.getApplication().getContextPath() +"/Paginas/Mantenimiento/Mensajes/Notificacion/filtro.jsf");            
       this.attrs.put("vigenciaInicial", new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
       this.attrs.put("vigenciaFin", new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
-      //loadPieModel();
-      /*if(JsfBase.isAdminEncuestaOrAdmin())
+      loadPieModel();
+      if(JsfBase.isAdminEncuestaOrAdmin())
         loadLineModelNacional();
-      loadLineModel();*/
-      loadEntidades();
+      loadLineModel();
+      doLoadSucursales();
       doLoad();
       loadMeses();
       //doLoadContadoresMeses();
@@ -214,7 +227,7 @@ public class Bienvenida extends Comun implements Serializable {
     BuildChart buildChart= null;
     try {
       buildChart= new BuildChart(JsfBase.getAutentifica().getPersona().getIdPerfil(), JsfBase.getAutentifica().getPersona().getIdGrupo());
-      chart= buildChart.buildPie();
+      chart= buildChart.buildPie();			
       json= new JsonChart("avanceNacional", "Avance " + (((boolean)this.attrs.get("isTablaGeneral")) ? "estatal" : "nacional") + " de captura", Decoder.toJson(chart));
       this.attrs.put("jsonNacional", json);   
       this.attrs.put("capturaPendiente", chart.getSeries()[0].getData()[1].getY());
@@ -466,4 +479,17 @@ public class Bienvenida extends Comun implements Serializable {
     this.selectedNodes1 = selectedNodes1;
   }
   
+	public void doLoadSucursales(){
+		try {
+			this.sucursales= new ArrayList<>();
+			this.datos= new ArrayList<>();
+			for(ESucursales sucursal: ESucursales.values()){
+				this.sucursales.add(new UISelectItem(sucursal.getIdKey(), Cadena.reemplazarCaracter(sucursal.getSucursal(), '_', ' ')));
+				this.datos.add(new Dato(sucursal.getIdKey(), sucursal.getSucursal(), sucursal.getClientes()));
+			} // for
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	}
 }
