@@ -265,8 +265,8 @@ public class BuildChart implements Serializable{
 				} // for
 			} // if
 			else{
-				dataList.add(new DetailData("Entrgadas".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("90")))).concat("%"), 90L));
-        dataList.add(new DetailData("Sin entrega".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("10")))).concat("%"), 10L));
+				dataList.add(new DetailData("Completas".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("90")))).concat("%"), 90L));
+        dataList.add(new DetailData("Pendientes".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("10")))).concat("%"), 10L));
 			} // else
 			data= new DetailData[dataList.size()];
 			data= dataList.toArray(data);
@@ -274,7 +274,7 @@ public class BuildChart implements Serializable{
 			regresar= new HighchartsPie(              
 							new Chart(ETipoGrafica.PIE.getName(), "250"),
 							//new Title(titulo),              
-							new Title("Entregas completas"),              
+							new Title("Entregas"),              
 							new Tooltip("  ".concat(tipoConteo)),
 							new PlotOptions(new Pie(true, "pointer", new DataLabels(false), true)),              
 								totales);													
