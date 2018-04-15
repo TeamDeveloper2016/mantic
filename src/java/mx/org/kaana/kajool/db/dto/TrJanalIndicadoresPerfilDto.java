@@ -58,6 +58,10 @@ public class TrJanalIndicadoresPerfilDto implements IBaseDto, Serializable{
     this(idIndicadorPerfil, null, null, null, null, null, null, null, null, null);
   }
 
+  public TrJanalIndicadoresPerfilDto(String tituloGeneral, String tituloLadox, String aliasLadox, String tituloLadoy, String aliasLadoy, String descripcionConteo) {
+		this(-1L, -1L, tituloGeneral, tituloLadox, aliasLadox, tituloLadoy, aliasLadoy, null, null, descripcionConteo);
+	}
+	
   public TrJanalIndicadoresPerfilDto(Long idIndicadorPerfil, Long idPerfil, String tituloGeneral, String tituloLadox, String aliasLadox, String tituloLadoy, String aliasLadoy, String vista, String idVista, String descripcionConteo) {
     setIdIndicadorPerfil(idIndicadorPerfil);
     setIdPerfil(idPerfil);
