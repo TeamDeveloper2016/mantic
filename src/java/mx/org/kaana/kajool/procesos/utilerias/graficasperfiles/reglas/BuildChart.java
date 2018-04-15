@@ -11,6 +11,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.dto.TrJanalIndicadoresPerfilDto;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ESucursales;
 import mx.org.kaana.kajool.procesos.enums.EPerfiles;
 import mx.org.kaana.kajool.procesos.enums.ETipoGrafica;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Bar;
@@ -58,7 +59,7 @@ public class BuildChart implements Serializable{
   } // build
   
   public Highcharts buildNacional() throws Exception{    
-    return loadCharPropertiesNacional("Avance estatal de captura", "Captura", "porcentaje", "Entidades", "entidad", "VistaIndicadoresPerfilesDto", "avanceEstatal", "", ETipoGrafica.values()[(int)(Math.random()*2)]);
+    return loadCharPropertiesNacional("Clientes por sucursal", "Clientes", "total", "Sucursales", "sucursal", "VistaIndicadoresPerfilesDto", "avanceEstatal", "", ETipoGrafica.values()[(int)(Math.random()*2)]);
   } // build
   
   public List<Highcharts> build(ETipoGrafica tipoChart) throws Exception{
@@ -66,10 +67,19 @@ public class BuildChart implements Serializable{
     List<TrJanalIndicadoresPerfilDto> registrados= null;
     try {
       regresar= new ArrayList<>();
-      registrados= toIndicadoresRegistradosPerfil();
-      for(TrJanalIndicadoresPerfilDto indicador: registrados){
-        regresar.add(loadCharProperties(indicador, tipoChart));
-      } // for
+      //registrados= toIndicadoresRegistradosPerfil();
+      registrados= new ArrayList<>();
+			if(!registrados.isEmpty()){
+				for(TrJanalIndicadoresPerfilDto indicador: registrados){
+					regresar.add(loadCharProperties(indicador, tipoChart));
+				} // for
+			} // if
+			else{				
+				for(ESucursales sucursal: ESucursales.values()){
+					if(sucursal.equals(ESucursales.SUCURSAL_E))
+						regresar.add(loadCharProperties(null, tipoChart, sucursal));								
+				} // for
+			} // else
     } // try
     catch (Exception e) {
       throw e;
@@ -95,6 +105,10 @@ public class BuildChart implements Serializable{
   } // toIndicadoresRegistradosPerfil
 
   private Highcharts loadCharProperties(TrJanalIndicadoresPerfilDto indicador, ETipoGrafica tipoChart) throws Exception{
+		return loadCharProperties(indicador, tipoChart, null);
+	} // loadCharProperties
+	
+	private Highcharts loadCharProperties(TrJanalIndicadoresPerfilDto indicador, ETipoGrafica tipoChart, ESucursales sucursal) throws Exception{
     Highcharts regresar        = null;
     List<Entity> records       = null;
     List<String> categoriesList= null;
@@ -105,11 +119,18 @@ public class BuildChart implements Serializable{
     try {
       dataList= new ArrayList<>();
       categoriesList= new ArrayList<>();
-      records= loadRecords(indicador.getVista(), indicador.getIdVista());
-      for(Entity record: records)
-        categoriesList.add(record.toString(indicador.getAliasLadoy()));
-      for(Entity record: records)
-        dataList.add(record.toLong(indicador.getAliasLadox()));
+			if(indicador!= null){
+				records= loadRecords(indicador.getVista(), indicador.getIdVista());
+				for(Entity record: records)
+					categoriesList.add(record.toString(indicador.getAliasLadoy()));
+				for(Entity record: records)
+					dataList.add(record.toLong(indicador.getAliasLadox()));
+			} // if
+			else{
+				indicador= new TrJanalIndicadoresPerfilDto(Cadena.letraCapital(Cadena.reemplazarCaracter(sucursal.getSucursal(), '_', ' ')), "Clientes", "total", "Sucursal", "total", "Numero de clientes");
+				categoriesList.add(sucursal.getSucursal());
+				dataList.add(sucursal.getClientes());
+			} // else
       categories= new String[categoriesList.size()];
       categories= categoriesList.toArray(categories);
       data= new Long[dataList.size()];
@@ -144,10 +165,18 @@ public class BuildChart implements Serializable{
       dataList= new ArrayList<>();
       categoriesList= new ArrayList<>();
       records= loadRecords(vista, idVista);
-      for(Entity record: records)
-        categoriesList.add(record.toString(aliasLadoy));
-      for(Entity record: records)
-        dataList.add(record.toLong(aliasLadox));
+			if(!records.isEmpty()){
+				for(Entity record: records)
+					categoriesList.add(record.toString(aliasLadoy));
+				for(Entity record: records)
+					dataList.add(record.toLong(aliasLadox));
+			} // 
+			else{
+				for(ESucursales sucursal: ESucursales.values()){
+					categoriesList.add(sucursal.getSucursal());
+					dataList.add(sucursal.getClientes());
+				} // for
+			}
       categories= new String[categoriesList.size()];
       categories= categoriesList.toArray(categories);
       data= new Long[dataList.size()];
@@ -229,19 +258,26 @@ public class BuildChart implements Serializable{
       categoriesList= new ArrayList<>();
       records= loadRecords(vista, idVista);      
       categoriesList.add("Total");
-      for(Entity record: records){
-        dataList.add(new DetailData(x.concat(": ").concat(record.toString(Cadena.toBeanName("por_".concat(Cadena.toSqlName(campoX))))).concat("%"), record.toLong(campoX)));
-        dataList.add(new DetailData(y.concat(": ").concat(record.toString(Cadena.toBeanName("por_".concat(Cadena.toSqlName(campoY))))).concat("%"), record.toLong(campoY)));
-      } // for            
-      data= new DetailData[dataList.size()];
-      data= dataList.toArray(data);
-      totales= new TotalesPie[]{new TotalesPie("Total", data)};
-      regresar= new HighchartsPie(              
-              new Chart(ETipoGrafica.PIE.getName(), "250"),
-              new Title(titulo),              
-              new Tooltip("  ".concat(tipoConteo)),
-              new PlotOptions(new Pie(true, "pointer", new DataLabels(false), true)),              
-              totales);
+			if(!records.isEmpty()){
+				for(Entity record: records){
+					dataList.add(new DetailData(x.concat(": ").concat(record.toString(Cadena.toBeanName("por_".concat(Cadena.toSqlName(campoX))))).concat("%"), record.toLong(campoX)));
+					dataList.add(new DetailData(y.concat(": ").concat(record.toString(Cadena.toBeanName("por_".concat(Cadena.toSqlName(campoY))))).concat("%"), record.toLong(campoY)));        
+				} // for
+			} // if
+			else{
+				dataList.add(new DetailData("Entrgadas".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("90")))).concat("%"), 90L));
+        dataList.add(new DetailData("Sin entrega".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("10")))).concat("%"), 10L));
+			} // else
+			data= new DetailData[dataList.size()];
+			data= dataList.toArray(data);
+			totales= new TotalesPie[]{new TotalesPie("Total", data)};
+			regresar= new HighchartsPie(              
+							new Chart(ETipoGrafica.PIE.getName(), "250"),
+							//new Title(titulo),              
+							new Title("Entregas completas"),              
+							new Tooltip("  ".concat(tipoConteo)),
+							new PlotOptions(new Pie(true, "pointer", new DataLabels(false), true)),              
+								totales);													
     } // try
     catch (Exception e) {
       throw e;
