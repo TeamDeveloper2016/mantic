@@ -217,52 +217,39 @@
           <div class="ContainerIndent">
             <p:panel style="min-height:400px;">
               <div class="Container40 Responsive Fs20">
-                <i class="icon-doc-text"></i> #{kajoolBienvenida.attrs.titulotabla}
+                <i class="icon-doc-text"></i> 
               </div>
               <div class="Container60 Responsive Fs12">                  
-                <p:selectOneMenu id="entidad" label="Entidad" value="#{kajoolBienvenida.attrs.entidad}" styleClass="Wid70 Fright" rendered="#{kajoolBienvenida.attrs.isAdmin}">
-                  <p:ajax event="change" onstart="janal.bloquear();" listener="#{kajoolBienvenida.doLoad}" process="@this" update="form:tabla" oncomplete="janal.desbloquear();"/>
-                  <f:selectItems value="#{kajoolBienvenida.entidades}"/>
+                <p:selectOneMenu id="entidad" label="Sucursal" styleClass="Wid70 Fright" rendered="#{kajoolBienvenida.attrs.isAdmin}">                  
+                  <f:selectItems value="#{kajoolBienvenida.sucursales}"/>
                 </p:selectOneMenu>                
               </div>
               <div class="EmptyBox10"></div>
               <div class="Container100">
                 <h:form id="form">
-                  <p:dataTable lazy="true" id="tabla" var="row" widgetVar="kajoolTable" rowIndexVar="index" value="#{kajoolBienvenida.lazyModel}" paginator="#{kajoolBienvenida.lazyModel.rowCount gt kajoolBienvenida.lazyModel.pageSize}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" styleClass="janal-content-table" selectionMode="single" selection="#{kajoolBienvenida.attrs.selected}" reflow="true" rendered="#{!kajoolBienvenida.attrs.isTablaGeneral}">
-                    <f:facet name="header">
+									<p:dataTable id="tabla" widgetVar="kajoolTable" var="dato" value="#{kajoolBienvenida.datos}" rows="4" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="6,12,16" reflow="true" selectionMode="single" rowKey="#{dato.id}">
+										<f:facet name="header">
                       <p:menuButton value="Opciones">
                         <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                         <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                       </p:menuButton>
                     </f:facet>
-                    <p:column styleClass="janal-column-left ColWid10 Responsive" >
+										<p:column styleClass="janal-column-left ColWid10 Responsive" >
                       <f:facet name="header">
-                        <h:outputText value="Nombre"/>
+                        <h:outputText value="Sucursal"/>
                       </f:facet>
-                      <h:outputText value="#{row.nombreCompleto}"  />
+                      <h:outputText value="#{dato.nombre}"  />
                     </p:column>                                                            
                     <p:column styleClass="janal-column-right ColWid5 Responsive" >
                       <f:facet name="header">
-                        <h:outputText value="Folios"/>
+                        <h:outputText value="Clientes"/>
                       </f:facet>
-                      <h:outputText value="#{row.total}" />
-                    </p:column>                    
-                    <p:column styleClass="janal-column-right ColWid5 Responsive">
-                      <f:facet name="header">
-                        <h:outputText value="Avance"/>
-                      </f:facet>
-                      <h:outputText value="#{row.completos}" />
-                    </p:column>                    
-                    <p:column styleClass="janal-column-right ColWid5 Responsive" >
-                      <f:facet name="header">
-                        <h:outputText value="Porcentaje"/>
-                      </f:facet>
-                      <h:outputText value="#{row.porcentaje}%" />
-                    </p:column>                    
-                    <f:facet name="footer">
-                      Total [#{kajoolBienvenida.lazyModel.rowCount}] registros
+                      <h:outputText value="#{dato.clientes}" />
+                    </p:column>   
+										<f:facet name="footer">
+                      Total [#{kajoolBienvenida.datos.size()}] registros
                     </f:facet>
-                  </p:dataTable>
+									</p:dataTable>                  
                   <h:commandLink id="dataPdf">
                     <p:dataExporter type="pdf" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}" />
                   </h:commandLink>
