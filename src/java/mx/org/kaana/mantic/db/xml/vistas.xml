@@ -13,7 +13,7 @@
 				from 
 					tc_mantic_articulos
 				inner join
-					tc_mantic_articulos_codigos ON tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
 				inner join 
 					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
 				inner join
