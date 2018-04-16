@@ -98,9 +98,9 @@ div.ui-panelgrid-content {
   border: none !important;
 }
 .janal-content-center {
-  margin-left: 5px;
-  margin-right: 5px;
-  padding: 0px 5px 10px 5px !important;
+  margin-left: 0px;
+  margin-right: 0px;
+  padding: 0px !important;
 }
 .janal-content-table {
   width: 100%;
