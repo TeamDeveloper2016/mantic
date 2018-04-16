@@ -494,5 +494,52 @@
           id_proveedor = {idProveedor} and id_proveedor_agente = {idProveedorAgente} and id_principal = {idPrincipal} and id_agente = {idAgente}
       </select>
     </unit>
+		<unit id="TcManticEmpaquesDto">
+			<select id="row">
+				select 
+					tc_mantic_empaques.id_empaque as id_key,
+					tc_mantic_empaques.*
+				from
+					tc_mantic_empaques
+				where 
+					{condicion}
+			</select>
+		</unit>
+		<unit id="TcManticArticulosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_articulos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_articulos
+        where      
+          id_empaque_unidad_medida = {idEmpaqueUnidadMedida} and id_empresa = {idEmpresa} and id_articulo = {idArticulo} and nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcManticArticulosCodigosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_articulos_codigos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_articulos_codigos
+        where      
+          codigo = '{codigo}' and id_articulo_codigo = {idArticuloCodigo} and id_articulo = {idArticulo}
+      </select>
+    </unit>
   </dml>    
 </process>
