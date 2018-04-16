@@ -40,7 +40,7 @@ public class CfgFile {
     LOG.info("Archivo de configuración [".concat(this.nameFile).concat("]"));
     try {
       this.pathFile = this.getClass().getResource(this.nameFile).getPath();
-      if (pathFile.substring(0, 1).contains("/")) 
+      if (Configuracion.getInstance().isEtapaDesarrollo() && pathFile.substring(0, 1).contains("/")) 
         this.pathFile = this.pathFile.substring(1, this.pathFile.length());      
       LOG.info("Path archivo de conguracion [".concat(this.pathFile).concat("]"));
     } // try
