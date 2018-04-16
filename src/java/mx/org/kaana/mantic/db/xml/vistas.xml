@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
-    Relación de consultas para las vistas de MANTIC
+		Relación de consultas para las vistas de MANTIC
 -->
 <process>
- 
-
-  <dml> 
-     
-  </dml>    
+	<dml> 
+		<unit id="VistaArticulosDto">
+			<select id="row">
+				select 
+				  tc_mantic_articulos.id_articulo as id_key,
+				  tc_mantic_articulos.*,
+          tc_mantic_articulos_codigos.codigo
+				from 
+					tc_mantic_articulos
+				inner join
+					tc_mantic_articulos_codigos ON tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
+				inner join 
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+				inner join
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_unidad_medida
+				inner join 
+					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
+				inner join 
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+				where 
+					tc_mantic_empresas.id_empresa = {idEmpresa}
+				and 
+					tc_mantic_articulos_codigos.codigo like '%{codigo}%'
+			</select>
+		</unit>
+	</dml>    
 </process>
