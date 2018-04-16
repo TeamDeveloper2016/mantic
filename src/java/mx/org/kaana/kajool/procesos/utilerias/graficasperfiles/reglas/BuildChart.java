@@ -59,7 +59,7 @@ public class BuildChart implements Serializable{
   } // build
   
   public Highcharts buildNacional() throws Exception{    
-    return loadCharPropertiesNacional("Clientes por sucursal", "Clientes", "total", "Sucursales", "sucursal", "VistaIndicadoresPerfilesDto", "avanceEstatal", "", ETipoGrafica.values()[(int)(Math.random()*2)]);
+    return loadCharPropertiesNacional(" ", "Clientes", "total", "Sucursales", "sucursal", "VistaIndicadoresPerfilesDto", "avanceEstatal", "", ETipoGrafica.values()[(int)(Math.random()*2)]);
   } // build
   
   public List<Highcharts> build(ETipoGrafica tipoChart) throws Exception{
@@ -274,7 +274,7 @@ public class BuildChart implements Serializable{
 			regresar= new HighchartsPie(              
 							new Chart(ETipoGrafica.PIE.getName(), "250"),
 							//new Title(titulo),              
-							new Title("Entregas"),              
+							new Title(" "),              
 							new Tooltip("  ".concat(tipoConteo)),
 							new PlotOptions(new Pie(true, "pointer", new DataLabels(false), true)),              
 								totales);													
