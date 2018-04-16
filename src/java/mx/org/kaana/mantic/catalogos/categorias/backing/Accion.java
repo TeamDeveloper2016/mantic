@@ -96,7 +96,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			regresar.setTraza(parent!= null ? parent.getTraza().concat(" >> ").concat(regresar.getNombre()) : regresar.getNombre());			
 			if(EAccion.AGREGAR.equals((EAccion) this.attrs.get("accion"))){				
 				regresar.setIdCfgClaves(1L);
-				regresar.setIdEmpresa(1L);	
+				regresar.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
 				regresar.setClave(toClave(idCategoria));				
 				regresar.setNivel(parent!= null ? parent.getNivel() + 1L : 1L);							
 			} // if
