@@ -28,5 +28,21 @@
 					tc_mantic_articulos_codigos.codigo like '%{codigo}%'
 			</select>
 		</unit>
+		<unit id="VistaEmpaqueUnidadMedidaDto">
+			<select id="empaqueUnidadMedida">
+				select 
+					tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida as id_key,
+					tc_mantic_unidades_medidas.nombre,
+					tc_mantic_unidades_medidas.clave,
+					tc_mantic_unidades_medidas.descripcion,
+					tc_mantic_unidades_medidas.proporcion
+				from
+				  tr_mantic_empaque_unidad_medida
+				inner join 
+					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
+				where 
+					id_empaque= {idEmpaque}
+			</select>
+		</unit>
 	</dml>    
 </process>
