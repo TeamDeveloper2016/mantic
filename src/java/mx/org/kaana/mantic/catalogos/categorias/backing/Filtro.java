@@ -32,7 +32,7 @@ public class Filtro extends Comun implements Serializable{
 		try {
 			this.attrs.put("nombre", "");
 			this.attrs.put("descripcion", "");
-			this.attrs.put(Constantes.SQL_CONDICION, "id_empresa=1");
+			this.attrs.put(Constantes.SQL_CONDICION, "id_empresa=" + JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			doLoad();
 		} // try
 		catch (Exception e) {
