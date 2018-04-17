@@ -7,7 +7,7 @@ package mx.org.kaana.mantic.catalogos.categorias.reglas;
 
 import java.io.Serializable;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.dto.TcManticCategoriasDto;
+import mx.org.kaana.mantic.db.dto.TcManticCategoriasDto;
 import mx.org.kaana.libs.cfg.Detalle;
 
 /**

@@ -22,7 +22,7 @@ import mx.org.kaana.libs.cfg.Maestro;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.page.PageRecords;
-import mx.org.kaana.kajool.db.dto.TcManticCategoriasDto;
+import mx.org.kaana.mantic.db.dto.TcManticCategoriasDto;
 
 public class Categoria extends Maestro implements IArbol, Serializable {
 

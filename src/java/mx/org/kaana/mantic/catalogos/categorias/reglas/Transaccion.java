@@ -2,7 +2,7 @@
 package mx.org.kaana.mantic.catalogos.categorias.reglas;
 
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.dto.TcManticCategoriasDto;
+import mx.org.kaana.mantic.db.dto.TcManticCategoriasDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import org.hibernate.Session;

@@ -8,7 +8,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.kajool.db.dto.TcManticCategoriasDto;
+import mx.org.kaana.mantic.db.dto.TcManticCategoriasDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
