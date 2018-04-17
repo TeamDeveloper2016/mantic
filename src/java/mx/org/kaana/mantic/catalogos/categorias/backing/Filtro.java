@@ -48,6 +48,8 @@ public class Filtro extends Comun implements Serializable{
 		try {
 			campos= new ArrayList<>();
 			campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));			
+			campos.add(new Columna("traza", EFormatoDinamicos.MAYUSCULAS));			
+			campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));			
 			this.lazyModel= new FormatCustomLazy("TcManticCategoriasDto", "find", this.attrs, campos);
 			UIBackingUtilities.resetDataTable();
 		} // try
