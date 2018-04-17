@@ -47,8 +47,8 @@ public class Filtro extends Comun implements Serializable{
 		List<Columna>campos= null;
 		try {
 			campos= new ArrayList<>();
-			campos.add(new Columna("nombre", EFormatoDinamicos.LETRA_CAPITAL));			
-			campos.add(new Columna("descripcion", EFormatoDinamicos.LETRA_CAPITAL));			
+			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));			
+			campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));			
 			this.lazyModel= new FormatCustomLazy("VistaArticulosDto","row", this.attrs, campos);
 			UIBackingUtilities.resetDataTable();
 		} // try
