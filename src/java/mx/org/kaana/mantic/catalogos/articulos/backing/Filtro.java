@@ -14,7 +14,7 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -31,6 +31,8 @@ public class Filtro extends Comun implements Serializable{
 	protected void init() {
 		try {
 			this.attrs.put("codigo", "");			
+			this.attrs.put("nombre", "");			
+			this.attrs.put("descripcion", "");						
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			doLoad();
 		} // try
@@ -47,7 +49,7 @@ public class Filtro extends Comun implements Serializable{
 			campos= new ArrayList<>();
 			campos.add(new Columna("nombre", EFormatoDinamicos.LETRA_CAPITAL));			
 			campos.add(new Columna("descripcion", EFormatoDinamicos.LETRA_CAPITAL));			
-			this.lazyModel= new FormatLazyModel("VistaArticulosDto", this.attrs, campos);
+			this.lazyModel= new FormatCustomLazy("VistaArticulosDto","row", this.attrs, campos);
 			UIBackingUtilities.resetDataTable();
 		} // try
 		catch (Exception e) {
