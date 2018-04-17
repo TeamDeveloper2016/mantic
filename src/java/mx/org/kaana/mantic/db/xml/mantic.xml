@@ -540,5 +540,77 @@
           codigo = '{codigo}' and id_articulo_codigo = {idArticuloCodigo} and id_articulo = {idArticulo}
       </select>
     </unit>
+		<unit id="TcManticArticulosDescuentosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_articulos_descuentos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_articulos_descuentos
+        where      
+          vigencia_final = {vigenciaFinal} and vigencia_inicial = {vigenciaInicial} and porcentaje = {porcentaje} and id_articulo_descuento = {idArticuloDescuento}
+      </select>
+    </unit>
+		<unit id="TcManticArticulosDiseniosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_articulos_disenios
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_articulos_disenios
+        where      
+          id_articulo_disenio = {idArticuloDisenio} and id_articulo = {idArticulo} and nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcManticArticulosEspecificacionesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_articulos_especificaciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_articulos_especificaciones
+        where      
+          id_articulo_especificacion = {idArticuloEspecificacion} and id_articulo = {idArticulo} and nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcManticArticulosDimencionesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_articulos_dimenciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_articulos_dimenciones
+        where      
+          id_articulo_dimension = {idArticuloDimension} and id_articulo = {idArticulo}
+      </select>
+    </unit>
   </dml>    
 </process>
