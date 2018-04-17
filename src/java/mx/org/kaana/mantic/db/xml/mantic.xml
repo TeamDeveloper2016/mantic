@@ -72,9 +72,9 @@
 				from
 					tc_mantic_categorias
 				where 
-					lower(nombre) like lower('%{nombre}%')
+					upper(nombre) like upper('%{nombre}%')
 				and 
-					lower(descripcion) like lower('%{descripcion}%')
+					upper(descripcion) like upper('%{descripcion}%')
 				{sortOrder}				
 			</select>
 		</unit>	
