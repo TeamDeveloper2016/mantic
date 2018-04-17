@@ -3,7 +3,7 @@ package mx.org.kaana.mantic.catalogos.articulos.reglas;
 
 import java.io.Serializable;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TrManticEmpaqueUnidadMedidaDto;
 
 public class MotorBusqueda implements Serializable{
