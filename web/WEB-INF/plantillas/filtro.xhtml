@@ -7,7 +7,6 @@
   xmlns:h="http://java.sun.com/jsf/html"
   xmlns:f="http://java.sun.com/jsf/core"	
   xmlns:p="http://primefaces.org/ui"
-
   xmlns:pe="http://primefaces.org/ui/extensions">
   <f:view contentType="text/html">
     <h:head>
@@ -21,18 +20,18 @@
       <ui:insert name="librerias"/>      			
     </h:head>
     <h:body class="ui-widget-content">
-     <p:layout fullPage="true">
+			<p:layout fullPage="true">
         <p:layoutUnit position="north" style="border:0; width: 100%" gutter="0">
 					<ui:include src="/WEB-INF/plantillas/secciones/encabezado.xhtml" />
 				</p:layoutUnit>
         <p:layoutUnit id="principal" position="center" size="100%" style="border:0;" styleClass="sticky-wrapper" gutter="0">
           <ui:include src="/WEB-INF/plantillas/secciones/topbar.xhtml"/>												
           <ui:include src="/WEB-INF/plantillas/secciones/leftmenu.xhtml"/>  
-          <div id="layout-portlets-cover" class="janal-content-center">
-            <h:form id="datos" prependId="false">
+          <div id="layout-portlets-cover" class="janal-content-center janal-padding-cero" style="margin-left: 0 !important;margin-right: 0 !important;">
+            <h:form id="datos" prependId="false" styleClass="janal-padding-cero">
               <p:growl id="mensaje" autoUpdate="true" showSummary="false" showDetail="true" sticky="false" widgetVar="mensajes" escape="false" life="15000"/>
-              <p:panel styleClass="sticky-body" toggleable="true" style="border:0px;">
-                <p:focus context="principal"/>														
+              <p:panel styleClass="sticky-body janal-padding-cero" toggleable="true" style="border:0px;">
+                <p:focus class="janal-padding-cero" context="principal"/>														
                 <ui:insert name="contenido"/>																
                 <p:dialog id="confirmacion" widgetVar="dialogoConfirmacion" header="#{empty tituloConfirmacion? 'Confirmación': tituloConfirmacion}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false"  onHide="#{empty onHideDlg? 'janal.desbloquear();': onHideDlg}">
                   <h:outputText value="#{textoConfirmacion}" escape="false"/>
@@ -60,7 +59,6 @@
           <ui:insert name="dialogos"/>
      	</p:layoutUnit>
      </p:layout>
-
     </h:body>
   </f:view>
 </html>
