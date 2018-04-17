@@ -75,8 +75,7 @@
 					lower(nombre) like lower('%{nombre}%')
 				and 
 					lower(descripcion) like lower('%{descripcion}%')
-				order by 
-					clave, nivel
+				{sortOrder}				
 			</select>
 		</unit>	
          <unit id="TrManticArticuloPrecioSugeridoDto">
