@@ -14,7 +14,7 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -32,6 +32,7 @@ public class Filtro extends Comun implements Serializable{
 		try {
 			this.attrs.put("nombre", "");
 			this.attrs.put("descripcion", "");
+			this.attrs.put("sortOrder", "order by clave, nivel");
 			this.attrs.put(Constantes.SQL_CONDICION, "id_empresa=" + JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			doLoad();
 		} // try
@@ -47,7 +48,7 @@ public class Filtro extends Comun implements Serializable{
 		try {
 			campos= new ArrayList<>();
 			campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));			
-			this.lazyModel= new FormatLazyModel("TcManticCategoriasDto", "find", this.attrs, campos);
+			this.lazyModel= new FormatCustomLazy("TcManticCategoriasDto", "find", this.attrs, campos);
 			UIBackingUtilities.resetDataTable();
 		} // try
 		catch (Exception e) {
