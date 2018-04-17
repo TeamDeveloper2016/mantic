@@ -9,7 +9,6 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.dto.TcManticArticulosDto;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.kajool.db.dto.TcManticCategoriasDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -23,6 +22,7 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
+import mx.org.kaana.mantic.db.dto.TrManticEmpaqueUnidadMedidaDto;
 
 @Named(value = "manticCatalogosArticulosAccion")
 @ViewScoped
@@ -44,9 +44,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch		
 	} // init
 	
-	public void doLoad() {
-		EAccion eaccion       = null;
-		MotorBusqueda busqueda= null;		
+	public void doLoad() {		
+		TcManticArticulosDto dto                    = null;
+		TrManticEmpaqueUnidadMedidaDto empaqueUnidad= null;
+		EAccion eaccion                             = null;
+		MotorBusqueda busqueda                      = null;		
 		try {
 			eaccion= (EAccion) this.attrs.get("accion");
 			this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
@@ -56,8 +58,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 					break;
 				case MODIFICAR:
 					busqueda= new MotorBusqueda(Long.valueOf(this.attrs.get("idArticulo").toString()));
-					this.attrs.put("dto", busqueda.toArticulo());					
-					
+					dto= busqueda.toArticulo();
+					this.attrs.put("dto", dto);					
+					empaqueUnidad= busqueda.toEmpaqueUnidadMedida(dto.getIdEmpaqueUnidadMedida());
+					this.attrs.put("empaque", empaqueUnidad.getIdEmpaque());
+					this.attrs.put("unidadMedida", empaqueUnidad.getIdUnidadMedida());
+					this.attrs.put("categoria", dto.getIdCategoria());
 					break;
 			} // switch
 		} // try
@@ -147,5 +153,20 @@ public class Accion extends IBaseAttribute implements Serializable {
 		finally{
 			Methods.clean(params);
 		} // finally
+	} // loadNodos
+	
+	private void loadCategorias(){
+		List<UISelectItem> categorias= null;
+		Map<String, Object>params    = null;		
+		try {
+			params= new HashMap<>();			
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			categorias= UISelect.build("TcManticCategoriasDto", "row", params, "traza", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("categorias", categorias);
+			this.attrs.put("categoria", UIBackingUtilities.toFirstKeySelectItem(categorias));
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
 	} // loadNodos
 }
