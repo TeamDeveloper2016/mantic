@@ -20,6 +20,9 @@
 			span.ui-inputnumber > input{
 				width: -webkit-fill-available;
 			}
+			span.ui-calendar > input{
+				width: -webkit-fill-available;
+			}
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
@@ -51,7 +54,7 @@
 							<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100, janal-wid-3">
 								<p:outputLabel for="codigo" value="Código:"/>
 								<p:inputText id="codigo" styleClass="janal-wid-100-txt"/>                    																
-								<p:spacer/>
+								<p:spacer width="0px"/>
 								<p:outputLabel for="proveedor" value="Proveedor:"/>
 								<p:selectOneMenu id="proveedor" styleClass="janal-wid-100-txt">
 									<f:selectItems/>
@@ -63,7 +66,7 @@
 							<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100, janal-wid-3">
 								<p:outputLabel for="nombreEspecificacion" value="Nombre:"/>
 								<p:inputText id="nombreEspecificacion" styleClass="janal-wid-100-txt"/>                    
-								<p:spacer/>
+								<p:spacer width="0px"/>
 								<p:outputLabel for="valorEspecificacion" value="Valor:"/>
 								<p:inputText id="valorEspecificacion" styleClass="janal-wid-100-txt"/>                    
 								<p:commandButton icon="fa fa-plus" styleClass="janal-text-white"/>
@@ -76,10 +79,35 @@
 							</p:panelGrid>
 						</p:tab>
 						<p:tab title="Descuentos">
-
+							<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100, janal-wid-3">
+								<p:outputLabel for="porcentaje" value="Porcentaje:"/>
+								<p:inputNumber id="porcentaje" styleClass="janal-wid-100-txt" symbol="%" emptyValue="zero" symbolPosition="s"/>                    
+								<p:spacer width="0px"/>
+								<p:outputLabel for="vigenciaInicial" value="Vigencia inicial:" />
+								<p:calendar id="vigenciaInicial" styleClass="janal-wid-100-txt" mode="popup"/>
+								<p:spacer width="0px"/>
+								<p:outputLabel for="vigenciaFinal" value="Vigencia final:" />
+								<p:calendar id="vigenciaFinal" styleClass="janal-wid-100-txt" mode="popup"/>
+								<p:commandButton icon="fa fa-plus" styleClass="janal-text-white"/>
+							</p:panelGrid>
 						</p:tab>
 						<p:tab title="Descuentos especiales">
-
+							<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100, janal-wid-3">
+								<p:outputLabel for="clienteEspecial" value="Cliente:"/>
+								<p:selectOneMenu id="clienteEspecial" styleClass="janal-wid-100-txt">
+									<f:selectItems/>
+								</p:selectOneMenu>   
+								<p:spacer width="0px"/>
+								<p:outputLabel for="porcentajeEspecial" value="Porcentaje:"/>
+								<p:inputNumber id="porcentajeEspecial" styleClass="janal-wid-100-txt" symbol="%" emptyValue="zero" symbolPosition="s"/>                    
+								<p:spacer width="0px"/>
+								<p:outputLabel for="vigenciaInicialEspecial" value="Vigencia inicial:" />
+								<p:calendar id="vigenciaInicialEspecial" styleClass="janal-wid-100-txt" mode="popup"/>
+								<p:spacer width="0px"/>
+								<p:outputLabel for="vigenciaFinalEspecial" value="Vigencia final:" />
+								<p:calendar id="vigenciaFinalEspecial" styleClass="janal-wid-100-txt" mode="popup"/>
+								<p:commandButton icon="fa fa-plus" styleClass="janal-text-white"/>
+							</p:panelGrid>
 						</p:tab>
 						<p:tab title="Precio sugerido">
 
