@@ -27,14 +27,16 @@
         <p:layoutUnit id="principal" position="center" size="100%" style="border:0;" resizable="false" styleClass="sticky-wrapper" gutter="0">
           <ui:include src="/WEB-INF/plantillas/secciones/topbar.xhtml"/>												
           <ui:include src="/WEB-INF/plantillas/secciones/leftmenu.xhtml"/> 
-          <div id="layout-portlets-cover" class="janal-content-center">
-            <h:form id="datos" prependId="false">
+          <div id="layout-portlets-cover" class="janal-content-center janal-padding-cero">
+            <h:form id="datos" prependId="false" class="janal-padding-cero">
               <p:growl id="mensaje" showSummary="false" showDetail="true" sticky="false" widgetVar="mensajes"  escape="false" autoUpdate="true" life="15000"/>	
-              <p:panel id="panelStickyBody" toggleable="true" styleClass="sticky-body" style="border:0px;">
-                <p:focus context="principal"/>														
+              <p:panel id="panelStickyBody" toggleable="true" styleClass="sticky-body janal-padding-cero" style="border:0px;">
+                <p:focus context="principal" class="janal-padding-cero"/>														
                 <ui:insert name="contenido"/>
                 <hr class="ui-widget-content" style="#{empty lineaSeparacion? '': 'display:none'}"/>
-                <ui:insert name="acciones"/>
+                <div class="janal-line-button">
+                  <ui:insert name="acciones"/>
+                </div>
                 <p:dialog id="confirmacion" widgetVar="dialogoConfirmacion" header="#{empty tituloConfirmacion? 'Confirmación': tituloConfirmacion}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false"  onHide="#{empty onHideDlg? 'janal.desbloquear();': onHideDlg}">
                   <h:outputText value="#{textoConfirmacion}" escape="false"/>
                   <ui:insert name="detalleConfirmacion" />
