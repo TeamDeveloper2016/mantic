@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/filtro.xhtml">
-	<ui:param name="titulo" value="Categorias" />
+	<ui:param name="titulo" value="Artículos" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
@@ -37,11 +37,15 @@
 					<p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla">
 						<h:panelGrid styleClass="janal-wid-100">
 							<p:outputLabel for="codigo" value="Código:"/>
-							<p:inputText id="codigo" value="#{manticCatalogosArticulosFiltro.attrs.codigo}" styleClass="janal-wid-90"/>              							
+							<p:inputText id="codigo" value="#{manticCatalogosArticulosFiltro.attrs.codigo}" styleClass="janal-wid-100-txt"/>              							
+							<p:outputLabel for="nombre" value="Nombre:"/>
+							<p:inputText id="nombre" value="#{manticCatalogosArticulosFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/>              							
+							<p:outputLabel for="descripcion" value="Descripción:"/>
+							<p:inputText id="descripcion" value="#{manticCatalogosArticulosFiltro.attrs.descripcion}" styleClass="janal-wid-100-txt"/>              							
 						</h:panelGrid>
 						<p:separator/>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.bloquear();" process="@this codigo" actionListener="#{manticCatalogosArticulosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
+							<p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.bloquear();" process="@this codigo nombre descripcion" actionListener="#{manticCatalogosArticulosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
 						</div>
 					</p:panel>
 				</div>
@@ -55,24 +59,30 @@
 								<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							</p:menuButton>
-						</f:facet>						
-						<p:column class="janal-column-right janal-wid-30 MarAuto Responsive">
-							<f:facet name="header">
-								<h:outputText value="Código"/>
-							</f:facet>
-							<h:outputText value="#{filtro['codigo']}"/>
-						</p:column>
-						<p:column class="janal-column-left MarAuto Responsive">
+						</f:facet>												
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{filtro.nombre}">
 							<f:facet name="header">
 								<h:outputText value="Nombre"/>
 							</f:facet>
 							<h:outputText value="#{filtro['nombre']}"/>
 						</p:column>					
-						<p:column class="janal-column-left MarAuto Responsive">
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.descripcion}">
 							<f:facet name="header">
 								<h:outputText value="Descripcion"/>
 							</f:facet>
 							<h:outputText value="#{filtro['descripcion']}"/>
+						</p:column>					
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.iva}">
+							<f:facet name="header">
+								<h:outputText value="Iva"/>
+							</f:facet>
+							<h:outputText value="#{filtro['iva']}"/>
+						</p:column>					
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.desperdicio}">
+							<f:facet name="header">
+								<h:outputText value="Desperdicio"/>
+							</f:facet>
+							<h:outputText value="#{filtro['desperdicio']}"/>
 						</p:column>					
 						<f:facet name="footer">
 							Total [#{manticCatalogosArticulosFiltro.lazyModel==null?0:manticCatalogosArticulosFiltro.lazyModel.rowCount}] registros
