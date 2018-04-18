@@ -39,13 +39,11 @@
 							<p:outputLabel for="codigo" value="Código:"/>
 							<p:inputText id="codigo" value="#{manticCatalogosArticulosFiltro.attrs.codigo}" styleClass="janal-wid-100-txt"/>              							
 							<p:outputLabel for="nombre" value="Nombre:"/>
-							<p:inputText id="nombre" value="#{manticCatalogosArticulosFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/>              							
-							<p:outputLabel for="descripcion" value="Descripción:"/>
-							<p:inputText id="descripcion" value="#{manticCatalogosArticulosFiltro.attrs.descripcion}" styleClass="janal-wid-100-txt"/>              							
+							<p:inputText id="nombre" value="#{manticCatalogosArticulosFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/>              														
 						</h:panelGrid>
 						<p:separator/>
 						<div class="janal-align-right">
-							<p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.bloquear();" process="@this codigo nombre descripcion" actionListener="#{manticCatalogosArticulosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
+							<p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.bloquear();" process="@this codigo nombre" actionListener="#{manticCatalogosArticulosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
 						</div>
 					</p:panel>
 				</div>
@@ -65,12 +63,24 @@
 								<h:outputText value="Nombre"/>
 							</f:facet>
 							<h:outputText value="#{filtro['nombre']}"/>
-						</p:column>					
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.descripcion}">
+						</p:column>														
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.menudeo}">
 							<f:facet name="header">
-								<h:outputText value="Descripcion"/>
+								<h:outputText value="Menudeo"/>
 							</f:facet>
-							<h:outputText value="#{filtro['descripcion']}"/>
+							<h:outputText value="#{filtro['menudeo']}"/>
+						</p:column>					
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.medioMayoreo}">
+							<f:facet name="header">
+								<h:outputText value="Medio mayoreo"/>
+							</f:facet>
+							<h:outputText value="#{filtro['medioMayoreo']}"/>
+						</p:column>					
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.mayoreo}">
+							<f:facet name="header">
+								<h:outputText value="Mayoreo"/>
+							</f:facet>
+							<h:outputText value="#{filtro['mayoreo']}"/>
 						</p:column>					
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.iva}">
 							<f:facet name="header">
@@ -83,6 +93,12 @@
 								<h:outputText value="Desperdicio"/>
 							</f:facet>
 							<h:outputText value="#{filtro['desperdicio']}"/>
+						</p:column>					
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.stock}">
+							<f:facet name="header">
+								<h:outputText value="Stock"/>
+							</f:facet>
+							<h:outputText value="#{filtro['stock']}"/>
 						</p:column>					
 						<f:facet name="footer">
 							Total [#{manticCatalogosArticulosFiltro.lazyModel==null?0:manticCatalogosArticulosFiltro.lazyModel.rowCount}] registros
