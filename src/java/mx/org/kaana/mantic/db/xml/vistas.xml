@@ -9,7 +9,10 @@
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,
 				  tc_mantic_articulos.nombre,          
-				  tc_mantic_articulos.descripcion,          
+				  tc_mantic_articulos.menudeo,          
+				  tc_mantic_articulos.medio_mayoreo,          
+				  tc_mantic_articulos.mayoreo,          
+				  tc_mantic_articulos.stock,       
 				  tc_mantic_articulos.iva,          
 				  tc_mantic_articulos.desperdicio          
 				from 
@@ -29,12 +32,13 @@
 				and 
 					upper(tc_mantic_articulos_codigos.codigo) like upper('%{codigo}%')
 				and 
-					upper(tc_mantic_articulos.nombre) like upper('%{nombre}%')
-				and 
-					(upper(tc_mantic_articulos.descripcion) like upper('%{descripcion}%') or tc_mantic_articulos.descripcion is null)
+					upper(tc_mantic_articulos.nombre) like upper('%{nombre}%')				
 				group by 
 				  tc_mantic_articulos.nombre,          
-				  tc_mantic_articulos.descripcion,          
+				  tc_mantic_articulos.menudeo,          
+				  tc_mantic_articulos.medio_mayoreo,          
+				  tc_mantic_articulos.mayoreo,          
+				  tc_mantic_articulos.stock,          
 				  tc_mantic_articulos.iva,          
 				  tc_mantic_articulos.desperdicio          
 				{sortOrder}
