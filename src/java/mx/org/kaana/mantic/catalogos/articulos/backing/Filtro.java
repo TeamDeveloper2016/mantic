@@ -26,13 +26,14 @@ import mx.org.kaana.mantic.catalogos.categorias.reglas.Transaccion;
 @ViewScoped
 public class Filtro extends Comun implements Serializable{
 
+	private static final long serialVersionUID = 8793667741599428879L;
+
 	@PostConstruct
 	@Override
 	protected void init() {
 		try {
 			this.attrs.put("codigo", "");			
-			this.attrs.put("nombre", "");			
-			this.attrs.put("descripcion", "");						
+			this.attrs.put("nombre", "");												
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			doLoad();
 		} // try
@@ -48,7 +49,6 @@ public class Filtro extends Comun implements Serializable{
 		try {
 			campos= new ArrayList<>();
 			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));			
-			campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));			
 			this.lazyModel= new FormatCustomLazy("VistaArticulosDto","row", this.attrs, campos);
 			UIBackingUtilities.resetDataTable();
 		} // try
