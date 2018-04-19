@@ -151,6 +151,12 @@
         where      
           vigencia_final = {vigenciaFinal} and vigencia_inicial = {vigenciaInicial} and id_persona = {idPersona} and id_articulo_cliente_descuentio = {idArticuloClienteDescuentio} and porcentaje = {porcentaje} and id_articulo = {idArticulo}
       </select>
+			<select id="maximo">
+        select      
+          max(id_articulo_cliente_descuento) maximo
+        from      
+          tr_mantic_articulo_cliente_descuento
+      </select>
     </unit>
     
     <unit id="TrManticArticuloCodigoDto">
@@ -169,7 +175,7 @@
           tr_mantic_articulo_codigo
         where      
           codigo = '{codigo}' and id_articulo_codigo = {idArticuloCodigo} and id_articulo = {idArticulo}
-      </select>
+      </select>      
     </unit>
     
      <unit id="TrManticArticuloPresentacionDto">
@@ -539,6 +545,12 @@
         where      
           codigo = '{codigo}' and id_articulo_codigo = {idArticuloCodigo} and id_articulo = {idArticulo}
       </select>
+			<select id="maximo">
+        select      
+          max(id_articulo_codigo) maximo
+        from      
+          tc_mantic_articulos_codigos
+      </select>
     </unit>
 		<unit id="TcManticArticulosDescuentosDto">
       <select id="row">
@@ -556,6 +568,12 @@
           tc_mantic_articulos_descuentos
         where      
           vigencia_final = {vigenciaFinal} and vigencia_inicial = {vigenciaInicial} and porcentaje = {porcentaje} and id_articulo_descuento = {idArticuloDescuento}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_articulo_descuento) maximo
+        from      
+          tc_mantic_articulos_descuentos
       </select>
     </unit>
 		<unit id="TcManticArticulosDiseniosDto">
@@ -593,6 +611,12 @@
         where      
           id_articulo_especificacion = {idArticuloEspecificacion} and id_articulo = {idArticulo} and nombre = '{nombre}'
       </select>
+			<select id="maximo">
+        select      
+          max(id_articulo_especificacion) maximo
+        from      
+          tc_mantic_articulos_especificaciones
+      </select>
     </unit>
 		<unit id="TcManticArticulosDimencionesDto">
       <select id="row">
@@ -610,6 +634,33 @@
           tc_mantic_articulos_dimenciones
         where      
           id_articulo_dimension = {idArticuloDimension} and id_articulo = {idArticulo}
+      </select>
+    </unit>
+		 <unit id="TcManticProveedoresDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_proveedores
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_proveedores
+        where      
+          id_proveedor = {idProveedor} and razon_social = '{razonSocial}' and id_empresa = {idEmpresa}
+      </select>
+			<select id="findEmpresa">
+        select      
+					tc_mantic_proveedores.id_proveedor as id_key,
+          tc_mantic_proveedores.*
+        from      
+          tc_mantic_proveedores
+        where 
+          tc_mantic_proveedores.id_empresa = {idEmpresa} 
       </select>
     </unit>
   </dml>    
