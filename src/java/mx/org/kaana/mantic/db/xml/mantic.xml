@@ -153,7 +153,7 @@
       </select>
 			<select id="maximo">
         select      
-          max(id_articulo_cliente_descuento) maximo
+          max(id_articulo_cliente_descuentio) maximo
         from      
           tr_mantic_articulo_cliente_descuento
       </select>
