@@ -1,0 +1,294 @@
+package mx.org.kaana.mantic.db.dto;
+
+import java.io.Serializable;
+import java.sql.Blob;
+import java.sql.Date;
+import java.sql.Time;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Transient;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Lob;
+import javax.persistence.Table;
+import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
+
+/**
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
+ *@date 10/10/2016
+ *@time 11:58:22 PM
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
+ */
+
+@Entity
+@Table(name="tc_mantic_clientes")
+public class TcManticClientesDto implements IBaseDto, Serializable {
+		
+  private static final long serialVersionUID=1L;
+  @Column (name="clave")
+  private String clave;
+  @Column (name="plazo_dias")
+  private Long plazoDias;
+  @Id
+  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
+	@Column (name="id_cliente")
+  private Long idCliente;
+  @Column (name="limite_credito")
+  private Double limiteCredito;
+  @Column (name="id_usuario")
+  private Long idUsuario;
+  @Column (name="observaciones")
+  private String observaciones;
+  @Column (name="id_empresa")
+  private Long idEmpresa;
+  @Column (name="razon_social")
+  private String razonSocial;
+  @Column (name="id_tmp_cliente")
+  private Long idTmpCliente;
+  @Column (name="rfc")
+  private String rfc;
+  @Column (name="registro")
+  private Timestamp registro;
+
+  public TcManticClientesDto() {
+    this(new Long(-1L));
+  }
+
+  public TcManticClientesDto(Long key) {
+    this(null, null, new Long(-1L), null, null, null, null, null, null, null);
+    setKey(key);
+  }
+
+  public TcManticClientesDto(String clave, Long plazoDias, Long idCliente, Double limiteCredito, Long idUsuario, String observaciones, Long idEmpresa, String razonSocial, Long idTmpCliente, String rfc) {
+    setClave(clave);
+    setPlazoDias(plazoDias);
+    setIdCliente(idCliente);
+    setLimiteCredito(limiteCredito);
+    setIdUsuario(idUsuario);
+    setObservaciones(observaciones);
+    setIdEmpresa(idEmpresa);
+    setRazonSocial(razonSocial);
+    setIdTmpCliente(idTmpCliente);
+    setRfc(rfc);
+    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+  }
+	
+  public void setClave(String clave) {
+    this.clave = clave;
+  }
+
+  public String getClave() {
+    return clave;
+  }
+
+  public void setPlazoDias(Long plazoDias) {
+    this.plazoDias = plazoDias;
+  }
+
+  public Long getPlazoDias() {
+    return plazoDias;
+  }
+
+  public void setIdCliente(Long idCliente) {
+    this.idCliente = idCliente;
+  }
+
+  public Long getIdCliente() {
+    return idCliente;
+  }
+
+  public void setLimiteCredito(Double limiteCredito) {
+    this.limiteCredito = limiteCredito;
+  }
+
+  public Double getLimiteCredito() {
+    return limiteCredito;
+  }
+
+  public void setIdUsuario(Long idUsuario) {
+    this.idUsuario = idUsuario;
+  }
+
+  public Long getIdUsuario() {
+    return idUsuario;
+  }
+
+  public void setObservaciones(String observaciones) {
+    this.observaciones = observaciones;
+  }
+
+  public String getObservaciones() {
+    return observaciones;
+  }
+
+  public void setIdEmpresa(Long idEmpresa) {
+    this.idEmpresa = idEmpresa;
+  }
+
+  public Long getIdEmpresa() {
+    return idEmpresa;
+  }
+
+  public void setRazonSocial(String razonSocial) {
+    this.razonSocial = razonSocial;
+  }
+
+  public String getRazonSocial() {
+    return razonSocial;
+  }
+
+  public void setIdTmpCliente(Long idTmpCliente) {
+    this.idTmpCliente = idTmpCliente;
+  }
+
+  public Long getIdTmpCliente() {
+    return idTmpCliente;
+  }
+
+  public void setRfc(String rfc) {
+    this.rfc = rfc;
+  }
+
+  public String getRfc() {
+    return rfc;
+  }
+
+  public void setRegistro(Timestamp registro) {
+    this.registro = registro;
+  }
+
+  public Timestamp getRegistro() {
+    return registro;
+  }
+
+  @Transient
+  @Override
+  public Long getKey() {
+  	return getIdCliente();
+  }
+
+  @Override
+  public void setKey(Long key) {
+  	this.idCliente = key;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder regresar= new StringBuilder();
+    regresar.append("[");
+		regresar.append(getClave());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPlazoDias());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdCliente());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getLimiteCredito());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdUsuario());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getObservaciones());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEmpresa());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRazonSocial());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTmpCliente());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRfc());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRegistro());
+    regresar.append("]");
+  	return regresar.toString();
+  }
+
+  @Override
+  public Map toMap() {
+    Map regresar = new HashMap();
+		regresar.put("clave", getClave());
+		regresar.put("plazoDias", getPlazoDias());
+		regresar.put("idCliente", getIdCliente());
+		regresar.put("limiteCredito", getLimiteCredito());
+		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("observaciones", getObservaciones());
+		regresar.put("idEmpresa", getIdEmpresa());
+		regresar.put("razonSocial", getRazonSocial());
+		regresar.put("idTmpCliente", getIdTmpCliente());
+		regresar.put("rfc", getRfc());
+		regresar.put("registro", getRegistro());
+  	return regresar;
+  }
+
+  @Override
+  public Object[] toArray() {
+    Object[] regresar = new Object[]{
+    getClave(), getPlazoDias(), getIdCliente(), getLimiteCredito(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getRazonSocial(), getIdTmpCliente(), getRfc(), getRegistro()
+    };
+    return regresar;
+  }
+
+  @Override
+  public Object toValue(String name) {
+    return Methods.getValue(this, name);
+  }
+
+  @Override
+  public String toAllKeys() {
+    StringBuilder regresar= new StringBuilder();
+    regresar.append("|");
+    regresar.append("idCliente~");
+    regresar.append(getIdCliente());
+    regresar.append("|");
+    return regresar.toString();
+  }
+
+  @Override
+  public String toKeys() {
+    StringBuilder regresar= new StringBuilder();
+    regresar.append(getIdCliente());
+    return regresar.toString();
+  }
+
+  @Override
+  public Class toHbmClass() {
+    return TcManticClientesDto.class;
+  }
+
+  @Override
+  public boolean isValid() {
+  	return getIdCliente()!= null && getIdCliente()!=-1L;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final TcManticClientesDto other = (TcManticClientesDto) obj;
+    if (getIdCliente() != other.idCliente && (getIdCliente() == null || !getIdCliente().equals(other.idCliente))) {
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 67 * hash + (getIdCliente() != null ? getIdCliente().hashCode() : 0);
+    return hash;
+  }
+
+}
+
+
