@@ -27,6 +27,7 @@ import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
 @ViewScoped
 public class Accion extends IBaseAttribute implements Serializable {
 
+	private static final long serialVersionUID = 327393488565639367L;
 	private RegistroArticulo registroArticulo;
 
 	public RegistroArticulo getRegistroArticulo() {
@@ -44,9 +45,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));						
 			this.attrs.put("idArticulo", JsfBase.getFlashAttribute("idCategoria"));		
 			doLoad();		
+			loadProveedores();			
 			loadCategorias();
 			loadEmpaques();
 			doLoadUnidadesMedidas();				
+			loadClientes();
+			loadTiposVentas();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -77,21 +81,22 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} // doLoad
 	
 	public String doAceptar(){
-		TcManticArticulosDto dto= null;
-		Transaccion transaccion  = null;
-		try {
-			dto= loadDto();
-			transaccion= new Transaccion(dto, Long.valueOf(this.attrs.get("codigo").toString()), this.attrs.get("observaciones").toString());
-			if(transaccion.ejecutar((EAccion) this.attrs.get("accion")))
-				JsfBase.addMessage("Se aplico el cambio de forma correcta", ETipoMensaje.INFORMACION);
+		Transaccion transaccion= null;
+		String regresar        = null;
+		try {			
+			transaccion= new Transaccion(this.registroArticulo);
+			if(transaccion.ejecutar((EAccion) this.attrs.get("accion"))){
+				regresar= "filtro";
+				JsfBase.addMessage("Se registro el artículo de forma correcta.", ETipoMensaje.INFORMACION);
+			} // if
 			else
-				JsfBase.addMessage("Ocurrió un error al registrar el cambio", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Ocurrió un error al registrar el artículo", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return "filtro";
+		return regresar;
 	} // doAccion
 	
 	private TcManticArticulosDto loadDto() throws Exception{
@@ -113,6 +118,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} // loadDto		
 	
 	public String doCancelar(){		
+		if(((EAccion) this.attrs.get("accion")).equals(EAccion.AGREGAR))
+			this.registroArticulo.doCancelar();
 		return "filtro";
 	} // doAccion
 	
@@ -174,5 +181,59 @@ public class Accion extends IBaseAttribute implements Serializable {
 		catch (Exception e) {
 			throw e;
 		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
 	} // loadCategorias
+	
+	private void loadProveedores(){
+		List<UISelectItem> proveedores= null;
+		Map<String, Object>params     = null;		
+		try {
+			params= new HashMap<>();			
+			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			proveedores= UISelect.build("TcManticProveedoresDto", "findEmpresa", params, "razonSocial", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("proveedoresGeneral", proveedores);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadProveedores
+	
+	private void loadClientes(){
+		List<UISelectItem> clientes= null;
+		Map<String, Object>params  = null;		
+		try {
+			params= new HashMap<>();			
+			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			clientes= UISelect.build("TcManticClientesDto", "findEmpresa", params, "razonSocial", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("clientesGeneral", clientes);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadClientes
+	
+	private void loadTiposVentas(){
+		List<UISelectItem> tiposVentas= null;
+		Map<String, Object>params     = null;
+		try {			
+			params= new HashMap<>();			
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			tiposVentas= UISelect.build("TcManticTiposVentasDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("tiposVentasGeneral", tiposVentas);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadClientes
 }
