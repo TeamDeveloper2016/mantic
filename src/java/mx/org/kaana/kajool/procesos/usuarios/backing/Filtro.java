@@ -83,8 +83,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       campos.add(new Columna("segundoApellido", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("descPerfil", EFormatoDinamicos.MAYUSCULAS));
-      
+      campos.add(new Columna("descPerfil", EFormatoDinamicos.MAYUSCULAS));      
       switch (tipoBusqueda) {
         case NOMBRE:
           params.put(Constantes.SQL_CONDICION, carga.busquedaPorNombre());
