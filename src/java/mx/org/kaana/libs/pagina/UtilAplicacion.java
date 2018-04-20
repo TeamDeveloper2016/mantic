@@ -54,7 +54,7 @@ public class UtilAplicacion {
   private static final String FUSION = "jquery.janal.fusion.charts-3.3.1.js";
 
   public String getTituloSistema() {
-    return Configuracion.getInstance().getPropiedad("sistema.titulo");
+    return Configuracion.getInstance().getPropiedad("sistema.titulo").toUpperCase();
   }
 
   public String getTituloCorto() {
