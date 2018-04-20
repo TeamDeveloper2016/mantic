@@ -9,8 +9,9 @@ package mx.org.kaana.kajool.enums;
  */
 public enum ETipoBusqueda {
 
-	POR_NOMBRE,
-	POR_PERFIL,
-	POR_ENTIDAD,
-	POR_ORGANIZACION
+	NOMBRE,
+	PERFIL,
+    SIN_CONDICION,
+    TODOS;
+	
 }
