@@ -19,15 +19,19 @@ public class Empresa implements Serializable {
   private Long idEmpresa;
   private Long idEmpresaDepende;
   private String nombre;
+  private String nombreCorto;
+  private String titulo;
 
   public Empresa () {
-     this(-1L,-1L,"");
+     this(-1L,-1L,"","","");
   }     
 
-  public Empresa(Long idEmpresa,Long idEmpresaDepende ,String nombre) {
+  public Empresa(Long idEmpresa,Long idEmpresaDepende ,String nombre, String nombreCorto,String titulo) {
     this.nombre=nombre;
     this.idEmpresa = idEmpresa;
     this.idEmpresaDepende=idEmpresaDepende;
+    this.nombreCorto  = nombreCorto;
+    this.titulo  = titulo;
   }
 
   public Long getIdEmpresaDepende() {
@@ -39,8 +43,9 @@ public class Empresa implements Serializable {
   } 
   
   public String getNombre() {
-    return Cadena.letraCapital(nombre);
-  }
+    return nombre.toUpperCase();
+  }  
+  
 
   public void setNombre(String nombre) {
     this.nombre = nombre;
@@ -53,6 +58,22 @@ public class Empresa implements Serializable {
   public void setIdEmpresa(Long idEmpresa) {
     this.idEmpresa = idEmpresa;
   }
+
+  public String getNombreCorto() {
+    return nombreCorto.toUpperCase();
+  }
+
+  public void setNombreCorto(String nombreCorto) {
+    this.nombreCorto = nombreCorto;
+  }
+
+  public String getTitulo() {
+    return titulo.toUpperCase();
+  }
+
+  public void setTitulo(String titulo) {
+    this.titulo = titulo;
+  }  
 
   @Override
   public String toString() {
