@@ -11,7 +11,8 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
-				codigo: {validaciones: 'libre', mascara: 'libre'}				
+				codigo: {validaciones: 'cambiar-mayusculas', mascara: 'libre'},
+				nombre: {validaciones: 'cambiar-mayusculas', mascara: 'libre'}				
 			};			
 			
 			function showPanelFind(id){
@@ -37,9 +38,9 @@
 					<p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla">
 						<h:panelGrid styleClass="janal-wid-100">
 							<p:outputLabel for="codigo" value="Código:"/>
-							<p:inputText id="codigo" value="#{manticCatalogosArticulosFiltro.attrs.codigo}" styleClass="janal-wid-100-txt"/>              							
+							<p:inputText id="codigo" value="#{manticCatalogosArticulosFiltro.attrs.codigo}" styleClass="janal-wid-100-txt" onblur="janal.individual('codigo')"/>              							
 							<p:outputLabel for="nombre" value="Nombre:"/>
-							<p:inputText id="nombre" value="#{manticCatalogosArticulosFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/>              														
+							<p:inputText id="nombre" value="#{manticCatalogosArticulosFiltro.attrs.nombre}" styleClass="janal-wid-100-txt" onblur="janal.individual('nombre')"/>              														
 						</h:panelGrid>
 						<p:separator/>
 						<div class="janal-align-right">
