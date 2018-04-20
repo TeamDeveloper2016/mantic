@@ -7,7 +7,8 @@ import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TrManticEmpaqueUnidadMedidaDto;
 
 public class MotorBusqueda implements Serializable{
-	
+
+	private static final long serialVersionUID = 5366287658013154045L;
 	private Long idArticulo;
 
 	public MotorBusqueda(Long idArticulo) {
