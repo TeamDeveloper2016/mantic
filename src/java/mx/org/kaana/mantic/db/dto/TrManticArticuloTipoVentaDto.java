@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -40,6 +34,8 @@ public class TrManticArticuloTipoVentaDto implements IBaseDto, Serializable {
   private Long idArticuloTipoVenta;
   @Column (name="id_registro")
   private Long idRegistro;
+  @Column (name="porcentaje")
+  private Double porcentaje;
   @Column (name="orden")
   private Long orden;
   @Column (name="id_articulo")
@@ -54,13 +50,14 @@ public class TrManticArticuloTipoVentaDto implements IBaseDto, Serializable {
   }
 
   public TrManticArticuloTipoVentaDto(Long key) {
-    this(new Long(-1L), null, null, null, null);
+    this(new Long(-1L), null, null, null, null, null);
     setKey(key);
   }
 
-  public TrManticArticuloTipoVentaDto(Long idArticuloTipoVenta, Long idRegistro, Long orden, Long idArticulo, Long idTipoVenta) {
+  public TrManticArticuloTipoVentaDto(Long idArticuloTipoVenta, Long idRegistro, Double porcentaje, Long orden, Long idArticulo, Long idTipoVenta) {
     setIdArticuloTipoVenta(idArticuloTipoVenta);
     setIdRegistro(idRegistro);
+    setPorcentaje(porcentaje);
     setOrden(orden);
     setIdArticulo(idArticulo);
     setIdTipoVenta(idTipoVenta);
@@ -81,6 +78,14 @@ public class TrManticArticuloTipoVentaDto implements IBaseDto, Serializable {
 
   public Long getIdRegistro() {
     return idRegistro;
+  }
+
+  public void setPorcentaje(Double porcentaje) {
+    this.porcentaje = porcentaje;
+  }
+
+  public Double getPorcentaje() {
+    return porcentaje;
   }
 
   public void setOrden(Long orden) {
@@ -134,6 +139,8 @@ public class TrManticArticuloTipoVentaDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdRegistro());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPorcentaje());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdArticulo());
@@ -150,6 +157,7 @@ public class TrManticArticuloTipoVentaDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("idArticuloTipoVenta", getIdArticuloTipoVenta());
 		regresar.put("idRegistro", getIdRegistro());
+		regresar.put("porcentaje", getPorcentaje());
 		regresar.put("orden", getOrden());
 		regresar.put("idArticulo", getIdArticulo());
 		regresar.put("idTipoVenta", getIdTipoVenta());
@@ -160,7 +168,7 @@ public class TrManticArticuloTipoVentaDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdArticuloTipoVenta(), getIdRegistro(), getOrden(), getIdArticulo(), getIdTipoVenta(), getRegistro()
+    getIdArticuloTipoVenta(), getIdRegistro(), getPorcentaje(), getOrden(), getIdArticulo(), getIdTipoVenta(), getRegistro()
     };
     return regresar;
   }
