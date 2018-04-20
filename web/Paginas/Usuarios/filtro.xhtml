@@ -3,158 +3,131 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/filtro.xhtml">
-  <ui:param name="titulo" value="Administración de grupos de trabajo" />
+  <ui:param name="titulo" value="Administración de usuarios del sistema" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'criteriosBusqueda\\:nombre': {validaciones: 'requerido', mascara: 'libre', grupo: 'nombre'},
-        'criteriosBusqueda\\:entidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'entidad'},
-        'criteriosBusqueda\\:perfil': {validaciones: 'requerido', mascara: 'libre', grupo: 'perfil'}
+        'nombre': {validaciones: 'cambiar-mayusculas', mascara: 'libre'},
+        'tipoPerfil': {validaciones: 'libre', mascara: 'libre'}
       };
 
-      function lanzarMensaje() {
-        janal.bloquear();
-        PF('dialogoConfirmacion').show();
-      }
+      function showPanelFind(id) {
+        if ($('#' + id).hasClass('lg-pantalla')) {
+          $('#' + id).removeClass('lg-pantalla');
+          $('#' + id).addClass('xs-pantalla');
+        } // if
+        else {
+          $('#' + id).removeClass('xs-pantalla');
+          $('#' + id).addClass('lg-pantalla');
+        } // else
+      } // showPanelFind     
 
       function mensajeConfirmacion() {
         janal.bloquear();
         PF('confirmEliminacion').show();
       }
-    </script>
-    <style type="text/css">
-      .criterios {
-        margin-bottom: 10px;
-        margin-top: 10px;
-        border: 0px;
-        margin-left: 10%;
-      }
-    </style>
+    </script>		
   </ui:define>
-  <ui:define name="contenido">		
-    <h:panelGrid columns="1" styleClass="janal-content-table">
-      <p:tabView id="criteriosBusqueda" dynamic="true">
-        <p:ajax event="tabChange" listener="#{kajoolUsuariosFiltro.onTabChange}" update=":datos:tabla" oncomplete="janal.reset()"/>
-        <p:tab id="tabEntidad" title="#{kajoolUsuariosFiltro.criteriosBusqueda.titleTabEntidad}">
-          <h:panelGrid columns="3" styleClass="sin-lineas">
-            <p:outputLabel value="Entidad:" for="entidad"/>
-            <p:selectOneMenu id="entidad" value="#{kajoolUsuariosFiltro.criteriosBusqueda.criterioEntidad}" var="item" converter="janal.convertidor.Entity">
-              <f:selectItems value="#{kajoolUsuariosFiltro.criteriosBusqueda.listaEntidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>    							
-              <p:column>
-                <h:outputText value="#{item.clave}"/>
-              </p:column>
-              <p:column>
-                <h:outputText value="#{item.descripcion}"/>
-              </p:column>
-            </p:selectOneMenu>	
-            <p:commandButton id="buscarEntidad" icon="fa fa-search" actionListener="#{kajoolUsuariosFiltro.busquedaEntidad}" onstart="return janal.partial('entidad');" process="@this,entidad" update=":datos:tabla" title="Buscar por entidad"/>
-          </h:panelGrid>
-        </p:tab>
-        <p:tab id="tabPerfil" title="#{kajoolUsuariosFiltro.criteriosBusqueda.titleTabPerfil}">
-          <h:panelGrid columns="3" styleClass="sin-lineas">
-            <p:outputLabel value="Perfil:" for="perfil"/>
-            <p:selectOneMenu id="perfil" value="#{kajoolUsuariosFiltro.criteriosBusqueda.criterioPerfil}">
-              <f:selectItems value="#{kajoolUsuariosFiltro.criteriosBusqueda.listaPerfiles}" />
-            </p:selectOneMenu>
-            <p:commandButton id="buscarPerfil" actionListener="#{kajoolUsuariosFiltro.doBusquedaPerfil}" onstart="return janal.partial('perfil');" process="@this,perfil" update=":datos:tabla" icon="fa fa-search" title="Buscar por perfil" />
-          </h:panelGrid>
-        </p:tab>
-        <p:tab id="tabNombre" title="#{kajoolUsuariosFiltro.criteriosBusqueda.titleTabNombre}" >
-          <h:panelGrid columns="3" styleClass="sin-lineas" >
-            <p:outputLabel value="Nombre:" for="nombre"/>
-            <p:inputText id="nombre" value="#{kajoolUsuariosFiltro.criteriosBusqueda.criterioNombre}" size="80" />
-            <p:commandButton id="buscarNombre" actionListener="#{kajoolUsuariosFiltro.doBusquedaNombre}"  onstart="return janal.partial('nombre');" process="@this,nombre" update=":datos:tabla" icon="fa fa-search" title="Buscar por nombre"/>
-          </h:panelGrid>
-        </p:tab>
-      </p:tabView>
-      
-      <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{kajoolUsuariosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kajoolUsuariosFiltro.seleccionado}" selectionMode="single" paginator="#{kajoolUsuariosFiltro.lazyModel.rowCount gt kajoolUsuariosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
-       
-        <f:facet name="header">
-          <p:menuButton   value="Opciones">
-            <p:menuitem  value="Agregar" action="#{kajoolUsuariosFiltro.doAccion('AGREGAR')}"   ajax="false"  icon="fa fa-plus" title="Agregar usuario" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />						
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla">
+      <p:commandButton icon="fa fa-search" onstart="showPanelFind('panelBusqueda');" styleClass="janal-text-white"/>
+      <p:spacer height="5px"/>		
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla">
+            <h:panelGrid styleClass="janal-wid-100">
+              <p:outputLabel for="nombre" value="Nombre completo:"/>
+              <p:inputText id="nombre" value="#{kajoolUsuariosFiltro.criteriosBusqueda.nombre}" styleClass="janal-wid-90" onblur="janal.individual('nombre')" />              
+              <p:outputLabel for="tipoPerfil"  value="Perfil:"/>
+              <p:selectOneMenu  id="tipoPerfil" value="#{kajoolUsuariosFiltro.criteriosBusqueda.perfil}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-90">
+                <f:selectItems value="#{kajoolUsuariosFiltro.criteriosBusqueda.listaPerfiles}"  var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
+                <p:column>
+                  <h:outputText value="#{item.descripcion}"/>
+                </p:column>                
+              </p:selectOneMenu>
+            </h:panelGrid>
             <p:separator/>
-            <p:menuitem value="Delegar usuario" action="#{kajoolUsuariosFiltro.doDelegarMismoUsuario}" ajax="false"  icon="icono-rol" title="Delegar usuario" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="false"/>
+            <div class="janal-align-right">
+              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.bloquear();" process="@this nombre tipoPerfil" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
+            </div>
+          </p:panel>
+        </div>
+        <p:spacer/>
+        <div class="ui-grid-col-9">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{kajoolUsuariosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kajoolUsuariosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{kajoolUsuariosFiltro.lazyModel.rowCount gt kajoolUsuariosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+            <p:ajax event="contextMenu" process="@this" update="contextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);"/>
+            <f:facet name="header">
+              <div class="lg-pantalla">
+                <p:menuButton   value="Opciones">
+                  <p:menuitem  value="Agregar" action="#{kajoolUsuariosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar usuario" onstart="return janal.bloquear()"/>						
+                  <p:separator/>
+                  <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                </p:menuButton>
+              </div>     
+              <div class="xs-pantalla">
+                <p:commandButton  value="Agregar" action="#{kajoolUsuariosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar usuario" onstart="return janal.bloquear()" styleClass="janal-text-white"/>									   
+                <p:commandButton id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+                <p:commandButton id="xlsIcono" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+              </div>    
+            </f:facet>						
+            <p:column class="janal-column-right Wid10 MarAuto Responsive">
+              <f:facet name="header">
+                <h:outputText value="Índice"/>
+              </f:facet>
+              <h:outputText value="#{index+1}"/>
+            </p:column>				
+            <p:column class="janal-column-left Wid20 MarAuto Responsive" sortBy="#{filtro.primerApellido}">
+              <f:facet name="header">
+                <h:outputText value="Usuario"/>
+              </f:facet>
+              <h:outputText value="#{filtro['primerApellido']} #{filtro['segundoApellido']} #{filtro['nombres']}"/>
+            </p:column>
+            <p:column class="janal-column-left Wid20 MarAuto Responsive" sortBy="#{filtro.cuenta}">
+              <f:facet name="header">
+                <h:outputText value="Cuenta"/>
+              </f:facet>
+              <h:outputText value="#{filtro['cuenta']}"/>
+            </p:column>
+            <p:column class="janal-column-left Wid20 MarAuto Responsive" sortBy="#{filtro.descPerfil}">
+              <f:facet name="header">
+                <h:outputText value="Perfil"/>
+              </f:facet>
+              <h:outputText value="#{filtro['descPerfil']}"/>
+            </p:column>            
+            <f:facet name="footer">
+              Total [#{kajoolUsuariosFiltro.lazyModel==null?0:kajoolUsuariosFiltro.lazyModel.rowCount}] registros
+            </f:facet>
+          </p:dataTable>
+          <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+            <p:menuitem action="#{kajoolUsuariosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" />
+            <p:menuitem icon="fa fa-trash" value="Eliminar" process="@this tabla" update="dialogEliminar" oncomplete="mensajeConfirmacion()" />                              				
             <p:separator/>
-            <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-            <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-          </p:menuButton>
-        </f:facet>
-        <p:column class="janal-column-right Wid10 MarAuto Responsive">
-          <f:facet name="header">
-            <h:outputText value="Índice"/>
-          </f:facet>
-          <h:outputText value="#{index+1}"/>
-        </p:column>				
-        <p:column class="janal-column-left Wid20 MarAuto Responsive" sortBy="#{filtro.descEntidad}">
-          <f:facet name="header">
-            <h:outputText value="Entidad federativa"/>
-          </f:facet>
-          <h:outputText value="#{filtro['descEntidad']}"/>
-        </p:column>
-        <p:column class="janal-column-left Wid20 MarAuto Responsive" sortBy="#{filtro.primerApellido}">
-          <f:facet name="header">
-            <h:outputText value="Usuario"/>
-          </f:facet>
-          <h:outputText value="#{filtro['primerApellido']} #{filtro['segundoApellido']} #{filtro['nombres']}"/>
-        </p:column>
-        <p:column class="janal-column-left Wid20 MarAuto Responsive" sortBy="#{filtro.cuenta}">
-          <f:facet name="header">
-            <h:outputText value="Cuenta"/>
-          </f:facet>
-          <h:outputText value="#{filtro['cuenta']}"/>
-        </p:column>
-        <p:column class="janal-column-left Wid20 MarAuto Responsive" sortBy="#{filtro.descPerfil}">
-          <f:facet name="header">
-            <h:outputText value="Perfil"/>
-          </f:facet>
-          <h:outputText value="#{filtro['descPerfil']}"/>
-        </p:column>
-        <p:column exportable="false" class="janal-column-center Wid10 MarAuto Responsive">
-          <f:facet name="header">
-            <h:outputText value="Opciones"/>
-          </f:facet>	
-          <div class="janal-text-one-line">
-            <p:commandButton rendered="#{ (filtro['activo'] == '1')}" icon="fa fa-unlock-alt" title="Usuario activo"  actionListener="#{kajoolUsuariosFiltro.doConfigMensaje(filtro)}" update=":datos:tabla :datos:confirmacion"  onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.bloquear();PF('dialogoConfirmacion').show();"/>
-            <p:commandButton rendered="#{ (filtro['activo'] == '0')}" icon="fa fa-trash" title="Usuario inactivo"  actionListener="#{kajoolUsuariosFiltro.doConfigMensaje(filtro)}" update=":datos:tabla :datos:confirmacion" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.bloquear();PF('dialogoConfirmacion').show();"/>
-          </div>
-        </p:column>
-        <p:column headerText="Touch" width="35" styleClass="janal-column-center" rendered="#{util.isMobile}">
-          <span class="ui-icon ui-icon-lightbulb janal-context-menu" data-ri="#{index}" title="Acciones"/>
-        </p:column>
-        <f:facet name="footer">
-          Total [#{kajoolUsuariosFiltro.lazyModel==null?0:kajoolUsuariosFiltro.lazyModel.rowCount}] registros
-        </f:facet>
-      </p:dataTable>
-      <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-        <p:menuitem action="#{kajoolUsuariosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar usuario" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
-        <p:menuitem actionListener="#{kajoolUsuariosFiltro.doRecuperarInformacionDeUsuario}" icon="fa fa-trash" value="Eliminar usuario" update=":datos:dialogEliminar" oncomplete="mensajeConfirmacion()" />                              				
-        <p:separator/>
-        <p:menuitem icon="fa fa-user-plus" value="Resetear contraseña" oncomplete="janal.bloquear();PF('resetContrasenia').show();" update=":datos:dialogReset" />
-      </p:contextMenu>
-    </h:panelGrid>
-    <!-- Dialogo para confirmacion de activacion de usuario -->
-    <ui:param name="textoConfirmacion" value="¿Está seguro de #{kajoolUsuariosFiltro.attrs.mensajeAlerta} ?" />
-    <ui:param name="accionConfirmacion" value="#{kajoolUsuariosFiltro}"/>
-    <ui:param name="updateComponent" value=":datos:tabla :datos:confirmacion"/>
-    <ui:param name="eventoConfirmacion" value="doActivarUsuario"	/>	
-    <ui:param name="renderedConfirmacion" value="true"/>	
-    <!-- Dialogo para eliminación de usuario -->
+            <p:menuitem icon="fa fa-user-plus" value="Resetear contraseña" oncomplete="janal.bloquear();PF('resetContrasenia').show();" update=":datos:dialogReset" />            
+            <p:menuitem  icon="fa fa-unlock-alt"  rendered="#{kajoolUsuariosFiltro.attrs.seleccionado.activo=='1'}" value="Bloquear"    update=":datos:tabla :datos:confirmacion"  onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.bloquear();PF('dialogoConfirmacion').show();"/>
+            <p:menuitem  icon="fa fa-trash" rendered="#{kajoolUsuariosFiltro.attrs.seleccionado.activo=='0'}" value="Activar"   update=":datos:tabla :datos:confirmacion" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.bloquear();PF('dialogoConfirmacion').show();"/>              
+          </p:contextMenu>
+          <div class="EmptyBox30"></div>
+        </div>
+      </div>
+    </div>		      
     <p:dialog id="dialogEliminar" header="Eliminación" showEffect="clip" hideEffect="bounce" widgetVar="confirmEliminacion" dynamic="true" maximizable="false" minimizable="false" onHide="janal.desbloquear()">
       <h:outputText value="¿Está seguro de eliminar el usuario ?" />
-      <h:panelGrid columns="2">					
-        <h:outputText value="Entidad:"/>
-        <h:outputText value="#{kajoolUsuariosFiltro.attrs.entidad}" />
-        <h:outputText value="Perfil:"/>
-        <h:outputText value="#{kajoolUsuariosFiltro.attrs.perfil}" />
+      <h:panelGrid columns="2">
         <h:outputText value="Usuario:"/>
-        <h:outputText value="#{kajoolUsuariosFiltro.attrs.nombre}" />
+        <h:outputText value="#{kajoolUsuariosFiltro.attrs.seleccionado.nombres} #{kajoolUsuariosFiltro.attrs.seleccionado.primerApellido} #{kajoolUsuariosFiltro.attrs.seleccionado.segundoApellido}"/>
+        <h:outputText value="Perfil:"/>
+        <h:outputText value="#{kajoolUsuariosFiltro.attrs.seleccinado.descPerfil}" />        
       </h:panelGrid>
       <hr class="ui-widget-content"/>
       <div class="janal-line-button">
-        <p:commandButton process="@form" icon="fa fa-trash" update=":datos:tabla :datos:confirmacion"  value="Eliminar" actionListener="#{kajoolUsuariosFiltro.doEliminar}" onstart="PF('confirmEliminacion').hide()" oncomplete="janal.desbloquear();"  />
+        <p:commandButton process="@form" icon="fa fa-trash" update=":datos:tabla :datos:confirmacion"  value="Eliminar" actionListener="#{kajoolUsuariosFiltro.doEliminar}" onstart="PF('confirmEliminacion').hide();return true;" oncomplete="janal.desbloquear();"  />
         <p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" onstart="PF('confirmEliminacion').hide(); return true;"  oncomplete="janal.desbloquear();"/>
       </div>
     </p:dialog>
@@ -174,12 +147,13 @@
         <p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" onstart="PF('resetContrasenia').hide(); return true;"  oncomplete="janal.desbloquear();"/>
       </div>
     </p:dialog>
-    <h:commandLink id="dataPdf">
-      <p:dataExporter type="pdf" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}" />
-    </h:commandLink>
-    <h:commandLink id="dataXls">
-      <p:dataExporter type="xls" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>
-    </h:commandLink>
-  </ui:define>
-  <ui:param name="componenteBloqueo" value="criteriosBusqueda:entidad,criteriosBusqueda:buscarEntidad,criteriosBusqueda:perfil,criteriosBusqueda:buscarPerfil,criteriosBusqueda:buscarNombre,tabla"/>
+  </ui:define>    
+  <!-- Dialogo para confirmacion de activacion de usuario -->
+  <ui:param name="textoConfirmacion" value="¿Está seguro de #{kajoolUsuariosFiltro.attrs.mensajeAlerta} ?" />
+  <ui:param name="accionConfirmacion" value="#{kajoolUsuariosFiltro}"/>
+  <ui:param name="updateComponent" value=":datos:tabla :datos:confirmacion"/>
+  <ui:param name="eventoConfirmacion" value="doActivarUsuario"	/>	
+  <ui:param name="renderedConfirmacion" value="true"/>	
+  <!-- Dialogo para eliminación de usuario -->
+
 </ui:composition>

@@ -33,7 +33,9 @@
       </select>
       <select id="sucursales">           
         select 
-          tr_mantic_empresa_personal.id_empresa_persona,tc_mantic_empresas.id_empresa ,tc_mantic_empresas.id_empresa_depende,tc_mantic_empresas.nombre
+          tr_mantic_empresa_personal.id_empresa_persona,tc_mantic_empresas.id_empresa ,
+          tc_mantic_empresas.id_empresa_depende,tc_mantic_empresas.nombre,
+          tc_mantic_empresas.nombre_corto,tc_mantic_empresas.titulo
         from 
           tr_mantic_empresa_personal
         inner join
@@ -497,19 +499,22 @@
 		<unit id="VistaUsuariosDto">
 			<select id="row">
 				select
-			  	tc_janal_usuarios.id_usuario as id_key_usuario,
+			  	  tc_janal_usuarios.id_usuario as id_key_usuario,
+                  tc_mantic_personas.id_persona,
 				  if(isnull(tc_mantic_personas.nombres), ' ', tc_mantic_personas.nombres) nombres,
 					if(isnull(tc_mantic_personas.paterno), ' ', tc_mantic_personas.paterno) primer_apellido,
 					if(isnull(tc_mantic_personas.materno), ' ', tc_mantic_personas.materno) segundo_apellido,
 				  tc_janal_perfiles.descripcion desc_perfil,				
 				  tc_janal_usuarios.activo,				
-				  lower(tc_mantic_personas.cuenta) cuenta				  				
+				  lower(tc_mantic_personas.cuenta) cuenta,
+                  tc_mantic_personas.curp
+                  			  				
 				from
 				  tc_janal_usuarios
 				inner join 				
 				  tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
-        inner join				
-				  tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona				
+                 inner join				
+				  tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona                 				
 				inner join
 				  tc_janal_grupos on tc_janal_perfiles.id_grupo= tc_janal_grupos.id_grupo		
 				where

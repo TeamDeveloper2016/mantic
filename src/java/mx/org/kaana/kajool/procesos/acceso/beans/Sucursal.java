@@ -24,11 +24,11 @@ public class Sucursal extends Empresa implements Serializable, IBaseDto {
   }
   
   public Sucursal (Long idEmpresaPersona) {
-    this(idEmpresaPersona,-1L, -1L,"");
+    this(idEmpresaPersona,-1L, -1L,"","","");
   }  
   
-  public Sucursal (Long idEmpresaPersona, Long idEmpresa, Long idEmpresaDepende, String nombre ) {
-    super(idEmpresa,idEmpresa, nombre);
+  public Sucursal (Long idEmpresaPersona, Long idEmpresa, Long idEmpresaDepende, String nombre, String nombreCorto, String titulo ) {
+    super(idEmpresa,idEmpresa, nombre,nombreCorto,titulo);
     this.idEmpresaPersona = idEmpresaPersona;    
   }   
 

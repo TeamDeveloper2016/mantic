@@ -58,9 +58,7 @@ public class Autentifica implements Serializable {
 
   public Sucursal getEmpresa() {
     return empresa;
-  }
-
-  
+  }  
   
   public String getPaginaActual() {
     return paginaActual;

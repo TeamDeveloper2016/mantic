@@ -7,6 +7,7 @@ package mx.org.kaana.kajool.procesos.usuarios.reglas;
  * @time 08:11:30 PM
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,22 +17,18 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.dto.TrJanalPerfilesJerarquiasDto;
-import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.beans.CriteriosBusqueda;
+import mx.org.kaana.kajool.reglas.comun.Columna;
 
 public class CargaInformacionUsuarios {
 
   private CriteriosBusqueda criteriosBusqueda;
-
-  public CargaInformacionUsuarios() {
-  }
 
   public CargaInformacionUsuarios(CriteriosBusqueda criteriosBusqueda) {
     this.criteriosBusqueda = criteriosBusqueda;
@@ -40,10 +37,10 @@ public class CargaInformacionUsuarios {
   private CriteriosBusqueda getCriteriosBusqueda() {
     return criteriosBusqueda;
   }
-
-  public void initPerfiles() {
+  
+   public void init(boolean incluyeOptionAll) {
     try {
-      cargarPerfiles();
+      cargarPerfiles(incluyeOptionAll);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -52,8 +49,7 @@ public class CargaInformacionUsuarios {
 
   public void init() {
     try {
-      cargarEntidades();
-      initPerfiles();
+      cargarPerfiles(true);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -66,61 +62,32 @@ public class CargaInformacionUsuarios {
    *
    * @throws Exception
    */
-  private void cargarPerfiles() throws Exception {
+  private void cargarPerfiles(boolean optionAll) throws Exception {
     Map<String, Object> params = null;
+    List<Columna> formatos = null;
+    Entity entityDefault = null;
     try {
-      params = getCondicionPerfiles();
-      getCriteriosBusqueda().getListaPerfiles().addAll(UISelect.build("VistaMantenimientoPerfilesDto", "jerarquiaMostrarAsignados", params, "descripcion", EFormatoDinamicos.MAYUSCULAS));
-      if (!getCriteriosBusqueda().getListaPerfiles().isEmpty()) {
-        getCriteriosBusqueda().setCriterioPerfil((Long) UIBackingUtilities.toFirstKeySelectItem(getCriteriosBusqueda().getListaPerfiles()));
-      } // if
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      throw new Exception("Ocurrió un error al cargar las entidades", e);
-    } // catch
-    finally {
-      Methods.clean(params);
-    } // finally
-  }
-
-  /**
-   * Obtiene las condiciones para realizar la consulta hacia los perfiles
-   *
-   * @return Devuelve las condiciones en un Map
-   */
-  private Map<String, Object> getCondicionPerfiles() throws Exception {
-    Map<String, Object> regresar = null;
-    try {
-      regresar = new HashMap<>();
-      regresar.put("idPerfil", JsfBase.getAutentifica().getPersona().getIdPerfil());;
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      throw new Exception("Ocurrió un error al recuperar la condición de los perfiles.");
-    } // catch
-    return regresar;
-  }
-
-  private void cargarEntidades() throws Exception {
-    List<UISelectEntity> listaEntidades = null;
-    Map<String, Object> params = null;
-    try {
+      formatos = new ArrayList<>();
       params = new HashMap<>();
-      params.put("idPais", "1");
-      listaEntidades = UIEntity.build("TcJanalEntidadesDto", "comboEntidades", params);
-      if (listaEntidades != null && !listaEntidades.isEmpty()) {
-        getCriteriosBusqueda().getListaEntidades().addAll(listaEntidades);
+      formatos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+      params.put("idPerfil", JsfBase.getAutentifica().getPersona().getIdPerfil());
+      entityDefault = new Entity();
+      this.criteriosBusqueda.getListaPerfiles().addAll(UIEntity.build("VistaMantenimientoPerfilesDto", "jerarquiaMostrarAsignados", params, formatos));
+      entityDefault.put("idKeyPerfil", new Value("idKeyPerfil", -1L, "id_Key_Perfil"));      
+      entityDefault.put("descripcion", new Value("descripcion", "TODOS", "descripcion")); 
+      if (optionAll)
+        this.criteriosBusqueda.getListaPerfiles().add(0, new UISelectEntity(entityDefault));
+      if (!getCriteriosBusqueda().getListaPerfiles().isEmpty()) {
+        getCriteriosBusqueda().setPerfil((UISelectEntity) UIBackingUtilities.toFirstKeySelectEntity(this.criteriosBusqueda.getListaPerfiles()));
       } // if
     } // try
     catch (Exception e) {
-      Error.mensaje(e);
-      throw new Exception("Ocurrió un error al recuperar las entidades", e);
+      throw e;
     } // catch
     finally {
       Methods.clean(params);
-      Methods.clean(listaEntidades);
-    }
+      Methods.clean(formatos);
+    } // finally
   }
 
   private String condicionEmpleado(String alias, String cadena) {
@@ -138,10 +105,10 @@ public class CargaInformacionUsuarios {
         } // while contador
         i = contador;
         if (i == busqueda.length - 1) {
-          like.append("  ((upper(").append(alias).append("primer_apellido) like upper('%").append(elemento.toString()).append("%')) or (upper(").append(alias).append("segundo_apellido) like upper('%").append(elemento.toString()).append("%')) or (upper(").append(alias).append("nombres) like upper('%").append(elemento.toString()).append("%'))) ");
+          like.append("  ((upper(").append(alias).append("paterno) like upper('%").append(elemento.toString()).append("%')) or (upper(").append(alias).append("materno) like upper('%").append(elemento.toString()).append("%')) or (upper(").append(alias).append("nombres) like upper('%").append(elemento.toString()).append("%'))) ");
         } // if
         else {
-          like.append("  ((upper(").append(alias).append("primer_apellido) like upper('%").append(elemento.toString()).append("%')) or (upper(").append(alias).append("segundo_apellido) like upper('%").append(elemento.toString()).append("%')) or (upper(").append(alias).append("nombres) like upper('%").append(elemento.toString()).append("%'))) and ");
+          like.append("  ((upper(").append(alias).append("paterno) like upper('%").append(elemento.toString()).append("%')) or (upper(").append(alias).append("materno) like upper('%").append(elemento.toString()).append("%')) or (upper(").append(alias).append("nombres) like upper('%").append(elemento.toString()).append("%'))) and ");
         } // else
         elemento.delete(0, elemento.length());
       }// for i
@@ -159,13 +126,10 @@ public class CargaInformacionUsuarios {
    * @return Devuele los id de los perfiles encontrados en una cadena separada por comas
    */
   private String recuperarIdPerfiles() throws Exception {
-    Map<String, Object> params = new HashMap<>();
     StringBuilder regresar = new StringBuilder();
     try {
-      params.put(Constantes.SQL_CONDICION, "id_perfil = ".concat(JsfBase.getAutentifica().getPersona().getIdPerfil().toString()));
-      List<TrJanalPerfilesJerarquiasDto> trJanalPerfilesJerarquiasDto = (List<TrJanalPerfilesJerarquiasDto>) DaoFactory.getInstance().findViewCriteria(TrJanalPerfilesJerarquiasDto.class, params);
-      for (TrJanalPerfilesJerarquiasDto trJanalPerfilJerarquiaDto : trJanalPerfilesJerarquiasDto) {
-        regresar.append(trJanalPerfilJerarquiaDto.getIdPerfilAlta());
+      for (UISelectEntity perlfilAlta : this.getCriteriosBusqueda().getListaPerfiles()) {
+        regresar.append(perlfilAlta.getKey());
         regresar.append(",");
       } // for	
       if (regresar.length() != 0) {
@@ -178,10 +142,7 @@ public class CargaInformacionUsuarios {
     } // try
     catch (Exception e) {
       throw e;
-    } // catch
-    finally {
-      Methods.clean(params);
-    } // finally
+    } // catch   
     return regresar.toString();
   }
 
@@ -201,7 +162,7 @@ public class CargaInformacionUsuarios {
     String condicionemp = null;
     try {
       idPerfiles = recuperarIdPerfiles();
-      condicionemp = condicionEmpleado("", getCriteriosBusqueda().getCriterioNombre().toUpperCase());
+      condicionemp = condicionEmpleado("", getCriteriosBusqueda().getNombre().toUpperCase());
       if (!Cadena.isVacio(condicionemp)) {
         regresar.append(condicionemp);
         regresar.append(" and ");
@@ -216,64 +177,23 @@ public class CargaInformacionUsuarios {
     return regresar.toString();
   } // busquedaPorNombre
 
-  /**
-   * *
-   * Realiza con consulta a partir de entidad seleccionada
-   *
-   * @return devuela lista lista de resultados
-   */
-  public String busquedaPorEntidad() throws Exception {
-    StringBuilder regresar = null;
-    String idPerfiles = null;
-    try {
-      idPerfiles = recuperarIdPerfiles();
-      regresar = new StringBuilder();
-      regresar.append("tc_janal_entidades.id_entidad=");
-      regresar.append(getCriteriosBusqueda().getCriterioEntidad());
-      regresar.append(" and tc_janal_perfiles.id_perfil in (");
-      regresar.append(idPerfiles);
-      regresar.append(")");
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch
-    return regresar.toString();
-  } // busquedaPorPerfil
-
-  /**
-   * *
-   * Realizar la busqueda por el perfil seleccionado
-   *
-   * @return Devuelve la lista de resultados como tipo Entity
-   */
   public String busquedaPorPerfil() throws Exception {
     String regresar = null;
     try {
-      recuperarIdPerfiles();
-      regresar = "tc_janal_perfiles.id_perfil=".concat(getCriteriosBusqueda().getCriterioPerfil().toString());
+      regresar = "tc_janal_perfiles.id_perfil=".concat(getCriteriosBusqueda().getPerfil().getKey().toString());
     }// try
     catch (Exception e) {
-      Error.mensaje(e);
       throw e;
     } //  catch
     return regresar;
   }//busquedaPorOficina
 
-  public String busquedaPorEntidadPerfilNombre() {
+  public String busquedaPorPerfilNombre() {
     StringBuilder regresar = new StringBuilder();
     String idPerfiles = "";
     String condicionEmp = "";
     try {
-      if (getCriteriosBusqueda().getCriterioEntidad().getKey().equals(-1L)) {
-        regresar.append("tc_janal_entidades.id_entidad in (");
-        regresar.append(recuperarEntidades());
-        regresar.append(")");
-      } // if
-      else {
-        regresar.append("tc_janal_entidades.id_entidad=");
-        regresar.append(getCriteriosBusqueda().getCriterioEntidad());
-      } // else
-      if (getCriteriosBusqueda().getCriterioPerfil().longValue() == -1L) {
+      if (getCriteriosBusqueda().getPerfil().getKey().equals(-1L)) {
         idPerfiles = recuperarIdPerfiles();
         regresar.append(" and tr_perfiles.id_perfil in (");
         regresar.append(idPerfiles);
@@ -281,9 +201,9 @@ public class CargaInformacionUsuarios {
       } // if
       else {
         regresar.append(" and tr_perfiles.id_perfil = ");
-        regresar.append(getCriteriosBusqueda().getCriterioPerfil().toString());
+        regresar.append(getCriteriosBusqueda().getPerfil().getKey().toString());
       } // else
-      condicionEmp = condicionEmpleado("", getCriteriosBusqueda().getCriterioNombre().toUpperCase());
+      condicionEmp = condicionEmpleado("", getCriteriosBusqueda().getNombre().toUpperCase());
       if (!Cadena.isVacio(condicionEmp)) {
         regresar.append(" and ");
         regresar.append(condicionEmp);
@@ -294,38 +214,5 @@ public class CargaInformacionUsuarios {
       Error.mensaje(e);
     } //  catch
     return regresar.toString();
-  } // busquedaPorOficinaPerfilNombre
-
-  /**
-   * *
-   * Cambia el estatus del usuario. Si el parametro "activo" es true, entonces cambiará el estatus a activo (1)
-   *
-   * @param activo
-   */
-  public void cambiarEstatusUsuario(Map<String, Object> attrs) {
-    Transaccion transaccion = null;
-    try {
-      transaccion = new Transaccion(attrs);
-      if (transaccion.ejecutar(EAccion.ACTIVAR)) {
-        JsfBase.addMessage((boolean) attrs.get("activo") ? "Se activó el usuario con éxito." : "Se desactivó el usuario con éxito.");
-      }
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-    } // catch
-  }
-
-  private String recuperarEntidades() {
-    StringBuilder regresar = new StringBuilder();
-    try {
-      for (UISelectEntity entity : getCriteriosBusqueda().getListaEntidades()) {
-        regresar = regresar.append(entity.getKey().toString());
-        regresar = regresar.append(",");
-      } // for
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-    } // catch
-    return regresar.toString().substring(3, regresar.length() - 1);
-  } // recuperarEntidades
+  } // busquedaPorOficinaPerfilNombre 
 }

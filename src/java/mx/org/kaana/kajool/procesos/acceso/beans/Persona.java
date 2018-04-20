@@ -64,17 +64,13 @@ public class Persona implements Serializable, IBaseDto {
     this.claveGrupo = claveGrupo;
   }
   
-  
-
   public Timestamp getUltimoAcceso() {
     return ultimoAcceso;
   }
 
   public void setUltimoAcceso(Timestamp ultimoAcceso) {
     this.ultimoAcceso = ultimoAcceso;
-  }
- 
-  
+  }  
   
   public String getEstilo() {
     return estilo;

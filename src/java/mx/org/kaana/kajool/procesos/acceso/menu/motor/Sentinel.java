@@ -120,14 +120,11 @@ public class Sentinel extends IBaseMenu implements Serializable {
         regresar.append("<a href=\"").append(context);
         regresar.append("/Paginas/Acceso/Perfil/filtro.jsf\" class=\"janal-text-white Unselectable\"><i class=\"fa fa-group\"></i>Perfiles</a></li>");
       } // if
-      if (!JsfBase.getAutentifica().getCredenciales().isAccesoDelega()) {
+      /*if (!JsfBase.getAutentifica().getCredenciales().isAccesoDelega()) {
         regresar.append("<li class=\"Animated05\">");
         regresar.append("<a href=\"").append(context);
         regresar.append("/Paginas/Usuarios/Delegar/filtro.jsf\" class=\"janal-text-white Unselectable\"><i class=\"icon-users-2\"></i>Delegar</a></li>");
-      } // if
-      regresar.append("<li class=\"Animated05\">");
-      regresar.append("<a href=\"").append(context);
-      regresar.append("/Paginas/Mantenimiento/Temas/disponibles.jsf\" class=\"janal-text-white Unselectable\"><i class=\"icon-brush\"></i>Temas</a></li>");
+      } // if*/
       regresar.append("<li class=\"Animated05\">");
       regresar.append("<a href=\"").append(context);
       regresar.append("/Paginas/Mantenimiento/Mensajes/Notificacion/filtro.jsf\" class=\"janal-text-white Unselectable\"><i class=\"icon-mail\"></i>Mensajes</a></li>");

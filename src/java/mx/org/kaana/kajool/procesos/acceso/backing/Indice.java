@@ -17,10 +17,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseFilter;
-import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.procesos.mantenimiento.temas.backing.TemaActivo;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.Transaccion;
+import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 
 /**
  * @company KAANA
@@ -88,7 +88,7 @@ public class Indice extends IBaseFilter implements Serializable {
       param.put("curp", getCliente().getCurp());
       vistaUsuario = (Entity) DaoFactory.getInstance().toEntity("VistaTcJanalUsuariosDto", "recuperar", param);
       if (vistaUsuario != null) {
-        reiniciarContrasenia(vistaUsuario.toLong("idKey"));
+        reiniciarContrasenia(vistaUsuario.toLong("idKey"), getCliente().getCurp());
         getCliente().setCuenta("");
         getCliente().setCurp("");
         JsfBase.addMessage("Se reinicio la contraseña con éxito.");
@@ -103,23 +103,20 @@ public class Indice extends IBaseFilter implements Serializable {
     }
   } // doVerificarCuenta
 
-  private boolean reiniciarContrasenia(Long idEmpleado) throws Exception {
-    Transaccion transaccion = null;
-    Map<String, Object> params = null;
-    boolean regresar = false;
+  private boolean reiniciarContrasenia(Long idPersona, String curp) throws Exception {
+    Transaccion transaccion     = null;   
+    boolean regresar             = false;
+    TcManticPersonasDto  persona = null;
     try {
-      params = new HashMap();
-      params.put("idPersona", idEmpleado);
-      transaccion = new Transaccion(params);
+      persona  = new TcManticPersonasDto(idPersona);
+      persona.setCurp(curp);
+      transaccion = new Transaccion(persona);
       regresar = transaccion.ejecutar(EAccion.RESTAURAR);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessage(UIMessage.toMessage("error_solicitud"));
-    } // catch
-    finally {
-      Methods.clean(params);
-    } // finally
+    } // catch   
     return regresar;
   } // enviarCorreo
 
