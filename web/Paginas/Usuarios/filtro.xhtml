@@ -12,7 +12,7 @@
     <script type="text/javascript">
       Janal.Control.fields = {
         'nombre': {validaciones: 'cambiar-mayusculas', mascara: 'libre'},
-		'tipoPerfil': {validaciones: 'libre', mascara: 'libre'}
+        'tipoPerfil': {validaciones: 'libre', mascara: 'libre'}
       };
 
       function showPanelFind(id) {
@@ -25,7 +25,7 @@
           $('#' + id).addClass('lg-pantalla');
         } // else
       } // showPanelFind     
-      
+
       function mensajeConfirmacion() {
         janal.bloquear();
         PF('confirmEliminacion').show();
@@ -47,11 +47,11 @@
               <p:outputLabel for="tipoPerfil"  value="Perfil:"/>
               <p:selectOneMenu  id="tipoPerfil" value="#{kajoolUsuariosFiltro.criteriosBusqueda.perfil}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-90">
                 <f:selectItems value="#{kajoolUsuariosFiltro.criteriosBusqueda.listaPerfiles}"  var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
-                  <p:column>
-                    <h:outputText value="#{item.descripcion}"/>
-                  </p:column>                
+                <p:column>
+                  <h:outputText value="#{item.descripcion}"/>
+                </p:column>                
               </p:selectOneMenu>
-              </h:panelGrid>
+            </h:panelGrid>
             <p:separator/>
             <div class="janal-align-right">
               <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.bloquear();" process="@this nombre tipoPerfil" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
@@ -64,18 +64,18 @@
             <p:ajax event="contextMenu" process="@this" update="contextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);"/>
             <f:facet name="header">
               <div class="lg-pantalla">
-               <p:menuButton   value="Opciones">
+                <p:menuButton   value="Opciones">
                   <p:menuitem  value="Agregar" action="#{kajoolUsuariosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar usuario" onstart="return janal.bloquear()"/>						
                   <p:separator/>
                   <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-               </p:menuButton>
+                </p:menuButton>
               </div>     
               <div class="xs-pantalla">
                 <p:commandButton  value="Agregar" action="#{kajoolUsuariosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar usuario" onstart="return janal.bloquear()" styleClass="janal-text-white"/>									   
                 <p:commandButton id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
                 <p:commandButton id="xlsIcono" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
-			  </div>    
+              </div>    
             </f:facet>						
             <p:column class="janal-column-right Wid10 MarAuto Responsive">
               <f:facet name="header">
@@ -148,12 +148,12 @@
       </div>
     </p:dialog>
   </ui:define>    
- <!-- Dialogo para confirmacion de activacion de usuario -->
-    <ui:param name="textoConfirmacion" value="¿Está seguro de #{kajoolUsuariosFiltro.attrs.mensajeAlerta} ?" />
-    <ui:param name="accionConfirmacion" value="#{kajoolUsuariosFiltro}"/>
-    <ui:param name="updateComponent" value=":datos:tabla :datos:confirmacion"/>
-    <ui:param name="eventoConfirmacion" value="doActivarUsuario"	/>	
-    <ui:param name="renderedConfirmacion" value="true"/>	
-    <!-- Dialogo para eliminación de usuario -->
-    
+  <!-- Dialogo para confirmacion de activacion de usuario -->
+  <ui:param name="textoConfirmacion" value="¿Está seguro de #{kajoolUsuariosFiltro.attrs.mensajeAlerta} ?" />
+  <ui:param name="accionConfirmacion" value="#{kajoolUsuariosFiltro}"/>
+  <ui:param name="updateComponent" value=":datos:tabla :datos:confirmacion"/>
+  <ui:param name="eventoConfirmacion" value="doActivarUsuario"	/>	
+  <ui:param name="renderedConfirmacion" value="true"/>	
+  <!-- Dialogo para eliminación de usuario -->
+
 </ui:composition>
