@@ -59,10 +59,10 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // init
 
   public void doLoad() {
-    EAccion eaccion = null;
-    Long idArticulo = -1L;
+    EAccion eaccion= null;
+    Long idArticulo= -1L;
     try {
-      eaccion = (EAccion) this.attrs.get("accion");
+      eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
       switch (eaccion) {
         case AGREGAR:
@@ -81,17 +81,16 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doLoad
 
   public String doAceptar() {
-    Transaccion transaccion = null;
-    String regresar = null;
+    Transaccion transaccion= null;
+    String regresar        = null;
     try {
       transaccion = new Transaccion(this.registroArticulo);
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
         regresar = "filtro";
         JsfBase.addMessage("Se registro el artículo de forma correcta.", ETipoMensaje.INFORMACION);
       } // if
-      else {
-        JsfBase.addMessage("Ocurrió un error al registrar el artículo", ETipoMensaje.ERROR);
-      }
+      else 
+        JsfBase.addMessage("Ocurrió un error al registrar el artículo", ETipoMensaje.ERROR);      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -100,32 +99,14 @@ public class Accion extends IBaseAttribute implements Serializable {
     return regresar;
   } // doAccion
 
-  private TcManticArticulosDto loadDto() throws Exception {
-    TcManticArticulosDto regresar = null;
-    try {
-      regresar = (TcManticArticulosDto) this.attrs.get("dto");
-      if (EAccion.AGREGAR.equals((EAccion) this.attrs.get("accion"))) {
-        regresar.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      } // if
-      else {
-      } // if													
-      regresar.setIdUsuario(JsfBase.getIdUsuario());
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch		
-    return regresar;
-  } // loadDto		
-
   public String doCancelar() {
-    if (((EAccion) this.attrs.get("accion")).equals(EAccion.AGREGAR)) {
-      this.registroArticulo.doCancelar();
-    }
+    if (((EAccion) this.attrs.get("accion")).equals(EAccion.AGREGAR)) 
+      this.registroArticulo.doCancelar();    
     return "filtro";
   } // doAccion
 
   private void loadEmpaques() {
-    List<UISelectItem> empaques = null;
+    List<UISelectItem> empaques= null;
     Map<String, Object> params = null;
     EAccion eaccion = null;
     try {
@@ -134,9 +115,8 @@ public class Accion extends IBaseAttribute implements Serializable {
       empaques = UISelect.build("TcManticEmpaquesDto", "row", params, "nombre", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("empaques", empaques);
       eaccion = (EAccion) this.attrs.get("accion");
-      if (eaccion.equals(EAccion.AGREGAR)) {
-        this.registroArticulo.setIdEmpaque((Long) UIBackingUtilities.toFirstKeySelectItem(empaques));
-      }
+      if (eaccion.equals(EAccion.AGREGAR)) 
+        this.registroArticulo.setIdEmpaque((Long) UIBackingUtilities.toFirstKeySelectItem(empaques));      
     } // try
     catch (Exception e) {
       throw e;
@@ -147,18 +127,17 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // loadEmpaques
 
   public void doLoadUnidadesMedidas() {
-    List<UISelectItem> unidadesMedidas = null;
-    Map<String, Object> params = null;
-    EAccion eaccion = null;
+    List<UISelectItem> unidadesMedidas= null;
+    Map<String, Object> params        = null;
+    EAccion eaccion                   = null;
     try {
       params = new HashMap<>();
       params.put("idEmpaque", this.registroArticulo.getIdEmpaque());
       eaccion = (EAccion) this.attrs.get("accion");
       unidadesMedidas = UISelect.build("VistaEmpaqueUnidadMedidaDto", "empaqueUnidadMedida", params, "nombre", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("unidadesMedidas", unidadesMedidas);
-      if (eaccion.equals(EAccion.AGREGAR)) {
-        this.registroArticulo.getArticulo().setIdEmpaqueUnidadMedida((Long) UIBackingUtilities.toFirstKeySelectItem(unidadesMedidas));
-      }
+      if (eaccion.equals(EAccion.AGREGAR)) 
+        this.registroArticulo.getArticulo().setIdEmpaqueUnidadMedida((Long) UIBackingUtilities.toFirstKeySelectItem(unidadesMedidas));      
     } // try
     catch (Exception e) {
       throw e;
@@ -169,18 +148,17 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doLoadUnidadesMedidas
 
   private void loadCategorias() {
-    List<UISelectItem> categorias = null;
-    Map<String, Object> params = null;
-    EAccion eaccion = null;
+    List<UISelectItem> categorias= null;
+    Map<String, Object> params   = null;
+    EAccion eaccion              = null;
     try {
       params = new HashMap<>();
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       categorias = UISelect.build("TcManticCategoriasDto", "row", params, "traza", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("categorias", categorias);
       eaccion = (EAccion) this.attrs.get("accion");
-      if (eaccion.equals(EAccion.AGREGAR)) {
+      if (eaccion.equals(EAccion.AGREGAR)) 
         this.registroArticulo.getArticulo().setIdCategoria((Long) UIBackingUtilities.toFirstKeySelectItem(categorias));
-      }
     } // try
     catch (Exception e) {
       throw e;
@@ -191,8 +169,8 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // loadCategorias
 
   private void loadProveedores() {
-    List<UISelectItem> proveedores = null;
-    Map<String, Object> params = null;
+    List<UISelectItem> proveedores= null;
+    Map<String, Object> params    = null;
     try {
       params = new HashMap<>();
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
@@ -208,7 +186,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // loadProveedores
 
   private void loadClientes() {
-    List<UISelectItem> clientes = null;
+    List<UISelectItem> clientes= null;
     Map<String, Object> params = null;
     try {
       params = new HashMap<>();
@@ -225,8 +203,8 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // loadClientes
 
   private void loadTiposVentas() {
-    List<UISelectItem> tiposVentas = null;
-    Map<String, Object> params = null;
+    List<UISelectItem> tiposVentas= null;
+    Map<String, Object> params    = null;
     try {
       params = new HashMap<>();
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
