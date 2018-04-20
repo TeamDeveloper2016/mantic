@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
-import javax.faces.event.ActionEvent;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.libs.Constantes;
@@ -15,10 +14,10 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.dto.TcJanalUsuariosDto;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.EReporte;
 import mx.org.kaana.kajool.enums.ETipoBusqueda;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -28,9 +27,10 @@ import mx.org.kaana.kajool.procesos.usuarios.reglas.Transaccion;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.beans.CriteriosBusqueda;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.pagina.UIMessage;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
-import org.primefaces.event.SelectEvent;
-import org.primefaces.event.TabChangeEvent;
 
 /**
  * @company KAANA
@@ -44,28 +44,11 @@ import org.primefaces.event.TabChangeEvent;
 public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = -1279553224860143822L;
-  private final String ESTATUS_ACTIVO = "1";
+  private final Long ESTATUS_ACTIVO = 1L;
   private CriteriosBusqueda criteriosBusqueda;
-  private Entity seleccionado;
 
   public CriteriosBusqueda getCriteriosBusqueda() {
     return criteriosBusqueda;
-  }
-
-  public void setCriteriosBusqueda(CriteriosBusqueda criteriosBusqueda) {
-    this.criteriosBusqueda = criteriosBusqueda;
-  }
-
-  public Entity getSeleccionado() {
-    return seleccionado;
-  }
-
-  public void setSeleccionado(Entity seleccionado) {
-    this.seleccionado = seleccionado;
-  }
-
-  public void selectec(SelectEvent selectEvent) {
-    this.seleccionado = (Entity) selectEvent.getObject();
   }
 
   @Override
@@ -73,8 +56,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   protected void init() {
     CargaInformacionUsuarios carga = null;
     try {
-      this.attrs.put("opcionSeleccionada", 1);
-      setCriteriosBusqueda(new CriteriosBusqueda());
+      this.criteriosBusqueda = new CriteriosBusqueda();
       carga = new CargaInformacionUsuarios(getCriteriosBusqueda());
       carga.init();
       this.attrs.put("isPermisoDelega", JsfBase.isAdmin());
@@ -90,126 +72,83 @@ public class Filtro extends IBaseFilter implements Serializable {
    * Recarga los datos segun la acicón que se ejecutó.
    */
   private void recargarTablaDatos(ETipoBusqueda tipoBusqueda) {
+    Map<String, Object> params = null;
+    List<Columna> campos = null;
+    CargaInformacionUsuarios carga = null;
     try {
-      CargaInformacionUsuarios carga = new CargaInformacionUsuarios(getCriteriosBusqueda());
-      Map<String, Object> params = new HashMap<>();
-      List<Columna> campos = new ArrayList<>();
+      carga = new CargaInformacionUsuarios(getCriteriosBusqueda());
+      params = new HashMap<>();
+      campos = new ArrayList<>();
+      campos.add(new Columna("primerApellido", EFormatoDinamicos.MAYUSCULAS));
+      campos.add(new Columna("segundoApellido", EFormatoDinamicos.MAYUSCULAS));
+      campos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      campos.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
+      campos.add(new Columna("descPerfil", EFormatoDinamicos.MAYUSCULAS));
+      
       switch (tipoBusqueda) {
-        case POR_NOMBRE:
+        case NOMBRE:
           params.put(Constantes.SQL_CONDICION, carga.busquedaPorNombre());
           break;
-        case POR_PERFIL:
+        case PERFIL:
           params.put(Constantes.SQL_CONDICION, carga.busquedaPorPerfil());
           break;
-        case POR_ENTIDAD:
-          params.put(Constantes.SQL_CONDICION, carga.busquedaPorEntidad());
+        case TODOS:
+          params.put(Constantes.SQL_CONDICION, carga.busquedaPorPerfilNombre());
+          break;
+        case SIN_CONDICION:
+          params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
           break;
       } // switch
       this.attrs.put("condicion", params.get(Constantes.SQL_CONDICION));
-      params.put("sortOrder", "order by tc_janal_perfiles.id_perfil, tc_janal_empleados.primer_apellido, tc_janal_empleados.segundo_apellido, tc_janal_empleados.nombres");
+      params.put("sortOrder", "order by tc_janal_perfiles.id_perfil, tc_mantic_personas.paterno, tc_mantic_personas.materno, tc_mantic_personas.nombres");
       this.lazyModel = new FormatCustomLazy("VistaUsuariosDto", "row", params, campos);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
     } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(campos);
+    } // finally
   }
 
-  /**
-   * *
-   * Metodo de interacción cuando se presiona el link en la busqueda por nombre
-   *
-   * @param event. Recibe el evento desde la pagina
-   */
-  public void doBusquedaNombre(ActionEvent event) {
-    recargarTablaDatos(ETipoBusqueda.POR_NOMBRE);
-  }
-
-  /**
-   * *
-   * Metodo de interaccion cuando se presiona el link en la busqueda por Se realiza la consulta por perfil
-   *
-   * @param event
-   */
-  public void doBusquedaPerfil(ActionEvent event) {
-    recargarTablaDatos(ETipoBusqueda.POR_PERFIL);
-  }
-
-  /**
-   * *
-   * Metodo de interaccion cuando se presiona el link en la busqueda por perfil Se realiza la consulta por perfil
-   *
-   * @param event
-   */
-  public void busquedaEntidad(ActionEvent event) {
-    recargarTablaDatos(ETipoBusqueda.POR_ENTIDAD);
-  }
-
-  public void busquedaOrganizacion(ActionEvent event) {
-    recargarTablaDatos(ETipoBusqueda.POR_ORGANIZACION);
-    this.attrs.put("opcionSeleccionada", ETipoBusqueda.POR_ORGANIZACION.ordinal() + 1);
-  }
-
-  /**
-   * *
-   * Metodo de interacción cuando se presiona el botón de activiar usuario. Se verificar el estatus actual del usuario,
-   * si es activo. cambiar a inactivo o viceversa
-   *
-   * @param event
-   */
   public void doActivarUsuario() {
-    CargaInformacionUsuarios carga = new CargaInformacionUsuarios();
-    this.attrs.put("idUsuario", this.seleccionado.toLong("idKeyUsuario"));
-    this.attrs.put("activo", this.seleccionado.toString("activo").equals(ESTATUS_ACTIVO) ? 0L : 1L);
-    carga.cambiarEstatusUsuario(this.attrs);
-    Integer opcionSeleccionada = (Integer) this.attrs.get("opcionSeleccionada");
-    //Verificando tab Seleccionado
-    switch (opcionSeleccionada) {
-      case 1:
-        recargarTablaDatos(ETipoBusqueda.POR_NOMBRE);
-        break;
-      case 2:
-        recargarTablaDatos(ETipoBusqueda.POR_ENTIDAD);
-        break;
-      case 3:
-        recargarTablaDatos(ETipoBusqueda.POR_PERFIL);
-        break;
-    } // switch
+    Entity seleccionado            = null;
+    Transaccion  transaccion       = null;
+    TcJanalUsuariosDto usuario     = null;
+    try {
+      seleccionado = (Entity) this.attrs.get("seleccionado");
+      usuario = new TcJanalUsuariosDto(seleccionado.getKey());
+      usuario.setActivo(seleccionado.toLong("activo").equals(ESTATUS_ACTIVO)?0L:ESTATUS_ACTIVO);
+      transaccion = new Transaccion(usuario);
+      if (transaccion.ejecutar(EAccion.ACTIVAR)) {
+        JsfBase.addMessage(usuario.getActivo().equals(ESTATUS_ACTIVO) ? "Se activó el usuario con éxito." : "Se desactivó el usuario con éxito.");
+      }
+      doBuscar();
+    } // try
+    catch (Exception e) {
+      JsfBase.addMessageError(e);
+      Error.mensaje(e);
+    } // catch  
   }
 
-  /**
-   * *
-   * Metodo escuchador que se ejecuta cuando hubo un cambio de tab.
-   *
-   * @param event
-   */
-  public void onTabChange(TabChangeEvent event) {
-    this.lazyModel = null;
-    this.attrs.put("opcionSeleccionada", event.getTab().getTitle().equals(getCriteriosBusqueda().getTitleTabNombre()) ? 1 : event.getTab().getTitle().equals(getCriteriosBusqueda().getTitleTabEntidad()) ? 2 : 3);
-    this.seleccionado = null;
-    UIBackingUtilities.resetDataTable();
-  }
-
-  public void doConfigMensaje(ActionEvent event) {
-    Entity entity = (Entity) event.getComponent().getAttributes().get("current");
-    doConfigMensaje(entity);
-  }
-
-  public void doConfigMensaje(Entity entity) {
-    this.seleccionado = entity;
+  public void doActivar() {
+    Entity seleccionado = (Entity) this.attrs.get("seleccionado");
     StringBuilder mensaje = new StringBuilder();
-    mensaje.append(this.seleccionado.toString("activo").equals(ESTATUS_ACTIVO) ? "desactivar " : " activar ");
+    mensaje.append(seleccionado.toString("activo").equals(ESTATUS_ACTIVO) ? "Bloquear " : " activar ");
     mensaje.append(" la cuenta de acceso de [");
-    mensaje.append(this.seleccionado.toString("cuenta"));
+    mensaje.append(seleccionado.toString("cuenta"));
     mensaje.append("]");
     this.attrs.put("mensajeAlerta", mensaje);
   }
 
   public String doAccion(EAccion accion) {
+    Entity seleccionado = (Entity) this.attrs.get("seleccionado");
     try {
       JsfBase.setFlashAttribute("accion", accion);
       if (accion.equals(EAccion.MODIFICAR)) {
-        JsfBase.setFlashAttribute("idUsuario", this.seleccionado.toLong("idKeyUsuario"));
+        JsfBase.setFlashAttribute("idUsuario", seleccionado.toLong("idKeyUsuario"));
       }
     } // try
     catch (Exception e) {
@@ -228,48 +167,45 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doAceptar
 
   public void doRecuperarInformacionDeUsuario() {
-    this.attrs.put("entidad", this.seleccionado.toString("descEntidad"));
-    this.attrs.put("nombre", this.seleccionado.toString("nombres"));
-    this.attrs.put("perfil", this.seleccionado.toString("descPerfil"));
+    Entity seleccionado = (Entity) this.attrs.get("seleccionado");
+    this.attrs.put("nombre", seleccionado.toString("nombres"));
+    this.attrs.put("perfil", seleccionado.toString("descPerfil"));
     //return null;
   }
 
   public void doEliminar() {
     Transaccion tx = null;
     TcJanalUsuariosDto usuario = null;
-    TcManticPersonasDto persona = null;
+    Entity seleccionado = null;
+    Map<String, Object> params = null;
     try {
-      usuario = (TcJanalUsuariosDto) DaoFactory.getInstance().findById(TcJanalUsuariosDto.class, this.seleccionado.toLong("idKeyUsuario"));
-      persona = (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, usuario.getIdPersona());
-      this.attrs.put("idUsuario", this.seleccionado.toLong("idKeyUsuario"));
-      this.attrs.put("tcJanalUsuarioDto", usuario);
-      tx = new Transaccion(this.attrs);
+      seleccionado = (Entity) this.attrs.get("seleccionado");
+      params = new HashMap<>();
+      usuario = new TcJanalUsuariosDto(seleccionado.getKey());
+      tx = new Transaccion(usuario);
       if (tx.ejecutar(EAccion.ELIMINAR)) {
-        JsfBase.addMessage("El usuario ".concat(persona.getCuenta()).concat(" fue eliminado correctamente."));
+        params.put("elemento", "el usuario [".concat(seleccionado.toString("cuenta")).concat("]"));
+        JsfBase.addMessage(UIMessage.toMessage("correcto_eliminar_elemento", params));
       } // if
       else {
-        JsfBase.addMessage("Error", "El usuario no pudo se eliminado", ETipoMensaje.ERROR);
+        JsfBase.addMessage("Error", "El usuario no puede ser eliminado debido a que tiene información asociada", ETipoMensaje.ERROR);
       } // else
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessage("Error", "Ocurrió un error al eliminar el registro del usuario".concat(e.getMessage()), ETipoMensaje.FATAL);
     } // catch
-  }
-
-  public void doRecuperaRegistro(ActionEvent event) {
-    this.seleccionado = (Entity) event.getComponent().getAttributes().get("current");
-  }
-
-  public String doRegresar() {
-    //return UIBacking.returnMenu();
-    return null;
+    finally {
+      Methods.clean(params);
+    }// 
   }
 
   @Override
   public void doLoad() {
+    Entity seleccionado = (Entity) this.attrs.get("seleccionado");
     try {
-      this.attrs.put("validaDelega", JsfBase.isAdmin() || JsfBase.getAutentifica().getPersona().getIdUsuario().equals(this.seleccionado.getKey()));
+      //this.attrs.put("validaDelega", JsfBase.isAdmin() || JsfBase.getAutentifica().getPersona().getIdUsuario().equals(seleccionado.getKey()));      
+      doBuscar();
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -279,9 +215,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   public String doDelegarUsuario() {
     String regresar = null;
+    Entity seleccionado = (Entity) this.attrs.get("seleccionado");
     try {
       if (Boolean.valueOf(this.attrs.get("validaDelega").toString())) {
-        JsfBase.setFlashAttribute("idUsuario", this.seleccionado.getKey());
+        JsfBase.setFlashAttribute("idUsuario", seleccionado.getKey());
         regresar = "delegar";
       } // if
       else {
@@ -302,13 +239,13 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   public void doReset() {
     Transaccion tx = null;
-    TcJanalUsuariosDto usuario = null;
     TcManticPersonasDto persona = null;
+    Entity seleccionado = null;
     try {
-      usuario = (TcJanalUsuariosDto) DaoFactory.getInstance().findById(TcJanalUsuariosDto.class, this.seleccionado.toLong("idKeyUsuario"));
-      persona = (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, usuario.getIdPersona());
-      this.attrs.put("idPersona", usuario.getIdPersona());
-      tx = new Transaccion(this.attrs);
+      seleccionado = (Entity) this.attrs.get("seleccionado");
+      persona = new TcManticPersonasDto(seleccionado.toLong("idPersona"));
+      persona.setCurp(seleccionado.toString("curp"));
+      tx = new Transaccion(persona);
       if (tx.ejecutar(EAccion.RESTAURAR)) {
         JsfBase.addMessage("La cuenta del usuario ".concat(persona.getCuenta()).concat(" ya fue resetada con exito."));
       } // if
@@ -320,5 +257,25 @@ public class Filtro extends IBaseFilter implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessage("Error", "Ocurrió un error al resetear la contraseña del usuario".concat(e.getMessage()), ETipoMensaje.FATAL);
     } // catch
+  }
+
+  private void doBuscar() {
+    try {
+      if (Cadena.isVacio(this.criteriosBusqueda.getNombre()) && this.criteriosBusqueda.getPerfil().getKey().equals(-1L)) {
+        recargarTablaDatos(ETipoBusqueda.SIN_CONDICION);
+      } else {
+        if (!Cadena.isVacio(this.criteriosBusqueda.getNombre()) && this.criteriosBusqueda.getPerfil().getKey().equals(-1L)) {
+          recargarTablaDatos(ETipoBusqueda.NOMBRE);
+        } // if
+        else {
+          recargarTablaDatos(Cadena.isVacio(this.criteriosBusqueda.getNombre()) ? ETipoBusqueda.PERFIL : ETipoBusqueda.TODOS);
+        }
+      }  // else        
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessage("Ocurrió un error en la busqueda de los usuarios", ETipoMensaje.ERROR);
+    } // catch
+
   }
 }

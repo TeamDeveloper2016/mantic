@@ -8,6 +8,8 @@ package mx.org.kaana.kajool.procesos.usuarios.backing;
  * @author Team Developer 2016 <team.developer@kaana.org.mx>@kaana.org.mx>
  */
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -17,14 +19,14 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.db.dto.TcJanalUsuariosDto;
-import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.procesos.usuarios.reglas.CargaInformacionUsuarios;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.RandomCuenta;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.Transaccion;
+import mx.org.kaana.kajool.procesos.usuarios.reglas.beans.CriteriosBusqueda;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import org.primefaces.context.RequestContext;
@@ -34,18 +36,23 @@ import org.primefaces.context.RequestContext;
 public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 5319332808932704073L;
+  private CriteriosBusqueda criteriosBusqueda;
 
+  public CriteriosBusqueda getCriteriosBusqueda() {
+    return criteriosBusqueda;
+  }
+    
   @PostConstruct
   @Override
   protected void init() {
     try {
+      this.criteriosBusqueda = new CriteriosBusqueda();
       this.attrs.put("tcJanalEmpleadoDto", new TcManticPersonasDto());
       this.attrs.put("tcJanalUsuarioDto", new TcJanalUsuariosDto());
       this.attrs.put("accion", (EAccion) JsfBase.getFlashAttribute("accion"));
       this.attrs.put("esperada", "");
       this.attrs.put("texto", "<div class=\"TexAlCenter\">Se encontró un usuario con el mismo nombre y apellidos<br/><span class=\"FontBold Fs14\">¿Desea tomar lo datos este usuario para esta cuenta de acceso?</span></div>");
       this.attrs.put("showConfirmDialog", true);
-      loadEntidades();
       loadPerfiles();
       if (((EAccion) this.attrs.get("accion")).equals(EAccion.MODIFICAR)) {
         this.attrs.put("titulo", "Modificar usuario de grupos de trabajo");
@@ -63,15 +70,23 @@ public class Accion extends IBaseAttribute implements Serializable {
   public String doAceptar() {
     Transaccion transaccion = null;
     String regresar = null;
+    TcManticPersonasDto persona = null;
+    TcJanalUsuariosDto  usuario = null;
     try {
-      TcManticPersonasDto empleado = (TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto");
-      transaccion = new Transaccion(this.attrs);
+      persona = (TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto");
+      usuario = (TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto");
+      usuario.setIdUsuarioModifica(JsfBase.getIdUsuario());
+      usuario.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+      persona.setIdUSuario(JsfBase.getIdUsuario());
+      persona.setEstilo("sentinel");
+      persona.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+      transaccion = new Transaccion(usuario,persona);
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
         JsfBase.addMessage(((EAccion) this.attrs.get("accion")).equals(EAccion.AGREGAR) ? "Se agregó el usuario con éxito." : "Se modificó el usuario con éxito.");
       } // if
       else {
-        JsfBase.addMessage("El usuario " + empleado.getNombres() + empleado.getPaterno() + " con ese perfil ya éxiste.");
+        JsfBase.addMessage("El usuario " + persona.getNombres() + persona.getPaterno() + " con ese perfil ya éxiste.");
       }
     } // try
     catch (Exception e) {
@@ -123,20 +138,12 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
   }
 
-  protected void loadEntidades() {
-    try {
-     
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch
-  } // loadEntidades
 
   protected void loadPerfiles() {
-    try {
-      this.attrs.put("idPerfil", JsfBase.getAutentifica().getPersona().getIdPerfil());
-      this.attrs.put("listaPerfiles", UISelect.build("VistaMantenimientoPerfilesDto", "jerarquiaMostrarAsignados", this.attrs, "descripcion", EFormatoDinamicos.MAYUSCULAS));
-      //((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).setIdEntidad((Long) UIBackingUtilities.toFirstKeySelectItem((List<UISelectItem>) this.attrs.get("listaEntidades")));
+    CargaInformacionUsuarios cargarInformaUsuario= null;  
+    try {      
+      cargarInformaUsuario = new CargaInformacionUsuarios(this.criteriosBusqueda);
+      cargarInformaUsuario.init(false);     
     } // try
     catch (Exception e) {
       throw e;

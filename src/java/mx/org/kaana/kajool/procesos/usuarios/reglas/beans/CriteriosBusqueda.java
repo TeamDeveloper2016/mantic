@@ -11,93 +11,42 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.pagina.UISelectItem;
 
 public class CriteriosBusqueda implements Serializable {
 
-	private static final long serialVersionUID=-4121538166956277598L;
-	private String criterioNombre;
-	private Long criterioPerfil;
-	private UISelectEntity criterioEntidad;	
-	private List<UISelectItem> listaPerfiles;
-	protected List<UISelectEntity> listaEntidades;
-	private String titleTabNombre;
-	private String titleTabPerfil;
-	private String titleTabEntidad;
+  private static final long serialVersionUID = -4121538166956277598L;
 
-	public CriteriosBusqueda() {
-		setCriterioNombre("");
-		setCriterioEntidad(null);
-		setCriterioPerfil(-1L);
-		setListaEntidades(new ArrayList<UISelectEntity>());
-		setListaPerfiles(new ArrayList<UISelectItem>());
-		setTitleTabNombre("Por nombre");
-		setTitleTabPerfil("Por perfil");
-		setTitleTabEntidad("Por entidad");
-	}
+  private UISelectEntity perfil;
+  private List<UISelectEntity> listaPerfiles;
+  private String nombre;
 
-	public String getTitleTabNombre() {
-		return titleTabNombre;
-	}
+  public CriteriosBusqueda() {
+    this.listaPerfiles = new ArrayList<>();
+    this.nombre = "";
+  }
 
-	public void setTitleTabNombre(String titleTabNombre) {
-		this.titleTabNombre=titleTabNombre;
-	}
+  public String getNombre() {
+    return nombre;
+  }
 
-	public String getTitleTabEntidad() {
-		return titleTabEntidad;
-	}
+  public void setNombre(String nombre) {
+    this.nombre = nombre;
+  }
 
-	public void setTitleTabEntidad(String titleTabEntidad) {
-		this.titleTabEntidad=titleTabEntidad;
-	}
+  public UISelectEntity getPerfil() {
+    return perfil;
+  }
 
-	public String getTitleTabPerfil() {
-		return titleTabPerfil;
-	}
+  public void setPerfil(UISelectEntity perfil) {
+    this.perfil = perfil;
+  }
 
-	public void setTitleTabPerfil(String titleTabPerfil) {
-		this.titleTabPerfil=titleTabPerfil;
-	}
+  public List<UISelectEntity> getListaPerfiles() {
+    return listaPerfiles;
+  }
 
-	public String getCriterioNombre() {
-		return criterioNombre;
-	}
+  public void setListaPerfiles(List<UISelectEntity> listaPerfiles) {
+    this.listaPerfiles = listaPerfiles;
+  }
 
-	public void setCriterioNombre(String criterioNombre) {
-		this.criterioNombre=criterioNombre;
-	}
-
-	public Long getCriterioPerfil() {
-		return criterioPerfil;
-	}
-
-	public void setCriterioPerfil(Long criterioPerfil) {
-		this.criterioPerfil=criterioPerfil;
-	}
-
-	public UISelectEntity getCriterioEntidad() {
-		return criterioEntidad;
-	}
-
-	public void setCriterioEntidad(UISelectEntity criterioEntidad) {
-		this.criterioEntidad=criterioEntidad;
-	}
-
-	public List<UISelectEntity> getListaEntidades() {
-		return listaEntidades;
-	}
-
-	public void setListaEntidades(List<UISelectEntity> listaEntidades) {
-		this.listaEntidades=listaEntidades;
-	}
-
-	public List<UISelectItem> getListaPerfiles() {
-		return listaPerfiles;
-	}
-
-	public void setListaPerfiles(List<UISelectItem> listaPerfiles) {
-		this.listaPerfiles=listaPerfiles;
-	}
-	
 }
