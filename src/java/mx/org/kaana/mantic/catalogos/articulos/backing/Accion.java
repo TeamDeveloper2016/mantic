@@ -27,213 +27,218 @@ import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
 @ViewScoped
 public class Accion extends IBaseAttribute implements Serializable {
 
-	private static final long serialVersionUID = 327393488565639367L;
-	private RegistroArticulo registroArticulo;
+  private static final long serialVersionUID = 327393488565639367L;
+  private RegistroArticulo registroArticulo;
 
-	public RegistroArticulo getRegistroArticulo() {
-		return registroArticulo;
-	}
+  public RegistroArticulo getRegistroArticulo() {
+    return registroArticulo;
+  }
 
-	public void setRegistroArticulo(RegistroArticulo registroArticulo) {
-		this.registroArticulo = registroArticulo;
-	}
-		
-	@PostConstruct
-	@Override
-	protected void init() {
-		try {
-			this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));						
-			this.attrs.put("idArticulo", JsfBase.getFlashAttribute("idCategoria"));		
-			doLoad();		
-			loadProveedores();			
-			loadCategorias();
-			loadEmpaques();
-			doLoadUnidadesMedidas();				
-			loadClientes();
-			loadTiposVentas();
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch		
-	} // init
-	
-	public void doLoad() {		
-		EAccion eaccion= null;
-		Long idArticulo= -1L;
-		try {
-			eaccion= (EAccion) this.attrs.get("accion");
-			this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
-			switch(eaccion){
-				case AGREGAR:	
-					this.registroArticulo= new RegistroArticulo();					
-					break;
-				case MODIFICAR:
-					idArticulo= Long.valueOf(this.attrs.get("idArticulo").toString());
-					this.registroArticulo= new RegistroArticulo(idArticulo);					
-					break;	
-			} // switch
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch		
-	} // doLoad
-	
-	public String doAceptar(){
-		Transaccion transaccion= null;
-		String regresar        = null;
-		try {			
-			transaccion= new Transaccion(this.registroArticulo);
-			if(transaccion.ejecutar((EAccion) this.attrs.get("accion"))){
-				regresar= "filtro";
-				JsfBase.addMessage("Se registro el artículo de forma correcta.", ETipoMensaje.INFORMACION);
-			} // if
-			else
-				JsfBase.addMessage("Ocurrió un error al registrar el artículo", ETipoMensaje.ERROR);
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch
-		return regresar;
-	} // doAccion
-	
-	private TcManticArticulosDto loadDto() throws Exception{
-		TcManticArticulosDto regresar= null;
-		try {
-			regresar= (TcManticArticulosDto) this.attrs.get("dto");		
-			if(EAccion.AGREGAR.equals((EAccion) this.attrs.get("accion"))){				
-				regresar.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
-			} // if
-			else{	
-				
-			} // if													
-			regresar.setIdUsuario(JsfBase.getIdUsuario());									
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar;
-	} // loadDto		
-	
-	public String doCancelar(){		
-		if(((EAccion) this.attrs.get("accion")).equals(EAccion.AGREGAR))
-			this.registroArticulo.doCancelar();
-		return "filtro";
-	} // doAccion
-	
-	private void loadEmpaques(){
-		List<UISelectItem> empaques= null;
-		Map<String, Object>params  = null;
-		EAccion eaccion            = null;
-		try {	
-			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			empaques= UISelect.build("TcManticEmpaquesDto",  "row", params, "nombre", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
-			this.attrs.put("empaques", empaques);
-			eaccion= (EAccion) this.attrs.get("accion");							
-			if(eaccion.equals(EAccion.AGREGAR))
-				this.registroArticulo.setIdEmpaque((Long) UIBackingUtilities.toFirstKeySelectItem(empaques));
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally
-	} // loadEmpaques
-	
-	public void doLoadUnidadesMedidas(){
-		List<UISelectItem> unidadesMedidas= null;
-		Map<String, Object>params         = null;
-		EAccion eaccion                   = null;
-		try {
-			params= new HashMap<>();			
-			params.put("idEmpaque", this.registroArticulo.getIdEmpaque());
-			eaccion= (EAccion) this.attrs.get("accion");							
-			unidadesMedidas= UISelect.build("VistaEmpaqueUnidadMedidaDto", "empaqueUnidadMedida", params, "nombre", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
-			this.attrs.put("unidadesMedidas", unidadesMedidas);
-			if(eaccion.equals(EAccion.AGREGAR))
-				this.registroArticulo.getArticulo().setIdEmpaqueUnidadMedida((Long) UIBackingUtilities.toFirstKeySelectItem(unidadesMedidas));				
-		} // try
-		catch (Exception e) {
-			throw e;
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally
-	} // doLoadUnidadesMedidas
-	
-	private void loadCategorias(){
-		List<UISelectItem> categorias= null;
-		Map<String, Object>params    = null;		
-		EAccion eaccion              = null;
-		try {
-			params= new HashMap<>();			
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			categorias= UISelect.build("TcManticCategoriasDto", "row", params, "traza", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
-			this.attrs.put("categorias", categorias);
-			eaccion= (EAccion) this.attrs.get("accion");
-			if(eaccion.equals(EAccion.AGREGAR))
-				this.registroArticulo.getArticulo().setIdCategoria((Long) UIBackingUtilities.toFirstKeySelectItem(categorias));
-		} // try
-		catch (Exception e) {
-			throw e;
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally
-	} // loadCategorias
-	
-	private void loadProveedores(){
-		List<UISelectItem> proveedores= null;
-		Map<String, Object>params     = null;		
-		try {
-			params= new HashMap<>();			
-			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			proveedores= UISelect.build("TcManticProveedoresDto", "findEmpresa", params, "razonSocial", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
-			this.attrs.put("proveedoresGeneral", proveedores);
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally
-	} // loadProveedores
-	
-	private void loadClientes(){
-		List<UISelectItem> clientes= null;
-		Map<String, Object>params  = null;		
-		try {
-			params= new HashMap<>();			
-			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			clientes= UISelect.build("TcManticClientesDto", "findEmpresa", params, "razonSocial", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
-			this.attrs.put("clientesGeneral", clientes);
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally
-	} // loadClientes
-	
-	private void loadTiposVentas(){
-		List<UISelectItem> tiposVentas= null;
-		Map<String, Object>params     = null;
-		try {			
-			params= new HashMap<>();			
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			tiposVentas= UISelect.build("TcManticTiposVentasDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
-			this.attrs.put("tiposVentasGeneral", tiposVentas);
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally
-	} // loadClientes
+  public void setRegistroArticulo(RegistroArticulo registroArticulo) {
+    this.registroArticulo = registroArticulo;
+  }
+
+  @PostConstruct
+  @Override
+  protected void init() {
+    try {
+      this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
+      this.attrs.put("idArticulo", JsfBase.getFlashAttribute("idCategoria"));
+      doLoad();
+      loadProveedores();
+      loadCategorias();
+      loadEmpaques();
+      doLoadUnidadesMedidas();
+      loadClientes();
+      loadTiposVentas();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+  } // init
+
+  public void doLoad() {
+    EAccion eaccion = null;
+    Long idArticulo = -1L;
+    try {
+      eaccion = (EAccion) this.attrs.get("accion");
+      this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
+      switch (eaccion) {
+        case AGREGAR:
+          this.registroArticulo = new RegistroArticulo();
+          break;
+        case MODIFICAR:
+          idArticulo = Long.valueOf(this.attrs.get("idArticulo").toString());
+          this.registroArticulo = new RegistroArticulo(idArticulo);
+          break;
+      } // switch
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+  } // doLoad
+
+  public String doAceptar() {
+    Transaccion transaccion = null;
+    String regresar = null;
+    try {
+      transaccion = new Transaccion(this.registroArticulo);
+      if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
+        regresar = "filtro";
+        JsfBase.addMessage("Se registro el artículo de forma correcta.", ETipoMensaje.INFORMACION);
+      } // if
+      else {
+        JsfBase.addMessage("Ocurrió un error al registrar el artículo", ETipoMensaje.ERROR);
+      }
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    return regresar;
+  } // doAccion
+
+  private TcManticArticulosDto loadDto() throws Exception {
+    TcManticArticulosDto regresar = null;
+    try {
+      regresar = (TcManticArticulosDto) this.attrs.get("dto");
+      if (EAccion.AGREGAR.equals((EAccion) this.attrs.get("accion"))) {
+        regresar.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      } // if
+      else {
+
+      } // if													
+      regresar.setIdUsuario(JsfBase.getIdUsuario());
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    return regresar;
+  } // loadDto		
+
+  public String doCancelar() {
+    if (((EAccion) this.attrs.get("accion")).equals(EAccion.AGREGAR)) {
+      this.registroArticulo.doCancelar();
+    }
+    return "filtro";
+  } // doAccion
+
+  private void loadEmpaques() {
+    List<UISelectItem> empaques = null;
+    Map<String, Object> params = null;
+    EAccion eaccion = null;
+    try {
+      params = new HashMap<>();
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      empaques = UISelect.build("TcManticEmpaquesDto", "row", params, "nombre", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
+      this.attrs.put("empaques", empaques);
+      eaccion = (EAccion) this.attrs.get("accion");
+      if (eaccion.equals(EAccion.AGREGAR)) {
+        this.registroArticulo.setIdEmpaque((Long) UIBackingUtilities.toFirstKeySelectItem(empaques));
+      }
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+  } // loadEmpaques
+
+  public void doLoadUnidadesMedidas() {
+    List<UISelectItem> unidadesMedidas = null;
+    Map<String, Object> params = null;
+    EAccion eaccion = null;
+    try {
+      params = new HashMap<>();
+      params.put("idEmpaque", this.registroArticulo.getIdEmpaque());
+      eaccion = (EAccion) this.attrs.get("accion");
+      unidadesMedidas = UISelect.build("VistaEmpaqueUnidadMedidaDto", "empaqueUnidadMedida", params, "nombre", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
+      this.attrs.put("unidadesMedidas", unidadesMedidas);
+      if (eaccion.equals(EAccion.AGREGAR)) {
+        this.registroArticulo.getArticulo().setIdEmpaqueUnidadMedida((Long) UIBackingUtilities.toFirstKeySelectItem(unidadesMedidas));
+      }
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+  } // doLoadUnidadesMedidas
+
+  private void loadCategorias() {
+    List<UISelectItem> categorias = null;
+    Map<String, Object> params = null;
+    EAccion eaccion = null;
+    try {
+      params = new HashMap<>();
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      categorias = UISelect.build("TcManticCategoriasDto", "row", params, "traza", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
+      this.attrs.put("categorias", categorias);
+      eaccion = (EAccion) this.attrs.get("accion");
+      if (eaccion.equals(EAccion.AGREGAR)) {
+        this.registroArticulo.getArticulo().setIdCategoria((Long) UIBackingUtilities.toFirstKeySelectItem(categorias));
+      }
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+  } // loadCategorias
+
+  private void loadProveedores() {
+    List<UISelectItem> proveedores = null;
+    Map<String, Object> params = null;
+    try {
+      params = new HashMap<>();
+      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      proveedores = UISelect.build("TcManticProveedoresDto", "findEmpresa", params, "razonSocial", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+      this.attrs.put("proveedoresGeneral", proveedores);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+  } // loadProveedores
+
+  private void loadClientes() {
+    List<UISelectItem> clientes = null;
+    Map<String, Object> params = null;
+    try {
+      params = new HashMap<>();
+      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      clientes = UISelect.build("TcManticClientesDto", "findEmpresa", params, "razonSocial", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+      this.attrs.put("clientesGeneral", clientes);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+  } // loadClientes
+
+  private void loadTiposVentas() {
+    List<UISelectItem> tiposVentas = null;
+    Map<String, Object> params = null;
+    try {
+      params = new HashMap<>();
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      tiposVentas = UISelect.build("TcManticTiposVentasDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+      this.attrs.put("tiposVentasGeneral", tiposVentas);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+  } // loadClientes
 }
