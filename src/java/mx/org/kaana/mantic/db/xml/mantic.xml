@@ -635,6 +635,12 @@
         where      
           id_articulo_dimension = {idArticuloDimension} and id_articulo = {idArticulo}
       </select>
+			<select id="maximo">
+        select      
+          max(id_articulo_dimencion) maximo
+        from      
+          tc_mantic_articulos_dimenciones
+      </select>
     </unit>
 		 <unit id="TcManticProveedoresDto">
       <select id="row">
