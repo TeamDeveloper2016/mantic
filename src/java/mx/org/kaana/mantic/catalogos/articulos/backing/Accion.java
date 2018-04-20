@@ -108,7 +108,6 @@ public class Accion extends IBaseAttribute implements Serializable {
         regresar.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       } // if
       else {
-
       } // if													
       regresar.setIdUsuario(JsfBase.getIdUsuario());
     } // try
