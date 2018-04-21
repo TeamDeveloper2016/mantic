@@ -155,7 +155,7 @@
         from      
           tr_mantic_articulo_cliente_descuento
         where      
-          vigencia_final = {vigenciaFinal} and vigencia_inicial = {vigenciaInicial} and id_persona = {idPersona} and id_articulo_cliente_descuentio = {idArticuloClienteDescuentio} and porcentaje = {porcentaje} and id_articulo = {idArticulo}
+          vigencia_final = '{vigenciaFinal}' and vigencia_inicial = '{vigenciaInicial}' and id_cliente = {idCliente} and id_articulo_cliente_descuentio = {idArticuloClienteDescuentio} and porcentaje = {porcentaje} and id_articulo = {idArticulo}
       </select>
 			<select id="maximo">
         select      
@@ -218,7 +218,7 @@
         from      
           tr_mantic_articulo_proveedor
         where      
-          id_proveedor = {idProveedor} and id_proveedor_persona = {idProveedorPersona} and id_articulo_proveedor = {idArticuloProveedor} and id_articulo = {idArticulo} and registro = {registro}
+          id_proveedor = {idProveedor} and id_articulo_proveedor = {idArticuloProveedor} and id_articulo = {idArticulo} and registro = '{registro}'
       </select>
 			<select id="maximo">
         select      
@@ -585,7 +585,7 @@
         from      
           tc_mantic_articulos_descuentos
         where      
-          vigencia_final = {vigenciaFinal} and vigencia_inicial = {vigenciaInicial} and porcentaje = {porcentaje} and id_articulo_descuento = {idArticuloDescuento}
+          vigencia_final = '{vigenciaFinal}' and vigencia_inicial = '{vigenciaInicial}' and porcentaje = {porcentaje} and id_articulo_descuento = {idArticuloDescuento}
       </select>
 			<select id="maximo">
         select      
@@ -725,5 +725,23 @@
 					{condicion}
 			</select>			
 		</unit>
+		<unit id="TcManticImagenesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_imagenes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_imagenes
+        where      
+          id_imagen = {idImagen} and id_tipo_imagen = {idTipoImagen} and nombre = '{nombre}'
+      </select>
+    </unit>
   </dml>    
 </process>
