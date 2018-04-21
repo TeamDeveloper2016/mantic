@@ -75,13 +75,7 @@
             <f:facet name="footer"> 
               <h:outputText value="Total [#{kajoolExplotacionFiltro.lazyModel.rowCount == null ? '0' : kajoolExplotacionFiltro.lazyModel.rowCount}] registros"/>
             </f:facet> 
-          </p:dataTable>
-          <h:commandLink id="dataPdf">
-            <p:dataExporter type="pdf" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}" />
-          </h:commandLink>
-          <h:commandLink id="dataXls">
-            <p:dataExporter type="xls" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>
-          </h:commandLink>
+          </p:dataTable>          
         </p:panel>
       </div>
     </div>		     

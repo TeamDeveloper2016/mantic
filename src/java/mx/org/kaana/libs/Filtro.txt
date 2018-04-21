@@ -45,13 +45,7 @@
 			<f:facet name="footer">
 				Total [#{{backing}.lazyModel.rowCount == null ? '0' : {backing}.lazyModel.rowCount}] registros
       </f:facet>
-    </p:dataTable>
-		<h:commandLink id="dataPdf">
-			<p:dataExporter type="pdf" target="tabla" fileName="#{util.nameFile}" pageOnly="false" preProcessor="#{util.doPreProcessPdf}"/>
-		</h:commandLink>
-		<h:commandLink id="dataXls">
-			<p:dataExporter type="xls" target="tabla" fileName="#{util.nameFile}" pageOnly="false"/>
-		</h:commandLink>
+    </p:dataTable>		
 		<p:contextMenu widgetVar="kajoolContextMenu" for="tabla">
 			<p:menuitem id="modificar" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" process="@this, tabla" icon="icono-modificar" action="#{{backing}.doEvento('MODIFICAR')}" update="@form"/>
 			<p:menuitem id="eliminar" value="Eliminar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" process="@this, tabla" icon="icono-eliminar" action="#{{backing}.doEvento('ELIMINAR')}" update="@form"/>

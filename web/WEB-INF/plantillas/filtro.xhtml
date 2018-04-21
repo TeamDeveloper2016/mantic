@@ -32,7 +32,13 @@
               <p:growl id="mensaje" autoUpdate="true" showSummary="false" showDetail="true" sticky="false" widgetVar="mensajes" escape="false" life="15000"/>
               <p:panel styleClass="sticky-body janal-padding-cero" toggleable="true" style="border:0px;">
                 <p:focus class="janal-padding-cero" context="principal"/>														
-                <ui:insert name="contenido"/>																
+                <ui:insert name="contenido"/>
+                  <h:commandLink id="dataPdf">
+                    <pe:exporter type="pdf"  skipComponents="org.primefaces.component.outputpanel.OutputPanel,com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton"  target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
+                  </h:commandLink>
+                  <h:commandLink id="dataXls">
+                    <pe:exporter type="xlsx" skipComponents="javax.faces.component.UIComponent,org.primefaces.component.outputpanel.OutputPanel,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/> 
+                  </h:commandLink>			
                 <p:dialog id="confirmacion" widgetVar="dialogoConfirmacion" header="#{empty tituloConfirmacion? 'Confirmación': tituloConfirmacion}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false"  onHide="#{empty onHideDlg? 'janal.desbloquear();': onHideDlg}">
                   <h:outputText value="#{textoConfirmacion}" escape="false"/>
                   <ui:insert name="detalleConfirmacion" />

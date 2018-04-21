@@ -11,8 +11,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:pe="http://primefaces.org/ui/extensions"
+                xmlns:p="http://primefaces.org/ui"                
                 template="/WEB-INF/plantillas/filtro.xhtml">
   <ui:param name="titulo" value="Avance de captura" />
   <ui:define name="librerias">
@@ -114,12 +113,6 @@
       <f:facet name="footer">
         Total [#{kajoolIndicadoresFiltro.lazyModel.rowCount}] registros
       </f:facet>
-    </p:dataTable>
-    <h:commandLink id="dataPdf">
-      <p:dataExporter type="pdf" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}" />
-    </h:commandLink>
-    <h:commandLink id="dataXls">
-      <p:dataExporter type="xls" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>
-    </h:commandLink>
+    </p:dataTable>    
   </ui:define>
 </ui:composition>
