@@ -38,8 +38,8 @@ public class TrManticArticuloClienteDescuentoDto implements IBaseDto, Serializab
   private Timestamp vigenciaFinal;
   @Column (name="vigencia_inicial")
   private Timestamp vigenciaInicial;
-  @Column (name="id_persona")
-  private Long idPersona;
+  @Column (name="id_cliente")
+  private Long idCliente;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="observaciones")
@@ -64,10 +64,10 @@ public class TrManticArticuloClienteDescuentoDto implements IBaseDto, Serializab
     setKey(key);
   }
 
-  public TrManticArticuloClienteDescuentoDto(Timestamp vigenciaFinal, Timestamp vigenciaInicial, Long idPersona, Long idUsuario, String observaciones, Long idArticuloClienteDescuentio, Double porcentaje, Long idArticulo) {
+  public TrManticArticuloClienteDescuentoDto(Timestamp vigenciaFinal, Timestamp vigenciaInicial, Long idCliente, Long idUsuario, String observaciones, Long idArticuloClienteDescuentio, Double porcentaje, Long idArticulo) {
     setVigenciaFinal(vigenciaFinal);
     setVigenciaInicial(vigenciaInicial);
-    setIdPersona(idPersona);
+    setIdCliente(idCliente);
     setIdUsuario(idUsuario);
     setObservaciones(observaciones);
     setIdArticuloClienteDescuentio(idArticuloClienteDescuentio);
@@ -92,12 +92,12 @@ public class TrManticArticuloClienteDescuentoDto implements IBaseDto, Serializab
     return vigenciaInicial;
   }
 
-  public void setIdPersona(Long idPersona) {
-    this.idPersona = idPersona;
+  public void setIdCliente(Long idCliente) {
+    this.idCliente = idCliente;
   }
 
-  public Long getIdPersona() {
-    return idPersona;
+  public Long getIdCliente() {
+    return idCliente;
   }
 
   public void setIdUsuario(Long idUsuario) {
@@ -167,7 +167,7 @@ public class TrManticArticuloClienteDescuentoDto implements IBaseDto, Serializab
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getVigenciaInicial());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdPersona());
+		regresar.append(getIdCliente());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
@@ -189,7 +189,7 @@ public class TrManticArticuloClienteDescuentoDto implements IBaseDto, Serializab
     Map regresar = new HashMap();
 		regresar.put("vigenciaFinal", getVigenciaFinal());
 		regresar.put("vigenciaInicial", getVigenciaInicial());
-		regresar.put("idPersona", getIdPersona());
+		regresar.put("idCliente", getIdCliente());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idArticuloClienteDescuentio", getIdArticuloClienteDescuentio());
@@ -202,7 +202,7 @@ public class TrManticArticuloClienteDescuentoDto implements IBaseDto, Serializab
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getVigenciaFinal(), getVigenciaInicial(), getIdPersona(), getIdUsuario(), getObservaciones(), getIdArticuloClienteDescuentio(), getPorcentaje(), getIdArticulo(), getRegistro()
+    getVigenciaFinal(), getVigenciaInicial(), getIdCliente(), getIdUsuario(), getObservaciones(), getIdArticuloClienteDescuentio(), getPorcentaje(), getIdArticulo(), getRegistro()
     };
     return regresar;
   }

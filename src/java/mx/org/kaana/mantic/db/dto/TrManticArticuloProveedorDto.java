@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -37,9 +31,7 @@ public class TrManticArticuloProveedorDto implements IBaseDto, Serializable {
   @Column (name="id_proveedor")
   private Long idProveedor;
   @Column (name="precio")
-  private Double precio;
-  @Column (name="id_proveedor_persona")
-  private Long idProveedorPersona;
+  private Double precio; 
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="descuento")
@@ -64,14 +56,13 @@ public class TrManticArticuloProveedorDto implements IBaseDto, Serializable {
   }
 
   public TrManticArticuloProveedorDto(Long key) {
-    this(null, null, null, null, null, new Long(-1L), new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null);
+    this(null, null, null, null, new Long(-1L), new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null);
     setKey(key);
   }
 
-  public TrManticArticuloProveedorDto(Long idProveedor, Double precio, Long idProveedorPersona, Long idUsuario, Double descuento, Long idArticuloProveedor, Timestamp fechaCompra, String observaciones, Double cantidad, Long idArticulo) {
+  public TrManticArticuloProveedorDto(Long idProveedor, Double precio, Long idUsuario, Double descuento, Long idArticuloProveedor, Timestamp fechaCompra, String observaciones, Double cantidad, Long idArticulo) {
     setIdProveedor(idProveedor);
-    setPrecio(precio);
-    setIdProveedorPersona(idProveedorPersona);
+    setPrecio(precio);    
     setIdUsuario(idUsuario);
     setDescuento(descuento);
     setIdArticuloProveedor(idArticuloProveedor);
@@ -96,15 +87,7 @@ public class TrManticArticuloProveedorDto implements IBaseDto, Serializable {
 
   public Double getPrecio() {
     return precio;
-  }
-
-  public void setIdProveedorPersona(Long idProveedorPersona) {
-    this.idProveedorPersona = idProveedorPersona;
-  }
-
-  public Long getIdProveedorPersona() {
-    return idProveedorPersona;
-  }
+  } 
 
   public void setIdUsuario(Long idUsuario) {
     this.idUsuario = idUsuario;
@@ -187,9 +170,7 @@ public class TrManticArticuloProveedorDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getIdProveedor());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getPrecio());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdProveedorPersona());
+		regresar.append(getPrecio());	
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
@@ -215,7 +196,6 @@ public class TrManticArticuloProveedorDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("idProveedor", getIdProveedor());
 		regresar.put("precio", getPrecio());
-		regresar.put("idProveedorPersona", getIdProveedorPersona());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("descuento", getDescuento());
 		regresar.put("idArticuloProveedor", getIdArticuloProveedor());
@@ -230,7 +210,7 @@ public class TrManticArticuloProveedorDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdProveedor(), getPrecio(), getIdProveedorPersona(), getIdUsuario(), getDescuento(), getIdArticuloProveedor(), getFechaCompra(), getObservaciones(), getCantidad(), getIdArticulo(), getRegistro()
+    getIdProveedor(), getPrecio(), getIdUsuario(), getDescuento(), getIdArticuloProveedor(), getFechaCompra(), getObservaciones(), getCantidad(), getIdArticulo(), getRegistro()
     };
     return regresar;
   }
