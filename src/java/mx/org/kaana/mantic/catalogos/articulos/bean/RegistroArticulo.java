@@ -226,7 +226,15 @@ public class RegistroArticulo implements Serializable{
 	public void setArticuloTiposVentaSeleccion(TipoVenta articuloTiposVentaSeleccion) {
 		this.articuloTiposVentaSeleccion = articuloTiposVentaSeleccion;
 	}
-	
+
+	public List<IBaseDto> getDeleteList() {
+		return deleteList;
+	}
+
+	public void setDeleteList(List<IBaseDto> deleteList) {
+		this.deleteList = deleteList;
+	}
+		
 	private void init(){
 		MotorBusqueda motorBusqueda                = null;
 		TrManticEmpaqueUnidadMedidaDto unidadMedida= null;
@@ -481,7 +489,7 @@ public class RegistroArticulo implements Serializable{
 				result.delete();			      
 			toWriteFile(result, event.getFile().getInputstream());
 			fileSize= event.getFile().getSize();
-			this.importado= new Importado(event.getFile().getFileName(), event.getFile().getContentType(), EFormatos.FREE, event.getFile().getSize(), fileSize.equals(0L) ? fileSize : fileSize/1024, event.getFile().equals(0L) ? BYTES : K_BYTES);      
+			this.importado= new Importado(event.getFile().getFileName(), event.getFile().getContentType(), EFormatos.FREE, event.getFile().getSize(), fileSize.equals(0L) ? fileSize : fileSize/1024, event.getFile().equals(0L) ? BYTES : K_BYTES, genericPath);      
 			toMessageImage();			
 		} // try
 		catch (Exception e) {
