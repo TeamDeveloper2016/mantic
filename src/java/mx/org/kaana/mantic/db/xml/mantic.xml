@@ -10,11 +10,21 @@
     <unit id="TcManticPersonasDto">
       <select id="row">
         select 
-        *
+        tc_mantic_personas.*,tc_mantic_personas.id_persona as id_key
         from
         tc_mantic_personas
         where 
         {condicion}
+        order by
+          paterno,materno,nombres
+      </select>
+      <select id="identically">
+        select 
+          *
+        from
+          tc_mantic_personas
+        where
+          rfc='{rfc}' and curp='{curp}'
       </select>
       <select id="curp">
         select
@@ -42,6 +52,7 @@
         and lower(paterno)= lower('{paterno}')
         and lower(materno)= lower('{materno}')
       </select>
+      
     </unit>    
 		<unit id="TcManticCategoriasDto">
       <select id="row">
@@ -743,5 +754,18 @@
           id_imagen = {idImagen} and id_tipo_imagen = {idTipoImagen} and nombre = '{nombre}'
       </select>
     </unit>
+     <unit id="TcManticPersonasTitulosDto">
+          <select id="row">
+            select  
+              tc_mantic_personas_titulos.*,
+              tc_mantic_personas_titulos.id_persona_titulo as id_key 
+            from 
+              tc_mantic_personas_titulos 
+            where 
+              {condicion}
+            order by 
+              nombre			
+          </select>
+        </unit>  
   </dml>    
 </process>
