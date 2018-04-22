@@ -6,7 +6,7 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
-								template="/WEB-INF/plantillas/accion.xhtml">
+                template="/WEB-INF/plantillas/accion.xhtml">
   <ui:param name="titulo" value="#{kajoolUsuariosAccion.attrs.titulo}"  />
   <ui:define name="librerias">
     <script type="text/javascript">
@@ -15,19 +15,19 @@
         'contenedorGrupos\\:persona': {validaciones: 'requerido', mascara: 'libre'},
         'contenedorGrupos\\:nombres': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre'},
         'contenedorGrupos\\:materno': {validaciones: 'cambiar-mayusculas', mascara: 'libre'},
-        'contenedorGrupos\\:paterno': {validaciones: 'cambiar-mayusculas', mascara: 'libre'},
+        'contenedorGrupos\\:paterno': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre'},
         'contenedorGrupos\\:idTituloPersona': {validaciones: 'requerido', mascara: 'libre'},
         'contenedorGrupos\\:idTipoSexo': {validaciones: 'requerido', mascara: 'libre'},
         'contenedorGrupos\\:tipoPerfil': {validaciones: 'requerido', mascara: 'libre'},
-        'contenedorGrupos\\:curp'  	: { validaciones: 'requerido|curp|cambiar-mayusculas', mascara: 'curp', mensaje: 'La CURP es requerida'},
-        'contenedorGrupos\\:rfc'  	: { validaciones: 'requerido|rfc|cambiar-mayusculas', mascara: 'rfc'}
-       };		
-       
-       function checkEmptyValue() {
-         return ($.trim($('#contenedorGrupos:nombres').val()).length> 0) && ($.trim($('#contenedorGrupos:paterno').val()).length> 0 || $.trim($('#contenedorGrupos:materno').val()).length> 0);
-       }
+        'contenedorGrupos\\:curp': {validaciones: 'requerido|curp|cambiar-mayusculas', mascara: 'curp', mensaje: 'La CURP es requerida'},
+        'contenedorGrupos\\:rfc': {validaciones: 'requerido|rfc|cambiar-mayusculas', mascara: 'rfc'}
+      };
+
+      function checkEmptyValue() {
+        return ($.trim($('#contenedorGrupos\\:nombres').val()).length > 0) && ($.trim($('#contenedorGrupos\\:paterno').val()).length > 0 || $.trim($('#contenedorGrupos\\:materno').val()).length > 0);
+      }
       //]]>
-     </script>
+    </script>
     <style type="text/css">
       span.ui-inputnumber > input{
         width: -webkit-fill-available;
@@ -67,7 +67,7 @@
       }
     </style>		
   </ui:define>
-	<ui:define name="contenido">
+  <ui:define name="contenido">
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div class="ui-grid-col-12">
@@ -101,15 +101,15 @@
                 <p:outputLabel for="nombres" value="Nombres:"/>                   
                 <p:inputText id="nombres" readonly="#{kajoolUsuariosAccion.lockField}" styleClass="janal-wid-100-txt" value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.nombres}" onblur="janal.individual('contenedorGrupos\\:nombres')">
                   <p:ajax event="blur" update="cuenta" onstart="return checkEmptyValue();" process="@this nombres materno paterno" listener="#{kajoolUsuariosAccion.doCuenta}"  />
-        </p:inputText>
-                 <p:outputLabel for="paterno" value="Apellido paterno:"/>                   
+                </p:inputText>
+                <p:outputLabel for="paterno" value="Apellido paterno:"/>                   
                 <p:inputText readonly="#{kajoolUsuariosAccion.lockField}" id="paterno"  styleClass="janal-wid-100-txt" value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.paterno}" onblur="janal.individual('contenedorGrupos\\:paterno')">
-                 <p:ajax event="blur" update="cuenta" onstart="return checkEmptyValue();" process="@this nombres materno" listener="#{kajoolUsuariosAccion.doCuenta}"/>
-        </p:inputText>  
+                  <p:ajax event="blur" update="cuenta" onstart="return checkEmptyValue();" process="@this nombres materno" listener="#{kajoolUsuariosAccion.doCuenta}"/>
+                </p:inputText>  
                 <p:outputLabel for="materno" value="Apellido materno:"/>                   
                 <p:inputText id="materno"  readonly="#{kajoolUsuariosAccion.lockField}" styleClass="janal-wid-100-txt" value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.materno}" onblur="janal.individual('contenedorGrupos\\:materno')">
-                 <p:ajax event="blur" update="cuenta" onstart="return checkEmptyValue();" process="@this nombres paterno" listener="#{kajoolUsuariosAccion.doCuenta}"/>
-        </p:inputText>  
+                  <p:ajax event="blur" update="cuenta" onstart="return checkEmptyValue();" process="@this nombres paterno" listener="#{kajoolUsuariosAccion.doCuenta}"/>
+                </p:inputText>  
                 <p:outputLabel  for="cuenta" value="Cuenta:"/>
                 <p:inputText  id="cuenta" value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.cuenta}" styleClass="janal-wid-100-txt" readonly="true"/>
                 <p:outputLabel for="rfc"  value="RFC:"/>                   
@@ -123,7 +123,7 @@
                   <f:selectItem  itemLabel="HOMBRE" itemValue="1"/>
                   <f:selectItem itemLabel="MUJER" itemValue="2"/>
                   <f:selectItem itemLabel="NO ESPECIFICADO" itemValue="3"/>
-				</p:selectOneMenu>				
+                </p:selectOneMenu>				
               </p:panelGrid>              
             </p:tab>						
             <p:tab id="Perfil" title="Pérfil">														
@@ -134,12 +134,8 @@
                   <p:column>
                     <h:outputText value="#{item.descripcion}"/>
                   </p:column>                
-        </p:selectOneMenu>
-				<p:outputLabel value="Perfil:" for="perfilUsuario"/>
-				<p:selectOneMenu id="perfilUsuario" value="#{kajoolUsuariosAccion.attrs.tcJanalUsuarioDto.idPerfil}">
-					<f:selectItems value="#{kajoolUsuariosAccion.attrs.listaPerfiles}" />
-				</p:selectOneMenu>				
-			</p:panelGrid>	
+                </p:selectOneMenu>                			
+              </p:panelGrid>	
             </p:tab>            
             <p:tab title="Observaciones">
               <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
@@ -148,15 +144,12 @@
               </p:panelGrid>
             </p:tab>
           </p:tabView>
-		</div>
+        </div>
       </div>
     </div>		
-	</ui:define>
-	<ui:param name="componenteBloqueo"  value="entidad perfilUsuario cancelar nombres primerApellido segundoApellido curp idSexo correo"/>
-	<ui:define name="acciones">
-    <p:commandButton id="aceptar" icon="fa fa-check" value="Aceptar" action="#{kajoolUsuariosAccion.doAceptar}" process="@this entidad perfilUsuario cancelar nombres primerApellido segundoApellido curp idSexo correo esperada" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
-    <p:commandButton id="cancelar" icon="fa fa-remove" value="Cancelar" action="filtro" immediate="true" ajax="false" />
-	</ui:define>
+  </ui:define>
+  <ui:param name="componenteBloqueo"  value="aceptar contenedorGrupos:persona contenedorGrupos:nombres contenedorGrupos:paterno contenedorGrupos:materno contenedorGrupos:curp"/>
+ 
   <ui:param name="tituloConfirmacion" value="Confirmar datos del usuario"/>
   <ui:param name="textoConfirmacion" value="#{kajoolUsuariosAccion.attrs.texto}"/>
   <ui:param name="updateComponent" value="contenedorGrupos:persona contenedorGrupos:cuenta contenedorGrupos:nombres contenedorGrupos:materno contenedorGrupos:paterno contenedorGrupos:curp contenedorGrupos:idTipoSexo contenedorGrupos:rfc contenedorGrupos:idTituloPersona"/>
@@ -176,18 +169,18 @@
       <p:inputText value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.materno}" size="80" readonly="true"/>
       <label class="una-sola-linea">Cuenta de acceso:</label>						
       <p:inputText value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.cuenta}" size="50" readonly="true"/>
-      		
+
     </p:panelGrid>  
   </ui:define>    
   <ui:define name="acciones">
     <div class="lg-pantalla">
-      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this contenedorGrupos:persona contenedorGrupos:cuenta contenedorGrupos:nombres contenedorGrupos:materno contenedorGrupos:paterno contenedorGrupos:fechaNacimiento contenedorGrupos:curp contenedorGrupos:idTipoSexo contenedorGrupos:rfc contenedorGrupos:tipoPerfil" action="#{kajoolUsuariosAccion.doAceptar}" oncomplete="janal.desbloquear()" onstart="return janal.execute();"  styleClass="janal-text-white"/>
-      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this " action="#{kajoolUsuariosAccion.doCancelar}" ajax="false"  styleClass="janal-text-white"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this contenedorGrupos:persona contenedorGrupos:cuenta contenedorGrupos:nombres contenedorGrupos:materno contenedorGrupos:paterno contenedorGrupos:fechaNacimiento contenedorGrupos:curp contenedorGrupos:idTipoSexo contenedorGrupos:rfc contenedorGrupos:tipoPerfil" actionListener="#{kajoolUsuariosAccion.doAceptar}"  oncomplete="janal.desbloquear()" onstart="return janal.execute();"    styleClass="janal-text-white"/>
+      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this"  action="#{kajoolUsuariosAccion.doCancelar}" ajax="false"  styleClass="janal-text-white"/>
     </div>		
     <div class="xs-pantalla">
       <p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@this contenedorGrupos:persona contenedorGrupos:cuenta contenedorGrupos:nombres contenedorGrupos:materno contenedorGrupos:paterno contenedorGrupos:fechaNacimiento contenedorGrupos:curp contenedorGrupos:idTipoSexo contenedorGrupos:rfc contenedorGrupos:tipoPerfil" action="#{kajoolUsuariosAccion.doAceptar}" onstart="return janal.execute();" ajax="false" styleClass="janal-text-white"/>
       <p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{kajoolUsuariosAccion.doCancelar}"  ajax="false" styleClass="janal-text-white"/>
     </div>		
   </ui:define>
-  
+
 </ui:composition>

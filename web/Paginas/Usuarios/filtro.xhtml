@@ -109,9 +109,9 @@
             <p:menuitem action="#{kajoolUsuariosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" />
             <p:menuitem icon="fa fa-trash" value="Eliminar" process="@this tabla" update="dialogEliminar" oncomplete="mensajeConfirmacion()" />                              				
             <p:separator/>
-            <p:menuitem icon="fa fa-user-plus" value="Resetear contraseña" oncomplete="janal.bloquear();PF('resetContrasenia').show();" update=":datos:dialogReset" />            
-            <p:menuitem  icon="fa fa-unlock-alt"  rendered="#{kajoolUsuariosFiltro.attrs.seleccionado.activo=='1'}" value="Bloquear"    update=":datos:tabla :datos:confirmacion"  onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.bloquear();PF('dialogoConfirmacion').show();"/>
-            <p:menuitem  icon="fa fa-trash" rendered="#{kajoolUsuariosFiltro.attrs.seleccionado.activo=='0'}" value="Activar"   update=":datos:tabla :datos:confirmacion" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.bloquear();PF('dialogoConfirmacion').show();"/>              
+            <p:menuitem icon="fa fa-user-plus" value="Resetear contraseña" oncomplete="janal.bloquear();PF('resetContrasenia').show();" process="@this tabla" update=":datos:dialogReset" />            
+            <p:menuitem  icon="fa fa-unlock-alt"  rendered="#{kajoolUsuariosFiltro.attrs.seleccionado.activo=='1'}" value="Bloquear"  actionListener="#{kajoolUsuariosFiltro.doActivar}"   update=":datos:tabla :datos:confirmacion"  onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.bloquear();PF('dialogoConfirmacion').show();"/>
+            <p:menuitem  icon="fa fa-trash" rendered="#{kajoolUsuariosFiltro.attrs.seleccionado.activo=='0'}" value="Activar" actionListener="#{kajoolUsuariosFiltro.doActivar}"  update=":datos:tabla :datos:confirmacion" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.bloquear();PF('dialogoConfirmacion').show();"/>              
           </p:contextMenu>
           <div class="EmptyBox30"></div>
         </div>
@@ -123,7 +123,7 @@
         <h:outputText value="Usuario:"/>
         <h:outputText value="#{kajoolUsuariosFiltro.attrs.seleccionado.nombres} #{kajoolUsuariosFiltro.attrs.seleccionado.primerApellido} #{kajoolUsuariosFiltro.attrs.seleccionado.segundoApellido}"/>
         <h:outputText value="Perfil:"/>
-        <h:outputText value="#{kajoolUsuariosFiltro.attrs.seleccinado.descPerfil}" />        
+        <h:outputText value="#{kajoolUsuariosFiltro.attrs.seleccionado.descPerfil}" />        
       </h:panelGrid>
       <hr class="ui-widget-content"/>
       <div class="janal-line-button">
@@ -135,11 +135,11 @@
       <h:outputText value="¿Está seguro de desea resetear la contraseña del usuario ?"/>
       <h:panelGrid columns="2">					
         <h:outputText value="Usuario:"/>
-        <h:outputText value="#{kajoolUsuariosFiltro.seleccionado.primerApellido} #{kajoolUsuariosFiltro.seleccionado.segundoApellido} #{kajoolUsuariosFiltro.seleccionado.nombres}" />
+        <h:outputText value="#{kajoolUsuariosFiltro.attrs.seleccionado.nombres} #{kajoolUsuariosFiltro.attrs.seleccionado.primerApellido} #{kajoolUsuariosFiltro.attrs.seleccionado.segundoApellido}"/>
         <h:outputText value="Cuenta:"/>
-        <h:outputText value="#{kajoolUsuariosFiltro.seleccionado.cuenta}" />
+        <h:outputText value="#{kajoolUsuariosFiltro.attrs.seleccionado.cuenta}" />
         <h:outputText value="Perfil:"/>
-        <h:outputText value="#{kajoolUsuariosFiltro.seleccionado.descPerfil}" />
+        <h:outputText value="#{kajoolUsuariosFiltro.attrs.seleccionado.descPerfil}" />
       </h:panelGrid>
       <hr class="ui-widget-content"/>
       <div class="janal-line-button">
