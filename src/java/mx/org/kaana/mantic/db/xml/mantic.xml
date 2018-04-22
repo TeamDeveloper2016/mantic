@@ -767,5 +767,18 @@
               nombre			
           </select>
         </unit>  
+        <unit id="TcManticTiposProveedoresDto">
+          <select id="row">
+            select
+              tc_mantic_tipos_proveedores.*,
+              tc_mantic_tipos_proveedores.id_tipo_proveedor as id_key
+            from
+             tc_mantic_tipos_proveedores
+            where
+              {condicion}
+            order by
+              id_tipo_proveedor
+          </select>  
+        </unit>  
   </dml>    
 </process>

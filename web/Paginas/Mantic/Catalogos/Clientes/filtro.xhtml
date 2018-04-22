@@ -7,122 +7,131 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/filtro.xhtml">
-	<ui:param name="titulo" value="Artículos" />
-	<ui:define name="librerias">
-		<script type="text/javascript">
-			Janal.Control.fields = {
-				codigo: {validaciones: 'cambiar-mayusculas', mascara: 'libre'},
-				nombre: {validaciones: 'cambiar-mayusculas', mascara: 'libre'}				
-			};			
-			
-			function showPanelFind(id){
-				if($('#'+id).hasClass('lg-pantalla')){
-					$('#'+id).removeClass('lg-pantalla');
-					$('#'+id).addClass('xs-pantalla');
-				} // if
-				else{
-					$('#'+id).removeClass('xs-pantalla');
-					$('#'+id).addClass('lg-pantalla');
-				} // else
-			} // showPanelFind        
-		</script>		
-	</ui:define>
-	<ui:define name="contenido">
-		<div class="janal-align-right xs-pantalla">
-			<p:commandButton icon="fa fa-search" onstart="showPanelFind('panelBusqueda');" styleClass="janal-text-white"/>
-			<p:spacer height="5px"/>		
-		</div>			
-		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
-			<div class="ui-grid-row janal-grid-row">
-				<div class="ui-grid-col-3">
-					<p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla">
-						<h:panelGrid styleClass="janal-wid-100">
-							<p:outputLabel for="codigo" value="Código:"/>
-							<p:inputText id="codigo" value="#{manticCatalogosClientesFiltro.attrs.codigo}" styleClass="janal-wid-100-txt" onblur="janal.individual('codigo')"/>              							
-							<p:outputLabel for="nombre" value="Nombre:"/>
-							<p:inputText id="nombre" value="#{manticCatalogosClientesFiltro.attrs.nombre}" styleClass="janal-wid-100-txt" onblur="janal.individual('nombre')"/>              														
-						</h:panelGrid>
-						<p:separator/>
-						<div class="janal-align-right">
-							<p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.bloquear();" process="@this codigo nombre" actionListener="#{manticCatalogosClientesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
-						</div>
-					</p:panel>
-				</div>
-				<p:spacer/>
-				<div class="ui-grid-col-9">
-					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosClientesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosClientesFiltro.lazyModel.rowCount gt manticCatalogosClientesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
-						<f:facet name="header" >
-							<p:menuButton   value="Opciones">
-								<p:menuitem  value="Agregar" action="#{manticCatalogosClientesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar usuario" onstart="return janal.bloquear()"/>						
-								<p:separator/>
-								<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-								<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-							</p:menuButton>
-						</f:facet>												
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{filtro.nombre}">
-							<f:facet name="header">
-								<h:outputText value="Nombre"/>
-							</f:facet>
-							<h:outputText value="#{filtro['nombre']}"/>
-						</p:column>														
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.menudeo}">
-							<f:facet name="header">
-								<h:outputText value="Menudeo"/>
-							</f:facet>
-							<h:outputText value="#{filtro['menudeo']}"/>
-						</p:column>					
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.medioMayoreo}">
-							<f:facet name="header">
-								<h:outputText value="Medio mayoreo"/>
-							</f:facet>
-							<h:outputText value="#{filtro['medioMayoreo']}"/>
-						</p:column>					
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.mayoreo}">
-							<f:facet name="header">
-								<h:outputText value="Mayoreo"/>
-							</f:facet>
-							<h:outputText value="#{filtro['mayoreo']}"/>
-						</p:column>					
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.iva}">
-							<f:facet name="header">
-								<h:outputText value="Iva"/>
-							</f:facet>
-							<h:outputText value="#{filtro['iva']}"/>
-						</p:column>					
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.desperdicio}">
-							<f:facet name="header">
-								<h:outputText value="Desperdicio"/>
-							</f:facet>
-							<h:outputText value="#{filtro['desperdicio']}"/>
-						</p:column>					
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.stock}">
-							<f:facet name="header">
-								<h:outputText value="Stock"/>
-							</f:facet>
-							<h:outputText value="#{filtro['stock']}"/>
-						</p:column>					
-						<f:facet name="footer">
-							Total [#{manticCatalogosClientesFiltro.lazyModel==null?0:manticCatalogosClientesFiltro.lazyModel.rowCount}] registros
-						</f:facet>
-					</p:dataTable>
-					<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-						<p:menuitem id="modificar" action="#{manticCatalogosClientesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-						<p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
-					</p:contextMenu>
-					<div class="EmptyBox30"></div>
-				</div>
-			</div>
-		</div>		           				
-	</ui:define>    
-	<ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la categoria seleccionada ?" />
-	<ui:param name="accionConfirmacion" value="#{manticCatalogosClientesFiltro}"/>
-	<ui:param name="updateComponent" value="tabla"/>
-	<ui:param name="eventoConfirmacion" value="doEliminar"	/>	
-	<ui:param name="renderedConfirmacion" value="true"/>	
-	<ui:define name="detalleConfirmacion">
-		<h:panelGrid columns="2">
-			<p:outputLabel value="Categoría: "/>
-			<p:outputLabel value="#{manticCatalogosClientesFiltro.attrs.seleccionado.nombre}"/>
-		</h:panelGrid>			
-	</ui:define>
+  <ui:param name="titulo" value="Catalogo de clientes" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'razonSocial': {validaciones: 'cambiar-mayusculas', mascara: 'libre'},
+        'clave': {validaciones: 'cambiar-mayusculas', mascara: 'libre'},
+        'rfc': {validaciones: 'cambiar-mayusculas', mascara: 'rfc'}       
+      };
+
+      function showPanelFind(id) {
+        if ($('#' + id).hasClass('lg-pantalla')) {
+          $('#' + id).removeClass('lg-pantalla');
+          $('#' + id).addClass('xs-pantalla');
+        } // if
+        else {
+          $('#' + id).removeClass('xs-pantalla');
+          $('#' + id).addClass('lg-pantalla');
+        } // else
+      } // showPanelFind        
+    </script>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla">
+      <p:commandButton icon="fa fa-search" onstart="showPanelFind('panelBusqueda');" styleClass="janal-text-white"/>
+      <p:spacer height="5px"/>		
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla">
+            <h:panelGrid styleClass="janal-wid-100">
+              <p:outputLabel for="clave" value="Clave:"/>
+              <p:inputText id="clave" value="#{manticCatalogosClientesFiltro.attrs.clave}" styleClass="janal-wid-100-txt" onblur="janal.individual('clave')"/> 
+              <p:outputLabel for="rfc" value="RFC:"/>
+              <p:inputText id="rfc" value="#{manticCatalogosClientesFiltro.attrs.rfc}" styleClass="janal-wid-100-txt" onblur="janal.individual('rfc')"/>              			                            
+              <p:outputLabel for="razonSocial" value="Razón social:"/>
+              <p:inputText id="razonSocial" value="#{manticCatalogosClientesFiltro.attrs.razonSocial}" styleClass="janal-wid-100-txt" onblur="janal.individual('razonSocial')"/>              														
+              
+            </h:panelGrid>
+            <p:separator/>
+            <div class="janal-align-right">
+              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.execute(true);" process="@this clave razonSocial rfc" actionListener="#{manticCatalogosClientesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
+            </div>
+             <div class="janal-align-right xs-pantalla">
+                <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.execute(true);" process="@this clave razonSocial rfc" actionListener="#{manticCatalogosClientesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"  styleClass="janal-text-white"/>
+              </div>
+          </p:panel>
+        </div>
+        <p:spacer/>
+        <div class="ui-grid-col-9">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosClientesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosClientesFiltro.lazyModel.rowCount gt manticCatalogosClientesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+            <f:facet name="header" >
+              <div class="lg-pantalla">
+                <p:menuButton   value="Opciones">
+                  <p:menuitem  value="Agregar" action="#{manticCatalogosClientesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                  <p:separator/>
+                  <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                </p:menuButton>
+              </div>  
+              <div class="xs-pantalla">              
+                <p:commandButton  value="Agregar" action="#{manticCatalogosClientesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" styleClass="janal-text-white"/>						
+                <p:separator/>
+                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+              </div>  
+            </f:facet>												
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.clave}">
+              <f:facet name="header">
+                <h:outputText value="Clave"/>
+              </f:facet>
+              <h:outputText value="#{filtro['clave']}"/>
+            </p:column>														
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.rfc}">
+              <f:facet name="header">
+                <h:outputText value="RFC"/>
+              </f:facet>
+              <h:outputText value="#{filtro['rfc']}"/>
+            </p:column>					
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{filtro.razonSocial}">
+              <f:facet name="header">
+                <h:outputText value="Razón social"/>
+              </f:facet>
+              <h:outputText value="#{filtro['razonSocial']}"/>
+            </p:column>	            
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.calle}">
+              <f:facet name="header">
+                <h:outputText value="Calle"/>
+              </f:facet>
+              <h:outputText value="#{filtro['calle']}"/>
+            </p:column>					
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-5" sortBy="#{filtro.numeroExterior}">
+              <f:facet name="header">
+                <h:outputText value="No. exterior"/>
+              </f:facet>
+              <h:outputText value="#{filtro['numeroExterior']}"/>
+            </p:column>					
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.asentamiento}">
+              <f:facet name="header">
+                <h:outputText value="Colonia"/>
+              </f:facet>
+              <h:outputText value="#{filtro['asentamiento']}"/>
+            </p:column>					
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticCatalogosClientesFiltro.lazyModel==null?0:manticCatalogosClientesFiltro.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+          <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+            <p:menuitem id="modificar" action="#{manticCatalogosClientesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+          </p:contextMenu>
+          <div class="EmptyBox30"></div>
+        </div>
+      </div>
+    </div>		           				
+  </ui:define>    
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el cliente ?" />
+  <ui:param name="accionConfirmacion" value="#{manticCatalogosClientesFiltro}"/>
+  <ui:param name="updateComponent" value="tabla"/>
+  <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
+  <ui:param name="renderedConfirmacion" value="true"/>	
+  <ui:define name="detalleConfirmacion">
+    <h:panelGrid columns="2">
+      <p:outputLabel value="Cliente: "/>
+      <p:outputLabel value="#{manticCatalogosClientesFiltro.attrs.seleccionado.razonSocial}"/>
+    </h:panelGrid>			
+  </ui:define>
 </ui:composition>
