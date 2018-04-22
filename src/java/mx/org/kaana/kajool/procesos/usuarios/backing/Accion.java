@@ -10,6 +10,7 @@ package mx.org.kaana.kajool.procesos.usuarios.backing;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,8 +23,11 @@ import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.db.dto.TcJanalUsuariosDto;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.CargaInformacionUsuarios;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.RandomCuenta;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.Transaccion;
@@ -36,6 +40,9 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import mx.org.kaana.mantic.enums.ETipoPersona;
 import org.primefaces.context.RequestContext;
+
+
+
 
 @Named(value = "kajoolUsuariosAccion")
 @ViewScoped
@@ -174,7 +181,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     Long idKeyPersona = null;
     int posPerfil = -1;
     int posTituloPersona = -1;
-    List<UISelectEntity> titulosPersona;
+    List<UISelectEntity> titulosPersona=null;
     try {
       params = new HashMap();
       idKeyPersona = this.criteriosBusqueda.getPersona().getKey();
@@ -190,12 +197,12 @@ public class Accion extends IBaseAttribute implements Serializable {
         posPerfil = this.getCriteriosBusqueda().getListaPerfiles().indexOf(new UISelectEntity(new Entity(idKeyPersona)));
         this.criteriosBusqueda.setPerfil(this.getCriteriosBusqueda().getListaPerfiles().get(posPerfil));
         }
-      } // if
+     
       else {
         this.attrs.put("tcJanalEmpleadoDto", new TcManticPersonasDto());
         this.attrs.put("tcJanalUsuarioDto", new TcJanalUsuariosDto());
       } // else
-    } // try // try
+  }
     catch (Exception e) {
       JsfBase.addMessageError(e);
       Error.mensaje(e);
