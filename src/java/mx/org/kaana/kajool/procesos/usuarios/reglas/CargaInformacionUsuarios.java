@@ -133,7 +133,7 @@ public class CargaInformacionUsuarios {
         regresar.append(",");
       } // for	
       if (regresar.length() != 0) {
-        regresar.deleteCharAt(regresar.length() - 1);
+        regresar.deleteCharAt(regresar.length() - 1); 
       } // if
       if (regresar.length() == 0) {
         JsfBase.addMessage("No existen perfiles a los que pueda consultar, favor de veriifcarlo con el administrador del sistema", ETipoMensaje.ERROR);
