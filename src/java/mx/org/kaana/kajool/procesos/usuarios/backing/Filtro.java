@@ -154,7 +154,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       JsfBase.addMessageError(e);
       Error.mensaje(e);
     } // catch
-    return "accion";
+    return "accion".concat(Constantes.REDIRECIONAR);
   }
 
   public String doAceptar() {
