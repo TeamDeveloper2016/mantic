@@ -41,9 +41,6 @@ import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import mx.org.kaana.mantic.enums.ETipoPersona;
 import org.primefaces.context.RequestContext;
 
-
-
-
 @Named(value = "kajoolUsuariosAccion")
 @ViewScoped
 public class Accion extends IBaseAttribute implements Serializable {
@@ -54,7 +51,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   public CriteriosBusqueda getCriteriosBusqueda() {
     return criteriosBusqueda;
   }
-    
+
   @PostConstruct
   @Override
   protected void init() {
@@ -112,8 +109,8 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.criteriosBusqueda.getListaPersonas().addAll(UIEntity.build("TcManticPersonasDto", "row", params, formatos));
       entityDefault.put("idKey", new Value("idKey", -1L, "id_key"));
       entityDefault.put("nombres", new Value("nombres", "SELECCIONE...", "nombres"));
-     // entityDefault.put("descripcion", new Value("paterno", "NUEVA...", "paterno"));
-     // entityDefault.put("descripcion", new Value("paterno", "NUEVA...", "paterno"));
+      // entityDefault.put("descripcion", new Value("paterno", "NUEVA...", "paterno"));
+      // entityDefault.put("descripcion", new Value("paterno", "NUEVA...", "paterno"));
       this.criteriosBusqueda.getListaPersonas().add(0, new UISelectEntity(entityDefault));
       if (!getCriteriosBusqueda().getListaPersonas().isEmpty()) {
         getCriteriosBusqueda().setPersona((UISelectEntity) UIBackingUtilities.toFirstKeySelectEntity(this.criteriosBusqueda.getListaPersonas()));
@@ -132,22 +129,25 @@ public class Accion extends IBaseAttribute implements Serializable {
     Transaccion transaccion = null;
     String regresar = null;
     TcManticPersonasDto persona = null;
-    TcJanalUsuariosDto  usuario = null;
+    TcJanalUsuariosDto usuario = null;
     try {
-      persona = (TcManticPersonasDto) this.attrs.get("tcJanalEmpleadoDto");
+      persona = (TcManticPersonasDto) this.attrs.get("tcManticPersonaDto");
       usuario = (TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto");
       usuario.setIdUsuarioModifica(JsfBase.getIdUsuario());
       usuario.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       persona.setIdUSuario(JsfBase.getIdUsuario());
+      usuario.setActivo(1L);
+      usuario.setIdPerfil(this.criteriosBusqueda.getPerfil().getKey());
       persona.setEstilo("sentinel");
       persona.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
       transaccion = new Transaccion(usuario, persona);
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
-        regresar = "filtro".concat(Constantes.REDIRECIONAR);
+        regresar = "filtro";
         JsfBase.addMessage(((EAccion) this.attrs.get("accion")).equals(EAccion.AGREGAR) ? "Se agregó el usuario con éxito." : "Se modificó el usuario con éxito.");
       } // if
       else {
-        JsfBase.addMessage("El usuario " + persona.getNombres() + persona.getPaterno() + " con ese perfil ya éxiste.");
+        String perfil= this.criteriosBusqueda.getListaPerfiles().get(this.criteriosBusqueda.getListaPerfiles().indexOf(new UISelectEntity(this.criteriosBusqueda.getPerfil().getKey().toString()))).toString("descripcion");
+        JsfBase.addMessage("El usuario " + persona.getNombres() + persona.getPaterno() + " ya existe con perfil de ".concat(perfil));
       }
     } // try
     catch (Exception e) {
@@ -160,10 +160,9 @@ public class Accion extends IBaseAttribute implements Serializable {
   private void cargarUsuario(Long idUsuario) {
     try {
       if (!idUsuario.equals(-1L)) {
-      this.attrs.put("tcJanalUsuarioDto", (TcJanalUsuariosDto) DaoFactory.getInstance().findById(TcJanalUsuariosDto.class, idUsuario));
+        this.attrs.put("tcJanalUsuarioDto", (TcJanalUsuariosDto) DaoFactory.getInstance().findById(TcJanalUsuariosDto.class, idUsuario));
         this.attrs.put("tcManticPersonaDto", (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).getIdPersona()));
-      }
-      else {
+      } else {
         this.attrs.put("tcJanalUsuarioDto", new TcJanalUsuariosDto());
         this.attrs.put("tcManticPersonaDto", new TcManticPersonasDto());
       }
@@ -181,7 +180,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     Long idKeyPersona = null;
     int posPerfil = -1;
     int posTituloPersona = -1;
-    List<UISelectEntity> titulosPersona=null;
+    List<UISelectEntity> titulosPersona = null;
     try {
       params = new HashMap();
       idKeyPersona = this.criteriosBusqueda.getPersona().getKey();
@@ -190,20 +189,17 @@ public class Accion extends IBaseAttribute implements Serializable {
         this.attrs.put("tcManticPersonaDto", persona);
         titulosPersona = (List<UISelectEntity>) this.attrs.get("titulosPersonas");
         posTituloPersona = titulosPersona.indexOf(new UISelectEntity(persona.getIdPersonaTitulo().toString()));
-        this.attrs.put("idTituloPersona", titulosPersona.get(posTituloPersona));        
+        this.attrs.put("idTituloPersona", titulosPersona.get(posTituloPersona));
       } // if      
       usuario = (TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto");
       if (usuario.isValid()) {
         posPerfil = this.getCriteriosBusqueda().getListaPerfiles().indexOf(new UISelectEntity(new Entity(idKeyPersona)));
         this.criteriosBusqueda.setPerfil(this.getCriteriosBusqueda().getListaPerfiles().get(posPerfil));
-        }
-     
-      else {
+      } else {
         this.attrs.put("tcJanalEmpleadoDto", new TcManticPersonasDto());
         this.attrs.put("tcJanalUsuarioDto", new TcJanalUsuariosDto());
       } // else
-  }
-    catch (Exception e) {
+    } catch (Exception e) {
       JsfBase.addMessageError(e);
       Error.mensaje(e);
     } // exception
@@ -211,13 +207,15 @@ public class Accion extends IBaseAttribute implements Serializable {
       Methods.clean(params);
     } // finally
   }
-
+  	public String doCancelar(){		
+		return "filtro";
+	} // doAccion
 
   protected void loadPerfiles() {
     CargaInformacionUsuarios cargarInformaUsuario = null;
-    try {      
+    try {
       cargarInformaUsuario = new CargaInformacionUsuarios(this.criteriosBusqueda);
-      cargarInformaUsuario.init(false);     
+      cargarInformaUsuario.init(false);
     } // try
     catch (Exception e) {
       throw e;

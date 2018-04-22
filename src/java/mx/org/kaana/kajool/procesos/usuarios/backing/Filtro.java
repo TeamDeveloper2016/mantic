@@ -135,7 +135,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   public void doActivar() {
     Entity seleccionado = (Entity) this.attrs.get("seleccionado");
     StringBuilder mensaje = new StringBuilder();
-    mensaje.append(seleccionado.toString("activo").equals(ESTATUS_ACTIVO) ? "Bloquear " : " activar ");
+    mensaje.append(seleccionado.toLong("activo").equals(ESTATUS_ACTIVO) ? "bloquear " : " activar ");
     mensaje.append(" la cuenta de acceso de [");
     mensaje.append(seleccionado.toString("cuenta"));
     mensaje.append("]");
@@ -184,7 +184,8 @@ public class Filtro extends IBaseFilter implements Serializable {
       tx = new Transaccion(usuario);
       if (tx.ejecutar(EAccion.ELIMINAR)) {
         params.put("elemento", "el usuario [".concat(seleccionado.toString("cuenta")).concat("]"));
-        JsfBase.addMessage(UIMessage.toMessage("correcto_eliminar_elemento", params));
+        //JsfBase.addMessage(UIMessage.toMessage("correcto_eliminar_elemento", params));
+        JsfBase.addMessage("Se elimino el usuario [".concat(seleccionado.toString("cuenta")).concat("]"));
       } // if
       else {
         JsfBase.addMessage("Error", "El usuario no puede ser eliminado debido a que tiene información asociada", ETipoMensaje.ERROR);
@@ -246,7 +247,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       persona.setCurp(seleccionado.toString("curp"));
       tx = new Transaccion(persona);
       if (tx.ejecutar(EAccion.RESTAURAR)) {
-        JsfBase.addMessage("La cuenta del usuario ".concat(persona.getCuenta()).concat(" ya fue resetada con exito."));
+        JsfBase.addMessage("La cuenta del usuario ".concat(seleccionado.toString("cuenta")).concat(" ya fue resetada con exito."));
       } // if
       else {
         JsfBase.addMessage("Error", "No se puede resetar la contraseña del usuario", ETipoMensaje.ERROR);

@@ -24,6 +24,7 @@ public class CriteriosBusqueda implements Serializable {
 
   public CriteriosBusqueda() {
     this.listaPerfiles = new ArrayList<>();
+    this.listaPersonas = new ArrayList<>();
     this.nombre = "";
   }
 

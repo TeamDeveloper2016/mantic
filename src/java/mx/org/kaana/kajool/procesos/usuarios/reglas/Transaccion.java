@@ -57,12 +57,16 @@ public class Transaccion extends IBaseTnx {
             DaoFactory.getInstance().insert(session, this.persona);
             this.usuario.setIdPersona(this.persona.getIdPersona());
           }
-          params.put("idPersona", this.usuario.getIdPersona());
+          params.put("idPersona", this.persona.getIdPersona());
           params.put("idPerfil", this.usuario.getIdPerfil());
           usuarioExiste = (TcJanalUsuariosDto) DaoFactory.getInstance().findIdentically(session, TcJanalUsuariosDto.class, params);
-          regresar = usuarioExiste.isValid();
+          regresar =usuarioExiste!=null && usuarioExiste.isValid();
           if (!regresar) {
+            this.usuario.setIdPersona(persona.getIdPersona());
             regresar = DaoFactory.getInstance().insert(session, this.usuario) >= 1L;
+          }
+          else {
+            regresar = false;
           }
           break;
         case MODIFICAR:
