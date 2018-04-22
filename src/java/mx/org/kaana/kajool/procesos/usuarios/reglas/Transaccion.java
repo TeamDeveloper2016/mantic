@@ -28,6 +28,7 @@ public class Transaccion extends IBaseTnx {
   private TcJanalUsuariosDto usuario;
   private TcManticPersonasDto persona;
 
+  
   public Transaccion(TcJanalUsuariosDto usuario) {
    this(usuario,null);
   }
