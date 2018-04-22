@@ -39,6 +39,8 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   private String materno;
   @Column(name = "CURP")
   private String curp;
+  @Column(name = "RFC")
+  private String rfc;
   @Column(name = "ID_TIPO_SEXO")
   private Long idTipoSexo;
   @Column(name = "CONTRASENIA")
@@ -48,9 +50,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   @Column(name = "CUENTA")
   private String cuenta;
   @Column(name = "ESTILO")
-  private String estilo;
-  @Column(name = "CORREO")
-  private String correo;
+  private String estilo;  
   @Column(name = "REGISTRO")
   private Timestamp registro;
   @Column(name = "FECHA_NACIMIENTO")
@@ -61,11 +61,11 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   }
 
   public TcManticPersonasDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticPersonasDto(Long idEmpleado, String nombres, String paterno, String materno, String curp, Long idTipoSexo, String correo, String estilo, String cuenta, String contrasenia) {
+  public TcManticPersonasDto(Long idEmpleado, String nombres, String paterno, String materno, String curp, Long idTipoSexo,  String estilo, String cuenta, String contrasenia) {
     setIdEmpleado(idEmpleado);
     setNombres(nombres);
     this.paterno = paterno;
@@ -75,7 +75,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
     setCuenta(cuenta);
     setContrasenia(contrasenia);
-    setCorreo(correo);
+   
     setEstilo(estilo);
   }
 
@@ -83,6 +83,15 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     return fechaNacimiento;
   }
 
+  public String getRfc() {
+    return rfc;
+  }
+
+  public void setRfc(String rfc) {
+    this.rfc = rfc;
+  }
+
+  
   public void setFechaNacimiento(Date fechaNacimiento) {
     this.fechaNacimiento = fechaNacimiento;
   }
@@ -113,13 +122,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     this.estilo = estilo;
   }
 
-  public String getCorreo() {
-    return correo;
-  }
-
-  public void setCorreo(String correo) {
-    this.correo = correo;
-  }
+  
 
   public Timestamp getRegistro() {
     return registro;
@@ -246,8 +249,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     regresar.append(Constantes.SEPARADOR);
     regresar.append(getContrasenia());
     regresar.append(Constantes.SEPARADOR);
-    regresar.append(getCorreo());
-    regresar.append(Constantes.SEPARADOR);
+   
     regresar.append(getEstilo());
     regresar.append(Constantes.SEPARADOR);
     regresar.append(getRegistro());
@@ -265,8 +267,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     regresar.put("curp", getCurp());
     regresar.put("idTipoSexo", getIdTipoSexo());
     regresar.put("cuenta", getCuenta());
-    regresar.put("contrasenia", getContrasenia());
-    regresar.put("correo", getCorreo());
+    regresar.put("contrasenia", getContrasenia());   
     regresar.put("registro", getRegistro());
     regresar.put("estilo", getEstilo());
     return regresar;
@@ -275,8 +276,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getIdPersona(), getNombres(), getPaterno(), getMaterno(), getIdTipoSexo(), getCurp(), getCuenta(), getContrasenia(), getEstilo(), getCorreo()
-    };
+      getIdPersona(), getNombres(), getPaterno(), getMaterno(), getIdTipoSexo(), getCurp(), getCuenta(), getContrasenia(), getEstilo()    };
     return regresar;
   }
 
