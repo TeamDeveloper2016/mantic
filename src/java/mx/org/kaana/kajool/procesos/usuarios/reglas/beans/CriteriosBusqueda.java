@@ -17,7 +17,9 @@ public class CriteriosBusqueda implements Serializable {
   private static final long serialVersionUID = -4121538166956277598L;
 
   private UISelectEntity perfil;
+  private UISelectEntity persona;
   private List<UISelectEntity> listaPerfiles;
+  private List<UISelectEntity> listaPersonas;
   private String nombre;
 
   public CriteriosBusqueda() {
@@ -48,5 +50,23 @@ public class CriteriosBusqueda implements Serializable {
   public void setListaPerfiles(List<UISelectEntity> listaPerfiles) {
     this.listaPerfiles = listaPerfiles;
   }
+
+  public UISelectEntity getPersona() {
+    return persona;
+  }
+
+  public void setPersona(UISelectEntity persona) {
+    this.persona = persona;
+  }
+
+  public List<UISelectEntity> getListaPersonas() {
+    return listaPersonas;
+  }
+
+  public void setListaPersonas(List<UISelectEntity> listaPersonas) {
+    this.listaPersonas = listaPersonas;
+  }
+  
+  
 
 }
