@@ -19,8 +19,9 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.articulos.bean.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.categorias.reglas.MotorBusqueda;
-import mx.org.kaana.mantic.catalogos.categorias.reglas.Transaccion;
+import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
 
 @ManagedBean(name="manticCatalogosArticulosFiltro")
 @ViewScoped
@@ -76,21 +77,18 @@ public class Filtro extends Comun implements Serializable{
 	} // doAccion
 	
 	public void doEliminar(){
-		Transaccion transaccion= null;
-		Entity categoria       = null;
-		MotorBusqueda motor    = null;
+		Transaccion transaccion  = null;
+		Entity seleccionado      = null;
+		RegistroArticulo registro= null;
 		try {
-			categoria= (Entity) this.attrs.get("seleccionado");
-			motor= new MotorBusqueda(categoria.getKey());
-			if(motor.isChild()){
-				transaccion= new Transaccion(new TcManticCategoriasDto(categoria.getKey()));
-				if(transaccion.ejecutar(EAccion.ELIMINAR))
-					JsfBase.addMessage("Eliminar categoría", "El artículo se ha eliminado correctamente.", ETipoMensaje.ERROR);
-				else
-					JsfBase.addMessage("Eliminar categoría", "Ocurrió un error al eliminar la artículo.", ETipoMensaje.ERROR);					
-			} // if
+			seleccionado= (Entity) this.attrs.get("seleccionado");			
+			registro= new RegistroArticulo();
+			registro.setIdArticulo(seleccionado.getKey());
+			transaccion= new Transaccion(registro);
+			if(transaccion.ejecutar(EAccion.ELIMINAR))
+				JsfBase.addMessage("Eliminar categoría", "El artículo se ha eliminado correctamente.", ETipoMensaje.ERROR);
 			else
-				JsfBase.addMessage("Eliminar categoría", "No es posible eliminar el artículo, contiene dependencias.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar categoría", "Ocurrió un error al eliminar la artículo.", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
