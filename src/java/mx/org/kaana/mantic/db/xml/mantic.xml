@@ -52,7 +52,6 @@
         and lower(paterno)= lower('{paterno}')
         and lower(materno)= lower('{materno}')
       </select>
-      
     </unit>    
 		<unit id="TcManticCategoriasDto">
       <select id="row">
@@ -111,6 +110,9 @@
           max(id_articulo_precio_sugerido) maximo
         from      
           tr_mantic_articulo_precio_sugerido
+      </select>
+			 <select id="rows">
+        delte from tr_mantic_articulo_precio_sugerido where id_articulo= {idArticulo} 
       </select>
     </unit>
     
@@ -173,6 +175,9 @@
           max(id_articulo_cliente_descuentio) maximo
         from      
           tr_mantic_articulo_cliente_descuento
+      </select>
+			<select id="rows">
+        delte from tr_mantic_articulo_cliente_descuento where id_articulo={idArticulo} 
       </select>
     </unit>
     
@@ -237,6 +242,9 @@
         from      
           tr_mantic_articulo_proveedor
       </select>
+			<select id="rows">
+        delete from tr_mantic_articulo_proveedor where id_articulo={idArticulo} 
+      </select>
     </unit>
     
      <unit id="TrManticArticuloTipoVentaDto">
@@ -261,6 +269,9 @@
           max(id_articulo_tipo_venta) maximo
         from      
           tr_mantic_articulo_tipo_venta
+      </select>
+			<select id="rows">
+        delete from tr_mantic_articulo_tipo_venta where id_articulo={idArticulo} 
       </select>
     </unit>
     
@@ -580,6 +591,9 @@
         from      
           tc_mantic_articulos_codigos
       </select>
+			<select id="rows">
+        delete from tc_mantic_articulos_codigos where id_articulo= {idArticulo} 
+      </select>
     </unit>
 		<unit id="TcManticArticulosDescuentosDto">
       <select id="row">
@@ -603,6 +617,9 @@
           max(id_articulo_descuento) maximo
         from      
           tc_mantic_articulos_descuentos
+      </select>
+			 <select id="rows">
+        delete from tc_mantic_articulos_descuentos where id_articulo= {idArticulo} 
       </select>
     </unit>
 		<unit id="TcManticArticulosDiseniosDto">
@@ -646,6 +663,9 @@
         from      
           tc_mantic_articulos_especificaciones
       </select>
+			<select id="rows">
+        delete from tc_mantic_articulos_especificaciones where id_articulo={idArticulo} 
+      </select>
     </unit>
 		<unit id="TcManticArticulosDimencionesDto">
       <select id="row">
@@ -669,6 +689,9 @@
           max(id_articulo_dimencion) maximo
         from      
           tc_mantic_articulos_dimenciones
+      </select>
+			<select id="rows">
+        delete from tc_mantic_articulos_dimenciones where id_articulo={idArticulo} 
       </select>
     </unit>
 		 <unit id="TcManticProveedoresDto">
@@ -753,45 +776,35 @@
         where      
           id_imagen = {idImagen} and id_tipo_imagen = {idTipoImagen} and nombre = '{nombre}'
       </select>
+			<select id="rows">
+        delete from tc_mantic_imagenes where id_articulo={idArticulo} 
+      </select>
     </unit>
-     <unit id="TcManticPersonasTitulosDto">
-          <select id="row">
-            select  
-              tc_mantic_personas_titulos.*,
-              tc_mantic_personas_titulos.id_persona_titulo as id_key 
-            from 
-              tc_mantic_personas_titulos 
-            where 
-              {condicion}
-            order by 
-              nombre			
-          </select>
-        </unit>  
-        <unit id="TcManticTiposProveedoresDto">
-          <select id="row">
-            select
-              tc_mantic_tipos_proveedores.*,
-              tc_mantic_tipos_proveedores.id_tipo_proveedor as id_key
-            from
-             tc_mantic_tipos_proveedores
-            where
-              {condicion}
-            order by
-              id_tipo_proveedor
-          </select>  
-        </unit>  
-        <unit id="TcManticTiposPersonasDto">
-          <select id="row">
-             select 
-              tc_mantic_tipos_personas.*,
-              tc_mantic_tipos_personas.id_tipo_persona as id_key
-            from 
-              tc_mantic_tipos_personas
-            where
-              {condicion}
-            order by
-              nombre
-          </select>  
-        </unit>  
+		<unit id="TcManticPersonasTitulosDto">
+			<select id="row">
+				select  
+					tc_mantic_personas_titulos.*,
+					tc_mantic_personas_titulos.id_persona_titulo as id_key 
+				from 
+					tc_mantic_personas_titulos 
+				where 
+					{condicion}
+				order by 
+					nombre			
+			</select>
+		</unit>  
+		<unit id="TcManticTiposProveedoresDto">
+			<select id="row">
+				select
+					tc_mantic_tipos_proveedores.*,
+					tc_mantic_tipos_proveedores.id_tipo_proveedor as id_key
+				from
+				 tc_mantic_tipos_proveedores
+				where
+					{condicion}
+				order by
+					id_tipo_proveedor
+			</select>  
+		</unit>  
   </dml>    
 </process>
