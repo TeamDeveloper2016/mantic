@@ -18,11 +18,11 @@ public class Descuento extends TcManticArticulosDescuentosDto{
 	}
 
 	public Descuento(Long key) {
-		this(key, ESql.INSERT);
+		this(key, ESql.UPDATE);
 	}
 	
 	public Descuento(Long key, ESql sqlAccion) {
-		this(key, sqlAccion, true);
+		this(key, sqlAccion, false);
 	}
 	
 	public Descuento(Long key, ESql sqlAccion, Boolean nuevo) {

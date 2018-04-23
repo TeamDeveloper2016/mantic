@@ -14,11 +14,11 @@ public class ArticuloDimencion extends TcManticArticulosDimencionesDto{
 	}
 
 	public ArticuloDimencion(Long key) {
-		this(key, ESql.INSERT);
+		this(key, ESql.UPDATE);
 	}
 	
 	public ArticuloDimencion(Long key, ESql sqlAccion) {
-		this(key, sqlAccion, true);
+		this(key, sqlAccion, false);
 	}
 	
 	public ArticuloDimencion(Long key, ESql sqlAccion, Boolean nuevo) {

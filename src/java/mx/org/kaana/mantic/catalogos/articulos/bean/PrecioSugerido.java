@@ -14,11 +14,11 @@ public class PrecioSugerido extends TrManticArticuloPrecioSugeridoDto{
 	}
 
 	public PrecioSugerido(Long key) {
-		this(key, ESql.INSERT);
+		this(key, ESql.UPDATE);
 	}
 	
 	public PrecioSugerido(Long key, ESql sqlAccion) {
-		this(key, sqlAccion, true);
+		this(key, sqlAccion, false);
 	}
 	
 	public PrecioSugerido(Long key, ESql sqlAccion, Boolean nuevo) {

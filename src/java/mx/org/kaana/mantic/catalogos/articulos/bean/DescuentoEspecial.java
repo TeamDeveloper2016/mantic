@@ -18,11 +18,11 @@ public class DescuentoEspecial extends TrManticArticuloClienteDescuentoDto{
 	}
 
 	public DescuentoEspecial(Long key) {
-		this(key, ESql.INSERT);
+		this(key, ESql.UPDATE);
 	}
 	
 	public DescuentoEspecial(Long key, ESql sqlAccion) {
-		this(key, sqlAccion, true);
+		this(key, sqlAccion, false);
 	}
 	
 	public DescuentoEspecial(Long key, ESql sqlAccion, Boolean nuevo) {

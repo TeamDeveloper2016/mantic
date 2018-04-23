@@ -15,11 +15,11 @@ public class ArticuloCodigo extends TcManticArticulosCodigosDto implements Seria
 	}
 
 	public ArticuloCodigo(Long key) {
-		this(key, ESql.INSERT);
+		this(key, ESql.UPDATE);
 	}
 	
 	public ArticuloCodigo(Long key, ESql sqlAccion) {
-		this(key, sqlAccion, true);
+		this(key, sqlAccion, false);
 	}
 	
 	public ArticuloCodigo(Long key, ESql sqlAccion, Boolean nuevo) {

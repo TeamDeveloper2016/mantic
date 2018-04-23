@@ -17,11 +17,11 @@ public class ArticuloProveedor extends TrManticArticuloProveedorDto{
 	}
 
 	public ArticuloProveedor(Long key) {
-		this(key, ESql.INSERT);
+		this(key, ESql.UPDATE);
 	}
 	
 	public ArticuloProveedor(Long key, ESql sqlAccion) {
-		this(key, sqlAccion, true);
+		this(key, sqlAccion, false);
 	}
 	
 	public ArticuloProveedor(Long key, ESql sqlAccion, Boolean nuevo) {

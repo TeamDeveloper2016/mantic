@@ -14,11 +14,11 @@ public class Especificacion extends TcManticArticulosEspecificacionesDto{
 	}
 
 	public Especificacion(Long key) {
-		this(key, ESql.INSERT);
+		this(key, ESql.UPDATE);
 	}
 	
 	public Especificacion(Long key, ESql sqlAccion) {
-		this(key, sqlAccion, true);
+		this(key, sqlAccion, false);
 	}
 	
 	public Especificacion(Long key, ESql sqlAccion, Boolean nuevo) {

@@ -99,6 +99,10 @@ public class RegistroArticulo implements Serializable{
 		return idArticulo;
 	}
 
+	public void setIdArticulo(Long idArticulo) {
+		this.idArticulo = idArticulo;
+	}
+	
 	public TcManticArticulosDto getArticulo() {
 		return articulo;
 	}
@@ -241,9 +245,10 @@ public class RegistroArticulo implements Serializable{
 		try {
 			motorBusqueda= new MotorBusqueda(this.idArticulo);
 			this.articulo= motorBusqueda.toArticulo();
+			this.redondear= this.articulo.getIdRedondear()== 1L;
 			unidadMedida= motorBusqueda.toEmpaqueUnidadMedida(this.articulo.getIdEmpaqueUnidadMedida());
 			this.idEmpaque= unidadMedida.getIdEmpaque();
-			initCollections();
+			initCollections(motorBusqueda);
 		} // try
 		catch (Exception e) {			
 			JsfBase.addMessageError(e);
@@ -251,8 +256,25 @@ public class RegistroArticulo implements Serializable{
 		} // catch		
 	} // init
 	
-	private void initCollections(){
-		
+	private void initCollections(MotorBusqueda motor) throws Exception{
+		try {
+			this.articulosCodigos= motor.toArticulosCodigos();
+			this.articuloDimencion= motor.toArticuloDimencion();
+			this.articulosDescuentos= motor.toArticulosDescuentos();
+			this.articulosProveedores= motor.toArticulosProveedor();
+			this.articulosTiposVenta= motor.toArticulosTipoVenta();
+			this.clientesDescuentos= motor.toArticulosDescuentosEspeciales();
+			this.especificaciones= motor.toArticulosEspecificaciones();
+			this.importado= motor.toArticuloImagen(this.articulo.getIdImagen());
+			this.preciosSugeridos= motor.toArticulosPreciosSugeridos();
+			if(!this.articulosCodigos.isEmpty())
+				this.observaciones= this.articulosCodigos.get(0).getObservaciones();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+			throw e;
+		} // catch		
 	} // initCollections
 	
 	public void doAgregarArticuloCodigo(){
