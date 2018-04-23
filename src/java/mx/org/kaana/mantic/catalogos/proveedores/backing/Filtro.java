@@ -56,6 +56,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // for
     return regresar.substring(0,regresar.length()-1);
   }
+  
   @Override
   public void doLoad() {
     List<Columna> campos = null;
