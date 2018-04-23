@@ -2,6 +2,8 @@
 package mx.org.kaana.mantic.catalogos.articulos.reglas;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
+import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.mantic.db.dto.TcManticImagenesDto;
@@ -19,6 +21,8 @@ import mx.org.kaana.mantic.catalogos.articulos.bean.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.bean.TipoVenta;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosCodigosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDescuentosDto;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosDimencionesDto;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosEspecificacionesDto;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloClienteDescuentoDto;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloPrecioSugeridoDto;
@@ -49,6 +53,9 @@ public class Transaccion extends IBaseTnx {
 				case MODIFICAR:
 					regresar= actualizarArticulo(sesion);
 					break;				
+				case ELIMINAR:
+					regresar= eliminarArticulo(sesion);
+					break;
 			} // switch
 			if(!regresar)
         throw new Exception(this.messageError);
@@ -58,6 +65,30 @@ public class Transaccion extends IBaseTnx {
 		} // catch		
 		return regresar;
 	} // ejecutar
+	
+	private boolean eliminarArticulo(Session sesion) throws Exception, Exception{
+		boolean regresar         = false;		
+		Map<String, Object>params= null;
+		try {			
+			params= new HashMap<>();
+			params.put("idArticulo", this.articulo.getIdArticulo());
+			if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosCodigosDto.class, params)> -1L){
+				if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosEspecificacionesDto.class, params)> -1L){
+					if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosDescuentosDto.class, params)> -1L){
+						if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloClienteDescuentoDto.class, params)> -1L){
+							if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloPrecioSugeridoDto.class, params)> -1L){
+								if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloProveedorDto.class, params)> -1L){
+									if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloTipoVentaDto.class, params)> -1L){
+										if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosDimencionesDto.class, params)> -1L){
+											if(DaoFactory.getInstance().deleteAll(sesion, TcManticImagenesDto.class, params)> -1L){
+												regresar= DaoFactory.getInstance().delete(sesion, TcManticArticulosDto.class, this.articulo.getIdArticulo())>= 1L;
+				}	}	}	}	}	}	}	}	} // if		
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // eliminarArticulo
 	
 	private boolean procesarArticulo(Session sesion) throws Exception{
 		boolean regresar= false;
@@ -93,14 +124,27 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // procesarArticulo
 	
-	private boolean actualizarArticulo(Session sesion){
+	private boolean actualizarArticulo(Session sesion) throws Exception{
+		boolean regresar= false;
+		Long idArticulo = -1L;
 		try {
-			
+			idArticulo= this.articulo.getIdArticulo();
+			if(registraCodigos(sesion, idArticulo)){
+					if(registraEspecificaciones(sesion, idArticulo)){
+						if(registraDescuentos(sesion, idArticulo)){
+							if(registraClientesDescuentos(sesion, idArticulo)){
+								if(registraPreciosSugeridos(sesion, idArticulo)){
+									if(registraArticulosProveedor(sesion, idArticulo)){
+										if(registraArticulosTipoVenta(sesion, idArticulo)){
+											if(DaoFactory.getInstance().update(sesion, this.articulo.getArticuloDimencion()) >= 1L){												
+												if(DaoFactory.getInstance().update(sesion, loadImage())>= 1L)
+													regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
+			} } } } } } } }
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-		return true;
+		return regresar;
 	} // actualizarArticulo	
 	
 	private TcManticImagenesDto loadImage(){
