@@ -311,6 +311,15 @@
         where      
           id_cliente = {idCliente} and id_cliente_representante = {idClienteRepresentante} and id_representante = {idRepresentante} and id_principal = {idPrincipal}
       </select>
+			<select id="maximo">
+        select      
+          max(id_cliente_representante) maximo
+        from      
+          tr_mantic_clientes_representantes
+      </select>
+			<select id="rows">
+        delete from tr_mantic_clientes_representantes where id_cliente={idCliente}
+      </select>
     </unit>
     
     <unit id="TrManticEmpaqueUnidadMedidaDto">
@@ -806,5 +815,59 @@
 					id_tipo_proveedor
 			</select>  
 		</unit>  
+		<unit id="TrManticClienteDomicilioDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_cliente_domicilio
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_cliente_domicilio
+        where      
+          id_cliente = {idCliente} and id_cliente_domicilio = {idClienteDomicilio} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_cliente_domicilio) maximo
+        from      
+          tr_mantic_cliente_domicilio
+      </select>
+			<select id="rows">
+        delete from tr_mantic_cliente_domicilio where id_cliente={idCliente}
+      </select>
+    </unit>	
+		<unit id="TrManticClienteTipoContactoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_cliente_tipo_contacto
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_cliente_tipo_contacto
+        where      
+          id_cliente = {idCliente} and id_cliente_tipo_contacto = {idClienteTipoContacto} and id_tipo_contacto = {idTipoContacto}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_cliente_tipo_contacto) maximo
+        from      
+          tr_mantic_cliente_tipo_contacto
+      </select>
+			<select id="rows">
+        delete from tr_mantic_cliente_tipo_contacto where id_cliente= {idCliente}
+      </select>
+    </unit>		
   </dml>    
 </process>
