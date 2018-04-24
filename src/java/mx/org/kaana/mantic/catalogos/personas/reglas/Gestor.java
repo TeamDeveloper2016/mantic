@@ -5,7 +5,6 @@
  */
 package mx.org.kaana.mantic.catalogos.personas.reglas;
 
-import mx.org.kaana.mantic.catalogos.proveedores.reglas.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
