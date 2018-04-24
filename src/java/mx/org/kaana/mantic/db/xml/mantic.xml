@@ -868,6 +868,20 @@
 			<select id="rows">
         delete from tr_mantic_cliente_tipo_contacto where id_cliente= {idCliente}
       </select>
-    </unit>		
+    </unit>
+		<unit id="TcManticDomiciliosDto">
+			<select id="row">
+				select 
+					* 
+				from 
+					tc_mantic_domicilios
+			</select>
+			<select id="comboDomicilios">
+				select 
+					id_domicilio as id_key, descripcion
+				from 
+					tc_mantic_domicilios
+			</select>
+		</unit>		
   </dml>    
 </process>
