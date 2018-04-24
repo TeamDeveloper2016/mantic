@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.catalogos.personas.backing;
+package mx.org.kaana.mantic.catalogos.agentes.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,13 +15,12 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
-import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.personas.reglas.Gestor;
+import mx.org.kaana.mantic.enums.ETipoPersona;
 
 
 
-@Named(value = "manticCatalogosPersonasFiltro")
+@Named(value = "manticCatalogosAgentesFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
@@ -32,7 +31,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   protected void init() {
     try {
       this.attrs.put("sortOrder", "order by tc_mantic_personas.nombres");
-      loadTiposPersonas();
+      this.attrs.put("idTipoPersona", ETipoPersona.AGENTE_VENTAS.getIdTipoPersona());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -40,22 +39,9 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch		
   } // init
   
-  private void loadTiposPersonas() throws Exception {
-    Gestor gestor = new Gestor();
-    gestor.loadTiposPersonas();
-    this.attrs.put("tiposPersonas", gestor.getTiposPersonas());
-    this.attrs.put("tipoPersona", UIBackingUtilities.toFirstKeySelectEntity(gestor.getTiposPersonas()));
-  }
 
-  private String toAllTiposPersonas () {
-    StringBuilder regresar  = new StringBuilder();
-    List<UISelectEntity> tiposPersonas = (List<UISelectEntity>) this.attrs.get("tiposPersonas");
-    for (UISelectEntity tipoPersona: tiposPersonas){
-      regresar.append(tipoPersona.getKey());
-      regresar.append(",");
-    } // for
-    return regresar.substring(0,regresar.length()-1);
-  }
+
+  
   
   @Override
   public void doLoad() {
@@ -67,9 +53,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       campos.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("curp", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("sexo", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("tipoPersona", EFormatoDinamicos.MAYUSCULAS));     
-      this.attrs.put("idTipoPersona",((UISelectEntity)this.attrs.get("tipoPersona")).getKey().equals(-1L)?toAllTiposPersonas():((UISelectEntity)this.attrs.get("tipoPersona")).getKey());
+      campos.add(new Columna("sexo", EFormatoDinamicos.MAYUSCULAS));      
       this.lazyModel = new FormatCustomLazy("VistaPersonasDto", "row", this.attrs, campos);
       UIBackingUtilities.resetDataTable();
     } // try

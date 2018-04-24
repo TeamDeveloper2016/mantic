@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/filtro.xhtml">
-  <ui:param name="titulo" value="Catálogo de empleados" />
+  <ui:param name="titulo" value="Catálogo de agentes" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
@@ -41,13 +41,13 @@
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla">
             <h:panelGrid styleClass="janal-wid-100">
               <p:outputLabel for="nombres" value="Nombres, paterno, materno:"/>
-              <p:inputText id="nombres" value="#{manticCatalogosEmpleadosFiltro.attrs.nombres}" styleClass="janal-wid-100-txt" onblur="janal.individual('nombres')"/> 
+              <p:inputText id="nombres" value="#{manticCatalogosAgentesFiltro.attrs.nombres}" styleClass="janal-wid-100-txt" onblur="janal.individual('nombres')"/> 
               <p:outputLabel for="rfc" value="RFC:"/>
-              <p:inputText id="rfc" value="#{manticCatalogosEmpleadosFiltro.attrs.rfc}" styleClass="janal-wid-100-txt" onblur="janal.individual('rfc')"/>              			                            
+              <p:inputText id="rfc" value="#{manticCatalogosAgentesFiltro.attrs.rfc}" styleClass="janal-wid-100-txt" onblur="janal.individual('rfc')"/>              			                            
               <p:outputLabel for="curp" value="CURP:"/>
-              <p:inputText id="curp" value="#{manticCatalogosEmpleadosFiltro.attrs.curp}" styleClass="janal-wid-100-txt" onblur="janal.individual('curp')"/>              														
+              <p:inputText id="curp" value="#{manticCatalogosAgentesFiltro.attrs.curp}" styleClass="janal-wid-100-txt" onblur="janal.individual('curp')"/>              														
               <p:outputLabel for="idTipoSexo"  value="Sexo:"/>
-              <p:selectOneMenu  id="idTipoSexo"  value="#{manticCatalogosEmpleadosFiltro.attrs.idTipoSexo}"  styleClass="janal-wid-90">
+              <p:selectOneMenu  id="idTipoSexo"  value="#{manticCatalogosAgentesFiltro.attrs.idTipoSexo}"  styleClass="janal-wid-90">
                 <f:selectItem itemLabel="TODOS" itemValue="1,2,3"/>
                 <f:selectItem itemLabel="HOMBRE" itemValue="1"/>
                 <f:selectItem itemLabel="MUJER" itemValue="2"/>
@@ -56,27 +56,27 @@
             </h:panelGrid>
             <p:separator/>
             <div class="janal-align-right">
-              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.execute(true);" process="@this nombres rfc curp idTipoSexo" actionListener="#{manticCatalogosEmpleadosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
+              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.execute(true);" process="@this nombres rfc curp idTipoSexo" actionListener="#{manticCatalogosAgentesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
             </div>
              <div class="janal-align-right xs-pantalla">
-                <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.execute(true);" process="@this nombres rfc curp idTipoSexo" actionListener="#{manticCatalogosEmpleadosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"  styleClass="janal-text-white"/>
+                <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.execute(true);" process="@this nombres rfc curp idTipoSexo" actionListener="#{manticCatalogosAgentesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"  styleClass="janal-text-white"/>
               </div>
           </p:panel>
         </div>
         <p:spacer/>
         <div class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosEmpleadosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosEmpleadosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosEmpleadosFiltro.lazyModel.rowCount gt manticCatalogosEmpleadosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosAgentesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosAgentesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosAgentesFiltro.lazyModel.rowCount gt manticCatalogosAgentesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton   value="Opciones">
-                  <p:menuitem  value="Agregar" action="#{manticCatalogosEmpleadosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                  <p:menuitem  value="Agregar" action="#{manticCatalogosAgentesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:commandButton  value="Agregar" action="#{manticCatalogosEmpleadosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" styleClass="janal-text-white"/>						
+                <p:commandButton  value="Agregar" action="#{manticCatalogosAgentesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" styleClass="janal-text-white"/>						
                 <p:separator/>
                 <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
@@ -126,11 +126,11 @@
             </p:column>					
            		
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{manticCatalogosEmpleadosFiltro.lazyModel==null?0:manticCatalogosEmpleadosFiltro.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{manticCatalogosAgentesFiltro.lazyModel==null?0:manticCatalogosAgentesFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="modificar" action="#{manticCatalogosEmpleadosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="modificar" action="#{manticCatalogosAgentesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
           </p:contextMenu>
           <div class="EmptyBox30"></div>
@@ -140,14 +140,14 @@
   </ui:define>   
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
   <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar a la persona ?" />
-  <ui:param name="accionConfirmacion" value="#{manticCatalogosEmpleadosFiltro}"/>
+  <ui:param name="accionConfirmacion" value="#{manticCatalogosAgentesFiltro}"/>
   <ui:param name="updateComponent" value="tabla"/>
   <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
   <ui:param name="renderedConfirmacion" value="true"/>	
   <ui:define name="detalleConfirmacion">
     <h:panelGrid columns="2">
       <p:outputLabel value="Persona:"/>
-      <p:outputLabel value="#{manticCatalogosEmpleadosFiltro.attrs.seleccionado.nombres}"/>
+      <p:outputLabel value="#{manticCatalogosAgentesFiltro.attrs.seleccionado.nombres}"/>
     </h:panelGrid>			
   </ui:define>
 </ui:composition>
