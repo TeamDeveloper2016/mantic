@@ -433,6 +433,26 @@
 				  id_municipio
 			</select>
 		</unit>
+		<unit id="TcJanalLocalidadesDto">
+			<select id="row">
+				select
+          *
+        from
+          tc_janal_localidades
+				where
+          {condicion}
+			</select>
+			<select id="comboLocalidades">
+				select
+          id_localidad id_key, descripcion
+        from
+          tc_janal_localidades
+				where
+          id_municipio= {idMunicipio}
+				order by
+				  id_localidad
+			</select>
+		</unit>
     <unit id="TrJanalUsuariosDelegaDto">
       <select id="row">
         select
