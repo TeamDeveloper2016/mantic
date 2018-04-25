@@ -22,6 +22,8 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.clientes.bean.RegistroCliente;
+import mx.org.kaana.mantic.catalogos.clientes.reglas.MotorBusqueda;
+import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.enums.ETipoPersona;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.enums.ETiposDomicilios;
@@ -55,7 +57,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 			loadEntidades();
 			loadMunicipios();
 			loadLocalidades();
-			loadDomicilios();
+			loadCodigosPostales();
+			doLoadDomicilios();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -136,7 +139,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     catch (Exception e) {
       throw e;
     } // catch		    
-	}
+	} // loadTiposContactos
 	
 	private void loadTiposDomicilios() {
     List<UISelectItem> tiposDomicilios= null;
@@ -160,7 +163,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       entidades = UISelect.build("TcJanalEntidadesDto", "comboEntidades", params, "descripcion", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("entidades", entidades);
-      this.attrs.put("entidad", UIBackingUtilities.toFirstKeySelectItem(entidades));			
+			this.registroCliente.getDomicilio().setIdEntidad((Long) UIBackingUtilities.toFirstKeySelectItem(entidades));
     } // try
     catch (Exception e) {
       throw e;
@@ -175,10 +178,10 @@ public class Accion extends IBaseAttribute implements Serializable {
     Map<String, Object> params   = null;
     try {
       params = new HashMap<>();
-      params.put("idEntidad", this.attrs.get("entidad"));
+      params.put("idEntidad", this.registroCliente.getDomicilio().getIdEntidad());
       municipios = UISelect.build("TcJanalMunicipiosDto", "comboMunicipios", params, "descripcion", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("municipios", municipios);
-      this.attrs.put("municipio", UIBackingUtilities.toFirstKeySelectItem(municipios));			
+			this.registroCliente.getDomicilio().setIdMunicipio((Long) UIBackingUtilities.toFirstKeySelectItem(municipios));
     } // try
     catch (Exception e) {
       throw e;
@@ -193,10 +196,10 @@ public class Accion extends IBaseAttribute implements Serializable {
     Map<String, Object> params    = null;
     try {
       params = new HashMap<>();
-      params.put("idMunicipio", this.attrs.get("municipio"));
+      params.put("idMunicipio", this.registroCliente.getDomicilio().getIdMunicipio());
       localidades = UISelect.build("TcJanalLocalidadesDto", "comboLocalidades", params, "descripcion", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("localidades", localidades);
-      this.attrs.put("localidad", UIBackingUtilities.toFirstKeySelectItem(localidades));			
+			this.registroCliente.getDomicilio().setIdLocalidad((Long) UIBackingUtilities.toFirstKeySelectItem(localidades));
     } // try
     catch (Exception e) {
       throw e;
@@ -206,7 +209,118 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
 	} // loadLocalidades
 	
-	private void loadDomicilios(){
-		
-	} // loadDomicilios
+	private void loadCodigosPostales(){
+		List<UISelectItem> codigosPostales= null;
+    Map<String, Object> params       = null;
+    try {
+      params = new HashMap<>();
+      params.put("idLocalidad", this.registroCliente.getDomicilio().getIdLocalidad());      
+      codigosPostales = UISelect.build("TcManticDomiciliosDto", "codigosPostales", params, "codigoPostal", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+      this.attrs.put("codigosPostales", codigosPostales);
+			if(!codigosPostales.isEmpty()){
+				this.registroCliente.getDomicilio().setCodigoPostal(codigosPostales.get(0).getLabel());
+				this.registroCliente.getDomicilio().setIdCodigoPostal((Long) codigosPostales.get(0).getValue());
+			} // if
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+	} // loadCodigosPostales
+	
+	public void doLoadDomicilios(){
+		List<UISelectItem> domicilios= null;
+    Map<String, Object> params   = null;
+    try {
+      params = new HashMap<>();
+      params.put("idLocalidad", this.registroCliente.getDomicilio().getIdLocalidad());
+      params.put("codigoPostal", this.registroCliente.getDomicilio().getCodigoPostal());
+      domicilios = UISelect.build("TcManticDomiciliosDto", "domicilios", params, "domicilio", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+      this.attrs.put("domicilios", domicilios);
+			if(!domicilios.isEmpty()){
+				this.registroCliente.getDomicilio().setIdDomicilio((Long) domicilios.get(0).getValue());		
+				doLoadAtributos();
+			} // if			
+			else
+				clearAtributos();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+	} // doLoadDomicilios
+	
+	public void doActualizaMunicipios(){
+		try {
+			loadMunicipios();
+			loadLocalidades();
+			loadCodigosPostales();
+			doLoadDomicilios();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // doActualizaMunicipios
+	
+	public void doActualizaLocalidades(){
+		try {			
+			loadLocalidades();
+			loadCodigosPostales();
+			doLoadDomicilios();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // doActualizaMunicipios
+	
+	public void doActualizaCodigosPostales(){
+		try {						
+			loadCodigosPostales();
+			doLoadDomicilios();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // doActualizaMunicipios
+	
+	public void doLoadAtributos(){
+		TcManticDomiciliosDto domicilio= null;						
+		MotorBusqueda motor            = null;
+		try {
+			motor= new MotorBusqueda(this.registroCliente.getIdCliente());
+			domicilio= motor.toDomicilio(this.registroCliente.getDomicilio().getIdDomicilio());
+			this.registroCliente.getDomicilio().setNumeroExterior(domicilio.getNumeroExterior());
+			this.registroCliente.getDomicilio().setNumeroInterior(domicilio.getNumeroInterior());
+			this.registroCliente.getDomicilio().setCalle(domicilio.getCalle());
+			this.registroCliente.getDomicilio().setAsentamiento(domicilio.getAsentamiento());
+			this.registroCliente.getDomicilio().setEntreCalle(domicilio.getEntreCalle());
+			this.registroCliente.getDomicilio().setYcalle(domicilio.getYcalle());
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+	} // doLoadAtributos
+	
+	public void clearAtributos(){
+		try {
+			this.registroCliente.getDomicilio().setNumeroExterior("");
+			this.registroCliente.getDomicilio().setNumeroInterior("");
+			this.registroCliente.getDomicilio().setCalle("");
+			this.registroCliente.getDomicilio().setAsentamiento("");
+			this.registroCliente.getDomicilio().setEntreCalle("");
+			this.registroCliente.getDomicilio().setYcalle("");
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+	} // doLoadAtributos
 }
