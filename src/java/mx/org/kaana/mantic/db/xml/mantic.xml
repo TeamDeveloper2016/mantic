@@ -892,6 +892,28 @@
 				from 
 					tc_mantic_domicilios
 			</select>
+			<select id="codigosPostales">
+				select   
+					id_domicilio AS id_key,
+					codigo_postal
+				from 
+				  tc_mantic_domicilios
+				where 
+					id_localidad = {idLocalidad}
+				group by 
+					codigo_postal
+			</select>
+			<select id="domicilios">
+				select   
+					id_domicilio as id_key,
+					concat(calle,' ',numero_exterior,' ',asentamiento) as domicilio          
+				from 
+					tc_mantic_domicilios
+				where 
+					id_localidad = {idLocalidad}
+				and 
+				  codigo_postal= '{codigoPostal}'
+			</select>
     </unit>		
   </dml>    
 </process>
