@@ -868,8 +868,8 @@
 			<select id="rows">
         delete from tr_mantic_cliente_tipo_contacto where id_cliente= {idCliente}
       </select>
-    </unit>
-		<unit id="TcManticDomiciliosDto">
+    </unit>		
+    <unit id="TcManticDomiciliosDto">
 			<select id="row">
 				select 
 					tc_mantic_domicilios.*,
@@ -881,12 +881,43 @@
                 order by
                   calle
 			</select>
+    
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_domicilios
+        where      
+          id_domicilio = {idDomicilio}
+      </select>
 			<select id="comboDomicilios">
 				select 
 					id_domicilio as id_key, descripcion
 				from 
 					tc_mantic_domicilios
 			</select>
-		</unit>		
+			<select id="codigosPostales">
+				select   
+					id_domicilio AS id_key,
+					codigo_postal
+				from 
+				  tc_mantic_domicilios
+				where 
+					id_localidad = {idLocalidad}
+				group by 
+					codigo_postal
+			</select>
+			<select id="domicilios">
+				select   
+					id_domicilio as id_key,
+					concat(calle,' ',numero_exterior,' ',asentamiento) as domicilio          
+				from 
+					tc_mantic_domicilios
+				where 
+					id_localidad = {idLocalidad}
+				and 
+				  codigo_postal= '{codigoPostal}'
+			</select>
+    </unit>		
   </dml>    
 </process>

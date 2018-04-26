@@ -12,6 +12,7 @@ import mx.org.kaana.mantic.catalogos.clientes.bean.ClienteRepresentante;
 import mx.org.kaana.mantic.catalogos.clientes.bean.ClienteTipoContacto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
+import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 
 public class MotorBusqueda implements Serializable{
 	
@@ -83,4 +84,15 @@ public class MotorBusqueda implements Serializable{
 		} // finally
 		return regresar;
 	} // toClientesTipoContacto
+	
+	public TcManticDomiciliosDto toDomicilio(Long idDomicilio) throws Exception {
+		TcManticDomiciliosDto regresar= null;
+		try {
+			regresar= (TcManticDomiciliosDto) DaoFactory.getInstance().findById(TcManticDomiciliosDto.class, idDomicilio);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toDomicilio
 }

@@ -8,7 +8,6 @@ import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.mantic.catalogos.articulos.bean.ArticuloCodigo;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 
@@ -26,20 +25,22 @@ public class RegistroCliente implements Serializable{
 	private List<IBaseDto> deleteList;
 	private ContadoresListas contadores;
 	private Long countIndice;
+	private Domicilio domicilio;
 
 	public RegistroCliente() {
-		this(-1L, new TcManticClientesDto(), new ArrayList<ClienteDomicilio>(), new ArrayList<ClienteTipoContacto>(), new ArrayList<ClienteRepresentante>());
+		this(-1L, new TcManticClientesDto(), new ArrayList<ClienteDomicilio>(), new ArrayList<ClienteTipoContacto>(), new ArrayList<ClienteRepresentante>(), new Domicilio());
 	}
 	
 	public RegistroCliente(Long idCliente) {
 		this.idCliente  = idCliente;
-		this.contadores  = new ContadoresListas();
-		this.countIndice = 0L;
-		this.deleteList  = new ArrayList<>();
+		this.contadores = new ContadoresListas();
+		this.countIndice= 0L;
+		this.deleteList = new ArrayList<>();
+		this.domicilio  = new Domicilio();
 		init();		
 	}
 	
-	public RegistroCliente(Long idCliente, TcManticClientesDto cliente, List<ClienteDomicilio> clientesDomicilio, List<ClienteTipoContacto> clientesTiposContacto, List<ClienteRepresentante> clientesRepresentantes) {
+	public RegistroCliente(Long idCliente, TcManticClientesDto cliente, List<ClienteDomicilio> clientesDomicilio, List<ClienteTipoContacto> clientesTiposContacto, List<ClienteRepresentante> clientesRepresentantes, Domicilio domicilio) {
 		this.idCliente             = idCliente;
 		this.cliente               = cliente;
 		this.clientesDomicilio     = clientesDomicilio;
@@ -48,6 +49,7 @@ public class RegistroCliente implements Serializable{
 		this.deleteList            = new ArrayList<>();
 		this.contadores            = new ContadoresListas();
 		this.countIndice           = 0L;
+		this.domicilio             = domicilio;
 	}
 	
 	public Long getIdCliente() {
@@ -121,6 +123,14 @@ public class RegistroCliente implements Serializable{
 	public void setDeleteList(List<IBaseDto> deleteList) {
 		this.deleteList = deleteList;
 	}		
+
+	public Domicilio getDomicilio() {
+		return domicilio;
+	}
+
+	public void setDomicilio(Domicilio domicilio) {
+		this.domicilio = domicilio;
+	}		
 	
 	private void init(){
 		MotorBusqueda motorBusqueda= null;
@@ -177,6 +187,30 @@ public class RegistroCliente implements Serializable{
 			JsfBase.addMessageError(e);			
 		} // catch			
 	} // doEliminarClienteDomicilio
+	
+	public void doActualizarClienteDomicilio(){
+		ClienteDomicilio pivote= null;
+		try {			
+			pivote= this.clientesDomicilio.get(this.clientesDomicilio.indexOf(this.clienteDomicilioSelecion));			
+			pivote.setModificar(false);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch				
+	} // doEliminarArticuloCodigo
+	
+	public void doConsultarClienteDomicilio(){
+		ClienteDomicilio pivote= null;
+		try {			
+			pivote= this.clientesDomicilio.get(this.clientesDomicilio.indexOf(this.clienteDomicilioSelecion));
+			pivote.setModificar(true);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // doEliminarArticuloCodigo
 	
 	public void doAgregarClienteRepresentante(){
 		ClienteRepresentante clienteRepresentante= null;
