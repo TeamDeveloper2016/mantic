@@ -91,6 +91,18 @@
                 tc_mantic_proveedores.id_empresa={idEmpresa}            
               {sortOrder}
           </select>
+          <select id="proveedorCondicionPago">
+            select 
+                tc_mantic_tipos_pagos.id_tipo_pago,
+                tc_mantic_tipos_pagos.id_tipo_pago as id_key,            
+                tc_mantic_tipos_pagos.nombre as nombre_pago,
+                tc_mantic_tipos_formas_pagos.clave,
+                tc_mantic_tipos_formas_pagos.nombre
+            from 
+              tc_mantic_tipos_pagos
+            inner join 
+              tc_mantic_tipos_formas_pagos on tc_mantic_tipos_formas_pagos.id_tipo_medio_pago=tc_mantic_tipos_pagos.id_tipo_medio_pago              
+          </select>  
           
         </unit> 
         <unit id="VistaClientesDto"> 

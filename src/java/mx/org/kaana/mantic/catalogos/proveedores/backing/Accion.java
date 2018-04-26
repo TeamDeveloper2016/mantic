@@ -43,12 +43,29 @@ public class Accion extends IBaseAttribute implements Serializable {
       gestor.loadEntidades(!renglonProveedor.getTcManticProveedoresDto().isValid());
       this.attrs.put("entidades", gestor.getEntidades());
       this.domicilio.setEntidad((UISelectEntity) UIBackingUtilities.toFirstKeySelectEntity(gestor.getEntidades()));
+      loadCondicionesPago();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
   } // init
+  
+  private void loadCondicionesPago () throws Exception {
+    loadTipoPago();
+    this.renglonProveedor.loadCondicionesPago();
+  }
+  
+  
+  private void loadTipoPago() throws Exception{
+    Gestor gestor = new Gestor();
+    try {
+      this.attrs.put("tiposPago", gestor.toTiposPagos());
+    } // try
+    catch(Exception e){
+      throw e;
+    }// catch
+  }
 
   public void doLoadMunicipios() {
     Gestor gestor = null;
@@ -117,7 +134,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public void doAgregarDocimilio(Domicilio domicilio, int index) {
-
+    
   }
 
   public void doEliminarDomicilio(Domicilio domicilio, int index) {

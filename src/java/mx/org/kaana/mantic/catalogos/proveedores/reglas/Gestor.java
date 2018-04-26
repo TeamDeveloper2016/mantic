@@ -18,9 +18,13 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.CondicionPago;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.Domicilio;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -203,4 +207,33 @@ public class Gestor implements Serializable {
       Methods.clean(params);
     }// finally
   }
+  
+  public List<UISelectItem> toTiposPagos () throws Exception {
+    List<UISelectItem> regresar = null;
+    try {     
+      regresar = UISelect.build("VistaProveedoresDto", "proveedorCondicionPago",Collections.emptyMap(),Cadena.toList("nombrePago|clave|nombre")," ", EFormatoDinamicos.MAYUSCULAS);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+    return regresar;
+  }
+  
+  
+  public List<CondicionPago>  toCondicionesPagoProveedor(Long idProveedor) throws Exception {
+    List<CondicionPago> regresar = null;
+    Map<String,Object> params = new HashMap<>();
+    try {
+      params.put(Constantes.SQL_CONDICION, "id_proveedor".concat(idProveedor.toString()));
+      regresar = DaoFactory.getInstance().toEntitySet(CondicionPago.class,"TrManticProveedorPagoDto","row",params);
+    } // try
+    catch (Exception e) {
+      throw e;
+    }// catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
 }

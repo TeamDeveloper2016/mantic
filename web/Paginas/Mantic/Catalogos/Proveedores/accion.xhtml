@@ -134,28 +134,27 @@
                 </div>
               </div>
             </p:tab> 
-            <!--
             <p:tab id="tabTipoPago" title="Condiciones de pago">
               <p:panelGrid id="panelTipoPago" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaTipoPago" rowIndexVar="index" var="condicionPago" value="#{manticCatalogosProveedoresAccion.renglonProveedor.condicionPagos}" rows="10" paginator="false" reflow="true" rowKey="#{condicionPago.key}" styleClass="paginated">												
                   <p:column headerText="Tipo de pago">
-                    <p:selectOneMenu id="tipoPago-#{condicionPago.key}" var="tipoPago" styleClass="janal-wid-100-txt" value="#{condicionPago.idTipoPago}" filter="true" filterMatchMode="startsWith">
+                    <p:selectOneMenu id="tipoPago-#{condicionPago.key}" var="tipoPago" styleClass="janal-wid-100-txt" value="#{condicionPago.idTipoPago}" filter="true" filterMatchMode="contains">
                       <f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.tiposPago}"/>
                     </p:selectOneMenu>
                   </p:column> 
-                  <p:column headerText="Descuento" styleClass="janal-wid-30">		
+                  <p:column headerText="Descuento adicional" styleClass="janal-wid-30">		
                     <p:inputNumber   id="descuento-#{condicionPago.key}" symbol="%" emptyValue="zero" symbolPosition="s" styleClass="janal-wid-100-txt" value="#{condicionPago.descuento}"/>                    																																			
                   </p:column>    
                   <p:column style="width:32px;text-align: center">
                     <p:commandButton update="tablaTipoPago" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.doEliminarCondicionPago(condicionPago)}" styleClass="janal-text-white"/>
                  </p:column>
                   <f:facet name="footer">
-                    <p:commandButton actionListener="#{manticCatalogosProveedoresAccion.doAgregarCondicionPago()}" process="@this tablaEspecificaciones" update="tablaEspecificaciones" icon="fa fa-plus" styleClass="janal-text-white"/>						
+                    <p:commandButton actionListener="#{manticCatalogosProveedoresAccion.doAgregarCondicionPago()}" process="@this"  icon="fa fa-plus" styleClass="janal-text-white"/>						
                   </f:facet>
                 </p:dataTable>	
               </p:panelGrid>	
             </p:tab>
-            <p:tab id="tabPersonaContacto" title="Responsable">								
+            <p:tab id="tabPersonaContacto" title="Responsables">								
             
             </p:tab>
             <p:tab id="tabTipoContacto" title="Contacto">
@@ -164,7 +163,7 @@
             <p:tab id="tabAgentes" title="Agentes">
         
             </p:tab>
-            -->
+            
             <p:tab title="Observaciones">
               <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
                 <p:outputLabel for="observaciones" value="Observaciones:"/>

@@ -13,6 +13,7 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.josql.FactoryJoSql;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorDomicilioDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -26,22 +27,21 @@ public class Domicilio extends TrManticProveedorDomicilioDto implements Serializ
   private UISelectEntity entidad;
   private UISelectEntity municipio;
   private UISelectEntity localidad;
-  private UISelectEntity detalleCalle; 
- /* private String codigoPostal;
-  private Long numeroExterior;
-  private String numeroInterior;
-  private String colonia;
-  private String entreCalle;
-  private String yCalle*/;
-  
+  private UISelectEntity detalleCalle;
+  private TcManticDomiciliosDto tcManticDomicilioDto;  
   private ESql accion;
   
   public Domicilio () {
-   this(ESql.UPDATE);
+   this(ESql.UPDATE);  
   }
   
   public Domicilio (ESql accion) {
     this.accion = accion;
+    this.tcManticDomicilioDto = new TcManticDomiciliosDto();
+  }  
+
+  public TcManticDomiciliosDto getTcManticDomicilioDto() {
+    return tcManticDomicilioDto;
   }  
 
   public ESql getAccion() {

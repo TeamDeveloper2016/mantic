@@ -481,6 +481,8 @@
           tr_mantic_proveedor_pago
         where 
           {condicion} 
+        order  by 
+          id_tipo_pago
       </select>
       <select id="identically">
         select      

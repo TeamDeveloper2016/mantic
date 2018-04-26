@@ -20,7 +20,8 @@ public class RenglonProveedor implements Serializable {
   private TcManticProveedoresDto tcManticProveedoresDto;
   private UISelectEntity idTipoProveedor;
   private List<UISelectEntity> tiposProveedores;
-  private List<Domicilio> domicilios; 
+  private List<Domicilio> domicilios;
+  private List<CondicionPago>  condicionPagos;
   
 
   public RenglonProveedor(Long idProveedor) throws Exception {
@@ -30,6 +31,10 @@ public class RenglonProveedor implements Serializable {
     init();
   } 
 
+  public List<CondicionPago> getCondicionPagos() {
+    return condicionPagos;
+  }  
+  
   public List<Domicilio> getDomicilios() {
     return domicilios;
   }  
@@ -60,7 +65,7 @@ public class RenglonProveedor implements Serializable {
     try {
       if (this.tcManticProveedoresDto.isValid())
         this.tcManticProveedoresDto = (TcManticProveedoresDto) DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.tcManticProveedoresDto.getIdProveedor());
-      
+      loadDomicilios();
     } // try
     catch (Exception e) {
       throw e;
@@ -78,6 +83,15 @@ public class RenglonProveedor implements Serializable {
     } // catch
   }
   
+  public void loadCondicionesPago () throws Exception {
+    Gestor  gestor = new Gestor();
+    try {
+      this.condicionPagos = gestor.toCondicionesPagoProveedor(this.tcManticProveedoresDto.getIdProveedor());      
+    } // try
+    catch (Exception e) {
+       throw  e;
+    } // catch
+  }
   
   
   public void addDomicilio (Domicilio domicilio) {
