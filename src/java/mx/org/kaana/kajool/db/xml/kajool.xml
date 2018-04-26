@@ -415,12 +415,15 @@
 		</unit>
 		<unit id="TcJanalMunicipiosDto">
 			<select id="row">
-				select
-          *
+		select
+          tc_janal_municipios.*,
+          tc_janal_municipios.id_municipio as id_key
         from
           tc_janal_municipios
-				where
+		 where
           {condicion}
+         order by
+            clave
 			</select>
 			<select id="comboMunicipios">
 				select
@@ -436,11 +439,14 @@
 		<unit id="TcJanalLocalidadesDto">
 			<select id="row">
 				select
-          *
-        from
-          tc_janal_localidades
+                  tc_janal_localidades.*,
+                  tc_janal_localidades.id_localidad as id_key  
+                from
+                   tc_janal_localidades
 				where
-          {condicion}
+                  {condicion}
+                order by
+                 clave
 			</select>
 			<select id="comboLocalidades">
 				select

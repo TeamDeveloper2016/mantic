@@ -82,7 +82,7 @@
              where
                tc_mantic_proveedores.razon_social like '%{razonSocial}%'
               and
-               tc_mantic_proveedores.rfc like '%{rfc}%'
+               (tc_mantic_proveedores.rfc like '%{rfc}%' or tc_mantic_proveedores.rfc is null)
               and
                tc_mantic_proveedores.clave like '%{clave}%'
               and 
@@ -91,6 +91,7 @@
                 tc_mantic_proveedores.id_empresa={idEmpresa}            
               {sortOrder}
           </select>
+          
         </unit> 
         <unit id="VistaClientesDto"> 
           <select id="row">
@@ -207,8 +208,7 @@
                  tc_mantic_personas.id_tipo_persona  in ({idTipoPersona})
                 {sortOrder}  
             </select>              
-        </unit>
-            
+        </unit>   
                     
 	</dml>    
 </process>
