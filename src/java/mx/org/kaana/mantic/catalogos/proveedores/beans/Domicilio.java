@@ -47,7 +47,10 @@ public class Domicilio extends TrManticProveedorDomicilioDto implements Serializ
   public ESql getAccion() {
     return accion;
   }
-    
+
+  public void setAccion(ESql accion) {
+    this.accion = accion;
+  }
 
   public UISelectEntity getDetalleCalle() {
     return detalleCalle;

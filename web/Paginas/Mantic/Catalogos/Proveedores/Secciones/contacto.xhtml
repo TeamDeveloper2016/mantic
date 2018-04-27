@@ -4,8 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"     
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core">	
-  <p:panelGrid id="panelResponsables" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
-    <p:dataTable id="tablaResponsable" rowIndexVar="index" var="contacto" value="#{manticCatalogosProveedoresAccion.renglonProveedor.contactos}" rows="10" paginator="false" reflow="true" rowKey="#{responsable.key}" styleClass="paginated">												
+  <p:panelGrid id="panelContacto" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
+    <p:dataTable id="tablaContacto" rowIndexVar="index" var="contacto" value="#{manticCatalogosProveedoresAccion.renglonProveedor.contactos}" rows="10" paginator="false" reflow="true" rowKey="#{responsable.key}" styleClass="paginated">												
       <p:column headerText="Contacto">
         <p:selectOneMenu id="contacto-#{contacto.key}" var="item" styleClass="janal-wid-100-txt" value="#{contacto.idTipoContacto}" filter="true" filterMatchMode="contains">
           <f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.tiposContactos}"/>

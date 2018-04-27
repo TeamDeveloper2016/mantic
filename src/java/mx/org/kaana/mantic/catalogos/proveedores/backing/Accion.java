@@ -46,6 +46,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void init() {
     Gestor gestor = null;
     try {
+      this.attrs.put("idTemporal", -1);
       renglonProveedor = new RenglonProveedor(JsfBase.getFlashAttribute("idProveedor") == null ? -1L : (Long) JsfBase.getFlashAttribute("idProveedor"));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       gestor = new Gestor();
@@ -159,6 +160,12 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch
   }
 
+  private Long toIdTemporal () {
+      Long regresar = (Long)this.attrs.get("idTemporal")+-1L;
+      this.attrs.put("idTemporal", regresar);
+      return regresar;
+  }
+  
   private void load() {
     EAccion eaccion = null;
 
@@ -182,18 +189,22 @@ public class Accion extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     return regresar;
-  } // doAccion
-
+  } // doAccion  
+  
   public void doAgregarDocimilio(Domicilio domicilio, int index) {
-    
+    domicilio.setIdDomicilio(toIdTemporal());
+    domicilio.setAccion(ESql.INSERT);
+    this.renglonProveedor.addDomicilio(new Domicilio(ESql.SELECT));    
   }
 
-  public void doEliminarDomicilio(Domicilio domicilio, int index) {
-
+  public void doEliminarDomicilio(Domicilio domicilio, int index) {     
+     this.renglonProveedor.getDomicilios().remove(domicilio);
   }
 
   public void doBuscarDomicilio(Domicilio domicilio, int index) {
-
+    int pos = -1;
+    pos=this.renglonProveedor.getDomicilios().indexOf(domicilio);
+    domicilio = this.renglonProveedor.getDomicilios().get(pos);
   }
   
   public void doAgregarResponsable() {
