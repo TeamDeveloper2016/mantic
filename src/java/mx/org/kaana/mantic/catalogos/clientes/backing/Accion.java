@@ -410,6 +410,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.registroCliente.getDomicilio().setAsentamiento(dtoDomicilio.getAsentamiento());
 			this.registroCliente.getDomicilio().setEntreCalle(dtoDomicilio.getEntreCalle());
 			this.registroCliente.getDomicilio().setYcalle(dtoDomicilio.getYcalle());
+			this.registroCliente.getDomicilio().setIdTipoDomicilio(domicilio.getIdTipoDomicilio());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
