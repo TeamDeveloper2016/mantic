@@ -20,6 +20,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.clientes.bean.Domicilio;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.clientes.bean.RegistroCliente;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.MotorBusqueda;
@@ -58,7 +59,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			loadMunicipios();
 			loadLocalidades();
 			loadCodigosPostales();
-			doLoadDomicilios();
+			loadDomicilios();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -94,7 +95,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       transaccion = new Transaccion(this.registroCliente);
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
-        regresar = "filtro";
+        regresar = "filtro".concat(Constantes.REDIRECIONAR);
         JsfBase.addMessage("Se registro el cliente de forma correcta.", ETipoMensaje.INFORMACION);
       } // if
       else 
@@ -220,7 +221,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 			if(!codigosPostales.isEmpty()){
 				this.registroCliente.getDomicilio().setCodigoPostal(codigosPostales.get(0).getLabel());
 				this.registroCliente.getDomicilio().setIdCodigoPostal((Long) codigosPostales.get(0).getValue());
+				this.registroCliente.getDomicilio().setNuevoCp(false);
 			} // if
+			else
+				this.registroCliente.getDomicilio().setNuevoCp(true);
     } // try
     catch (Exception e) {
       throw e;
@@ -231,10 +235,21 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} // loadCodigosPostales
 	
 	public void doLoadDomicilios(){
+		try {
+			updateCodigoPostal();
+			loadDomicilios();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doLoadDomicilios
+	
+	private void loadDomicilios(){
 		List<UISelectItem> domicilios= null;
     Map<String, Object> params   = null;
     try {
-      params = new HashMap<>();
+      params = new HashMap<>();			
       params.put("idLocalidad", this.registroCliente.getDomicilio().getIdLocalidad());
       params.put("codigoPostal", this.registroCliente.getDomicilio().getCodigoPostal());
       domicilios = UISelect.build("TcManticDomiciliosDto", "domicilios", params, "domicilio", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
@@ -254,12 +269,34 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
 	} // doLoadDomicilios
 	
+	private void updateCodigoPostal(){
+		List<UISelectItem> codigosPostales= null;
+		try {
+			if(this.registroCliente.getDomicilio().getIdCodigoPostal().equals(-1L)){
+				this.registroCliente.getDomicilio().setCodigoPostal("");
+				this.registroCliente.getDomicilio().setNuevoCp(true);
+			} // if
+			else{
+				codigosPostales= (List<UISelectItem>) this.attrs.get("codigosPostales");
+				for(UISelectItem codigo: codigosPostales){
+					if(codigo.getValue().equals(this.registroCliente.getDomicilio().getIdCodigoPostal())){
+						this.registroCliente.getDomicilio().setCodigoPostal(codigo.getLabel());
+						this.registroCliente.getDomicilio().setNuevoCp(false);
+					} // if
+				} // for
+			} // else
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // updateCodigoPostal
+	
 	public void doActualizaMunicipios(){
 		try {
 			loadMunicipios();
 			loadLocalidades();
 			loadCodigosPostales();
-			doLoadDomicilios();
+			loadDomicilios();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -271,7 +308,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		try {			
 			loadLocalidades();
 			loadCodigosPostales();
-			doLoadDomicilios();
+			loadDomicilios();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -282,7 +319,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	public void doActualizaCodigosPostales(){
 		try {						
 			loadCodigosPostales();
-			doLoadDomicilios();
+			loadDomicilios();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -294,14 +331,18 @@ public class Accion extends IBaseAttribute implements Serializable {
 		TcManticDomiciliosDto domicilio= null;						
 		MotorBusqueda motor            = null;
 		try {
-			motor= new MotorBusqueda(this.registroCliente.getIdCliente());
-			domicilio= motor.toDomicilio(this.registroCliente.getDomicilio().getIdDomicilio());
-			this.registroCliente.getDomicilio().setNumeroExterior(domicilio.getNumeroExterior());
-			this.registroCliente.getDomicilio().setNumeroInterior(domicilio.getNumeroInterior());
-			this.registroCliente.getDomicilio().setCalle(domicilio.getCalle());
-			this.registroCliente.getDomicilio().setAsentamiento(domicilio.getAsentamiento());
-			this.registroCliente.getDomicilio().setEntreCalle(domicilio.getEntreCalle());
-			this.registroCliente.getDomicilio().setYcalle(domicilio.getYcalle());
+			if(!this.registroCliente.getDomicilio().getIdDomicilio().equals(-1L)){
+				motor= new MotorBusqueda(this.registroCliente.getIdCliente());
+				domicilio= motor.toDomicilio(this.registroCliente.getDomicilio().getIdDomicilio());
+				this.registroCliente.getDomicilio().setNumeroExterior(domicilio.getNumeroExterior());
+				this.registroCliente.getDomicilio().setNumeroInterior(domicilio.getNumeroInterior());
+				this.registroCliente.getDomicilio().setCalle(domicilio.getCalle());
+				this.registroCliente.getDomicilio().setAsentamiento(domicilio.getAsentamiento());
+				this.registroCliente.getDomicilio().setEntreCalle(domicilio.getEntreCalle());
+				this.registroCliente.getDomicilio().setYcalle(domicilio.getYcalle());
+			}	// if
+			else
+				clearAtributos();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -323,4 +364,56 @@ public class Accion extends IBaseAttribute implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch
 	} // doLoadAtributos
+	
+	public void doAgregarCliente(){
+		try {
+			this.registroCliente.doAgregarClienteDomicilio();
+			this.registroCliente.setDomicilio(new Domicilio());
+			loadEntidades();
+			doActualizaMunicipios();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAgregarCliente
+	
+	public void doConsultarClienteDomicilio(){
+		MotorBusqueda motor               = null;
+		Domicilio domicilio               = null;
+		TcManticDomiciliosDto dtoDomicilio= null;
+		List<UISelectItem> codigos        = null;
+		try {			
+			this.registroCliente.doConsultarClienteDomicilio();
+			motor= new MotorBusqueda(this.registroCliente.getIdCliente());
+			domicilio= this.registroCliente.getDomicilioPivote();
+			dtoDomicilio= motor.toDomicilio(domicilio.getIdDomicilio());			
+			loadEntidades();
+			this.registroCliente.getDomicilio().setIdEntidad(domicilio.getIdEntidad());
+			loadMunicipios();
+			this.registroCliente.getDomicilio().setIdMunicipio(domicilio.getIdMunicipio());
+			loadLocalidades();
+			this.registroCliente.getDomicilio().setIdLocalidad(domicilio.getIdLocalidad());
+			loadCodigosPostales();
+			codigos= (List<UISelectItem>) this.attrs.get("codigosPostales");
+			for(UISelectItem codigo: codigos){
+				if(codigo.getLabel().equals(dtoDomicilio.getCodigoPostal())){
+					this.registroCliente.getDomicilio().setIdCodigoPostal((Long) codigo.getValue());
+					this.registroCliente.getDomicilio().setCodigoPostal(codigo.getLabel());
+				} // if
+			}	// for
+			loadDomicilios();
+			this.registroCliente.getDomicilio().setIdDomicilio(domicilio.getIdDomicilio());
+			this.registroCliente.getDomicilio().setCalle(dtoDomicilio.getCalle());
+			this.registroCliente.getDomicilio().setNumeroExterior(dtoDomicilio.getNumeroExterior());
+			this.registroCliente.getDomicilio().setNumeroInterior(dtoDomicilio.getNumeroInterior());
+			this.registroCliente.getDomicilio().setAsentamiento(dtoDomicilio.getAsentamiento());
+			this.registroCliente.getDomicilio().setEntreCalle(dtoDomicilio.getEntreCalle());
+			this.registroCliente.getDomicilio().setYcalle(dtoDomicilio.getYcalle());
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // doEliminarArticuloCodigo	
 }

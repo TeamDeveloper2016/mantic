@@ -10,6 +10,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
@@ -17,6 +18,8 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion;
+import mx.org.kaana.mantic.catalogos.clientes.bean.RegistroCliente;
 
 @Named(value = "manticCatalogosClientesFiltro")
 @ViewScoped
@@ -75,13 +78,22 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doAccion
 
   public void doEliminar() {
-
-    try {
-
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch		
+		Transaccion transaccion = null;
+		Entity seleccionado     = null;
+		RegistroCliente registro= null;
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");			
+			registro= new RegistroCliente();
+			registro.setIdCliente(seleccionado.getKey());
+			transaccion= new Transaccion(registro);
+			if(transaccion.ejecutar(EAccion.ELIMINAR))
+				JsfBase.addMessage("Eliminar cliente", "El cliente se ha eliminado correctamente.", ETipoMensaje.ERROR);
+			else
+				JsfBase.addMessage("Eliminar cliente", "Ocurrió un error al eliminar el cliente.", ETipoMensaje.ERROR);								
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
   } // doEliminar
 }
