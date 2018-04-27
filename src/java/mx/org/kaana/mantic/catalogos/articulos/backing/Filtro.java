@@ -8,7 +8,6 @@ import mx.org.kaana.libs.formato.Error;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.mantic.db.dto.TcManticCategoriasDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -20,7 +19,6 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.bean.RegistroArticulo;
-import mx.org.kaana.mantic.catalogos.categorias.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
 
 @ManagedBean(name="manticCatalogosArticulosFiltro")
@@ -86,9 +84,9 @@ public class Filtro extends Comun implements Serializable{
 			registro.setIdArticulo(seleccionado.getKey());
 			transaccion= new Transaccion(registro);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar categoría", "El artículo se ha eliminado correctamente.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar articulo", "El artículo se ha eliminado correctamente.", ETipoMensaje.ERROR);
 			else
-				JsfBase.addMessage("Eliminar categoría", "Ocurrió un error al eliminar la artículo.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar articulo", "Ocurrió un error al eliminar la artículo.", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

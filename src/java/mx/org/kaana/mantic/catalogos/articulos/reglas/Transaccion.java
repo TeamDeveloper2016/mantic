@@ -66,7 +66,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // ejecutar
 	
-	private boolean eliminarArticulo(Session sesion) throws Exception, Exception{
+	private boolean eliminarArticulo(Session sesion) throws Exception{
 		boolean regresar         = false;		
 		Map<String, Object>params= null;
 		try {			

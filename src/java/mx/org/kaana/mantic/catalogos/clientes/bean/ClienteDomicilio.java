@@ -7,8 +7,12 @@ public class ClienteDomicilio extends TrManticClienteDomicilioDto{
 	
 	private static final long serialVersionUID = 731679150148040999L;	
 	private ESql sqlAccion;
-	private Boolean nuevo;
-	private Boolean modificar;	
+	private Boolean nuevo;	
+	private Long consecutivo;
+	private Boolean modificar;
+	private Long idEntidad;
+	private Long idMunicipio;
+	private Long idLocalidad;
 
 	public ClienteDomicilio() {
 		this(-1L);
@@ -22,15 +26,19 @@ public class ClienteDomicilio extends TrManticClienteDomicilioDto{
 		this(key, sqlAccion, false);
 	}
 	
-	public ClienteDomicilio(Long key, ESql sqlAccion, Boolean nuevo) {
-		this(key, sqlAccion, nuevo, false);
+	public ClienteDomicilio(Long key, ESql sqlAccion, Boolean nuevo) {		
+		this(key, sqlAccion, nuevo, 0L, false, -1L, -1L, -1L);
 	}
 	
-	public ClienteDomicilio(Long key, ESql sqlAccion, Boolean nuevo, Boolean modificar) {
+	public ClienteDomicilio(Long key, ESql sqlAccion, Boolean nuevo, Long consecutivo, Boolean modificar, Long idEntidad, Long idMunicipio, Long idLocalidad) {		
 		super(key);
-		this.sqlAccion= sqlAccion;
-		this.nuevo    = nuevo;
-		this.modificar= modificar;
+		this.sqlAccion     = sqlAccion;
+		this.nuevo         = nuevo;
+		this.consecutivo   = consecutivo;
+		this.modificar     = modificar;
+		this.idEntidad     = idEntidad;
+		this.idMunicipio   = idMunicipio;
+		this.idLocalidad   = idLocalidad;
 	}
 
 	public ESql getSqlAccion() {
@@ -47,6 +55,14 @@ public class ClienteDomicilio extends TrManticClienteDomicilioDto{
 
 	public void setNuevo(Boolean nuevo) {
 		this.nuevo = nuevo;
+	}	
+
+	public Long getConsecutivo() {
+		return consecutivo;
+	}
+
+	public void setConsecutivo(Long consecutivo) {
+		this.consecutivo = consecutivo;
 	}
 
 	public Boolean getModificar() {
@@ -55,5 +71,29 @@ public class ClienteDomicilio extends TrManticClienteDomicilioDto{
 
 	public void setModificar(Boolean modificar) {
 		this.modificar = modificar;
+	}	
+
+	public Long getIdEntidad() {
+		return idEntidad;
 	}
+
+	public void setIdEntidad(Long idEntidad) {
+		this.idEntidad = idEntidad;
+	}
+
+	public Long getIdMunicipio() {
+		return idMunicipio;
+	}
+
+	public void setIdMunicipio(Long idMunicipio) {
+		this.idMunicipio = idMunicipio;
+	}
+	
+	public Long getIdLocalidad() {
+		return idLocalidad;
+	}
+
+	public void setIdLocalidad(Long idLocalidad) {
+		this.idLocalidad = idLocalidad;
+	}	
 }
