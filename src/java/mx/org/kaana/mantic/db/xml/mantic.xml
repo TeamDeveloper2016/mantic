@@ -501,7 +501,7 @@
         from      
           tr_mantic_proveedor_persona
         where 
-          {condicion} 
+          {condicion}       
       </select>
       <select id="identically">
         select      
@@ -920,6 +920,20 @@
 				and 
 				  codigo_postal= '{codigoPostal}'
 			</select>
-    </unit>		
+    </unit>	
+    <unit id="TcManticTiposContactosDto">
+      <select id="row">
+        select
+          tc_mantic_tipos_contactos.*,
+          tc_mantic_tipos_contactos.id_tipo_contacto as id_key
+        from
+          tc_mantic_tipos_contactos
+        where 
+          {condicion}
+        order by
+          id_tipo_medio,orden     
+      </select>  
+    </unit>  
+        	
   </dml>    
 </process>

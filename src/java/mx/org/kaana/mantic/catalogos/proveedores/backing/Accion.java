@@ -1,19 +1,29 @@
 package mx.org.kaana.mantic.catalogos.proveedores.backing;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ESql;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.Agente;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.Contacto;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.Domicilio;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.RenglonProveedor;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.Responsable;
 import mx.org.kaana.mantic.catalogos.proveedores.reglas.Gestor;
+import mx.org.kaana.mantic.enums.ETipoPersona;
 
 @Named(value = "manticCatalogosProveedoresAccion")
 @ViewScoped
@@ -21,7 +31,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
   private RenglonProveedor renglonProveedor;
-  private Domicilio domicilio;
+  private Domicilio domicilio; 
 
   public RenglonProveedor getRenglonProveedor() {
     return renglonProveedor;
@@ -44,6 +54,9 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("entidades", gestor.getEntidades());
       this.domicilio.setEntidad((UISelectEntity) UIBackingUtilities.toFirstKeySelectEntity(gestor.getEntidades()));
       loadCondicionesPago();
+      loadPersonas();
+      loadContactos();
+      loadAgentes();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -56,6 +69,44 @@ public class Accion extends IBaseAttribute implements Serializable {
     this.renglonProveedor.loadCondicionesPago();
   }
   
+   private void loadPersonas() throws Exception {
+    Map params = new HashMap();
+    try {
+      params.put("sortOrder", "order by tc_mantic_personas.nombres");
+      params.put("idTipoPersona", ETipoPersona.RESPONSABLE.getIdTipoPersona());
+      this.attrs.put("personas",UISelect.build("TcManticPersonasDto", "row", params, "nombres|paterno|materno", " ", EFormatoDinamicos.MAYUSCULAS));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+  }
+  
+  
+  private void loadAgentes() throws Exception {
+    Map params = new HashMap();
+    try {
+      params.put("sortOrder", "order by tc_mantic_personas.nombres");
+      params.put("idTipoPersona", ETipoPersona.AGENTE_VENTAS.getIdTipoPersona());
+      this.attrs.put("personas",UISelect.build("TcManticPersonasDto", "row", params, "nombres|paterno|materno", " ", EFormatoDinamicos.MAYUSCULAS));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+  }
+  
+  private void loadContactos() throws Exception {
+    Map params = new HashMap();
+    try {     
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_TODOS_REGISTROS);
+      this.attrs.put("tiposContactos",UISelect.build("TcManticTiposContactosDto", "row", params, "nombre", " ", EFormatoDinamicos.MAYUSCULAS));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(params);
+    }// finally
+  }  
   
   private void loadTipoPago() throws Exception{
     Gestor gestor = new Gestor();
@@ -144,7 +195,39 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doBuscarDomicilio(Domicilio domicilio, int index) {
 
   }
+  
+  public void doAgregarResponsable() {
+    try {
+    
+    } // try
+    catch (Exception e) {
+    
+    } // catch
+  }
+  
+  public void doEliminarResponsable (Responsable responsable) {
+  
+  }
 
+  public void doAgregarContacto () {
+  
+  }
+  
+  public void doEliminarContacto (Contacto contacto) {
+  
+  }
+  
+  public void doAgregarAgente (Agente agente) {
+  
+  }
+  
+  public void doEliminarAgente (Agente contacto) {
+  
+  }
+  
+  
+  
+  
   public String doCancelar() {
 
     return "filtro";

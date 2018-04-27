@@ -24,8 +24,11 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.Agente;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.CondicionPago;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.Contacto;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.Domicilio;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.Responsable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -138,25 +141,30 @@ public class Gestor implements Serializable {
   
   public void loadMunicipios(Long idEntidad) {
     Map<String, Object> params = null;
+    List<Columna>  formatos = null;
     try {
+      formatos = new ArrayList<>();
       params = new HashMap<>();
       params.put(Constantes.SQL_CONDICION, "id_entidad=".concat(idEntidad.toString()));
-      this.municipios.addAll(UIEntity.build("TcJanalMunicipiosDto", "row", params));
+      this.municipios.addAll(UIEntity.build("TcJanalMunicipiosDto", "row", params,formatos,Constantes.SQL_TODOS_REGISTROS));
     } // try
     catch (Exception e) {
       throw e;
     } // catch
     finally {
       Methods.clean(params);
+      Methods.clean(formatos);
     }// finally
   }
 
   public void loadLocalidades(Long idMunicipio) {
     Map<String, Object> params = null;
+    List<Columna>  formatos = null;
     try {
+      formatos = new ArrayList<>();
       params = new HashMap();
       params.put(Constantes.SQL_CONDICION, "id_municipio=".concat(idMunicipio.toString()));
-      this.localidades.addAll(UIEntity.build("TcJanalLocalidadesDto", "row", params));
+      this.localidades.addAll(UIEntity.build("TcJanalLocalidadesDto", "row", params,formatos,Constantes.SQL_TODOS_REGISTROS));
     } // try
     catch (Exception e) {
       throw e;
@@ -169,10 +177,12 @@ public class Gestor implements Serializable {
   public void loadCodigosPostales(Long idLocalidad) {
     Map<String, Object> params = null;
     Entity  entityDefault = null;
+    List<Columna> formatos = null;
     try {
+      formatos = new ArrayList<>();
       params = new HashMap();
       params.put(Constantes.SQL_CONDICION, "id_localidad=".concat(idLocalidad.toString()));
-      this.codigosPostales.addAll(UIEntity.build("TcManticDomiciliosDto", "row", params));
+      this.codigosPostales.addAll(UIEntity.build("TcManticDomiciliosDto", "row", params,formatos,Constantes.SQL_TODOS_REGISTROS));
        entityDefault = new Entity();
        entityDefault.put("idKey", new Value("idKey", -1L, "id_key"));
        entityDefault.put("calle", new Value("calle", "NUEVO", "calle"));
@@ -193,7 +203,7 @@ public class Gestor implements Serializable {
     try {
       params = new HashMap<>();
       params.put("idProveedor", idProvedor);
-      domiciliosActuales = DaoFactory.getInstance().toEntitySet(Domicilio.class,"TcManticDomiciliosDto","row",params);
+      domiciliosActuales = DaoFactory.getInstance().toEntitySet(Domicilio.class,"TcManticDomiciliosDto","row",params,Constantes.SQL_TODOS_REGISTROS);
       if(domiciliosActuales!= null && !domiciliosActuales.isEmpty())
         this.direcciones.addAll(domiciliosActuales);
       else {
@@ -218,13 +228,12 @@ public class Gestor implements Serializable {
     } // catch
     return regresar;
   }
-  
-  
+   
   public List<CondicionPago>  toCondicionesPagoProveedor(Long idProveedor) throws Exception {
     List<CondicionPago> regresar = null;
     Map<String,Object> params = new HashMap<>();
     try {
-      params.put(Constantes.SQL_CONDICION, "id_proveedor".concat(idProveedor.toString()));
+      params.put(Constantes.SQL_CONDICION, "id_proveedor=".concat(idProveedor.toString()));
       regresar = DaoFactory.getInstance().toEntitySet(CondicionPago.class,"TrManticProveedorPagoDto","row",params);
     } // try
     catch (Exception e) {
@@ -235,5 +244,55 @@ public class Gestor implements Serializable {
     } // finally
     return regresar;
   }
+  
+  public List<Responsable>  toResponsablesProvedor(Long idProveedor) throws Exception {
+    List<Responsable> regresar = null;
+    Map<String,Object> params = new HashMap<>();
+    try {
+      params.put(Constantes.SQL_CONDICION, "id_proveedor=".concat(idProveedor.toString()));
+      regresar = DaoFactory.getInstance().toEntitySet(Responsable.class,"TrManticProveedorPersonaDto","row",params);
+    } // try
+    catch (Exception e) {
+      throw e;
+    }// catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+ 
+   public List<Contacto>  toContactosProvedor(Long idProveedor) throws Exception {
+    List<Contacto> regresar = null;
+    Map<String,Object> params = new HashMap<>();
+    try {
+      params.put(Constantes.SQL_CONDICION, "id_proveedor=".concat(idProveedor.toString()).concat(" order by orden"));
+      regresar = DaoFactory.getInstance().toEntitySet(Contacto.class,"TrManticProveedorTipoContactoDto","row",params);
+    } // try
+    catch (Exception e) {
+      throw e;
+    }// catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+ 
+   public List<Agente>  toAgentesProvedor(Long idProveedor) throws Exception {
+    List<Agente> regresar = null;
+    Map<String,Object> params = new HashMap<>();
+    try {
+      params.put(Constantes.SQL_CONDICION, "id_proveedor=".concat(idProveedor.toString()));
+      regresar = DaoFactory.getInstance().toEntitySet(Agente.class,"TrManticProveedoresAgentesDto","row",params);
+    } // try
+    catch (Exception e) {
+      throw e;
+    }// catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  }
+  
+  
   
 }
