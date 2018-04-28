@@ -83,7 +83,7 @@
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:commandButton  value="Agregar" action="#{manticCatalogosPersonasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" styleClass="janal-text-white"/>						
+                <p:commandButton  value="Agregar" action="#{manticCatalogosPersonasFiltro.doAccion('AGREGAR')}" ajax="false" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" styleClass="janal-text-white"/>						
                 <p:separator/>
                 <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
@@ -136,8 +136,7 @@
                 <h:outputText value="Sexo"/>
               </f:facet>
               <h:outputText value="#{filtro['sexo']}"/>
-            </p:column>					
-           		
+            </p:column>					           		
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCatalogosPersonasFiltro.lazyModel==null?0:manticCatalogosPersonasFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
