@@ -6,23 +6,21 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.enums.ETipoPersona;
 
-
-
 @Named(value = "manticCatalogosAgentesFiltro")
 @ViewScoped
-public class Filtro extends IBaseFilter implements Serializable {
+public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtro implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
 
@@ -30,6 +28,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
+			super.init();
       this.attrs.put("sortOrder", "order by tc_mantic_personas.nombres");
       this.attrs.put("idTipoPersona", ETipoPersona.AGENTE_VENTAS.getIdTipoPersona());
     } // try
@@ -38,11 +37,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
   } // init
-  
-
-
-  
-  
+ 
   @Override
   public void doLoad() {
     List<Columna> campos = null;
@@ -66,26 +61,20 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad
 
+	@Override
   public String doAccion(String accion) {
-    EAccion eaccion = null;
-    try {
-
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch
-    return "accion".concat(Constantes.REDIRECIONAR);
-  } // doAccion
-
-  public void doEliminar() {
-
-    try {
-
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch		
-  } // doEliminar
+    EAccion eaccion= null;
+		try {
+			eaccion= EAccion.valueOf(accion.toUpperCase());
+			JsfBase.setFlashAttribute("accion", eaccion);		
+			JsfBase.setFlashAttribute("tipoPersona", this.attrs.get("idTipoPersona"));		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Agentes/filtro");		
+			JsfBase.setFlashAttribute("idPersona", eaccion.equals(EAccion.MODIFICAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return "/Paginas/Mantic/Catalogos/Personas/accion".concat(Constantes.REDIRECIONAR);
+  } // doAccion  
 }
