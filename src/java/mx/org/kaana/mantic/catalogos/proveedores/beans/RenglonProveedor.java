@@ -8,6 +8,7 @@ package mx.org.kaana.mantic.catalogos.proveedores.beans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.catalogos.proveedores.reglas.Gestor;
@@ -25,13 +26,19 @@ public class RenglonProveedor implements Serializable {
   private List<Responsable> responsables;
   private List<Contacto> contactos;
   private List<Agente> agentes;
+  private List<IBaseDto> listaEliminar;
 
   public RenglonProveedor(Long idProveedor) throws Exception {
     this.tcManticProveedoresDto = new TcManticProveedoresDto(idProveedor);
     this.tiposProveedores = new ArrayList<>();
-    this.domicilios = new ArrayList<>();
+    this.domicilios = new ArrayList<>();    
+    this.listaEliminar = new ArrayList<>();   
     init();
   }
+
+  public List<IBaseDto> getListaEliminar() {
+    return listaEliminar;
+  }  
 
   public List<Agente> getAgentes() {
     return agentes;
@@ -129,7 +136,7 @@ public class RenglonProveedor implements Serializable {
   }
 
   public void addDomicilio(Domicilio domicilio) {
-
+   this.domicilios.add(0,domicilio);
   }
 
 }

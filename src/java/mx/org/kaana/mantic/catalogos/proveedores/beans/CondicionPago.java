@@ -10,7 +10,7 @@ import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorPagoDto;
 
 
-public class CondicionPago  extends TrManticProveedorPagoDto implements Serializable  {
+public class CondicionPago  extends TrManticProveedorPagoDto implements Serializable, IBaseAction  {
 
   private static final long serialVersionUID = 1814811165126557004L;
   

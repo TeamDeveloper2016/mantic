@@ -12,7 +12,7 @@ import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.mantic.db.dto.TrManticProveedoresAgentesDto;
 
 
-public class Agente  extends TrManticProveedoresAgentesDto  implements Serializable {
+public class Agente  extends TrManticProveedoresAgentesDto  implements Serializable,IBaseAction {
   
   private static final long serialVersionUID = 7516634619157750816L;
   
@@ -21,5 +21,10 @@ public class Agente  extends TrManticProveedoresAgentesDto  implements Serializa
    public Agente() {
      this.accion=ESql.UPDATE;
    }
+
+  @Override
+  public ESql getAccion() {
+    return this.accion;
+  }
   
 }

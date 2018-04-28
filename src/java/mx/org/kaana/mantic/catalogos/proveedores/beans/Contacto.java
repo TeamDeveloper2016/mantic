@@ -5,21 +5,22 @@
  */
 package mx.org.kaana.mantic.catalogos.proveedores.beans;
 
-
-
 import java.io.Serializable;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorTipoContactoDto;
 
+public class Contacto extends TrManticProveedorTipoContactoDto implements Serializable, IBaseAction {
 
-public class Contacto  extends TrManticProveedorTipoContactoDto  implements Serializable {
-  
   private static final long serialVersionUID = 7516634619157750816L;
-  
-   private ESql accion;
-   
-   public Contacto() {
-     this.accion=ESql.UPDATE;
-   }
-  
+
+  private ESql accion;
+
+  public Contacto() {
+    this.accion = ESql.UPDATE;
+  }
+
+  public ESql getAccion() {
+    return accion;
+  }
+
 }

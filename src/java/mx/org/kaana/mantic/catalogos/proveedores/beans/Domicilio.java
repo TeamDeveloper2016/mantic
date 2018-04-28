@@ -19,7 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 
-public class Domicilio extends TrManticProveedorDomicilioDto implements Serializable {
+public class Domicilio extends TrManticProveedorDomicilioDto implements Serializable,IBaseAction {
   
   private static final Log LOG = LogFactory.getLog(Domicilio.class);
   private static final long serialVersionUID = 3459865616223422089L;

@@ -111,7 +111,7 @@
         from      
           tr_mantic_articulo_precio_sugerido
       </select>
-			 <delete id="rows">
+	  <delete id="rows">
         delte from tr_mantic_articulo_precio_sugerido where id_articulo= {idArticulo} 
       </delete>
     </unit>
@@ -471,6 +471,9 @@
         where      
           id_proveedor = {idProveedor} and id_proveedor_domicilio = {idProveedorDomicilio} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
       </select>
+      <delete id="rows">
+         delete from tr_mantic_proveedor_domicilio where id_proveedor = {idProveedor}
+      </delete>  
     </unit>
     
      <unit id="TrManticProveedorPagoDto">
@@ -492,6 +495,9 @@
         where      
           id_proveedor_pago = {idProveedorPago} and id_proveedor = {idProveedor} and id_tipo_pago = {idTipoPago}
       </select>
+      <delete id="rows">
+        delete from tr_ mantic_proveedor_pago  where id_proveedor = {idProveedor}
+      </delete>  
     </unit>
     
     <unit id="TrManticProveedorPersonaDto">
@@ -511,6 +517,9 @@
         where      
           id_proveedor = {idProveedor} and id_persona = {idPersona} and id_proveedor_persona = {idProveedorPersona} and id_responsable = {idResponsable}
       </select>
+      <delete id="rows">
+        delete from tr_mantic_proveedor_persona  where id_proveedor = {idProveedor}
+      </delete>  
     </unit>
     
     <unit id="TrManticProveedorTipoContactoDto">
@@ -530,6 +539,9 @@
         where      
           id_proveedor = {idProveedor} and id_proveedor_tipo_contacto = {idProveedorTipoContacto} and id_tipo_contacto = {idTipoContacto}
       </select>
+      <delete id="rows">
+        delete from tr_mantic_proveedor_tipo_contacto  where  id_proveedor = {idProveedor}
+      </delete>  
     </unit>
     
     <unit id="TrManticProveedoresAgentesDto">
@@ -549,6 +561,9 @@
         where      
           id_proveedor = {idProveedor} and id_proveedor_agente = {idProveedorAgente} and id_principal = {idPrincipal} and id_agente = {idAgente}
       </select>
+      <delete id="rows">
+        delete from tr_mantic_proveedores_agentes where id_proveedor = {idProveedor}
+      </delete>  
     </unit>
 		<unit id="TcManticEmpaquesDto">
 			<select id="row">
@@ -705,7 +720,7 @@
         delete from tc_mantic_articulos_dimenciones where id_articulo={idArticulo} 
       </delete>
     </unit>
-		 <unit id="TcManticProveedoresDto">
+	<unit id="TcManticProveedoresDto">
       <select id="row">
         select      
           *
@@ -731,6 +746,7 @@
         where 
           tc_mantic_proveedores.id_empresa = {idEmpresa} 
       </select>
+      
     </unit>
 		<unit id="TcManticClientesDto">
       <select id="row">
