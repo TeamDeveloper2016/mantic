@@ -135,7 +135,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       usuario = (TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto");
       usuario.setIdUsuarioModifica(JsfBase.getIdUsuario());
       usuario.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-      persona.setIdUSuario(JsfBase.getIdUsuario());
+      persona.setIdUsuario(JsfBase.getIdUsuario());
       usuario.setActivo(1L);
       usuario.setIdPerfil(this.criteriosBusqueda.getPerfil().getKey());
       persona.setEstilo("sentinel");
