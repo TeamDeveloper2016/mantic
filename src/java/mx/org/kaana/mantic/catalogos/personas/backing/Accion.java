@@ -87,8 +87,10 @@ public class Accion extends IBaseAttribute implements Serializable {
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
       switch (eaccion) {
-        case AGREGAR:
+        case AGREGAR:											
           this.persona= new TcManticPersonasDto();
+					if(this.attrs.get("tipoPersona")!= null)
+						this.persona.setIdTipoPersona(Long.valueOf(this.attrs.get("tipoPersona").toString()));
           break;
         case MODIFICAR:					
           idPersona= Long.valueOf(this.attrs.get("idPersona").toString());
