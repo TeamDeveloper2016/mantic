@@ -20,9 +20,6 @@ public class Accion extends IBaseAttribute implements Serializable {
   protected void init() {
     try {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
-      
-      
-     
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -32,7 +29,6 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public void doLoad() {
     EAccion eaccion= null;
-   
     try {
     
       
@@ -43,8 +39,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // doLoad
 
-  public String doAceptar() {
-  
+  public String doAceptar() {  
     String regresar        = null;
     try {
      
@@ -57,17 +52,6 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {
-   
     return "filtro";
   } // doAccion
-
-
-
-
-
-
-
-
-
- 
 }
