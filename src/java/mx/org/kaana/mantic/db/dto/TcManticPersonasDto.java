@@ -54,18 +54,18 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   @Column(name = "REGISTRO")
   private Timestamp registro;
   @Column(name = "FECHA_NACIMIENTO")
-  private java.sql.Date fechaNacimiento;
+  private Date fechaNacimiento;
 
   public TcManticPersonasDto() {
     this(new Long(-1L));
   }
 
   public TcManticPersonasDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticPersonasDto(Long idEmpleado, String nombres, String paterno, String materno, String curp, Long idTipoSexo,  String estilo, String cuenta, String contrasenia) {
+  public TcManticPersonasDto(Long idEmpleado, String nombres, String paterno, String materno, String curp, Long idTipoSexo,  String estilo, String cuenta, String contrasenia, Date fechaNacimiento, Long idUsuario) {
     setIdEmpleado(idEmpleado);
     setNombres(nombres);
 		setPaterno(paterno);
@@ -76,6 +76,8 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     setCuenta(cuenta);
     setContrasenia(contrasenia);   
     setEstilo(estilo);
+		setFechaNacimiento(fechaNacimiento);
+		setIdUsuario(idUsuario);
   }
 
   public Date getFechaNacimiento() {
@@ -166,8 +168,8 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
-  public void setIdUsuario(Long idUsuario) {
-    this.idUsuario = idUsuario;
+  public void setIdUsuario(Long idUSuario) {
+    this.idUsuario = idUSuario;
   }
 
   public String getPaterno() {
@@ -219,7 +221,6 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   @Override
   public void setKey(Long key) {
     this.idPersona = key;
-  
   }
 
   @Override
@@ -247,6 +248,10 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     regresar.append(getEstilo());
     regresar.append(Constantes.SEPARADOR);
     regresar.append(getRegistro());
+    regresar.append(Constantes.SEPARADOR);
+    regresar.append(getFechaNacimiento());
+    regresar.append(Constantes.SEPARADOR);
+    regresar.append(getIdUsuario());
     regresar.append("]");
     return regresar.toString();
   }
@@ -265,13 +270,15 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     regresar.put("contrasenia", getContrasenia());   
     regresar.put("registro", getRegistro());
     regresar.put("estilo", getEstilo());
+    regresar.put("fechaNacimiento", getFechaNacimiento());
+    regresar.put("idUsuario", getIdUsuario());
     return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getIdPersona(), getNombres(), getPaterno(), getMaterno(), getIdTipoSexo(), getCurp(), getCuenta(), getContrasenia(), getEstilo()    };
+      getIdPersona(), getNombres(), getPaterno(), getMaterno(), getIdTipoSexo(), getCurp(), getCuenta(), getContrasenia(), getEstilo(), getFechaNacimiento(), getIdUsuario()   };
     return regresar;
   }
 
