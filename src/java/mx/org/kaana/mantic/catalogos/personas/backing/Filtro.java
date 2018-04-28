@@ -6,9 +6,11 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
@@ -17,7 +19,9 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.personas.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.personas.reglas.Gestor;
+import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 
 
 
@@ -30,7 +34,12 @@ public class Filtro extends IBaseFilter implements Serializable {
   @PostConstruct
   @Override
   protected void init() {
-    try {
+    try {			
+			this.attrs.put("nombres", "");
+			this.attrs.put("paterno", "");
+			this.attrs.put("materno", "");
+			this.attrs.put("rfc", "");
+			this.attrs.put("curp", "");
       this.attrs.put("sortOrder", "order by tc_mantic_personas.nombres");
       loadTiposPersonas();
     } // try
@@ -45,17 +54,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     gestor.loadTiposPersonas();
     this.attrs.put("tiposPersonas", gestor.getTiposPersonas());
     this.attrs.put("tipoPersona", UIBackingUtilities.toFirstKeySelectEntity(gestor.getTiposPersonas()));
-  }
-
-  private String toAllTiposPersonas () {
-    StringBuilder regresar  = new StringBuilder();
-    List<UISelectEntity> tiposPersonas = (List<UISelectEntity>) this.attrs.get("tiposPersonas");
-    for (UISelectEntity tipoPersona: tiposPersonas){
-      regresar.append(tipoPersona.getKey());
-      regresar.append(",");
-    } // for
-    return regresar.substring(0,regresar.length()-1);
-  }
+  } // loadTiposPersonas  
   
   @Override
   public void doLoad() {
@@ -82,26 +81,47 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad
 
+	private String toAllTiposPersonas () {
+    StringBuilder regresar= new StringBuilder();
+    List<UISelectEntity> tiposPersonas= (List<UISelectEntity>) this.attrs.get("tiposPersonas");
+    for (UISelectEntity tipoPersona: tiposPersonas)
+      regresar.append(tipoPersona.getKey()).append(",");
+    return regresar.substring(0,regresar.length()-1);
+  } // toAllTiposPersonas
+	
   public String doAccion(String accion) {
-    EAccion eaccion = null;
-    try {
-
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch
-    return "accion".concat(Constantes.REDIRECIONAR);
+    EAccion eaccion= null;
+		try {
+			eaccion= EAccion.valueOf(accion.toUpperCase());
+			JsfBase.setFlashAttribute("accion", eaccion);		
+			JsfBase.setFlashAttribute("tipoPersona", null);		
+			JsfBase.setFlashAttribute("retorno", "filtro");		
+			JsfBase.setFlashAttribute("idPersona", eaccion.equals(EAccion.MODIFICAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return "accion".concat(Constantes.REDIRECIONAR);
   } // doAccion
 
   public void doEliminar() {
-
-    try {
-
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch		
+		Transaccion transaccion    = null;
+		Entity seleccionado        = null;
+		TcManticPersonasDto persona= null;
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");			
+			persona= new TcManticPersonasDto();
+			persona.setIdPersona(seleccionado.getKey());
+			transaccion= new Transaccion(persona);
+			if(transaccion.ejecutar(EAccion.ELIMINAR))
+				JsfBase.addMessage("Eliminar persona", "La persona se ha eliminado correctamente.", ETipoMensaje.ERROR);
+			else
+				JsfBase.addMessage("Eliminar persona", "Ocurrió un error al eliminar la persona seleccionada.", ETipoMensaje.ERROR);								
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
   } // doEliminar
 }
