@@ -115,7 +115,7 @@
                   <f:selectItem itemLabel="NO ESPECIFICADO" itemValue="3"/>
                 </p:selectOneMenu>
                 <p:outputLabel value="Descuento:" for="descuento"/>
-                <p:inputNumber id="descuento" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.renglonProveedor.tcManticProveedoresDto.descuento}"  symbol="%" emptyValue="zero" symbolPosition="s"/> 
+                <p:inputNumber id="descuento" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.renglonProveedor.tcManticProveedoresDto.descuento}"   symbol="%" emptyValue="zero" symbolPosition="s"/> 
               </p:panelGrid>
             </p:tab>						
             <p:tab id="tabDomicilio" title="Domicilios">	
@@ -125,13 +125,13 @@
                     <p:panel  header="Domicilios:">
                       <h:panelGrid styleClass="janal-wid-100">
                         <p:dataList emptyMessage="No existen registros" rowIndexVar="index" value="#{manticCatalogosProveedoresAccion.renglonProveedor.domicilios}" styleClass="paginated" id="direcciones" var="direccion">
-                          <p:commandLink  actionListener="#{manticCatalogosProveedoresAccion.doAgregarDocimilio(direccion,index)}" process="@this contenedorGrupos:panelDomicilio" onstart="return janal.partial('domicilio')" rendered="#{direccion.accion eq 'SELECT'}" >                           
+                          <p:commandLink  title="Agregar" actionListener="#{manticCatalogosProveedoresAccion.doAgregarDocimilio()}" update="direcciones" process="@this contenedorGrupos:panelDomicilio" onstart="return janal.partial('domicilio')" rendered="#{direccion.accion eq 'SELECT'}" >                           
                             <i class="fa fa-plus-square"></i>                           
                           </p:commandLink>                         
-                          <p:commandLink  actionListener="#{manticCatalogosProveedoresAccion.doEliminarDomicilio(direccion,index)}" rendered="#{direccion.accion != 'SELECT'}" >
+                          <p:commandLink title="Eliminar" actionListener="#{manticCatalogosProveedoresAccion.doEliminarDomicilio(direccion)}" rendered="#{direccion.accion == 'UPDATE' || direccion.accion == 'INSERT'}">
                              <i class="fa fa-minus-square"></i>   
                           </p:commandLink> 
-                          <p:commandLink   actionListener="#{manticCatalogosProveedoresAccion.doBuscarDomicilio(direccion,index)}" process="@this" update="contenedorGrupos:panelDomicilio" value="Direccion  #{index+1}"/>                                                                    
+                          <p:commandLink  title="Consultar"  actionListener="#{manticCatalogosProveedoresAccion.doBuscarDomicilio(direccion)}" process="@this" update="contenedorGrupos:panelDomicilio" value="Direccion  #{index+1}"/>                                                                    
                         </p:dataList>
                       </h:panelGrid>
                     </p:panel>

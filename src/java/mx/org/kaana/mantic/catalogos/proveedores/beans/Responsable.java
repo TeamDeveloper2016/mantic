@@ -11,7 +11,7 @@ import java.io.Serializable;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorPersonaDto;
 
-public class Responsable  extends TrManticProveedorPersonaDto  implements Serializable {
+public class Responsable  extends TrManticProveedorPersonaDto  implements Serializable,IBaseAction {
   
   private static final long serialVersionUID = 7516634619157750816L;
   
@@ -20,5 +20,10 @@ public class Responsable  extends TrManticProveedorPersonaDto  implements Serial
    public Responsable() {
      this.accion=ESql.UPDATE;
    }
+
+  @Override
+  public ESql getAccion() {
+     return this.accion;
+  }
   
 }

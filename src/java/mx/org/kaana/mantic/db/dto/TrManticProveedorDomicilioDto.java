@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,44 +10,40 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 
 /**
- *@company KAANA
- *@project KAJOOL (Control system polls)
- *@date 10/10/2016
- *@time 11:58:22 PM
- *@author Team Developer 2016 <team.developer@kaana.org.mx>
+ * @company KAANA
+ * @project KAJOOL (Control system polls)
+ * @date 10/10/2016
+ * @time 11:58:22 PM
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-
 @Entity
-@Table(name="tr_mantic_proveedor_domicilio")
+@Table(name = "tr_mantic_proveedor_domicilio")
 public class TrManticProveedorDomicilioDto implements IBaseDto, Serializable {
-		
-  private static final long serialVersionUID=1L;
+
+  private static final long serialVersionUID = 1L;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_proveedor_domicilio")
+  @Column(name = "id_proveedor_domicilio")
   private Long idProveedorDomicilio;
-  @Column (name="id_proveedor")
+  @Column(name = "id_proveedor")
   private Long idProveedor;
-  @Column (name="id_usuario")
+  @Column(name = "id_usuario")
   private Long idUsuario;
-  @Column (name="id_tipo_domicilio")
+  @Column(name = "id_tipo_domicilio")
   private Long idTipoDomicilio;
-  @Column (name="id_domicilio")
+  @Column(name = "id_domicilio")
   private Long idDomicilio;
-  @Column (name="id_principal")
+  @Column(name = "id_principal")
   private Long idPrincipal;
-  @Column (name="observaciones")
+  @Column(name = "observaciones")
   private String observaciones;
-  @Column (name="registro")
+  @Column(name = "registro")
   private Timestamp registro;
 
   public TrManticProveedorDomicilioDto() {
@@ -72,7 +65,7 @@ public class TrManticProveedorDomicilioDto implements IBaseDto, Serializable {
     setObservaciones(observaciones);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
-	
+
   public void setIdProveedorDomicilio(Long idProveedorDomicilio) {
     this.idProveedorDomicilio = idProveedorDomicilio;
   }
@@ -140,55 +133,55 @@ public class TrManticProveedorDomicilioDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdProveedorDomicilio();
+    return getIdProveedorDomicilio();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idProveedorDomicilio = key;
+    this.idProveedorDomicilio = key;
   }
 
   @Override
   public String toString() {
-    StringBuilder regresar= new StringBuilder();
+    StringBuilder regresar = new StringBuilder();
     regresar.append("[");
-		regresar.append(getIdProveedorDomicilio());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdProveedor());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdUsuario());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTipoDomicilio());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdDomicilio());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdPrincipal());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getObservaciones());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getRegistro());
+    regresar.append(getIdProveedorDomicilio());
+    regresar.append(Constantes.SEPARADOR);
+    regresar.append(getIdProveedor());
+    regresar.append(Constantes.SEPARADOR);
+    regresar.append(getIdUsuario());
+    regresar.append(Constantes.SEPARADOR);
+    regresar.append(getIdTipoDomicilio());
+    regresar.append(Constantes.SEPARADOR);
+    regresar.append(getIdDomicilio());
+    regresar.append(Constantes.SEPARADOR);
+    regresar.append(getIdPrincipal());
+    regresar.append(Constantes.SEPARADOR);
+    regresar.append(getObservaciones());
+    regresar.append(Constantes.SEPARADOR);
+    regresar.append(getRegistro());
     regresar.append("]");
-  	return regresar.toString();
+    return regresar.toString();
   }
 
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("idProveedorDomicilio", getIdProveedorDomicilio());
-		regresar.put("idProveedor", getIdProveedor());
-		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("idTipoDomicilio", getIdTipoDomicilio());
-		regresar.put("idDomicilio", getIdDomicilio());
-		regresar.put("idPrincipal", getIdPrincipal());
-		regresar.put("observaciones", getObservaciones());
-		regresar.put("registro", getRegistro());
-  	return regresar;
+    regresar.put("idProveedorDomicilio", getIdProveedorDomicilio());
+    regresar.put("idProveedor", getIdProveedor());
+    regresar.put("idUsuario", getIdUsuario());
+    regresar.put("idTipoDomicilio", getIdTipoDomicilio());
+    regresar.put("idDomicilio", getIdDomicilio());
+    regresar.put("idPrincipal", getIdPrincipal());
+    regresar.put("observaciones", getObservaciones());
+    regresar.put("registro", getRegistro());
+    return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdProveedorDomicilio(), getIdProveedor(), getIdUsuario(), getIdTipoDomicilio(), getIdDomicilio(), getIdPrincipal(), getObservaciones(), getRegistro()
+      getIdProveedorDomicilio(), getIdProveedor(), getIdUsuario(), getIdTipoDomicilio(), getIdDomicilio(), getIdPrincipal(), getObservaciones(), getRegistro()
     };
     return regresar;
   }
@@ -200,7 +193,7 @@ public class TrManticProveedorDomicilioDto implements IBaseDto, Serializable {
 
   @Override
   public String toAllKeys() {
-    StringBuilder regresar= new StringBuilder();
+    StringBuilder regresar = new StringBuilder();
     regresar.append("|");
     regresar.append("idProveedorDomicilio~");
     regresar.append(getIdProveedorDomicilio());
@@ -210,7 +203,7 @@ public class TrManticProveedorDomicilioDto implements IBaseDto, Serializable {
 
   @Override
   public String toKeys() {
-    StringBuilder regresar= new StringBuilder();
+    StringBuilder regresar = new StringBuilder();
     regresar.append(getIdProveedorDomicilio());
     return regresar.toString();
   }
@@ -222,7 +215,7 @@ public class TrManticProveedorDomicilioDto implements IBaseDto, Serializable {
 
   @Override
   public boolean isValid() {
-  	return getIdProveedorDomicilio()!= null && getIdProveedorDomicilio()!=-1L;
+    return getIdProveedorDomicilio() != null && getIdProveedorDomicilio() != -1L;
   }
 
   @Override
@@ -248,5 +241,3 @@ public class TrManticProveedorDomicilioDto implements IBaseDto, Serializable {
   }
 
 }
-
-
