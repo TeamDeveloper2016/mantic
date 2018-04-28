@@ -30,7 +30,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   @Column(name = "ID_TIPO_PERSONA")
   private Long idTipoPersona;
   @Column(name = "ID_USUARIO")
-  private Long idUSuario;
+  private Long idUsuario;
   @Column(name = "NOMBRES")
   private String nombres;
   @Column(name = "PATERNO")
@@ -68,14 +68,13 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   public TcManticPersonasDto(Long idEmpleado, String nombres, String paterno, String materno, String curp, Long idTipoSexo,  String estilo, String cuenta, String contrasenia) {
     setIdEmpleado(idEmpleado);
     setNombres(nombres);
-    this.paterno = paterno;
-    this.materno = materno;   
+		setPaterno(paterno);
+		setMaterno(materno);    
     setIdTipoSexo(idTipoSexo);
     setCurp(curp);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
     setCuenta(cuenta);
-    setContrasenia(contrasenia);
-   
+    setContrasenia(contrasenia);   
     setEstilo(estilo);
   }
 
@@ -90,13 +89,10 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   public void setRfc(String rfc) {
     this.rfc = rfc;
   }
-
   
   public void setFechaNacimiento(Date fechaNacimiento) {
     this.fechaNacimiento = fechaNacimiento;
   }
-
-  
   
   public String getContrasenia() {
     return contrasenia;
@@ -121,8 +117,6 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   public void setEstilo(String estilo) {
     this.estilo = estilo;
   }
-
-  
 
   public Timestamp getRegistro() {
     return registro;
@@ -168,12 +162,12 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     this.idTipoPersona = idTipoPersona;
   }
 
-  public Long getIdUSuario() {
-    return idUSuario;
+  public Long getIdUsuario() {
+    return idUsuario;
   }
 
-  public void setIdUSuario(Long idUSuario) {
-    this.idUSuario = idUSuario;
+  public void setIdUsuario(Long idUsuario) {
+    this.idUsuario = idUsuario;
   }
 
   public String getPaterno() {
@@ -199,7 +193,6 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   public void setObservaciones(String observaciones) {
     this.observaciones = observaciones;
   }
-
  
   public String getCurp() {
     return curp;
@@ -241,6 +234,8 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     regresar.append(Constantes.SEPARADOR);
     regresar.append(getMaterno());
     regresar.append(Constantes.SEPARADOR);
+    regresar.append(getRfc());
+    regresar.append(Constantes.SEPARADOR);
     regresar.append(getCurp());
     regresar.append(Constantes.SEPARADOR);
     regresar.append(getIdTipoSexo());
@@ -249,7 +244,6 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     regresar.append(Constantes.SEPARADOR);
     regresar.append(getContrasenia());
     regresar.append(Constantes.SEPARADOR);
-   
     regresar.append(getEstilo());
     regresar.append(Constantes.SEPARADOR);
     regresar.append(getRegistro());
@@ -264,6 +258,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     regresar.put("nombres", getNombres());
     regresar.put("paterno", getPaterno());
     regresar.put("materno", getMaterno());
+    regresar.put("rfc", getRfc());
     regresar.put("curp", getCurp());
     regresar.put("idTipoSexo", getIdTipoSexo());
     regresar.put("cuenta", getCuenta());
@@ -333,5 +328,4 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdPersona() != null ? getIdPersona().hashCode() : 0);
     return hash;
   }
-
 }

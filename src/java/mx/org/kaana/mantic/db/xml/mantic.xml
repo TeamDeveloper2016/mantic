@@ -949,6 +949,16 @@
           id_tipo_medio,orden     
       </select>  
     </unit>  
-        	
+    <unit id="TcManticTiposPersonasDto">
+			<select id="row">
+				select 
+					tc_mantic_tipos_personas.id_tipo_persona as id_key,
+					tc_mantic_tipos_personas.*
+				from 
+					tc_mantic_tipos_personas
+				where 
+					{condicion}
+			</select>			
+		</unit>    	
   </dml>    
 </process>
