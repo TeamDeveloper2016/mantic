@@ -496,7 +496,7 @@
           id_proveedor_pago = {idProveedorPago} and id_proveedor = {idProveedor} and id_tipo_pago = {idTipoPago}
       </select>
       <delete id="rows">
-        delete from tr_ mantic_proveedor_pago  where id_proveedor = {idProveedor}
+        delete from tr_mantic_proveedor_pago  where id_proveedor = {idProveedor}
       </delete>  
     </unit>
     

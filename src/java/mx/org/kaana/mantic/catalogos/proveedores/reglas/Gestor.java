@@ -29,6 +29,7 @@ import mx.org.kaana.mantic.catalogos.proveedores.beans.CondicionPago;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.Contacto;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.Domicilio;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.Responsable;
+import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -128,8 +129,7 @@ public class Gestor implements Serializable {
          entityDefault.put("descripcion", new Value("descripcion", "SELECCIONE", "descripcion"));
          entityDefault.put("clave", new Value("clave", "00", "clave"));
         this.entidades.add(0, new UISelectEntity(entityDefault));
-      }
-        
+      }        
     } // try
     catch (Exception e) {
       throw e;
@@ -200,12 +200,24 @@ public class Gestor implements Serializable {
   public void loadDirecciones(Long idProvedor) throws Exception {
     Map<String,Object> params =  null;
     List<Domicilio>  domiciliosActuales= null;
+    Entity domicilioActual = null;
     try {
       params = new HashMap<>();
-      params.put("idProveedor", idProvedor);
-      domiciliosActuales = DaoFactory.getInstance().toEntitySet(Domicilio.class,"TcManticDomiciliosDto","row",params,Constantes.SQL_TODOS_REGISTROS);
-      if(domiciliosActuales!= null && !domiciliosActuales.isEmpty())
+      params.put(Constantes.SQL_CONDICION,"id_proveedor=".concat(idProvedor.toString()));
+      domiciliosActuales = DaoFactory.getInstance().toEntitySet(Domicilio.class,"TrManticProveedorDomicilioDto","row",params,Constantes.SQL_TODOS_REGISTROS);
+      if(domiciliosActuales!= null && !domiciliosActuales.isEmpty()){
+        for (Domicilio  domActual : domiciliosActuales) {
+          params.put("idDomicilio", domActual.getIdDomicilio());
+          domicilioActual = (Entity) DaoFactory.getInstance().toEntity("VistaProveedoresDto","direccionProveedor",params);
+          domActual.setTcManticDomicilioDto((TcManticDomiciliosDto) DaoFactory.getInstance().findById(TcManticDomiciliosDto.class, domActual.getIdDomicilio()));
+          domActual.setLocalidad(new UISelectEntity(domActual.getTcManticDomicilioDto().getIdLocalidad().toString()));
+          domActual.setDetalleCalle(new UISelectEntity(domActual.getIdDomicilio().toString()));
+          domActual.setMunicipio(new UISelectEntity(domicilioActual.toString("idMunicipio")));
+          domActual.setEntidad(new UISelectEntity(domicilioActual.toString("idEntidad")));          
+        }
         this.direcciones.addAll(domiciliosActuales);
+        this.direcciones.add(0,new Domicilio(ESql.SELECT));
+      }  
       else {
         this.direcciones.add(new Domicilio(ESql.SELECT));
       }
@@ -221,7 +233,7 @@ public class Gestor implements Serializable {
   public List<UISelectItem> toTiposPagos () throws Exception {
     List<UISelectItem> regresar = null;
     try {     
-      regresar = UISelect.build("VistaProveedoresDto", "proveedorCondicionPago",Collections.emptyMap(),Cadena.toList("nombrePago|clave|nombre")," ", EFormatoDinamicos.MAYUSCULAS);
+      regresar = UISelect.build("VistaProveedoresDto", "proveedorCondicionPago",Collections.emptyMap(),Cadena.toList("clave|nombrePago|nombre")," ", EFormatoDinamicos.MAYUSCULAS);
     } // try
     catch (Exception e) {
       throw e;

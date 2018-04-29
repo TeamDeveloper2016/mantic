@@ -16,9 +16,13 @@ public class Contacto extends TrManticProveedorTipoContactoDto implements Serial
   private ESql accion;
 
   public Contacto() {
-    this.accion = ESql.UPDATE;
+   this(ESql.UPDATE);  
   }
-
+  
+  public Contacto(ESql accion) {
+    this.accion =accion;
+  }
+  
   public ESql getAccion() {
     return accion;
   }

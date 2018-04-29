@@ -24,7 +24,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 @Entity
 @Table(name = "tr_mantic_proveedor_domicilio")
-public class TrManticProveedorDomicilioDto implements IBaseDto, Serializable {
+public class TrManticProveedorDomicilioDto implements IBaseDto, Serializable,Cloneable {
 
   private static final long serialVersionUID = 1L;
   @Id
@@ -239,5 +239,16 @@ public class TrManticProveedorDomicilioDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdProveedorDomicilio() != null ? getIdProveedorDomicilio().hashCode() : 0);
     return hash;
   }
+  
+  @Transient
+  @Override
+  public Object clone() {
+    try {
+      return  super.clone();
+    }
+    catch (CloneNotSupportedException e) {
+       throw new InternalError(e.toString());
+     }
+   } 
 
 }

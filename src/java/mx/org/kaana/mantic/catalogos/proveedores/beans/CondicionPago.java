@@ -17,12 +17,16 @@ public class CondicionPago  extends TrManticProveedorPagoDto implements Serializ
   private ESql accion;
   
   public CondicionPago () {
-    this.accion = ESql.UPDATE;
+    this(ESql.UPDATE);
   }
+  
+  public CondicionPago (ESql accion) {
+    this.accion = accion;
+  }  
 
+  @Override
   public ESql getAccion() {
     return accion;
-  } 
-  
+  }  
   
 }

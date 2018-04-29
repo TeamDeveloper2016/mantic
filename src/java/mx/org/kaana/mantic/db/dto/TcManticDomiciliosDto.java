@@ -25,7 +25,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 
 @Entity
 @Table(name="tc_mantic_domicilios")
-public class TcManticDomiciliosDto implements IBaseDto, Serializable {
+public class TcManticDomiciliosDto implements IBaseDto, Serializable,Cloneable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="asentamiento")
@@ -326,6 +326,13 @@ public class TcManticDomiciliosDto implements IBaseDto, Serializable {
     return TcManticDomiciliosDto.class;
   }
 
+  @Override
+  public Object clone() throws CloneNotSupportedException {
+    return super.clone(); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  
+  
   @Override
   public boolean isValid() {
   	return getIdDomicilio()!= null && getIdDomicilio()!=-1L;

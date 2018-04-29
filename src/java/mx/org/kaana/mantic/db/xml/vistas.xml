@@ -103,7 +103,20 @@
             inner join 
               tc_mantic_tipos_formas_pagos on tc_mantic_tipos_formas_pagos.id_tipo_medio_pago=tc_mantic_tipos_pagos.id_tipo_medio_pago              
           </select>  
-          
+           <select id="direccionProveedor">
+            select 
+            tc_janal_entidades.id_entidad,tc_janal_municipios.id_municipio,tc_janal_localidades.id_localidad, tc_janal_entidades.id_entidad as id_key
+          from 
+            tc_janal_entidades 
+          inner join
+            tc_janal_municipios  on tc_janal_municipios.id_entidad=tc_janal_entidades.id_entidad
+          inner join    
+            tc_janal_localidades on tc_janal_localidades.id_municipio=tc_janal_municipios.id_municipio
+           inner join
+            tc_mantic_domicilios on tc_mantic_domicilios.id_localidad=tc_janal_localidades.id_localidad
+           where 
+            tc_mantic_domicilios.id_domicilio={idDomicilio}
+          </select>            
         </unit> 
         <unit id="VistaClientesDto"> 
           <select id="row">
@@ -136,6 +149,7 @@
                   tr_mantic_cliente_domicilio.id_principal={idPrincipal}            
                {sortOrder}            
           </select>
+         
         </unit>
         <unit id="VistaAlmacenesDto">
           <select id="row">

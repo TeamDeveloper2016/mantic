@@ -39,9 +39,9 @@
         <h:outputText value="#{item.descripcion}"/>
       </p:column>   
     </p:selectOneMenu>  
-     <p:outputLabel value="Calle:" for="detalleCalle"/>
+     <p:outputLabel value="Detalle calle:" for="detalleCalle"/>
     <p:selectOneMenu filter="true" filterMatchMode="contains" var="item" value="#{manticCatalogosProveedoresAccion.domicilio.detalleCalle}" styleClass="janal-wid-100-txt" id="detalleCalle" converter="janal.convertidor.Entity" >
-      <p:ajax event="change" update="contenedorGrupos:calle" process="@this"/>
+      <p:ajax event="change" update="calle contenedorGrupos:codigoPostal contenedorGrupos:ycalle contenedorGrupos:entreCalle contenedorGrupos:numeroInterior contenedorGrupos:numeroExterior contenedorGrupos:asentamiento" process="@this" listener="#{manticCatalogosProveedoresAccion.doActualizaCalle()}"/>
       <f:selectItems  value="#{manticCatalogosProveedoresAccion.attrs.detalleCalles}" var="element" itemValue="#{element}" itemLabel="#{element.calle}"/>
       <p:column headerText="Código postal">
         <h:outputText styleClass="janal-column-center" value="#{item.codigoPostal}"/>
@@ -56,20 +56,20 @@
         <h:outputText  value="#{item.asentamiento}"/>
       </p:column>
     </p:selectOneMenu>
-    <p:outputLabel for="codigoPostal" value="Código postal:" />
-    <p:inputNumber id="codigoPostal"   styleClass="janal-wid-100-txt" maxlength="10" value="#{manticCatalogosProveedoresAccion.domicilio.tcManticDomicilioDto.codigoPostal}"/>                    
+     <p:outputLabel styleClass="janal-text-one-line" for="codigoPostal" value="Código postal:" />
+    <p:inputText id="codigoPostal"   styleClass="janal-wid-100-txt" maxlength="10" value="#{manticCatalogosProveedoresAccion.domicilio.tcManticDomicilioDto.codigoPostal}" />                    
     <p:outputLabel for="calle" value="Calle:"/>
-    <p:inputText id="calle"  styleClass="janal-wid-100-txt" maxlength="100" value="#{manticCatalogosProveedoresAccion.domicilio.tcManticDomicilioDto.calle}"/>    
-    <p:outputLabel for="numeroExterior" value="Número exterior:"/>
-    <p:inputNumber  id="numeroExterior"  styleClass="janal-wid-100-txt" maxlength="10" value="#{manticCatalogosProveedoresAccion.domicilio.tcManticDomicilioDto.numeroExterior}"/>    
-    <p:outputLabel for="numeroInterior" value="Número interior:"/>
+    <p:inputText id="calle"  styleClass="janal-wid-100-txt" maxlength="100" value="#{manticCatalogosProveedoresAccion.domicilio.tcManticDomicilioDto.calle}" onblur="janal.individual('contenedorGrupos\\:calle')"/>    
+    <p:outputLabel styleClass="janal-text-one-line" for="numeroExterior" value="Número exterior:"/>
+    <p:inputText  id="numeroExterior"  styleClass="janal-wid-100-txt" maxlength="10" value="#{manticCatalogosProveedoresAccion.domicilio.tcManticDomicilioDto.numeroExterior}" onblur="janal.individual('contenedorGrupos\\:numeroExterior')"/>    
+    <p:outputLabel styleClass="janal-text-one-line" for="numeroInterior" value="Número interior:"/>
     <p:inputText id="numeroInterior"   styleClass="janal-wid-100-txt" maxlength="10" value="#{manticCatalogosProveedoresAccion.domicilio.tcManticDomicilioDto.numeroInterior}"/>    
     <p:outputLabel for="asentamiento" value="Colonia:"/>
-    <p:inputNumber id="asentamiento" styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.domicilio.tcManticDomicilioDto.asentamiento}"/>    
+    <p:inputText id="asentamiento" styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.domicilio.tcManticDomicilioDto.asentamiento}" onblur="janal.individual('contenedorGrupos\\:asentamiento')"/>    
     <p:outputLabel for="entreCalle"  value="Entre calle:"/>
-    <p:inputNumber id="entreCalle"  styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.domicilio.tcManticDomicilioDto.entreCalle}"/>        
+    <p:inputText id="entreCalle"  styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.domicilio.tcManticDomicilioDto.entreCalle}" onblur="janal.individual('contenedorGrupos\\:entreCalle')"/>        
     <p:outputLabel for="ycalle" value="Y calle:"/>
-    <p:inputNumber id="ycalle" styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.domicilio.tcManticDomicilioDto.ycalle}"/>    
+    <p:inputText id="ycalle" styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.domicilio.tcManticDomicilioDto.ycalle}" onblur="janal.individual('contenedorGrupos\\:ycalle')"/>    
     <p:outputLabel value="Tipo domicilio:" for="idTipoDomicilio"/>
      <p:selectOneMenu id="idTipoDomicilio" var="item" value="#{manticCatalogosProveedoresAccion.domicilio.idTipoDomicilio}" converter="javax.faces.Long"  styleClass="janal-wid-100-txt">
         <f:selectItem itemLabel="FISICO" itemValue="1"/>

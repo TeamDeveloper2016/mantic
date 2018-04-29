@@ -18,7 +18,11 @@ public class Responsable  extends TrManticProveedorPersonaDto  implements Serial
    private ESql accion;
    
    public Responsable() {
-     this.accion=ESql.UPDATE;
+     this(ESql.UPDATE);
+   }
+   
+   public Responsable(ESql accion) {
+     this.accion=accion;
    }
 
   @Override

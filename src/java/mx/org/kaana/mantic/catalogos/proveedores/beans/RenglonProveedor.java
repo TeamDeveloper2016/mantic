@@ -31,27 +31,26 @@ public class RenglonProveedor implements Serializable {
   public RenglonProveedor(Long idProveedor) throws Exception {
     this.tcManticProveedoresDto = new TcManticProveedoresDto(idProveedor);
     this.tiposProveedores = new ArrayList<>();
-    this.domicilios = new ArrayList<>();    
-    this.listaEliminar = new ArrayList<>();   
+    this.domicilios = new ArrayList<>();
+    this.listaEliminar = new ArrayList<>();
     init();
   }
 
   public List<IBaseDto> getListaEliminar() {
     return listaEliminar;
-  }  
+  }
 
   public List<Agente> getAgentes() {
     return agentes;
   }
 
-  
   public List<Responsable> getResponsables() {
     return responsables;
-  } 
+  }
 
   public List<Contacto> getContactos() {
     return contactos;
-  }  
+  }
 
   public List<CondicionPago> getCondicionPagos() {
     return condicionPagos;
@@ -65,6 +64,10 @@ public class RenglonProveedor implements Serializable {
     return idTipoProveedor;
   }
 
+  public void setIdTipoProveedor(UISelectEntity idTipoProveedor) {
+    this.idTipoProveedor = idTipoProveedor;
+  }  
+
   public List<UISelectEntity> getTiposProveedores() {
     return tiposProveedores;
   }
@@ -77,24 +80,24 @@ public class RenglonProveedor implements Serializable {
     Gestor gestor = new Gestor();
     gestor.loadTiposProveedores(false);
     this.tiposProveedores.addAll(gestor.getTiposProveedores());
-    if (!this.tcManticProveedoresDto.getIdTipoProveedor().equals(-1L)) {
-      int pos = this.tiposProveedores.indexOf(new UISelectEntity(this.tcManticProveedoresDto.getIdProveedor().toString()));
+    if (this.tcManticProveedoresDto.getIdTipoProveedor()!= null && !this.tcManticProveedoresDto.getIdTipoProveedor().equals(-1L)) {
+      int pos = this.tiposProveedores.indexOf(new UISelectEntity(this.tcManticProveedoresDto.getIdTipoProveedor().toString()));
       this.idTipoProveedor = this.tiposProveedores.get(pos);
     } // if       
   }
-  
-  public void loadResponsables () throws Exception {
-    Gestor gestor = new Gestor();  
-    this.responsables=gestor.toResponsablesProvedor(this.tcManticProveedoresDto.getIdProveedor());   
+
+  public void loadResponsables() throws Exception {
+    Gestor gestor = new Gestor();
+    this.responsables = gestor.toResponsablesProvedor(this.tcManticProveedoresDto.getIdProveedor());
   }
-  
-  public void loadContactos () throws Exception {
-    Gestor  gestor = new Gestor();
+
+  public void loadContactos() throws Exception {
+    Gestor gestor = new Gestor();
     this.contactos = gestor.toContactosProvedor(this.tcManticProveedoresDto.getIdProveedor());
   }
-  
-  public void loadAgentes () throws Exception {
-    Gestor  gestor = new Gestor();
+
+  public void loadAgentes() throws Exception {
+    Gestor gestor = new Gestor();
     this.agentes = gestor.toAgentesProvedor(this.tcManticProveedoresDto.getIdProveedor());
   }
 
@@ -136,7 +139,7 @@ public class RenglonProveedor implements Serializable {
   }
 
   public void addDomicilio(Domicilio domicilio) {
-   this.domicilios.add(0,domicilio);
+    this.domicilios.add(domicilio);
   }
 
 }

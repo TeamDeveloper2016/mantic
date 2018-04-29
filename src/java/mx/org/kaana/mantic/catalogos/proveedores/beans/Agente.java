@@ -19,7 +19,11 @@ public class Agente  extends TrManticProveedoresAgentesDto  implements Serializa
    private ESql accion;
    
    public Agente() {
-     this.accion=ESql.UPDATE;
+     this(ESql.UPDATE);
+   }
+   
+   public Agente(ESql accion) {
+     this.accion=accion;
    }
 
   @Override

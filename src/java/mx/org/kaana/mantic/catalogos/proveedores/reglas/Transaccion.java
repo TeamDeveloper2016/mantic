@@ -39,6 +39,7 @@ public class Transaccion extends IBaseTnx {
   private List<CondicionPago> condicionPago;
   private List<Responsable> responsables;
   private List<IBaseDto> eliminados; 
+ 
   private String notificacion;
   
   public Transaccion (TcManticProveedoresDto tcMantiProveedorDto) {
@@ -66,10 +67,10 @@ public class Transaccion extends IBaseTnx {
       case AGREGAR:
         agregar(sesion);
       break;  
-      case ELIMINAR:
+      case MODIFICAR:
         actualizar(sesion);
       break;  
-      case MODIFICAR:
+      case ELIMINAR:
         eliminar(sesion);
     } // switch
     return regresar;
@@ -95,6 +96,8 @@ public class Transaccion extends IBaseTnx {
              DaoFactory.getInstance().insert(session, condicionPago);
           break;  
           case UPDATE :
+            if (condicionPago.getIdUsuario()!= null && condicionPago.getIdUsuario().equals(0L))
+              condicionPago.setIdUsuario(null);
             DaoFactory.getInstance().update(session,condicionPago);         
         } // switch       
       }// for
@@ -112,6 +115,8 @@ public class Transaccion extends IBaseTnx {
              DaoFactory.getInstance().insert(session, responsable);
           break;  
           case UPDATE :
+            if (responsable.getIdUsuario()!= null && responsable.getIdUsuario().equals(0L))
+              responsable.setIdUsuario(null);
             DaoFactory.getInstance().update(session,responsable);         
         } // switch       
       }// for
@@ -131,6 +136,8 @@ public class Transaccion extends IBaseTnx {
              DaoFactory.getInstance().insert(session, contacto);
           break;  
           case UPDATE :
+             if (contacto.getIdUsuario()!= null && contacto.getIdUsuario().equals(0L))
+              contacto.setIdUsuario(null);
             DaoFactory.getInstance().update(session,contacto);         
         } // switch       
       }// for
@@ -149,6 +156,8 @@ public class Transaccion extends IBaseTnx {
              DaoFactory.getInstance().insert(session, agente);
           break;  
           case UPDATE :
+            if (agente.getIdUsuario()!= null && agente.getIdUsuario().equals(0L))
+              agente.setIdUsuario(null);
             DaoFactory.getInstance().update(session,agente);         
         } // switch       
       }// for
@@ -164,12 +173,15 @@ public class Transaccion extends IBaseTnx {
         switch(domicilio.getAccion()){
           case INSERT:
              domicilio.setIdProveedor(idProveedor);
-             if (domicilio.getKey().equals(-1L)){
-               DaoFactory.getInstance().insert(session,domicilio.getTcManticDomicilioDto());               
+             if (domicilio.getIdDomicilio().equals(-1L)){
+               DaoFactory.getInstance().insert(session,domicilio.getTcManticDomicilioDto()); 
+               domicilio.setIdDomicilio(domicilio.getTcManticDomicilioDto().getIdDomicilio());
              }  
              DaoFactory.getInstance().insert(session, domicilio);
           break;  
           case UPDATE :
+            if (domicilio.getIdUsuario()!= null && domicilio.getIdUsuario().equals(0L))
+              domicilio.setIdUsuario(null);
             DaoFactory.getInstance().update(session,domicilio);         
         } // switch       
       }// for
