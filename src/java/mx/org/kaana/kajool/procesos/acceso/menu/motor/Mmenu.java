@@ -8,6 +8,7 @@ import java.util.List;
 import javax.faces.context.FacesContext;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.kajool.procesos.acceso.menu.reglas.IBaseMenu;
+import mx.org.kaana.libs.recurso.Configuracion;
 
 /**
  *@company KAANA
@@ -46,6 +47,8 @@ public class Mmenu extends IBaseMenu implements Serializable{
 				if (treeObject.getType()==Tree.LEAF) {					
 					getMenu().append("<li><a style=\"font-size: 18px;font-family: titillium_webregular;\" href= \"");
 					getMenu().append(FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath());
+					if (Configuracion.getInstance().isEtapaDesarrollo())
+						getMenu().append("/");
 					getMenu().append(treeObject.getUrl());
 					getMenu().append("\"><i class=\"");
 					getMenu().append(treeObject.getIcono());
