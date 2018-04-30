@@ -27,8 +27,8 @@
 		'contenedorGrupos\\:localidad'    : {validaciones: 'requerido', mascara: 'libre', grupo:'domicilio'},				
 		'contenedorGrupos\\:codigoPostal'           : {validaciones: 'requerido', mascara: 'numero', grupo:'domicilio'},				
 		'contenedorGrupos\\:calle'        : {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo:'domicilio'},
-		'contenedorGrupos\\:numeroExterior'        : {validaciones: 'libre', mascara: 'libre', grupo:'domicilio'},
-		'contenedorGrupos\\:numeroInterior'        : {validaciones: 'libre', mascara: 'libre', grupo:'domicilio'},
+		'contenedorGrupos\\:numeroExterior'        : {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo:'domicilio'},
+		'contenedorGrupos\\:numeroInterior'        : {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo:'domicilio'},
 		'contenedorGrupos\\:asentamiento'        : {validaciones: 'libre', mascara: 'libre', grupo:'domicilio'},
 		'contenedorGrupos\\:entreCalle'        : {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo:'domicilio'},
 		'contenedorGrupos\\:diasEntrega'        : {validaciones: 'requerido', mascara: 'numero', grupo:'general'},
@@ -161,8 +161,7 @@
             </p:tab>
             <p:tab id="tabAgentes" title="Agentes">
               <ui:include src="../Proveedores/Secciones/agentes.xhtml"/>
-            </p:tab>
-            
+            </p:tab>            
             <p:tab title="Observaciones">
               <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
                 <p:outputLabel for="observaciones" value="Observaciones:"/>

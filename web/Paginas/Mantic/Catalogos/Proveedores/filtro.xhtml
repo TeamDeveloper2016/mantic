@@ -101,13 +101,7 @@
                 <h:outputText value="Razón social"/>
               </f:facet>
               <h:outputText value="#{filtro['razonSocial']}"/>
-            </p:column>					
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.tipoProveedor}">
-              <f:facet name="header">
-                <h:outputText value="Tipo proveedor"/>
-              </f:facet>
-              <h:outputText value="#{filtro['tipoProveedor']}"/>
-            </p:column>					
+            </p:column>	            	
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCatalogosProveedoresFiltro.lazyModel==null?0:manticCatalogosProveedoresFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>

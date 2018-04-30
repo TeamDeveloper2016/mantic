@@ -91,25 +91,7 @@
                 <h:outputText value="Razón social"/>
               </f:facet>
               <h:outputText value="#{filtro['razonSocial']}"/>
-            </p:column>	            
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.calle}">
-              <f:facet name="header">
-                <h:outputText value="Calle"/>
-              </f:facet>
-              <h:outputText value="#{filtro['calle']}"/>
-            </p:column>					
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-5" sortBy="#{filtro.numeroExterior}">
-              <f:facet name="header">
-                <h:outputText value="No. exterior"/>
-              </f:facet>
-              <h:outputText value="#{filtro['numeroExterior']}"/>
-            </p:column>					
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.asentamiento}">
-              <f:facet name="header">
-                <h:outputText value="Colonia"/>
-              </f:facet>
-              <h:outputText value="#{filtro['asentamiento']}"/>
-            </p:column>					
+            </p:column>
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCatalogosClientesFiltro.lazyModel==null?0:manticCatalogosClientesFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
