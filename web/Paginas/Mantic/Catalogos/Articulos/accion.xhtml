@@ -221,7 +221,7 @@
 										<p:inputNumber id="descuento#{precioSugerido.key}" styleClass="janal-wid-100-txt" value="#{precioSugerido.descuento}" symbol="%" emptyValue="zero" symbolPosition="s"/>                    																																			
 									</p:column>
 									<p:column headerText="Observaciones">		
-										<p:inputTextarea id="observaciones#{precioSugerido.key}" styleClass="janal-wid-100-txt" value="#{precioSugerido.observaciones}" onblur="applyMayusTable('tablaPreciosSugeridos',#{index}, 'observaciones')"/>                    																																			
+										<p:inputText id="observaciones#{precioSugerido.key}" styleClass="janal-wid-100-txt" value="#{precioSugerido.observaciones}" onblur="applyMayusTable('tablaPreciosSugeridos',#{index}, 'observaciones')"/>                    																																			
 									</p:column>												
 									 <p:column style="width:32px;text-align: center">
 										 <p:commandButton update="tablaPreciosSugeridos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarPrecioSugerido}" styleClass="janal-text-white">
