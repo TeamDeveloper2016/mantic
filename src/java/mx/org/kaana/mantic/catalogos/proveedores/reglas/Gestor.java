@@ -30,6 +30,7 @@ import mx.org.kaana.mantic.catalogos.proveedores.beans.Contacto;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.Domicilio;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.Responsable;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
+import mx.org.kaana.mantic.db.dto.TrManticProveedorPagoDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -303,8 +304,5 @@ public class Gestor implements Serializable {
       Methods.clean(params);
     } // finally
     return regresar;
-  }
-  
-  
-  
+  }  
 }

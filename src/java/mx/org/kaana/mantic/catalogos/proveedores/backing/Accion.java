@@ -67,6 +67,7 @@ public class Accion extends IBaseAttribute implements Serializable {
          }
       }      
       renglonProveedor.getTcManticProveedoresDto().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      renglonProveedor.getTcManticProveedoresDto().setIdUsuario(JsfBase.getIdUsuario());
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       gestor = new Gestor();
       this.domicilio = new Domicilio(ESql.SELECT);

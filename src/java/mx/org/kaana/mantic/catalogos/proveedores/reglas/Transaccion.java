@@ -92,13 +92,12 @@ public class Transaccion extends IBaseTnx {
       for (CondicionPago condicionPago : this.condicionPago) {
         switch(condicionPago.getAccion()){
           case INSERT:
-             condicionPago.setIdProveedor(idProveedor);
+             condicionPago.setIdProveedor(idProveedor);             
              DaoFactory.getInstance().insert(session, condicionPago);
           break;  
           case UPDATE :
-            if (condicionPago.getIdUsuario()!= null && condicionPago.getIdUsuario().equals(0L))
-              condicionPago.setIdUsuario(null);
-            DaoFactory.getInstance().update(session,condicionPago);         
+           condicionPago.setIdUsuario(this.tcMantiProveedorDto.getIdUsuario());
+           DaoFactory.getInstance().update(session,condicionPago);         
         } // switch       
       }// for
     } // try
@@ -115,8 +114,7 @@ public class Transaccion extends IBaseTnx {
              DaoFactory.getInstance().insert(session, responsable);
           break;  
           case UPDATE :
-            if (responsable.getIdUsuario()!= null && responsable.getIdUsuario().equals(0L))
-              responsable.setIdUsuario(null);
+            responsable.setIdUsuario(this.tcMantiProveedorDto.getIdUsuario());
             DaoFactory.getInstance().update(session,responsable);         
         } // switch       
       }// for
@@ -136,8 +134,7 @@ public class Transaccion extends IBaseTnx {
              DaoFactory.getInstance().insert(session, contacto);
           break;  
           case UPDATE :
-             if (contacto.getIdUsuario()!= null && contacto.getIdUsuario().equals(0L))
-              contacto.setIdUsuario(null);
+            contacto.setIdUsuario(this.tcMantiProveedorDto.getIdUsuario());
             DaoFactory.getInstance().update(session,contacto);         
         } // switch       
       }// for
@@ -156,9 +153,9 @@ public class Transaccion extends IBaseTnx {
              DaoFactory.getInstance().insert(session, agente);
           break;  
           case UPDATE :
-            if (agente.getIdUsuario()!= null && agente.getIdUsuario().equals(0L))
-              agente.setIdUsuario(null);
-            DaoFactory.getInstance().update(session,agente);         
+            agente.setIdUsuario(tcMantiProveedorDto.getIdUsuario());
+            DaoFactory.getInstance().update(session,agente);   
+          break;  
         } // switch       
       }// for
     } // try
@@ -179,9 +176,8 @@ public class Transaccion extends IBaseTnx {
              }  
              DaoFactory.getInstance().insert(session, domicilio);
           break;  
-          case UPDATE :
-            if (domicilio.getIdUsuario()!= null && domicilio.getIdUsuario().equals(0L))
-              domicilio.setIdUsuario(null);
+          case UPDATE :            
+            domicilio.setIdUsuario(tcMantiProveedorDto.getIdUsuario());
             DaoFactory.getInstance().update(session,domicilio);         
         } // switch       
       }// for
