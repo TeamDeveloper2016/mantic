@@ -593,6 +593,14 @@
         where      
           id_empaque_unidad_medida = {idEmpaqueUnidadMedida} and id_empresa = {idEmpresa} and id_articulo = {idArticulo} and nombre = '{nombre}'
       </select>
+			<update id="rows">
+				update 
+				  tc_mantic_articulos
+				set
+				  iva= {iva}
+				where
+				  iva> 0
+			</update>
     </unit>
 		<unit id="TcManticArticulosCodigosDto">
       <select id="row">

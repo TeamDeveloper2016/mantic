@@ -11,7 +11,6 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-
         'contenedorGrupos\\:prefijo': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:rfc': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'rfc', grupo: 'general'},
         'contenedorGrupos\\:razonSocial': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
@@ -136,7 +135,6 @@
                             <i class="fa fa-minus-square fa-lg"></i>   
                           </p:commandLink> 
                           <p:commandLink rendered="#{direccion.modificar &amp;&amp; direccion.accion!= 'SELECT'}" oncomplete="janal.refresh();janal.desbloquear();" process="direcciones contenedorGrupos:panelDomicilio" update="direcciones contenedorGrupos:panelDomicilio" title="Actualizar" actionListener="#{manticCatalogosProveedoresAccion.doActualizarDomicilio()}">
-                           
                             <i class="fa fa-check-square fa-lg"></i>
                           </p:commandLink>		
                           <p:commandLink  title="Consultar" oncomplete="janal.refresh();janal.desbloquear();" onstart="return janal.bloquear();"  actionListener="#{manticCatalogosProveedoresAccion.doBuscarDomicilio(direccion)}" process="@this" update="direcciones contenedorGrupos:panelDomicilio" rendered="#{direccion.accion!= 'SELECT'}">
