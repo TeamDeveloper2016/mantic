@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -51,9 +45,7 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
   @Column (name="id_empresa")
   private Long idEmpresa;
   @Column (name="razon_social")
-  private String razonSocial;
-  @Column (name="id_tmp_cliente")
-  private Long idTmpCliente;
+  private String razonSocial;  
   @Column (name="rfc")
   private String rfc;
   @Column (name="registro")
@@ -64,11 +56,11 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
   }
 
   public TcManticClientesDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null, null, null, null, null);
+    this(null, null, new Long(-1L), null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticClientesDto(String clave, Long plazoDias, Long idCliente, Double limiteCredito, Long idUsuario, String observaciones, Long idEmpresa, String razonSocial, Long idTmpCliente, String rfc) {
+  public TcManticClientesDto(String clave, Long plazoDias, Long idCliente, Double limiteCredito, Long idUsuario, String observaciones, Long idEmpresa, String razonSocial, String rfc) {
     setClave(clave);
     setPlazoDias(plazoDias);
     setIdCliente(idCliente);
@@ -77,7 +69,6 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
     setRazonSocial(razonSocial);
-    setIdTmpCliente(idTmpCliente);
     setRfc(rfc);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
@@ -146,14 +137,6 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
     return razonSocial;
   }
 
-  public void setIdTmpCliente(Long idTmpCliente) {
-    this.idTmpCliente = idTmpCliente;
-  }
-
-  public Long getIdTmpCliente() {
-    return idTmpCliente;
-  }
-
   public void setRfc(String rfc) {
     this.rfc = rfc;
   }
@@ -199,9 +182,7 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdEmpresa());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getRazonSocial());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTmpCliente());
+		regresar.append(getRazonSocial());		
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRfc());
 		regresar.append(Constantes.SEPARADOR);
@@ -221,7 +202,6 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("razonSocial", getRazonSocial());
-		regresar.put("idTmpCliente", getIdTmpCliente());
 		regresar.put("rfc", getRfc());
 		regresar.put("registro", getRegistro());
   	return regresar;
@@ -230,7 +210,7 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getClave(), getPlazoDias(), getIdCliente(), getLimiteCredito(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getRazonSocial(), getIdTmpCliente(), getRfc(), getRegistro()
+    getClave(), getPlazoDias(), getIdCliente(), getLimiteCredito(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getRazonSocial(), getRfc(), getRegistro()
     };
     return regresar;
   }
