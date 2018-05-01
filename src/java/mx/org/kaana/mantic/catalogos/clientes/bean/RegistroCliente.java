@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.MotorBusqueda;
+import mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 
 public class RegistroCliente implements Serializable{
@@ -325,9 +327,12 @@ public class RegistroCliente implements Serializable{
 		} // catch			
 	} // doEliminarClienteTipoContacto
 	
-	private void addDeleteList(IBaseDto dto){
+	private void addDeleteList(IBaseDto dto) throws Exception{
+		Transaccion transaccion= null;
 		try {
-			this.deleteList.add(dto);
+			transaccion= new Transaccion(dto);
+			transaccion.ejecutar(EAccion.DEPURAR);
+			//this.deleteList.add(dto);
 		} // try
 		catch (Exception e) {			
 			throw e;
