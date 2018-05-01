@@ -1028,7 +1028,7 @@
       $parent.custom({summary: 'Janal:', detail: msg, severity: 'info'});
     }, // alert
     version: function() {
-      return '0.1.3.7';
+      return '0.1.4.2';
     }, // version
     align: function(pixels) {
       try {
