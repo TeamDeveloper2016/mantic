@@ -57,6 +57,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     Gestor gestor = null;
     Map params = new HashMap();
     try {
+      this.attrs.put("nombreAccion", JsfBase.getFlashAttribute("nombreAccion"));
       renglonProveedor = new RenglonProveedor(JsfBase.getFlashAttribute("idProveedor") == null ? -1L : (Long) JsfBase.getFlashAttribute("idProveedor"));
       this.attrs.put("idTemporal", -1L);
       this.attrs.put("idDomicilioPrincipal", -1L);
