@@ -959,6 +959,25 @@
 				where 
 					{condicion}
 			</select>			
-		</unit>    	
+		</unit>   
+        
+          <unit id="TcManticHistorialIvaDto">
+          <select id="row">
+            select      
+              *
+            from      
+              tc_mantic_historial_iva
+            where 
+              {condicion} 
+          </select>
+          <select id="identically">
+            select      
+              *
+            from      
+              tc_mantic_historial_iva
+            where      
+              id_historial_iva = {idHistorialIva} and id_empresa = {idEmpresa} and importe = {importe}
+          </select>
+        </unit> 	
   </dml>    
 </process>
