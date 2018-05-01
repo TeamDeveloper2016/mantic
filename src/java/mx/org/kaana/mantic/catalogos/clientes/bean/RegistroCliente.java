@@ -178,7 +178,7 @@ public class RegistroCliente implements Serializable{
 		ClienteDomicilio clienteDomicilio= null;
 		try {								
 			clienteDomicilio= new ClienteDomicilio(this.contadores.getTotalClientesDomicilios()+ this.countIndice, ESql.INSERT, true);	
-			setValuesClienteDomicilio(clienteDomicilio);			
+			setValuesClienteDomicilio(clienteDomicilio, false);			
 			this.clientesDomicilio.add(clienteDomicilio);			
 		} // try
 		catch (Exception e) {
@@ -230,7 +230,7 @@ public class RegistroCliente implements Serializable{
 		try {			
 			pivote= this.clientesDomicilio.get(this.clientesDomicilio.indexOf(this.clienteDomicilioSelecion));			
 			pivote.setModificar(false);
-			setValuesClienteDomicilio(pivote);			
+			setValuesClienteDomicilio(pivote, true);						
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -238,7 +238,7 @@ public class RegistroCliente implements Serializable{
 		} // catch				
 	} // doActualizarClienteDomicilio
 	
-	private void setValuesClienteDomicilio(ClienteDomicilio clienteDomicilio) throws Exception{
+	private void setValuesClienteDomicilio(ClienteDomicilio clienteDomicilio, boolean actualizar) throws Exception{
 		try {
 			if(this.domicilio.getPrincipal()){
 				for(ClienteDomicilio record: this.clientesDomicilio)
@@ -251,7 +251,8 @@ public class RegistroCliente implements Serializable{
 				clienteDomicilio.setIdDomicilio(this.domicilio.getIdDomicilio());
 			clienteDomicilio.setIdUsuario(JsfBase.getIdUsuario());
 			clienteDomicilio.setIdTipoDomicilio(this.domicilio.getIdTipoDomicilio());
-			clienteDomicilio.setConsecutivo(this.clientesDomicilio.size() + 1L);
+			if(!actualizar)
+				clienteDomicilio.setConsecutivo(this.clientesDomicilio.size() + 1L);
 			clienteDomicilio.setIdEntidad(this.domicilio.getIdEntidad());
 			clienteDomicilio.setIdMunicipio(this.domicilio.getIdMunicipio());
 			clienteDomicilio.setIdLocalidad(this.domicilio.getIdLocalidad());
