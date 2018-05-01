@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Catálogo del historico del IVA" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'importe': {validaciones: 'flotante', mascara: 'libre'} 
+      };
+
+      function showPanelFind(id) {
+        if ($('#' + id).hasClass('lg-pantalla')) {
+          $('#' + id).removeClass('lg-pantalla');
+          $('#' + id).addClass('xs-pantalla');
+        } // if
+        else {
+          $('#' + id).removeClass('xs-pantalla');
+          $('#' + id).addClass('lg-pantalla');
+        } // else
+      } // showPanelFind        
+    </script>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla">
+      <p:commandButton icon="fa fa-search" onstart="showPanelFind('panelBusqueda');" styleClass="janal-text-white"/>
+      <p:spacer height="5px"/>		
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla">
+            <h:panelGrid styleClass="janal-wid-100">
+              <p:outputLabel for="importe" value="Importe:"/>
+              <p:inputText id="importe" value="#{manticCatalogosIvaFiltro.attrs.importe}" styleClass="janal-wid-100-txt"/> 
+            </h:panelGrid>
+            <p:separator/>
+            <div class="janal-align-right">
+              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.execute(true);" process="@this importe" actionListener="#{manticCatalogosIvaFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
+            </div>
+             <div class="janal-align-right xs-pantalla">
+                <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.execute(true);" process="@this importe" actionListener="#{manticCatalogosIvaFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"  styleClass="janal-text-white"/>
+              </div>
+          </p:panel>
+        </div>
+        <p:spacer/>
+        <div class="ui-grid-col-9">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosIvaFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosIvaFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosIvaFiltro.lazyModel.rowCount gt manticCatalogosIvaFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+            <f:facet name="header" >
+              <div class="lg-pantalla">
+                <p:menuButton   value="Opciones">
+                  <p:menuitem  value="Agregar" action="#{manticCatalogosIvaFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                  <p:separator/>
+                  <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                </p:menuButton>
+              </div>  
+              <div class="xs-pantalla">              
+                <p:commandButton  value="Agregar" action="#{manticCatalogosIvaFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" styleClass="janal-text-white"/>						
+                <p:separator/>
+                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+              </div>  
+            </f:facet>	            
+             <p:column class="janal-column-center MarAuto Responsive" sortBy="#{filtro.importe}">
+              <f:facet name="header">
+                <h:outputText value="Importe"/>
+              </f:facet>
+              <h:outputText value="#{filtro['importe']}"/>
+            </p:column>		
+             <p:column class="janal-column-center MarAuto Responsive janal-wid-30" sortBy="#{filtro.registro}">
+              <f:facet name="header">
+                <h:outputText value="Registro"/>
+              </f:facet>
+              <h:outputText value="#{filtro['registro']}"/>
+            </p:column>		
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticCatalogosIvaFiltro.lazyModel==null?0:manticCatalogosIvaFiltro.lazyModel.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+          <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+            <p:menuitem id="modificar" action="#{manticCatalogosIvaFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+          </p:contextMenu>
+          <div class="EmptyBox30"></div>
+        </div>
+      </div>
+    </div>		           				
+  </ui:define>   
+  <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el registro del IVA ?" />
+  <ui:param name="accionConfirmacion" value="#{manticCatalogosIvaFiltro}"/>
+  <ui:param name="updateComponent" value="tabla"/>
+  <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
+  <ui:param name="renderedConfirmacion" value="true"/>	
+  <ui:define name="detalleConfirmacion">
+    <h:panelGrid columns="2">
+      <p:outputLabel value="Importe del IVA:"/>
+      <p:outputLabel value="#{manticCatalogosIvaFiltro.attrs.seleccionado.importe}"/>
+    </h:panelGrid>			
+  </ui:define>
+</ui:composition>

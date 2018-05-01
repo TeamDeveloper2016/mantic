@@ -42,7 +42,7 @@
     name: [],
     stage: [100,101,115,97,114,114,111,108,108,111],
     form: 'datos', 
-    display: 'growl',
+    display: 'inline',
     growl: 'mensajes',
     lock: 'bloqueo',
     errors: 3
@@ -363,7 +363,7 @@
     // privates atributtes for class
     form          : 'datos',
     fields        : {},
-    kind          : 'growl',
+    kind          : 'inline',
     message       : 'mensajes',
     stage         : 'desarrollo',
     locked        : 'bloqueo',
