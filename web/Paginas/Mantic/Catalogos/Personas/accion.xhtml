@@ -57,8 +57,8 @@
 								<p:inputText id="curp" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.persona.curp}" onblur="janal.individual('contenedorGrupos\\:curp')"/>                    
 								<p:outputLabel for="nacimiento" value="Fecha de nacimiento:"/>
 								<p:calendar id="nacimiento" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.persona.fechaNacimiento}" mode="popup" converter="janal.convertidor.Calendario"/>
-								<p:outputLabel for="tipoPersona" value="Tipo persona:" rendered="#{manticCatalogosPersonasAccion.general}"/>
-								<p:selectOneMenu id="tipoPersona" value="#{manticCatalogosPersonasAccion.persona.idTipoPersona}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.general}">									
+								<p:outputLabel for="tipoPersona" value="Tipo persona:" rendered="#{manticCatalogosPersonasAccion.attrs.general}"/>
+								<p:selectOneMenu id="tipoPersona" value="#{manticCatalogosPersonasAccion.persona.idTipoPersona}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.general}">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.tiposPersonas}"/>
 								</p:selectOneMenu>		
 								<p:outputLabel for="sexo" value="Sexo:"/>
