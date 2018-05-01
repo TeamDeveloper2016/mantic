@@ -137,7 +137,7 @@
                     <f:selectItems value="#{manticCatalogosClientesAccion.attrs.localidades}"/>
                   </p:selectOneMenu>																	
                   <p:outputLabel for="codigoPostal" value="Código postal:"/>
-                  <p:selectOneMenu id="codigoPostal" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.idCodigoPostal}" styleClass="janal-wid-100-txt">									
+                  <p:selectOneMenu id="codigoPostal" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.idCodigoPostal}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith">									
                     <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doLoadDomicilios}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
                     <f:selectItem itemValue="-1" itemLabel="Nuevo"/>
                     <f:selectItems value="#{manticCatalogosClientesAccion.attrs.codigosPostales}"/>
