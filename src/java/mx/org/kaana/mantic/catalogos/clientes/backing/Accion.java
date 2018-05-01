@@ -217,8 +217,8 @@ public class Accion extends IBaseAttribute implements Serializable {
     Map<String, Object> params = null;
     try {
       params = new HashMap<>();
-      params.put("idLocalidad", this.registroCliente.getDomicilio().getIdLocalidad());
-      codigosPostales = UISelect.build("TcManticDomiciliosDto", "codigosPostales", params, "codigoPostal", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+      params.put(Constantes.SQL_CONDICION, "id_entidad=" + this.registroCliente.getDomicilio().getIdEntidad());
+      codigosPostales = UISelect.build("TcManticCodigosPostalesDto", "row", params, "codigo", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("codigosPostales", codigosPostales);
       if (!codigosPostales.isEmpty()) {
         this.registroCliente.getDomicilio().setCodigoPostal(codigosPostales.get(0).getLabel());
