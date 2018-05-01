@@ -21,9 +21,14 @@ import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx {
 
+  private IBaseDto dto;
   private RegistroCliente registroCliente;
   private String messageError;
 
+	public Transaccion(IBaseDto dto) {
+		this.dto = dto;
+	}
+	
   public Transaccion(RegistroCliente registroCliente) {
     this.registroCliente = registroCliente;
   }
@@ -32,7 +37,8 @@ public class Transaccion extends IBaseTnx {
   protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
     boolean regresar = false;
     try {
-      this.registroCliente.getCliente().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			if(this.registroCliente!= null)
+				this.registroCliente.getCliente().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       switch (accion) {
         case AGREGAR:
           regresar = procesarCliente(sesion);
@@ -43,6 +49,9 @@ public class Transaccion extends IBaseTnx {
         case ELIMINAR:
           regresar = eliminarCliente(sesion);
           break;
+				case DEPURAR:
+					regresar= DaoFactory.getInstance().delete(sesion, this.dto)>= 1L;
+					break;
       } // switch
       if (!regresar) {
         throw new Exception(this.messageError);
