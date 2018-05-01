@@ -405,6 +405,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         if (codigo.getLabel().equals(dtoDomicilio.getCodigoPostal())) {
           this.registroCliente.getDomicilio().setIdCodigoPostal((Long) codigo.getValue());
           this.registroCliente.getDomicilio().setCodigoPostal(codigo.getLabel());
+					this.registroCliente.getDomicilio().setNuevoCp(true);
         } // if
       }	// for
       loadDomicilios();
@@ -423,4 +424,30 @@ public class Accion extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
   } // doEliminarArticuloCodigo	
+	
+	public void doActualizaDomicilio(){
+		try {
+			this.registroCliente.doActualizarClienteDomicilio();
+			this.registroCliente.setDomicilio(new Domicilio());
+      loadEntidades();
+      doActualizaMunicipios();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+	} // doActualizaDomicilio
+	
+	public void doEliminarDomicilio(){
+		try {
+			this.registroCliente.doEliminarClienteDomicilio();;
+			this.registroCliente.setDomicilio(new Domicilio());
+      loadEntidades();
+      doActualizaMunicipios();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+	} // doActualizaDomicilio
 }
