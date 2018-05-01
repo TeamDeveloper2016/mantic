@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -59,13 +60,14 @@ public class Accion extends IBaseAttribute implements Serializable {
       renglonProveedor = new RenglonProveedor(JsfBase.getFlashAttribute("idProveedor") == null ? -1L : (Long) JsfBase.getFlashAttribute("idProveedor"));
       this.attrs.put("idTemporal", -1L);
       this.attrs.put("idDomicilioPrincipal", -1L);
-      if (renglonProveedor.getDomicilios()!= null && renglonProveedor.getDomicilios().size()>0){
-         params.put(Constantes.SQL_CONDICION, "id_proveedor=".concat(renglonProveedor.getTcManticProveedoresDto().getIdProveedor().toString()).concat(" and id_principal=1"));
-         TrManticProveedorDomicilioDto proveedorDom = (TrManticProveedorDomicilioDto) DaoFactory.getInstance().findFirst(TrManticProveedorDomicilioDto.class, "row", params);
-         if (proveedorDom!= null){
-            this.attrs.put("idDomicilioPrincipal", proveedorDom.getIdProveedorDomicilio());
-         }
-      }      
+      this.attrs.put("confirmar", false);
+      if (renglonProveedor.getDomicilios() != null && renglonProveedor.getDomicilios().size() > 0) {
+        params.put(Constantes.SQL_CONDICION, "id_proveedor=".concat(renglonProveedor.getTcManticProveedoresDto().getIdProveedor().toString()).concat(" and id_principal=1"));
+        TrManticProveedorDomicilioDto proveedorDom = (TrManticProveedorDomicilioDto) DaoFactory.getInstance().findFirst(TrManticProveedorDomicilioDto.class, "row", params);
+        if (proveedorDom != null) {
+          this.attrs.put("idDomicilioPrincipal", proveedorDom.getIdProveedorDomicilio());
+        }
+      }
       renglonProveedor.getTcManticProveedoresDto().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       renglonProveedor.getTcManticProveedoresDto().setIdUsuario(JsfBase.getIdUsuario());
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
@@ -258,20 +260,45 @@ public class Accion extends IBaseAttribute implements Serializable {
     this.domicilio.getTcManticDomicilioDto().setEntreCalle(null);
     this.domicilio.getTcManticDomicilioDto().setYcalle(null);
     this.domicilio.getTcManticDomicilioDto().setCodigoPostal(null);
+    this.domicilio.getTcManticDomicilioDto().setCodigoPostal(null);
+    this.domicilio.setIdPrincipal(2L);
     doLoadLocalidadesCalle();
   }
 
   public void doEliminarDomicilio(Domicilio domicilio) {
     this.renglonProveedor.getDomicilios().remove(domicilio);
     if (domicilio.getKey() > 0L) {
-      this.renglonProveedor.getListaEliminar().add(domicilio);
+      //this.renglonProveedor.getListaEliminar().add(domicilio);
+      try {
+        eliminar(domicilio);
+      } // try
+      catch (Exception e) {
+        JsfBase.addMessageError(e);
+      } // catc
     }
   }
 
+  public void doActualizarDomicilio() {
+    Domicilio modificar = (Domicilio) this.domicilio.clone();
+    domicilio.setAccion(ESql.UPDATE);
+    domicilio.setModificar(false);
+    int pos = this.renglonProveedor.getDomicilios().indexOf(modificar);
+    this.renglonProveedor.getDomicilios().remove(pos);
+    this.renglonProveedor.getDomicilios().add(pos, modificar);
+    this.attrs.put("idDomicilioPrincipal", modificar.getKey());
+  }
+
+  private void cleanModify(){
+    for(Domicilio record: this.renglonProveedor.getDomicilios()) {
+       record.setModificar(false);
+    }//for
+  }
+  
   public void doBuscarDomicilio(Domicilio domicilio) {
     int pos = -1;
     pos = this.renglonProveedor.getDomicilios().indexOf(domicilio);
     this.domicilio = (Domicilio) this.renglonProveedor.getDomicilios().get(pos).clone();
+    cleanModify();
     switch (domicilio.getAccion()) {
       case UPDATE:
         Gestor gestor = new Gestor();
@@ -281,20 +308,25 @@ public class Accion extends IBaseAttribute implements Serializable {
         this.attrs.put("localidades", gestor.getLocalidades());
         gestor.loadCodigosPostales(this.domicilio.getLocalidad().getKey());
         this.attrs.put("detalleCalles", gestor.getCodigosPostales());
+        this.renglonProveedor.getDomicilios().get(pos).setModificar(true);
         break;
       case SELECT:
         this.attrs.put("municipios", new ArrayList<UISelectEntity>());
         this.attrs.put("localidades", new ArrayList<UISelectEntity>());
         this.attrs.put("detalleCalles", new ArrayList<UISelectEntity>());
-      break;  
-    } // switch   
+        break;
+      case INSERT:
+        this.renglonProveedor.getDomicilios().get(pos).setModificar(true);
+       break;
+    } // switch 
+
   }
 
   public void doAgregarResponsable() {
     Responsable responsable = new Responsable(ESql.INSERT);
     try {
       responsable.setIdProveedorPersona(toIdTemporal());
-      responsable.setIdResponsable(1L);
+      responsable.setIdResponsable(2L);
       responsable.setIdUsuario(JsfBase.getIdUsuario());
       this.renglonProveedor.getResponsables().add(responsable);
     } // try
@@ -304,11 +336,39 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch
   }
 
+  private void eliminar(IBaseDto baseDto) throws Exception {
+    Transaccion transaccion = null;
+    try {
+      transaccion = new Transaccion(baseDto);
+      if (transaccion.ejecutar(EAccion.DEPURAR)) {
+        JsfBase.addMessage(UIMessage.toMessage("mantic", "proveedor_general_eliminacion"));
+      } // if
+      else {
+        JsfBase.addMessage(UIMessage.toMessage("mantic", "proveedor_general_error"), ETipoMensaje.ERROR);
+      } // else
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+  }
+
   public void doEliminarResponsable(Responsable responsable) {
-    this.renglonProveedor.getResponsables().remove(responsable);
-    if (responsable.getKey() > 0) {
-      this.renglonProveedor.getListaEliminar().add(responsable);
-    }
+    try {
+      this.renglonProveedor.getResponsables().remove(responsable);
+      if (responsable.getKey() > 0) {
+        //this.renglonProveedor.getListaEliminar().add(responsable);    
+        try {
+          eliminar(responsable);
+        } // try
+        catch (Exception e) {
+          JsfBase.addMessageError(e);
+        } // catc
+      } // if
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    }// catch
   }
 
   public void doAgregarContacto() {
@@ -328,14 +388,20 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doEliminarContacto(Contacto contacto) {
     this.renglonProveedor.getContactos().remove(contacto);
     if (contacto.getKey() > 0) {
-      this.renglonProveedor.getListaEliminar().add(contacto);
+      //this.renglonProveedor.getListaEliminar().add(contacto);
+      try {
+        eliminar(contacto);
+      } // try
+      catch (Exception e) {
+        JsfBase.addMessageError(e);
+      } // catch     
     }
   }
 
   public void doAgregarAgente() {
     Agente agente = new Agente(ESql.INSERT);
     try {
-      agente.setIdPrincipal(1L);
+      agente.setIdPrincipal(2L);
       agente.setIdProveedorAgente(toIdTemporal());
       agente.setIdUsuario(JsfBase.getIdUsuario());
       this.renglonProveedor.getAgentes().add(agente);
@@ -348,7 +414,13 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doEliminarAgente(Agente agente) {
     this.renglonProveedor.getAgentes().remove(agente);
     if (agente.getKey() > 0L) {
-      this.renglonProveedor.getListaEliminar().add(agente);
+      //this.renglonProveedor.getListaEliminar().add(agente);
+      try {
+        eliminar(agente);
+      } // try
+      catch (Exception e) {
+        JsfBase.addMessageError(e);
+      } // catc
     }
   }
 
@@ -365,13 +437,19 @@ public class Accion extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-
   }
 
   public void doEliminarCondicionPago(CondicionPago condicionPago) {
     this.renglonProveedor.getCondicionPagos().remove(condicionPago);
     if (condicionPago.getKey() > 0L) {
-      this.renglonProveedor.getListaEliminar().add(condicionPago);
+      //this.renglonProveedor.getListaEliminar().add(condicionPago);
+      try {
+        eliminar(condicionPago);
+      } // try
+      catch (Exception e) {
+        JsfBase.addMessageError(e);
+      } // catc
+
     }
   }
 

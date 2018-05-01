@@ -7,20 +7,16 @@
   <p:panelGrid id="panelAgentes" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
     <p:dataTable emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" id="tablaAgentes" rowIndexVar="index" var="agente" value="#{manticCatalogosProveedoresAccion.renglonProveedor.agentes}" rows="10" paginator="false" reflow="true" rowKey="#{responsable.key}" styleClass="paginated">												
       <p:column headerText="Persona">
-        <p:selectOneMenu id="persona-#{agente.key}" styleClass="janal-wid-100-txt" value="#{agente.idAgente}" filter="true" filterMatchMode="contains">
+        <p:selectOneMenu  disabled="#{agente.accion=='UPDATE'}" id="persona-#{agente.key}" styleClass="janal-wid-100-txt" value="#{agente.idAgente}" filter="true" filterMatchMode="contains">
           <f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.agentes}"/>
         </p:selectOneMenu>
       </p:column> 
       <p:column headerText="Principal">
-        <p:selectOneMenu id="personaResponsable#{agente.key}"  styleClass="janal-wid-100-txt" value="#{agente.idPrincipal}">
-          <f:selectItem itemLabel="SI" itemValue="1"/>
-          <f:selectItem itemLabel="NO" itemValue="2"/>
-        </p:selectOneMenu>
-      </p:column>
+         <p:selectBooleanCheckbox id="principal#{agente.key}" value="#{agente.principal}" styleClass="janal-wid-100-txt" />                   
+       </p:column>
         <p:column style="width:32px;text-align: center">
           <p:commandButton update="tablaAgentes" process="@this tablaAgentes" icon="fa fa-close" title="Eliminar" actionListener="#{manticCatalogosProveedoresAccion.doEliminarAgente(agente)}" styleClass="janal-text-white"/>
-
-         
+        
         </p:column> 
         <f:facet name="footer">
           <p:commandButton actionListener="#{manticCatalogosProveedoresAccion.doAgregarAgente()}" process="@this" update="tablaAgentes"  icon="fa fa-plus" styleClass="janal-text-white"/>						

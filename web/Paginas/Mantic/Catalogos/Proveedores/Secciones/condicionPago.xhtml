@@ -8,12 +8,12 @@
   <p:panelGrid id="panelTipoPago" columns="1" layout="grid"  styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
     <p:dataTable id="tablaTipoPago" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" var="condicionPago" value="#{manticCatalogosProveedoresAccion.renglonProveedor.condicionPagos}" rows="10" paginator="false" reflow="true" rowKey="#{condicionPago.key}" styleClass="paginated">												
       <p:column headerText="Tipo de pago">
-        <p:selectOneMenu id="tipoPago-#{condicionPago.key}"  styleClass="janal-wid-100-txt" value="#{condicionPago.idTipoPago}" filter="true" filterMatchMode="contains">
+        <p:selectOneMenu disabled="#{condicionPago.accion=='UPDATE'}" id="tipoPago-#{condicionPago.key}"  styleClass="janal-wid-100-txt" value="#{condicionPago.idTipoPago}" filter="true" filterMatchMode="contains">
           <f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.tiposPago}"/>
         </p:selectOneMenu>
       </p:column> 
       <p:column headerText="Descuento adicional" styleClass="janal-wid-30">		
-        <p:inputNumber   id="descuento-#{condicionPago.key}" symbol="%" emptyValue="zero" symbolPosition="s" styleClass="janal-wid-100-txt" value="#{condicionPago.descuento}"/>                    																																			
+        <p:inputNumber  disabled="#{condicionPago.accion=='UPDATE'}"  id="descuento-#{condicionPago.key}" symbol="%" emptyValue="zero" symbolPosition="s" styleClass="janal-wid-100-txt" value="#{condicionPago.descuento}"/>                    																																			
       </p:column>    
       <p:column style="width:32px;text-align: center">
         <p:commandButton  icon="fa fa-close" title="Eliminar" actionListener="#{manticCatalogosProveedoresAccion.doEliminarCondicionPago(condicionPago)}" process="@this tablaTipoPago" update="tablaTipoPago"  styleClass="janal-text-white"/>

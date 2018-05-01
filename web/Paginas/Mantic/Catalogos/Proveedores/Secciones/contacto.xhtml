@@ -6,13 +6,13 @@
       xmlns:f="http://java.sun.com/jsf/core">	
   <p:panelGrid id="panelContacto" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
     <p:dataTable emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" id="tablaContacto" rowIndexVar="index" var="contacto" value="#{manticCatalogosProveedoresAccion.renglonProveedor.contactos}" rows="10" paginator="false" reflow="true" rowKey="#{responsable.key}" styleClass="paginated">												
-      <p:column headerText="Contacto">
-        <p:selectOneMenu id="contacto-#{contacto.key}"  styleClass="janal-wid-100-txt" value="#{contacto.idTipoContacto}" filter="true" filterMatchMode="startsWith">
+      <p:column  headerText="Contacto">
+        <p:selectOneMenu disabled="#{contacto.accion=='UPDATE'}" id="contacto-#{contacto.key}"  styleClass="janal-wid-100-txt" value="#{contacto.idTipoContacto}" filter="true" filterMatchMode="startsWith">
           <f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.tiposContactos}"/>
         </p:selectOneMenu>
       </p:column> 
       <p:column headerText="Valor" styleClass="janal-column-right">
-        <p:inputText id="valor-#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}"/>                    																																							
+        <p:inputText disabled="#{contacto.accion=='UPDATE'}" id="valor-#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}"/>                    																																							
       </p:column>  
       <p:column styleClass="janal-column-right" headerText="Orden">
        <p:outputLabel value="#{contacto.orden}"/>    
