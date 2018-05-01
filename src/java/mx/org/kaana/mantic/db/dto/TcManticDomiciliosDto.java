@@ -45,9 +45,7 @@ public class TcManticDomiciliosDto implements IBaseDto, Serializable,Cloneable {
 	@Column (name="id_domicilio")
   private Long idDomicilio;
   @Column (name="numero_interior")
-  private String numeroInterior;
-  @Column (name="id_tmp_cliente")
-  private Long idTmpCliente;
+  private String numeroInterior;  
   @Column (name="y_calle")
   private String ycalle;
   @Column (name="registro")
@@ -59,20 +57,18 @@ public class TcManticDomiciliosDto implements IBaseDto, Serializable,Cloneable {
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="observaciones")
-  private String observaciones;
-  @Column (name="id_tmp_proveedor")
-  private Long idTmpProveedor;
+  private String observaciones;  
 
   public TcManticDomiciliosDto() {
     this(new Long(-1L));
   }
 
   public TcManticDomiciliosDto(Long key) {
-    this(null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticDomiciliosDto(String asentamiento, Long idLocalidad, String codigoPostal, String latitud, String entreCalle, String calle, Long idDomicilio, String numeroInterior, Long idTmpCliente, String ycalle, String longitud, String numeroExterior, Long idUsuario, String observaciones, Long idTmpProveedor) {
+  public TcManticDomiciliosDto(String asentamiento, Long idLocalidad, String codigoPostal, String latitud, String entreCalle, String calle, Long idDomicilio, String numeroInterior,  String ycalle, String longitud, String numeroExterior, Long idUsuario, String observaciones) {
     setAsentamiento(asentamiento);
     setIdLocalidad(idLocalidad);
     setCodigoPostal(codigoPostal);
@@ -81,14 +77,12 @@ public class TcManticDomiciliosDto implements IBaseDto, Serializable,Cloneable {
     setCalle(calle);
     setIdDomicilio(idDomicilio);
     setNumeroInterior(numeroInterior);
-    setIdTmpCliente(idTmpCliente);
     setYcalle(ycalle);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
     setLongitud(longitud);
     setNumeroExterior(numeroExterior);
     setIdUsuario(idUsuario);
     setObservaciones(observaciones);
-    setIdTmpProveedor(idTmpProveedor);
   }
 	
   public void setAsentamiento(String asentamiento) {
@@ -153,15 +147,7 @@ public class TcManticDomiciliosDto implements IBaseDto, Serializable,Cloneable {
 
   public String getNumeroInterior() {
     return numeroInterior;
-  }
-
-  public void setIdTmpCliente(Long idTmpCliente) {
-    this.idTmpCliente = idTmpCliente;
-  }
-
-  public Long getIdTmpCliente() {
-    return idTmpCliente;
-  }
+  }  
 
   public void setYcalle(String ycalle) {
     this.ycalle = ycalle;
@@ -211,14 +197,6 @@ public class TcManticDomiciliosDto implements IBaseDto, Serializable,Cloneable {
     return observaciones;
   }
 
-  public void setIdTmpProveedor(Long idTmpProveedor) {
-    this.idTmpProveedor = idTmpProveedor;
-  }
-
-  public Long getIdTmpProveedor() {
-    return idTmpProveedor;
-  }
-
   @Transient
   @Override
   public Long getKey() {
@@ -249,9 +227,7 @@ public class TcManticDomiciliosDto implements IBaseDto, Serializable,Cloneable {
 		regresar.append(getIdDomicilio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNumeroInterior());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTmpCliente());
-		regresar.append(Constantes.SEPARADOR);
+		regresar.append(Constantes.SEPARADOR);		
 		regresar.append(getYcalle());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
@@ -262,9 +238,7 @@ public class TcManticDomiciliosDto implements IBaseDto, Serializable,Cloneable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getObservaciones());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTmpProveedor());
+		regresar.append(getObservaciones());		
     regresar.append("]");
   	return regresar.toString();
   }
@@ -280,21 +254,19 @@ public class TcManticDomiciliosDto implements IBaseDto, Serializable,Cloneable {
 		regresar.put("calle", getCalle());
 		regresar.put("idDomicilio", getIdDomicilio());
 		regresar.put("numeroInterior", getNumeroInterior());
-		regresar.put("idTmpCliente", getIdTmpCliente());
 		regresar.put("ycalle", getYcalle());
 		regresar.put("registro", getRegistro());
 		regresar.put("longitud", getLongitud());
 		regresar.put("numeroExterior", getNumeroExterior());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("observaciones", getObservaciones());
-		regresar.put("idTmpProveedor", getIdTmpProveedor());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getAsentamiento(), getIdLocalidad(), getCodigoPostal(), getLatitud(), getEntreCalle(), getCalle(), getIdDomicilio(), getNumeroInterior(), getIdTmpCliente(), getYcalle(), getRegistro(), getLongitud(), getNumeroExterior(), getIdUsuario(), getObservaciones(), getIdTmpProveedor()
+    getAsentamiento(), getIdLocalidad(), getCodigoPostal(), getLatitud(), getEntreCalle(), getCalle(), getIdDomicilio(), getNumeroInterior(), getYcalle(), getRegistro(), getLongitud(), getNumeroExterior(), getIdUsuario(), getObservaciones()
     };
     return regresar;
   }
@@ -359,7 +331,6 @@ public class TcManticDomiciliosDto implements IBaseDto, Serializable,Cloneable {
     hash = 67 * hash + (getIdDomicilio() != null ? getIdDomicilio().hashCode() : 0);
     return hash;
   }
-
 }
 
 
