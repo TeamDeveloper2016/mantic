@@ -380,8 +380,8 @@
       show        : 0
     },
     names         : {
-      validations : ['libre', 'max-caracteres', 'min-caracteres', 'max-valor', 'min-valor', 'requerido', 'entero', 'entero-signo', 'valor-simple', 'telefono', 'contiene-a', 'igual-a', 'menor-a', 'mayor-a', 'asterisco', 'moneda', 'moneda-decimal', 'flotante-signo', 'flotante', 'mayusculas', 'minusculas', 'vocales', 'rango', 'secuencia-palabra', 'longitud', 'letras', 'texto', 'curp', 'rfc', 'texto-especial', 'boleano', 'resultado-entrevista-modulo', 'resultado-entrevista-basico', 'fecha', 'fecha-menor', 'fecha-mayor', 'registro', 'hora', 'hora-completa', 'hora-mayor', 'hora-menor', 'comodin', 'no-permitir', 'ipv4', 'ipv6','no-aplica', 'esta-en','correo','acceso'],
-      masks       : ['libre', 'fecha', 'fecha-hora', 'registro', 'hora', 'hora-completa', 'tarjeta-credito', 'decimal', 'decimal-signo', 'letras', 'vocales', 'texto', 'numero', 'un-digito', 'dos-digitos', 'tres-digitos', 'tres-digitos-default', 'cuatro-digitos', 'cinco-digitos', 'siete-digitos', 'diez-digitos', 'entero', 'entero-blanco', 'entero-signo', 'entero-sin-signo', 'flotante', 'flotante-signo', 'rfc', 'curp', 'moneda', 'moneda-decimal', 'mayusculas', 'minusculas', 'cuenta', 'numeros-letras', 'nombre-dto', 'telefono', 'ip', 'version', 'clave-ct-call-center', 'clave-ct', 'clave-operativa', 'resultado-entrevista-basico', 'resultado-entrevista-modulo','resultado-entrevista-exacuatro' ,'no-aplica','correo','valor-simple', 'acceso'],
+      validations : ['libre', 'max-caracteres', 'min-caracteres', 'max-valor', 'min-valor', 'requerido', 'entero', 'entero-signo', 'valor-simple', 'telefono', 'contiene-a', 'igual-a', 'menor-a', 'mayor-a', 'asterisco', 'moneda', 'moneda-decimal', 'flotante-signo', 'flotante', 'mayusculas', 'minusculas', 'vocales', 'rango', 'secuencia-palabra', 'longitud', 'letras', 'texto', 'curp', 'rfc', 'texto-especial', 'boleano', 'fecha', 'fecha-menor', 'fecha-mayor', 'registro', 'hora', 'hora-completa', 'hora-mayor', 'hora-menor', 'comodin', 'no-permitir', 'ipv4', 'ipv6','no-aplica', 'esta-en','correo','acceso'],
+      masks       : ['libre', 'fecha', 'fecha-hora', 'registro', 'hora', 'hora-completa', 'tarjeta-credito', 'decimal', 'decimal-signo', 'letras', 'vocales', 'texto', 'numero', 'un-digito', 'dos-digitos', 'tres-digitos', 'tres-digitos-default', 'cuatro-digitos', 'cinco-digitos', 'siete-digitos', 'diez-digitos', 'entero', 'entero-blanco', 'entero-signo', 'entero-sin-signo', 'flotante', 'flotante-signo', 'rfc', 'curp', 'moneda', 'moneda-decimal', 'mayusculas', 'minusculas', 'cuenta', 'numeros-letras', 'nombre-dto', 'telefono', 'ip', 'version', 'no-aplica','correo', 'valor-simple', 'acceso'],
       watermarks  : ['entero', 'entero-signo', 'valor-simple', 'decimal', 'decimal-signo', 'flotante', 'flotante-signo', 'moneda', 'moneda-decimal', 'max-valor', 'min-valor'],
       formats     : ['libre', 'cambiar-mayusculas', 'cambiar-minusculas', 'rellenar-caracter'],
       customs     : []
@@ -1028,7 +1028,7 @@
       $parent.custom({summary: 'Janal:', detail: msg, severity: 'info'});
     }, // alert
     version: function() {
-      return '0.1.4.2';
+      return '0.1.4.3';
     }, // version
     align: function(pixels) {
       try {
@@ -1042,6 +1042,20 @@
     integer: function(value, start) {
       return isNaN(parseInt(value, 10))? typeof(start)!== 'undefined'? start: 0: parseInt(value, 10);
     },
+		collapsePanel: function(id) {
+      var $divContent= $('#'+ id+ '-content');
+			$('#'+ id+ '-find').toggleClass('ui-grid-col-3');
+			if($divContent.hasClass('ui-grid-col-9')) 
+				$divContent.removeClass('ui-grid-col-9').addClass('ui-grid-col-12');
+			else
+				$divContent.removeClass('ui-grid-col-12').addClass('ui-grid-col-9');			
+		},
+		togglePanel: function(id) {
+      if ($('#' + id).hasClass('lg-pantalla')) 
+		  	$('#' + id).removeClass('lg-pantalla').addClass('xs-pantalla');
+		  else
+			  $('#' + id).removeClass('xs-pantalla').addClass('lg-pantalla');			
+		},
     ready: function() {
       $parent.console('Janal.Control.Validations.ready');
       if(typeof($parent.start)!== 'undefined')

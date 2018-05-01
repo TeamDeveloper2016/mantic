@@ -9,30 +9,19 @@
                 template="/WEB-INF/plantillas/filtroResponsive.xhtml">
     <ui:param name="titulo" value="Filtro" />
     <ui:define name="librerias">
-        <script type="text/javascript">
-					function showPanelFind(id){
-						if($('#'+id).hasClass('lg-pantalla')){
-							$('#'+id).removeClass('lg-pantalla');
-							$('#'+id).addClass('xs-pantalla');
-						} // if
-						else{
-							$('#'+id).removeClass('xs-pantalla');
-							$('#'+id).addClass('lg-pantalla');
-						} // else
-					} // showPanelFind
-        </script>
         <style type="text/css">            
         </style>
     </ui:define>
     <ui:define name="contenido">        
 			<div class="janal-align-right xs-pantalla">
-				<p:commandButton icon="fa fa-search" onstart="showPanelFind('panelBusqueda');"/>
+				<p:commandButton icon="fa fa-search" onstart="janal.togglePanel('panelBusqueda');"/>
 				<p:spacer height="5px"/>		
 			</div>			
 			<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 				<div class="ui-grid-row janal-grid-row">
-					<div class="ui-grid-col-3">
-						<p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla">
+					<div id="collapse-find" class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
               <h:panelGrid styleClass="janal-wid-100">
                 <p:outputLabel for="nombreSentinel" value="Nombre:"/>
                 <p:inputText id="nombreSentinel" styleClass="janal-wid-100-txt"/>              
@@ -47,15 +36,14 @@
               </h:panelGrid>
               <p:separator/>
               <div class="janal-align-right lg-pantalla">
-                <p:commandButton id="buscarSentinel" value="Buscar" icon="fa fa-filter"  oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+                <p:commandButton id="buscarSentinel" value="Buscar" icon="fa fa-filter"  oncomplete="janal.execute()" styleClass="janal-text-white"/>
               </div>
               <div class="janal-align-right xs-pantalla">
-                <p:commandButton id="buscarSentinelIcon" icon="fa fa-filter"  oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+                <p:commandButton id="buscarSentinelIcon" icon="fa fa-filter"  oncomplete="janal.execute()" styleClass="janal-text-white"/>
               </div>
 						</p:panel>
 					</div>
-					<p:spacer/>
-					<div class="ui-grid-col-9">
+					<div id="collapse-content" class="ui-grid-col-9">
 						<p:dataTable var="car" value="#{kajoolBienvenida.cars}" rows="6" paginator="true" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}" rowsPerPageTemplate="6,12,16" reflow="true" selectionMode="single" rowKey="#{car.id}">
               <f:facet name="header">         
 								<div class="lg-pantalla">

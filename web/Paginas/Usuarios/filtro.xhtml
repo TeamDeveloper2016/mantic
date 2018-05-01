@@ -15,17 +15,6 @@
         'tipoPerfil': {validaciones: 'libre', mascara: 'libre'}
       };
 
-      function showPanelFind(id) {
-        if ($('#' + id).hasClass('lg-pantalla')) {
-          $('#' + id).removeClass('lg-pantalla');
-          $('#' + id).addClass('xs-pantalla');
-        } // if
-        else {
-          $('#' + id).removeClass('xs-pantalla');
-          $('#' + id).addClass('lg-pantalla');
-        } // else
-      } // showPanelFind     
-
       function mensajeConfirmacion() {
         janal.bloquear();
         PF('confirmEliminacion').show();
@@ -34,13 +23,14 @@
   </ui:define>
   <ui:define name="contenido">
     <div class="janal-align-right xs-pantalla">
-      <p:commandButton icon="fa fa-search" onstart="showPanelFind('panelBusqueda');" styleClass="janal-text-white"/>
+      <p:commandButton icon="fa fa-search" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white"/>
       <p:spacer height="5px"/>		
     </div>			
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
-        <div class="ui-grid-col-3">
-          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla">
+        <div id="collapse-find" class="ui-grid-col-3">
+          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <h:panelGrid styleClass="janal-wid-100">
               <p:outputLabel for="nombre" value="Nombre completo:"/>
               <p:inputText id="nombre" value="#{kajoolUsuariosFiltro.criteriosBusqueda.nombre}" styleClass="janal-wid-90" onblur="janal.individual('nombre')" />              
@@ -53,13 +43,15 @@
               </p:selectOneMenu>
             </h:panelGrid>
             <p:separator/>
-            <div class="janal-align-right">
-              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.bloquear();" process="@this nombre tipoPerfil" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
+            <div class="janal-align-right lg-pantalla">
+              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.execute();" process="@this nombre tipoPerfil" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
             </div>
+						<div class="janal-align-right xs-pantalla">
+							<p:commandButton id="buscarSentinelIcon" icon="fa fa-filter"  oncomplete="janal.execute()"  process="@this nombre tipoPerfil" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
+						</div>
           </p:panel>
         </div>
-        <p:spacer/>
-        <div class="ui-grid-col-9">
+        <div id="collapse-content" class="ui-grid-col-9">
           <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{kajoolUsuariosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{kajoolUsuariosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{kajoolUsuariosFiltro.lazyModel.rowCount gt kajoolUsuariosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
             <p:ajax event="contextMenu" process="@this" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);"/>
             <f:facet name="header" >
@@ -113,7 +105,6 @@
             <p:menuitem  icon="fa fa-unlock-alt"  rendered="#{kajoolUsuariosFiltro.attrs.seleccionado.activo=='1'}" value="Bloquear"  actionListener="#{kajoolUsuariosFiltro.doActivar}"   update=":datos:tabla :datos:confirmacion"  onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.bloquear();PF('dialogoConfirmacion').show();"/>
             <p:menuitem  icon="fa fa-trash" rendered="#{kajoolUsuariosFiltro.attrs.seleccionado.activo=='0'}" value="Activar" actionListener="#{kajoolUsuariosFiltro.doActivar}"  update=":datos:tabla :datos:confirmacion" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); janal.bloquear();PF('dialogoConfirmacion').show();"/>              
           </p:contextMenu>
-          <div class="EmptyBox30"></div>
         </div>
       </div>
     </div>		      
