@@ -33,8 +33,6 @@ public class Accion extends IBaseAttribute implements Serializable {
   private static final long serialVersionUID = 327393488565639367L;
 	private static final String TEMA= "sentinel";
 	private TcManticPersonasDto persona;
-	private String contrasenia;
-	private Boolean general;
 
 	public TcManticPersonasDto getPersona() {
 		return persona;
@@ -42,23 +40,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
 	public void setPersona(TcManticPersonasDto persona) {
 		this.persona = persona;
-	}	
-
-	public Boolean getGeneral() {
-		return general;
-	}
-
-	public void setGeneral(Boolean general) {
-		this.general = general;
-	}
-
-	public String getContrasenia() {
-		return contrasenia;
-	}
-
-	public void setContrasenia(String contrasenia) {
-		this.contrasenia = contrasenia;
-	}
+	}		
 	
   @PostConstruct
   @Override
@@ -68,7 +50,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("tipoPersona", JsfBase.getFlashAttribute("tipoPersona"));
       this.attrs.put("idPersona", JsfBase.getFlashAttribute("idPersona"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
-			this.general= this.attrs.get("tipoPersona")== null;
+			this.attrs.put("general", this.attrs.get("tipoPersona")== null);
 			doLoad();
 			loadTitulos();
 			loadTiposPersonas();           
