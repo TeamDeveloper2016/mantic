@@ -39,8 +39,13 @@ public class Transaccion extends IBaseTnx {
   private List<CondicionPago> condicionPago;
   private List<Responsable> responsables;
   private List<IBaseDto> eliminados; 
- 
-  private String notificacion;
+  private IBaseDto dtoSingleDepura; 
+  
+  private String notificacion; 
+  
+  public Transaccion (IBaseDto dtoSingleDepura ) {
+    this.dtoSingleDepura = dtoSingleDepura;
+  }
   
   public Transaccion (TcManticProveedoresDto tcMantiProveedorDto) {
      this.tcMantiProveedorDto = tcMantiProveedorDto;
@@ -72,6 +77,10 @@ public class Transaccion extends IBaseTnx {
       break;  
       case ELIMINAR:
         eliminar(sesion);
+      break;
+      case DEPURAR:
+        regresar = DaoFactory.getInstance().delete(sesion,this.dtoSingleDepura)>=0L;
+      break;  
     } // switch
     return regresar;
   }

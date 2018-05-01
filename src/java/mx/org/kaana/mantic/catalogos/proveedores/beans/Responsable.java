@@ -16,6 +16,7 @@ public class Responsable  extends TrManticProveedorPersonaDto  implements Serial
   private static final long serialVersionUID = 7516634619157750816L;
   
    private ESql accion;
+   private boolean principal;
    
    public Responsable() {
      this(ESql.UPDATE);
@@ -29,5 +30,16 @@ public class Responsable  extends TrManticProveedorPersonaDto  implements Serial
   public ESql getAccion() {
      return this.accion;
   }
+
+  public boolean isPrincipal() {
+    return getIdResponsable()!= null && getIdResponsable().equals(1L);
+  }
+
+  public void setPrincipal(boolean principal) {
+    this.setIdResponsable(principal?1L:2L);
+    
+  }
+  
+  
   
 }

@@ -11,29 +11,29 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        
-        'contenedorGrupos\\:prefijo': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo:'general'},
-        'contenedorGrupos\\:rfc': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'rfc',grupo:'general'},
-        'contenedorGrupos\\:razonSocial': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre',grupo:'general'},
-        'contenedorGrupos\\:idTipoProveedor': {validaciones: 'requerido', mascara: 'libre',grupo:'general'},
-        'contenedorGrupos\\:descuento': {validaciones: 'requerido', mascara: 'libre',grupo:'general'},
-        'contenedorGrupos\\:dias_entrega': {validaciones: 'requerido', mascara: 'libre',grupo:'general'},
-        'contenedorGrupos\\:idTipoDia': {validaciones: 'requerido', mascara: 'libre',grupo:'general'},
-        'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre',grupo:'general'},
-        'contenedorGrupos\\:detalleCalle': {validaciones: 'requerido', mascara: 'libre',grupo:'general'},
-        'contenedorGrupos\\:clave': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre',grupo:'general'},
-        'contenedorGrupos\\:entidad'      : {validaciones: 'requerido', mascara: 'libre', grupo:'domicilio'},				
-	    'contenedorGrupos\\:municipio'    : {validaciones: 'requerido', mascara: 'libre', grupo:'domicilio'},				
-		'contenedorGrupos\\:localidad'    : {validaciones: 'requerido', mascara: 'libre', grupo:'domicilio'},				
-		'contenedorGrupos\\:codigoPostal'           : {validaciones: 'requerido', mascara: 'numero', grupo:'domicilio'},				
-		'contenedorGrupos\\:calle'        : {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo:'domicilio'},
-		'contenedorGrupos\\:numeroExterior'        : {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo:'domicilio'},
-		'contenedorGrupos\\:numeroInterior'        : {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo:'domicilio'},
-		'contenedorGrupos\\:asentamiento'        : {validaciones: 'libre', mascara: 'libre', grupo:'domicilio'},
-		'contenedorGrupos\\:entreCalle'        : {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo:'domicilio'},
-		'contenedorGrupos\\:diasEntrega'        : {validaciones: 'requerido', mascara: 'numero', grupo:'general'},
-		'contenedorGrupos\\:ycalle'        : {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo:'domicilio'},
-      
+
+        'contenedorGrupos\\:prefijo': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:rfc': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'rfc', grupo: 'general'},
+        'contenedorGrupos\\:razonSocial': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:idTipoProveedor': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:descuento': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:dias_entrega': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:idTipoDia': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:detalleCalle': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:clave': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:entidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:municipio': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:localidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:codigoPostal': {validaciones: 'requerido', mascara: 'numero', grupo: 'domicilio'},
+        'contenedorGrupos\\:calle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:numeroExterior': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:numeroInterior': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:asentamiento': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:entreCalle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:diasEntrega': {validaciones: 'requerido', mascara: 'numero', grupo: 'general'},
+        'contenedorGrupos\\:ycalle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
+
       };
 
       function applyMayusTable(parent, index, name) {
@@ -42,8 +42,8 @@
       } // applyMayusTable
 
       function refresh(index) {
-        janal.refresh('tabview_'+ index);
-      
+        janal.refresh('tabview_' + index);
+
       }
     </script>   
     <style type="text/css">
@@ -71,15 +71,15 @@
       input.ui-selectonemenu-filter{								
         width: -webkit-fill-available !important;
       }
-      div.ui-datalist{
-        border: transparent !important;
-      }
-      div.ui-datalist-footer{
-        border: transparent !important;
-        background: transparent !important;
-        text-align: left !important;
-        color: black !important;
-      }
+     div.ui-datalist{
+				border: transparent !important;
+			}
+			div.ui-datalist-footer{
+				border: transparent !important;
+				background: transparent !important;
+				text-align: left !important;
+				color: black !important;
+			}
       table.janal-panel-tabla > tbody > tr > td{
         vertical-align: top !important;
       }
@@ -131,14 +131,22 @@
                   <div class="ui-grid-col-3">
                     <p:panel>
                       <h:panelGrid styleClass="janal-wid-100">
-                        <p:dataList emptyMessage="No existen registros" rowIndexVar="index" value="#{manticCatalogosProveedoresAccion.renglonProveedor.domicilios}" styleClass="paginated" id="direcciones" var="direccion">
-                          <p:commandLink  title="Agregar" oncomplete="janal.refresh();janal.desbloquear();" actionListener="#{manticCatalogosProveedoresAccion.doAgregarDocimilio()}" update="direcciones contenedorGrupos:panelDomicilio" process="@this contenedorGrupos:codigoPostal contenedorGrupos:panelDomicilio" onstart="return janal.partial('domicilio')" rendered="#{direccion.accion eq 'SELECT'}" >                           
-                            <i class="fa fa-plus-square"></i>                           
-                          </p:commandLink>                         
+                        <p:dataList  emptyMessage="No existen registros" rowIndexVar="index" value="#{manticCatalogosProveedoresAccion.renglonProveedor.domicilios}" styleClass="paginated" id="direcciones" var="direccion">
                           <p:commandLink title="Eliminar" process="@this" onstart="return janal.bloquear();" update="direcciones" actionListener="#{manticCatalogosProveedoresAccion.doEliminarDomicilio(direccion)}" rendered="#{direccion.accion == 'UPDATE' || direccion.accion == 'INSERT'}" oncomplete="janal.refresh();janal.desbloquear();">
-                             <i class="fa fa-minus-square"></i>   
+                            <i class="fa fa-minus-square fa-lg"></i>   
                           </p:commandLink> 
-                          <p:commandLink  title="Consultar" oncomplete="janal.refresh();janal.desbloquear();" onstart="return janal.bloquear();"  actionListener="#{manticCatalogosProveedoresAccion.doBuscarDomicilio(direccion)}" process="@this" update="direcciones contenedorGrupos:panelDomicilio" value="#{direccion.accion=='SELECT'?'Direccion':'Direccion '.concat(index).concat(direccion.idPrincipal eq  1?'(*Principal)':'')} "/>                                                                    
+                          <p:commandLink rendered="#{direccion.modificar &amp;&amp; direccion.accion!= 'SELECT'}" oncomplete="janal.refresh();janal.desbloquear();" process="direcciones contenedorGrupos:panelDomicilio" update="direcciones contenedorGrupos:panelDomicilio" title="Actualizar" actionListener="#{manticCatalogosProveedoresAccion.doActualizarDomicilio()}">
+                           
+                            <i class="fa fa-check-square fa-lg"></i>
+                          </p:commandLink>		
+                          <p:commandLink  title="Consultar" oncomplete="janal.refresh();janal.desbloquear();" onstart="return janal.bloquear();"  actionListener="#{manticCatalogosProveedoresAccion.doBuscarDomicilio(direccion)}" process="@this" update="direcciones contenedorGrupos:panelDomicilio" rendered="#{direccion.accion!= 'SELECT'}">
+                            <p:outputLabel  value="Direccion #{index} #{direccion.idPrincipal eq  1?'*':''} "/>
+                          </p:commandLink>   
+                          <f:facet name="footer" class="alinear-izquierda">																
+                            <p:commandLink  title="Agregar" oncomplete="janal.refresh();janal.desbloquear();" actionListener="#{manticCatalogosProveedoresAccion.doAgregarDocimilio()}" update="direcciones contenedorGrupos:panelDomicilio" process="@this contenedorGrupos:codigoPostal contenedorGrupos:panelDomicilio" onstart="return janal.partial('domicilio')" >                           
+                              <i class="fa fa-plus-square fa-lg"><p:spacer width="3px"/><p:outputLabel value="Agregar dirección"/></i>
+                            </p:commandLink>		              										
+                          </f:facet>
                         </p:dataList>
                       </h:panelGrid>
                     </p:panel>
@@ -157,7 +165,7 @@
               <ui:include src="../Proveedores/Secciones/responsables.xhtml"/>
             </p:tab>
             <p:tab id="tabTipoContacto" title="Contacto">
-               <ui:include src="../Proveedores/Secciones/contacto.xhtml"/>
+              <ui:include src="../Proveedores/Secciones/contacto.xhtml"/>
             </p:tab>
             <p:tab id="tabAgentes" title="Agentes">
               <ui:include src="../Proveedores/Secciones/agentes.xhtml"/>

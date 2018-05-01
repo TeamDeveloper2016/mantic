@@ -10,9 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.persistence.Transient;
 import mx.org.kaana.kajool.db.comun.josql.FactoryJoSql;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -32,6 +29,9 @@ public class Domicilio extends TrManticProveedorDomicilioDto implements Serializ
   private UISelectEntity detalleCalle;
   private TcManticDomiciliosDto tcManticDomicilioDto;
   private ESql accion;
+  private boolean principal;
+  private boolean modificar;
+  
 
   public Domicilio() {
     this(ESql.UPDATE);
@@ -42,15 +42,34 @@ public class Domicilio extends TrManticProveedorDomicilioDto implements Serializ
     this.tcManticDomicilioDto = new TcManticDomiciliosDto();
   }
 
+  public boolean isPrincipal() {
+    boolean regresar = false;
+    regresar = getIdPrincipal()!=null && getIdPrincipal().equals(1L);
+    return regresar;
+  }
+
+  public void setPrincipal(boolean principal) {
+    this.principal = principal;
+    this.setIdPrincipal(principal?1L:2L);
+  }
+
+  public boolean isModificar() {
+    return modificar;
+  }
+
+  public void setModificar(boolean modificar) {
+    this.modificar = modificar;
+  }
+  
+  
+  
   public TcManticDomiciliosDto getTcManticDomicilioDto() {
     return tcManticDomicilioDto;
   }
 
   public void setTcManticDomicilioDto(TcManticDomiciliosDto tcManticDomicilioDto) {
     this.tcManticDomicilioDto = tcManticDomicilioDto;
-  }
-  
-  
+  }  
 
   public ESql getAccion() {
     return accion;

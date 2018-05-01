@@ -7,15 +7,13 @@
   <p:panelGrid id="panelResponsables" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
     <p:dataTable emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" id="tablaResponsable" rowIndexVar="index" var="responsable" value="#{manticCatalogosProveedoresAccion.renglonProveedor.responsables}" rows="10" paginator="false" reflow="true" rowKey="#{responsable.key}" styleClass="paginated">												
       <p:column headerText="Persona">
-        <p:selectOneMenu id="persona-#{responsable.key}" styleClass="janal-wid-100-txt" value="#{responsable.idPersona}" filter="true" filterMatchMode="contains">
+        <p:selectOneMenu disabled="#{responsable.accion=='UPDATE'}" id="persona-#{responsable.key}" styleClass="janal-wid-100-txt" value="#{responsable.idPersona}" filter="true" filterMatchMode="contains">
           <f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.personas}"/>
         </p:selectOneMenu>
       </p:column> 
-      <p:column headerText="Principal">
-        <p:selectOneMenu id="personaResponsable#{responsable.key}"  styleClass="janal-wid-100-txt" value="#{responsable.idPersona}">
-          <f:selectItem itemLabel="SI" itemValue="1"/>
-          <f:selectItem itemLabel="NO" itemValue="2"/>
-        </p:selectOneMenu>
+      <p:column styleClass="janal-wid-30" style="text-align: center" headerText="Principal">
+        <p:selectBooleanCheckbox id="personaResponsable#{responsable.key}"  value="#{responsable.principal}" styleClass="janal-wid-100-txt" />                   
+        
       </p:column>
         <p:column style="width:32px;text-align: center">
           <p:commandButton update="tablaResponsable" process="@this tablaResponsable" icon="fa fa-close" title="Eliminar" actionListener="#{manticCatalogosProveedoresAccion.doEliminarResponsable(responsable)}" styleClass="janal-text-white"/>

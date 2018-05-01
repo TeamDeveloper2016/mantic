@@ -14,6 +14,7 @@ public class Agente extends TrManticProveedoresAgentesDto implements Serializabl
   private static final long serialVersionUID = 7516634619157750816L;
 
   private ESql accion;
+  private boolean principal;
 
   public Agente() {
     this(ESql.UPDATE);
@@ -26,6 +27,17 @@ public class Agente extends TrManticProveedoresAgentesDto implements Serializabl
   @Override
   public ESql getAccion() {
     return this.accion;
+  }  
+
+  public boolean isPrincipal() {
+    return getIdPrincipal()!= null && getIdPrincipal().equals(1L);
   }
 
+  public void setPrincipal(boolean principal) {
+    setIdPrincipal(principal?1L:2L);
+  }
+  
+  
+ 
+  
 }
