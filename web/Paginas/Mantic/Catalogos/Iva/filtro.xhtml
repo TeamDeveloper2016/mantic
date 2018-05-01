@@ -34,12 +34,11 @@
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div class="ui-grid-col-3">
-          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla">
+          <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
             <h:panelGrid styleClass="janal-wid-100">
               <p:outputLabel for="importe" value="Importe:"/>
               <p:inputText id="importe" value="#{manticCatalogosIvaFiltro.attrs.importe}" styleClass="janal-wid-100-txt"/> 
             </h:panelGrid>
-            <p:separator/>
             <div class="janal-align-right">
               <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.execute(true);" process="@this importe" actionListener="#{manticCatalogosIvaFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
             </div>
@@ -87,7 +86,6 @@
             <p:menuitem id="modificar" action="#{manticCatalogosIvaFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
           </p:contextMenu>
-          <div class="EmptyBox30"></div>
         </div>
       </div>
     </div>		           				

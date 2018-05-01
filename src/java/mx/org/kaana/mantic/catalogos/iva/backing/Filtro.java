@@ -47,7 +47,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       campos = new ArrayList<>();
       campos.add(new Columna("importe", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       campos.add(new Columna("registro", EFormatoDinamicos.DIA_FECHA_HORA));      
-      this.lazyModel = new FormatCustomLazy("TcHistorialIvaDto", "importe", this.attrs, campos);
+      this.lazyModel = new FormatCustomLazy("TcManticHistorialIvaDto", "importe", this.attrs, campos);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
