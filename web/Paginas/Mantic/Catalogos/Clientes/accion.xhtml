@@ -173,14 +173,14 @@
             </p:tab>
             <p:tab title="Representantes">
               <p:panelGrid id="panelTablaRepresentates" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
-                <p:dataTable id="tablaRepresentantes" rowIndexVar="index" var="representante" value="#{manticCatalogosClientesAccion.registroCliente.clientesRepresentantes}" rows="6" paginator="false" reflow="true" rowKey="#{representante.key}" emptyMessage=" " styleClass="paginated">																					
+                <p:dataTable id="tablaRepresentantes" rowIndexVar="index" var="representante" value="#{manticCatalogosClientesAccion.registroCliente.clientesRepresentantes}" rows="6" paginator="false" reflow="true" rowKey="#{!representante.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Representante">										
-                    <p:selectOneMenu id="representante#{codigo.key}" styleClass="janal-wid-100-txt" value="#{representante.idRepresentante}" filter="true" filterMatchMode="startsWith">
+                    <p:selectOneMenu id="representante#{representante.key}" styleClass="janal-wid-100-txt" value="#{representante.idRepresentante}" filter="true" filterMatchMode="startsWith" disabled="#{!representante.nuevo}">
                       <f:selectItems value="#{manticCatalogosClientesAccion.attrs.representantes}"/>
                     </p:selectOneMenu> 				
                   </p:column>	
                   <p:column headerText="Principal" styleClass="janal-wid-30" style="text-align: center">		
-                    <p:selectBooleanCheckbox id="principal#{representante.key}" value="#{representante.principal}" styleClass="janal-wid-100-txt" />                    										
+                    <p:selectBooleanCheckbox id="principal#{representante.key}" value="#{representante.principal}" styleClass="janal-wid-100-txt" disabled="#{representante.nuevo}"/>                    										
                   </p:column>
                   <p:column style="width:32px;text-align: center">
                     <p:commandButton update="tablaRepresentantes" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosClientesAccion.registroCliente.doEliminarClienteRepresentante}" styleClass="janal-text-white">
@@ -197,12 +197,12 @@
               <p:panelGrid id="panelTablaContactos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaContactos" rowIndexVar="index" var="contacto" value="#{manticCatalogosClientesAccion.registroCliente.clientesTiposContacto}" rows="6" paginator="false" reflow="true" rowKey="#{cliente.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Tipo contacto">										
-                    <p:selectOneMenu id="contacto#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.idTipoContacto}" filter="true" filterMatchMode="startsWith">
+                    <p:selectOneMenu id="contacto#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.idTipoContacto}" filter="true" filterMatchMode="startsWith" disabled="#{!contacto.nuevo}">
                       <f:selectItems value="#{manticCatalogosClientesAccion.attrs.tiposContactos}"/>
                     </p:selectOneMenu> 				
                   </p:column>	
                   <p:column headerText="Valor" styleClass="janal-wid-50">		
-                    <p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}" onblur="applyMayusTable('tablaContactos',#{index}, 'valor')"/>                    																																			
+                    <p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}" onblur="applyMayusTable('tablaContactos',#{index}, 'valor')" disabled="#{!contacto.nuevo}"/>                    																																			
                   </p:column>
                   <p:column style="width:32px;text-align: center">
                     <p:commandButton update="tablaContactos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosClientesAccion.registroCliente.doEliminarClienteTipoContacto}" styleClass="janal-text-white">
