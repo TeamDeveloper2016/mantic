@@ -34,7 +34,6 @@ import mx.org.kaana.mantic.db.dto.TrManticProveedorPagoDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-
 public class Gestor implements Serializable {
 
   private static final Log LOG = LogFactory.getLog(Gestor.class);
@@ -78,7 +77,7 @@ public class Gestor implements Serializable {
 
   public List<Domicilio> getDirecciones() {
     return direcciones;
-  } 
+  }
 
   public void loadTiposProveedores() throws Exception {
     try {
@@ -119,35 +118,39 @@ public class Gestor implements Serializable {
   public void loadEntidades(boolean includeItemSeleccione) {
     Map<String, Object> params = null;
     Entity entityDefault = null;
+    List<Columna> formatos  = new ArrayList<>();
     try {
       params = new HashMap();
       params.put(Constantes.SQL_CONDICION, "id_pais=1");
+      formatos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       params.put("sortOrder", "order by clave");
-      this.entidades.addAll(UIEntity.build("TcJanalEntidadesDto", "mto", params));
-      if (includeItemSeleccione){
-         entityDefault = new Entity();
-         entityDefault.put("idKey", new Value("idKey", -1L, "id_key"));
-         entityDefault.put("descripcion", new Value("descripcion", "SELECCIONE", "descripcion"));
-         entityDefault.put("clave", new Value("clave", "00", "clave"));
+      this.entidades.addAll(UIEntity.build("TcJanalEntidadesDto", "mto", params,formatos));
+      if (includeItemSeleccione) {
+        entityDefault = new Entity();
+        entityDefault.put("idKey", new Value("idKey", -1L, "id_key"));
+        entityDefault.put("descripcion", new Value("descripcion", "SELECCIONE", "descripcion"));
+        entityDefault.put("clave", new Value("clave", "00", "clave"));
         this.entidades.add(0, new UISelectEntity(entityDefault));
-      }        
+      }
     } // try
     catch (Exception e) {
       throw e;
     } // catch
     finally {
       Methods.clean(params);
+      Methods.clean(formatos);
     }// finally
   }
-  
+
   public void loadMunicipios(Long idEntidad) {
     Map<String, Object> params = null;
-    List<Columna>  formatos = null;
+    List<Columna> formatos = null;
     try {
       formatos = new ArrayList<>();
+      formatos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       params = new HashMap<>();
       params.put(Constantes.SQL_CONDICION, "id_entidad=".concat(idEntidad.toString()));
-      this.municipios.addAll(UIEntity.build("TcJanalMunicipiosDto", "row", params,formatos,Constantes.SQL_TODOS_REGISTROS));
+      this.municipios.addAll(UIEntity.build("TcJanalMunicipiosDto", "row", params, formatos, Constantes.SQL_TODOS_REGISTROS));
     } // try
     catch (Exception e) {
       throw e;
@@ -160,35 +163,41 @@ public class Gestor implements Serializable {
 
   public void loadLocalidades(Long idMunicipio) {
     Map<String, Object> params = null;
-    List<Columna>  formatos = null;
+    List<Columna> formatos = null;
     try {
       formatos = new ArrayList<>();
+      formatos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       params = new HashMap();
       params.put(Constantes.SQL_CONDICION, "id_municipio=".concat(idMunicipio.toString()));
-      this.localidades.addAll(UIEntity.build("TcJanalLocalidadesDto", "row", params,formatos,Constantes.SQL_TODOS_REGISTROS));
+      this.localidades.addAll(UIEntity.build("TcJanalLocalidadesDto", "row", params, formatos, Constantes.SQL_TODOS_REGISTROS));
     } // try
     catch (Exception e) {
       throw e;
     } // catch
     finally {
       Methods.clean(params);
+      Methods.clean(formatos);
     }// finally
   }
 
   public void loadCodigosPostales(Long idLocalidad) {
     Map<String, Object> params = null;
-    Entity  entityDefault = null;
+    Entity entityDefault = null;
     List<Columna> formatos = null;
     try {
       formatos = new ArrayList<>();
       params = new HashMap();
+      formatos.add(new Columna("codigoPostal",EFormatoDinamicos.MAYUSCULAS));
+      formatos.add(new Columna("calle",EFormatoDinamicos.MAYUSCULAS));
+      formatos.add(new Columna("numeroExterior",EFormatoDinamicos.MAYUSCULAS));
+      formatos.add(new Columna("numeroInterior",EFormatoDinamicos.MAYUSCULAS));
       params.put(Constantes.SQL_CONDICION, "id_localidad=".concat(idLocalidad.toString()));
-      this.codigosPostales.addAll(UIEntity.build("TcManticDomiciliosDto", "row", params,formatos,Constantes.SQL_TODOS_REGISTROS));
-       entityDefault = new Entity();
-       entityDefault.put("idKey", new Value("idKey", -1L, "id_key"));
-       entityDefault.put("calle", new Value("calle", "NUEVO", "calle"));
-       entityDefault.put("codigoPostal", new Value("codigoPostal", "00", "codigoPostal"));  
-       this.codigosPostales.add(0,new UISelectEntity(entityDefault));
+      this.codigosPostales.addAll(UIEntity.build("TcManticDomiciliosDto", "row", params, formatos, Constantes.SQL_TODOS_REGISTROS));
+      entityDefault = new Entity();
+      entityDefault.put("idKey", new Value("idKey", -1L, "id_key"));
+      entityDefault.put("calle", new Value("calle", "NUEVO", "calle"));
+      entityDefault.put("codigoPostal", new Value("codigoPostal", "00", "codigoPostal"));
+      this.codigosPostales.add(0, new UISelectEntity(entityDefault));
     } // try
     catch (Exception e) {
       throw e;
@@ -199,27 +208,26 @@ public class Gestor implements Serializable {
   }
 
   public void loadDirecciones(Long idProvedor) throws Exception {
-    Map<String,Object> params =  null;
-    List<Domicilio>  domiciliosActuales= null;
+    Map<String, Object> params = null;
+    List<Domicilio> domiciliosActuales = null;
     Entity domicilioActual = null;
     try {
       params = new HashMap<>();
-      params.put(Constantes.SQL_CONDICION,"id_proveedor=".concat(idProvedor.toString()));
-      domiciliosActuales = DaoFactory.getInstance().toEntitySet(Domicilio.class,"TrManticProveedorDomicilioDto","row",params,Constantes.SQL_TODOS_REGISTROS);
-      if(domiciliosActuales!= null && !domiciliosActuales.isEmpty()){
-        for (Domicilio  domActual : domiciliosActuales) {
+      params.put(Constantes.SQL_CONDICION, "id_proveedor=".concat(idProvedor.toString()));
+      domiciliosActuales = DaoFactory.getInstance().toEntitySet(Domicilio.class, "TrManticProveedorDomicilioDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+      if (domiciliosActuales != null && !domiciliosActuales.isEmpty()) {
+        for (Domicilio domActual : domiciliosActuales) {
           params.put("idDomicilio", domActual.getIdDomicilio());
-          domicilioActual = (Entity) DaoFactory.getInstance().toEntity("VistaProveedoresDto","direccionProveedor",params);
+          domicilioActual = (Entity) DaoFactory.getInstance().toEntity("VistaProveedoresDto", "direccionProveedor", params);
           domActual.setTcManticDomicilioDto((TcManticDomiciliosDto) DaoFactory.getInstance().findById(TcManticDomiciliosDto.class, domActual.getIdDomicilio()));
           domActual.setLocalidad(new UISelectEntity(domActual.getTcManticDomicilioDto().getIdLocalidad().toString()));
           domActual.setDetalleCalle(new UISelectEntity(domActual.getIdDomicilio().toString()));
           domActual.setMunicipio(new UISelectEntity(domicilioActual.toString("idMunicipio")));
-          domActual.setEntidad(new UISelectEntity(domicilioActual.toString("idEntidad")));          
+          domActual.setEntidad(new UISelectEntity(domicilioActual.toString("idEntidad")));
         }
         this.direcciones.addAll(domiciliosActuales);
-        this.direcciones.add(0,new Domicilio(ESql.SELECT));
-      }  
-      else {
+        this.direcciones.add(0, new Domicilio(ESql.SELECT));
+      } else {
         this.direcciones.add(new Domicilio(ESql.SELECT));
       }
     } // try
@@ -230,24 +238,40 @@ public class Gestor implements Serializable {
       Methods.clean(params);
     }// finally
   }
-  
-  public List<UISelectItem> toTiposPagos () throws Exception {
+
+  public List<UISelectItem> toTiposPagos() throws Exception {
     List<UISelectItem> regresar = null;
-    try {     
-      regresar = UISelect.build("VistaProveedoresDto", "proveedorCondicionPago",Collections.emptyMap(),Cadena.toList("clave|nombrePago|nombre")," ", EFormatoDinamicos.MAYUSCULAS);
+    try {
+      regresar = UISelect.build("VistaProveedoresDto", "proveedorCondicionPago", Collections.emptyMap(), Cadena.toList("clave|nombrePago|nombre"), " ", EFormatoDinamicos.MAYUSCULAS);
     } // try
     catch (Exception e) {
       throw e;
     } // catch
     return regresar;
   }
-   
-  public List<CondicionPago>  toCondicionesPagoProveedor(Long idProveedor) throws Exception {
+
+  public List<UISelectEntity> toCodigosPostales(Long idEntidad) throws Exception {
+    List<UISelectEntity> regresar = new ArrayList<>();
+    Map<String, Object> params = new HashMap<>();
+    try {
+      params.put(Constantes.SQL_CONDICION, "id_entidad=".concat(idEntidad.toString()));
+      regresar.addAll(UIEntity.build("TcManticCodigosPostalesDto", "row", params));
+    }// try
+    catch (Exception e) {
+      throw e;
+    } // catcg
+    finally {
+      Methods.clean(params);
+    }// finally
+    return regresar;
+  }
+
+  public List<CondicionPago> toCondicionesPagoProveedor(Long idProveedor) throws Exception {
     List<CondicionPago> regresar = null;
-    Map<String,Object> params = new HashMap<>();
+    Map<String, Object> params = new HashMap<>();
     try {
       params.put(Constantes.SQL_CONDICION, "id_proveedor=".concat(idProveedor.toString()));
-      regresar = DaoFactory.getInstance().toEntitySet(CondicionPago.class,"TrManticProveedorPagoDto","row",params);
+      regresar = DaoFactory.getInstance().toEntitySet(CondicionPago.class, "TrManticProveedorPagoDto", "row", params);
     } // try
     catch (Exception e) {
       throw e;
@@ -257,13 +281,13 @@ public class Gestor implements Serializable {
     } // finally
     return regresar;
   }
-  
-  public List<Responsable>  toResponsablesProvedor(Long idProveedor) throws Exception {
+
+  public List<Responsable> toResponsablesProvedor(Long idProveedor) throws Exception {
     List<Responsable> regresar = null;
-    Map<String,Object> params = new HashMap<>();
+    Map<String, Object> params = new HashMap<>();
     try {
       params.put(Constantes.SQL_CONDICION, "id_proveedor=".concat(idProveedor.toString()));
-      regresar = DaoFactory.getInstance().toEntitySet(Responsable.class,"TrManticProveedorPersonaDto","row",params);
+      regresar = DaoFactory.getInstance().toEntitySet(Responsable.class, "TrManticProveedorPersonaDto", "row", params);
     } // try
     catch (Exception e) {
       throw e;
@@ -273,13 +297,13 @@ public class Gestor implements Serializable {
     } // finally
     return regresar;
   }
- 
-   public List<Contacto>  toContactosProvedor(Long idProveedor) throws Exception {
+
+  public List<Contacto> toContactosProvedor(Long idProveedor) throws Exception {
     List<Contacto> regresar = null;
-    Map<String,Object> params = new HashMap<>();
+    Map<String, Object> params = new HashMap<>();
     try {
       params.put(Constantes.SQL_CONDICION, "id_proveedor=".concat(idProveedor.toString()).concat(" order by orden"));
-      regresar = DaoFactory.getInstance().toEntitySet(Contacto.class,"TrManticProveedorTipoContactoDto","row",params);
+      regresar = DaoFactory.getInstance().toEntitySet(Contacto.class, "TrManticProveedorTipoContactoDto", "row", params);
     } // try
     catch (Exception e) {
       throw e;
@@ -289,13 +313,13 @@ public class Gestor implements Serializable {
     } // finally
     return regresar;
   }
- 
-   public List<Agente>  toAgentesProvedor(Long idProveedor) throws Exception {
+
+  public List<Agente> toAgentesProvedor(Long idProveedor) throws Exception {
     List<Agente> regresar = null;
-    Map<String,Object> params = new HashMap<>();
+    Map<String, Object> params = new HashMap<>();
     try {
       params.put(Constantes.SQL_CONDICION, "id_proveedor=".concat(idProveedor.toString()));
-      regresar = DaoFactory.getInstance().toEntitySet(Agente.class,"TrManticProveedoresAgentesDto","row",params);
+      regresar = DaoFactory.getInstance().toEntitySet(Agente.class, "TrManticProveedoresAgentesDto", "row", params);
     } // try
     catch (Exception e) {
       throw e;
@@ -304,5 +328,6 @@ public class Gestor implements Serializable {
       Methods.clean(params);
     } // finally
     return regresar;
-  }  
+  }
+
 }
