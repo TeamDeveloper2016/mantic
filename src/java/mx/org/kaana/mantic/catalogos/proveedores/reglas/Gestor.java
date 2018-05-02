@@ -43,7 +43,7 @@ public class Gestor implements Serializable {
   private List<UISelectEntity> entidades;
   private List<UISelectEntity> municipios;
   private List<UISelectEntity> localidades;
-  private List<UISelectEntity> codigosPostales;
+  private List<UISelectEntity> detalleCalles;
   private List<Domicilio> direcciones;
 
   public Gestor() {
@@ -51,7 +51,7 @@ public class Gestor implements Serializable {
     this.entidades = new ArrayList();
     this.municipios = new ArrayList();
     this.localidades = new ArrayList();
-    this.codigosPostales = new ArrayList();
+    this.detalleCalles = new ArrayList();
     this.direcciones = new ArrayList();
   }
 
@@ -67,8 +67,8 @@ public class Gestor implements Serializable {
     return localidades;
   }
 
-  public List<UISelectEntity> getCodigosPostales() {
-    return codigosPostales;
+  public List<UISelectEntity> getDetalleCalles() {
+    return detalleCalles;
   }
 
   public List<UISelectEntity> getTiposProveedores() {
@@ -180,7 +180,7 @@ public class Gestor implements Serializable {
     }// finally
   }
 
-  public void loadCodigosPostales(Long idLocalidad) {
+  public void loadLocalidadCalles(Long idLocalidad) {
     Map<String, Object> params = null;
     Entity entityDefault = null;
     List<Columna> formatos = null;
@@ -192,13 +192,13 @@ public class Gestor implements Serializable {
       formatos.add(new Columna("numeroExterior",EFormatoDinamicos.MAYUSCULAS));
       formatos.add(new Columna("numeroInterior",EFormatoDinamicos.MAYUSCULAS));
       params.put(Constantes.SQL_CONDICION, "id_localidad=".concat(idLocalidad.toString()));
-      this.codigosPostales.addAll(UIEntity.build("TcManticDomiciliosDto", "row", params, formatos, Constantes.SQL_TODOS_REGISTROS));
+      this.detalleCalles.addAll(UIEntity.build("TcManticDomiciliosDto", "row", params, formatos, Constantes.SQL_TODOS_REGISTROS));
       entityDefault = new Entity();
       entityDefault.put("idKey", new Value("idKey", -1L, "id_key"));
       entityDefault.put("calle", new Value("calle", "NUEVO", "calle"));
       entityDefault.put("codigoPostal", new Value("codigoPostal", "00", "codigoPostal"));
-      this.codigosPostales.add(0, new UISelectEntity(entityDefault));
-    } // try
+      this.detalleCalles.add(0, new UISelectEntity(entityDefault));
+    } // try // try
     catch (Exception e) {
       throw e;
     } // catch

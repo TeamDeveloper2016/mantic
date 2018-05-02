@@ -178,9 +178,9 @@ public class Accion extends IBaseAttribute implements Serializable {
     Gestor gestor = null;
     try {
       gestor = new Gestor();
-      gestor.loadCodigosPostales(this.domicilio.getLocalidad().getKey());
-      this.attrs.put("detalleCalles", gestor.getCodigosPostales());
-      this.domicilio.setDetalleCalle((UISelectEntity) UIBackingUtilities.toFirstKeySelectEntity(gestor.getCodigosPostales()));
+      gestor.loadLocalidadCalles(this.domicilio.getLocalidad().getKey());
+      this.attrs.put("detalleCalles", gestor.getDetalleCalles());
+      this.domicilio.setDetalleCalle((UISelectEntity) UIBackingUtilities.toFirstKeySelectEntity(gestor.getDetalleCalles()));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -307,8 +307,8 @@ public class Accion extends IBaseAttribute implements Serializable {
         this.attrs.put("municipios", gestor.getMunicipios());
         gestor.loadLocalidades(this.domicilio.getMunicipio().getKey());
         this.attrs.put("localidades", gestor.getLocalidades());
-        gestor.loadCodigosPostales(this.domicilio.getLocalidad().getKey());
-        this.attrs.put("detalleCalles", gestor.getCodigosPostales());
+        gestor.loadLocalidadCalles(this.domicilio.getLocalidad().getKey());
+        this.attrs.put("detalleCalles", gestor.getDetalleCalles());
         this.renglonProveedor.getDomicilios().get(pos).setModificar(true);
         break;
       case SELECT:
