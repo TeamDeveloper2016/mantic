@@ -106,13 +106,7 @@
                 <h:outputText value="Sexo"/>
               </f:facet>
               <h:outputText value="#{filtro['sexo']}"/>
-            </p:column>           			
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.idTipoSexo}">
-              <f:facet name="header">
-                <h:outputText value="Sexo"/>
-              </f:facet>
-              <h:outputText value="#{filtro['sexo']}"/>
-            </p:column>					
+            </p:column>           			           				
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCatalogosAgentesFiltro.lazyModel==null?0:manticCatalogosAgentesFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
