@@ -1007,5 +1007,16 @@
 					{condicion}
 			</select>
 		</unit>
+		<unit id="TcManticPuestosDto">
+			<select id="row">
+				select 
+					tc_mantic_puestos.id_puesto as id_key,
+					tc_mantic_puestos.*
+				from 
+					tc_mantic_puestos
+				where 
+					{condicion}
+			</select>
+		</unit>		
   </dml>    
 </process>
