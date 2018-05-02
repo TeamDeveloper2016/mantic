@@ -19,7 +19,7 @@
 				'contenedorGrupos\\:codigo'         : {validaciones: 'cambiar-mayusculas', mascara: 'libre'}				
 			};
 			
-			function applyMayusTable(parent, index, name){				
+			function applyMayusTable(parent, index, name) {				
 				var mayus= $('#contenedorGrupos\\:'+parent+'\\:'+index+'\\:'+name).val().toUpperCase();
 				$('#contenedorGrupos\\:'+parent+'\\:'+index+'\\:'+name).val(mayus);
 			} // applyMayusTable
@@ -82,9 +82,9 @@
 								<p:separator/><p:separator/>
 								<p:outputLabel for="meta" value="Meta tag:"/>
 								<p:inputText id="meta" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.metaTag}" onblur="janal.individual('contenedorGrupos\\:meta')"/>                    
-								<p:outputLabel for="metaDescripcion" value="Descripción:"/>
+								<p:outputLabel for="metaDescripcion" value="Meta descripción:"/>
 								<p:inputTextarea id="metaDescripcion" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.metaTagDescipcion}" onblur="janal.individual('contenedorGrupos\\:metaDescripcion')"/>                    
-								<p:outputLabel for="metaTeclado" value="Teclas:"/>
+								<p:outputLabel for="metaTeclado" value="Meta referencia:"/>
 								<p:inputTextarea id="metaTeclado" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.metaTagTeclado}" onblur="janal.individual('contenedorGrupos\\:metaTeclado')"/>                    																	
 								<p:separator/><p:separator/>
 								<p:outputLabel for="pesoEstimado" value="Peso estimado:"/>

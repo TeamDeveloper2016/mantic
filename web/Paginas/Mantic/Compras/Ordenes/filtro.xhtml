@@ -3,9 +3,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/filtro.xhtml">
   <ui:param name="titulo" value="Ordenes de compra generadas" />
   <ui:define name="librerias">
@@ -33,7 +31,7 @@
               <p:outputLabel for="consecutivo" value="No. orden:"/>
               <p:inputText id="consecutivo" value="#{manticComprasOrdenesFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="proveedor" value="Proveedor:"/>
-              <p:selectOneMenu  id="proveedor" value="#{manticComprasOrdenesFiltro.attrs.proveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96">
+              <p:selectOneMenu id="proveedor" value="#{manticComprasOrdenesFiltro.attrs.proveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96">
                 <f:selectItems value="#{manticComprasOrdenesFiltro.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column>
                   <h:outputText value="#{item.nombre}"/>
@@ -45,7 +43,7 @@
               <p:outputLabel for="articulo" value="Articulo:"/>
               <p:inputText id="articulo" value="#{manticComprasOrdenesFiltro.attrs.articulo}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="fecha" value="Fecha:"/>
-							<p:calendar id="fecha" inputStyleClass="janal-wid-86" styleClass="janal-wid-100" value="#{manticComprasOrdenesFiltro.attrs.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" mask="true"/>
+							<p:calendar id="fecha" inputStyleClass="janal-wid-86" styleClass="janal-wid-100" value="#{manticComprasOrdenesFiltro.attrs.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="importe" value="Importe:"/>
               <p:inputText id="importe" value="#{manticComprasOrdenesFiltro.attrs.importe}" styleClass="janal-wid-100-txt"/> 
             </h:panelGrid>
@@ -61,8 +59,8 @@
           <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticComprasOrdenesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticComprasOrdenesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticComprasOrdenesFiltro.lazyModel.rowCount gt manticComprasOrdenesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
             <f:facet name="header" >
               <div class="lg-pantalla">
-                <p:menuButton   value="Opciones">
-                  <p:menuitem  value="Agregar" action="#{manticComprasOrdenesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                <p:menuButton value="Opciones">
+                  <p:menuitem value="Agregar" action="#{manticComprasOrdenesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
