@@ -439,6 +439,9 @@
         from      
           tr_mantic_persona_domicilio
       </select>
+			<delete id="rows">
+         delete from tr_mantic_persona_domicilio where id_persona = {idPersona}
+      </delete>  
     </unit>
     
     <unit id="TrManticPersonaTipoContactoDto">
@@ -464,6 +467,9 @@
         from      
           tr_mantic_persona_tipo_contacto
       </select>
+			<delete id="rows">
+         delete from tr_mantic_persona_tipo_contacto where id_persona = {idPersona}
+      </delete>
     </unit>
     
      <unit id="TrManticProveedorDomicilioDto">
