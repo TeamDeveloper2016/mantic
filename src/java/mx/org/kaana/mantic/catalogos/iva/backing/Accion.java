@@ -27,7 +27,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		return this.iva;
 	}
 
-	public void setPersona(TcManticHistorialIvaDto iva) {
+	public void setIva(TcManticHistorialIvaDto iva) {
 		this.iva = iva;
 	}	
 
@@ -39,6 +39,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idHistorialIva", JsfBase.getFlashAttribute("idHistorialIva"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
+			doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -90,7 +91,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {   
-    return this.attrs.get("retorno").toString();
+    return (String)this.attrs.get("retorno");
   } // doAccion
 	
 }

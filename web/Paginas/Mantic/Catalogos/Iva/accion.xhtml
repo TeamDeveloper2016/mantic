@@ -11,7 +11,7 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-				'contenedorGrupos\\:importe'      : {validaciones: 'requerido|flotante', mascara: 'decimal'},
+				'contenedorGrupos\\:importe'      : {validaciones: 'requerido|flotante', mascara: 'flotante'},
 				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre'}				
 			};						
 		</script>   
@@ -39,7 +39,7 @@
 								<p:outputLabel for="aplicar" value="Aplicar:"/>
 								<p:selectBooleanCheckbox id="aplicar" value="#{manticCatalogosIvaAccion.attrs.aplicar}" styleClass="janal-wid-100-txt" />                    
 								<p:spacer width="1"/>
-								<p:outputLabel value="Aplicar el impuesto del IVA a todos los articulos del catálogo, excepto a aquellos articulos que no aplica el impuesto"/>
+								<p:outputLabel value="Selecciona para aplicar el impuesto del IVA a todos los articulos del catálogo, excepto a aquellos articulos que no les aplica el impuesto."/>
               </p:panelGrid>
 						</p:tab>						            						            																																																
 						<p:tab title="Observaciones">
