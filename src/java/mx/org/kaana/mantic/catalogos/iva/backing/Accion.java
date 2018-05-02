@@ -54,7 +54,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
       switch (eaccion) {
         case AGREGAR:											
-          this.iva= new TcManticHistorialIvaDto();
+          this.iva= new TcManticHistorialIvaDto(JsfBase.getAutentifica().getPersona().getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 16.0);
           break;
         case MODIFICAR:					
           idHistorialIva= (Long)this.attrs.get("idHistorialIva");
