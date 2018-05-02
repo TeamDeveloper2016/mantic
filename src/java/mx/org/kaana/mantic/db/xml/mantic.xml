@@ -376,6 +376,9 @@
         where      
           id_persona = {idPersona} and id_puesto = {idPuesto} and id_empresa_persona = {idEmpresaPersona} and id_empresa = {idEmpresa}
       </select>
+			<delete id="rows">
+				delete from tr_mantic_empresa_personal where id_persona = {idPersona}
+			</delete>
     </unit>
     
     <unit id="TrManticEmpresaTipoContactoDto">
@@ -582,18 +585,7 @@
       <delete id="rows">
         delete from tr_mantic_proveedores_agentes where id_proveedor = {idProveedor}
       </delete>  
-    </unit>
-		<unit id="TcManticEmpaquesDto">
-			<select id="row">
-				select 
-					tc_mantic_empaques.id_empaque as id_key,
-					tc_mantic_empaques.*
-				from
-					tc_mantic_empaques
-				where 
-					{condicion}
-			</select>
-		</unit>
+    </unit>		
 		<unit id="TcManticArticulosDto">
       <select id="row">
         select      
@@ -800,18 +792,7 @@
         where 
           tc_mantic_clientes.id_empresa = {idEmpresa} 
       </select>
-    </unit>
-		<unit id="TcManticTiposVentasDto">
-			<select id="row">
-				select 
-					tc_mantic_tipos_ventas.id_tipo_venta as id_key,
-					tc_mantic_tipos_ventas.*
-				from 
-					tc_mantic_tipos_ventas
-				where 
-					{condicion}
-			</select>			
-		</unit>
+    </unit>		
 		<unit id="TcManticImagenesDto">
       <select id="row">
         select      
@@ -832,33 +813,7 @@
 			<delete id="rows">
         delete from tc_mantic_imagenes where id_articulo={idArticulo} 
       </delete>
-    </unit>
-		<unit id="TcManticPersonasTitulosDto">
-			<select id="row">
-				select  
-					tc_mantic_personas_titulos.*,
-					tc_mantic_personas_titulos.id_persona_titulo as id_key 
-				from 
-					tc_mantic_personas_titulos 
-				where 
-					{condicion}
-				order by 
-					nombre			
-			</select>
-		</unit>  
-		<unit id="TcManticTiposProveedoresDto">
-			<select id="row">
-				select
-					tc_mantic_tipos_proveedores.*,
-					tc_mantic_tipos_proveedores.id_tipo_proveedor as id_key
-				from
-				 tc_mantic_tipos_proveedores
-				where
-					{condicion}
-				order by
-					id_tipo_proveedor
-			</select>  
-		</unit>  
+    </unit>				
 		<unit id="TrManticClienteDomicilioDto">
       <select id="row">
         select      
@@ -961,31 +916,7 @@
 				and 
 				  codigo_postal= '{codigoPostal}'
 			</select>
-    </unit>	
-    <unit id="TcManticTiposContactosDto">
-      <select id="row">
-        select
-          tc_mantic_tipos_contactos.*,
-          tc_mantic_tipos_contactos.id_tipo_contacto as id_key
-        from
-          tc_mantic_tipos_contactos
-        where 
-          {condicion}
-        order by
-          id_tipo_medio,orden     
-      </select>  
-    </unit>  
-    <unit id="TcManticTiposPersonasDto">
-			<select id="row">
-				select 
-					tc_mantic_tipos_personas.id_tipo_persona as id_key,
-					tc_mantic_tipos_personas.*
-				from 
-					tc_mantic_tipos_personas
-				where 
-					{condicion}
-			</select>			
-		</unit>   
+    </unit>	        
     <unit id="TcManticHistorialIvaDto">
 			<select id="row">
 				select      
@@ -1013,28 +944,614 @@
 					importe like '%{importe}%'
 				{sortOrder}
 			</select>			
-		</unit> 	
-		<unit id="TcManticCodigosPostalesDto">
-			<select id="row">
-				select 
+		</unit> 				
+		<unit id="TcManticAlmacenesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_almacenes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_almacenes
+        where      
+          id_almacen = {idAlmacen} and id_empresa = {idEmpresa} and nombre = '{nombre}'
+      </select>
+    </unit>
+	<unit id="TcManticAlmacenesArticulosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_almacenes_articulos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_almacenes_articulos
+        where      
+          id_almacen_articulo = {idAlmacenArticulo} and id_almacen = {idAlmacen} and id_articulo = {idArticulo}
+      </select>
+    </unit>
+	    <unit id="TcManticAlmacenesUbicacionesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_almacenes_ubicaciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_almacenes_ubicaciones
+        where      
+          piso = '{piso}' and id_almacen = {idAlmacen} and id_almacen_ubicacion = {idAlmacenUbicacion}
+      </select>
+    </unit>	    
+	    <unit id="TcManticCargosComprasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_cargos_compras
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_cargos_compras
+        where      
+          nombre = '{nombre}' and id_cargo_compra = {idCargoCompra}
+      </select>
+    </unit>
+	    <unit id="TcManticCodigosPostalesDto">
+      <select id="row">
+        select 
 					tc_mantic_codigos_postales.id_codigo_postal as id_key, 
 					tc_mantic_codigos_postales.*
 				from 
 					tc_mantic_codigos_postales
 				where 
+					{condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_codigos_postales
+        where      
+          id_codigo_postal = {idCodigoPostal}
+      </select>
+    </unit>
+	    <unit id="TcManticDetallesComprasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_detalles_compras
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_detalles_compras
+        where      
+          id_detalle_compra = {idDetalleCompra} and id_orden_compra = {idOrdenCompra} and id_articulo = {idArticulo}
+      </select>
+    </unit>
+	    <unit id="TcManticEmpaquesDto">
+      <select id="row">
+        select 
+					tc_mantic_empaques.id_empaque as id_key,
+					tc_mantic_empaques.*
+				from
+					tc_mantic_empaques
+				where 
 					{condicion}
-			</select>
-		</unit>
-		<unit id="TcManticPuestosDto">
-			<select id="row">
-				select 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_empaques
+        where      
+          id_empaque = {idEmpaque} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticEmpresasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_empresas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_empresas
+        where      
+          id_empresa = {idEmpresa} and id_tipo_empresa = {idTipoEmpresa} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticManufacturasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_manufacturas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_manufacturas
+        where      
+          id_manufactura = {idManufactura} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticOrdenesComprasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_ordenes_compras
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ordenes_compras
+        where      
+          id_tipo_compra = {idTipoCompra} and id_proveedor_pago = {idProveedorPago} and id_proveedor = {idProveedor} and id_cliente = {idCliente} and entrega_estimada = {entregaEstimada} and id_orden_compra = {idOrdenCompra} and id_empresa = {idEmpresa}
+      </select>
+    </unit>
+	    <unit id="TcManticPersonaDomicilioDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_persona_domicilio
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_persona_domicilio
+        where      
+          id_persona = {idPersona} and id_persona_domicilio = {idPersonaDomicilio} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
+      </select>
+    </unit>
+	    <unit id="TcManticPersonasTitulosDto">
+      <select id="row">
+        select  
+					tc_mantic_personas_titulos.*,
+					tc_mantic_personas_titulos.id_persona_titulo as id_key 
+				from 
+					tc_mantic_personas_titulos 
+				where 
+					{condicion}
+				order by 
+					nombre			
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_personas_titulos
+        where      
+          id_persona_titulo = {idPersonaTitulo}
+      </select>
+    </unit>
+	    <unit id="TcManticPresentacionesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_presentaciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_presentaciones
+        where      
+          id_presentacion = {idPresentacion} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticPuestosDto">
+      <select id="row">
+       select 
 					tc_mantic_puestos.id_puesto as id_key,
 					tc_mantic_puestos.*
 				from 
 					tc_mantic_puestos
 				where 
+					{condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_puestos
+        where      
+          id_puesto = {idPuesto}
+      </select>
+    </unit>
+	    <unit id="TcManticSinoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_sino
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_sino
+        where      
+          clave = '{clave}' and id_sino = {idSino}
+      </select>
+    </unit>
+	    <unit id="TcManticTiposCodigosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_codigos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_codigos
+        where      
+          id_tipo_codigo = {idTipoCodigo}
+      </select>
+    </unit>
+	    <unit id="TcManticTiposComprasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_compras
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_compras
+        where      
+          id_tipo_compra = {idTipoCompra} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticTiposContactosDto">
+      <select id="row">
+        select
+          tc_mantic_tipos_contactos.*,
+          tc_mantic_tipos_contactos.id_tipo_contacto as id_key
+        from
+          tc_mantic_tipos_contactos
+        where 
+          {condicion}
+        order by
+          id_tipo_medio,orden 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_contactos
+        where      
+          nombre = '{nombre}' and id_tipo_contacto = {idTipoContacto}
+      </select>
+    </unit>
+	    <unit id="TcManticTiposDiasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_dias
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_dias
+        where      
+          id_tipo_dia = {idTipoDia} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticTiposDomiciliosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_domicilios
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_domicilios
+        where      
+          id_tipo_domicilio = {idTipoDomicilio} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticTiposEmpresasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_empresas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_empresas
+        where      
+          nombre = '{nombre}' and id_tipo_empresa = {idTipoEmpresa}
+      </select>
+    </unit>
+	    <unit id="TcManticTiposFormasPagosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_formas_pagos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_formas_pagos
+        where      
+          id_tipo_medio_pago = {idTipoMedioPago} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticTiposImagenesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_imagenes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_imagenes
+        where      
+          id_tipo_imagen = {idTipoImagen} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticTiposMediosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_medios
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_medios
+        where      
+          id_tipo_medio = {idTipoMedio} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticTiposMediosPagosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_medios_pagos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_medios_pagos
+        where      
+          id_tipo_medio_pago = {idTipoMedioPago} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticTiposMonedasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_monedas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_monedas
+        where      
+          id_tipo_moneda = {idTipoMoneda} and id_pais = {idPais} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticTiposPagosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_pagos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_pagos
+        where      
+          id_tipo_medio_pago = {idTipoMedioPago} and id_tipo_pago = {idTipoPago} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticTiposPersonasDto">
+      <select id="row">
+        select 
+					tc_mantic_tipos_personas.id_tipo_persona as id_key,
+					tc_mantic_tipos_personas.*
+				from 
+					tc_mantic_tipos_personas
+				where 
 					{condicion}
-			</select>
-		</unit>		
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_personas
+        where      
+          nombre = '{nombre}' and id_tipo_persona = {idTipoPersona}
+      </select>
+    </unit>
+	    <unit id="TcManticTiposProveedoresDto">
+      <select id="row">
+        select
+					tc_mantic_tipos_proveedores.*,
+					tc_mantic_tipos_proveedores.id_tipo_proveedor as id_key
+				from
+				 tc_mantic_tipos_proveedores
+				where
+					{condicion}
+				order by
+					id_tipo_proveedor
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_proveedores
+        where      
+          id_tipo_proveedor = {idTipoProveedor} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticTiposSexosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_sexos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_sexos
+        where      
+          id_tipo_sexo = {idTipoSexo} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticTiposVentasDto">
+      <select id="row">
+        select 
+					tc_mantic_tipos_ventas.id_tipo_venta as id_key,
+					tc_mantic_tipos_ventas.*
+				from 
+					tc_mantic_tipos_ventas
+				where 
+					{condicion}
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_ventas
+        where      
+          nombre = '{nombre}' and id_tipo_venta = {idTipoVenta}
+      </select>
+    </unit>
+	    <unit id="TcManticUnidadesMedidasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_unidades_medidas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_unidades_medidas
+        where      
+          id_unidad_medida = {idUnidadMedida} and nombre = '{nombre}'
+      </select>
+    </unit>
+	    <unit id="TcManticUsosCfdiDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_usos_cfdi
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_usos_cfdi
+        where      
+          clave = '{clave}' and id_uso_cfdi = {idUsoCfdi}
+      </select>
+    </unit>
   </dml>    
 </process>
