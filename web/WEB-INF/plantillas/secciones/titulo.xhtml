@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+			xmlns:ui="http://java.sun.com/jsf/facelets">	
+  <script type="text/javascript">
+    $(function() {
+      janal.fecha();
+      $('#banner').addClass('ui-panelgrid');
+      $('#banner').addClass('ui-widget');
+      $('#banner tr:eq(0)').addClass('ui-widget-content');
+    });
+  </script>
+  <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+    <div class="ui-grid-row janal-grid-row">
+      <div class="ui-grid-col-8 lg-pantalla">
+        <h1 class="titulo-proyecto janal-header-title">#{sessionScope.autentifica.empresa.nombre}</h1>
+      </div>
+      <div class="ui-grid-col-8 xs-pantalla">
+        <h1 class="janal-header-title">#{kajoolUtilAplicacion.tituloCorto}</h1>
+      </div>
+      <div class="ui-grid-col-4 lg-pantalla">
+        <p:graphicImage library="janal" name="img/sistema/logo.svg" width="25" style="float:right;margin-right:10px;"/>
+      </div>  
+      <div class="ui-grid-col-4 xs-pantalla">
+        <p:graphicImage library="janal" name="img/sistema/logo.svg" styleClass="janal-logo-mini" width="25" style="float:right;margin-right:10px;"/>
+      </div>
+    </div>
+    <div class="ui-grid-row janal-grid-rows">
+      <div class="ui-grid-col-4 margin-fecha">
+        <span id="reloj" class="fecha janal-text-one-line lg-pantalla"></span>
+        <span class="fecha janal-text-one-line xs-pantalla Fs14">#{kajoolUtilAplicacion.currentDate}</span>
+      </div>
+      <div class="ui-grid-col-4 margin-desarrollo" style="text-align: center;">
+        <p:outputLabel styleClass="janal-etapa lg-pantalla" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
+        <p:outputLabel styleClass="janal-etapa xs-pantalla Fs14" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
+      </div>
+      <div class="ui-grid-col-4 margin-version" style="text-align: right;">
+        <span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}</span>
+        <span id="version" class="version xs-pantalla Fs14">#{kajoolUtilAplicacion.version}</span>
+      </div>
+    </div>
+  </div>
+	<div id="sticky-menu" class="ui-panel ui-widget ui-widget-content ui-corner-all janal-content-header Responsive100">
+    <ui:include src="/WEB-INF/plantillas/secciones/topperfil.xhtml"/>
+		<div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header" style="display: -webkit-box;">
+			<h:panelGrid id="iktan-slide-menu">
+				<a href="#" class="BordRad3" onclick="mmenu.open('#{kajoolTemaActivo.name}');">
+					<i class="fa fa-lg icon-menu-1" style="color: white"/>
+				</a>
+			</h:panelGrid>  
+			<span class="ui-panel-title Fs18 lg-pantalla">
+				#{titulo}
+			</span>
+			<span class="ui-panel-title Fs16 xs-pantalla">
+				#{kajoolUtilAplicacion.toTitle(titulo, 35)}
+			</span>
+		</div>
+		<div class="janal-icon-ajax">
+			<p:ajaxStatus style="width:16px; height:16px;">
+				<f:facet name="start">
+					<i class="fa fa-spinner fa-spin fa-2x"/>
+				</f:facet>
+				<f:facet name="complete">
+					<h:outputText value="" />
+				</f:facet>
+			</p:ajaxStatus>
+		</div>
+	</div>
+  <p:notificationBar id="lockNotification" position="top" effect="slide" styleClass="jana-bar-top" widgetVar="notification" effectSpeed="slow">
+    <span title="Cerrar" style="position: absolute; top: 10px; right: 80px; cursor: pointer;" onclick="PF('notification').hide();"><i class="fa fa-lg fa-close"/></span>
+    <p:panelGrid layout="grid" columns="2" columnClasses="janal-wid-col-200">
+      <h:outputText value="Aplicación MANTIC" styleClass="Fs20"/>
+      <h:outputText value="#{kajoolUtilAplicacion.notificacion}" escape="false" styleClass="Fs14"/>
+    </p:panelGrid>
+  </p:notificationBar>
+</html>

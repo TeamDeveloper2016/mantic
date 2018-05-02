@@ -15,18 +15,16 @@
       <link rel="shortcut icon" type="image/ico" href="#{kajoolUtilAplicacion.defaultResourceImg}/sistema/favicon.ico.jsf?ln=janal"/>
       <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryJs}"/>
       <h:outputText escape="false" value="#{kajoolUtilAplicacion.defaultScripts}"/>
-      <h:outputScript library="sentinel" name="js/jquery.sentinel.layout-1.0.1.js"/>
       <h:outputText escape="false" value="#{kajoolUtilAplicacion.defaultCss}"/>
       <ui:insert name="librerias"/>      	
     </h:head>
     <h:body class="ui-widget-content">
 			<p:layout fullPage="true">
         <p:layoutUnit position="north" style="border:0; width: 100%" gutter="0">
+          <ui:include src="/WEB-INF/plantillas/secciones/leftmenu.xhtml"/>  
 					<ui:include src="/WEB-INF/plantillas/secciones/encabezado.xhtml" />
 				</p:layoutUnit>
         <p:layoutUnit id="principal" position="center" size="100%" style="border:0;" styleClass="sticky-wrapper" gutter="0">
-          <ui:include src="/WEB-INF/plantillas/secciones/topbar.xhtml"/>												
-          <ui:include src="/WEB-INF/plantillas/secciones/leftmenu.xhtml"/>  
           <div id="layout-portlets-cover" class="janal-content-center janal-padding-cero" style="margin-left: 0 !important;margin-right: 0 !important;">
             <h:form id="datos" prependId="false" styleClass="janal-padding-cero">
               <p:growl id="mensaje" autoUpdate="true" showSummary="false" showDetail="true" sticky="false" widgetVar="mensajes" escape="false" life="15000"/>

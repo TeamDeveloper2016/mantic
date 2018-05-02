@@ -178,9 +178,9 @@ public class Accion extends IBaseAttribute implements Serializable {
     Gestor gestor = null;
     try {
       gestor = new Gestor();
-      gestor.loadCodigosPostales(this.domicilio.getLocalidad().getKey());
-      this.attrs.put("detalleCalles", gestor.getCodigosPostales());
-      this.domicilio.setDetalleCalle((UISelectEntity) UIBackingUtilities.toFirstKeySelectEntity(gestor.getCodigosPostales()));
+      gestor.loadLocalidadCalles(this.domicilio.getLocalidad().getKey());
+      this.attrs.put("detalleCalles", gestor.getDetalleCalles());
+      this.domicilio.setDetalleCalle((UISelectEntity) UIBackingUtilities.toFirstKeySelectEntity(gestor.getDetalleCalles()));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -307,8 +307,8 @@ public class Accion extends IBaseAttribute implements Serializable {
         this.attrs.put("municipios", gestor.getMunicipios());
         gestor.loadLocalidades(this.domicilio.getMunicipio().getKey());
         this.attrs.put("localidades", gestor.getLocalidades());
-        gestor.loadCodigosPostales(this.domicilio.getLocalidad().getKey());
-        this.attrs.put("detalleCalles", gestor.getCodigosPostales());
+        gestor.loadLocalidadCalles(this.domicilio.getLocalidad().getKey());
+        this.attrs.put("detalleCalles", gestor.getDetalleCalles());
         this.renglonProveedor.getDomicilios().get(pos).setModificar(true);
         break;
       case SELECT:
@@ -328,8 +328,13 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       responsable.setIdProveedorPersona(toIdTemporal());
       responsable.setIdResponsable(2L);
-      responsable.setIdUsuario(JsfBase.getIdUsuario());
-      this.renglonProveedor.getResponsables().add(responsable);
+      responsable.setIdUsuario(JsfBase.getIdUsuario());      
+      if (exist("personas")) {
+        this.renglonProveedor.getResponsables().add(responsable);
+      }
+       else {
+        JsfBase.addMessage("No hay responsables disponibles para el proveedor,favor de verificar el catálogo de representantes", ETipoMensaje.INFORMACION);
+      }
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -378,7 +383,11 @@ public class Accion extends IBaseAttribute implements Serializable {
       contacto.setIdUsuario(JsfBase.getIdUsuario());
       contacto.setIdProveedorTipoContacto(toIdTemporal());
       contacto.setOrden(this.renglonProveedor.getContactos().size() == 0 ? 1L : Integer.valueOf(this.renglonProveedor.getContactos().size() + 1).longValue());
-      this.renglonProveedor.getContactos().add(contacto);
+      if (exist("tiposContactos")) {
+        this.renglonProveedor.getContactos().add(contacto);
+      } else {
+        JsfBase.addMessage("No hay medio de contacto para el prooveedor", ETipoMensaje.INFORMACION);
+      }
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -405,7 +414,11 @@ public class Accion extends IBaseAttribute implements Serializable {
       agente.setIdPrincipal(2L);
       agente.setIdProveedorAgente(toIdTemporal());
       agente.setIdUsuario(JsfBase.getIdUsuario());
-      this.renglonProveedor.getAgentes().add(agente);
+      if (exist("agentes")) {
+        this.renglonProveedor.getAgentes().add(agente);
+      } else {
+        JsfBase.addMessage("No hay agentes  disponibles,favor de verificar el catálogo de agentes", ETipoMensaje.INFORMACION);
+      }
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -432,7 +445,11 @@ public class Accion extends IBaseAttribute implements Serializable {
       condicionPago.setIdProveedorPago(toIdTemporal());
       condicionPago.setDescuento(0.0);
       condicionPago.setIdUsuario(JsfBase.getIdUsuario());
-      this.renglonProveedor.getCondicionPagos().add(condicionPago);
+      if (exist("tiposPago")) {
+        this.renglonProveedor.getCondicionPagos().add(condicionPago);
+      } else {
+        JsfBase.addMessage("No hay condiciones de pago establecidas", ETipoMensaje.INFORMACION);
+      }
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -475,6 +492,14 @@ public class Accion extends IBaseAttribute implements Serializable {
     catch (Exception e) {
       Error.mensaje(e);
     }// catch
+  }
+  
+  private boolean exist(String nameKeyList) {
+    boolean regresar = false;
+    if (this.attrs.get(nameKeyList) != null) {
+      regresar = ((List<UISelectItem>) this.attrs.get(nameKeyList)).size() > 0;
+    }// if
+    return regresar;
   }
 
   public String doCancelar() {

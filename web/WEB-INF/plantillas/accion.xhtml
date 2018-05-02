@@ -22,11 +22,10 @@
     <h:body class="ui-widget-content">			
       <p:layout fullPage="true">
         <p:layoutUnit position="north" style="border:0;" resizable="false" gutter="0">
+          <ui:include src="/WEB-INF/plantillas/secciones/leftmenu.xhtml"/> 
           <ui:include src="/WEB-INF/plantillas/secciones/encabezado.xhtml"/>
         </p:layoutUnit>
         <p:layoutUnit id="principal" position="center" size="100%" style="border:0;" resizable="false" styleClass="sticky-wrapper" gutter="0">
-          <ui:include src="/WEB-INF/plantillas/secciones/topbar.xhtml"/>												
-          <ui:include src="/WEB-INF/plantillas/secciones/leftmenu.xhtml"/> 
           <div id="layout-portlets-cover" class="janal-content-center janal-padding-cero">
             <h:form id="datos" prependId="false" class="janal-padding-cero">
               <p:growl id="mensaje" showSummary="false" showDetail="true" sticky="false" widgetVar="mensajes"  escape="false" autoUpdate="true" life="15000"/>	

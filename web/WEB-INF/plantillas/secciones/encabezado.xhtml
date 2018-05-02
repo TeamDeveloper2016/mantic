@@ -4,7 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://java.sun.com/jsf/core">	
+      xmlns:f="http://java.sun.com/jsf/core"
+			xmlns:ui="http://java.sun.com/jsf/facelets">	
   <script type="text/javascript">
     $(function() {
       janal.fecha();
@@ -44,6 +45,7 @@
     </div>
   </div>
 	<div id="sticky-menu" class="ui-panel ui-widget ui-widget-content ui-corner-all janal-content-header Responsive100">
+    <ui:include src="/WEB-INF/plantillas/secciones/topbar.xhtml"/>
 		<div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header" style="display: -webkit-box;">
 			<h:panelGrid id="iktan-slide-menu">
 				<a href="#" class="BordRad3" onclick="mmenu.open('#{kajoolTemaActivo.name}');">

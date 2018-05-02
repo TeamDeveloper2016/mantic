@@ -14,9 +14,9 @@ import java.text.MessageFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.ApplicationScoped;
 import javax.faces.context.FacesContext;
+import javax.inject.Named;
 import javax.servlet.ServletContext;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.archivo.Archivo;
@@ -42,7 +42,7 @@ import org.primefaces.context.RequestContext;
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-@ManagedBean(name = "kajoolUtilAplicacion")
+@Named(value = "kajoolUtilAplicacion")
 @ApplicationScoped
 public class UtilAplicacion {
 
@@ -50,8 +50,8 @@ public class UtilAplicacion {
 
   private static final String LESS = "less.min-2.5.0.js";
   private static final String CORE = "jquery.janal.core-1.4.2.js";
-  private static final String CSS = "mantic-0.0.4.css";
-  private static final String FUSION = "jquery.janal.fusion.charts-3.3.1.js";
+  private static final String CSS  = "mantic-0.0.5.css";
+  private static final String FUSION= "jquery.janal.fusion.charts-3.3.1.js";
 
   public String getTituloSistema() {
     return Configuracion.getInstance().getPropiedad("sistema.titulo").toUpperCase();
@@ -108,7 +108,7 @@ public class UtilAplicacion {
 
   public String getDefaultCss() {
     StringBuilder sb = new StringBuilder();
-    String[] css = {"sentinel-core-1.0.1.css|sentinel", "sentinel-font-icon-1.0.0.css|sentinel", "sentinel-layout-1.0.0.css|sentinel", CSS.concat("|janal")};
+    String[] css = {"sentinel-core-1.0.1.css|sentinel", "sentinel-font-icon-1.0.0.css|sentinel", "sentinel-layout-1.0.1.css|sentinel", CSS.concat("|janal")};
     for (String item : css) {
       String[] values = item.split("[|]");
       sb.append(MessageFormat.format(STYLE_SHEET, JsfUtilities.getContext(), values[0], values[1]));

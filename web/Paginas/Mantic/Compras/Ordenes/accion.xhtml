@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{manticComprasOrdendesAccion.attrs.nombreAccion} una orde de compra"/>
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+				'contenedorGrupos\\:consecutivo'  : {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre'}				
+			};			
+			function applyMayusTable(parent, index, name) {				
+				var mayus= $('#contenedorGrupos\\:'+parent+'\\:'+index+'\\:'+name).val().toUpperCase();
+				$('#contenedorGrupos\\:'+parent+'\\:'+index+'\\:'+name).val(mayus);
+			} // applyMayusTable
+		</script>   
+		<style type="text/css">			
+			span.ui-calendar > input {
+				width: -webkit-fill-available;
+			}						
+			div.ui-selectonemenu-filter-container {	
+				width: -webkit-fill-available !important;
+			}
+			input.ui-selectonemenu-filter {	
+				width: -webkit-fill-available !important;
+			}									
+      span.ui-inputnumber > input {
+        width: -webkit-fill-available;
+      }
+      div.ui-datatable-footer {
+        border: transparent !important;
+        background: transparent !important;
+      }
+      li.ui-datalist-item {
+        text-align: left !important;
+        font-weight: bold !important;
+        padding-left: 10px !important;
+      }
+      ul.ui-datalist-data {								
+        padding-left: 0px !important;
+      }
+      div.ui-selectonemenu-filter-container {								
+        width: -webkit-fill-available !important;
+      }
+      input.ui-selectonemenu-filter {								
+        width: -webkit-fill-available !important;
+      }
+      div.ui-datalist {
+        border: transparent !important;
+      }
+      div.ui-datalist-footer {
+        border: transparent !important;
+        background: transparent !important;
+        text-align: left !important;
+        color: black !important;
+      }
+      table.janal-panel-tabla > tbody > tr > td {
+        vertical-align: top !important;
+      }
+		</style>		
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+            <p:tab title="General">							
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
+								<p:outputLabel for="consecutivo" value="No. orden:"/>
+								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.attrs.consecutivo}" readonly="true"/>
+								<p:outputLabel for="solicitante" value="Quien solicita:"/>
+								<p:inputText id="solicitante" styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.attrs.solicitante}"/>
+                <p:outputLabel for="tipoCompra" value="Forma de compra:"/>
+								<p:selectOneMenu id="tipoCompra" value="#{manticComprasOrdendesAccion.attrs.tipoCompra}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96">
+									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.tiposCompras}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+									<p:column>
+										<h:outputText value="#{item.nombre}"/>
+									</p:column>   
+								</p:selectOneMenu>
+								<p:separator/><p:separator/>
+								<p:outputLabel for="proveedor" value="Proveedor:"/>
+								<p:selectOneMenu id="proveedor" value="#{manticComprasOrdendesAccion.attrs.proveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96">
+									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+									<p:column>
+										<h:outputText value="#{item.nombre}"/>
+									</p:column>   
+									<p:column styleClass="janal-column-right" headerText="Tiempo estimado de entrega(dias)">
+										<h:outputText value="#{item.dias}"/>
+									</p:column>   
+								</p:selectOneMenu>
+								<p:outputLabel for="proveedorPago" value="Condición de pago:"/>
+								<p:selectOneMenu id="proveedorPago" value="#{manticComprasOrdendesAccion.attrs.proveedorPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96">
+									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.proveedoresPagos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+									<p:column>
+										<h:outputText value="#{item.nombre}"/>
+									</p:column>   
+									<p:column styleClass="janal-column-right" headerText="Descuento">
+										<h:outputText value="#{item.descuento}"/>
+									</p:column>   
+								</p:selectOneMenu>
+								<p:separator/><p:separator/>
+								<p:outputLabel for="referencia" value="Referencia:"/>
+								<p:editor id="referencia" styleClass="janal-wid-100-txt" height="200" value="#{manticComprasOrdendesAccion.attrs.referencia}"/>  
+								<p:outputLabel for="entregaEstimada" value="Entrega estimada:"/>
+								<p:calendar id="entregaEstimada" inputStyleClass="janal-wid-96" styleClass="janal-wid-100" value="#{manticComprasOrdenesFiltro.attrs.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+								<p:separator/><p:separator/>
+								<p:outputLabel for="idGasto" value="Es un gasto:"/>
+								<p:selectBooleanCheckbox id="idGasto" value="#{manticComprasOrdendesAccion.attrs.idGasto}" styleClass="janal-wid-100-txt" />                    
+              </p:panelGrid>
+						</p:tab>						            						            																																																
+						<p:tab title="Articulos">
+							<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+								<div class="ui-grid-row janal-grid-row">
+									<div id="collapse-find" class="ui-grid-col-3">
+										<p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
+											<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
+											<h:panelGrid styleClass="janal-wid-100">
+												<p:outputLabel for="codigo" value="Código:"/>
+												<p:inputText id="codigo" value="#{manticComprasOrdendesAccion.attrs.codigo}" styleClass="janal-wid-100-txt"/> 
+												<p:outputLabel for="cantidad" value="Cantidad:"/>
+												<p:inputText id="cantidad" value="#{manticComprasOrdendesAccion.attrs.cantidad}" styleClass="janal-wid-100-txt"/> 
+											</h:panelGrid>
+											<div class="janal-align-right lg-pantalla">
+												<p:commandButton id="sumar" value="Agregar" icon="fa fa-plus" onstart="return janal.execute();" process="@this codigo cantidad" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
+											</div>
+											<div class="janal-align-right xs-pantalla">
+												<p:commandButton id="sumarIcon" icon="fa fa-plus" onstart="return janal.execute();" process="@this codigo cantidad" oncomplete="janal.desbloquear();" update="tabla"  styleClass="janal-text-white"/>
+											</div>
+										</p:panel>
+									</div>
+									<div id="collapse-content" class="ui-grid-col-9">
+										<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticComprasOrdendesAccion.attrs.seleccionado}" selectionMode="single" paginator="#{manticComprasOrdendesAccion.lazyModel.rowCount gt manticComprasOrdendesAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+										  <p:column class="MarAuto Responsive janal-wid-15">
+												<f:facet name="header">
+													<h:outputText value="Código"/>
+												</f:facet>
+												<h:outputText value="#{filtro['codigo']}"/>
+											</p:column>		
+											<p:column class="MarAuto Responsive">
+												<f:facet name="header">
+													<h:outputText value="Articulo"/>
+												</f:facet>
+												<h:outputText value="#{filtro['nombre']}"/>
+											</p:column>		
+											<p:column class="MarAuto Responsive janal-wid-30">
+												<f:facet name="header">
+													<h:outputText value="Precio"/>
+												</f:facet>
+												<h:outputText value="#{filtro['precio']}"/>
+											</p:column>		
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+												<f:facet name="header">
+													<h:outputText value="Cantidad"/>
+												</f:facet>
+												<h:outputText value="#{filtro['cantidad']}"/>
+											</p:column>		
+											<p:column class="janal-column-center MarAuto Responsive janal-wid-5">
+												<f:facet name="header">
+													<h:outputText value="Descuento"/>
+												</f:facet>
+												<h:outputText value="#{filtro['descuento']}"/>
+											</p:column>		
+											<p:column class="janal-column-center MarAuto Responsive janal-wid-5">
+												<f:facet name="header">
+													<h:outputText value="Importe"/>
+												</f:facet>
+												<h:outputText value="#{filtro['importe']}"/>
+											</p:column>		
+										</p:dataTable>
+									</div>									
+								</div>
+							</div>	
+						</p:tab>
+						<p:tab title="Observaciones">
+							<p:editor id="observaciones" styleClass="janal-wid-100-txt" height="200" value="#{manticComprasOrdendesAccion.attrs.observaciones}"/>  
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasOrdendesAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasOrdendesAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasOrdendesAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasOrdendesAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>
