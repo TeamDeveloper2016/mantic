@@ -323,4 +323,8 @@ public class Autentifica implements Serializable {
     } // catch		
     return regresar;
   } // toRedirectMenu  
+
+	public List<Sucursal> getSucursales() {
+		return sucursales;
+	}	
 }
