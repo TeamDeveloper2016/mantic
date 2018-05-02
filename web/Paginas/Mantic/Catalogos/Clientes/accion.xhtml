@@ -145,7 +145,7 @@
                   <p:spacer id="spacerCp" rendered="#{manticCatalogosClientesAccion.registroCliente.domicilio.nuevoCp}"/>
                   <p:inputText placeholder="Captura el nuevo código postal. Ej. 20284" id="cp" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.codigoPostal}" onblur="janal.individual('contenedorGrupos\\:cp')" rendered="#{manticCatalogosClientesAccion.registroCliente.domicilio.nuevoCp}"/>
                   <p:outputLabel for="domicilio" value="Domicilio:"/>
-                  <p:selectOneMenu id="domicilio" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.idDomicilio}" styleClass="janal-wid-100-txt">									
+                  <p:selectOneMenu id="domicilio" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.idDomicilio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith">									
                     <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doLoadAtributos}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
                     <f:selectItem itemValue="-1" itemLabel="Nuevo"/>
                     <f:selectItems value="#{manticCatalogosClientesAccion.attrs.domicilios}"/>
