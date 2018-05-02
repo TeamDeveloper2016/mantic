@@ -433,6 +433,12 @@
         where      
           id_persona = {idPersona} and id_persona_domicilio = {idPersonaDomicilio} and id_usuario = {idUsuario} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
       </select>
+			<select id="maximo">
+        select      
+          max(id_persona_domicilio) maximo
+        from      
+          tr_mantic_persona_domicilio
+      </select>
     </unit>
     
     <unit id="TrManticPersonaTipoContactoDto">
@@ -451,6 +457,12 @@
           tr_mantic_persona_tipo_contacto
         where      
           id_persona = {idPersona} and id_persona_tipo_contacto = {idPersonaTipoContacto} and id_tipo_contacto = {idTipoContacto}
+      </select>
+			<select id="maximo">
+        select      
+          max(id_persona_tipo_contacto) maximo
+        from      
+          tr_mantic_persona_tipo_contacto
       </select>
     </unit>
     
