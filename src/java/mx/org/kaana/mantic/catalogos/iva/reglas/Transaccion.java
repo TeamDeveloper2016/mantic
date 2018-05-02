@@ -9,7 +9,7 @@ import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticHistorialIvaDto;
 import org.hibernate.Session;
 
-public class Transaccion extends IBaseTnx{
+public class Transaccion extends IBaseTnx {
 
 	private TcManticHistorialIvaDto iva;	
 	private String messageError;
@@ -27,7 +27,7 @@ public class Transaccion extends IBaseTnx{
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar          = false;
-		Map<String, Object> params= new HashMap<String, Object>();
+		Map<String, Object> params= new HashMap<>();
 		try {
 			params.put("iva", this.iva.getImporte());
 			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" el registro del IVA");
