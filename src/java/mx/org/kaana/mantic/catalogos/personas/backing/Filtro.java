@@ -19,6 +19,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.personas.beans.RegistroPersona;
 import mx.org.kaana.mantic.catalogos.personas.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.personas.reglas.Gestor;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
@@ -107,12 +108,12 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doAccion
 
   public void doEliminar() {
-		Transaccion transaccion    = null;
-		Entity seleccionado        = null;
-		TcManticPersonasDto persona= null;
+		Transaccion transaccion= null;
+		Entity seleccionado    = null;
+		RegistroPersona persona= null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			persona= new TcManticPersonasDto();
+			persona= new RegistroPersona();
 			persona.setIdPersona(seleccionado.getKey());
 			transaccion= new Transaccion(persona);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
