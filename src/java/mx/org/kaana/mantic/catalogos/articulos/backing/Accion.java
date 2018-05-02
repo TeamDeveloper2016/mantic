@@ -152,7 +152,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     EAccion eaccion              = null;
     try {
       params = new HashMap<>();
-      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      params.put(Constantes.SQL_CONDICION, "id_empresa=" + JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       categorias = UISelect.build("TcManticCategoriasDto", "row", params, "traza", EFormatoDinamicos.LIBRE, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("categorias", categorias);
       eaccion = (EAccion) this.attrs.get("accion");
