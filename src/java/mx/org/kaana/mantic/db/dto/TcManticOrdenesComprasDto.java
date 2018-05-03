@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -36,18 +30,18 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Column (name="id_proveedor_pago")
   private Long idProveedorPago;
-  @Column (name="id_proveedor")
-  private Long idProveedor;
-  @Column (name="id_cliente")
-  private Long idCliente;
   @Column (name="descuento")
   private Double descuento;
+  @Column (name="solicitante")
+  private String solicitante;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_orden_compra")
   private Long idOrdenCompra;
   @Column (name="registro")
   private Timestamp registro;
+  @Column (name="consecutivo")
+  private String consecutivo;
   @Column (name="id_tipo_compra")
   private Long idTipoCompra;
   @Column (name="id_gasto")
@@ -58,8 +52,6 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   private Timestamp entregaEstimada;
   @Column (name="id_usuario")
   private Long idUsuario;
-  @Column (name="id_almacen")
-  private Long idAlmacen;
   @Column (name="subtotal")
   private Double subtotal;
   @Column (name="observaciones")
@@ -78,23 +70,22 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   }
 
   public TcManticOrdenesComprasDto(Long key) {
-    this(null, null, null, null, new Long(-1L), null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null);
+    this(null, null, null, new Long(-1L), null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticOrdenesComprasDto(Long idProveedorPago, Long idProveedor, Long idCliente, Double descuento, Long idOrdenCompra, Long idTipoCompra, Long idGasto, Double total, Timestamp entregaEstimada, Long idUsuario, Long idAlmacen, Double subtotal, String observaciones, Long idEmpresa, String referencia, Long idEstatus, Double totalImpuestos) {
+  public TcManticOrdenesComprasDto(Long idProveedorPago, Double descuento, String solicitante, Long idOrdenCompra, String consecutivo, Long idTipoCompra, Long idGasto, Double total, Timestamp entregaEstimada, Long idUsuario, Double subtotal, String observaciones, Long idEmpresa, String referencia, Long idEstatus, Double totalImpuestos) {
     setIdProveedorPago(idProveedorPago);
-    setIdProveedor(idProveedor);
-    setIdCliente(idCliente);
     setDescuento(descuento);
+    setSolicitante(solicitante);
     setIdOrdenCompra(idOrdenCompra);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setConsecutivo(consecutivo);
     setIdTipoCompra(idTipoCompra);
     setIdGasto(idGasto);
     setTotal(total);
     setEntregaEstimada(entregaEstimada);
     setIdUsuario(idUsuario);
-    setIdAlmacen(idAlmacen);
     setSubtotal(subtotal);
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
@@ -111,28 +102,20 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
     return idProveedorPago;
   }
 
-  public void setIdProveedor(Long idProveedor) {
-    this.idProveedor = idProveedor;
-  }
-
-  public Long getIdProveedor() {
-    return idProveedor;
-  }
-
-  public void setIdCliente(Long idCliente) {
-    this.idCliente = idCliente;
-  }
-
-  public Long getIdCliente() {
-    return idCliente;
-  }
-
   public void setDescuento(Double descuento) {
     this.descuento = descuento;
   }
 
   public Double getDescuento() {
     return descuento;
+  }
+
+  public void setSolicitante(String solicitante) {
+    this.solicitante = solicitante;
+  }
+
+  public String getSolicitante() {
+    return solicitante;
   }
 
   public void setIdOrdenCompra(Long idOrdenCompra) {
@@ -149,6 +132,14 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
 
   public Timestamp getRegistro() {
     return registro;
+  }
+
+  public void setConsecutivo(String consecutivo) {
+    this.consecutivo = consecutivo;
+  }
+
+  public String getConsecutivo() {
+    return consecutivo;
   }
 
   public void setIdTipoCompra(Long idTipoCompra) {
@@ -189,14 +180,6 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
 
   public Long getIdUsuario() {
     return idUsuario;
-  }
-
-  public void setIdAlmacen(Long idAlmacen) {
-    this.idAlmacen = idAlmacen;
-  }
-
-  public Long getIdAlmacen() {
-    return idAlmacen;
   }
 
   public void setSubtotal(Double subtotal) {
@@ -264,15 +247,15 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getIdProveedorPago());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdProveedor());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdCliente());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDescuento());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getSolicitante());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdOrdenCompra());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getConsecutivo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoCompra());
 		regresar.append(Constantes.SEPARADOR);
@@ -283,8 +266,6 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
 		regresar.append(getEntregaEstimada());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdAlmacen());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getSubtotal());
 		regresar.append(Constantes.SEPARADOR);
@@ -305,17 +286,16 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("idProveedorPago", getIdProveedorPago());
-		regresar.put("idProveedor", getIdProveedor());
-		regresar.put("idCliente", getIdCliente());
 		regresar.put("descuento", getDescuento());
+		regresar.put("solicitante", getSolicitante());
 		regresar.put("idOrdenCompra", getIdOrdenCompra());
 		regresar.put("registro", getRegistro());
+		regresar.put("consecutivo", getConsecutivo());
 		regresar.put("idTipoCompra", getIdTipoCompra());
 		regresar.put("idGasto", getIdGasto());
 		regresar.put("total", getTotal());
 		regresar.put("entregaEstimada", getEntregaEstimada());
 		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("idAlmacen", getIdAlmacen());
 		regresar.put("subtotal", getSubtotal());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
@@ -328,7 +308,7 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdProveedorPago(), getIdProveedor(), getIdCliente(), getDescuento(), getIdOrdenCompra(), getRegistro(), getIdTipoCompra(), getIdGasto(), getTotal(), getEntregaEstimada(), getIdUsuario(), getIdAlmacen(), getSubtotal(), getObservaciones(), getIdEmpresa(), getReferencia(), getIdEstatus(), getTotalImpuestos()
+    getIdProveedorPago(), getDescuento(), getSolicitante(), getIdOrdenCompra(), getRegistro(), getConsecutivo(), getIdTipoCompra(), getIdGasto(), getTotal(), getEntregaEstimada(), getIdUsuario(), getSubtotal(), getObservaciones(), getIdEmpresa(), getReferencia(), getIdEstatus(), getTotalImpuestos()
     };
     return regresar;
   }
