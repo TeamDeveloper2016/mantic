@@ -3,7 +3,6 @@ package mx.org.kaana.kajool.procesos.acceso.beans;
 import java.io.Serializable;
 import java.util.Objects;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.formato.Cadena;
 
 /**
  * @company KAANA
@@ -18,20 +17,22 @@ public class Empresa implements Serializable {
   
   private Long idEmpresa;
   private Long idEmpresaDepende;
+  private Long idTipoEmpresa;
   private String nombre;
   private String nombreCorto;
   private String titulo;
 
   public Empresa () {
-     this(-1L,-1L,"","","");
+    this(-1L, -1L, -1L, "", "", "");
   }     
 
-  public Empresa(Long idEmpresa,Long idEmpresaDepende ,String nombre, String nombreCorto,String titulo) {
-    this.nombre=nombre;
-    this.idEmpresa = idEmpresa;
-    this.idEmpresaDepende=idEmpresaDepende;
-    this.nombreCorto  = nombreCorto;
-    this.titulo  = titulo;
+  public Empresa(Long idEmpresa, Long idEmpresaDepende, Long idTipoEmpresa, String nombre, String nombreCorto, String titulo) {
+    this.nombre          = nombre;
+    this.idEmpresa       = idEmpresa;
+    this.idEmpresaDepende= idEmpresaDepende;
+    this.idTipoEmpresa   = idTipoEmpresa;
+    this.nombreCorto     = nombreCorto;
+    this.titulo          = titulo;
   }
 
   public Long getIdEmpresaDepende() {
@@ -45,8 +46,15 @@ public class Empresa implements Serializable {
   public String getNombre() {
     return nombre.toUpperCase();
   }  
-  
 
+	public Long getIdTipoEmpresa() {
+		return idTipoEmpresa;
+	}
+
+	public void setIdTipoEmpresa(Long idTipoEmpresa) {
+		this.idTipoEmpresa=idTipoEmpresa;
+	}
+  
   public void setNombre(String nombre) {
     this.nombre = nombre;
   }  
@@ -75,6 +83,10 @@ public class Empresa implements Serializable {
     this.titulo = titulo;
   }  
 
+	public boolean isMatriz() {
+	  return this.getIdTipoEmpresa()!= null && this.getIdTipoEmpresa().intValue()==Constantes.SI;
+	}
+	
   @Override
   public String toString() {
     StringBuilder regresar = new StringBuilder();

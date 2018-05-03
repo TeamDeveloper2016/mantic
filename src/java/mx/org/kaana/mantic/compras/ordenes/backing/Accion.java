@@ -16,7 +16,7 @@ import mx.org.kaana.mantic.catalogos.iva.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticHistorialIvaDto;
 
 
-@Named(value = "manticComprasOrdendesAccion")
+@Named(value= "manticComprasOrdendesAccion")
 @ViewScoped
 public class Accion extends IBaseAttribute implements Serializable {
 
@@ -35,9 +35,9 @@ public class Accion extends IBaseAttribute implements Serializable {
   @Override
   protected void init() {		
     try {
-      this.attrs.put("aplicar", false);
+      this.attrs.put("isPesos", false);
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
-      this.attrs.put("idHistorialIva", JsfBase.getFlashAttribute("idHistorialIva"));
+      this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
 			doLoad();
     } // try

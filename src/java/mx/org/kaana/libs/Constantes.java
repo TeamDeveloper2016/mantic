@@ -38,29 +38,29 @@ public final class Constantes {
   public static final String COMILLA = "'";
 
   //Constantes de SQL
-  public static final String SQL_RESERVADO = "params";
-  public static final String SQL_CONDICION = "condicion";
-  public static final String SQL_VERDADERO = "1=1";
-  public static final long SQL_MAXIMO_REGISTROS = 100L;
-  public static final long SQL_TOPE_REGISTROS = 2000L;
+  public static final String SQL_RESERVADO     = "params";
+  public static final String SQL_CONDICION     = "condicion";
+  public static final String SQL_VERDADERO     = "1=1";
+  public static final long SQL_MAXIMO_REGISTROS= 100L;
+  public static final long SQL_TOPE_REGISTROS  = 2000L;
   public static final long SQL_TODOS_REGISTROS = -1L;
-  public static final int SQL_PRIMER_REGISTRO = 1;
-  public static final int SI = 1;
-  public static final int NO = 2;
+  public static final int SQL_PRIMER_REGISTRO  = 1;
+  public static final int SI                   = 1;
+  public static final int NO                   = 2;
 
   //Constantes para la lectura del xml
-  public static final String DML_IDENTICO = "identically";
-  public static final String DML_DINAMICO = "dinamico";
-  public static final String DML_SELECT = "row";
-  public static final String DML_ACTUALIZAR_TODOS = "rows";
-  public static final String DML_ELIMINAR_TODOS = "rows";
-  public static final String DML_RESERVADO = "view";
-  public static final String XML_PROYECTO_LOAD = "load";
-  public static final String XML_PROYECTO_MAPPING = "mapping";
-  public static final String XML_PROYECTO_BEANS = "backing";
-  public static final String XML_PROYECTO_DTO = "dto";
-  public static final String XML_PROYECTO_ID = "id";
-  public static final String XML_PROYECTO_MSG = "msg";
+  public static final String DML_IDENTICO        = "identically";
+  public static final String DML_DINAMICO        = "dinamico";
+  public static final String DML_SELECT          = "row";
+  public static final String DML_ACTUALIZAR_TODOS= "rows";
+  public static final String DML_ELIMINAR_TODOS  = "rows";
+  public static final String DML_RESERVADO       = "view";
+  public static final String XML_PROYECTO_LOAD   = "load";
+  public static final String XML_PROYECTO_MAPPING= "mapping";
+  public static final String XML_PROYECTO_BEANS  = "backing";
+  public static final String XML_PROYECTO_DTO    = "dto";
+  public static final String XML_PROYECTO_ID     = "id";
+  public static final String XML_PROYECTO_MSG    = "msg";
 
   // Constates para importar archivos
   public static final String RUTA_IMPORTADOS = RUTA_TEMPORALES.concat("/Files/");
@@ -69,12 +69,12 @@ public final class Constantes {
 
   // Constantes para REPORTES
   public static final String REPORTE_REFERENCIA = "_REPORTE";
-  public static final String REPORTE_SQL = "REPORTE_SQL";
-  public static final String REPORTE_REGISTROS = "REPORTE_REGISTROS";
-  public static final String REPORTE_IMAGENES = "REPORTE_IMAGENES";
-  public static final String REPORTE_TITULOS = "REPORTE_TITULOS";
+  public static final String REPORTE_SQL        = "REPORTE_SQL";
+  public static final String REPORTE_REGISTROS  = "REPORTE_REGISTROS";
+  public static final String REPORTE_IMAGENES   = "REPORTE_IMAGENES";
+  public static final String REPORTE_TITULOS    = "REPORTE_TITULOS";
   public static final String REPORTE_SUBREPORTE = "REPORTE_SUBREPORTE";
-  public static final String REPORTE_VERSION = "REPORTE_VERSION";
+  public static final String REPORTE_VERSION    = "REPORTE_VERSION";
 
   public static Color[] COLORES = {new Color(230, 230, 230), Color.BLACK, Color.WHITE, Color.GRAY, Color.BLUE, Color.RED, Color.YELLOW};
   public static final Long USUARIO_ACTIVO = 1L;

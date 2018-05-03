@@ -60,8 +60,8 @@ public class TcManticEmpresasDto implements IBaseDto, Serializable {
   private Long idEmpresa;
   @Column (name="id_tipo_empresa")
   private Long idTipoEmpresa;
-  @Column (name="nombre_corto")
-  private String nombreCorto;
+  @Column (name="clave")
+  private String clave;
 
   public TcManticEmpresasDto() {
     this(new Long(-1L));
@@ -72,7 +72,7 @@ public class TcManticEmpresasDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticEmpresasDto(Long idUsuarios, Long idImagen, Long idEmpresaDepende, String titulo, Long idResponsable, String carpetaTrabajo, String nombre, Double iva, String observaciones, Long idEmpresa, Long idTipoEmpresa, String nombreCorto) {
+  public TcManticEmpresasDto(Long idUsuarios, Long idImagen, Long idEmpresaDepende, String titulo, Long idResponsable, String carpetaTrabajo, String nombre, Double iva, String observaciones, Long idEmpresa, Long idTipoEmpresa, String clave) {
     setIdUsuarios(idUsuarios);
     setIdImagen(idImagen);
     setIdEmpresaDepende(idEmpresaDepende);
@@ -85,7 +85,7 @@ public class TcManticEmpresasDto implements IBaseDto, Serializable {
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
     setIdTipoEmpresa(idTipoEmpresa);
-    setNombreCorto(nombreCorto);
+    setClave(clave);
   }
 	
   public void setIdUsuarios(Long idUsuarios) {
@@ -184,12 +184,12 @@ public class TcManticEmpresasDto implements IBaseDto, Serializable {
     return idTipoEmpresa;
   }
 
-  public void setNombreCorto(String nombreCorto) {
-    this.nombreCorto = nombreCorto;
+  public void setClave(String clave) {
+    this.clave = clave;
   }
 
-  public String getNombreCorto() {
-    return nombreCorto;
+  public String getClave() {
+    return clave;
   }
 
   @Transient
@@ -231,7 +231,7 @@ public class TcManticEmpresasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoEmpresa());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getNombreCorto());
+		regresar.append(getClave());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -251,14 +251,14 @@ public class TcManticEmpresasDto implements IBaseDto, Serializable {
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("idTipoEmpresa", getIdTipoEmpresa());
-		regresar.put("nombreCorto", getNombreCorto());
+		regresar.put("clave", getClave());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdUsuarios(), getIdImagen(), getIdEmpresaDepende(), getTitulo(), getIdResponsable(), getCarpetaTrabajo(), getNombre(), getRegistro(), getIva(), getObservaciones(), getIdEmpresa(), getIdTipoEmpresa(), getNombreCorto()
+    getIdUsuarios(), getIdImagen(), getIdEmpresaDepende(), getTitulo(), getIdResponsable(), getCarpetaTrabajo(), getNombre(), getRegistro(), getIva(), getObservaciones(), getIdEmpresa(), getIdTipoEmpresa(), getClave()
     };
     return regresar;
   }

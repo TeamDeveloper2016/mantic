@@ -7,19 +7,28 @@
     <unit id="VistaTcJanalUsuariosDto">
       <select id="acceso">
         select
-            tc_janal_usuarios.id_usuario,  tc_mantic_personas.cuenta, tc_mantic_personas.contrasenia, tc_janal_usuarios.registro, tc_janal_perfiles.descripcion as descripcion_perfil, tc_janal_usuarios.id_perfil,
-            tc_janal_grupos.descripcion as descripcion_grupo, tc_mantic_personas.estilo, tc_janal_perfiles.id_menu, tc_mantic_personas.id_persona, nombres, paterno primer_apellido,
-            materno segundo_apellido, id_tipo_sexo, tc_janal_grupos.id_grupo,tc_janal_grupos.clave as clave_grupo,tc_janal_usuarios.ultimo_acceso
-          from
-            tc_janal_usuarios
-          inner join
-            tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
-          inner join
-            tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
-          inner join
-            tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
-          where
-            tc_mantic_personas.cuenta = '{cuenta}' and tc_janal_usuarios.activo=1
+					tc_janal_usuarios.id_usuario, tc_mantic_personas.cuenta, 
+					tc_mantic_personas.contrasenia, tc_janal_usuarios.registro, 
+				  tc_janal_perfiles.descripcion as descripcion_perfil, 
+				  tc_janal_usuarios.id_perfil,
+					tc_janal_grupos.descripcion as descripcion_grupo, 
+				  tc_mantic_personas.estilo, tc_janal_perfiles.id_menu, 
+				  tc_mantic_personas.id_persona, nombres, 
+				  paterno primer_apellido,
+					materno segundo_apellido, 
+				  id_tipo_sexo, tc_janal_grupos.id_grupo,
+				  tc_janal_grupos.clave as clave_grupo,
+				  tc_janal_usuarios.ultimo_acceso
+				from
+					tc_janal_usuarios
+				inner join
+					tc_janal_perfiles on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+				inner join
+					tc_janal_grupos on tc_janal_grupos.id_grupo = tc_janal_perfiles.id_grupo
+				inner join
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
+				where
+					tc_mantic_personas.cuenta = '{cuenta}' and tc_janal_usuarios.activo=1
       </select>
       <select id="recuperar">
         select
@@ -33,9 +42,13 @@
       </select>
       <select id="sucursales">           
         select 
-          tr_mantic_empresa_personal.id_empresa_persona,tc_mantic_empresas.id_empresa ,
-          tc_mantic_empresas.id_empresa_depende,tc_mantic_empresas.nombre,
-          tc_mantic_empresas.nombre_corto,tc_mantic_empresas.titulo
+          tr_mantic_empresa_personal.id_empresa_persona,
+				  tc_mantic_empresas.id_empresa,
+          tc_mantic_empresas.id_empresa_depende,
+				  tc_mantic_empresas.id_tipo_empresa,
+				  tc_mantic_empresas.nombre,
+          tc_mantic_empresas.clave,
+				  tc_mantic_empresas.titulo
         from 
           tr_mantic_empresa_personal
         inner join

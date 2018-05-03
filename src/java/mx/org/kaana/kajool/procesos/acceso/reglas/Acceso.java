@@ -73,7 +73,7 @@ public class Acceso implements Serializable {
   public void valida() throws Exception {
     LOG.info("Validar credenciales...");
     Autentifica autentifica = new Autentifica();
-    HttpSession session = null;
+    HttpSession session     = null;
     RegistroPerfil registro = null;
     autentifica.getCredenciales().setCuentaInicial(getCliente().getCuenta());
     LOG.info("cuenta[".concat(getCliente().getCuenta()).concat("]"));
@@ -81,7 +81,7 @@ public class Acceso implements Serializable {
       if (JsfBase.isLockUsers()) {
         throw new BloqueoSitioException();
       }
-      registro = new RegistroPerfil(autentifica);
+      registro= new RegistroPerfil(autentifica);
       session = JsfBase.getSession();
       registro.addAutentifica(session);
       agregarUsuariosSitio(session, autentifica);

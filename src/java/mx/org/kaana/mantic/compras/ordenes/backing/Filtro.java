@@ -31,6 +31,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
+      this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("sortOrder", "order by tc_mantic_ordenes_compras.registro");
     } // try
     catch (Exception e) {
