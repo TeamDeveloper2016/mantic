@@ -1553,5 +1553,59 @@
           clave = '{clave}' and id_uso_cfdi = {idUsoCfdi}
       </select>
     </unit>
+		<unit id="TcManticNotasDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_notas_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_notas_detalles
+        where      
+          id_nota_detalle = {idNotaDetalle} and id_nota_entrada = {idNotaEntrada} and id_articulo = {idArticulo}
+      </select>
+    </unit>
+    <unit id="TcManticNotasEntradasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_notas_entradas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_notas_entradas
+        where      
+          id_proveedor = {idProveedor} and id_nota_entrada = {idNotaEntrada}
+      </select>
+    </unit>
+    <unit id="TcManticOrdenesDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_ordenes_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ordenes_detalles
+        where      
+          id_orden_compra = {idOrdenCompra} and id_articulo = {idArticulo} and id_orden_detalle = {idOrdenDetalle}
+      </select>
+    </unit>						
   </dml>    
 </process>
