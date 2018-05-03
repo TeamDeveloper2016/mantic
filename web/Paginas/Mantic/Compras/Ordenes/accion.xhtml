@@ -14,55 +14,7 @@
 				'contenedorGrupos\\:consecutivo'  : {validaciones: 'libre', mascara: 'libre'},
 				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre'}				
 			};			
-			function applyMayusTable(parent, index, name) {				
-				var mayus= $('#contenedorGrupos\\:'+parent+'\\:'+index+'\\:'+name).val().toUpperCase();
-				$('#contenedorGrupos\\:'+parent+'\\:'+index+'\\:'+name).val(mayus);
-			} // applyMayusTable
 		</script>   
-		<style type="text/css">			
-			span.ui-calendar > input {
-				width: -webkit-fill-available;
-			}						
-			div.ui-selectonemenu-filter-container {	
-				width: -webkit-fill-available !important;
-			}
-			input.ui-selectonemenu-filter {	
-				width: -webkit-fill-available !important;
-			}									
-      span.ui-inputnumber > input {
-        width: -webkit-fill-available;
-      }
-      div.ui-datatable-footer {
-        border: transparent !important;
-        background: transparent !important;
-      }
-      li.ui-datalist-item {
-        text-align: left !important;
-        font-weight: bold !important;
-        padding-left: 10px !important;
-      }
-      ul.ui-datalist-data {								
-        padding-left: 0px !important;
-      }
-      div.ui-selectonemenu-filter-container {								
-        width: -webkit-fill-available !important;
-      }
-      input.ui-selectonemenu-filter {								
-        width: -webkit-fill-available !important;
-      }
-      div.ui-datalist {
-        border: transparent !important;
-      }
-      div.ui-datalist-footer {
-        border: transparent !important;
-        background: transparent !important;
-        text-align: left !important;
-        color: black !important;
-      }
-      table.janal-panel-tabla > tbody > tr > td {
-        vertical-align: top !important;
-      }
-		</style>		
 	</ui:define>
 	<ui:define name="contenido">
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">

@@ -31,54 +31,7 @@
         'contenedorGrupos\\:entreCalle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:ycalle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'}
 			};						
-			
-			function refresh(index) {
-        janal.refresh('tabview_'+ index);      
-      }
-
-      function applyMayusTable(parent, index, name) {
-        var mayus = $('#contenedorGrupos\\:' + parent + '\\:' + index + '\\:' + name).val().toUpperCase();
-        $('#contenedorGrupos\\:' + parent + '\\:' + index + '\\:' + name).val(mayus);
-      } // applyMayusTable
 		</script>   
-		<style type="text/css">			
-			 span.ui-inputnumber > input{
-        width: -webkit-fill-available;
-      }
-      span.ui-calendar > input{
-        width: -webkit-fill-available;
-      }
-      div.ui-datatable-footer{
-        border: transparent !important;
-        background: transparent !important;
-      }
-      li.ui-datalist-item{
-        text-align: left !important;
-        font-weight: bold !important;
-        padding-left: 10px !important;
-      }
-      ul.ui-datalist-data{								
-        padding-left: 0px !important;
-      }
-      div.ui-selectonemenu-filter-container{								
-        width: -webkit-fill-available !important;
-      }
-      input.ui-selectonemenu-filter{								
-        width: -webkit-fill-available !important;
-      }
-      div.ui-datalist{
-        border: transparent !important;
-      }
-      div.ui-datalist-footer{
-        border: transparent !important;
-        background: transparent !important;
-        text-align: left !important;
-        color: black !important;
-      }
-      table.janal-panel-tabla > tbody > tr > td{
-        vertical-align: top !important;
-      }							
-		</style>		
 	</ui:define>
 	<ui:define name="contenido">
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
@@ -205,7 +158,7 @@
                     </p:selectOneMenu> 				
                   </p:column>	
                   <p:column headerText="Valor" styleClass="janal-wid-50">		
-                    <p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}" onblur="applyMayusTable('tablaContactos',#{index}, 'valor')" disabled="#{!contacto.nuevo}"/>                    																																			
+                    <p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaContactos', #{index}, 'valor')" disabled="#{!contacto.nuevo}"/>                    																																			
                   </p:column>
                   <p:column style="width:32px;text-align: center">
                     <p:commandButton update="tablaContactos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosPersonasAccion.registroPersona.doEliminarClienteTipoContacto}" styleClass="janal-text-white">

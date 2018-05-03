@@ -15,13 +15,50 @@
       <link rel="shortcut icon" type="image/ico" href="#{kajoolUtilAplicacion.defaultResourceImg}/sistema/favicon.ico.jsf?ln=janal"/>
       <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryJs}"/>
       <h:outputText escape="false" value="#{kajoolUtilAplicacion.defaultScripts}"/>
-      <h:outputScript library="sentinel" name="js/jquery.sentinel.layout-1.0.1.js"/>
       <h:outputText escape="false" value="#{kajoolUtilAplicacion.defaultCss}"/>
       <ui:insert name="librerias"/>
+  		<style type="text/css">
+				span.ui-inputnumber > input {
+					width: -webkit-fill-available;
+				}
+				span.ui-calendar > input {
+					width: -webkit-fill-available;
+				}
+				div.ui-datatable-footer {
+					border: transparent !important;
+					background: transparent !important;
+				}
+				li.ui-datalist-item {
+					text-align: left !important;
+					font-weight: bold !important;
+					padding-left: 10px !important;
+				}
+				ul.ui-datalist-data {								
+					padding-left: 0px !important;
+				}
+				div.ui-selectonemenu-filter-container {								
+					width: -webkit-fill-available !important;
+				}
+				input.ui-selectonemenu-filter {								
+					width: -webkit-fill-available !important;
+				}
+				div.ui-datalist {
+					border: transparent !important;
+				}
+				div.ui-datalist-footer {
+					border: transparent !important;
+					background: transparent !important;
+					text-align: left !important;
+					color: black !important;
+				}
+				table.janal-panel-tabla > tbody > tr > td {
+					vertical-align: top !important;
+				}			
+			</style>		
     </h:head>
     <h:body class="ui-widget-content">			
       <p:layout fullPage="true">
-        <p:layoutUnit position="north" style="border:0;" resizable="false" gutter="0">
+        <p:layoutUnit position="north" styleClass="janal-header-page" style="border:0;" resizable="false" gutter="0">
           <ui:include src="/WEB-INF/plantillas/secciones/leftmenu.xhtml"/> 
           <ui:include src="/WEB-INF/plantillas/secciones/encabezado.xhtml"/>
         </p:layoutUnit>
