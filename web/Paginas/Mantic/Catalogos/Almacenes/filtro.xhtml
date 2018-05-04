@@ -74,48 +74,18 @@
               </f:facet>
               <h:outputText value="#{filtro['nombre']}"/>
             </p:column>					
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{filtro.descripcion}">
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.descripcion}">
               <f:facet name="header">
                 <h:outputText value="Descripcion"/>
               </f:facet>
               <h:outputText value="#{filtro['descripcion']}"/>
-            </p:column>	  
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.pisos}">
-              <f:facet name="header">
-                <h:outputText value="Pisos"/>
-              </f:facet>
-              <h:outputText value="#{filtro['pisos']}"/>
-            </p:column>	 
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{filtro.nombres}">
-              <f:facet name="header">
-                <h:outputText value="Responsable"/>
-              </f:facet>
-              <h:outputText value="#{filtro['nombres']} #{filtro['paterno']} #{filtro['materno']}"/>
-            </p:column>			
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.calle}">
+            </p:column>	                          			
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.calle}">
               <f:facet name="header">
                 <h:outputText value="Calle"/>
               </f:facet>
               <h:outputText value="#{filtro['calle']}"/>
-            </p:column>					
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.numeroExterior}">
-              <f:facet name="header">
-                <h:outputText value="No."/>
-              </f:facet>
-              <h:outputText value="#{filtro['numeroExterior']}"/>
-            </p:column>					
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.asentamiento}">
-              <f:facet name="header">
-                <h:outputText value="Colonia"/>
-              </f:facet>
-              <h:outputText value="#{filtro['asentamiento']}"/>
-            </p:column>					
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{filtro.municipio}">
-              <f:facet name="header">
-                <h:outputText value="Ubicación"/>
-              </f:facet>
-              <h:outputText value="#{filtro['municipio']}  "/>
-            </p:column>					
+            </p:column>					                                    
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCatalogosAlmacenesFiltro.lazyModel==null?0:manticCatalogosAlmacenesFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
