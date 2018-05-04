@@ -129,11 +129,13 @@ public class Transaccion extends IBaseTnx {
     boolean validate = false;
     boolean regresar = false;
     try {
-      for (AlmacenDomicilio clienteDomicilio : this.registroAlmacen.getAlmacenDomicilio()) {
-        clienteDomicilio.setIdAlmacen(idAlmacen);
-        clienteDomicilio.setIdUsuario(JsfBase.getIdUsuario());
-        dto = (TrManticAlmacenDomicilioDto) clienteDomicilio;
-        sqlAccion = clienteDomicilio.getSqlAccion();
+      for (AlmacenDomicilio almacenDomicilio : this.registroAlmacen.getAlmacenDomicilio()) {
+				if(this.registroAlmacen.getAlmacenDomicilio().size()== 1)
+					almacenDomicilio.setIdPrincipal(1L);
+        almacenDomicilio.setIdAlmacen(idAlmacen);
+        almacenDomicilio.setIdUsuario(JsfBase.getIdUsuario());
+        dto = (TrManticAlmacenDomicilioDto) almacenDomicilio;
+        sqlAccion = almacenDomicilio.getSqlAccion();
         switch (sqlAccion) {
           case INSERT:
             dto.setIdAlmacenDomicilio(-1L);
