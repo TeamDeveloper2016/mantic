@@ -16,56 +16,61 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 
 /**
- * @company KAANA
- * @project KAJOOL (Control system polls)
- * @date 10/10/2016
- * @time 11:58:22 PM
- * @author Team Developer 2016 <team.developer@kaana.org.mx>
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
+ *@date 10/10/2016
+ *@time 11:58:22 PM
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-@Entity
-@Table(name = "tc_mantic_proveedores")
-public class TcManticProveedoresDto implements IBaseDto, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  @Column(name = "id_tipo_proveedor")
+@Entity
+@Table(name="tc_mantic_proveedores")
+public class TcManticProveedoresDto implements IBaseDto, Serializable {
+		
+  private static final long serialVersionUID=1L;
+  @Column (name="id_tipo_proveedor")
   private Long idTipoProveedor;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-  @Column(name = "id_proveedor")
+	@Column (name="id_proveedor")
   private Long idProveedor;
-  @Column(name = "clave")
+  @Column (name="clave")
   private String clave;
-  @Column(name = "dias_entrega")
+  @Column (name="dias_entrega")
   private Long diasEntrega;
-  @Column(name = "descuento")
+  @Column (name="descuento")
   private Double descuento;
-  @Column(name = "prefijo")
+  @Column (name="prefijo")
   private String prefijo;
-  @Column(name = "razon_social")
+  @Column (name="razon_social")
   private String razonSocial;
-  @Column(name = "rfc")
+  @Column (name="rfc")
   private String rfc;
-  @Column(name = "registro")
+  @Column (name="registro")
   private Timestamp registro;
-  @Column(name = "id_tipo_dia")
+  @Column (name="id_tipo_dia")
   private Long idTipoDia;
-  @Column(name = "id_usuario")
+  @Column (name="id_usuario")
   private Long idUsuario;
-  @Column(name = "observaciones")
+  @Column (name="id_tipo_moneda")
+  private Long idTipoMoneda;
+  @Column (name="observaciones")
   private String observaciones;
-  @Column(name = "id_empresa")
+  @Column (name="id_empresa")
   private Long idEmpresa;
+  @Column (name="id_tmp_proveedor")
+  private Long idTmpProveedor;
 
   public TcManticProveedoresDto() {
     this(new Long(-1L));
   }
 
   public TcManticProveedoresDto(Long key) {
-    this(null, new Long(-1L), null, null, null, null, null, null, null, null, null, null);
+    this(null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticProveedoresDto(Long idTipoProveedor, Long idProveedor, String clave, Long diasEntrega, Double descuento, String prefijo, String razonSocial, String rfc, Long idTipoDia, Long idUsuario, String observaciones, Long idEmpresa) {
+  public TcManticProveedoresDto(Long idTipoProveedor, Long idProveedor, String clave, Long diasEntrega, Double descuento, String prefijo, String razonSocial, String rfc, Long idTipoDia, Long idUsuario, Long idTipoMoneda, String observaciones, Long idEmpresa, Long idTmpProveedor) {
     setIdTipoProveedor(idTipoProveedor);
     setIdProveedor(idProveedor);
     setClave(clave);
@@ -77,11 +82,12 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
     setIdTipoDia(idTipoDia);
     setIdUsuario(idUsuario);
+    setIdTipoMoneda(idTipoMoneda);
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
-  
+    setIdTmpProveedor(idTmpProveedor);
   }
-
+	
   public void setIdTipoProveedor(Long idTipoProveedor) {
     this.idTipoProveedor = idTipoProveedor;
   }
@@ -170,6 +176,14 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
+  public void setIdTipoMoneda(Long idTipoMoneda) {
+    this.idTipoMoneda = idTipoMoneda;
+  }
+
+  public Long getIdTipoMoneda() {
+    return idTipoMoneda;
+  }
+
   public void setObservaciones(String observaciones) {
     this.observaciones = observaciones;
   }
@@ -186,75 +200,87 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
     return idEmpresa;
   }
 
+  public void setIdTmpProveedor(Long idTmpProveedor) {
+    this.idTmpProveedor = idTmpProveedor;
+  }
+
+  public Long getIdTmpProveedor() {
+    return idTmpProveedor;
+  }
+
   @Transient
   @Override
   public Long getKey() {
-    return getIdProveedor();
+  	return getIdProveedor();
   }
 
   @Override
   public void setKey(Long key) {
-    this.idProveedor = key;
+  	this.idProveedor = key;
   }
 
   @Override
   public String toString() {
-    StringBuilder regresar = new StringBuilder();
+    StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-    regresar.append(getIdTipoProveedor());
-    regresar.append(Constantes.SEPARADOR);
-    regresar.append(getIdProveedor());
-    regresar.append(Constantes.SEPARADOR);
-    regresar.append(getClave());
-    regresar.append(Constantes.SEPARADOR);
-    regresar.append(getDiasEntrega());
-    regresar.append(Constantes.SEPARADOR);
-    regresar.append(getDescuento());
-    regresar.append(Constantes.SEPARADOR);
-    regresar.append(getPrefijo());
-    regresar.append(Constantes.SEPARADOR);
-    regresar.append(getRazonSocial());
-    regresar.append(Constantes.SEPARADOR);
-    regresar.append(getRfc());
-    regresar.append(Constantes.SEPARADOR);
-    regresar.append(getRegistro());
-    regresar.append(Constantes.SEPARADOR);
-    regresar.append(getIdTipoDia());
-    regresar.append(Constantes.SEPARADOR);
-    regresar.append(getIdUsuario());
-    regresar.append(Constantes.SEPARADOR);
-    regresar.append(getObservaciones());
-    regresar.append(Constantes.SEPARADOR);
-    regresar.append(getIdEmpresa());
-
+		regresar.append(getIdTipoProveedor());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdProveedor());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getClave());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getDiasEntrega());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getDescuento());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPrefijo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRazonSocial());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRfc());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoDia());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdUsuario());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoMoneda());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getObservaciones());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEmpresa());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTmpProveedor());
     regresar.append("]");
-    return regresar.toString();
+  	return regresar.toString();
   }
 
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-    regresar.put("idTipoProveedor", getIdTipoProveedor());
-    regresar.put("idProveedor", getIdProveedor());
-    regresar.put("clave", getClave());
-    regresar.put("diasEntrega", getDiasEntrega());
-    regresar.put("descuento", getDescuento());
-    regresar.put("prefijo", getPrefijo());
-    regresar.put("razonSocial", getRazonSocial());
-    regresar.put("rfc", getRfc());
-    regresar.put("registro", getRegistro());
-    regresar.put("idTipoDia", getIdTipoDia());
-    regresar.put("idUsuario", getIdUsuario());
-    regresar.put("observaciones", getObservaciones());
-    regresar.put("idEmpresa", getIdEmpresa());
-   
-    return regresar;
+		regresar.put("idTipoProveedor", getIdTipoProveedor());
+		regresar.put("idProveedor", getIdProveedor());
+		regresar.put("clave", getClave());
+		regresar.put("diasEntrega", getDiasEntrega());
+		regresar.put("descuento", getDescuento());
+		regresar.put("prefijo", getPrefijo());
+		regresar.put("razonSocial", getRazonSocial());
+		regresar.put("rfc", getRfc());
+		regresar.put("registro", getRegistro());
+		regresar.put("idTipoDia", getIdTipoDia());
+		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("idTipoMoneda", getIdTipoMoneda());
+		regresar.put("observaciones", getObservaciones());
+		regresar.put("idEmpresa", getIdEmpresa());
+		regresar.put("idTmpProveedor", getIdTmpProveedor());
+  	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getIdTipoProveedor(), getIdProveedor(), getClave(), getDiasEntrega(), getDescuento(), getPrefijo(), getRazonSocial(), getRfc(), getRegistro(), getIdTipoDia(), getIdUsuario(), getObservaciones(), getIdEmpresa()
+    getIdTipoProveedor(), getIdProveedor(), getClave(), getDiasEntrega(), getDescuento(), getPrefijo(), getRazonSocial(), getRfc(), getRegistro(), getIdTipoDia(), getIdUsuario(), getIdTipoMoneda(), getObservaciones(), getIdEmpresa(), getIdTmpProveedor()
     };
     return regresar;
   }
@@ -266,7 +292,7 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
 
   @Override
   public String toAllKeys() {
-    StringBuilder regresar = new StringBuilder();
+    StringBuilder regresar= new StringBuilder();
     regresar.append("|");
     regresar.append("idProveedor~");
     regresar.append(getIdProveedor());
@@ -276,7 +302,7 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
 
   @Override
   public String toKeys() {
-    StringBuilder regresar = new StringBuilder();
+    StringBuilder regresar= new StringBuilder();
     regresar.append(getIdProveedor());
     return regresar.toString();
   }
@@ -288,7 +314,7 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
 
   @Override
   public boolean isValid() {
-    return getIdProveedor() != null && getIdProveedor() != -1L;
+  	return getIdProveedor()!= null && getIdProveedor()!=-1L;
   }
 
   @Override
@@ -314,3 +340,5 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
   }
 
 }
+
+

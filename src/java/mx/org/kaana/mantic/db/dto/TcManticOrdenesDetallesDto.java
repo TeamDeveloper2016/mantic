@@ -30,10 +30,14 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Column (name="costo")
   private Double costo;
+  @Column (name="iva")
+  private Double iva;
   @Column (name="descuento")
   private Double descuento;
   @Column (name="id_orden_compra")
   private Long idOrdenCompra;
+  @Column (name="extras")
+  private String extras;
   @Column (name="cantidad")
   private Long cantidad;
   @Id
@@ -52,14 +56,16 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
   }
 
   public TcManticOrdenesDetallesDto(Long key) {
-    this(null, null, null, null, new Long(-1L), null, null);
+    this(null, null, null, null, null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcManticOrdenesDetallesDto(Double costo, Double descuento, Long idOrdenCompra, Long cantidad, Long idOrdenDetalle, Long idArticulo, Double importe) {
+  public TcManticOrdenesDetallesDto(Double costo, Double iva, Double descuento, Long idOrdenCompra, String extras, Long cantidad, Long idOrdenDetalle, Long idArticulo, Double importe) {
     setCosto(costo);
+    setIva(iva);
     setDescuento(descuento);
     setIdOrdenCompra(idOrdenCompra);
+    setExtras(extras);
     setCantidad(cantidad);
     setIdOrdenDetalle(idOrdenDetalle);
     setIdArticulo(idArticulo);
@@ -73,6 +79,14 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
 
   public Double getCosto() {
     return costo;
+  }
+
+  public void setIva(Double iva) {
+    this.iva = iva;
+  }
+
+  public Double getIva() {
+    return iva;
   }
 
   public void setDescuento(Double descuento) {
@@ -89,6 +103,14 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
 
   public Long getIdOrdenCompra() {
     return idOrdenCompra;
+  }
+
+  public void setExtras(String extras) {
+    this.extras = extras;
+  }
+
+  public String getExtras() {
+    return extras;
   }
 
   public void setCantidad(Long cantidad) {
@@ -148,9 +170,13 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getCosto());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIva());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDescuento());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdOrdenCompra());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getExtras());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCantidad());
 		regresar.append(Constantes.SEPARADOR);
@@ -169,8 +195,10 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("costo", getCosto());
+		regresar.put("iva", getIva());
 		regresar.put("descuento", getDescuento());
 		regresar.put("idOrdenCompra", getIdOrdenCompra());
+		regresar.put("extras", getExtras());
 		regresar.put("cantidad", getCantidad());
 		regresar.put("idOrdenDetalle", getIdOrdenDetalle());
 		regresar.put("idArticulo", getIdArticulo());
@@ -182,7 +210,7 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getCosto(), getDescuento(), getIdOrdenCompra(), getCantidad(), getIdOrdenDetalle(), getIdArticulo(), getImporte(), getRegistro()
+    getCosto(), getIva(), getDescuento(), getIdOrdenCompra(), getExtras(), getCantidad(), getIdOrdenDetalle(), getIdArticulo(), getImporte(), getRegistro()
     };
     return regresar;
   }

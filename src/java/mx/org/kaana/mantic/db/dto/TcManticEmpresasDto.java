@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -34,6 +28,8 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcManticEmpresasDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
+  @Column (name="clave")
+  private String clave;
   @Column (name="id_usuarios")
   private Long idUsuarios;
   @Column (name="id_imagen")
@@ -60,19 +56,18 @@ public class TcManticEmpresasDto implements IBaseDto, Serializable {
   private Long idEmpresa;
   @Column (name="id_tipo_empresa")
   private Long idTipoEmpresa;
-  @Column (name="clave")
-  private String clave;
 
   public TcManticEmpresasDto() {
     this(new Long(-1L));
   }
 
   public TcManticEmpresasDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, new Long(-1L), null, null);
+    this(null, null, null, null, null, null, null, null, null, null, new Long(-1L), null);
     setKey(key);
   }
 
-  public TcManticEmpresasDto(Long idUsuarios, Long idImagen, Long idEmpresaDepende, String titulo, Long idResponsable, String carpetaTrabajo, String nombre, Double iva, String observaciones, Long idEmpresa, Long idTipoEmpresa, String clave) {
+  public TcManticEmpresasDto(String clave, Long idUsuarios, Long idImagen, Long idEmpresaDepende, String titulo, Long idResponsable, String carpetaTrabajo, String nombre, Double iva, String observaciones, Long idEmpresa, Long idTipoEmpresa) {
+    setClave(clave);
     setIdUsuarios(idUsuarios);
     setIdImagen(idImagen);
     setIdEmpresaDepende(idEmpresaDepende);
@@ -85,9 +80,16 @@ public class TcManticEmpresasDto implements IBaseDto, Serializable {
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
     setIdTipoEmpresa(idTipoEmpresa);
-    setClave(clave);
   }
 	
+  public void setClave(String clave) {
+    this.clave = clave;
+  }
+
+  public String getClave() {
+    return clave;
+  }
+
   public void setIdUsuarios(Long idUsuarios) {
     this.idUsuarios = idUsuarios;
   }
@@ -184,14 +186,6 @@ public class TcManticEmpresasDto implements IBaseDto, Serializable {
     return idTipoEmpresa;
   }
 
-  public void setClave(String clave) {
-    this.clave = clave;
-  }
-
-  public String getClave() {
-    return clave;
-  }
-
   @Transient
   @Override
   public Long getKey() {
@@ -207,6 +201,8 @@ public class TcManticEmpresasDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
+		regresar.append(getClave());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuarios());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdImagen());
@@ -230,8 +226,6 @@ public class TcManticEmpresasDto implements IBaseDto, Serializable {
 		regresar.append(getIdEmpresa());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoEmpresa());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getClave());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -239,6 +233,7 @@ public class TcManticEmpresasDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
+		regresar.put("clave", getClave());
 		regresar.put("idUsuarios", getIdUsuarios());
 		regresar.put("idImagen", getIdImagen());
 		regresar.put("idEmpresaDepende", getIdEmpresaDepende());
@@ -251,14 +246,13 @@ public class TcManticEmpresasDto implements IBaseDto, Serializable {
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("idTipoEmpresa", getIdTipoEmpresa());
-		regresar.put("clave", getClave());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdUsuarios(), getIdImagen(), getIdEmpresaDepende(), getTitulo(), getIdResponsable(), getCarpetaTrabajo(), getNombre(), getRegistro(), getIva(), getObservaciones(), getIdEmpresa(), getIdTipoEmpresa(), getClave()
+    getClave(), getIdUsuarios(), getIdImagen(), getIdEmpresaDepende(), getTitulo(), getIdResponsable(), getCarpetaTrabajo(), getNombre(), getRegistro(), getIva(), getObservaciones(), getIdEmpresa(), getIdTipoEmpresa()
     };
     return regresar;
   }

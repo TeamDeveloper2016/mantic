@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -40,6 +34,8 @@ public class TrManticProveedorPagoDto implements IBaseDto, Serializable {
   private Long idProveedorPago;
   @Column (name="id_proveedor")
   private Long idProveedor;
+  @Column (name="clave")
+  private String clave;
   @Column (name="id_tipo_pago")
   private Long idTipoPago;
   @Column (name="id_usuario")
@@ -56,13 +52,14 @@ public class TrManticProveedorPagoDto implements IBaseDto, Serializable {
   }
 
   public TrManticProveedorPagoDto(Long key) {
-    this(new Long(-1L), null, null, null, null, null);
+    this(new Long(-1L), null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TrManticProveedorPagoDto(Long idProveedorPago, Long idProveedor, Long idTipoPago, Long idUsuario, Double descuento, String observaciones) {
+  public TrManticProveedorPagoDto(Long idProveedorPago, Long idProveedor, String clave, Long idTipoPago, Long idUsuario, Double descuento, String observaciones) {
     setIdProveedorPago(idProveedorPago);
     setIdProveedor(idProveedor);
+    setClave(clave);
     setIdTipoPago(idTipoPago);
     setIdUsuario(idUsuario);
     setDescuento(descuento);
@@ -84,6 +81,14 @@ public class TrManticProveedorPagoDto implements IBaseDto, Serializable {
 
   public Long getIdProveedor() {
     return idProveedor;
+  }
+
+  public void setClave(String clave) {
+    this.clave = clave;
+  }
+
+  public String getClave() {
+    return clave;
   }
 
   public void setIdTipoPago(Long idTipoPago) {
@@ -145,6 +150,8 @@ public class TrManticProveedorPagoDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdProveedor());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getClave());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoPago());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
@@ -163,6 +170,7 @@ public class TrManticProveedorPagoDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("idProveedorPago", getIdProveedorPago());
 		regresar.put("idProveedor", getIdProveedor());
+		regresar.put("clave", getClave());
 		regresar.put("idTipoPago", getIdTipoPago());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("descuento", getDescuento());
@@ -174,7 +182,7 @@ public class TrManticProveedorPagoDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdProveedorPago(), getIdProveedor(), getIdTipoPago(), getIdUsuario(), getDescuento(), getObservaciones(), getRegistro()
+    getIdProveedorPago(), getIdProveedor(), getClave(), getIdTipoPago(), getIdUsuario(), getDescuento(), getObservaciones(), getRegistro()
     };
     return regresar;
   }

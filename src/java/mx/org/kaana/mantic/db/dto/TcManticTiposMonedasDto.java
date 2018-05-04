@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -36,14 +30,16 @@ public class TcManticTiposMonedasDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Column (name="descripcion")
   private String descripcion;
+  @Column (name="simbolo")
+  private String simbolo;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_tipo_moneda")
   private Long idTipoMoneda;
-  @Column (name="id_pais")
-  private Long idPais;
+  @Column (name="siglas")
+  private String siglas;
   @Column (name="nombre")
   private String nombre;
   @Column (name="registro")
@@ -54,15 +50,16 @@ public class TcManticTiposMonedasDto implements IBaseDto, Serializable {
   }
 
   public TcManticTiposMonedasDto(Long key) {
-    this(null, null, new Long(-1L), null, null);
+    this(null, null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcManticTiposMonedasDto(String descripcion, Long idUsuario, Long idTipoMoneda, Long idPais, String nombre) {
+  public TcManticTiposMonedasDto(String descripcion, String simbolo, Long idUsuario, Long idTipoMoneda, String siglas, String nombre) {
     setDescripcion(descripcion);
+    setSimbolo(simbolo);
     setIdUsuario(idUsuario);
     setIdTipoMoneda(idTipoMoneda);
-    setIdPais(idPais);
+    setSiglas(siglas);
     setNombre(nombre);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
@@ -73,6 +70,14 @@ public class TcManticTiposMonedasDto implements IBaseDto, Serializable {
 
   public String getDescripcion() {
     return descripcion;
+  }
+
+  public void setSimbolo(String simbolo) {
+    this.simbolo = simbolo;
+  }
+
+  public String getSimbolo() {
+    return simbolo;
   }
 
   public void setIdUsuario(Long idUsuario) {
@@ -91,12 +96,12 @@ public class TcManticTiposMonedasDto implements IBaseDto, Serializable {
     return idTipoMoneda;
   }
 
-  public void setIdPais(Long idPais) {
-    this.idPais = idPais;
+  public void setSiglas(String siglas) {
+    this.siglas = siglas;
   }
 
-  public Long getIdPais() {
-    return idPais;
+  public String getSiglas() {
+    return siglas;
   }
 
   public void setNombre(String nombre) {
@@ -132,11 +137,13 @@ public class TcManticTiposMonedasDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getDescripcion());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getSimbolo());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoMoneda());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdPais());
+		regresar.append(getSiglas());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
@@ -149,9 +156,10 @@ public class TcManticTiposMonedasDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("descripcion", getDescripcion());
+		regresar.put("simbolo", getSimbolo());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idTipoMoneda", getIdTipoMoneda());
-		regresar.put("idPais", getIdPais());
+		regresar.put("siglas", getSiglas());
 		regresar.put("nombre", getNombre());
 		regresar.put("registro", getRegistro());
   	return regresar;
@@ -160,7 +168,7 @@ public class TcManticTiposMonedasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getIdUsuario(), getIdTipoMoneda(), getIdPais(), getNombre(), getRegistro()
+    getDescripcion(), getSimbolo(), getIdUsuario(), getIdTipoMoneda(), getSiglas(), getNombre(), getRegistro()
     };
     return regresar;
   }
