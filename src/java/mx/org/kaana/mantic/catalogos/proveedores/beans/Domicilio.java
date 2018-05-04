@@ -26,8 +26,9 @@ public class Domicilio extends TrManticProveedorDomicilioDto implements Serializ
   private UISelectEntity entidad;
   private UISelectEntity municipio;
   private UISelectEntity localidad;
-  private UISelectEntity detalleCalle;
+  private UISelectEntity detalleCalle;  
   private TcManticDomiciliosDto tcManticDomicilioDto;
+  private String codigoPostalNuevo;
   private ESql accion;
   private boolean principal;
   private boolean modificar;
@@ -42,6 +43,15 @@ public class Domicilio extends TrManticProveedorDomicilioDto implements Serializ
     this.tcManticDomicilioDto = new TcManticDomiciliosDto();
   }
 
+  public String getCodigoPostalNuevo() {
+    return codigoPostalNuevo;
+  }
+
+  public void setCodigoPostalNuevo(String codigoPostalNuevo) {
+    this.codigoPostalNuevo = codigoPostalNuevo;
+    getTcManticDomicilioDto().setCodigoPostal(codigoPostalNuevo);
+  } 
+  
   public boolean isPrincipal() {
     boolean regresar = false;
     regresar = getIdPrincipal()!=null && getIdPrincipal().equals(1L);
@@ -60,8 +70,7 @@ public class Domicilio extends TrManticProveedorDomicilioDto implements Serializ
   public void setModificar(boolean modificar) {
     this.modificar = modificar;
   }
-  
-  
+
   
   public TcManticDomiciliosDto getTcManticDomicilioDto() {
     return tcManticDomicilioDto;
