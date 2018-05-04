@@ -87,7 +87,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			registro.setIdCliente(seleccionado.getKey());
 			transaccion= new Transaccion(registro);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar cliente", "El cliente se ha eliminado correctamente.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar cliente", "El cliente se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
 			else
 				JsfBase.addMessage("Eliminar cliente", "Ocurrió un error al eliminar el cliente.", ETipoMensaje.ERROR);								
 		} // try
