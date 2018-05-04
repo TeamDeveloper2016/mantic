@@ -1,0 +1,76 @@
+package mx.org.kaana.mantic.catalogos.almacenes.bean;
+
+import java.util.Collections;
+import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Value;
+
+public class ContadoresListas {
+
+	private static final Long INCREMENTO= 10000L;
+	private Long totalAlmacenesDomicilios;
+	private Long totalAlmacenesTipoContacto;	
+
+	public ContadoresListas() {
+		init();
+	} // ContadoresListas
+	
+	public ContadoresListas(Long totalAlmacenesDomicilios, Long totalAlmacenesTipoContacto) {
+		this.totalAlmacenesDomicilios    = totalAlmacenesDomicilios;
+		this.totalAlmacenesTipoContacto  = totalAlmacenesTipoContacto;
+	} // ContadoresListas
+
+	public Long getTotalAlmacenesDomicilios() {
+		return totalAlmacenesDomicilios;
+	}
+
+	public void setTotalAlmacenesDomicilios(Long totalAlmacenesDomicilios) {
+		this.totalAlmacenesDomicilios = totalAlmacenesDomicilios;
+	}
+
+	public Long getTotalAlmacenesTipoContacto() {
+		return totalAlmacenesTipoContacto;
+	}
+
+	public void setTotalAlmacenesTipoContacto(Long totalAlmacenesTipoContacto) {
+		this.totalAlmacenesTipoContacto = totalAlmacenesTipoContacto;
+	}
+	
+	private void init(){
+		try {
+			this.totalAlmacenesDomicilios  = toMaxAlmacenDomicilio();
+			this.totalAlmacenesTipoContacto= toMaxAlmacenTiposContactos();			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);						
+		} // catch		
+	} // init
+	
+	private Long toMaxAlmacenDomicilio() throws Exception{
+		Long regresar= 0L;
+		Value maximo = null;
+		try {
+			maximo= DaoFactory.getInstance().toField("TrManticAlmacenDomicilioDto", "maximo", Collections.EMPTY_MAP, "maximo");
+			if(maximo.getData()!= null)
+				regresar= Long.valueOf(maximo.toString()) + INCREMENTO;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch				
+		return regresar;
+	} // toMaxArticuloCodigo	
+	
+	private Long toMaxAlmacenTiposContactos() throws Exception{
+		Long regresar= 0L;
+		Value maximo = null;
+		try {
+			maximo= DaoFactory.getInstance().toField("TrManticAlmacenTipoContactoDto", "maximo", Collections.EMPTY_MAP, "maximo");
+			if(maximo.getData()!= null)
+				regresar= Long.valueOf(maximo.toString()) + INCREMENTO;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch				
+		return regresar;
+	} // toMaxAlmacenTiposContactos
+}
