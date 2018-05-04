@@ -22,9 +22,6 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.personas.beans.RegistroPersona;
 import mx.org.kaana.mantic.catalogos.personas.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.personas.reglas.Gestor;
-import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
-
-
 
 @Named(value = "manticCatalogosPersonasFiltro")
 @ViewScoped
@@ -117,7 +114,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			persona.setIdPersona(seleccionado.getKey());
 			transaccion= new Transaccion(persona);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar persona", "La persona se ha eliminado correctamente.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar persona", "La persona se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
 			else
 				JsfBase.addMessage("Eliminar persona", "Ocurrió un error al eliminar la persona seleccionada.", ETipoMensaje.ERROR);								
 		} // try
