@@ -162,7 +162,7 @@ public class Transaccion  extends IBaseTnx{
 			empresaPersonal.setIdEmpresa(this.idEmpresa);
 			empresaPersonal.setIdPuesto(this.idPuesto);
 			empresaPersonal.setIdUsuario(JsfBase.getIdUsuario());
-			regresar= DaoFactory.getInstance().insert(sesion, dto)>= 1L;
+			regresar= DaoFactory.getInstance().insert(sesion, empresaPersonal)>= 1L;
 		} // try
 		catch (Exception e) {			
 			throw e;
