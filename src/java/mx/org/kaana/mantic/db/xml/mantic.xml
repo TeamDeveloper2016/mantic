@@ -111,11 +111,10 @@
         from      
           tr_mantic_articulo_precio_sugerido
       </select>
-	  <delete id="rows">
+			<delete id="rows">
         delte from tr_mantic_articulo_precio_sugerido where id_articulo= {idArticulo} 
       </delete>
-    </unit>
-    
+    </unit>    
      <unit id="TrManticAlmacenDomicilioDto">
       <select id="row">
         select      
@@ -133,8 +132,16 @@
         where      
           id_almacen_domicilio = {idAlmacenDomicilio} and id_almacen = {idAlmacen} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
       </select>
-    </unit>
-    
+			<select id="maximo">
+        select      
+          max(id_almacen_domicilio) maximo
+        from      
+          tr_mantic_almacen_domicilio
+      </select>
+			<delete id="rows">
+        delte from tr_mantic_almacen_domicilio where id_almacen = {idAlmacen}
+      </delete>
+    </unit>    
     <unit id="TrManticAlmacenTipoContactoDto">
       <select id="row">
         select      
@@ -152,6 +159,15 @@
         where      
           id_almacen = {idAlmacen} and id_almacen_tipo_contacto = {idAlmacenTipoContacto} and id_tipo_contacto = {idTipoContacto}
       </select>
+			<select id="maximo">
+        select      
+          max(id_almacen_tipo_contacto) maximo
+        from      
+          tr_mantic_almacen_tipo_contacto
+      </select>
+			<delete id="rows">
+        delte from tr_mantic_almacen_tipo_contacto where id_almacen = {idAlmacen}
+      </delete>
     </unit>
     <unit id="TrManticArticuloClienteDescuentoDto">
       <select id="row">
