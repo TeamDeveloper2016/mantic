@@ -754,7 +754,7 @@
         delete from tc_mantic_articulos_dimenciones where id_articulo={idArticulo} 
       </delete>
     </unit>
-	<unit id="TcManticProveedoresDto">
+		<unit id="TcManticProveedoresDto">
       <select id="row">
         select      
           *
@@ -779,8 +779,7 @@
           tc_mantic_proveedores
         where 
           tc_mantic_proveedores.id_empresa = {idEmpresa} 
-      </select>
-      
+      </select>      
     </unit>
 		<unit id="TcManticClientesDto">
       <select id="row">
@@ -1089,7 +1088,7 @@
           id_empaque = {idEmpaque} and nombre = '{nombre}'
       </select>
     </unit>
-	    <unit id="TcManticEmpresasDto">
+	  <unit id="TcManticEmpresasDto">
       <select id="row">
         select      
           *
@@ -1125,7 +1124,7 @@
           id_manufactura = {idManufactura} and nombre = '{nombre}'
       </select>
     </unit>
-	    <unit id="TcManticOrdenesComprasDto">
+	  <unit id="TcManticOrdenesComprasDto">
       <select id="row">
         select      
           *
@@ -1140,10 +1139,10 @@
         from      
           tc_mantic_ordenes_compras
         where      
-          id_tipo_compra = {idTipoCompra} and id_proveedor_pago = {idProveedorPago} and id_proveedor = {idProveedor} and id_cliente = {idCliente} and entrega_estimada = {entregaEstimada} and id_orden_compra = {idOrdenCompra} and id_empresa = {idEmpresa}
+          id_tipo_compra = {idTipoCompra} and id_proveedor_pago = {idProveedorPago} and entrega_estimada = {entregaEstimada} and id_almacen = {idAlmacen} and id_orden_compra = {idOrdenCompra} and id_empresa = {idEmpresa}
       </select>
     </unit>
-	    <unit id="TcManticPersonaDomicilioDto">
+	  <unit id="TcManticPersonaDomicilioDto">
       <select id="row">
         select      
           *
@@ -1420,7 +1419,7 @@
           id_tipo_medio_pago = {idTipoMedioPago} and nombre = '{nombre}'
       </select>
     </unit>
-	    <unit id="TcManticTiposMonedasDto">
+	  <unit id="TcManticTiposMonedasDto">
       <select id="row">
         select      
           *
@@ -1435,7 +1434,7 @@
         from      
           tc_mantic_tipos_monedas
         where      
-          id_tipo_moneda = {idTipoMoneda} and id_pais = {idPais} and nombre = '{nombre}'
+          id_tipo_moneda = {idTipoMoneda} and nombre = '{nombre}'
       </select>
     </unit>
 	    <unit id="TcManticTiposPagosDto">
