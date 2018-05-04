@@ -34,6 +34,7 @@ import mx.org.kaana.mantic.catalogos.proveedores.reglas.Gestor;
 import mx.org.kaana.mantic.catalogos.proveedores.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorDomicilioDto;
 import mx.org.kaana.mantic.enums.ETipoPersona;
+import org.primefaces.context.RequestContext;
 
 @Named(value = "manticCatalogosProveedoresAccion")
 @ViewScoped
@@ -84,12 +85,21 @@ public class Accion extends IBaseAttribute implements Serializable {
       loadContactos();
       loadAgentes();
       loadTiposProveedores();
+      doloadCodigosPostales();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // init
+  } // initload
+  
+  public void doloadCodigosPostales() throws Exception {
+    Gestor gestor = new Gestor();
+    UISelectItem defaulTodost = new UISelectItem("0","NUEVO");    
+    List<UISelectItem> listaCodigos = gestor.toCodigosPostales(this.domicilio.getEntidad()==null?-1L:this.domicilio.getEntidad().getKey());
+    listaCodigos.add(0, defaulTodost);   
+    this.attrs.put("codigosPostales", listaCodigos);
+  }
 
   private void loadTiposProveedores() throws Exception {
     this.renglonProveedor.loadTiposProveedores();
@@ -103,8 +113,9 @@ public class Accion extends IBaseAttribute implements Serializable {
   private void loadPersonas() throws Exception {
     Map params = new HashMap();
     try {
-      params.put(Constantes.SQL_CONDICION, "id_Tipo_Persona=".concat(ETipoPersona.RESPONSABLE.getIdTipoPersona().toString()));
-      this.attrs.put("personas", UISelect.build("TcManticPersonasDto", "row", params, "nombres|paterno|materno", " ", EFormatoDinamicos.MAYUSCULAS));
+      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      params.put("idTipoPersona", ETipoPersona.RESPONSABLE.getIdTipoPersona());
+      this.attrs.put("personas",UISelect.build("VistaPersonasDto", "tipoPersona", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS));        
     } // try
     catch (Exception e) {
       throw e;
@@ -154,7 +165,8 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("municipios", gestor.getMunicipios());
       this.domicilio.setMunicipio((UISelectEntity) UIBackingUtilities.toFirstKeySelectEntity(gestor.getMunicipios()));
       doLoadLocalidades();
-      doLoadLocalidadesCalle();
+      doLoadLocalidadesCalle(); 
+      this.domicilio.setDetalleCalle((UISelectEntity) UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("detalleCalles")));      
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -168,19 +180,26 @@ public class Accion extends IBaseAttribute implements Serializable {
       gestor.loadLocalidades(this.domicilio.getMunicipio().getKey());
       this.attrs.put("localidades", gestor.getLocalidades());
       this.domicilio.setLocalidad((UISelectEntity) UIBackingUtilities.toFirstKeySelectEntity(gestor.getLocalidades()));
+      doloadCodigosPostales();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
     } // catch
-  }
+  }  
 
   public void doLoadLocalidadesCalle() {
-    Gestor gestor = null;
+    Gestor gestor = null;    
     try {
-      gestor = new Gestor();
-      gestor.loadLocalidadCalles(this.domicilio.getLocalidad().getKey());
-      this.attrs.put("detalleCalles", gestor.getDetalleCalles());
-      this.domicilio.setDetalleCalle((UISelectEntity) UIBackingUtilities.toFirstKeySelectEntity(gestor.getDetalleCalles()));
+      gestor = new Gestor();            
+      gestor.loadDetalleCalles(this.domicilio.getLocalidad().getKey(), this.domicilio.getTcManticDomicilioDto().getCodigoPostal());
+      this.domicilio.setCodigoPostalNuevo(this.domicilio.getTcManticDomicilioDto().getCodigoPostal());
+      this.attrs.put("detalleCalles", gestor.getDetalleCalles());      
+      if (this.domicilio.getTcManticDomicilioDto().getCodigoPostal().equals("0")){
+        RequestContext.getCurrentInstance().execute("changeCp(true);");
+      }
+      else {
+        RequestContext.getCurrentInstance().execute("changeCp(false);");
+      }
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -230,7 +249,10 @@ public class Accion extends IBaseAttribute implements Serializable {
   private void fillDomicilio(Domicilio domicilio) {
     if (!domicilio.getDetalleCalle().equals(-1L)) {
       domicilio.setIdDomicilio(domicilio.getDetalleCalle().getKey());
-    }
+    }   
+    domicilio.getTcManticDomicilioDto().setIdLocalidad(domicilio.getLocalidad().getKey());
+    
+    
   }
 
   public void doAgregarDocimilio() {
@@ -261,9 +283,10 @@ public class Accion extends IBaseAttribute implements Serializable {
     this.domicilio.getTcManticDomicilioDto().setEntreCalle(null);
     this.domicilio.getTcManticDomicilioDto().setYcalle(null);
     this.domicilio.getTcManticDomicilioDto().setCodigoPostal(null);
-    this.domicilio.getTcManticDomicilioDto().setCodigoPostal(null);
+    this.domicilio.setCodigoPostalNuevo("0");
     this.domicilio.setIdPrincipal(2L);
     doLoadLocalidadesCalle();
+    this.domicilio.setDetalleCalle((UISelectEntity) UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("detalleCalles")));
   }
 
   public void doEliminarDomicilio(Domicilio domicilio) {
@@ -286,40 +309,79 @@ public class Accion extends IBaseAttribute implements Serializable {
     int pos = this.renglonProveedor.getDomicilios().indexOf(modificar);
     this.renglonProveedor.getDomicilios().remove(pos);
     this.renglonProveedor.getDomicilios().add(pos, modificar);
-    this.attrs.put("idDomicilioPrincipal", modificar.getKey());
+    if (modificar.getIdPrincipal().equals(1L)) {
+      this.attrs.put("idDomicilioPrincipal", modificar.getKey());
+      for(Domicilio  recordDomicilio:this.renglonProveedor.getDomicilios()) {
+         if (!recordDomicilio.getIdProveedorDomicilio().equals(modificar.getKey())){
+           recordDomicilio.setIdPrincipal(2L);
+         }//
+      }// for      
+    }   
   }
 
-  private void cleanModify(){
-    for(Domicilio record: this.renglonProveedor.getDomicilios()) {
-       record.setModificar(false);
+  private void cleanModify() {
+    for (Domicilio record : this.renglonProveedor.getDomicilios()) {
+      record.setModificar(false);
     }//for
+  }
+  
+ /* private Long toIdCodigoPostal(Long idEntidad,Long idDomicilio) throws Exception {
+    Long regresar = -1L;
+    TcManticDomiciliosDto  domicilio= DaoFactory.getInstance().findFirst(TcManticDomiciliosDto.class, idDomicilio);
+    regresar = domicilio!=null?domicilio.getIdCodigopostal:-1L;
+    return regresar;
+  }*/
+
+  private  void posicionaCodigoPostal (String codigoPostal) {    
+    this.domicilio.setCodigoPostalNuevo(codigoPostal);
+    List<UISelectItem>  codigosPostales=null;
+    if(this.attrs.get("codigosPostales")!= null) {
+       codigosPostales = (List<UISelectItem>) this.attrs.get("codigosPostales");
+       if(!codigosPostales.contains(new UISelectItem(codigoPostal))) {
+         codigosPostales.add(new UISelectItem(codigoPostal,codigoPostal));
+      }
+    }
   }
   
   public void doBuscarDomicilio(Domicilio domicilio) {
     int pos = -1;
-    pos = this.renglonProveedor.getDomicilios().indexOf(domicilio);
-    this.domicilio = (Domicilio) this.renglonProveedor.getDomicilios().get(pos).clone();
-    cleanModify();
-    switch (domicilio.getAccion()) {
-      case UPDATE:
-        Gestor gestor = new Gestor();
-        gestor.loadMunicipios(this.domicilio.getEntidad().getKey());
-        this.attrs.put("municipios", gestor.getMunicipios());
-        gestor.loadLocalidades(this.domicilio.getMunicipio().getKey());
-        this.attrs.put("localidades", gestor.getLocalidades());
-        gestor.loadLocalidadCalles(this.domicilio.getLocalidad().getKey());
-        this.attrs.put("detalleCalles", gestor.getDetalleCalles());
-        this.renglonProveedor.getDomicilios().get(pos).setModificar(true);
-        break;
-      case SELECT:
-        this.attrs.put("municipios", new ArrayList<UISelectEntity>());
-        this.attrs.put("localidades", new ArrayList<UISelectEntity>());
-        this.attrs.put("detalleCalles", new ArrayList<UISelectEntity>());
-        break;
-      case INSERT:
-        this.renglonProveedor.getDomicilios().get(pos).setModificar(true);
-       break;
-    } // switch 
+    try {
+      pos = this.renglonProveedor.getDomicilios().indexOf(domicilio);
+      this.domicilio = (Domicilio) this.renglonProveedor.getDomicilios().get(pos).clone();
+      cleanModify();
+      switch (domicilio.getAccion()) {
+        case UPDATE:
+          if (this.domicilio.getCodigoPostalNuevo()!=null && !this.domicilio.getCodigoPostalNuevo().equals("0")) {
+            this.domicilio.getTcManticDomicilioDto().setCodigoPostal(this.domicilio.getCodigoPostalNuevo());
+          }          
+          Gestor gestor = new Gestor();
+          gestor.loadMunicipios(this.domicilio.getEntidad().getKey());
+          this.attrs.put("municipios", gestor.getMunicipios());
+          gestor.loadLocalidades(this.domicilio.getMunicipio().getKey());
+          this.attrs.put("localidades", gestor.getLocalidades());
+          doloadCodigosPostales();      
+          posicionaCodigoPostal(this.domicilio.getTcManticDomicilioDto().getCodigoPostal());          
+          //gestor.loadLocalidadCalles(this.domicilio.getLocalidad().getKey());
+          doLoadLocalidadesCalle();
+          //this.attrs.put("detalleCalles", gestor.getDetalleCalles());
+          this.renglonProveedor.getDomicilios().get(pos).setModificar(true);
+          break;
+        case SELECT:
+          this.attrs.put("municipios", new ArrayList<UISelectEntity>());
+          this.attrs.put("localidades", new ArrayList<UISelectEntity>());
+          this.attrs.put("detalleCalles", new ArrayList<UISelectEntity>());
+          this.attrs.put("codigosPostales", new ArrayList<UISelectEntity>());
+          break;
+        case INSERT:
+          doloadCodigosPostales();
+          doLoadLocalidadesCalle();          
+          this.renglonProveedor.getDomicilios().get(pos).setModificar(true);
+          break;
+      } // switch 
+    } // try 
+    catch (Exception e) {
+      JsfBase.addMessageError(e);
+    } // catch
 
   }
 
@@ -328,12 +390,11 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       responsable.setIdProveedorPersona(toIdTemporal());
       responsable.setIdResponsable(2L);
-      responsable.setIdUsuario(JsfBase.getIdUsuario());      
+      responsable.setIdUsuario(JsfBase.getIdUsuario());
       if (exist("personas")) {
         this.renglonProveedor.getResponsables().add(responsable);
-      }
-       else {
-        JsfBase.addMessage("No hay responsables disponibles para el proveedor,favor de verificar el catálogo de representantes", ETipoMensaje.INFORMACION);
+      } else {
+        JsfBase.addMessage("No hay responsables disponibles para el proveedor,favor de verificar el catálogo de responsables", ETipoMensaje.INFORMACION);
       }
     } // try
     catch (Exception e) {
@@ -448,7 +509,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       if (exist("tiposPago")) {
         this.renglonProveedor.getCondicionPagos().add(condicionPago);
       } else {
-        JsfBase.addMessage("No hay condiciones de pago establecidas", ETipoMensaje.INFORMACION);
+          JsfBase.addMessage("No hay condiciones de pago establecidas", ETipoMensaje.INFORMACION);
       }
     } // try
     catch (Exception e) {
@@ -472,28 +533,29 @@ public class Accion extends IBaseAttribute implements Serializable {
   }
 
   public void doActualizaCalle() {
+    boolean isNuevoCp = false;
     boolean isNuevo = false;
     int posDetalle = -1;
-    UISelectEntity detalleCalle = null;
-    try {
+    UISelectEntity detalleCalle = null;    
+    try {           
       posDetalle = ((List<UISelectEntity>) this.attrs.get("detalleCalles")).indexOf(new UISelectEntity(this.domicilio.getDetalleCalle().getKey().toString()));
       detalleCalle = ((List<UISelectEntity>) this.attrs.get("detalleCalles")).get(posDetalle);
       isNuevo = detalleCalle.getKey().equals(-1L);
       this.domicilio.getTcManticDomicilioDto().setCalle(isNuevo ? null : detalleCalle.toString("calle"));
       this.domicilio.getTcManticDomicilioDto().setAsentamiento(isNuevo ? null : detalleCalle.toString("asentamiento"));
-      this.domicilio.getTcManticDomicilioDto().setCodigoPostal(isNuevo ? null : detalleCalle.toString("codigoPostal"));
+      //this.domicilio.getTcManticDomicilioDto().setCodigoPostal(isNuevoCp ? null : detalleCodigo.toString("codigo"));
+      this.domicilio.setCodigoPostalNuevo(this.domicilio.getTcManticDomicilioDto().getCodigoPostal());
       this.domicilio.getTcManticDomicilioDto().setYcalle(isNuevo ? null : detalleCalle.toString("ycalle"));
       this.domicilio.getTcManticDomicilioDto().setEntreCalle(isNuevo ? null : detalleCalle.toString("entreCalle"));
       this.domicilio.getTcManticDomicilioDto().setNumeroExterior(isNuevo ? null : detalleCalle.toString("numeroExterior"));
-      this.domicilio.getTcManticDomicilioDto().setNumeroInterior(isNuevo ? null : detalleCalle.toString("numeroInterior"));
-      this.domicilio.getTcManticDomicilioDto().setIdLocalidad(detalleCalle.toLong("idLocalidad"));
-      //this.domicilio.getTcManticDomicilioDto().setIdLocalidad(detalleCalle.toLong("idLocalidad"));
+      this.domicilio.getTcManticDomicilioDto().setNumeroInterior(isNuevo ? null : detalleCalle.toString("numeroInterior"));      
+      this.domicilio.getTcManticDomicilioDto().setIdLocalidad(this.domicilio.getLocalidad().getKey());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
     }// catch
   }
-  
+
   private boolean exist(String nameKeyList) {
     boolean regresar = false;
     if (this.attrs.get(nameKeyList) != null) {
