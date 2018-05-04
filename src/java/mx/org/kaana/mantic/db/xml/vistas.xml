@@ -76,9 +76,7 @@
              inner join
                tc_mantic_tipos_proveedores   on  tc_mantic_tipos_proveedores.id_tipo_proveedor= tc_mantic_proveedores.id_tipo_proveedor
              inner  join
-               tc_mantic_tipos_dias  on tc_mantic_tipos_dias.id_tipo_dia=tc_mantic_proveedores.id_tipo_dia
-             inner join 
-               tr_mantic_proveedor_domicilio  on   tr_mantic_proveedor_domicilio.id_proveedor=tc_mantic_proveedores.id_proveedor
+               tc_mantic_tipos_dias  on tc_mantic_tipos_dias.id_tipo_dia=tc_mantic_proveedores.id_tipo_dia             
              where
                tc_mantic_proveedores.razon_social like '%{razonSocial}%'
               and
