@@ -8,7 +8,7 @@
   <p:panelGrid  id="panelDomicilio" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
     <p:outputLabel value="Entidad:" for="entidad"/>
     <p:selectOneMenu filter="true" filterMatchMode="contains" var="item" value="#{manticCatalogosProveedoresAccion.domicilio.entidad}" styleClass="janal-wid-100-txt" id="entidad" converter="janal.convertidor.Entity">
-      <p:ajax event="change" process="@this" update="municipio localidad detalleCalle" listener="#{manticCatalogosProveedoresAccion.doLoadMunicipios()}"/>
+      <p:ajax event="change" process="@this" update="municipio localidad detalleCalle codigoPostal" listener="#{manticCatalogosProveedoresAccion.doLoadMunicipios()}"/>
       <f:selectItems  value="#{manticCatalogosProveedoresAccion.attrs.entidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
       <p:column  styleClass="janal-column-center">
         <h:outputText value="#{item.clave}"/>
@@ -39,6 +39,13 @@
         <h:outputText value="#{item.descripcion}"/>
       </p:column>   
     </p:selectOneMenu>  
+     <p:outputLabel styleClass="janal-text-one-line" for="codigoPostal" value="Código postal:" />
+     <p:selectOneMenu  filter="true" filterMatchMode="contains" value="#{manticCatalogosProveedoresAccion.domicilio.tcManticDomicilioDto.codigoPostal}" var="item" styleClass="janal-wid-100-txt" id="codigoPostal">
+       <p:ajax event="change" update="contenedorGrupos:calle contenedorGrupos:cp detalleCalle contenedorGrupos:ycalle contenedorGrupos:entreCalle contenedorGrupos:numeroInterior contenedorGrupos:numeroExterior contenedorGrupos:asentamiento" process="@this" listener="#{manticCatalogosProveedoresAccion.doLoadLocalidadesCalle()}"/>
+       <f:selectItems  value="#{manticCatalogosProveedoresAccion.attrs.codigosPostales}" />       
+     </p:selectOneMenu>       
+     <p:spacer/>
+     <p:inputText id="cp" styleClass="janal-wid-100-txt"  placeholder="Captura el nuevo código postal. Ej. 20284"  value="#{manticCatalogosProveedoresAccion.domicilio.codigoPostalNuevo}"  onblur="janal.individual('contenedorGrupos\\:cp')"/>
      <p:outputLabel value="Dirección:" for="detalleCalle"/>
     <p:selectOneMenu filter="true" filterMatchMode="contains" var="item" value="#{manticCatalogosProveedoresAccion.domicilio.detalleCalle}" styleClass="janal-wid-100-txt" id="detalleCalle" converter="janal.convertidor.Entity" >
       <p:ajax event="change" update="calle contenedorGrupos:codigoPostal contenedorGrupos:ycalle contenedorGrupos:entreCalle contenedorGrupos:numeroInterior contenedorGrupos:numeroExterior contenedorGrupos:asentamiento" process="@this" listener="#{manticCatalogosProveedoresAccion.doActualizaCalle()}"/>
@@ -55,9 +62,7 @@
       <p:column headerText="Colonia" styleClass="janal-column-left">
         <h:outputText  value="#{item.asentamiento}"/>
       </p:column>
-    </p:selectOneMenu>
-     <p:outputLabel styleClass="janal-text-one-line" for="codigoPostal" value="Código postal:" />
-    <p:inputText id="codigoPostal"   styleClass="janal-wid-100-txt" maxlength="10" value="#{manticCatalogosProveedoresAccion.domicilio.tcManticDomicilioDto.codigoPostal}" />                    
+    </p:selectOneMenu>     
     <p:outputLabel for="calle" value="Calle:"/>
     <p:inputText id="calle"  styleClass="janal-wid-100-txt" maxlength="100" value="#{manticCatalogosProveedoresAccion.domicilio.tcManticDomicilioDto.calle}" onblur="janal.individual('contenedorGrupos\\:calle')"/>    
     <p:outputLabel styleClass="janal-text-one-line" for="numeroExterior" value="Número exterior:"/>
