@@ -30,7 +30,6 @@ import mx.org.kaana.mantic.catalogos.proveedores.beans.Contacto;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.Domicilio;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.Responsable;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
-import mx.org.kaana.mantic.db.dto.TrManticProveedorPagoDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -250,12 +249,12 @@ public class Gestor implements Serializable {
     return regresar;
   }
 
-  public List<UISelectEntity> toCodigosPostales(Long idEntidad) throws Exception {
+  /*public List<UISelectEntity> toCodigosPostales(Long idEntidad) throws Exception {
     List<UISelectEntity> regresar = new ArrayList<>();
     Map<String, Object> params = new HashMap<>();
     try {
       params.put(Constantes.SQL_CONDICION, "id_entidad=".concat(idEntidad.toString()));
-      regresar.addAll(UIEntity.build("TcManticCodigosPostalesDto", "row", params));
+      regresar.addAll(UIEntity.build("TcManticCodigosPostalesDto", "row", params,new  ArrayList<Columna>(),Constantes.SQL_TODOS_REGISTROS));
     }// try
     catch (Exception e) {
       throw e;
@@ -264,7 +263,25 @@ public class Gestor implements Serializable {
       Methods.clean(params);
     }// finally
     return regresar;
+  }*/  
+  
+  public List<UISelectItem> toCodigosPostales(Long idEntidad) throws Exception {
+    List<UISelectItem> regresar = new ArrayList<>();
+    Map<String, Object> params = new HashMap<>();
+    try {
+      params.put(Constantes.SQL_CONDICION, "id_entidad=".concat(idEntidad.toString()));
+      regresar.addAll(UISelect.free("TcManticCodigosPostalesDto", "row", params,"codigo","",EFormatoDinamicos.MAYUSCULAS,"codigo",Constantes.SQL_TODOS_REGISTROS));
+    }// try
+    catch (Exception e) {
+      throw e;
+    } // catch  
+    finally {
+      Methods.clean(params);
+    }// finally
+    return regresar;
   }
+
+  
 
   public List<CondicionPago> toCondicionesPagoProveedor(Long idProveedor) throws Exception {
     List<CondicionPago> regresar = null;
@@ -329,5 +346,33 @@ public class Gestor implements Serializable {
     } // finally
     return regresar;
   }
+  
+  public void loadDetalleCalles(Long idLocalidad, String codigoPostal) {
+    Map<String, Object> params = null;
+    Entity  entityDefault = null;
+    List<Columna> formatos = null;
+    try {
+      formatos = new ArrayList<>();
+      params = new HashMap();
+      params.put(Constantes.SQL_CONDICION, "id_localidad=".concat(idLocalidad.toString()).concat(" and codigo_postal='".concat(codigoPostal==null?"0":codigoPostal).concat("'")));
+      formatos.add(new Columna("codigoPostal",EFormatoDinamicos.MAYUSCULAS));
+      formatos.add(new Columna("calle",EFormatoDinamicos.MAYUSCULAS));
+      formatos.add(new Columna("numeroExterior",EFormatoDinamicos.MAYUSCULAS));
+      formatos.add(new Columna("numeroInterior",EFormatoDinamicos.MAYUSCULAS));
+      this.detalleCalles.addAll(UIEntity.build("TcManticDomiciliosDto", "row", params,formatos,Constantes.SQL_TODOS_REGISTROS));
+       entityDefault = new Entity();
+       entityDefault.put("idKey", new Value("idKey", -1L, "id_key"));
+       entityDefault.put("calle", new Value("calle", "NUEVO", "calle"));
+       entityDefault.put("codigoPostal", new Value("codigoPostal", "00", "codigoPostal"));  
+       this.detalleCalles.add(0,new UISelectEntity(entityDefault));
+    } // try // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+    finally {
+      Methods.clean(params);
+    }// finally
+  }
+
 
 }

@@ -188,6 +188,7 @@ public class Transaccion extends IBaseTnx {
           case UPDATE :            
             domicilio.setIdUsuario(tcMantiProveedorDto.getIdUsuario());
             DaoFactory.getInstance().update(session,domicilio);         
+            DaoFactory.getInstance().update(session,domicilio.getTcManticDomicilioDto());         
         } // switch       
       }// for
     } // try
