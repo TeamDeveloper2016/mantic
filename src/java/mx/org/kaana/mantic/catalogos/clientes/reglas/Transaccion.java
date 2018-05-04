@@ -135,6 +135,8 @@ public class Transaccion extends IBaseTnx {
     boolean regresar = false;
     try {
       for (ClienteDomicilio clienteDomicilio : this.registroCliente.getClientesDomicilio()) {
+				if(this.registroCliente.getClientesDomicilio().size()== 1)
+					clienteDomicilio.setIdPrincipal(1L);
         clienteDomicilio.setIdCliente(idCliente);
         clienteDomicilio.setIdUsuario(JsfBase.getIdUsuario());
         dto = (TrManticClienteDomicilioDto) clienteDomicilio;
