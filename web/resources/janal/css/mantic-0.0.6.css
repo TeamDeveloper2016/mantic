@@ -153,8 +153,11 @@ div.ui-panelgrid-content {
 .janal-wid-30 {width: 30% !important;}
 .janal-wid-40 {width: 40% !important;}
 .janal-wid-50 {width: 50% !important;}
+.janal-wid-55 {width: 55% !important;}
 .janal-wid-60 {width: 60% !important;}
+.janal-wid-65 {width: 65% !important;}
 .janal-wid-70 {width: 70% !important;}
+.janal-wid-75 {width: 75% !important;}
 .janal-wid-80 {width: 80% !important;}
 .janal-wid-86 {width: 86% !important;}
 .janal-wid-90 {width: 90% !important;}
@@ -351,7 +354,7 @@ div.ui-panelgrid-content {
     margin: -20px;
   }
   .ui-sticky {top: 89px !important;}
-  .layout-header-widgets {top: 34px;}
+  .layout-header-widgets {top: -1px;}
   .janal-logo-kajool {
     height: 60px;
     width: 80px;
@@ -375,7 +378,7 @@ div.ui-panelgrid-content {
 @media  (min-width : 481px) and (max-width : 767px) {
   .ui-tabs .ui-tabs-panel {padding: initial;}
   .ui-sticky {top: 89px !important;}
-  .layout-header-widgets {top: 11px;}
+  .layout-header-widgets {top: 0px;}
   .janal-logo-kajool {
     height: 60px;
     width: 80px;

@@ -26,16 +26,16 @@
   <ui:define name="contenido">
 		<p:remoteCommand name="asignarIcono" actionListener="#{kajoolMantenimientoMenusAgregar.doAsignarIcono}" update="textoIcono,labelIcono,tamanio" onstart="PF('dialogoIconos').hide();" oncomplete="janal.desbloquear();"/>
     <p:fieldset legend="Menú" toggleable="true" collapsed="false" styleClass="Responsive100">
-			<p:panelGrid id="definicion" columns="2"  layout="grid">
+			<p:panelGrid id="definicion" columns="2"  layout="grid" columnClasses="janal-wid-10, janal-wid-100" styleClass="janal-wid-100">
 				<p:outputLabel for="descripcion">Descripción:</p:outputLabel>
-				<p:inputText id="descripcion" styleClass="Wid70" value="#{kajoolMantenimientoMenusAgregar.current.descripcion}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}"/>
+				<p:inputText id="descripcion" styleClass="Wid98" value="#{kajoolMantenimientoMenusAgregar.current.descripcion}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}"/>
 				<p:outputLabel for="ayuda">Ayuda:</p:outputLabel>
-				<p:inputText id="ayuda" styleClass="Wid70" value="#{kajoolMantenimientoMenusAgregar.current.ayuda}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}"/>
+				<p:inputText id="ayuda" styleClass="Wid98" value="#{kajoolMantenimientoMenusAgregar.current.ayuda}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}"/>
 				<p:outputLabel for="url">URL:</p:outputLabel>
-				<p:inputText id="url" styleClass="Wid70" value="#{kajoolMantenimientoMenusAgregar.current.ruta}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}"/>
+				<p:inputText id="url" styleClass="Wid98" value="#{kajoolMantenimientoMenusAgregar.current.ruta}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}"/>
 				<p:outputLabel value="Icono:"/>
-				<p:panelGrid columns="3" layout="grid" columnClasses="ui-grid-col-4,ui-grid-col-1,ui-grid-col-4">
-					<p:inputText id="textoIcono" value="#{kajoolMantenimientoMenusAgregar.current.icono}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}">
+				<p:panelGrid columns="3" layout="grid" columnClasses="ui-grid-col-3,ui-grid-col-2,ui-grid-col-3" styleClass="janal-wid-100">
+					<p:inputText id="textoIcono" styleClass="Wid90" value="#{kajoolMantenimientoMenusAgregar.current.icono}" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}">
 						<p:ajax event="blur" update="labelIcono"/>
 					</p:inputText>
 					<p:commandButton id="muestraIconos" icon="fa fa-search" onstart="janal.bloquear(); PF('dialogoIconos').show()" disabled="#{kajoolMantenimientoMenusAgregar.soloLectura}"/>
@@ -68,8 +68,8 @@
     <p:commandButton id="cancelar" icon="fa fa-remove" value="Cancelar" action="#{kajoolMantenimientoMenusAgregar.doCancelar}" ajax="false" />
   </ui:define>	
 	<ui:define name="dialogos">
-		<p:dialog id="iconos" widgetVar="dialogoIconos" header="Iconos" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" resizable="false" closable="false" onShow="$('.ui-carousel-viewport').css('height','60px');">
-			<p:scrollPanel mode="native" style="width:800px;height:600px">
+		<p:dialog id="iconos" widgetVar="dialogoIconos" header="Iconos disponibles" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" resizable="false" closable="false" onShow="$('.ui-carousel-viewport').css('height','60px');">
+			<p:scrollPanel mode="native" style="width:800px;height:300px">
 				<p:fieldset legend="Iconos web" toggleable="true" toggleSpeed="500" collapsed="true">
 					<ui:include src="/Paginas/Mantenimiento/Menus/Secciones/iconosWeb.xhtml"/>
 				</p:fieldset>
