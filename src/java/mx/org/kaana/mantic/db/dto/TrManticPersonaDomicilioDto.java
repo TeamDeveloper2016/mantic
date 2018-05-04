@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -36,10 +30,10 @@ public class TrManticPersonaDomicilioDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Column (name="id_persona")
   private Long idPersona;
-  @Column (name="id_persona_domicilio")
-  private Long idPersonaDomicilio;
-  @Id
+	@Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
+  @Column (name="id_persona_domicilio")
+  private Long idPersonaDomicilio;  
 	@Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="id_tipo_domicilio")
@@ -140,12 +134,12 @@ public class TrManticPersonaDomicilioDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdUsuario();
+  	return getIdPersonaDomicilio();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idUsuario = key;
+  	this.idPersonaDomicilio = key;
   }
 
   @Override
@@ -202,8 +196,8 @@ public class TrManticPersonaDomicilioDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idUsuario~");
-    regresar.append(getIdUsuario());
+    regresar.append("idPersonaDomicilio~");
+    regresar.append(getIdPersonaDomicilio());
     regresar.append("|");
     return regresar.toString();
   }
@@ -211,7 +205,7 @@ public class TrManticPersonaDomicilioDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdUsuario());
+    regresar.append(getIdPersonaDomicilio());
     return regresar.toString();
   }
 
@@ -222,7 +216,7 @@ public class TrManticPersonaDomicilioDto implements IBaseDto, Serializable {
 
   @Override
   public boolean isValid() {
-  	return getIdUsuario()!= null && getIdUsuario()!=-1L;
+  	return getIdPersonaDomicilio()!= null && getIdPersonaDomicilio()!=-1L;
   }
 
   @Override
@@ -234,7 +228,7 @@ public class TrManticPersonaDomicilioDto implements IBaseDto, Serializable {
       return false;
     }
     final TrManticPersonaDomicilioDto other = (TrManticPersonaDomicilioDto) obj;
-    if (getIdUsuario() != other.idUsuario && (getIdUsuario() == null || !getIdUsuario().equals(other.idUsuario))) {
+    if (getIdPersonaDomicilio()!= other.idPersonaDomicilio && (getIdPersonaDomicilio()== null || !getIdPersonaDomicilio().equals(other.idPersonaDomicilio))) {
       return false;
     }
     return true;
@@ -243,10 +237,7 @@ public class TrManticPersonaDomicilioDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdUsuario() != null ? getIdUsuario().hashCode() : 0);
+    hash = 67 * hash + (getIdPersonaDomicilio()!= null ? getIdPersonaDomicilio().hashCode() : 0);
     return hash;
   }
-
 }
-
-
