@@ -10,7 +10,7 @@
   <ui:param name="titulo" value="#{manticCatalogosProveedoresAccion.attrs.nombreAccion} al catálogo de proveedores" />
   <ui:define name="librerias">
     <script type="text/javascript">
-      Janal.Control.fields = {
+        Janal.Control.fields = {
         'contenedorGrupos\\:prefijo': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:rfc': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'rfc', grupo: 'general'},
         'contenedorGrupos\\:razonSocial': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
@@ -24,7 +24,8 @@
         'contenedorGrupos\\:entidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:municipio': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:localidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:codigoPostal': {validaciones: 'requerido', mascara: 'numero', grupo: 'domicilio'},
+        'contenedorGrupos\\:codigoPostal': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:cp': {validaciones: 'requerido', mascara: 'numero', grupo: 'domicilio'},
         'contenedorGrupos\\:calle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:numeroExterior': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:numeroInterior': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
@@ -32,8 +33,8 @@
         'contenedorGrupos\\:entreCalle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:diasEntrega': {validaciones: 'requerido', mascara: 'numero', grupo: 'general'},
         'contenedorGrupos\\:ycalle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-
       };
+
     </script>
      <style type="text/css">
        .cpHide{
