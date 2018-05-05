@@ -9,11 +9,12 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'sucursal'   : {validaciones: 'libre', mascara: 'libre'},
-        'consecutivo': {validaciones: 'libre', mascara: 'libre'},
-        'proveedor'  : {validaciones: 'libre', mascara: 'libre'},
-        'articulo'   : {validaciones: 'libre', mascara: 'libre'},
-        'fecha'      : {validaciones: 'fecha', mascara: 'libre'}
+        'idEmpresa'      : {validaciones: 'libre', mascara: 'libre'},
+        'consecutivo'    : {validaciones: 'libre', mascara: 'libre'},
+        'idProveedor'    : {validaciones: 'libre', mascara: 'libre'},
+        'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha'}
+        'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha'}
+        'idCompraEstatus': {validaciones: 'libre', mascara: 'libre'},
       };
     </script>		
   </ui:define>
@@ -28,8 +29,8 @@
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <h:panelGrid styleClass="janal-wid-100">
-              <p:outputLabel for="sucursal" value="Sucursal:" rendered="#{manticComprasOrdenesFiltro.attrs.isMatriz}"/>
-              <p:selectOneMenu id="sucursal" value="#{manticComprasOrdenesFiltro.attrs.sucursal}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}">
+              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticComprasOrdenesFiltro.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{manticComprasOrdenesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}">
                 <f:selectItems value="#{manticComprasOrdenesFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
@@ -40,8 +41,8 @@
               </p:selectOneMenu>
               <p:outputLabel for="consecutivo" value="No. orden:"/>
               <p:inputText id="consecutivo" value="#{manticComprasOrdenesFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
-              <p:outputLabel for="proveedor" value="Proveedor:"/>
-              <p:selectOneMenu id="proveedor" value="#{manticComprasOrdenesFiltro.attrs.proveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96">
+              <p:outputLabel for="idProveedor" value="Proveedor:"/>
+              <p:selectOneMenu id="idProveedor" value="#{manticComprasOrdenesFiltro.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96">
                 <f:selectItems value="#{manticComprasOrdenesFiltro.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
@@ -53,10 +54,17 @@
                   <h:outputText value="#{item.dias}"/>
                 </p:column>   
               </p:selectOneMenu>
-              <p:outputLabel for="articulo" value="Articulo:"/>
-              <p:inputText id="articulo" value="#{manticComprasOrdenesFiltro.attrs.articulo}" styleClass="janal-wid-100-txt"/> 
-              <p:outputLabel for="fecha" value="Fecha:"/>
-							<p:calendar id="fecha" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticComprasOrdenesFiltro.attrs.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+              <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticComprasOrdenesFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+              <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticComprasOrdenesFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+              <p:outputLabel for="idCompraEstatus" value="Estatus:"/>
+              <p:selectOneMenu id="idCompraEstatus" value="#{manticComprasOrdenesFiltro.attrs.idCompraEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96">
+                <f:selectItems value="#{manticComprasOrdenesFiltro.attrs.estatus}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
             </h:panelGrid>
             <div class="janal-align-right lg-pantalla">
               <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.execute();" process="@form" actionListener="#{manticComprasOrdenesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
@@ -84,7 +92,13 @@
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
               </div>  
             </f:facet>	            
-             <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{filtro.consecutivo}">
+            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{filtro.empresa}">
+              <f:facet name="header">
+                <h:outputText value="Sucursal"/>
+              </f:facet>
+              <h:outputText value="#{filtro['empresa']}"/>
+            </p:column>		
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="No. orden"/>
               </f:facet>
@@ -96,19 +110,19 @@
               </f:facet>
               <h:outputText value="#{filtro['proveedor']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-30" sortBy="#{filtro.importe}">
-              <f:facet name="header">
-                <h:outputText value="Referencia"/>
-              </f:facet>
-              <h:outputText value="#{filtro['referencia']}"/>
-            </p:column>		
             <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
-              <h:outputText value="#{filtro['importe']}"/>
+              <h:outputText value="#{filtro['total']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-5" sortBy="#{filtro.fecha}">
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.estatus}">
+              <f:facet name="header">
+                <h:outputText value="Estatus"/>
+              </f:facet>
+              <h:outputText value="#{filtro['estatus']}"/>
+            </p:column>		
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.fecha}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>
