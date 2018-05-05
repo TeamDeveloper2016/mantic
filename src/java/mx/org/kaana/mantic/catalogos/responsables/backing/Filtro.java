@@ -28,7 +28,7 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
   @Override
   protected void init() {
     try {
-			super.init();
+      super.init();
       this.attrs.put("sortOrder", "order by tc_mantic_personas.nombres");
       this.attrs.put("idTipoPersona", ETipoPersona.RESPONSABLE.getIdTipoPersona());
     } // try
@@ -37,7 +37,7 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
       JsfBase.addMessageError(e);
     } // catch		
   } // init
-  
+
   @Override
   public void doLoad() {
     List<Columna> campos = null;
@@ -48,7 +48,7 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
       campos.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("curp", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("sexo", EFormatoDinamicos.MAYUSCULAS));      
+      campos.add(new Columna("sexo", EFormatoDinamicos.MAYUSCULAS));
       this.lazyModel = new FormatCustomLazy("VistaPersonasDto", "row", this.attrs, campos);
       UIBackingUtilities.resetDataTable();
     } // try
@@ -61,20 +61,20 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
     } // finally		
   } // doLoad
 
-	@Override
+  @Override
   public String doAccion(String accion) {
-   EAccion eaccion= null;
-		try {
-			eaccion= EAccion.valueOf(accion.toUpperCase());
-			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("tipoPersona", this.attrs.get("idTipoPersona"));		
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Responsables/filtro");		
-			JsfBase.setFlashAttribute("idPersona", eaccion.equals(EAccion.MODIFICAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch
-		return "/Paginas/Mantic/Catalogos/Personas/accion".concat(Constantes.REDIRECIONAR);
+    EAccion eaccion = null;
+    try {
+      eaccion = EAccion.valueOf(accion.toUpperCase());
+      JsfBase.setFlashAttribute("accion", eaccion);
+      JsfBase.setFlashAttribute("tipoPersona", this.attrs.get("idTipoPersona"));
+      JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Responsables/filtro");
+      JsfBase.setFlashAttribute("idPersona", eaccion.equals(EAccion.MODIFICAR) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    return "/Paginas/Mantic/Catalogos/Personas/accion".concat(Constantes.REDIRECIONAR);
   } // doAccion  
 }
