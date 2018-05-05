@@ -18,7 +18,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.enums.ETipoPersona;
 
-@Named(value = "manticCatalogosResponsablesFiltro")
+@Named(value = "manticCatalogosRepresentantesFiltro")
 @ViewScoped
 public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtro implements Serializable {
 
