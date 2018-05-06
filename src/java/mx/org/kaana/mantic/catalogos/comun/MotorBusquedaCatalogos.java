@@ -74,4 +74,56 @@ public abstract class MotorBusquedaCatalogos {
 		} // finally
 		return regresar;
 	} // toIdMunicipio	
+	
+	protected Entity toEntidad(Long idMunicipio) throws Exception{
+		Entity regresar          = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idPais", 1);
+      params.put(Constantes.SQL_CONDICION, "id_entidad=" + toIdEntidad(idMunicipio));
+			regresar= (Entity) DaoFactory.getInstance().toEntity("TcJanalEntidadesDto", "comboEntidades", params);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toEntidad
+	
+	protected Entity toMunicipio(Long idLocalidad) throws Exception{
+		Entity regresar           = null;
+    Map<String, Object> params= null;
+    try {
+      params = new HashMap<>();
+      params.put(Constantes.SQL_CONDICION, "id_municipio=" + toIdMunicipio(idLocalidad));
+      regresar= (Entity) DaoFactory.getInstance().toEntity("TcJanalMunicipiosDto", "row", params);							
+		} // try
+		catch (Exception e) {
+			throw e;			
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toMunicipio
+	
+	protected Entity toLocalidad(Long idDomicilio) throws Exception{
+		Entity regresar           = null;
+    Map<String, Object> params= null;
+    try {
+      params = new HashMap<>();
+      params.put(Constantes.SQL_CONDICION, "id_localidad=" + toIdLocalidad(idDomicilio));
+      regresar= (Entity) DaoFactory.getInstance().toEntity("TcJanalMunicipiosDto", "row", params);							
+		} // try
+		catch (Exception e) {
+			throw e;			
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toLocalidad
 }
