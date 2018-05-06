@@ -174,11 +174,16 @@ public class Transaccion  extends IBaseTnx{
     TrManticPersonaDomicilioDto dto= null;
     ESql sqlAccion= null;
     int count= 0;
+		int countPrincipal = 0;
     boolean validate= false;
     boolean regresar= false;
     try {
+			if(this.persona.getPersonasDomicilio().size()== 1)
+					this.persona.getPersonasDomicilio().get(0).setIdPrincipal(1L);
       for (PersonaDomicilio personaDomicilio : this.persona.getPersonasDomicilio()) {
-				if(this.persona.getPersonasDomicilio().size()== 1)
+				if(personaDomicilio.getIdPrincipal().equals(1L))
+					countPrincipal++;
+				if(countPrincipal== 0 && this.persona.getPersonasDomicilio().size()-1 == count)
 					personaDomicilio.setIdPrincipal(1L);
         personaDomicilio.setIdPersona(idPersona);
         personaDomicilio.setIdUsuario(JsfBase.getIdUsuario());
