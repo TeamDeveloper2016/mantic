@@ -41,9 +41,9 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			params.put(Constantes.SQL_CONDICION, "id_almacen=" + this.idAlmacen);
 			regresar= DaoFactory.getInstance().toEntitySet(AlmacenDomicilio.class, "TrManticAlmacenDomicilioDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 			for(AlmacenDomicilio almacenDomicilio: regresar){
-				almacenDomicilio.setIdLocalidad(toIdLocalidad(almacenDomicilio.getIdDomicilio()));
-				almacenDomicilio.setIdMunicipio(toIdMunicipio(almacenDomicilio.getIdLocalidad()));
-				almacenDomicilio.setIdEntidad(toIdEntidad(almacenDomicilio.getIdMunicipio()));
+				almacenDomicilio.setIdLocalidad(toLocalidad(almacenDomicilio.getIdDomicilio()));
+				almacenDomicilio.setIdMunicipio(toMunicipio(almacenDomicilio.getIdLocalidad().getKey()));
+				almacenDomicilio.setIdEntidad(toEntidad(almacenDomicilio.getIdMunicipio().getKey()));
 			} // for
 		} // try
 		catch (Exception e) {		
