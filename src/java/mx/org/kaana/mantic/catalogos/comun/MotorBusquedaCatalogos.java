@@ -116,7 +116,7 @@ public abstract class MotorBusquedaCatalogos {
     try {
       params = new HashMap<>();
       params.put(Constantes.SQL_CONDICION, "id_localidad=" + toIdLocalidad(idDomicilio));
-      regresar= (Entity) DaoFactory.getInstance().toEntity("TcJanalMunicipiosDto", "row", params);							
+      regresar= (Entity) DaoFactory.getInstance().toEntity("TcJanalLocalidadesDto", "row", params);							
 		} // try
 		catch (Exception e) {
 			throw e;			
