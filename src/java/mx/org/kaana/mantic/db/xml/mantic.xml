@@ -1121,11 +1121,23 @@
       </select>
       <select id="sucursales">
         select      
-          *
+				  tc_mantic_empresas.id_empresa as id_key,
+          tc_mantic_empresas.*
         from      
           tc_mantic_empresas
         where 
           id_empresa_depende= {idEmpresa}
+				order by
+				  clave
+      </select>
+      <select id="empresas">
+        select      
+				  tc_mantic_empresas.id_empresa as id_key,
+          tc_mantic_empresas.*
+        from      
+          tc_mantic_empresas
+        where 
+          id_empresa in ({sucursales})
 				order by
 				  clave
       </select>
@@ -1644,6 +1656,27 @@
           tc_mantic_ordenes_detalles
         where      
           id_orden_compra = {idOrdenCompra} and id_articulo = {idArticulo} and id_orden_detalle = {idOrdenDetalle}
+      </select>
+    </unit>						
+    <unit id="TcManticComprasEstatusDto">
+      <select id="row">
+        select      
+				  tc_mantic_compras_estatus.id_compra_estatus as id_key,
+          tc_mantic_compras_estatus.*
+        from      
+          tc_mantic_compras_estatus
+        where 
+          {condicion} 
+				order by 
+				  id_compra_estatus
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_compras_estatus
+        where      
+          id_orden_compra_estatus = {idCompraEstatus}
       </select>
     </unit>						
   </dml>    

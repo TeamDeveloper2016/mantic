@@ -28,7 +28,7 @@ public class SentinelLateral extends IBaseMenu implements Serializable{
 	public Object toBuild() {
 		MenuModel regresar= null;
 		try {
-			if(JsfBase.getAutentifica().getCredenciales().isMenuEncabezado()){
+			if(JsfBase.getAutentifica().getCredenciales().isMenuEncabezado() && getRoot()!= null){
 				getRoot().loadMenu();
 				regresar= ((TreeBean)JsfBase.getSession().getAttribute("tree")).getRoot().getModel();
 			} // if

@@ -328,15 +328,18 @@ public class Autentifica implements Serializable {
 	}	
 
 	private String toLoadSucursales() throws Exception {
-		String regresar= this.getEmpresa().getIdEmpresa().toString().concat(", ");
+		String regresar= "";
 		Map<String, Object> params=null;
 		try {
 			params=new HashMap<>();
 			params.put("idEmpresa", this.getEmpresa().getIdEmpresa());
 			List<TcManticEmpresasDto> items= DaoFactory.getInstance().findViewCriteria(TcManticEmpresasDto.class, params, "sucursales");
-			for (TcManticEmpresasDto item: items) {
-				regresar= regresar.concat(item.getIdEmpresa().toString()).concat(", ");
-			} // for
+			if(items.isEmpty())
+				regresar= this.getEmpresa().getIdEmpresa().toString().concat(", ");
+			else		
+				for (TcManticEmpresasDto item: items) {
+					regresar= regresar.concat(item.getIdEmpresa().toString()).concat(", ");
+				} // for
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
