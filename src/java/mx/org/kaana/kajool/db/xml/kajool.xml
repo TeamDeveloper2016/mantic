@@ -427,13 +427,14 @@
 			</select>
 			<select id="comboMunicipios">
 				select
-          id_municipio id_key, descripcion
+          id_municipio id_key, 
+					tc_janal_municipios.*
         from
           tc_janal_municipios
 				where
           id_entidad= {idEntidad}
 				order by
-				  id_municipio
+				  clave
 			</select>
 		</unit>
 		<unit id="TcJanalLocalidadesDto">
@@ -450,13 +451,14 @@
 			</select>
 			<select id="comboLocalidades">
 				select
-          id_localidad id_key, descripcion
+          id_localidad id_key, 
+					tc_janal_localidades.*
         from
           tc_janal_localidades
 				where
           id_municipio= {idMunicipio}
 				order by
-				  id_localidad
+				  clave
 			</select>
 		</unit>
     <unit id="TrJanalUsuariosDelegaDto">

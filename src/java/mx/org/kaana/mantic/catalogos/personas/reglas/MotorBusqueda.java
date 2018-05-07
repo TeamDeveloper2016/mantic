@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
@@ -41,9 +42,9 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			params.put(Constantes.SQL_CONDICION, "id_persona=" + this.idPersona);
 			regresar= DaoFactory.getInstance().toEntitySet(PersonaDomicilio.class, "TrManticPersonaDomicilioDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 			for(PersonaDomicilio personaDomicilio: regresar){
-				personaDomicilio.setIdLocalidad(toIdLocalidad(personaDomicilio.getIdDomicilio()));
-				personaDomicilio.setIdMunicipio(toIdMunicipio(personaDomicilio.getIdLocalidad()));
-				personaDomicilio.setIdEntidad(toIdEntidad(personaDomicilio.getIdMunicipio()));
+				personaDomicilio.setIdLocalidad(toLocalidad(personaDomicilio.getIdDomicilio()));
+				personaDomicilio.setIdMunicipio(toMunicipio(personaDomicilio.getIdLocalidad().getKey()));
+				personaDomicilio.setIdEntidad(toEntidad(personaDomicilio.getIdMunicipio().getKey()));
 			} // for
 		} // try
 		catch (Exception e) {		
@@ -71,4 +72,38 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		} // finally
 		return regresar;
 	} // toClientesTipoContacto	
+	
+	public Long toClienteRepresentante() throws Exception{
+		Long regresar= -1L;
+		Entity registro= null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_representante=" + this.idPersona + " and id_principal=1");
+			registro= (Entity) DaoFactory.getInstance().toEntity("TrManticClientesRepresentantesDto", "row", params);
+			if(registro!= null)
+				regresar= registro.toLong("idCliente");
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		return regresar;
+	}
+	
+	public Long toProveedorAgente() throws Exception{
+		Long regresar= -1L;
+		Entity registro= null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_agente=" + this.idPersona + " and id_principal=1");
+			registro= (Entity) DaoFactory.getInstance().toEntity("TrManticProveedoresAgentesDto", "row", params);
+			if(registro!= null)
+				regresar= registro.toLong("idProveedor");
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		return regresar;
+	}
 }

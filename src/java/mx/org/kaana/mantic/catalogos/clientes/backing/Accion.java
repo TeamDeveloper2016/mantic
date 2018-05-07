@@ -12,12 +12,14 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.bean.Domicilio;
@@ -159,15 +161,18 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // loadTiposDomicilios
 
   private void loadEntidades() {
-    List<UISelectItem> entidades = null;
-    Map<String, Object> params = null;
+    List<UISelectEntity> entidades= null;
+		List<Columna>campos= null;
+    Map<String, Object> params= null;
     try {
       params = new HashMap<>();
       params.put("idPais", 1);
       params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      entidades = UISelect.build("TcJanalEntidadesDto", "comboEntidades", params, "descripcion", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			campos= new ArrayList<>();
+			campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+      entidades = UIEntity.build("TcJanalEntidadesDto", "comboEntidades", params, campos, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("entidades", entidades);
-      this.registroCliente.getDomicilio().setIdEntidad((Long) UIBackingUtilities.toFirstKeySelectItem(entidades));
+      this.registroCliente.getDomicilio().setIdEntidad(entidades.get(0));
     } // try
     catch (Exception e) {
       throw e;
@@ -178,14 +183,17 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // loadEntidades
 
   private void loadMunicipios() {
-    List<UISelectItem> municipios = null;
-    Map<String, Object> params = null;
+    List<UISelectEntity> municipios= null;
+    Map<String, Object> params= null;
+		List<Columna>campos= null;
     try {
       params = new HashMap<>();
-      params.put("idEntidad", this.registroCliente.getDomicilio().getIdEntidad());
-      municipios = UISelect.build("TcJanalMunicipiosDto", "comboMunicipios", params, "descripcion", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+      params.put("idEntidad", this.registroCliente.getDomicilio().getIdEntidad().getKey());
+			campos= new ArrayList<>();
+			campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+      municipios = UIEntity.build("TcJanalMunicipiosDto", "comboMunicipios", params, campos, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("municipios", municipios);
-      this.registroCliente.getDomicilio().setIdMunicipio((Long) UIBackingUtilities.toFirstKeySelectItem(municipios));
+      this.registroCliente.getDomicilio().setIdMunicipio(municipios.get(0));
     } // try
     catch (Exception e) {
       throw e;
@@ -196,14 +204,18 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // loadMunicipios
 
   private void loadLocalidades() {
-    List<UISelectItem> localidades = null;
-    Map<String, Object> params = null;
+    List<UISelectEntity> localidades= null;
+    Map<String, Object> params= null;
+		List<Columna>campos= null;
     try {
       params = new HashMap<>();
-      params.put("idMunicipio", this.registroCliente.getDomicilio().getIdMunicipio());
-      localidades = UISelect.build("TcJanalLocalidadesDto", "comboLocalidades", params, "descripcion", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+      params.put("idMunicipio", this.registroCliente.getDomicilio().getIdMunicipio().getKey());
+			campos= new ArrayList<>();
+			campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+      localidades = UIEntity.build("TcJanalLocalidadesDto", "comboLocalidades", params, campos, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("localidades", localidades);
-      this.registroCliente.getDomicilio().setIdLocalidad((Long) UIBackingUtilities.toFirstKeySelectItem(localidades));
+      this.registroCliente.getDomicilio().setLocalidad(localidades.get(0));
+      this.registroCliente.getDomicilio().setIdLocalidad(localidades.get(0).getKey());
     } // try
     catch (Exception e) {
       throw e;
@@ -218,7 +230,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     Map<String, Object> params = null;
     try {
       params = new HashMap<>();
-      params.put(Constantes.SQL_CONDICION, "id_entidad=" + this.registroCliente.getDomicilio().getIdEntidad());
+      params.put(Constantes.SQL_CONDICION, "id_entidad=" + this.registroCliente.getDomicilio().getIdEntidad().getKey());
       codigosPostales = UISelect.build("TcManticCodigosPostalesDto", "row", params, "codigo", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("codigosPostales", codigosPostales);
       if (!codigosPostales.isEmpty()) {
@@ -250,16 +262,23 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doLoadDomicilios
 
   private void loadDomicilios() {
-    List<UISelectItem> domicilios = null;
-    Map<String, Object> params = null;
+    List<UISelectEntity> domicilios= null;
+    Map<String, Object> params= null;
+		List<Columna>campos= null;
     try {
       params = new HashMap<>();
-      params.put("idLocalidad", this.registroCliente.getDomicilio().getIdLocalidad());
+      params.put("idLocalidad", this.registroCliente.getDomicilio().getLocalidad().getKey());
       params.put("codigoPostal", this.registroCliente.getDomicilio().getCodigoPostal());
-      domicilios = UISelect.build("TcManticDomiciliosDto", "domicilios", params, "domicilio", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			campos= new ArrayList<>();
+			campos.add(new Columna("calle", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("numeroExterior", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("numeroInterior", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("asentamiento", EFormatoDinamicos.MAYUSCULAS));
+      domicilios = UIEntity.build("TcManticDomiciliosDto", "domicilios", params, campos, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("domicilios", domicilios);
       if (!domicilios.isEmpty()) {
-        this.registroCliente.getDomicilio().setIdDomicilio((Long) domicilios.get(0).getValue());
+        this.registroCliente.getDomicilio().setDomicilio(domicilios.get(0));
+        this.registroCliente.getDomicilio().setIdDomicilio(domicilios.get(0).getKey());
         doLoadAtributos();
       } // if			
       else {
@@ -399,6 +418,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       loadMunicipios();
       this.registroCliente.getDomicilio().setIdMunicipio(domicilio.getIdMunicipio());
       loadLocalidades();
+      this.registroCliente.getDomicilio().setLocalidad(domicilio.getLocalidad());
       this.registroCliente.getDomicilio().setIdLocalidad(domicilio.getIdLocalidad());
       loadCodigosPostales();
       codigos = (List<UISelectItem>) this.attrs.get("codigosPostales");
@@ -451,4 +471,19 @@ public class Accion extends IBaseAttribute implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch
 	} // doActualizaDomicilio
+	
+	public void doAgregarClienteRepresentante(){
+		List<UISelectItem> representantes = null;
+		try {
+			representantes= (List<UISelectItem>) this.attrs.get("representantes");
+			if(!representantes.isEmpty())
+				this.registroCliente.doAgregarClienteRepresentante();
+			else
+				JsfBase.addMessage("Agregar representante", "No hay representantes registrados", ETipoMensaje.INFORMACION);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // doAgregarClienteRepresentante
 }

@@ -923,7 +923,8 @@
 			<select id="domicilios">
 				select   
 					id_domicilio as id_key,
-					concat(calle,' ',numero_exterior,' ',asentamiento) as domicilio          
+					concat(calle,' ',numero_exterior,' ',asentamiento) as domicilio,
+					tc_mantic_domicilios.*
 				from 
 					tc_mantic_domicilios
 				where 
@@ -1041,6 +1042,8 @@
 					tc_mantic_codigos_postales
 				where 
 					{condicion} 
+				order by 
+					codigo
       </select>
       <select id="identically">
         select      

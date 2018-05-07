@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.catalogos.responsables.backing;
+package mx.org.kaana.mantic.catalogos.representantes.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,7 +18,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.enums.ETipoPersona;
 
-@Named(value = "manticCatalogosResponsablesFiltro")
+@Named(value = "manticCatalogosRepresentantesFiltro")
 @ViewScoped
 public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtro implements Serializable {
 
@@ -30,7 +30,7 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
     try {
       super.init();
       this.attrs.put("sortOrder", "order by tc_mantic_personas.nombres");
-      this.attrs.put("idTipoPersona", ETipoPersona.RESPONSABLE.getIdTipoPersona());
+      this.attrs.put("idTipoPersona", ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -68,7 +68,7 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
       eaccion = EAccion.valueOf(accion.toUpperCase());
       JsfBase.setFlashAttribute("accion", eaccion);
       JsfBase.setFlashAttribute("tipoPersona", this.attrs.get("idTipoPersona"));
-      JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Responsables/filtro");
+      JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Representantes/filtro");
       JsfBase.setFlashAttribute("idPersona", eaccion.equals(EAccion.MODIFICAR) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
     } // try
     catch (Exception e) {

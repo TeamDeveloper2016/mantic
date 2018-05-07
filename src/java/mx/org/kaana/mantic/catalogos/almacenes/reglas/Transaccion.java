@@ -13,7 +13,6 @@ import mx.org.kaana.mantic.catalogos.almacenes.bean.AlmacenDomicilio;
 import mx.org.kaana.mantic.catalogos.almacenes.bean.AlmacenTipoContacto;
 import mx.org.kaana.mantic.catalogos.almacenes.bean.RegistroAlmacen;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesDto;
-import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TrManticAlmacenDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticAlmacenTipoContactoDto;
 import org.hibernate.Session;
@@ -126,11 +125,16 @@ public class Transaccion extends IBaseTnx {
     TrManticAlmacenDomicilioDto dto = null;
     ESql sqlAccion = null;
     int count = 0;
+		int countPrincipal = 0;
     boolean validate = false;
     boolean regresar = false;
     try {
+			if(this.registroAlmacen.getAlmacenDomicilio().size()== 1)
+					this.registroAlmacen.getAlmacenDomicilio().get(0).setIdPrincipal(1L);
       for (AlmacenDomicilio almacenDomicilio : this.registroAlmacen.getAlmacenDomicilio()) {
-				if(this.registroAlmacen.getAlmacenDomicilio().size()== 1)
+				if(almacenDomicilio.getIdPrincipal().equals(1L))
+					countPrincipal++;
+				if(countPrincipal== 0 && this.registroAlmacen.getAlmacenDomicilio().size()-1 == count)
 					almacenDomicilio.setIdPrincipal(1L);
         almacenDomicilio.setIdAlmacen(idAlmacen);
         almacenDomicilio.setIdUsuario(JsfBase.getIdUsuario());
