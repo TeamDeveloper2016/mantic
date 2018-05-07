@@ -125,12 +125,17 @@ public class Accion extends IBaseAttribute implements Serializable {
   private void loadAgentes() throws Exception {
     Map params = new HashMap();
     try {
+      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      params.put("idTipoPersona", ETipoPersona.AGENTE_VENTAS.getIdTipoPersona());
       params.put(Constantes.SQL_CONDICION, "id_tipo_persona=".concat(ETipoPersona.AGENTE_VENTAS.getIdTipoPersona().toString()));
-      this.attrs.put("agentes", UISelect.build("TcManticPersonasDto", "row", params, "nombres|paterno|materno", " ", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("agentes", UISelect.build("VistaPersonasDto", "tipoPersona", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS));
     } // try
     catch (Exception e) {
       throw e;
     } // catch   
+    finally {
+      Methods.clean(params);
+    }// finally
   }
 
   private void loadContactos() throws Exception {
