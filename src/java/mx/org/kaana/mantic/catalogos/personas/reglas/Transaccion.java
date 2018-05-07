@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.catalogos.personas.reglas;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -8,16 +9,20 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.RandomCuenta;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
-import mx.org.kaana.libs.formato.Encriptar;
+import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.BouncyEncryption;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaDomicilio;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.catalogos.personas.beans.RegistroPersona;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
+import mx.org.kaana.mantic.db.dto.TrManticClientesRepresentantesDto;
 import mx.org.kaana.mantic.db.dto.TrManticEmpresaPersonalDto;
 import mx.org.kaana.mantic.db.dto.TrManticPersonaDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticPersonaTipoContactoDto;
+import mx.org.kaana.mantic.db.dto.TrManticProveedoresAgentesDto;
+import mx.org.kaana.mantic.enums.ETipoPersona;
 import org.hibernate.Session;
 
 public class Transaccion  extends IBaseTnx{
@@ -28,6 +33,7 @@ public class Transaccion  extends IBaseTnx{
 	private String cuenta;
 	private Long idEmpresa;
 	private Long idPuesto;
+	private Long idPersonaAdicional;
 
 	public Transaccion(IBaseDto dto) {
 		this.dto = dto;
@@ -38,9 +44,14 @@ public class Transaccion  extends IBaseTnx{
 	} // Transaccion
 	
 	public Transaccion(RegistroPersona persona, Long idEmpresa, Long idPuesto) {
+		this(persona, idEmpresa, idPuesto, null);
+	} // Transaccion
+	
+	public Transaccion(RegistroPersona persona, Long idEmpresa, Long idPuesto, Long idPersonaAdicional) {
 		this.persona  = persona;		
 		this.idEmpresa= idEmpresa;
 		this.idPuesto = idPuesto;
+		this.idPersonaAdicional= idPersonaAdicional;
 	} // Transaccion
 
 	public String getCuenta() {
@@ -87,21 +98,23 @@ public class Transaccion  extends IBaseTnx{
 	} // toCuenta
 	
 	private boolean procesarCliente(Session sesion) throws Exception {
-    boolean regresar   = false;
-    Long idPersona     = -1L;
-		Encriptar encriptar= null;
+    boolean regresar= false;
+    Long idPersona  = -1L;
     try {
       this.messageError = "Error al registrar el articulo";
       if (eliminarRegistros(sesion)) {
-				encriptar= new Encriptar();
 				toCuenta();
-				this.persona.getPersona().setContrasenia(encriptar.encriptar(this.persona.getPersona().getRfc()));
+				this.persona.getPersona().setContrasenia(BouncyEncryption.encrypt(this.persona.getPersona().getRfc()));
 				this.persona.getPersona().setCuenta(this.cuenta);
         this.persona.getPersona().setIdUsuario(JsfBase.getIdUsuario());
         idPersona = DaoFactory.getInstance().insert(sesion, this.persona.getPersona());
 				if(registraPersonaEmpresa(sesion, idPersona)){
 					if (registraPersonasDomicilios(sesion, idPersona)) {
 						regresar = registraPersonasTipoContacto(sesion, idPersona);
+						if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.AGENTE_VENTAS.getIdTipoPersona()))
+							regresar= registrarProveedor(sesion, idPersona);
+						if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona()))
+							regresar= registrarCliente(sesion, idPersona);
 					} // if
         } // if
       } // if
@@ -121,6 +134,10 @@ public class Transaccion  extends IBaseTnx{
       if (registraPersonasDomicilios(sesion, idPersona)) {
 				if (registraPersonasTipoContacto(sesion, idPersona)) {
 					regresar = DaoFactory.getInstance().update(sesion, this.persona.getPersona()) >= 1L;
+					if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.AGENTE_VENTAS.getIdTipoPersona()))
+						regresar= actualizaProveedor(sesion);
+					if(this.persona.getPersona().getIdTipoPersona().equals(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona()))
+						regresar= actualizaCliente(sesion);
 				} // if
       } // if
     } // try
@@ -276,4 +293,92 @@ public class Transaccion  extends IBaseTnx{
   private boolean actualizar(Session sesion, IBaseDto dto) throws Exception {
     return DaoFactory.getInstance().update(sesion, dto) >= 1L;
   } // actualizar
+	
+	private boolean registrarCliente(Session sesion, Long idPersona) throws Exception{
+		boolean regresar= false;
+		TrManticClientesRepresentantesDto dto= null;
+		try {
+			dto= new TrManticClientesRepresentantesDto();
+			dto.setIdCliente(this.idPersonaAdicional);
+			dto.setIdPrincipal(1L);
+			dto.setIdRepresentante(idPersona);
+			dto.setIdUsuario(JsfBase.getIdUsuario());
+			regresar= registrar(sesion, dto);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // registrarCliente
+	
+	private boolean registrarProveedor(Session sesion, Long idPersona) throws Exception{
+		boolean regresar= false;
+		TrManticProveedoresAgentesDto dto= null;
+		try {
+			dto= new TrManticProveedoresAgentesDto();
+			dto.setIdProveedor(this.idPersonaAdicional);
+			dto.setIdAgente(idPersona);
+			dto.setIdPrincipal(1L);
+			dto.setIdUsuario(JsfBase.getIdUsuario());
+			regresar= registrar(sesion, dto);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // registrarProveedor
+	
+	private boolean actualizaProveedor(Session sesion) throws Exception{
+		List<TrManticProveedoresAgentesDto> proveedores= null;
+		Map<String, Object>params= null;
+		boolean regresar= true;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_agente=" + this.persona.getIdPersona());
+			proveedores= DaoFactory.getInstance().toEntitySet(sesion, TrManticProveedoresAgentesDto.class, "TrManticProveedoresAgentesDto", "row", params, Constantes.SQL_TODOS_REGISTROS);							
+			if(!proveedores.isEmpty()){
+				for(TrManticProveedoresAgentesDto dtoProv: proveedores){
+					if(this.idPersonaAdicional.equals(dtoProv.getIdProveedor()))
+						dtoProv.setIdPrincipal(1L);
+					else
+						dtoProv.setIdPrincipal(2L);
+					DaoFactory.getInstance().update(sesion, dtoProv);
+				} // for
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally	
+		return regresar;
+	} // actualizaProveedor
+	
+	private boolean actualizaCliente(Session sesion) throws Exception{
+		List<TrManticClientesRepresentantesDto> clientes= null;
+		Map<String, Object>params= null;
+		boolean regresar= true;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_representante=" + this.persona.getIdPersona());
+			clientes= DaoFactory.getInstance().toEntitySet(sesion, TrManticClientesRepresentantesDto.class, "TrManticClientesRepresentantesDto", "row", params, Constantes.SQL_TODOS_REGISTROS);							
+			if(!clientes.isEmpty()){
+				for(TrManticClientesRepresentantesDto dtoProv: clientes){
+					if(this.idPersonaAdicional.equals(dtoProv.getIdCliente()))
+						dtoProv.setIdPrincipal(1L);
+					else
+						dtoProv.setIdPrincipal(2L);
+					DaoFactory.getInstance().update(sesion, dtoProv);
+				} // for
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally	
+		return regresar;
+	} // actualizaCliente
 }
