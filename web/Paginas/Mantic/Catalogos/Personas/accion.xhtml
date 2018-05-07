@@ -42,6 +42,7 @@
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">		
 								<p:outputLabel for="empresa" value="Empresa:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}"/>
 								<p:selectOneMenu id="empresa" value="#{manticCatalogosPersonasAccion.attrs.idEmpresa}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}" filter="true" filterMatchMode="startsWith">									
+									<p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doActualizaClientesProveedores}" process="@this" update="cliente proveedores" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.empresas}"/>
 								</p:selectOneMenu>	
 								<p:outputLabel for="titulo" value="Titulo:"/>
@@ -74,6 +75,32 @@
 								<p:selectOneMenu id="puesto" value="#{manticCatalogosPersonasAccion.attrs.idPuesto}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarPuestos}" filter="true" filterMatchMode="startsWith">									
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.puestos}"/>
 								</p:selectOneMenu>
+								<p:outputLabel for="proveedores" value="Proveedor:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarProveedores}"/>
+								<p:selectOneMenu id="proveedores" value="#{manticCatalogosPersonasAccion.attrs.proveedor}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarProveedores}" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
+									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.proveedores}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
+									<p:column  styleClass="janal-column-center">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column styleClass="janal-column-left">
+										<h:outputText value="#{item.rfc}"/>
+									</p:column>  
+									<p:column styleClass="janal-column-left">
+										<h:outputText value="#{item.razonSocial}"/>
+									</p:column>  
+								</p:selectOneMenu>	
+								<p:outputLabel for="cliente" value="Cliente:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarClientes}"/>
+								<p:selectOneMenu id="cliente" value="#{manticCatalogosPersonasAccion.attrs.cliente}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarClientes}" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
+									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
+									<p:column  styleClass="janal-column-center">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column styleClass="janal-column-left">
+										<h:outputText value="#{item.rfc}"/>
+									</p:column>  
+									<p:column styleClass="janal-column-left">
+										<h:outputText value="#{item.razonSocial}"/>
+									</p:column>   
+								</p:selectOneMenu>	
               </p:panelGrid>
 						</p:tab>	
 						<p:tab title="Domicilios">
