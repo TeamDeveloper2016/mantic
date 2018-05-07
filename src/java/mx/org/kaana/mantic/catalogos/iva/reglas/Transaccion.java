@@ -24,6 +24,10 @@ public class Transaccion extends IBaseTnx {
 		this.aplicar= aplicar;
 	} // Transaccion
 
+	public String getMessageError() {
+		return messageError;
+	}
+
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar          = false;

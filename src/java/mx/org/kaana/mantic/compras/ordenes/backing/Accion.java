@@ -58,7 +58,7 @@ public class Accion extends IBaseAttribute implements Serializable {
           this.iva= new TcManticHistorialIvaDto(JsfBase.getAutentifica().getPersona().getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 16.00);
           break;
         case MODIFICAR:					
-          idHistorialIva= (Long)this.attrs.get("idHistorialIva");
+          idHistorialIva= (Long)this.attrs.get("idOrdenCompra");
           this.iva= (TcManticHistorialIvaDto)DaoFactory.getInstance().findById(TcManticHistorialIvaDto.class, idHistorialIva);
           break;
       } // switch

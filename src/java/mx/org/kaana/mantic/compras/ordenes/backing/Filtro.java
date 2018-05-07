@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
@@ -22,10 +23,10 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
+import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 
 @Named(value = "manticComprasOrdenesFiltro")
 @ViewScoped
@@ -88,20 +89,20 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doAccion  
 	
   public void doEliminar() {
-//		Transaccion transaccion = null;
-//		Entity seleccionado     = null;
-//		try {
-//			seleccionado= (Entity) this.attrs.get("seleccionado");			
-//			transaccion= new Transaccion(new TcManticHistorialIvaDto(seleccionado.getKey()));
-//			if(transaccion.ejecutar(EAccion.ELIMINAR))
-//				JsfBase.addMessage("Eliminar", "La orden de compra se ha eliminado correctamente.", ETipoMensaje.ERROR);
-//			else
-//				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la orden de compra.", ETipoMensaje.ERROR);								
-//		} // try
-//		catch (Exception e) {
-//			Error.mensaje(e);
-//			JsfBase.addMessageError(e);			
-//		} // catch			
+		Transaccion transaccion = null;
+		Entity seleccionado     = null;
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");			
+			transaccion= new Transaccion(new TcManticOrdenesComprasDto(seleccionado.getKey()));
+			if(transaccion.ejecutar(EAccion.ELIMINAR))
+				JsfBase.addMessage("Eliminar", "La orden de compra se ha eliminado correctamente.", ETipoMensaje.ERROR);
+			else
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la orden de compra.", ETipoMensaje.ERROR);								
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
   } // doEliminar
 
 	private Map<String, Object> toPrepare() {
