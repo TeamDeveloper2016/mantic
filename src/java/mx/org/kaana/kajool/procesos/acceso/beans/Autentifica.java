@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.procesos.acceso.reglas.Privilegios;
 import mx.org.kaana.kajool.enums.EPaginasPrivilegios;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.mantic.db.dto.TcManticEmpresasDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -46,12 +47,12 @@ public class Autentifica implements Serializable {
   } // Autentifica
 
   public Autentifica(Monitoreo monitoreo, Persona persona, Sucursal empresa, List<UsuarioMenu> menu, List<UsuarioMenu> topMenu, EPaginasPrivilegios redirect, Credenciales credenciales, String paginaActual) {
-    this.monitoreo = monitoreo;
-    this.persona = persona;
-    this.empresa = empresa;
-    this.menu = menu;
-    this.topMenu = topMenu;
-    this.redirect = redirect;
+    this.monitoreo    = monitoreo;
+    this.persona      = persona;
+    this.empresa      = empresa;
+    this.menu         = menu;
+    this.topMenu      = topMenu;
+    this.redirect     = redirect;
     this.credenciales = credenciales;
     this.paginaActual = paginaActual;
   }	// Autentifica
@@ -170,13 +171,11 @@ public class Autentifica implements Serializable {
     try {
       privilegios = new Privilegios(this.persona);
       this.sucursales= privilegios.toSucursales();
-      //if(this.escuelas.size()> 1)
-      //	this.redirect= EPaginasPrivilegios.ESCUELAS;
-      //else
-      this.redirect = EPaginasPrivilegios.DEFAULT;
-      this.empresa = sucursales.get(0);
-      this.menu = privilegios.procesarModulosPerfil();
-      this.topMenu = privilegios.procesarTopModulos();
+      this.redirect  = EPaginasPrivilegios.DEFAULT;
+      this.empresa   = sucursales.get(0);
+			this.empresa.setSucursales(toLoadSucursales());
+      this.menu      = privilegios.procesarModulosPerfil();
+      this.topMenu   = privilegios.procesarTopModulos();
       if (this.menu.isEmpty() && this.topMenu.isEmpty()) {
         LOG.info(" Error: El usuario no tiene acceso a ningun modulo.");
         Error.mensaje(new Exception("El usuario no tiene acceso a ninguna opción del sistema"));
@@ -327,4 +326,25 @@ public class Autentifica implements Serializable {
 	public List<Sucursal> getSucursales() {
 		return sucursales;
 	}	
+
+	private String toLoadSucursales() throws Exception {
+		String regresar= this.getEmpresa().getIdEmpresa().toString().concat(", ");
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("idEmpresa", this.getEmpresa().getIdEmpresa());
+			List<TcManticEmpresasDto> items= DaoFactory.getInstance().findViewCriteria(TcManticEmpresasDto.class, params, "sucursales");
+			for (TcManticEmpresasDto item: items) {
+				regresar= regresar.concat(item.getIdEmpresa().toString()).concat(", ");
+			} // for
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar.substring(0, regresar.length()- 2);
+	}
 }

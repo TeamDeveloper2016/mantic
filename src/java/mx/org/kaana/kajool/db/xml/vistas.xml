@@ -59,6 +59,8 @@
           tc_janal_usuarios on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
         where 
           tc_mantic_personas.id_persona={idPersona}
+				order by
+				  tr_mantic_empresa_personal.registro
       </select>
      	<select id="detalleUsuarioPerfil">
 				select 					

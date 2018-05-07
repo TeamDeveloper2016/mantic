@@ -21,7 +21,9 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 
@@ -46,17 +48,17 @@ public class Filtro extends IBaseFilter implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> campos      = null;
+    List<Columna> columns     = null;
 		Map<String, Object> params= toPrepare();
     try {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      campos = new ArrayList<>();
-      campos.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-      campos.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
-      this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", "row", params, campos);
+      columns = new ArrayList<>();
+      columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
+      this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", "row", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -65,7 +67,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch
     finally {
       Methods.clean(params);
-      Methods.clean(campos);
+      Methods.clean(columns);
     } // finally		
   } // doLoad
 
@@ -119,15 +121,23 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 	
 	private void toLoadCatalog() {
-    Map<String, Object> params = new HashMap<>();
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
     try {
-      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      this.attrs.put("sucursales", (List<UISelectItem>) UISelect.build("TcSucursalesDto", "row", params, "nombre", " ", EFormatoDinamicos.MAYUSCULAS));
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+			else
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "sucursales", params, columns));
+      this.attrs.put("proveedores", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "proveedores", params, columns));
     } // try
     catch (Exception e) {
       throw e;
     } // catch   
     finally {
+      Methods.clean(columns);
       Methods.clean(params);
     }// finally
 	}

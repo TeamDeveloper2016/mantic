@@ -1080,7 +1080,7 @@
           id_detalle_compra = {idDetalleCompra} and id_orden_compra = {idOrdenCompra} and id_articulo = {idArticulo}
       </select>
     </unit>
-	    <unit id="TcManticEmpaquesDto">
+	  <unit id="TcManticEmpaquesDto">
       <select id="row">
         select 
 					tc_mantic_empaques.id_empaque as id_key,
@@ -1115,6 +1115,16 @@
           tc_mantic_empresas
         where      
           id_empresa = {idEmpresa} and id_tipo_empresa = {idTipoEmpresa} and nombre = '{nombre}'
+      </select>
+      <select id="sucursales">
+        select      
+          *
+        from      
+          tc_mantic_empresas
+        where 
+          id_empresa_depende= {idEmpresa}
+				order by
+				  clave
       </select>
     </unit>
 	    <unit id="TcManticManufacturasDto">

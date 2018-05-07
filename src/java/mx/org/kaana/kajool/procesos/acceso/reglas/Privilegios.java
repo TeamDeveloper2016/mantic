@@ -44,15 +44,14 @@ public class Privilegios implements Serializable {
   } // Privilegios
 
   public List<Sucursal> toSucursales() throws Exception {
-    Map<String, Object> params = null;
-    List<Sucursal> regresar = null;
+    Map<String, Object> params= null;
+    List<Sucursal> regresar   = null;
     try {
-      LOG.info(" verificar acceso a sucursales");
+      LOG.info(" Verificar acceso a sucursales ");
       params = new HashMap<>();
       params.put("idPersona", this.persona.getIdPersona());
-      params.put("idTipoEmpresa", ETipoEmpresa.SUCURSAL.getIdTipoEmpresa());
       regresar = (List<Sucursal>) DaoFactory.getInstance().toEntitySet(Sucursal.class, "VistaTcJanalUsuariosDto", "sucursales", params);
-    }// try// try// try// try
+    }// try
     catch (Exception e) {
       throw e;
     }// catch
