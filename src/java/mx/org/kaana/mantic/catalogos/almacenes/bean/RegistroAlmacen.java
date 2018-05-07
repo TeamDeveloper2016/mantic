@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -208,9 +209,12 @@ public class RegistroAlmacen implements Serializable{
 			this.domicilioPivote.setIdTipoDomicilio(pivote.getIdTipoDomicilio());
 			this.domicilioPivote.setPrincipal(pivote.getIdPrincipal().equals(1L));	
 			this.domicilioPivote.setIdDomicilio(pivote.getIdDomicilio());
+			this.domicilioPivote.setDomicilio(new Entity(pivote.getIdDomicilio()));
 			this.domicilioPivote.setIdEntidad(pivote.getIdEntidad());
 			this.domicilioPivote.setIdMunicipio(pivote.getIdMunicipio());
-			this.domicilioPivote.setIdLocalidad(pivote.getIdLocalidad());
+			this.domicilioPivote.setLocalidad(pivote.getIdLocalidad());
+			this.domicilioPivote.setIdLocalidad(pivote.getIdLocalidad().getKey());
+			this.domicilioPivote.setCodigoPostal(pivote.getCodigoPostal());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -248,7 +252,8 @@ public class RegistroAlmacen implements Serializable{
 				almacenDomicilio.setConsecutivo(this.almacenDomicilio.size() + 1L);
 			almacenDomicilio.setIdEntidad(this.domicilio.getIdEntidad());
 			almacenDomicilio.setIdMunicipio(this.domicilio.getIdMunicipio());
-			almacenDomicilio.setIdLocalidad(this.domicilio.getIdLocalidad());
+			almacenDomicilio.setCodigoPostal(this.domicilio.getCodigoPostal());
+			almacenDomicilio.setIdLocalidad(this.domicilio.getLocalidad());
 		} // try
 		catch (Exception e) {			
 			throw e;

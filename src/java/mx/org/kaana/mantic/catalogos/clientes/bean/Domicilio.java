@@ -1,46 +1,51 @@
 package mx.org.kaana.mantic.catalogos.clientes.bean;
 
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 
 public class Domicilio extends TcManticDomiciliosDto{
 	
 	private static final long serialVersionUID = -3112775965972427532L;
-	private Long idEntidad;
-	private Long idMunicipio;
+	private Entity idEntidad;
+	private Entity idMunicipio;
+	private Entity localidad;
+	private Entity domicilio;
 	private Long idCodigoPostal;	
 	private boolean nuevoCp;
 	private Boolean principal;	
 	private Long idTipoDomicilio;
 	
 	public Domicilio() {
-		this(-1L,-1L,-1L, false, false, -1L);
+		this(null, null, null, null, -1L, false, false, -1L);
 	}
 
-	public Domicilio(Long idEntidad, Long idMunicipio, Long idCodigoPostal, boolean nuevoCp, Boolean principal, Long idTipoDomicilio) {
+	public Domicilio(Entity idEntidad, Entity idMunicipio, Entity localidad, Entity domicilio, Long idCodigoPostal, boolean nuevoCp, Boolean principal, Long idTipoDomicilio) {
 		this.idEntidad      = idEntidad;
 		this.idMunicipio    = idMunicipio;
 		this.idCodigoPostal = idCodigoPostal;
 		this.nuevoCp        = nuevoCp;
 		this.principal      = principal;
 		this.idTipoDomicilio= idTipoDomicilio;
+		this.localidad      = localidad;
+		this.domicilio      = domicilio;
 	}
-	
-	public Long getIdEntidad() {
+
+	public Entity getIdEntidad() {
 		return idEntidad;
 	}
 
-	public void setIdEntidad(Long idEntidad) {
+	public void setIdEntidad(Entity idEntidad) {
 		this.idEntidad = idEntidad;
 	}
 
-	public Long getIdMunicipio() {
+	public Entity getIdMunicipio() {
 		return idMunicipio;
 	}
 
-	public void setIdMunicipio(Long idMunicipio) {
+	public void setIdMunicipio(Entity idMunicipio) {
 		this.idMunicipio = idMunicipio;
-	}	
-
+	}
+	
 	public Long getIdCodigoPostal() {
 		return idCodigoPostal;
 	}
@@ -71,5 +76,21 @@ public class Domicilio extends TcManticDomiciliosDto{
 
 	public void setIdTipoDomicilio(Long idTipoDomicilio) {
 		this.idTipoDomicilio = idTipoDomicilio;
+	}
+
+	public Entity getLocalidad() {
+		return localidad;
+	}
+
+	public void setLocalidad(Entity localidad) {
+		this.localidad = localidad;
+	}	
+
+	public Entity getDomicilio() {
+		return domicilio;
+	}
+
+	public void setDomicilio(Entity domicilio) {
+		this.domicilio = domicilio;
 	}	
 }

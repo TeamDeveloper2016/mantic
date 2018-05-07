@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.catalogos.almacenes.bean;
 
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.mantic.db.dto.TrManticAlmacenDomicilioDto;
 
@@ -10,9 +11,11 @@ public class AlmacenDomicilio extends TrManticAlmacenDomicilioDto{
 	private Boolean nuevo;	
 	private Long consecutivo;
 	private Boolean modificar;
-	private Long idEntidad;
-	private Long idMunicipio;
-	private Long idLocalidad;
+	private Entity idEntidad;
+	private Entity idMunicipio;
+	private Entity idLocalidad;
+	private Entity domicilio;
+	private String codigoPostal;
 
 	public AlmacenDomicilio() {
 		this(-1L);
@@ -27,18 +30,20 @@ public class AlmacenDomicilio extends TrManticAlmacenDomicilioDto{
 	}
 	
 	public AlmacenDomicilio(Long key, ESql sqlAccion, Boolean nuevo) {		
-		this(key, sqlAccion, nuevo, 0L, false, -1L, -1L, -1L);
+		this(key, sqlAccion, nuevo, 0L, false, null, null, null, null, null);
 	}
 	
-	public AlmacenDomicilio(Long key, ESql sqlAccion, Boolean nuevo, Long consecutivo, Boolean modificar, Long idEntidad, Long idMunicipio, Long idLocalidad) {		
+	public AlmacenDomicilio(Long key, ESql sqlAccion, Boolean nuevo, Long consecutivo, Boolean modificar, Entity idEntidad, Entity idMunicipio, Entity idLocalidad, Entity domicilio, String codigoPostal) {		
 		super(key);
-		this.sqlAccion     = sqlAccion;
-		this.nuevo         = nuevo;
-		this.consecutivo   = consecutivo;
-		this.modificar     = modificar;
-		this.idEntidad     = idEntidad;
-		this.idMunicipio   = idMunicipio;
-		this.idLocalidad   = idLocalidad;
+		this.sqlAccion   = sqlAccion;
+		this.nuevo       = nuevo;
+		this.consecutivo = consecutivo;
+		this.modificar   = modificar;
+		this.idEntidad   = idEntidad;
+		this.idMunicipio = idMunicipio;
+		this.idLocalidad = idLocalidad;
+		this.codigoPostal= codigoPostal;
+		this.domicilio   = domicilio;
 	}
 
 	public ESql getSqlAccion() {
@@ -73,27 +78,43 @@ public class AlmacenDomicilio extends TrManticAlmacenDomicilioDto{
 		this.modificar = modificar;
 	}	
 
-	public Long getIdEntidad() {
+	public Entity getIdEntidad() {
 		return idEntidad;
 	}
 
-	public void setIdEntidad(Long idEntidad) {
+	public void setIdEntidad(Entity idEntidad) {
 		this.idEntidad = idEntidad;
 	}
 
-	public Long getIdMunicipio() {
+	public Entity getIdMunicipio() {
 		return idMunicipio;
 	}
 
-	public void setIdMunicipio(Long idMunicipio) {
+	public void setIdMunicipio(Entity idMunicipio) {
 		this.idMunicipio = idMunicipio;
 	}
-	
-	public Long getIdLocalidad() {
+
+	public Entity getIdLocalidad() {
 		return idLocalidad;
 	}
 
-	public void setIdLocalidad(Long idLocalidad) {
+	public void setIdLocalidad(Entity idLocalidad) {
 		this.idLocalidad = idLocalidad;
+	}
+
+	public Entity getDomicilio() {
+		return domicilio;
+	}
+
+	public void setDomicilio(Entity domicilio) {
+		this.domicilio = domicilio;
+	}
+
+	public String getCodigoPostal() {
+		return codigoPostal;
+	}
+
+	public void setCodigoPostal(String codigoPostal) {
+		this.codigoPostal = codigoPostal;
 	}	
 }
