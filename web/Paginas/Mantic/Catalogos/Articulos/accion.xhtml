@@ -37,13 +37,6 @@
 								<p:outputLabel for="redondear" value="Redondear:"/>
 								<p:selectBooleanCheckbox id="redondear" value="#{manticCatalogosArticulosAccion.registroArticulo.redondear}" styleClass="janal-wid-100-txt" />                    
 								<p:separator/><p:separator/>
-								<p:outputLabel for="meta" value="Meta tag:"/>
-								<p:inputText id="meta" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.metaTag}" onblur="janal.mayusculas('contenedorGrupos\\:meta')"/>                    
-								<p:outputLabel for="metaDescripcion" value="Meta descripción:"/>
-								<p:inputTextarea id="metaDescripcion" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.metaTagDescipcion}" onblur="janal.mayusculas('contenedorGrupos\\:metaDescripcion')"/>                    
-								<p:outputLabel for="metaTeclado" value="Meta referencia:"/>
-								<p:inputTextarea id="metaTeclado" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.metaTagTeclado}" onblur="janal.mayusculas('contenedorGrupos\\:metaTeclado')"/>                    																	
-								<p:separator/><p:separator/>
 								<p:outputLabel for="pesoEstimado" value="Peso estimado:"/>
 								<p:inputNumber id="pesoEstimado" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.pesoEstimado}" onblur="janal.mayusculas('contenedorGrupos\\:pesoEstimado')"/>                    																	
 								<p:outputLabel for="desperdicio" value="Desperdicio:"/>
@@ -127,7 +120,7 @@
 								</p:dataTable>	
 							</p:panelGrid>							
 						</p:tab>
-						<p:tab title="Descuentos especiales">
+						<p:tab title="Grupos">
 							<p:panelGrid id="panelTablaDescuentosEspeciales" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaDescuentosEspeciales" var="descuentoEspecial" value="#{manticCatalogosArticulosAccion.registroArticulo.clientesDescuentos}" rows="6" paginator="false" reflow="true" rowKey="#{descuentoEspecial.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Cliente">										
@@ -163,7 +156,7 @@
 								</p:selectOneMenu>								
 							</p:panelGrid>	
 						</p:tab>
-						<p:tab title="Precio sugerido">
+						<p:tab title="Ofertas">
 							<p:panelGrid id="panelTablaPreciosSugeridos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaPreciosSugeridos" rowIndexVar="index" var="precioSugerido" value="#{manticCatalogosArticulosAccion.registroArticulo.preciosSugeridos}" rows="6" paginator="false" reflow="true" rowKey="#{precioSugerido.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Proveedor">										
@@ -222,7 +215,7 @@
 								</p:dataTable>	
 							</p:panelGrid>
 						</p:tab>
-						<p:tab title="Tipo de venta">
+						<p:tab title="Tipo de venta" rendered="false">
 							<p:panelGrid id="panelTablaTiposVenta" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaTiposVenta" var="tipoVenta" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosTiposVenta}" rows="6" paginator="false" reflow="true" rowKey="#{tipoVenta.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Tipo venta">										
@@ -255,6 +248,9 @@
 								<p:selectOneMenu id="unidadMedida" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.idEmpaqueUnidadMedida}" styleClass="janal-wid-100-txt">
 									<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.unidadesMedidas}"/>
 								</p:selectOneMenu>
+								<p:outputLabel for="cantidad" value="Cantidad:"/>
+								<p:inputNumber id="cantidad" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.cantidad}" onblur="janal.mayusculas('contenedorGrupos\\:ancho')"/>                    
+								<p:separator/><p:separator/>
 								<p:outputLabel for="ancho" value="Ancho:"/>
 								<p:inputNumber id="ancho" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.ancho}" onblur="janal.mayusculas('contenedorGrupos\\:ancho')"/>                    
 								<p:outputLabel for="largo" value="Largo:"/>
@@ -265,7 +261,15 @@
 						</p:tab>
 						<p:tab title="Observaciones">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
-								<p:outputLabel for="observaciones" value="Observaciones:"/>
+								<p:outputLabel for="meta" value="Meta tag:"/>
+								<p:inputText id="meta" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.metaTag}" onblur="janal.mayusculas('contenedorGrupos\\:meta')"/>                    
+								<p:outputLabel for="metaDescripcion" value="Meta descripción:"/>
+								<p:inputTextarea id="metaDescripcion" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.metaTagDescipcion}" onblur="janal.mayusculas('contenedorGrupos\\:metaDescripcion')"/>                    
+								<p:outputLabel for="metaTeclado" value="Meta referencia:"/>
+								<p:inputTextarea id="metaTeclado" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.metaTagTeclado}" onblur="janal.mayusculas('contenedorGrupos\\:metaTeclado')"/>                    																	
+							</p:panelGrid>	
+							<p:separator/>
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 								<p:editor id="observaciones" styleClass="janal-wid-100-txt" height="200" value="#{manticCatalogosArticulosAccion.registroArticulo.observaciones}"/>  
 							</p:panelGrid>
 						</p:tab>

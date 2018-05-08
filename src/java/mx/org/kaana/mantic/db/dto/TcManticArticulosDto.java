@@ -42,6 +42,8 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
   private Double pesoEstimado;
   @Column (name="id_empaque_unidad_medida")
   private Long idEmpaqueUnidadMedida;
+  @Column (name="cantidad")
+  private Long cantidad;
   @Column (name="id_imagen")
   private Long idImagen;
   @Column (name="id_redondear")
@@ -88,15 +90,16 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
   }
 
   public TcManticArticulosDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null);
+    this(null, null, null, null, 1L, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcManticArticulosDto(String descripcion, Long idTmpArticulo, Double pesoEstimado, Long idEmpaqueUnidadMedida, Long idImagen, Long idRedondear, Long idCategoria, Double ultimoPrecio, Double menudeo, String metaTag, String nombre, String metaTagTeclado, Double iva, Long idUsuario, Double mayoreo, Double desperdicio, Long idEmpresa, String metaTagDescipcion, Long idVigente, Long idArticulo, Long stock, Double medioMayoreo) {
+  public TcManticArticulosDto(String descripcion, Long idTmpArticulo, Double pesoEstimado, Long idEmpaqueUnidadMedida, Long cantidad, Long idImagen, Long idRedondear, Long idCategoria, Double ultimoPrecio, Double menudeo, String metaTag, String nombre, String metaTagTeclado, Double iva, Long idUsuario, Double mayoreo, Double desperdicio, Long idEmpresa, String metaTagDescipcion, Long idVigente, Long idArticulo, Long stock, Double medioMayoreo) {
     setDescripcion(descripcion);
     setIdTmpArticulo(idTmpArticulo);
     setPesoEstimado(pesoEstimado);
     setIdEmpaqueUnidadMedida(idEmpaqueUnidadMedida);
+		this.cantidad= cantidad;
     setIdImagen(idImagen);
     setIdRedondear(idRedondear);
     setIdCategoria(idCategoria);
@@ -149,6 +152,14 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
   public Long getIdEmpaqueUnidadMedida() {
     return idEmpaqueUnidadMedida;
   }
+
+	public Long getCantidad() {
+		return cantidad;
+	}
+
+	public void setCantidad(Long cantidad) {
+		this.cantidad=cantidad;
+	}
 
   public void setIdImagen(Long idImagen) {
     this.idImagen = idImagen;
@@ -325,6 +336,8 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdEmpaqueUnidadMedida());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCantidad());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdImagen());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdRedondear());
@@ -373,6 +386,7 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
 		regresar.put("idTmpArticulo", getIdTmpArticulo());
 		regresar.put("pesoEstimado", getPesoEstimado());
 		regresar.put("idEmpaqueUnidadMedida", getIdEmpaqueUnidadMedida());
+		regresar.put("cantidad", getCantidad());
 		regresar.put("idImagen", getIdImagen());
 		regresar.put("idRedondear", getIdRedondear());
 		regresar.put("idCategoria", getIdCategoria());
@@ -398,7 +412,7 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getIdTmpArticulo(), getPesoEstimado(), getIdEmpaqueUnidadMedida(), getIdImagen(), getIdRedondear(), getIdCategoria(), getUltimoPrecio(), getMenudeo(), getMetaTag(), getNombre(), getMetaTagTeclado(), getRegistro(), getIva(), getIdUsuario(), getMayoreo(), getDesperdicio(), getIdEmpresa(), getMetaTagDescipcion(), getIdVigente(), getIdArticulo(), getStock(), getMedioMayoreo()
+    getDescripcion(), getIdTmpArticulo(), getPesoEstimado(), getIdEmpaqueUnidadMedida(), getCantidad(), getIdImagen(), getIdRedondear(), getIdCategoria(), getUltimoPrecio(), getMenudeo(), getMetaTag(), getNombre(), getMetaTagTeclado(), getRegistro(), getIva(), getIdUsuario(), getMayoreo(), getDesperdicio(), getIdEmpresa(), getMetaTagDescipcion(), getIdVigente(), getIdArticulo(), getStock(), getMedioMayoreo()
     };
     return regresar;
   }
