@@ -16,36 +16,41 @@
   </script>
   <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
     <div class="ui-grid-row janal-grid-row">
-      <div class="ui-grid-col-8 lg-pantalla">
-        <h1 class="titulo-proyecto janal-header-title">#{sessionScope.autentifica.empresa.nombre}</h1>
-      </div>
-      <div class="ui-grid-col-8 xs-pantalla">
-        <h1 class="janal-header-title">#{kajoolUtilAplicacion.tituloCorto}</h1>
-      </div>
-      <div class="ui-grid-col-4 lg-pantalla">
-        <p:graphicImage library="janal" name="img/sistema/logo.svg" width="25" style="float:right;margin-right:10px;"/>
-      </div>  
-      <div class="ui-grid-col-4 xs-pantalla">
-        <p:graphicImage library="janal" name="img/sistema/logo.svg" styleClass="janal-logo-mini" width="25" style="float:right;margin-right:10px;"/>
-      </div>
-    </div>
-    <div class="ui-grid-row janal-grid-rows">
-      <div class="ui-grid-col-4 margin-fecha">
-        <span id="reloj" class="fecha janal-text-one-line lg-pantalla"></span>
-        <span class="fecha janal-text-one-line xs-pantalla Fs14">#{kajoolUtilAplicacion.currentDate}</span>
-      </div>
-      <div class="ui-grid-col-4 margin-desarrollo" style="text-align: center;">
-        <p:outputLabel styleClass="janal-etapa lg-pantalla" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
-        <p:outputLabel styleClass="janal-etapa xs-pantalla Fs14" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
-      </div>
-      <div class="ui-grid-col-4 margin-version" style="text-align: right;">
-        <span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}</span>
-        <span id="version" class="version xs-pantalla Fs14">#{kajoolUtilAplicacion.version}</span>
-      </div>
-    </div>
-  </div>
+			<div style="width: 4% !important; text-align: center">
+				<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>
+			</div>	
+  		<div class="ui-grid-col-12">
+				<div class="ui-grid-row janal-grid-row">
+					<div class="ui-grid-col-8 lg-pantalla">
+						<h1 class="titulo-proyecto janal-header-title">#{sessionScope.autentifica.empresa.nombre}</h1>
+					</div>
+					<div class="ui-grid-col-8 xs-pantalla">
+						<h1 class="janal-header-title">#{kajoolUtilAplicacion.tituloCorto}</h1>
+					</div>
+					<div class="ui-grid-col-4 lg-pantalla">
+					</div>  
+					<div class="ui-grid-col-4 xs-pantalla">
+					</div>
+				</div>
+				<div class="ui-grid-row janal-grid-rows">
+					<div class="ui-grid-col-4 margin-fecha">
+						<span id="reloj" class="fecha janal-text-one-line lg-pantalla"></span>
+						<span class="fecha janal-text-one-line xs-pantalla Fs14">#{kajoolUtilAplicacion.currentDate}</span>
+					</div>
+					<div class="ui-grid-col-4 margin-desarrollo" style="text-align: center;">
+						<p:outputLabel styleClass="janal-etapa lg-pantalla" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
+						<p:outputLabel styleClass="janal-etapa xs-pantalla Fs14" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
+					</div>
+					<div class="ui-grid-col-4 margin-version" style="text-align: right;">
+						<span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}</span>
+						<span id="version" class="version xs-pantalla Fs14">#{kajoolUtilAplicacion.version}</span>
+					</div>
+				</div>
+			</div>
+		</div>	
+	</div>
 	<div id="sticky-menu" class="ui-panel ui-widget ui-widget-content ui-corner-all janal-content-header Responsive100">
-    <ui:include src="/WEB-INF/plantillas/secciones/topbar.xhtml"/>
+		<ui:include src="/WEB-INF/plantillas/secciones/topbar.xhtml"/>
 		<div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header" style="display: -webkit-box;">
 			<h:panelGrid id="iktan-slide-menu">
 				<a href="#" class="BordRad3" onclick="mmenu.open('#{kajoolTemaActivo.name}');">
