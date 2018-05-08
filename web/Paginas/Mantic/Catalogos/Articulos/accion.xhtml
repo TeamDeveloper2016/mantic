@@ -30,7 +30,7 @@
 								<p:outputLabel for="nombre" value="Nombre:"/>
 								<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.nombre}" onblur="janal.mayusculas('contenedorGrupos\\:nombre')"/>                    
 								<p:outputLabel for="descripcion" value="Descripción:"/>
-								<p:editor id="descripcion" styleClass="janal-wid-100-txt" height="200" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.descripcion}" />                    
+								<p:editor id="descripcion" styleClass="janal-wid-100-txt" height="100" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.descripcion}" />                    
 								<p:separator/><p:separator/>
 								<p:outputLabel for="iva" value="Iva:"/>
 								<p:inputNumber id="iva" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.iva}"/>                    
@@ -260,6 +260,10 @@
 							</p:panelGrid>							
 						</p:tab>
 						<p:tab title="Observaciones">
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+								<p:editor id="observaciones" styleClass="janal-wid-100-txt" height="200" value="#{manticCatalogosArticulosAccion.registroArticulo.observaciones}"/>  
+							</p:panelGrid>
+							<p:separator/>
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 								<p:outputLabel for="meta" value="Meta tag:"/>
 								<p:inputText id="meta" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.metaTag}" onblur="janal.mayusculas('contenedorGrupos\\:meta')"/>                    
@@ -268,10 +272,6 @@
 								<p:outputLabel for="metaTeclado" value="Meta referencia:"/>
 								<p:inputTextarea id="metaTeclado" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.metaTagTeclado}" onblur="janal.mayusculas('contenedorGrupos\\:metaTeclado')"/>                    																	
 							</p:panelGrid>	
-							<p:separator/>
-							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
-								<p:editor id="observaciones" styleClass="janal-wid-100-txt" height="200" value="#{manticCatalogosArticulosAccion.registroArticulo.observaciones}"/>  
-							</p:panelGrid>
 						</p:tab>
 					</p:tabView>
 				</div>
