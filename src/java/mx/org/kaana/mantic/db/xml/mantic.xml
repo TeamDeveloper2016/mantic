@@ -10,11 +10,11 @@
     <unit id="TcManticPersonasDto">
       <select id="row">
         select 
-        tc_mantic_personas.*,tc_mantic_personas.id_persona as id_key
+          tc_mantic_personas.*,tc_mantic_personas.id_persona as id_key
         from
-        tc_mantic_personas
+          tc_mantic_personas
         where 
-        {condicion}
+          {condicion}
         order by
           paterno,materno,nombres
       </select>
@@ -24,7 +24,7 @@
         from
           tc_mantic_personas
         where
-          rfc='{rfc}' and curp='{curp}'
+          1=2
       </select>
       <select id="curp">
         select
