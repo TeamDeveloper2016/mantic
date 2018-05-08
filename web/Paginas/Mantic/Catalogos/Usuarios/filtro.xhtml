@@ -31,11 +31,11 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <h:panelGrid styleClass="janal-wid-100">
               <p:outputLabel for="nombres" value="Nombres, paterno, materno:"/>
-              <p:inputText id="nombres" value="#{manticCatalogosUsuariosFiltro.attrs.nombres}" styleClass="janal-wid-100-txt" onblur="janal.individual('nombres')"/> 
+              <p:inputText id="nombres" value="#{manticCatalogosUsuariosFiltro.attrs.nombres}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('nombres')"/> 
               <p:outputLabel for="rfc" value="RFC:"/>
-              <p:inputText id="rfc" value="#{manticCatalogosUsuariosFiltro.attrs.rfc}" styleClass="janal-wid-100-txt" onblur="janal.individual('rfc')"/>              			                            
+              <p:inputText id="rfc" value="#{manticCatalogosUsuariosFiltro.attrs.rfc}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('rfc')"/>              			                            
               <p:outputLabel for="curp" value="CURP:"/>
-              <p:inputText id="curp" value="#{manticCatalogosUsuariosFiltro.attrs.curp}" styleClass="janal-wid-100-txt" onblur="janal.individual('curp')"/>              														
+              <p:inputText id="curp" value="#{manticCatalogosUsuariosFiltro.attrs.curp}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('curp')"/>              														
               <p:outputLabel for="idTipoSexo"  value="Sexo:"/>
               <p:selectOneMenu  id="idTipoSexo"  value="#{manticCatalogosUsuariosFiltro.attrs.idTipoSexo}"  styleClass="janal-wid-90">
                 <f:selectItem itemLabel="TODOS" itemValue="1,2,3"/>

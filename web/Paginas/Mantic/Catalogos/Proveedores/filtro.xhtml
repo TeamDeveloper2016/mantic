@@ -29,11 +29,11 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <h:panelGrid styleClass="janal-wid-100">
               <p:outputLabel for="clave" value="Clave:"/>
-              <p:inputText id="clave" value="#{manticCatalogosProveedoresFiltro.attrs.clave}" styleClass="janal-wid-100-txt" onblur="janal.individual('clave')"/> 
+              <p:inputText id="clave" value="#{manticCatalogosProveedoresFiltro.attrs.clave}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('clave')"/> 
               <p:outputLabel for="rfc" value="RFC:"/>
-              <p:inputText id="rfc" value="#{manticCatalogosProveedoresFiltro.attrs.rfc}" styleClass="janal-wid-100-txt" onblur="janal.individual('rfc')"/>              			                            
+              <p:inputText id="rfc" value="#{manticCatalogosProveedoresFiltro.attrs.rfc}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('rfc')"/>              			                            
               <p:outputLabel for="razonSocial" value="Razón social:"/>
-              <p:inputText id="razonSocial" value="#{manticCatalogosProveedoresFiltro.attrs.razonSocial}" styleClass="janal-wid-100-txt" onblur="janal.individual('razonSocial')"/>              														
+              <p:inputText id="razonSocial" value="#{manticCatalogosProveedoresFiltro.attrs.razonSocial}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('razonSocial')"/>              														
               <p:outputLabel for="tipoProveedor"  value="Tipo proveedor:"/>
               <p:selectOneMenu  id="tipoProveedor" value="#{manticCatalogosProveedoresFiltro.attrs.tipoProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-90">
                 <f:selectItems value="#{manticCatalogosProveedoresFiltro.attrs.tiposProveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>

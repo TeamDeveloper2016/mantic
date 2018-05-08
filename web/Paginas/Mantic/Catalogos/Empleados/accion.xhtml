@@ -28,7 +28,7 @@
             <p:tab title="General">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								
 								<p:outputLabel for="nombre" value="Nombre:"/>
-								<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroArticulo.articulo.nombre}" onblur="janal.individual('contenedorGrupos\\:nombre')"/>                    
+								<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroArticulo.articulo.nombre}" onblur="janal.mayusculas('contenedorGrupos\\:nombre')"/>                    
 								<p:outputLabel for="descripcion" value="Descripción:"/>
 								<p:editor id="descripcion" styleClass="janal-wid-100-txt" height="200" value="#{manticCatalogosPersonasAccion.registroArticulo.articulo.descripcion}" />                    
 								<p:separator/><p:separator/>
@@ -38,16 +38,16 @@
 								<p:selectBooleanCheckbox id="redondear" value="#{manticCatalogosPersonasAccion.registroArticulo.redondear}" styleClass="janal-wid-100-txt" />                    
 								<p:separator/><p:separator/>
 								<p:outputLabel for="meta" value="Meta tag:"/>
-								<p:inputText id="meta" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroArticulo.articulo.metaTag}" onblur="janal.individual('contenedorGrupos\\:meta')"/>                    
+								<p:inputText id="meta" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroArticulo.articulo.metaTag}" onblur="janal.mayusculas('contenedorGrupos\\:meta')"/>                    
 								<p:outputLabel for="metaDescripcion" value="Descripción:"/>
-								<p:inputTextarea id="metaDescripcion" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroArticulo.articulo.metaTagDescipcion}" onblur="janal.individual('contenedorGrupos\\:metaDescripcion')"/>                    
+								<p:inputTextarea id="metaDescripcion" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroArticulo.articulo.metaTagDescipcion}" onblur="janal.mayusculas('contenedorGrupos\\:metaDescripcion')"/>                    
 								<p:outputLabel for="metaTeclado" value="Teclas:"/>
-								<p:inputTextarea id="metaTeclado" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroArticulo.articulo.metaTagTeclado}" onblur="janal.individual('contenedorGrupos\\:metaTeclado')"/>                    																	
+								<p:inputTextarea id="metaTeclado" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroArticulo.articulo.metaTagTeclado}" onblur="janal.mayusculas('contenedorGrupos\\:metaTeclado')"/>                    																	
 								<p:separator/><p:separator/>
 								<p:outputLabel for="pesoEstimado" value="Peso estimado:"/>
-								<p:inputNumber id="pesoEstimado" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroArticulo.articulo.pesoEstimado}" onblur="janal.individual('contenedorGrupos\\:pesoEstimado')"/>                    																	
+								<p:inputNumber id="pesoEstimado" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroArticulo.articulo.pesoEstimado}" onblur="janal.mayusculas('contenedorGrupos\\:pesoEstimado')"/>                    																	
 								<p:outputLabel for="desperdicio" value="Desperdicio:"/>
-								<p:inputNumber id="desperdicio" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroArticulo.articulo.desperdicio}" onblur="janal.individual('contenedorGrupos\\:desperdicio')"/>                    																	
+								<p:inputNumber id="desperdicio" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroArticulo.articulo.desperdicio}" onblur="janal.mayusculas('contenedorGrupos\\:desperdicio')"/>                    																	
               </p:panelGrid>
 						</p:tab>						
             <p:tab id="tabCodigos" title="Códigos">														
@@ -231,7 +231,7 @@
 										</p:selectOneMenu> 				
 									</p:column>											
 									<p:column headerText="Porcentaje" styleClass="janal-wid-30">		
-										<p:inputNumber id="porcentaje#{tipoVenta.key}" styleClass="janal-wid-100-txt" value="#{tipoVenta.porcentaje}" onblur="janal.individual('contenedorGrupos\\:porcentaje#{tipoVenta.key}')" symbol="%" emptyValue="zero" symbolPosition="s"/>																													
+										<p:inputNumber id="porcentaje#{tipoVenta.key}" styleClass="janal-wid-100-txt" value="#{tipoVenta.porcentaje}" onblur="janal.mayusculas('contenedorGrupos\\:porcentaje#{tipoVenta.key}')" symbol="%" emptyValue="zero" symbolPosition="s"/>																													
 									</p:column>									
 									 <p:column style="width:32px;text-align: center">
 										 <p:commandButton update="tablaTiposVenta" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosPersonasAccion.registroArticulo.doEliminarTipoVenta}" styleClass="janal-text-white">
@@ -256,11 +256,11 @@
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.unidadesMedidas}"/>
 								</p:selectOneMenu>
 								<p:outputLabel for="ancho" value="Ancho:"/>
-								<p:inputNumber id="ancho" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroArticulo.articuloDimencion.ancho}" onblur="janal.individual('contenedorGrupos\\:ancho')"/>                    
+								<p:inputNumber id="ancho" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroArticulo.articuloDimencion.ancho}" onblur="janal.mayusculas('contenedorGrupos\\:ancho')"/>                    
 								<p:outputLabel for="largo" value="Largo:"/>
-								<p:inputNumber id="largo" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroArticulo.articuloDimencion.largo}" onblur="janal.individual('contenedorGrupos\\:largo')"/>                    
+								<p:inputNumber id="largo" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroArticulo.articuloDimencion.largo}" onblur="janal.mayusculas('contenedorGrupos\\:largo')"/>                    
 								<p:outputLabel for="alto" value="Alto:"/>
-								<p:inputNumber id="alto" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroArticulo.articuloDimencion.alto}" onblur="janal.individual('contenedorGrupos\\:alto')"/>                    
+								<p:inputNumber id="alto" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroArticulo.articuloDimencion.alto}" onblur="janal.mayusculas('contenedorGrupos\\:alto')"/>                    
 							</p:panelGrid>							
 						</p:tab>
 						<p:tab title="Observaciones">

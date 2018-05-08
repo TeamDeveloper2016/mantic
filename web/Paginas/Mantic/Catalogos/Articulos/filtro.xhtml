@@ -28,9 +28,9 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
 						<h:panelGrid styleClass="janal-wid-100">
 							<p:outputLabel for="codigo" value="Código:"/>
-							<p:inputText id="codigo" value="#{manticCatalogosArticulosFiltro.attrs.codigo}" styleClass="janal-wid-100-txt" onblur="janal.individual('codigo')"/>              							
+							<p:inputText id="codigo" value="#{manticCatalogosArticulosFiltro.attrs.codigo}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('codigo')"/>              							
 							<p:outputLabel for="nombre" value="Nombre:"/>
-							<p:inputText id="nombre" value="#{manticCatalogosArticulosFiltro.attrs.nombre}" styleClass="janal-wid-100-txt" onblur="janal.individual('nombre')"/>              														
+							<p:inputText id="nombre" value="#{manticCatalogosArticulosFiltro.attrs.nombre}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('nombre')"/>              														
 						</h:panelGrid>
 						<p:separator/>
 						<div class="janal-align-right lg-pantalla">

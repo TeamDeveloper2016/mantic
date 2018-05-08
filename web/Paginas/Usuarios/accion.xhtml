@@ -61,23 +61,23 @@
                   </p:column>      
                 </p:selectOneMenu>
                 <p:outputLabel for="nombres" value="Nombres:"/>                   
-                <p:inputText id="nombres" readonly="#{kajoolUsuariosAccion.lockField}" styleClass="janal-wid-100-txt" value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.nombres}" onblur="janal.individual('contenedorGrupos\\:nombres')">
+                <p:inputText id="nombres" readonly="#{kajoolUsuariosAccion.lockField}" styleClass="janal-wid-100-txt" value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.nombres}" onblur="janal.mayusculas('contenedorGrupos\\:nombres')">
                   <p:ajax event="blur" update="cuenta" onstart="return checkEmptyValue();" process="@this nombres materno paterno" listener="#{kajoolUsuariosAccion.doCuenta}"  />
                 </p:inputText>
                 <p:outputLabel for="paterno" value="Apellido paterno:"/>                   
-                <p:inputText readonly="#{kajoolUsuariosAccion.lockField}" id="paterno"  styleClass="janal-wid-100-txt" value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.paterno}" onblur="janal.individual('contenedorGrupos\\:paterno')">
+                <p:inputText readonly="#{kajoolUsuariosAccion.lockField}" id="paterno"  styleClass="janal-wid-100-txt" value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.paterno}" onblur="janal.mayusculas('contenedorGrupos\\:paterno')">
                   <p:ajax event="blur" update="cuenta" onstart="return checkEmptyValue();" process="@this nombres materno" listener="#{kajoolUsuariosAccion.doCuenta}"/>
                 </p:inputText>  
                 <p:outputLabel for="materno" value="Apellido materno:"/>                   
-                <p:inputText id="materno"  readonly="#{kajoolUsuariosAccion.lockField}" styleClass="janal-wid-100-txt" value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.materno}" onblur="janal.individual('contenedorGrupos\\:materno')">
+                <p:inputText id="materno"  readonly="#{kajoolUsuariosAccion.lockField}" styleClass="janal-wid-100-txt" value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.materno}" onblur="janal.mayusculas('contenedorGrupos\\:materno')">
                   <p:ajax event="blur" update="cuenta" onstart="return checkEmptyValue();" process="@this nombres paterno" listener="#{kajoolUsuariosAccion.doCuenta}"/>
                 </p:inputText>  
                 <p:outputLabel  for="cuenta" value="Cuenta:"/>
                 <p:inputText  id="cuenta" value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.cuenta}" styleClass="janal-wid-100-txt" readonly="true"/>
                 <p:outputLabel for="rfc"  value="RFC:"/>                   
-                <p:inputText readonly="#{kajoolUsuariosAccion.lockField}" id="rfc" maxlength="13"  styleClass="janal-wid-100-txt" value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.rfc}" onblur="janal.individual('contenedorGrupos\\:rfc')"/>
+                <p:inputText readonly="#{kajoolUsuariosAccion.lockField}" id="rfc" maxlength="13"  styleClass="janal-wid-100-txt" value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.rfc}" onblur="janal.mayusculas('contenedorGrupos\\:rfc')"/>
                 <p:outputLabel for="curp" value="CURP:"/>                   
-                <p:inputText readonly="#{kajoolUsuariosAccion.lockField}" id="curp" maxlength="18" styleClass="janal-wid-100-txt" value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.curp}" onblur="janal.individual('contenedorGrupos\\:curp')"/>
+                <p:inputText readonly="#{kajoolUsuariosAccion.lockField}" id="curp" maxlength="18" styleClass="janal-wid-100-txt" value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.curp}" onblur="janal.mayusculas('contenedorGrupos\\:curp')"/>
                 <p:outputLabel for="fechaNacimiento" value="Fecha de Nacimiento:"/>                   
                 <p:calendar disabled="#{kajoolUsuariosAccion.lockField}"  pattern="dd/MM/yyyy"  locale="es"  effect="explode" size="12"  converter="janal.convertidor.Fecha"  readonly="true"  styleClass="janal-wid-100-txt"  id="fechaNacimiento"   value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.fechaNacimiento}"  />
                 <p:outputLabel for="idTipoSexo" value="Sexo:"/>  

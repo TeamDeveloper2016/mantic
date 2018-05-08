@@ -14,8 +14,8 @@
         'contenedorGrupos\\:clave': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:rfc': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:razonSocial': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:limiteCredito': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:plazo': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:limiteCredito': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:plazo': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:entidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:municipio': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
@@ -25,8 +25,8 @@
         'contenedorGrupos\\:exterior': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:interior': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:asentamiento': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:entreCalle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:ycalle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'}
+        'contenedorGrupos\\:entreCalle': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:ycalle': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'}
       };
     </script>   
   </ui:define>
@@ -39,11 +39,11 @@
             <p:tab title="General">
               <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								
                 <p:outputLabel for="clave" value="Clave:"/>
-                <p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.clave}" onblur="janal.individual('contenedorGrupos\\:clave')"/>                    
+                <p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.clave}" onblur="janal.mayusculas('contenedorGrupos\\:clave')"/>                    
                 <p:outputLabel for="rfc" value="RFC:"/>
-                <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.rfc}" onblur="janal.individual('contenedorGrupos\\:rfc')"/>                    
+                <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.rfc}" onblur="janal.mayusculas('contenedorGrupos\\:rfc')"/>                    
                 <p:outputLabel for="razonSocial" value="Razon social:"/>
-                <p:inputText id="razonSocial" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.razonSocial}" onblur="janal.individual('contenedorGrupos\\:razonSocial')"/>                    
+                <p:inputText id="razonSocial" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.razonSocial}" onblur="janal.mayusculas('contenedorGrupos\\:razonSocial')"/>                    
                 <p:outputLabel for="limiteCredito" value="Limite de credito:"/>
                 <p:inputNumber id="limiteCredito" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.limiteCredito}"/>                    																	
                 <p:outputLabel for="plazo" value="Plazo de días:"/>
@@ -72,7 +72,6 @@
                   </f:facet>
                 </p:dataList>
                 <p:panelGrid id="formularioDomicilio" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-100">
-                  <p:spacer/><p:spacer/>
                   <p:outputLabel for="entidad" value="Entidad:"/>
                   <p:selectOneMenu id="entidad" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.idEntidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
                     <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doActualizaMunicipios}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
@@ -113,7 +112,7 @@
                     <f:selectItems value="#{manticCatalogosClientesAccion.attrs.codigosPostales}"/>
                   </p:selectOneMenu>	
                   <p:spacer id="spacerCp" rendered="#{manticCatalogosClientesAccion.registroCliente.domicilio.nuevoCp}"/>
-                  <p:inputText placeholder="Captura el nuevo código postal. Ej. 20284" id="cp" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.codigoPostal}" onblur="janal.individual('contenedorGrupos\\:cp')" rendered="#{manticCatalogosClientesAccion.registroCliente.domicilio.nuevoCp}"/>
+                  <p:inputText placeholder="Captura el nuevo código postal. Ej. 20284" id="cp" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.codigoPostal}" onblur="janal.mayusculas('contenedorGrupos\\:cp')" rendered="#{manticCatalogosClientesAccion.registroCliente.domicilio.nuevoCp}"/>
                   <p:outputLabel for="domicilio" value="Domicilio:"/>
                   <p:selectOneMenu id="domicilio" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.domicilio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
                     <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doLoadAtributos}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
@@ -130,17 +129,17 @@
 										</p:column>  
                   </p:selectOneMenu>																										
                   <p:outputLabel for="calle" value="Calle:"/>
-                  <p:inputText id="calle" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.calle}" onblur="janal.individual('contenedorGrupos\\:calle')"/>
+                  <p:inputText id="calle" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.calle}" onblur="janal.mayusculas('contenedorGrupos\\:calle')"/>
                   <p:outputLabel for="exterior" value="Número exterior:"/>
-                  <p:inputText id="exterior" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.numeroExterior}" onblur="janal.individual('contenedorGrupos\\:exterior')" />                    																																		
+                  <p:inputText id="exterior" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.numeroExterior}" onblur="janal.mayusculas('contenedorGrupos\\:exterior')" />                    																																		
                   <p:outputLabel for="interior" value="Número interior:"/>
-                  <p:inputText id="interior" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.numeroInterior}" onblur="janal.individual('contenedorGrupos\\:interior')"/>	
+                  <p:inputText id="interior" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.numeroInterior}" onblur="janal.mayusculas('contenedorGrupos\\:interior')"/>	
                   <p:outputLabel for="asentamiento" value="Colonia:"/>
-                  <p:inputText id="asentamiento" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.asentamiento}" onblur="janal.individual('contenedorGrupos\\:asentamiento')"/>	
+                  <p:inputText id="asentamiento" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.asentamiento}" onblur="janal.mayusculas('contenedorGrupos\\:asentamiento')"/>	
                   <p:outputLabel for="entreCalle" value="Entre calle:"/>
-                  <p:inputText id="entreCalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.entreCalle}" onblur="janal.individual('contenedorGrupos\\:entreCalle')"/>	
+                  <p:inputText id="entreCalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.entreCalle}" onblur="janal.mayusculas('contenedorGrupos\\:entreCalle')"/>	
                   <p:outputLabel for="ycalle" value="Y calle:"/>
-                  <p:inputText id="ycalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.ycalle}" onblur="janal.individual('contenedorGrupos\\:ycalle')"/>	
+                  <p:inputText id="ycalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.ycalle}" onblur="janal.mayusculas('contenedorGrupos\\:ycalle')"/>	
                   <p:outputLabel for="tipoDomicilio" value="Tipo domicilio:"/>
                   <p:selectOneMenu id="tipoDomicilio" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.idTipoDomicilio}" styleClass="janal-wid-100-txt">									
                     <f:selectItems value="#{manticCatalogosClientesAccion.attrs.tiposDomicilios}"/>
@@ -149,28 +148,6 @@
                   <p:selectBooleanCheckbox id="principal" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.principal}" styleClass="janal-wid-100-txt" />                    
                 </p:panelGrid>
               </p:panelGrid>
-            </p:tab>
-            <p:tab title="Representantes">
-              <p:panelGrid id="panelTablaRepresentates" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
-                <p:dataTable id="tablaRepresentantes" rowIndexVar="index" var="representante" value="#{manticCatalogosClientesAccion.registroCliente.clientesRepresentantes}" rows="6" paginator="false" reflow="true" rowKey="#{!representante.key}" emptyMessage=" " styleClass="paginated">																					
-                  <p:column headerText="Representante">										
-                    <p:selectOneMenu id="representante#{representante.key}" styleClass="janal-wid-100-txt" value="#{representante.idRepresentante}" filter="true" filterMatchMode="startsWith" disabled="#{!representante.nuevo}">
-                      <f:selectItems value="#{manticCatalogosClientesAccion.attrs.representantes}"/>
-                    </p:selectOneMenu> 				
-                  </p:column>	
-                  <p:column headerText="Principal" styleClass="janal-wid-30" style="text-align: center">		
-                    <p:selectBooleanCheckbox id="principal#{representante.key}" value="#{representante.principal}" styleClass="janal-wid-100-txt" disabled="#{representante.nuevo}"/>                    										
-                  </p:column>
-                  <p:column style="width:32px;text-align: center">
-                    <p:commandButton update="tablaRepresentantes" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosClientesAccion.registroCliente.doEliminarClienteRepresentante}" styleClass="janal-text-white">
-                      <f:setPropertyActionListener value="#{representante}" target="#{manticCatalogosClientesAccion.registroCliente.clienteRepresentanteSeleccion}" />
-                    </p:commandButton>
-                  </p:column>
-                  <f:facet name="footer">
-                    <p:commandButton actionListener="#{manticCatalogosClientesAccion.doAgregarClienteRepresentante}" process="@this tablaRepresentantes" update="tablaRepresentantes" icon="fa fa-plus" styleClass="janal-text-white"/>						
-                  </f:facet>
-                </p:dataTable>	
-              </p:panelGrid>	
             </p:tab>
             <p:tab title="Contacto">
               <p:panelGrid id="panelTablaContactos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
@@ -190,6 +167,28 @@
                   </p:column>
                   <f:facet name="footer">
                     <p:commandButton actionListener="#{manticCatalogosClientesAccion.registroCliente.doAgregarClienteTipoContacto}" process="@this tablaContactos" update="tablaContactos" icon="fa fa-plus" styleClass="janal-text-white"/>						
+                  </f:facet>
+                </p:dataTable>	
+              </p:panelGrid>	
+            </p:tab>
+            <p:tab title="Representantes">
+              <p:panelGrid id="panelTablaRepresentates" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
+                <p:dataTable id="tablaRepresentantes" rowIndexVar="index" var="representante" value="#{manticCatalogosClientesAccion.registroCliente.clientesRepresentantes}" rows="6" paginator="false" reflow="true" rowKey="#{!representante.key}" emptyMessage=" " styleClass="paginated">																					
+                  <p:column headerText="Representante">										
+                    <p:selectOneMenu id="representante#{representante.key}" styleClass="janal-wid-100-txt" value="#{representante.idRepresentante}" filter="true" filterMatchMode="startsWith" disabled="#{!representante.nuevo}">
+                      <f:selectItems value="#{manticCatalogosClientesAccion.attrs.representantes}"/>
+                    </p:selectOneMenu> 				
+                  </p:column>	
+                  <p:column headerText="Principal" styleClass="janal-wid-30" style="text-align: center">		
+                    <p:selectBooleanCheckbox id="principal#{representante.key}" value="#{representante.principal}" styleClass="janal-wid-100-txt" disabled="#{representante.nuevo}"/>                    										
+                  </p:column>
+                  <p:column style="width:32px;text-align: center">
+                    <p:commandButton update="tablaRepresentantes" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosClientesAccion.registroCliente.doEliminarClienteRepresentante}" styleClass="janal-text-white">
+                      <f:setPropertyActionListener value="#{representante}" target="#{manticCatalogosClientesAccion.registroCliente.clienteRepresentanteSeleccion}" />
+                    </p:commandButton>
+                  </p:column>
+                  <f:facet name="footer">
+                    <p:commandButton actionListener="#{manticCatalogosClientesAccion.doAgregarClienteRepresentante}" process="@this tablaRepresentantes" update="tablaRepresentantes" icon="fa fa-plus" styleClass="janal-text-white"/>						
                   </f:facet>
                 </p:dataTable>	
               </p:panelGrid>	

@@ -28,11 +28,11 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <h:panelGrid styleClass="janal-wid-100">
               <p:outputLabel for="clave" value="Clave:"/>
-              <p:inputText id="clave" value="#{manticCatalogosClientesFiltro.attrs.clave}" styleClass="janal-wid-100-txt" onblur="janal.individual('clave')"/> 
+              <p:inputText id="clave" value="#{manticCatalogosClientesFiltro.attrs.clave}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('clave')"/> 
               <p:outputLabel for="rfc" value="RFC:"/>
-              <p:inputText id="rfc" value="#{manticCatalogosClientesFiltro.attrs.rfc}" styleClass="janal-wid-100-txt" onblur="janal.individual('rfc')"/>              			                            
+              <p:inputText id="rfc" value="#{manticCatalogosClientesFiltro.attrs.rfc}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('rfc')"/>              			                            
               <p:outputLabel for="razonSocial" value="Razón social:"/>
-              <p:inputText id="razonSocial" value="#{manticCatalogosClientesFiltro.attrs.razonSocial}" styleClass="janal-wid-100-txt" onblur="janal.individual('razonSocial')"/>              														
+              <p:inputText id="razonSocial" value="#{manticCatalogosClientesFiltro.attrs.razonSocial}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('razonSocial')"/>              														
             </h:panelGrid>
             <p:separator/>
             <div class="janal-align-right lg-pantalla">

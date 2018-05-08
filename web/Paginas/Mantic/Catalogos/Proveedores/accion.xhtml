@@ -67,14 +67,14 @@
             <p:tab id="general"  title="General">
               <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								
                 <p:outputLabel for="clave" value="Clave"/>
-                <p:inputText id="clave" styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.renglonProveedor.tcManticProveedoresDto.clave}" onblur="janal.individual('contenedorGrupos\\:clave')"/>                    
+                <p:inputText id="clave" styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.renglonProveedor.tcManticProveedoresDto.clave}" onblur="janal.mayusculas('contenedorGrupos\\:clave')"/>                    
                 <p:outputLabel for="prefijo" value="Prefijo:"/>
-                <p:inputText id="prefijo" styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.renglonProveedor.tcManticProveedoresDto.prefijo}" onblur="janal.individual('contenedorGrupos\\:prefijo')"/>                    
+                <p:inputText id="prefijo" styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.renglonProveedor.tcManticProveedoresDto.prefijo}" onblur="janal.mayusculas('contenedorGrupos\\:prefijo')"/>                    
                 <p:separator/><p:separator/>
                 <p:outputLabel for="rfc" value="RFC:"/>
-                <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.renglonProveedor.tcManticProveedoresDto.rfc}" onblur="janal.individual('contenedorGrupos\\:rfc')"/>                    
+                <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.renglonProveedor.tcManticProveedoresDto.rfc}" onblur="janal.mayusculas('contenedorGrupos\\:rfc')"/>                    
                 <p:outputLabel for="razonSocial" value="Razón social:"/>
-                <p:inputText id="razonSocial" styleClass="janal-wid-100-txt" maxlength="255" value="#{manticCatalogosProveedoresAccion.renglonProveedor.tcManticProveedoresDto.razonSocial}" onblur="janal.individual('contenedorGrupos\\:razonSocial')"/>                    
+                <p:inputText id="razonSocial" styleClass="janal-wid-100-txt" maxlength="255" value="#{manticCatalogosProveedoresAccion.renglonProveedor.tcManticProveedoresDto.razonSocial}" onblur="janal.mayusculas('contenedorGrupos\\:razonSocial')"/>                    
                 <p:separator/><p:separator/>
                 <p:outputLabel for="idTipoProveedor"  value="Tipo proveedor:"/>
                 <p:selectOneMenu  id="idTipoProveedor" value="#{manticCatalogosProveedoresAccion.renglonProveedor.idTipoProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt">

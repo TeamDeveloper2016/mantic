@@ -33,7 +33,7 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <h:panelGrid styleClass="janal-wid-100">
               <p:outputLabel for="nombre" value="Nombre completo:"/>
-              <p:inputText id="nombre" value="#{kajoolUsuariosFiltro.criteriosBusqueda.nombre}" styleClass="janal-wid-90" onblur="janal.individual('nombre')" />              
+              <p:inputText id="nombre" value="#{kajoolUsuariosFiltro.criteriosBusqueda.nombre}" styleClass="janal-wid-90" onblur="janal.mayusculas('nombre')" />              
               <p:outputLabel for="tipoPerfil"  value="Perfil:"/>
               <p:selectOneMenu  id="tipoPerfil" value="#{kajoolUsuariosFiltro.criteriosBusqueda.perfil}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-90">
                 <f:selectItems value="#{kajoolUsuariosFiltro.criteriosBusqueda.listaPerfiles}"  var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>

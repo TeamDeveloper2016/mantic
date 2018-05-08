@@ -287,6 +287,10 @@
 		 	 var mayusculas= $('#'+ content+ '\\:'+ parent+'\\:'+ index+'\\:'+ name).val().toUpperCase();
 			 $('#'+ content+ '\\:'+ parent+'\\:'+ index+'\\:'+ name).val(mayusculas);
 	   }, // capitalLetterTable
+		 mayusculas: function(id) {
+				var input= $('#'+ id);
+				input.val(input.val().toUpperCase());
+		 },
      value: function(id) {
        var values= '';
        var items= $('input[id$="'+ id+ '"], input[id$="'+ id+ $parent.INPUT_RESERVE+ '"], select[id$="'+ id+ $parent.INPUT_RESERVE+ '"] option:selected, textarea[id$="'+ id+ '"], input[id^="'+ id+ ':"]:checked, input[id*=":'+ id+ ':"]:checked, input[id$="'+ id+ ':"]:checked');
@@ -1032,7 +1036,7 @@
       $parent.custom({summary: 'Janal:', detail: msg, severity: 'info'});
     }, // alert
     version: function() {
-      return '0.1.4.3';
+      return '0.1.4.4';
     }, // version
     align: function(pixels) {
       try {
