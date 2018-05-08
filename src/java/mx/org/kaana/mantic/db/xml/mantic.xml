@@ -1679,5 +1679,41 @@
           id_orden_compra_estatus = {idCompraEstatus}
       </select>
     </unit>						
+		<unit id="TcManticGruposDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_grupos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_grupos
+        where      
+          id_grupo = {idGrupo} and nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcManticGruposClientesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_grupos_clientes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_grupos_clientes
+        where      
+          id_grupo_cliente = {idGrupoCliente}
+      </select>
+    </unit>
   </dml>    
 </process>
