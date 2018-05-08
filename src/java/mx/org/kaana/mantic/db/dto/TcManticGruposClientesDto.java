@@ -8,6 +8,7 @@ import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -169,27 +170,34 @@ public class TcManticGruposClientesDto implements IBaseDto, Serializable {
   	return getIdGrupoCliente()!= null && getIdGrupoCliente()!=-1L;
   }
 
-  @Override
-  public boolean equals(Object obj) {
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    final TcManticGruposClientesDto other = (TcManticGruposClientesDto) obj;
-    if (getIdGrupoCliente() != other.idGrupoCliente && (getIdGrupoCliente() == null || !getIdGrupoCliente().equals(other.idGrupoCliente))) {
-      return false;
-    }
-    return true;
-  }
+	@Override
+	public int hashCode() {
+		int hash=3;
+		hash=19*hash+Objects.hashCode(this.idGrupo);
+		hash=19*hash+Objects.hashCode(this.idCliente);
+		return hash;
+	}
 
-  @Override
-  public int hashCode() {
-    int hash = 7;
-    hash = 67 * hash + (getIdGrupoCliente() != null ? getIdGrupoCliente().hashCode() : 0);
-    return hash;
-  }
+	@Override
+	public boolean equals(Object obj) {
+		if (this==obj) {
+			return true;
+		}
+		if (obj==null) {
+			return false;
+		}
+		if (getClass()!=obj.getClass()) {
+			return false;
+		}
+		final TcManticGruposClientesDto other=(TcManticGruposClientesDto) obj;
+		if (!Objects.equals(this.idGrupo, other.idGrupo)) {
+			return false;
+		}
+		if (!Objects.equals(this.idCliente, other.idCliente)) {
+			return false;
+		}
+		return true;
+	}
 
 }
 

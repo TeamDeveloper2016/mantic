@@ -172,8 +172,8 @@ public class Accion extends IBaseAttribute implements Serializable {
     Map<String, Object> params    = null;
     try {
       params = new HashMap<>();
-      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      proveedores = UISelect.build("TcManticProveedoresDto", "findEmpresa", params, "razonSocial", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      proveedores = UISelect.build("TcManticProveedoresDto", "sucursales", params, "razonSocial", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("proveedoresGeneral", proveedores);
     } // try
     catch (Exception e) {
@@ -189,8 +189,8 @@ public class Accion extends IBaseAttribute implements Serializable {
     Map<String, Object> params = null;
     try {
       params = new HashMap<>();
-      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      clientes = UISelect.build("TcManticClientesDto", "findEmpresa", params, "razonSocial", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      clientes = UISelect.build("TcManticClientesDto", "sucursales", params, "razonSocial", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("clientesGeneral", clientes);
     } // try
     catch (Exception e) {

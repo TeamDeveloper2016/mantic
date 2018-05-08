@@ -570,11 +570,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 		Long idProveedor= null;
     try {
       params = new HashMap<>();
-      params.put("idEmpresa", Boolean.valueOf(this.attrs.get("mostrarEmpresas").toString()) ? Long.valueOf(this.attrs.get("idEmpresa").toString()) : JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      params.put("sucursales", Boolean.valueOf(this.attrs.get("mostrarEmpresas").toString()) ? Long.valueOf(this.attrs.get("idEmpresa").toString()) : JsfBase.getAutentifica().getEmpresa().getSucursales());
 			campos= new ArrayList<>();
 			campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-      proveedores = UIEntity.build("TcManticProveedoresDto", "findEmpresa", params, campos, Constantes.SQL_TODOS_REGISTROS);
+      proveedores = UIEntity.build("TcManticProveedoresDto", "sucursales", params, campos, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("proveedoresGeneral", proveedores);
 			eaccion= (EAccion) this.attrs.get("accion");
 			if(eaccion.equals(EAccion.MODIFICAR)){
@@ -605,11 +605,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 		MotorBusqueda motor= null;
     try {
       params = new HashMap<>();
-      params.put("idEmpresa", Boolean.valueOf(this.attrs.get("mostrarEmpresas").toString()) ? Long.valueOf(this.attrs.get("idEmpresa").toString()) : JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      params.put("sucursales", Boolean.valueOf(this.attrs.get("mostrarEmpresas").toString()) ? Long.valueOf(this.attrs.get("idEmpresa").toString()) : JsfBase.getAutentifica().getEmpresa().getSucursales());
 			campos= new ArrayList<>();
 			campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-      clientes = UIEntity.build("TcManticClientesDto", "findEmpresa", params, campos, Constantes.SQL_TODOS_REGISTROS);
+      clientes = UIEntity.build("TcManticClientesDto", "sucursales", params, campos, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("clientes", clientes);
 			eaccion= (EAccion) this.attrs.get("accion");
 			if(eaccion.equals(EAccion.MODIFICAR)){

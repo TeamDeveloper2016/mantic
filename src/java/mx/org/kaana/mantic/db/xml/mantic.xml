@@ -771,14 +771,14 @@
         where      
           id_proveedor = {idProveedor} and razon_social = '{razonSocial}' and id_empresa = {idEmpresa}
       </select>
-			<select id="findEmpresa">
+			<select id="sucursales">
         select      
 					tc_mantic_proveedores.id_proveedor as id_key,
           tc_mantic_proveedores.*
         from      
           tc_mantic_proveedores
         where 
-          tc_mantic_proveedores.id_empresa = {idEmpresa} 
+          tc_mantic_proveedores.id_empresa in ({sucursales})
       </select>      
     </unit>
 		<unit id="TcManticClientesDto">
@@ -798,14 +798,14 @@
         where      
           id_cliente = {idCliente}
       </select>
-			<select id="findEmpresa">
+			<select id="sucursales">
         select      
 					tc_mantic_clientes.id_cliente as id_key,
           tc_mantic_clientes.*
         from      
           tc_mantic_clientes
         where 
-          tc_mantic_clientes.id_empresa = {idEmpresa} 
+          tc_mantic_clientes.id_empresa in ({sucursales})
       </select>
     </unit>		
 		<unit id="TcManticImagenesDto">
@@ -1694,7 +1694,15 @@
         from      
           tc_mantic_grupos
         where      
-          id_grupo = {idGrupo} and nombre = '{nombre}'
+          nombre = '{nombre}'
+      </select>
+      <select id="nombre">
+        select      
+          *
+        from      
+          tc_mantic_grupos
+        where      
+          nombre like '%{nombre}%'
       </select>
     </unit>
 		<unit id="TcManticGruposClientesDto">
@@ -1712,7 +1720,15 @@
         from      
           tc_mantic_grupos_clientes
         where      
-          id_grupo_cliente = {idGrupoCliente}
+          id_grupo = {idGrupo} and id_cliente = {idCliente}
+      </select>
+      <select id="clientes">
+        select      
+          *
+        from      
+          tc_mantic_grupos_clientes
+        where      
+          id_grupo = {idGrupo}
       </select>
     </unit>
   </dml>    
