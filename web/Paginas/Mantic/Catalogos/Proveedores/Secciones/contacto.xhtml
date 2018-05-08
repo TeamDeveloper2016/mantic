@@ -14,17 +14,12 @@
       <p:column headerText="Valor" styleClass="janal-column-right">
         <p:inputText disabled="#{contacto.accion=='UPDATE'}" id="valor-#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}"/>                    																																							
       </p:column>  
-      <p:column styleClass="janal-column-right" headerText="Orden">
-       <p:outputLabel value="#{contacto.orden}"/>    
-       </p:column>     
       <p:column style="width:32px;text-align: center">
           <p:commandButton update="tablaContacto" process="@this tablaContacto" icon="fa fa-close" title="Eliminar" actionListener="#{manticCatalogosProveedoresAccion.doEliminarContacto(contacto)}" styleClass="janal-text-white"/>
-
-         
-        </p:column> 
-        <f:facet name="footer">
-          <p:commandButton actionListener="#{manticCatalogosProveedoresAccion.doAgregarContacto()}" process="@this tablaContacto" update="tablaContacto"  icon="fa fa-plus" styleClass="janal-text-white"/>						
-        </f:facet>
+      </p:column> 
+      <f:facet name="footer">
+        <p:commandButton actionListener="#{manticCatalogosProveedoresAccion.doAgregarContacto()}" process="@this tablaContacto" update="tablaContacto"  icon="fa fa-plus" styleClass="janal-text-white"/>						
+      </f:facet>
     </p:dataTable>	
   </p:panelGrid>
 </html>

@@ -61,7 +61,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   }
 
   public TcManticPersonasDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, 1L, null, null, null, null, null);
     setKey(key);
   }
 

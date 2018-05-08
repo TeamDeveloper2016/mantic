@@ -227,8 +227,6 @@
 				and 
 					tc_mantic_personas.rfc  like '%{rfc}%'
 				and 
-					tc_mantic_personas.curp like '%{curp}%'
-				and 
 					tc_mantic_personas.id_tipo_sexo in ({idTipoSexo})
 				and
 					tc_mantic_personas.id_tipo_persona  in ({idTipoPersona})

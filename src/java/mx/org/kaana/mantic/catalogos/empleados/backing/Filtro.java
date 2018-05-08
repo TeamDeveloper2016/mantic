@@ -47,7 +47,6 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
       campos.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("curp", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("sexo", EFormatoDinamicos.MAYUSCULAS));      
       this.lazyModel = new FormatCustomLazy("VistaPersonasDto", "row", this.attrs, campos);
       UIBackingUtilities.resetDataTable();

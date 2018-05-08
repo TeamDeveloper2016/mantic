@@ -11,25 +11,25 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-				'contenedorGrupos\\:titulo'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:titulo'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:nombre'      : {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:paterno'     : {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:materno'     : {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:rfc'         : {validaciones: 'requerido|cambiar-mayusculas', mascara: 'rfc', grupo: 'general'},
-				'contenedorGrupos\\:curp'        : {validaciones: 'requerido|cambiar-mayusculas', mascara: 'curp', grupo: 'general'},
-				'contenedorGrupos\\:nacimiento'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:materno'     : {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:rfc'         : {validaciones: 'requerido|rfc|cambiar-mayusculas', mascara: 'rfc', grupo: 'general'},
+				'contenedorGrupos\\:curp'        : {validaciones: 'libre|curp|cambiar-mayusculas', mascara: 'curp', grupo: 'general'},
+				'contenedorGrupos\\:nacimiento'  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
 				'contenedorGrupos\\:tipoPersona' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},				
 				'contenedorGrupos\\:sexo'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:entidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:municipio': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:localidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:cp': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:calle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:exterior': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:interior': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
+				'contenedorGrupos\\:entidad'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:municipio'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:localidad'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:cp'          : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:calle'       : {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:exterior'    : {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:interior'    : {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:asentamiento': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:entreCalle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:ycalle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'}
+        'contenedorGrupos\\:entreCalle'  : {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:ycalle'      : {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'}
 			};						
 		</script>   
 	</ui:define>
@@ -125,7 +125,6 @@
                   </f:facet>
                 </p:dataList>
                 <p:panelGrid id="formularioDomicilio" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-100">
-                  <p:spacer/><p:spacer/>
                   <p:outputLabel for="entidad" value="Entidad:"/>
                   <p:selectOneMenu id="entidad" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.idEntidad}" styleClass="janal-wid-100-txt" var="item" converter="janal.convertidor.Entity">									
                     <p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doActualizaMunicipios}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>

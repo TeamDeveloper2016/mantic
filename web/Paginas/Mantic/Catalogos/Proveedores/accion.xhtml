@@ -14,11 +14,11 @@
         'contenedorGrupos\\:prefijo': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:rfc': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'rfc', grupo: 'general'},
         'contenedorGrupos\\:razonSocial': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:idTipoProveedor': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:descuento': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:dias_entrega': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:idTipoDia': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:idTipoMoneda': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:idTipoProveedor': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:descuento': {validaciones: 'flotante', mascara: 'flotante', grupo: 'general'},
+        'contenedorGrupos\\:dias_entrega': {validaciones: 'entero', mascara: 'entero', grupo: 'general'},
+        'contenedorGrupos\\:idTipoDia': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:idTipoMoneda': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:detalleCalle': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:clave': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
@@ -31,22 +31,17 @@
         'contenedorGrupos\\:numeroExterior': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:numeroInterior': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:asentamiento': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:entreCalle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:diasEntrega': {validaciones: 'requerido', mascara: 'numero', grupo: 'general'},
-        'contenedorGrupos\\:ycalle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:entreCalle': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
+        'contenedorGrupos\\:diasEntrega': {validaciones: 'libre', mascara: 'numero', grupo: 'general'},
+        'contenedorGrupos\\:ycalle': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
       };
       
       function changeCp (visible) {
-        if(visible){
+        if(visible)
           $('#contenedorGrupos\\:cp').removeClass("cpHide cpShow").addClass("cpShow");    
-        }  
-        else{
+        else
           $('#contenedorGrupos\\:cp').removeClass("cpHide cpShow").addClass("cpHide");    
-          
-        }
-        
       }
-
     </script>
      <style type="text/css">
        .cpHide{
@@ -65,7 +60,7 @@
           <p:tabView id="contenedorGrupos" cache="true">
             <p:ajax event="tabChange" process="@this" oncomplete="janal.refresh(janal.tabView('contenedorGrupos'))"/>
             <p:tab id="general"  title="General">
-              <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								
+              <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-100">								
                 <p:outputLabel for="clave" value="Clave"/>
                 <p:inputText id="clave" styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.renglonProveedor.tcManticProveedoresDto.clave}" onblur="janal.mayusculas('contenedorGrupos\\:clave')"/>                    
                 <p:outputLabel for="prefijo" value="Prefijo:"/>
@@ -107,30 +102,27 @@
             <p:tab id="tabDomicilio" title="Domicilios">	
               <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;"> 
                 <div class="ui-grid-row janal-grid-row">
-                  <div class="ui-grid-col-3">
-                    <p:panel>
-                      <h:panelGrid styleClass="janal-wid-100">
-                        <p:dataList  emptyMessage="No existen registros" rowIndexVar="index" value="#{manticCatalogosProveedoresAccion.renglonProveedor.domicilios}" styleClass="paginated" id="direcciones" var="direccion">
-                          <p:commandLink title="Eliminar" process="@this" onstart="return janal.bloquear();" update="direcciones" actionListener="#{manticCatalogosProveedoresAccion.doEliminarDomicilio(direccion)}" rendered="#{direccion.accion == 'UPDATE' || direccion.accion == 'INSERT'}" oncomplete="janal.refresh();janal.desbloquear();">
-                            <i class="fa fa-minus-square fa-lg"></i>   
-                          </p:commandLink> 
-                          <p:commandLink rendered="#{direccion.modificar &amp;&amp; direccion.accion!= 'SELECT'}" oncomplete="janal.refresh();janal.desbloquear();" process="direcciones contenedorGrupos:panelDomicilio" update="direcciones contenedorGrupos:panelDomicilio" title="Actualizar" actionListener="#{manticCatalogosProveedoresAccion.doActualizarDomicilio()}">
-                            <i class="fa fa-check-square fa-lg"></i>
-                          </p:commandLink>		
-                          <p:commandLink  title="Consultar" oncomplete="janal.refresh();janal.desbloquear();" onstart="return janal.bloquear();"  actionListener="#{manticCatalogosProveedoresAccion.doBuscarDomicilio(direccion)}" process="@this" update="direcciones contenedorGrupos:panelDomicilio" rendered="#{direccion.accion!= 'SELECT'}">
-                            <p:outputLabel  value="Direccion #{index} #{direccion.idPrincipal eq  1?'*':''} "/>
-                          </p:commandLink>   
-                          <f:facet name="footer" class="alinear-izquierda">																
-                            <p:commandLink  title="Agregar" oncomplete="janal.refresh();janal.desbloquear();" actionListener="#{manticCatalogosProveedoresAccion.doAgregarDocimilio()}" update="direcciones contenedorGrupos:panelDomicilio" process="@this contenedorGrupos:codigoPostal contenedorGrupos:panelDomicilio" onstart="return janal.partial('domicilio')" >                           
-                              <i class="fa fa-plus-square fa-lg"><p:spacer width="3px"/><p:outputLabel value="Agregar dirección"/></i>
-                            </p:commandLink>		              										
-                          </f:facet>
-                        </p:dataList>
-                      </h:panelGrid>
-                    </p:panel>
+                  <div class="ui-grid-col-2">
+										<h:panelGrid styleClass="janal-wid-100">
+											<p:dataList  emptyMessage="No existen registros" rowIndexVar="index" value="#{manticCatalogosProveedoresAccion.renglonProveedor.domicilios}" styleClass="paginated" id="direcciones" var="direccion">
+												<p:commandLink title="Eliminar" process="@this" onstart="return janal.bloquear();" update="direcciones" actionListener="#{manticCatalogosProveedoresAccion.doEliminarDomicilio(direccion)}" rendered="#{direccion.accion == 'UPDATE' || direccion.accion == 'INSERT'}" oncomplete="janal.refresh();janal.desbloquear();">
+													<i class="fa fa-minus-square fa-lg"></i>   
+												</p:commandLink> 
+												<p:commandLink rendered="#{direccion.modificar &amp;&amp; direccion.accion!= 'SELECT'}" oncomplete="janal.refresh();janal.desbloquear();" process="direcciones contenedorGrupos:panelDomicilio" update="direcciones contenedorGrupos:panelDomicilio" title="Actualizar" actionListener="#{manticCatalogosProveedoresAccion.doActualizarDomicilio()}">
+													<i class="fa fa-check-square fa-lg"></i>
+												</p:commandLink>		
+												<p:commandLink  title="Consultar" oncomplete="janal.refresh();janal.desbloquear();" onstart="return janal.bloquear();"  actionListener="#{manticCatalogosProveedoresAccion.doBuscarDomicilio(direccion)}" process="@this" update="direcciones contenedorGrupos:panelDomicilio" rendered="#{direccion.accion!= 'SELECT'}">
+													<p:outputLabel  value="Direccion #{index} #{direccion.idPrincipal eq  1?'*':''} "/>
+												</p:commandLink>   
+												<f:facet name="footer" class="alinear-izquierda">																
+													<p:commandLink  title="Agregar" oncomplete="janal.refresh();janal.desbloquear();" actionListener="#{manticCatalogosProveedoresAccion.doAgregarDocimilio()}" update="direcciones contenedorGrupos:panelDomicilio" process="@this contenedorGrupos:codigoPostal contenedorGrupos:panelDomicilio" onstart="return janal.partial('domicilio')" >                           
+														<i class="fa fa-plus-square fa-lg"><p:spacer width="3px"/><p:outputLabel value="Agregar dirección"/></i>
+													</p:commandLink>		              										
+												</f:facet>
+											</p:dataList>
+										</h:panelGrid>
                   </div>
-                  <p:spacer width="10px"/>
-                  <div class="ui-grid-col-9 janal-grid-row">                  
+                  <div class="ui-grid-col-10 janal-grid-row">                  
                     <ui:include src="../Proveedores/Secciones/domicilios.xhtml"/>                                          
                   </div>
                 </div>
@@ -139,9 +131,6 @@
             <p:tab id="tabTipoPago" title="Condiciones de pago">
               <ui:include src="../Proveedores/Secciones/condicionPago.xhtml"/>	
             </p:tab>
-            <p:tab id="tabPersonaContacto" title="Responsables">								
-              <ui:include src="../Proveedores/Secciones/responsables.xhtml"/>
-            </p:tab>
             <p:tab id="tabTipoContacto" title="Contacto">
               <ui:include src="../Proveedores/Secciones/contacto.xhtml"/>
             </p:tab>
@@ -149,8 +138,7 @@
               <ui:include src="../Proveedores/Secciones/agentes.xhtml"/>
             </p:tab>            
             <p:tab title="Observaciones">
-              <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
-                <p:outputLabel for="observaciones" value="Observaciones:"/>
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
                 <p:editor id="observaciones" styleClass="janal-wid-100-txt" height="200" value="#{manticCatalogosProveedoresAccion.renglonProveedor.tcManticProveedoresDto.observaciones}"/>  
               </p:panelGrid>
             </p:tab>
