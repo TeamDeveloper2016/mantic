@@ -143,6 +143,10 @@
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
             <p:menuitem id="modificar" action="#{manticComprasOrdenesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+            <p:separator/>					
+            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+            <p:separator/>					
+            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
           </p:contextMenu>
         </div>
       </div>
