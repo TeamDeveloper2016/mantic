@@ -937,8 +937,8 @@
 			</select>
 			<select id="domicilioExiste">
 				select      
-					tc_mantic_domicilios.id_domicilio as id_key 
-					tc_mantic_domicilios.*,          
+					tc_mantic_domicilios.id_domicilio as id_key, 
+					tc_mantic_domicilios.*
         from      
           tc_mantic_domicilios
         where 
