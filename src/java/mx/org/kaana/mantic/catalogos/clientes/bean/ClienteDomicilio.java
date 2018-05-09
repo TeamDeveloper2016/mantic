@@ -16,7 +16,14 @@ public class ClienteDomicilio extends TrManticClienteDomicilioDto{
 	private Entity idLocalidad;
 	private Entity domicilio;
 	private String codigoPostal;
-
+	private String calle;
+	private String exterior;
+	private String interior;
+	private String colonia;
+	private String entreCalle;
+	private String yCalle;
+	private boolean nuevoCp;
+	
 	public ClienteDomicilio() {
 		this(-1L);
 	}
@@ -30,10 +37,10 @@ public class ClienteDomicilio extends TrManticClienteDomicilioDto{
 	}
 	
 	public ClienteDomicilio(Long key, ESql sqlAccion, Boolean nuevo) {		
-		this(key, sqlAccion, nuevo, 0L, false, null, null, null, null, null);
+		this(key, sqlAccion, nuevo, 0L, false, null, null, null, null, null, null, null, null, null, null, null, false);
 	}
 	
-	public ClienteDomicilio(Long key, ESql sqlAccion, Boolean nuevo, Long consecutivo, Boolean modificar, Entity idEntidad, Entity idMunicipio, Entity idLocalidad, Entity domicilio, String codigoPostal) {		
+	public ClienteDomicilio(Long key, ESql sqlAccion, Boolean nuevo, Long consecutivo, Boolean modificar, Entity idEntidad, Entity idMunicipio, Entity idLocalidad, Entity domicilio, String codigoPostal, String calle, String exterior, String interior, String colonia, String entreCalle, String yCalle, boolean nuevoCp) {		
 		super(key);
 		this.sqlAccion   = sqlAccion;
 		this.nuevo       = nuevo;
@@ -43,6 +50,13 @@ public class ClienteDomicilio extends TrManticClienteDomicilioDto{
 		this.idMunicipio = idMunicipio;
 		this.idLocalidad = idLocalidad;
 		this.codigoPostal= codigoPostal;
+		this.calle       = calle;
+		this.exterior    = exterior;
+		this.interior    = interior;
+		this.colonia     = colonia;
+		this.entreCalle  = entreCalle;
+		this.yCalle      = yCalle;		
+		this.nuevoCp     = nuevoCp;
 	}
 
 	public ESql getSqlAccion() {
@@ -115,5 +129,61 @@ public class ClienteDomicilio extends TrManticClienteDomicilioDto{
 
 	public void setCodigoPostal(String codigoPostal) {
 		this.codigoPostal = codigoPostal;
-	}	
+	}
+
+	public String getCalle() {
+		return calle;
+	}
+
+	public void setCalle(String calle) {
+		this.calle = calle;
+	}
+
+	public String getExterior() {
+		return exterior;
+	}
+
+	public void setExterior(String exterior) {
+		this.exterior = exterior;
+	}
+
+	public String getInterior() {
+		return interior;
+	}
+
+	public void setInterior(String interior) {
+		this.interior = interior;
+	}
+
+	public String getColonia() {
+		return colonia;
+	}
+
+	public void setColonia(String colonia) {
+		this.colonia = colonia;
+	}
+
+	public String getEntreCalle() {
+		return entreCalle;
+	}
+
+	public void setEntreCalle(String entreCalle) {
+		this.entreCalle = entreCalle;
+	}
+
+	public String getyCalle() {
+		return yCalle;
+	}
+
+	public void setyCalle(String yCalle) {
+		this.yCalle = yCalle;
+	}
+
+	public boolean isNuevoCp() {
+		return nuevoCp;
+	}
+
+	public void setNuevoCp(boolean nuevoCp) {
+		this.nuevoCp = nuevoCp;
+	}
 }
