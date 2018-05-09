@@ -10,15 +10,17 @@ public class ContadoresListas {
 	private Long totalClientesDomicilios;
 	private Long totalClientesRepresentantes;
 	private Long totalClientesTipoContacto;	
+	private Long totalPersonasTipoContacto;	
 
 	public ContadoresListas() {
 		init();
 	} // ContadoresListas
 	
-	public ContadoresListas(Long totalClientesDomicilios, Long totalClientesRepresentantes, Long totalClientesTipoContacto) {
+	public ContadoresListas(Long totalClientesDomicilios, Long totalClientesRepresentantes, Long totalClientesTipoContacto, Long totalPersonasTipoContacto) {
 		this.totalClientesDomicilios    = totalClientesDomicilios;
 		this.totalClientesRepresentantes= totalClientesRepresentantes;
 		this.totalClientesTipoContacto  = totalClientesTipoContacto;
+		this.totalPersonasTipoContacto  = totalPersonasTipoContacto;	
 	} // ContadoresListas
 
 	public Long getTotalClientesDomicilios() {
@@ -44,12 +46,21 @@ public class ContadoresListas {
 	public void setTotalClientesTipoContacto(Long totalClientesTipoContacto) {
 		this.totalClientesTipoContacto = totalClientesTipoContacto;
 	}
+
+	public Long getTotalPersonasTipoContacto() {
+		return totalPersonasTipoContacto;
+	}
+
+	public void setTotalPersonasTipoContacto(Long totalPersonasTipoContacto) {
+		this.totalPersonasTipoContacto = totalPersonasTipoContacto;
+	}
 	
 	private void init(){
 		try {
 			this.totalClientesDomicilios    = toMaxClienteDomicilio();
 			this.totalClientesRepresentantes= toMaxClienteRepresentantes();
-			this.totalClientesTipoContacto  = toMaxClienteTiposContactos();			
+			this.totalClientesTipoContacto  = toMaxClienteTiposContactos();		
+			this.totalPersonasTipoContacto  = toMaxPersonaTiposContactos();
 		} // try
 		catch (Exception e) {
 			mx.org.kaana.libs.formato.Error.mensaje(e);						
@@ -89,6 +100,20 @@ public class ContadoresListas {
 		Value maximo = null;
 		try {
 			maximo= DaoFactory.getInstance().toField("TrManticClienteTipoContactoDto", "maximo", Collections.EMPTY_MAP, "maximo");
+			if(maximo.getData()!= null)
+				regresar= Long.valueOf(maximo.toString()) + INCREMENTO;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch				
+		return regresar;
+	} // toMaxClienteTiposContactos	
+	
+	private Long toMaxPersonaTiposContactos() throws Exception{
+		Long regresar= 0L;
+		Value maximo = null;
+		try {
+			maximo= DaoFactory.getInstance().toField("TrManticPersonaTipoContactoDto", "maximo", Collections.EMPTY_MAP, "maximo");
 			if(maximo.getData()!= null)
 				regresar= Long.valueOf(maximo.toString()) + INCREMENTO;
 		} // try

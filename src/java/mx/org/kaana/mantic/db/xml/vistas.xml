@@ -387,5 +387,36 @@
 				  tc_mantic_proveedores.clave
 			</select>
 		</unit>
+		<unit id="VistaDomiciliosCatalogosDto">
+			<select id="domicilios">
+				select 
+          tc_mantic_domicilios.id_domicilio as id_key,
+          tc_mantic_domicilios.*,
+          concat(tc_janal_entidades.descripcion,' , ',calle,' ',numero_exterior,' ',asentamiento) as domicilio,          
+          tc_janal_localidades.clave as clave_localidad,
+          tc_janal_localidades.descripcion as localidad,
+          tc_janal_municipios.id_municipio,
+          tc_janal_municipios.clave as clave_municipio,
+          tc_janal_municipios.descripcion as municipio,
+          tc_janal_entidades.id_entidad,
+          tc_janal_entidades.clave as clave_entidad,
+          tc_janal_entidades.descripcion as entidad
+        from 
+          tc_mantic_domicilios
+        inner join 
+          tc_janal_localidades on tc_mantic_domicilios.id_localidad = tc_janal_localidades.id_localidad
+        inner join
+          tc_janal_municipios on tc_janal_localidades.id_municipio = tc_janal_municipios.id_municipio
+        inner join 
+          tc_janal_entidades on tc_janal_municipios.id_entidad = tc_janal_entidades.id_entidad
+        where 
+          {condicion}
+        order by 
+          tc_janal_entidades.clave,
+          tc_janal_municipios.clave,
+          tc_janal_localidades.clave,
+          tc_mantic_domicilios.codigo_postal
+			</select>
+		</unit>
 	</dml>    
 </process>
