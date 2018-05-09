@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.catalogos.clientes.reglas;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -8,21 +9,27 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.clientes.bean.ClienteContactoRepresentante;
 import mx.org.kaana.mantic.catalogos.clientes.bean.ClienteDomicilio;
-import mx.org.kaana.mantic.catalogos.clientes.bean.ClienteRepresentante;
 import mx.org.kaana.mantic.catalogos.clientes.bean.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.clientes.bean.RegistroCliente;
+import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
+import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticClientesRepresentantesDto;
+import mx.org.kaana.mantic.db.dto.TrManticPersonaTipoContactoDto;
+import mx.org.kaana.mantic.enums.ETipoPersona;
 import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx {
 
+	private static final String ESTILO= "sentinel";
   private IBaseDto dto;
   private RegistroCliente registroCliente;
   private String messageError;
@@ -180,9 +187,10 @@ public class Transaccion extends IBaseTnx {
     boolean validate = false;
     boolean regresar = false;
     try {
-      for (ClienteRepresentante clienteRepresentante : this.registroCliente.getClientesRepresentantes()) {
+      for (ClienteContactoRepresentante clienteRepresentante : this.registroCliente.getPersonasTiposContacto()) {
         clienteRepresentante.setIdCliente(idCliente);
         clienteRepresentante.setIdUsuario(JsfBase.getIdUsuario());
+        clienteRepresentante.setIdRepresentante(addRepresentante(sesion, clienteRepresentante));
         dto = (TrManticClientesRepresentantesDto) clienteRepresentante;
         sqlAccion = clienteRepresentante.getSqlAccion();
         switch (sqlAccion) {
@@ -208,7 +216,70 @@ public class Transaccion extends IBaseTnx {
     } // finally
     return regresar;
   } // registraClientesRepresentantes
+	
+	private Long addRepresentante(Session sesion, ClienteContactoRepresentante clienteRepresentante) throws Exception{
+		Long regresar= -1L;
+		TcManticPersonasDto representante= null;
+		try {
+			representante= new TcManticPersonasDto();
+			representante.setNombres(clienteRepresentante.getNombres());
+			representante.setPaterno(clienteRepresentante.getPaterno());
+			representante.setMaterno(clienteRepresentante.getMaterno());
+			representante.setIdTipoPersona(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona());	
+			representante.setIdTipoSexo(1L);
+			representante.setEstilo(ESTILO);
+			regresar= DaoFactory.getInstance().insert(sesion, representante);
+			if(regresar > -1L)
+				registraPersonasTipoContacto(sesion, regresar, clienteRepresentante.getContactos());
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			this.messageError = "Error al registrar los representantes, verifique que no haya duplicados";
+		} // finally
+		return regresar;
+	} // addRepresentante
 
+	private boolean registraPersonasTipoContacto(Session sesion, Long idPersona, List<PersonaTipoContacto> tiposContactos) throws Exception {
+    TrManticPersonaTipoContactoDto dto = null;
+    ESql sqlAccion = null;
+    int count = 0;
+    boolean validate = false;
+    boolean regresar = false;
+    try {
+      for (PersonaTipoContacto personaTipoContacto : tiposContactos) {
+				if(personaTipoContacto.getValor()!= null && !Cadena.isVacio(personaTipoContacto.getValor())){
+					personaTipoContacto.setIdPersona(idPersona);
+					personaTipoContacto.setIdUsuario(JsfBase.getIdUsuario());
+					dto = (TrManticPersonaTipoContactoDto) personaTipoContacto;
+					sqlAccion = personaTipoContacto.getSqlAccion();
+					switch (sqlAccion) {
+						case INSERT:
+							dto.setIdPersonaTipoContacto(-1L);
+							validate = registrar(sesion, dto);
+							break;
+						case UPDATE:
+							validate = actualizar(sesion, dto);
+							break;
+					} // switch
+				} // if
+				else
+					validate= true;
+        if (validate) 
+          count++;        
+      } // for		
+      regresar = count == tiposContactos.size();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      this.messageError = "Error al registrar los tipos de contacto, verifique que no haya duplicados";
+    } // finally
+    return regresar;
+  } // registraClientesTipoContacto
+	
   private boolean registraClientesTipoContacto(Session sesion, Long idCliente) throws Exception {
     TrManticClienteTipoContactoDto dto = null;
     ESql sqlAccion = null;
@@ -217,19 +288,23 @@ public class Transaccion extends IBaseTnx {
     boolean regresar = false;
     try {
       for (ClienteTipoContacto clienteTipoContacto : this.registroCliente.getClientesTiposContacto()) {
-        clienteTipoContacto.setIdCliente(idCliente);
-        clienteTipoContacto.setIdUsuario(JsfBase.getIdUsuario());
-        dto = (TrManticClienteTipoContactoDto) clienteTipoContacto;
-        sqlAccion = clienteTipoContacto.getSqlAccion();
-        switch (sqlAccion) {
-          case INSERT:
-            dto.setIdClienteTipoContacto(-1L);
-            validate = registrar(sesion, dto);
-            break;
-          case UPDATE:
-            validate = actualizar(sesion, dto);
-            break;
-        } // switch
+				if(clienteTipoContacto.getValor()!= null && !Cadena.isVacio(clienteTipoContacto.getValor())){
+					clienteTipoContacto.setIdCliente(idCliente);
+					clienteTipoContacto.setIdUsuario(JsfBase.getIdUsuario());
+					dto = (TrManticClienteTipoContactoDto) clienteTipoContacto;
+					sqlAccion = clienteTipoContacto.getSqlAccion();
+					switch (sqlAccion) {
+						case INSERT:
+							dto.setIdClienteTipoContacto(-1L);
+							validate = registrar(sesion, dto);
+							break;
+						case UPDATE:
+							validate = actualizar(sesion, dto);
+							break;
+					} // switch
+				} // if
+				else
+					validate= true;
         if (validate) {
           count++;
         }
@@ -266,7 +341,11 @@ public class Transaccion extends IBaseTnx {
   } // eliminarRegistros
 
   private boolean registrar(Session sesion, IBaseDto dto) throws Exception {
-    return DaoFactory.getInstance().insert(sesion, dto) >= 1L;
+    return registrarSentencia(sesion, dto) >= 1L;
+  } // registrar
+  
+	private Long registrarSentencia(Session sesion, IBaseDto dto) throws Exception {
+    return DaoFactory.getInstance().insert(sesion, dto);
   } // registrar
 
   private boolean actualizar(Session sesion, IBaseDto dto) throws Exception {
