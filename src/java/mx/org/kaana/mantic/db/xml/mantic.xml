@@ -935,6 +935,29 @@
 				and 
 				  codigo_postal= '{codigoPostal}'
 			</select>
+			<select id="domicilioExiste">
+				select      
+					tc_mantic_domicilios.id_domicilio as id_key 
+					tc_mantic_domicilios.*,          
+        from      
+          tc_mantic_domicilios
+        where 
+          id_localidad={idLocalidad}
+        and
+          codigo_postal='{codigoPostal}'
+        and
+          calle='{calle}'
+        and
+          numero_exterior= '{numeroExterior}'
+        and
+          numero_interior='{numeroInterior}'
+        and
+					asentamiento='{asentamiento}'
+        and
+					entre_calle='{entreCalle}'
+        and
+					y_calle='{yCalle}'
+			</select>
     </unit>	        
     <unit id="TcManticHistorialIvaDto">
 			<select id="row">
