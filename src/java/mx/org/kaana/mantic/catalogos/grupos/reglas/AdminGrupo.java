@@ -15,7 +15,7 @@ import mx.org.kaana.mantic.db.dto.TcManticGruposDto;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class AdminGrupo implements Serializable {
+public final class AdminGrupo implements Serializable {
 
   private static final long serialVersionUID = 8793667741599422569L;
 	

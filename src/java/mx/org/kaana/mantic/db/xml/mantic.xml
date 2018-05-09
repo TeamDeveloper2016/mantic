@@ -512,8 +512,7 @@
          delete from tr_mantic_proveedor_domicilio where id_proveedor = {idProveedor}
       </delete>  
     </unit>
-    
-     <unit id="TrManticProveedorPagoDto">
+    <unit id="TrManticProveedorPagoDto">
       <select id="row">
         select      
           *
@@ -1669,7 +1668,17 @@
         from      
           tc_mantic_ordenes_detalles
         where      
-          id_orden_compra = {idOrdenCompra} and id_articulo = {idArticulo} and id_orden_detalle = {idOrdenDetalle}
+          id_orden_compra = {idOrdenCompra} and id_articulo = {idArticulo}
+      </select>
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_ordenes_detalles
+        where      
+          id_orden_compra = {idOrdenCompra}
+				order by
+				  tc_mantic_ordenes_detalles.registro
       </select>
     </unit>						
     <unit id="TcManticComprasEstatusDto">

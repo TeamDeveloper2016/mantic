@@ -33,7 +33,7 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
   @Column (name="iva")
   private Double iva;
   @Column (name="descuento")
-  private Double descuento;
+  private String descuento;
   @Column (name="id_orden_compra")
   private Long idOrdenCompra;
   @Column (name="extras")
@@ -46,6 +46,10 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
   private Long idOrdenDetalle;
   @Column (name="id_articulo")
   private Long idArticulo;
+  @Column (name="codigo")
+  private String codigo;
+  @Column (name="sat")
+  private String sat;
   @Column (name="importe")
   private Double importe;
   @Column (name="registro")
@@ -56,11 +60,11 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
   }
 
   public TcManticOrdenesDetallesDto(Long key) {
-    this(null, null, null, null, null, null, new Long(-1L), null, null);
+    this(null, null, null, null, null, null, new Long(-1L), null, null, null, null);
     setKey(key);
   }
 
-  public TcManticOrdenesDetallesDto(Double costo, Double iva, Double descuento, Long idOrdenCompra, String extras, Long cantidad, Long idOrdenDetalle, Long idArticulo, Double importe) {
+  public TcManticOrdenesDetallesDto(Double costo, Double iva, String descuento, Long idOrdenCompra, String extras, Long cantidad, Long idOrdenDetalle, Long idArticulo, String codigo, String sat, Double importe) {
     setCosto(costo);
     setIva(iva);
     setDescuento(descuento);
@@ -69,6 +73,8 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
     setCantidad(cantidad);
     setIdOrdenDetalle(idOrdenDetalle);
     setIdArticulo(idArticulo);
+    setCodigo(codigo);
+    setSat(sat);
     setImporte(importe);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
@@ -89,11 +95,11 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
     return iva;
   }
 
-  public void setDescuento(Double descuento) {
+  public void setDescuento(String descuento) {
     this.descuento = descuento;
   }
 
-  public Double getDescuento() {
+  public String getDescuento() {
     return descuento;
   }
 
@@ -136,6 +142,22 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
   public Long getIdArticulo() {
     return idArticulo;
   }
+
+	public String getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo=codigo;
+	}
+
+	public String getSat() {
+		return sat;
+	}
+
+	public void setSat(String sat) {
+		this.sat=sat;
+	}
 
   public void setImporte(Double importe) {
     this.importe = importe;
@@ -184,6 +206,10 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdArticulo());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCodigo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getSat());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImporte());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
@@ -202,6 +228,8 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
 		regresar.put("cantidad", getCantidad());
 		regresar.put("idOrdenDetalle", getIdOrdenDetalle());
 		regresar.put("idArticulo", getIdArticulo());
+		regresar.put("codigo", getCodigo());
+		regresar.put("sat", getSat());
 		regresar.put("importe", getImporte());
 		regresar.put("registro", getRegistro());
   	return regresar;
@@ -210,7 +238,7 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getCosto(), getIva(), getDescuento(), getIdOrdenCompra(), getExtras(), getCantidad(), getIdOrdenDetalle(), getIdArticulo(), getImporte(), getRegistro()
+      getCosto(), getIva(), getDescuento(), getIdOrdenCompra(), getExtras(), getCantidad(), getIdOrdenDetalle(), getIdArticulo(), getCodigo(), getSat(), getImporte(), getRegistro()
     };
     return regresar;
   }

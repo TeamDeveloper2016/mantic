@@ -47,4 +47,5 @@ public class Cliente extends TcManticGruposClientesDto implements Serializable {
 		return TcManticGruposClientesDto.class;
 	}
 
+	
 }

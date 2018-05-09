@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -28,6 +29,8 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
+  @Column (name="id_proveedor")
+  private Long idProveedor;
   @Column (name="id_proveedor_pago")
   private Long idProveedorPago;
   @Column (name="id_cliente")
@@ -51,7 +54,7 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   @Column (name="total")
   private Double total;
   @Column (name="entrega_estimada")
-  private Timestamp entregaEstimada;
+  private Date entregaEstimada;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="id_almacen")
@@ -74,11 +77,12 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   }
 
   public TcManticOrdenesComprasDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null);
+    this(null, null, null, null, new Long(-1L), null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticOrdenesComprasDto(Long idProveedorPago, Long idCliente, String descuento, Long idOrdenCompra, String extras, String consecutivo, Long idTipoCompra, Long idGasto, Double total, Timestamp entregaEstimada, Long idUsuario, Long idAlmacen, Double subtotal, Double impuestos, Double tipoDeCambio, String observaciones, Long idEmpresa, Long idEstatus) {
+  public TcManticOrdenesComprasDto(Long idProveedor, Long idProveedorPago, Long idCliente, String descuento, Long idOrdenCompra, String extras, String consecutivo, Long idTipoCompra, Long idGasto, Double total, Date entregaEstimada, Long idUsuario, Long idAlmacen, Double subtotal, Double impuestos, Double tipoDeCambio, String observaciones, Long idEmpresa, Long idEstatus) {
+    setIdProveedor(idProveedor);
     setIdProveedorPago(idProveedorPago);
     setIdCliente(idCliente);
     setDescuento(descuento);
@@ -98,6 +102,14 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
     setIdEstatus(idEstatus);
+  }
+	
+  public void setIdProveedor(Long idProveedor) {
+    this.idProveedor = idProveedor;
+  }
+
+  public Long getIdProveedor() {
+    return idProveedor;
   }
 	
   public void setIdProveedorPago(Long idProveedorPago) {
@@ -180,11 +192,11 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
     return total;
   }
 
-  public void setEntregaEstimada(Timestamp entregaEstimada) {
+  public void setEntregaEstimada(Date entregaEstimada) {
     this.entregaEstimada = entregaEstimada;
   }
 
-  public Timestamp getEntregaEstimada() {
+  public Date getEntregaEstimada() {
     return entregaEstimada;
   }
 
@@ -267,6 +279,8 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
+		regresar.append(getIdProveedor());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdProveedorPago());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCliente());
@@ -311,6 +325,7 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
+		regresar.put("idProveedor", getIdProveedor());
 		regresar.put("idProveedorPago", getIdProveedorPago());
 		regresar.put("idCliente", getIdCliente());
 		regresar.put("descuento", getDescuento());
@@ -336,7 +351,7 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdProveedorPago(), getIdCliente(), getDescuento(), getIdOrdenCompra(), getExtras(), getRegistro(), getConsecutivo(), getIdTipoCompra(), getIdGasto(), getTotal(), getEntregaEstimada(), getIdUsuario(), getIdAlmacen(), getSubtotal(), getImpuestos(), getTipoDeCambio(), getObservaciones(), getIdEmpresa(), getIdEstatus()
+    getIdProveedor(), getIdProveedorPago(), getIdCliente(), getDescuento(), getIdOrdenCompra(), getExtras(), getRegistro(), getConsecutivo(), getIdTipoCompra(), getIdGasto(), getTotal(), getEntregaEstimada(), getIdUsuario(), getIdAlmacen(), getSubtotal(), getImpuestos(), getTipoDeCambio(), getObservaciones(), getIdEmpresa(), getIdEstatus()
     };
     return regresar;
   }

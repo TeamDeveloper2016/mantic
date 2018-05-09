@@ -11,9 +11,17 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-				'contenedorGrupos\\:consecutivo'  : {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:almacen'      : {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre'}				
+				'contenedorGrupos\\:consecutivo'    : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idAlmacen'      : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idCliente'      : {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:idProveedor'    : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idProveedorPago': {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:dias'           : {validaciones: 'libre', mascara: 'entero'},
+				'contenedorGrupos\\:entregaEstimada': {validaciones: 'fecha', mascara: 'fecha'},
+				'contenedorGrupos\\:idGasto'        : {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre'},			
+				'contenedorGrupos\\:cantidad'       : {validaciones: 'entero', mascara: 'entero'},				
+				'contenedorGrupos\\:precio'         : {validaciones: 'flotante', mascara: 'flotante'}				
 			};			
 		</script>   
 	</ui:define>
@@ -23,13 +31,13 @@
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
             <p:tab title="General">							
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-100">		
 								<p:outputLabel for="consecutivo" value="No. orden:"/>
-								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.attrs.consecutivo}" readonly="true"/>
+								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.adminOrden.orden.consecutivo}" readonly="true"/>
 								<p:separator/><p:separator/>
-                <p:outputLabel for="almacen" value="Almacen:"/>
-								<p:selectOneMenu id="almacen" value="#{manticComprasOrdendesAccion.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="startsWith">
-									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.almacenes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+                <p:outputLabel for="idAlmacen" value="Almacen:"/>
+								<p:selectOneMenu id="idAlmacen" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="startsWith">
+									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -37,33 +45,36 @@
 										<h:outputText value="#{item.nombre}"/>
 									</p:column>   
 								</p:selectOneMenu>
-                <p:outputLabel for="cliente" value="Cliente:"/>
-								<p:selectOneMenu id="cliente" value="#{manticComprasOrdendesAccion.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="startsWith">
-									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+                <p:outputLabel for="idCliente" value="Cliente:"/>
+								<p:selectOneMenu id="idCliente" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="startsWith">
+									<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
 									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombre}"/>
+										<h:outputText value="#{item.razonSocial}"/>
 									</p:column>   
 								</p:selectOneMenu>
 								<p:separator/><p:separator/>
-								<p:outputLabel for="proveedor" value="Proveedor:"/>
-								<p:selectOneMenu id="proveedor" value="#{manticComprasOrdendesAccion.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="startsWith">
-									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+								<p:outputLabel for="idProveedor" value="Proveedor:"/>
+								<p:selectOneMenu id="idProveedor" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="startsWith">
+									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdateProveedor}" update="idProveedorPago entregaEstimada datosProveedor datosArticulos" process="@form" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
 									<p:column headerText="Nombre">
-										<h:outputText value="#{item.nombre}"/>
+										<h:outputText value="#{item.razonSocial}"/>
 									</p:column>   
 									<p:column styleClass="janal-column-right" headerText="Entrega(dias)">
 										<h:outputText value="#{item.diasEntrega}"/>
 									</p:column>   
 								</p:selectOneMenu>
-								<p:outputLabel for="proveedorPago" value="Condición de pago:"/>
-								<p:selectOneMenu id="proveedorPago" value="#{manticComprasOrdendesAccion.attrs.idProveedorPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="startsWith">
-									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.condiciones}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+								<p:outputLabel for="idProveedorPago" value="Condición de pago:"/>
+								<p:selectOneMenu id="idProveedorPago" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikProveedorPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="startsWith">
+									<p:ajax event="change" update="datosArticulos" process="@this"/>
+									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.condiciones}" var="element" itemValue="#{element}" itemLabel="#{element.clave} #{element.descuento}%"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -74,15 +85,30 @@
 										<h:outputText value="#{item.descuento}"/>
 									</p:column>   
 								</p:selectOneMenu>
-								<p:outputLabel for="moneda" value="Moneda proveedor:"/>
-								<p:inputText id="moneda" styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.attrs.moneda}" readonly="true"/>
-								<p:separator/><p:separator/>
 								<p:outputLabel for="entregaEstimada" value="Entrega estimada:"/>
-								<p:calendar id="entregaEstimada" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{manticComprasOrdenesFiltro.attrs.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+								<p:calendar id="entregaEstimada" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{manticComprasOrdendesAccion.adminOrden.orden.entregaEstimada}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 								<p:separator/><p:separator/>
 								<p:outputLabel for="idGasto" value="Es un gasto:"/>
-								<p:selectBooleanCheckbox id="idGasto" value="#{manticComprasOrdendesAccion.attrs.idGasto}" styleClass="janal-wid-100-txt" />                    
+								<p:selectOneMenu id="idGasto" value="#{manticComprasOrdendesAccion.adminOrden.orden.idGasto}" styleClass="janal-wid-98">  
+		  						<f:selectItem itemLabel="SI" itemValue="1" />
+                  <f:selectItem itemLabel="NO" itemValue="2" />								
+  							</p:selectOneMenu>	
               </p:panelGrid>
+							<p:separator/>
+							<p:panelGrid id="datosProveedor" columns="3" layout="grid" styleClass="janal-wid-100">		
+								<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
+									<p:outputLabel for="moneda" value="Tipo de moneda:"/>
+									<p:inputText id="moneda" styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.attrs.proveedor.moneda}" readonly="true"/>
+								</p:panelGrid>	
+								<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
+									<p:outputLabel for="tipoProveedor" value="Tipo proveedor:"/>
+									<p:inputText id="tipoProveedor" styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.attrs.proveedor.tipoProveedor}" readonly="true"/>
+								</p:panelGrid>
+								<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
+									<p:outputLabel for="dias" value="Dias plazo (#{manticComprasOrdendesAccion.attrs.proveedor.tipoDia}): "/>
+									<p:inputText id="dias" styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.attrs.proveedor.dias}" readonly="true"/>
+								</p:panelGrid>
+							</p:panelGrid>	
 						</p:tab>						            						            																																																
 						<p:tab title="Articulos">
 							<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
@@ -103,6 +129,10 @@
 														<h:outputText value="#{item.nombre}"/>
 													</p:column>   
 												</p:selectOneMenu>
+												<p:outputLabel for="cantidad" value="Cantidad:"/>
+												<p:inputText id="cantidad" value="#{manticComprasOrdendesAccion.attrs.cantidad}" styleClass="janal-wid-100-txt"/> 
+												<p:outputLabel for="precio" value="Precio:"/>
+												<p:inputText id="precio" value="#{manticComprasOrdendesAccion.attrs.precio}" styleClass="janal-wid-100-txt"/> 
 											</h:panelGrid>
 											<div class="janal-align-right lg-pantalla">
 												<p:commandButton id="sumar" value="Agregar" icon="fa fa-plus" onstart="return janal.execute();" process="@this codigo nombre" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
@@ -114,110 +144,118 @@
 									</div>
 									<p:spacer width="10"/>
 									<div id="collapse-content" class="ui-grid-col-9">
-      							<p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100">
+      							<p:panelGrid id="datosArticulos" columns="4" layout="grid" styleClass="janal-wid-100">
 											<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100">
 										    <p:outputLabel for="sinIva" value="Calculos sin IVA:"/>
 										    <p:selectBooleanCheckbox id="sinIva" value="#{manticComprasOrdendesAccion.attrs.sinIva}"/>
 											</p:panelGrid>	
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-											  <p:outputLabel for="tipoCambio" value="Tipo de cambio (DOLAR):" rendered="#{not manticComprasOrdendesAccion.attrs.isPesos}"/>
-											  <p:inputText id="tipoCambio" styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.attrs.tipoCambio}" rendered="#{not manticComprasOrdendesAccion.attrs.isPesos}"/>
+											  <p:outputLabel for="tipoCambio" value="Tipo de cambio (#{manticComprasOrdendesAccion.attrs.proveedor.moneda}):" rendered="#{manticComprasOrdendesAccion.attrs.proveedor.idTipoMoneda.toInteger ne 1}"/>
+												<p:inputText id="tipoCambio" styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.adminOrden.orden.tipoDeCambio}" rendered="#{manticComprasOrdendesAccion.attrs.proveedor.idTipoMoneda.toInteger ne 1}"/>
 											</p:panelGrid>	
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
   											<p:outputLabel for="descuentos" value="Descuentos (%):"/>
-	  										<p:inputText id="descuentos" styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.attrs.descuentos}"/>
+	  										<p:inputText id="descuentos" styleClass="janal-wid-100-txt janal-column-right" value="#{manticComprasOrdendesAccion.adminOrden.orden.descuento}"/>
 											</p:panelGrid>
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 											  <p:outputLabel for="extras" value="Extras (%):"/>
-											  <p:inputText id="extras" styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.attrs.extras}"/>
+											  <p:inputText id="extras" styleClass="janal-wid-100-txt janal-column-right" value="#{manticComprasOrdendesAccion.adminOrden.orden.extras}"/>
 											</p:panelGrid>	 
 										</p:panelGrid>	
-										<p:dataTable id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticComprasOrdendesAccion.attrs.articulos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" selection="#{manticComprasOrdendesAccion.attrs.seleccionado}" selectionMode="single" rowIndexVar="index" reflow="true">
+										<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticComprasOrdendesAccion.adminOrden.articulos}" rows="6" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " styleClass="paginated">
 										  <p:column class="MarAuto Responsive janal-wid-15">
-												<f:facet name="header" class="janal-column-right MarAuto Responsive janal-wid-10">
+												<f:facet name="header" class="janal-column-right MarAuto Responsive janal-wid-5">
 													<h:outputText value="Código"/>
 												</f:facet>
-												<h:outputText value="#{filtro['codigo']}"/>
+												<h:outputText value="#{row['codigo']}"/>
 											</p:column>		
 											<p:column  class="MarAuto Responsive">
 												<f:facet name="header">
 													<h:outputText value="Articulo"/>
 												</f:facet>
-												<h:outputText value="#{filtro['nombre']}"/>
+												<h:outputText value="#{row['nombre']}"/>
 											</p:column>		
 											<p:column class="MarAuto Responsive janal-wid-10">
 												<f:facet name="header">
-													<h:outputText value="Precio"/>
+													<h:outputText value="Costo"/>
 												</f:facet>
-												<h:outputText value="#{filtro['precio']}"/>
+												<p:inputText value="#{row['costo']}" styleClass="janal-wid-100-txt janal-column-right"/>
 											</p:column>		
-											<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-5">
 												<f:facet name="header">
 													<h:outputText value="Cantidad"/>
 												</f:facet>
-												<h:outputText value="#{filtro['cantidad']}"/>
+												<p:inputText value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right"/>
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 												<f:facet name="header">
 													<h:outputText value="Descuento (%)"/>
 												</f:facet>
-												<h:outputText value="#{filtro['descuento']}"/>
+												<p:inputText value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right"/>
 											</p:column>		
-											<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-5">
 												<f:facet name="header">
 													<h:outputText value="Extras (%)"/>
 												</f:facet>
-												<h:outputText value="#{filtro['extras']}"/>
+												<p:inputText value="#{row['extras']}" styleClass="janal-wid-100-txt janal-column-right"/>
 											</p:column>		
-											<p:column class="janal-column-right MarAuto Responsive janal-wid-10" rendered="false">
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-5">
 												<f:facet name="header">
 													<h:outputText value="IVA"/>
 												</f:facet>
-												<h:outputText value="#{filtro['iva']}"/>
+												<p:inputText value="#{row['iva']}" styleClass="janal-wid-100-txt janal-column-right"/>
 											</p:column>		
-											<p:column class="janal-column-right MarAuto Responsive janal-wid-10" rendered="false">
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 												<f:facet name="header">
 													<h:outputText value="Subtotal"/>
 												</f:facet>
-												<h:outputText value="#{filtro['subtotal']}"/>
+												<p:inputText value="#{row['subTotal']}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 												<f:facet name="header">
 													<h:outputText value="Importe"/>
 												</f:facet>
-												<h:outputText value="#{filtro['importe']}"/>
+												<p:inputText value="#{row['importe']}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
 											</p:column>		
+											<p:column style="width:32px; text-align: center">
+												<p:commandButton update="tabla" icon="fa fa-close" title="Eliminar" action="#{manticComprasOrdendesAccion.doRemoveArticulo}" styleClass="janal-text-white">
+													<f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.seleccionado}" />
+												</p:commandButton>
+											</p:column>
+											<f:facet name="footer">
+												<p:commandButton actionListener="#{manticComprasOrdendesAccion.doAddArticulo}" process="@this tabla" update="tabla" icon="fa fa-plus" styleClass="janal-text-white"/>						
+											</f:facet>
 										</p:dataTable>
 										<p:panelGrid columns="6" layout="grid" styleClass="janal-wid-100">		
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">		
 											  <p:outputLabel value="Articulos:"/>
-												<p:inputText styleClass="janal-wid-100-txt" value="0" readonly="true"/>
+												<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="0" readonly="true"/>
 											</p:panelGrid>	
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">		
   											<p:outputLabel value="IVA:"/>
-	  										<p:inputText styleClass="janal-wid-100-txt" value="0" readonly="true"/>
+	  										<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="0" readonly="true"/>
 											</p:panelGrid>	
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">		
 											  <p:outputLabel value="Total sin iva:"/>
-											  <p:inputText styleClass="janal-wid-100-txt" value="0" readonly="true"/>
+											  <p:inputText styleClass="janal-wid-100-txt janal-column-right" value="0" readonly="true"/>
 											</p:panelGrid>		
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">		
 											  <p:outputLabel value="Descuento:"/>
-											  <p:inputText styleClass="janal-wid-100-txt" value="0" readonly="true"/>
+											  <p:inputText styleClass="janal-wid-100-txt janal-column-right" value="0" readonly="true"/>
 											</p:panelGrid>		
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">		
 											  <p:outputLabel value="Subtotal:"/>
-											  <p:inputText styleClass="janal-wid-100-txt" value="0" readonly="true"/>
+											  <p:inputText styleClass="janal-wid-100-txt janal-column-right" value="0" readonly="true"/>
                       </p:panelGrid>													
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">		
   											<p:outputLabel value="Total:"/>
-											  <p:inputText styleClass="janal-wid-100-txt" value="0" readonly="true"/>
+											  <p:inputText styleClass="janal-wid-100-txt janal-column-right" value="0" readonly="true"/>
                       </p:panelGrid>													
 										</p:panelGrid>	
 									</div>									
 								</div>
 							</div>
-							<p:panelGrid id="information" columns="1" layout="grid" styleClass="janal-wid-100" rendered="true">
+							<p:panelGrid id="information" columns="1" layout="grid" styleClass="janal-wid-100" rendered="false">
 								<h:outputText value="Ultima compra de este articulo:" styleClass="janal-font-bold"/>
 								<p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100" style="margin-top: -13px !important;">
 									<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
@@ -226,11 +264,11 @@
 									</p:panelGrid>	
 									<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 										<p:outputLabel value="Descuentos (%):"/>
-										<p:inputText styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.attrs.descuentos}" readonly="true"/>
+										<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="#{manticComprasOrdendesAccion.attrs.descuentos}" readonly="true"/>
 									</p:panelGrid>
 									<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 										<p:outputLabel value="Extras (%):"/>
-										<p:inputText styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.attrs.extras}" readonly="true"/>
+										<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="#{manticComprasOrdendesAccion.attrs.extras}" readonly="true"/>
 									</p:panelGrid>	 
 									<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 										<p:outputLabel value="Fecha compra:"/>

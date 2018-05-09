@@ -2,13 +2,17 @@ package mx.org.kaana.mantic.compras.ordenes.reglas;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesDto;
-import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 
 /**
@@ -19,31 +23,35 @@ import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class AdminOrdenes implements Serializable {
+public final class AdminOrdenes implements Serializable {
 
 	private static final long serialVersionUID=-5550539230224591510L;
 
-	private TcManticOrdenesComprasDto orden;
+	private OrdenCompra orden;
 	private TcManticProveedoresDto proveedor;
 	private TcManticAlmacenesDto almacen;
 	private List<Articulo> articulos;
 
-	public AdminOrdenes(TcManticOrdenesComprasDto orden) throws Exception {
-		this.orden=orden;
+	public AdminOrdenes(OrdenCompra orden) throws Exception {
+		this.orden= orden;
 		if(this.orden.isValid()) {
-			this.articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaOrdenesComprasDto", "articulos", this.orden.toMap());
-			for (Articulo articulo: articulos) 
-				articulo.getIdEntity().setKey(articulo.getIdArticulo());
-		}	
-		else	
+			this.articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticOrdenesDetallesDto", "detalle", this.orden.toMap());
+		}	// if
+		else	{
 		  this.articulos= new ArrayList<>();
+			this.orden.setConsecutivo(this.toConsecutivo("?????"));
+			this.orden.setDescuento("0.00");
+			this.orden.setExtras("0.00");
+			this.orden.setTipoDeCambio(0.00);
+			this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
+		} // else	
 	}
 
-	public TcManticOrdenesComprasDto getOrden() {
+	public OrdenCompra getOrden() {
 		return orden;
 	}
 
-	public void setOrden(TcManticOrdenesComprasDto orden) {
+	public void setOrden(OrdenCompra orden) {
 		this.orden=orden;
 	}
 
@@ -72,8 +80,8 @@ public class AdminOrdenes implements Serializable {
 	}
 	
   public void add() {
-		Long idArticuloDetalle= new Long((int)(Math.random()*10000));
-		this.articulos.add(new Articulo());
+		Long idOrdenDetalle= new Long((int)(Math.random()*10000));
+		this.articulos.add(new Articulo(0.00, 16.00, "", -1L, "", 1L, -1* idOrdenDetalle, 1L, "", "", 0.00));
 	}
 
 	public void remove(Articulo seleccionado) {
@@ -81,8 +89,26 @@ public class AdminOrdenes implements Serializable {
 		  this.articulos.remove(seleccionado);
 	}
 
-  public String toConsecutivo() {
-		return Fecha.getAnioActual()+ Cadena.rellenar("1", 5, '0', true);
+  public String toConsecutivo(String value) {
+		return Fecha.getAnioActual()+ Cadena.rellenar(value, 6, '0', true);
 	}	
 		
+	public String toSiguiente() throws Exception {
+		String regresar= "1";
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			regresar= DaoFactory.getInstance().toField("VistaOrdenesComprasDto", "siguiente", params).toString();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return toConsecutivo(regresar);
+	}
+	
 }
