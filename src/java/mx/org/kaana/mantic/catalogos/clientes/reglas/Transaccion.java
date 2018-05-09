@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
@@ -14,6 +15,7 @@ import mx.org.kaana.mantic.catalogos.clientes.bean.ClienteRepresentante;
 import mx.org.kaana.mantic.catalogos.clientes.bean.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.clientes.bean.RegistroCliente;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
+import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticClientesRepresentantesDto;
@@ -144,6 +146,7 @@ public class Transaccion extends IBaseTnx {
 					clienteDomicilio.setIdPrincipal(1L);
         clienteDomicilio.setIdCliente(idCliente);
         clienteDomicilio.setIdUsuario(JsfBase.getIdUsuario());
+				clienteDomicilio.setIdDomicilio(toIdDomicilio(sesion, clienteDomicilio));
         dto = (TrManticClienteDomicilioDto) clienteDomicilio;
         sqlAccion = clienteDomicilio.getSqlAccion();
         switch (sqlAccion) {
@@ -269,4 +272,66 @@ public class Transaccion extends IBaseTnx {
   private boolean actualizar(Session sesion, IBaseDto dto) throws Exception {
     return DaoFactory.getInstance().update(sesion, dto) >= 1L;
   } // actualizar
+	
+	private Long toIdDomicilio(Session sesion, ClienteDomicilio clienteDomicilio) throws Exception{		
+		Entity entityDomicilio= null;
+		Long regresar= -1L;
+		try {
+			entityDomicilio= toDomicilio(sesion, clienteDomicilio);
+			if(entityDomicilio!= null)
+				regresar= entityDomicilio.getKey();
+			else
+				regresar= insertDomicilio(sesion, clienteDomicilio);					
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // registrarDomicilio	
+	
+	private Long insertDomicilio(Session sesion, ClienteDomicilio clienteDomicilio) throws Exception{
+		TcManticDomiciliosDto domicilio= null;
+		Long regresar= -1L;
+		try {
+			domicilio= new TcManticDomiciliosDto();
+			domicilio.setIdLocalidad(clienteDomicilio.getIdLocalidad().getKey());
+			domicilio.setAsentamiento(clienteDomicilio.getColonia());
+			domicilio.setCalle(clienteDomicilio.getCalle());
+			domicilio.setCodigoPostal(clienteDomicilio.getCodigoPostal());
+			domicilio.setEntreCalle(clienteDomicilio.getEntreCalle());
+			domicilio.setIdUsuario(JsfBase.getIdUsuario());
+			domicilio.setNumeroExterior(clienteDomicilio.getExterior());
+			domicilio.setNumeroInterior(clienteDomicilio.getInterior());
+			domicilio.setYcalle(clienteDomicilio.getyCalle());
+			regresar= DaoFactory.getInstance().insert(sesion, domicilio);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
+		return regresar;
+	} // insertDomicilio
+	
+	private Entity toDomicilio(Session sesion, ClienteDomicilio clienteDomicilio) throws Exception{
+		Entity regresar= null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idLocalidad", clienteDomicilio.getIdLocalidad().getKey());
+			params.put("codigoPostal", clienteDomicilio.getCodigoPostal());
+			params.put("calle", clienteDomicilio.getCalle());
+			params.put("numeroExterior", clienteDomicilio.getExterior());
+			params.put("numeroInterior", clienteDomicilio.getInterior());
+			params.put("asentamiento", clienteDomicilio.getColonia());
+			params.put("entreCalle", clienteDomicilio.getEntreCalle());
+			params.put("yCalle", clienteDomicilio.getyCalle());
+			regresar= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticDomiciliosDto", "domicilioExiste", params);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toDomicilio
 }
