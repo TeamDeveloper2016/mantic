@@ -253,7 +253,7 @@ public class RegistroPersona implements Serializable{
 	public void doAgregarClienteTipoContacto(){
 		PersonaTipoContacto personaTipoContacto= null;
 		try {					
-			personaTipoContacto= new PersonaTipoContacto(this.contadores.getTotalPersonasTipoContacto()+ this.countIndice, ESql.INSERT, true);				
+			personaTipoContacto= new PersonaTipoContacto(this.contadores.getTotalPersonasTipoContacto()+ this.countIndice, ESql.INSERT, true, null);				
 			personaTipoContacto.setOrden(this.personasTiposContacto.size() + 1L);
 			this.personasTiposContacto.add(personaTipoContacto);			
 		} // try
