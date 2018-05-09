@@ -8,11 +8,11 @@ import mx.org.kaana.mantic.catalogos.grupos.beans.Cliente;
 import mx.org.kaana.mantic.db.dto.TcManticGruposDto;
 
 /**
- *@company INEGI
- *@project IKTAN (Sistema de seguimiento y control de proyectos)
- *@date 8/05/2018
- *@time 08:03:22 AM 
- *@author Alejandro Jimenez Garcia <alejandro.jimenez@inegi.org.mx>
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
+ *@date Jun 15, 2012
+ *@time 12:23:54 PM
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
 public class AdminGrupo implements Serializable {

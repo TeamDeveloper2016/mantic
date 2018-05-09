@@ -11,7 +11,8 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-				'contenedorGrupos\\:consecutivo'  : {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:consecutivo'  : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:almacen'      : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre'}				
 			};			
 		</script>   
@@ -27,7 +28,7 @@
 								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.attrs.consecutivo}" readonly="true"/>
 								<p:separator/><p:separator/>
                 <p:outputLabel for="almacen" value="Almacen:"/>
-								<p:selectOneMenu id="almacen" value="#{manticComprasOrdendesAccion.attrs.almacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98">
+								<p:selectOneMenu id="almacen" value="#{manticComprasOrdendesAccion.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="startsWith">
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.almacenes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -37,7 +38,7 @@
 									</p:column>   
 								</p:selectOneMenu>
                 <p:outputLabel for="cliente" value="Cliente:"/>
-								<p:selectOneMenu id="cliente" value="#{manticComprasOrdendesAccion.attrs.cliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98">
+								<p:selectOneMenu id="cliente" value="#{manticComprasOrdendesAccion.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="startsWith">
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -48,7 +49,7 @@
 								</p:selectOneMenu>
 								<p:separator/><p:separator/>
 								<p:outputLabel for="proveedor" value="Proveedor:"/>
-								<p:selectOneMenu id="proveedor" value="#{manticComprasOrdendesAccion.attrs.proveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98">
+								<p:selectOneMenu id="proveedor" value="#{manticComprasOrdendesAccion.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="startsWith">
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -57,12 +58,12 @@
 										<h:outputText value="#{item.nombre}"/>
 									</p:column>   
 									<p:column styleClass="janal-column-right" headerText="Entrega(dias)">
-										<h:outputText value="#{item.dias}"/>
+										<h:outputText value="#{item.diasEntrega}"/>
 									</p:column>   
 								</p:selectOneMenu>
 								<p:outputLabel for="proveedorPago" value="Condición de pago:"/>
-								<p:selectOneMenu id="proveedorPago" value="#{manticComprasOrdendesAccion.attrs.proveedorPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98">
-									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.proveedoresPagos}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+								<p:selectOneMenu id="proveedorPago" value="#{manticComprasOrdendesAccion.attrs.idProveedorPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="startsWith">
+									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.condiciones}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   

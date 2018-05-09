@@ -1,19 +1,26 @@
 package mx.org.kaana.mantic.compras.ordenes.backing;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.iva.reglas.Transaccion;
-import mx.org.kaana.mantic.db.dto.TcManticHistorialIvaDto;
 
 
 @Named(value= "manticComprasOrdendesAccion")
@@ -21,15 +28,6 @@ import mx.org.kaana.mantic.db.dto.TcManticHistorialIvaDto;
 public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
-	private TcManticHistorialIvaDto iva;
-
-	public TcManticHistorialIvaDto getIva() {
-		return this.iva;
-	}
-
-	public void setIva(TcManticHistorialIvaDto iva) {
-		this.iva = iva;
-	}	
 
 	@PostConstruct
   @Override
@@ -48,20 +46,20 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // init
 
   public void doLoad() {
-    EAccion eaccion    = null;
-    Long idHistorialIva= -1L;
+    EAccion eaccion= null;
     try {
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
       switch (eaccion) {
         case AGREGAR:											
-          this.iva= new TcManticHistorialIvaDto(JsfBase.getAutentifica().getPersona().getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 16.00);
+          
           break;
         case MODIFICAR:					
-          idHistorialIva= (Long)this.attrs.get("idOrdenCompra");
-          this.iva= (TcManticHistorialIvaDto)DaoFactory.getInstance().findById(TcManticHistorialIvaDto.class, idHistorialIva);
+          
+          
           break;
       } // switch
+			toLoadCatalog();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -75,7 +73,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		EAccion eaccion        = null;
     try {			
 			eaccion= (EAccion) this.attrs.get("accion");
-			transaccion = new Transaccion(this.iva, (Boolean)this.attrs.get("aplicar"));
+			transaccion = new Transaccion(null, false);
 			if (transaccion.ejecutar(eaccion)) {
 				regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra."), ETipoMensaje.INFORMACION);
@@ -93,5 +91,50 @@ public class Accion extends IBaseAttribute implements Serializable {
   public String doCancelar() {   
     return (String)this.attrs.get("retorno");
   } // doCancelar
+
+	private void toLoadCatalog() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			columns= new ArrayList<>();
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
+      this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("TcManticClientesDto", "sucursales", params, columns));
+      this.attrs.put("proveedores", (List<UISelectEntity>) UIEntity.build("TcManticProveedoresDto", "sucursales", params, columns));
+			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
+			if(!proveedores.isEmpty()) 
+				toLoadCondiciones(proveedores.get(0));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}
+
+	private void toLoadCondiciones(UISelectEntity proveedor) {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("idProveedor", proveedor.getKey());
+      this.attrs.put("condiciones", (List<UISelectEntity>) UIEntity.build("TrManticProveedorPagoDto", "condiciones", params, columns));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}
 	
 }

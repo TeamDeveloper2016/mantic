@@ -335,6 +335,25 @@
 				order by
 				  tc_mantic_proveedores.clave
 			</select>
+			<select id="condiciones">
+select      
+				  tr_mantic_proveedor_pago.id_proveedor_pago as idKey,
+          tr_mantic_proveedor_pago.id_proveedor,
+          tr_mantic_proveedor_pago.clave,
+          tr_mantic_proveedor_pago.descuento,
+          tr_mantic_proveedor_pago.id_tipo_pago,
+          tc_mantic_tipos_compras.id_tipo_compra,
+          tc_mantic_tipos_compras.nombre,
+          tr_mantic_proveedor_pago.observaciones
+        from      
+          tr_mantic_proveedor_pago
+        inner join 
+          tc_mantic_tipos_compras on tr_mantic_proveedor_pago.id_tipo_compra= tc_mantic_tipos_compras.id_tipo_compra
+        where      
+          tr_mantic_proveedor_pago.id_proveedor = {idProveedor}
+				order by
+				  tr_mantic_proveedor_pago.clave				
+			</select>	
 		</unit>
 	</dml>    
 </process>
