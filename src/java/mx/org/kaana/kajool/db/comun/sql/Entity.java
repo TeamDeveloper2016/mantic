@@ -23,7 +23,7 @@ public class Entity extends HashMap<String, Value> implements IValue, IBaseDto, 
   }
 
   public Entity(Long key) {
-    this.put("idKey", new Value("idKey", new Long(-1)));
+    this.put("idKey", new Value("idKey", key));
   }
 
   public String toField(String name) {
