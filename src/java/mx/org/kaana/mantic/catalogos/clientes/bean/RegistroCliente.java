@@ -205,7 +205,7 @@ public class RegistroCliente implements Serializable{
 	private void initCollections(MotorBusqueda motor) throws Exception{
 		int count= 0;
 		try {
-			this.clientesDomicilio= motor.toClientesDomicilio();
+			this.clientesDomicilio= motor.toClientesDomicilio(true);
 			for(ClienteDomicilio clienteDomicilio: this.clientesDomicilio){
 				count++;
 				clienteDomicilio.setConsecutivo(Long.valueOf(count));
