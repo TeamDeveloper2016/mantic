@@ -73,7 +73,9 @@
                   </f:facet>
                 </p:dataList>
                 <p:panelGrid id="formularioDomicilio" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-100">
-                  <p:outputLabel for="domicilio" value="Domicilio:"/>
+                  <p:spacer/>
+									<p:commandButton process="@this" update="dialogoDomicilios" icon="fa fa-search" styleClass="janal-text-white" onstart="return janal.bloquear();" oncomplete="PF('dlgDomicilios').show();" title="Buscar domicilio" style="float: right !important"/>						
+									<p:outputLabel for="domicilio" value="Domicilio:"/>
                   <p:selectOneMenu id="domicilio" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.domicilio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
                     <p:ajax event="change" listener="#{manticCatalogosClientesAccion.doLoadAtributos}" process="@this domicilio" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
                     <f:selectItem itemValue="-1" itemLabel="Seleccione"/>
@@ -237,7 +239,37 @@
           </p:tabView>
         </div>
       </div>
-    </div>		
+    </div>	
+		<p:dialog id="dialogoDomicilios" widgetVar="dlgDomicilios" header="Busqueda de domicilio:" resizable="false" closable="false" responsive="true" width="60%">
+			<h:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100, janal-wid-10">
+				<p:outputLabel for="calleBusqueda" value="Calle:"/>
+				<p:inputText id="calleBusqueda" value="#{manticCatalogosClientesAccion.attrs.calle}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('calleBusqueda')"/>
+				<p:commandButton icon="fa fa-search" actionListener="#{manticCatalogosClientesAccion.doBusquedaDomicilios}" process="@this calleBusqueda" update="domiciliosBusqueda" styleClass="janal-text-white"/>
+				<p:outputLabel for="domiciliosBusqueda" value="Domicilio:"/>
+				<p:selectOneMenu id="domiciliosBusqueda" value="#{manticCatalogosClientesAccion.domicilioBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
+					<f:selectItems value="#{manticCatalogosClientesAccion.attrs.domiciliosBusqueda}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
+					<p:column  styleClass="janal-column-left janal-wid-col-150">
+						<h:outputText value="#{item.entidad}"/>
+					</p:column>   										
+					<p:column  styleClass="janal-column-left">
+						<h:outputText value="#{item.calle}"/>
+					</p:column>   
+					<p:column styleClass="janal-column-right janal-wid-col-50">
+						<h:outputText value="#{item.numeroExterior}"/>
+					</p:column>  										
+					<p:column styleClass="janal-column-left janal-wid-col-250">
+						<h:outputText value="#{item.asentamiento}"/>
+					</p:column>  
+				</p:selectOneMenu>
+				<p:spacer/><p:spacer/><p:spacer/>
+				<p:outputLabel value="Total encontrados[#{manticCatalogosClientesAccion.attrs.resultados}]"/>
+			</h:panelGrid>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton id="aceptarBusqueda" icon="fa fa-check" process="@this dialogoDomicilios domiciliosBusqueda" update="contenedorGrupos:panelTablaDomicilios"  value="Aceptar" action="#{manticCatalogosClientesAccion.doAsignaDomicilio}" onstart="PF('dlgDomicilios').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+        <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgDomicilios').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+			</div>
+		</p:dialog> 
   </ui:define>    
   <ui:define name="acciones">
     <div class="lg-pantalla">
