@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -58,7 +59,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       loadRepresentantes();
       loadTiposContactos();
       loadTiposDomicilios();
-			loadDomicilios();
+			//loadDomicilios();
       loadEntidades();
 			toAsignaEntidad();
       loadMunicipios();
@@ -437,7 +438,6 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       loadLocalidades();
       loadCodigosPostales();
-      //loadDomicilios();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -448,7 +448,6 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doActualizaCodigosPostales() {
     try {
       loadCodigosPostales();
-      //loadDomicilios();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -538,15 +537,20 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.registroCliente.doConsultarClienteDomicilio();
 			domicilio = this.registroCliente.getDomicilioPivote();
       this.registroCliente.getDomicilio().setIdDomicilio(domicilio.getIdDomicilio());
-      this.registroCliente.getDomicilio().setDomicilio(domicilio.getDomicilio());
-      loadEntidades();
-      this.registroCliente.getDomicilio().setIdEntidad(domicilio.getIdEntidad());
-      loadMunicipios();
-      this.registroCliente.getDomicilio().setIdMunicipio(domicilio.getIdMunicipio());
-      loadLocalidades();
-      this.registroCliente.getDomicilio().setLocalidad(domicilio.getLocalidad());
-      this.registroCliente.getDomicilio().setIdLocalidad(domicilio.getIdLocalidad());
-      loadCodigosPostales();
+      this.registroCliente.getDomicilio().setDomicilio(domicilio.getDomicilio());      			
+      this.registroCliente.getDomicilio().setIdEntidad(domicilio.getIdEntidad());	
+			this.registroCliente.getDomicilio().getDomicilio().put("idEntidad", new Value("idEntidad", domicilio.getIdEntidad().getKey()));
+      toAsignaEntidad();
+			loadMunicipios();
+      this.registroCliente.getDomicilio().setIdMunicipio(domicilio.getIdMunicipio());			
+			this.registroCliente.getDomicilio().getDomicilio().put("idMunicipio", new Value("idMunicipio", domicilio.getIdMunicipio().getKey()));
+      toAsignaMunicipio();
+			loadLocalidades();
+      this.registroCliente.getDomicilio().setLocalidad(domicilio.getLocalidad());			
+      this.registroCliente.getDomicilio().setIdLocalidad(domicilio.getIdLocalidad());			
+			this.registroCliente.getDomicilio().getDomicilio().put("idLocalidad", new Value("idLocalidad", domicilio.getLocalidad().getKey()));
+      toAsignaLocalidad();
+			loadCodigosPostales();
       codigos = (List<UISelectItem>) this.attrs.get("codigosPostales");
       for (UISelectItem codigo : codigos) {
         if (codigo.getLabel().equals(domicilio.getCodigoPostal())) {
