@@ -153,7 +153,7 @@ public class Transaccion extends IBaseTnx {
 					clienteDomicilio.setIdPrincipal(1L);
         clienteDomicilio.setIdCliente(idCliente);
         clienteDomicilio.setIdUsuario(JsfBase.getIdUsuario());
-				clienteDomicilio.setIdDomicilio(toIdDomicilio(sesion, clienteDomicilio));
+				clienteDomicilio.setIdDomicilio(toIdDomicilio(sesion, clienteDomicilio));		
         dto = (TrManticClienteDomicilioDto) clienteDomicilio;
         sqlAccion = clienteDomicilio.getSqlAccion();
         switch (sqlAccion) {
@@ -184,10 +184,17 @@ public class Transaccion extends IBaseTnx {
     TrManticClientesRepresentantesDto dto = null;
     ESql sqlAccion = null;
     int count = 0;
+    int countPrincipal = 0;
     boolean validate = false;
     boolean regresar = false;
     try {
+			if(this.registroCliente.getPersonasTiposContacto().size()== 1)
+					this.registroCliente.getPersonasTiposContacto().get(0).setIdPrincipal(1L);
       for (ClienteContactoRepresentante clienteRepresentante : this.registroCliente.getPersonasTiposContacto()) {
+				if(clienteRepresentante.getIdPrincipal().equals(1L))
+					countPrincipal++;
+				if(countPrincipal== 0 && this.registroCliente.getPersonasTiposContacto().size()-1 == count)
+					clienteRepresentante.setIdPrincipal(1L);
         clienteRepresentante.setIdCliente(idCliente);
         clienteRepresentante.setIdUsuario(JsfBase.getIdUsuario());
         clienteRepresentante.setIdRepresentante(addRepresentante(sesion, clienteRepresentante));
@@ -206,7 +213,7 @@ public class Transaccion extends IBaseTnx {
           count++;
         }
       } // for		
-      regresar = count == this.registroCliente.getClientesRepresentantes().size();
+      regresar = count == this.registroCliente.getPersonasTiposContacto().size();
     } // try
     catch (Exception e) {
       throw e;
@@ -228,6 +235,7 @@ public class Transaccion extends IBaseTnx {
 			representante.setIdTipoPersona(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona());	
 			representante.setIdTipoSexo(1L);
 			representante.setEstilo(ESTILO);
+			representante.setIdPersonaTitulo(1L);		
 			regresar= DaoFactory.getInstance().insert(sesion, representante);
 			if(regresar > -1L)
 				registraPersonasTipoContacto(sesion, regresar, clienteRepresentante.getContactos());
@@ -252,6 +260,7 @@ public class Transaccion extends IBaseTnx {
 				if(personaTipoContacto.getValor()!= null && !Cadena.isVacio(personaTipoContacto.getValor())){
 					personaTipoContacto.setIdPersona(idPersona);
 					personaTipoContacto.setIdUsuario(JsfBase.getIdUsuario());
+					personaTipoContacto.setOrden(count+1L);
 					dto = (TrManticPersonaTipoContactoDto) personaTipoContacto;
 					sqlAccion = personaTipoContacto.getSqlAccion();
 					switch (sqlAccion) {
