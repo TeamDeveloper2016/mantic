@@ -245,7 +245,7 @@
 			<h:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-80, janal-wid-20">
 				<p:outputLabel for="calleBusqueda" value="Calle:"/>
 				<p:inputText id="calleBusqueda" value="#{manticCatalogosClientesAccion.attrs.calle}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('calleBusqueda')"/>
-				<p:commandButton icon="fa fa-search" actionListener="#{manticCatalogosClientesAccion.doBusquedaDomicilios}" process="@this calleBusqueda" update="domiciliosBusqueda" styleClass="janal-text-white" onstart="return janal.partial('dialogo')"/>
+				<p:commandButton icon="fa fa-search" actionListener="#{manticCatalogosClientesAccion.doBusquedaDomicilios}" process="@this calleBusqueda" update="domiciliosBusqueda totalResultados" styleClass="janal-text-white" onstart="return janal.partial('dialogo')"/>
 				<p:outputLabel for="domiciliosBusqueda" value="Domicilio:"/>
 				<p:selectOneMenu id="domiciliosBusqueda" value="#{manticCatalogosClientesAccion.domicilioBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
 					<f:selectItems value="#{manticCatalogosClientesAccion.attrs.domiciliosBusqueda}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
@@ -263,7 +263,7 @@
 					</p:column>  
 				</p:selectOneMenu>
 				<p:spacer/><p:spacer/><p:spacer/>
-				<p:outputLabel value="Total [#{manticCatalogosClientesAccion.attrs.resultados}]"/>
+				<p:outputLabel id="totalResultados" value="Total [#{manticCatalogosClientesAccion.attrs.resultados}]"/>
 			</h:panelGrid>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
