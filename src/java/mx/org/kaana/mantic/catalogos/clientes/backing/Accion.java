@@ -421,6 +421,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.registroCliente.getDomicilio().setDomicilio(new Entity(-1L));
       this.registroCliente.getDomicilio().setIdDomicilio(-1L);
 			this.attrs.put("domiciliosBusqueda", domicilios);      
+			this.attrs.put("resultados", domicilios.size());      
     } // try
     catch (Exception e) {
       throw e;
