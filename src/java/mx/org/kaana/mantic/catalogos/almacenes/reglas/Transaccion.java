@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
@@ -13,6 +14,7 @@ import mx.org.kaana.mantic.catalogos.almacenes.bean.AlmacenDomicilio;
 import mx.org.kaana.mantic.catalogos.almacenes.bean.AlmacenTipoContacto;
 import mx.org.kaana.mantic.catalogos.almacenes.bean.RegistroAlmacen;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesDto;
+import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TrManticAlmacenDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticAlmacenTipoContactoDto;
 import org.hibernate.Session;
@@ -138,6 +140,7 @@ public class Transaccion extends IBaseTnx {
 					almacenDomicilio.setIdPrincipal(1L);
         almacenDomicilio.setIdAlmacen(idAlmacen);
         almacenDomicilio.setIdUsuario(JsfBase.getIdUsuario());
+				almacenDomicilio.setIdDomicilio(toIdDomicilio(sesion, almacenDomicilio));		
         dto = (TrManticAlmacenDomicilioDto) almacenDomicilio;
         sqlAccion = almacenDomicilio.getSqlAccion();
         switch (sqlAccion) {
@@ -227,4 +230,66 @@ public class Transaccion extends IBaseTnx {
   private boolean actualizar(Session sesion, IBaseDto dto) throws Exception {
     return DaoFactory.getInstance().update(sesion, dto) >= 1L;
   } // actualizar
+	
+	private Long toIdDomicilio(Session sesion, AlmacenDomicilio almacenDomicilio) throws Exception{		
+		Entity entityDomicilio= null;
+		Long regresar= -1L;
+		try {
+			entityDomicilio= toDomicilio(sesion, almacenDomicilio);
+			if(entityDomicilio!= null)
+				regresar= entityDomicilio.getKey();
+			else
+				regresar= insertDomicilio(sesion, almacenDomicilio);					
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // registrarDomicilio	
+	
+	private Long insertDomicilio(Session sesion, AlmacenDomicilio almacenDomicilio) throws Exception{
+		TcManticDomiciliosDto domicilio= null;
+		Long regresar= -1L;
+		try {
+			domicilio= new TcManticDomiciliosDto();
+			domicilio.setIdLocalidad(almacenDomicilio.getIdLocalidad().getKey());
+			domicilio.setAsentamiento(almacenDomicilio.getColonia());
+			domicilio.setCalle(almacenDomicilio.getCalle());
+			domicilio.setCodigoPostal(almacenDomicilio.getCodigoPostal());
+			domicilio.setEntreCalle(almacenDomicilio.getEntreCalle());
+			domicilio.setIdUsuario(JsfBase.getIdUsuario());
+			domicilio.setNumeroExterior(almacenDomicilio.getExterior());
+			domicilio.setNumeroInterior(almacenDomicilio.getInterior());
+			domicilio.setYcalle(almacenDomicilio.getyCalle());
+			regresar= DaoFactory.getInstance().insert(sesion, domicilio);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
+		return regresar;
+	} // insertDomicilio
+	
+	private Entity toDomicilio(Session sesion, AlmacenDomicilio almacenDomicilio) throws Exception{
+		Entity regresar= null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idLocalidad", almacenDomicilio.getIdLocalidad().getKey());
+			params.put("codigoPostal", almacenDomicilio.getCodigoPostal());
+			params.put("calle", almacenDomicilio.getCalle());
+			params.put("numeroExterior", almacenDomicilio.getExterior());
+			params.put("numeroInterior", almacenDomicilio.getInterior());
+			params.put("asentamiento", almacenDomicilio.getColonia());
+			params.put("entreCalle", almacenDomicilio.getEntreCalle());
+			params.put("yCalle", almacenDomicilio.getyCalle());
+			regresar= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticDomiciliosDto", "domicilioExiste", params);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toDomicilio
 }
