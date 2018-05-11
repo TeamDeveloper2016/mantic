@@ -210,9 +210,9 @@ public class RegistroCliente implements Serializable{
 				count++;
 				clienteDomicilio.setConsecutivo(Long.valueOf(count));
 			} // for				
-			this.clientesRepresentantes= motor.toClientesRepresentantes();
+			//this.clientesRepresentantes= motor.toClientesRepresentantes();
 			this.clientesTiposContacto= motor.toClientesTipoContacto();			
-			this.personasTiposContacto= motor.toPersonasTipoContacto();
+			this.personasTiposContacto= motor.toRepresentantes();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);			
