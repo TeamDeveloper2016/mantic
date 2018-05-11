@@ -193,7 +193,7 @@
                     <f:setPropertyActionListener value="#{representante}" target="#{manticCatalogosClientesAccion.registroCliente.personaTipoContacto}" />
 										<i class="fa fa-check-square fa-lg"></i>
                   </p:commandLink>																				
-									<p:commandLink onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();" update="contenedorGrupos:formularioTablaRepresentantes contenedorGrupos:formularioNombreRepresentantes contenedorGrupos:tablaRepresentantes" title="Domicilio #{representante.consecutivo}" action="#{manticCatalogosClientesAccion.registroCliente.doConsultarRepresentante}">
+									<p:commandLink onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();" update="contenedorGrupos:formularioTablaRepresentantes contenedorGrupos:formularioNombreRepresentantes contenedorGrupos:tablaRepresentantes" title="Representante #{representante.consecutivo}" action="#{manticCatalogosClientesAccion.registroCliente.doConsultarRepresentante}">
                     <f:setPropertyActionListener value="#{representante}" target="#{manticCatalogosClientesAccion.registroCliente.personaTipoContacto}" />		
 										<p:outputLabel value="Representante #{representante.consecutivo}"/>
                   </p:commandLink>                                                                        
