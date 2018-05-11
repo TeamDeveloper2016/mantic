@@ -13,22 +13,23 @@
 			Janal.Control.fields = {
         'contenedorGrupos\\:clave': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:nombre': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:descripcion': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:descripcion': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:responsable': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},        
-        'contenedorGrupos\\:entidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:municipio': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:localidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:cp': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:calle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:exterior': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:interior': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:asentamiento': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:entreCalle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:ycalle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
 				'contenedorGrupos\\:piso': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:cuarto': {validaciones: 'cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:anaquel': {validaciones: 'cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:charola': {validaciones: 'cambiar-mayusculas', mascara: 'libre', grupo: 'general'}
+				'contenedorGrupos\\:charola': {validaciones: 'cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:entidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'ubicacion'},
+        'contenedorGrupos\\:municipio': {validaciones: 'requerido', mascara: 'libre', grupo: 'ubicacion'},
+        'contenedorGrupos\\:localidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'ubicacion'},
+        'contenedorGrupos\\:cp': {validaciones: 'libre', mascara: 'libre', grupo: 'ubicacion'},
+        'contenedorGrupos\\:calle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'ubicacion'},
+        'contenedorGrupos\\:exterior': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'ubicacion'},
+        'contenedorGrupos\\:interior': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'ubicacion'},
+        'contenedorGrupos\\:asentamiento': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'ubicacion'},
+        'contenedorGrupos\\:entreCalle': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'ubicacion'},
+        'contenedorGrupos\\:ycalle': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'ubicacion'},				
+				'calleBusqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'}
       };
 		</script>   
 	</ui:define>
@@ -44,8 +45,8 @@
                 <p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacen.clave}" onblur="janal.mayusculas('contenedorGrupos\\:clave')"/>                    
                 <p:outputLabel for="nombre" value="Nombre:"/>
                 <p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacen.nombre}" onblur="janal.mayusculas('contenedorGrupos\\:nombre')"/>                    
-                <p:outputLabel for="descripcion" value="Descripción:"/>
-								<p:editor id="descripcion" styleClass="janal-wid-100-txt" height="200" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacen.descripcion}"/>  
+                <p:outputLabel value="Descripción:"/>
+								<p:inputTextarea id="descripcion" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacen.descripcion}" onblur="janal.mayusculas('contenedorGrupos\\:descripcion')"/>  
                 <p:outputLabel for="responsable" value="Responsable:"/>
 								<p:selectOneMenu id="responsable" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacen.idResponsable}" styleClass="janal-wid-100-txt" >									
 									<f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.responsables}"/>
@@ -68,17 +69,38 @@
 										<p:outputLabel value="Dirección #{domicilio.consecutivo} #{domicilio.idPrincipal eq 1 ? ' * ' : ''}"/>
                   </p:commandLink>                                                                        
                   <f:facet name="footer" class="alinear-izquierda">																
-                    <p:commandLink title="Agregar domicilio" action="#{manticCatalogosAlamacenesAccion.doAgregarAlmacen}" process="@this contenedorGrupos:entidad contenedorGrupos:municipio contenedorGrupos:localidad contenedorGrupos:codigoPostal contenedorGrupos:domicilio contenedorGrupos:cp contenedorGrupos:calle contenedorGrupos:exterior contenedorGrupos:interior contenedorGrupos:asentamiento contenedorGrupos:entreCalle contenedorGrupos:ycalle contenedorGrupos:tipoDomicilio contenedorGrupos:principal" update="contenedorGrupos:tablaDomicilios contenedorGrupos:formularioDomicilio" onstart="return janal.partial('domicilio', true);" oncomplete="janal.refresh();janal.desbloquear();">
+                    <p:commandLink title="Agregar domicilio" action="#{manticCatalogosAlamacenesAccion.doAgregarAlmacen}" process="@this contenedorGrupos:entidad contenedorGrupos:municipio contenedorGrupos:localidad contenedorGrupos:codigoPostal contenedorGrupos:domicilio contenedorGrupos:cp contenedorGrupos:calle contenedorGrupos:exterior contenedorGrupos:interior contenedorGrupos:asentamiento contenedorGrupos:entreCalle contenedorGrupos:ycalle contenedorGrupos:tipoDomicilio contenedorGrupos:principal" update="contenedorGrupos:tablaDomicilios contenedorGrupos:formularioDomicilio" onstart="return janal.partial('ubicacion', true);" oncomplete="janal.refresh();janal.desbloquear();">
 											<i class="fa fa-plus-square fa-lg"><p:spacer width="3px"/><p:outputLabel value="Agregar dirección"/></i>
 										</p:commandLink>		              										
                   </f:facet>
                 </p:dataList>
                 <p:panelGrid id="formularioDomicilio" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-100">
-                  <p:spacer/><p:spacer/>
+                  <p:spacer/>
+									<p:commandButton process="@this" update="dialogoDomicilios" icon="fa fa-search" styleClass="janal-text-white" onstart="return janal.bloquear();" oncomplete="PF('dlgDomicilios').show();" title="Buscar domicilio" style="float: right !important"/>						
+									<p:outputLabel for="domicilio" value="Domicilio:"/>
+                  <p:selectOneMenu id="domicilio" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.domicilio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
+                    <p:ajax event="change" listener="#{manticCatalogosAlamacenesAccion.doLoadAtributos}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
+                    <f:selectItem itemValue="-1" itemLabel="Seleccione"/>
+                    <f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.domicilios}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
+										<p:column  styleClass="janal-column-left janal-wid-col-150">
+											<h:outputText value="#{item.entidad}"/>
+										</p:column>   										
+										<p:column  styleClass="janal-column-left">
+											<h:outputText value="#{item.calle}"/>
+										</p:column>   
+										<p:column styleClass="janal-column-right janal-wid-col-50">
+											<h:outputText value="#{item.numeroExterior}"/>
+										</p:column>  										
+										<p:column styleClass="janal-column-left janal-wid-col-250">
+											<h:outputText value="#{item.asentamiento}"/>
+										</p:column>   
+									</p:selectOneMenu>
+									<p:spacer height="10px"/><p:spacer height="10px"/>
                   <p:outputLabel for="entidad" value="Entidad:"/>
                   <p:selectOneMenu id="entidad" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.idEntidad}" styleClass="janal-wid-100-txt" var="item" converter="janal.convertidor.Entity">									
                     <p:ajax event="change" listener="#{manticCatalogosAlamacenesAccion.doActualizaMunicipios}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
-                    <f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.entidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
+                    <f:selectItem itemValue="-1" itemLabel="Seleccione"/>
+										<f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.entidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
 										<p:column  styleClass="janal-column-center">
 											<h:outputText value="#{item.clave}"/>
 										</p:column>   
@@ -89,7 +111,8 @@
                   <p:outputLabel for="municipio" value="Municipio:"/>
                   <p:selectOneMenu id="municipio" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.idMunicipio}" styleClass="janal-wid-100-txt" var="item" converter="janal.convertidor.Entity">									
                     <p:ajax event="change" listener="#{manticCatalogosAlamacenesAccion.doActualizaLocalidades}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
-                    <f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.municipios}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
+                    <f:selectItem itemValue="-1" itemLabel="Seleccione"/>
+										<f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.municipios}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
 										<p:column  styleClass="janal-column-center">
 											<h:outputText value="#{item.clave}"/>
 										</p:column>   
@@ -100,7 +123,8 @@
                   <p:outputLabel for="localidad" value="Localidad:"/>
                   <p:selectOneMenu id="localidad" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.localidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
                     <p:ajax event="change" listener="#{manticCatalogosAlamacenesAccion.doActualizaCodigosPostales}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
-                    <f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.localidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
+                    <f:selectItem itemValue="-1" itemLabel="Seleccione"/>
+										<f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.localidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
 										<p:column  styleClass="janal-column-center">
 											<h:outputText value="#{item.clave}"/>
 										</p:column>   
@@ -111,26 +135,11 @@
                   <p:outputLabel for="codigoPostal" value="Código postal:"/>
                   <p:selectOneMenu id="codigoPostal" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.idCodigoPostal}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith">									
                     <p:ajax event="change" listener="#{manticCatalogosAlamacenesAccion.doLoadDomicilios}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
-                    <f:selectItem itemValue="-1" itemLabel="Nuevo"/>
+                    <f:selectItem itemValue="-1" itemLabel="Seleccione"/>
                     <f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.codigosPostales}"/>
                   </p:selectOneMenu>	
                   <p:spacer id="spacerCp" rendered="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.nuevoCp}"/>
-                  <p:inputText placeholder="Captura el nuevo código postal. Ej. 20284" id="cp" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.codigoPostal}" onblur="janal.mayusculas('contenedorGrupos\\:cp')" rendered="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.nuevoCp}"/>
-                  <p:outputLabel for="domicilio" value="Domicilio:"/>
-                  <p:selectOneMenu id="domicilio" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.domicilio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
-                    <p:ajax event="change" listener="#{manticCatalogosAlamacenesAccion.doLoadAtributos}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
-                    <f:selectItem itemValue="-1" itemLabel="Nuevo"/>
-                    <f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.domicilios}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
-										<p:column  styleClass="janal-column-center">
-											<h:outputText value="#{item.calle}"/>
-										</p:column>   
-										<p:column  styleClass="janal-column-left">
-											<h:outputText value="#{item.numeroExterior}"/>
-										</p:column>  										
-										<p:column styleClass="janal-column-left">
-											<h:outputText value="#{item.asentamiento}"/>
-										</p:column>  
-									</p:selectOneMenu>																										
+                  <p:inputText placeholder="Captura el nuevo código postal. Ej. 20284" id="cp" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.codigoPostal}" onblur="janal.mayusculas('contenedorGrupos\\:cp')" rendered="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.nuevoCp}"/>                  																										
                   <p:outputLabel for="calle" value="Calle:"/>
                   <p:inputText id="calle" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.calle}" onblur="janal.mayusculas('contenedorGrupos\\:calle')"/>
                   <p:outputLabel for="exterior" value="Número exterior:"/>
@@ -161,7 +170,7 @@
                     </p:selectOneMenu> 				
                   </p:column>	
                   <p:column headerText="Valor" styleClass="janal-wid-50">		
-                    <p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}" onblur="applyMayusTable('tablaContactos',#{index}, 'valor')" disabled="#{!contacto.nuevo}"/>                    																																			
+                    <p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaContactos', #{index}, 'valor')" disabled="#{!contacto.nuevo}"/>                    																																			
                   </p:column>
                   <p:column style="width:32px;text-align: center">
                     <p:commandButton update="tablaContactos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosAlamacenesAccion.registroAlmacen.doEliminarAlamcenTipoContacto}" styleClass="janal-text-white">
@@ -190,14 +199,44 @@
         </div>
       </div>
     </div>		
+		<p:dialog id="dialogoDomicilios" widgetVar="dlgDomicilios" header="Busqueda de domicilio:" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.refresh();">
+			<h:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-80, janal-wid-20">
+				<p:outputLabel for="calleBusqueda" value="Calle:"/>
+				<p:inputText id="calleBusqueda" value="#{manticCatalogosAlamacenesAccion.attrs.calle}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('calleBusqueda')"/>
+				<p:commandButton icon="fa fa-search" actionListener="#{manticCatalogosAlamacenesAccion.doBusquedaDomicilios}" process="@this calleBusqueda" update="domiciliosBusqueda totalResultados" styleClass="janal-text-white" onstart="return janal.partial('dialogo')"/>
+				<p:outputLabel for="domiciliosBusqueda" value="Domicilio:"/>
+				<p:selectOneMenu id="domiciliosBusqueda" value="#{manticCatalogosAlamacenesAccion.domicilioBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
+					<f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.domiciliosBusqueda}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
+					<p:column  styleClass="janal-column-left janal-wid-col-150">
+						<h:outputText value="#{item.entidad}"/>
+					</p:column>   										
+					<p:column  styleClass="janal-column-left">
+						<h:outputText value="#{item.calle}"/>
+					</p:column>   
+					<p:column styleClass="janal-column-right janal-wid-col-50">
+						<h:outputText value="#{item.numeroExterior}"/>
+					</p:column>  										
+					<p:column styleClass="janal-column-left janal-wid-col-250">
+						<h:outputText value="#{item.asentamiento}"/>
+					</p:column>  
+				</p:selectOneMenu>
+				<p:spacer/><p:spacer/><p:spacer/>
+				<p:outputLabel id="totalResultados" value="Total [#{manticCatalogosAlamacenesAccion.attrs.resultados}]"/>
+			</h:panelGrid>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton id="aceptarBusqueda" icon="fa fa-check" process="@this dialogoDomicilios domiciliosBusqueda" update="contenedorGrupos:panelTablaDomicilios"  value="Aceptar" action="#{manticCatalogosAlamacenesAccion.doAsignaDomicilio}" onstart="PF('dlgDomicilios').hide();" oncomplete="janal.desbloquear();janal.refresh();" styleClass="janal-text-white"/>
+        <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgDomicilios').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+			</div>
+		</p:dialog> 
   </ui:define>    
   <ui:define name="acciones">
     <div class="lg-pantalla">
-      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosAlamacenesAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this contenedorGrupos" action="#{manticCatalogosAlamacenesAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
       <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosAlamacenesAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
     </div>		
     <div class="xs-pantalla">
-      <p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosAlamacenesAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@this contenedorGrupos" action="#{manticCatalogosAlamacenesAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
       <p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosAlamacenesAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
     </div>		
   </ui:define>
