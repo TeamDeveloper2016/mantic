@@ -205,14 +205,14 @@ public class RegistroCliente implements Serializable{
 	private void initCollections(MotorBusqueda motor) throws Exception{
 		int count= 0;
 		try {
-			this.clientesDomicilio= motor.toClientesDomicilio();
+			this.clientesDomicilio= motor.toClientesDomicilio(true);
 			for(ClienteDomicilio clienteDomicilio: this.clientesDomicilio){
 				count++;
 				clienteDomicilio.setConsecutivo(Long.valueOf(count));
 			} // for				
-			this.clientesRepresentantes= motor.toClientesRepresentantes();
+			//this.clientesRepresentantes= motor.toClientesRepresentantes();
 			this.clientesTiposContacto= motor.toClientesTipoContacto();			
-			this.personasTiposContacto= motor.toPersonasTipoContacto();
+			this.personasTiposContacto= motor.toRepresentantes();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);			
