@@ -106,6 +106,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 						this.registroCliente.setClienteDomicilioSelecion(this.registroCliente.getClientesDomicilio().get(0));
 						doConsultarClienteDomicilio();
 					} // if
+					if(!this.registroCliente.getPersonasTiposContacto().isEmpty()){
+						this.registroCliente.setPersonaTipoContacto(this.registroCliente.getPersonasTiposContacto().get(0));
+						this.registroCliente.doConsultarRepresentante();
+					} // if
           break;
       } // switch      
     } // try
