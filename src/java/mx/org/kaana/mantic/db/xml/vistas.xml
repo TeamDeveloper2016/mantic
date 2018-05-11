@@ -313,6 +313,62 @@
 					tc_mantic_ordenes_compras.registro
 				{sortOrder}
 			</select>
+			<select id="articulo">
+        select 
+          tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
+				  tc_mantic_articulos.id_articulo,
+				  tc_mantic_articulos_codigos.codigo,
+				  tc_mantic_articulos_codigos.id_principal,
+				  tc_mantic_articulos_codigos.id_proveedor,
+				  tc_mantic_articulos.nombre,
+				  tc_mantic_articulos.precio,
+				  tc_mantic_articulos.iva
+				from 
+					tc_mantic_articulos
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
+				inner join 
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+				where 
+					tc_mantic_empresas.id_empresa in ({sucursales})
+				  and (
+				    (tc_mantic_articulos.id_articulo= {idArticulo} and tc_mantic_articulos_codigos.id_principal= 1)
+				    or
+				    (tc_mantic_articulos.id_articulo= {idArticulo} and tc_mantic_articulos_codigos.id_proveedor= {idProveedor})	
+				   ) 			
+				order by 
+				  tc_mantic_articulos_codigos.codigo,
+				  tc_mantic_articulos_codigos.id_proveedor				
+			</select>
+			<select id="codigos">
+				select 
+				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
+				  tc_mantic_articulos.id_articulo,
+				  tc_mantic_articulos_codigos.codigo,
+				  tc_mantic_articulos_codigos.id_principal,
+				  tc_mantic_articulos_codigos.id_proveedor,
+				  tc_mantic_articulos.nombre,
+				  tc_mantic_articulos.precio,
+				  tc_mantic_articulos.iva,
+				  tc_mantic_articulos.id_redondear
+				from 
+					tc_mantic_articulos
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
+				inner join 
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+				where 
+					tc_mantic_empresas.id_empresa in ({sucursales})
+				  and (
+				    (upper(tc_mantic_articulos_codigos.codigo) like upper('%{codigo}%') and tc_mantic_articulos_codigos.id_principal= 1)
+				    or 
+				    upper(tc_mantic_articulos.nombre) like upper('%{codigo}%')
+				    or
+				    (upper(tc_mantic_articulos_codigos.codigo) like upper('%{codigo}%') and tc_mantic_articulos_codigos.id_proveedor= {idProveedor})	
+				   ) 			
+				order by 
+				  tc_mantic_articulos.nombre
+			</select>
 			<select id="siguiente">
         select
 					max(orden)+ 1 as siguiente
@@ -372,7 +428,7 @@
           tc_mantic_tipos_monedas.simbolo,
           tc_mantic_tipos_proveedores.nombre as tipo_proveedor,
           tc_mantic_tipos_proveedores.dias,
-          tc_mantic_tipos_proveedores.nombre as tipo_dia
+          tc_mantic_tipos_dias.nombre as tipo_dia
         from      
           tc_mantic_proveedores
         inner join 

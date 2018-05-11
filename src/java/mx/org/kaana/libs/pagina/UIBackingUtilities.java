@@ -12,6 +12,7 @@ package mx.org.kaana.libs.pagina;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 
 import org.primefaces.component.datatable.DataTable;
 
@@ -43,8 +44,8 @@ public class UIBackingUtilities {
 		return regresar;
 	} 	
 
-  public static Object toFirstKeySelectEntity(List<UISelectEntity> items) {
-		Object regresar= -1L;
+  public static UISelectEntity toFirstKeySelectEntity(List<UISelectEntity> items) {
+		UISelectEntity regresar= new UISelectEntity(new Entity(-1L));
 		if(items!= null && items.size()> 0)
   	  regresar= items.get(0);
 		return regresar;

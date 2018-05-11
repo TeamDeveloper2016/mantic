@@ -9,9 +9,11 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.KajoolBaseException;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.compras.ordenes.beans.Totales;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 
@@ -31,18 +33,22 @@ public final class AdminOrdenes implements Serializable {
 	private TcManticProveedoresDto proveedor;
 	private TcManticAlmacenesDto almacen;
 	private List<Articulo> articulos;
+	private Totales totales;
 
 	public AdminOrdenes(OrdenCompra orden) throws Exception {
 		this.orden= orden;
+		this.totales= new Totales();
 		if(this.orden.isValid()) {
 			this.articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticOrdenesDetallesDto", "detalle", this.orden.toMap());
+      toCalculate();
 		}	// if
 		else	{
 		  this.articulos= new ArrayList<>();
-			this.orden.setConsecutivo(this.toConsecutivo("?????"));
+			this.orden.setConsecutivo(this.toConsecutivo("0"));
+			this.orden.setIdGasto(2L);
 			this.orden.setDescuento("0.00");
 			this.orden.setExtras("0.00");
-			this.orden.setTipoDeCambio(0.00);
+			this.orden.setTipoDeCambio(1.00);
 			this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
 		} // else	
 	}
@@ -78,15 +84,25 @@ public final class AdminOrdenes implements Serializable {
 	public void setArticulos(List<Articulo> articulos) {
 		this.articulos=articulos;
 	}
+
+	public Totales getTotales() {
+		return totales;
+	}
 	
-  public void add() {
-		Long idOrdenDetalle= new Long((int)(Math.random()*10000));
-		this.articulos.add(new Articulo(0.00, 16.00, "", -1L, "", 1L, -1* idOrdenDetalle, 1L, "", "", 0.00));
+  public void add(Articulo articulo) {
+		if(this.articulos.indexOf(articulo)< 0) {
+		  this.articulos.add(articulo);
+   		toCalculate();
+		} // if
+		else
+		  throw new KajoolBaseException("El articulo ["+ articulo.getCodigo()+ "] ya esta dentro de la lista seleccionada !");
 	}
 
 	public void remove(Articulo seleccionado) {
-		if(this.articulos.indexOf(seleccionado)>= 0)
+		if(this.articulos.indexOf(seleccionado)>= 0) {
 		  this.articulos.remove(seleccionado);
+  		toCalculate();
+		} // if
 	}
 
   public String toConsecutivo(String value) {
@@ -109,6 +125,25 @@ public final class AdminOrdenes implements Serializable {
 			Methods.clean(params);
 		} // finally
 		return toConsecutivo(regresar);
+	}
+	
+	public void toCalculate() {
+		this.toCalculate(false, false, this.getOrden().getTipoDeCambio());
+	}
+
+	public void toCalculate(boolean reset, boolean sinIva, double tipoDeCambio) {
+		this.totales.reset();
+  	this.totales.setArticulos(this.articulos.size());
+		for (Articulo articulo : this.articulos) {
+			if(reset)
+			  articulo.toCalculate(sinIva, tipoDeCambio);
+			this.totales.addImporte(articulo.getImportes().getImporte());
+			this.totales.addDescuento(articulo.getImportes().getDescuento());
+			this.totales.addExtra(articulo.getImportes().getExtra());
+			this.totales.addIva(articulo.getImportes().getIva());
+			this.totales.addSubTotal(articulo.getImportes().getSubTotal());
+			this.totales.addTotal(articulo.getImportes().getTotal());
+		} // for
 	}
 	
 }

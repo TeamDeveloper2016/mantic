@@ -10,6 +10,7 @@ import java.util.Map;
  * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public class BaseException extends KajoolBaseException {
+	
   private static final long serialVersionUID = -9164866930711041059L;
 
   public BaseException(String key) {
@@ -31,6 +32,5 @@ public class BaseException extends KajoolBaseException {
   public BaseException(String proyecto, String key, Map<String, Object> params, Throwable e) {
     super(UIMessage.toMessage(proyecto, key, params), e);
   }
-
 
 }

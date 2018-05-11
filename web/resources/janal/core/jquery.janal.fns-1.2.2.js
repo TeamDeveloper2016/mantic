@@ -235,6 +235,20 @@ $.mask.masks = $.extend($.mask.masks, {
       return 'N\u00FAmero de caracteres '+ $(element).val().length+ ' es menor al permitido, el m\u00EDnimo es '+ params.cuantos+ '.';
     });
 
+  $.validator.addMethod('mayor', function(value, element, params) {
+      if (janal.empty(value))
+        return true;
+      else
+        if(typeof(params.cuanto)=== 'undefined') {
+					janal.programmer([{summary: 'Función: mayor', detail: 'falta el parametro {cuanto}'}]);
+          return false;
+				} // if	
+        else
+         return parseFloat(janal.cleanToken(value), 10)>= params.cuanto;
+    }, function(params, element) {
+      return 'Valor '+ $(element).val()+ ' tiene que ser mayor al permitido, el valor m\u00E1ximo es '+ params.cuanto+ '.';
+    });
+		
   $.validator.addMethod('max-valor', function(value, element, params) {
       if (janal.empty(value))
         return true;
@@ -244,11 +258,25 @@ $.mask.masks = $.extend($.mask.masks, {
           return false;
 				} // if	
         else
-         return parseInt(janal.cleanToken(value), 10)<= params.cuanto;
+         return parseFloat(janal.cleanToken(value), 10)<= params.cuanto;
     }, function(params, element) {
       return 'Valor '+ $(element).val()+ ' es mayor al permitido, el valor m\u00E1ximo es '+ params.cuanto+ '.';
     });
 
+  $.validator.addMethod('menor', function(value, element, params) {
+      if (janal.empty(value))
+        return true;
+      else
+        if(typeof(params.cuanto)=== 'undefined') {
+					janal.programmer([{summary: 'Función: menor', detail: 'falta el parametro {cuanto}'}]);
+          return false;
+				} // if	
+        else
+          return parseFloat(janal.cleanToken(value), 10)<= params.cuanto;
+    }, function(params, element) {
+      return 'Valor '+ $(element).val()+ ' tiene que ser menor al permitido, el valor m\u00EDnimo es '+ params.cuanto+ '.';
+    });
+		
   $.validator.addMethod('min-valor', function(value, element, params) {
       if (janal.empty(value))
         return true;
@@ -258,7 +286,7 @@ $.mask.masks = $.extend($.mask.masks, {
           return false;
 				} // if	
         else
-          return parseInt(janal.cleanToken(value), 10)>= params.cuanto;
+          return parseFloat(janal.cleanToken(value), 10)>= params.cuanto;
     }, function(params, element) {
       return 'Valor '+ $(element).val()+ ' es menor al permitido, el valor m\u00EDnimo es '+ params.cuanto+ '.';
     });

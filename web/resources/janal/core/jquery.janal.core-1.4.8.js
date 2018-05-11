@@ -62,7 +62,7 @@
       $self.console('Janal.Control.Function.init');
       if(typeof(root)!== 'undefined')
         this.root   = root;
-      $self.load(0, ['/resources/janal/core/jquery.janal.sticky.min-1.0.0.js','/resources/janal/js/jquery.janal.menu-2.0.1.js','/resources/janal/core/jquery.longclick-1.0.0.js', '/resources/janal/core/jquery.validate.min-1.15.0.js', '/resources/janal/core/jquery.meio.mask.min-1.1.15.js', '/resources/janal/core/jquery.janal.fns.min-1.2.1.js']);
+      $self.load(0, ['/resources/janal/core/jquery.janal.sticky.min-1.0.0.js','/resources/janal/js/jquery.janal.menu-2.0.1.js','/resources/janal/core/jquery.longclick-1.0.0.js', '/resources/janal/core/jquery.validate.min-1.15.0.js', '/resources/janal/core/jquery.meio.mask.min-1.1.15.js', '/resources/janal/core/jquery.janal.fns-1.2.2.js']);
       $self.console('Janal.Control.Function.init resource loaded');
     },
     dateFormat: function(format) {
@@ -302,6 +302,58 @@
      text: function(id) {
        return this.search(id).text();
      }, // text
+		 descuentos: function(element, value) {
+				var regresar= 0.0;
+				var val     = $(element)? $(element).val().trim(): value;
+				var text    = ''; 
+				var values  = '';
+				if(val=== 'undefined' || val.length=== 0)
+					$(element).val(value);
+				else {
+				  var items= val.split(',');
+					for (item in items) {
+						if(Number.isNaN(parseFloat(items[item], 10))) {
+							text+= items[item]+ ', ';
+							items[item]= '0';
+						}	// if
+						else {
+							items[item]= parseFloat(items[item], 10);
+							regresar+= items[item];
+							values+= items[item]+ ', ';
+						} // else	
+					} // for
+					$(element).val(values.length=== 0? '0': values.substring(0, values.length- 2));
+				} // else	
+				if(text.trim().length> 0)
+					text= text.substring(0, text.length- 2);
+				return {"suma": regresar.toFixed(2), "text": text, "error": text.length> 0};
+		 },
+		 cantidad: function(element, value) {
+				var val= $(element)? $(element).val().trim(): value;
+				if(val=== 'undefined' || val.length=== 0) {
+					$(element).val(value);
+				} // if	
+				else {
+					if(Number.isNaN(parseInt(val, 10)) || parseInt(val, 10)< parseInt(value, 10))
+						$(element).val(value);
+					else
+						$(element).val(parseInt(val, 10));
+				} // else
+				return {"value": $(element).val(), "error": false};	
+		 },
+		 porcentaje: function(element, value) {
+				var val= $(element)? $(element).val().trim(): value;
+				if(val=== 'undefined' || val.length=== 0) {
+					$(element).val(parseFloat(value).toFixed(2));
+				} // if	
+				else {
+					if(Number.isNaN(parseFloat(val, 10)) || parseFloat(val, 10)< parseFloat(value, 10))
+						$(element).val(parseFloat(value).toFixed(2));
+					else
+						$(element).val(parseFloat(val, 10).toFixed(2));
+				} // else
+			  return {"value": $(element).val(), "error": false};	
+		 },
      fecha: function() {
        var meses= new Array ("enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre");
        var data = new Date();
@@ -388,9 +440,9 @@
       show        : 0
     },
     names         : {
-      validations : ['libre', 'max-caracteres', 'min-caracteres', 'max-valor', 'min-valor', 'requerido', 'entero', 'entero-signo', 'valor-simple', 'telefono', 'contiene-a', 'igual-a', 'menor-a', 'mayor-a', 'asterisco', 'moneda', 'moneda-decimal', 'flotante-signo', 'flotante', 'mayusculas', 'minusculas', 'vocales', 'rango', 'secuencia-palabra', 'longitud', 'letras', 'texto', 'curp', 'rfc', 'texto-especial', 'boleano', 'fecha', 'fecha-menor', 'fecha-mayor', 'registro', 'hora', 'hora-completa', 'hora-mayor', 'hora-menor', 'comodin', 'no-permitir', 'ipv4', 'ipv6','no-aplica', 'esta-en','correo','acceso'],
+      validations : ['libre', 'max-caracteres', 'min-caracteres', 'mayor', 'max-valor', 'menor', 'min-valor', 'requerido', 'entero', 'entero-signo', 'valor-simple', 'telefono', 'contiene-a', 'igual-a', 'menor-a', 'mayor-a', 'asterisco', 'moneda', 'moneda-decimal', 'flotante-signo', 'flotante', 'mayusculas', 'minusculas', 'vocales', 'rango', 'secuencia-palabra', 'longitud', 'letras', 'texto', 'curp', 'rfc', 'texto-especial', 'boleano', 'fecha', 'fecha-menor', 'fecha-mayor', 'registro', 'hora', 'hora-completa', 'hora-mayor', 'hora-menor', 'comodin', 'no-permitir', 'ipv4', 'ipv6','no-aplica', 'esta-en','correo','acceso'],
       masks       : ['libre', 'fecha', 'fecha-hora', 'registro', 'hora', 'hora-completa', 'tarjeta-credito', 'decimal', 'decimal-signo', 'letras', 'vocales', 'texto', 'numero', 'un-digito', 'dos-digitos', 'tres-digitos', 'tres-digitos-default', 'cuatro-digitos', 'cinco-digitos', 'siete-digitos', 'diez-digitos', 'entero', 'entero-blanco', 'entero-signo', 'entero-sin-signo', 'flotante', 'flotante-signo', 'rfc', 'curp', 'moneda', 'moneda-decimal', 'mayusculas', 'minusculas', 'cuenta', 'numeros-letras', 'nombre-dto', 'telefono', 'ip', 'version', 'no-aplica','correo', 'valor-simple', 'acceso'],
-      watermarks  : ['entero', 'entero-signo', 'valor-simple', 'decimal', 'decimal-signo', 'flotante', 'flotante-signo', 'moneda', 'moneda-decimal', 'max-valor', 'min-valor'],
+      watermarks  : ['entero', 'entero-signo', 'valor-simple', 'decimal', 'decimal-signo', 'flotante', 'flotante-signo', 'moneda', 'moneda-decimal', 'mayor', 'max-valor', 'menor', 'min-valor'],
       formats     : ['libre', 'cambiar-mayusculas', 'cambiar-minusculas', 'rellenar-caracter'],
       customs     : []
     },
@@ -1036,7 +1088,7 @@
       $parent.custom({summary: 'Janal:', detail: msg, severity: 'info'});
     }, // alert
     version: function() {
-      return '0.1.4.4';
+      return '0.1.4.8';
     }, // version
     align: function(pixels) {
       try {

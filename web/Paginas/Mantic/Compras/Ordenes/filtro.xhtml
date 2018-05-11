@@ -33,7 +33,7 @@
         <div id="collapse-find" class="ui-grid-col-3">
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
-            <h:panelGrid styleClass="janal-wid-100">
+            <p:panelGrid layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticComprasOrdenesFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticComprasOrdenesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="startsWith">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
@@ -73,7 +73,7 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
-            </h:panelGrid>
+            </p:panelGrid>
             <div class="janal-align-right lg-pantalla">
               <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.execute();" process="@form" actionListener="#{manticComprasOrdenesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
             </div>
@@ -82,6 +82,7 @@
             </div>
           </p:panel>
         </div>
+				<p:spacer/>
         <div id="collapse-content" class="ui-grid-col-9">
           <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticComprasOrdenesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticComprasOrdenesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticComprasOrdenesFiltro.lazyModel.rowCount gt manticComprasOrdenesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
             <f:facet name="header" >
@@ -159,9 +160,9 @@
   <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
   <ui:param name="renderedConfirmacion" value="true"/>	
   <ui:define name="detalleConfirmacion">
-    <h:panelGrid columns="2">
+    <p:panelGrid layout="grid" columns="2">
       <p:outputLabel value="No. de orden:"/>
       <p:outputLabel value="#{manticComprasOrdenesFiltro.attrs.seleccionado.consecutivo}"/>
-    </h:panelGrid>			
+    </p:panelGrid>			
   </ui:define>
 </ui:composition>

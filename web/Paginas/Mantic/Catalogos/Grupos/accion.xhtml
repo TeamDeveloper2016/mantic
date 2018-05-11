@@ -56,7 +56,7 @@
               </p:panelGrid>								
 						</p:tab>
 						<p:tab title="Observaciones">
-							<p:editor id="observaciones" styleClass="janal-wid-100-txt" height="200" value="#{manticCatalogosGruposAccion.adminGrupo.grupo.observaciones}" />  
+							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticCatalogosGruposAccion.adminGrupo.grupo.observaciones}" onblur="janal.mayusculas('contenedorGrupos\\:observaciones');"/>
 						</p:tab>
 					</p:tabView>
 				</div>

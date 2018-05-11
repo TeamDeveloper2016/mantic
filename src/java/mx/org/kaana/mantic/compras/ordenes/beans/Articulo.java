@@ -1,8 +1,11 @@
 package mx.org.kaana.mantic.compras.ordenes.beans;
 
 import java.io.Serializable;
+import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
 
 /**
@@ -17,9 +20,12 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Serializable
 
 	private static final long serialVersionUID=329661715469035396L;
 
+  private Long idArticulo;	
 	private String nombre;
-	private Double subTotal;
-	private Double importe;
+	private Totales importes;
+	private double costo;
+	private boolean sinIva;
+	private double tipoDeCambio;
 	private UISelectEntity idEntity;
 
 	public Articulo() {
@@ -27,16 +33,19 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Serializable
 	}
 
 	public Articulo(Long key) {
-		super(key);
-		this.idEntity= new UISelectEntity(new Entity(-1L));
-		this.subTotal= 0D;
-		this.importe = 0D;
+		this(true, 1.0, "", 0.0, 16.0, "0", -1L, "0", 1L, -1L, -1L, "", "", 0.0);
 	}
 
-	public Articulo(Double costo, Double iva, String descuento, Long idOrdenCompra, String extras, Long cantidad, Long idOrdenDetalle, Long idArticulo, String codigo, String sat, Double importe) {
-		super(costo, iva, descuento, idOrdenCompra, extras, cantidad, idOrdenDetalle, idArticulo, codigo, sat, importe);
-		this.subTotal= 0D;
-		this.importe = 0D;
+	public Articulo(boolean conIva, double tipoDeCambio, String nombre, Double costo, Double iva, String descuento, Long idOrdenCompra, String extras, Long cantidad, Long idOrdenDetalle, Long idArticulo, String codigo, String propio, Double importe) {
+		super(costo, iva, descuento, idOrdenCompra, extras, cantidad, idOrdenDetalle, idArticulo, codigo, propio, importe);
+		this.idEntity    = new UISelectEntity(new Entity(-1L));
+		this.nombre      = nombre;
+		this.idArticulo  = idArticulo;
+		this.sinIva      = conIva;
+		this.importes    = new Totales();
+		this.costo       = costo;
+		this.tipoDeCambio= tipoDeCambio;
+		toCalculate();
 	}
 
 	public String getNombre() {
@@ -47,22 +56,6 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Serializable
 		this.nombre=nombre;
 	}
 
-	public Double getSubTotal() {
-		return subTotal;
-	}
-
-	public void setSubTotal(Double subTotal) {
-		this.subTotal=subTotal;
-	}
-
-	public Double getImporte() {
-		return importe;
-	}
-
-	public void setImporte(Double importe) {
-		this.importe=importe;
-	}
-
 	public UISelectEntity getIdEntity() {
 		return idEntity;
 	}
@@ -71,9 +64,66 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Serializable
 		this.idEntity=idEntity;
 	}
 
+	public boolean isConIva() {
+		return sinIva;
+	}
+
+	public Totales getImportes() {
+		return importes;
+	}
+	
 	@Override
 	public Class toHbmClass() {
 		return TcManticOrdenesDetallesDto.class;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash=3;
+		hash=19*hash+Objects.hashCode(this.idArticulo);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this==obj) {
+			return true;
+		}
+		if (obj==null) {
+			return false;
+		}
+		if (getClass()!=obj.getClass()) {
+			return false;
+		}
+		final Articulo other=(Articulo) obj;
+		if (!Objects.equals(this.idArticulo, other.idArticulo)) {
+			return false;
+		}
+		return true;
+	}
+
+	private void toCalculate() {
+		double costoModena= this.costo* this.tipoDeCambio;
+		double costoReal  = this.getCantidad()* costoModena;
+		if(this.sinIva) {
+			this.setCosto(Numero.toRedondear(costoModena* (1- (this.getIva()/ 100))));
+		  this.importes.setImporte(Numero.toRedondear(this.getCantidad()* this.getCosto()));
+		} // if
+		else
+			this.importes.setImporte(Numero.toRedondear(this.getCantidad()* costoModena));
+		this.importes.setIva(Numero.toRedondear((this.getIva()/ 100)* (this.sinIva? costoReal: this.importes.getImporte())));
+		Descuentos descuentos= new Descuentos(this.importes.getImporte());
+		this.importes.setDescuento(Numero.toRedondear(descuentos.toImporte(this.getDescuento())));
+		this.importes.setExtra(Numero.toRedondear(descuentos.toImporte(this.getExtras())));
+		this.importes.setSubTotal(Numero.toRedondear(this.importes.getImporte()- this.importes.getDescuento()- this.importes.getExtra()));
+		this.importes.setTotal(Numero.toRedondear(this.importes.getSubTotal()+ this.importes.getIva()));
+		this.setImporte(Numero.toRedondear(this.importes.getTotal()));
+	}
+
+	public void toCalculate(boolean sinIva, double tipoDeCambio) {
+		this.sinIva      = sinIva;
+		this.tipoDeCambio= tipoDeCambio;
+		this.toCalculate();
 	}
 	
 }

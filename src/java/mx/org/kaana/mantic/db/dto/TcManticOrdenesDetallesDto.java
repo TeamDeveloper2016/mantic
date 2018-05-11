@@ -48,8 +48,8 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
   private Long idArticulo;
   @Column (name="codigo")
   private String codigo;
-  @Column (name="sat")
-  private String sat;
+  @Column (name="propio")
+  private String propio;
   @Column (name="importe")
   private Double importe;
   @Column (name="registro")
@@ -64,7 +64,7 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticOrdenesDetallesDto(Double costo, Double iva, String descuento, Long idOrdenCompra, String extras, Long cantidad, Long idOrdenDetalle, Long idArticulo, String codigo, String sat, Double importe) {
+  public TcManticOrdenesDetallesDto(Double costo, Double iva, String descuento, Long idOrdenCompra, String extras, Long cantidad, Long idOrdenDetalle, Long idArticulo, String codigo, String propio, Double importe) {
     setCosto(costo);
     setIva(iva);
     setDescuento(descuento);
@@ -74,7 +74,7 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
     setIdOrdenDetalle(idOrdenDetalle);
     setIdArticulo(idArticulo);
     setCodigo(codigo);
-    setSat(sat);
+    setPropio(propio);
     setImporte(importe);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
@@ -151,12 +151,12 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
 		this.codigo=codigo;
 	}
 
-	public String getSat() {
-		return sat;
+	public String getPropio() {
+		return propio;
 	}
 
-	public void setSat(String sat) {
-		this.sat=sat;
+	public void setPropio(String propio) {
+		this.propio=propio;
 	}
 
   public void setImporte(Double importe) {
@@ -208,7 +208,7 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCodigo());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getSat());
+		regresar.append(getPropio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImporte());
 		regresar.append(Constantes.SEPARADOR);
@@ -229,7 +229,7 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
 		regresar.put("idOrdenDetalle", getIdOrdenDetalle());
 		regresar.put("idArticulo", getIdArticulo());
 		regresar.put("codigo", getCodigo());
-		regresar.put("sat", getSat());
+		regresar.put("propio", getPropio());
 		regresar.put("importe", getImporte());
 		regresar.put("registro", getRegistro());
   	return regresar;
@@ -238,7 +238,7 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getCosto(), getIva(), getDescuento(), getIdOrdenCompra(), getExtras(), getCantidad(), getIdOrdenDetalle(), getIdArticulo(), getCodigo(), getSat(), getImporte(), getRegistro()
+      getCosto(), getIva(), getDescuento(), getIdOrdenCompra(), getExtras(), getCantidad(), getIdOrdenDetalle(), getIdArticulo(), getCodigo(), getPropio(), getImporte(), getRegistro()
     };
     return regresar;
   }
