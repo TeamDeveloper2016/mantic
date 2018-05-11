@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.almacenes.bean.AlmacenDomicilio;
@@ -12,6 +14,7 @@ import mx.org.kaana.mantic.catalogos.almacenes.bean.AlmacenTipoContacto;
 import mx.org.kaana.mantic.catalogos.almacenes.bean.AlmacenUbicacion;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesDto;
+import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 
 public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializable {
 	
@@ -34,8 +37,14 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 	} // toAlmacen
 	
 	public List<AlmacenDomicilio> toAlmacenesDomicilio() throws Exception {
+		return toAlmacenesDomicilio(false);
+	} // toAlmacenesDomicilio
+	
+	public List<AlmacenDomicilio> toAlmacenesDomicilio(boolean update) throws Exception {
 		List<AlmacenDomicilio> regresar= null;
 		Map<String, Object>params      = null;
+		TcManticDomiciliosDto domicilio= null;
+		Entity entityDomicilio         = null;
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_almacen=" + this.idAlmacen);
@@ -44,6 +53,21 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 				almacenDomicilio.setIdLocalidad(toLocalidad(almacenDomicilio.getIdDomicilio()));
 				almacenDomicilio.setIdMunicipio(toMunicipio(almacenDomicilio.getIdLocalidad().getKey()));
 				almacenDomicilio.setIdEntidad(toEntidad(almacenDomicilio.getIdMunicipio().getKey()));
+				if(update){
+					domicilio= toDomicilio(almacenDomicilio.getIdDomicilio());
+					almacenDomicilio.setCalle(domicilio.getCalle());
+					almacenDomicilio.setCodigoPostal(domicilio.getCodigoPostal());
+					almacenDomicilio.setColonia(domicilio.getAsentamiento());
+					almacenDomicilio.setEntreCalle(domicilio.getEntreCalle());
+					almacenDomicilio.setyCalle(domicilio.getYcalle());
+					almacenDomicilio.setExterior(domicilio.getNumeroExterior());
+					almacenDomicilio.setInterior(domicilio.getNumeroInterior());
+					entityDomicilio= new Entity(almacenDomicilio.getIdDomicilio());
+					entityDomicilio.put("idEntidad", new Value("idEntidad", almacenDomicilio.getIdEntidad().getKey()));
+					entityDomicilio.put("idMunicipio", new Value("idMunicipio", almacenDomicilio.getIdMunicipio().getKey()));
+					entityDomicilio.put("idLocalidad", new Value("idLocalidad", almacenDomicilio.getIdLocalidad().getKey()));
+					almacenDomicilio.setDomicilio(entityDomicilio);
+				} // if
 			} // for
 		} // try
 		catch (Exception e) {		
