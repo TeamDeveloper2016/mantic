@@ -9,6 +9,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.mantic.catalogos.clientes.bean.Domicilio;
@@ -155,12 +156,13 @@ public class RegistroAlmacen implements Serializable{
 	private void initCollections(MotorBusqueda motor) throws Exception{
 		int count= 0;
 		try {
-			this.almacenDomicilio= motor.toAlmacenesDomicilio();
+			this.almacenDomicilio= motor.toAlmacenesDomicilio(true);
 			for(AlmacenDomicilio almacenDomicilio: this.almacenDomicilio){
 				count++;
 				almacenDomicilio.setConsecutivo(Long.valueOf(count));
 			} // for				
 			this.almacenTiposContacto= motor.toAlmacenesTipoContacto();
+			this.almacenUbicacion= motor.toAlmacenUbicacion();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);			
@@ -208,13 +210,20 @@ public class RegistroAlmacen implements Serializable{
 			this.domicilioPivote= new Domicilio();
 			this.domicilioPivote.setIdTipoDomicilio(pivote.getIdTipoDomicilio());
 			this.domicilioPivote.setPrincipal(pivote.getIdPrincipal().equals(1L));	
-			this.domicilioPivote.setIdDomicilio(pivote.getIdDomicilio());
-			this.domicilioPivote.setDomicilio(new Entity(pivote.getIdDomicilio()));
+			this.domicilioPivote.setIdDomicilio(pivote.getDomicilio().getKey());
+			this.domicilioPivote.setDomicilio(pivote.getDomicilio());
 			this.domicilioPivote.setIdEntidad(pivote.getIdEntidad());
 			this.domicilioPivote.setIdMunicipio(pivote.getIdMunicipio());
 			this.domicilioPivote.setLocalidad(pivote.getIdLocalidad());
 			this.domicilioPivote.setIdLocalidad(pivote.getIdLocalidad().getKey());
 			this.domicilioPivote.setCodigoPostal(pivote.getCodigoPostal());
+			this.domicilioPivote.setCalle(pivote.getCalle());
+			this.domicilioPivote.setNumeroExterior(pivote.getExterior());
+			this.domicilioPivote.setNumeroInterior(pivote.getInterior());
+			this.domicilioPivote.setAsentamiento(pivote.getColonia());
+			this.domicilioPivote.setEntreCalle(pivote.getEntreCalle());
+			this.domicilioPivote.setYcalle(pivote.getyCalle());
+			this.domicilioPivote.setNuevoCp(pivote.getCodigoPostal()!= null && !Cadena.isVacio(pivote.getCodigoPostal()));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -242,18 +251,23 @@ public class RegistroAlmacen implements Serializable{
 					record.setIdPrincipal(0L);
 			} // if
 			almacenDomicilio.setIdPrincipal(this.domicilio.getPrincipal() ? 1L : 2L);
-			if(this.domicilio.getIdDomicilio().equals(-1L))
-				almacenDomicilio.setIdDomicilio(registrarDomicilio());
-			else
-				almacenDomicilio.setIdDomicilio(this.domicilio.getIdDomicilio());
+			almacenDomicilio.setDomicilio(this.domicilio.getDomicilio());
+			almacenDomicilio.setIdDomicilio(this.domicilio.getDomicilio().getKey());
 			almacenDomicilio.setIdUsuario(JsfBase.getIdUsuario());
 			almacenDomicilio.setIdTipoDomicilio(this.domicilio.getIdTipoDomicilio());
 			if(!actualizar)
 				almacenDomicilio.setConsecutivo(this.almacenDomicilio.size() + 1L);
 			almacenDomicilio.setIdEntidad(this.domicilio.getIdEntidad());
 			almacenDomicilio.setIdMunicipio(this.domicilio.getIdMunicipio());
-			almacenDomicilio.setCodigoPostal(this.domicilio.getCodigoPostal());
 			almacenDomicilio.setIdLocalidad(this.domicilio.getLocalidad());
+			almacenDomicilio.setCodigoPostal(this.domicilio.getCodigoPostal());
+			almacenDomicilio.setCalle(this.domicilio.getCalle());
+			almacenDomicilio.setExterior(this.domicilio.getNumeroExterior());
+			almacenDomicilio.setInterior(this.domicilio.getNumeroInterior());
+			almacenDomicilio.setEntreCalle(this.domicilio.getEntreCalle());
+			almacenDomicilio.setyCalle(this.domicilio.getYcalle());
+			almacenDomicilio.setColonia(this.domicilio.getAsentamiento());
+			almacenDomicilio.setNuevoCp(this.domicilio.getCodigoPostal()!= null && !Cadena.isVacio(this.domicilio.getCodigoPostal()));
 		} // try
 		catch (Exception e) {			
 			throw e;
