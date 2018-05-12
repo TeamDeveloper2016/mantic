@@ -18,6 +18,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorCondicionPago;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorContactoAgente;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorDomicilio;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
@@ -28,6 +29,7 @@ import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticPersonaTipoContactoDto;
+import mx.org.kaana.mantic.db.dto.TrManticProveedorPagoDto;
 import mx.org.kaana.mantic.db.dto.TrManticProveedoresAgentesDto;
 import mx.org.kaana.mantic.enums.ETipoPersona;
 import org.apache.commons.logging.Log;
@@ -91,8 +93,9 @@ public class Transaccion extends IBaseTnx {
         idProveedor = DaoFactory.getInstance().insert(sesion, this.registroProveedor.getProveedor());
         if (registraProveedoresDomicilios(sesion, idProveedor)) {
           if (registraProveedoresAgentes(sesion, idProveedor)) {
-            regresar = registraProveedoresTipoContacto(sesion, idProveedor);
-          }
+            if(registraProveedoresTipoContacto(sesion, idProveedor))
+							regresar= registraProveedoresFormaPago(sesion, idProveedor);
+          } // if
         } // if
       } // if
     } // try
@@ -110,7 +113,8 @@ public class Transaccion extends IBaseTnx {
       if (registraProveedoresDomicilios(sesion, idProveedor)) {
         if (registraProveedoresAgentes(sesion, idProveedor)) {
           if (registraProveedoresTipoContacto(sesion, idProveedor)) {
-            regresar = DaoFactory.getInstance().update(sesion, this.registroProveedor.getProveedor()) >= 1L;
+						if(registraProveedoresFormaPago(sesion, idProveedor))
+							regresar = DaoFactory.getInstance().update(sesion, this.registroProveedor.getProveedor()) >= 1L;
           }
         } // if
       } // if
@@ -130,7 +134,8 @@ public class Transaccion extends IBaseTnx {
       if (DaoFactory.getInstance().deleteAll(sesion, TrManticProveedorDomicilioDto.class, params) > -1L) {
         if (DaoFactory.getInstance().deleteAll(sesion, TrManticProveedoresAgentesDto.class, params) > -1L) {
           if (DaoFactory.getInstance().deleteAll(sesion, TrManticProveedorTipoContactoDto.class, params) > -1L) {
-            regresar = DaoFactory.getInstance().delete(sesion, TcManticProveedoresDto.class, this.registroProveedor.getIdProveedor()) >= 1L;
+            if(DaoFactory.getInstance().deleteAll(sesion, TrManticProveedorPagoDto.class, params)> -1L)
+						  regresar = DaoFactory.getInstance().delete(sesion, TcManticProveedoresDto.class, this.registroProveedor.getIdProveedor()) >= 1L;
           }
         } // if
       } // if
@@ -336,15 +341,54 @@ public class Transaccion extends IBaseTnx {
     } // finally
     return regresar;
   } // registraProveedoresTipoContacto
+	
+  private boolean registraProveedoresFormaPago(Session sesion, Long idProveedor) throws Exception {
+    TrManticProveedorPagoDto dto = null;
+    ESql sqlAccion = null;
+    int count = 0;
+    boolean validate = false;
+    boolean regresar = false;
+    try {
+      for (ProveedorCondicionPago proveedorCondicionPago : this.registroProveedor.getProveedoresCondicionPago()) {
+				if(proveedorCondicionPago.getDescuento()!= null && !Cadena.isVacio(proveedorCondicionPago.getDescuento())){
+					proveedorCondicionPago.setIdProveedor(idProveedor);
+					proveedorCondicionPago.setIdUsuario(JsfBase.getIdUsuario());
+					dto = (TrManticProveedorPagoDto) proveedorCondicionPago;
+					sqlAccion = proveedorCondicionPago.getSqlAccion();
+					switch (sqlAccion) {
+						case INSERT:
+							dto.setIdProveedorPago(-1L);
+							validate = registrar(sesion, dto);
+							break;
+						case UPDATE:
+							validate = actualizar(sesion, dto);
+							break;
+					} // switch
+				} // if
+				else
+					validate= true;
+        if (validate) {
+          count++;
+        }
+      } // for		
+      regresar = count == this.registroProveedor.getProveedoresCondicionPago().size();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      this.messageError = "Error al registrar los tipos de pago, verifique que no haya duplicados";
+    } // finally
+    return regresar;
+  } // registraProveedoresTipoContacto
 
   private boolean eliminarRegistros(Session sesion) throws Exception {
     boolean regresar = true;
     int count = 0;
     try {
       for (IBaseDto dto : this.registroProveedor.getDeleteList()) {
-        if (DaoFactory.getInstance().delete(sesion, dto) >= 1L) {
+        if (DaoFactory.getInstance().delete(sesion, dto) >= 1L) 
           count++;
-        }
       } // for
       regresar = count == this.registroProveedor.getDeleteList().size();
     } // try
