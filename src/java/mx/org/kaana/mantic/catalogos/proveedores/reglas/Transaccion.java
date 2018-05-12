@@ -10,20 +10,26 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.proveedores.beans.Agente;
-import mx.org.kaana.mantic.catalogos.proveedores.beans.CondicionPago;
-import mx.org.kaana.mantic.catalogos.proveedores.beans.Contacto;
-import mx.org.kaana.mantic.catalogos.proveedores.beans.Domicilio;
-import mx.org.kaana.mantic.catalogos.proveedores.beans.Responsable;
+import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorContactoAgente;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorDomicilio;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.RegistroProveedor;
+import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
+import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorDomicilioDto;
-import mx.org.kaana.mantic.db.dto.TrManticProveedorPagoDto;
-import mx.org.kaana.mantic.db.dto.TrManticProveedorPersonaDto;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorTipoContactoDto;
+import mx.org.kaana.mantic.db.dto.TrManticPersonaTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticProveedoresAgentesDto;
+import mx.org.kaana.mantic.enums.ETipoPersona;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -31,233 +37,397 @@ import org.hibernate.Session;
 public class Transaccion extends IBaseTnx {
 
   private static final Log LOG = LogFactory.getLog(Transaccion.class);
-  
-  private TcManticProveedoresDto tcMantiProveedorDto;
-  private List<Domicilio> domicilios;
-  private List<Agente> agentes;
-  private List<Contacto> contactos;
-  private List<CondicionPago> condicionPago;
-  private List<Responsable> responsables;
-  private List<IBaseDto> eliminados; 
-  private IBaseDto dtoSingleDepura; 
-  
-  private String notificacion; 
-  
-  public Transaccion (IBaseDto dtoSingleDepura ) {
-    this.dtoSingleDepura = dtoSingleDepura;
-  }
-  
-  public Transaccion (TcManticProveedoresDto tcMantiProveedorDto) {
-     this.tcMantiProveedorDto = tcMantiProveedorDto;
-  }
-  
-  public Transaccion (TcManticProveedoresDto tcMantiProveedorDto, List<Domicilio> domicilios, List<Agente> agentes,List<Contacto> contactos, List<CondicionPago> condicionPago,List<Responsable> responsables) {
-    this(tcMantiProveedorDto,domicilios,agentes,contactos,condicionPago,responsables,null);
-  }
-  
-  public Transaccion (TcManticProveedoresDto tcMantiProveedorDto, List<Domicilio> domicilios, List<Agente> agentes,List<Contacto> contactos, List<CondicionPago> condicionPago,List<Responsable> responsables, List<IBaseDto> eliminados) {
-    this.tcMantiProveedorDto =tcMantiProveedorDto;
-    this.domicilios = domicilios;
-    this.agentes = agentes;
-    this.contactos  = contactos;
-    this.condicionPago = condicionPago;
-    this.responsables = responsables; 
-    this.eliminados = eliminados;
+  private static final String ESTILO= "sentinel";
+	private IBaseDto dto;
+	private RegistroProveedor registroProveedor;
+	private String messageError;
+	
+	public Transaccion(IBaseDto dto) {
+		this.dto= dto;
+	}
+	
+  public Transaccion(RegistroProveedor registroProveedor) {
+    this.registroProveedor= registroProveedor;
   }
 
   @Override
   protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
     boolean regresar = false;
-    switch (accion) {
-      case AGREGAR:
-        agregar(sesion);
-      break;  
-      case MODIFICAR:
-        actualizar(sesion);
-      break;  
-      case ELIMINAR:
-        eliminar(sesion);
-      break;
-      case DEPURAR:
-        regresar = DaoFactory.getInstance().delete(sesion,this.dtoSingleDepura)>=0L;
-      break;  
-    } // switch
+    try {
+			if(this.registroProveedor!= null)
+				this.registroProveedor.getProveedor().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      switch (accion) {
+        case AGREGAR:
+          regresar = procesarProveedor(sesion);
+          break;
+        case MODIFICAR:
+          regresar = actualizarProveedor(sesion);
+          break;
+        case ELIMINAR:
+          regresar = eliminarProveedor(sesion);
+          break;
+				case DEPURAR:
+					regresar= DaoFactory.getInstance().delete(sesion, this.dto)>= 1L;
+					break;
+      } // switch
+      if (!regresar) {
+        throw new Exception(this.messageError);
+      }
+    } // try
+    catch (Exception e) {
+      throw new Exception(this.messageError);
+    } // catch		
     return regresar;
-  }
-
-  private void procesaTodosEliminados (Session session) throws Exception {
+  } // ejecutar
+	
+	private boolean procesarProveedor(Session sesion) throws Exception {
+    boolean regresar = false;
+    Long idProveedor = -1L;
     try {
-       for (IBaseDto record : this.eliminados) {
-         DaoFactory.getInstance().delete(session, record);
-       }// for
-    } // try
-    catch (Exception e) {
-      throw e;
-    }// catch
-  }
-  
-  private void procesaCondicionPagos(Session session, Long idProveedor) throws Exception {
-    try {
-      for (CondicionPago condicionPago : this.condicionPago) {
-        switch(condicionPago.getAccion()){
-          case INSERT:
-             condicionPago.setIdProveedor(idProveedor);             
-             DaoFactory.getInstance().insert(session, condicionPago);
-          break;  
-          case UPDATE :
-           condicionPago.setIdUsuario(this.tcMantiProveedorDto.getIdUsuario());
-           DaoFactory.getInstance().update(session,condicionPago);         
-        } // switch       
-      }// for
-    } // try
-    catch (Exception e) {      
-      throw e;
-    } // catch
-  }
-  private void procesaResponsables(Session session, Long idProveedor) throws Exception {
-    try {
-      for (Responsable responsable : this.responsables) {
-        switch(responsable.getAccion()){
-          case INSERT:
-             responsable.setIdProveedor(idProveedor);
-             DaoFactory.getInstance().insert(session, responsable);
-          break;  
-          case UPDATE :
-            responsable.setIdUsuario(this.tcMantiProveedorDto.getIdUsuario());
-            DaoFactory.getInstance().update(session,responsable);         
-        } // switch       
-      }// for
-    } // try
-    catch (Exception e) {
-      
-      throw e;
-    } // catch
-  }
-  
-  private void procesaContacto(Session session, Long idProveedor) throws Exception {
-    try {
-      for (Contacto contacto : this.contactos) {
-        switch(contacto.getAccion()){
-          case INSERT:
-             contacto.setIdProveedor(idProveedor);
-             DaoFactory.getInstance().insert(session, contacto);
-          break;  
-          case UPDATE :
-            contacto.setIdUsuario(this.tcMantiProveedorDto.getIdUsuario());
-            DaoFactory.getInstance().update(session,contacto);         
-        } // switch       
-      }// for
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch
-  }
-  
-   private void procesaAgentes(Session session, Long idProveedor) throws Exception {
-    try {
-      for (Agente agente : this.agentes) {
-        switch(agente.getAccion()){
-          case INSERT:
-             agente.setIdProveedor(idProveedor);
-             DaoFactory.getInstance().insert(session, agente);
-          break;  
-          case UPDATE :
-            agente.setIdUsuario(tcMantiProveedorDto.getIdUsuario());
-            DaoFactory.getInstance().update(session,agente);   
-          break;  
-        } // switch       
-      }// for
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch
-  }
-  
-  private void procesaDomicilios(Session session, Long idProveedor) throws Exception {
-    try {
-      for (Domicilio domicilio : this.domicilios) {
-        switch(domicilio.getAccion()){
-          case INSERT:
-             domicilio.setIdProveedor(idProveedor);
-             if (domicilio.getIdDomicilio().equals(-1L)){
-               DaoFactory.getInstance().insert(session,domicilio.getTcManticDomicilioDto()); 
-               domicilio.setIdDomicilio(domicilio.getTcManticDomicilioDto().getIdDomicilio());
-             }  
-             DaoFactory.getInstance().insert(session, domicilio);
-          break;  
-          case UPDATE :            
-            domicilio.setIdUsuario(tcMantiProveedorDto.getIdUsuario());
-            DaoFactory.getInstance().update(session,domicilio);         
-            DaoFactory.getInstance().update(session,domicilio.getTcManticDomicilioDto());         
-        } // switch       
-      }// for
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch
-  }
-
-  private void agregar(Session session) throws Exception {
-    Long idProveedor = null;
-    try {
-      LOG.info("Agregando provedor[".concat(this.tcMantiProveedorDto.toMap().toString()).concat("]"));
-      idProveedor = DaoFactory.getInstance().insert(session, this.tcMantiProveedorDto);
-      if (idProveedor >= 1L) {
-        LOG.info("Agregando domicilios[".concat(this.domicilios.toString()).concat("]"));
-        procesaDomicilios(session, idProveedor);
-        LOG.info("Agregando agentes[".concat(this.agentes.toString()).concat("]"));
-        procesaAgentes(session, idProveedor);
-        LOG.info("Agregando condicionPagos[".concat(this.domicilios.toString()).concat("]"));
-        procesaCondicionPagos(session, idProveedor);
-        LOG.info("Agregando contactos[".concat(this.domicilios.toString()).concat("]"));
-        procesaContacto(session, idProveedor);
-        LOG.info("Agregando responsables[".concat(this.responsables.toString()).concat("]"));
-        procesaResponsables(session,idProveedor);
+      this.messageError = "Error al registrar el articulo";
+      if (eliminarRegistros(sesion)) {
+        this.registroProveedor.getProveedor().setIdUsuario(JsfBase.getIdUsuario());
+        this.registroProveedor.getProveedor().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+        idProveedor = DaoFactory.getInstance().insert(sesion, this.registroProveedor.getProveedor());
+        if (registraProveedoresDomicilios(sesion, idProveedor)) {
+          if (registraProveedoresAgentes(sesion, idProveedor)) {
+            regresar = registraProveedoresTipoContacto(sesion, idProveedor);
+          }
+        } // if
       } // if
     } // try
     catch (Exception e) {
       throw e;
-    }// catch    
-  } 
-  
-  private void actualizar(Session session) throws Exception {
-    Long idProveedor = null;
+    } // catch		
+    return regresar;
+  } // procesarProveedor
+
+  private boolean actualizarProveedor(Session sesion) throws Exception {
+    boolean regresar = false;
+    Long idProveedor = -1L;
     try {
-      LOG.info("Actualizando[".concat(this.tcMantiProveedorDto.toMap().toString() ).concat("]"));
-      idProveedor = DaoFactory.getInstance().update(session, this.tcMantiProveedorDto);
-      if (idProveedor >= 1L) {
-        procesaDomicilios(session, idProveedor);
-        procesaAgentes(session, idProveedor);
-        procesaCondicionPagos(session, idProveedor);
-        procesaContacto(session, idProveedor);
-        procesaResponsables(session, idProveedor);
-        procesaTodosEliminados(session);
-      } // if      
+      idProveedor = this.registroProveedor.getIdProveedor();
+      if (registraProveedoresDomicilios(sesion, idProveedor)) {
+        if (registraProveedoresAgentes(sesion, idProveedor)) {
+          if (registraProveedoresTipoContacto(sesion, idProveedor)) {
+            regresar = DaoFactory.getInstance().update(sesion, this.registroProveedor.getProveedor()) >= 1L;
+          }
+        } // if
+      } // if
     } // try
     catch (Exception e) {
       throw e;
-    }// catch    
-  }
-  
-  private void eliminar (Session session) throws Exception {
-    Map<String,Object>  params = null;
+    } // catch		
+    return regresar;
+  } // actualizarProveedor
+
+  private boolean eliminarProveedor(Session sesion) throws Exception {
+    boolean regresar = false;
+    Map<String, Object> params = null;
     try {
       params = new HashMap<>();
-      LOG.info("Eliminando prioveedor[".concat( this.tcMantiProveedorDto.getKey().toString()).concat("]"));
-      params.put("idProveedor", this.tcMantiProveedorDto.getKey());
-      DaoFactory.getInstance().deleteAll(session, TrManticProveedorDomicilioDto.class, params);
-      DaoFactory.getInstance().deleteAll(session, TrManticProveedorPersonaDto.class, params);
-      DaoFactory.getInstance().deleteAll(session, TrManticProveedorTipoContactoDto.class, params);
-      DaoFactory.getInstance().deleteAll(session, TrManticProveedorPagoDto.class, params);
-      DaoFactory.getInstance().deleteAll(session, TrManticProveedoresAgentesDto.class, params);
-      DaoFactory.getInstance().delete(session,TcManticProveedoresDto.class, this.tcMantiProveedorDto.getKey());      
+      params.put("idProveedor", this.registroProveedor.getIdProveedor());
+      if (DaoFactory.getInstance().deleteAll(sesion, TrManticProveedorDomicilioDto.class, params) > -1L) {
+        if (DaoFactory.getInstance().deleteAll(sesion, TrManticProveedoresAgentesDto.class, params) > -1L) {
+          if (DaoFactory.getInstance().deleteAll(sesion, TrManticProveedorTipoContactoDto.class, params) > -1L) {
+            regresar = DaoFactory.getInstance().delete(sesion, TcManticProveedoresDto.class, this.registroProveedor.getIdProveedor()) >= 1L;
+          }
+        } // if
+      } // if
     } // try
     catch (Exception e) {
       throw e;
-    } // catch
+    } // catch		
     finally {
       Methods.clean(params);
-    }
-  }
+    } // finally
+    return regresar;
+  } // eliminarProveedor
 
+  private boolean registraProveedoresDomicilios(Session sesion, Long idProveedor) throws Exception {
+    TrManticProveedorDomicilioDto dto = null;
+    ESql sqlAccion = null;
+    int count = 0;
+    int countPrincipal = 0;
+    boolean validate = false;
+    boolean regresar = false;
+    try {
+			if(this.registroProveedor.getProveedoresDomicilio().size()== 1)
+					this.registroProveedor.getProveedoresDomicilio().get(0).setIdPrincipal(1L);
+      for (ProveedorDomicilio proveedorDomicilio : this.registroProveedor.getProveedoresDomicilio()) {								
+				if(proveedorDomicilio.getIdPrincipal().equals(1L))
+					countPrincipal++;
+				if(countPrincipal== 0 && this.registroProveedor.getProveedoresDomicilio().size()-1 == count)
+					proveedorDomicilio.setIdPrincipal(1L);
+        proveedorDomicilio.setIdProveedor(idProveedor);
+        proveedorDomicilio.setIdUsuario(JsfBase.getIdUsuario());
+				proveedorDomicilio.setIdDomicilio(toIdDomicilio(sesion, proveedorDomicilio));		
+        dto = (TrManticProveedorDomicilioDto) proveedorDomicilio;
+        sqlAccion = proveedorDomicilio.getSqlAccion();
+        switch (sqlAccion) {
+          case INSERT:
+            dto.setIdProveedorDomicilio(-1L);
+            validate = registrar(sesion, dto);
+            break;
+          case UPDATE:
+            validate = actualizar(sesion, dto);
+            break;
+        } // switch
+        if (validate) {
+          count++;
+        }
+      } // for		
+      regresar = count == this.registroProveedor.getProveedoresDomicilio().size();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      this.messageError = "Error al registrar los domicilios, verifique que no haya duplicados";
+    } // finally
+    return regresar;
+  } // registraProveedoresDomicilios
+
+  private boolean registraProveedoresAgentes(Session sesion, Long idProveedor) throws Exception {
+    TrManticProveedoresAgentesDto dto = null;
+    ESql sqlAccion = null;
+    int count = 0;
+    int countPrincipal = 0;
+    boolean validate = false;
+    boolean regresar = false;
+    try {
+			if(this.registroProveedor.getPersonasTiposContacto().size()== 1)
+					this.registroProveedor.getPersonasTiposContacto().get(0).setIdPrincipal(1L);
+      for (ProveedorContactoAgente proveedorRepresentante : this.registroProveedor.getPersonasTiposContacto()) {
+				if(proveedorRepresentante.getIdPrincipal().equals(1L))
+					countPrincipal++;
+				if(countPrincipal== 0 && this.registroProveedor.getPersonasTiposContacto().size()-1 == count)
+					proveedorRepresentante.setIdPrincipal(1L);
+        proveedorRepresentante.setIdProveedor(idProveedor);
+        proveedorRepresentante.setIdUsuario(JsfBase.getIdUsuario());
+        proveedorRepresentante.setIdAgente(addAgente(sesion, proveedorRepresentante));
+        dto = (TrManticProveedoresAgentesDto) proveedorRepresentante;
+        sqlAccion = proveedorRepresentante.getSqlAccion();
+        switch (sqlAccion) {
+          case INSERT:
+            dto.setIdProveedorAgente(-1L);
+            validate = registrar(sesion, dto);
+            break;
+          case UPDATE:
+            validate = actualizar(sesion, dto);
+            break;
+        } // switch
+        if (validate) {
+          count++;
+        }
+      } // for		
+      regresar = count == this.registroProveedor.getPersonasTiposContacto().size();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      this.messageError = "Error al registrar los representantes, verifique que no haya duplicados";
+    } // finally
+    return regresar;
+  } // registraProveedoresAgentes
+	
+	private Long addAgente(Session sesion, ProveedorContactoAgente proveedorAgente) throws Exception{
+		Long regresar= -1L;
+		TcManticPersonasDto representante= null;
+		try {
+			representante= new TcManticPersonasDto();
+			representante.setNombres(proveedorAgente.getNombres());
+			representante.setPaterno(proveedorAgente.getPaterno());
+			representante.setMaterno(proveedorAgente.getMaterno());
+			representante.setIdTipoPersona(ETipoPersona.REPRESENTANTE_LEGAL.getIdTipoPersona());	
+			representante.setIdTipoSexo(1L);
+			representante.setEstilo(ESTILO);
+			representante.setIdPersonaTitulo(1L);		
+			regresar= DaoFactory.getInstance().insert(sesion, representante);
+			if(regresar > -1L)
+				registraPersonasTipoContacto(sesion, regresar, proveedorAgente.getContactos());
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			this.messageError = "Error al registrar los representantes, verifique que no haya duplicados";
+		} // finally
+		return regresar;
+	} // addRepresentante
+
+	private boolean registraPersonasTipoContacto(Session sesion, Long idPersona, List<PersonaTipoContacto> tiposContactos) throws Exception {
+    TrManticPersonaTipoContactoDto dto = null;
+    ESql sqlAccion = null;
+    int count = 0;
+    boolean validate = false;
+    boolean regresar = false;
+    try {
+      for (PersonaTipoContacto personaTipoContacto : tiposContactos) {
+				if(personaTipoContacto.getValor()!= null && !Cadena.isVacio(personaTipoContacto.getValor())){
+					personaTipoContacto.setIdPersona(idPersona);
+					personaTipoContacto.setIdUsuario(JsfBase.getIdUsuario());
+					personaTipoContacto.setOrden(count+1L);
+					dto = (TrManticPersonaTipoContactoDto) personaTipoContacto;
+					sqlAccion = personaTipoContacto.getSqlAccion();
+					switch (sqlAccion) {
+						case INSERT:
+							dto.setIdPersonaTipoContacto(-1L);
+							validate = registrar(sesion, dto);
+							break;
+						case UPDATE:
+							validate = actualizar(sesion, dto);
+							break;
+					} // switch
+				} // if
+				else
+					validate= true;
+        if (validate) 
+          count++;        
+      } // for		
+      regresar = count == tiposContactos.size();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      this.messageError = "Error al registrar los tipos de contacto, verifique que no haya duplicados";
+    } // finally
+    return regresar;
+  } // registraProveedoresTipoContacto
+	
+  private boolean registraProveedoresTipoContacto(Session sesion, Long idProveedor) throws Exception {
+    TrManticProveedorTipoContactoDto dto = null;
+    ESql sqlAccion = null;
+    int count = 0;
+    boolean validate = false;
+    boolean regresar = false;
+    try {
+      for (ProveedorTipoContacto proveedorTipoContacto : this.registroProveedor.getProveedoresTipoContacto()) {
+				if(proveedorTipoContacto.getValor()!= null && !Cadena.isVacio(proveedorTipoContacto.getValor())){
+					proveedorTipoContacto.setIdProveedor(idProveedor);
+					proveedorTipoContacto.setIdUsuario(JsfBase.getIdUsuario());
+					dto = (TrManticProveedorTipoContactoDto) proveedorTipoContacto;
+					sqlAccion = proveedorTipoContacto.getSqlAccion();
+					switch (sqlAccion) {
+						case INSERT:
+							dto.setIdProveedorTipoContacto(-1L);
+							validate = registrar(sesion, dto);
+							break;
+						case UPDATE:
+							validate = actualizar(sesion, dto);
+							break;
+					} // switch
+				} // if
+				else
+					validate= true;
+        if (validate) {
+          count++;
+        }
+      } // for		
+      regresar = count == this.registroProveedor.getProveedoresTipoContacto().size();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      this.messageError = "Error al registrar los tipos de contacto, verifique que no haya duplicados";
+    } // finally
+    return regresar;
+  } // registraProveedoresTipoContacto
+
+  private boolean eliminarRegistros(Session sesion) throws Exception {
+    boolean regresar = true;
+    int count = 0;
+    try {
+      for (IBaseDto dto : this.registroProveedor.getDeleteList()) {
+        if (DaoFactory.getInstance().delete(sesion, dto) >= 1L) {
+          count++;
+        }
+      } // for
+      regresar = count == this.registroProveedor.getDeleteList().size();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      this.messageError = "Error al eliminar registros";
+    } // finally
+    return regresar;
+  } // eliminarRegistros
+
+  private boolean registrar(Session sesion, IBaseDto dto) throws Exception {
+    return registrarSentencia(sesion, dto) >= 1L;
+  } // registrar
+  
+	private Long registrarSentencia(Session sesion, IBaseDto dto) throws Exception {
+    return DaoFactory.getInstance().insert(sesion, dto);
+  } // registrar
+
+  private boolean actualizar(Session sesion, IBaseDto dto) throws Exception {
+    return DaoFactory.getInstance().update(sesion, dto) >= 1L;
+  } // actualizar
+	
+	private Long toIdDomicilio(Session sesion, ProveedorDomicilio proveedorDomicilio) throws Exception{		
+		Entity entityDomicilio= null;
+		Long regresar= -1L;
+		try {
+			entityDomicilio= toDomicilio(sesion, proveedorDomicilio);
+			if(entityDomicilio!= null)
+				regresar= entityDomicilio.getKey();
+			else
+				regresar= insertDomicilio(sesion, proveedorDomicilio);					
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // registrarDomicilio	
+	
+	private Long insertDomicilio(Session sesion, ProveedorDomicilio proveedorDomicilio) throws Exception{
+		TcManticDomiciliosDto domicilio= null;
+		Long regresar= -1L;
+		try {
+			domicilio= new TcManticDomiciliosDto();
+			domicilio.setIdLocalidad(proveedorDomicilio.getIdLocalidad().getKey());
+			domicilio.setAsentamiento(proveedorDomicilio.getColonia());
+			domicilio.setCalle(proveedorDomicilio.getCalle());
+			domicilio.setCodigoPostal(proveedorDomicilio.getCodigoPostal());
+			domicilio.setEntreCalle(proveedorDomicilio.getEntreCalle());
+			domicilio.setIdUsuario(JsfBase.getIdUsuario());
+			domicilio.setNumeroExterior(proveedorDomicilio.getExterior());
+			domicilio.setNumeroInterior(proveedorDomicilio.getInterior());
+			domicilio.setYcalle(proveedorDomicilio.getyCalle());
+			regresar= DaoFactory.getInstance().insert(sesion, domicilio);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
+		return regresar;
+	} // insertDomicilio
+	
+	private Entity toDomicilio(Session sesion, ProveedorDomicilio proveedorDomicilio) throws Exception{
+		Entity regresar= null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idLocalidad", proveedorDomicilio.getIdLocalidad().getKey());
+			params.put("codigoPostal", proveedorDomicilio.getCodigoPostal());
+			params.put("calle", proveedorDomicilio.getCalle());
+			params.put("numeroExterior", proveedorDomicilio.getExterior());
+			params.put("numeroInterior", proveedorDomicilio.getInterior());
+			params.put("asentamiento", proveedorDomicilio.getColonia());
+			params.put("entreCalle", proveedorDomicilio.getEntreCalle());
+			params.put("yCalle", proveedorDomicilio.getyCalle());
+			regresar= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticDomiciliosDto", "domicilioExiste", params);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toDomicilio
 }
