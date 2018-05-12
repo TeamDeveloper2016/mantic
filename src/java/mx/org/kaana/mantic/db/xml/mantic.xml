@@ -508,6 +508,12 @@
         where      
           id_proveedor = {idProveedor} and id_proveedor_domicilio = {idProveedorDomicilio} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal}
       </select>
+			<select id="maximo">
+        select      
+          max(id_proveedor_domicilio) maximo
+        from      
+          tr_mantic_proveedor_domicilio
+      </select>	
       <delete id="rows">
          delete from tr_mantic_proveedor_domicilio where id_proveedor = {idProveedor}
       </delete>  
@@ -531,8 +537,14 @@
         where      
           id_proveedor_pago = {idProveedorPago} and id_proveedor = {idProveedor} and id_tipo_pago = {idTipoPago}
       </select>
+			<select id="maximo">
+        select      
+          max(id_proveedor_pago) maximo
+        from      
+          tr_mantic_proveedor_pago
+      </select>			
       <delete id="rows">
-        delete from tr_mantic_proveedor_pago  where id_proveedor = {idProveedor}
+        delete from tr_mantic_proveedor_pago where id_proveedor= {idProveedor}
       </delete>  
     </unit>
     <unit id="TrManticProveedorPersonaDto">
@@ -574,6 +586,12 @@
         where      
           id_proveedor = {idProveedor} and id_proveedor_tipo_contacto = {idProveedorTipoContacto} and id_tipo_contacto = {idTipoContacto}
       </select>
+			<select id="maximo">
+        select      
+          max(id_proveedor_tipo_contacto) maximo
+        from      
+          tr_mantic_proveedor_tipo_contacto
+      </select>
       <delete id="rows">
         delete from tr_mantic_proveedor_tipo_contacto  where  id_proveedor = {idProveedor}
       </delete>  
@@ -596,6 +614,12 @@
         where      
           id_proveedor = {idProveedor} and id_proveedor_agente = {idProveedorAgente} and id_principal = {idPrincipal} and id_agente = {idAgente}
       </select>
+			<select id="maximo">
+        select      
+          max(id_proveedor_agente) maximo
+        from      
+          tr_mantic_proveedores_agentes
+      </select>	
       <delete id="rows">
         delete from tr_mantic_proveedores_agentes where id_proveedor = {idProveedor}
       </delete>  
@@ -1512,7 +1536,8 @@
 	    <unit id="TcManticTiposPagosDto">
       <select id="row">
         select      
-          *
+					tc_mantic_tipos_pagos.id_tipo_pago as id_key,
+          tc_mantic_tipos_pagos.*
         from      
           tc_mantic_tipos_pagos
         where 
