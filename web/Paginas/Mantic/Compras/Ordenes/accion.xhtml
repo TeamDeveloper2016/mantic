@@ -19,16 +19,23 @@
 				'contenedorGrupos\\:dias'           : {validaciones: 'libre', mascara: 'entero', grupo: 'general'},
 				'contenedorGrupos\\:entregaEstimada': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
 				'contenedorGrupos\\:idGasto'        : {validaciones: 'libre', mascara: 'libre'},
-				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre'},			
-				'contenedorGrupos\\:nombre'         : {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo'},				
+				'contenedorGrupos\\:articulo'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo'},				
 				'contenedorGrupos\\:cantidad'       : {validaciones: 'entero|mayor({"cuanto": 1})', mascara: 'entero', grupo: 'articulo'},				
 				'contenedorGrupos\\:precio'         : {validaciones: 'flotante|mayor({"cuanto": 1})', mascara: 'flotante', grupo: 'articulo'},			
-				'contenedorGrupos\\:articulo'       : {validaciones: 'requerido|mayor({"cuanto": 1})', mascara: 'flotante', grupo: 'general'},			
-				'contenedorGrupos\\:total'          : {validaciones: 'requerido|mayor({"cuanto": 1})', mascara: 'flotante', grupo: 'general'}				
+				'contenedorGrupos\\:articulos'      : {validaciones: 'requerido|mayor({"cuanto": 1})', mascara: 'flotante', grupo: 'general'},			
+				'contenedorGrupos\\:total'          : {validaciones: 'requerido|mayor({"cuanto": 1})', mascara: 'flotante', grupo: 'general'},			
+				'janalImporte'                      : {validaciones: 'requerido|mayor({"cuanto": 1})', mascara: 'libre', grupo: 'general', multiple: '$'},
+				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}				
 			};			
 			
-			function execute() {
-				return janal.partial('general');
+			function checkMaxDescuentos(descuento, extra) {
+				var importeDescuento= janal.descuentos($('#'+ descuento)).suma;
+				var importeExtra    = janal.descuentos($('#'+ extra)).suma;
+				var total           = parseFloat(importeDescuento, 10)+ parseFloat(importeExtra, 10);
+				janal.clean();
+				if(total> 100) 
+					janal.info(descuento, 'El importe de los descuentos excede el 100% ['+ total+ ']');
+					//janal.warn();
 			}
 		</script>   
 	</ui:define>
@@ -128,22 +135,28 @@
 									<div class="ui-grid-col-4">
 										<p:outputLabel for="codigo" value="Código:"/><br/>
 										<p:inputText id="codigo" value="#{manticComprasOrdendesAccion.attrs.codigo}" styleClass="janal-wid-100-txt">
-											<p:ajax event="keyup" listener="#{manticComprasOrdendesAccion.doUpdateArticulos}" process="@this" update="nombre precio" onstart="return $('#contenedorGrupos\\:codigo').val().trim().length&gt; 0"/>
+											<p:ajax event="keyup" listener="#{manticComprasOrdendesAccion.doUpdateArticulos}" process="@this" update="articulo precio" onstart="return $('#contenedorGrupos\\:codigo').val().trim().length&gt; 0"/>
 										</p:inputText>
 									</div>
-									<div class="ui-grid-col-4">
+									<div class="ui-grid-col-3">
 										<p:outputLabel for="cantidad" value="Cantidad:"/><br/>
-										<p:inputText id="cantidad" value="#{manticComprasOrdendesAccion.attrs.cantidad}" styleClass="janal-wid-100-txt janal-column-right" converter="javax.faces.Long"/> 
+										<p:inputText id="cantidad" value="#{manticComprasOrdendesAccion.attrs.cantidad}" styleClass="janal-wid-100-txt janal-column-right" converter="javax.faces.Long"/>
 									</div>
 									<div class="ui-grid-col-4">
 										<p:outputLabel for="precio" value="Precio:"/><br/>
-										<p:inputText id="precio" value="#{manticComprasOrdendesAccion.attrs.precio}" styleClass="janal-wid-100-txt janal-column-right" converter="javax.faces.Double"/> 
+										<p:inputText id="precio" value="#{manticComprasOrdendesAccion.attrs.precio}" styleClass="janal-wid-100-txt janal-column-right" converter="javax.faces.Double"> 
+											<p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateDiferencia}" process="@this" update="diferencia"/>
+										</p:inputText>	
+									</div>
+									<div class="ui-grid-col-1 janal-column-right">
+										<p:outputLabel for="diferencia" value="Diferencia:"/><br/>
+										<h:outputText id="diferencia" value=" #{manticComprasOrdendesAccion.attrs.diferencia} %" styleClass="janal-wid-100-txt janal-font-bold #{manticComprasOrdendesAccion.attrs.diferencia lt -5? 'janal-color-red': manticComprasOrdendesAccion.attrs.diferencia gt 5? 'janal-color-blue': 'janal-color-green'}"/>
 									</div>
 								</div>
 								<div class="ui-grid-row janal-grid-row">
-									<div class="ui-grid-col-12">
-										<p:outputLabel for="nombre" value="Código - descripción [$ último precio]:"/><br/>
-										<p:selectOneMenu id="nombre" value="#{manticComprasOrdendesAccion.attrs.articulo}" var="item" styleClass="janal-wid-98" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="startsWith">
+									<div class="ui-grid-col-10">
+										<p:outputLabel for="articulo" value="Articulos:"/><br/>
+										<p:selectOneMenu id="articulo" value="#{manticComprasOrdendesAccion.attrs.articulo}" var="item" styleClass="janal-wid-98" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="startsWith">
 											<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdatePrecio}" update="precio" process="@this"/>
 											<f:selectItems value="#{manticComprasOrdendesAccion.attrs.articulos}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{element.nombre} [$ #{element.precio}]"/>
 											<p:column headerText="Código">
@@ -154,13 +167,13 @@
 											</p:column>   
 										</p:selectOneMenu>
 									</div>
-									<div class="ui-grid-col-1">
+									<div class="ui-grid-col-2  janal-column-right">
 										<br/>
-										<div class="lg-pantalla janal-column-right">
-											<p:commandButton id="sumar" value="Agregar" icon="fa fa-plus" onstart="return janal.partial('articulo');" process="@this codigo nombre cantidad precio descuentos extras sinIva" oncomplete="janal.desbloquear();" update="tabla  @(.total)" styleClass="janal-text-white" actionListener="#{manticComprasOrdendesAccion.doAddArticulo}"/>
+										<div class="lg-pantalla">
+											<p:commandButton id="sumar" value="Agregar" icon="fa fa-plus" onstart="return janal.partial('articulo');" process="@this codigo articulo cantidad precio descuentos extras sinIva" oncomplete="janal.desbloquear();" update="tabla  @(.total)" styleClass="janal-text-white" actionListener="#{manticComprasOrdendesAccion.doAddArticulo}"/>
 										</div>
-										<div class="xs-pantalla janal-column-right">
-											<p:commandButton id="sumarIcon" icon="fa fa-plus" onstart="return janal.partial('articulo');" process="@this codigo nombre cantidad precio descuentos extras sinIva" oncomplete="janal.desbloquear();" update="tabla  @(.total)" styleClass="janal-text-white" actionListener="#{manticComprasOrdendesAccion.doAddArticulo}"/>
+										<div class="xs-pantalla">
+											<p:commandButton id="sumarIcon" icon="fa fa-plus" onstart="return janal.partial('articulo');" process="@this codigo articulo cantidad precio descuentos extras sinIva" oncomplete="janal.desbloquear();" update="tabla  @(.total)" styleClass="janal-text-white" actionListener="#{manticComprasOrdendesAccion.doAddArticulo}"/>
 										</div>
 									</div>	
 								</div>
@@ -182,11 +195,11 @@
 											</p:panelGrid>	
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
   											<p:outputLabel for="descuentos" value="Descuentos (%):"/>
-	  										<p:inputText id="descuentos" styleClass="janal-wid-100-txt janal-column-right" value="#{manticComprasOrdendesAccion.adminOrden.orden.descuento}"/>
+	  										<p:inputText id="descuentos" styleClass="janal-wid-100-txt janal-column-right" value="#{manticComprasOrdendesAccion.adminOrden.orden.descuento}" onblur="checkMaxDescuentos('contenedorGrupos\\:descuentos', 'contenedorGrupos\\:extras');"/>
 											</p:panelGrid>
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 											  <p:outputLabel for="extras" value="Extras (%):"/>
-											  <p:inputText id="extras" styleClass="janal-wid-100-txt janal-column-right" value="#{manticComprasOrdendesAccion.adminOrden.orden.extras}"/>
+											  <p:inputText id="extras" styleClass="janal-wid-100-txt janal-column-right" value="#{manticComprasOrdendesAccion.adminOrden.orden.extras}" onblur="checkMaxDescuentos('contenedorGrupos\\:extras', 'contenedorGrupos\\:descuentos');"/>
 											</p:panelGrid>	 
 										</p:panelGrid>	
 										<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticComprasOrdendesAccion.adminOrden.articulos}" rows="6" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " styleClass="paginated" rowIndexVar="index">
@@ -223,7 +236,7 @@
 													<h:outputText value="Descuento (%)"/>
 												</f:facet>
 												<p:inputText id="janalDescuento" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right total">
-                          <p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.total)" onstart="return !janal.porcentaje($('#contenedorGrupos\\:tabla\\:#{index}\\:janalDescuento'), '0').error;"/>													
+                          <p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.total)" onstart="checkMaxDescuentos('contenedorGrupos\\:tabla\\:#{index}\\:janalDescuento', 'contenedorGrupos\\:tabla\\:#{index}\\:janalExtra'); return !janal.porcentaje($('#contenedorGrupos\\:tabla\\:#{index}\\:janalDescuento'), '0').error;"/>													
 												</p:inputText>
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
@@ -231,7 +244,7 @@
 													<h:outputText value="Extras (%)"/>
 												</f:facet>
 												<p:inputText id="janalExtra" value="#{row['extras']}" styleClass="janal-wid-100-txt janal-column-right total">
-                          <p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.total)" onstart="return !janal.porcentaje($('#contenedorGrupos\\:tabla\\:#{index}\\:janalExtra'), '0').error;"/>													
+                          <p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.total)" onstart="checkMaxDescuentos('contenedorGrupos\\:tabla\\:#{index}\\:janalExtra', 'contenedorGrupos\\:tabla\\:#{index}\\:janalDescuento'); return !janal.porcentaje($('#contenedorGrupos\\:tabla\\:#{index}\\:janalExtra'), '0').error;"/>													
 												</p:inputText>
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
@@ -242,11 +255,11 @@
                           <p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.total)" onstart="return !janal.cantidad($('#contenedorGrupos\\:tabla\\:#{index}\\:janalIva'), '0').error;"/>													
 												</p:inputText>
 											</p:column>		
-											<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-10 janalImporte">
 												<f:facet name="header">
 													<h:outputText value="Importe"/>
 												</f:facet>
-												<p:inputText value="#{row['importe']}" styleClass="janal-wid-100-txt janal-column-right total" readonly="true"/>
+												<p:inputText id="janalImporte" value="#{row['importe']}" styleClass="janal-wid-100-txt janal-column-right total" readonly="true"/>
 											</p:column>		
 											<p:column style="width:38px; text-align: center">
 												<p:commandButton update="tabla @(.total)" icon="fa fa-close" title="Eliminar" action="#{manticComprasOrdendesAccion.doRemoveArticulo}" styleClass="janal-text-white">
@@ -257,8 +270,8 @@
 										<p:spacer width="5"/>
 										<div class="ui-grid-row janal-grid-row">
 											<div class="ui-grid-col-2">
-												<p:outputLabel for="articulo" value="Articulos:"/><br/>
-												<p:inputText id="articulo" styleClass="janal-wid-100-txt janal-column-right total" readonly="true" value="#{manticComprasOrdendesAccion.adminOrden.totales.articulos}"/>
+												<p:outputLabel for="articulos" value="Articulos:"/><br/>
+												<p:inputText id="articulos" styleClass="janal-wid-100-txt janal-column-right total" readonly="true" value="#{manticComprasOrdendesAccion.adminOrden.totales.articulos}"/>
 									    </div>	
 											<div class="ui-grid-col-2">
   											<p:outputLabel value="IVA:"/><br/>
@@ -293,7 +306,7 @@
 									</p:panelGrid>	
 									<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 										<p:outputLabel value="Descuentos (%):"/>
-										<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="#{manticComprasOrdendesAccion.attrs.descuentos}" readonly="true"/>
+										<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="#{manticComprasOrdendesAccion.attrs.descuentos}" readonly="true" />
 									</p:panelGrid>
 									<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 										<p:outputLabel value="Extras (%):"/>
@@ -320,7 +333,7 @@
 							</p:panelGrid>	
 						</p:tab>
 						<p:tab title="Observaciones">
-							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.adminOrden.orden.observaciones}" onblur="janal.mayusculas('contenedorGrupos\\:observaciones');"/>
+							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.adminOrden.orden.observaciones}"/>
 						</p:tab>
 					</p:tabView>
 				</div>

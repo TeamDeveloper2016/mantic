@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -18,6 +19,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -56,6 +58,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("cantidad", 1);
 			this.attrs.put("precio", 10);
 			this.attrs.put("sinIva", false);
+			this.attrs.put("diferencia", "0");
 			doLoad();
     } // try
     catch (Exception e) {
@@ -207,7 +210,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   private UISelectEntity toArticulo() {
   	List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");
 	  UISelectEntity articulo= (UISelectEntity)this.attrs.get("articulo");
-		return articulos.get(articulos.indexOf(articulo));
+		return articulos== null? new UISelectEntity(new Entity(-1L)): articulos.indexOf(articulo)>= 0? articulos.get(articulos.indexOf(articulo)): articulos.isEmpty()? new UISelectEntity(new Entity(-1L)): articulos.get(0);
 	}
 	
 	public void doAddArticulo() {
@@ -252,6 +255,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doUpdatePrecio(UISelectEntity seleccionado) {
 		try {
    		this.attrs.put("precio", seleccionado.toDouble("precio"));
+			this.doUpdateDiferencia();
 		} // try
 	  catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -260,6 +264,17 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	public void doUpdateIvaTipoDeCambio() {
 		this.adminOrden.toCalculate(true, (boolean)this.attrs.get("sinIva"), this.adminOrden.getOrden().getTipoDeCambio());
+	} 
+
+  public void doUpdateDiferencia() {
+		double precio    = (Double)this.attrs.get("precio");
+		double diferencia= 0.0; 
+		double costo     = precio== 0? 1: precio; 
+		UISelectEntity articulo= this.toArticulo();
+		if(articulo!= null && articulo.size()> 1)
+		  costo= articulo.toDouble("precio");
+    diferencia= precio* 100/ costo;
+  	this.attrs.put("diferencia", Numero.toRedondear(diferencia- 100));
 	} 
 	
 }

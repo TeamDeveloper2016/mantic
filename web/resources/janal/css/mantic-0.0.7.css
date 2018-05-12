@@ -426,6 +426,15 @@ div.ui-panelgrid-content {
 .janal-field-error {
   color: red;
 }
+.janal-color-orange {
+  color: orange;
+}
+.janal-color-green {
+  color: green;
+}
+.janal-color-blue {
+  color: blue;
+}
 .jana-bar-top {
   filter:alpha(opacity=80); opacity:0.8; padding:10px 0 0 50px; z-index: 1000; height: 120px !important;
 }

@@ -443,7 +443,7 @@
       validations : ['libre', 'max-caracteres', 'min-caracteres', 'mayor', 'max-valor', 'menor', 'min-valor', 'requerido', 'entero', 'entero-signo', 'valor-simple', 'telefono', 'contiene-a', 'igual-a', 'menor-a', 'mayor-a', 'asterisco', 'moneda', 'moneda-decimal', 'flotante-signo', 'flotante', 'mayusculas', 'minusculas', 'vocales', 'rango', 'secuencia-palabra', 'longitud', 'letras', 'texto', 'curp', 'rfc', 'texto-especial', 'boleano', 'fecha', 'fecha-menor', 'fecha-mayor', 'registro', 'hora', 'hora-completa', 'hora-mayor', 'hora-menor', 'comodin', 'no-permitir', 'ipv4', 'ipv6','no-aplica', 'esta-en','correo','acceso'],
       masks       : ['libre', 'fecha', 'fecha-hora', 'registro', 'hora', 'hora-completa', 'tarjeta-credito', 'decimal', 'decimal-signo', 'letras', 'vocales', 'texto', 'numero', 'un-digito', 'dos-digitos', 'tres-digitos', 'tres-digitos-default', 'cuatro-digitos', 'cinco-digitos', 'siete-digitos', 'diez-digitos', 'entero', 'entero-blanco', 'entero-signo', 'entero-sin-signo', 'flotante', 'flotante-signo', 'rfc', 'curp', 'moneda', 'moneda-decimal', 'mayusculas', 'minusculas', 'cuenta', 'numeros-letras', 'nombre-dto', 'telefono', 'ip', 'version', 'no-aplica','correo', 'valor-simple', 'acceso'],
       watermarks  : ['entero', 'entero-signo', 'valor-simple', 'decimal', 'decimal-signo', 'flotante', 'flotante-signo', 'moneda', 'moneda-decimal', 'mayor', 'max-valor', 'menor', 'min-valor'],
-      formats     : ['libre', 'cambiar-mayusculas', 'cambiar-minusculas', 'rellenar-caracter'],
+      formats     : ['libre', 'cambiar-mayusculas', 'cambiar-minusculas', 'rellenar-caracter', 'mayusculas', 'minusculas', 'porcentaje', 'descuentos', 'cantidad'],
       customs     : []
     },
     // methods publics for class
@@ -502,7 +502,8 @@
     }, // add
     format: function(error, id, items) {
       //$parent.console('Janal.Control.Validations.format: '+ id+ ': '+ String(error));
-			var name= id.indexOf(':')> 0? id.substring(id.lastIndexOf(':')+ 1): id.indexOf($parent.INPUT_RESERVE)> 0? id.substring(0, id.lastIndexOf($parent.INPUT_RESERVE)): id;
+			var name= id.indexOf(':')> 0? id.substring(id.lastIndexOf(':')+ 1): id;
+					name=	name.indexOf($parent.INPUT_RESERVE)> 0? name.substring(0, name.lastIndexOf($parent.INPUT_RESERVE)): name;
 			if(!$('#'+ name).hasClass('janal-input-error'))
 			  $('#'+ name).addClass('janal-input-error');
       var titles= $parent.labels(name);
@@ -1075,20 +1076,40 @@
       $span= $parent.build('span', '', container, 'ui-messages-'+ item.severity+ '-detail');
       $span.text(item.detail);
     }, // custom    
-    info: function(msg) {
-      $parent.custom({summary: 'Información:', detail: msg, severity: 'info'});
+    notify: function(title, type, id, msg) {
+			$parent.clean();
+			switch (arguments.length) {
+        case 3: 
+					$parent.custom({summary: title, detail: id, severity: type});
+					break;
+				case 4:	
+					$parent.show([{id: id, summary: title, detail: msg, severity: type}]);
+					break;
+	    } // switch
     }, // info
-    warn: function(msg) {
-      $parent.custom({summary: 'Precaución:', detail: msg, severity: 'warn'});
+    info: function(id, msg) {
+			if(arguments.length=== 1)
+			  $parent.notify('Información:', 'info', id);
+			else
+			  $parent.notify('Información:', 'info', id, msg);
+    }, // info
+    warn: function(id, msg) {
+			if(arguments.length=== 1)
+  			$parent.notify('Precaución:', 'warn', id);
+			else
+  			$parent.notify('Precaución:', 'warn', id, msg);
     }, // warn
-    error: function(msg) {
-      $parent.custom({summary: 'Error:', detail: msg, severity: 'error'});
+    error: function(id, msg) {
+			if(arguments.length=== 1)
+			  $parent.notify('Error:', 'error', id);
+		  else
+			  $parent.notify('Error:', 'error', id, msg);
     }, // error
-    alert: function(msg) {
-      $parent.custom({summary: 'Janal:', detail: msg, severity: 'info'});
+    alert: function(id, msg) {
+      $parent.info(id, msg);
     }, // alert
     version: function() {
-      return '0.1.4.8';
+      return '0.1.4.9';
     }, // version
     align: function(pixels) {
       try {
