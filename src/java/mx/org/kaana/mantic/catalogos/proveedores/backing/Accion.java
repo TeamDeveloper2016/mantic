@@ -2,7 +2,6 @@ package mx.org.kaana.mantic.catalogos.proveedores.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,6 +72,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // initload
   
 	private void loadCollections(){
+		loadTiposProveedores();
 		loadTipoPago();
 		loadTiposContactos();
 		loadTiposDomicilios();	
@@ -170,14 +170,42 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
   private void loadTipoPago(){
     List<UISelectItem> tiposPago= null;
+		Map<String, Object>params   = null;
     try {
-			tiposPago= UISelect.build("VistaProveedoresDto", "proveedorCondicionPago", Collections.emptyMap(), Cadena.toList("clave|nombrePago|nombre"), " ", EFormatoDinamicos.MAYUSCULAS);
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			tiposPago= UISelect.build("TcManticTiposPagosDto", "row", params, "nombre", " ", EFormatoDinamicos.MAYUSCULAS);
       this.attrs.put("tiposPago", tiposPago);
     } // try
     catch (Exception e) {
       throw e;
     } // catch
+		finally{
+			Methods.clean(params);
+		} // finally
   } // loadTipoPago
+	
+	private void loadTiposProveedores(){
+		List<UISelectEntity> tiposProveedores= null;
+    List<Columna> formatos               = null;
+    Map<String, Object> params           = null;
+    try {
+      params = new HashMap();
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      formatos = new ArrayList<>();      
+      formatos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      formatos.add(new Columna("dias", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      tiposProveedores= UIEntity.build("TcManticTiposProveedoresDto", params, formatos);
+			this.attrs.put("tiposProveedores", tiposProveedores);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(formatos);
+    } // finally
+	} // loadTiposProveedores
 	
 	private void loadEntidades() {
     List<UISelectEntity> entidades= null;
@@ -444,18 +472,13 @@ public class Accion extends IBaseAttribute implements Serializable {
 			toAsignaLocalidad();
 			loadCodigosPostales();      
 			toAsignaCodigoPostal();
-			loadAtributosComplemento();			
-			this.attrs.put("calle", "");
-			this.attrs.put("domiciliosBusqueda", new ArrayList<>());      
+			loadAtributosComplemento();						
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
-		finally {
-			
-		} // finally
-	}
+	} // doAsignaDomicilio
 	
   private void updateCodigoPostal() {
     List<UISelectItem> codigosPostales = null;
