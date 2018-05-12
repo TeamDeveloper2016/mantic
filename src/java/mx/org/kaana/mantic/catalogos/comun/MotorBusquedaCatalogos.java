@@ -1,12 +1,15 @@
 package mx.org.kaana.mantic.catalogos.comun;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
+import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 
 public abstract class MotorBusquedaCatalogos {
 
@@ -126,4 +129,32 @@ public abstract class MotorBusquedaCatalogos {
 		} // finally
 		return regresar;
 	} // toLocalidad
+	
+	protected List<PersonaTipoContacto> toPersonaContacto(Long idPersona) throws Exception{
+		List<PersonaTipoContacto> regresar= null;
+		Map<String, Object>params    = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_persona=" + idPersona);
+			regresar= DaoFactory.getInstance().toEntitySet(PersonaTipoContacto.class, "TrManticPersonaTipoContactoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toPersonaContacto
+	
+	protected TcManticPersonasDto toPersona(Long idPersona) throws Exception{
+		TcManticPersonasDto regresar= null;
+		try {
+			regresar= (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, idPersona);
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch				
+		return regresar;
+	} // toPersona
 }
