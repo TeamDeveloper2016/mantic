@@ -434,9 +434,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			toAsignaLocalidad();
 			loadCodigosPostales();      
 			toAsignaCodigoPostal();
-			loadAtributosComplemento();			
-			this.attrs.put("calle", "");
-			this.attrs.put("domiciliosBusqueda", new ArrayList<>());      
+			loadAtributosComplemento();						
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
