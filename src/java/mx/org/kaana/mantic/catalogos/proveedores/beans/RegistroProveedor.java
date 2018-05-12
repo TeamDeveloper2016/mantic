@@ -38,7 +38,7 @@ public class RegistroProveedor implements Serializable{
 	private ProveedorCondicionPago proveedorCondicionPagoSeleccion;
 
 	public RegistroProveedor() {
-		this(-1L, new TcManticProveedoresDto(), new ProveedorDomicilio(), new ArrayList<ProveedorTipoContacto>(), new Domicilio(), new Domicilio(), new ArrayList<ProveedorContactoAgente>(), new ProveedorContactoAgente(), new ProveedorContactoAgente(), new ArrayList<ProveedorCondicionPago>());
+		this(-1L, new TcManticProveedoresDto(), new ProveedorDomicilio(), new ArrayList<ProveedorTipoContacto>(), new Domicilio(), new Domicilio(), new ArrayList<ProveedorContactoAgente>(), new ProveedorContactoAgente(), new ProveedorContactoAgente(), new ArrayList<ProveedorCondicionPago>(), new ArrayList<ProveedorDomicilio>());
 	} // RegistroProveedor
 
 	public RegistroProveedor(Long idProveedor) {
@@ -53,7 +53,7 @@ public class RegistroProveedor implements Serializable{
 		init();
 	} // RegistroProveedor
 
-	public RegistroProveedor(Long idProveedor, TcManticProveedoresDto proveedor, ProveedorDomicilio proveedorDomicilioSeleccion, List<ProveedorTipoContacto> proveedoresTipoContacto, Domicilio domicilio, Domicilio domicilioPivote, List<ProveedorContactoAgente> personasTiposContacto, ProveedorContactoAgente personaTipoContactoPivote, ProveedorContactoAgente personaTipoContacto, List<ProveedorCondicionPago> proveedoresCondicionPago) {
+	public RegistroProveedor(Long idProveedor, TcManticProveedoresDto proveedor, ProveedorDomicilio proveedorDomicilioSeleccion, List<ProveedorTipoContacto> proveedoresTipoContacto, Domicilio domicilio, Domicilio domicilioPivote, List<ProveedorContactoAgente> personasTiposContacto, ProveedorContactoAgente personaTipoContactoPivote, ProveedorContactoAgente personaTipoContacto, List<ProveedorCondicionPago> proveedoresCondicionPago, List<ProveedorDomicilio> proveedoresDomicilio) {
 		this.idProveedor                = idProveedor;
 		this.proveedor                  = proveedor;
 		this.proveedorDomicilioSeleccion= proveedorDomicilioSeleccion;
@@ -67,6 +67,7 @@ public class RegistroProveedor implements Serializable{
 		this.personaTipoContactoPivote  = personaTipoContactoPivote;
 		this.personaTipoContacto        = personaTipoContacto;
 		this.proveedoresCondicionPago   = proveedoresCondicionPago;
+		this.proveedoresDomicilio       = proveedoresDomicilio;
 	} // RegistroProveedor	
 
 	public Long getIdProveedor() {
