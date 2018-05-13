@@ -2,15 +2,14 @@ package mx.org.kaana.mantic.compras.ordenes.reglas;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.KajoolBaseException;
-import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.beans.Totales;
@@ -36,20 +35,21 @@ public final class AdminOrdenes implements Serializable {
 	private Totales totales;
 
 	public AdminOrdenes(OrdenCompra orden) throws Exception {
-		this.orden= orden;
+		this.orden  = orden;
 		this.totales= new Totales();
 		if(this.orden.isValid()) {
 			this.articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticOrdenesDetallesDto", "detalle", this.orden.toMap());
-      toCalculate();
+      this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
+      this.orden.setIkCliente(new UISelectEntity(new Entity(this.orden.getIdCliente())));
+      this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdProveedor())));
+      this.orden.setIkProveedorPago(new UISelectEntity(new Entity(this.orden.getIdProveedorPago())));
+			toCalculate();
 		}	// if
 		else	{
 		  this.articulos= new ArrayList<>();
 			this.orden.setConsecutivo(this.toConsecutivo("0"));
-			this.orden.setIdGasto(2L);
-			this.orden.setDescuento("0.00");
-			this.orden.setExtras("0.00");
-			this.orden.setTipoDeCambio(1.00);
 			this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
+			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 		} // else	
 	}
 
@@ -94,8 +94,8 @@ public final class AdminOrdenes implements Serializable {
 		  this.articulos.add(articulo);
    		toCalculate();
 		} // if
-		else
-		  throw new KajoolBaseException("El articulo ["+ articulo.getCodigo()+ "] ya esta dentro de la lista seleccionada !");
+//		else
+//		  throw new KajoolBaseException("El articulo ["+ articulo.getCodigo()+ "] ya esta dentro de la lista seleccionada !");
 	}
 
 	public void remove(Articulo seleccionado) {
@@ -109,24 +109,6 @@ public final class AdminOrdenes implements Serializable {
 		return Fecha.getAnioActual()+ Cadena.rellenar(value, 6, '0', true);
 	}	
 		
-	public String toSiguiente() throws Exception {
-		String regresar= "1";
-		Map<String, Object> params=null;
-		try {
-			params=new HashMap<>();
-			params.put("ejercicio", Fecha.getAnioActual());
-			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			regresar= DaoFactory.getInstance().toField("VistaOrdenesComprasDto", "siguiente", params).toString();
-		} // try
-		catch (Exception e) {
-			throw e;
-		} // catch
-		finally {
-			Methods.clean(params);
-		} // finally
-		return toConsecutivo(regresar);
-	}
-	
 	public void toCalculate() {
 		this.toCalculate(false, false, this.getOrden().getTipoDeCambio());
 	}

@@ -78,6 +78,7 @@ public class Accion extends IBaseAttribute implements Serializable {
           break;
         case MODIFICAR:					
           this.adminOrden= new AdminOrdenes((OrdenCompra)DaoFactory.getInstance().findById(OrdenCompra.class, (Long)this.attrs.get("idOrdenCompra")));
+    			this.attrs.put("sinIva", this.adminOrden.getOrden().getIdSinIva().equals(1L));
           break;
       } // switch
 			toLoadCatalog();
@@ -94,6 +95,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 		EAccion eaccion        = null;
     try {			
 			eaccion= (EAccion) this.attrs.get("accion");
+			this.adminOrden.getOrden().setDescuentos(this.adminOrden.getTotales().getDescuentos());
+			this.adminOrden.getOrden().setImpuestos(this.adminOrden.getTotales().getIva());
+			this.adminOrden.getOrden().setSubtotal(this.adminOrden.getTotales().getSubTotal());
+			this.adminOrden.getOrden().setTotal(this.adminOrden.getTotales().getTotal());
 			transaccion = new Transaccion(this.adminOrden.getOrden(), this.adminOrden.getArticulos());
 			if (transaccion.ejecutar(eaccion)) {
 				regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
@@ -221,16 +226,19 @@ public class Accion extends IBaseAttribute implements Serializable {
 				(Boolean)this.attrs.get("sinIva"),
 				this.adminOrden.getOrden().getTipoDeCambio(),
 				seleccionado.toString("nombre"), 
+				seleccionado.toString("codigo"),
 				(Double)this.attrs.get("precio"), 
-				seleccionado.toDouble("iva"), 
-				this.adminOrden.getOrden().getDescuento(), 
-				-1L, 
+        this.adminOrden.getOrden().getDescuento(), 
+				-1L,
 				this.adminOrden.getOrden().getExtras(), 
+				0D,
+				seleccionado.toString("codigo"),
+				seleccionado.toDouble("iva"), 
+				0D,
+				0D,
 				(Long)this.attrs.get("cantidad"), 
 				-1* idOrdenDetalle, 
 				seleccionado.toLong("idArticulo"), 
-				seleccionado.toString("codigo"),
-				seleccionado.toString("codigo"),
 				0.0);
 			this.adminOrden.add(item);
 		} // try
@@ -263,7 +271,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} 
 	
 	public void doUpdateIvaTipoDeCambio() {
-		this.adminOrden.toCalculate(true, (boolean)this.attrs.get("sinIva"), this.adminOrden.getOrden().getTipoDeCambio());
+		boolean sinIva= (boolean)this.attrs.get("sinIva");
+		this.adminOrden.getOrden().setIdSinIva(sinIva? 1L: 2L);
+		this.adminOrden.toCalculate(true, sinIva, this.adminOrden.getOrden().getTipoDeCambio());
 	} 
 
   public void doUpdateDiferencia() {

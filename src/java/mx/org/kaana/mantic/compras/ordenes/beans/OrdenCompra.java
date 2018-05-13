@@ -29,8 +29,8 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 		super(key);
 	}
 
-	public OrdenCompra(Long idProveedor, Long idProveedorPago, Long idCliente, String descuento, Long idOrdenCompra, String extras, String consecutivo, Long idTipoCompra, Long idGasto, Double total, Date entregaEstimada, Long idUsuario, Long idAlmacen, Double subtotal, Double impuestos, Double tipoDeCambio, String observaciones, Long idEmpresa, Long idEstatus) {
-		super(idProveedor, idProveedorPago, idCliente, descuento, idOrdenCompra, extras, consecutivo, idTipoCompra, idGasto, total, entregaEstimada, idUsuario, idAlmacen, subtotal, impuestos, tipoDeCambio, observaciones, idEmpresa, idEstatus);
+	public OrdenCompra(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Date entregaEstimada, Long idCompraEstatus, Long idUsuario, Long idAlmacen, Double impuestos, Double subtotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden) {
+		super(idProveedorPago, descuentos, idProveedor, idCliente, descuento, idOrdenCompra, extras, ejercicio, consecutivo, idGasto, total, entregaEstimada, idCompraEstatus, idUsuario, idAlmacen, impuestos, subtotal, tipoDeCambio, idSinIva, observaciones, idEmpresa, orden);
 	}
 
 	public UISelectEntity getIkAlmacen() {

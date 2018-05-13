@@ -33,11 +33,11 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Serializable
 	}
 
 	public Articulo(Long key) {
-		this(true, 1.0, "", 0.0, 16.0, "0", -1L, "0", 1L, -1L, -1L, "", "", 0.0);
+		this(true, 1.0, "", "", 0.0, "0", -1L, "0", 0D, "", 16D, 0D, 0D, 1L, -1L, -1L, 0D);
 	}
 
-	public Articulo(boolean conIva, double tipoDeCambio, String nombre, Double costo, Double iva, String descuento, Long idOrdenCompra, String extras, Long cantidad, Long idOrdenDetalle, Long idArticulo, String codigo, String propio, Double importe) {
-		super(costo, iva, descuento, idOrdenCompra, extras, cantidad, idOrdenDetalle, idArticulo, codigo, propio, importe);
+	public Articulo(boolean conIva, double tipoDeCambio, String nombre, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Long cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos) {
+		super(codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos);
 		this.idEntity    = new UISelectEntity(new Entity(-1L));
 		this.nombre      = nombre;
 		this.idArticulo  = idArticulo;
@@ -118,6 +118,10 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Serializable
 		this.importes.setSubTotal(Numero.toRedondear(this.importes.getImporte()- this.importes.getDescuento()- this.importes.getExtra()));
 		this.importes.setTotal(Numero.toRedondear(this.importes.getSubTotal()+ this.importes.getIva()));
 		this.setImporte(Numero.toRedondear(this.importes.getTotal()));
+		
+		this.setTotalImpuesto(this.importes.getIva());
+		this.setTotalDescuentos(this.importes.getDescuentos());
+		this.setSubTotal(this.importes.getSubTotal());
 	}
 
 	public void toCalculate(boolean sinIva, double tipoDeCambio) {

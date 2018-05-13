@@ -19,6 +19,10 @@ import static mx.org.kaana.kajool.enums.EAccion.AGREGAR;
 import static mx.org.kaana.kajool.enums.EAccion.ELIMINAR;
 import static mx.org.kaana.kajool.enums.EAccion.MODIFICAR;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
@@ -52,10 +56,13 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
 			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" el grupo de clientes");
-			this.orden.setObservaciones(this.orden.getObservaciones()!= null? this.orden.getObservaciones().toUpperCase(): null);
-			switch(accion){
+			switch(accion) {
 				case AGREGAR:
-					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
+					Long consecutivo= this.toSiguiente(sesion);
+					this.orden.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
+					this.orden.setOrden(consecutivo);
+					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
+					//regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 					toFillArticulos(sesion);
 					break;
 				case MODIFICAR:
@@ -84,9 +91,27 @@ public class Transaccion extends IBaseTnx {
 				DaoFactory.getInstance().delete(sesion, item);
 		for (Articulo articulo: this.articulos) {
 			articulo.setIdOrdenCompra(this.orden.getIdOrdenCompra());
-			if(DaoFactory.getInstance().findIdentically(sesion, TcManticOrdenesDetallesDto.class, articulo.toMap())== null) 
-				DaoFactory.getInstance().insert(sesion, articulo);
+//			if(DaoFactory.getInstance().findIdentically(sesion, TcManticOrdenesDetallesDto.class, articulo.toMap())== null) 
+//				DaoFactory.getInstance().insert(sesion, articulo);
 		} // for
+	}
+	
+	private Long toSiguiente(Session sesion) throws Exception {
+		Long regresar= 1L;
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			regresar= DaoFactory.getInstance().toField(sesion, "VistaOrdenesComprasDto", "siguiente", params, "siguiente").toLong();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
 	}
 	
 } 

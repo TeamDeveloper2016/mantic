@@ -38,7 +38,6 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params.put("idGrupo", this.grupo.getIdGrupo());
 			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" el grupo de clientes");
-			this.grupo.setObservaciones(this.grupo.getObservaciones()!= null? this.grupo.getObservaciones().toUpperCase(): null);
 			switch(accion){
 				case AGREGAR:
 					regresar= DaoFactory.getInstance().insert(sesion, this.grupo)>= 1L;

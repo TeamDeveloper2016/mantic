@@ -40,7 +40,6 @@
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
-		<!--p:inputText value="3.3a" onblur="janal.alert(janal.porcentaje(this, '0'));"/-->
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
@@ -140,12 +139,12 @@
 									</div>
 									<div class="ui-grid-col-3">
 										<p:outputLabel for="cantidad" value="Cantidad:"/><br/>
-										<p:inputText id="cantidad" value="#{manticComprasOrdendesAccion.attrs.cantidad}" styleClass="janal-wid-100-txt janal-column-right" converter="javax.faces.Long"/>
+										<p:inputText id="cantidad" value="#{manticComprasOrdendesAccion.attrs.cantidad}" styleClass="janal-wid-100-txt janal-column-right" converter="javax.faces.Long" onblur="janal.cantidad($('#contenedorGrupos\\:cantidad'), '1');"/>
 									</div>
 									<div class="ui-grid-col-4">
 										<p:outputLabel for="precio" value="Precio:"/><br/>
 										<p:inputText id="precio" value="#{manticComprasOrdendesAccion.attrs.precio}" styleClass="janal-wid-100-txt janal-column-right" converter="javax.faces.Double"> 
-											<p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateDiferencia}" process="@this" update="diferencia"/>
+											<p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateDiferencia}" process="@this" update="diferencia" onstart="return !janal.porcentaje($('#contenedorGrupos\\:precio'), '1').error;"/>
 										</p:inputText>	
 									</div>
 									<div class="ui-grid-col-1 janal-column-right">

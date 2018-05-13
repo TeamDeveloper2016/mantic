@@ -1,7 +1,9 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
+import java.sql.Blob;
 import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -11,6 +13,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -31,6 +36,8 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Column (name="id_proveedor_pago")
   private Long idProveedorPago;
+  @Column (name="descuentos")
+  private Double descuentos;
   @Column (name="id_proveedor")
   private Long idProveedor;
   @Column (name="id_cliente")
@@ -67,28 +74,27 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   private Double subtotal;
   @Column (name="tipo_de_cambio")
   private Double tipoDeCambio;
+  @Column (name="id_sin_iva")
+  private Long idSinIva;
   @Column (name="observaciones")
   private String observaciones;
-  @Column (name="sin_iva")
-  private Long sinIva;
   @Column (name="id_empresa")
   private Long idEmpresa;
   @Column (name="orden")
   private Long orden;
-  @Column (name="total_descuentos")
-  private Double totalDescuentos;
 
   public TcManticOrdenesComprasDto() {
     this(new Long(-1L));
   }
 
   public TcManticOrdenesComprasDto(Long key) {
-    this(null, null, null, null, new Long(-1L), null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, null, null, null);
+    this(null, 0D, null, null, "0", new Long(-1L), "0", 2018L, "201800000", 2L, 0.0, new Date(Calendar.getInstance().getTimeInMillis()), 1L, null, null, 0D, 0D, 1D, 2L, null, null, null);
     setKey(key);
   }
 
-  public TcManticOrdenesComprasDto(Long idProveedorPago, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Date entregaEstimada, Long idCompraEstatus, Long idUsuario, Long idAlmacen, Double impuestos, Double subtotal, Double tipoDeCambio, String observaciones, Long sinIva, Long idEmpresa, Long orden, Double totalDescuentos) {
+  public TcManticOrdenesComprasDto(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Date entregaEstimada, Long idCompraEstatus, Long idUsuario, Long idAlmacen, Double impuestos, Double subtotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden) {
     setIdProveedorPago(idProveedorPago);
+    setDescuentos(descuentos);
     setIdProveedor(idProveedor);
     setIdCliente(idCliente);
     setDescuento(descuento);
@@ -106,11 +112,10 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
     setImpuestos(impuestos);
     setSubtotal(subtotal);
     setTipoDeCambio(tipoDeCambio);
+    setIdSinIva(idSinIva);
     setObservaciones(observaciones);
-    setSinIva(sinIva);
     setIdEmpresa(idEmpresa);
     setOrden(orden);
-    setTotalDescuentos(totalDescuentos);
   }
 	
   public void setIdProveedorPago(Long idProveedorPago) {
@@ -119,6 +124,14 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
 
   public Long getIdProveedorPago() {
     return idProveedorPago;
+  }
+
+  public void setDescuentos(Double descuentos) {
+    this.descuentos = descuentos;
+  }
+
+  public Double getDescuentos() {
+    return descuentos;
   }
 
   public void setIdProveedor(Long idProveedor) {
@@ -257,20 +270,20 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
     return tipoDeCambio;
   }
 
+  public void setIdSinIva(Long idSinIva) {
+    this.idSinIva = idSinIva;
+  }
+
+  public Long getIdSinIva() {
+    return idSinIva;
+  }
+
   public void setObservaciones(String observaciones) {
     this.observaciones = observaciones;
   }
 
   public String getObservaciones() {
     return observaciones;
-  }
-
-  public void setSinIva(Long sinIva) {
-    this.sinIva = sinIva;
-  }
-
-  public Long getSinIva() {
-    return sinIva;
   }
 
   public void setIdEmpresa(Long idEmpresa) {
@@ -289,14 +302,6 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
     return orden;
   }
 
-  public void setTotalDescuentos(Double totalDescuentos) {
-    this.totalDescuentos = totalDescuentos;
-  }
-
-  public Double getTotalDescuentos() {
-    return totalDescuentos;
-  }
-
   @Transient
   @Override
   public Long getKey() {
@@ -313,6 +318,8 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
 		regresar.append(getIdProveedorPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getDescuentos());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdProveedor());
 		regresar.append(Constantes.SEPARADOR);
@@ -348,15 +355,13 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getTipoDeCambio());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getObservaciones());
+		regresar.append(getIdSinIva());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getSinIva());
+		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdEmpresa());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getTotalDescuentos());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -365,6 +370,7 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("idProveedorPago", getIdProveedorPago());
+		regresar.put("descuentos", getDescuentos());
 		regresar.put("idProveedor", getIdProveedor());
 		regresar.put("idCliente", getIdCliente());
 		regresar.put("descuento", getDescuento());
@@ -382,18 +388,17 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
 		regresar.put("impuestos", getImpuestos());
 		regresar.put("subtotal", getSubtotal());
 		regresar.put("tipoDeCambio", getTipoDeCambio());
+		regresar.put("idSinIva", getIdSinIva());
 		regresar.put("observaciones", getObservaciones());
-		regresar.put("sinIva", getSinIva());
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("orden", getOrden());
-		regresar.put("totalDescuentos", getTotalDescuentos());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdProveedorPago(), getIdProveedor(), getIdCliente(), getDescuento(), getIdOrdenCompra(), getExtras(), getEjercicio(), getRegistro(), getConsecutivo(), getIdGasto(), getTotal(), getEntregaEstimada(), getIdCompraEstatus(), getIdUsuario(), getIdAlmacen(), getImpuestos(), getSubtotal(), getTipoDeCambio(), getObservaciones(), getSinIva(), getIdEmpresa(), getOrden(), getTotalDescuentos()
+    getIdProveedorPago(), getDescuentos(), getIdProveedor(), getIdCliente(), getDescuento(), getIdOrdenCompra(), getExtras(), getEjercicio(), getRegistro(), getConsecutivo(), getIdGasto(), getTotal(), getEntregaEstimada(), getIdCompraEstatus(), getIdUsuario(), getIdAlmacen(), getImpuestos(), getSubtotal(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden()
     };
     return regresar;
   }
