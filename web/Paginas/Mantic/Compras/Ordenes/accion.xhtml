@@ -144,7 +144,7 @@
 									<div class="ui-grid-col-4">
 										<p:outputLabel for="precio" value="Precio:"/><br/>
 										<p:inputText id="precio" value="#{manticComprasOrdendesAccion.attrs.precio}" styleClass="janal-wid-100-txt janal-column-right" converter="javax.faces.Double"> 
-											<p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateDiferencia}" process="@this" update="diferencia" onstart="return !janal.porcentaje($('#contenedorGrupos\\:precio'), '1').error;"/>
+											<p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateDiferencia}" process="@this" update="diferencia" onstart="return !janal.precio($('#contenedorGrupos\\:precio'), '1').error;"/>
 										</p:inputText>	
 									</div>
 									<div class="ui-grid-col-1 janal-column-right">
@@ -235,7 +235,7 @@
 													<h:outputText value="Descuento (%)"/>
 												</f:facet>
 												<p:inputText id="janalDescuento" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right total">
-                          <p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.total)" onstart="checkMaxDescuentos('contenedorGrupos\\:tabla\\:#{index}\\:janalDescuento', 'contenedorGrupos\\:tabla\\:#{index}\\:janalExtra'); return !janal.porcentaje($('#contenedorGrupos\\:tabla\\:#{index}\\:janalDescuento'), '0').error;"/>													
+                          <p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.total)" onstart="checkMaxDescuentos('contenedorGrupos\\:tabla\\:#{index}\\:janalDescuento', 'contenedorGrupos\\:tabla\\:#{index}\\:janalExtra'); return !janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:janalDescuento'), '0').error;"/>													
 												</p:inputText>
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
@@ -243,7 +243,7 @@
 													<h:outputText value="Extras (%)"/>
 												</f:facet>
 												<p:inputText id="janalExtra" value="#{row['extras']}" styleClass="janal-wid-100-txt janal-column-right total">
-                          <p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.total)" onstart="checkMaxDescuentos('contenedorGrupos\\:tabla\\:#{index}\\:janalExtra', 'contenedorGrupos\\:tabla\\:#{index}\\:janalDescuento'); return !janal.porcentaje($('#contenedorGrupos\\:tabla\\:#{index}\\:janalExtra'), '0').error;"/>													
+                          <p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.total)" onstart="checkMaxDescuentos('contenedorGrupos\\:tabla\\:#{index}\\:janalExtra', 'contenedorGrupos\\:tabla\\:#{index}\\:janalDescuento'); return !janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:janalExtra'), '0').error;"/>													
 												</p:inputText>
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
