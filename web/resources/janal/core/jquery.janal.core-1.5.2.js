@@ -443,7 +443,7 @@
       validations : ['libre', 'max-caracteres', 'min-caracteres', 'mayor', 'max-valor', 'menor', 'min-valor', 'requerido', 'entero', 'entero-signo', 'valor-simple', 'telefono', 'contiene-a', 'igual-a', 'menor-a', 'mayor-a', 'asterisco', 'moneda', 'moneda-decimal', 'flotante-signo', 'flotante', 'mayusculas', 'minusculas', 'vocales', 'rango', 'secuencia-palabra', 'longitud', 'letras', 'texto', 'curp', 'rfc', 'texto-especial', 'boleano', 'fecha', 'fecha-menor', 'fecha-mayor', 'registro', 'hora', 'hora-completa', 'hora-mayor', 'hora-menor', 'comodin', 'no-permitir', 'ipv4', 'ipv6','no-aplica', 'esta-en','correo','acceso'],
       masks       : ['libre', 'fecha', 'fecha-hora', 'registro', 'hora', 'hora-completa', 'tarjeta-credito', 'decimal', 'decimal-signo', 'letras', 'vocales', 'texto', 'numero', 'un-digito', 'dos-digitos', 'tres-digitos', 'tres-digitos-default', 'cuatro-digitos', 'cinco-digitos', 'siete-digitos', 'diez-digitos', 'entero', 'entero-blanco', 'entero-signo', 'entero-sin-signo', 'flotante', 'flotante-signo', 'rfc', 'curp', 'moneda', 'moneda-decimal', 'mayusculas', 'minusculas', 'cuenta', 'numeros-letras', 'nombre-dto', 'telefono', 'ip', 'version', 'no-aplica','correo', 'valor-simple', 'acceso'],
       watermarks  : ['entero', 'entero-signo', 'valor-simple', 'decimal', 'decimal-signo', 'flotante', 'flotante-signo', 'moneda', 'moneda-decimal', 'mayor', 'max-valor', 'menor', 'min-valor'],
-      formats     : ['libre', 'cambiar-mayusculas', 'cambiar-minusculas', 'rellenar-caracter', 'mayusculas', 'minusculas', 'porcentaje', 'descuentos', 'cantidad'],
+      formats     : ['libre', 'cambiar-mayusculas', 'cambiar-minusculas', 'rellenar-caracter', 'porcentaje', 'cantidad', 'consecutivo', 'descuentos'],
       customs     : []
     },
     // methods publics for class
@@ -1109,7 +1109,7 @@
       $parent.info(id, msg);
     }, // alert
     version: function() {
-      return '0.1.4.9';
+      return '0.1.5.2';
     }, // version
     align: function(pixels) {
       try {

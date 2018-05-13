@@ -8,7 +8,9 @@ package mx.org.kaana.mantic.compras.ordenes.reglas;
  *@author Alejandro Jimenez Garcia <alejandro.jimenez@inegi.org.mx>
  */
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -17,36 +19,52 @@ import static mx.org.kaana.kajool.enums.EAccion.AGREGAR;
 import static mx.org.kaana.kajool.enums.EAccion.ELIMINAR;
 import static mx.org.kaana.kajool.enums.EAccion.MODIFICAR;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
+import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
 import org.apache.log4j.Logger;
 
 public class Transaccion extends IBaseTnx {
 
   private static final Logger LOG = Logger.getLogger(Transaccion.class);
  
-	private TcManticOrdenesComprasDto dto;
+	private TcManticOrdenesComprasDto orden;	
+	private List<Articulo> articulos;
 	private String messageError;
-	
-	public Transaccion(TcManticOrdenesComprasDto dto) {
-	  this.dto= dto;
+
+	public Transaccion(TcManticOrdenesComprasDto orden) {
+		this(orden, new ArrayList<Articulo>());
 	}
-	
-  @Override
-  protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
+
+	public Transaccion(TcManticOrdenesComprasDto orden, List<Articulo> articulos) {
+		this.orden    = orden;		
+		this.articulos= articulos;
+	} // Transaccion
+
+	public String getMessageError() {
+		return messageError;
+	}
+
+	@Override
+	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar          = false;
 		Map<String, Object> params= new HashMap<>();
 		try {
-			//params.put("iva", this.dto.getImporte());
-			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" registrar la orden de compra.");
+			params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
+			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" el grupo de clientes");
+			this.orden.setObservaciones(this.orden.getObservaciones()!= null? this.orden.getObservaciones().toUpperCase(): null);
 			switch(accion){
 				case AGREGAR:
-					regresar= DaoFactory.getInstance().insert(sesion, this.dto)>= 1L;
+					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
+					toFillArticulos(sesion);
 					break;
 				case MODIFICAR:
-					regresar= DaoFactory.getInstance().update(sesion, this.dto)>= 1L;
+					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
+					toFillArticulos(sesion);
 					break;				
 				case ELIMINAR:
-					regresar= DaoFactory.getInstance().delete(sesion, this.dto)>= 1L;
+					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticOrdenesDetallesDto.class, params)>= 1L;
+					regresar= regresar && DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
 					break;
 			} // switch
 			if(!regresar)
@@ -55,7 +73,20 @@ public class Transaccion extends IBaseTnx {
 		catch (Exception e) {			
 			throw new Exception(this.messageError);
 		} // catch		
+		LOG.info("Se genero de forma correcta la orden: "+ this.orden.getConsecutivo());
 		return regresar;
-  }
+	}	// ejecutar
+
+	private void toFillArticulos(Session sesion) throws Exception {
+		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, TcManticOrdenesDetallesDto.class, "TcManticOrdenesDetallesDto", "detalle", this.orden.toMap());
+		for (Articulo item: todos) 
+			if(this.articulos.indexOf(item)< 0)
+				DaoFactory.getInstance().delete(sesion, item);
+		for (Articulo articulo: this.articulos) {
+			articulo.setIdOrdenCompra(this.orden.getIdOrdenCompra());
+			if(DaoFactory.getInstance().findIdentically(sesion, TcManticOrdenesDetallesDto.class, articulo.toMap())== null) 
+				DaoFactory.getInstance().insert(sesion, articulo);
+		} // for
+	}
 	
 } 

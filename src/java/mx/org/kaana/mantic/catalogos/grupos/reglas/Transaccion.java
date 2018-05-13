@@ -49,8 +49,8 @@ public class Transaccion extends IBaseTnx {
 					toFillClientes(sesion);
 					break;				
 				case ELIMINAR:
-					regresar= DaoFactory.getInstance().delete(sesion, this.grupo)>= 1L;
-					regresar= regresar && DaoFactory.getInstance().deleteAll(sesion, TcManticGruposClientesDto.class, params)>= 1L;
+					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticGruposClientesDto.class, params)>= 1L;
+					regresar= regresar && DaoFactory.getInstance().delete(sesion, this.grupo)>= 1L;
 					break;
 			} // switch
 			if(!regresar)

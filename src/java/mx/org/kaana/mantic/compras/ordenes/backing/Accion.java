@@ -27,7 +27,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
-import mx.org.kaana.mantic.catalogos.iva.reglas.Transaccion;
+import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.AdminOrdenes;
 
@@ -94,7 +94,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		EAccion eaccion        = null;
     try {			
 			eaccion= (EAccion) this.attrs.get("accion");
-			transaccion = new Transaccion(null, false);
+			transaccion = new Transaccion(this.adminOrden.getOrden(), this.adminOrden.getArticulos());
 			if (transaccion.ejecutar(eaccion)) {
 				regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra."), ETipoMensaje.INFORMACION);

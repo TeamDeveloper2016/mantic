@@ -170,6 +170,84 @@ $.mask.masks = $.extend($.mask.masks, {
 });
 
 (function() {
+  $.validator.addMethod('porcentaje', function(value, element, params) {
+      if(typeof(params)=== 'undefined')
+				params= {default: '0'};
+		  if(typeof(params.default)=== 'undefined')
+				params.default= '0';
+      if (janal.empty(value))
+				$(element).val(parseFloat(params.default).toFixed(2));
+		  else		
+        if(Number.isNaN(parseFloat(value, 10)) || parseFloat(value, 10)< parseFloat(params.default, 10))
+					$(element).val(parseFloat(params.default).toFixed(2));
+				else
+					$(element).val(parseFloat(value, 10).toFixed(2)); 
+      return true;
+		}, function(params, element) {
+      return 'No se logro verificar el valor del porcentaje.';
+    });
+    
+  $.validator.addMethod('cantidad', function(value, element, params) {
+		  if(typeof(params)=== 'undefined')
+				params= {default: 0};
+		  if(typeof(params.default)=== 'undefined')
+				params.default= 0;
+      if (janal.empty(value))
+				$(element).val(params.default);
+		  else		
+        if(Number.isNaN(parseInt(value, 10)) || parseInt(value, 10)< parseInt(params.default, 10))
+				  $(element).val(params.default);
+				else
+					$(element).val(parseInt(value, 10)); 
+      return true;
+    }, function(params, element) {
+      return 'No se logro verificar el número de la cantidad.';
+    });
+    
+  $.validator.addMethod('descuentos', function(value, element, params) {
+			var values= '';
+      if(typeof(params)=== 'undefined')
+				params= {default: '0'};
+		  if(typeof(params.default)=== 'undefined')
+				params.default= '0';
+			if(janal.empty(value))
+				$(element).val(params.default);
+			else {
+				var items= value.split(',');
+				for (item in items) {
+					if(Number.isNaN(parseFloat(items[item], 10))) 
+						items[item]= '0';
+					else {
+						items[item]= parseFloat(items[item], 10);
+						values+= items[item]+ ', ';
+					} // else	
+				} // for
+				$(element).val(values.length=== 0? params.default: values.substring(0, values.length- 2));
+			} // else	
+      return true;
+    }, function(params, element) {
+      return 'No se logro verificar los valores de los descuentos.';
+    });
+    
+  $.validator.addMethod('consecutivo', function(value, element, params) {
+		  var year= (new Date()).getFullYear();
+      var val= $.trim(value);
+			var params;
+			if(typeof(params)=== 'undefined')
+				params= {cuantos: 5, cual: '0'};
+			if(typeof(params.cuantos)=== 'undefined')
+				params.cuantos= 5;
+			if(typeof(params.cual)=== 'undefined')
+				params.cual= '0';
+			for(var x= 0; x< params.cuantos- $.trim(value).length; x++)
+				val= params.cual+ val;
+      if (!janal.empty(value))
+        $(element).val(year+ val); 
+      return true;
+    }, function(params, element) {
+      return 'No se logro generar el valor del consecutivo.';
+    });
+    
   $.validator.addMethod('cambiar-mayusculas', function(value, element, params) {
       if (!janal.empty(value))
         $(element).val($(element).val().toUpperCase()); 
