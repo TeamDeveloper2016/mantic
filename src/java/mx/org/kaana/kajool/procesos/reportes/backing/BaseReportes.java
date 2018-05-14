@@ -37,47 +37,60 @@ import org.primefaces.model.StreamedContent;
  */
 public class BaseReportes extends IBaseAttribute implements Serializable {
 
+	private static final long serialVersionUID = 8308306224661209782L;
 	protected EFormatos idFormato;
 	protected Long idTitulos;
 	protected String nombre;
 	protected Long total;
-	protected String automatico;
+	protected String automatico;	
 	protected List<UISelectItem> formatos;
 	protected IReporte ireporte;
-	protected Boolean paginacionXls;
+	protected Boolean paginacionXls; 
+	protected Boolean previsualizar; 
 	protected String habilitarXls;
+  protected Boolean pdfConSeguridad;
+  protected String prefijo;
+  protected String fileName;
 
-	public EFormatos getIdFormato() {
-		return idFormato;
-	}
+	public Boolean getPdfConSeguridad() {
+    return pdfConSeguridad;
+  }
 
-	public void setIdFormato(EFormatos idFormato) {
-		this.idFormato=idFormato;
-	}
+  public void setPdfConSeguridad(Boolean pdfConSeguridad) {
+    this.pdfConSeguridad = pdfConSeguridad;
+  }
+   
+  public EFormatos getIdFormato() {
+    return idFormato;
+  }
 
-	public Long getIdTitulos() {
-		return idTitulos;
-	}
+  public void setIdFormato(EFormatos idFormato) {
+    this.idFormato= idFormato;
+  }
 
-	public void setIdTitulos(Long idTitulos) {
-		this.idTitulos=idTitulos;
-	}
+  public Long getIdTitulos() {
+    return idTitulos;
+  }
 
-	public String getNombre() {
-		return nombre;
-	}
+  public void setIdTitulos(Long idTitulos) {
+    this.idTitulos= idTitulos;
+  }
 
-	public void setNombre(String nombre) {
-		this.nombre=nombre;
-	}
+  public String getNombre() {
+    return nombre;
+  }
 
-	public Long getTotal() {
-		return total;
-	}
+  public void setNombre(String nombre) {
+    this.nombre= nombre;
+  }
 
-	public String getAutomatico() {
-		return automatico;
-	}
+  public Long getTotal() {
+    return total;
+  }
+
+  public String getAutomatico() {
+    return automatico;
+  }
 
 	public List<UISelectItem> getFormatos() {
 		return formatos;
@@ -88,7 +101,7 @@ public class BaseReportes extends IBaseAttribute implements Serializable {
 	}
 
 	public void setPaginacionXls(Boolean paginacionXls) {
-		this.paginacionXls=paginacionXls;
+		this.paginacionXls= paginacionXls;
 	}
 
 	public String getHabilitarXls() {
@@ -96,40 +109,44 @@ public class BaseReportes extends IBaseAttribute implements Serializable {
 	}
 
 	public void setHabilitarXls(String habilitarXls) {
-		this.habilitarXls=habilitarXls;
+		this.habilitarXls= habilitarXls;
 	}
+
+  public Boolean getPrevisualizar() {
+    return previsualizar;
+  }
+
+  public void setPrevisualizar(Boolean previsualizar) {
+    this.previsualizar = previsualizar;
+  }
 
 	protected void loadResourceFileJasper(Map<String, Object> parametros) throws Exception {
 		Map<String, Object> params= null;
-    JasperReport subreport    = null;
 		try {
-			params=new HashMap<>();
-			for (String key : parametros.keySet()) {
-				if (key.startsWith(Constantes.TILDE)) {
-					subreport=(JasperReport) JRLoader.loadObject(new File(JsfBase.getRealPath((String)parametros.get(key))));
-          if(subreport== null)
-  					subreport=(JasperReport) JRLoader.loadObject(SearchFileJar.getInstance().toInputStream((String) parametros.get(key)));
-					params.put(key.substring(1), subreport);
+			params= new HashMap<>();
+			for(String key: parametros.keySet()) {						
+				if(key.startsWith(Constantes.TILDE)) {					
+          JasperReport subreport= (JasperReport)JRLoader.loadObject(SearchFileJar.getInstance().toInputStream((String)parametros.get(key)));
+          params.put(key.substring(1), subreport);        
 				} // if				
 			} // for			
-			for (String key : params.keySet()) {
+			for(String key: params.keySet())
 				parametros.remove(Constantes.TILDE.concat(key));
-			} // for
-			parametros.putAll(params);
+			parametros.putAll(params);			
 		} // try
-		catch (Exception e) {
+		catch(Exception e) {
 			throw e;
 		} // catch		
 		finally {
 			Methods.clean(params);
 		} // finally
-	}
+  }
 
 	public String getArchivo() {
-		return this.nombre.substring(this.nombre.lastIndexOf(File.separatorChar)+1);
+		return this.nombre.substring(this.nombre.lastIndexOf(File.separatorChar)+ 1);
 	}
 
-	public Boolean getVer() {
+  public Boolean getVer() {
 		return Boolean.FALSE;
 	}
 
@@ -140,75 +157,71 @@ public class BaseReportes extends IBaseAttribute implements Serializable {
 	@Override
 	protected void init() {
 	}
-
-	protected void llenarFormatos() {
-		for (EFormatos formato : EFormatos.values()) {
-			if (formato.getType().equals(ETipoFormato.IREPORT)) {
-				this.formatos.add(new UISelectItem(formato, formato.name()));
-			} // if
-		} // for
+	
+	protected void llenarFormatos () {
+	  for(EFormatos formato: EFormatos.values()) 
+      if (formato.getType().equals(ETipoFormato.IREPORT) && !formato.equals(EFormatos.DOC) && !formato.equals(EFormatos.PPT) && !formato.equals(EFormatos.JXL))  
+        this.formatos.add(new UISelectItem(formato, formato.name()));
 	}
-
+	
 	protected StreamedContent getDescargar() throws Exception {
-		Zip zip=null;
-		String contentType=null;
-		StreamedContent regresar=null;
-		String zipName=null;
-		InputStream inputStream=null;
+		Zip zip                 = null;
+		String contentType      = null;
+		StreamedContent regresar= null;
+		String zipName          = null;
+		InputStream inputStream = null;
 		try {
-			zip=new Zip();
-			if (this.ireporte.getComprimir()) {
-				zipName=this.nombre.substring(0, this.nombre.lastIndexOf(".")+1).concat(EFormatos.ZIP.name().toLowerCase());
+			zip= new Zip();
+			if(this.ireporte.getComprimir()) {
+				zipName= this.nombre.substring(0, this.nombre.lastIndexOf(".")+ 1).concat(EFormatos.ZIP.name().toLowerCase());
 				zip.setDebug(true);
 				zip.setEliminar(true);
-				zip.compactar(JsfBase.getRealPath(zipName), JsfBase.getRealPath(this.idFormato.toPath()), getArchivo());
-				this.nombre=zipName;
-				contentType=EFormatos.ZIP.getContent();
-				inputStream=((ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(this.nombre);
-				regresar=new DefaultStreamedContent(inputStream, contentType, getArchivo());
+				zip.compactar(JsfBase.getRealPath().concat(zipName), JsfBase.getRealPath().concat(this.idFormato.toPath()), getArchivo());
+				this.nombre= zipName;
+				contentType= EFormatos.ZIP.getContent();
+				inputStream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(this.nombre);  
+				regresar   = new DefaultStreamedContent(inputStream, contentType, getArchivo());	
 			} // if	
 		} // try
-		catch (Exception e) {
-			throw e;
+		catch(Exception e) {
+			throw e;			
 		} // catch
-		return regresar;
+    return regresar;
 	} // getDescargar
-
+	
 	protected Reporte reporteDataSource(String source, String nombreArchivo) throws Exception {
-		Reporte regresar=null;
+		Reporte regresar= null;
 		try {
-			regresar=new Reporte(source.substring(0, source.lastIndexOf('.')), JsfBase.getRealPath(this.idFormato.toPath()).concat(File.separator), this.ireporte.getParametros(), nombreArchivo, ((IReporteDataSource) this.ireporte).getJrDataSource(), this.paginacionXls);
-			if (this.ireporte instanceof IBaseDatasource) {
-				((IBaseDatasource) this.ireporte).reload();
-			} // if
+			regresar= new Reporte(source.substring(0, source.lastIndexOf('.')), JsfBase.getRealPath().concat(this.idFormato.toPath()).concat(File.separator), this.ireporte.getParametros(), nombreArchivo, ((IReporteDataSource)this.ireporte).getJrDataSource() , this.paginacionXls, this.previsualizar, this.pdfConSeguridad);
+			if (this.ireporte instanceof IBaseDatasource)
+			  ((IBaseDatasource)this.ireporte).reload();
 		} // try
-		catch (Exception e) {
-			throw e;
+		catch(Exception e) {
+		  throw e;		
 		} // catch
 		return regresar;
 	}
-
+	
 	protected Reporte reporteConnection(String source, String nombreArchivo) throws Exception {
-		Reporte regresar=null;
-		String sql=null;
+		Reporte regresar= null;
+		String sql      = null;
 		try {
-			sql=Dml.getInstance().getSelect(this.ireporte.getProceso(), this.ireporte.getIdXml(), this.ireporte.getParams());
+			sql= Dml.getInstance().getSelect(this.ireporte.getProceso(), this.ireporte.getIdXml(), this.ireporte.getParams());
 			this.ireporte.getParametros().put(Constantes.REPORTE_SQL, sql);
-			regresar=new Reporte(source.substring(0, source.lastIndexOf('.')), JsfBase.getRealPath(this.idFormato.toPath()).concat(File.separator), this.ireporte.getParametros(), nombreArchivo, this.paginacionXls);
+			regresar= new Reporte(this.pdfConSeguridad, source.substring(0, source.lastIndexOf('.')), JsfBase.getRealPath().concat(this.idFormato.toPath()).concat(File.separator), this.ireporte.getParametros(), nombreArchivo , this.paginacionXls, this.previsualizar);
 		} // try
-		catch (Exception e) {
+		catch(Exception e) {
 			throw e;
 		} // catch
 		return regresar;
 	} // reporteConnection	
-
+	
 	protected void doSeleccionarReporte() {
-		if (this.idFormato.name().equals(EFormatos.XLS.name())||this.idFormato.name().equals(EFormatos.XLSX.name())) {
-			this.habilitarXls=Boolean.toString(false);
-		} // if
+		if(this.idFormato.name().equals(EFormatos.XLS.name()) || this.idFormato.name().equals(EFormatos.XLSX.name()))					
+			this.habilitarXls= Boolean.toString(false); 					
 		else {
-			this.habilitarXls=Boolean.toString(true);
-			this.paginacionXls=false;
+			this.habilitarXls = Boolean.toString(true); 
+			this.paginacionXls= false;
 		} // else
 	} // doSeleccionarReporte 	
 }
