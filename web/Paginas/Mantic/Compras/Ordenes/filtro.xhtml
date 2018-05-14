@@ -4,7 +4,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
-                template="/WEB-INF/plantillas/filtro.xhtml">
+                template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Ordenes de compra generadas" />
   <ui:define name="librerias">
     <script type="text/javascript">
@@ -12,9 +12,9 @@
         'idEmpresa'      : {validaciones: 'libre', mascara: 'libre'},
         'consecutivo'    : {validaciones: 'libre', mascara: 'libre'},
         'idProveedor'    : {validaciones: 'libre', mascara: 'libre'},
-        'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha'}
-        'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha'}
-        'idCompraEstatus': {validaciones: 'libre', mascara: 'libre'},
+        'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha'},
+        'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha'},
+        'idCompraEstatus': {validaciones: 'libre', mascara: 'libre'}
       };
     </script>		
 		<style>
@@ -147,7 +147,7 @@
             <p:separator/>					
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
             <p:separator/>					
-            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar"/>					
           </p:contextMenu>
         </div>
       </div>
