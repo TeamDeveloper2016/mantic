@@ -134,7 +134,7 @@
 									<div class="ui-grid-col-4">
 										<p:outputLabel for="codigo" value="Código:"/><br/>
 										<p:inputText id="codigo" value="#{manticComprasOrdendesAccion.attrs.codigo}" styleClass="janal-wid-100-txt">
-											<p:ajax event="keyup" listener="#{manticComprasOrdendesAccion.doUpdateArticulos}" process="@this" update="articulo precio informacion" onstart="janal.bloquear(); return $('#contenedorGrupos\\:codigo').val().trim().length&gt; 0" oncomplete="janal.desbloquear();"/>
+											<p:ajax event="keyup" listener="#{manticComprasOrdendesAccion.doUpdateArticulos}" process="@this" update="articulo precio informacion" onstart="return $('#contenedorGrupos\\:codigo').val().trim().length&gt; 0"/>
 										</p:inputText>
 									</div>
 									<div class="ui-grid-col-3">
@@ -297,10 +297,10 @@
 								</div>
 							</div>
 							<p:spacer height="10"/>
-							<p:fieldset id="informacion" legend="Datos del articulo" rendered="#{not manticComprasOrdendesAccion.attrs.articulos.isEmpty()}">
+							<p:fieldset id="informacion" legend="Datos del articulo">
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
-										<h:outputText value="Ultima compra:" styleClass="janal-font-bold"/>
+										<h:outputText value="Ultima compra #{manticComprasOrdendesAccion.attrs.ultimoPrecio.consecutivo}:" styleClass="janal-font-bold"/>
 									</div>	
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
@@ -329,6 +329,7 @@
 										<p:inputText styleClass="janal-wid-100-txt janal-column-center" value="#{manticComprasOrdendesAccion.attrs.ultimoPrecio.registro}" readonly="true"/>
 									</div>	
 								</div>
+								<br/>
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
 										<h:outputText value="Precios sugeridos:" styleClass="janal-font-bold"/>
@@ -336,21 +337,28 @@
 								</div>
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
-										<p:selectOneMenu id="sugeridos" var="item" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="startsWith">
-											<f:selectItems value="#{manticComprasOrdendesAccion.attrs.preciosSugeridos}" var="element" itemValue="#{element}" itemLabel="#{element.proveedor} #{element.precio}  #{element.descuento}% "/>
-											<p:column headerText="Proveedor">
-												<h:outputText value="#{item.proveedor}"/>
+										<p:dataTable id="sugeridos" var="row" value="#{manticComprasOrdendesAccion.attrs.preciosSugeridos}" rows="6" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " styleClass="paginated" rowIndexVar="index">
+											<p:column headerText="No" styleClass="janal-wid-3">
+												<h:outputText value="#{index+ 1}"/>
 											</p:column>   
-											<p:column styleClass="janal-column-right" headerText="Precio">
-												<h:outputText value="#{item.precio}"/>
+											<p:column headerText="Proveedor" styleClass="janal-wid-15">
+												<h:outputText value="#{row.proveedor}"/>
 											</p:column>   
-											<p:column styleClass="janal-column-right" headerText="Descuento">
-												<h:outputText value="#{item.descuento}"/>
+											<p:column styleClass="janal-wid-8 janal-column-right" headerText="Precio">
+												<h:outputText value="#{row.precio}"/>
+											</p:column>   
+											<p:column styleClass="janal-wid-10 janal-column-right" headerText="Descuento">
+												<h:outputText value="#{row.descuento}%"/>
 											</p:column>   
 											<p:column headerText="Observación">
-												<h:outputText value="#{item.observacion}"/>
+												<h:outputText value="#{row.observacion}"/>
 											</p:column>   
-										</p:selectOneMenu>
+											<p:column style="width:38px; text-align: center">
+												<p:commandButton update="sugeridos" icon="fa fa-check" title="Marcar como leido" action="#{manticComprasOrdendesAccion.doUpdateSugeridos}" styleClass="janal-text-white">
+													<f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.sugerido}" />
+												</p:commandButton>
+											</p:column>
+										</p:dataTable>
 									</div>	
 								</div>	
 							</p:fieldset>

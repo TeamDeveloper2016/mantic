@@ -12,7 +12,6 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -32,7 +31,7 @@ import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.AdminOrdenes;
-import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
+import mx.org.kaana.mantic.db.dto.TrManticArticuloPrecioSugeridoDto;
 
 
 @Named(value= "manticComprasOrdendesAccion")
@@ -62,6 +61,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("precio", 10);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("diferencia", "0");
+			this.attrs.put("mostrar", false);
 			doLoad();
     } // try
     catch (Exception e) {
@@ -270,6 +270,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		try {
    		this.attrs.put("precio", seleccionado.toDouble("precio"));
    		this.attrs.put("idArticulo", seleccionado.getKey());
+      this.attrs.put("mostrar", seleccionado!= null && seleccionado.size()> 1);
 			this.doUpdateDiferencia();
 			this.doUpdateInformacion();
 		} // try
@@ -296,13 +297,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} 
 
 	private void doUpdateInformacion() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
     try {
-			columns= new ArrayList<>();
-      columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("precio", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-      columns.add(new Columna("descuento", EFormatoDinamicos.NUMERO_CON_DECIMALES));
 			Entity ultimoPrecio= (Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "ultimoPrecio", this.attrs);
 			if(ultimoPrecio!= null && !ultimoPrecio.isEmpty())
 				ultimoPrecio.values().stream().map((value) -> {
@@ -313,14 +308,35 @@ public class Accion extends IBaseAttribute implements Serializable {
 					value.setData(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, value.toTimestamp()));
 				}); // for
  		  this.attrs.put("ultimoPrecio", ultimoPrecio);
+			doUpdateSugeridos();
+    } // try
+    catch (Exception e) {
+			Error.mensaje(e);
+    } // catch   
+	}
+	
+	public void doUpdateSugeridos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			if(this.attrs.get("sugerido")!= null && ((UISelectEntity)this.attrs.get("sugerido")).getKey()!= -1L) {
+			  TrManticArticuloPrecioSugeridoDto sugerido= new TrManticArticuloPrecioSugeridoDto(((UISelectEntity)this.attrs.get("sugerido")).getKey());
+				params.put("idLeido", 1L);
+				DaoFactory.getInstance().update(sugerido, params);
+				this.attrs.put("sugerido", new UISelectEntity(new Entity(-1L)));
+			} // if	
+			columns= new ArrayList<>();
+      columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("precio", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("descuento", EFormatoDinamicos.NUMERO_CON_DECIMALES));
 		  this.attrs.put("preciosSugeridos", UIEntity.build("VistaOrdenesComprasDto", "preciosSegerido", this.attrs, columns));
     } // try
     catch (Exception e) {
 			Error.mensaje(e);
     } // catch   
     finally {
-      Methods.clean(columns);
       Methods.clean(params);
+      Methods.clean(columns);
     }// finally
 	}
 	

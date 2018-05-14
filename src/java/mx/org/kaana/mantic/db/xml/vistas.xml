@@ -317,6 +317,7 @@
 			<select id="ultimoPrecio">
         select      
           tc_mantic_ordenes_detalles.id_orden_detalle as id_key,
+				  tc_mantic_ordenes_compras.consecutivo,
           tc_mantic_ordenes_compras.tipo_de_cambio,
           tc_mantic_ordenes_detalles.costo,
           tc_mantic_ordenes_detalles.cantidad,
@@ -346,7 +347,7 @@
 				inner join 
 					tc_mantic_proveedores on tr_mantic_articulo_precio_sugerido.id_proveedor= tc_mantic_proveedores.id_proveedor
         where      
-          id_articulo = {idArticulo}
+          id_articulo = {idArticulo} and id_leido= 2
 				order by
 				  tr_mantic_articulo_precio_sugerido.registro				
 			</select>

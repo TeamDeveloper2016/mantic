@@ -272,27 +272,7 @@
         delete from tr_mantic_articulo_tipo_venta where id_articulo={idArticulo} 
       </delete>
     </unit>
-    
-     <unit id="TrManticArticulosPreciosOfertadosDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tr_mantic_articulos_precios_ofertados
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tr_mantic_articulos_precios_ofertados
-        where      
-          id_proveedor = {idProveedor} and precio = {precio} and id_articulo_precio_ofertado = {idArticuloPrecioOfertado} and descuento = {descuento} and id_articulo = {idArticulo}
-      </select>
-    </unit>
-    
-     <unit id="TrManticClientesRepresentantesDto">
+    <unit id="TrManticClientesRepresentantesDto">
       <select id="row">
         select      
           *
@@ -1820,5 +1800,41 @@
         delte from tr_mantic_articulo_grupo_descuento where id_articulo={idArticulo} 
       </delete>
     </unit>
+    <unit id="TrManticArticuloPrecioSugeridoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_articulo_precio_sugerido
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_articulo_precio_sugerido
+        where      
+          id_proveedor = {idProveedor} and precio = {precio} and descuento = {descuento} and id_articulo = {idArticulo}
+      </select>
+    </unit>		
+    <unit id="TcManticOrdenesBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_ordenes_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ordenes_bitacora
+        where      
+          id_orden_compra = {idOrdenCompra} and id_orden_bitacora = {idOrdenBitacora} and id_compras_estatus = {idComprasEstatus}
+      </select>
+    </unit>		
   </dml>    
 </process>

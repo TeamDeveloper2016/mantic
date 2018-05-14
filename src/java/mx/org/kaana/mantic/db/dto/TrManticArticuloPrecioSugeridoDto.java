@@ -50,6 +50,8 @@ public class TrManticArticuloPrecioSugeridoDto implements IBaseDto, Serializable
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_articulo_precio_sugerido")
   private Long idArticuloPrecioSugerido;
+  @Column (name="id_leido")
+  private Long idLeido;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -58,11 +60,11 @@ public class TrManticArticuloPrecioSugeridoDto implements IBaseDto, Serializable
   }
 
   public TrManticArticuloPrecioSugeridoDto(Long key) {
-    this(null, null, null, null, null, null, new Long(-1L));
+    this(null, null, null, null, null, null, new Long(-1L), null);
     setKey(key);
   }
 
-  public TrManticArticuloPrecioSugeridoDto(Long idProveedor, Double precio, Long idUsuario, Double descuento, String observaciones, Long idArticulo, Long idArticuloPrecioSugerido) {
+  public TrManticArticuloPrecioSugeridoDto(Long idProveedor, Double precio, Long idUsuario, Double descuento, String observaciones, Long idArticulo, Long idArticuloPrecioSugerido, Long idLeido) {
     setIdProveedor(idProveedor);
     setPrecio(precio);
     setIdUsuario(idUsuario);
@@ -70,6 +72,7 @@ public class TrManticArticuloPrecioSugeridoDto implements IBaseDto, Serializable
     setObservaciones(observaciones);
     setIdArticulo(idArticulo);
     setIdArticuloPrecioSugerido(idArticuloPrecioSugerido);
+    setIdLeido(idLeido);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -129,6 +132,14 @@ public class TrManticArticuloPrecioSugeridoDto implements IBaseDto, Serializable
     return idArticuloPrecioSugerido;
   }
 
+  public void setIdLeido(Long idLeido) {
+    this.idLeido = idLeido;
+  }
+
+  public Long getIdLeido() {
+    return idLeido;
+  }
+
   public void setRegistro(Timestamp registro) {
     this.registro = registro;
   }
@@ -166,6 +177,8 @@ public class TrManticArticuloPrecioSugeridoDto implements IBaseDto, Serializable
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdArticuloPrecioSugerido());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdLeido());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -181,6 +194,7 @@ public class TrManticArticuloPrecioSugeridoDto implements IBaseDto, Serializable
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idArticulo", getIdArticulo());
 		regresar.put("idArticuloPrecioSugerido", getIdArticuloPrecioSugerido());
+		regresar.put("idLeido", getIdLeido());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -188,7 +202,7 @@ public class TrManticArticuloPrecioSugeridoDto implements IBaseDto, Serializable
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdProveedor(), getPrecio(), getIdUsuario(), getDescuento(), getObservaciones(), getIdArticulo(), getIdArticuloPrecioSugerido(), getRegistro()
+    getIdProveedor(), getPrecio(), getIdUsuario(), getDescuento(), getObservaciones(), getIdArticulo(), getIdArticuloPrecioSugerido(), getIdLeido(), getRegistro()
     };
     return regresar;
   }
