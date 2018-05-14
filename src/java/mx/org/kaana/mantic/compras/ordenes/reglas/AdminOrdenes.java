@@ -43,7 +43,7 @@ public final class AdminOrdenes implements Serializable {
       this.orden.setIkCliente(new UISelectEntity(new Entity(this.orden.getIdCliente())));
       this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdProveedor())));
       this.orden.setIkProveedorPago(new UISelectEntity(new Entity(this.orden.getIdProveedorPago())));
-			toCalculate();
+			toCalculate(true, this.orden.getIdSinIva().equals(1L), this.getOrden().getTipoDeCambio());
 		}	// if
 		else	{
 		  this.articulos= new ArrayList<>();
@@ -94,8 +94,8 @@ public final class AdminOrdenes implements Serializable {
 		  this.articulos.add(articulo);
    		toCalculate();
 		} // if
-//		else
-//		  throw new KajoolBaseException("El articulo ["+ articulo.getCodigo()+ "] ya esta dentro de la lista seleccionada !");
+		else
+		  throw new KajoolBaseException("El articulo ["+ articulo.getCodigo()+ "] ya esta dentro de la lista seleccionada !");
 	}
 
 	public void remove(Articulo seleccionado) {

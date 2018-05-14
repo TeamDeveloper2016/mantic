@@ -21,9 +21,7 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Serializable
 	private static final long serialVersionUID=329661715469035396L;
 
   private Long idArticulo;	
-	private String nombre;
 	private Totales importes;
-	private double costo;
 	private boolean sinIva;
 	private double tipoDeCambio;
 	private UISelectEntity idEntity;
@@ -37,23 +35,13 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Serializable
 	}
 
 	public Articulo(boolean conIva, double tipoDeCambio, String nombre, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Long cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos) {
-		super(codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos);
+		super(codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos, nombre);
 		this.idEntity    = new UISelectEntity(new Entity(-1L));
-		this.nombre      = nombre;
 		this.idArticulo  = idArticulo;
 		this.sinIva      = conIva;
 		this.importes    = new Totales();
-		this.costo       = costo;
 		this.tipoDeCambio= tipoDeCambio;
 		toCalculate();
-	}
-
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre=nombre;
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -71,7 +59,7 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Serializable
 	public Totales getImportes() {
 		return importes;
 	}
-	
+
 	@Override
 	public Class toHbmClass() {
 		return TcManticOrdenesDetallesDto.class;
@@ -103,14 +91,13 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Serializable
 	}
 
 	private void toCalculate() {
-		double costoModena= this.costo* this.tipoDeCambio;
-		double costoReal  = this.getCantidad()* costoModena;
-		if(this.sinIva) {
-			this.setCosto(Numero.toRedondear(costoModena* (1- (this.getIva()/ 100))));
-		  this.importes.setImporte(Numero.toRedondear(this.getCantidad()* this.getCosto()));
-		} // if
+		double costoMoneda= this.getCosto()* this.tipoDeCambio;
+		double costoReal  = this.getCantidad()* costoMoneda;
+		double costoSinIva= Numero.toRedondear(this.getCosto()* (1- (this.getIva()/ 100)));
+		if(this.sinIva) 
+		  this.importes.setImporte(Numero.toRedondear(this.getCantidad()* costoSinIva* this.tipoDeCambio));
 		else
-			this.importes.setImporte(Numero.toRedondear(this.getCantidad()* costoModena));
+			this.importes.setImporte(Numero.toRedondear(costoReal));
 		this.importes.setIva(Numero.toRedondear((this.getIva()/ 100)* (this.sinIva? costoReal: this.importes.getImporte())));
 		Descuentos descuentos= new Descuentos(this.importes.getImporte());
 		this.importes.setDescuento(Numero.toRedondear(descuentos.toImporte(this.getDescuento())));

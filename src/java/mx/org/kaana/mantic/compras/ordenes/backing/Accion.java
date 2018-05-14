@@ -30,6 +30,7 @@ import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.AdminOrdenes;
+import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 
 
 @Named(value= "manticComprasOrdendesAccion")
@@ -77,7 +78,7 @@ public class Accion extends IBaseAttribute implements Serializable {
           this.adminOrden= new AdminOrdenes(new OrdenCompra(-1L));
           break;
         case MODIFICAR:					
-          this.adminOrden= new AdminOrdenes((OrdenCompra)DaoFactory.getInstance().findById(OrdenCompra.class, (Long)this.attrs.get("idOrdenCompra")));
+          this.adminOrden= new AdminOrdenes((OrdenCompra)DaoFactory.getInstance().toEntity(OrdenCompra.class, "TcManticOrdenesComprasDto", "detalle", this.attrs));
     			this.attrs.put("sinIva", this.adminOrden.getOrden().getIdSinIva().equals(1L));
           break;
       } // switch
@@ -101,8 +102,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.adminOrden.getOrden().setTotal(this.adminOrden.getTotales().getTotal());
 			transaccion = new Transaccion(this.adminOrden.getOrden(), this.adminOrden.getArticulos());
 			if (transaccion.ejecutar(eaccion)) {
-				regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+				if(eaccion.equals(EAccion.AGREGAR))
+ 				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra."), ETipoMensaje.INFORMACION);
+  			JsfBase.setFlashAttribute("idOrdenCompra", this.adminOrden.getOrden().getIdOrdenCompra());
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar la orden de compra.", ETipoMensaje.ERROR);      			
@@ -115,6 +118,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {   
+  	JsfBase.setFlashAttribute("idOrdenCompra", this.adminOrden.getOrden().getIdOrdenCompra());
     return (String)this.attrs.get("retorno");
   } // doCancelar
 

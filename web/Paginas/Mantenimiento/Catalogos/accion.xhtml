@@ -43,7 +43,7 @@
     </p:dialog>
   </ui:define>
   <ui:define name="acciones">
-    <p:commandButton id="aceptar" icon="fa fa-check" value="Aceptar" actionListener="#{kajoolDinamicosAccion.doAceptar}" process="@this #{kajoolDinamicosAccion.names}" onstart="janal.execute();"/>
+    <p:commandButton id="aceptar" icon="fa fa-check" value="Aceptar" actionListener="#{kajoolDinamicosAccion.doAceptar}" process="@this #{kajoolDinamicosAccion.names}" onstart="janal.execute(true);"/>
     <p:commandButton icon="fa fa-remove" value="Cancelar" action="filtro?faces-redirect=true" immediate="true"/>
   </ui:define>
   <ui:param name="componenteBloqueo" value="aceptar"/>

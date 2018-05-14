@@ -1207,7 +1207,15 @@
         from      
           tc_mantic_ordenes_compras
         where      
-          id_proveedor_pago = {idProveedorPago} and entrega_estimada = {entregaEstimada} and id_almacen = {idAlmacen} and id_orden_compra = {idOrdenCompra} and id_empresa = {idEmpresa}
+          id_proveedor_pago = {idProveedorPago} and id_almacen = {idAlmacen} and id_empresa = {idEmpresa}
+      </select>
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_ordenes_compras
+        where 
+          id_orden_compra = {idOrdenCompra} 
       </select>
     </unit>
 	  <unit id="TcManticPersonaDomicilioDto">

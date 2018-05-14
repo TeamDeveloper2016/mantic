@@ -301,6 +301,7 @@
 					or tc_mantic_proveedores.id_proveedor = {idProveedor}
 					or (date_format(tc_mantic_ordenes_compras.registro, '%Y%c%d')&gt;= '{fechaInicio}' and date_format(tc_mantic_ordenes_compras.registro, '%Y%c%d')&lt;= '{fechaTermino}')
 					or tc_mantic_ordenes_compras.id_compra_estatus= {idCompraEstatus}
+					or tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}
 				group by
 					tc_mantic_ordenes_compras.id_orden_compra,
 					tc_mantic_ordenes_compras.id_empresa, 

@@ -22,9 +22,9 @@
 				'contenedorGrupos\\:articulo'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo'},				
 				'contenedorGrupos\\:cantidad'       : {validaciones: 'entero|mayor({"cuanto": 1})', mascara: 'entero', grupo: 'articulo'},				
 				'contenedorGrupos\\:precio'         : {validaciones: 'flotante|mayor({"cuanto": 1})', mascara: 'flotante', grupo: 'articulo'},			
-				'contenedorGrupos\\:articulos'      : {validaciones: 'requerido|mayor({"cuanto": 1})', mascara: 'flotante', grupo: 'general'},			
-				'contenedorGrupos\\:total'          : {validaciones: 'requerido|mayor({"cuanto": 1})', mascara: 'flotante', grupo: 'general'},			
-				'janalImporte'                      : {validaciones: 'requerido|mayor({"cuanto": 1})', mascara: 'libre', grupo: 'general', multiple: '$'},
+				'contenedorGrupos\\:articulos'      : {validaciones: 'requerido|mayor({"cuanto": 1})', mascara: 'no-aplica', grupo: 'general'},			
+				'contenedorGrupos\\:total'          : {validaciones: 'requerido|mayor({"cuanto": 1})', mascara: 'no-aplica', grupo: 'general'},			
+				'janalImporte'                      : {validaciones: 'requerido|mayor({"cuanto": 1})', mascara: 'no-aplica', grupo: 'general', multiple: '$'},
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}				
 			};			
 			
@@ -219,7 +219,7 @@
 													<h:outputText value="Precio"/>
 												</f:facet>
 												<p:inputText id="janalCosto" value="#{row['costo']}" styleClass="janal-wid-100-txt janal-column-right total">
-													<p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.total)" onstart="return !janal.cantidad($('#contenedorGrupos\\:tabla\\:#{index}\\:janalCosto'), '1').error;"/>
+													<p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.total)" onstart="return !janal.costo($('#contenedorGrupos\\:tabla\\:#{index}\\:janalCosto'), '1').error;"/>
 												</p:inputText>	
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
@@ -341,11 +341,11 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasOrdendesAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasOrdendesAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('general', true);" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasOrdendesAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasOrdendesAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasOrdendesAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('general', true);" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasOrdendesAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>

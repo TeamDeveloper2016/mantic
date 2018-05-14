@@ -4,6 +4,7 @@ import com.coolservlets.beans.tree.Tree;
 import com.coolservlets.beans.tree.TreeNode;
 import com.coolservlets.beans.tree.TreeObject;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.faces.context.FacesContext;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -31,7 +32,7 @@ public class Mmenu extends IBaseMenu implements Serializable{
 		try {
 			if(JsfBase.getAutentifica().getCredenciales().isMenuEncabezado()){
 				getMenu().append("<ul>");
-				generar(getRoot().loadChildren());
+				generar(getRoot()!= null? getRoot().loadChildren(): new ArrayList<>());
 				getMenu().append("</ul>");
 			} // if
 		} // try

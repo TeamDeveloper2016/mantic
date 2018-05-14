@@ -23,6 +23,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 	private UISelectEntity ikProveedorPago;
 
 	public OrdenCompra() {
+		this(-1L);
 	}
 
 	public OrdenCompra(Long key) {

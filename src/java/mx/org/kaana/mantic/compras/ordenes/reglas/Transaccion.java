@@ -62,7 +62,7 @@ public class Transaccion extends IBaseTnx {
 					this.orden.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
 					this.orden.setOrden(consecutivo);
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
-					//regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
+					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 					toFillArticulos(sesion);
 					break;
 				case MODIFICAR:
@@ -85,14 +85,14 @@ public class Transaccion extends IBaseTnx {
 	}	// ejecutar
 
 	private void toFillArticulos(Session sesion) throws Exception {
-		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, TcManticOrdenesDetallesDto.class, "TcManticOrdenesDetallesDto", "detalle", this.orden.toMap());
+		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticOrdenesDetallesDto", "detalle", this.orden.toMap());
 		for (Articulo item: todos) 
 			if(this.articulos.indexOf(item)< 0)
 				DaoFactory.getInstance().delete(sesion, item);
 		for (Articulo articulo: this.articulos) {
 			articulo.setIdOrdenCompra(this.orden.getIdOrdenCompra());
-//			if(DaoFactory.getInstance().findIdentically(sesion, TcManticOrdenesDetallesDto.class, articulo.toMap())== null) 
-//				DaoFactory.getInstance().insert(sesion, articulo);
+			if(DaoFactory.getInstance().findIdentically(sesion, TcManticOrdenesDetallesDto.class, articulo.toMap())== null) 
+				DaoFactory.getInstance().insert(sesion, articulo);
 		} // for
 	}
 	

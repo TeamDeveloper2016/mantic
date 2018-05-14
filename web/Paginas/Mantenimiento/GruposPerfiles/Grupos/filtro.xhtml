@@ -20,7 +20,7 @@
         <p:panelGrid columns="3" layout="grid" columnClasses="janal-wid-col-90,Wid40,janal-wid-col-40">
           <p:outputLabel for="descripcion" value="Descripción:"/>
           <p:inputText id="descripcion" styleClass="Container90" value="#{kajoolMantenimientoGruposperfilesGruposFiltro.attrs.descripcion}"/>		
-          <p:commandButton id="buscar" icon="fa fa-search" actionListener="#{kajoolMantenimientoGruposperfilesGruposFiltro.doLoad}" onstart="return janal.execute();" process="@this descripcion" update="tabla" title="Busqueda General"/>
+          <p:commandButton id="buscar" icon="fa fa-search" actionListener="#{kajoolMantenimientoGruposperfilesGruposFiltro.doLoad}" onstart="return janal.execute(true);" process="@this descripcion" update="tabla" title="Busqueda General"/>
         </p:panelGrid>
       </p:fieldset>
 		</div>

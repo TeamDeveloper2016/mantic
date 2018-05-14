@@ -723,7 +723,7 @@
         var $components= $parent.components(value.multiple, id);
         $.each($components, function() {
           $(this).unsetMask();
-          $(this).css('text-align', 'left');
+          //$(this).css('text-align', 'left');
           $(this).rules('remove');
           $parent.required(id, value.validaciones, false);
         });
