@@ -18,6 +18,7 @@ public interface IReporte {
 	public String getProceso();
 	public String getIdXml();
 	public Map<String, Object> getParams();
+	public void setParams(Map<String, Object> params);
 	public String getNombre();
 	public EFormatos getFormato();
 	public Long getTitulo();
