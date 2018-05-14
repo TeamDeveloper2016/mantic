@@ -84,7 +84,8 @@ public class JsfBase extends JsfUtilities {
     return isLockUsers(toLockUsers(), getAutentifica());
   }
 
-	 public static Reporte toReporte () {
+	public static Reporte toReporte () {
     return (Reporte) getFacesContext().getViewRoot().getViewMap().get("kajoolTemplateReporte");
   }
+	
 }
