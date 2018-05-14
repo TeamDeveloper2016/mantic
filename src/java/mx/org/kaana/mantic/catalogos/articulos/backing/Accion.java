@@ -48,7 +48,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       loadCategorias();
       loadEmpaques();
       doLoadUnidadesMedidas();
-      loadClientes();
+      loadGrupos();
       loadTiposVentas();
     } // try
     catch (Exception e) {
@@ -184,14 +184,14 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
   } // loadProveedores
 
-  private void loadClientes() {
-    List<UISelectItem> clientes= null;
+  private void loadGrupos() {
+    List<UISelectItem> grupos= null;
     Map<String, Object> params = null;
     try {
       params = new HashMap<>();
-      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      clientes = UISelect.build("TcManticClientesDto", "sucursales", params, "razonSocial", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
-      this.attrs.put("clientesGeneral", clientes);
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      grupos = UISelect.build("TcManticGruposDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+      this.attrs.put("gruposGeneral", grupos);
     } // try
     catch (Exception e) {
       throw e;
