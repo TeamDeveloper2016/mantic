@@ -173,7 +173,7 @@
                 <p:focus class="janal-padding-cero" context="principal"/>	
 								<p:remoteCommand name="actualizarComponentes" update="titulos formatos registros"/>
 								<div class="tabla-filtro">
-									<p:fieldset legend="Reporte" toggleable="true" toggleSpeed="500" collapsed="true" style="margin-bottom:10px; width: 98%" styleClass="sin-lineas">
+									<p:fieldset legend="Reporte" toggleable="true" toggleSpeed="500" collapsed="true" style="margin-bottom:10px; width: 98%; display: none" styleClass="sin-lineas">
 										<h:panelGrid columns="2" id="encabezadoReporte" >
 											<label for="titulos" id="l_titulos">Titulos:</label>
 											<p:selectOneMenu id="titulos" value="#{kajoolTemplateReporte.idTitulos}" widgetVar="titulo">
