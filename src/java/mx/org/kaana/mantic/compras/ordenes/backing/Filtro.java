@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.compras.ordenes.backing;
 
+import java.io.File;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -26,14 +28,22 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
+import mx.org.kaana.mantic.enums.EReportes;
+import org.primefaces.context.RequestContext;
 
 @Named(value = "manticComprasOrdenesFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;
-
+	private Reporte reporte;
+	
+	public Reporte getReporte() {
+		return reporte;
+	}	// getReporte
+	
   @PostConstruct
   @Override
   protected void init() {
@@ -149,4 +159,36 @@ public class Filtro extends IBaseFilter implements Serializable {
     }// finally
 	}
 	
+	public void doReporte() throws Exception{
+		Map<String, Object>params    = null;
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;
+		try{				
+			reporteSeleccion= EReportes.ORDEN_COMPRA;
+			this.reporte= JsfBase.toReporte();
+			params= new HashMap<>();
+			params.put("idOrdenCompra", ((Entity)this.attrs.get("seleccionado")).getKey());			
+			parametros= new HashMap<>();
+			parametros.put("REPORTE_EMPRESA", JsfBase.getAutentifica().getEmpresa().getNombreCorto());
+		  parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+			parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+			parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+			this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+			doVerificarReporte();
+			this.reporte.doAceptar();			
+		} // try
+		catch(Exception e) {
+			throw e;
+    } // catch	
+	} // doReporte
+	
+	public void doVerificarReporte() {
+		RequestContext rc= RequestContext.getCurrentInstance();
+		if(this.reporte.getTotal()> 0L)
+			rc.execute("start(" + this.reporte.getTotal() + ")");		
+		else{
+			rc.execute("generalHide()");		
+			JsfBase.addMessage("Generar reporte","No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+		} // else
+	} // doVerificarReporte		
 }
