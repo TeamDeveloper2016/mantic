@@ -134,7 +134,7 @@
 									<div class="ui-grid-col-4">
 										<p:outputLabel for="codigo" value="Código:"/><br/>
 										<p:inputText id="codigo" value="#{manticComprasOrdendesAccion.attrs.codigo}" styleClass="janal-wid-100-txt">
-											<p:ajax event="keyup" listener="#{manticComprasOrdendesAccion.doUpdateArticulos}" process="@this" update="articulo precio" onstart="return $('#contenedorGrupos\\:codigo').val().trim().length&gt; 0"/>
+											<p:ajax event="keyup" listener="#{manticComprasOrdendesAccion.doUpdateArticulos}" process="@this" update="articulo precio informacion" onstart="return $('#contenedorGrupos\\:codigo').val().trim().length&gt; 0"/>
 										</p:inputText>
 									</div>
 									<div class="ui-grid-col-3">
@@ -156,7 +156,7 @@
 									<div class="ui-grid-col-10">
 										<p:outputLabel for="articulo" value="Articulos:"/><br/>
 										<p:selectOneMenu id="articulo" value="#{manticComprasOrdendesAccion.attrs.articulo}" var="item" styleClass="janal-wid-98" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="startsWith">
-											<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdatePrecio}" update="precio" process="@this"/>
+											<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdatePrecio}" update="precio informacion" process="@this"/>
 											<f:selectItems value="#{manticComprasOrdendesAccion.attrs.articulos}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{element.nombre} [$ #{element.precio}]"/>
 											<p:column headerText="Código">
 												<h:outputText value="#{item.codigo}"/>
@@ -296,29 +296,40 @@
 									</div>									
 								</div>
 							</div>
-							<p:panelGrid id="information" columns="1" layout="grid" styleClass="janal-wid-100" rendered="false">
+							<p:panelGrid id="informacion" columns="1" layout="grid" styleClass="janal-wid-100" rendered="#{manticComprasOrdendesAccion.attrs.articulos.size() gt 0}">
 								<h:outputText value="Ultima compra de este articulo:" styleClass="janal-font-bold"/>
-								<p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100" style="margin-top: -13px !important;">
-									<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-										<p:outputLabel value="Costo real:"/>
-										<p:inputText styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.attrs.tipoCambio}" readonly="true"/>
-									</p:panelGrid>	
-									<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-2">
+										<p:outputLabel value="Costo:"/><br/>
+										<p:inputText styleClass="janal-wid-100-txt janal-column-rigth" value="#{manticComprasOrdendesAccion.attrs.ultimoPrecio.costo}" readonly="true"/>
+									</div>	
+									<div class="ui-grid-col-2">
+										<p:outputLabel value="Cantidad:"/>
+										<p:inputText styleClass="janal-wid-100-txt janal-column-rigth" value="#{manticComprasOrdendesAccion.attrs.ultimoPrecio.cantidad}" readonly="true"/>
+									</div>	
+									<div class="ui-grid-col-2">
+										<p:outputLabel value="Tipo de cambio:"/>
+										<p:inputText styleClass="janal-wid-100-txt janal-column-rigth" value="#{manticComprasOrdendesAccion.attrs.ultimoPrecio.tipoDeCambio}" readonly="true"/>
+									</div>	
+									<div class="ui-grid-col-2">
 										<p:outputLabel value="Descuentos (%):"/>
-										<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="#{manticComprasOrdendesAccion.attrs.descuentos}" readonly="true" />
-									</p:panelGrid>
-									<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+										<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="#{manticComprasOrdendesAccion.attrs.ultimoPrecio.descuento}" readonly="true" />
+									</div>	
+									<div class="ui-grid-col-2">
 										<p:outputLabel value="Extras (%):"/>
-										<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="#{manticComprasOrdendesAccion.attrs.extras}" readonly="true"/>
-									</p:panelGrid>	 
-									<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+										<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="#{manticComprasOrdendesAccion.attrs.ultimoPrecio.extra}" readonly="true"/>
+									</div>	
+									<div class="ui-grid-col-2">
 										<p:outputLabel value="Fecha compra:"/>
-										<p:inputText styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.attrs.fecha}" readonly="true"/>
-									</p:panelGrid>	 
-								</p:panelGrid>	
+										<p:inputText styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.attrs.ultimoPrecio.registro}" readonly="true"/>
+									</div>	
+								</div>
 								<h:outputText value="Listado de precios sugeridos para este articulo:" styleClass="janal-font-bold"/>
-								<p:selectOneMenu id="sugeridos" var="item" styleClass="janal-wid-99">
-									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.preciosSugeridos}" var="element" itemValue="#{element}" itemLabel="#{element.observacion}"/>
+								<p:selectOneMenu id="sugeridos" var="item" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="startsWith">
+									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.preciosSugeridos}" var="element" itemValue="#{element}" itemLabel="#{element.proveedor} #{element.precio}  #{element.descuento}"/>
+									<p:column styleClass="janal-column-right" headerText="Proveedor">
+										<h:outputText value="#{item.proveedor}"/>
+									</p:column>   
 									<p:column styleClass="janal-column-right" headerText="Precio">
 										<h:outputText value="#{item.precio}"/>
 									</p:column>   

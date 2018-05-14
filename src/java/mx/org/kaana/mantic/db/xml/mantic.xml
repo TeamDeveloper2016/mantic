@@ -111,6 +111,16 @@
         from      
           tr_mantic_articulo_precio_sugerido
       </select>
+      <select id="detalle">
+        select      
+          *
+        from      
+          tr_mantic_articulo_precio_sugerido
+        where      
+          id_articulo = {idArticulo}
+				orden by
+				  tr_mantic_articulo_precio_sugerido.registro
+      </select>
 			<delete id="rows">
         delte from tr_mantic_articulo_precio_sugerido where id_articulo= {idArticulo} 
       </delete>
@@ -1798,7 +1808,7 @@
         from      
           tr_mantic_articulo_grupo_descuento
         where      
-          vigencia_final = {vigenciaFinal} and vigencia_inicial = {vigenciaInicial} and id_grupo = {idGrupo} and id_articulo_grupo_descuento = {idArticuloGrupoDescuento} and porcentaje = {porcentaje} and id_articulo = {idArticulo}
+          id_grupo = {idGrupo} and id_articulo_grupo_descuento = {idArticuloGrupoDescuento} and porcentaje = {porcentaje} and id_articulo = {idArticulo}
       </select>
 			<select id="maximo">
         select      

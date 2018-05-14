@@ -12,6 +12,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -19,6 +20,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -131,11 +133,11 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
+      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
       columns.remove(0);
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("TcManticClientesDto", "sucursales", params, columns));
-      this.attrs.put("proveedores", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "moneda", params, columns));
+      this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "sucursales", params, columns));
+      this.attrs.put("proveedores", UIEntity.build("VistaOrdenesComprasDto", "moneda", params, columns));
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 			if(!proveedores.isEmpty()) 
 				toLoadCondiciones(proveedores.get(0));
@@ -146,7 +148,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    }// finally
+    } // finally
 	}
 
 	private void toLoadCondiciones(UISelectEntity proveedor) {
@@ -157,7 +159,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("idProveedor", proveedor.getKey());
-      this.attrs.put("condiciones", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "condiciones", params, columns));
+      this.attrs.put("condiciones", UIEntity.build("VistaOrdenesComprasDto", "condiciones", params, columns));
 			List<UISelectEntity> condiciones= (List<UISelectEntity>) this.attrs.get("condiciones");
 			if(!condiciones.isEmpty())
 				this.adminOrden.getOrden().setDescuento(condiciones.get(0).toString("descuento"));
@@ -267,7 +269,9 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doUpdatePrecio(UISelectEntity seleccionado) {
 		try {
    		this.attrs.put("precio", seleccionado.toDouble("precio"));
+   		this.attrs.put("idArticulo", seleccionado.getKey());
 			this.doUpdateDiferencia();
+			this.doUpdateInformacion();
 		} // try
 	  catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -290,5 +294,33 @@ public class Accion extends IBaseAttribute implements Serializable {
     diferencia= precio* 100/ costo;
   	this.attrs.put("diferencia", Numero.toRedondear(diferencia- 100));
 	} 
+
+	private void doUpdateInformacion() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("precio", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("descuento", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			Entity ultimoPrecio= (Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "ultimoPrecio", this.attrs);
+			ultimoPrecio.values().stream().map((value) -> {
+				if("|costo|tipoDeCambio|".indexOf(value.getName())> 0)
+					value.setData(Numero.toRedondear(value.toDouble()));
+				return value;
+			}).filter((value) -> ("|registro|".indexOf(value.getName())> 0)).forEachOrdered((value) -> {
+				value.setData(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, value.toTimestamp()));
+			}); // for
+ 		  this.attrs.put("ultimoPrecio", ultimoPrecio);
+		  this.attrs.put("preciosSugeridos", UIEntity.build("VistaOrdenesComprasDto", "preciosSegerido", this.attrs, columns));
+    } // try
+    catch (Exception e) {
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}
 	
 }

@@ -314,6 +314,42 @@
 					tc_mantic_ordenes_compras.registro
 				{sortOrder}
 			</select>
+			<select id="ultimoPrecio">
+        select      
+          tc_mantic_ordenes_detalles.id_orden_detalle as id_key,
+          tc_mantic_ordenes_compras.tipo_de_cambio,
+          tc_mantic_ordenes_detalles.costo,
+          tc_mantic_ordenes_detalles.cantidad,
+          tc_mantic_ordenes_detalles.descuento,
+          tc_mantic_ordenes_detalles.extras,
+          tc_mantic_ordenes_detalles.registro
+        from      
+          tc_mantic_ordenes_detalles
+				inner join 
+					tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra
+        where      
+          id_articulo = {idArticulo}
+        order by
+          tc_mantic_ordenes_detalles.registro desc				
+			</select>
+			<select id="preciosSegerido">
+        select      
+          tr_mantic_articulo_precio_sugerido.id_articulo_precio_sugerido as id_key,        
+          tc_mantic_proveedores.clave as clave_proveedor,
+          tc_mantic_proveedores.razon_social as proveedor,
+          tr_mantic_articulo_precio_sugerido.precio,
+          tr_mantic_articulo_precio_sugerido.descuento,
+          tr_mantic_articulo_precio_sugerido.observaciones,
+          tr_mantic_articulo_precio_sugerido.id_leido
+        from      
+          tr_mantic_articulo_precio_sugerido
+				inner join 
+					tc_mantic_proveedores on tr_mantic_articulo_precio_sugerido.id_proveedor= tc_mantic_proveedores.id_proveedor
+        where      
+          id_articulo = {idArticulo}
+				order by
+				  tr_mantic_articulo_precio_sugerido.registro				
+			</select>
 			<select id="articulo">
         select 
           tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
