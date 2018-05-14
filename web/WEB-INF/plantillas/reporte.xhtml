@@ -153,21 +153,6 @@
         <p:layoutUnit id="principal" position="center" size="100%" style="border:0;" styleClass="sticky-wrapper" gutter="0">
           <div id="layout-portlets-cover" class="janal-content-center janal-padding-cero" style="margin-left: 0 !important;margin-right: 0 !important;">
             <h:form id="datos" prependId="false" styleClass="janal-padding-cero">
-							<div id="toggleable" class="ui-panel ui-widget ui-widget-content ui-corner-all" style="margin-bottom:5px" data-widget="panel">
-								<div id="toggleable_header" class="ui-panel-titlebar ui-widget-header ui-helper-clearfix ui-corner-all">
-									<span class="ui-panel-title">#{titulo}</span>        
-									<div class="ajax">
-										<p:ajaxStatus style="width:16px;height:16px;" id="ajaxStatusPanel">  
-											<f:facet name="start">  
-												<p:graphicImage library="janal" name="icon/ajax-loader.gif" />            
-											</f:facet>  
-											<f:facet name="complete">  
-												<h:outputText value="" />  
-											</f:facet>  
-										</p:ajaxStatus>  
-									</div>
-								</div>  
-							</div>
               <p:growl id="mensaje" autoUpdate="true" showSummary="false" showDetail="true" sticky="false" widgetVar="mensajes" escape="false" life="15000"/>
               <p:panel styleClass="sticky-body janal-padding-cero" toggleable="true" style="border:0px;">
                 <p:focus class="janal-padding-cero" context="principal"/>	
