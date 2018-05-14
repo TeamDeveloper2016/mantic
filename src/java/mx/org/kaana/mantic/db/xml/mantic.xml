@@ -169,34 +169,6 @@
         delte from tr_mantic_almacen_tipo_contacto where id_almacen = {idAlmacen}
       </delete>
     </unit>
-    <unit id="TrManticArticuloClienteDescuentoDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tr_mantic_articulo_cliente_descuento
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tr_mantic_articulo_cliente_descuento
-        where      
-          vigencia_final = '{vigenciaFinal}' and vigencia_inicial = '{vigenciaInicial}' and id_cliente = {idCliente} and id_articulo_cliente_descuentio = {idArticuloClienteDescuentio} and porcentaje = {porcentaje} and id_articulo = {idArticulo}
-      </select>
-			<select id="maximo">
-        select      
-          max(id_articulo_cliente_descuentio) maximo
-        from      
-          tr_mantic_articulo_cliente_descuento
-      </select>
-			<delete id="rows">
-        delte from tr_mantic_articulo_cliente_descuento where id_articulo={idArticulo} 
-      </delete>
-    </unit>
-    
     <unit id="TrManticArticuloCodigoDto">
       <select id="row">
         select      
@@ -1753,7 +1725,8 @@
 		<unit id="TcManticGruposDto">
       <select id="row">
         select      
-          *
+          tc_mantic_grupos.id_grupo as id_key,
+				  tc_mantic_grupos.*
         from      
           tc_mantic_grupos
         where 
@@ -1819,6 +1792,15 @@
         where      
           vigencia_final = {vigenciaFinal} and vigencia_inicial = {vigenciaInicial} and id_grupo = {idGrupo} and id_articulo_grupo_descuento = {idArticuloGrupoDescuento} and porcentaje = {porcentaje} and id_articulo = {idArticulo}
       </select>
+			<select id="maximo">
+        select      
+          max(id_articulo_grupo_descuento) maximo
+        from      
+          tr_mantic_articulo_grupo_descuento
+      </select>
+			<delete id="rows">
+        delte from tr_mantic_articulo_grupo_descuento where id_articulo={idArticulo} 
+      </delete>
     </unit>
   </dml>    
 </process>
