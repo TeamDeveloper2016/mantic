@@ -147,7 +147,7 @@ public class ContadoresListas {
 		Long regresar= 0L;
 		Value maximo = null;
 		try {
-			maximo= DaoFactory.getInstance().toField("TrManticArticuloClienteDescuentoDto", "maximo", Collections.EMPTY_MAP, "maximo");
+			maximo= DaoFactory.getInstance().toField("TrManticArticuloGrupoDescuentoDto", "maximo", Collections.EMPTY_MAP, "maximo");
 			if(maximo.getData()!= null)
 				regresar= Long.valueOf(maximo.toString()) + INCREMENTO;
 		} // try
