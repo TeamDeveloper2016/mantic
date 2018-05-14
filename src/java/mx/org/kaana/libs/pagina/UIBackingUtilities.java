@@ -13,6 +13,9 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.libs.formato.Global;
 
 import org.primefaces.component.datatable.DataTable;
 
@@ -63,6 +66,24 @@ public class UIBackingUtilities {
 	
 	public static void resetDataTable() {
 		resetDataTable("tabla");
+	}
+
+  public static void toFormatEntitySet(List<Entity> items, List<Columna> columns) {
+		items.forEach((item) -> {
+			toFormatEntity(item, columns);
+		}); // for
+	} 	
+
+  public static void toFormatEntity(Entity entity, List<Columna> columns) {
+		columns.forEach((column) -> { 
+			if(entity.containsKey(column.getName())) {
+				Value value= new Value(column.getName(), entity.get(column.getName()));          
+				value.setData(Global.format(column.getFormat(), value.getData()));
+				entity.put(column.getName(), value);          
+			} // if
+			else
+				throw new RuntimeException("No existe la columna "+ column.getName()+ " en la lista de items.");
+		});
 	}
 	
 }

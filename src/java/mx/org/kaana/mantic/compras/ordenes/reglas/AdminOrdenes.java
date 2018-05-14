@@ -2,14 +2,18 @@ package mx.org.kaana.mantic.compras.ordenes.reglas;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.KajoolBaseException;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.beans.Totales;
@@ -89,8 +93,9 @@ public final class AdminOrdenes implements Serializable {
 		return totales;
 	}
 	
-  public void add(Articulo articulo) {
+  public void add(Articulo articulo) throws Exception {
 		if(this.articulos.indexOf(articulo)< 0) {
+			toFillCodigo(articulo);
 		  this.articulos.add(articulo);
    		toCalculate();
 		} // if
@@ -98,6 +103,30 @@ public final class AdminOrdenes implements Serializable {
 		  throw new KajoolBaseException("El articulo ["+ articulo.getCodigo()+ "] ya esta dentro de la lista seleccionada !");
 	}
 
+	private void toFillCodigo(Articulo articulo) throws Exception {
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idArticulo", articulo.getIdArticulo());
+  		params.put("idProveedor", articulo.getIdProveedor());
+			List<Entity> codigos= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaOrdenesComprasDto", "articulo", params);
+			for (Entity codigo : codigos) {
+				if(codigo.toInteger("idPrincipal")== 1L)
+					articulo.setPropio(codigo.toString("codigo"));
+				else
+					articulo.setCodigo(codigo.toString("codigo"));
+			} // for
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+	
 	public void remove(Articulo seleccionado) {
 		if(this.articulos.indexOf(seleccionado)>= 0) {
 		  this.articulos.remove(seleccionado);

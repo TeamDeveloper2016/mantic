@@ -21,6 +21,7 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Serializable
 	private static final long serialVersionUID=329661715469035396L;
 
   private Long idArticulo;	
+  private Long idProveedor;	
 	private Totales importes;
 	private boolean sinIva;
 	private double tipoDeCambio;
@@ -31,13 +32,14 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Serializable
 	}
 
 	public Articulo(Long key) {
-		this(true, 1.0, "", "", 0.0, "0", -1L, "0", 0D, "", 16D, 0D, 0D, 1L, -1L, -1L, 0D);
+		this(true, 1.0, "", "", 0.0, "0", -1L, "0", 0D, "", 16D, 0D, 0D, 1L, -1L, -1L, 0D, -1L);
 	}
 
-	public Articulo(boolean conIva, double tipoDeCambio, String nombre, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Long cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos) {
+	public Articulo(boolean conIva, double tipoDeCambio, String nombre, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Long cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos, Long idProveedor) {
 		super(codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos, nombre);
 		this.idEntity    = new UISelectEntity(new Entity(-1L));
 		this.idArticulo  = idArticulo;
+		this.idProveedor = idProveedor;
 		this.sinIva      = conIva;
 		this.importes    = new Totales();
 		this.tipoDeCambio= tipoDeCambio;
@@ -58,6 +60,14 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Serializable
 
 	public Totales getImportes() {
 		return importes;
+	}
+
+	public Long getIdArticulo() {
+		return idArticulo;
+	}
+
+	public Long getIdProveedor() {
+		return idProveedor;
 	}
 
 	@Override

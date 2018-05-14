@@ -21,7 +21,7 @@ public class JsfBase extends JsfUtilities {
 
   private static final Log LOG = LogFactory.getLog(JsfBase.class);
   private static final String ADMIN = "ADMINISTRADOR";
-  private static final String ADMIN_ENCUESTA = "ADMINISTRADORDEENCUESTA";
+  private static final String ADMIN_ENCUESTA = "GERENTE";
 
   public static Autentifica getAutentifica() {
     return (Autentifica) getSession().getAttribute(Constantes.ATRIBUTO_AUTENTIFICA);

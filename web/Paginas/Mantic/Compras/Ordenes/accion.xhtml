@@ -261,7 +261,7 @@
 												<p:inputText id="janalImporte" value="#{row['importe']}" styleClass="janal-wid-100-txt janal-column-right total" readonly="true"/>
 											</p:column>		
 											<p:column style="width:38px; text-align: center">
-												<p:commandButton update="tabla @(.total)" icon="fa fa-close" title="Eliminar" action="#{manticComprasOrdendesAccion.doRemoveArticulo}" styleClass="janal-text-white">
+												<p:commandButton update="tabla @(.total)" icon="fa fa-close" title="Quitar" action="#{manticComprasOrdendesAccion.doRemoveArticulo}" styleClass="janal-text-white">
 													<f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.seleccionado}" />
 												</p:commandButton>
 											</p:column>

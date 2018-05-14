@@ -245,7 +245,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 				(Long)this.attrs.get("cantidad"), 
 				-1* idOrdenDetalle, 
 				seleccionado.toLong("idArticulo"), 
-				0.0);
+				0.0,
+			  this.adminOrden.getOrden().getIdProveedor());
 			this.adminOrden.add(item);
 		} // try
 	  catch (Exception e) {

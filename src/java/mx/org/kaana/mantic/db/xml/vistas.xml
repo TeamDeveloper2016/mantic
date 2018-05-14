@@ -357,10 +357,7 @@
 				  tc_mantic_articulos.id_articulo,
 				  tc_mantic_articulos_codigos.codigo,
 				  tc_mantic_articulos_codigos.id_principal,
-				  tc_mantic_articulos_codigos.id_proveedor,
-				  tc_mantic_articulos.nombre,
-				  tc_mantic_articulos.precio,
-				  tc_mantic_articulos.iva
+				  tc_mantic_articulos_codigos.id_proveedor
 				from 
 					tc_mantic_articulos
 				inner join
@@ -375,8 +372,8 @@
 				    (tc_mantic_articulos.id_articulo= {idArticulo} and tc_mantic_articulos_codigos.id_proveedor= {idProveedor})	
 				   ) 			
 				order by 
-				  tc_mantic_articulos_codigos.codigo,
-				  tc_mantic_articulos_codigos.id_proveedor				
+				  tc_mantic_articulos_codigos.id_articulo,
+				  tc_mantic_articulos_codigos.id_principal
 			</select>
 			<select id="codigos">
 				select 
