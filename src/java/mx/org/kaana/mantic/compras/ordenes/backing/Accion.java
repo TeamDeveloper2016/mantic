@@ -302,20 +302,21 @@ public class Accion extends IBaseAttribute implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("precio", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-      columns.add(new Columna("descuento", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("descuento", EFormatoDinamicos.NUMERO_CON_DECIMALES));
 			Entity ultimoPrecio= (Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "ultimoPrecio", this.attrs);
-			ultimoPrecio.values().stream().map((value) -> {
-				if("|costo|tipoDeCambio|".indexOf(value.getName())> 0)
-					value.setData(Numero.toRedondear(value.toDouble()));
-				return value;
-			}).filter((value) -> ("|registro|".indexOf(value.getName())> 0)).forEachOrdered((value) -> {
-				value.setData(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, value.toTimestamp()));
-			}); // for
+			if(ultimoPrecio!= null && !ultimoPrecio.isEmpty())
+				ultimoPrecio.values().stream().map((value) -> {
+					if("|costo|tipoDeCambio|".indexOf(value.getName())> 0)
+						value.setData(Numero.toRedondear(value.toDouble()));
+					return value;
+				}).filter((value) -> ("|registro|".indexOf(value.getName())> 0)).forEachOrdered((value) -> {
+					value.setData(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, value.toTimestamp()));
+				}); // for
  		  this.attrs.put("ultimoPrecio", ultimoPrecio);
 		  this.attrs.put("preciosSugeridos", UIEntity.build("VistaOrdenesComprasDto", "preciosSegerido", this.attrs, columns));
     } // try
     catch (Exception e) {
-			JsfBase.addMessageError(e);
+			Error.mensaje(e);
     } // catch   
     finally {
       Methods.clean(columns);
