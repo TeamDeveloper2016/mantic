@@ -1802,5 +1802,23 @@
           id_grupo = {idGrupo}
       </select>
     </unit>
+		<unit id="TrManticArticuloGrupoDescuentoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_articulo_grupo_descuento
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_articulo_grupo_descuento
+        where      
+          vigencia_final = {vigenciaFinal} and vigencia_inicial = {vigenciaInicial} and id_grupo = {idGrupo} and id_articulo_grupo_descuento = {idArticuloGrupoDescuento} and porcentaje = {porcentaje} and id_articulo = {idArticulo}
+      </select>
+    </unit>
   </dml>    
 </process>
