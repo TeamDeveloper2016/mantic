@@ -24,7 +24,7 @@ import mx.org.kaana.mantic.db.dto.TcManticArticulosDescuentosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDimencionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosEspecificacionesDto;
-import mx.org.kaana.mantic.db.dto.TrManticArticuloClienteDescuentoDto;
+import mx.org.kaana.mantic.db.dto.TrManticArticuloGrupoDescuentoDto;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloPrecioSugeridoDto;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloProveedorDto;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloTipoVentaDto;
@@ -75,7 +75,7 @@ public class Transaccion extends IBaseTnx {
 			if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosCodigosDto.class, params)> -1L){
 				if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosEspecificacionesDto.class, params)> -1L){
 					if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosDescuentosDto.class, params)> -1L){
-						if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloClienteDescuentoDto.class, params)> -1L){
+						if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloGrupoDescuentoDto.class, params)> -1L){
 							if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloPrecioSugeridoDto.class, params)> -1L){
 								if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloProveedorDto.class, params)> -1L){
 									if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloTipoVentaDto.class, params)> -1L){
@@ -301,7 +301,7 @@ public class Transaccion extends IBaseTnx {
 	} // registraDescuentos
 	
 	private boolean registraClientesDescuentos(Session sesion, Long idArticulo) throws Exception{
-		TrManticArticuloClienteDescuentoDto dto= null;
+		TrManticArticuloGrupoDescuentoDto dto= null;
 		ESql sqlAccion  = null;		
 		int count       = 0;
 		boolean validate= false;
@@ -312,11 +312,11 @@ public class Transaccion extends IBaseTnx {
 				descuentoEspecial.setIdUsuario(JsfBase.getIdUsuario());
 				descuentoEspecial.setVigenciaInicial(new Timestamp(descuentoEspecial.getVigenciaIni().getTime()));
 				descuentoEspecial.setVigenciaFinal(new Timestamp(descuentoEspecial.getVigenciaFin().getTime()));
-				dto= (TrManticArticuloClienteDescuentoDto) descuentoEspecial;				
+				dto= (TrManticArticuloGrupoDescuentoDto) descuentoEspecial;				
 				sqlAccion= descuentoEspecial.getSqlAccion();
 				switch(sqlAccion){
 					case INSERT:
-						dto.setIdArticuloClienteDescuentio(-1L);
+						dto.setIdArticuloGrupoDescuento(-1L);
 						validate= registrar(sesion, dto);
 						break;
 					case UPDATE:
