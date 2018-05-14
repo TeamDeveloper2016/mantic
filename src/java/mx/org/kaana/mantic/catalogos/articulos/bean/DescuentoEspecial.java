@@ -1,11 +1,12 @@
 package mx.org.kaana.mantic.catalogos.articulos.bean;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.Date;
 import mx.org.kaana.kajool.enums.ESql;
-import mx.org.kaana.mantic.db.dto.TrManticArticuloClienteDescuentoDto;
+import mx.org.kaana.mantic.db.dto.TrManticArticuloGrupoDescuentoDto;
 
-public class DescuentoEspecial extends TrManticArticuloClienteDescuentoDto{
+public class DescuentoEspecial extends TrManticArticuloGrupoDescuentoDto implements Serializable{
 	
 	private static final long serialVersionUID = 8334628425056719016L;
 	private ESql sqlAccion;
