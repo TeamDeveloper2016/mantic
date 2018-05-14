@@ -79,4 +79,9 @@ public class Usuario implements IReporte, Serializable {
 	public Boolean getComprimir() {
 		return this.reporte.getComprimir();
 	}
+
+	@Override
+	public void setParams(Map<String, Object> params) {
+		this.params = params;
+	}
 }
