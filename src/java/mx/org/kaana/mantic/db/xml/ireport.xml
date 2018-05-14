@@ -7,5 +7,35 @@
   </model>
 
   <dml>
+		<unit id="VistaOrdenesComprasDto">
+			<select id="reporteOrden">
+				select
+					tc_mantic_ordenes_compras.id_orden_compra as id_key,
+					tc_mantic_ordenes_compras.id_empresa,  
+				  tc_mantic_empresas.clave as empresa,  
+					tc_mantic_ordenes_compras.consecutivo,  
+					tc_mantic_proveedores.id_proveedor,  
+					tc_mantic_proveedores.razon_social as proveedor,
+					tc_mantic_ordenes_compras.total,
+				  tc_mantic_compras_estatus.nombre as estatus,
+					tc_mantic_ordenes_compras.id_compra_estatus,
+					tc_mantic_ordenes_compras.registro as registro_orden_compra,
+					tc_mantic_ordenes_detalles.*
+				from 
+					tc_mantic_ordenes_compras
+				inner join 
+					tr_mantic_proveedor_pago on tc_mantic_ordenes_compras.id_proveedor_pago= tr_mantic_proveedor_pago.id_proveedor_pago
+				inner join 
+					tc_mantic_proveedores on tr_mantic_proveedor_pago.id_proveedor= tc_mantic_proveedores.id_proveedor
+				inner join 
+					tc_mantic_ordenes_detalles on tc_mantic_ordenes_compras.id_orden_compra= tc_mantic_ordenes_detalles.id_orden_compra
+				inner join 
+					tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_compras_estatus on tc_mantic_ordenes_compras.id_compra_estatus= tc_mantic_compras_estatus.id_compra_estatus
+				where
+					tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}									
+			</select>
+		</unit>
   </dml>
 </process>
