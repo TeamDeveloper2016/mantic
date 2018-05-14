@@ -142,4 +142,14 @@ public final class Archivo {
       regresar=dir.delete();
     return regresar;
   }
+	
+	public static String toFormatNameFile(String nameFile, String prefijo) {
+    StringBuilder regresar = new StringBuilder();
+    regresar.append(prefijo);
+    regresar.append(Constantes.ARCHIVO_PATRON_SEPARADOR);
+    regresar.append(Fecha.formatear("yyyyMMddhhmmssS", Calendar.getInstance().getTime()));
+    regresar.append(Constantes.ARCHIVO_PATRON_SEPARADOR);
+    regresar.append(nameFile);
+    return regresar.toString();    
+  }
 }
