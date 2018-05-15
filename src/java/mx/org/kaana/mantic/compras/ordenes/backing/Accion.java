@@ -58,10 +58,10 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? -1L: JsfBase.getFlashAttribute("idOrdenCompra"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("cantidad", 1);
-			this.attrs.put("precio", 10);
+			this.attrs.put("precio", 0);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("diferencia", "0");
-			this.attrs.put("mostrar", false);
+			this.attrs.put("solicitado", new Entity(-1L));
 			doLoad();
     } // try
     catch (Exception e) {
@@ -248,6 +248,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 				0.0,
 			  this.adminOrden.getOrden().getIdProveedor());
 			this.adminOrden.add(item);
+			this.attrs.put("cantidad", 1);
+			this.attrs.put("precio", 0);
+			this.attrs.put("codigo", "");
+			this.attrs.put("articulos", null);
 		} // try
 	  catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -271,9 +275,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 		try {
    		this.attrs.put("precio", seleccionado.toDouble("precio"));
    		this.attrs.put("idArticulo", seleccionado.getKey());
-      this.attrs.put("mostrar", seleccionado!= null && seleccionado.size()> 1);
+      this.attrs.put("mostrar", !seleccionado.isEmpty());
 			this.doUpdateDiferencia();
 			this.doUpdateInformacion();
+			this.doUpdateSolicitado();
 		} // try
 	  catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -302,7 +307,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Entity ultimoPrecio= (Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "ultimoPrecio", this.attrs);
 			if(ultimoPrecio!= null && !ultimoPrecio.isEmpty())
 				ultimoPrecio.values().stream().map((value) -> {
-					if("|costo|tipoDeCambio|".indexOf(value.getName())> 0)
+					if("|costo|".indexOf(value.getName())> 0)
 						value.setData(Numero.toRedondear(value.toDouble()));
 					return value;
 				}).filter((value) -> ("|registro|".indexOf(value.getName())> 0)).forEachOrdered((value) -> {
@@ -331,6 +336,27 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("precio", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("descuento", EFormatoDinamicos.NUMERO_CON_DECIMALES));
 		  this.attrs.put("preciosSugeridos", UIEntity.build("VistaOrdenesComprasDto", "preciosSegerido", this.attrs, columns));
+    } // try
+    catch (Exception e) {
+			Error.mensaje(e);
+    } // catch   
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    }// finally
+	}
+	
+	public void doUpdateSolicitado() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("moneda", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+			Entity solicitado= (Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "solicitado", this.attrs);
+      this.attrs.put("solicitado", solicitado!= null? UIBackingUtilities.toFormatEntity(solicitado, columns): new Entity(-1L));
     } // try
     catch (Exception e) {
 			Error.mensaje(e);

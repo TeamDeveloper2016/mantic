@@ -314,22 +314,51 @@
 					tc_mantic_ordenes_compras.registro
 				{sortOrder}
 			</select>
-			<select id="ultimoPrecio">
+			<select id="solicitado">
         select      
           tc_mantic_ordenes_detalles.id_orden_detalle as id_key,
 				  tc_mantic_ordenes_compras.consecutivo,
-          tc_mantic_ordenes_compras.tipo_de_cambio,
-          tc_mantic_ordenes_detalles.costo,
           tc_mantic_ordenes_detalles.cantidad,
-          tc_mantic_ordenes_detalles.descuento,
-          tc_mantic_ordenes_detalles.extras,
+          tc_mantic_ordenes_detalles.costo,
+          tc_mantic_proveedores.razon_social,
+          tc_mantic_tipos_monedas.nombre as moneda,
           tc_mantic_ordenes_detalles.registro
         from      
           tc_mantic_ordenes_detalles
 				inner join 
 					tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra
+				inner join
+					tc_mantic_proveedores on tc_mantic_ordenes_compras.id_proveedor= tc_mantic_proveedores.id_proveedor       
+        inner join 
+          tc_mantic_tipos_monedas on tc_mantic_proveedores.id_tipo_moneda= tc_mantic_tipos_monedas.id_tipo_moneda
         where      
-          id_articulo = {idArticulo}
+          tc_mantic_ordenes_detalles.id_articulo = {idArticulo}
+          and tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5)
+        order by
+          tc_mantic_ordenes_detalles.registro desc				
+			</select>
+			<select id="ultimoPrecio">
+        select      
+          tc_mantic_ordenes_detalles.id_orden_detalle as id_key,
+				  tc_mantic_ordenes_compras.consecutivo,
+          tc_mantic_ordenes_detalles.costo,
+          tc_mantic_articulos.stock,
+          tc_mantic_proveedores.razon_social,
+          tc_mantic_tipos_monedas.nombre as moneda,
+          tc_mantic_ordenes_detalles.registro
+        from      
+          tc_mantic_ordenes_detalles
+				inner join
+					tc_mantic_articulos on tc_mantic_ordenes_detalles.id_articulo = tc_mantic_articulos.id_articulo
+				inner join 
+					tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra
+				inner join
+						tc_mantic_proveedores on tc_mantic_ordenes_compras.id_proveedor= tc_mantic_proveedores.id_proveedor       
+        inner join 
+          tc_mantic_tipos_monedas on tc_mantic_proveedores.id_tipo_moneda= tc_mantic_tipos_monedas.id_tipo_moneda
+        where      
+          tc_mantic_ordenes_detalles.id_articulo =  {idArticulo}
+          and tc_mantic_ordenes_compras.id_orden_estatus in (6)
         order by
           tc_mantic_ordenes_detalles.registro desc				
 			</select>

@@ -62,8 +62,8 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   private Double total;
   @Column (name="entrega_estimada")
   private Date entregaEstimada;
-  @Column (name="id_compra_estatus")
-  private Long idCompraEstatus;
+  @Column (name="id_orden_estatus")
+  private Long idOrdenEstatus;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="id_almacen")
@@ -92,7 +92,7 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticOrdenesComprasDto(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Date entregaEstimada, Long idCompraEstatus, Long idUsuario, Long idAlmacen, Double impuestos, Double subtotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden) {
+  public TcManticOrdenesComprasDto(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Date entregaEstimada, Long idOrdenEstatus, Long idUsuario, Long idAlmacen, Double impuestos, Double subtotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden) {
     setIdProveedorPago(idProveedorPago);
     setDescuentos(descuentos);
     setIdProveedor(idProveedor);
@@ -106,7 +106,7 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
     setIdGasto(idGasto);
     setTotal(total);
     setEntregaEstimada(entregaEstimada);
-    setIdCompraEstatus(idCompraEstatus);
+    setIdOrdenEstatus(idOrdenEstatus);
     setIdUsuario(idUsuario);
     setIdAlmacen(idAlmacen);
     setImpuestos(impuestos);
@@ -222,12 +222,12 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
     return entregaEstimada;
   }
 
-  public void setIdCompraEstatus(Long idCompraEstatus) {
-    this.idCompraEstatus = idCompraEstatus;
+  public void setIdOrdenEstatus(Long idOrdenEstatus) {
+    this.idOrdenEstatus = idOrdenEstatus;
   }
 
-  public Long getIdCompraEstatus() {
-    return idCompraEstatus;
+  public Long getIdOrdenEstatus() {
+    return idOrdenEstatus;
   }
 
   public void setIdUsuario(Long idUsuario) {
@@ -343,7 +343,7 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getEntregaEstimada());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdCompraEstatus());
+		regresar.append(getIdOrdenEstatus());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
@@ -382,7 +382,7 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
 		regresar.put("idGasto", getIdGasto());
 		regresar.put("total", getTotal());
 		regresar.put("entregaEstimada", getEntregaEstimada());
-		regresar.put("idCompraEstatus", getIdCompraEstatus());
+		regresar.put("idOrdenEstatus", getIdOrdenEstatus());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idAlmacen", getIdAlmacen());
 		regresar.put("impuestos", getImpuestos());
@@ -398,7 +398,7 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdProveedorPago(), getDescuentos(), getIdProveedor(), getIdCliente(), getDescuento(), getIdOrdenCompra(), getExtras(), getEjercicio(), getRegistro(), getConsecutivo(), getIdGasto(), getTotal(), getEntregaEstimada(), getIdCompraEstatus(), getIdUsuario(), getIdAlmacen(), getImpuestos(), getSubtotal(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden()
+    getIdProveedorPago(), getDescuentos(), getIdProveedor(), getIdCliente(), getDescuento(), getIdOrdenCompra(), getExtras(), getEjercicio(), getRegistro(), getConsecutivo(), getIdGasto(), getTotal(), getEntregaEstimada(), getIdOrdenEstatus(), getIdUsuario(), getIdAlmacen(), getImpuestos(), getSubtotal(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden()
     };
     return regresar;
   }

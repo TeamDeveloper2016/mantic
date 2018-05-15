@@ -132,9 +132,13 @@
 							<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-4">
-										<p:outputLabel for="codigo" value="Código:"/><br/>
+										<p:outputLabel for="codigo" value="Código o nombre del articulo:"/>
+										<span class="janal-help-icon janal-help-11 fa fa-fw fa-question-circle Fright" onclick="countHelp(8);"/>	
+										<pe:tooltip for="@(.janal-help-11)" showEvent="click">
+								      <h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(8)}" styleClass="Fs15" escape="false"/>
+							      </pe:tooltip><br/>
 										<p:inputText id="codigo" value="#{manticComprasOrdendesAccion.attrs.codigo}" styleClass="janal-wid-100-txt">
-											<p:ajax event="keyup" listener="#{manticComprasOrdendesAccion.doUpdateArticulos}" process="@this" update="articulo precio informacion" onstart="return $('#contenedorGrupos\\:codigo').val().trim().length&gt; 0"/>
+											<p:ajax event="keyup" listener="#{manticComprasOrdendesAccion.doUpdateArticulos}" process="@this" update="articulo precio informacion solicitado" onstart="return $('#contenedorGrupos\\:codigo').val().trim().length&gt; 0"/>
 										</p:inputText>
 									</div>
 									<div class="ui-grid-col-3">
@@ -144,19 +148,19 @@
 									<div class="ui-grid-col-4">
 										<p:outputLabel for="precio" value="Precio:"/><br/>
 										<p:inputText id="precio" value="#{manticComprasOrdendesAccion.attrs.precio}" styleClass="janal-wid-100-txt janal-column-right" converter="javax.faces.Double"> 
-											<p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateDiferencia}" process="@this" update="diferencia" onstart="janal.bloquear(); return !janal.precio($('#contenedorGrupos\\:precio'), '1').error;" oncomplete="janal.desbloquear();"/>
+											<p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateDiferencia}" process="@this" update="diferencia" onstart="janal.bloquear(); return !janal.precio($('#contenedorGrupos\\:precio'), '0').error;" oncomplete="janal.desbloquear();"/>
 										</p:inputText>	
 									</div>
 									<div class="ui-grid-col-1 janal-column-right">
 										<p:outputLabel for="diferencia" value="Diferencia:"/><br/>
-										<h:outputText id="diferencia" value=" #{manticComprasOrdendesAccion.attrs.diferencia} %" styleClass="janal-wid-100-txt janal-font-bold #{manticComprasOrdendesAccion.attrs.diferencia lt -5? 'janal-color-red': manticComprasOrdendesAccion.attrs.diferencia gt 5? 'janal-color-blue': 'janal-color-green'}"/>
+										<h:outputText id="diferencia" value=" #{manticComprasOrdendesAccion.attrs.diferencia} %" styleClass="janal-wid-100-txt janal-font-bold #{manticComprasOrdendesAccion.attrs.diferencia lt -5? 'janal-color-orange': manticComprasOrdendesAccion.attrs.diferencia gt 5? 'janal-color-blue': 'janal-color-green'}"/>
 									</div>
 								</div>
-								<div class="ui-grid-row janal-grid-row">
-									<div class="ui-grid-col-10">
+								<div class="ui-grid-row janal-grid-row" style="margin-right: 6px;">
+									<div class="ui-grid-col-12">
 										<p:outputLabel for="articulo" value="Articulos:"/><br/>
-										<p:selectOneMenu id="articulo" value="#{manticComprasOrdendesAccion.attrs.articulo}" var="item" styleClass="janal-wid-98" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="startsWith">
-											<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdatePrecio}" update="precio informacion" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<p:selectOneMenu id="articulo" value="#{manticComprasOrdendesAccion.attrs.articulo}" var="item" styleClass="janal-wid-98" converter="janal.convertidor.Entity">
+											<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdatePrecio}" update="precio informacion solicitado" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 											<f:selectItems value="#{manticComprasOrdendesAccion.attrs.articulos}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{element.nombre} [$ #{element.precio}]"/>
 											<p:column headerText="Código">
 												<h:outputText value="#{item.codigo}"/>
@@ -166,16 +170,21 @@
 											</p:column>   
 										</p:selectOneMenu>
 									</div>
-									<div class="ui-grid-col-2  janal-column-right">
+									<div class="ui-grid-col-1 janal-column-right">
 										<br/>
 										<div class="lg-pantalla">
-											<p:commandButton id="sumar" value="Agregar" icon="fa fa-plus" onstart="return janal.partial('articulo');" process="@this codigo articulo cantidad precio descuentos extras sinIva" oncomplete="janal.desbloquear();" update="tabla  @(.total)" styleClass="janal-text-white" actionListener="#{manticComprasOrdendesAccion.doAddArticulo}"/>
+											<p:commandButton id="sumar" value="Agregar" icon="fa fa-plus" onstart="return janal.partial('articulo');" process="@this codigo articulo cantidad precio descuentos extras sinIva" oncomplete="janal.desbloquear();$('#contenedorGrupos\\:codigo').focus();" update="tabla codigo articulo cantidad precio @(.total)" styleClass="janal-text-white" actionListener="#{manticComprasOrdendesAccion.doAddArticulo}"/>
 										</div>
 										<div class="xs-pantalla">
-											<p:commandButton id="sumarIcon" icon="fa fa-plus" onstart="return janal.partial('articulo');" process="@this codigo articulo cantidad precio descuentos extras sinIva" oncomplete="janal.desbloquear();" update="tabla  @(.total)" styleClass="janal-text-white" actionListener="#{manticComprasOrdendesAccion.doAddArticulo}"/>
+											<p:commandButton id="sumarIcon" icon="fa fa-plus" onstart="return janal.partial('articulo');" process="@this codigo articulo cantidad precio descuentos extras sinIva" oncomplete="janal.desbloquear();" update="tabla codigo articulo cantidad precio @(.total)" styleClass="janal-text-white" actionListener="#{manticComprasOrdendesAccion.doAddArticulo}"/>
 										</div>
 									</div>	
 								</div>
+								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-12">
+										<h:outputText id= "solicitado" value="Articulo solicitado #{manticComprasOrdendesAccion.attrs.solicitado.consecutivo}: #{manticComprasOrdendesAccion.attrs.solicitado.razonSocial} =&gt; #{manticComprasOrdendesAccion.attrs.solicitado.costo}(#{manticComprasOrdendesAccion.attrs.solicitado.moneda}) =&gt; #{manticComprasOrdendesAccion.attrs.solicitado.registro} =&gt; #{manticComprasOrdendesAccion.attrs.solicitado.cantidad} unidades."/>
+									</div>
+								</div>	
 								<p:separator/>
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
@@ -297,42 +306,38 @@
 								</div>
 							</div>
 							<p:spacer height="10"/>
-							<p:fieldset id="informacion" legend="Datos del articulo" rendered="#{manticComprasOrdendesAccion.attrs.mostrar}">
+							<p:fieldset id="informacion" legend="Datos del articulo">
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
-										<h:outputText value="Ultima compra #{manticComprasOrdendesAccion.attrs.ultimoPrecio.consecutivo}:" styleClass="janal-font-bold"/>
+										<h:outputText value="Ultima compra #{manticComprasOrdendesAccion.attrs.ultimoPrecio.consecutivo}:"/>
 									</div>	
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-4">
+										<p:outputLabel value="Proveedor:"/><br/>
+										<h:outputText styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.attrs.ultimoPrecio.razonSocial}"/>
+									</div>	
 									<div class="ui-grid-col-2">
 										<p:outputLabel value="Precio:"/><br/>
-										<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="#{manticComprasOrdendesAccion.attrs.ultimoPrecio.costo}" readonly="true"/>
+										<h:outputText styleClass="janal-wid-100-txt janal-column-right" value="$ #{manticComprasOrdendesAccion.attrs.ultimoPrecio.costo}"/>
 									</div>	
 									<div class="ui-grid-col-2">
-										<p:outputLabel value="Cantidad:"/><br/>
-										<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="#{manticComprasOrdendesAccion.attrs.ultimoPrecio.cantidad}" readonly="true"/>
+										<p:outputLabel value="Moneda:"/><br/>
+										<h:outputText styleClass="janal-wid-100-txt janal-column-center" value="#{manticComprasOrdendesAccion.attrs.ultimoPrecio.moneda}"/>
 									</div>	
 									<div class="ui-grid-col-2">
-										<p:outputLabel value="Tipo de cambio:"/><br/>
-										<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="#{manticComprasOrdendesAccion.attrs.ultimoPrecio.tipoDeCambio}" readonly="true"/>
-									</div>	
-									<div class="ui-grid-col-2">
-										<p:outputLabel value="Descuentos (%):"/><br/>
-										<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="#{manticComprasOrdendesAccion.attrs.ultimoPrecio.descuento}" readonly="true" />
-									</div>	
-									<div class="ui-grid-col-2">
-										<p:outputLabel value="Extras (%):"/><br/>
-										<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="#{manticComprasOrdendesAccion.attrs.ultimoPrecio.extra}" readonly="true"/>
+										<p:outputLabel value="Stock:"/><br/>
+										<h:outputText styleClass="janal-wid-100-txt janal-column-right" value="#{manticComprasOrdendesAccion.attrs.ultimoPrecio.stock}"/>
 									</div>	
 									<div class="ui-grid-col-2">
 										<p:outputLabel value="Fecha compra:"/><br/>
-										<p:inputText styleClass="janal-wid-100-txt janal-column-center" value="#{manticComprasOrdendesAccion.attrs.ultimoPrecio.registro}" readonly="true"/>
+										<h:outputText styleClass="janal-wid-100-txt janal-column-center" value="#{manticComprasOrdendesAccion.attrs.ultimoPrecio.registro}"/>
 									</div>	
 								</div>
-								<br/>
+								<p:spacer height="5"/>
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
-										<h:outputText value="Precios sugeridos:" styleClass="janal-font-bold"/>
+										<h:outputText value="Precios sugeridos:"/>
 									</div>
 								</div>
 								<div class="ui-grid-row janal-grid-row">
