@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Venta"/>
+	<ui:define name="librerias">
+		<script type="text/javascript">			
+		</script>   
+		<style type="text/css">
+			.total_compra{
+				font-size: 75px !important;
+				font-weight: bold !important;
+				font-style: italic;	
+			}			
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-100, janal-wid-20">
+						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+							<p:outputLabel for="clienteBusqueda" value="Buscar cliente:"/>
+							<p:inputText id="clienteBusqueda" placeholder="Nombre o clave" styleClass="janal-wid-100-txt"/>
+						</p:panelGrid>	
+						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-wid-100-txt" columnClasses="janal-wid-100-txt">
+							<p:outputLabel for="cliente" value="Cliente:"/>
+							<p:selectOneMenu id="cliente" styleClass="janal-wid-100-txt">
+								<f:selectItem itemValue="-1" itemLabel="Publico general"/>
+							</p:selectOneMenu>
+						</p:panelGrid>
+						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+							<p:outputLabel for="descuento" value="Descuento:"/>
+							<p:inputText id="descuento" placeholder="Ej. 10%" styleClass="janal-wid-100-txt janal-column-right" value=""/>
+						</p:panelGrid>
+					</p:panelGrid>	
+					<p:separator/>
+					<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" style="height:350px !important;" columnClasses="janal-wid-80, janal-wid-20">					
+						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-98" style="height:348px !important;overflow-y: visible" columnClasses="janal-wid-100">					
+							<p:dataTable var="articulo" styleClass="janal-wid-99" emptyMessage="">
+								<p:column headerText="Num." styleClass="janal-wid-col-40">
+									<h:outputText value="" />
+								</p:column>
+								<p:column headerText="Descripción">
+									<h:outputText value="" />
+								</p:column>
+								<p:column headerText="Descuento" styleClass="janal-wid-col-80">
+									<h:outputText value="" />
+								</p:column>
+								<p:column headerText="Cantidad" styleClass="janal-wid-col-50">
+									<h:outputText value="" />
+								</p:column>
+								<p:column headerText="Precio" styleClass="janal-wid-col-50">
+									<h:outputText value="" />
+								</p:column>
+								<p:column styleClass="janal-wid-col-50">
+									<h:outputText value="" />
+								</p:column>
+							</p:dataTable>					
+						</p:panelGrid>
+						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-column-center">
+								<p:outputLabel value="$ 0.00" styleClass="total_compra"/>
+							</p:panelGrid>
+							<p:separator/>
+							<p:panelGrid  columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-13">
+								<p:outputLabel value="Código:"/><p:spacer/>
+								<p:inputText styleClass="janal-wid-100-txt"/>
+								<p:commandButton icon="fa fa-search" styleClass="janal-text-white"/>
+							</p:panelGrid>
+							<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+								<p:outputLabel value="Cantidad:"/>
+								<p:inputText styleClass="janal-wid-100-txt"/>
+							</p:panelGrid>
+							<p:panelGrid  columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-13">
+								<p:spacer/><p:commandButton icon="fa fa-check" styleClass="janal-text-white"/>
+							</p:panelGrid>
+						</p:panelGrid>
+					</p:panelGrid>
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" styleClass="janal-text-white" onstart="return janal.partial('general', true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" styleClass="janal-text-white" onstart="return janal.partial('general', true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>
