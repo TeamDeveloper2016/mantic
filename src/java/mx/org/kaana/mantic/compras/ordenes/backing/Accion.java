@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
@@ -30,8 +31,10 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.OrdenCompra;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.compras.ordenes.reglas.AdminOrdenes;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloPrecioSugeridoDto;
+import org.primefaces.event.TabChangeEvent;
 
 
 @Named(value= "manticComprasOrdendesAccion")
@@ -40,6 +43,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
   private AdminOrdenes adminOrden;
+	private EOrdenes tipoOrden;
 
 	public AdminOrdenes getAdminOrden() {
 		return adminOrden;
@@ -47,6 +51,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 
 	public void setAdminOrden(AdminOrdenes adminOrden) {
 		this.adminOrden=adminOrden;
+	}
+
+	public EOrdenes getTipoOrden() {
+		return tipoOrden;
 	}
 	
 	@PostConstruct
@@ -63,6 +71,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("diferencia", "0");
 			this.attrs.put("solicitado", new Entity(-1L));
 			doLoad();
+			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+			if(!almacenes.isEmpty()) 
+				this.adminOrden.getOrden().setIkAlmacen(almacenes.get(0));
+			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -139,8 +151,10 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "sucursales", params, columns));
       this.attrs.put("proveedores", UIEntity.build("VistaOrdenesComprasDto", "moneda", params, columns));
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
-			if(!proveedores.isEmpty()) 
+			if(!proveedores.isEmpty()) { 
+				this.adminOrden.getOrden().setIkProveedor(proveedores.get(0));
 				toLoadCondiciones(proveedores.get(0));
+			} // if	
     } // try
     catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -375,5 +389,51 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doUpdatePorcentaje() {
 		this.adminOrden.toUpdatePorcentajes();
 	} 
-	
+
+	public void doTabChange(TabChangeEvent event) {
+		//JsfBase.addMessage("Tab changed active tab: "+ event.getTab().getId());
+		if(event.getTab().getTitle().equals("Articulos")) {
+			if(this.attrs.get("proveedores")== null) 
+  	  	JsfBase.addMessage("No se selecciono ningun proveedor !", ETipoMensaje.INFORMACION);
+			if(this.attrs.get("articulos")== null) {
+				switch(this.tipoOrden) {
+					case NORMAL:
+						break;
+					case ALMACEN: 
+						this.toLoadArticulos("almacen");
+						break;
+					case PROVEEDOR:
+						this.toLoadArticulos("proveedor");
+						break;
+				} // switch
+			} // if
+		} // if	
+	}
+  
+	public void toLoadArticulos(String idXml) {
+		List<Articulo> articulos  = null;
+    Map<String, Object> params= new HashMap<>();
+		try {
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.putAll(this.adminOrden.getOrden().toMap());
+			articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaOrdenesComprasDto", idXml, params);
+      if(articulos!= null)
+				for (Articulo articulo : articulos) {
+					articulo.toPrepare(
+						(Boolean)this.attrs.get("sinIva"), 
+						this.adminOrden.getOrden().getTipoDeCambio(), 
+						this.adminOrden.getOrden().getIdProveedor()
+					);
+					this.adminOrden.add(articulo);
+				} // for
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+	}
+
 }

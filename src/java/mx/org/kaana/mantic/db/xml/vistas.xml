@@ -342,7 +342,7 @@
 					tc_mantic_articulos.id_articulo as id_key,
 					tc_mantic_articulos_codigos.codigo as propio,
 					tc_mantic_articulos.nombre,
-					tc_mantic_articulos.precio,
+					tc_mantic_articulos.precio as costo,
 					'0.00' as descuento,
 					-1 as id_orden_compra,
 					'0.00' as extras,
@@ -351,7 +351,7 @@
 					tc_mantic_articulos.iva,
 					0.0 as total_impuesto,
 					0.0 as subtotal,
-					1 as cantidad,
+					tc_mantic_almacenes_articulos.maximo- tc_mantic_almacenes_articulos.stock as cantidad,
 					-1 as id_orden_detalle,
 					tc_mantic_articulos.id_articulo,
 					0.0 as total_descuentos,
@@ -369,7 +369,7 @@
 					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo
 				where 
 					tc_mantic_almacenes.id_empresa in ({sucursales})
-					and tc_mantic_almacenes.id_almacen= {idArticulo}
+					and tc_mantic_almacenes.id_almacen= {idAlmacen}
 					and tc_mantic_almacenes_articulos.stock &lt;= tc_mantic_almacenes_articulos.minimo
 					and tc_mantic_articulos_codigos.id_principal= 1
 				order by
@@ -380,7 +380,7 @@
 					tc_mantic_articulos.id_articulo as id_key,
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
 					tc_mantic_articulos.nombre,
-					tc_mantic_articulos.precio,
+					tc_mantic_articulos.precio as costo,
 					'0.00' as descuento,
 					-1 as id_orden_compra,
 					'0.00' as extras,
@@ -389,7 +389,7 @@
 					tc_mantic_articulos.iva,
 					0.0 as total_impuesto,
 					0.0 as subtotal,
-					1 as cantidad,
+					tc_mantic_almacenes_articulos.maximo- tc_mantic_almacenes_articulos.stock as cantidad,
 					-1 as id_orden_detalle,
 					tc_mantic_articulos.id_articulo,
 					0.0 as total_descuentos,

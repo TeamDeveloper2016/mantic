@@ -43,7 +43,6 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Serializable
 		this.sinIva      = conIva;
 		this.importes    = new Totales();
 		this.tipoDeCambio= tipoDeCambio;
-		toCalculate();
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -70,6 +69,13 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Serializable
 		return idProveedor;
 	}
 
+	public void toPrepare(boolean conIva, Double tipoDeCambio, Long idProvedores) {
+		this.idArticulo  = super.getIdArticulo();
+		this.sinIva      = conIva;
+		this.tipoDeCambio= tipoDeCambio;
+		this.idProveedor = idProvedores;
+	}
+	
 	@Override
 	public Class toHbmClass() {
 		return TcManticOrdenesDetallesDto.class;

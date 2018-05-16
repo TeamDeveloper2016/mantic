@@ -100,7 +100,7 @@ public final class AdminOrdenes implements Serializable {
    		toCalculate();
 		} // if
 		else
-		  throw new KajoolBaseException("El articulo ["+ articulo.getCodigo()+ "] ya esta dentro de la lista seleccionada !");
+		  throw new KajoolBaseException("El articulo ["+ articulo.getNombre()+ "] ya esta dentro de la lista seleccionada !");
 	}
 
 	private void toFillCodigo(Articulo articulo) throws Exception {

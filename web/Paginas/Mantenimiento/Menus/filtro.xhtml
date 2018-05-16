@@ -28,17 +28,16 @@
             <p:menuitem value="Reasignar claves" icon="fa fa-edit" actionListener="#{kajoolMantenimientoMenusFiltro.doReasignarClaves}" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
           </p:menuButton>
         </f:facet>
-
         <p:column headerText="Icono" styleClass="TexAlCenter Responsive janal-wid-col-40">
           <i class="#{row.icono} fa-lg"/>
         </p:column>
-        <p:column headerText="Descripción" styleClass="TextAlLeft Responsive">
+        <p:column headerText="Descripción" styleClass="TextAlLeft Responsive janal-wid-20">
           <h:outputText value="#{row.descripcion}"/>
         </p:column>
-        <p:column headerText="Ayuda" styleClass="TexAlLeft Responsive janal-wid-20">
+        <p:column headerText="Ayuda" styleClass="TexAlLeft Responsive janal-wid-30">
           <h:outputText value="#{row.ayuda}"/>
         </p:column>
-        <p:column headerText="Ruta" styleClass="TexAlLeft Responsive janal-wid-40">
+        <p:column headerText="Ruta" styleClass="TexAlLeft Responsive">
           <h:outputText value="#{row.ruta}"/>
         </p:column>
         <p:column headerText="Publicar" styleClass="TexAlCenter Responsive janal-wid-col-50">
