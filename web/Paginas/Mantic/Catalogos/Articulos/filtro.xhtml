@@ -34,10 +34,10 @@
 						</h:panelGrid>
 						<p:separator/>
 						<div class="janal-align-right lg-pantalla">
-							<p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.execute();" process="@this codigo nombre" actionListener="#{manticCatalogosArticulosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
+							<p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.execute(true);" process="@this codigo nombre" actionListener="#{manticCatalogosArticulosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
 						</div>
 						<div class="janal-align-right xs-pantalla">
- 						  <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.execute();" process="@this codigo nombre" actionListener="#{manticCatalogosArticulosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"  styleClass="janal-text-white"/>
+ 						  <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.execute(true);" process="@this codigo nombre" actionListener="#{manticCatalogosArticulosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"  styleClass="janal-text-white"/>
 					  </div>
 					</p:panel>
 				</div>
