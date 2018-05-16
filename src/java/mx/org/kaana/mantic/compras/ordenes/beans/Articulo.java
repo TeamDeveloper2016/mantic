@@ -126,5 +126,10 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Serializable
 		this.tipoDeCambio= tipoDeCambio;
 		this.toCalculate();
 	}
+
+	public static void main(String ... args) {
+		String search= "hola   como estas    ";
+		System.out.println(search.replaceAll("( |\\t)+", ".*.*"));
+	}	
 	
 }

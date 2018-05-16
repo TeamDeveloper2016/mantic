@@ -169,12 +169,15 @@
 										<p:outputLabel for="articulo" value="Articulos:"/><br/>
 										<p:selectOneMenu id="articulo" value="#{manticComprasOrdendesAccion.attrs.articulo}" var="item" styleClass="janal-wid-98" converter="janal.convertidor.Entity">
 											<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdatePrecio}" update="precio informacion solicitado" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-											<f:selectItems value="#{manticComprasOrdendesAccion.attrs.articulos}" var="element" itemValue="#{element}" itemLabel="#{element.codigo} #{element.nombre} [$ #{element.precio}]"/>
-											<p:column headerText="Código">
-												<h:outputText value="#{item.codigo}"/>
+											<f:selectItems value="#{manticComprasOrdendesAccion.attrs.articulos}" var="element" itemValue="#{element}" itemLabel="(#{element.propio}) #{element.nombre} [$ #{element.precio}]"/>
+											<p:column headerText="Propio">
+												<h:outputText value="#{item.propio}"/>
 											</p:column>   
 											<p:column headerText="Nombre">
 												<h:outputText value="#{item.nombre}"/>
+											</p:column>   
+											<p:column headerText="Proveedor">
+												<h:outputText value="#{item.codigo}"/>
 											</p:column>   
 										</p:selectOneMenu>
 									</div>

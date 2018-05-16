@@ -203,8 +203,13 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-  		params.put("idProveedor", ((UISelectEntity)this.attrs.get("proveedor")).getKey());
-  		params.put("codigo", this.attrs.get("codigo"));
+  		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
+			String search= (String)this.attrs.get("codigo"); 
+			if(!Cadena.isVacio(search)) 
+				search= search.trim().toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			else
+				search= "WXYZ";
+  		params.put("codigo", search);
       this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "codigos", params, columns));
 	    this.doUpdatePrecio(UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("articulos")));
 		} // try
@@ -238,7 +243,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				-1L,
 				this.adminOrden.getOrden().getExtras(), 
 				0D,
-				seleccionado.toString("codigo"),
+				seleccionado.toString("propio"),
 				seleccionado.toDouble("iva"), 
 				0D,
 				0D,

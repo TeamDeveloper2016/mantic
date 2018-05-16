@@ -337,6 +337,84 @@
         order by
           tc_mantic_ordenes_detalles.registro desc				
 			</select>
+			<select id="almacen">
+				select
+					tc_mantic_articulos.id_articulo as id_key,
+					tc_mantic_articulos_codigos.codigo as propio,
+					tc_mantic_articulos.nombre,
+					tc_mantic_articulos.precio,
+					'0.00' as descuento,
+					-1 as id_orden_compra,
+					'0.00' as extras,
+					tc_mantic_articulos.precio as importe,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= 2) as codigo,
+					tc_mantic_articulos.iva,
+					0.0 as total_impuesto,
+					0.0 as subtotal,
+					1 as cantidad,
+					-1 as id_orden_detalle,
+					tc_mantic_articulos.id_articulo,
+					0.0 as total_descuentos,
+					-1 as id_proveedor,
+					tc_mantic_almacenes_articulos.stock,
+					tc_mantic_almacenes_articulos.minimo,
+					tc_mantic_almacenes_articulos.maximo
+				from
+					tc_mantic_articulos
+				inner join
+					tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo
+				inner join
+					tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_almacenes.id_almacen
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo
+				where 
+					tc_mantic_almacenes.id_empresa in ({sucursales})
+					and tc_mantic_almacenes.id_almacen= {idArticulo}
+					and tc_mantic_almacenes_articulos.stock &lt;= tc_mantic_almacenes_articulos.minimo
+					and tc_mantic_articulos_codigos.id_principal= 1
+				order by
+					tc_mantic_articulos.nombre
+			</select>
+			<select id="proveedor">
+				select
+					tc_mantic_articulos.id_articulo as id_key,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					tc_mantic_articulos.nombre,
+					tc_mantic_articulos.precio,
+					'0.00' as descuento,
+					-1 as id_orden_compra,
+					'0.00' as extras,
+					tc_mantic_articulos.precio as importe,
+					tc_mantic_articulos_codigos.codigo,
+					tc_mantic_articulos.iva,
+					0.0 as total_impuesto,
+					0.0 as subtotal,
+					1 as cantidad,
+					-1 as id_orden_detalle,
+					tc_mantic_articulos.id_articulo,
+					0.0 as total_descuentos,
+					tc_mantic_proveedores.id_proveedor,
+					tc_mantic_almacenes_articulos.stock,
+					tc_mantic_almacenes_articulos.minimo,
+					tc_mantic_almacenes_articulos.maximo
+				from
+					tc_mantic_articulos
+				inner join
+					tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo= tc_mantic_almacenes_articulos.id_articulo
+				inner join
+					tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_almacenes.id_almacen
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo= tc_mantic_articulos_codigos.id_articulo
+				inner join
+					tc_mantic_proveedores on tc_mantic_articulos_codigos.id_proveedor= tc_mantic_proveedores.id_proveedor
+				where 
+					tc_mantic_almacenes.id_empresa in ({sucursales})
+					and tc_mantic_almacenes.id_almacen= {idAlmacen}
+					and tc_mantic_almacenes_articulos.stock&lt;= tc_mantic_almacenes_articulos.minimo
+					and tc_mantic_proveedores.id_proveedor= {idProveedor}
+				order by
+					tc_mantic_articulos.nombre				
+			</select>
 			<select id="ultimoPrecio">
         select      
           tc_mantic_ordenes_detalles.id_orden_detalle as id_key,
@@ -408,7 +486,8 @@
 				select 
 				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
 				  tc_mantic_articulos.id_articulo,
-				  tc_mantic_articulos_codigos.codigo,
+				  tc_mantic_articulos_codigos.codigo as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= 1) as codigo,
 				  tc_mantic_articulos_codigos.id_principal,
 				  tc_mantic_articulos_codigos.id_proveedor,
 				  tc_mantic_articulos.nombre,
@@ -424,11 +503,11 @@
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and (
-				    (upper(tc_mantic_articulos_codigos.codigo) like upper('%{codigo}%') and tc_mantic_articulos_codigos.id_principal= 1)
+				    (upper(tc_mantic_articulos_codigos.codigo) like '%{codigo}%' and tc_mantic_articulos_codigos.id_principal= 1)
 				    or 
-				    upper(tc_mantic_articulos.nombre) like upper('%{codigo}%')
+				    upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*'
 				    or
-				    (upper(tc_mantic_articulos_codigos.codigo) like upper('%{codigo}%') and tc_mantic_articulos_codigos.id_proveedor= {idProveedor})	
+				    (upper(tc_mantic_articulos_codigos.codigo) like '%{codigo}%' and tc_mantic_articulos_codigos.id_proveedor= {idProveedor})	
 				   ) 			
 				order by 
 				  tc_mantic_articulos.nombre
