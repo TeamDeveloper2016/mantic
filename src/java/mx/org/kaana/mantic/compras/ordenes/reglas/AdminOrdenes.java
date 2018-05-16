@@ -47,7 +47,7 @@ public final class AdminOrdenes implements Serializable {
       this.orden.setIkCliente(new UISelectEntity(new Entity(this.orden.getIdCliente())));
       this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdProveedor())));
       this.orden.setIkProveedorPago(new UISelectEntity(new Entity(this.orden.getIdProveedorPago())));
-			toCalculate(true, this.orden.getIdSinIva().equals(1L), this.getOrden().getTipoDeCambio());
+			toCalculate();
 		}	// if
 		else	{
 		  this.articulos= new ArrayList<>();
@@ -139,15 +139,10 @@ public final class AdminOrdenes implements Serializable {
 	}	
 		
 	public void toCalculate() {
-		this.toCalculate(false, false, this.getOrden().getTipoDeCambio());
-	}
-
-	public void toCalculate(boolean reset, boolean sinIva, double tipoDeCambio) {
 		this.totales.reset();
   	this.totales.setArticulos(this.articulos.size());
 		for (Articulo articulo : this.articulos) {
-			if(reset)
-			  articulo.toCalculate(sinIva, tipoDeCambio);
+		  articulo.toCalculate(this.orden.getIdSinIva().equals(1L), this.getOrden().getTipoDeCambio());
 			this.totales.addImporte(articulo.getImportes().getImporte());
 			this.totales.addDescuento(articulo.getImportes().getDescuento());
 			this.totales.addExtra(articulo.getImportes().getExtra());
@@ -155,6 +150,16 @@ public final class AdminOrdenes implements Serializable {
 			this.totales.addSubTotal(articulo.getImportes().getSubTotal());
 			this.totales.addTotal(articulo.getImportes().getTotal());
 		} // for
+	}
+
+	public void toUpdatePorcentajes() {
+		this.articulos.stream().map((articulo) -> {
+			articulo.setDescuento(this.getOrden().getDescuento());
+			return articulo;
+		}).forEachOrdered((articulo) -> {
+			articulo.setExtras(this.getOrden().getExtras());
+		}); // for
+		this.toCalculate();
 	}
 	
 }

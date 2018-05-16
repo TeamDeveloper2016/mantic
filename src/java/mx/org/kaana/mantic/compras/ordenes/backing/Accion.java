@@ -288,7 +288,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	public void doUpdateIvaTipoDeCambio() {
 		boolean sinIva= (boolean)this.attrs.get("sinIva");
 		this.adminOrden.getOrden().setIdSinIva(sinIva? 1L: 2L);
-		this.adminOrden.toCalculate(true, sinIva, this.adminOrden.getOrden().getTipoDeCambio());
+		this.adminOrden.toCalculate();
 	} 
 
   public void doUpdateDiferencia() {
@@ -366,5 +366,9 @@ public class Accion extends IBaseAttribute implements Serializable {
       Methods.clean(columns);
     }// finally
 	}
+
+  public void doUpdatePorcentaje() {
+		this.adminOrden.toUpdatePorcentajes();
+	} 
 	
 }
