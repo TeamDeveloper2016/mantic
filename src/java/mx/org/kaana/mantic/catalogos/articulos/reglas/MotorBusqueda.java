@@ -208,6 +208,8 @@ public class MotorBusqueda implements Serializable{
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_articulo=" + this.idArticulo);
 			regresar= (ArticuloDimencion) DaoFactory.getInstance().toEntity(ArticuloDimencion.class, "TcManticArticulosDimencionesDto", "row", params);
+			if(regresar== null)
+				regresar= new ArticuloDimencion();
 		} // try
 		catch (Exception e) {		
 			throw e;
@@ -222,9 +224,13 @@ public class MotorBusqueda implements Serializable{
 		Importado regresar        = null;
 		TcManticImagenesDto imagen= null;
 		try {
-			imagen= (TcManticImagenesDto) DaoFactory.getInstance().findById(TcManticImagenesDto.class, idImagen);
-			if(imagen!= null)
-				regresar= new Importado(imagen.getNombre(), imagen.getArchivo(), EFormatos.FREE, imagen.getTamanio(), imagen.getTamanio(), BYTES, imagen.getRuta());			
+			if(idImagen!= null){
+				imagen= (TcManticImagenesDto) DaoFactory.getInstance().findById(TcManticImagenesDto.class, idImagen);
+				if(imagen!= null)
+					regresar= new Importado(imagen.getNombre(), imagen.getArchivo(), EFormatos.FREE, imagen.getTamanio(), imagen.getTamanio(), BYTES, imagen.getRuta());			
+			} // if
+			else
+				regresar= new Importado();
 		} // try
 		catch (Exception e) {		
 			throw e;
