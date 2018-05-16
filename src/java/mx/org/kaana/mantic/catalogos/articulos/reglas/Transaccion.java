@@ -102,7 +102,6 @@ public class Transaccion extends IBaseTnx {
 				this.articulo.getArticulo().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 				this.articulo.getArticulo().setIdVigente(1L);
 				this.articulo.getArticulo().setStock(0L);
-				this.articulo.getArticulo().setUltimoPrecio(0D);
 				idArticulo= DaoFactory.getInstance().insert(sesion, this.articulo.getArticulo());
 				if(registraCodigos(sesion, idArticulo)){
 					if(registraEspecificaciones(sesion, idArticulo)){

@@ -30,7 +30,7 @@
 								<p:outputLabel for="nombre" value="Nombre:"/>
 								<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.nombre}" onblur="janal.mayusculas('contenedorGrupos\\:nombre')"/>                    
 								<p:outputLabel for="descripcion" value="Descripción:"/>
-								<p:editor id="descripcion" styleClass="janal-wid-100-txt" height="100" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.descripcion}" />                    
+								<p:inputTextarea id="descripcion" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.descripcion}" onblur="janal.mayusculas('contenedorGrupos\\:descripcion')"/>                    
 								<p:separator/><p:separator/>
 								<p:outputLabel for="iva" value="Iva:"/>
 								<p:inputNumber id="iva" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.iva}"/>                    

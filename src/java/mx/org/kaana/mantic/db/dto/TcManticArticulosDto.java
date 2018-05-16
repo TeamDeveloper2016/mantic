@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -36,42 +30,26 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Column (name="descripcion")
   private String descripcion;
-  @Column (name="id_tmp_articulo")
-  private Long idTmpArticulo;
-  @Column (name="peso_estimado")
-  private Double pesoEstimado;
-  @Column (name="id_empaque_unidad_medida")
-  private Long idEmpaqueUnidadMedida;
-  @Column (name="cantidad")
-  private Long cantidad;
+  @Column (name="descuentos")
+  private String descuentos;
   @Column (name="id_imagen")
   private Long idImagen;
-  @Column (name="id_redondear")
-  private Long idRedondear;
   @Column (name="id_categoria")
   private Long idCategoria;
-  @Column (name="ultimo_precio")
-  private Double ultimoPrecio;
-  @Column (name="menudeo")
-  private Double menudeo;
+  @Column (name="extras")
+  private String extras;
   @Column (name="meta_tag")
   private String metaTag;
   @Column (name="nombre")
   private String nombre;
-  @Column (name="meta_tag_teclado")
-  private String metaTagTeclado;
-  @Column (name="registro")
-  private Timestamp registro;
+  @Column (name="precio")
+  private Double precio;
   @Column (name="iva")
   private Double iva;
-  @Column (name="id_usuario")
-  private Long idUsuario;
   @Column (name="mayoreo")
   private Double mayoreo;
   @Column (name="desperdicio")
   private Double desperdicio;
-  @Column (name="id_empresa")
-  private Long idEmpresa;
   @Column (name="meta_tag_descipcion")
   private String metaTagDescipcion;
   @Column (name="id_vigente")
@@ -84,41 +62,63 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
   private Long stock;
   @Column (name="medio_mayoreo")
   private Double medioMayoreo;
+  @Column (name="peso_estimado")
+  private Double pesoEstimado;
+  @Column (name="id_empaque_unidad_medida")
+  private Long idEmpaqueUnidadMedida;
+  @Column (name="id_redondear")
+  private Long idRedondear;
+  @Column (name="menudeo")
+  private Double menudeo;
+  @Column (name="meta_tag_teclado")
+  private String metaTagTeclado;
+  @Column (name="registro")
+  private Timestamp registro;
+  @Column (name="fecha")
+  private Timestamp fecha;
+  @Column (name="id_usuario")
+  private Long idUsuario;
+  @Column (name="id_empresa")
+  private Long idEmpresa;
+  @Column (name="cantidad")
+  private Long cantidad;
 
   public TcManticArticulosDto() {
     this(new Long(-1L));
   }
 
   public TcManticArticulosDto(Long key) {
-    this(null, null, null, null, 1L, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null);
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null);
     setKey(key);
   }
 
-  public TcManticArticulosDto(String descripcion, Long idTmpArticulo, Double pesoEstimado, Long idEmpaqueUnidadMedida, Long cantidad, Long idImagen, Long idRedondear, Long idCategoria, Double ultimoPrecio, Double menudeo, String metaTag, String nombre, String metaTagTeclado, Double iva, Long idUsuario, Double mayoreo, Double desperdicio, Long idEmpresa, String metaTagDescipcion, Long idVigente, Long idArticulo, Long stock, Double medioMayoreo) {
+  public TcManticArticulosDto(String descripcion, String descuentos, Long idImagen, Long idCategoria, String extras, String metaTag, String nombre, Double precio, Double iva, Double mayoreo, Double desperdicio, String metaTagDescipcion, Long idVigente, Long idArticulo, Long stock, Double medioMayoreo, Double pesoEstimado, Long idEmpaqueUnidadMedida, Long idRedondear, Double menudeo, String metaTagTeclado, Timestamp fecha, Long idUsuario, Long idEmpresa, Long cantidad) {
     setDescripcion(descripcion);
-    setIdTmpArticulo(idTmpArticulo);
-    setPesoEstimado(pesoEstimado);
-    setIdEmpaqueUnidadMedida(idEmpaqueUnidadMedida);
-		this.cantidad= cantidad;
+    setDescuentos(descuentos);
     setIdImagen(idImagen);
-    setIdRedondear(idRedondear);
     setIdCategoria(idCategoria);
-    setUltimoPrecio(ultimoPrecio);
-    setMenudeo(menudeo);
+    setExtras(extras);
     setMetaTag(metaTag);
     setNombre(nombre);
-    setMetaTagTeclado(metaTagTeclado);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setPrecio(precio);
     setIva(iva);
-    setIdUsuario(idUsuario);
     setMayoreo(mayoreo);
     setDesperdicio(desperdicio);
-    setIdEmpresa(idEmpresa);
     setMetaTagDescipcion(metaTagDescipcion);
     setIdVigente(idVigente);
     setIdArticulo(idArticulo);
     setStock(stock);
     setMedioMayoreo(medioMayoreo);
+    setPesoEstimado(pesoEstimado);
+    setIdEmpaqueUnidadMedida(idEmpaqueUnidadMedida);
+    setIdRedondear(idRedondear);
+    setMenudeo(menudeo);
+    setMetaTagTeclado(metaTagTeclado);
+    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setFecha(fecha);
+    setIdUsuario(idUsuario);
+    setIdEmpresa(idEmpresa);
+    setCantidad(cantidad);
   }
 	
   public void setDescripcion(String descripcion) {
@@ -129,37 +129,13 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
     return descripcion;
   }
 
-  public void setIdTmpArticulo(Long idTmpArticulo) {
-    this.idTmpArticulo = idTmpArticulo;
+  public void setDescuentos(String descuentos) {
+    this.descuentos = descuentos;
   }
 
-  public Long getIdTmpArticulo() {
-    return idTmpArticulo;
+  public String getDescuentos() {
+    return descuentos;
   }
-
-  public void setPesoEstimado(Double pesoEstimado) {
-    this.pesoEstimado = pesoEstimado;
-  }
-
-  public Double getPesoEstimado() {
-    return pesoEstimado;
-  }
-
-  public void setIdEmpaqueUnidadMedida(Long idEmpaqueUnidadMedida) {
-    this.idEmpaqueUnidadMedida = idEmpaqueUnidadMedida;
-  }
-
-  public Long getIdEmpaqueUnidadMedida() {
-    return idEmpaqueUnidadMedida;
-  }
-
-	public Long getCantidad() {
-		return cantidad;
-	}
-
-	public void setCantidad(Long cantidad) {
-		this.cantidad=cantidad;
-	}
 
   public void setIdImagen(Long idImagen) {
     this.idImagen = idImagen;
@@ -167,14 +143,6 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
 
   public Long getIdImagen() {
     return idImagen;
-  }
-
-  public void setIdRedondear(Long idRedondear) {
-    this.idRedondear = idRedondear;
-  }
-
-  public Long getIdRedondear() {
-    return idRedondear;
   }
 
   public void setIdCategoria(Long idCategoria) {
@@ -185,20 +153,12 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
     return idCategoria;
   }
 
-  public void setUltimoPrecio(Double ultimoPrecio) {
-    this.ultimoPrecio = ultimoPrecio;
+  public void setExtras(String extras) {
+    this.extras = extras;
   }
 
-  public Double getUltimoPrecio() {
-    return ultimoPrecio;
-  }
-
-  public void setMenudeo(Double menudeo) {
-    this.menudeo = menudeo;
-  }
-
-  public Double getMenudeo() {
-    return menudeo;
+  public String getExtras() {
+    return extras;
   }
 
   public void setMetaTag(String metaTag) {
@@ -217,20 +177,12 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
     return nombre;
   }
 
-  public void setMetaTagTeclado(String metaTagTeclado) {
-    this.metaTagTeclado = metaTagTeclado;
+  public void setPrecio(Double precio) {
+    this.precio = precio;
   }
 
-  public String getMetaTagTeclado() {
-    return metaTagTeclado;
-  }
-
-  public void setRegistro(Timestamp registro) {
-    this.registro = registro;
-  }
-
-  public Timestamp getRegistro() {
-    return registro;
+  public Double getPrecio() {
+    return precio;
   }
 
   public void setIva(Double iva) {
@@ -239,14 +191,6 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
 
   public Double getIva() {
     return iva;
-  }
-
-  public void setIdUsuario(Long idUsuario) {
-    this.idUsuario = idUsuario;
-  }
-
-  public Long getIdUsuario() {
-    return idUsuario;
   }
 
   public void setMayoreo(Double mayoreo) {
@@ -263,14 +207,6 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
 
   public Double getDesperdicio() {
     return desperdicio;
-  }
-
-  public void setIdEmpresa(Long idEmpresa) {
-    this.idEmpresa = idEmpresa;
-  }
-
-  public Long getIdEmpresa() {
-    return idEmpresa;
   }
 
   public void setMetaTagDescipcion(String metaTagDescipcion) {
@@ -313,6 +249,86 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
     return medioMayoreo;
   }
 
+  public void setPesoEstimado(Double pesoEstimado) {
+    this.pesoEstimado = pesoEstimado;
+  }
+
+  public Double getPesoEstimado() {
+    return pesoEstimado;
+  }
+
+  public void setIdEmpaqueUnidadMedida(Long idEmpaqueUnidadMedida) {
+    this.idEmpaqueUnidadMedida = idEmpaqueUnidadMedida;
+  }
+
+  public Long getIdEmpaqueUnidadMedida() {
+    return idEmpaqueUnidadMedida;
+  }
+
+  public void setIdRedondear(Long idRedondear) {
+    this.idRedondear = idRedondear;
+  }
+
+  public Long getIdRedondear() {
+    return idRedondear;
+  }
+
+  public void setMenudeo(Double menudeo) {
+    this.menudeo = menudeo;
+  }
+
+  public Double getMenudeo() {
+    return menudeo;
+  }
+
+  public void setMetaTagTeclado(String metaTagTeclado) {
+    this.metaTagTeclado = metaTagTeclado;
+  }
+
+  public String getMetaTagTeclado() {
+    return metaTagTeclado;
+  }
+
+  public void setRegistro(Timestamp registro) {
+    this.registro = registro;
+  }
+
+  public Timestamp getRegistro() {
+    return registro;
+  }
+
+  public void setFecha(Timestamp fecha) {
+    this.fecha = fecha;
+  }
+
+  public Timestamp getFecha() {
+    return fecha;
+  }
+
+  public void setIdUsuario(Long idUsuario) {
+    this.idUsuario = idUsuario;
+  }
+
+  public Long getIdUsuario() {
+    return idUsuario;
+  }
+
+  public void setIdEmpresa(Long idEmpresa) {
+    this.idEmpresa = idEmpresa;
+  }
+
+  public Long getIdEmpresa() {
+    return idEmpresa;
+  }
+
+  public void setCantidad(Long cantidad) {
+    this.cantidad = cantidad;
+  }
+
+  public Long getCantidad() {
+    return cantidad;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -330,41 +346,25 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getDescripcion());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTmpArticulo());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getPesoEstimado());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdEmpaqueUnidadMedida());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getCantidad());
+		regresar.append(getDescuentos());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdImagen());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdRedondear());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCategoria());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getUltimoPrecio());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getMenudeo());
+		regresar.append(getExtras());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getMetaTag());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getMetaTagTeclado());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getRegistro());
+		regresar.append(getPrecio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIva());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getMayoreo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDesperdicio());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdEmpresa());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getMetaTagDescipcion());
 		regresar.append(Constantes.SEPARADOR);
@@ -375,6 +375,26 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
 		regresar.append(getStock());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getMedioMayoreo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPesoEstimado());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEmpaqueUnidadMedida());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdRedondear());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getMenudeo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getMetaTagTeclado());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFecha());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdUsuario());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEmpresa());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCantidad());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -383,36 +403,38 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("descripcion", getDescripcion());
-		regresar.put("idTmpArticulo", getIdTmpArticulo());
-		regresar.put("pesoEstimado", getPesoEstimado());
-		regresar.put("idEmpaqueUnidadMedida", getIdEmpaqueUnidadMedida());
-		regresar.put("cantidad", getCantidad());
+		regresar.put("descuentos", getDescuentos());
 		regresar.put("idImagen", getIdImagen());
-		regresar.put("idRedondear", getIdRedondear());
 		regresar.put("idCategoria", getIdCategoria());
-		regresar.put("ultimoPrecio", getUltimoPrecio());
-		regresar.put("menudeo", getMenudeo());
+		regresar.put("extras", getExtras());
 		regresar.put("metaTag", getMetaTag());
 		regresar.put("nombre", getNombre());
-		regresar.put("metaTagTeclado", getMetaTagTeclado());
-		regresar.put("registro", getRegistro());
+		regresar.put("precio", getPrecio());
 		regresar.put("iva", getIva());
-		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("mayoreo", getMayoreo());
 		regresar.put("desperdicio", getDesperdicio());
-		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("metaTagDescipcion", getMetaTagDescipcion());
 		regresar.put("idVigente", getIdVigente());
 		regresar.put("idArticulo", getIdArticulo());
 		regresar.put("stock", getStock());
 		regresar.put("medioMayoreo", getMedioMayoreo());
+		regresar.put("pesoEstimado", getPesoEstimado());
+		regresar.put("idEmpaqueUnidadMedida", getIdEmpaqueUnidadMedida());
+		regresar.put("idRedondear", getIdRedondear());
+		regresar.put("menudeo", getMenudeo());
+		regresar.put("metaTagTeclado", getMetaTagTeclado());
+		regresar.put("registro", getRegistro());
+		regresar.put("fecha", getFecha());
+		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("idEmpresa", getIdEmpresa());
+		regresar.put("cantidad", getCantidad());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getIdTmpArticulo(), getPesoEstimado(), getIdEmpaqueUnidadMedida(), getCantidad(), getIdImagen(), getIdRedondear(), getIdCategoria(), getUltimoPrecio(), getMenudeo(), getMetaTag(), getNombre(), getMetaTagTeclado(), getRegistro(), getIva(), getIdUsuario(), getMayoreo(), getDesperdicio(), getIdEmpresa(), getMetaTagDescipcion(), getIdVigente(), getIdArticulo(), getStock(), getMedioMayoreo()
+    getDescripcion(), getDescuentos(), getIdImagen(), getIdCategoria(), getExtras(), getMetaTag(), getNombre(), getPrecio(), getIva(), getMayoreo(), getDesperdicio(), getMetaTagDescipcion(), getIdVigente(), getIdArticulo(), getStock(), getMedioMayoreo(), getPesoEstimado(), getIdEmpaqueUnidadMedida(), getIdRedondear(), getMenudeo(), getMetaTagTeclado(), getRegistro(), getFecha(), getIdUsuario(), getIdEmpresa(), getCantidad()
     };
     return regresar;
   }
