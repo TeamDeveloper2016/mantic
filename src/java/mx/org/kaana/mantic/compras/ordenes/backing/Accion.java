@@ -201,6 +201,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	public void doUpdateProveedor() {
 		try {
+			if(this.tipoOrden.equals(EOrdenes.PROVEEDOR)) {
+				this.adminOrden.getArticulos().clear();
+				this.adminOrden.toCalculate();
+			} // if	
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 			toLoadCondiciones(proveedores.get(proveedores.indexOf((UISelectEntity)this.adminOrden.getOrden().getIkProveedor())));
 		}	
@@ -292,9 +296,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
   public void doUpdatePrecio(UISelectEntity seleccionado) {
 		try {
-   		this.attrs.put("precio", seleccionado.toDouble("precio"));
+   		this.attrs.put("precio", seleccionado.containsKey("precio")? seleccionado.toDouble("precio"): 0D);
    		this.attrs.put("idArticulo", seleccionado.getKey());
-      this.attrs.put("mostrar", !seleccionado.isEmpty());
 			this.doUpdateDiferencia();
 			this.doUpdateInformacion();
 			this.doUpdateSolicitado();
@@ -417,7 +420,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.putAll(this.adminOrden.getOrden().toMap());
 			articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaOrdenesComprasDto", idXml, params);
-      if(articulos!= null)
+      if(articulos!= null && this.adminOrden.getArticulos().isEmpty())
 				for (Articulo articulo : articulos) {
 					articulo.toPrepare(
 						(Boolean)this.attrs.get("sinIva"), 
@@ -436,4 +439,11 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // finally
 	}
 
+	public void doUpdateAlmacen() {
+		if(this.tipoOrden.equals(EOrdenes.ALMACEN)) {
+  		this.adminOrden.getArticulos().clear();
+			this.adminOrden.toCalculate();
+		} // if	
+	}
+	
 }
