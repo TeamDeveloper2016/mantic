@@ -52,23 +52,31 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			params.put(Constantes.SQL_CONDICION, "id_proveedor=" + this.idProveedor);
 			regresar= DaoFactory.getInstance().toEntitySet(ProveedorDomicilio.class, "TrManticProveedorDomicilioDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 			for(ProveedorDomicilio proveedorDomicilio: regresar){
-				proveedorDomicilio.setIdLocalidad(toLocalidad(proveedorDomicilio.getIdDomicilio()));
-				proveedorDomicilio.setIdMunicipio(toMunicipio(proveedorDomicilio.getIdLocalidad().getKey()));
-				proveedorDomicilio.setIdEntidad(toEntidad(proveedorDomicilio.getIdMunicipio().getKey()));
+				if(proveedorDomicilio.getIdDomicilio()!= null)
+					proveedorDomicilio.setIdLocalidad(toLocalidad(proveedorDomicilio.getIdDomicilio()));
+				if(proveedorDomicilio.getIdLocalidad()!= null)
+					proveedorDomicilio.setIdMunicipio(toMunicipio(proveedorDomicilio.getIdLocalidad().getKey()));
+				if(proveedorDomicilio.getIdMunicipio()!= null)
+					proveedorDomicilio.setIdEntidad(toEntidad(proveedorDomicilio.getIdMunicipio().getKey()));
 				if(update){
-					domicilio= toDomicilio(proveedorDomicilio.getIdDomicilio());
-					proveedorDomicilio.setCalle(domicilio.getCalle());
-					proveedorDomicilio.setCodigoPostal(domicilio.getCodigoPostal());
-					proveedorDomicilio.setColonia(domicilio.getAsentamiento());
-					proveedorDomicilio.setEntreCalle(domicilio.getEntreCalle());
-					proveedorDomicilio.setyCalle(domicilio.getYcalle());
-					proveedorDomicilio.setExterior(domicilio.getNumeroExterior());
-					proveedorDomicilio.setInterior(domicilio.getNumeroInterior());
-					entityDomicilio= new Entity(proveedorDomicilio.getIdDomicilio());
-					entityDomicilio.put("idEntidad", new Value("idEntidad", proveedorDomicilio.getIdEntidad().getKey()));
-					entityDomicilio.put("idMunicipio", new Value("idMunicipio", proveedorDomicilio.getIdMunicipio().getKey()));
-					entityDomicilio.put("idLocalidad", new Value("idLocalidad", proveedorDomicilio.getIdLocalidad().getKey()));
-					proveedorDomicilio.setDomicilio(entityDomicilio);
+					if(proveedorDomicilio.getIdDomicilio()!= null)
+						domicilio= toDomicilio(proveedorDomicilio.getIdDomicilio());
+					if(domicilio!= null){
+						proveedorDomicilio.setCalle(domicilio.getCalle());
+						proveedorDomicilio.setCodigoPostal(domicilio.getCodigoPostal());
+						proveedorDomicilio.setColonia(domicilio.getAsentamiento());
+						proveedorDomicilio.setEntreCalle(domicilio.getEntreCalle());
+						proveedorDomicilio.setyCalle(domicilio.getYcalle());
+						proveedorDomicilio.setExterior(domicilio.getNumeroExterior());
+						proveedorDomicilio.setInterior(domicilio.getNumeroInterior());
+					} // if
+					if(proveedorDomicilio.getIdDomicilio()!= null){
+						entityDomicilio= new Entity(proveedorDomicilio.getIdDomicilio());
+						entityDomicilio.put("idEntidad", new Value("idEntidad", proveedorDomicilio.getIdEntidad().getKey()));
+						entityDomicilio.put("idMunicipio", new Value("idMunicipio", proveedorDomicilio.getIdMunicipio().getKey()));
+						entityDomicilio.put("idLocalidad", new Value("idLocalidad", proveedorDomicilio.getIdLocalidad().getKey()));
+						proveedorDomicilio.setDomicilio(entityDomicilio);
+					} // if
 				} // if				
 			} // for
 		} // try
