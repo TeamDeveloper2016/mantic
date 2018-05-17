@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -590,15 +591,20 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.registroAlmacen.doConsultarAlmacenDomicilio();
 			domicilio = this.registroAlmacen.getDomicilioPivote();
       this.registroAlmacen.getDomicilio().setIdDomicilio(domicilio.getIdDomicilio());
-      this.registroAlmacen.getDomicilio().setDomicilio(domicilio.getDomicilio());
-      loadEntidades();
-      this.registroAlmacen.getDomicilio().setIdEntidad(domicilio.getIdEntidad());
-      loadMunicipios();
-      this.registroAlmacen.getDomicilio().setIdMunicipio(domicilio.getIdMunicipio());
-      loadLocalidades();
-      this.registroAlmacen.getDomicilio().setLocalidad(domicilio.getLocalidad());
-      this.registroAlmacen.getDomicilio().setIdLocalidad(domicilio.getIdLocalidad());
-      loadCodigosPostales();
+      this.registroAlmacen.getDomicilio().setDomicilio(domicilio.getDomicilio());      			
+      this.registroAlmacen.getDomicilio().setIdEntidad(domicilio.getIdEntidad());	
+			this.registroAlmacen.getDomicilio().getDomicilio().put("idEntidad", new Value("idEntidad", domicilio.getIdEntidad().getKey()));
+      toAsignaEntidad();
+			loadMunicipios();
+      this.registroAlmacen.getDomicilio().setIdMunicipio(domicilio.getIdMunicipio());			
+			this.registroAlmacen.getDomicilio().getDomicilio().put("idMunicipio", new Value("idMunicipio", domicilio.getIdMunicipio().getKey()));
+      toAsignaMunicipio();
+			loadLocalidades();
+      this.registroAlmacen.getDomicilio().setLocalidad(domicilio.getLocalidad());			
+      this.registroAlmacen.getDomicilio().setIdLocalidad(domicilio.getIdLocalidad());			
+			this.registroAlmacen.getDomicilio().getDomicilio().put("idLocalidad", new Value("idLocalidad", domicilio.getLocalidad().getKey()));
+      toAsignaLocalidad();
+			loadCodigosPostales();
       codigos = (List<UISelectItem>) this.attrs.get("codigosPostales");
       for (UISelectItem codigo : codigos) {
         if (codigo.getLabel().equals(domicilio.getCodigoPostal())) {
