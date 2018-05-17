@@ -1036,6 +1036,15 @@
         where      
           piso = '{piso}' and id_almacen = {idAlmacen} and id_almacen_ubicacion = {idAlmacenUbicacion}
       </select>
+			<select id="maximo">
+        select      
+          max(id_almacen_ubicacion) maximo
+        from      
+          tc_mantic_almacenes_ubicaciones
+      </select>
+			<delete id="rows">
+        delte from tc_mantic_almacenes_ubicaciones where id_almacen={idAlmacen} 
+      </delete>
     </unit>	    
 	    <unit id="TcManticCargosComprasDto">
       <select id="row">

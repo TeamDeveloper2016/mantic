@@ -164,8 +164,7 @@
              tc_mantic_domicilios.asentamiento,
              tc_mantic_domicilios.codigo_postal,
              tc_janal_entidades.descripcion as entidad,
-             tc_janal_municipios.descripcion as municipio,
-             (select count(*) from tc_mantic_almacenes_pisos where id_almacen=tc_mantic_almacenes.id_almacen) pisos            
+             tc_janal_municipios.descripcion as municipio             
            from 
              tc_mantic_almacenes
            inner join

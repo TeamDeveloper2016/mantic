@@ -31,10 +31,12 @@ public class Filtro extends Comun implements Serializable {
   @Override
   protected void init() {
     try {
+			this.attrs.put("clave", "");
+			this.attrs.put("nombre", "");
+			this.attrs.put("descripcion", "");			
       this.attrs.put("sortOrder", "order by tc_mantic_almacenes.nombre");
       this.attrs.put("idPrincipal", 1L);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);

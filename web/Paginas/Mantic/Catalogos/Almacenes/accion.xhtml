@@ -14,11 +14,7 @@
         'contenedorGrupos\\:clave': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:nombre': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:descripcion': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:responsable': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},        
-				'contenedorGrupos\\:piso': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:cuarto': {validaciones: 'cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:anaquel': {validaciones: 'cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:charola': {validaciones: 'cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:responsable': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},        				
         'contenedorGrupos\\:entidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'ubicacion'},
         'contenedorGrupos\\:municipio': {validaciones: 'requerido', mascara: 'libre', grupo: 'ubicacion'},
         'contenedorGrupos\\:localidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'ubicacion'},
@@ -184,16 +180,30 @@
               </p:panelGrid>	
             </p:tab>    
 						<p:tab title="Ubicación">
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
-                <p:outputLabel for="piso" value="Piso:"/>
-                <p:inputText id="piso" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenUbicacion.piso}" onblur="janal.mayusculas('contenedorGrupos\\:piso')"/>                    
-                <p:outputLabel for="cuarto" value="Cuarto:"/>
-                <p:inputText id="cuarto" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenUbicacion.cuarto}" onblur="janal.mayusculas('contenedorGrupos\\:cuarto')"/>                    
-                <p:outputLabel for="anaquel" value="Anaquel:"/>
-                <p:inputText id="anaquel" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenUbicacion.anaquel}" onblur="janal.mayusculas('contenedorGrupos\\:anaquel')"/>                    
-                <p:outputLabel for="charola" value="Charola:"/>
-                <p:inputText id="charola" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenUbicacion.charola}" onblur="janal.mayusculas('contenedorGrupos\\:charola')"/>                    
-							</p:panelGrid>
+							<p:panelGrid id="panelTablaUbicacion" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
+                <p:dataTable id="tablaUbicacion" rowIndexVar="index" var="ubicacion" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.ubicaciones}" rows="8" paginator="false" reflow="true" rowKey="#{ubicacion.key}" emptyMessage=" " styleClass="paginated">																					
+                  <p:column headerText="Piso" >										
+                    <p:inputText id="piso#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.piso}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaUbicacion', #{index}, 'piso')" disabled="#{!ubicacion.nuevo}"/>                    																																			
+                  </p:column>	
+                  <p:column headerText="Cuarto" >		
+                    <p:inputText id="cuarto#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.cuarto}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaUbicacion', #{index}, 'cuarto')" disabled="#{!ubicacion.nuevo}"/>                    																																			
+                  </p:column>
+                  <p:column headerText="Anaquel">		
+                    <p:inputText id="anaquel#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.anaquel}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaUbicacion', #{index}, 'anaquel')" disabled="#{!ubicacion.nuevo}"/>                    																																			
+                  </p:column>
+                  <p:column headerText="Charola">		
+                    <p:inputText id="charola#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.charola}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaUbicacion', #{index}, 'charola')" disabled="#{!ubicacion.nuevo}"/>                    																																			
+                  </p:column>
+                  <p:column style="width:32px;text-align: center">
+                    <p:commandButton update="tablaUbicacion" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosAlamacenesAccion.registroAlmacen.doEliminarAlmacenUbicacion}" styleClass="janal-text-white">
+                      <f:setPropertyActionListener value="#{ubicacion}" target="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenUbicacionSeleccion}" />
+                    </p:commandButton>
+                  </p:column>
+                  <f:facet name="footer">
+                    <p:commandButton actionListener="#{manticCatalogosAlamacenesAccion.registroAlmacen.doAgregarAlmacenUbicacion}" process="@this tablaUbicacion" update="tablaUbicacion" icon="fa fa-plus" styleClass="janal-text-white"/>						
+                  </f:facet>
+                </p:dataTable>	
+              </p:panelGrid>							
 						</p:tab>
           </p:tabView>
         </div>

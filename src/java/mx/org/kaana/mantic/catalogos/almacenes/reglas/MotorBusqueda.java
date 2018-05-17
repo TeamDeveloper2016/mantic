@@ -96,13 +96,13 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		return regresar;
 	} // toAlmacenesTipoContacto
 	
-	public AlmacenUbicacion toAlmacenUbicacion() throws Exception {
-		AlmacenUbicacion regresar= null;
+	public List<AlmacenUbicacion> toAlmacenUbicacion() throws Exception {
+		List<AlmacenUbicacion> regresar= null;
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_almacen=" + this.idAlmacen);
-			regresar= (AlmacenUbicacion) DaoFactory.getInstance().toEntity(AlmacenUbicacion.class, "TcManticAlmacenesUbicacionesDto", "row", params);
+			regresar= DaoFactory.getInstance().toEntitySet(AlmacenUbicacion.class, "TcManticAlmacenesUbicacionesDto", "row", params);			
 		} // try
 		catch (Exception e) {		
 			throw e;

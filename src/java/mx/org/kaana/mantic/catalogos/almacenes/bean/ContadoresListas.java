@@ -10,14 +10,16 @@ public class ContadoresListas {
 	private static final Long INCREMENTO= 10000L;
 	private Long totalAlmacenesDomicilios;
 	private Long totalAlmacenesTipoContacto;	
+	private Long totalAlmacenesUbicacion;	
 
 	public ContadoresListas() {
 		init();
 	} // ContadoresListas
 	
-	public ContadoresListas(Long totalAlmacenesDomicilios, Long totalAlmacenesTipoContacto) {
-		this.totalAlmacenesDomicilios    = totalAlmacenesDomicilios;
-		this.totalAlmacenesTipoContacto  = totalAlmacenesTipoContacto;
+	public ContadoresListas(Long totalAlmacenesDomicilios, Long totalAlmacenesTipoContacto, Long totalAlmacenesUbicacion) {
+		this.totalAlmacenesDomicilios  = totalAlmacenesDomicilios;
+		this.totalAlmacenesTipoContacto= totalAlmacenesTipoContacto;
+		this.totalAlmacenesUbicacion   = totalAlmacenesUbicacion;
 	} // ContadoresListas
 
 	public Long getTotalAlmacenesDomicilios() {
@@ -35,11 +37,20 @@ public class ContadoresListas {
 	public void setTotalAlmacenesTipoContacto(Long totalAlmacenesTipoContacto) {
 		this.totalAlmacenesTipoContacto = totalAlmacenesTipoContacto;
 	}
+
+	public Long getTotalAlmacenesUbicacion() {
+		return totalAlmacenesUbicacion;
+	}
+
+	public void setTotalAlmacenesUbicacion(Long totalAlmacenesUbicacion) {
+		this.totalAlmacenesUbicacion = totalAlmacenesUbicacion;
+	}	
 	
 	private void init(){
 		try {
 			this.totalAlmacenesDomicilios  = toMaxAlmacenDomicilio();
 			this.totalAlmacenesTipoContacto= toMaxAlmacenTiposContactos();			
+			this.totalAlmacenesUbicacion   = toMaxAlmacenUbicacion();			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);						
@@ -73,4 +84,18 @@ public class ContadoresListas {
 		} // catch				
 		return regresar;
 	} // toMaxAlmacenTiposContactos
+	
+	private Long toMaxAlmacenUbicacion() throws Exception{
+		Long regresar= 0L;
+		Value maximo = null;
+		try {
+			maximo= DaoFactory.getInstance().toField("TcManticAlmacenesUbicacionesDto", "maximo", Collections.EMPTY_MAP, "maximo");
+			if(maximo.getData()!= null)
+				regresar= Long.valueOf(maximo.toString()) + INCREMENTO;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch				
+		return regresar;
+	} // toMaxAlmacenUbicacion
 }
