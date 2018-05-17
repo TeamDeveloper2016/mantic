@@ -103,6 +103,8 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_almacen=" + this.idAlmacen);
 			regresar= (AlmacenUbicacion) DaoFactory.getInstance().toEntity(AlmacenUbicacion.class, "TcManticAlmacenesUbicacionesDto", "row", params);
+			if(regresar== null)
+				regresar= new AlmacenUbicacion();
 		} // try
 		catch (Exception e) {		
 			throw e;
