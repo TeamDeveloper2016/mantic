@@ -26,7 +26,8 @@ public class RegistroAlmacen implements Serializable{
 	private AlmacenDomicilio almacenDomicilioSelecion;
 	private List<AlmacenTipoContacto> almacenTiposContacto;
 	private AlmacenTipoContacto almacenTipoContactoSeleccion;
-	private AlmacenUbicacion almacenUbicacion;
+	private List<AlmacenUbicacion> ubicaciones;
+	private AlmacenUbicacion almacenUbicacionSeleccion;
 	private List<IBaseDto> deleteList;
 	private ContadoresListas contadores;
 	private Long countIndice;
@@ -34,7 +35,7 @@ public class RegistroAlmacen implements Serializable{
 	private Domicilio domicilioPivote;
 
 	public RegistroAlmacen() {
-		this(-1L, new TcManticAlmacenesDto(), new ArrayList<AlmacenDomicilio>(), new ArrayList<AlmacenTipoContacto>(), new AlmacenUbicacion(), new Domicilio());
+		this(-1L, new TcManticAlmacenesDto(), new ArrayList<AlmacenDomicilio>(), new ArrayList<AlmacenTipoContacto>(), new ArrayList<AlmacenUbicacion>(), new Domicilio());
 	}
 	
 	public RegistroAlmacen(Long idAlmacen) {
@@ -47,12 +48,12 @@ public class RegistroAlmacen implements Serializable{
 		init();		
 	}
 	
-	public RegistroAlmacen(Long idAlmacen, TcManticAlmacenesDto almacen, List<AlmacenDomicilio> almacenDomicilio, List<AlmacenTipoContacto> almacenTiposContacto, AlmacenUbicacion almacenUbicacion, Domicilio domicilio) {
+	public RegistroAlmacen(Long idAlmacen, TcManticAlmacenesDto almacen, List<AlmacenDomicilio> almacenDomicilio, List<AlmacenTipoContacto> almacenTiposContacto, List<AlmacenUbicacion> ubicaciones, Domicilio domicilio) {
 		this.idAlmacen           = idAlmacen;
 		this.almacen             = almacen;
 		this.almacenDomicilio    = almacenDomicilio;
 		this.almacenTiposContacto= almacenTiposContacto;
-		this.almacenUbicacion    = almacenUbicacion;
+		this.ubicaciones         = ubicaciones;
 		this.deleteList          = new ArrayList<>();
 		this.contadores          = new ContadoresListas();
 		this.countIndice         = 0L;
@@ -108,13 +109,21 @@ public class RegistroAlmacen implements Serializable{
 		this.almacenTipoContactoSeleccion = almacenTipoContactoSeleccion;
 	}
 
-	public AlmacenUbicacion getAlmacenUbicacion() {
-		return almacenUbicacion;
+	public List<AlmacenUbicacion> getUbicaciones() {
+		return ubicaciones;
 	}
 
-	public void setAlmacenUbicacion(AlmacenUbicacion almacenUbicacion) {
-		this.almacenUbicacion = almacenUbicacion;
-	}	
+	public void setUbicaciones(List<AlmacenUbicacion> ubicaciones) {
+		this.ubicaciones = ubicaciones;
+	}
+
+	public AlmacenUbicacion getAlmacenUbicacionSeleccion() {
+		return almacenUbicacionSeleccion;
+	}
+
+	public void setAlmacenUbicacionSeleccion(AlmacenUbicacion almacenUbicacionSeleccion) {
+		this.almacenUbicacionSeleccion = almacenUbicacionSeleccion;
+	}
 
 	public List<IBaseDto> getDeleteList() {
 		return deleteList;
@@ -162,7 +171,7 @@ public class RegistroAlmacen implements Serializable{
 				almacenDomicilio.setConsecutivo(Long.valueOf(count));
 			} // for				
 			this.almacenTiposContacto= motor.toAlmacenesTipoContacto();
-			this.almacenUbicacion= motor.toAlmacenUbicacion();
+			this.ubicaciones= motor.toAlmacenUbicacion();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);			
@@ -295,6 +304,37 @@ public class RegistroAlmacen implements Serializable{
 			if(this.almacenTiposContacto.remove(this.almacenTipoContactoSeleccion)){
 				if(!this.almacenTipoContactoSeleccion.getNuevo())
 					addDeleteList(this.almacenTipoContactoSeleccion);
+				JsfBase.addMessage("Se eliminó correctamente el tipo de contacto", ETipoMensaje.INFORMACION);
+			} // if
+			else
+				JsfBase.addMessage("No fue porsible eliminar el tipo de contacto", ETipoMensaje.INFORMACION);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
+	} // doEliminarAlamcenTipoContacto
+	
+	public void doAgregarAlmacenUbicacion(){
+		AlmacenUbicacion almacenUbicacion= null;
+		try {					
+			almacenUbicacion= new AlmacenUbicacion(this.contadores.getTotalAlmacenesUbicacion() + this.countIndice, ESql.INSERT, true);				
+			this.ubicaciones.add(almacenUbicacion);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{			
+			this.countIndice++;
+		} // finally
+	} // doAgregarAlmacenTipoContacto
+	
+	public void doEliminarAlmacenUbicacion(){
+		try {			
+			if(this.ubicaciones.remove(this.almacenUbicacionSeleccion)){
+				if(!this.almacenUbicacionSeleccion.getNuevo())
+					addDeleteList(this.almacenUbicacionSeleccion);
 				JsfBase.addMessage("Se eliminó correctamente el tipo de contacto", ETipoMensaje.INFORMACION);
 			} // if
 			else
