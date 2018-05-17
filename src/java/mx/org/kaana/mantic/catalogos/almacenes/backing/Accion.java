@@ -503,8 +503,6 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} // doLoadAtributos
 	
   public void doLoadAtributos(boolean all) {
-    TcManticDomiciliosDto domicilio = null;
-    MotorBusqueda motor = null;
 		List<Entity> domicilios= null;
     try {
 			if(all){
