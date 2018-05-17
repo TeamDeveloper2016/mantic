@@ -12,8 +12,10 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.almacenes.bean.AlmacenDomicilio;
 import mx.org.kaana.mantic.catalogos.almacenes.bean.AlmacenTipoContacto;
+import mx.org.kaana.mantic.catalogos.almacenes.bean.AlmacenUbicacion;
 import mx.org.kaana.mantic.catalogos.almacenes.bean.RegistroAlmacen;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesDto;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TrManticAlmacenDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticAlmacenTipoContactoDto;
@@ -70,14 +72,11 @@ public class Transaccion extends IBaseTnx {
         this.registroAlmacen.getAlmacen().setIdUsuario(JsfBase.getIdUsuario());
         this.registroAlmacen.getAlmacen().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
         idAlmacen = DaoFactory.getInstance().insert(sesion, this.registroAlmacen.getAlmacen());
-				this.registroAlmacen.getAlmacenUbicacion().setIdAlmacen(idAlmacen);
-				this.registroAlmacen.getAlmacenUbicacion().setIdUsuario(JsfBase.getIdUsuario());			
-				if(DaoFactory.getInstance().insert(sesion, this.registroAlmacen.getAlmacenUbicacion())>= 1L){
-					if (registraAlmacenDomicilios(sesion, idAlmacen)) {          
-						regresar = registraAlmacenTipoContacto(sesion, idAlmacen);
-					} // if
-        } // if
-      } // if
+				if (registraAlmacenDomicilios(sesion, idAlmacen)) {          
+					if(registraAlmacenTipoContacto(sesion, idAlmacen))
+						regresar = registraAlmacenUbicaciones(sesion, idAlmacen);
+				} // if
+			} // if
     } // try
     catch (Exception e) {
       throw e;
@@ -92,7 +91,8 @@ public class Transaccion extends IBaseTnx {
       idAlmacen = this.registroAlmacen.getIdAlmacen();
       if (registraAlmacenDomicilios(sesion, idAlmacen)) {        
 				if (registraAlmacenTipoContacto(sesion, idAlmacen)) {
-					regresar = DaoFactory.getInstance().update(sesion, this.registroAlmacen.getAlmacen()) >= 1L;
+					if (registraAlmacenUbicaciones(sesion, idAlmacen)) 
+						regresar = DaoFactory.getInstance().update(sesion, this.registroAlmacen.getAlmacen()) >= 1L;
         } // if
       } // if
     } // try
@@ -110,7 +110,8 @@ public class Transaccion extends IBaseTnx {
       params.put("idCliente", this.registroAlmacen.getIdAlmacen());
       if (DaoFactory.getInstance().deleteAll(sesion, TrManticAlmacenDomicilioDto.class, params) > -1L) {
 				if (DaoFactory.getInstance().deleteAll(sesion, TrManticAlmacenTipoContactoDto.class, params) > -1L) {
-					regresar = DaoFactory.getInstance().delete(sesion, TcManticAlmacenesDto.class, this.registroAlmacen.getIdAlmacen()) >= 1L;
+					if (DaoFactory.getInstance().deleteAll(sesion, TcManticAlmacenesUbicacionesDto.class, params) > -1L) 
+						regresar = DaoFactory.getInstance().delete(sesion, TcManticAlmacenesDto.class, this.registroAlmacen.getIdAlmacen()) >= 1L;
         } // if
       } // if
     } // try
@@ -199,6 +200,42 @@ public class Transaccion extends IBaseTnx {
     } // catch		
     finally {
       this.messageError = "Error al registrar los tipos de contacto, verifique que no haya duplicados";
+    } // finally
+    return regresar;
+  } // registraClientesTipoContacto
+	
+  private boolean registraAlmacenUbicaciones(Session sesion, Long idAlmacen) throws Exception {
+    TcManticAlmacenesUbicacionesDto dto = null;
+    ESql sqlAccion = null;
+    int count = 0;
+    boolean validate = false;
+    boolean regresar = false;
+    try {
+      for (AlmacenUbicacion almacenUbicacion : this.registroAlmacen.getUbicaciones()) {
+        almacenUbicacion.setIdAlmacen(idAlmacen);
+        almacenUbicacion.setIdUsuario(JsfBase.getIdUsuario());
+        dto = (TcManticAlmacenesUbicacionesDto) almacenUbicacion;
+        sqlAccion = almacenUbicacion.getSqlAccion();
+        switch (sqlAccion) {
+          case INSERT:
+            dto.setIdAlmacenUbicacion(-1L);
+            validate = registrar(sesion, dto);
+            break;
+          case UPDATE:
+            validate = actualizar(sesion, dto);
+            break;
+        } // switch
+        if (validate) {
+          count++;
+        } // if
+      } // for		
+      regresar = count == this.registroAlmacen.getUbicaciones().size();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      this.messageError = "Error al registrar las ubicaciones, verifique que no haya duplicados";
     } // finally
     return regresar;
   } // registraClientesTipoContacto
