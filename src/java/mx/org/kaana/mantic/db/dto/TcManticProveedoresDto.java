@@ -57,20 +57,18 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
   @Column (name="observaciones")
   private String observaciones;
   @Column (name="id_empresa")
-  private Long idEmpresa;
-  @Column (name="id_tmp_proveedor")
-  private Long idTmpProveedor;
+  private Long idEmpresa;  
 
   public TcManticProveedoresDto() {
     this(new Long(-1L));
   }
 
   public TcManticProveedoresDto(Long key) {
-    this(null, new Long(-1L), null, 5L, 0.00, null, null, null, null, null, null, null, null, null);
+    this(null, new Long(-1L), null, 5L, 0.00, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticProveedoresDto(Long idTipoProveedor, Long idProveedor, String clave, Long diasEntrega, Double descuento, String prefijo, String razonSocial, String rfc, Long idTipoDia, Long idUsuario, Long idTipoMoneda, String observaciones, Long idEmpresa, Long idTmpProveedor) {
+  public TcManticProveedoresDto(Long idTipoProveedor, Long idProveedor, String clave, Long diasEntrega, Double descuento, String prefijo, String razonSocial, String rfc, Long idTipoDia, Long idUsuario, Long idTipoMoneda, String observaciones, Long idEmpresa) {
     setIdTipoProveedor(idTipoProveedor);
     setIdProveedor(idProveedor);
     setClave(clave);
@@ -85,7 +83,6 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
     setIdTipoMoneda(idTipoMoneda);
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
-    setIdTmpProveedor(idTmpProveedor);
   }
 	
   public void setIdTipoProveedor(Long idTipoProveedor) {
@@ -199,15 +196,7 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
   public Long getIdEmpresa() {
     return idEmpresa;
   }
-
-  public void setIdTmpProveedor(Long idTmpProveedor) {
-    this.idTmpProveedor = idTmpProveedor;
-  }
-
-  public Long getIdTmpProveedor() {
-    return idTmpProveedor;
-  }
-
+	
   @Transient
   @Override
   public Long getKey() {
@@ -249,9 +238,7 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdEmpresa());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTmpProveedor());
+		regresar.append(getIdEmpresa());		
     regresar.append("]");
   	return regresar.toString();
   }
@@ -273,14 +260,13 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
 		regresar.put("idTipoMoneda", getIdTipoMoneda());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
-		regresar.put("idTmpProveedor", getIdTmpProveedor());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdTipoProveedor(), getIdProveedor(), getClave(), getDiasEntrega(), getDescuento(), getPrefijo(), getRazonSocial(), getRfc(), getRegistro(), getIdTipoDia(), getIdUsuario(), getIdTipoMoneda(), getObservaciones(), getIdEmpresa(), getIdTmpProveedor()
+    getIdTipoProveedor(), getIdProveedor(), getClave(), getDiasEntrega(), getDescuento(), getPrefijo(), getRazonSocial(), getRfc(), getRegistro(), getIdTipoDia(), getIdUsuario(), getIdTipoMoneda(), getObservaciones(), getIdEmpresa(), 
     };
     return regresar;
   }
