@@ -8,6 +8,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.almacenes.bean.AlmacenDomicilio;
@@ -212,19 +213,23 @@ public class Transaccion extends IBaseTnx {
     boolean regresar = false;
     try {
       for (AlmacenUbicacion almacenUbicacion : this.registroAlmacen.getUbicaciones()) {
-        almacenUbicacion.setIdAlmacen(idAlmacen);
-        almacenUbicacion.setIdUsuario(JsfBase.getIdUsuario());
-        dto = (TcManticAlmacenesUbicacionesDto) almacenUbicacion;
-        sqlAccion = almacenUbicacion.getSqlAccion();
-        switch (sqlAccion) {
-          case INSERT:
-            dto.setIdAlmacenUbicacion(-1L);
-            validate = registrar(sesion, dto);
-            break;
-          case UPDATE:
-            validate = actualizar(sesion, dto);
-            break;
-        } // switch
+				if(almacenUbicacion.getPiso()!= null && !Cadena.isVacio(almacenUbicacion.getPiso())){
+					almacenUbicacion.setIdAlmacen(idAlmacen);
+					almacenUbicacion.setIdUsuario(JsfBase.getIdUsuario());
+					dto = (TcManticAlmacenesUbicacionesDto) almacenUbicacion;
+					sqlAccion = almacenUbicacion.getSqlAccion();
+					switch (sqlAccion) {
+						case INSERT:
+							dto.setIdAlmacenUbicacion(-1L);
+							validate = registrar(sesion, dto);
+							break;
+						case UPDATE:
+							validate = actualizar(sesion, dto);
+							break;
+					} // switch
+				} // if
+				else
+					validate= true;
         if (validate) {
           count++;
         } // if
