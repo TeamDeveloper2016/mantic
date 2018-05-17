@@ -12,6 +12,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -141,7 +142,6 @@ public class Accion extends IBaseAttribute implements Serializable {
     Map<String, Object> params= new HashMap<>();
     try {
 			columns= new ArrayList<>();
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -157,6 +157,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			} // if	
     } // try
     catch (Exception e) {
+      Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
     finally {
@@ -209,6 +210,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			toLoadCondiciones(proveedores.get(proveedores.indexOf((UISelectEntity)this.adminOrden.getOrden().getIkProveedor())));
 		}	
 	  catch (Exception e) {
+      Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
 	} 
@@ -249,14 +251,25 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	public void doAddArticulo() {
 		try {
-			UISelectEntity seleccionado= toArticulo();
+			UISelectEntity articulo= toArticulo(); 
+			((Value)articulo.get("precio")).setData(this.attrs.get("precio"));
+			toAddArticulo(articulo);
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	}
+
+	public void toAddArticulo(UISelectEntity seleccionado) {
+		try {
 			Long idOrdenDetalle= new Long((int)(Math.random()*10000));
 			Articulo item= new Articulo(
 				(Boolean)this.attrs.get("sinIva"),
 				this.adminOrden.getOrden().getTipoDeCambio(),
 				seleccionado.toString("nombre"), 
 				seleccionado.toString("codigo"),
-				(Double)this.attrs.get("precio"), 
+				seleccionado.toDouble("precio"),
         this.adminOrden.getOrden().getDescuento(), 
 				-1L,
 				this.adminOrden.getOrden().getExtras(), 
@@ -277,15 +290,17 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("articulos", null);
 		} // try
 	  catch (Exception e) {
+			Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
 	}
-	
+
 	public void doRemoveArticulo() {
 		try {
    		this.adminOrden.remove((Articulo)this.attrs.get("seleccionado"));
 		} // try
 	  catch (Exception e) {
+			Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
 	}
@@ -303,6 +318,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.doUpdateSolicitado();
 		} // try
 	  catch (Exception e) {
+			Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
 	} 
@@ -326,7 +342,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
 	private void doUpdateInformacion() {
     try {
-			Entity ultimoPrecio= (Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "ultimoPrecio", this.attrs);
+			Entity ultimoPrecio= (Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "ultimo", this.attrs);
 			if(ultimoPrecio!= null && !ultimoPrecio.isEmpty())
 				ultimoPrecio.values().stream().map((value) -> {
 					if("|costo|".indexOf(value.getName())> 0)
@@ -335,11 +351,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 				}).filter((value) -> ("|registro|".indexOf(value.getName())> 0)).forEachOrdered((value) -> {
 					value.setData(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, value.toTimestamp()));
 				}); // for
- 		  this.attrs.put("ultimoPrecio", ultimoPrecio);
+ 		  this.attrs.put("ultimo", ultimoPrecio);
 			doUpdateSugeridos();
     } // try
     catch (Exception e) {
 			Error.mensaje(e);
+			JsfBase.addMessageError(e);
     } // catch   
 	}
 	
@@ -357,10 +374,11 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("precio", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("descuento", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-		  this.attrs.put("preciosSugeridos", UIEntity.build("VistaOrdenesComprasDto", "preciosSegerido", this.attrs, columns));
+		  this.attrs.put("sugeridos", UIEntity.build("VistaOrdenesComprasDto", "sugerido", this.attrs, columns));
     } // try
     catch (Exception e) {
 			Error.mensaje(e);
+			JsfBase.addMessageError(e);
     } // catch   
     finally {
       Methods.clean(params);
@@ -382,6 +400,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // try
     catch (Exception e) {
 			Error.mensaje(e);
+			JsfBase.addMessageError(e);
     } // catch   
     finally {
       Methods.clean(params);
@@ -411,6 +430,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 				} // switch
 			} // if
 		} // if	
+		else 
+			if(event.getTab().getTitle().equals("Faltantes") && this.attrs.get("faltantes")== null) 
+        toLoadFaltantes();
 	}
   
 	public void toLoadArticulos(String idXml) {
@@ -444,6 +466,47 @@ public class Accion extends IBaseAttribute implements Serializable {
   		this.adminOrden.getArticulos().clear();
 			this.adminOrden.toCalculate();
 		} // if	
+	}
+	
+	public void doFaltanteArticulo() {
+		try {
+			UISelectEntity faltante= (UISelectEntity)this.attrs.get("faltante");
+   		toAddArticulo(faltante);
+		  List<UISelectEntity> faltantes= (List<UISelectEntity>)this.attrs.get("faltantes");
+			faltantes.remove(faltantes.indexOf(faltante));
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	}
+
+	public void toLoadFaltantes() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put("idAlmacen", this.adminOrden.getOrden().getIdAlmacen());
+			params.put("idProveedor", this.adminOrden.getOrden().getIdProveedor());
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("minimo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("maximo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      this.attrs.put("faltantes", UIEntity.build("VistaOrdenesComprasDto", "faltantes", params, columns));
+    } // try
+    catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    }// finally
 	}
 	
 }
