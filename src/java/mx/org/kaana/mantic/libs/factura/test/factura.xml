@@ -1,0 +1,574 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<cfdi:Comprobante xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd" Version="3.3" Folio="1910830" Fecha="2018-03-16T13:53:49" Sello="K6NQfuHmnS/9LJCbM49MKu3pqpdHrb1x4dKVsMzAiaQE0NUbcf0R4MjOMZEg+ypcAU1ujnRUtSBLRqo7ZGXX0LXp/PWFsu7rkhfp6Oi5G7PoJLR8E185SSTKk7y8MsrJgxWm3rLm4S7MJPjdNA/yaniaIsQ9ggYrhKVfWyGCgBxBl4a8muJ2pcGd6Lg7xPvymAs1ihwvRFwYfeYvYDXZKZANKUts5bVU3Y9Ap5RC1sThdv+thaD33noIKTgmX7uNmjhmTmkSq8SrsbL8JUe8ax4m8Khwom/je3eiiVU1EygKZIQ175zggtAzs3k87f8+wIh9COJdC1XtcnIdXANtsg==" FormaPago="99" NoCertificado="00001000000405047264" Certificado="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" SubTotal="16647.31" Moneda="MXN" TipoCambio="1" Total="19310.88" TipoDeComprobante="I" MetodoPago="PPD" LugarExpedicion="45680" xmlns:cfdi="http://www.sat.gob.mx/cfd/3">
+	<cfdi:Emisor Rfc="UH26500402Q29" Nombre="HERRAMIENTAS PROFESIONALES S.A. DE C.V." RegimenFiscal="601" />
+	<cfdi:Receptor Rfc="DAPA57890117TK4" Nombre="XXXXX PADXXXXXILLXXXA, XXX XX" UsoCFDI="G01" />
+	<cfdi:Conceptos>
+		<cfdi:Concepto ClaveProdServ="27112836" NoIdentificacion="141707" Cantidad="1.00" ClaveUnidad="SET" Unidad="Pieza" Descripcion="Jgo puntas y acc 56pz" ValorUnitario="111.50" Importe="111.50">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="111.500000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="17.84" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7011044" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111711" NoIdentificacion="5249S" Cantidad="2.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Matraca 3/8&quot; corta" ValorUnitario="180.52" Importe="361.04">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="361.040000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="57.7664" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7010408" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111711" NoIdentificacion="5449S" Cantidad="2.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Matraca 1/2&quot; corta" ValorUnitario="246.89" Importe="493.78">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="493.780000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="79.0048" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111704" NoIdentificacion="BF51T27" Cantidad="6.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Dado 3/8&quot; punta torx T27" ValorUnitario="12.73" Importe="76.38">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="76.380000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="12.2208" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  16  1628  8000614" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111704" NoIdentificacion="BF51T60" Cantidad="6.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Dado 3/8&quot; punta torx T60" ValorUnitario="12.73" Importe="76.38">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="76.380000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="12.2208" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7012605" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="60111302" NoIdentificacion="L604C" Cantidad="5.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Numero 4 bold 4&quot; cr sat" ValorUnitario="23.89" Importe="119.45">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="119.450000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="19.112" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="60111302" NoIdentificacion="L600C" Cantidad="5.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Numero 0 bold 4&quot; cr sat" ValorUnitario="23.89" Importe="119.45">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="119.450000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="19.112" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111701" NoIdentificacion="DER52" Cantidad="6.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Dest negro tmpo plana1/4x1-1/2" ValorUnitario="12.21" Importe="73.26">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="73.260000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="11.7216" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111712" NoIdentificacion="107044" Cantidad="1.00" ClaveUnidad="SET" Unidad="Pieza" Descripcion="Jgo extractor p/torn c/brocas" ValorUnitario="142.82" Importe="142.82">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="142.820000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="22.8512" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7006257" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="31162916" NoIdentificacion="107117" Cantidad="1.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Prensa rapida tipo F 10&quot;" ValorUnitario="57.86" Importe="57.86">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="57.860000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="9.2576" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="23271700" NoIdentificacion="118008" Cantidad="4.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Tenaza de tierra 500 A" ValorUnitario="73.79" Importe="295.16">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="295.160000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="47.2256" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7009904" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111701" NoIdentificacion="D4327" Cantidad="6.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Dest amar torx T27" ValorUnitario="22.29" Importe="133.74">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="133.740000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="21.3984" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="25191722" NoIdentificacion="107276" Cantidad="2.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Pinza instalar anillos piston" ValorUnitario="63.17" Importe="126.34">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="126.340000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="20.2144" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="25191700" NoIdentificacion="107216" Cantidad="2.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Hta p/rondana resorte freno" ValorUnitario="40.88" Importe="81.76">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="81.760000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="13.0816" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  16  1628  8001307" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="25191835" NoIdentificacion="140952" Cantidad="6.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Gauge t/lapiz 50 PSI" ValorUnitario="13.80" Importe="82.80">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="82.800000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="13.248" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  16  1628  8002267" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="46182300" NoIdentificacion="137441" Cantidad="1.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Arnes posicionamiento unitalla" ValorUnitario="275.56" Importe="275.56">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="275.560000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="44.0896" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  16  1628  8000989" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111906" NoIdentificacion="FF-3/8" Cantidad="3.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Formon prof p/madera 3/8&quot;" ValorUnitario="41.40" Importe="124.20">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="124.200000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="19.872" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  16  1628  8001386" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111906" NoIdentificacion="120050" Cantidad="1.00" ClaveUnidad="SET" Unidad="Pieza" Descripcion="Jgo 6 gurbias manual" ValorUnitario="132.20" Importe="132.20">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="132.200000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="21.152" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7004714" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="46182201" NoIdentificacion="137504" Cantidad="2.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Faja de malla CH" ValorUnitario="58.40" Importe="116.80">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="116.800000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="18.688" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="46181811" NoIdentificacion="137676" Cantidad="6.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Lentes seg panoramic transp" ValorUnitario="18.58" Importe="111.48">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="111.480000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="17.8368" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7012092" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27112805" NoIdentificacion="850-1/2P" Cantidad="1.00" ClaveUnidad="SET" Unidad="Pieza" Descripcion="Jgo peines p/tarraja 1/2&quot; NPT" ValorUnitario="403.53" Importe="403.53">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="403.530000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="64.5648" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  81  3667  8000035" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27112805" NoIdentificacion="850-3/4P" Cantidad="1.00" ClaveUnidad="SET" Unidad="Pieza" Descripcion="Jgo peines p/tarraja 3/4&quot; NPT" ValorUnitario="403.53" Importe="403.53">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="403.530000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="64.5648" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  81  3667  8000035" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27112805" NoIdentificacion="850-1P" Cantidad="1.00" ClaveUnidad="SET" Unidad="Pieza" Descripcion="Jgo peines p/tarraja 1&quot; NPT" ValorUnitario="403.53" Importe="403.53">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="403.530000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="64.5648" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  81  3667  8000143" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="46181604" NoIdentificacion="137559" Cantidad="3.00" ClaveUnidad="PR" Unidad="Pieza" Descripcion="Botas sanitarias # 6" ValorUnitario="100.34" Importe="301.02">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="301.020000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="48.1632" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  16  1628  8000946" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27112717" NoIdentificacion="PC600" Cantidad="1.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Pistola de calor 1500W 626°C" ValorUnitario="451.31" Importe="451.31">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="451.310000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="72.2096" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  3879  7014547" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="24112401" NoIdentificacion="125071" Cantidad="3.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Caja plas broche plas 12&quot;" ValorUnitario="47.78" Importe="143.34">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="143.340000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="22.9344" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="15  24  3055  5021230" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="23231001" NoIdentificacion="2592" Cantidad="40.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Clip p/dado cuadro 1/2&quot;" ValorUnitario="2.38" Importe="95.20">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="95.200000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="15.232" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="60111302" NoIdentificacion="L605C" Cantidad="5.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Numero 5 bold 4&quot; cr sat" ValorUnitario="23.89" Importe="119.45">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="119.450000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="19.112" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="60111302" NoIdentificacion="L601C" Cantidad="5.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Numero 1 bold 4&quot; cr sat" ValorUnitario="23.89" Importe="119.45">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="119.450000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="19.112" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="60111302" NoIdentificacion="L70CC" Cantidad="5.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Letra C bold 4&quot; cr sat" ValorUnitario="23.89" Importe="119.45">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="119.450000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="19.112" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="60111302" NoIdentificacion="L608C" Cantidad="5.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Numero 8 bold 4&quot; cr sat" ValorUnitario="23.89" Importe="119.45">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="119.450000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="19.112" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="60111302" NoIdentificacion="L602C" Cantidad="5.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Numero 2 bold 4&quot; cr sat" ValorUnitario="23.89" Importe="119.45">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="119.450000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="19.112" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="60111302" NoIdentificacion="L607C" Cantidad="5.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Numero 7 bold 4&quot; cr sat" ValorUnitario="23.89" Importe="119.45">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="119.450000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="19.112" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="60111302" NoIdentificacion="L603C" Cantidad="5.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Numero 3 bold 4&quot; cr sat" ValorUnitario="23.89" Importe="119.45">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="119.450000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="19.112" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="60111302" NoIdentificacion="L70AC" Cantidad="5.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Letra A bold 4&quot; cr sat" ValorUnitario="23.89" Importe="119.45">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="119.450000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="19.112" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="60111302" NoIdentificacion="L70BC" Cantidad="5.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Letra B bold 4&quot; cr sat" ValorUnitario="23.89" Importe="119.45">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="119.450000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="19.112" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="60111302" NoIdentificacion="L606C" Cantidad="5.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Numero 6 bold 4&quot; cr sat" ValorUnitario="23.89" Importe="119.45">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="119.450000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="19.112" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="60111302" NoIdentificacion="L609C" Cantidad="5.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Numero 9 bold 4&quot; cr sat" ValorUnitario="23.89" Importe="119.45">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="119.450000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="19.112" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7007729" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111804" NoIdentificacion="123274" Cantidad="6.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Plomada laton t/barril 340g" ValorUnitario="87.60" Importe="525.60">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="525.600000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="84.096" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7003597" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="24101611" NoIdentificacion="ER22" Cantidad="2.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Eslinga red sin-fin verd 2m 2t" ValorUnitario="225.65" Importe="451.30">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="451.300000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="72.208" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7006600" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111713" NoIdentificacion="140612" Cantidad="12.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Llave combinado 3/8&quot; pul esp" ValorUnitario="10.08" Importe="120.96">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="120.960000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="19.3536" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  16  1628  8000443" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111712" NoIdentificacion="107296" Cantidad="1.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Extractor poleas reversible 4&quot;" ValorUnitario="158.75" Importe="158.75">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="158.750000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="25.40" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  16  1628  8000322" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111712" NoIdentificacion="140508" Cantidad="1.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Extractor poleas reversible 8&quot;" ValorUnitario="292.03" Importe="292.03">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="292.030000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="46.7248" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  16  1628  8001121" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111713" NoIdentificacion="140818" Cantidad="6.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Llave combinado 18mm pul esp" ValorUnitario="20.70" Importe="124.20">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="124.200000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="19.872" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="31162405" NoIdentificacion="151533" Cantidad="15.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Tensor zinc gancho-arg 3/8&quot;" ValorUnitario="20.70" Importe="310.50">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="310.500000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="49.68" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111701" NoIdentificacion="D302" Cantidad="6.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Dest azul plana redon 3/16x4&quot;" ValorUnitario="17.52" Importe="105.12">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="105.120000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="16.8192" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  16  1628  8000473" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111907" NoIdentificacion="123263" Cantidad="6.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Cepillo alambre 9x20 s/mango" ValorUnitario="29.20" Importe="175.20">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="175.200000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="28.032" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  16  1628  8002314" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111907" NoIdentificacion="123262" Cantidad="6.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Cepillo alambre 6x19 s/mango" ValorUnitario="19.11" Importe="114.66">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="114.660000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="18.3456" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7012424" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="25191700" NoIdentificacion="107293" Cantidad="2.00" ClaveUnidad="SET" Unidad="Pieza" Descripcion="Jgo ext inst polea bomba direc" ValorUnitario="264.94" Importe="529.88">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="529.880000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="84.7808" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7009500" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="25191700" NoIdentificacion="107219" Cantidad="2.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Separador balatas freno disco" ValorUnitario="52.55" Importe="105.10">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="105.100000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="16.816" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  16  1628  8001139" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="46182300" NoIdentificacion="137431" Cantidad="1.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Cuerda posicion nylon trenzado" ValorUnitario="158.75" Importe="158.75">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="158.750000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="25.40" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7013108" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="23241640" NoIdentificacion="119370" Cantidad="2.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Broca escalonada #1 1/8-1/2&quot;" ValorUnitario="111.50" Importe="223.00">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="223.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="35.68" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  16  1628  8001372" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111801" NoIdentificacion="142127" Cantidad="12.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Flexometro 3m x 1/2&quot; turquesa" ValorUnitario="16.45" Importe="197.40">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="197.400000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="31.584" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7007641" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="26121613" NoIdentificacion="136926" Cantidad="1.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Cable POT 2x12 100m blanco" ValorUnitario="1247.22" Importe="1247.22">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="1247.220000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="199.5552" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  16  1628  8000443" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111749" NoIdentificacion="818UR" Cantidad="2.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Llave stillson hierro malea18&quot;" ValorUnitario="413.61" Importe="827.22">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="827.220000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="132.3552" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  16  1628  8001173" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27112703" NoIdentificacion="RM512B" Cantidad="1.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Rotomartillo 1/2&quot; 810w" ValorUnitario="450.78" Importe="450.78">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="450.780000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="72.1248" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7012442" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111804" NoIdentificacion="123275" Cantidad="6.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Plomada laton t/barril 330g" ValorUnitario="92.91" Importe="557.46">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="557.460000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="89.1936" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7009239" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27112836" NoIdentificacion="13054" Cantidad="10.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Punta poder cdo#2x1-15/16" ValorUnitario="5.24" Importe="52.40">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="52.400000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="8.384" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7012097" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="31211906" NoIdentificacion="123346" Cantidad="6.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Maneral prof p/rodillos 9&quot;" ValorUnitario="12.73" Importe="76.38">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="76.380000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="12.2208" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  16  1628  8000485" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="39121402" NoIdentificacion="136503" Cantidad="50.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Clavija hule redonda" ValorUnitario="4.24" Importe="212.00">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="212.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="33.92" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  16  1628  8000614" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111812" NoIdentificacion="CL50" Cantidad="1.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Cinta larga metalica de 50m" ValorUnitario="244.24" Importe="244.24">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="244.240000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="39.0784" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7012330" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111802" NoIdentificacion="UNT12" Cantidad="2.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Nivel Torpedo 9&quot;" ValorUnitario="158.75" Importe="317.50">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="317.500000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="50.80" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7012660" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27112120" NoIdentificacion="107058" Cantidad="4.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Prensa &quot;C&quot; hierro nodular 8&quot;" ValorUnitario="132.74" Importe="530.96">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="530.960000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="84.9536" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  16  1628  8001121" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="27111704" NoIdentificacion="BF51T55" Cantidad="6.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Dado 3/8&quot; punta torx T55" ValorUnitario="12.73" Importe="76.38">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="76.380000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="12.2208" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="18  16  1628  8001121" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="46171503" NoIdentificacion="L22S384" Cantidad="3.00" ClaveUnidad="SET" Unidad="Pieza" Descripcion="Jgo 4 candado acero cort 38mm" ValorUnitario="106.19" Importe="318.57">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="318.570000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="50.9712" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7006530" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="24101641" NoIdentificacion="GRI4" Cantidad="5.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Grillete acero forjado 3/8&quot;" ValorUnitario="15.39" Importe="76.95">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="76.950000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="12.312" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7009067" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="24101641" NoIdentificacion="GRI5" Cantidad="5.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Grillete acero forjado 7/16&quot;" ValorUnitario="16.45" Importe="82.25">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="82.250000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="13.16" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="17  16  1628  7006530" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="24101641" NoIdentificacion="GRI6" Cantidad="5.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Grillete acero forjado 1/2&quot;" ValorUnitario="18.58" Importe="92.90">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="92.900000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="14.864" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+			<cfdi:InformacionAduanera NumeroPedimento="16  24  3055  6003893" />
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="31152204" NoIdentificacion="CAP113" Cantidad="2.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Cable acero PVC 7x7 3/32&quot;x76m" ValorUnitario="222.99" Importe="445.98">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="445.980000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="71.3568" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="46171508" NoIdentificacion="C27C35" Cantidad="4.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Candado comb dig 35mm cr bri" ValorUnitario="33.44" Importe="133.76">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="133.760000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="21.4016" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="31152204" NoIdentificacion="CAP114" Cantidad="2.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Cable acero PVC 7x7 1/8&quot;x76m" ValorUnitario="294.67" Importe="589.34">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="589.340000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="94.2944" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+		<cfdi:Concepto ClaveProdServ="23231001" NoIdentificacion="2591" Cantidad="40.00" ClaveUnidad="EA" Unidad="Pieza" Descripcion="Clip p/dado cuadro 3/8&quot;" ValorUnitario="2.38" Importe="95.20">
+			<cfdi:Impuestos>
+				<cfdi:Traslados>
+					<cfdi:Traslado Base="95.200000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="15.232" />
+				</cfdi:Traslados>
+			</cfdi:Impuestos>
+		</cfdi:Concepto>
+	</cfdi:Conceptos>
+	<cfdi:Impuestos TotalImpuestosTrasladados="2663.57">
+		<cfdi:Traslados>
+			<cfdi:Traslado Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="2663.57" />
+		</cfdi:Traslados>
+	</cfdi:Impuestos>
+	<cfdi:Complemento>
+		<tfd:TimbreFiscalDigital xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital" 
+														 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+														 xsi:schemaLocation="http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/cfd/TimbreFiscalDigital/TimbreFiscalDigitalv11.xsd" 
+														 Version="1.1" 
+														 UUID="1511A1FE-570C-46E6-B425-4907C354625C" 
+														 FechaTimbrado="2018-03-16T13:59:22" 
+														 RfcProvCertif="ASE0209252Q1" 
+														 SelloCFD="K6NQfuHmnS/9LJCbM49MKu3pqpdHrb1x4dKVsMzAiaQE0NUbcf0R4MjOMZEg+ypcAU1ujnRUtSBLRqo7ZGXX0LXp/PWFsu7rkhfp6Oi5G7PoJLR8E185SSTKk7y8MsrJgxWm3rLm4S7MJPjdNA/yaniaIsQ9ggYrhKVfWyGCgBxBl4a8muJ2pcGd6Lg7xPvymAs1ihwvRFwYfeYvYDXZKZANKUts5bVU3Y9Ap5RC1sThdv+thaD33noIKTgmX7uNmjhmTmkSq8SrsbL8JUe8ax4m8Khwom/je3eiiVU1EygKZIQ175zggtAzs3k87f8+wIh9COJdC1XtcnIdXANtsg==" 
+														 NoCertificadoSAT="00001000000404481161" SelloSAT="EN/R4WraSqOtqsu4OOxdQPwdsimykvi1IQpESu//fwEWbR3XkViS62Jjx7izK2Yjn55tJYKc2NLKB152OfWNmrOS1oGBvQbj1flklL6EWByF9r4e/RzN7VwYF+7cbIyuxvACxQChZt5OCrsm6oUw/sQXNZT9QbDHUMjf6xqXSwOMUhDLYTxbSBrbQXf27nqlK+JGirXglolZq8FJAg/UWB93Jy8qd9oXA5U93NWwTO/gUslfhSSkqyhKvDuDvkXZxHldjj7MWcVGePg2Vty0Pd+2FxyRP6vRtehcjZpoeN8IS9uFsqqXINqlZX4WYY5Olpmbgl3woW1H2BOGfwYGyg==" />
+	</cfdi:Complemento>
+</cfdi:Comprobante>
