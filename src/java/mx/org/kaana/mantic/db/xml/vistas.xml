@@ -247,7 +247,7 @@
 				order by
 					paterno,materno,nombres
 			</select>
-    </unit>        
+    </unit>   
 		<unit id="VistaGruposClientesDto">
 			<select id="row">
 				select      
@@ -269,6 +269,32 @@
 					tc_mantic_grupos.nombre
 			</select>
 		</unit>
+		<unit id="VistaNotasEntradasDto">
+			<select id="row">
+				select
+				  tc_mantic_notas_entradas.id_nota_entrada as id_key,
+				  tc_mantic_ordenes_compras.consecutivo as orden_compra,
+				  tc_mantic_notas_entradas.consecutivo,
+				  if(tc_mantic_notas_entradas.id_directa= 1, "DIRECTA", "FACTURA") as directa,
+				  tc_mantic_proveedores.razon_social,
+				  tc_mantic_notas_entradas.total,
+				  tc_mantic_notas_estatus.id_nota_estatus,
+				  tc_mantic_notas_estatus.nombre as estatus,
+				  tc_mantic_notas_entradas.registro
+				from
+				  tc_mantic_notas_entradas
+        inner join
+          tc_mantic_ordenes_compras on tc_mantic_notas_entradas.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra
+        inner join
+          tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
+        inner join
+          tc_mantic_notas_estatus on tc_mantic_notas_entradas.id_nota_estatus= tc_mantic_notas_estatus.id_nota_estatus
+  			where 
+					tc_mantic_notas_entradas.id_orden_compra= {idOrdenCompra}
+				order by
+				  tc_mantic_notas_entradas.consecutivo				
+			</select>
+		</unit>
 		<unit id="VistaOrdenesComprasDto">
 			<select id="row">
 				select
@@ -279,8 +305,8 @@
 					tc_mantic_proveedores.id_proveedor,  
 					tc_mantic_proveedores.razon_social as proveedor,
 					tc_mantic_ordenes_compras.total,
-				  tc_mantic_compras_estatus.nombre as estatus,
-					tc_mantic_ordenes_compras.id_compra_estatus,
+				  tc_mantic_ordenes_estatus.nombre as estatus,
+					tc_mantic_ordenes_compras.id_orden_estatus,
 					tc_mantic_ordenes_compras.registro
 				from 
 					tc_mantic_ordenes_compras
@@ -293,13 +319,13 @@
 				inner join 
 					tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
 				inner join 
-					tc_mantic_compras_estatus on tc_mantic_ordenes_compras.id_compra_estatus= tc_mantic_compras_estatus.id_compra_estatus
+					tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus=tc_mantic_ordenes_estatus.id_orden_estatus
 				where
 					tc_mantic_ordenes_compras.id_empresa= {idEmpresa}
 					or tc_mantic_ordenes_compras.consecutivo like '%{consecutivo}%'
 					or tc_mantic_proveedores.id_proveedor = {idProveedor}
 					or (date_format(tc_mantic_ordenes_compras.registro, '%Y%c%d')&gt;= '{fechaInicio}' and date_format(tc_mantic_ordenes_compras.registro, '%Y%c%d')&lt;= '{fechaTermino}')
-					or tc_mantic_ordenes_compras.id_compra_estatus= {idCompraEstatus}
+					or tc_mantic_ordenes_compras.id_orden_estatus= {idOrdenEstatus}
 					or tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}
 				group by
 					tc_mantic_ordenes_compras.id_orden_compra,
@@ -308,8 +334,8 @@
 					tc_mantic_ordenes_compras.consecutivo,  
 					tc_mantic_proveedores.id_proveedor,  
 					tc_mantic_proveedores.razon_social,
-					tc_mantic_compras_estatus.nombre,
-					tc_mantic_ordenes_compras.id_compra_estatus,
+					tc_mantic_ordenes_estatus.nombre,
+					tc_mantic_ordenes_compras.id_orden_estatus,
 					tc_mantic_ordenes_compras.registro
 				{sortOrder}
 			</select>
