@@ -36,6 +36,8 @@
         'contenedorGrupos\\:nombreRepresentante': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', mensaje:'La captura del campo nombres es obligatorio', grupo: 'representantes'},
         'calleBusqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'}
       };      
+			
+			$(document).ready(function(){janal.readingMode('#{manticCatalogosProveedoresAccion.attrs.nombreAccion}');});
     </script>
   </ui:define>
   <ui:define name="contenido">
