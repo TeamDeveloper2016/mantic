@@ -68,6 +68,7 @@ public class Accion extends IBaseAttribute implements Serializable {
           this.registroArticulo = new RegistroArticulo();
           break;
         case MODIFICAR:
+        case CONSULTAR:
           idArticulo = Long.valueOf(this.attrs.get("idArticulo").toString());
           this.registroArticulo = new RegistroArticulo(idArticulo);
           break;
