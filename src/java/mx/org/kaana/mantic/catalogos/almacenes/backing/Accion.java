@@ -99,6 +99,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 					loadCollections();
           break;
         case MODIFICAR:
+        case CONSULTAR:
           idAlmacen = Long.valueOf(this.attrs.get("idAlmacen").toString());
           this.registroAlmacen = new RegistroAlmacen(idAlmacen);
 					loadCollections();
