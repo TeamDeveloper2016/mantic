@@ -18,6 +18,8 @@
 				'contenedorGrupos\\:metaTeclado'    : {validaciones: 'cambiar-mayusculas', mascara: 'libre'},				
 				'contenedorGrupos\\:codigo'         : {validaciones: 'cambiar-mayusculas', mascara: 'libre'}				
 			};
+			
+			$(document).ready(function(){janal.readingMode('#{manticCatalogosArticulosAccion.attrs.nombreAccion}');});
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
