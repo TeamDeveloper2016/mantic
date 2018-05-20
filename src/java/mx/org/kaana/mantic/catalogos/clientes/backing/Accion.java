@@ -31,9 +31,9 @@ import mx.org.kaana.mantic.catalogos.clientes.bean.RegistroCliente;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.enums.ETipoPersona;
+import mx.org.kaana.mantic.enums.ETipoVenta;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.enums.ETiposDomicilios;
-import org.primefaces.context.RequestContext;
 
 @Named(value = "manticCatalogosClientesAccion")
 @ViewScoped
@@ -65,6 +65,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));
+			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin());
       doLoad();      					
     } // try
     catch (Exception e) {
@@ -77,6 +78,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		loadRepresentantes();
 		loadTiposContactos();
 		loadTiposDomicilios();	
+		loadTiposVentas();
 		loadDomicilios();
 		loadEntidades();
 		toAsignaEntidad();
@@ -726,4 +728,17 @@ public class Accion extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
 	} // doEliminarRepresentante
+	
+	private void loadTiposVentas(){
+		List<UISelectItem> tiposVentas= null;
+		try {
+			tiposVentas= new ArrayList<>();
+			for(ETipoVenta tipoVenta: ETipoVenta.values())
+				tiposVentas.add(new UISelectItem(tipoVenta.getIdTipoVenta(), Cadena.reemplazarCaracter(tipoVenta.name(), '_', ' ')));
+			this.attrs.put("tiposVentas", tiposVentas);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
+	} // loadTiposVentas
 }
