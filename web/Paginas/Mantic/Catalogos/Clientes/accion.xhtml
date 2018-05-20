@@ -29,14 +29,16 @@
         'contenedorGrupos\\:ycalle': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:nombreRepresentante': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', mensaje:'La captura del campo nombres es obligatorio', grupo: 'representantes'},
         'calleBusqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'}
-      };
+      };		
+			
+			$(document).ready(function(){janal.readingMode('#{manticCatalogosClientesAccion.attrs.nombreAccion}');});
     </script>   
   </ui:define>
   <ui:define name="contenido">
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div class="ui-grid-col-12">
-          <p:tabView id="contenedorGrupos">
+          <p:tabView id="contenedorGrupos">            
             <p:ajax event="tabChange" process="@this" oncomplete="janal.refresh(janal.tabView('contenedorGrupos'))"/>
             <p:tab title="General">
               <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								
@@ -156,7 +158,7 @@
                     <f:selectItems value="#{manticCatalogosClientesAccion.attrs.tiposDomicilios}"/>
                   </p:selectOneMenu>	
                   <p:outputLabel for="principal" value="Principal:"/>
-                  <p:selectBooleanCheckbox id="principal" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.principal}" styleClass="janal-wid-100-txt" />                    
+									<p:selectBooleanCheckbox id="principal" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.principal}" styleClass="janal-wid-100-txt" />                    
                 </p:panelGrid>
               </p:panelGrid>
             </p:tab>
