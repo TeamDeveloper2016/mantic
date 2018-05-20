@@ -33,6 +33,7 @@ import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.enums.ETipoPersona;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.enums.ETiposDomicilios;
+import org.primefaces.context.RequestContext;
 
 @Named(value = "manticCatalogosClientesAccion")
 @ViewScoped
@@ -99,6 +100,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 					loadCollections();
           break;
         case MODIFICAR:
+        case CONSULTAR:
           idCliente = Long.valueOf(this.attrs.get("idCliente").toString());
           this.registroCliente = new RegistroCliente(idCliente);
 					loadCollections();
@@ -111,7 +113,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 						this.registroCliente.doConsultarRepresentante();
 					} // if
           break;
-      } // switch      
+      } // switch 
+			//if(eaccion.equals(EAccion.CONSULTAR))
+				//RequestContext.getCurrentInstance().execute("readingMode();");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -140,7 +144,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {
-    return "filtro";
+    return "filtro".concat(Constantes.REDIRECIONAR);
   } // doAccion
 
   private void loadRepresentantes() {
