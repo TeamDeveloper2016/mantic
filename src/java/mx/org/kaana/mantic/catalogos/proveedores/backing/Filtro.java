@@ -89,7 +89,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       eaccion = EAccion.valueOf(accion.toUpperCase());
       JsfBase.setFlashAttribute("accion", eaccion);      
       JsfBase.setFlashAttribute("nombreAccion", Cadena.letraCapital(accion.toUpperCase()));      
-      JsfBase.setFlashAttribute("idProveedor", eaccion.equals(EAccion.MODIFICAR) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
+      JsfBase.setFlashAttribute("idProveedor", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
