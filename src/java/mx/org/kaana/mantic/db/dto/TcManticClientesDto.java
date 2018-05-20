@@ -50,17 +50,19 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
   private String rfc;
   @Column (name="registro")
   private Timestamp registro;
+	@Column (name="id_tipo_venta")
+  private Long idTipoVenta;
 
   public TcManticClientesDto() {
     this(new Long(-1L));
   }
 
   public TcManticClientesDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null, null, null, null);
+    this(null, null, new Long(-1L), null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticClientesDto(String clave, Long plazoDias, Long idCliente, Double limiteCredito, Long idUsuario, String observaciones, Long idEmpresa, String razonSocial, String rfc) {
+  public TcManticClientesDto(String clave, Long plazoDias, Long idCliente, Double limiteCredito, Long idUsuario, String observaciones, Long idEmpresa, String razonSocial, String rfc, Long idTipoVenta) {
     setClave(clave);
     setPlazoDias(plazoDias);
     setIdCliente(idCliente);
@@ -71,6 +73,7 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
     setRazonSocial(razonSocial);
     setRfc(rfc);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		setIdTipoVenta(idTipoVenta);
   }
 	
   public void setClave(String clave) {
@@ -153,6 +156,14 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
     return registro;
   }
 
+	public Long getIdTipoVenta() {
+		return idTipoVenta;
+	}
+
+	public void setIdTipoVenta(Long idTipoVenta) {
+		this.idTipoVenta = idTipoVenta;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -187,6 +198,8 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
 		regresar.append(getRfc());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoVenta());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -204,13 +217,14 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
 		regresar.put("razonSocial", getRazonSocial());
 		regresar.put("rfc", getRfc());
 		regresar.put("registro", getRegistro());
+		regresar.put("idTipoVenta", getIdTipoVenta());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getClave(), getPlazoDias(), getIdCliente(), getLimiteCredito(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getRazonSocial(), getRfc(), getRegistro()
+    getClave(), getPlazoDias(), getIdCliente(), getLimiteCredito(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getRazonSocial(), getRfc(), getRegistro(), getIdTipoVenta()
     };
     return regresar;
   }
