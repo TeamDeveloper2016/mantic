@@ -588,8 +588,9 @@
     </unit>		
 		<unit id="TcManticArticulosDto">
       <select id="row">
-        select      
-          *
+        select   -
+					tc_mantic_articulos.id_articulo,
+          tc_mantic_articulos.*
         from      
           tc_mantic_articulos
         where 
@@ -1004,7 +1005,8 @@
 	  <unit id="TcManticAlmacenesArticulosDto">
       <select id="row">
         select      
-          *
+					tc_mantic_almacenes_articulos.id_almacen_articulo as id_key,
+          tc_mantic_almacenes_articulos.*
         from      
           tc_mantic_almacenes_articulos
         where 
@@ -1018,6 +1020,71 @@
         where      
           id_almacen_articulo = {idAlmacenArticulo} and id_almacen = {idAlmacen} and id_articulo = {idArticulo}
       </select>
+			<select id="maximo">
+        select      
+          max(id_almacen_articulo) maximo
+        from      
+          tc_mantic_almacenes_articulos
+      </select>
+			<delete id="rows">
+        delte from tc_mantic_almacenes_articulos where id_almacen={idAlmacen} 
+      </delete>
+    </unit>
+		<unit id="TcManticProveedoresBancosDto">
+      <select id="row">
+        select     
+					tc_mantic_proveedores_bancos.id_proveedor_banca as id_key,
+					tc_mantic_proveedores_bancos.*
+        from      
+          tc_mantic_proveedores_bancos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_proveedores_bancos
+        where      
+          id_proveedor = {idProveedor} and convenio_cuenta = '{convenioCuenta}' and id_proveedor_banca = {idProveedorBanca} and id_tipo_cuenta = {idTipoCuenta} and clabe_referencia = '{clabeReferencia}'
+      </select>
+			<select id="maximo">
+        select      
+          max(id_proveedor_banca) maximo
+        from      
+          tc_mantic_proveedores_bancos
+      </select>
+			<delete id="rows">
+        delte from tc_mantic_proveedores_bancos where id_proveedor={idProveedor} 
+      </delete>
+    </unit>
+		<unit id="TcManticProveedoresPortalesDto">
+      <select id="row">
+        select      
+					tc_mantic_proveedores_portales.id_proveedor_portal as id_key,
+          tc_mantic_proveedores_portales.*
+        from      
+          tc_mantic_proveedores_portales
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_proveedores_portales
+        where      
+          pagina = '{pagina}' and id_proveedor_portal = {idProveedorPortal} and id_proveedor = {idProveedor} and cuenta = '{cuenta}'
+      </select>
+			<select id="maximo">
+        select      
+          max(id_proveedor_portal) maximo
+        from      
+          tc_mantic_proveedores_portales
+      </select>
+			<delete id="rows">
+        delte from tc_mantic_proveedores_portales where id_proveedor={idProveedor} 
+      </delete>
     </unit>
 	    <unit id="TcManticAlmacenesUbicacionesDto">
       <select id="row">
@@ -1916,6 +1983,17 @@
         where      
           id_orden_compra = {idOrdenCompra} and id_orden_bitacora = {idOrdenBitacora} and id_compras_estatus = {idComprasEstatus}
       </select>
-    </unit>		
+    </unit>
+		<unit id="TcManticBancosDto">
+			<select id="row">
+				select 
+					tc_mantic_bancos.id_banco as id_key,
+					tc_mantic_bancos.*
+				from 
+					tc_mantic_bancos
+				where 
+					{condicion}
+			</select>			
+		</unit>		
   </dml>    
 </process>

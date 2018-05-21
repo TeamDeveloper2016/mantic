@@ -31,6 +31,7 @@ import mx.org.kaana.mantic.catalogos.clientes.bean.RegistroCliente;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.enums.ETipoPersona;
+import mx.org.kaana.mantic.enums.ETipoVenta;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.enums.ETiposDomicilios;
 
@@ -64,6 +65,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));
+			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin());
       doLoad();      					
     } // try
     catch (Exception e) {
@@ -76,6 +78,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		loadRepresentantes();
 		loadTiposContactos();
 		loadTiposDomicilios();	
+		loadTiposVentas();
 		loadDomicilios();
 		loadEntidades();
 		toAsignaEntidad();
@@ -99,6 +102,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 					loadCollections();
           break;
         case MODIFICAR:
+        case CONSULTAR:
           idCliente = Long.valueOf(this.attrs.get("idCliente").toString());
           this.registroCliente = new RegistroCliente(idCliente);
 					loadCollections();
@@ -111,7 +115,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 						this.registroCliente.doConsultarRepresentante();
 					} // if
           break;
-      } // switch      
+      } // switch 
+			//if(eaccion.equals(EAccion.CONSULTAR))
+				//RequestContext.getCurrentInstance().execute("readingMode();");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -140,7 +146,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {
-    return "filtro";
+    return "filtro".concat(Constantes.REDIRECIONAR);
   } // doAccion
 
   private void loadRepresentantes() {
@@ -722,4 +728,17 @@ public class Accion extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
 	} // doEliminarRepresentante
+	
+	private void loadTiposVentas(){
+		List<UISelectItem> tiposVentas= null;
+		try {
+			tiposVentas= new ArrayList<>();
+			for(ETipoVenta tipoVenta: ETipoVenta.values())
+				tiposVentas.add(new UISelectItem(tipoVenta.getIdTipoVenta(), Cadena.reemplazarCaracter(tipoVenta.name(), '_', ' ')));
+			this.attrs.put("tiposVentas", tiposVentas);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
+	} // loadTiposVentas
 }

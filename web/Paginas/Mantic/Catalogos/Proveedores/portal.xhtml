@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/filtro.xhtml">
+  <ui:param name="titulo" value="Portales de proveedores" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'proveedor': {validaciones: 'libre', mascara: 'libre'},
+				'codigo': {validaciones: 'cambiar-mayusculas', mascara: 'libre'}
+      };
+    </script>		
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="janal-align-right xs-pantalla">
+      <p:commandButton icon="fa fa-search" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white"/>
+      <p:spacer height="5px"/>		
+    </div>			
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div class="ui-grid-col-12">
+					<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+						<p:outputLabel for="codigo"  value="Buscar:"/>
+						<p:inputText id="codigo" value="#{manticCatalogosProveedoresPortal.attrs.codigo}" styleClass="janal-wid-100-txt" placeholder="Buscar por código, rfc o nombre">
+							<p:ajax event="blur" listener="#{manticCatalogosProveedoresPortal.doLoad}" process="@this codigo" update="proveedor pagina cuenta contrasenia" onstart="return janal.bloquear();" oncomplete="janal.mayusculas('codigo'); janal.desbloquear();"/>
+						</p:inputText>
+						<p:outputLabel for="proveedor"  value="Proveedor:"/>
+						<p:selectOneMenu  id="proveedor" value="#{manticCatalogosProveedoresPortal.attrs.proveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt">
+							<p:ajax event="change" listener="#{manticCatalogosProveedoresPortal.doLoadPortal}" process="@this proveedor" update="pagina cuenta contrasenia" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+							<f:selectItem itemValue="-1" itemLabel="Seleccione"/>
+							<f:selectItems value="#{manticCatalogosProveedoresPortal.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
+							<p:column>
+								<h:outputText value="#{item.clave}"/>
+							</p:column>   
+							<p:column>
+								<h:outputText value="#{item.rfc}"/>
+							</p:column>   
+							<p:column>
+								<h:outputText value="#{item.razonSocial}"/>
+							</p:column>   							
+						</p:selectOneMenu>
+						<p:spacer/><p:spacer/>
+						<p:spacer/><p:separator/>
+						<p:outputLabel for="pagina"  value="Pagina:"/>
+						<p:inputText id="pagina" value="#{manticCatalogosProveedoresPortal.attrs.pagina}" readonly="true" styleClass="janal-wid-100-txt"/>
+						<p:outputLabel for="cuenta"  value="Cuenta:"/>
+						<p:inputText id="cuenta" value="#{manticCatalogosProveedoresPortal.attrs.cuenta}" readonly="true" styleClass="janal-wid-100-txt"/>
+						<p:outputLabel for="contrasenia"  value="Contraseña:"/>
+						<p:inputText id="contrasenia" value="#{manticCatalogosProveedoresPortal.attrs.contrasenia}" readonly="true" styleClass="janal-wid-100-txt"/>
+					</p:panelGrid>          
+        </div>
+      </div>
+    </div>		           				
+  </ui:define>      
+</ui:composition>

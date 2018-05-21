@@ -89,6 +89,31 @@
                 tc_mantic_proveedores.id_empresa={idEmpresa}            
               {sortOrder}
           </select>
+          <select id="portal">
+            select 
+              tc_mantic_proveedores.id_proveedor as id_key,
+              tc_mantic_proveedores.clave,
+              tc_mantic_proveedores.rfc,
+              tc_mantic_proveedores.razon_social,
+              tc_mantic_tipos_proveedores.nombre as tipo_proveedor,
+              tc_mantic_proveedores.dias_entrega,
+              tc_mantic_tipos_dias.nombre as tipo_dia,
+              tc_mantic_proveedores.descuento  
+             from   
+               tc_mantic_proveedores
+             inner join
+               tc_mantic_tipos_proveedores   on  tc_mantic_tipos_proveedores.id_tipo_proveedor= tc_mantic_proveedores.id_tipo_proveedor
+             inner  join
+               tc_mantic_tipos_dias  on tc_mantic_tipos_dias.id_tipo_dia=tc_mantic_proveedores.id_tipo_dia             
+             where
+               upper(tc_mantic_proveedores.razon_social) like upper('%{codigo}%')
+              or
+               (upper(tc_mantic_proveedores.rfc) like upper('%{codigo}%') or upper(tc_mantic_proveedores.rfc is null))
+              or
+               upper(tc_mantic_proveedores.clave like '%{codigo}%')
+              and
+                tc_mantic_proveedores.id_empresa in ({sucursales})
+          </select>
           <select id="proveedorCondicionPago">
             select 
                 tc_mantic_tipos_pagos.id_tipo_pago,
@@ -584,7 +609,7 @@
 				   ) 			
 				order by 
 				  tc_mantic_articulos.nombre
-			</select>
+			</select>			
 			<select id="siguiente">
         select
 					max(orden)+ 1 as siguiente
@@ -688,6 +713,38 @@
           tc_janal_municipios.clave,
           tc_janal_localidades.clave,
           tc_mantic_domicilios.codigo_postal
+			</select>
+		</unit>
+		<unit id="VistaArticulosAlmacenDto">
+			<select id="articulos">
+				select 
+				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
+				  tc_mantic_articulos.id_articulo,
+				  tc_mantic_articulos_codigos.codigo as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= 1) as codigo,
+				  tc_mantic_articulos_codigos.id_principal,
+				  tc_mantic_articulos_codigos.id_proveedor,
+				  tc_mantic_articulos.nombre,
+				  tc_mantic_articulos.precio,
+				  tc_mantic_articulos.iva,
+				  tc_mantic_articulos.id_redondear
+				from 
+					tc_mantic_articulos
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
+				inner join 
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+				where 
+					tc_mantic_empresas.id_empresa in ({sucursales})
+				  and (
+				    (upper(tc_mantic_articulos_codigos.codigo) like '%{codigo}%' and tc_mantic_articulos_codigos.id_principal= 1)
+				    or 
+				    upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*'
+				    or
+				    upper(tc_mantic_articulos_codigos.codigo) like '%{codigo}%' 
+				   ) 			
+				order by 
+				  tc_mantic_articulos.nombre
 			</select>
 		</unit>
 	</dml>    

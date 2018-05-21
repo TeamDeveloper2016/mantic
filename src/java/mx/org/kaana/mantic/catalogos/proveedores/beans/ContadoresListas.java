@@ -12,17 +12,21 @@ public class ContadoresListas {
 	private Long totalProveedoresPago;
 	private Long totalProveedoresTipoContacto;	
 	private Long totalPersonasTipoContacto;	
+	private Long totalProveedoresServicio;	
+	private Long totalProveedoresTransferencia;	
 	
 	public ContadoresListas() {
 		init();
 	} // ContadoresListas
 	
-	public ContadoresListas(Long totalProveedoresDomicilios, Long totalProveedoresAgentes, Long totalProveedoresTipoContacto, Long totalPersonasTipoContacto, Long totalProveedoresPago) {
-		this.totalProveedoresDomicilios  = totalProveedoresDomicilios;
-		this.totalProveedoresAgentes     = totalProveedoresAgentes;
-		this.totalProveedoresTipoContacto= totalProveedoresTipoContacto;
-		this.totalPersonasTipoContacto   = totalPersonasTipoContacto;	
-		this.totalProveedoresPago        = totalProveedoresPago;
+	public ContadoresListas(Long totalProveedoresDomicilios, Long totalProveedoresAgentes, Long totalProveedoresTipoContacto, Long totalPersonasTipoContacto, Long totalProveedoresPago, Long totalProveedoresServicio, Long totalProveedoresTransferencia) {
+		this.totalProveedoresDomicilios   = totalProveedoresDomicilios;
+		this.totalProveedoresAgentes      = totalProveedoresAgentes;
+		this.totalProveedoresTipoContacto = totalProveedoresTipoContacto;
+		this.totalPersonasTipoContacto    = totalPersonasTipoContacto;	
+		this.totalProveedoresPago         = totalProveedoresPago;
+		this.totalProveedoresServicio     = totalProveedoresServicio;
+		this.totalProveedoresTransferencia= totalProveedoresTransferencia;
 	} // ContadoresListas
 
 	public Long getTotalProveedoresDomicilios() {
@@ -64,14 +68,32 @@ public class ContadoresListas {
 	public void setTotalPersonasTipoContacto(Long totalPersonasTipoContacto) {
 		this.totalPersonasTipoContacto = totalPersonasTipoContacto;
 	}
+
+	public Long getTotalProveedoresServicio() {
+		return totalProveedoresServicio;
+	}
+
+	public void setTotalProveedoresServicio(Long totalProveedoresServicio) {
+		this.totalProveedoresServicio = totalProveedoresServicio;
+	}
+
+	public Long getTotalProveedoresTransferencia() {
+		return totalProveedoresTransferencia;
+	}
+
+	public void setTotalProveedoresTransferencia(Long totalProveedoresTransferencia) {
+		this.totalProveedoresTransferencia = totalProveedoresTransferencia;
+	}
 	
 	private void init(){
 		try {
-			this.totalProveedoresDomicilios  = toMaxProveedorDomicilio();
-			this.totalProveedoresAgentes     = toMaxProveedorAgentes();
-			this.totalProveedoresTipoContacto= toMaxProveedorTiposContactos();		
-			this.totalPersonasTipoContacto   = toMaxPersonaTiposContactos();
-			this.totalProveedoresPago        = toMaxProveedorPago();
+			this.totalProveedoresDomicilios   = toMaxProveedorDomicilio();
+			this.totalProveedoresAgentes      = toMaxProveedorAgentes();
+			this.totalProveedoresTipoContacto = toMaxProveedorTiposContactos();		
+			this.totalPersonasTipoContacto    = toMaxPersonaTiposContactos();
+			this.totalProveedoresPago         = toMaxProveedorPago();
+			this.totalProveedoresServicio     = toMaxProveedorBanco();
+			this.totalProveedoresTransferencia= toMaxProveedorBanco();
 		} // try
 		catch (Exception e) {
 			mx.org.kaana.libs.formato.Error.mensaje(e);						
@@ -96,6 +118,10 @@ public class ContadoresListas {
 	
 	private Long toMaxPersonaTiposContactos() throws Exception{		
 		return toMax("TrManticPersonaTipoContactoDto");
+	} // toMaxProveedorTiposContactos
+	
+	private Long toMaxProveedorBanco() throws Exception{		
+		return toMax("TcManticProveedoresBancosDto");
 	} // toMaxProveedorTiposContactos
 	
 	private Long toMax(String vista) throws Exception{
