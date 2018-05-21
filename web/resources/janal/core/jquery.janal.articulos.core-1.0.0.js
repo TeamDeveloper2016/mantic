@@ -1,0 +1,312 @@
+/*
+ *company KAANA
+ *project KAJOOL (Control system polls)
+ *date 21/08/2018
+ *time 11:15:55 PM
+ *author Team Developer 2016 <team.developer@kaana.org.mx>
+ */
+
+(function(window) {
+	var jsArticulos;
+	
+	Janal.Control.Articulos= {};
+	
+	Janal.Control.Articulos.Core= Class.extend({
+		joker      : 'contenedorGrupos\\:tabla\\:', 
+		codes      : '\\:codigos', 
+		discounts  : '\\:descuentos',
+		additionals: '\\:extras',
+		amounts    : '\\:cantidades',
+		prices     : '\\:precios',
+		keys       : '\\:keys',
+		values     : '\\:values',
+		selector   : '.key-down-event',
+		focus      : '.key-focus-event',
+		lookup     : '.key-up-event',
+		current    : '',
+		dialog     : 'dialogo',
+		typingTimer: null,
+		doneInterval: 10000,
+		VK_ENTER   : 13, // Attributes
+		VK_ESC     : 27,
+		VK_ASTERISK: 106,
+		VK_MINUS   : 109,
+		VK_PLUS    : 107,
+		VK_DIV     : 111,
+		VK_POINT   : 110,
+		VK_UP      : 38,
+		VK_DOWN    : 40,
+		VK_REST    : 189,
+		VK_PIPE    : 220,
+		VK_CTRL    : 17,
+		cursor: {
+			top: 1, // el top debera ser elementos que van de 0 a n-1
+			index: 0
+		},
+		init: function(top) { // Constructor
+			$articulos= this;
+			this.cursor.top= top-1;
+			this.events();
+		}, // init
+		events: function() {
+      $(document).on('keyup', this.lookup, function(e) {
+				clearTimeout($articulos.typingTimer);
+        if ($(this).val() && $(this).val().trim().length> 0) 
+          $articulos.typingTimer= setTimeout($articulos.look($(this)), $articulos.doneInterval);
+				return false;
+			});  
+      $(document).on('focus', this.focus, function() {
+				$articulos.current= $(this).val();
+				$articulos.index($(this).attr('id'));
+			});  
+      $(document).on('focus', this.selector, function() {
+				$articulos.index($(this).attr('id'));
+			});  
+      $(document).on('keydown', this.focus, function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
+				switch(key) {
+					case $articulos.VK_ENTER:
+						return $articulos.calculate($(this));
+						break;
+					case $articulos.VK_ESC:
+						return $articulos.reset($(this));
+						break;
+					case $articulos.VK_REST:
+						return $articulos.show($(this));
+						break;
+				} // switch
+			});	
+      $(document).on('keydown', this.selector, function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
+				switch(key) {
+					case $articulos.VK_ENTER:
+						return $articulos.find();
+						break;
+					case $articulos.VK_UP:
+						return $articulos.up();
+						break;
+					case $articulos.VK_DOWN:
+						return $articulos.down();
+						break;
+					case $articulos.VK_ASTERISK:
+						return $articulos.asterisk();
+						break;
+					case $articulos.VK_DIV:
+						return $articulos.div();
+						break;
+					case $articulos.VK_PLUS:
+						return $articulos.plus();
+						break;
+					case $articulos.VK_POINT:
+						return $articulos.point();
+						break;
+					case $articulos.VK_ESC:
+						return $articulos.clean();
+						break;
+					case $articulos.VK_PIPE:
+						return $articulos.search();
+						break;
+					case $articulos.VK_MINUS:
+						$('#aceptar').click();
+						return false;
+						break;
+					case $articulos.VK_CTRL:
+						return $articulos.show($(this));
+						break;
+					default:
+						break;
+				} // switch
+      });
+			setTimeout('$articulos.goto()', 1000);
+		},
+		index: function(id) {
+			id= id.replace(/:/gi, '\\:');
+			var start= id.indexOf(this.joker)>= 0? this.joker.length: -1;
+			if(start> 0)
+				this.cursor.index= parseInt(id.substring(start, id.lastIndexOf('\\:')), 10);
+		},
+		move: function() {
+			var id= this.name();
+			if($(id))
+				$(id).focus();
+		},
+		name: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.codes;
+		},
+		amount: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.amounts;
+		},
+		discount: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.discounts;
+		},
+		additional: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.additionals;
+		},
+		price: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.prices;
+		},
+		key: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.keys;
+		},
+		value: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.values;
+		},
+		set: function(value) {
+		  if($(this.name()))
+				$(this.name()).val(value);	
+		},
+		get: function() {
+			return $(this.name())? $(this.name()).val(): '';
+		},
+		up: function() {
+			if(this.cursor.index> 0)
+				this.cursor.index--;
+			else
+				this.cursor.index= this.cursor.top;
+			this.move();
+			return false;
+		},
+		down: function() {
+			if(this.cursor.index< this.cursor.top)
+				this.cursor.index++;
+			else
+				this.cursor.index= 0;
+			this.move();
+			return false;
+		},
+		valid: function() {
+			return $(this.key()) && parseInt($(this.key()).val(), 10)> 0;
+		}, 
+		refresh: function() {
+			if(this.valid()) {
+  			console.info('refresh: '+ this.cursor.index);
+				refresh(this.cursor.index);
+			} // if
+			return false;
+		},
+		asterisk: function() {
+			var value = this.get().trim();
+			if($(this.amount()) && value.length> 0 && janal.isInteger(value)) {
+				$(this.amount()).val(value);
+				this.set('');
+				this.refresh();
+			  return false;
+			} // if	
+			return true;
+		},
+		div: function() {
+			var value= this.get().trim();
+			var temp = $(this.discount()).val();
+			if($(this.discount()) && value.length> 0) {
+			  $(this.discount()).val(value);
+				var ok= janal.descuentos($(this.discount()));
+				if(ok.error)
+				  $(this.discount()).val(temp);
+				else {
+					this.set('');
+  				this.refresh();
+				} // if
+			  return ok.error;
+			} // if	
+			return true;
+		},
+		plus: function() {
+			var value = this.get().trim();
+			var temp = $(this.price()).val();
+			if($(this.price()) && value.length> 0 && janal.precio($(this.price()), value)) {
+			  $(this.price()).val(value);
+				var ok= janal.descuentos($(this.price()));
+				if(ok.error)
+				  $(this.price()).val(temp);
+				else {
+					this.set('');
+  				this.refresh();
+				} // if
+			  return ok.error;
+			} // if	
+			return true;
+		},
+		point: function() {
+			var value = this.get().trim();
+			var temp = $(this.additional()).val();
+			if($(this.additional()) && value.length> 0) {
+			  $(this.additional()).val(value);
+				var ok= janal.descuentos($(this.additional()));
+				if(ok.error)
+				  $(this.additional()).val(temp);
+				else {
+					this.set('');
+	 				this.refresh();
+				} // if
+		  return ok.error;
+			} // if	
+			return true;
+		},
+		find: function() {
+			var value = this.get().trim();
+			if(value.length> 0)
+			  locate(value, this.cursor.index);
+			return false;
+		},
+		goto: function() {
+			if($(this.name()))
+				$(this.name()).focus();
+		},
+		clean: function() {
+			$(this.price()).val('0');
+			$(this.amount()).val('0');
+			$(this.discount()).val('0');
+			$(this.additional()).val('0');
+			$(this.key()).val('-1');
+			suppress(this.cursor.index);
+			return false;
+		},
+		update: function(top) {
+			this.cursor.top= top;
+		},
+		calculate: function(active) {
+			if($(active).val()!= this.current)
+				if(parseFloat($(active).val(), 10)!= parseFloat(this.current, 10))
+  				this.refresh();
+			  else
+  				if($(active).val().indexOf(',')>= 0 || this.current.indexOf(',')>= 0)
+    				this.refresh();
+			return false;	
+		},
+		next: function() {
+			if($(this.key()) && parseInt($(this.key()).val(), 10)> 0)
+  			this.down();
+		},
+		reset: function(name) {
+			if($(name).attr('id').endsWith(this.prices.substring(2)))
+				$(name).val($(this.value()).val());
+			return false;
+		},
+		search: function() {
+			if(this.valid())
+				search($(this.key()).val(), this.cursor.index);
+			return false;
+		},
+		show: function(name) {
+			janal.bloquear();
+			PF(this.dialog).show();
+			return false;
+		},
+	  callback: function(code) {
+			console.log('Call back: '+ code);
+		  return false
+		},
+		close: function() {
+		  replace(this.cursor.index);
+			return false;
+		},
+		look: function(name) {
+			console.log('look: '+ $(name).val());
+			lookup();
+		}	
+	});
+	
+	console.info('Iktan.Control.Articulos initialized');
+})(window);
+
+

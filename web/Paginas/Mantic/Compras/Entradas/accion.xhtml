@@ -9,6 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="#{manticComprasEntradasAccion.attrs.nombreAccion} una nota de entrada #{manticComprasEntradasAccion.attrs.titulo}"/>
 	<ui:define name="librerias">
+    <h:outputScript library="janal" name="core/jquery.janal.articulos.core-1.0.0.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:consecutivo'    : {validaciones: 'requerido', mascara: 'libre'},
@@ -25,321 +26,9 @@
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
 				'codigo'                            : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}				
 			};			
-			
-			function checkMaxDescuentos(descuento, extra) {
-				console.info('checkMaxDescuentos: janal.clean();');
-				janal.hide();
-				var importeDescuento= janal.descuentos($('#'+ descuento)).suma;
-				var importeExtra    = janal.descuentos($('#'+ extra)).suma;
-				var total           = parseFloat(importeDescuento, 10)+ parseFloat(importeExtra, 10);
-				if(total> 100) 
-					janal.info(descuento, 'El importe de los descuentos excede el 100% ['+ total+ ']');
-					//janal.warn();
-			}
-			
-(function(window) {
-	var jsArticulos;
-	Janal.Control.Articulos= {};
-	Janal.Control.Articulos.Core= Class.extend({
-		joker      : 'contenedorGrupos\\:tabla\\:', 
-		codes      : '\\:codigos', 
-		discounts  : '\\:descuentos',
-		additionals: '\\:extras',
-		amounts    : '\\:cantidades',
-		prices     : '\\:precios',
-		keys       : '\\:keys',
-		values     : '\\:values',
-		selector   : '.key-down-event',
-		focus      : '.key-focus-event',
-		lookup     : '.key-up-event',
-		current    : '',
-		dialog     : 'dialogo',
-		typingTimer: null,
-		doneInterval: 10000,
-		VK_ENTER   : 13, // Attributes
-		VK_ESC     : 27,
-		VK_ASTERISK: 106,
-		VK_MINUS   : 109,
-		VK_PLUS    : 107,
-		VK_DIV     : 111,
-		VK_POINT   : 110,
-		VK_UP      : 38,
-		VK_DOWN    : 40,
-		VK_REST    : 189,
-		VK_PIPE    : 220,
-		VK_CTRL    : 17,
-		cursor: {
-			top: 1, // el top debera ser elementos que van de 0 a n-1
-			index: 0
-		},
-		init: function(top) { // Constructor
-			$articulos= this;
-			this.cursor.top= top-1;
-			this.events();
-		}, // init
-		events: function() {
-      $(document).on('keyup', this.lookup, function(e) {
-				clearTimeout($articulos.typingTimer);
-        if ($(this).val() &amp;&amp; $(this).val().trim().length&gt; 0) 
-          $articulos.typingTimer= setTimeout($articulos.look($(this)), $articulos.doneInterval);
-				return false;
-			});  
-      $(document).on('focus', this.focus, function() {
-				$articulos.current= $(this).val();
-				$articulos.index($(this).attr('id'));
-			});  
-      $(document).on('focus', this.selector, function() {
-				$articulos.index($(this).attr('id'));
-			});  
-      $(document).on('keydown', this.focus, function(e) {
-				var key= e.keyCode ? e.keyCode : e.which;
-				switch(key) {
-					case $articulos.VK_ENTER:
-						return $articulos.calculate($(this));
-						break;
-					case $articulos.VK_ESC:
-						return $articulos.reset($(this));
-						break;
-					case $articulos.VK_REST:
-						return $articulos.show($(this));
-						break;
-				} // switch
-			});	
-      $(document).on('keydown', this.selector, function(e) {
-				var key= e.keyCode ? e.keyCode : e.which;
-				switch(key) {
-					case $articulos.VK_ENTER:
-						return $articulos.find();
-						break;
-					case $articulos.VK_UP:
-						return $articulos.up();
-						break;
-					case $articulos.VK_DOWN:
-						return $articulos.down();
-						break;
-					case $articulos.VK_ASTERISK:
-						return $articulos.asterisk();
-						break;
-					case $articulos.VK_DIV:
-						return $articulos.div();
-						break;
-					case $articulos.VK_PLUS:
-						return $articulos.plus();
-						break;
-					case $articulos.VK_POINT:
-						return $articulos.point();
-						break;
-					case $articulos.VK_ESC:
-						return $articulos.clean();
-						break;
-					case $articulos.VK_PIPE:
-						return $articulos.search();
-						break;
-					case $articulos.VK_MINUS:
-						$('#aceptar').click();
-						return false;
-						break;
-					case $articulos.VK_CTRL:
-						return $articulos.show($(this));
-						break;
-					default:
-						break;
-				} // switch
+    	$(document).ready(function() {
+        jsArticulos= new Janal.Control.Articulos.Core(#{manticComprasEntradasAccion.adminOrden.articulos.size()});
       });
-			setTimeout('$articulos.goto()', 1000);
-		},
-		index: function(id) {
-			id= id.replace(/:/gi, '\\:');
-			var start= id.indexOf(this.joker)&gt;= 0? this.joker.length: -1;
-			if(start&gt; 0)
-				this.cursor.index= parseInt(id.substring(start, id.lastIndexOf('\\:')), 10);
-		},
-		move: function() {
-			var id= this.name();
-			if($(id))
-				$(id).focus();
-		},
-		name: function() {
-			return '#'+ this.joker+ this.cursor.index+ this.codes;
-		},
-		amount: function() {
-			return '#'+ this.joker+ this.cursor.index+ this.amounts;
-		},
-		discount: function() {
-			return '#'+ this.joker+ this.cursor.index+ this.discounts;
-		},
-		additional: function() {
-			return '#'+ this.joker+ this.cursor.index+ this.additionals;
-		},
-		price: function() {
-			return '#'+ this.joker+ this.cursor.index+ this.prices;
-		},
-		key: function() {
-			return '#'+ this.joker+ this.cursor.index+ this.keys;
-		},
-		value: function() {
-			return '#'+ this.joker+ this.cursor.index+ this.values;
-		},
-		set: function(value) {
-		  if($(this.name()))
-				$(this.name()).val(value);	
-		},
-		get: function() {
-			return $(this.name())? $(this.name()).val(): '';
-		},
-		up: function() {
-			if(this.cursor.index&gt; 0)
-				this.cursor.index--;
-			else
-				this.cursor.index= this.cursor.top;
-			this.move();
-			return false;
-		},
-		down: function() {
-			if(this.cursor.index&lt; this.cursor.top)
-				this.cursor.index++;
-			else
-				this.cursor.index= 0;
-			this.move();
-			return false;
-		},
-		valid: function() {
-			return $(this.key()) &amp;&amp; parseInt($(this.key()).val(), 10)&gt; 0;
-		}, 
-		refresh: function() {
-			if(this.valid()) {
-  			console.info('refresh: '+ this.cursor.index);
-				refresh(this.cursor.index);
-			} // if
-			return false;
-		},
-		asterisk: function() {
-			var value = this.get().trim();
-			if($(this.amount()) &amp;&amp; value.length&gt; 0 &amp;&amp; janal.isInteger(value)) {
-				$(this.amount()).val(value);
-				this.set('');
-				this.refresh();
-			  return false;
-			} // if	
-			return true;
-		},
-		div: function() {
-			var value= this.get().trim();
-			var temp = $(this.discount()).val();
-			if($(this.discount()) &amp;&amp; value.length&gt; 0) {
-			  $(this.discount()).val(value);
-				var ok= janal.descuentos($(this.discount()));
-				if(ok.error)
-				  $(this.discount()).val(temp);
-				else {
-					this.set('');
-  				this.refresh();
-				} // if
-			  return ok.error;
-			} // if	
-			return true;
-		},
-		plus: function() {
-			var value = this.get().trim();
-			var temp = $(this.price()).val();
-			if($(this.price()) &amp;&amp; value.length&gt; 0 &amp;&amp; janal.precio($(this.price()), value)) {
-			  $(this.price()).val(value);
-				var ok= janal.descuentos($(this.price()));
-				if(ok.error)
-				  $(this.price()).val(temp);
-				else {
-					this.set('');
-  				this.refresh();
-				} // if
-			  return ok.error;
-			} // if	
-			return true;
-		},
-		point: function() {
-			var value = this.get().trim();
-			var temp = $(this.additional()).val();
-			if($(this.additional()) &amp;&amp; value.length&gt; 0) {
-			  $(this.additional()).val(value);
-				var ok= janal.descuentos($(this.additional()));
-				if(ok.error)
-				  $(this.additional()).val(temp);
-				else {
-					this.set('');
-	 				this.refresh();
-				} // if
-		  return ok.error;
-			} // if	
-			return true;
-		},
-		find: function() {
-			var value = this.get().trim();
-			if(value.length&gt; 0)
-			  locate(value, this.cursor.index);
-			return false;
-		},
-		goto: function() {
-			if($(this.name()))
-				$(this.name()).focus();
-		},
-		clean: function() {
-			$(this.price()).val('0');
-			$(this.amount()).val('0');
-			$(this.discount()).val('0');
-			$(this.additional()).val('0');
-			$(this.key()).val('-1');
-			suppress(this.cursor.index);
-			return false;
-		},
-		update: function(top) {
-			this.cursor.top= top;
-		},
-		calculate: function(active) {
-			if($(active).val()!= this.current)
-				if(parseFloat($(active).val(), 10)!= parseFloat(this.current, 10))
-  				this.refresh();
-			  else
-  				if($(active).val().indexOf(',')&gt;= 0 || this.current.indexOf(',')&gt;= 0)
-    				this.refresh();
-			return false;	
-		},
-		next: function() {
-			if($(this.key()) &amp;&amp; parseInt($(this.key()).val(), 10)&gt; 0)
-  			this.down();
-		},
-		reset: function(name) {
-			if($(name).attr('id').endsWith(this.prices.substring(2)))
-				$(name).val($(this.value()).val());
-			return false;
-		},
-		search: function() {
-			if(this.valid())
-				search($(this.key()).val(), this.cursor.index);
-			return false;
-		},
-		show: function(name) {
-			janal.bloquear();
-			PF(this.dialog).show();
-			return false;
-		},
-	  callback: function(code) {
-			console.log('Call back: '+ code);
-		  return false
-		},
-		close: function() {
-		  replace(this.cursor.index);
-			return false;
-		},
-		look: function(name) {
-			console.log('look: '+ $(name).val());
-			lookup();
-		}	
-	});
-})(window);
-
-	$(document).ready(function() {
-    jsArticulos= new Janal.Control.Articulos.Core(#{manticComprasEntradasAccion.adminOrden.articulos.size()});
-    console.info('Janal.Control.Articulos initialized');
-  });
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
@@ -384,7 +73,7 @@
 								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{manticComprasEntradasAccion.adminOrden.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 								<p:separator/><p:separator/>
                 <p:outputLabel for="idAlmacen" value="Almacen:"/>
-								<p:selectOneMenu id="idAlmacen" value="#{manticComprasEntradasAccion.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="startsWith">
+								<p:selectOneMenu id="idAlmacen" value="#{manticComprasEntradasAccion.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98 faltantes" effect="fade" filter="true" filterMatchMode="startsWith">
 									<p:ajax event="change" listener="#{manticComprasEntradasAccion.doUpdateAlmacen}" process="@this" update="tabla @(.total) @(.recalculo)"/>
 									<f:selectItems value="#{manticComprasEntradasAccion.attrs.almacenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave}"/>
 									<p:column headerText="Clave">
@@ -396,7 +85,7 @@
 								</p:selectOneMenu>
 								<p:separator/><p:separator/>
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
-								<p:selectOneMenu id="idProveedor" value="#{manticComprasEntradasAccion.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="startsWith">
+								<p:selectOneMenu id="idProveedor" value="#{manticComprasEntradasAccion.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98 faltantes" effect="fade" filter="true" filterMatchMode="startsWith">
 									<p:ajax event="change" listener="#{manticComprasEntradasAccion.doUpdateProveedor}" update="datosProveedor datosArticulos" process="@form" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{manticComprasEntradasAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 									<p:column headerText="Clave">
@@ -453,13 +142,13 @@
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
   											<p:outputLabel for="descuento" value="% Descuentos:"/>
 												<p:inputText id="descuento" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticComprasEntradasAccion.adminOrden.orden.descuento}">
-													<p:ajax event="blur" listener="#{manticComprasEntradasAccion.doUpdatePorcentaje}" process="@this extra" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#contenedorGrupos\\:descuento'), '0'); checkMaxDescuentos('contenedorGrupos\\:descuento', 'contenedorGrupos\\:extra'); return true;"/>
+													<p:ajax event="blur" listener="#{manticComprasEntradasAccion.doUpdatePorcentaje}" process="@this extra" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#contenedorGrupos\\:descuento'), '0'); janal.maxDescuentos('contenedorGrupos\\:descuento', 'contenedorGrupos\\:extra'); return true;"/>
 												</p:inputText>	
 											</p:panelGrid>
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 											  <p:outputLabel for="extra" value="% Extras:"/>
 											  <p:inputText id="extra" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticComprasEntradasAccion.adminOrden.orden.extras}">
-													<p:ajax event="blur" listener="#{manticComprasEntradasAccion.doUpdatePorcentaje}" process="@this descuento" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#contenedorGrupos\\:extra'), '0'); checkMaxDescuentos('contenedorGrupos\\:extra', 'contenedorGrupos\\:descuento'); return true;"/>
+													<p:ajax event="blur" listener="#{manticComprasEntradasAccion.doUpdatePorcentaje}" process="@this descuento" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#contenedorGrupos\\:extra'), '0'); janal.maxDescuentos('contenedorGrupos\\:extra', 'contenedorGrupos\\:descuento'); return true;"/>
 												</p:inputText>
 											</p:panelGrid>	 
 										</p:panelGrid>	
@@ -715,8 +404,10 @@
 									<h:outputText value="#{row['estatus']}"/>
 								</p:column>		
 								<p:column style="width:38px; text-align: center">
-									<p:commandButton update="faltantes @(.recalculo)" icon="fa fa-plus" title="Agregar" action="#{manticComprasEntradasAccion.doFaltanteArticulo}" styleClass="janal-text-white" rendered="#{row['idOrdenEstatus'].toInteger eq 0}">
+									<p:commandButton update="faltantes @(.filas) @(.recalculo)" icon="fa fa-plus" title="Agregar" action="#{manticComprasEntradasAccion.doFaltanteArticulo}" styleClass="janal-text-white" rendered="#{row['idOrdenEstatus'].toInteger eq 0}">
 										<f:setPropertyActionListener value="#{row}" target="#{manticComprasEntradasAccion.attrs.faltante}" />
+										<f:setPropertyActionListener value="#{manticComprasEntradasAccion.adminOrden.orden.ikAlmacen}" target="#{manticComprasEntradasAccion.attrs.idAlmacen}" />
+										<f:setPropertyActionListener value="#{manticComprasEntradasAccion.adminOrden.orden.ikProveedor}" target="#{manticComprasEntradasAccion.attrs.idProveedor}" />
 									</p:commandButton>
 								</p:column>
 							</p:dataTable>

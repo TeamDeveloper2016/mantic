@@ -328,6 +328,15 @@
 					text= text.substring(0, text.length- 2);
 				return {"suma": regresar.toFixed(2), "text": text, "error": text.length> 0};
 		 },
+		 maxDescuentos: function(descuento, extra) {
+      $parent.console('Janal.Control.Validations.maxDescuentos');
+			janal.hide();
+			var importeDescuento= janal.descuentos($('#'+ descuento)).suma;
+			var importeExtra    = janal.descuentos($('#'+ extra)).suma;
+			var total           = parseFloat(importeDescuento, 10)+ parseFloat(importeExtra, 10);
+			if(total> 100) 
+				janal.info(descuento, 'El importe de los descuentos excede el 100% ['+ total+ ']');
+		 }, 
 		 cantidad: function(element, value) {
 				var val= $(element)? $(element).val().trim(): value;
 				if(val=== 'undefined' || val.length=== 0) {
@@ -1109,7 +1118,7 @@
       $parent.info(id, msg);
     }, // alert
     version: function() {
-      return '0.1.5.2';
+      return '0.1.5.6';
     }, // version
     align: function(pixels) {
       try {

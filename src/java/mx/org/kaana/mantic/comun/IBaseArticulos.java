@@ -281,18 +281,14 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 			seleccionado.toDouble("iva"), 
 			0D,
 			0D,
-			(Long)this.attrs.get("cantidad"), 
+			seleccionado.toLong("cantidad"), 
 			-1* idOrdenDetalle, 
 			seleccionado.toLong("idArticulo"), 
 			0.0,
-			this.getAdminOrden().getProveedor().getIdProveedor());
+			((UISelectEntity)this.attrs.get("idProveedor")).getKey());
 		if(this.getAdminOrden().add(item))
 			RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
 		RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ item.toMap()+ "');");
-		this.attrs.put("cantidad", 1);
-		this.attrs.put("precio", 0);
-		this.attrs.put("codigo", "");
-		this.attrs.put("articulos", null);
 	}
 	
 	public void doFaltanteArticulo() {
@@ -323,7 +319,6 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
       columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       columns.add(new Columna("minimo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       columns.add(new Columna("maximo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
-      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       this.attrs.put("faltantes", UIEntity.build("VistaOrdenesComprasDto", "faltantes", params, columns));
     } // try
     catch (Exception e) {
