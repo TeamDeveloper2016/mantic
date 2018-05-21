@@ -322,21 +322,15 @@
 							values+= items[item]+ ', ';
 						} // else	
 					} // for
-					$(element).val(values.length=== 0? '0': values.substring(0, values.length- 2));
+					if(regresar> 100)
+						$(element).val('0');
+					else	
+					  $(element).val(values.length=== 0? '0': values.substring(0, values.length- 2));
 				} // else	
 				if(text.trim().length> 0)
 					text= text.substring(0, text.length- 2);
 				return {"suma": regresar.toFixed(2), "text": text, "error": text.length> 0};
 		 },
-		 maxDescuentos: function(descuento, extra) {
-      $parent.console('Janal.Control.Validations.maxDescuentos');
-			janal.hide();
-			var importeDescuento= janal.descuentos($('#'+ descuento)).suma;
-			var importeExtra    = janal.descuentos($('#'+ extra)).suma;
-			var total           = parseFloat(importeDescuento, 10)+ parseFloat(importeExtra, 10);
-			if(total> 100) 
-				janal.info(descuento, 'El importe de los descuentos excede el 100% ['+ total+ ']');
-		 }, 
 		 cantidad: function(element, value) {
 				var val= $(element)? $(element).val().trim(): value;
 				if(val=== 'undefined' || val.length=== 0) {
@@ -1118,7 +1112,7 @@
       $parent.info(id, msg);
     }, // alert
     version: function() {
-      return '0.1.5.6';
+      return '0.1.5.7';
     }, // version
     align: function(pixels) {
       try {
@@ -1153,6 +1147,14 @@
       else
         $parent.console('Janal.Control.Validations.start not implemented !');
     }, // ready		
+		maxDescuentos: function(descuento, extra) {
+		 $parent.hide();
+		 var importeDescuento= $parent.descuentos($('#'+ descuento)).suma;
+		 var importeExtra    = $parent.descuentos($('#'+ extra)).suma;
+		 var total           = parseFloat(importeDescuento, 10)+ parseFloat(importeExtra, 10);
+		 if(total> 100) 
+			 $parent.info(descuento, 'El importe de los descuentos excede el 100% ['+ total+ ']');
+	  }, 
 		readingMode: function(action){
 			actionValidate= action!== null && action!== undefined ? action.toUpperCase() : 'CONSULTAR';
 			if(actionValidate=== 'CONSULTAR'){

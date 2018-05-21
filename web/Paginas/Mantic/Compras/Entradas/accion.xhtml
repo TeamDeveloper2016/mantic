@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="#{manticComprasEntradasAccion.attrs.nombreAccion} una nota de entrada #{manticComprasEntradasAccion.attrs.titulo}"/>
+	<ui:param name="titulo" value="#{manticComprasEntradasAccion.attrs.nombreAccion} una nota de entrada #{manticComprasEntradasAccion.titulo}"/>
 	<ui:define name="librerias">
     <h:outputScript library="janal" name="core/jquery.janal.articulos.core-1.0.0.js"/>
 		<script type="text/javascript">
@@ -153,7 +153,13 @@
 											</p:panelGrid>	 
 										</p:panelGrid>	
 										<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticComprasEntradasAccion.adminOrden.articulos}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">
-											<p:column  class="MarAuto Responsive janal-wid-15">
+											<p:column class="MarAuto Responsive janal-wid-3">
+												<f:facet name="header">
+													<h:outputText value="No."/>
+												</f:facet>
+												<h:outputText value="#{index+ 1}"/>
+											</p:column>		
+											<p:column  class="MarAuto Responsive janal-wid-13">
 												<f:facet name="header">
 													<h:outputText value="Código"/>
 													<span class="janal-help-icon janal-help-9 fa fa-fw fa-question-circle Fright" onclick="countHelp(9);"/>	

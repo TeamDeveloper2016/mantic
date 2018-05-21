@@ -40,6 +40,10 @@ public class Accion extends IBaseArticulos implements Serializable {
 		return this.tipoOrden.equals(EOrdenes.NORMAL)? "libre": "requerido";
 	}
 	
+	public String getTitulo() {
+		return this.tipoOrden.equals(EOrdenes.NORMAL)? "(DIRECTA)": "";
+	}
+	
 	@PostConstruct
   @Override
   protected void init() {		
