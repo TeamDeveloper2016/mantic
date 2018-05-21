@@ -89,6 +89,31 @@
                 tc_mantic_proveedores.id_empresa={idEmpresa}            
               {sortOrder}
           </select>
+          <select id="portal">
+            select 
+              tc_mantic_proveedores.id_proveedor as id_key,
+              tc_mantic_proveedores.clave,
+              tc_mantic_proveedores.rfc,
+              tc_mantic_proveedores.razon_social,
+              tc_mantic_tipos_proveedores.nombre as tipo_proveedor,
+              tc_mantic_proveedores.dias_entrega,
+              tc_mantic_tipos_dias.nombre as tipo_dia,
+              tc_mantic_proveedores.descuento  
+             from   
+               tc_mantic_proveedores
+             inner join
+               tc_mantic_tipos_proveedores   on  tc_mantic_tipos_proveedores.id_tipo_proveedor= tc_mantic_proveedores.id_tipo_proveedor
+             inner  join
+               tc_mantic_tipos_dias  on tc_mantic_tipos_dias.id_tipo_dia=tc_mantic_proveedores.id_tipo_dia             
+             where
+               upper(tc_mantic_proveedores.razon_social) like upper('%{codigo}%')
+              or
+               (upper(tc_mantic_proveedores.rfc) like upper('%{codigo}%') or upper(tc_mantic_proveedores.rfc is null))
+              or
+               upper(tc_mantic_proveedores.clave like '%{codigo}%')
+              and
+                tc_mantic_proveedores.id_empresa in ({sucursales})
+          </select>
           <select id="proveedorCondicionPago">
             select 
                 tc_mantic_tipos_pagos.id_tipo_pago,
@@ -707,7 +732,7 @@
 				    or 
 				    upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*'
 				    or
-				    (upper(tc_mantic_articulos_codigos.codigo) like '%{codigo}%' 
+				    upper(tc_mantic_articulos_codigos.codigo) like '%{codigo}%' 
 				   ) 			
 				order by 
 				  tc_mantic_articulos.nombre
