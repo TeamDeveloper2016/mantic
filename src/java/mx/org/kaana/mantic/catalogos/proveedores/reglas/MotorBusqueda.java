@@ -10,6 +10,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorBanca;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorCondicionPago;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorContactoAgente;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorDomicilio;
@@ -17,6 +18,8 @@ import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
+import mx.org.kaana.mantic.db.dto.TcManticProveedoresPortalesDto;
+import mx.org.kaana.mantic.enums.ETiposCuentas;
 
 public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializable{
 	
@@ -149,4 +152,48 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		} // finally
 		return regresar;
 	} // toCondicionesPago
+	
+	public TcManticProveedoresPortalesDto toPortal() throws Exception{
+		TcManticProveedoresPortalesDto regresar= null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_proveedor=" + this.idProveedor);
+			regresar= (TcManticProveedoresPortalesDto) DaoFactory.getInstance().toEntity(TcManticProveedoresPortalesDto.class, "TcManticProveedoresPortalesDto", params);
+			if(regresar== null)
+				regresar= new TcManticProveedoresPortalesDto();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toPortal
+	
+	public List<ProveedorBanca> toServicios() throws Exception{
+		return toProveedorBanca(ETiposCuentas.SERVICIOS);
+	} // toServicios
+	
+	public List<ProveedorBanca> toTransferencias() throws Exception{
+		return toProveedorBanca(ETiposCuentas.TRANSFERENCIAS);
+	} // toTransferencias
+	
+	private List<ProveedorBanca> toProveedorBanca(ETiposCuentas tipoCuenta) throws Exception{
+		List<ProveedorBanca> regresar= null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, " id_proveedor=" + this.idProveedor + " and id_tipo_cuenta=" + tipoCuenta.getKey());
+			regresar= DaoFactory.getInstance().toEntitySet(ProveedorBanca.class, "TcManticProveedoresBancosDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toProveedorbanca
 }
