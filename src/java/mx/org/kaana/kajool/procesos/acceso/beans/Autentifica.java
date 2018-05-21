@@ -327,6 +327,13 @@ public class Autentifica implements Serializable {
 		return sucursales;
 	}	
 
+	public String getIdsSucursales(){
+		String regresar= "";
+		for(Sucursal sucursal: this.sucursales)
+			regresar= regresar.concat(sucursal.getIdEmpresa().toString()).concat(",");		
+		return regresar.substring(0, regresar.length()-1);
+	} // getIdsSucursales 
+	
 	private String toLoadSucursales() throws Exception {
 		String regresar= "";
 		Map<String, Object> params=null;
