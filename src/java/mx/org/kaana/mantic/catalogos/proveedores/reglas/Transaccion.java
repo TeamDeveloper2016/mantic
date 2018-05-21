@@ -18,6 +18,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorBanca;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorCondicionPago;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorContactoAgente;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorDomicilio;
@@ -25,6 +26,7 @@ import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.catalogos.proveedores.beans.RegistroProveedor;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
+import mx.org.kaana.mantic.db.dto.TcManticProveedoresBancosDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorTipoContactoDto;
@@ -74,7 +76,7 @@ public class Transaccion extends IBaseTnx {
       } // switch
       if (!regresar) {
         throw new Exception(this.messageError);
-      }
+      } // if
     } // try
     catch (Exception e) {
       throw new Exception(this.messageError);
@@ -90,11 +92,20 @@ public class Transaccion extends IBaseTnx {
       if (eliminarRegistros(sesion)) {
         this.registroProveedor.getProveedor().setIdUsuario(JsfBase.getIdUsuario());
         this.registroProveedor.getProveedor().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+				this.registroProveedor.getProveedor().setIdTipoProveedor(2L);
         idProveedor = DaoFactory.getInstance().insert(sesion, this.registroProveedor.getProveedor());
         if (registraProveedoresDomicilios(sesion, idProveedor)) {
           if (registraProveedoresAgentes(sesion, idProveedor)) {
-            if(registraProveedoresTipoContacto(sesion, idProveedor))
-							regresar= registraProveedoresFormaPago(sesion, idProveedor);
+            if(registraProveedoresTipoContacto(sesion, idProveedor)){
+							if(registraProveedoresServicios(sesion, idProveedor)){
+								if(registraProveedoresTransferencia(sesion, idProveedor)){
+									if(registraProveedoresFormaPago(sesion, idProveedor)){
+										this.registroProveedor.getPortal().setIdProveedor(idProveedor);
+										regresar= DaoFactory.getInstance().insert(sesion, this.registroProveedor.getPortal())>= 1L;
+									} // if
+								} // if
+							} // if
+						} // if
           } // if
         } // if
       } // if
@@ -113,9 +124,25 @@ public class Transaccion extends IBaseTnx {
       if (registraProveedoresDomicilios(sesion, idProveedor)) {
         if (registraProveedoresAgentes(sesion, idProveedor)) {
           if (registraProveedoresTipoContacto(sesion, idProveedor)) {
-						if(registraProveedoresFormaPago(sesion, idProveedor))
-							regresar = DaoFactory.getInstance().update(sesion, this.registroProveedor.getProveedor()) >= 1L;
-          }
+						if(registraProveedoresFormaPago(sesion, idProveedor)){
+							if(registraProveedoresServicios(sesion, idProveedor)){
+								if(registraProveedoresTransferencia(sesion, idProveedor)){
+									if(this.registroProveedor.getPortal().isValid()){
+										if(DaoFactory.getInstance().update(sesion, this.registroProveedor.getPortal())>= 0L){
+											regresar = DaoFactory.getInstance().update(sesion, this.registroProveedor.getProveedor()) >= 1L;
+										} // if
+									} // if
+									else{										
+										regresar = DaoFactory.getInstance().update(sesion, this.registroProveedor.getProveedor()) >= 1L;
+										if(regresar && this.registroProveedor.getPortal()!= null && !Cadena.isVacio(this.registroProveedor.getPortal())){
+											this.registroProveedor.getPortal().setIdProveedor(idProveedor);
+											regresar= DaoFactory.getInstance().insert(sesion, this.registroProveedor.getPortal())>= 1L;
+										} // if
+									} // else
+								} // if
+							} // if
+						} // if
+          } // if
         } // if
       } // if
     } // try
@@ -342,6 +369,86 @@ public class Transaccion extends IBaseTnx {
     return regresar;
   } // registraProveedoresTipoContacto
 	
+  private boolean registraProveedoresServicios(Session sesion, Long idProveedor) throws Exception {
+    TcManticProveedoresBancosDto dto = null;
+    ESql sqlAccion = null;
+    int count = 0;
+    boolean validate = false;
+    boolean regresar = false;
+    try {
+      for (ProveedorBanca proveedorBanca : this.registroProveedor.getProveedoresServicio()) {
+				if(proveedorBanca.getConvenioCuenta()!= null && !Cadena.isVacio(proveedorBanca.getConvenioCuenta())){
+					proveedorBanca.setIdProveedor(idProveedor);
+					proveedorBanca.setIdUsuario(JsfBase.getIdUsuario());
+					dto = (TcManticProveedoresBancosDto) proveedorBanca;
+					sqlAccion = proveedorBanca.getSqlAccion();
+					switch (sqlAccion) {
+						case INSERT:
+							dto.setIdProveedorBanca(-1L);
+							validate = registrar(sesion, dto);
+							break;
+						case UPDATE:
+							validate = actualizar(sesion, dto);
+							break;
+					} // switch
+				} // if
+				else
+					validate= true;
+        if (validate) {
+          count++;
+        }
+      } // for		
+      regresar = count == this.registroProveedor.getProveedoresServicio().size();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      this.messageError = "Error al registrar el servicio de banco, verifique que no haya duplicados";
+    } // finally
+    return regresar;
+  } // registraProveedoresServicios
+	
+  private boolean registraProveedoresTransferencia(Session sesion, Long idProveedor) throws Exception {
+    TcManticProveedoresBancosDto dto = null;
+    ESql sqlAccion = null;
+    int count = 0;
+    boolean validate = false;
+    boolean regresar = false;
+    try {
+      for (ProveedorBanca proveedorBanca : this.registroProveedor.getProveedoresTransferencia()) {
+				if(proveedorBanca.getConvenioCuenta()!= null && !Cadena.isVacio(proveedorBanca.getConvenioCuenta())){
+					proveedorBanca.setIdProveedor(idProveedor);
+					proveedorBanca.setIdUsuario(JsfBase.getIdUsuario());
+					dto = (TcManticProveedoresBancosDto) proveedorBanca;
+					sqlAccion = proveedorBanca.getSqlAccion();
+					switch (sqlAccion) {
+						case INSERT:
+							dto.setIdProveedorBanca(-1L);
+							validate = registrar(sesion, dto);
+							break;
+						case UPDATE:
+							validate = actualizar(sesion, dto);
+							break;
+					} // switch
+				} // if
+				else
+					validate= true;
+        if (validate) {
+          count++;
+        }
+      } // for		
+      regresar = count == this.registroProveedor.getProveedoresTransferencia().size();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      this.messageError = "Error al registrar el servicio de banco, verifique que no haya duplicados";
+    } // finally
+    return regresar;
+  } // registraProveedoresTransferencia
+	
   private boolean registraProveedoresFormaPago(Session sesion, Long idProveedor) throws Exception {
     TrManticProveedorPagoDto dto = null;
     ESql sqlAccion = null;
@@ -353,6 +460,7 @@ public class Transaccion extends IBaseTnx {
 				if(proveedorCondicionPago.getDescuento()!= null && !Cadena.isVacio(proveedorCondicionPago.getDescuento())){
 					proveedorCondicionPago.setIdProveedor(idProveedor);
 					proveedorCondicionPago.setIdUsuario(JsfBase.getIdUsuario());
+					proveedorCondicionPago.setClave("TMP");
 					dto = (TrManticProveedorPagoDto) proveedorCondicionPago;
 					sqlAccion = proveedorCondicionPago.getSqlAccion();
 					switch (sqlAccion) {
