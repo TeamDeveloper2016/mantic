@@ -1911,6 +1911,17 @@
         where      
           id_orden_compra = {idOrdenCompra} and id_orden_bitacora = {idOrdenBitacora} and id_compras_estatus = {idComprasEstatus}
       </select>
-    </unit>		
+    </unit>
+		<unit id="TcManticBancosDto">
+			<select id="row">
+				select 
+					tc_mantic_bancos.id_banco as id_key,
+					tc_mantic_bancos.*
+				from 
+					tc_mantic_bancos
+				where 
+					{condicion}
+			</select>			
+		</unit>		
   </dml>    
 </process>
