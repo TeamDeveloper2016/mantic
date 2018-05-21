@@ -63,6 +63,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idProveedor", JsfBase.getFlashAttribute("idProveedor"));
+			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin());
       doLoad(); 
     } // try
     catch (Exception e) {
@@ -72,6 +73,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // initload
   
 	private void loadCollections(){
+		loadBancos();
 		loadTiposProveedores();
 		loadTipoPago();
 		loadTiposContactos();
@@ -738,4 +740,24 @@ public class Accion extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
 	} // doEliminarRepresentante
+	
+	private void loadBancos(){
+		List<UISelectItem> bancos= null;
+		Map<String, Object>params= null;
+		List<String> campos= null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			campos= new ArrayList<>();
+			campos.add("nombre");
+			bancos= UISelect.build("TcManticBancosDto", "row", params, campos, " ", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("bancos", bancos);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	}
 }
