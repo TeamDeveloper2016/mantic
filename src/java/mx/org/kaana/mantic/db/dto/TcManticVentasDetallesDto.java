@@ -30,62 +30,56 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_mantic_notas_detalles")
-public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
+@Table(name="tc_mantic_ventas_detalles")
+public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="descripcion")
   private String descripcion;
   @Column (name="descuentos")
   private String descuentos;
-  @Column (name="codigo")
-  private String codigo;
-  @Column (name="unidad_medida")
-  private String unidadMedida;
-  @Column (name="precio_lista")
-  private Double precioLista;
-  @Column (name="sat")
-  private String sat;
-  @Column (name="id_nota_entrada")
-  private Long idNotaEntrada;
-  @Column (name="registro")
-  private Timestamp registro;
   @Column (name="precio")
   private Double precio;
+  @Column (name="codigo")
+  private String codigo;
   @Column (name="impuesto")
   private Double impuesto;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_nota_detalle")
-  private Long idNotaDetalle;
+	@Column (name="id_venta_detalle")
+  private Long idVentaDetalle;
+  @Column (name="sat")
+  private String sat;
   @Column (name="cantidad")
   private Long cantidad;
   @Column (name="id_articulo")
   private Long idArticulo;
+  @Column (name="id_venta")
+  private Long idVenta;
+  @Column (name="registro")
+  private Timestamp registro;
 
-  public TcManticNotasDetallesDto() {
+  public TcManticVentasDetallesDto() {
     this(new Long(-1L));
   }
 
-  public TcManticNotasDetallesDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, new Long(-1L), null, null);
+  public TcManticVentasDetallesDto(Long key) {
+    this(null, null, null, null, null, new Long(-1L), null, null, null, null);
     setKey(key);
   }
 
-  public TcManticNotasDetallesDto(String descripcion, String descuentos, String codigo, String unidadMedida, Double precioLista, String sat, Long idNotaEntrada, Double precio, Double impuesto, Long idNotaDetalle, Long cantidad, Long idArticulo) {
+  public TcManticVentasDetallesDto(String descripcion, String descuentos, Double precio, String codigo, Double impuesto, Long idVentaDetalle, String sat, Long cantidad, Long idArticulo, Long idVenta) {
     setDescripcion(descripcion);
     setDescuentos(descuentos);
-    setCodigo(codigo);
-    setUnidadMedida(unidadMedida);
-    setPrecioLista(precioLista);
-    setSat(sat);
-    setIdNotaEntrada(idNotaEntrada);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
     setPrecio(precio);
+    setCodigo(codigo);
     setImpuesto(impuesto);
-    setIdNotaDetalle(idNotaDetalle);
+    setIdVentaDetalle(idVentaDetalle);
+    setSat(sat);
     setCantidad(cantidad);
     setIdArticulo(idArticulo);
+    setIdVenta(idVenta);
+    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
   public void setDescripcion(String descripcion) {
@@ -104,60 +98,20 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
     return descuentos;
   }
 
-  public void setCodigo(String codigo) {
-    this.codigo = codigo;
-  }
-
-  public String getCodigo() {
-    return codigo;
-  }
-
-  public void setUnidadMedida(String unidadMedida) {
-    this.unidadMedida = unidadMedida;
-  }
-
-  public String getUnidadMedida() {
-    return unidadMedida;
-  }
-
-  public void setPrecioLista(Double precioLista) {
-    this.precioLista = precioLista;
-  }
-
-  public Double getPrecioLista() {
-    return precioLista;
-  }
-
-  public void setSat(String sat) {
-    this.sat = sat;
-  }
-
-  public String getSat() {
-    return sat;
-  }
-
-  public void setIdNotaEntrada(Long idNotaEntrada) {
-    this.idNotaEntrada = idNotaEntrada;
-  }
-
-  public Long getIdNotaEntrada() {
-    return idNotaEntrada;
-  }
-
-  public void setRegistro(Timestamp registro) {
-    this.registro = registro;
-  }
-
-  public Timestamp getRegistro() {
-    return registro;
-  }
-
   public void setPrecio(Double precio) {
     this.precio = precio;
   }
 
   public Double getPrecio() {
     return precio;
+  }
+
+  public void setCodigo(String codigo) {
+    this.codigo = codigo;
+  }
+
+  public String getCodigo() {
+    return codigo;
   }
 
   public void setImpuesto(Double impuesto) {
@@ -168,12 +122,20 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
     return impuesto;
   }
 
-  public void setIdNotaDetalle(Long idNotaDetalle) {
-    this.idNotaDetalle = idNotaDetalle;
+  public void setIdVentaDetalle(Long idVentaDetalle) {
+    this.idVentaDetalle = idVentaDetalle;
   }
 
-  public Long getIdNotaDetalle() {
-    return idNotaDetalle;
+  public Long getIdVentaDetalle() {
+    return idVentaDetalle;
+  }
+
+  public void setSat(String sat) {
+    this.sat = sat;
+  }
+
+  public String getSat() {
+    return sat;
   }
 
   public void setCantidad(Long cantidad) {
@@ -192,15 +154,31 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
     return idArticulo;
   }
 
+  public void setIdVenta(Long idVenta) {
+    this.idVenta = idVenta;
+  }
+
+  public Long getIdVenta() {
+    return idVenta;
+  }
+
+  public void setRegistro(Timestamp registro) {
+    this.registro = registro;
+  }
+
+  public Timestamp getRegistro() {
+    return registro;
+  }
+
   @Transient
   @Override
   public Long getKey() {
-  	return getIdNotaDetalle();
+  	return getIdVentaDetalle();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idNotaDetalle = key;
+  	this.idVentaDetalle = key;
   }
 
   @Override
@@ -211,27 +189,23 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDescuentos());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getCodigo());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getUnidadMedida());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getPrecioLista());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getSat());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdNotaEntrada());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getRegistro());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getPrecio());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCodigo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImpuesto());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdNotaDetalle());
+		regresar.append(getIdVentaDetalle());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getSat());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCantidad());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdArticulo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdVenta());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -241,24 +215,22 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("descripcion", getDescripcion());
 		regresar.put("descuentos", getDescuentos());
-		regresar.put("codigo", getCodigo());
-		regresar.put("unidadMedida", getUnidadMedida());
-		regresar.put("precioLista", getPrecioLista());
-		regresar.put("sat", getSat());
-		regresar.put("idNotaEntrada", getIdNotaEntrada());
-		regresar.put("registro", getRegistro());
 		regresar.put("precio", getPrecio());
+		regresar.put("codigo", getCodigo());
 		regresar.put("impuesto", getImpuesto());
-		regresar.put("idNotaDetalle", getIdNotaDetalle());
+		regresar.put("idVentaDetalle", getIdVentaDetalle());
+		regresar.put("sat", getSat());
 		regresar.put("cantidad", getCantidad());
 		regresar.put("idArticulo", getIdArticulo());
+		regresar.put("idVenta", getIdVenta());
+		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getDescuentos(), getCodigo(), getUnidadMedida(), getPrecioLista(), getSat(), getIdNotaEntrada(), getRegistro(), getPrecio(), getImpuesto(), getIdNotaDetalle(), getCantidad(), getIdArticulo()
+    getDescripcion(), getDescuentos(), getPrecio(), getCodigo(), getImpuesto(), getIdVentaDetalle(), getSat(), getCantidad(), getIdArticulo(), getIdVenta(), getRegistro()
     };
     return regresar;
   }
@@ -272,8 +244,8 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idNotaDetalle~");
-    regresar.append(getIdNotaDetalle());
+    regresar.append("idVentaDetalle~");
+    regresar.append(getIdVentaDetalle());
     regresar.append("|");
     return regresar.toString();
   }
@@ -281,18 +253,18 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdNotaDetalle());
+    regresar.append(getIdVentaDetalle());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcManticNotasDetallesDto.class;
+    return TcManticVentasDetallesDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdNotaDetalle()!= null && getIdNotaDetalle()!=-1L;
+  	return getIdVentaDetalle()!= null && getIdVentaDetalle()!=-1L;
   }
 
   @Override
@@ -303,8 +275,8 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcManticNotasDetallesDto other = (TcManticNotasDetallesDto) obj;
-    if (getIdNotaDetalle() != other.idNotaDetalle && (getIdNotaDetalle() == null || !getIdNotaDetalle().equals(other.idNotaDetalle))) {
+    final TcManticVentasDetallesDto other = (TcManticVentasDetallesDto) obj;
+    if (getIdVentaDetalle() != other.idVentaDetalle && (getIdVentaDetalle() == null || !getIdVentaDetalle().equals(other.idVentaDetalle))) {
       return false;
     }
     return true;
@@ -313,7 +285,7 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdNotaDetalle() != null ? getIdNotaDetalle().hashCode() : 0);
+    hash = 67 * hash + (getIdVentaDetalle() != null ? getIdVentaDetalle().hashCode() : 0);
     return hash;
   }
 

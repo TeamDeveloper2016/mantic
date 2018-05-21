@@ -30,42 +30,28 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_mantic_notas_entradas")
-public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
+@Table(name="tc_mantic_ventas")
+public class TcManticVentasDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="descuentos")
   private Double descuentos;
-  @Column (name="id_proveedor")
-  private Long idProveedor;
+  @Column (name="id_factura")
+  private Long idFactura;
+  @Column (name="id_tipo_medio_pago")
+  private Long idTipoMedioPago;
+  @Column (name="id_cliente")
+  private Long idCliente;
   @Column (name="descuento")
   private String descuento;
-  @Column (name="id_orden_compra")
-  private Long idOrdenCompra;
-  @Column (name="id_directa")
-  private Long idDirecta;
-  @Column (name="fecha_recepcion")
-  private Date fechaRecepcion;
   @Column (name="extras")
   private String extras;
-  @Id
-  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_nota_entrada")
-  private Long idNotaEntrada;
-  @Column (name="fecha_factura")
-  private Date fechaFactura;
-  @Column (name="id_nota_estatus")
-  private Long idNotaEstatus;
-  @Column (name="ejercicio")
-  private Long ejercicio;
   @Column (name="registro")
   private Timestamp registro;
   @Column (name="consecutivo")
-  private String consecutivo;
+  private Long consecutivo;
   @Column (name="total")
   private Double total;
-  @Column (name="factura")
-  private String factura;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="id_almacen")
@@ -78,47 +64,55 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   private Double tipoDeCambio;
   @Column (name="id_sin_iva")
   private Long idSinIva;
+  @Column (name="tipo_tarjeta")
+  private String tipoTarjeta;
+  @Column (name="efectivo")
+  private Double efectivo;
   @Column (name="observaciones")
   private String observaciones;
-  @Column (name="id_empresa")
-  private Long idEmpresa;
-  @Column (name="orden")
-  private Long orden;
+  @Column (name="tarjeta")
+  private String tarjeta;
+  @Id
+  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
+	@Column (name="id_venta")
+  private Long idVenta;
+  @Column (name="dia")
+  private Date dia;
+  @Column (name="id_venta_estatus")
+  private Long idVentaEstatus;
 
-  public TcManticNotasEntradasDto() {
+  public TcManticVentasDto() {
     this(new Long(-1L));
   }
 
-  public TcManticNotasEntradasDto(Long key) {
-    this(null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+  public TcManticVentasDto(Long key) {
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null);
     setKey(key);
   }
 
-  public TcManticNotasEntradasDto(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idDirecta, Date fechaRecepcion, String extras, Long idNotaEntrada, Date fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subtotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden) {
+  public TcManticVentasDto(Double descuentos, Long idFactura, Long idTipoMedioPago, Long idCliente, String descuento, String extras, Long consecutivo, Double total, Long idUsuario, Long idAlmacen, Double subtotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String tipoTarjeta, Double efectivo, String observaciones, String tarjeta, Long idVenta, Date dia, Long idVentaEstatus) {
     setDescuentos(descuentos);
-    setIdProveedor(idProveedor);
+    setIdFactura(idFactura);
+    setIdTipoMedioPago(idTipoMedioPago);
+    setIdCliente(idCliente);
     setDescuento(descuento);
-    setIdOrdenCompra(idOrdenCompra);
-    setIdDirecta(idDirecta);
-    setFechaRecepcion(fechaRecepcion);
     setExtras(extras);
-    setIdNotaEntrada(idNotaEntrada);
-    setFechaFactura(fechaFactura);
-    setIdNotaEstatus(idNotaEstatus);
-    setEjercicio(ejercicio);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
     setConsecutivo(consecutivo);
     setTotal(total);
-    setFactura(factura);
     setIdUsuario(idUsuario);
     setIdAlmacen(idAlmacen);
     setSubtotal(subtotal);
     setImpuestos(impuestos);
     setTipoDeCambio(tipoDeCambio);
     setIdSinIva(idSinIva);
+    setTipoTarjeta(tipoTarjeta);
+    setEfectivo(efectivo);
     setObservaciones(observaciones);
-    setIdEmpresa(idEmpresa);
-    setOrden(orden);
+    setTarjeta(tarjeta);
+    setIdVenta(idVenta);
+    setDia(dia);
+    setIdVentaEstatus(idVentaEstatus);
   }
 	
   public void setDescuentos(Double descuentos) {
@@ -129,12 +123,28 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
     return descuentos;
   }
 
-  public void setIdProveedor(Long idProveedor) {
-    this.idProveedor = idProveedor;
+  public void setIdFactura(Long idFactura) {
+    this.idFactura = idFactura;
   }
 
-  public Long getIdProveedor() {
-    return idProveedor;
+  public Long getIdFactura() {
+    return idFactura;
+  }
+
+  public void setIdTipoMedioPago(Long idTipoMedioPago) {
+    this.idTipoMedioPago = idTipoMedioPago;
+  }
+
+  public Long getIdTipoMedioPago() {
+    return idTipoMedioPago;
+  }
+
+  public void setIdCliente(Long idCliente) {
+    this.idCliente = idCliente;
+  }
+
+  public Long getIdCliente() {
+    return idCliente;
   }
 
   public void setDescuento(String descuento) {
@@ -145,68 +155,12 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
     return descuento;
   }
 
-  public void setIdOrdenCompra(Long idOrdenCompra) {
-    this.idOrdenCompra = idOrdenCompra;
-  }
-
-  public Long getIdOrdenCompra() {
-    return idOrdenCompra;
-  }
-
-  public void setIdDirecta(Long idDirecta) {
-    this.idDirecta = idDirecta;
-  }
-
-  public Long getIdDirecta() {
-    return idDirecta;
-  }
-
-  public void setFechaRecepcion(Date fechaRecepcion) {
-    this.fechaRecepcion = fechaRecepcion;
-  }
-
-  public Date getFechaRecepcion() {
-    return fechaRecepcion;
-  }
-
   public void setExtras(String extras) {
     this.extras = extras;
   }
 
   public String getExtras() {
     return extras;
-  }
-
-  public void setIdNotaEntrada(Long idNotaEntrada) {
-    this.idNotaEntrada = idNotaEntrada;
-  }
-
-  public Long getIdNotaEntrada() {
-    return idNotaEntrada;
-  }
-
-  public void setFechaFactura(Date fechaFactura) {
-    this.fechaFactura = fechaFactura;
-  }
-
-  public Date getFechaFactura() {
-    return fechaFactura;
-  }
-
-  public void setIdNotaEstatus(Long idNotaEstatus) {
-    this.idNotaEstatus = idNotaEstatus;
-  }
-
-  public Long getIdNotaEstatus() {
-    return idNotaEstatus;
-  }
-
-  public void setEjercicio(Long ejercicio) {
-    this.ejercicio = ejercicio;
-  }
-
-  public Long getEjercicio() {
-    return ejercicio;
   }
 
   public void setRegistro(Timestamp registro) {
@@ -217,11 +171,11 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
     return registro;
   }
 
-  public void setConsecutivo(String consecutivo) {
+  public void setConsecutivo(Long consecutivo) {
     this.consecutivo = consecutivo;
   }
 
-  public String getConsecutivo() {
+  public Long getConsecutivo() {
     return consecutivo;
   }
 
@@ -231,14 +185,6 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
 
   public Double getTotal() {
     return total;
-  }
-
-  public void setFactura(String factura) {
-    this.factura = factura;
-  }
-
-  public String getFactura() {
-    return factura;
   }
 
   public void setIdUsuario(Long idUsuario) {
@@ -289,6 +235,22 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
     return idSinIva;
   }
 
+  public void setTipoTarjeta(String tipoTarjeta) {
+    this.tipoTarjeta = tipoTarjeta;
+  }
+
+  public String getTipoTarjeta() {
+    return tipoTarjeta;
+  }
+
+  public void setEfectivo(Double efectivo) {
+    this.efectivo = efectivo;
+  }
+
+  public Double getEfectivo() {
+    return efectivo;
+  }
+
   public void setObservaciones(String observaciones) {
     this.observaciones = observaciones;
   }
@@ -297,31 +259,47 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
     return observaciones;
   }
 
-  public void setIdEmpresa(Long idEmpresa) {
-    this.idEmpresa = idEmpresa;
+  public void setTarjeta(String tarjeta) {
+    this.tarjeta = tarjeta;
   }
 
-  public Long getIdEmpresa() {
-    return idEmpresa;
+  public String getTarjeta() {
+    return tarjeta;
   }
 
-  public void setOrden(Long orden) {
-    this.orden = orden;
+  public void setIdVenta(Long idVenta) {
+    this.idVenta = idVenta;
   }
 
-  public Long getOrden() {
-    return orden;
+  public Long getIdVenta() {
+    return idVenta;
+  }
+
+  public void setDia(Date dia) {
+    this.dia = dia;
+  }
+
+  public Date getDia() {
+    return dia;
+  }
+
+  public void setIdVentaEstatus(Long idVentaEstatus) {
+    this.idVentaEstatus = idVentaEstatus;
+  }
+
+  public Long getIdVentaEstatus() {
+    return idVentaEstatus;
   }
 
   @Transient
   @Override
   public Long getKey() {
-  	return getIdNotaEntrada();
+  	return getIdVenta();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idNotaEntrada = key;
+  	this.idVenta = key;
   }
 
   @Override
@@ -330,33 +308,21 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getDescuentos());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdProveedor());
+		regresar.append(getIdFactura());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoMedioPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdCliente());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDescuento());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdOrdenCompra());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdDirecta());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getFechaRecepcion());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getExtras());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdNotaEntrada());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getFechaFactura());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdNotaEstatus());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getConsecutivo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getTotal());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getFactura());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
@@ -370,11 +336,19 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdSinIva());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getTipoTarjeta());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getEfectivo());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdEmpresa());
+		regresar.append(getTarjeta());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getOrden());
+		regresar.append(getIdVenta());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getDia());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdVentaEstatus());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -383,36 +357,34 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("descuentos", getDescuentos());
-		regresar.put("idProveedor", getIdProveedor());
+		regresar.put("idFactura", getIdFactura());
+		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
+		regresar.put("idCliente", getIdCliente());
 		regresar.put("descuento", getDescuento());
-		regresar.put("idOrdenCompra", getIdOrdenCompra());
-		regresar.put("idDirecta", getIdDirecta());
-		regresar.put("fechaRecepcion", getFechaRecepcion());
 		regresar.put("extras", getExtras());
-		regresar.put("idNotaEntrada", getIdNotaEntrada());
-		regresar.put("fechaFactura", getFechaFactura());
-		regresar.put("idNotaEstatus", getIdNotaEstatus());
-		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
 		regresar.put("consecutivo", getConsecutivo());
 		regresar.put("total", getTotal());
-		regresar.put("factura", getFactura());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idAlmacen", getIdAlmacen());
 		regresar.put("subtotal", getSubtotal());
 		regresar.put("impuestos", getImpuestos());
 		regresar.put("tipoDeCambio", getTipoDeCambio());
 		regresar.put("idSinIva", getIdSinIva());
+		regresar.put("tipoTarjeta", getTipoTarjeta());
+		regresar.put("efectivo", getEfectivo());
 		regresar.put("observaciones", getObservaciones());
-		regresar.put("idEmpresa", getIdEmpresa());
-		regresar.put("orden", getOrden());
+		regresar.put("tarjeta", getTarjeta());
+		regresar.put("idVenta", getIdVenta());
+		regresar.put("dia", getDia());
+		regresar.put("idVentaEstatus", getIdVentaEstatus());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescuentos(), getIdProveedor(), getDescuento(), getIdOrdenCompra(), getIdDirecta(), getFechaRecepcion(), getExtras(), getIdNotaEntrada(), getFechaFactura(), getIdNotaEstatus(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getFactura(), getIdUsuario(), getIdAlmacen(), getSubtotal(), getImpuestos(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden()
+    getDescuentos(), getIdFactura(), getIdTipoMedioPago(), getIdCliente(), getDescuento(), getExtras(), getRegistro(), getConsecutivo(), getTotal(), getIdUsuario(), getIdAlmacen(), getSubtotal(), getImpuestos(), getTipoDeCambio(), getIdSinIva(), getTipoTarjeta(), getEfectivo(), getObservaciones(), getTarjeta(), getIdVenta(), getDia(), getIdVentaEstatus()
     };
     return regresar;
   }
@@ -426,8 +398,8 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idNotaEntrada~");
-    regresar.append(getIdNotaEntrada());
+    regresar.append("idVenta~");
+    regresar.append(getIdVenta());
     regresar.append("|");
     return regresar.toString();
   }
@@ -435,18 +407,18 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdNotaEntrada());
+    regresar.append(getIdVenta());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcManticNotasEntradasDto.class;
+    return TcManticVentasDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdNotaEntrada()!= null && getIdNotaEntrada()!=-1L;
+  	return getIdVenta()!= null && getIdVenta()!=-1L;
   }
 
   @Override
@@ -457,8 +429,8 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcManticNotasEntradasDto other = (TcManticNotasEntradasDto) obj;
-    if (getIdNotaEntrada() != other.idNotaEntrada && (getIdNotaEntrada() == null || !getIdNotaEntrada().equals(other.idNotaEntrada))) {
+    final TcManticVentasDto other = (TcManticVentasDto) obj;
+    if (getIdVenta() != other.idVenta && (getIdVenta() == null || !getIdVenta().equals(other.idVenta))) {
       return false;
     }
     return true;
@@ -467,7 +439,7 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdNotaEntrada() != null ? getIdNotaEntrada().hashCode() : 0);
+    hash = 67 * hash + (getIdVenta() != null ? getIdVenta().hashCode() : 0);
     return hash;
   }
 

@@ -78,8 +78,8 @@
                   <ui:insert name="detalleConfirmacion" />
                   <hr class="ui-widget-content"/>
                   <div class="janal-line-button">
-                    <p:commandButton id="confirmar" icon="fa fa-check" process="@form" update="#{empty updateComponent ? 'tabla' : updateComponent }"  value="Aceptar" action="#{accionConfirmacion[eventoConfirmacion]}" oncomplete="PF('dialogoConfirmacion').hide();" rendered="#{empty renderedConfirmacion? false: renderedConfirmacion}"/>
-                    <p:commandButton process="@none" icon="fa fa-remove" value="#{renderedConfirmacion?'Cancelar':'Regresar'}" oncomplete="PF('dialogoConfirmacion').hide();"/>
+                    <p:commandButton id="confirmar" styleClass="janal-text-white" icon="fa fa-check" process="@form" update="#{empty updateComponent ? 'tabla' : updateComponent }"  value="Aceptar" action="#{accionConfirmacion[eventoConfirmacion]}" oncomplete="PF('dialogoConfirmacion').hide();" rendered="#{empty renderedConfirmacion? false: renderedConfirmacion}"/>
+                    <p:commandButton process="@none" styleClass="janal-text-white" icon="fa fa-remove" value="#{renderedConfirmacion?'Cancelar':'Regresar'}" oncomplete="PF('dialogoConfirmacion').hide();"/>
                   </div>
                 </p:dialog>
               </p:panel>

@@ -1550,7 +1550,7 @@
           nombre = '{nombre}' and id_tipo_persona = {idTipoPersona}
       </select>
     </unit>
-	    <unit id="TcManticTiposProveedoresDto">
+	  <unit id="TcManticTiposProveedoresDto">
       <select id="row">
         select
 					tc_mantic_tipos_proveedores.*,
@@ -1662,6 +1662,78 @@
           id_nota_detalle = {idNotaDetalle} and id_nota_entrada = {idNotaEntrada} and id_articulo = {idArticulo}
       </select>
     </unit>
+    <unit id="TcManticNotasBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_notas_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_notas_bitacora
+        where      
+          id_nota_bitacora = {idNotaBitacora} and id_nota_entrada = {idNotaEntrada} and id_nota_estatus = {idNotaEstatus}
+      </select>
+    </unit>		
+	   <unit id="TcManticVentasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_ventas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ventas
+        where      
+          consecutivo = {consecutivo} and id_cliente = {idCliente} and dia = {dia} and id_venta = {idVenta}
+      </select>
+    </unit>
+    <unit id="TcManticVentasDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_ventas_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ventas_detalles
+        where      
+          id_venta_detalle = {idVentaDetalle} and id_articulo = {idArticulo} and id_venta = {idVenta}
+      </select>
+    </unit>
+	    <unit id="TcManticVentasBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_ventas_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ventas_bitacora
+        where      
+          id_venta_bitacora = {idVentaBitacora} and id_venta = {idVenta} and id_venta_estatus = {idVentaEstatus}
+      </select>
+    </unit>				
     <unit id="TcManticNotasEntradasDto">
       <select id="row">
         select      
@@ -1677,7 +1749,7 @@
         from      
           tc_mantic_notas_entradas
         where      
-          id_proveedor = {idProveedor} and id_nota_entrada = {idNotaEntrada}
+          consecutivo = '{consecutivo}' and id_proveedor = {idProveedor} and id_orden_compra = {idOrdenCompra} and id_empresa = {idEmpresa} and id_nota_entrada = {idNotaEntrada}
       </select>
     </unit>
     <unit id="TcManticOrdenesDetallesDto">

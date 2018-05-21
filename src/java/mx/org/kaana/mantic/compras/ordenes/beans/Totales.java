@@ -122,6 +122,10 @@ public final class Totales implements Serializable {
 		this.total+= total;
 	}
 
+	public void addArticulo(Long idArticulo) {
+		this.articulos+= idArticulo> 0? 1: 0;
+	}
+
 	public void reset() {
 	  this.articulos= 0;
 		this.descuento= 0;

@@ -342,6 +342,7 @@
 			<select id="solicitado">
         select      
           tc_mantic_ordenes_detalles.id_orden_detalle as id_key,
+				  tc_mantic_articulos.nombre,     
 				  tc_mantic_ordenes_compras.consecutivo,
           tc_mantic_ordenes_detalles.cantidad,
           tc_mantic_ordenes_detalles.costo,
@@ -350,6 +351,8 @@
           tc_mantic_ordenes_detalles.registro
         from      
           tc_mantic_ordenes_detalles
+				inner join
+					tc_mantic_articulos on tc_mantic_ordenes_detalles.id_articulo = tc_mantic_articulos.id_articulo
 				inner join 
 					tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra
 				inner join
@@ -482,6 +485,7 @@
 			<select id="ultimo">
         select      
           tc_mantic_ordenes_detalles.id_orden_detalle as id_key,
+				  tc_mantic_articulos.nombre,
 				  tc_mantic_ordenes_compras.consecutivo,
           tc_mantic_ordenes_detalles.costo,
           tc_mantic_articulos.stock,
@@ -506,7 +510,8 @@
 			</select>
 			<select id="sugerido">
         select      
-          tr_mantic_articulo_precio_sugerido.id_articulo_precio_sugerido as id_key,        
+          tr_mantic_articulo_precio_sugerido.id_articulo_precio_sugerido as id_key,   
+				  tc_mantic_articulos.nombre,     
           tc_mantic_proveedores.clave as clave_proveedor,
           tc_mantic_proveedores.razon_social as proveedor,
           tr_mantic_articulo_precio_sugerido.precio,
@@ -515,10 +520,12 @@
           tr_mantic_articulo_precio_sugerido.id_leido
         from      
           tr_mantic_articulo_precio_sugerido
+				inner join
+					tc_mantic_articulos on tr_mantic_articulo_precio_sugerido.id_articulo = tc_mantic_articulos.id_articulo
 				inner join 
 					tc_mantic_proveedores on tr_mantic_articulo_precio_sugerido.id_proveedor= tc_mantic_proveedores.id_proveedor
         where      
-          id_articulo = {idArticulo} and id_leido= 2
+          tr_mantic_articulo_precio_sugerido.id_articulo = {idArticulo} and tr_mantic_articulo_precio_sugerido.id_leido= 2
 				order by
 				  tr_mantic_articulo_precio_sugerido.registro				
 			</select>
@@ -567,11 +574,13 @@
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and (
-				    (upper(tc_mantic_articulos_codigos.codigo) like '%{codigo}%' and tc_mantic_articulos_codigos.id_principal= 1)
+				      upper(tc_mantic_articulos_codigos.codigo) like '%{codigo}%'
 				    or 
-				    upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*'
+				      upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*'
 				    or
-				    (upper(tc_mantic_articulos_codigos.codigo) like '%{codigo}%' and tc_mantic_articulos_codigos.id_proveedor= {idProveedor})	
+				      (upper(tc_mantic_articulos_codigos.codigo) like '%{codigo}%' and tc_mantic_articulos_codigos.id_proveedor= {idProveedor})	
+				    or
+				      tc_mantic_articulos.id_articulo= {idArticulo}
 				   ) 			
 				order by 
 				  tc_mantic_articulos.nombre

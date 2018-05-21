@@ -1,0 +1,61 @@
+package mx.org.kaana.mantic.compras.entradas.beans;
+
+import java.io.Serializable;
+import java.sql.Date;
+import java.util.Calendar;
+import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
+
+/**
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
+ *@date 8/05/2018
+ *@time 10:29:26 PM 
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
+ */
+
+public class NotaEntrada extends TcManticNotasEntradasDto implements Serializable {
+
+	private static final long serialVersionUID=3088884892456452488L;
+	
+	private UISelectEntity ikAlmacen;
+	private UISelectEntity ikProveedor;
+
+	public NotaEntrada() {
+		this(-1L);
+	}
+
+	public NotaEntrada(Long key) {
+		super(0D, -1L, "0", -1L, 1L, new Date(Calendar.getInstance().getTimeInMillis()), "0", key, new Date(Calendar.getInstance().getTimeInMillis()), 1L, new Long(Calendar.getInstance().get(Calendar.YEAR)), "201800000", 0D, "", 1L, -1L, 0D, 0D, 10D, 1L, "", -1L, 1L);
+	}
+
+	public NotaEntrada(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Date entregaEstimada, Long idCompraEstatus, Long idUsuario, Long idAlmacen, Double impuestos, Double subtotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden) {
+		super(descuentos, idProveedor, descuento, idOrdenCompra, idEmpresa, entregaEstimada, extras, idEmpresa, entregaEstimada, idCompraEstatus, ejercicio, consecutivo, total, extras, idUsuario, idAlmacen, subtotal, impuestos, tipoDeCambio, idSinIva, observaciones, idEmpresa, orden);
+	}
+
+	public UISelectEntity getIkAlmacen() {
+		return ikAlmacen;
+	}
+
+	public void setIkAlmacen(UISelectEntity ikAlmacen) {
+		this.ikAlmacen=ikAlmacen;
+		if(this.ikAlmacen!= null)
+		  this.setIdAlmacen(this.ikAlmacen.getKey());
+	}
+
+	public UISelectEntity getIkProveedor() {
+		return ikProveedor;
+	}
+
+	public void setIkProveedor(UISelectEntity ikProveedor) {
+		this.ikProveedor=ikProveedor;
+		if(this.ikProveedor!= null)
+		  this.setIdProveedor(this.ikProveedor.getKey());
+	}
+
+	@Override
+	public Class toHbmClass() {
+		return TcManticNotasEntradasDto.class;
+	}
+	
+}

@@ -30,46 +30,46 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_mantic_ordenes_bitacora")
-public class TcManticOrdenesBitacoraDto implements IBaseDto, Serializable {
+@Table(name="tc_mantic_ventas_bitacora")
+public class TcManticVentasBitacoraDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Column (name="id_orden_estatus")
-  private Long idOrdenEstatus;
-  @Column (name="justificacion")
-  private String justificacion;
-  @Column (name="id_orden_compra")
-  private Long idOrdenCompra;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_orden_bitacora")
-  private Long idOrdenBitacora;
+	@Column (name="id_venta_bitacora")
+  private Long idVentaBitacora;
+  @Column (name="justificacion")
+  private String justificacion;
+  @Column (name="id_venta")
+  private Long idVenta;
+  @Column (name="id_venta_estatus")
+  private Long idVentaEstatus;
   @Column (name="registro")
   private Timestamp registro;
 
-  public TcManticOrdenesBitacoraDto() {
+  public TcManticVentasBitacoraDto() {
     this(new Long(-1L));
   }
 
-  public TcManticOrdenesBitacoraDto(Long key) {
-    this(null, null, null, new Long(-1L));
+  public TcManticVentasBitacoraDto(Long key) {
+    this(new Long(-1L), null, null, null);
     setKey(key);
   }
 
-  public TcManticOrdenesBitacoraDto(Long idOrdenEstatus, String justificacion, Long idOrdenCompra, Long idOrdenBitacora) {
-    setIdOrdenEstatus(idOrdenEstatus);
+  public TcManticVentasBitacoraDto(Long idVentaBitacora, String justificacion, Long idVenta, Long idVentaEstatus) {
+    setIdVentaBitacora(idVentaBitacora);
     setJustificacion(justificacion);
-    setIdOrdenCompra(idOrdenCompra);
-    setIdOrdenBitacora(idOrdenBitacora);
+    setIdVenta(idVenta);
+    setIdVentaEstatus(idVentaEstatus);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
-  public void setIdOrdenEstatus(Long idOrdenEstatus) {
-    this.idOrdenEstatus = idOrdenEstatus;
+  public void setIdVentaBitacora(Long idVentaBitacora) {
+    this.idVentaBitacora = idVentaBitacora;
   }
 
-  public Long getIdOrdenEstatus() {
-    return idOrdenEstatus;
+  public Long getIdVentaBitacora() {
+    return idVentaBitacora;
   }
 
   public void setJustificacion(String justificacion) {
@@ -80,20 +80,20 @@ public class TcManticOrdenesBitacoraDto implements IBaseDto, Serializable {
     return justificacion;
   }
 
-  public void setIdOrdenCompra(Long idOrdenCompra) {
-    this.idOrdenCompra = idOrdenCompra;
+  public void setIdVenta(Long idVenta) {
+    this.idVenta = idVenta;
   }
 
-  public Long getIdOrdenCompra() {
-    return idOrdenCompra;
+  public Long getIdVenta() {
+    return idVenta;
   }
 
-  public void setIdOrdenBitacora(Long idOrdenBitacora) {
-    this.idOrdenBitacora = idOrdenBitacora;
+  public void setIdVentaEstatus(Long idVentaEstatus) {
+    this.idVentaEstatus = idVentaEstatus;
   }
 
-  public Long getIdOrdenBitacora() {
-    return idOrdenBitacora;
+  public Long getIdVentaEstatus() {
+    return idVentaEstatus;
   }
 
   public void setRegistro(Timestamp registro) {
@@ -107,25 +107,25 @@ public class TcManticOrdenesBitacoraDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdOrdenBitacora();
+  	return getIdVentaBitacora();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idOrdenBitacora = key;
+  	this.idVentaBitacora = key;
   }
 
   @Override
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getIdOrdenEstatus());
+		regresar.append(getIdVentaBitacora());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getJustificacion());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdOrdenCompra());
+		regresar.append(getIdVenta());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdOrdenBitacora());
+		regresar.append(getIdVentaEstatus());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -135,10 +135,10 @@ public class TcManticOrdenesBitacoraDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("idOrdenEstatus", getIdOrdenEstatus());
+		regresar.put("idVentaBitacora", getIdVentaBitacora());
 		regresar.put("justificacion", getJustificacion());
-		regresar.put("idOrdenCompra", getIdOrdenCompra());
-		regresar.put("idOrdenBitacora", getIdOrdenBitacora());
+		regresar.put("idVenta", getIdVenta());
+		regresar.put("idVentaEstatus", getIdVentaEstatus());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -146,7 +146,7 @@ public class TcManticOrdenesBitacoraDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdOrdenEstatus(), getJustificacion(), getIdOrdenCompra(), getIdOrdenBitacora(), getRegistro()
+    getIdVentaBitacora(), getJustificacion(), getIdVenta(), getIdVentaEstatus(), getRegistro()
     };
     return regresar;
   }
@@ -160,8 +160,8 @@ public class TcManticOrdenesBitacoraDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idOrdenBitacora~");
-    regresar.append(getIdOrdenBitacora());
+    regresar.append("idVentaBitacora~");
+    regresar.append(getIdVentaBitacora());
     regresar.append("|");
     return regresar.toString();
   }
@@ -169,18 +169,18 @@ public class TcManticOrdenesBitacoraDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdOrdenBitacora());
+    regresar.append(getIdVentaBitacora());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcManticOrdenesBitacoraDto.class;
+    return TcManticVentasBitacoraDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdOrdenBitacora()!= null && getIdOrdenBitacora()!=-1L;
+  	return getIdVentaBitacora()!= null && getIdVentaBitacora()!=-1L;
   }
 
   @Override
@@ -191,8 +191,8 @@ public class TcManticOrdenesBitacoraDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcManticOrdenesBitacoraDto other = (TcManticOrdenesBitacoraDto) obj;
-    if (getIdOrdenBitacora() != other.idOrdenBitacora && (getIdOrdenBitacora() == null || !getIdOrdenBitacora().equals(other.idOrdenBitacora))) {
+    final TcManticVentasBitacoraDto other = (TcManticVentasBitacoraDto) obj;
+    if (getIdVentaBitacora() != other.idVentaBitacora && (getIdVentaBitacora() == null || !getIdVentaBitacora().equals(other.idVentaBitacora))) {
       return false;
     }
     return true;
@@ -201,7 +201,7 @@ public class TcManticOrdenesBitacoraDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdOrdenBitacora() != null ? getIdOrdenBitacora().hashCode() : 0);
+    hash = 67 * hash + (getIdVentaBitacora() != null ? getIdVentaBitacora().hashCode() : 0);
     return hash;
   }
 

@@ -16,15 +16,16 @@ import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Articulo extends TcManticOrdenesDetallesDto implements Serializable {
+public class Articulo extends TcManticOrdenesDetallesDto implements Comparable<Articulo>, Serializable {
 
 	private static final long serialVersionUID=329661715469035396L;
 
-  private Long idArticulo;	
   private Long idProveedor;	
 	private Totales importes;
 	private boolean sinIva;
 	private double tipoDeCambio;
+	private Long idRedondear;
+	private double valor;
 	private UISelectEntity idEntity;
 
 	public Articulo() {
@@ -32,17 +33,17 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Serializable
 	}
 
 	public Articulo(Long key) {
-		this(true, 1.0, "", "", 0.0, "0", -1L, "0", 0D, "", 16D, 0D, 0D, 1L, -1L, -1L, 0D, -1L);
+		this(true, 1.0, "", "", 0.0, "0", -1L, "0", 0D, "", 16D, 0D, 0D, 1L, -1L, key, 0D, -1L);
 	}
 
 	public Articulo(boolean conIva, double tipoDeCambio, String nombre, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Long cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos, Long idProveedor) {
 		super(codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos, nombre);
 		this.idEntity    = new UISelectEntity(new Entity(-1L));
-		this.idArticulo  = idArticulo;
 		this.idProveedor = idProveedor;
 		this.sinIva      = conIva;
 		this.importes    = new Totales();
 		this.tipoDeCambio= tipoDeCambio;
+		this.valor       = costo;
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -61,16 +62,66 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Serializable
 		return importes;
 	}
 
+	@Override
 	public Long getIdArticulo() {
-		return idArticulo;
+		return super.getIdArticulo();
+	}
+
+	@Override
+	public void setIdArticulo(Long idArticulo) {
+		super.setIdArticulo(idArticulo);
+	}
+
+	@Override
+	public Long getKey() {
+		return super.getIdArticulo();
+	}
+
+	@Override
+	public boolean isValid() {
+		return this.getKey()!= null &&  this.getKey()> 0;
 	}
 
 	public Long getIdProveedor() {
 		return idProveedor;
 	}
 
+	public void setIdProveedor(Long idProveedor) {
+		this.idProveedor=idProveedor;
+	}
+
+	public Long getIdRedondear() {
+		return idRedondear;
+	}
+
+	public void setIdRedondear(Long idRedondear) {
+		this.idRedondear=idRedondear;
+	}
+
+	public void setValor(double valor) {
+		this.valor=valor;
+		super.setCosto(valor);
+	}
+
+	public double getValor() {
+		return valor;
+	}
+
+	public String getDiferencia() {
+		double diferencia= this.toDiferencia();
+		String color     = diferencia< -5? "janal-color-orange": diferencia> 5? "janal-color-blue": "janal-color-green";
+		return "<span class='".concat(color).concat("' style='float:right;'>").concat(String.valueOf(diferencia)).concat("</span>");
+	}
+
+	public String getCostoMayorMenor() {
+		double diferencia= this.toDiferencia();
+		String color     = diferencia< -5? "janal-color-orange": diferencia> 5? "janal-color-blue": "janal-color-green";
+		boolean display  = diferencia!= 0D;
+		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(display? "": "none").concat("' title='Diferencia: ").concat(String.valueOf(diferencia)).concat("%'></i>");
+	}
+	
+	
 	public void toPrepare(boolean conIva, Double tipoDeCambio, Long idProvedores) {
-		this.idArticulo  = super.getIdArticulo();
 		this.sinIva      = conIva;
 		this.tipoDeCambio= tipoDeCambio;
 		this.idProveedor = idProvedores;
@@ -84,7 +135,7 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Serializable
 	@Override
 	public int hashCode() {
 		int hash=3;
-		hash=19*hash+Objects.hashCode(this.idArticulo);
+		hash=19*hash+Objects.hashCode(super.getIdArticulo());
 		return hash;
 	}
 
@@ -100,7 +151,7 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Serializable
 			return false;
 		}
 		final Articulo other=(Articulo) obj;
-		if (!Objects.equals(this.idArticulo, other.idArticulo)) {
+		if (!Objects.equals(this.getIdArticulo(), other.getIdArticulo())) {
 			return false;
 		}
 		return true;
@@ -133,9 +184,22 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Serializable
 		this.toCalculate();
 	}
 
+	@Override
+	public int compareTo(Articulo current) {
+		int x= this.getIdArticulo().compareTo(current.getIdArticulo());
+		if (x!= 0) 
+      return x;
+		else 
+			return current.getCosto().compareTo(this.getCosto());
+	}
+	
+	private double toDiferencia() {
+  	return this.valor> 0? Numero.toRedondear(this.getCosto()* 100/ this.valor- 100): 0D;
+	}
+	
 	public static void main(String ... args) {
 		String search= "hola   como estas    ";
 		System.out.println(search.replaceAll("( |\\t)+", ".*.*"));
 	}	
-	
+
 }
