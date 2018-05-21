@@ -1033,7 +1033,7 @@
 		<unit id="TcManticProveedoresBancosDto">
       <select id="row">
         select     
-					tc_mantic_proveedores_bancos.id_proveedor_banco as id_key,
+					tc_mantic_proveedores_bancos.id_proveedor_banca as id_key,
 					tc_mantic_proveedores_bancos.*
         from      
           tc_mantic_proveedores_bancos
@@ -1050,7 +1050,7 @@
       </select>
 			<select id="maximo">
         select      
-          max(id_proveedor_banco) maximo
+          max(id_proveedor_banca) maximo
         from      
           tc_mantic_proveedores_bancos
       </select>
