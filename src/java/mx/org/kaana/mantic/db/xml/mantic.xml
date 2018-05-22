@@ -1272,7 +1272,7 @@
         from      
           tc_mantic_ordenes_compras
         where      
-          id_proveedor_pago = {idProveedorPago} and id_almacen = {idAlmacen} and id_empresa = {idEmpresa}
+          ejercicio = {ejercicio} and orden = {orden} and id_empresa = {idEmpresa}
       </select>
       <select id="detalle">
         select      
@@ -1725,7 +1725,7 @@
         from      
           tc_mantic_notas_detalles
         where      
-          id_nota_detalle = {idNotaDetalle} and id_nota_entrada = {idNotaEntrada} and id_articulo = {idArticulo}
+          ejercicio = {ejercicio} and orden = {orden} and id_empresa = {idEmpresa} and id_orden_compra = {idOrdenCompra}
       </select>
       <select id="detalle">
         select      
@@ -1774,7 +1774,7 @@
         from      
           tc_mantic_ventas
         where      
-          consecutivo = {consecutivo} and id_cliente = {idCliente} and dia = {dia} and id_venta = {idVenta}
+          consecutivo = {consecutivo} and dia = {dia} and id_empresa = {idEmpresa}
       </select>
     </unit>
     <unit id="TcManticVentasDetallesDto">
@@ -1870,27 +1870,69 @@
 				delete from tc_mantic_ordenes_detalles where tc_mantic_ordenes_detalles.registro.id_orden_compra= {idOrdenCompra}
 			</delete>
     </unit>						
-    <unit id="TcManticComprasEstatusDto">
+    <unit id="TcManticNotasEstatusDto">
       <select id="row">
         select      
-				  tc_mantic_compras_estatus.id_compra_estatus as id_key,
-          tc_mantic_compras_estatus.*
+				  tc_mantic_notas_estatus.id_orden_estatus as id_key,
+          tc_mantic_notas_estatus.*
         from      
-          tc_mantic_compras_estatus
+          tc_mantic_notas_estatus
         where 
           {condicion} 
 				order by 
-				  id_compra_estatus
+				  id_nota_estatus
       </select>
       <select id="identically">
         select      
           *
         from      
-          tc_mantic_compras_estatus
+          tc_mantic_notas_estatus
         where      
-          id_orden_compra_estatus = {idCompraEstatus}
+          nombre = '{nombre}' and id_nota_estatus = {idNotaEstatus}
       </select>
-    </unit>						
+    </unit>		
+    <unit id="TcManticOrdenesEstatusDto">
+      <select id="row">
+        select      
+				  tc_mantic_ordenes_estatus.id_orden_estatus as id_key,
+          tc_mantic_ordenes_estatus.*
+        from      
+          tc_mantic_ordenes_estatus
+        where 
+          {condicion} 
+				order by 
+				  id_orden_estatus
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ordenes_estatus
+        where      
+          id_orden_estatus = {idOrdenEstatus} and nombre = '{nombre}'
+      </select>
+    </unit>
+    <unit id="TcManticVentasEstatusDto">
+      <select id="row">
+        select      
+				  tc_mantic_ventas_estatus.id_orden_estatus as id_key,
+          tc_mantic_ventas_estatus.*
+        from      
+          tc_mantic_ventas_estatus
+        where 
+          {condicion} 
+				order by 
+				  id_orden_estatus
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ventas_estatus
+        where      
+          nombre = '{nombre}' and id_venta_estatus = {idVentaEstatus}
+      </select>
+    </unit>		
 		<unit id="TcManticGruposDto">
       <select id="row">
         select      
