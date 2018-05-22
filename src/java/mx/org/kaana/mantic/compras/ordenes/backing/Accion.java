@@ -98,6 +98,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			((OrdenCompra)this.getAdminOrden().getOrden()).setSubtotal(this.getAdminOrden().getTotales().getSubTotal());
 			((OrdenCompra)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
 			transaccion = new Transaccion(((OrdenCompra)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(eaccion)) {
 				if(eaccion.equals(EAccion.AGREGAR))
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);

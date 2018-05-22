@@ -40,6 +40,7 @@
 		VK_REST    : 189,
 		VK_PIPE    : 220,
 		VK_CTRL    : 17,
+		VK_MAYOR   :226,
 		cursor: {
 			top: 1, // el top debera ser elementos que van de 0 a n-1
 			index: 0
@@ -120,7 +121,7 @@
 						$('#aceptar').click();
 						return false;
 						break;
-					case $articulos.VK_CTRL:
+					case $articulos.VK_MAYOR:
 						return $articulos.show($(this));
 						break;
 					default:
@@ -204,10 +205,23 @@
 			} // if	
 			return true;
 		},
+		isOk: function(s) {
+      if(janal.empty(s))
+        if(arguments.length === 1)
+          return false;
+        else
+          return(arguments[1] === true);
+      for(var i= 0; i< s.length; i++) {
+        var c= s.charAt(i);
+        if(!janal.isDigit(c) && (c!==' ') && (c!==',') && (c!=='.'))
+          return false;
+      } // for
+      return true;
+		},
 		div: function() {
 			var value= this.get().trim();
 			var temp = $(this.discount()).val();
-			if($(this.discount()) && value.length> 0) {
+			if($(this.discount()) && value.length> 0 && this.isOk(value)) {
 			  $(this.discount()).val(value);
 				var ok= janal.descuentos($(this.discount()));
 				if(ok.error)
@@ -222,8 +236,8 @@
 		},
 		plus: function() {
 			var value = this.get().trim();
-			var temp = $(this.price()).val();
-			if($(this.price()) && value.length> 0 && janal.precio($(this.price()), value)) {
+			if($(this.price()) && value.length> 0 && this.isOk(value) && janal.precio($(this.price()), value)) {
+  			var temp = $(this.price()).val();
 			  $(this.price()).val(value);
 				var ok= janal.descuentos($(this.price()));
 				if(ok.error)
@@ -239,7 +253,7 @@
 		point: function() {
 			var value = this.get().trim();
 			var temp = $(this.additional()).val();
-			if($(this.additional()) && value.length> 0) {
+			if($(this.additional()) && value.length> 0 && this.isOk(value)) {
 			  $(this.additional()).val(value);
 				var ok= janal.descuentos($(this.additional()));
 				if(ok.error)
@@ -304,7 +318,7 @@
 		},
 	  callback: function(code) {
 			console.log('Call back: '+ code);
-		  return false
+		  return false;
 		},
 		close: function() {
 		  replace(this.cursor.index);
@@ -318,5 +332,4 @@
 	
 	console.info('Iktan.Control.Articulos initialized');
 })(window);
-
-
+			
