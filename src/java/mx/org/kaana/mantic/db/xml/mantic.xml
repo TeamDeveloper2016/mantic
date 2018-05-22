@@ -244,8 +244,7 @@
         delete from tr_mantic_articulo_proveedor where id_articulo={idArticulo} 
       </delete>
     </unit>
-    
-     <unit id="TrManticArticuloTipoVentaDto">
+    <unit id="TrManticArticuloTipoVentaDto">
       <select id="row">
         select      
           *
@@ -1728,6 +1727,19 @@
         where      
           id_nota_detalle = {idNotaDetalle} and id_nota_entrada = {idNotaEntrada} and id_articulo = {idArticulo}
       </select>
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_notas_detalles
+        where      
+          id_nota_entrada = {idNotaEntrada}
+				order by
+				  tc_mantic_notas_detalles.registro
+      </select>
+			<delete id="rows">
+				delete from tc_mantic_notas_detalles where tc_mantic_notas_detalles.id_nota_entrada= {idNotaEntrada}
+			</delete>
     </unit>
     <unit id="TcManticNotasBitacoraDto">
       <select id="row">
@@ -1818,6 +1830,14 @@
         where      
           consecutivo = '{consecutivo}' and id_proveedor = {idProveedor} and id_orden_compra = {idOrdenCompra} and id_empresa = {idEmpresa} and id_nota_entrada = {idNotaEntrada}
       </select>
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_notas_entradas
+        where 
+          id_nota_entrada = {idNotaEntrada}
+      </select>
     </unit>
     <unit id="TcManticOrdenesDetallesDto">
       <select id="row">
@@ -1846,6 +1866,9 @@
 				order by
 				  tc_mantic_ordenes_detalles.registro
       </select>
+			<delete id="rows">
+				delete from tc_mantic_ordenes_detalles where tc_mantic_ordenes_detalles.registro.id_orden_compra= {idOrdenCompra}
+			</delete>
     </unit>						
     <unit id="TcManticComprasEstatusDto">
       <select id="row">

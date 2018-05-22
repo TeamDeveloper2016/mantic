@@ -1,11 +1,15 @@
 package mx.org.kaana.mantic.compras.ordenes.beans;
 
 import java.io.Serializable;
-import java.util.Objects;
+import java.sql.Timestamp;
+import java.util.Calendar;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
+import mx.org.kaana.mantic.comun.beans.ArticuloDetalle;
+import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
 
 /**
@@ -16,7 +20,7 @@ import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Articulo extends TcManticOrdenesDetallesDto implements Comparable<Articulo>, Serializable {
+public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, Serializable {
 
 	private static final long serialVersionUID=329661715469035396L;
 
@@ -33,11 +37,12 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Comparable<A
 	}
 
 	public Articulo(Long key) {
+		
 		this(true, 1.0, "", "", 0.0, "0", -1L, "0", 0D, "", 16D, 0D, 0D, 1L, -1L, key, 0D, -1L);
 	}
 
 	public Articulo(boolean conIva, double tipoDeCambio, String nombre, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Long cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos, Long idProveedor) {
-		super(codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos, nombre);
+		super(idArticulo, codigo, costo, descuento, extras, importe, new Timestamp(Calendar.getInstance().getTimeInMillis()), propio, iva, totalImpuesto, subTotal, cantidad, totalDescuentos, nombre, "", "");
 		this.idEntity    = new UISelectEntity(new Entity(-1L));
 		this.idProveedor = idProveedor;
 		this.sinIva      = conIva;
@@ -127,36 +132,6 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Comparable<A
 		this.idProveedor = idProvedores;
 	}
 	
-	@Override
-	public Class toHbmClass() {
-		return TcManticOrdenesDetallesDto.class;
-	}
-
-	@Override
-	public int hashCode() {
-		int hash=3;
-		hash=19*hash+Objects.hashCode(super.getIdArticulo());
-		return hash;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this==obj) {
-			return true;
-		}
-		if (obj==null) {
-			return false;
-		}
-		if (getClass()!=obj.getClass()) {
-			return false;
-		}
-		final Articulo other=(Articulo) obj;
-		if (!Objects.equals(this.getIdArticulo(), other.getIdArticulo())) {
-			return false;
-		}
-		return true;
-	}
-
 	private void toCalculate() {
 		double costoMoneda= this.getCosto()* this.tipoDeCambio;
 		double costoReal  = this.getCantidad()* costoMoneda;
@@ -197,9 +172,50 @@ public class Articulo extends TcManticOrdenesDetallesDto implements Comparable<A
   	return this.valor> 0? Numero.toRedondear(this.getCosto()* 100/ this.valor- 100): 0D;
 	}
 	
+	public TcManticNotasDetallesDto toNotaDetalle() {
+		return new TcManticNotasDetallesDto(
+			Cadena.isVacio(this.getCodigo())? this.getPropio(): this.getCodigo(), 
+			this.getUnidadMedida(), 
+			this.getCosto(), 
+			this.getDescuento(), 
+			this.getSat(), 
+			this.getExtras(), 
+			-1L, /*idNotaEntrada, */
+			this.getNombre(), 
+			this.getImporte(), 
+			this.getIva(), 
+			-1L, /*idNotaDetalle, */
+			this.getSubTotal(), 
+			this.getCantidad(), 
+			this.getIdArticulo(), 
+			this.getTotalDescuentos(), 
+			this.getTotalImpuesto()
+		);
+	}
+
+	public TcManticOrdenesDetallesDto toOrdenDetalle() {
+		return new TcManticOrdenesDetallesDto(
+			Cadena.isVacio(this.getCodigo())? this.getPropio(): this.getCodigo(), 
+			this.getCosto(), 
+			this.getDescuento(), 
+			-1L, /*idOrdenCompra, */
+			this.getExtras(), 
+			this.getNombre(), 
+			this.getImporte(), 
+			this.getPropio(), 
+			this.getIva(), 
+			this.getTotalImpuesto(), 
+			this.getSubTotal(), 
+			this.getCantidad(), 
+			-1L , /*idOrdenDetalle, */
+			this.getIdArticulo(), 
+			this.getTotalDescuentos()
+		);
+	}
+	
 	public static void main(String ... args) {
 		String search= "hola   como estas    ";
 		System.out.println(search.replaceAll("( |\\t)+", ".*.*"));
 	}	
-
+	
 }

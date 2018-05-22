@@ -44,6 +44,8 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
   private Long idOrdenCompra;
   @Column (name="extras")
   private String extras;
+  @Column (name="nombre")
+  private String nombre;
   @Column (name="importe")
   private Double importe;
   @Column (name="registro")
@@ -67,24 +69,22 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
   @Column (name="total_descuentos")
   private Double totalDescuentos;
 
-  @Column (name="nombre")
-  private String nombre;
-
   public TcManticOrdenesDetallesDto() {
     this(new Long(-1L));
   }
 
   public TcManticOrdenesDetallesDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null);
+    this(null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcManticOrdenesDetallesDto(String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Long cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos, String nombre) {
+  public TcManticOrdenesDetallesDto(String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, String nombre, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Long cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos) {
     setCodigo(codigo);
     setCosto(costo);
     setDescuento(descuento);
     setIdOrdenCompra(idOrdenCompra);
     setExtras(extras);
+    setNombre(nombre);
     setImporte(importe);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
     setPropio(propio);
@@ -95,7 +95,6 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
     setIdOrdenDetalle(idOrdenDetalle);
     setIdArticulo(idArticulo);
     setTotalDescuentos(totalDescuentos);
-    setNombre(nombre);
   }
 	
   public void setCodigo(String codigo) {
@@ -136,6 +135,14 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
 
   public String getExtras() {
     return extras;
+  }
+
+  public void setNombre(String nombre) {
+    this.nombre = nombre;
+  }
+
+  public String getNombre() {
+    return nombre;
   }
 
   public void setImporte(Double importe) {
@@ -218,14 +225,6 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
     return totalDescuentos;
   }
 
-	public String getNombre() {
-		return nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre=nombre;
-	}
-
   @Transient
   @Override
   public Long getKey() {
@@ -251,6 +250,8 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getExtras());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getNombre());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImporte());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
@@ -270,8 +271,6 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
 		regresar.append(getIdArticulo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getTotalDescuentos());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getNombre());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -284,6 +283,7 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
 		regresar.put("descuento", getDescuento());
 		regresar.put("idOrdenCompra", getIdOrdenCompra());
 		regresar.put("extras", getExtras());
+		regresar.put("nombre", getNombre());
 		regresar.put("importe", getImporte());
 		regresar.put("registro", getRegistro());
 		regresar.put("propio", getPropio());
@@ -294,14 +294,13 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
 		regresar.put("idOrdenDetalle", getIdOrdenDetalle());
 		regresar.put("idArticulo", getIdArticulo());
 		regresar.put("totalDescuentos", getTotalDescuentos());
-		regresar.put("nombre", getNombre());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getCodigo(), getCosto(), getDescuento(), getIdOrdenCompra(), getExtras(), getImporte(), getRegistro(), getPropio(), getIva(), getTotalImpuesto(), getSubTotal(), getCantidad(), getIdOrdenDetalle(), getIdArticulo(), getTotalDescuentos(), getNombre()
+    getCodigo(), getCosto(), getDescuento(), getIdOrdenCompra(), getExtras(), getNombre(), getImporte(), getRegistro(), getPropio(), getIva(), getTotalImpuesto(), getSubTotal(), getCantidad(), getIdOrdenDetalle(), getIdArticulo(), getTotalDescuentos()
     };
     return regresar;
   }

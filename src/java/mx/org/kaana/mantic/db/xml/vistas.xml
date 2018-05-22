@@ -319,6 +319,15 @@
 				order by
 				  tc_mantic_notas_entradas.consecutivo				
 			</select>
+      <select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_notas_entradas
+				where
+				  ejercicio= {ejercicio} 
+				  and id_empresa= {idEmpresa}				
+			</select>			
 		</unit>
 		<unit id="VistaOrdenesComprasDto">
 			<select id="row">

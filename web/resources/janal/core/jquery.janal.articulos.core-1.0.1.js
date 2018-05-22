@@ -23,6 +23,7 @@
 		selector   : '.key-down-event',
 		focus      : '.key-focus-event',
 		lookup     : '.key-up-event',
+		porcentajes: '.key-press-enter',
 		current    : '',
 		dialog     : 'dialogo',
 		typingTimer: null,
@@ -62,6 +63,15 @@
       $(document).on('focus', this.selector, function() {
 				$articulos.index($(this).attr('id'));
 			});  
+      $(document).on('keydown', this.porcentajes, function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
+				switch(key) {
+					case $articulos.VK_ENTER:
+						$(this).blur();
+						return false;
+						break;
+				} // switch
+			});	
       $(document).on('keydown', this.focus, function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
 				switch(key) {

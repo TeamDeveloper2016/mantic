@@ -26,11 +26,11 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
 	}
 
 	public NotaEntrada(Long key) {
-		super(0D, -1L, "0", -1L, 1L, new Date(Calendar.getInstance().getTimeInMillis()), "0", key, new Date(Calendar.getInstance().getTimeInMillis()), 1L, new Long(Calendar.getInstance().get(Calendar.YEAR)), "201800000", 0D, "", 1L, -1L, 0D, 0D, 10D, 1L, "", -1L, 1L);
+		super(0D, null, "0", null, 1L, new Date(Calendar.getInstance().getTimeInMillis()), "0", key, new Date(Calendar.getInstance().getTimeInMillis()), 1L, new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", 0D, "", 1L, -1L, 0D, 0D, 10D, 1L, "", -1L, 1L);
 	}
 
-	public NotaEntrada(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Date entregaEstimada, Long idCompraEstatus, Long idUsuario, Long idAlmacen, Double impuestos, Double subtotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden) {
-		super(descuentos, idProveedor, descuento, idOrdenCompra, idEmpresa, entregaEstimada, extras, idEmpresa, entregaEstimada, idCompraEstatus, ejercicio, consecutivo, total, extras, idUsuario, idAlmacen, subtotal, impuestos, tipoDeCambio, idSinIva, observaciones, idEmpresa, orden);
+	public NotaEntrada(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idDirecta, Date fechaRecepcion, String extras, Long idNotaEntrada, Date fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subtotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden) {
+		super(descuentos, idProveedor, descuento, idOrdenCompra, idDirecta, fechaRecepcion, extras, idNotaEntrada, fechaFactura, idNotaEstatus, ejercicio, consecutivo, total, factura, idUsuario, idAlmacen, subtotal, impuestos, tipoDeCambio, idSinIva, observaciones, idEmpresa, orden);
 	}
 
 	public UISelectEntity getIkAlmacen() {

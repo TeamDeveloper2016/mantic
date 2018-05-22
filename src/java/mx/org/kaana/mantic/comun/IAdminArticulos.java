@@ -30,37 +30,11 @@ public abstract class IAdminArticulos implements Serializable {
 
 	private static final long serialVersionUID=506956550372353914L;
 	
-	private TcManticProveedoresDto proveedor;
-	private TcManticAlmacenesDto almacen;
 	private List<Articulo> articulos;
 	private Totales totales;
 
-	public IAdminArticulos(Boolean isNew, Map params) throws Exception {
+	public IAdminArticulos() throws Exception {
 		this.totales= new Totales();
-		if(isNew) {
-		  this.articulos= new ArrayList<>();
-			this.articulos.add(new Articulo(-1L));
-		} // if	
-		else {
-  	  this.articulos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticOrdenesDetallesDto", "detalle", params);
-			this.toCalculate();
-		} // else
-	}
-
-	public TcManticProveedoresDto getProveedor() {
-		return proveedor;
-	}
-
-	public void setProveedor(TcManticProveedoresDto proveedor) {
-		this.proveedor=proveedor;
-	}
-
-	public TcManticAlmacenesDto getAlmacen() {
-		return almacen;
-	}
-
-	public void setAlmacen(TcManticAlmacenesDto almacen) {
-		this.almacen=almacen;
 	}
 
 	public List<Articulo> getArticulos() {
@@ -75,6 +49,10 @@ public abstract class IAdminArticulos implements Serializable {
 		return totales;
 	}
 
+	public abstract Long getIdAlmacen();
+
+	public abstract Long getIdProveedor();
+	
 	public abstract IBaseDto getOrden();
 	
 	public abstract void setOrden(IBaseDto orden);

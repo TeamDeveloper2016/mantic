@@ -23,7 +23,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.entradas.beans.NotaEntrada;
 import mx.org.kaana.mantic.compras.entradas.reglas.AdminNotas;
-import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
+import mx.org.kaana.mantic.compras.entradas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import org.primefaces.event.TabChangeEvent;
@@ -53,8 +53,6 @@ public class Accion extends IBaseArticulos implements Serializable {
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idOrdenCompra"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
-			this.attrs.put("cantidad", 1);
-			this.attrs.put("precio", 0);
 			this.attrs.put("sinIva", false);
 			doLoad();
     } // try
@@ -74,7 +72,7 @@ public class Accion extends IBaseArticulos implements Serializable {
           this.setAdminOrden(new AdminNotas(new NotaEntrada(-1L)));
           break;
         case MODIFICAR:					
-          this.setAdminOrden(new AdminNotas((NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticOrdenesComprasDto", "detalle", this.attrs)));
+          this.setAdminOrden(new AdminNotas((NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradaDto", "detalle", this.attrs)));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
           break;
       } // switch
@@ -96,15 +94,16 @@ public class Accion extends IBaseArticulos implements Serializable {
 			((NotaEntrada)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setSubtotal(this.getAdminOrden().getTotales().getSubTotal());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
-			transaccion = new Transaccion(null /*((NotaEntrada)this.getAdminOrden().getOrden())*/, this.getAdminOrden().getArticulos());
+			this.getAdminOrden().toAdjustArticulos();
+			transaccion = new Transaccion(((NotaEntrada)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 			if (transaccion.ejecutar(eaccion)) {
 				if(eaccion.equals(EAccion.AGREGAR))
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra."), ETipoMensaje.INFORMACION);
-  			JsfBase.setFlashAttribute("idOrdenCompra", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdOrdenCompra());
+  			JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la orden de compra.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la nota de entrada.", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -176,5 +175,5 @@ public class Accion extends IBaseArticulos implements Serializable {
 		if(event.getTab().getTitle().equals("Faltantes") && this.attrs.get("faltantes")== null) 
       this.toLoadFaltantes();
 	}
-
+	
 }

@@ -7,9 +7,7 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
@@ -21,12 +19,9 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
-import mx.org.kaana.mantic.compras.entradas.beans.NotaEntrada;
-import mx.org.kaana.mantic.compras.entradas.reglas.AdminNotas;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloPrecioSugeridoDto;
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.TabChangeEvent;
 
 /**
  *@company KAANA
@@ -40,13 +35,13 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 
 	private static final long serialVersionUID=-7378726801437171894L;
 	
-  private AdminNotas adminOrden;
+  private IAdminArticulos adminOrden;
 
-	public AdminNotas getAdminOrden() {
+	public IAdminArticulos getAdminOrden() {
 		return adminOrden;
 	}
 
-	public void setAdminOrden(AdminNotas adminOrden) {
+	public void setAdminOrden(IAdminArticulos adminOrden) {
 		this.adminOrden=adminOrden;
 	}
 
@@ -75,7 +70,6 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 		} // if	
 		else
 			temporal.setNombre("<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
-		
 	}
 	
 	public void doUpdateArticulo(String codigo, Integer index) {
@@ -309,8 +303,8 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
     Map<String, Object> params= new HashMap<>();
     try {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			params.put("idAlmacen", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdAlmacen());
-			params.put("idProveedor", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdProveedor());
+			params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
+			params.put("idProveedor", this.getAdminOrden().getIdProveedor());
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));

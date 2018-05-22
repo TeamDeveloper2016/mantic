@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.compras.ordenes.beans;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.Calendar;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 
@@ -27,11 +28,11 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 	}
 
 	public OrdenCompra(Long key) {
-		super(key);
+		this(-1L, 0D, -1L, -1L, "0", -1L, "0", new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", 2L, 0D, 1L, new Date(Calendar.getInstance().getTimeInMillis()), 1L, -1L, 0D, 0D, 10D, 1L, "", -1L, 1L);
 	}
 
-	public OrdenCompra(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Date entregaEstimada, Long idCompraEstatus, Long idUsuario, Long idAlmacen, Double impuestos, Double subtotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden) {
-		super(idProveedorPago, descuentos, idProveedor, idCliente, descuento, idOrdenCompra, extras, ejercicio, consecutivo, idGasto, total, idCompraEstatus, entregaEstimada, idUsuario, idAlmacen, impuestos, subtotal, tipoDeCambio, idSinIva, observaciones, idEmpresa, orden);
+	public OrdenCompra(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Long idOrdenEstatus, Date entregaEstimada, Long idUsuario, Long idAlmacen, Double impuestos, Double subtotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden) {
+		super(idProveedorPago, descuentos, idProveedor, idCliente, descuento, idOrdenCompra, extras, ejercicio, consecutivo, idGasto, total, idOrdenEstatus, entregaEstimada, idUsuario, idAlmacen, impuestos, subtotal, tipoDeCambio, idSinIva, observaciones, idEmpresa, orden);
 	}
 
 	public UISelectEntity getIkAlmacen() {
