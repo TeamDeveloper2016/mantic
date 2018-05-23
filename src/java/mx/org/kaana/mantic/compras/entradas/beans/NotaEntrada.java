@@ -20,6 +20,7 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
 	
 	private UISelectEntity ikAlmacen;
 	private UISelectEntity ikProveedor;
+	private UISelectEntity ikOrdenCompra;
 
 	public NotaEntrada() {
 		this(-1L);
@@ -53,6 +54,17 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
 		  this.setIdProveedor(this.ikProveedor.getKey());
 	}
 
+	public UISelectEntity getIkOrdenCompra() {
+		return ikOrdenCompra;
+	}
+
+	public void setIkOrdenCompra(UISelectEntity ikOrdenCompra) {
+		this.ikOrdenCompra=ikOrdenCompra;
+		if(this.ikOrdenCompra!= null)
+  	  this.setIdOrdenCompra(this.ikOrdenCompra.getKey());
+	}
+
+	
 	@Override
 	public Class toHbmClass() {
 		return TcManticNotasEntradasDto.class;

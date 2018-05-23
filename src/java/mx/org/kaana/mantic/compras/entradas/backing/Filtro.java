@@ -84,10 +84,18 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doLoad
 
   public String doAccion(String accion) {
+		String regresar= "/Paginas/Mantic/Compras/Entradas/accion";
     EAccion eaccion= null;
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
-			JsfBase.setFlashAttribute("accion", eaccion);		
+			if(eaccion.equals(EAccion.COMPLETO)) 
+			  JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
+			else 
+			  JsfBase.setFlashAttribute("accion", eaccion);		
+			if(!eaccion.equals(EAccion.COMPLETO) || (eaccion.equals(EAccion.MODIFICAR) && ((Entity)this.attrs.get("seleccionado")).toLong("idDirecta").equals(2L))) 
+				regresar= regresar.concat("?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs");
+			else
+				regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Compras/Entradas/filtro");		
 			JsfBase.setFlashAttribute("idNotaCompra", eaccion.equals(EAccion.MODIFICAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 		} // try
@@ -95,7 +103,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return "/Paginas/Mantic/Compras/Entradas/accion".concat(Constantes.REDIRECIONAR);
+		return regresar.concat(Constantes.REDIRECIONAR_AMPERSON);
   } // doAccion  
 	
   public void doEliminar() {

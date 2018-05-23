@@ -137,6 +137,10 @@ public class Accion extends IBaseArticulos implements Serializable {
 				((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(proveedores.get(0));
 			  this.attrs.put("proveedor", proveedores.get(0));
 			} // if	
+      this.attrs.put("ordenes", UIEntity.build("VistaNotasEntradasDto", "ordenes", params, columns));
+			List<UISelectEntity> ordenes= (List<UISelectEntity>)this.attrs.get("ordenes");
+			if(!ordenes.isEmpty()) 
+				((NotaEntrada)this.getAdminOrden().getOrden()).setIkOrdenCompra(ordenes.get(0));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
