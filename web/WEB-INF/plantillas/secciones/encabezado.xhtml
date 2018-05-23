@@ -51,9 +51,12 @@
 	</div>
 	<div id="sticky-menu" class="ui-panel ui-widget ui-widget-content ui-corner-all janal-content-header Responsive100">
 		<ui:include src="/WEB-INF/plantillas/secciones/topbar.xhtml"/>
+		<h:form prependId="false">
+		  <p:remoteCommand name="clean" actionListener="#{kaanaPlantillasSecciones.doCleanFlash}" process="@this"/>
+		</h:form>
 		<div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header" style="display: -webkit-box;">
 			<h:panelGrid id="iktan-slide-menu">
-				<a href="#" class="BordRad3" onclick="mmenu.open('#{kajoolTemaActivo.name}');">
+				<a href="#" class="BordRad3" onclick="mmenu.open('#{kajoolTemaActivo.name}');clean();">
 					<i class="fa fa-lg icon-menu-1" style="color: white"/>
 				</a>
 			</h:panelGrid>  

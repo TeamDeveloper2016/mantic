@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
@@ -30,6 +32,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private double tipoDeCambio;
 	private Long idRedondear;
 	private double valor;
+	private boolean ultimo;
+	private boolean solicitado;
 	private UISelectEntity idEntity;
 
 	public Articulo() {
@@ -37,11 +41,10 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 
 	public Articulo(Long key) {
-		
-		this(true, 1.0, "", "", 0.0, "0", -1L, "0", 0D, "", 16D, 0D, 0D, 1L, -1L, key, 0D, -1L);
+		this(true, 1.0, "", "", 0.0, "0", -1L, "0", 0D, "", 16D, 0D, 0D, 1L, -1L, key, 0D, -1L, false, false);
 	}
 
-	public Articulo(boolean conIva, double tipoDeCambio, String nombre, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Long cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos, Long idProveedor) {
+	public Articulo(boolean conIva, double tipoDeCambio, String nombre, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Long cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos, Long idProveedor, boolean ultimo, boolean solicitado) {
 		super(idArticulo, codigo, costo, descuento, extras, importe, new Timestamp(Calendar.getInstance().getTimeInMillis()), propio, iva, totalImpuesto, subTotal, cantidad, totalDescuentos, nombre, "", "");
 		this.idEntity    = new UISelectEntity(new Entity(-1L));
 		this.idProveedor = idProveedor;
@@ -49,6 +52,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.importes    = new Totales();
 		this.tipoDeCambio= tipoDeCambio;
 		this.valor       = costo;
+		this.ultimo      = ultimo;
+		this.solicitado  = solicitado;
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -112,6 +117,27 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		return valor;
 	}
 
+	public boolean isUltimo() {
+		return ultimo;
+	}
+
+	public void setUltimo(boolean ultimo) {
+		this.ultimo=ultimo;
+	}
+
+	public boolean isSolicitado() {
+		return solicitado;
+	}
+
+	public void setSolicitado(boolean solicitado) {
+		this.solicitado=solicitado;
+	}
+	
+	public String getImporte$() {
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.getImporte());
+	}
+
+
 	public String getDiferencia() {
 		double diferencia= this.toDiferencia();
 		String color     = diferencia< -5? "janal-color-orange": diferencia> 5? "janal-color-blue": "janal-color-green";
@@ -125,6 +151,15 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(display? "": "none").concat("' title='Diferencia: ").concat(String.valueOf(diferencia)).concat("%'></i>");
 	}
 	
+	public String getEstaSolicitado() {
+		String color= "janal-color-green";
+		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(this.solicitado? "": "none").concat("' title='El articulo esta solicitado en una orden de compra vigente !'></i>");
+	}
+	
+	public String getPrecioSugerido() {
+		String color= "janal-color-orange";
+		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(this.ultimo? "": "none").concat("' title='El articulo tiene un precio especial de un proveedor !'></i>");
+	}
 	
 	public void toPrepare(boolean conIva, Double tipoDeCambio, Long idProvedores) {
 		this.sinIva      = conIva;

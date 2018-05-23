@@ -1,6 +1,8 @@
 package mx.org.kaana.mantic.compras.ordenes.beans;
 
 import java.io.Serializable;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 
 /**
@@ -50,12 +52,20 @@ public final class Totales implements Serializable {
 		return Numero.toRedondear(importe);
 	}
 
+	public String getImporte$() {
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(importe));
+	}
+
 	public void setImporte(double importe) {
 		this.importe=importe;
 	}
 	
 	public double getIva() {
 		return Numero.toRedondear(iva);
+	}
+
+	public String getIva$() {
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(iva));
 	}
 
 	public void setIva(double iva) {
@@ -66,12 +76,20 @@ public final class Totales implements Serializable {
 		return Numero.toRedondear(descuento);
 	}
 
+	public String getDescuento$() {
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(descuento));
+	}
+
 	public void setDescuento(double descuento) {
 		this.descuento=descuento;
 	}
 
 	public double getExtra() {
 		return Numero.toRedondear(extra);
+	}
+
+	public String getExtra$() {
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(extra));
 	}
 
 	public void setExtra(double extra) {
@@ -82,12 +100,20 @@ public final class Totales implements Serializable {
 		return Numero.toRedondear(subTotal);
 	}
 
+	public String getSubTotal$() {
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(subTotal));
+	}
+
 	public void setSubTotal(double subTotal) {
 		this.subTotal=subTotal;
 	}
 
 	public double getTotal() {
 		return Numero.toRedondear(total);
+	}
+
+	public String getTotal$() {
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(total));
 	}
 
 	public void setTotal(double total) {

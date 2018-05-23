@@ -48,6 +48,7 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
   private void toMoveData(UISelectEntity articulo, Integer index) {
 		Articulo temporal= this.adminOrden.getArticulos().get(index);
 		if(articulo.size()> 1) {
+			this.doSearchArticulo(articulo.toLong("idArticulo"), index);
 			temporal.setKey(articulo.toLong("idArticulo"));
 			temporal.setIdArticulo(articulo.toLong("idArticulo"));
 			temporal.setIdProveedor(articulo.toLong("idProveedor"));
@@ -60,13 +61,14 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 			temporal.setDescuento(this.adminOrden.getDescuento());
 			temporal.setExtras(this.adminOrden.getExtras());
 			temporal.setCantidad(1L);
+			temporal.setUltimo(this.attrs.get("ultimo")!= null);
+			temporal.setSolicitado(this.attrs.get("solicitado")!= null);
 			if(index== this.adminOrden.getArticulos().size()- 1) {
 				this.adminOrden.getArticulos().add(new Articulo(-1L));
 				RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
 			} // if	
 			RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
 			this.adminOrden.toCalculate();
-			this.doSearchArticulo(articulo.toLong("idArticulo"), index);
 		} // if	
 		else
 			temporal.setNombre("<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
@@ -83,7 +85,12 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
   		params.put("codigo", codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*"));
       List<UISelectEntity> articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "codigos", params, columns);
-			this.toMoveData(UIBackingUtilities.toFirstKeySelectEntity(articulos), index);
+			UISelectEntity articulo= UIBackingUtilities.toFirstKeySelectEntity(articulos);
+			int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(articulo.toLong("idArticulo")));
+			if(articulo.size()> 1 && position>= 0)
+				RequestContext.getCurrentInstance().execute("jsArticulos.exists("+ position+ ");");
+			else
+			  this.toMoveData(articulo, index);
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -261,6 +268,7 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 
 	public void toAddArticulo(UISelectEntity seleccionado) throws Exception {
 		Long idOrdenDetalle= new Long((int)(Math.random()*10000));
+  	this.doSearchArticulo(seleccionado.toLong("idArticulo"), 0);
 		Articulo item= new Articulo(
 			(Boolean)this.attrs.get("sinIva"),
 			this.getAdminOrden().getTipoDeCambio(),
@@ -279,7 +287,9 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 			-1* idOrdenDetalle, 
 			seleccionado.toLong("idArticulo"), 
 			0.0,
-			((UISelectEntity)this.attrs.get("idProveedor")).getKey());
+			((UISelectEntity)this.attrs.get("idProveedor")).getKey(),
+		  this.attrs.get("ultimo")!= null,
+		  this.attrs.get("solicitado")!= null);
 		if(this.getAdminOrden().add(item))
 			RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
 		RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ item.toMap()+ "');");

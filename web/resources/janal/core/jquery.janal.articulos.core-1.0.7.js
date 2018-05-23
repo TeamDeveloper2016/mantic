@@ -28,6 +28,7 @@
 		dialog     : 'dialogo',
 		typingTimer: null,
 		doneInterval: 10000,
+		continue   : false,
 		VK_ENTER   : 13, // Attributes
 		VK_ESC     : 27,
 		VK_ASTERISK: 106,
@@ -272,8 +273,18 @@
 			  locate(value, this.cursor.index);
 			return false;
 		},
+		exists: function(index) {
+			alert('El articulo ya existe en la orden y se encuentra en la fila '+ (index+ 1)+ '.');
+			if(index>= 0 && index< this.cursor.top) {
+				if(index=== 0)
+					this.cursor.index= this.cursor.top;
+				else
+			    this.cursor.index= index- 1;
+				this.continue= true;
+			} // if	
+		}, 
 		goto: function() {
-			if($(this.name()))
+			if($(this.name())) 
 				$(this.name()).focus();
 		},
 		clean: function() {
@@ -289,8 +300,8 @@
 			this.cursor.top= top;
 		},
 		calculate: function(active) {
-			if($(active).val()!= this.current)
-				if(parseFloat($(active).val(), 10)!= parseFloat(this.current, 10))
+			if($(active).val()!== this.current)
+				if(parseFloat($(active).val(), 10)!== parseFloat(this.current, 10))
   				this.refresh();
 			  else
   				if($(active).val().indexOf(',')>= 0 || this.current.indexOf(',')>= 0)
@@ -298,8 +309,10 @@
 			return false;	
 		},
 		next: function() {
-			if($(this.key()) && parseInt($(this.key()).val(), 10)> 0)
+			if(($(this.key()) && parseInt($(this.key()).val(), 10)> 0) || this.continue) {
+				this.continue= false;
   			this.down();
+			} // if	
 		},
 		reset: function(name) {
 			if($(name).attr('id').endsWith(this.prices.substring(2)))

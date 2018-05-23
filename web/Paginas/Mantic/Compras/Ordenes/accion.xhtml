@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="#{manticComprasOrdendesAccion.attrs.nombreAccion} una orden de compra #{manticComprasOrdendesAccion.tipoOrden.titulo}"/>
 	<ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.janal.articulos.core-1.0.2.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.articulos.core-1.0.7.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:consecutivo'    : {validaciones: 'requerido', mascara: 'libre'},
@@ -27,6 +27,7 @@
 				'contenedorGrupos\\:extra'          : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'articulo'},			
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
 			};	
+			
     	$(document).ready(function() {
         jsArticulos= new Janal.Control.Articulos.Core(#{manticComprasOrdendesAccion.adminOrden.articulos.size()});
       });
@@ -194,8 +195,16 @@
 														<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(9)}" styleClass="Fs15" escape="false"/>
 													</pe:tooltip>
 												</f:facet>
-												<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
-												<p:inputText id="codigos" value="#{row['propio']}" styleClass="janal-wid-100-txt key-down-event"/>
+												<div class="ui-grid-row janal-grid-row">
+													<div class="ui-grid-col-12" style="padding-right: 14px;">
+  	 										  	<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
+	  											  <p:inputText id="codigos" value="#{row['propio']}" styleClass="janal-wid-100-txt key-down-event"/>
+													</div>	
+												  <div style="width: 10px; margin-left: -5px; margin-top: 8px;">
+												    <h:outputText value="#{row['estaSolicitado']}" escape="false"/>
+												    <h:outputText value="#{row['precioSugerido']}" escape="false"/>
+												  </div>
+												</div>	
 											</p:column>		
 											<p:column  class="MarAuto Responsive">
 												<f:facet name="header">
@@ -254,7 +263,7 @@
 												<f:facet name="header">
 													<h:outputText value="$ Importe"/>
 												</f:facet>
-												<p:outputLabel value="#{row['importe']}"/>
+												<p:outputLabel value="#{row['importe$']}"/>
 											</p:column>		
 										</p:dataTable>
 										<p:spacer width="5"/>
@@ -266,24 +275,24 @@
 									    </div>	
 											<div class="ui-grid-col-2 janal-column-center">
   											<p:outputLabel value="IVA:"/><br/>
-												<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticComprasOrdendesAccion.adminOrden.totales.iva}"/>
+												<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticComprasOrdendesAccion.adminOrden.totales.iva$}"/>
 									    </div>	
 											<div class="ui-grid-col-2 janal-column-center">
 											  <p:outputLabel value="Descuento:"/><br/>
-											  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticComprasOrdendesAccion.adminOrden.totales.descuento}"/>
+											  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticComprasOrdendesAccion.adminOrden.totales.descuento$}"/>
 									    </div>	
 											<div class="ui-grid-col-2 janal-column-center">
 											  <p:outputLabel value="Extra:"/><br/>
-											  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticComprasOrdendesAccion.adminOrden.totales.extra}"/>
+											  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticComprasOrdendesAccion.adminOrden.totales.extra$}"/>
 									    </div>	
 											<div class="ui-grid-col-2 janal-column-center">
 											  <p:outputLabel value="Subtotal:"/><br/>
-											  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticComprasOrdendesAccion.adminOrden.totales.subTotal}"/>
+											  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticComprasOrdendesAccion.adminOrden.totales.subTotal$}"/>
 									    </div>	
 											<div class="ui-grid-col-2 janal-column-center ">
   											<p:outputLabel for="total" value="Total:"/><br/>
 												<p:inputText id="total" value="#{manticComprasOrdendesAccion.adminOrden.totales.articulos}" style="display:none"/>
-											  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticComprasOrdendesAccion.adminOrden.totales.total}"/>
+												<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticComprasOrdendesAccion.adminOrden.totales.total$}"/>
 									    </div>	
 										</div>	
 									</div>									
@@ -301,7 +310,7 @@
 										<p:outputLabel value="No. orden"/><br/>
 										<h:outputText value="#{manticComprasOrdendesAccion.attrs.solicitado.consecutivo}"/>
 									</div>	
-									<div class="ui-grid-col-6">
+									<div class="ui-grid-col-8">
 										<p:outputLabel value="Proveedor:"/><br/>
 										<h:outputText value="#{manticComprasOrdendesAccion.attrs.solicitado.razonSocial}"/>
 									</div>	
@@ -310,14 +319,10 @@
 										<h:outputText value="#{manticComprasOrdendesAccion.attrs.solicitado.costo}"/>
 									</div>	
 									<div class="ui-grid-col-1 janal-column-center">
-										<p:outputLabel value="Moneda:"/><br/>
-										<h:outputText value="#{manticComprasOrdendesAccion.attrs.solicitado.moneda}"/>
-									</div>	
-									<div class="ui-grid-col-1 janal-column-center">
 										<p:outputLabel value="Cantidad:"/><br/>
 										<h:outputText value="#{manticComprasOrdendesAccion.attrs.solicitado.cantidad}"/>
 									</div>	
-									<div class="ui-grid-col-2 janal-column-center">
+									<div class="ui-grid-col-1 janal-column-center">
 										<p:outputLabel value="Fecha compra:"/><br/>
 										<h:outputText value="#{manticComprasOrdendesAccion.attrs.solicitado.registro}"/>
 									</div>	
@@ -333,7 +338,7 @@
 										<p:outputLabel value="No. orden"/><br/>
 										<h:outputText value="#{manticComprasOrdendesAccion.attrs.ultimo.consecutivo}"/>
 									</div>	
-									<div class="ui-grid-col-6">
+									<div class="ui-grid-col-8">
 										<p:outputLabel value="Proveedor:"/><br/>
 										<h:outputText value="#{manticComprasOrdendesAccion.attrs.ultimo.razonSocial}"/>
 									</div>	
@@ -342,14 +347,10 @@
 										<h:outputText value="$ #{manticComprasOrdendesAccion.attrs.ultimo.costo}"/>
 									</div>	
 									<div class="ui-grid-col-1 janal-column-center">
-										<p:outputLabel value="Moneda:"/><br/>
-										<h:outputText value="#{manticComprasOrdendesAccion.attrs.ultimo.moneda}"/>
-									</div>	
-									<div class="ui-grid-col-1 janal-column-center">
 										<p:outputLabel value="Stock:"/><br/>
 										<h:outputText styleClass="janal-wid-100-txt janal-column-center" value="#{manticComprasOrdendesAccion.attrs.ultimo.stock}"/>
 									</div>	
-									<div class="ui-grid-col-2 janal-column-center">
+									<div class="ui-grid-col-1 janal-column-center">
 										<p:outputLabel value="Fecha compra:"/><br/>
 										<h:outputText value="#{manticComprasOrdendesAccion.attrs.ultimo.registro}"/>
 									</div>	

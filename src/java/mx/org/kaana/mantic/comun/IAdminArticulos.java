@@ -1,7 +1,6 @@
 package mx.org.kaana.mantic.comun;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,8 +14,6 @@ import mx.org.kaana.libs.pagina.KajoolBaseException;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.beans.Totales;
-import mx.org.kaana.mantic.db.dto.TcManticAlmacenesDto;
-import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 
 /**
  *@company KAANA

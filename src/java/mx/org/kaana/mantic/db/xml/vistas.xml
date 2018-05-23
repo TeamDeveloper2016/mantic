@@ -379,7 +379,7 @@
 				  tc_mantic_articulos.nombre,     
 				  tc_mantic_ordenes_compras.consecutivo,
           tc_mantic_ordenes_detalles.cantidad,
-          tc_mantic_ordenes_detalles.costo,
+          tc_mantic_ordenes_detalles.costo/tc_mantic_ordenes_compras.tipo_de_cambio as costo,
           tc_mantic_proveedores.razon_social,
           tc_mantic_tipos_monedas.nombre as moneda,
           tc_mantic_ordenes_detalles.registro
@@ -521,7 +521,7 @@
           tc_mantic_ordenes_detalles.id_orden_detalle as id_key,
 				  tc_mantic_articulos.nombre,
 				  tc_mantic_ordenes_compras.consecutivo,
-          tc_mantic_ordenes_detalles.costo,
+          tc_mantic_ordenes_detalles.costo/tc_mantic_ordenes_compras.tipo_de_cambio	as costo,
           tc_mantic_articulos.stock,
           tc_mantic_proveedores.razon_social,
           tc_mantic_tipos_monedas.nombre as moneda,

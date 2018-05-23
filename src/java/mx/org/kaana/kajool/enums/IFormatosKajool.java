@@ -7,7 +7,7 @@ package mx.org.kaana.kajool.enums;
 
 public interface IFormatosKajool {
   
-  	public String getPatron();
+  public String getPatron();
 	public String execute(Object value);
   
 }
