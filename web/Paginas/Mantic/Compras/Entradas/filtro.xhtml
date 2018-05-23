@@ -5,20 +5,21 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Seleccionar la orden de compra para agregar las notas de entrada" />
+  <ui:param name="titulo" value="Notas de entrada generadas" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'idEmpresa'      : {validaciones: 'libre', mascara: 'libre'},
-        'consecutivo'    : {validaciones: 'libre', mascara: 'libre'},
-        'idProveedor'    : {validaciones: 'libre', mascara: 'libre'},
-        'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha'},
-        'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha'},
-        'idOrdenEstatus' : {validaciones: 'libre', mascara: 'libre'}
+        'idEmpresa'    : {validaciones: 'libre', mascara: 'libre'},
+        'ordenCompra'  : {validaciones: 'libre', mascara: 'libre'},
+        'notaEntrada'  : {validaciones: 'libre', mascara: 'libre'},
+        'idProveedor'  : {validaciones: 'libre', mascara: 'libre'},
+        'fechaInicio'  : {validaciones: 'fecha', mascara: 'fecha'},
+        'fechaTermino' : {validaciones: 'fecha', mascara: 'fecha'},
+        'idNotaEstatus': {validaciones: 'libre', mascara: 'libre'}
       };
     </script>		
 		<style>
-			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield{
+			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield {
 				width:225% !important;
 			}
 	  </style>		
@@ -45,8 +46,10 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
-              <p:outputLabel for="consecutivo" value="No. orden:"/>
-              <p:inputText id="consecutivo" value="#{manticComprasEntradasFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
+              <p:outputLabel for="ordenCompra" value="No. orden:"/>
+              <p:inputText id="ordenCompra" value="#{manticComprasEntradasFiltro.attrs.ordenCompra}" styleClass="janal-wid-100-txt"/> 
+              <p:outputLabel for="notaEntrada" value="No. nota:"/>
+              <p:inputText id="notaEntrada" value="#{manticComprasEntradasFiltro.attrs.notaEntrada}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="idProveedor" value="Proveedor:"/>
               <p:selectOneMenu id="idProveedor" value="#{manticComprasEntradasFiltro.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="startsWith">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
@@ -65,8 +68,8 @@
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticComprasEntradasFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticComprasEntradasFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
-              <p:outputLabel for="idOrdenEstatus" value="Estatus:"/>
-              <p:selectOneMenu id="idOrdenEstatus" value="#{manticComprasEntradasFiltro.attrs.idOrdenEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="startsWith">
+              <p:outputLabel for="idNotaEstatus" value="Estatus:"/>
+              <p:selectOneMenu id="idNotaEstatus" value="#{manticComprasEntradasFiltro.attrs.idNotaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="startsWith">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticComprasEntradasFiltro.attrs.estatus}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
@@ -101,37 +104,43 @@
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{filtro.empresa}">
+            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{filtro.empresa}">
               <f:facet name="header">
-                <h:outputText value="Sucursal"/>
+                <h:outputText value="Empresa"/>
               </f:facet>
               <h:outputText value="#{filtro['empresa']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.ordenCompra}">
               <f:facet name="header">
                 <h:outputText value="No. orden"/>
               </f:facet>
+              <h:outputText value="#{filtro['ordenCompra']}"/>
+            </p:column>		
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
+              <f:facet name="header">
+                <h:outputText value="No. nota"/>
+              </f:facet>
               <h:outputText value="#{filtro['consecutivo']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{filtro.proveedor}">
+            <p:column class="MarAuto Responsive  janal-wid-10" sortBy="#{filtro.directa}">
               <f:facet name="header">
-                <h:outputText value="Proveedor"/>
+                <h:outputText value="Tipo"/>
               </f:facet>
-              <h:outputText value="#{filtro['proveedor']}"/>
+              <h:outputText value="#{filtro['directa']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
+            <p:column class="MarAuto Responsive" sortBy="#{filtro.razonSocial}">
+              <f:facet name="header">
+                <h:outputText value="Proveeedor"/>
+              </f:facet>
+              <h:outputText value="#{filtro['razonSocial']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive  janal-wid-10 janal-column-right" sortBy="#{filtro.total}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{filtro['total']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.estatus}">
-              <f:facet name="header">
-                <h:outputText value="Estatus"/>
-              </f:facet>
-              <h:outputText value="#{filtro['estatus']}"/>
-            </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.fecha}">
+            <p:column class="MarAuto Responsive janal-wid-10 janal-column-center" sortBy="#{filtro.fecha}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>
@@ -142,13 +151,27 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="notas" action="#{manticComprasEntradasFiltro.doAccion('COMPLEMENTAR')}" icon="fa fa-edit" ajax="false" value="Notas entrada" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="modificar" action="#{manticComprasEntradasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
             <p:separator/>					
-            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasEntradasFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar"/>					
+            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+            <p:separator/>					
+            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar"/>					
           </p:contextMenu>
         </div>
       </div>
     </div>		           				
   </ui:define>   
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la nota de entrada ?" />
+  <ui:param name="accionConfirmacion" value="#{manticComprasEntradasFiltro}"/>
+  <ui:param name="updateComponent" value="tabla"/>
+  <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
+  <ui:param name="renderedConfirmacion" value="true"/>	
+  <ui:define name="detalleConfirmacion">
+    <p:panelGrid layout="grid" columns="2">
+      <p:outputLabel value="No. de nota:"/>
+      <p:outputLabel value="#{manticComprasEntradasFiltro.attrs.seleccionado.consecutivo}"/>
+    </p:panelGrid>			
+  </ui:define>
 </ui:composition>

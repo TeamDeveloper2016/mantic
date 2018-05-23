@@ -1,6 +1,5 @@
 package mx.org.kaana.mantic.compras.ordenes.backing;
 
-import java.io.File;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
