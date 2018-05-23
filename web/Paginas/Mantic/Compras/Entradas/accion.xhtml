@@ -9,8 +9,14 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="#{manticComprasEntradasAccion.attrs.nombreAccion} una nota de entrada #{manticComprasEntradasAccion.titulo}"/>
 	<ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.janal.articulos.core-1.0.7.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.articulos.core-1.1.0.js"/>
 		<script type="text/javascript">
+			$(window).bind('beforeunload', function() { 
+				if(jsArticulos.leavePage)
+					return ;
+				else
+				  return 'Es probable que los cambios no se hayan guardado\n¿Aun asi deseas salir de esta opción?.';
+			});			
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:consecutivo'    : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:factura'        : {validaciones: '#{manticComprasEntradasAccion.validacion}', mascara: 'texto', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
@@ -153,7 +159,7 @@
   	 										  	<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
 	  											  <p:inputText id="codigos" value="#{row['propio']}" styleClass="janal-wid-100-txt key-down-event"/>
 													</div>	
-												  <div style="width: 10px; margin-left: -5px; margin-top: 8px;">
+												  <div style="width: 10px; margin-left: -5px; margin-top: 1px;">
 												    <h:outputText value="#{row['estaSolicitado']}" escape="false"/>
 												    <h:outputText value="#{row['precioSugerido']}" escape="false"/>
 												  </div>

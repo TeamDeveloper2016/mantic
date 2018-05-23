@@ -24,19 +24,27 @@
 			font-size: 18px;font-family: titillium_webregular;
 		}
 		.mm-close {
-			font-size: 32px;font-family: titillium_webregular;
+			font-size: 24px;font-family: titillium_webregular;
 			font-weight: bold; 
 		}
 	</style>
-  <div id="panelMmenu" class="NoDisplay">	
-    <div id="layout-menubar" class="Unselectable fontRegular slimmenu">
-      <div class="layout-menubarinner-box" id="buttonArea">
-        <a href="#" class="BordRad3" onclick="mmenu.open();">
-				<i class="icon-menu-1" style="color: white"/></a>
-      </div>
-      <nav id="collapseMenu">
-        <h:outputText value="#{kajoolMenuGaleryMenu.mmenu}" escape="false"/>
-      </nav>
-    </div>
-  </div>
+	<script type="text/javascript">
+		$(document).on('click', 'ul.mm-listview > li > a', function(e) {
+			clean();
+		});
+	</script>	
+	<h:form prependId="false" id="encabezado">
+		<div id="panelMmenu" class="NoDisplay">	
+			<div id="layout-menubar" class="Unselectable fontRegular slimmenu">
+				<div class="layout-menubarinner-box" id="buttonArea">
+					<a href="#" class="BordRad3" onclick="mmenu.open();">
+					<i class="icon-menu-1" style="color: white"/></a>
+				</div>
+				<nav id="collapseMenu">
+					<h:outputText value="#{kajoolMenuGaleryMenu.mmenu}" escape="false"/>
+				</nav>
+			</div>
+		</div>
+    <p:remoteCommand name="clean" actionListener="#{kaanaPlantillasSecciones.doCleanFlash}" process="@this"/>
+	</h:form>	
 </ui:composition>

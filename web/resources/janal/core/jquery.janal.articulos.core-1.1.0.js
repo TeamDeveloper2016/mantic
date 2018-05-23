@@ -12,36 +12,38 @@
 	Janal.Control.Articulos= {};
 	
 	Janal.Control.Articulos.Core= Class.extend({
-		joker      : 'contenedorGrupos\\:tabla\\:', 
-		codes      : '\\:codigos', 
-		discounts  : '\\:descuentos',
-		additionals: '\\:extras',
-		amounts    : '\\:cantidades',
-		prices     : '\\:precios',
-		keys       : '\\:keys',
-		values     : '\\:values',
-		selector   : '.key-down-event',
-		focus      : '.key-focus-event',
-		lookup     : '.key-up-event',
-		porcentajes: '.key-press-enter',
-		current    : '',
-		dialog     : 'dialogo',
-		typingTimer: null,
+		joker       : 'contenedorGrupos\\:tabla\\:', // Attributes 
+		codes       : '\\:codigos', 
+		discounts   : '\\:descuentos',
+		additionals : '\\:extras',
+		amounts     : '\\:cantidades',
+		prices      : '\\:precios',
+		keys        : '\\:keys',
+		values      : '\\:values',
+		selector    : '.key-down-event',
+		focus       : '.key-focus-event',
+		lookup      : '.key-up-event',
+		porcentajes : '.key-press-enter',
+		current     : '',
+		dialog      : 'dialogo',
+		typingTimer : null,
 		doneInterval: 10000,
-		continue   : false,
-		VK_ENTER   : 13, // Attributes
-		VK_ESC     : 27,
-		VK_ASTERISK: 106,
-		VK_MINUS   : 109,
-		VK_PLUS    : 107,
-		VK_DIV     : 111,
-		VK_POINT   : 110,
-		VK_UP      : 38,
-		VK_DOWN    : 40,
-		VK_REST    : 189,
-		VK_PIPE    : 220,
-		VK_CTRL    : 17,
-		VK_MAYOR   :226,
+		continue    : false,
+		leavePage   : true,
+		VK_ENTER    : 13, 
+		VK_ESC      : 27,
+		VK_ASTERISK : 106,
+		VK_MINUS    : 109,
+		VK_PLUS     : 107,
+		VK_DIV      : 111,
+		VK_POINT    : 110,
+		VK_UP       : 38,
+		VK_DOWN     : 40,
+		VK_REST     : 189,
+		VK_PIPE     : 220,
+		VK_CTRL     : 17,
+		VK_MAYOR    : 226,
+	  change      : [13, 106, 111, 107, 110, 27, 226],
 		cursor: {
 			top: 1, // el top debera ser elementos que van de 0 a n-1
 			index: 0
@@ -89,7 +91,8 @@
 				} // switch
 			});	
       $(document).on('keydown', this.selector, function(e) {
-				var key= e.keyCode ? e.keyCode : e.which;
+				var key   = e.keyCode ? e.keyCode : e.which;
+        $articulos.leavePage= !($articulos.change.indexOf(key)>= 0);
 				switch(key) {
 					case $articulos.VK_ENTER:
 						return $articulos.find();
@@ -104,7 +107,7 @@
 						return $articulos.asterisk();
 						break;
 					case $articulos.VK_DIV:
-						return $articulos.div();
+            return $articulos.div();
 						break;
 					case $articulos.VK_PLUS:
 						return $articulos.plus();
@@ -119,6 +122,7 @@
 						return $articulos.search();
 						break;
 					case $articulos.VK_MINUS:
+						$articulos.leavePage= true;
 						$('#aceptar').click();
 						return false;
 						break;
