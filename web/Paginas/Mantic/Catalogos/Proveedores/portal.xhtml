@@ -24,14 +24,14 @@
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div class="ui-grid-col-12">
-					<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+					<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-100, janal-wid-100">
 						<p:outputLabel for="codigo"  value="Buscar:"/>
 						<p:inputText id="codigo" value="#{manticCatalogosProveedoresPortal.attrs.codigo}" styleClass="janal-wid-100-txt" placeholder="Buscar por código, rfc o nombre">
-							<p:ajax event="blur" listener="#{manticCatalogosProveedoresPortal.doLoad}" process="@this codigo" update="proveedor pagina cuenta contrasenia" onstart="return janal.bloquear();" oncomplete="janal.mayusculas('codigo'); janal.desbloquear();"/>
+							<p:ajax event="blur" listener="#{manticCatalogosProveedoresPortal.doLoad}" process="@this codigo" update="proveedor pagina cuenta contrasenia tabla tablaTransferencia" onstart="return janal.bloquear();" oncomplete="janal.mayusculas('codigo'); janal.desbloquear();"/>
 						</p:inputText>
 						<p:outputLabel for="proveedor"  value="Proveedor:"/>
 						<p:selectOneMenu  id="proveedor" value="#{manticCatalogosProveedoresPortal.attrs.proveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt">
-							<p:ajax event="change" listener="#{manticCatalogosProveedoresPortal.doLoadPortal}" process="@this proveedor" update="pagina cuenta contrasenia" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+							<p:ajax event="change" listener="#{manticCatalogosProveedoresPortal.doLoadPortal}" process="@this proveedor" update="pagina cuenta contrasenia tabla tablaTransferencia" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 							<f:selectItem itemValue="-1" itemLabel="Seleccione"/>
 							<f:selectItems value="#{manticCatalogosProveedoresPortal.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
 							<p:column>
@@ -52,7 +52,59 @@
 						<p:inputText id="cuenta" value="#{manticCatalogosProveedoresPortal.attrs.cuenta}" readonly="true" styleClass="janal-wid-100-txt"/>
 						<p:outputLabel for="contrasenia"  value="Contraseña:"/>
 						<p:inputText id="contrasenia" value="#{manticCatalogosProveedoresPortal.attrs.contrasenia}" readonly="true" styleClass="janal-wid-100-txt"/>
-					</p:panelGrid>          
+					</p:panelGrid>  
+					<p:separator/>
+					<p:fieldset legend="Servicios">
+						<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosProveedoresPortal.lazyModelServicios}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticCatalogosProveedoresPortal.lazyModelServicios.rowCount gt manticCatalogosProveedoresPortal.lazyModelServicios.pageSize}" rowIndexVar="index" reflow="true">
+							<p:column class="janal-column-left Responsive">
+								<f:facet name="header">
+									<h:outputText value="Banco"/>
+								</f:facet>
+								<h:outputText value="#{filtro['nombre']}"/>
+							</p:column>				
+							<p:column class="janal-column-left Responsive">
+								<f:facet name="header">
+									<h:outputText value="Convenio"/>
+								</f:facet>
+								<h:outputText value="#{filtro['convenioCuenta']}"/>
+							</p:column>
+							<p:column class="janal-column-left Responsive">
+								<f:facet name="header">
+									<h:outputText value="Referencia"/>
+								</f:facet>
+								<h:outputText value="#{filtro['clabeReferencia']}"/>
+							</p:column>            							
+							<f:facet name="footer">
+								<h:outputText value="Total [#{manticCatalogosProveedoresPortal.lazyModelServicios==null?0:manticCatalogosProveedoresPortal.lazyModelServicios.rowCount}] registros"/>
+							</f:facet>
+						</p:dataTable>
+					</p:fieldset>
+					<p:separator/>
+					<p:fieldset legend="Transferencias">
+						<p:dataTable lazy="true" id="tablaTransferencia" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosProveedoresPortal.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selectionMode="single" paginator="#{manticCatalogosProveedoresPortal.lazyModel.rowCount gt manticCatalogosProveedoresPortal.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+							<p:column class="janal-column-left Responsive">
+								<f:facet name="header">
+									<h:outputText value="Banco"/>
+								</f:facet>
+								<h:outputText value="#{filtro['nombre']}"/>
+							</p:column>				
+							<p:column class="janal-column-left Responsive">
+								<f:facet name="header">
+									<h:outputText value="Cuenta"/>
+								</f:facet>
+								<h:outputText value="#{filtro['convenioCuenta']}"/>
+							</p:column>
+							<p:column class="janal-column-left Responsive">
+								<f:facet name="header">
+									<h:outputText value="Clave"/>
+								</f:facet>
+								<h:outputText value="#{filtro['clabeReferencia']}"/>
+							</p:column>            							
+							<f:facet name="footer">
+								<h:outputText value="Total [#{manticCatalogosProveedoresPortal.lazyModel==null?0:manticCatalogosProveedoresPortal.lazyModel.rowCount}] registros"/>
+							</f:facet>
+						</p:dataTable>
+					</p:fieldset>
         </div>
       </div>
     </div>		           				
