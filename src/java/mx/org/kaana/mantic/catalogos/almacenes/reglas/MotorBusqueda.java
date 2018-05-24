@@ -9,6 +9,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.almacenes.bean.AlmacenArticulo;
 import mx.org.kaana.mantic.catalogos.almacenes.bean.AlmacenDomicilio;
 import mx.org.kaana.mantic.catalogos.almacenes.bean.AlmacenTipoContacto;
 import mx.org.kaana.mantic.catalogos.almacenes.bean.AlmacenUbicacion;
@@ -112,4 +113,38 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		} // finally
 		return regresar;
 	} // toAlmacenUbicacion
+	
+	public List<AlmacenArticulo> toAlmacenArticulos() throws Exception{
+		List<AlmacenArticulo> regresar= null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_almacen=" + this.idAlmacen);
+			regresar= DaoFactory.getInstance().toEntitySet(AlmacenArticulo.class, "TcManticAlmacenesArticulosDto", "row", params);			
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toAlmacenArticulos
+	
+	public Entity toArticulo() throws Exception{
+		Entity regresar= null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idArticulo", this.idAlmacen);
+			regresar= (Entity) DaoFactory.getInstance().toEntity("VistaArticulosAlmacenDto", "findIdArticulo", params);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toArticulo
 }

@@ -11,15 +11,17 @@ public class ContadoresListas {
 	private Long totalAlmacenesDomicilios;
 	private Long totalAlmacenesTipoContacto;	
 	private Long totalAlmacenesUbicacion;	
+	private Long totalAlmacenesArticulo;	
 
 	public ContadoresListas() {
 		init();
 	} // ContadoresListas
 	
-	public ContadoresListas(Long totalAlmacenesDomicilios, Long totalAlmacenesTipoContacto, Long totalAlmacenesUbicacion) {
+	public ContadoresListas(Long totalAlmacenesDomicilios, Long totalAlmacenesTipoContacto, Long totalAlmacenesUbicacion, Long totalAlmacenesArticulo) {
 		this.totalAlmacenesDomicilios  = totalAlmacenesDomicilios;
 		this.totalAlmacenesTipoContacto= totalAlmacenesTipoContacto;
 		this.totalAlmacenesUbicacion   = totalAlmacenesUbicacion;
+		this.totalAlmacenesArticulo    = totalAlmacenesArticulo;
 	} // ContadoresListas
 
 	public Long getTotalAlmacenesDomicilios() {
@@ -45,12 +47,21 @@ public class ContadoresListas {
 	public void setTotalAlmacenesUbicacion(Long totalAlmacenesUbicacion) {
 		this.totalAlmacenesUbicacion = totalAlmacenesUbicacion;
 	}	
+
+	public Long getTotalAlmacenesArticulo() {
+		return totalAlmacenesArticulo;
+	}
+
+	public void setTotalAlmacenesArticulo(Long totalAlmacenesArticulo) {
+		this.totalAlmacenesArticulo = totalAlmacenesArticulo;
+	}
 	
 	private void init(){
 		try {
 			this.totalAlmacenesDomicilios  = toMaxAlmacenDomicilio();
 			this.totalAlmacenesTipoContacto= toMaxAlmacenTiposContactos();			
 			this.totalAlmacenesUbicacion   = toMaxAlmacenUbicacion();			
+			this.totalAlmacenesArticulo    = toMaxAlmacenArticulo();			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);						
@@ -90,6 +101,20 @@ public class ContadoresListas {
 		Value maximo = null;
 		try {
 			maximo= DaoFactory.getInstance().toField("TcManticAlmacenesUbicacionesDto", "maximo", Collections.EMPTY_MAP, "maximo");
+			if(maximo.getData()!= null)
+				regresar= Long.valueOf(maximo.toString()) + INCREMENTO;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch				
+		return regresar;
+	} // toMaxAlmacenUbicacion
+	
+	private Long toMaxAlmacenArticulo() throws Exception{
+		Long regresar= 0L;
+		Value maximo = null;
+		try {
+			maximo= DaoFactory.getInstance().toField("TcManticAlmacenesArticulosDto", "maximo", Collections.EMPTY_MAP, "maximo");
 			if(maximo.getData()!= null)
 				regresar= Long.valueOf(maximo.toString()) + INCREMENTO;
 		} // try

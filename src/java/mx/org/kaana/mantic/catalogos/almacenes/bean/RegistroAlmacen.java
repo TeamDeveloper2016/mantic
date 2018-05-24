@@ -4,14 +4,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.mantic.catalogos.clientes.bean.Domicilio;
 import mx.org.kaana.mantic.catalogos.almacenes.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.catalogos.almacenes.reglas.Transaccion;
@@ -24,10 +23,15 @@ public class RegistroAlmacen implements Serializable{
 	private TcManticAlmacenesDto almacen;
 	private List<AlmacenDomicilio> almacenDomicilio;
 	private AlmacenDomicilio almacenDomicilioSelecion;
+	private List<AlmacenArticulo> almacenArticulo;
+	private AlmacenArticulo almacenArticuloSeleccion;
+	private AlmacenArticulo almacenArticuloPivote;
 	private List<AlmacenTipoContacto> almacenTiposContacto;
 	private AlmacenTipoContacto almacenTipoContactoSeleccion;
 	private List<AlmacenUbicacion> ubicaciones;
+	private List<UISelectItem> ubicacionesItems;
 	private AlmacenUbicacion almacenUbicacionSeleccion;
+	private UISelectItem almacenUbicacionItem;
 	private List<IBaseDto> deleteList;
 	private ContadoresListas contadores;
 	private Long countIndice;
@@ -35,7 +39,7 @@ public class RegistroAlmacen implements Serializable{
 	private Domicilio domicilioPivote;
 
 	public RegistroAlmacen() {
-		this(-1L, new TcManticAlmacenesDto(), new ArrayList<AlmacenDomicilio>(), new ArrayList<AlmacenTipoContacto>(), new ArrayList<AlmacenUbicacion>(), new Domicilio());
+		this(-1L, new TcManticAlmacenesDto(), new ArrayList<AlmacenDomicilio>(), new ArrayList<AlmacenTipoContacto>(), new ArrayList<AlmacenUbicacion>(), new Domicilio(), new ArrayList<AlmacenArticulo>(), new AlmacenArticulo());
 	}
 	
 	public RegistroAlmacen(Long idAlmacen) {
@@ -45,10 +49,12 @@ public class RegistroAlmacen implements Serializable{
 		this.deleteList = new ArrayList<>();
 		this.domicilio  = new Domicilio();
 		this.domicilioPivote= new Domicilio();
+		this.almacenArticuloSeleccion= new AlmacenArticulo();
+		this.almacenArticuloPivote= new AlmacenArticulo();
 		init();		
 	}
 	
-	public RegistroAlmacen(Long idAlmacen, TcManticAlmacenesDto almacen, List<AlmacenDomicilio> almacenDomicilio, List<AlmacenTipoContacto> almacenTiposContacto, List<AlmacenUbicacion> ubicaciones, Domicilio domicilio) {
+	public RegistroAlmacen(Long idAlmacen, TcManticAlmacenesDto almacen, List<AlmacenDomicilio> almacenDomicilio, List<AlmacenTipoContacto> almacenTiposContacto, List<AlmacenUbicacion> ubicaciones, Domicilio domicilio, List<AlmacenArticulo>almacenArticulo, AlmacenArticulo almacenArticuloSeleccion) {
 		this.idAlmacen           = idAlmacen;
 		this.almacen             = almacen;
 		this.almacenDomicilio    = almacenDomicilio;
@@ -59,6 +65,10 @@ public class RegistroAlmacen implements Serializable{
 		this.countIndice         = 0L;
 		this.domicilio           = domicilio;
 		this.domicilioPivote     = domicilio;
+		this.almacenArticulo     = almacenArticulo;
+		this.almacenArticuloSeleccion= almacenArticuloSeleccion;
+		this.almacenArticuloPivote= almacenArticuloSeleccion;
+		this.ubicacionesItems    = new ArrayList<>();
 	}
 
 	public Long getIdAlmacen() {
@@ -148,7 +158,47 @@ public class RegistroAlmacen implements Serializable{
 	public void setDomicilioPivote(Domicilio domicilioPivote) {
 		this.domicilioPivote = domicilioPivote;
 	}
-	
+
+	public List<AlmacenArticulo> getAlmacenArticulo() {
+		return almacenArticulo;
+	}
+
+	public void setAlmacenArticulo(List<AlmacenArticulo> almacenArticulo) {
+		this.almacenArticulo = almacenArticulo;
+	}
+
+	public AlmacenArticulo getAlmacenArticuloSeleccion() {
+		return almacenArticuloSeleccion;
+	}
+
+	public void setAlmacenArticuloSeleccion(AlmacenArticulo almacenArticuloSeleccion) {
+		this.almacenArticuloSeleccion = almacenArticuloSeleccion;
+	}
+
+	public AlmacenArticulo getAlmacenArticuloPivote() {
+		return almacenArticuloPivote;
+	}
+
+	public void setAlmacenArticuloPivote(AlmacenArticulo almacenArticuloPivote) {
+		this.almacenArticuloPivote = almacenArticuloPivote;
+	}
+
+	public List<UISelectItem> getUbicacionesItems() {
+		return ubicacionesItems;
+	}
+
+	public void setUbicacionesItems(List<UISelectItem> ubicacionesItems) {
+		this.ubicacionesItems = ubicacionesItems;
+	}
+
+	public UISelectItem getAlmacenUbicacionItem() {
+		return almacenUbicacionItem;
+	}
+
+	public void setAlmacenUbicacionItem(UISelectItem almacenUbicacionItem) {
+		this.almacenUbicacionItem = almacenUbicacionItem;
+	}
+		
 	private void init(){
 		MotorBusqueda motorBusqueda= null;
 		try {
@@ -165,6 +215,7 @@ public class RegistroAlmacen implements Serializable{
 	private void initCollections(MotorBusqueda motor) throws Exception{
 		int count= 0;
 		try {
+			this.ubicacionesItems= new ArrayList<>();
 			this.almacenDomicilio= motor.toAlmacenesDomicilio(true);
 			for(AlmacenDomicilio almacenDomicilio: this.almacenDomicilio){
 				count++;
@@ -172,6 +223,11 @@ public class RegistroAlmacen implements Serializable{
 			} // for				
 			this.almacenTiposContacto= motor.toAlmacenesTipoContacto();
 			this.ubicaciones= motor.toAlmacenUbicacion();
+			if(!this.ubicaciones.isEmpty()){
+				for(AlmacenUbicacion item: this.ubicaciones)
+					this.ubicacionesItems.add(new UISelectItem(item.getKey(), item.getUbicacion()));
+			} // if			
+			this.almacenArticulo= motor.toAlmacenArticulos();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);			
@@ -332,7 +388,16 @@ public class RegistroAlmacen implements Serializable{
 	
 	public void doEliminarAlmacenUbicacion(){
 		try {			
-			if(this.ubicaciones.remove(this.almacenUbicacionSeleccion)){
+			for(AlmacenArticulo recordoArt: this.almacenArticulo){
+				if(recordoArt.getIdAlmacenUbicacion().equals(this.almacenUbicacionSeleccion.getIdAlmacenUbicacion())){
+					recordoArt.setIdAlmacenUbicacion(-1L);
+					recordoArt.setAnaquel(null);
+					recordoArt.setPiso(null);
+					recordoArt.setCharola(null);
+					recordoArt.setCuarto(null);
+				} // if
+			} // for
+			if(this.ubicaciones.remove(this.almacenUbicacionSeleccion)){				
 				if(!this.almacenUbicacionSeleccion.getNuevo())
 					addDeleteList(this.almacenUbicacionSeleccion);
 				JsfBase.addMessage("Se eliminó correctamente el tipo de contacto", ETipoMensaje.INFORMACION);
@@ -346,6 +411,131 @@ public class RegistroAlmacen implements Serializable{
 		} // catch			
 	} // doEliminarAlamcenTipoContacto
 	
+	public void doAgregarAlmacenArticulo(){
+		AlmacenArticulo articulo= null;
+		AlmacenUbicacion ubicacion= null;
+		UISelectItem item= null;
+		try {					
+			articulo= new AlmacenArticulo(this.contadores.getTotalAlmacenesArticulo() + this.countIndice, ESql.INSERT, true);				
+			articulo.setIdAlmacenUbicacion(this.almacenArticuloPivote.getIdAlmacenUbicacion());
+			articulo.setIdArticulo(this.almacenArticuloPivote.getIdArticulo());
+			articulo.setIdUsuario(JsfBase.getIdUsuario());
+			articulo.setMaximo(this.almacenArticuloPivote.getMaximo());
+			articulo.setMinimo(this.almacenArticuloPivote.getMinimo());
+			articulo.setStock(this.almacenArticuloPivote.getStock());
+			if(almacenUbicacionItem!= null){
+				item= this.ubicacionesItems.get(this.ubicacionesItems.indexOf(this.almacenUbicacionItem));
+				for(AlmacenUbicacion recordUbicacion: this.ubicaciones){
+					if(Long.valueOf(item.getValue().toString()).equals(recordUbicacion.getKey()))
+						ubicacion= recordUbicacion;
+				} // for
+			} // if
+			if(ubicacion!= null){
+				articulo.setAnaquel(ubicacion.getAnaquel());
+				articulo.setPiso(ubicacion.getPiso());
+				articulo.setCuarto(ubicacion.getCuarto());
+				articulo.setCharola(ubicacion.getCharola());
+			} // if
+			this.almacenArticulo.add(articulo);		
+			this.almacenArticuloPivote= new AlmacenArticulo();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{			
+			this.countIndice++;
+		} // finally
+	} // doAgregarAlmacenArticulo
+	
+	public void doEliminarAlmacenArticulo(){
+		try {			
+			if(this.almacenArticulo.remove(this.almacenArticuloSeleccion)){
+				if(!this.almacenArticuloSeleccion.getNuevo())
+					addDeleteList(this.almacenArticuloSeleccion);
+				JsfBase.addMessage("Se eliminó correctamente el articulo", ETipoMensaje.INFORMACION);
+			} // if
+			else
+				JsfBase.addMessage("No fue porsible eliminar el articulo", ETipoMensaje.INFORMACION);
+			this.almacenArticuloPivote= new AlmacenArticulo();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
+	} // doEliminarAlmacenArticulo
+	
+	public void doActualizarAlmacenArticulo(){
+		AlmacenArticulo articulo= null;
+		AlmacenUbicacion ubicacion= null;
+		UISelectItem item= null;
+		try {					
+			articulo= this.almacenArticulo.get(this.almacenArticulo.indexOf(this.almacenArticuloSeleccion));
+			articulo.setModificar(false);
+			articulo.setIdAlmacenUbicacion(this.almacenArticuloPivote.getIdAlmacenUbicacion());
+			articulo.setIdArticulo(this.almacenArticuloPivote.getIdArticulo());
+			articulo.setIdUsuario(JsfBase.getIdUsuario());
+			articulo.setMaximo(this.almacenArticuloPivote.getMaximo());
+			articulo.setMinimo(this.almacenArticuloPivote.getMinimo());
+			articulo.setStock(this.almacenArticuloPivote.getStock());
+			if(this.almacenUbicacionItem!= null){
+				item= this.ubicacionesItems.get(this.ubicacionesItems.indexOf(this.almacenUbicacionItem));
+				for(AlmacenUbicacion recordUbicacion: this.ubicaciones){
+					if(Long.valueOf(item.getValue().toString()).equals(recordUbicacion.getKey()))
+						ubicacion= recordUbicacion;
+				} // for
+				if(ubicacion!= null){
+					articulo.setAnaquel(ubicacion.getAnaquel());
+					articulo.setPiso(ubicacion.getPiso());
+					articulo.setCuarto(ubicacion.getCuarto());
+					articulo.setCharola(ubicacion.getCharola());
+				} // if				
+			} // if
+			this.almacenArticuloPivote= new AlmacenArticulo();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{			
+			this.countIndice++;
+		} // finally
+	} // doAgregarAlmacenArticulo
+	
+	public void doConsultarAlmacenArticulo(){
+		AlmacenArticulo articulo         = null;
+		MotorBusqueda motor              = null;
+		UISelectItem ubicacion           = null;
+		AlmacenUbicacion almacenUbicacion= null;
+		try {					
+			articulo= this.almacenArticulo.get(this.almacenArticulo.indexOf(this.almacenArticuloSeleccion));			
+			articulo.setModificar(true);
+			this.almacenArticuloPivote.setIdArticulo(articulo.getIdArticulo());
+			this.almacenArticuloPivote.setMaximo(articulo.getMaximo());
+			this.almacenArticuloPivote.setMinimo(articulo.getMinimo());
+			this.almacenArticuloPivote.setStock(articulo.getStock());
+			motor= new MotorBusqueda(articulo.getIdArticulo());
+			this.almacenArticuloPivote.setArticulo(motor.toArticulo());
+			if(this.almacenUbicacionItem!= null){
+				ubicacion= this.ubicacionesItems.get(this.ubicacionesItems.indexOf(this.almacenUbicacionItem));
+				for(AlmacenUbicacion recordAlmacenUbicacion: this.ubicaciones){
+					if(recordAlmacenUbicacion.getKey().equals(Long.valueOf(ubicacion.getValue().toString())))
+						almacenUbicacion= recordAlmacenUbicacion;				
+				} // for
+				if(almacenUbicacion!= null){
+					this.almacenArticuloPivote.setAnaquel(almacenUbicacion.getAnaquel());
+					this.almacenArticuloPivote.setPiso(almacenUbicacion.getPiso());
+					this.almacenArticuloPivote.setCuarto(almacenUbicacion.getCuarto());
+					this.almacenArticuloPivote.setCharola(almacenUbicacion.getCharola());
+				} // if
+			}
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
+	} // doEliminarAlmacenArticulo
+	
 	private void addDeleteList(IBaseDto dto) throws Exception{
 		Transaccion transaccion= null;
 		try {
@@ -356,17 +546,5 @@ public class RegistroAlmacen implements Serializable{
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-	} // addDeleteList
-	
-	private Long registrarDomicilio() throws Exception{
-		Long regresar= -1L;
-		try {
-			this.domicilio.setIdUsuario(JsfBase.getIdUsuario());
-			regresar= DaoFactory.getInstance().insert(this.domicilio);
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar;
-	} // registrarDomicilio	
+	} // addDeleteList	
 }

@@ -24,6 +24,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.almacenes.bean.AlmacenUbicacion;
 import mx.org.kaana.mantic.catalogos.almacenes.bean.RegistroAlmacen;
 import mx.org.kaana.mantic.catalogos.almacenes.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.catalogos.almacenes.reglas.Transaccion;
@@ -64,6 +65,8 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idAlmacen", JsfBase.getFlashAttribute("idAlmacen"));
+			this.attrs.put("codigo", "");
+			this.attrs.put("articulos", new ArrayList<>());
       doLoad();      
     } // try
     catch (Exception e) {
@@ -106,6 +109,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 					if(!this.registroAlmacen.getAlmacenDomicilio().isEmpty()){
 						this.registroAlmacen.setAlmacenDomicilioSelecion(this.registroAlmacen.getAlmacenDomicilio().get(0));
 						doConsultarAlmacenDomicilio();
+					} // if
+					if(!this.registroAlmacen.getAlmacenArticulo().isEmpty()){
+						this.registroAlmacen.setAlmacenArticuloSeleccion(this.registroAlmacen.getAlmacenArticulo().get(0));
+						doConsultarAlmacenArticulo();
 					} // if
           break;
       } // switch      
@@ -679,4 +686,40 @@ public class Accion extends IBaseAttribute implements Serializable {
       Methods.clean(campos);
     } // finally
 	} // loadResponsables
+	
+	public void doConsultarArticulos(){
+		List<UISelectEntity> articulos= null;
+		Map<String, Object>params     = null;
+		List<Columna>campos           = null;
+		try {
+			params= new HashMap<>();
+			params.put("codigo", this.attrs.get("codigo"));
+			params.put("sucursales", JsfBase.getAutentifica().getIdsSucursales());
+			campos= new ArrayList<>();
+			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			articulos= UIEntity.build("VistaArticulosAlmacenDto", "articulos", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("articulos", articulos);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+			Methods.clean(campos);
+		} // finally
+	} // doConsultarArticulos
+	
+	public void doConsultarAlmacenArticulo(){
+		List<UISelectEntity>articulos= null;		
+		try {
+			this.registroAlmacen.doConsultarAlmacenArticulo();
+			articulos= new ArrayList<>();
+			articulos.add(new UISelectEntity(this.registroAlmacen.getAlmacenArticuloPivote().getArticulo()));
+			this.attrs.put("articulos", articulos);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+	} // doConsultarAlmacenArticulo
 }

@@ -42,4 +42,8 @@ public class AlmacenUbicacion extends TcManticAlmacenesUbicacionesDto{
 	public void setNuevo(Boolean nuevo) {
 		this.nuevo = nuevo;
 	}
+	
+	public String getUbicacion(){
+		return getPiso().concat(" --> ").concat(getCuarto()).concat(" --> ").concat(getAnaquel()).concat(" --> ").concat(getCharola());
+	}
 }
