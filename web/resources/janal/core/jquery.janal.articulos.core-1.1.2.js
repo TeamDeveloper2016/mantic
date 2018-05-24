@@ -318,7 +318,7 @@
 				this.continue= false;
   			this.down();
 			} // if	
-			PF('listado').close();
+			setTimeout('PF("listado").close()', 2000);
 		},
 		reset: function(name) {
 			if($(name).attr('id').endsWith(this.prices.substring(2)))

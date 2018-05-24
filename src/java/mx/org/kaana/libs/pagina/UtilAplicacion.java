@@ -50,7 +50,7 @@ public class UtilAplicacion {
 
   private static final String LESS = "less.min-2.5.0.js";
   private static final String CORE = "jquery.janal.core-1.5.8.js";
-  private static final String CSS  = "mantic-0.0.7.css";
+  private static final String CSS  = "mantic-0.0.8.css";
   private static final String FUSION= "jquery.janal.fusion.charts-3.3.1.js";
 
   public String getTituloSistema() {

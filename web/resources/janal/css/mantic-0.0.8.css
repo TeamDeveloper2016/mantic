@@ -178,6 +178,7 @@ div.ui-panelgrid-content {
 .janal-wid-col-20 {width: 20px !important;}
 .janal-wid-col-25 {width: 25px !important;}
 .janal-wid-col-30 {width: 30px !important;}
+.janal-wid-col-38 {width: 38px !important;}
 .janal-wid-col-40 {width: 40px !important;}
 .janal-wid-col-50 {width: 50px !important;}
 .janal-wid-col-60 {width: 60px !important;}
@@ -369,9 +370,29 @@ div.ui-panelgrid-content {
   .margin-fecha {}
   .margin-desarrollo {margin-top: -20px !important;}
   .margin-version {margin-top: -20px !important;}
-  .janal-wid-30 {width: 100% !important}
-  .janal-wid-20 {width: 100% !important}
+  .janal-wid-3 {width: 100% !important}
+  .janal-wid-5 {width: 100% !important}
+  .janal-wid-8 {width: 100% !important}
   .janal-wid-10 {width: 100% !important}
+  .janal-wid-13 {width: 100% !important}
+  .janal-wid-15 {width: 100% !important}
+  .janal-wid-20 {width: 100% !important}
+  .janal-wid-30 {width: 100% !important}
+  .janal-wid-40 {width: 100% !important}
+  .janal-wid-50 {width: 100% !important}
+  .janal-wid-55 {width: 100% !important}
+  .janal-wid-60 {width: 100% !important}
+  .janal-wid-66 {width: 100% !important}
+  .janal-wid-70 {width: 100% !important}
+  .janal-wid-80 {width: 100% !important}
+  .janal-wid-86 {width: 100% !important}
+  .janal-wid-90 {width: 100% !important}
+  .janal-wid-93 {width: 100% !important}
+  .janal-wid-94 {width: 100% !important}
+  .janal-wid-96 {width: 100% !important}
+  .janal-wid-98 {width: 100% !important}
+  .janal-wid-99 {width: 100% !important}
+  .janal-wid-col-38 {width: 85px !important;}
   .janal-top-menus {top: 6px;}
 }
 /* long-Smartphones (portrait) ----------- */
@@ -401,10 +422,30 @@ div.ui-panelgrid-content {
   .margin-fecha {margin-top: 15px !important;}
   .margin-desarrollo {margin-top: 15px !important;}
   .margin-version {margin-top: 15px !important;}
-  .janal-wid-30 {width: 100% !important}
-  .janal-wid-20 {width: 100% !important}
+  .janal-wid-3 {width: 100% !important}
+  .janal-wid-5 {width: 100% !important}
+  .janal-wid-8 {width: 100% !important}
   .janal-wid-10 {width: 100% !important}
-  .janal-top-menus {top: 87px;}
+  .janal-wid-13 {width: 100% !important}
+  .janal-wid-15 {width: 100% !important}
+  .janal-wid-20 {width: 100% !important}
+  .janal-wid-30 {width: 100% !important}
+  .janal-wid-40 {width: 100% !important}
+  .janal-wid-50 {width: 100% !important}
+  .janal-wid-55 {width: 100% !important}
+  .janal-wid-60 {width: 100% !important}
+  .janal-wid-66 {width: 100% !important}
+  .janal-wid-70 {width: 100% !important}
+  .janal-wid-80 {width: 100% !important}
+  .janal-wid-86 {width: 100% !important}
+  .janal-wid-90 {width: 100% !important}
+  .janal-wid-93 {width: 100% !important}
+  .janal-wid-94 {width: 100% !important}
+  .janal-wid-96 {width: 100% !important}
+  .janal-wid-98 {width: 100% !important}
+  .janal-wid-99 {width: 100% !important}
+  .janal-wid-col-38 {width: 85px !important;}
+ .janal-top-menus {top: 87px;}
 }
 
 /* tablets (portrait) ----------- */

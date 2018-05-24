@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="#{manticComprasOrdendesAccion.attrs.nombreAccion} una orden de compra #{manticComprasOrdendesAccion.tipoOrden.titulo}"/>
 	<ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.janal.articulos.core-1.1.1.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.articulos.core-1.1.2.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:consecutivo'    : {validaciones: 'requerido', mascara: 'libre'},
@@ -201,7 +201,7 @@
 														<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticComprasOrdendesAccion.attrs.articulo}" completeMethod="#{manticComprasOrdendesAccion.doCompleteArticulo}" maxResults="5" converter="janal.convertidor.Entity" forceSelection="true" minQueryLength="2">
 															<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
 															<f:facet name="itemtip">
-																<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-150">
+																<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
 																	<f:facet name="header" class="TexAlCenter">
 																		<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>
 																	</f:facet>
@@ -396,7 +396,7 @@
 											<p:column headerText="Observación">
 												<h:outputText value="#{row.observacion}"/>
 											</p:column>   
-											<p:column style="width:38px; text-align: center">
+											<p:column style="text-align: center" styleClass="janal-wid-col-38">
 												<p:commandButton update="sugeridos" icon="fa fa-check" title="Marcar como leido" action="#{manticComprasOrdendesAccion.doUpdateSugeridos}" styleClass="janal-text-white">
 													<f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.sugerido}" />
 												</p:commandButton>
