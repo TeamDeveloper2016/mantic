@@ -587,8 +587,8 @@
     </unit>		
 		<unit id="TcManticArticulosDto">
       <select id="row">
-        select   -
-					tc_mantic_articulos.id_articulo,
+        select   
+					tc_mantic_articulos.id_articulo as id_key,
           tc_mantic_articulos.*
         from      
           tc_mantic_articulos
