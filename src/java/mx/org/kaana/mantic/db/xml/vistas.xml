@@ -360,6 +360,7 @@
 				where
 				  tc_mantic_empresas.id_empresa in ({sucursales})
 				  and tc_mantic_ordenes_compras.id_orden_estatus in (3,4,5)
+				  and (tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra} or {idOrdenCompra} is null)
 				order by
 				  tc_mantic_ordenes_compras.registro			
 			</select>

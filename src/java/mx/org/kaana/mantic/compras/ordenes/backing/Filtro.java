@@ -98,6 +98,21 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return "/Paginas/Mantic/Compras/Ordenes/accion".concat(Constantes.REDIRECIONAR);
   } // doAccion  
 	
+  public String doNotasEntradas(String accion) {
+    EAccion eaccion= null;
+		try {
+			eaccion= EAccion.valueOf(accion.toUpperCase());
+			JsfBase.setFlashAttribute("accion", eaccion);		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Compras/Entradas/filtro");		
+			JsfBase.setFlashAttribute("idOrdenCompra", ((Entity)this.attrs.get("seleccionado")).getKey());
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return "/Paginas/Mantic/Compras/Entradas/accion?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs".concat(Constantes.REDIRECIONAR_AMPERSON);
+  } // doNotas  
+	
   public void doEliminar() {
 		Transaccion transaccion = null;
 		Entity seleccionado     = null;

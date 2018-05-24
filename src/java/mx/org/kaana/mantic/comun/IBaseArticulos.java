@@ -86,11 +86,17 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
   		params.put("codigo", codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*"));
       List<UISelectEntity> articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "codigos", params, columns);
 			UISelectEntity articulo= UIBackingUtilities.toFirstKeySelectEntity(articulos);
-			int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(articulo.toLong("idArticulo")));
-			if(articulo.size()> 1 && position>= 0)
-				RequestContext.getCurrentInstance().execute("jsArticulos.exists("+ position+ ");");
-			else
-			  this.toMoveData(articulo, index);
+			if(articulo.size()> 1) {
+				int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(articulo.toLong("idArticulo")));
+				if(articulo.size()> 1 && position>= 0) {
+					if(index!= position)
+						RequestContext.getCurrentInstance().execute("jsArticulos.exists("+ position+ ");");
+				} // if	
+				else
+					this.toMoveData(articulo, index);
+			} // if	
+  		else
+	  		this.toMoveData(articulo, index);
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -232,7 +238,7 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 			else
 				search= "WXYZ";
   		params.put("codigo", search);
-      this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "codigos", params, columns));
+      this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "codigos", params, columns, 20L));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -248,7 +254,20 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 		try {
     	List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");
 	    UISelectEntity articulo= (UISelectEntity)this.attrs.get("articulo");
-			this.toMoveData(articulo== null? new UISelectEntity(new Entity(-1L)): articulos.indexOf(articulo)>= 0? articulos.get(articulos.indexOf(articulo)): articulos.isEmpty()? new UISelectEntity(new Entity(-1L)): articulos.get(0), index);
+			if(articulo== null)
+			  articulo= new UISelectEntity(new Entity(-1L));
+			else
+				if(articulos.indexOf(articulo)>= 0) 
+					articulo= articulos.get(articulos.indexOf(articulo));
+			  else
+			    articulo= articulos.get(0);
+			int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(articulo.toLong("idArticulo")));
+			if(articulo.size()> 1 && position>= 0) {
+				if(index!= position)
+				  RequestContext.getCurrentInstance().execute("jsArticulos.exists("+ position+ ");");
+			} // if	
+			else
+  			this.toMoveData(articulo, index);
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -334,5 +353,11 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
       Methods.clean(columns);
     }// finally
 	}
-	
+
+	public List<UISelectEntity> doCompleteArticulo(String query) {
+		this.attrs.put("codigo", query);
+    this.doUpdateArticulos();		
+		return (List<UISelectEntity>)this.attrs.get("articulos");
+	}	
+
 }

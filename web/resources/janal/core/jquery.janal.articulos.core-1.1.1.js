@@ -13,7 +13,7 @@
 	
 	Janal.Control.Articulos.Core= Class.extend({
 		joker       : 'contenedorGrupos\\:tabla\\:', // Attributes 
-		codes       : '\\:codigos', 
+		codes       : '\\:codigos_input', 
 		discounts   : '\\:descuentos',
 		additionals : '\\:extras',
 		amounts     : '\\:cantidades',
@@ -54,6 +54,12 @@
 			this.events();
 		}, // init
 		events: function() {
+			$(window).bind('beforeunload', function() { 
+				if(jsArticulos.leavePage)
+					return ;
+				else
+				  return 'Es probable que los cambios no se hayan guardado\n¿Aun asi deseas salir de esta opción?.';
+			});			
       $(document).on('keyup', this.lookup, function(e) {
 				clearTimeout($articulos.typingTimer);
         if ($(this).val() && $(this).val().trim().length> 0) 
@@ -69,6 +75,7 @@
 			});  
       $(document).on('keydown', this.porcentajes, function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
+        $articulos.leavePage= !($articulos.change.indexOf(key)>= 0);
 				switch(key) {
 					case $articulos.VK_ENTER:
 						$(this).blur();
@@ -78,6 +85,7 @@
 			});	
       $(document).on('keydown', this.focus, function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
+        $articulos.leavePage= !($articulos.change.indexOf(key)>= 0);
 				switch(key) {
 					case $articulos.VK_ENTER:
 						return $articulos.calculate($(this));
@@ -241,16 +249,9 @@
 		},
 		plus: function() {
 			var value = this.get().trim();
-			if($(this.price()) && value.length> 0 && this.isOk(value) && janal.precio($(this.price()), value)) {
-  			var temp = $(this.price()).val();
-			  $(this.price()).val(value);
-				var ok= janal.descuentos($(this.price()));
-				if(ok.error)
-				  $(this.price()).val(temp);
-				else {
-					this.set('');
-  				this.refresh();
-				} // if
+			if($(this.price()) && value.length> 0 && this.isOk(value)) {
+				var ok= janal.precio($(this.price()), value);
+			  this.refresh();
 			  return ok.error;
 			} // if	
 			return true;
@@ -317,6 +318,7 @@
 				this.continue= false;
   			this.down();
 			} // if	
+			PF('listado').close();
 		},
 		reset: function(name) {
 			if($(name).attr('id').endsWith(this.prices.substring(2)))
@@ -339,6 +341,7 @@
 		},
 		close: function() {
 		  replace(this.cursor.index);
+      this.continue= true;
 			return false;
 		},
 		look: function(name) {

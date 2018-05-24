@@ -9,14 +9,8 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="#{manticComprasOrdendesAccion.attrs.nombreAccion} una orden de compra #{manticComprasOrdendesAccion.tipoOrden.titulo}"/>
 	<ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.janal.articulos.core-1.1.0.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.articulos.core-1.1.1.js"/>
 		<script type="text/javascript">
-			$(window).bind('beforeunload', function() { 
-				if(jsArticulos.leavePage)
-					return ;
-				else
-				  return 'Es probable que los cambios no se hayan guardado\n¿Aun asi deseas salir de esta opción?.';
-			});			
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:consecutivo'    : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:idAlmacen'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
@@ -40,7 +34,7 @@
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
-		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticComprasOrdendesAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 300);">  
+		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticComprasOrdendesAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
 			<pe:methodParam name="codigo"/>  
 			<pe:methodParam name="index"/>  
@@ -58,7 +52,7 @@
 			<pe:methodParam name="idArticulo"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="replace" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticComprasOrdendesAccion.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.goto();">  
+		<pe:remoteCommand name="replace" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticComprasOrdendesAccion.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
@@ -204,7 +198,24 @@
 												<div class="ui-grid-row janal-grid-row">
 													<div class="ui-grid-col-12" style="padding-right: 14px;">
   	 										  	<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
-	  											  <p:inputText id="codigos" value="#{row['propio']}" styleClass="janal-wid-100-txt key-down-event"/>
+														<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticComprasOrdendesAccion.attrs.articulo}" completeMethod="#{manticComprasOrdendesAccion.doCompleteArticulo}" maxResults="5" converter="janal.convertidor.Entity" forceSelection="true" minQueryLength="2">
+															<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
+															<f:facet name="itemtip">
+																<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-150">
+																	<f:facet name="header" class="TexAlCenter">
+																		<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>
+																	</f:facet>
+																	<h:outputText value="Código:" />
+																	<h:outputText value="#{custom.propio}" />
+																	<h:outputText value="Código:" />
+																	<h:outputText value="#{custom.codigo}" />
+																	<h:outputText value="Nombre:" />
+																	<h:outputText value="#{custom.nombre}" />
+																	<h:outputText value="Costo:" />
+																	<h:outputText value="#{custom.precio}" />
+																</h:panelGrid>
+															</f:facet>
+														</p:autoComplete>												
 													</div>	
 												  <div style="width: 10px; margin-left: -5px; margin-top: 1px;">
 												    <h:outputText value="#{row['estaSolicitado']}" escape="false"/>
@@ -230,7 +241,7 @@
 													<div class="ui-grid-col-12 janal-column-right" style="padding-right: 14px;">
     												<p:outputLabel value="#{row['costo']}"/>
     												<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
-												    <p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:precios'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:precios'));" style="display: none"/>
+												    <p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:precios'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:precios'));" style="display:none"/>
 													</div>	 
 												  <div style="width: 10px; margin-left: -5px; margin-top: 8px;">
 												    <h:outputText value="#{row['costoMayorMenor']}" escape="false"/>
@@ -242,21 +253,21 @@
 													<h:outputText value="Cantidad"/>
 												</f:facet>
 												<p:outputLabel value="#{row['cantidad']}"/>
-												<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event" onblur="janal.cantidad($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
+												<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.cantidad($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 												<f:facet name="header">
 													<h:outputText value="Descuento (%)"/>
 												</f:facet>
 												<p:outputLabel value="#{row['descuento']}"/>
-												<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'));" style="display: none"/>
+												<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'));" style="display: none"/>
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
 													<h:outputText value="Extras (%)"/>
 												</f:facet>
 												<p:outputLabel value="#{row['extras']}"/>
-												<p:inputText id="extras" value="#{row['extras']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:extras'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:extras'));" style="display: none"/>
+												<p:inputText id="extras" value="#{row['extras']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:extras'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:extras'));" style="display: none"/>
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-5">
 												<f:facet name="header">

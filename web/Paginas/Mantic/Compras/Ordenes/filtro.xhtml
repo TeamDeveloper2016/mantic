@@ -147,6 +147,8 @@
             <p:separator/>					
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
             <p:separator/>					
+            <p:menuitem id="notaEntrada" action="#{manticComprasOrdenesFiltro.doNotasEntradas('AGREGAR')}" icon="fa fa-edit" ajax="false" value="Notas entrada" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:separator/>					
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar"/>					
           </p:contextMenu>
         </div>
