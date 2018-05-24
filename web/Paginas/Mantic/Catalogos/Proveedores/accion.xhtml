@@ -302,58 +302,56 @@
 							</p:panelGrid>
 						</p:tab>
 						<p:tab title="Banca" rendered="#{manticCatalogosProveedoresAccion.attrs.admin}">
-							<p:tabView id="banca">
-								<p:tab title="Servicios">
-									<p:panelGrid id="panelTablaServicios" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
-										<p:dataTable id="tablaServicios" rowIndexVar="index" var="servicio" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresServicio}" rows="6" paginator="false" reflow="true" rowKey="#{servicio.key}" emptyMessage=" " styleClass="paginated">																					
-											<p:column headerText="Banco">										
-												<p:selectOneMenu id="banco#{servicio.key}" styleClass="janal-wid-100-txt" value="#{servicio.idBanco}" filter="true" filterMatchMode="startsWith" disabled="#{!servicio.nuevo}">
-													<f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.bancos}"/>
-												</p:selectOneMenu> 				
-											</p:column>	
-											<p:column headerText="Convenio" styleClass="janal-wid-30">		
-												<p:inputText id="convenio#{servicio.key}" styleClass="janal-wid-100-txt" value="#{servicio.convenioCuenta}" onblur="janal.capitalLetterTable('contenedorGrupos\\:banca', 'tablaServicios', #{index}, 'convenio')" disabled="#{!servicio.nuevo}"/>                    																																			
-											</p:column>
-											<p:column headerText="Referencia" styleClass="janal-wid-30">		
-												<p:inputText id="valor#{servicio.key}" styleClass="janal-wid-100-txt" value="#{servicio.clabeReferencia}" onblur="janal.capitalLetterTable('contenedorGrupos\\:banca', 'tablaServicios', #{index}, 'valor')" disabled="#{!servicio.nuevo}"/>                    																																			
-											</p:column>
-											<p:column style="width:32px;text-align: center">
-												<p:commandButton update="tablaServicios" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.registroProveedor.doEliminarProveedorServicio}" styleClass="janal-text-white">
-													<f:setPropertyActionListener value="#{servicio}" target="#{manticCatalogosProveedoresAccion.registroProveedor.proveedorServicioSeleccion}" />
-												</p:commandButton>
-											</p:column>
-											<f:facet name="footer">
-												<p:commandButton actionListener="#{manticCatalogosProveedoresAccion.registroProveedor.doAgregarProveedorServicio}" process="@this tablaServicios" update="tablaServicios" icon="fa fa-plus" styleClass="janal-text-white"/>						
-											</f:facet>
-										</p:dataTable>	
-									</p:panelGrid>	
-								</p:tab>
-								<p:tab title="Transferencia">
-									<p:panelGrid id="panelTablaTransferia" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
-										<p:dataTable id="tablaTransferencia" rowIndexVar="index" var="transferencia" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresTransferencia}" rows="6" paginator="false" reflow="true" rowKey="#{transferencia.key}" emptyMessage=" " styleClass="paginated">																					
-											<p:column headerText="Banco">										
-												<p:selectOneMenu id="transferencia#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.idBanco}" filter="true" filterMatchMode="startsWith" disabled="#{!transferencia.nuevo}">
-													<f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.bancos}"/>
-												</p:selectOneMenu> 				
-											</p:column>	
-											<p:column headerText="Cuenta" styleClass="janal-wid-30">		
-												<p:inputText id="convenio#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.convenioCuenta}" onblur="janal.capitalLetterTable('contenedorGrupos\\:banca', 'tablaTransferencia', #{index}, 'convenio')" disabled="#{!transferencia.nuevo}"/>                    																																			
-											</p:column>
-											<p:column headerText="Clave" styleClass="janal-wid-30">		
-												<p:inputText id="referencia#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.clabeReferencia}" onblur="janal.capitalLetterTable('contenedorGrupos\\:banca', 'tablaTransferencia', #{index}, 'referencia')" disabled="#{!transferencia.nuevo}"/>                    																																			
-											</p:column>
-											<p:column style="width:32px;text-align: center">
-												<p:commandButton update="tablaTransferencia" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.registroProveedor.doEliminarProveedorTransferencia}" styleClass="janal-text-white">
-													<f:setPropertyActionListener value="#{transferencia}" target="#{manticCatalogosProveedoresAccion.registroProveedor.proveedorTransferenciaSeleccion}" />
-												</p:commandButton>
-											</p:column>
-											<f:facet name="footer">
-												<p:commandButton actionListener="#{manticCatalogosProveedoresAccion.registroProveedor.doAgregarProveedorTransferencia}" process="@this tablaTransferencia" update="tablaTransferencia" icon="fa fa-plus" styleClass="janal-text-white"/>						
-											</f:facet>
-										</p:dataTable>	
-									</p:panelGrid>	
-								</p:tab>
-							</p:tabView>
+							<p:fieldset legend="Servicios">
+								<p:panelGrid id="panelTablaServicios" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
+									<p:dataTable id="tablaServicios" rowIndexVar="index" var="servicio" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresServicio}" rows="6" paginator="false" reflow="true" rowKey="#{servicio.key}" emptyMessage=" " styleClass="paginated">																					
+										<p:column headerText="Banco">										
+											<p:selectOneMenu id="banco#{servicio.key}" styleClass="janal-wid-100-txt" value="#{servicio.idBanco}" filter="true" filterMatchMode="startsWith" disabled="#{!servicio.nuevo}">
+												<f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.bancos}"/>
+											</p:selectOneMenu> 				
+										</p:column>	
+										<p:column headerText="Convenio" styleClass="janal-wid-30">		
+											<p:inputText id="convenio#{servicio.key}" styleClass="janal-wid-100-txt" value="#{servicio.convenioCuenta}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaServicios', #{index}, 'convenio')" disabled="#{!servicio.nuevo}"/>                    																																			
+										</p:column>
+										<p:column headerText="Referencia" styleClass="janal-wid-30">		
+											<p:inputText id="valor#{servicio.key}" styleClass="janal-wid-100-txt" value="#{servicio.clabeReferencia}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaServicios', #{index}, 'valor')" disabled="#{!servicio.nuevo}"/>                    																																			
+										</p:column>
+										<p:column style="width:32px;text-align: center">
+											<p:commandButton update="tablaServicios" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.registroProveedor.doEliminarProveedorServicio}" styleClass="janal-text-white">
+												<f:setPropertyActionListener value="#{servicio}" target="#{manticCatalogosProveedoresAccion.registroProveedor.proveedorServicioSeleccion}" />
+											</p:commandButton>
+										</p:column>
+										<f:facet name="footer">
+											<p:commandButton actionListener="#{manticCatalogosProveedoresAccion.registroProveedor.doAgregarProveedorServicio}" process="@this tablaServicios" update="tablaServicios" icon="fa fa-plus" styleClass="janal-text-white"/>						
+										</f:facet>
+									</p:dataTable>	
+								</p:panelGrid>	
+							</p:fieldset>
+							<p:fieldset legend="Transferencia">
+								<p:panelGrid id="panelTablaTransferia" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
+									<p:dataTable id="tablaTransferencia" rowIndexVar="index" var="transferencia" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresTransferencia}" rows="6" paginator="false" reflow="true" rowKey="#{transferencia.key}" emptyMessage=" " styleClass="paginated">																					
+										<p:column headerText="Banco">										
+											<p:selectOneMenu id="transferencia#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.idBanco}" filter="true" filterMatchMode="startsWith" disabled="#{!transferencia.nuevo}">
+												<f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.bancos}"/>
+											</p:selectOneMenu> 				
+										</p:column>	
+										<p:column headerText="Cuenta" styleClass="janal-wid-30">		
+											<p:inputText id="convenio#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.convenioCuenta}" onblur="janal.capitalLetterTable('contenedorGrupos\\:banca', 'tablaTransferencia', #{index}, 'convenio')" disabled="#{!transferencia.nuevo}"/>                    																																			
+										</p:column>
+										<p:column headerText="Clave" styleClass="janal-wid-30">		
+											<p:inputText id="referencia#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.clabeReferencia}" onblur="janal.capitalLetterTable('contenedorGrupos\\:banca', 'tablaTransferencia', #{index}, 'referencia')" disabled="#{!transferencia.nuevo}"/>                    																																			
+										</p:column>
+										<p:column style="width:32px;text-align: center">
+											<p:commandButton update="tablaTransferencia" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.registroProveedor.doEliminarProveedorTransferencia}" styleClass="janal-text-white">
+												<f:setPropertyActionListener value="#{transferencia}" target="#{manticCatalogosProveedoresAccion.registroProveedor.proveedorTransferenciaSeleccion}" />
+											</p:commandButton>
+										</p:column>
+										<f:facet name="footer">
+											<p:commandButton actionListener="#{manticCatalogosProveedoresAccion.registroProveedor.doAgregarProveedorTransferencia}" process="@this tablaTransferencia" update="tablaTransferencia" icon="fa fa-plus" styleClass="janal-text-white"/>						
+										</f:facet>
+									</p:dataTable>	
+								</p:panelGrid>	
+							</p:fieldset>
 						</p:tab>
             <p:tab title="Observaciones">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
