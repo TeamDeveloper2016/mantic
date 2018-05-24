@@ -753,6 +753,29 @@
 				order by 
 				  tc_mantic_articulos.nombre
 			</select>
+			<select id="findIdArticulo">
+				select 
+				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
+				  tc_mantic_articulos.id_articulo,
+				  tc_mantic_articulos_codigos.codigo as propio,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_proveedor= 1) as codigo,
+				  tc_mantic_articulos_codigos.id_principal,
+				  tc_mantic_articulos_codigos.id_proveedor,
+				  tc_mantic_articulos.nombre,
+				  tc_mantic_articulos.precio,
+				  tc_mantic_articulos.iva,
+				  tc_mantic_articulos.id_redondear
+				from 
+					tc_mantic_articulos
+				inner join
+					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
+				inner join 
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+				where 
+					tc_mantic_articulos.id_articulo= {idArticulo}
+				order by 
+				  tc_mantic_articulos.nombre
+			</select>
 		</unit>
 		<unit id="VistaPortalProveedoresDto">
 			<select id="banca">
