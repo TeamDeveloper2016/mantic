@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="#{manticComprasEntradasAccion.attrs.nombreAccion} una nota de entrada #{manticComprasEntradasAccion.titulo}"/>
 	<ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.janal.articulos.core-1.1.2.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.articulos.core-1.1.3.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:consecutivo'    : {validaciones: 'requerido', mascara: 'libre'},
@@ -168,7 +168,7 @@
 												<div class="ui-grid-row janal-grid-row">
 													<div class="ui-grid-col-12" style="padding-right: 14px;">
   	 										  	<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
-														<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticComprasEntradasAccion.attrs.articulo}" completeMethod="#{manticComprasEntradasAccion.doCompleteArticulo}" maxResults="5" converter="janal.convertidor.Entity" forceSelection="true" minQueryLength="2">
+														<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticComprasEntradasAccion.attrs.articulo}" completeMethod="#{manticComprasEntradasAccion.doCompleteArticulo}" maxResults="5" converter="janal.convertidor.Entity" minQueryLength="2">
 															<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
 															<f:facet name="itemtip">
 																<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
