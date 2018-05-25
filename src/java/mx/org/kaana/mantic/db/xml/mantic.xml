@@ -603,6 +603,17 @@
         where      
           id_empaque_unidad_medida = {idEmpaqueUnidadMedida} and id_empresa = {idEmpresa} and id_articulo = {idArticulo} and nombre = '{nombre}'
       </select>
+			<select id="inventario">
+				select
+					tc_mantic_articulos.id_articulo,
+					tc_mantic_articulos.minimo,
+					tc_mantic_articulos.maximo,
+					tc_mantic_articulos.stock
+				from 
+					tc_mantic_articulos
+				where
+					tc_mantic_articulos.id_articulo= {idArticulo}			
+			</select>
 			<update id="rows">
 				update 
 				  tc_mantic_articulos
@@ -1025,6 +1036,15 @@
         from      
           tc_mantic_almacenes_articulos
       </select>
+			<select id="ubicacion">
+				select
+					*
+				from 
+					tc_mantic_almacenes_articulos
+				where
+					id_almacen= {idAlmacen}
+					and id_articulo= {idArticulo}
+			</select>
 			<delete id="rows">
         delte from tc_mantic_almacenes_articulos where id_almacen={idAlmacen} 
       </delete>
@@ -1108,6 +1128,15 @@
         from      
           tc_mantic_almacenes_ubicaciones
       </select>
+			<select id="general">
+				select
+					*
+				from 
+					tc_mantic_almacenes_ubicaciones
+				where
+					id_almacen= {idAlmacen}
+				  and piso= 'GENERAL'
+			</select>
 			<delete id="rows">
         delte from tc_mantic_almacenes_ubicaciones where id_almacen={idAlmacen} 
       </delete>
@@ -1274,6 +1303,15 @@
         where      
           ejercicio = {ejercicio} and orden = {orden} and id_empresa = {idEmpresa}
       </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_ordenes_compras
+				where
+				  ejercicio= {ejercicio} 
+				  and id_empresa= {idEmpresa}				
+			</select>
       <select id="detalle">
         select      
           *
@@ -1725,7 +1763,7 @@
         from      
           tc_mantic_notas_detalles
         where      
-          ejercicio = {ejercicio} and orden = {orden} and id_empresa = {idEmpresa} and id_orden_compra = {idOrdenCompra}
+          id_nota_entrada = {idNotaEntrada} and id_articulo= {id_articulo}
       </select>
       <select id="detalle">
         select      
@@ -1838,6 +1876,15 @@
         where 
           id_nota_entrada = {idNotaEntrada}
       </select>
+      <select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_notas_entradas
+				where
+				  ejercicio= {ejercicio} 
+				  and id_empresa= {idEmpresa}				
+			</select>			
     </unit>
     <unit id="TcManticOrdenesDetallesDto">
       <select id="row">
@@ -1854,7 +1901,7 @@
         from      
           tc_mantic_ordenes_detalles
         where      
-          id_orden_compra = {idOrdenCompra} and id_articulo = {idArticulo} and id_orden_detalle = {idOrdenDetalle}
+          id_orden_compra = {idOrdenCompra} and id_articulo = {idArticulo}
       </select>
       <select id="detalle">
         select      

@@ -47,6 +47,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
+      this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("sucursales", JsfBase.getAutentifica().getSucursales());
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
@@ -70,7 +71,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
-      this.lazyModel = new FormatCustomLazy("VistaNotasEntradasDto", "row", this.attrs, columns);
+      this.lazyModel = new FormatCustomLazy("VistaNotasEntradasDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -125,7 +126,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
-		regresar.put("consecutivo", attrs.get("consecutivo"));
+		regresar.put("ordenCompra", attrs.get("ordenCompra"));
+		regresar.put("notaEntrada", attrs.get("notaEntrada"));
 		regresar.put("idEmpresa", attrs.get("idEmpresa"));
 		regresar.put("idProveedor", attrs.get("idProveedor"));
 		regresar.put("idOrdenEstatus", attrs.get("idOrdenEstatus"));

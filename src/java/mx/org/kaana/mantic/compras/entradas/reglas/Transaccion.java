@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import static mx.org.kaana.kajool.enums.EAccion.AGREGAR;
 import static mx.org.kaana.kajool.enums.EAccion.ELIMINAR;
@@ -17,6 +19,8 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import org.apache.log4j.Logger;
@@ -35,15 +39,17 @@ public class Transaccion extends IBaseTnx {
  
 	private TcManticNotasEntradasDto orden;	
 	private List<Articulo> articulos;
+	private boolean aplicar;
 	private String messageError;
 
 	public Transaccion(TcManticNotasEntradasDto orden) {
-		this(orden, new ArrayList<Articulo>());
+		this(orden, new ArrayList<Articulo>(), false);
 	}
 
-	public Transaccion(TcManticNotasEntradasDto orden, List<Articulo> articulos) {
+	public Transaccion(TcManticNotasEntradasDto orden, List<Articulo> articulos, boolean aplicar) {
 		this.orden    = orden;		
 		this.articulos= articulos;
+		this.aplicar  = aplicar;
 	} // Transaccion
 
 	public String getMessageError() {
@@ -66,8 +72,10 @@ public class Transaccion extends IBaseTnx {
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
 					if(this.orden.getIdDirecta().equals(1L))
 						this.orden.setIdOrdenCompra(null);
+  				if(this.aplicar)
+						this.orden.setIdNotaEstatus(6L);
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
-					toFillArticulos(sesion);
+					this.toFillArticulos(sesion);
 					break;
 				case MODIFICAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
@@ -92,15 +100,16 @@ public class Transaccion extends IBaseTnx {
 	private void toFillArticulos(Session sesion) throws Exception {
 		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticNotasDetallesDto", "detalle", this.orden.toMap());
 		for (Articulo item: todos) 
-			if(this.articulos.indexOf(item)< 0)
+			if(this.articulos.indexOf(item)< 0) 
 				DaoFactory.getInstance().delete(sesion, item);
 		for (Articulo articulo: this.articulos) {
 			TcManticNotasDetallesDto item= articulo.toNotaDetalle();
 			item.setIdNotaEntrada(this.orden.getIdNotaEntrada());
 			if(DaoFactory.getInstance().findIdentically(sesion, TcManticNotasDetallesDto.class, item.toMap())== null) {
 				DaoFactory.getInstance().insert(sesion, item);
-				// afectar almacenes y afectar stock de articulos
-			}
+				if(this.aplicar)
+				  this.toAffectAlmacenes(sesion, item);
+			} // if
 		} // for
 	}
 	
@@ -111,7 +120,7 @@ public class Transaccion extends IBaseTnx {
 			params=new HashMap<>();
 			params.put("ejercicio", Fecha.getAnioActual());
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			regresar= DaoFactory.getInstance().toField(sesion, "VistaNotasEntradasDto", "siguiente", params, "siguiente").toLong();
+			regresar= DaoFactory.getInstance().toField(sesion, "TcManticNotasEntradasDto", "siguiente", params, "siguiente").toLong();
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -120,6 +129,36 @@ public class Transaccion extends IBaseTnx {
 			Methods.clean(params);
 		} // finally
 		return regresar;
+	}
+	
+	private void toAffectAlmacenes(Session sesion, TcManticNotasDetallesDto item) throws Exception {
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("idAlmacen", this.orden.getIdAlmacen());
+			params.put("idArticulo", item.getIdArticulo());
+			TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class,  params, "ubicacion");
+			if(ubicacion== null) {
+			  TcManticAlmacenesUbicacionesDto general= (TcManticAlmacenesUbicacionesDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesUbicacionesDto.class, params, "general");
+				if(general== null) {
+  				general= new TcManticAlmacenesUbicacionesDto("GENERAL", "", "GENERAL", "", "", JsfBase.getAutentifica().getPersona().getIdUsuario(), this.orden.getIdAlmacen(), -1L);
+					DaoFactory.getInstance().insert(sesion, general);
+				} // if	
+			  Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticArticulosDto", "inventario", params);
+				TcManticAlmacenesArticulosDto articulo= new TcManticAlmacenesArticulosDto(entity.toLong("minimo"), -1L, general.getIdUsuario(), general.getIdAlmacen(), entity.toLong("maximo"), general.getIdAlmacenUbicacion(), item.getIdArticulo(), item.getCantidad());
+				DaoFactory.getInstance().insert(sesion, articulo);
+		  } // if
+			else { 
+				ubicacion.setStock(ubicacion.getStock()+ item.getCantidad());
+				DaoFactory.getInstance().update(ubicacion);
+			} // if
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
 	}
 	
 } 

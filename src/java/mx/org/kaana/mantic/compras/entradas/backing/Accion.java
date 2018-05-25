@@ -35,6 +35,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
 	private EOrdenes tipoOrden;
+	private boolean aplicar;
 
 	public String getValidacion() {
 		return this.tipoOrden.equals(EOrdenes.NORMAL)? "libre": "requerido";
@@ -48,6 +49,7 @@ public class Accion extends IBaseArticulos implements Serializable {
   @Override
   protected void init() {		
     try {
+			this.aplicar=  false;
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
@@ -85,6 +87,11 @@ public class Accion extends IBaseArticulos implements Serializable {
     } // catch		
   } // doLoad
 
+  public String doAplicar() {  
+		this.aplicar= true;
+		return this.doAceptar();
+	}
+	
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
@@ -96,7 +103,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			((NotaEntrada)this.getAdminOrden().getOrden()).setSubtotal(this.getAdminOrden().getTotales().getSubTotal());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
 			this.getAdminOrden().toAdjustArticulos();
-			transaccion = new Transaccion(((NotaEntrada)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+			transaccion = new Transaccion(((NotaEntrada)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.aplicar);
 			if (transaccion.ejecutar(eaccion)) {
 				if(eaccion.equals(EAccion.AGREGAR))
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);

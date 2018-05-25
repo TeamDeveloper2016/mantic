@@ -106,7 +106,7 @@ public class Transaccion extends IBaseTnx {
 			params=new HashMap<>();
 			params.put("ejercicio", Fecha.getAnioActual());
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			regresar= DaoFactory.getInstance().toField(sesion, "VistaOrdenesComprasDto", "siguiente", params, "siguiente").toLong();
+			regresar= DaoFactory.getInstance().toField(sesion, "TcManticOrdenesComprasDto", "siguiente", params, "siguiente").toLong();
 		} // try
 		catch (Exception e) {
 			throw e;

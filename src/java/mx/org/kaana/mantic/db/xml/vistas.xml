@@ -295,7 +295,7 @@
 			</select>
 		</unit>
 		<unit id="VistaNotasEntradasDto">
-			<select id="row">
+			<select id="lazy">
 				select
 				  tc_mantic_notas_entradas.id_nota_entrada as id_key,
 				  tc_mantic_notas_entradas.id_nota_entrada,
@@ -330,15 +330,6 @@
 					or tc_mantic_notas_entradas.id_nota_entrada= {idNotaEntrada}
 				{sortOrder}
 			</select>
-      <select id="siguiente">
-        select
-					max(orden)+ 1 as siguiente
-				from 
-					tc_mantic_notas_entradas
-				where
-				  ejercicio= {ejercicio} 
-				  and id_empresa= {idEmpresa}				
-			</select>			
 			<select id="ordenes">
 				select
 				  tc_mantic_ordenes_compras.id_orden_compra as id_key,
@@ -643,15 +634,6 @@
 				order by 
 				  tc_mantic_articulos.nombre
 			</select>			
-			<select id="siguiente">
-        select
-					max(orden)+ 1 as siguiente
-				from 
-					tc_mantic_ordenes_compras
-				where
-				  ejercicio= {ejercicio} 
-				  and id_empresa= {idEmpresa}				
-			</select>
 			<select id="proveedores">
         select
 					tc_mantic_proveedores.id_proveedor as id_key,
