@@ -10,11 +10,14 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.mantic.catalogos.clientes.bean.Domicilio;
 import mx.org.kaana.mantic.catalogos.almacenes.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.catalogos.almacenes.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesDto;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.TabChangeEvent;
 
 public class RegistroAlmacen implements Serializable{
 	
@@ -32,6 +35,7 @@ public class RegistroAlmacen implements Serializable{
 	private List<UISelectItem> ubicacionesItems;
 	private AlmacenUbicacion almacenUbicacionSeleccion;
 	private UISelectItem almacenUbicacionItem;
+	private Long idUbicacion;
 	private List<IBaseDto> deleteList;
 	private ContadoresListas contadores;
 	private Long countIndice;
@@ -197,6 +201,14 @@ public class RegistroAlmacen implements Serializable{
 
 	public void setAlmacenUbicacionItem(UISelectItem almacenUbicacionItem) {
 		this.almacenUbicacionItem = almacenUbicacionItem;
+	}
+
+	public Long getIdUbicacion() {
+		return idUbicacion;
+	}
+
+	public void setIdUbicacion(Long idUbicacion) {
+		this.idUbicacion = idUbicacion;
 	}
 		
 	private void init(){
@@ -414,20 +426,19 @@ public class RegistroAlmacen implements Serializable{
 	public void doAgregarAlmacenArticulo(){
 		AlmacenArticulo articulo= null;
 		AlmacenUbicacion ubicacion= null;
-		UISelectItem item= null;
 		try {					
-			articulo= new AlmacenArticulo(this.contadores.getTotalAlmacenesArticulo() + this.countIndice, ESql.INSERT, true);				
-			articulo.setIdAlmacenUbicacion(this.almacenArticuloPivote.getIdAlmacenUbicacion());
+			articulo= new AlmacenArticulo(this.contadores.getTotalAlmacenesArticulo() + this.countIndice, ESql.INSERT, true);							
 			articulo.setIdArticulo(this.almacenArticuloPivote.getIdArticulo());
 			articulo.setIdUsuario(JsfBase.getIdUsuario());
 			articulo.setMaximo(this.almacenArticuloPivote.getMaximo());
 			articulo.setMinimo(this.almacenArticuloPivote.getMinimo());
 			articulo.setStock(this.almacenArticuloPivote.getStock());
-			if(almacenUbicacionItem!= null){
-				item= this.ubicacionesItems.get(this.ubicacionesItems.indexOf(this.almacenUbicacionItem));
+			if(this.idUbicacion!= null && !this.idUbicacion.equals(-1L)){
 				for(AlmacenUbicacion recordUbicacion: this.ubicaciones){
-					if(Long.valueOf(item.getValue().toString()).equals(recordUbicacion.getKey()))
+					if(this.idUbicacion.equals(recordUbicacion.getKey())){
 						ubicacion= recordUbicacion;
+						articulo.setIdAlmacenUbicacion(recordUbicacion.getKey());
+					} // if
 				} // for
 			} // if
 			if(ubicacion!= null){
@@ -468,21 +479,20 @@ public class RegistroAlmacen implements Serializable{
 	public void doActualizarAlmacenArticulo(){
 		AlmacenArticulo articulo= null;
 		AlmacenUbicacion ubicacion= null;
-		UISelectItem item= null;
 		try {					
 			articulo= this.almacenArticulo.get(this.almacenArticulo.indexOf(this.almacenArticuloSeleccion));
-			articulo.setModificar(false);
-			articulo.setIdAlmacenUbicacion(this.almacenArticuloPivote.getIdAlmacenUbicacion());
+			articulo.setModificar(false);			
 			articulo.setIdArticulo(this.almacenArticuloPivote.getIdArticulo());
 			articulo.setIdUsuario(JsfBase.getIdUsuario());
 			articulo.setMaximo(this.almacenArticuloPivote.getMaximo());
 			articulo.setMinimo(this.almacenArticuloPivote.getMinimo());
 			articulo.setStock(this.almacenArticuloPivote.getStock());
-			if(this.almacenUbicacionItem!= null){
-				item= this.ubicacionesItems.get(this.ubicacionesItems.indexOf(this.almacenUbicacionItem));
+			if(this.idUbicacion!= null && !this.idUbicacion.equals(-1L)){
 				for(AlmacenUbicacion recordUbicacion: this.ubicaciones){
-					if(Long.valueOf(item.getValue().toString()).equals(recordUbicacion.getKey()))
+					if(recordUbicacion.getKey().equals(this.idUbicacion)){
 						ubicacion= recordUbicacion;
+						articulo.setIdAlmacenUbicacion(recordUbicacion.getKey());
+					} // if
 				} // for
 				if(ubicacion!= null){
 					articulo.setAnaquel(ubicacion.getAnaquel());
@@ -505,7 +515,6 @@ public class RegistroAlmacen implements Serializable{
 	public void doConsultarAlmacenArticulo(){
 		AlmacenArticulo articulo         = null;
 		MotorBusqueda motor              = null;
-		UISelectItem ubicacion           = null;
 		AlmacenUbicacion almacenUbicacion= null;
 		try {					
 			articulo= this.almacenArticulo.get(this.almacenArticulo.indexOf(this.almacenArticuloSeleccion));			
@@ -516,10 +525,9 @@ public class RegistroAlmacen implements Serializable{
 			this.almacenArticuloPivote.setStock(articulo.getStock());
 			motor= new MotorBusqueda(articulo.getIdArticulo());
 			this.almacenArticuloPivote.setArticulo(motor.toArticulo());
-			if(this.almacenUbicacionItem!= null){
-				ubicacion= this.ubicacionesItems.get(this.ubicacionesItems.indexOf(this.almacenUbicacionItem));
+			if(articulo.getIdAlmacenUbicacion()!= null){
 				for(AlmacenUbicacion recordAlmacenUbicacion: this.ubicaciones){
-					if(recordAlmacenUbicacion.getKey().equals(Long.valueOf(ubicacion.getValue().toString())))
+					if(recordAlmacenUbicacion.getKey().equals(articulo.getIdAlmacenUbicacion()))
 						almacenUbicacion= recordAlmacenUbicacion;				
 				} // for
 				if(almacenUbicacion!= null){
@@ -528,7 +536,7 @@ public class RegistroAlmacen implements Serializable{
 					this.almacenArticuloPivote.setCuarto(almacenUbicacion.getCuarto());
 					this.almacenArticuloPivote.setCharola(almacenUbicacion.getCharola());
 				} // if
-			}
+			} // if
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -547,4 +555,31 @@ public class RegistroAlmacen implements Serializable{
 			throw e;
 		} // catch		
 	} // addDeleteList	
+	
+	public void doLoadUbicaciones(){		
+		try {
+			this.ubicacionesItems= new ArrayList<>();
+			for(AlmacenUbicacion item: this.ubicaciones)
+				this.ubicacionesItems.add(new UISelectItem(item.getKey(), item.getUbicacion()));
+			if(!this.ubicacionesItems.isEmpty()){
+				this.almacenUbicacionItem= this.ubicacionesItems.get(0);
+				this.idUbicacion= (Long) UIBackingUtilities.toFirstKeySelectItem(this.ubicacionesItems);
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch			
+	}
+	
+	public void doActualizarListaUbicaciones(TabChangeEvent event){		
+		try {
+			if(event.getTab().getTitle().equals("Articulos"))
+				RequestContext.getCurrentInstance().execute("widAgregarUbicacion();");
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doActualizarListaUbicaciones
 }
