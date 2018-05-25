@@ -49,9 +49,11 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? -1L: JsfBase.getFlashAttribute("idOrdenCompra"));
+      this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra"));
       this.attrs.put("sortOrder", "order by tc_mantic_ordenes_compras.id_empresa, tc_mantic_ordenes_compras.ejercicio, tc_mantic_ordenes_compras.orden");
 			toLoadCatalog();
+      if(this.attrs.get("idOrdenCompra")!= null) 
+			  this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -70,7 +72,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
-      this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", "row", params, columns);
+      this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -132,19 +134,28 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
-		regresar.put("consecutivo", attrs.get("consecutivo"));
-		regresar.put("idEmpresa", attrs.get("idEmpresa"));
-		regresar.put("idProveedor", attrs.get("idProveedor"));
-		regresar.put("idOrdenEstatus", attrs.get("idOrdenEstatus"));
-		if(Cadena.isVacio(attrs.get("fechaInicio")))
-		  regresar.put("fechaInicio", "20160101");	
+		StringBuilder sb= new StringBuilder();
+		if(!Cadena.isVacio(this.attrs.get("idOrdenCompra")) && !this.attrs.get("idOrdenCompra").toString().equals("-1"))
+  		sb.append("(tc_mantic_ordenes_compras.id_orden_compra=").append(this.attrs.get("idOrdenCompra")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
+  		sb.append("(tc_mantic_ordenes_compras.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
+		  sb.append("(date_format(tc_mantic_ordenes_compras.registro, '%Y%c%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
+		  sb.append("(date_format(tc_mantic_ordenes_compras.registro, '%Y%c%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+		if(!Cadena.isVacio(this.attrs.get("idProveedor")) && !this.attrs.get("idProveedor").toString().equals("-1"))
+  		sb.append("(tc_mantic_proveedores.id_proveedor= ").append(this.attrs.get("idProveedor")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idOrdenEstatus")) && !this.attrs.get("idOrdenEstatus").toString().equals("-1"))
+  		sb.append("(tc_mantic_ordenes_compras.id_orden_estatus= ").append(this.attrs.get("idOrdenEstatus")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
-			regresar.put("fechaInicio", Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)attrs.get("fechaInicio")));	
-		if(Cadena.isVacio(attrs.get("fechaTermino")))
-		  regresar.put("fechaTermino", "29991231");	
-		else
-			regresar.put("fechaTermino", Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)attrs.get("fechaTermino")));	
-		return regresar;
+		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+		if(sb.length()== 0)
+		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+		else	
+		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+		return regresar;		
 	}
 	
 	private void toLoadCatalog() {

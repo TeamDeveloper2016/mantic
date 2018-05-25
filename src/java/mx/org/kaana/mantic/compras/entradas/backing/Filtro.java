@@ -134,9 +134,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("notaEntrada")))
   		sb.append("(tc_mantic_notas_entradas.consecutivo like '%").append(this.attrs.get("notaEntrada")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("date_format(tc_mantic_notas_entradas.registro, '%Y%c%d')&gt;= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+		  sb.append("(date_format(tc_mantic_notas_entradas.registro, '%Y%c%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("date_format(tc_mantic_notas_entradas.registro, '%Y%c%d')&lt;= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+		  sb.append("(date_format(tc_mantic_notas_entradas.registro, '%Y%c%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("idProveedor")) && !this.attrs.get("idProveedor").toString().equals("-1"))
   		sb.append("(tc_mantic_proveedores.id_proveedor= ").append(this.attrs.get("idProveedor")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idNotaEstatus")) && !this.attrs.get("idNotaEstatus").toString().equals("-1"))
