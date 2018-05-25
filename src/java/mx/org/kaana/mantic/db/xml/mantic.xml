@@ -1102,6 +1102,15 @@
         where      
           piso = '{piso}' and id_almacen = {idAlmacen} and id_almacen_ubicacion = {idAlmacenUbicacion}
       </select>
+      <select id="default">
+        select      
+          tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion as id_key,
+					tc_mantic_almacenes_ubicaciones.*
+        from      
+          tc_mantic_almacenes_ubicaciones
+        where      
+          piso = '1' and id_almacen = {idAlmacen} and cuarto is null and anaquel is null and charola is null
+      </select>
 			<select id="maximo">
         select      
           max(id_almacen_ubicacion) maximo
