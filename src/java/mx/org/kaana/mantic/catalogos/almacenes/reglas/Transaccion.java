@@ -272,12 +272,13 @@ public class Transaccion extends IBaseTnx {
     try {
       for (AlmacenArticulo almacenArticulo : this.registroAlmacen.getAlmacenArticulo()) {				
 				almacenArticulo.setIdAlmacen(idAlmacen);
-				almacenArticulo.setIdUsuario(JsfBase.getIdUsuario());
-				almacenArticulo.setIdAlmacenUbicacion(1L);
+				almacenArticulo.setIdUsuario(JsfBase.getIdUsuario());			
 				for (Map.Entry<Long, Long> recordMap : this.ubicaciones.entrySet()) {
 					if(recordMap.getKey().equals(almacenArticulo.getIdAlmacenUbicacion()))
 						almacenArticulo.setIdAlmacenUbicacion(recordMap.getValue());
 				} // for
+				if(almacenArticulo.getIdAlmacenUbicacion()== null || almacenArticulo.getIdAlmacenUbicacion().equals(-1L))
+					almacenArticulo.setIdAlmacenUbicacion(toDefaultIdAlmacenUbicacion(sesion, idAlmacen));
 				dto = (TcManticAlmacenesArticulosDto) almacenArticulo;
 				sqlAccion = almacenArticulo.getSqlAccion();
 				switch (sqlAccion) {
@@ -397,4 +398,31 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
 	} // toDomicilio
+	
+	private Long toDefaultIdAlmacenUbicacion(Session sesion, Long idAlmacen) throws Exception{
+		TcManticAlmacenesUbicacionesDto almacenUbicacion= null;
+		Map<String, Object>params= null;
+		Long regresar= -1L;
+		try {
+			params= new HashMap<>();
+			params.put("idAlmacen", idAlmacen);
+			almacenUbicacion= (TcManticAlmacenesUbicacionesDto) DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesUbicacionesDto.class, "TcManticAlmacenesUbicacionesDto", "default", params);
+			if(almacenUbicacion!= null)
+				regresar= almacenUbicacion.getIdAlmacenUbicacion();
+			else{
+				almacenUbicacion= new TcManticAlmacenesUbicacionesDto();
+				almacenUbicacion.setPiso("1");
+				almacenUbicacion.setIdAlmacen(idAlmacen);
+				almacenUbicacion.setIdUsuario(JsfBase.getIdUsuario());
+				regresar= DaoFactory.getInstance().insert(sesion, almacenUbicacion);
+			} // else
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toDefaultIdAlmacenArticulo
 }

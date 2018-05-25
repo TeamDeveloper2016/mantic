@@ -692,13 +692,15 @@ public class Accion extends IBaseAttribute implements Serializable {
 		Map<String, Object>params     = null;
 		List<Columna>campos           = null;
 		try {
-			params= new HashMap<>();
-			params.put("codigo", this.attrs.get("codigo"));
-			params.put("sucursales", JsfBase.getAutentifica().getIdsSucursales());
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			articulos= UIEntity.build("VistaArticulosAlmacenDto", "articulos", params, campos, Constantes.SQL_TODOS_REGISTROS);
-			this.attrs.put("articulos", articulos);
+			if(this.attrs.get("codigo")!= null && !Cadena.isVacio(this.attrs.get("codigo").toString())){
+				params= new HashMap<>();
+				params.put("codigo", this.attrs.get("codigo"));
+				params.put("sucursales", JsfBase.getAutentifica().getIdsSucursales());
+				campos= new ArrayList<>();
+				campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+				articulos= UIEntity.build("VistaArticulosAlmacenDto", "articulos", params, campos, Constantes.SQL_TODOS_REGISTROS);
+				this.attrs.put("articulos", articulos);
+			} // if
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -721,5 +723,5 @@ public class Accion extends IBaseAttribute implements Serializable {
 		catch (Exception e) {			
 			throw e;
 		} // catch
-	} // doConsultarAlmacenArticulo
+	} // doConsultarAlmacenArticulo		
 }
