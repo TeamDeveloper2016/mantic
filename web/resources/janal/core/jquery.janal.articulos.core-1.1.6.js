@@ -210,7 +210,6 @@
 		}, 
 		refresh: function() {
 			if(this.valid()) {
-  			console.info('refresh: '+ this.cursor.index);
 				refresh(this.cursor.index);
 			} // if
 			return false;
