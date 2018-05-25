@@ -10,8 +10,8 @@
     <script type="text/javascript">
       Janal.Control.fields = {
         'idEmpresa'    : {validaciones: 'libre', mascara: 'libre'},
-        'ordenCompra'  : {validaciones: 'libre', mascara: 'libre'},
-        'notaEntrada'  : {validaciones: 'libre', mascara: 'libre'},
+        'ordenCompra'  : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true},
+        'notaEntrada'  : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true},
         'idProveedor'  : {validaciones: 'libre', mascara: 'libre'},
         'fechaInicio'  : {validaciones: 'fecha', mascara: 'fecha'},
         'fechaTermino' : {validaciones: 'fecha', mascara: 'fecha'},
@@ -38,7 +38,7 @@
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticComprasEntradasFiltro.attrs.isMatriz}"/>
               <p:selectOneMenu id="idEmpresa" value="#{manticComprasEntradasFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="startsWith">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-                <f:selectItems value="#{manticComprasEntradasFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+                <f:selectItems value="#{manticComprasEntradasFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -53,7 +53,7 @@
               <p:outputLabel for="idProveedor" value="Proveedor:"/>
               <p:selectOneMenu id="idProveedor" value="#{manticComprasEntradasFiltro.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="startsWith">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-                <f:selectItems value="#{manticComprasEntradasFiltro.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+                <f:selectItems value="#{manticComprasEntradasFiltro.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{item.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   

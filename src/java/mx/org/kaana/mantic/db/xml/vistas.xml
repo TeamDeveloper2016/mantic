@@ -321,13 +321,8 @@
         left join
             tc_mantic_ordenes_compras on tc_mantic_notas_entradas.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra     
         where
-					tc_mantic_notas_entradas.id_empresa= {idEmpresa}
-					or tc_mantic_notas_entradas.consecutivo like '%{notaEntrada}%'
-					or tc_mantic_ordenes_compras.consecutivo like '%{ordenCompra}%'
-					or tc_mantic_proveedores.id_proveedor = {idProveedor}
-					or (date_format(tc_mantic_notas_entradas.registro, '%Y%c%d')&gt;= '{fechaInicio}' and date_format(tc_mantic_notas_entradas.registro, '%Y%c%d')&lt;= '{fechaTermino}')
-					or tc_mantic_notas_entradas.id_nota_estatus= {idNotaEstatus}
-					or tc_mantic_notas_entradas.id_nota_entrada= {idNotaEntrada}
+					tc_mantic_notas_entradas.id_empresa in ({idEmpresa})
+					and {condicion}
 				{sortOrder}
 			</select>
 			<select id="ordenes">
