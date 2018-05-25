@@ -79,7 +79,9 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case MODIFICAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-					toFillArticulos(sesion);
+  				if(this.aplicar)
+						this.orden.setIdNotaEstatus(6L);
+					this.toFillArticulos(sesion);
 					break;				
 				case ELIMINAR:
 					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params)>= 1L;
