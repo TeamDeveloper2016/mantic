@@ -26,10 +26,15 @@
         'contenedorGrupos\\:asentamiento': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'ubicacion'},
         'contenedorGrupos\\:entreCalle': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'ubicacion'},
         'contenedorGrupos\\:ycalle': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'ubicacion'},				
+        'contenedorGrupos\\:idAlmacen': {validaciones: 'libre', mascara: 'libre', grupo: 'articulo'},				
+        'contenedorGrupos\\:maximo': {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo'},				
+        'contenedorGrupos\\:minimo': {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo'},				
+        'contenedorGrupos\\:stock': {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo'},				
+        'contenedorGrupos\\:articulo': {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo'},				
 				'calleBusqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'}
       };
 			
-			$(document).ready(function(){janal.readingMode('#{manticCatalogosAlamacenesAccion.attrs.nombreAccion}');});
+			$(document).ready(function(){janal.readingMode('#{manticCatalogosAlamacenesAccion.attrs.nombreAccion}');});			
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
@@ -37,7 +42,7 @@
       <div class="ui-grid-row janal-grid-row">
         <div class="ui-grid-col-12">
           <p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" process="@this contenedorGrupos:tablaUbicacion" oncomplete="janal.refresh(janal.tabView('contenedorGrupos'))" update="contenedorGrupos:idAlmacen"/>
+            <p:ajax event="tabChange" listener="#{manticCatalogosAlamacenesAccion.registroAlmacen.doActualizarListaUbicaciones}" process="@this contenedorGrupos:tabUbicacion" oncomplete="janal.refresh(janal.tabView('contenedorGrupos'))"/>
             <p:tab title="General">
               <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								
                 <p:outputLabel for="clave" value="Clave:"/>
@@ -182,7 +187,7 @@
                 </p:dataTable>	
               </p:panelGrid>	
             </p:tab>    
-						<p:tab title="Ubicación">
+						<p:tab id="tabUbicacion" title="Ubicación">
 							<p:panelGrid id="panelTablaUbicacion" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaUbicacion" rowIndexVar="index" var="ubicacion" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.ubicaciones}" rows="8" paginator="false" reflow="true" rowKey="#{ubicacion.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Piso" >										
@@ -204,6 +209,7 @@
                   </p:column>
                   <f:facet name="footer">
                     <p:commandButton actionListener="#{manticCatalogosAlamacenesAccion.registroAlmacen.doAgregarAlmacenUbicacion}" process="@this tablaUbicacion" update="tablaUbicacion contenedorGrupos:idAlmacen" icon="fa fa-plus" styleClass="janal-text-white"/>						
+                    <p:remoteCommand id="agregarUbicacion" name="widAgregarUbicacion" process="@this tablaUbicacion" actionListener="#{manticCatalogosAlamacenesAccion.registroAlmacen.doLoadUbicaciones}" update="tablaUbicacion contenedorGrupos:idAlmacen"/>						
                   </f:facet>
                 </p:dataTable>	
               </p:panelGrid>							
@@ -256,8 +262,7 @@
                   <p:outputLabel for="maximo" value="Maximo:"/>
                   <p:inputText id="maximo" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticuloPivote.maximo}" onblur="janal.mayusculas('contenedorGrupos\\:maximo')"/>	                  
                   <p:outputLabel for="idAlmacen" value="Almacen:"/>
-                  <p:selectOneMenu id="idAlmacen" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenUbicacionItem}" styleClass="janal-wid-100-txt">									
-                    <f:selectItem itemValue="" itemLabel="Seleccione"/>
+                  <p:selectOneMenu id="idAlmacen" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.idUbicacion}" styleClass="janal-wid-100-txt">									
 										<f:selectItems value="#{manticCatalogosAlamacenesAccion.registroAlmacen.ubicacionesItems}"/>
                   </p:selectOneMenu>	                  
                 </p:panelGrid>
