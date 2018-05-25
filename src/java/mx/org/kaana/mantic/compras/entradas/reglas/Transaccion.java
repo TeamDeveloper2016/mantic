@@ -153,11 +153,11 @@ public class Transaccion extends IBaseTnx {
 		  } // if
 			else { 
 				ubicacion.setStock(ubicacion.getStock()+ item.getCantidad());
-				DaoFactory.getInstance().update(ubicacion);
+				DaoFactory.getInstance().update(sesion, ubicacion);
 			} // if
-			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, item.getIdArticulo());
+			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, item.getIdArticulo());
 			global.setStock(global.getStock()+ item.getCantidad());
-			DaoFactory.getInstance().update(global);
+			DaoFactory.getInstance().update(sesion, global);
 		} // try
 		catch (Exception e) {
 			throw e;

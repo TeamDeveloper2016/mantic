@@ -86,6 +86,17 @@
 						break;
 				} // switch
 			});	
+			$(document).on('keydown', '.key-event-sat', function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
+				switch(key) {
+					case $articulos.VK_UP:
+						return $articulos.xup();
+						break;
+					case $articulos.VK_DOWN:
+						return $articulos.xdown();
+						break;
+				} // switch
+			});	
       $(document).on('keydown', this.focus, function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
 				if(($articulos.change.indexOf(key)>= 0))
@@ -113,10 +124,10 @@
 						return $articulos.find();
 						break;
 					case $articulos.VK_UP:
-						return $articulos.up();
+						return $articulos.up(true);
 						break;
 					case $articulos.VK_DOWN:
-						return $articulos.down();
+						return $articulos.down(true);
 						break;
 					case $articulos.VK_ASTERISK:
 						return $articulos.asterisk();
@@ -149,6 +160,20 @@
 				} // switch
       });
 			setTimeout('$articulos.goto()', 1000);
+		},
+		xup: function() {
+			this.up(false);
+			var id= '#'+ this.joker+ this.cursor.index+ '\\:sat';
+			if($(id))
+				$(id).focus();
+			return false;
+		},
+		xdown: function() {
+			this.down(false);
+			var id= '#'+ this.joker+ this.cursor.index+ '\\:sat';
+			if($(id))
+				$(id).focus();
+			return false;
 		},
 		index: function(id) {
 			id= id.replace(/:/gi, '\\:');
@@ -189,20 +214,22 @@
 		get: function() {
 			return $(this.name())? $(this.name()).val(): '';
 		},
-		up: function() {
+		up: function(jump) {
 			if(this.cursor.index> 0)
 				this.cursor.index--;
 			else
 				this.cursor.index= this.cursor.top;
-			this.move();
+			if(jump)
+			  this.move();
 			return false;
 		},
-		down: function() {
+		down: function(jump) {
 			if(this.cursor.index< this.cursor.top)
 				this.cursor.index++;
 			else
 				this.cursor.index= 0;
-			this.move();
+			if(jump)
+  			this.move();
 			return false;
 		},
 		valid: function() {
@@ -322,7 +349,7 @@
 		next: function() {
 			if(($(this.key()) && parseInt($(this.key()).val(), 10)> 0) || this.continue) {
 				this.continue= false;
-  			this.down();
+  			this.down(true);
 			} // if	
 		},
 		reset: function(name) {
@@ -352,7 +379,10 @@
 		look: function(name) {
 			console.log('look: '+ $(name).val());
 			lookup();
-		}	
+		},
+		back: function(tipo, count) {
+			alert('Se generó la '+ tipo+ 'con consecutivo: '+ count);
+		}
 	});
 	
 	console.info('Iktan.Control.Articulos initialized');

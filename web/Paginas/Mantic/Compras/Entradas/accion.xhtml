@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="#{manticComprasEntradasAccion.attrs.nombreAccion} una nota de entrada #{manticComprasEntradasAccion.titulo}"/>
 	<ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.janal.articulos.core-1.1.6.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.articulos.core-1.1.7.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:consecutivo'    : {validaciones: 'requerido', mascara: 'libre'},
@@ -197,7 +197,7 @@
 												<f:facet name="header">
 													<h:outputText value="Código SAT"/>
 												</f:facet>
-	  									  <p:inputText id="sat" value="#{row['sat']}" styleClass="janal-wid-100-txt fila"/>
+	  									  <p:inputText id="sat" value="#{row['sat']}" styleClass="janal-wid-100-txt key-event-sat fila"/>
 											</p:column>		
 											<p:column  class="MarAuto Responsive">
 												<f:facet name="header">

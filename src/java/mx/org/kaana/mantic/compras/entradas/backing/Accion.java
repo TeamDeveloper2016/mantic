@@ -26,6 +26,7 @@ import mx.org.kaana.mantic.compras.entradas.reglas.AdminNotas;
 import mx.org.kaana.mantic.compras.entradas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.TabChangeEvent;
 
 
@@ -105,8 +106,10 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.getAdminOrden().toAdjustArticulos();
 			transaccion = new Transaccion(((NotaEntrada)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.aplicar);
 			if (transaccion.ejecutar(eaccion)) {
-				if(eaccion.equals(EAccion.AGREGAR))
+				if(eaccion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+    			RequestContext.getCurrentInstance().execute("jsArticulos.back('nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+				} // if	
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
 			} // if
