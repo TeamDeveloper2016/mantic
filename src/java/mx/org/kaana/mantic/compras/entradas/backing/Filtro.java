@@ -52,7 +52,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("sucursales", JsfBase.getAutentifica().getSucursales());
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
       this.attrs.put("sortOrder", "order by tc_mantic_notas_entradas.id_empresa, tc_mantic_notas_entradas.ejercicio, tc_mantic_notas_entradas.orden");
-			toLoadCatalog();
+			this.toLoadCatalog();
+			if(this.attrs.get("idNotaEntrada")!= null)
+				this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -126,6 +128,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
+		regresar.put("idNotaEntrada", attrs.get("idNotaEntrada"));
 		regresar.put("ordenCompra", attrs.get("ordenCompra"));
 		regresar.put("notaEntrada", attrs.get("notaEntrada"));
 		regresar.put("idEmpresa", attrs.get("idEmpresa"));

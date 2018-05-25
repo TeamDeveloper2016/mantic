@@ -21,6 +21,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import org.apache.log4j.Logger;
@@ -154,6 +155,9 @@ public class Transaccion extends IBaseTnx {
 				ubicacion.setStock(ubicacion.getStock()+ item.getCantidad());
 				DaoFactory.getInstance().update(ubicacion);
 			} // if
+			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, item.getIdArticulo());
+			global.setStock(global.getStock()+ item.getCantidad());
+			DaoFactory.getInstance().update(global);
 		} // try
 		catch (Exception e) {
 			throw e;
