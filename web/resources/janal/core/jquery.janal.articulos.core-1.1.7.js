@@ -381,7 +381,7 @@
 			lookup();
 		},
 		back: function(tipo, count) {
-			alert('Se generó la '+ tipo+ 'con consecutivo: '+ count);
+			alert('Se gener\u00F3 la '+ tipo+ ' con # consecutivo: '+ count);
 		}
 	});
 	

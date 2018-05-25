@@ -63,6 +63,8 @@ public class Transaccion extends IBaseTnx {
 					this.orden.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
 					this.orden.setOrden(consecutivo);
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
+					if(this.orden.getIdCliente()< 0)
+						this.orden.setIdCliente(null);
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 					toFillArticulos(sesion);
 					break;
