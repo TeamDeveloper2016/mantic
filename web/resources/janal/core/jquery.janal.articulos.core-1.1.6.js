@@ -14,6 +14,8 @@
 	Janal.Control.Articulos.Core= Class.extend({
 		joker       : 'contenedorGrupos\\:tabla\\:', // Attributes 
 		codes       : '\\:codigos_input', 
+		panels      : 'codigos_panel', 
+		itemtips    : 'codigos_itemtip', 
 		discounts   : '\\:descuentos',
 		additionals : '\\:extras',
 		amounts     : '\\:cantidades',
@@ -43,7 +45,7 @@
 		VK_PIPE     : 220,
 		VK_CTRL     : 17,
 		VK_MAYOR    : 226,
-	  change      : [13, 106, 111, 107, 110, 27, 226],
+	  change      : [13, 106, 111, 107, 110, 27, 226, 189, 220],
 		cursor: {
 			top: 1, // el top debera ser elementos que van de 0 a n-1
 			index: 0
@@ -75,7 +77,8 @@
 			});  
       $(document).on('keydown', this.porcentajes, function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
-        $articulos.leavePage= !($articulos.change.indexOf(key)>= 0);
+				if(($articulos.change.indexOf(key)>= 0)) 
+					$articulos.leavePage= false;
 				switch(key) {
 					case $articulos.VK_ENTER:
 						$(this).blur();
@@ -85,7 +88,8 @@
 			});	
       $(document).on('keydown', this.focus, function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
-        $articulos.leavePage= !($articulos.change.indexOf(key)>= 0);
+				if(($articulos.change.indexOf(key)>= 0))
+					$articulos.leavePage= false;
 				switch(key) {
 					case $articulos.VK_ENTER:
 						return $articulos.calculate($(this));
@@ -100,7 +104,10 @@
 			});	
       $(document).on('keydown', this.selector, function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-        $articulos.leavePage= !($articulos.change.indexOf(key)>= 0);
+				if(($articulos.change.indexOf(key)>= 0)) {
+					$articulos.leavePage= false;
+				  setTimeout("$('div[id$='+ jsArticulos.panels+ ']').hide();$('div[id$='+ jsArticulos.itemtips+ ']').hide();", 500);
+				} // if	 
 				switch(key) {
 					case $articulos.VK_ENTER:
 						return $articulos.find();
@@ -120,7 +127,7 @@
 					case $articulos.VK_PLUS:
 						return $articulos.plus();
 						break;
-					case $articulos.VK_POINT:
+					case $articulos.VK_REST:
 						return $articulos.point();
 						break;
 					case $articulos.VK_ESC:
@@ -318,7 +325,6 @@
 				this.continue= false;
   			this.down();
 			} // if	
-			setTimeout('PF("listado").close()', 2000);
 		},
 		reset: function(name) {
 			if($(name).attr('id').endsWith(this.prices.substring(2)))

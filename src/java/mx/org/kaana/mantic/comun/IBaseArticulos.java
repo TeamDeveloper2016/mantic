@@ -261,13 +261,17 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 					articulo= articulos.get(articulos.indexOf(articulo));
 			  else
 			    articulo= articulos.get(0);
-			int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(articulo.toLong("idArticulo")));
-			if(articulo.size()> 1 && position>= 0) {
-				if(index!= position)
-				  RequestContext.getCurrentInstance().execute("jsArticulos.exists("+ position+ ");");
-			} // if	
-			else
-  			this.toMoveData(articulo, index);
+			if(articulo.size()> 1) {
+				int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(articulo.toLong("idArticulo")));
+				if(articulo.size()> 1 && position>= 0) {
+					if(index!= position)
+						RequestContext.getCurrentInstance().execute("jsArticulos.exists("+ position+ ");");
+				} // if	
+				else
+					this.toMoveData(articulo, index);
+			} // else
+			else 
+					this.toMoveData(articulo, index);
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);

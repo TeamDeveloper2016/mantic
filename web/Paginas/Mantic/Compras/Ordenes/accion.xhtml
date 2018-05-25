@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="#{manticComprasOrdendesAccion.attrs.nombreAccion} una orden de compra #{manticComprasOrdendesAccion.tipoOrden.titulo}"/>
 	<ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.janal.articulos.core-1.1.3.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.articulos.core-1.1.6.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:consecutivo'    : {validaciones: 'requerido', mascara: 'libre'},
@@ -198,7 +198,7 @@
 												<div class="ui-grid-row janal-grid-row">
 													<div class="ui-grid-col-12" style="padding-right: 14px;">
   	 										  	<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
-														<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticComprasOrdendesAccion.attrs.articulo}" completeMethod="#{manticComprasOrdendesAccion.doCompleteArticulo}" maxResults="5" converter="janal.convertidor.Entity" minQueryLength="2">
+														<p:autoComplete id="codigos" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticComprasOrdendesAccion.attrs.articulo}" completeMethod="#{manticComprasOrdendesAccion.doCompleteArticulo}" maxResults="5" converter="janal.convertidor.Entity" minQueryLength="2">
 															<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
 															<f:facet name="itemtip">
 																<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
@@ -227,7 +227,7 @@
 												<f:facet name="header">
 													<h:outputText value="Articulo"/>
 												</f:facet>
-												<h:outputText id="nombres" value="#{row['nombre']}" title="#{row['propio']}" escape="false"/>
+												<h:outputText id="nombres" value="#{row['nombre']}" title="Código propio: #{row['propio']}  proveedor: #{row['codigo']}" escape="false"/>
 											</p:column>		
 											<p:column class="MarAuto Responsive janal-wid-10">
 												<f:facet name="header">
