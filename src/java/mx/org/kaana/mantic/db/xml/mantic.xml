@@ -561,7 +561,8 @@
     <unit id="TrManticProveedoresAgentesDto">
       <select id="row">
         select      
-          *
+					tr_mantic_proveedores_agentes.id_proveedor_agente as id_key,
+          tr_mantic_proveedores_agentes.*
         from      
           tr_mantic_proveedores_agentes
         where 
