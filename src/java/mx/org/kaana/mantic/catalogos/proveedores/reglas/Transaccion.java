@@ -33,6 +33,7 @@ import mx.org.kaana.mantic.db.dto.TrManticProveedorTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticPersonaTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorPagoDto;
 import mx.org.kaana.mantic.db.dto.TrManticProveedoresAgentesDto;
+import mx.org.kaana.mantic.enums.ETipoPago;
 import mx.org.kaana.mantic.enums.ETipoPersona;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -92,14 +93,13 @@ public class Transaccion extends IBaseTnx {
       if (eliminarRegistros(sesion)) {
         this.registroProveedor.getProveedor().setIdUsuario(JsfBase.getIdUsuario());
         this.registroProveedor.getProveedor().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-				this.registroProveedor.getProveedor().setIdTipoProveedor(2L);
         idProveedor = DaoFactory.getInstance().insert(sesion, this.registroProveedor.getProveedor());
         if (registraProveedoresDomicilios(sesion, idProveedor)) {
           if (registraProveedoresAgentes(sesion, idProveedor)) {
             if(registraProveedoresTipoContacto(sesion, idProveedor)){
 							if(registraProveedoresServicios(sesion, idProveedor)){
 								if(registraProveedoresTransferencia(sesion, idProveedor)){
-									if(registraProveedoresFormaPago(sesion, idProveedor)){
+									if(registraProveedoresFormaPago(sesion, idProveedor, this.registroProveedor.getProveedor().getClave())){
 										this.registroProveedor.getPortal().setIdProveedor(idProveedor);
 										regresar= DaoFactory.getInstance().insert(sesion, this.registroProveedor.getPortal())>= 1L;
 									} // if
@@ -124,7 +124,7 @@ public class Transaccion extends IBaseTnx {
       if (registraProveedoresDomicilios(sesion, idProveedor)) {
         if (registraProveedoresAgentes(sesion, idProveedor)) {
           if (registraProveedoresTipoContacto(sesion, idProveedor)) {
-						if(registraProveedoresFormaPago(sesion, idProveedor)){
+						if(registraProveedoresFormaPago(sesion, idProveedor, this.registroProveedor.getProveedor().getClave())){
 							if(registraProveedoresServicios(sesion, idProveedor)){
 								if(registraProveedoresTransferencia(sesion, idProveedor)){
 									if(this.registroProveedor.getPortal().isValid()){
@@ -449,7 +449,7 @@ public class Transaccion extends IBaseTnx {
     return regresar;
   } // registraProveedoresTransferencia
 	
-  private boolean registraProveedoresFormaPago(Session sesion, Long idProveedor) throws Exception {
+  private boolean registraProveedoresFormaPago(Session sesion, Long idProveedor, String claveProveedor) throws Exception {
     TrManticProveedorPagoDto dto = null;
     ESql sqlAccion = null;
     int count = 0;
@@ -460,7 +460,8 @@ public class Transaccion extends IBaseTnx {
 				if(proveedorCondicionPago.getDescuento()!= null && !Cadena.isVacio(proveedorCondicionPago.getDescuento())){
 					proveedorCondicionPago.setIdProveedor(idProveedor);
 					proveedorCondicionPago.setIdUsuario(JsfBase.getIdUsuario());
-					proveedorCondicionPago.setClave("TMP");
+					if(proveedorCondicionPago.getClave()== null || Cadena.isVacio(proveedorCondicionPago.getClave()))
+						proveedorCondicionPago.setClave(claveProveedor.concat(ETipoPago.fromIdTipoPago(proveedorCondicionPago.getIdTipoPago()).name()).concat(Cadena.rellenar(String.valueOf(proveedorCondicionPago.getDescuento().longValue()), 6, '0', true)));
 					dto = (TrManticProveedorPagoDto) proveedorCondicionPago;
 					sqlAccion = proveedorCondicionPago.getSqlAccion();
 					switch (sqlAccion) {
