@@ -516,6 +516,7 @@ public class RegistroAlmacen implements Serializable{
 		AlmacenArticulo articulo         = null;
 		MotorBusqueda motor              = null;
 		AlmacenUbicacion almacenUbicacion= null;
+		AlmacenUbicacion ubicacionDefault= null;
 		try {					
 			articulo= this.almacenArticulo.get(this.almacenArticulo.indexOf(this.almacenArticuloSeleccion));			
 			articulo.setModificar(true);
@@ -529,8 +530,13 @@ public class RegistroAlmacen implements Serializable{
 				for(AlmacenUbicacion recordAlmacenUbicacion: this.ubicaciones){
 					if(recordAlmacenUbicacion.getKey().equals(articulo.getIdAlmacenUbicacion()))
 						almacenUbicacion= recordAlmacenUbicacion;				
+					else if(recordAlmacenUbicacion.getDescripcion().equals("GENERAL"))
+						ubicacionDefault= recordAlmacenUbicacion;			
 				} // for
+				if(almacenUbicacion== null)
+					almacenUbicacion= ubicacionDefault;
 				if(almacenUbicacion!= null){
+					this.almacenArticuloPivote.setIdAlmacenUbicacion(almacenUbicacion.getIdAlmacenUbicacion());
 					this.almacenArticuloPivote.setAnaquel(almacenUbicacion.getAnaquel());
 					this.almacenArticuloPivote.setPiso(almacenUbicacion.getPiso());
 					this.almacenArticuloPivote.setCuarto(almacenUbicacion.getCuarto());
