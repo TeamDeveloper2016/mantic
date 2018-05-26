@@ -11,27 +11,27 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
-        'contenedorGrupos\\:clave': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:nombre': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:descripcion': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:clave': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:nombre': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:descripcion': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:responsable': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},        				
-        'contenedorGrupos\\:busquedaArticulo': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},        				
+        'contenedorGrupos\\:busquedaArticulo': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},        				
         'contenedorGrupos\\:entidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'ubicacion'},
         'contenedorGrupos\\:municipio': {validaciones: 'requerido', mascara: 'libre', grupo: 'ubicacion'},
         'contenedorGrupos\\:localidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'ubicacion'},
-        'contenedorGrupos\\:cp': {validaciones: 'libre', mascara: 'libre', grupo: 'ubicacion'},
-        'contenedorGrupos\\:calle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'ubicacion'},
-        'contenedorGrupos\\:exterior': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'ubicacion'},
-        'contenedorGrupos\\:interior': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'ubicacion'},
-        'contenedorGrupos\\:asentamiento': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'ubicacion'},
-        'contenedorGrupos\\:entreCalle': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'ubicacion'},
-        'contenedorGrupos\\:ycalle': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'ubicacion'},				
+        'contenedorGrupos\\:cp': {validaciones: 'libre', mascara: 'libre', grupo: 'ubicacion', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:calle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'ubicacion', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:exterior': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'ubicacion', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:interior': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'ubicacion', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:asentamiento': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'ubicacion', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:entreCalle': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'ubicacion', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:ycalle': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'ubicacion', formatos: 'cambiar-mayusculas', individual: true},				
         'contenedorGrupos\\:idAlmacen': {validaciones: 'libre', mascara: 'libre', grupo: 'articulo'},				
         'contenedorGrupos\\:maximo': {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo'},				
         'contenedorGrupos\\:minimo': {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo'},				
         'contenedorGrupos\\:stock': {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo'},				
         'contenedorGrupos\\:articulo': {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo'},				
-				'calleBusqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'}
+				'calleBusqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
       };
 			
 			$(document).ready(function(){janal.readingMode('#{manticCatalogosAlamacenesAccion.attrs.nombreAccion}');});			
@@ -46,11 +46,11 @@
             <p:tab title="General">
               <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								
                 <p:outputLabel for="clave" value="Clave:"/>
-                <p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacen.clave}" onblur="janal.mayusculas('contenedorGrupos\\:clave')"/>                    
+                <p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacen.clave}" />                    
                 <p:outputLabel for="nombre" value="Nombre:"/>
-                <p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacen.nombre}" onblur="janal.mayusculas('contenedorGrupos\\:nombre')"/>                    
+                <p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacen.nombre}" />                    
                 <p:outputLabel value="Descripción:"/>
-								<p:inputTextarea id="descripcion" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacen.descripcion}" onblur="janal.mayusculas('contenedorGrupos\\:descripcion')"/>  
+								<p:inputTextarea id="descripcion" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacen.descripcion}" />  
                 <p:outputLabel for="responsable" value="Responsable:"/>
 								<p:selectOneMenu id="responsable" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacen.idResponsable}" styleClass="janal-wid-100-txt" >									
 									<f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.responsables}"/>
@@ -143,19 +143,19 @@
                     <f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.codigosPostales}"/>
                   </p:selectOneMenu>	
                   <p:spacer id="spacerCp" rendered="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.nuevoCp}"/>
-                  <p:inputText placeholder="Captura el nuevo código postal. Ej. 20284" id="cp" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.codigoPostal}" onblur="janal.mayusculas('contenedorGrupos\\:cp')" rendered="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.nuevoCp}"/>                  																										
+                  <p:inputText placeholder="Captura el nuevo código postal. Ej. 20284" id="cp" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.codigoPostal}" />                  																										
                   <p:outputLabel for="calle" value="Calle:"/>
-                  <p:inputText id="calle" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.calle}" onblur="janal.mayusculas('contenedorGrupos\\:calle')"/>
+                  <p:inputText id="calle" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.calle}" />
                   <p:outputLabel for="exterior" value="Número exterior:"/>
-                  <p:inputText id="exterior" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.numeroExterior}" onblur="janal.mayusculas('contenedorGrupos\\:exterior')" />                    																																		
+                  <p:inputText id="exterior" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.numeroExterior}" />
                   <p:outputLabel for="interior" value="Número interior:"/>
-                  <p:inputText id="interior" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.numeroInterior}" onblur="janal.mayusculas('contenedorGrupos\\:interior')"/>	
+                  <p:inputText id="interior" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.numeroInterior}" />	
                   <p:outputLabel for="asentamiento" value="Colonia:"/>
-                  <p:inputText id="asentamiento" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.asentamiento}" onblur="janal.mayusculas('contenedorGrupos\\:asentamiento')"/>	
+                  <p:inputText id="asentamiento" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.asentamiento}" />	
                   <p:outputLabel for="entreCalle" value="Entre calle:"/>
-                  <p:inputText id="entreCalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.entreCalle}" onblur="janal.mayusculas('contenedorGrupos\\:entreCalle')"/>	
+                  <p:inputText id="entreCalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.entreCalle}" />	
                   <p:outputLabel for="ycalle" value="Y calle:"/>
-                  <p:inputText id="ycalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.ycalle}" onblur="janal.mayusculas('contenedorGrupos\\:ycalle')"/>	
+                  <p:inputText id="ycalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.ycalle}" />	
                   <p:outputLabel for="tipoDomicilio" value="Tipo domicilio:"/>
                   <p:selectOneMenu id="tipoDomicilio" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.idTipoDomicilio}" styleClass="janal-wid-100-txt">									
                     <f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.tiposDomicilios}"/>
@@ -215,8 +215,8 @@
               </p:panelGrid>							
 						</p:tab>
 						<p:tab title="Articulos">
-              <p:panelGrid id="panelTablaArticulos" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-15, janal-wid-100">
-                <p:dataList id="tablaArticulos" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticulo}" var="articulo" type="unordered" itemType="none" paginator="false" rows="10" styleClass="paginated" emptyMessage=" " rowIndexVar="index">						
+              <p:panelGrid id="panelTablaArticulos" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-20, janal-wid-100">
+                <p:dataList id="tablaArticulos" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticulo}" var="articulo" type="unordered" itemType="none" paginator="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticulo.size() gt 10}" rows="10" styleClass="paginated" emptyMessage=" " rowIndexVar="index">						
                   <p:commandLink update="contenedorGrupos:tablaArticulos contenedorGrupos:formularioArticulo" title="Eliminar" action="#{manticCatalogosAlamacenesAccion.registroAlmacen.doEliminarAlmacenArticulo}" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();">                    
 										<f:setPropertyActionListener value="#{articulo}" target="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticuloSeleccion}" />
 										<i class="fa fa-minus-square fa-lg"></i>   
@@ -237,7 +237,7 @@
                 </p:dataList>
                 <p:panelGrid id="formularioArticulo" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 									<p:outputLabel for="busquedaArticulo" value="Buscar:"/>
-									<p:inputText id="busquedaArticulo" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.attrs.codigo}" placeholder="Busqueda por código o nombre" onblur="janal.mayusculas('contenedorGrupos\\:busquedaArticulo')">
+									<p:inputText id="busquedaArticulo" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.attrs.codigo}" placeholder="Busqueda por código o nombre" >
 										<p:ajax event="blur" process="@this contenedorGrupos:busquedaArticulo" update="contenedorGrupos:articulo" listener="#{manticCatalogosAlamacenesAccion.doConsultarArticulos}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									</p:inputText>
 									<p:spacer/><p:spacer/>
@@ -250,17 +250,14 @@
 										</p:column>   										
 										<p:column  styleClass="janal-column-left">
 											<h:outputText value="#{item.nombre}"/>
-										</p:column>   
-										<p:column styleClass="janal-column-right janal-wid-col-50">
-											<h:outputText value="#{item.precio}"/>
-										</p:column>  																				
+										</p:column>   										
 									</p:selectOneMenu>                  
                   <p:outputLabel for="stock" value="Stock:"/>
-                  <p:inputText id="stock" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticuloPivote.stock}" onblur="janal.mayusculas('contenedorGrupos\\:stock')"/>
+                  <p:inputText id="stock" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticuloPivote.stock}" />
                   <p:outputLabel for="minimo" value="Minimo:"/>
-                  <p:inputText id="minimo" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticuloPivote.minimo}" onblur="janal.mayusculas('contenedorGrupos\\:minimo')" />                    																																		
+                  <p:inputText id="minimo" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticuloPivote.minimo}" />
                   <p:outputLabel for="maximo" value="Maximo:"/>
-                  <p:inputText id="maximo" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticuloPivote.maximo}" onblur="janal.mayusculas('contenedorGrupos\\:maximo')"/>	                  
+                  <p:inputText id="maximo" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticuloPivote.maximo}" />	                  
                   <p:outputLabel for="idAlmacen" value="Almacen:"/>
                   <p:selectOneMenu id="idAlmacen" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.idUbicacion}" styleClass="janal-wid-100-txt">									
 										<f:selectItems value="#{manticCatalogosAlamacenesAccion.registroAlmacen.ubicacionesItems}"/>
@@ -275,7 +272,7 @@
 		<p:dialog id="dialogoDomicilios" widgetVar="dlgDomicilios" header="Busqueda de domicilio:" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.refresh();">
 			<h:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-80, janal-wid-20">
 				<p:outputLabel for="calleBusqueda" value="Calle:"/>
-				<p:inputText id="calleBusqueda" value="#{manticCatalogosAlamacenesAccion.attrs.calle}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('calleBusqueda')"/>
+				<p:inputText id="calleBusqueda" value="#{manticCatalogosAlamacenesAccion.attrs.calle}" styleClass="janal-wid-100-txt" />
 				<p:commandButton icon="fa fa-search" actionListener="#{manticCatalogosAlamacenesAccion.doBusquedaDomicilios}" process="@this calleBusqueda" update="domiciliosBusqueda totalResultados" styleClass="janal-text-white" onstart="return janal.partial('dialogo')"/>
 				<p:outputLabel for="domiciliosBusqueda" value="Domicilio:"/>
 				<p:selectOneMenu id="domiciliosBusqueda" value="#{manticCatalogosAlamacenesAccion.domicilioBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
