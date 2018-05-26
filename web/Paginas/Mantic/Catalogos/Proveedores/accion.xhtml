@@ -302,7 +302,7 @@
 							</p:panelGrid>
 						</p:tab>
 						<p:tab title="Banca" rendered="#{manticCatalogosProveedoresAccion.attrs.admin}">
-							<p:fieldset legend="Servicios">
+							<p:fieldset legend="Cuentas de servicios">
 								<p:panelGrid id="panelTablaServicios" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 									<p:dataTable id="tablaServicios" rowIndexVar="index" var="servicio" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresServicio}" rows="6" paginator="false" reflow="true" rowKey="#{servicio.key}" emptyMessage=" " styleClass="paginated">																					
 										<p:column headerText="Banco">										
@@ -327,7 +327,7 @@
 									</p:dataTable>	
 								</p:panelGrid>	
 							</p:fieldset>
-							<p:fieldset legend="Transferencia">
+							<p:fieldset legend="Cuentas de transferencia">
 								<p:panelGrid id="panelTablaTransferia" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 									<p:dataTable id="tablaTransferencia" rowIndexVar="index" var="transferencia" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresTransferencia}" rows="6" paginator="false" reflow="true" rowKey="#{transferencia.key}" emptyMessage=" " styleClass="paginated">																					
 										<p:column headerText="Banco">										
@@ -338,7 +338,7 @@
 										<p:column headerText="Cuenta" styleClass="janal-wid-30">		
 											<p:inputText id="convenio#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.convenioCuenta}" onblur="janal.capitalLetterTable('contenedorGrupos\\:banca', 'tablaTransferencia', #{index}, 'convenio')" disabled="#{!transferencia.nuevo}"/>                    																																			
 										</p:column>
-										<p:column headerText="Clave" styleClass="janal-wid-30">		
+										<p:column headerText="Clabe" styleClass="janal-wid-30">		
 											<p:inputText id="referencia#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.clabeReferencia}" onblur="janal.capitalLetterTable('contenedorGrupos\\:banca', 'tablaTransferencia', #{index}, 'referencia')" disabled="#{!transferencia.nuevo}"/>                    																																			
 										</p:column>
 										<p:column style="width:32px;text-align: center">

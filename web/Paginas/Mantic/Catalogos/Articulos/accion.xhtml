@@ -251,14 +251,21 @@
 									<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.unidadesMedidas}"/>
 								</p:selectOneMenu>
 								<p:outputLabel for="cantidad" value="Cantidad:"/>
-								<p:inputNumber id="cantidad" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.cantidad}" onblur="janal.mayusculas('contenedorGrupos\\:ancho')"/>                    
+								<p:inputNumber id="cantidad" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.cantidad}"/>                    
 								<p:separator/><p:separator/>
 								<p:outputLabel for="ancho" value="Ancho:"/>
-								<p:inputNumber id="ancho" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.ancho}" onblur="janal.mayusculas('contenedorGrupos\\:ancho')"/>                    
+								<p:inputNumber id="ancho" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.ancho}"/>                    
 								<p:outputLabel for="largo" value="Largo:"/>
-								<p:inputNumber id="largo" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.largo}" onblur="janal.mayusculas('contenedorGrupos\\:largo')"/>                    
+								<p:inputNumber id="largo" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.largo}"/>                    
 								<p:outputLabel for="alto" value="Alto:"/>
-								<p:inputNumber id="alto" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.alto}" onblur="janal.mayusculas('contenedorGrupos\\:alto')"/>                    
+								<p:inputNumber id="alto" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.alto}"/>                    
+								<p:separator/><p:separator/>
+								<p:outputLabel for="stock" value="Existencias:"/>
+								<p:inputNumber id="stock" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.stock}"/>                    
+								<p:outputLabel for="minimo" value="Stock mínimo:"/>
+								<p:inputNumber id="minimo" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.minimo}"/>                    
+								<p:outputLabel for="maximo" value="Stock máximo:"/>
+								<p:inputNumber id="maximo" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.maximo}"/>                    
 							</p:panelGrid>							
 						</p:tab>
 						<p:tab title="Observaciones">
