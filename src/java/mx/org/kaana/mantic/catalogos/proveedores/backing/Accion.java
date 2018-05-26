@@ -127,6 +127,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     String regresar        = null;
     try {
       transaccion= new Transaccion(this.registroProveedor);
+			this.registroProveedor.getProveedor().setIdTipoProveedor(((UISelectEntity)this.attrs.get("tipoProveedor")).getKey());
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
         JsfBase.addMessage("Se registro el proveedor de forma correcta.", ETipoMensaje.INFORMACION);
