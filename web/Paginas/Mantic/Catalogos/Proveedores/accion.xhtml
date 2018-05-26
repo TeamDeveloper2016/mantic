@@ -11,33 +11,36 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'contenedorGrupos\\:prefijo': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:rfc': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'rfc', grupo: 'general'},
-        'contenedorGrupos\\:razonSocial': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:prefijo': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:rfc': {validaciones: 'requerido', mascara: 'rfc', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:idTipoProveedor': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:descuento': {validaciones: 'flotante', mascara: 'flotante', grupo: 'general'},
         'contenedorGrupos\\:dias_entrega': {validaciones: 'entero', mascara: 'entero', grupo: 'general'},
         'contenedorGrupos\\:idTipoDia': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:idTipoMoneda': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:detalleCalle': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:clave': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:clave': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:diasEntrega': {validaciones: 'libre', mascara: 'numero', grupo: 'general'},
-				'contenedorGrupos\\:pagina': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:cuenta': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:contrasenia': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:pagina': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:cuenta': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:contrasenia': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:entidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:municipio': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:localidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:cp': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:calle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:exterior': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:interior': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:asentamiento': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:entreCalle': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:ycalle': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:nombreRepresentante': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', mensaje:'La captura del campo nombres es obligatorio', grupo: 'representantes'},
-        'calleBusqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'}
+        'contenedorGrupos\\:cp': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:calle': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:exterior': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:interior': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:asentamiento': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:entreCalle': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:ycalle': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:nombreRepresentante': {validaciones: 'requerido', mascara: 'libre', mensaje:'La captura del campo nombres es obligatorio', grupo: 'representantes', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:nombreAgente': {validaciones: 'requerido', mascara: 'libre', grupo: 'agente', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:paternoAgente': {validaciones: 'requerido', mascara: 'libre', grupo: 'agente', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:maternoAgente': {validaciones: 'requerido', mascara: 'libre', grupo: 'agente', formatos: 'cambiar-mayusculas', individual: true},
+        'calleBusqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
       };      
 			
 			$(document).ready(function(){janal.readingMode('#{manticCatalogosProveedoresAccion.attrs.nombreAccion}');});
@@ -52,14 +55,14 @@
             <p:tab id="general"  title="General">
               <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-100">								
                 <p:outputLabel for="clave" value="Clave"/>
-                <p:inputText id="clave" styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.clave}" onblur="janal.mayusculas('contenedorGrupos\\:clave')"/>                    
+                <p:inputText id="clave" styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.clave}"/>                    
                 <p:outputLabel for="prefijo" value="Prefijo:"/>
-                <p:inputText id="prefijo" styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.prefijo}" onblur="janal.mayusculas('contenedorGrupos\\:prefijo')"/>                    
+                <p:inputText id="prefijo" styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.prefijo}"/>                    
                 <p:separator/><p:separator/>
                 <p:outputLabel for="rfc" value="RFC:"/>
-                <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.rfc}" onblur="janal.mayusculas('contenedorGrupos\\:rfc')"/>                    
+                <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.rfc}"/>                    
                 <p:outputLabel for="razonSocial" value="Razón social:"/>
-                <p:inputText id="razonSocial" styleClass="janal-wid-100-txt" maxlength="255" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.razonSocial}" onblur="janal.mayusculas('contenedorGrupos\\:razonSocial')"/>                    
+                <p:inputText id="razonSocial" styleClass="janal-wid-100-txt" maxlength="255" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.razonSocial}"/>                    
                 <p:separator/><p:separator/>
                 <p:outputLabel for="idTipoProveedor"  value="Tipo proveedor:"/>
                 <p:selectOneMenu  id="idTipoProveedor" value="#{manticCatalogosProveedoresAccion.attrs.tipoProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt">
@@ -175,19 +178,19 @@
                     <f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.codigosPostales}"/>
                   </p:selectOneMenu>	
                   <p:spacer id="spacerCp" rendered="#{!manticCatalogosProveedoresAccion.registroProveedor.domicilio.nuevoCp}"/>
-                  <p:inputText placeholder="Captura el nuevo código postal. Ej. 20284" id="cp" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.domicilio.codigoPostal}" onblur="janal.mayusculas('contenedorGrupos\\:cp')" rendered="#{!manticCatalogosProveedoresAccion.registroProveedor.domicilio.nuevoCp}"/>                  																								
+                  <p:inputText placeholder="Captura el nuevo código postal. Ej. 20284" id="cp" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.domicilio.codigoPostal}" rendered="#{!manticCatalogosProveedoresAccion.registroProveedor.domicilio.nuevoCp}"/>                  																								
                   <p:outputLabel for="calle" value="Calle:"/>
-                  <p:inputText id="calle" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.domicilio.calle}" onblur="janal.mayusculas('contenedorGrupos\\:calle')"/>
+                  <p:inputText id="calle" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.domicilio.calle}" />
                   <p:outputLabel for="exterior" value="Número exterior:"/>
-                  <p:inputText id="exterior" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.domicilio.numeroExterior}" onblur="janal.mayusculas('contenedorGrupos\\:exterior')" />                    																																		
+                  <p:inputText id="exterior" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.domicilio.numeroExterior}" />
                   <p:outputLabel for="interior" value="Número interior:"/>
-                  <p:inputText id="interior" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.domicilio.numeroInterior}" onblur="janal.mayusculas('contenedorGrupos\\:interior')"/>	
+                  <p:inputText id="interior" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.domicilio.numeroInterior}" />	
                   <p:outputLabel for="asentamiento" value="Colonia:"/>
-                  <p:inputText id="asentamiento" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.domicilio.asentamiento}" onblur="janal.mayusculas('contenedorGrupos\\:asentamiento')"/>	
+                  <p:inputText id="asentamiento" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.domicilio.asentamiento}" />	
                   <p:outputLabel for="entreCalle" value="Entre calle:"/>
-                  <p:inputText id="entreCalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.domicilio.entreCalle}" onblur="janal.mayusculas('contenedorGrupos\\:entreCalle')"/>	
+                  <p:inputText id="entreCalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.domicilio.entreCalle}" />	
                   <p:outputLabel for="ycalle" value="Y calle:"/>
-                  <p:inputText id="ycalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.domicilio.ycalle}" onblur="janal.mayusculas('contenedorGrupos\\:ycalle')"/>	
+                  <p:inputText id="ycalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.domicilio.ycalle}" />	
                   <p:outputLabel for="tipoDomicilio" value="Tipo domicilio:"/>
                   <p:selectOneMenu id="tipoDomicilio" value="#{manticCatalogosProveedoresAccion.registroProveedor.domicilio.idTipoDomicilio}" styleClass="janal-wid-100-txt">									
                     <f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.tiposDomicilios}"/>
@@ -200,12 +203,15 @@
             <p:tab id="tabTipoPago" title="Condiciones de pago">
               <p:panelGrid id="panelTablaTipoPago" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaTipoPago" rowIndexVar="index" var="tipoPago" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresCondicionPago}" rows="6" paginator="false" reflow="true" rowKey="#{tipoPago.key}" emptyMessage=" " styleClass="paginated">																					
-                  <p:column headerText="Tipo de pago">										
+                  <p:column headerText="Clave" styleClass="janal-wid-30">		
+                    <p:inputText id="clave#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.clave}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaTipoPago', #{index}, 'clave')" disabled="#{!tipoPago.nuevo}"/>                    																																			
+                  </p:column>
+									<p:column headerText="Tipo de pago">										
                     <p:selectOneMenu id="tipoPago#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.idTipoPago}" filter="true" filterMatchMode="startsWith" disabled="#{!tipoPago.nuevo}">
                       <f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.tiposPago}"/>
                     </p:selectOneMenu> 				
                   </p:column>	
-                  <p:column headerText="Descuento adicional" styleClass="janal-wid-50">		
+                  <p:column headerText="Descuento adicional" styleClass="janal-wid-30">		
                     <p:inputText id="valor#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.descuento}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaTipoPago', #{index}, 'valor')" disabled="#{!tipoPago.nuevo}"/>                    																																			
                   </p:column>
                   <p:column style="width:32px;text-align: center">
@@ -264,9 +270,9 @@
                 </p:dataList>
 								<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 								<p:panelGrid id="formularioNombreAgentes" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-40, janal-wid-30, janal-wid-30">
-									<p:inputText id="nombreAgente" value="#{manticCatalogosProveedoresAccion.registroProveedor.personaTipoContactoPivote.nombres}" styleClass="janal-wid-100-txt" placeholder="Nombres" onblur="janal.mayusculas('contenedorGrupos\\:nombreAgente')"/>
-									<p:inputText id="paternoAgente" value="#{manticCatalogosProveedoresAccion.registroProveedor.personaTipoContactoPivote.paterno}" styleClass="janal-wid-100-txt" placeholder="Ap. Paterno" onblur="janal.mayusculas('contenedorGrupos\\:paternoAgente')"/>
-									<p:inputText id="maternoAgente" value="#{manticCatalogosProveedoresAccion.registroProveedor.personaTipoContactoPivote.materno}" styleClass="janal-wid-100-txt" placeholder="Ap. Materno" onblur="janal.mayusculas('contenedorGrupos\\:maternoAgente')"/>
+									<p:inputText id="nombreAgente" value="#{manticCatalogosProveedoresAccion.registroProveedor.personaTipoContactoPivote.nombres}" styleClass="janal-wid-100-txt" placeholder="Nombres" />
+									<p:inputText id="paternoAgente" value="#{manticCatalogosProveedoresAccion.registroProveedor.personaTipoContactoPivote.paterno}" styleClass="janal-wid-100-txt" placeholder="Ap. Paterno" />
+									<p:inputText id="maternoAgente" value="#{manticCatalogosProveedoresAccion.registroProveedor.personaTipoContactoPivote.materno}" styleClass="janal-wid-100-txt" placeholder="Ap. Materno" />
 								</p:panelGrid>
 								<p:panelGrid id="formularioTablaAgentes" columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
 									<p:dataTable id="tablaContacto" rowIndexVar="index" var="contactoAgente" value="#{manticCatalogosProveedoresAccion.registroProveedor.personaTipoContactoPivote.contactos}" rows="6" paginator="false" reflow="true" rowKey="#{contactoAgente.key}" emptyMessage=" " styleClass="paginated">
@@ -276,7 +282,7 @@
 											</p:selectOneMenu> 				
 										</p:column>	
 										<p:column headerText="Valor" styleClass="janal-wid-50">		
-											<p:inputText id="valor#{contactoAgente.key}" styleClass="janal-wid-100-txt" value="#{contactoAgente.valor}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaContactos', #{index}, 'valor')" disabled="#{!contactoAgente.nuevo}"/>                    																																			
+											<p:inputText id="valor#{contactoAgente.key}" styleClass="janal-wid-100-txt" value="#{contactoAgente.valor}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaContacto', #{index}, 'valor')" disabled="#{!contactoAgente.nuevo}"/>                    																																			
 										</p:column>
 										<p:column style="width:32px;text-align: center">
 											<p:commandButton update="tablaContacto" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.registroProveedor.doEliminarAgenteContacto}" styleClass="janal-text-white">
@@ -294,11 +300,11 @@
 						<p:tab title="Portal" rendered="#{manticCatalogosProveedoresAccion.attrs.admin}">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-100">
 								<p:outputLabel for="pagina" value="Pagina:"/>
-                <p:inputText id="pagina" value="#{manticCatalogosProveedoresAccion.registroProveedor.portal.pagina}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('contenedorGrupos\\:pagina')"/>                    
+                <p:inputText id="pagina" value="#{manticCatalogosProveedoresAccion.registroProveedor.portal.pagina}" styleClass="janal-wid-100-txt"/>                    
 								<p:outputLabel for="cuenta" value="Cuenta:"/>
-                <p:inputText id="cuenta" value="#{manticCatalogosProveedoresAccion.registroProveedor.portal.cuenta}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('contenedorGrupos\\:cuenta')"/>                    
+                <p:inputText id="cuenta" value="#{manticCatalogosProveedoresAccion.registroProveedor.portal.cuenta}" styleClass="janal-wid-100-txt"/>                    
 								<p:outputLabel for="contrasenia" value="Contraseña:"/>
-                <p:inputText id="contrasenia" value="#{manticCatalogosProveedoresAccion.registroProveedor.portal.contrasenia}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('contenedorGrupos\\:contrasenia')"/>                    
+                <p:inputText id="contrasenia" value="#{manticCatalogosProveedoresAccion.registroProveedor.portal.contrasenia}" styleClass="janal-wid-100-txt"/>                    
 							</p:panelGrid>
 						</p:tab>
 						<p:tab title="Banca" rendered="#{manticCatalogosProveedoresAccion.attrs.admin}">
@@ -336,10 +342,10 @@
 											</p:selectOneMenu> 				
 										</p:column>	
 										<p:column headerText="Cuenta" styleClass="janal-wid-30">		
-											<p:inputText id="convenio#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.convenioCuenta}" onblur="janal.capitalLetterTable('contenedorGrupos\\:banca', 'tablaTransferencia', #{index}, 'convenio')" disabled="#{!transferencia.nuevo}"/>                    																																			
+											<p:inputText id="convenio#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.convenioCuenta}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaTransferencia', #{index}, 'convenio')" disabled="#{!transferencia.nuevo}"/>                    																																			
 										</p:column>
-										<p:column headerText="Clabe" styleClass="janal-wid-30">		
-											<p:inputText id="referencia#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.clabeReferencia}" onblur="janal.capitalLetterTable('contenedorGrupos\\:banca', 'tablaTransferencia', #{index}, 'referencia')" disabled="#{!transferencia.nuevo}"/>                    																																			
+										<p:column headerText="Clave" styleClass="janal-wid-30">		
+											<p:inputText id="referencia#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.clabeReferencia}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaTransferencia', #{index}, 'referencia')" disabled="#{!transferencia.nuevo}"/>                    																																			
 										</p:column>
 										<p:column style="width:32px;text-align: center">
 											<p:commandButton update="tablaTransferencia" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.registroProveedor.doEliminarProveedorTransferencia}" styleClass="janal-text-white">
@@ -355,7 +361,7 @@
 						</p:tab>
             <p:tab title="Observaciones">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
-                <p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.observaciones}" onblur="janal.mayusculas('contenedorGrupos\\:observaciones')"/>  
+                <p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.observaciones}"/>  
               </p:panelGrid>
             </p:tab>
           </p:tabView>
@@ -365,7 +371,7 @@
 		<p:dialog id="dialogoDomicilios" widgetVar="dlgDomicilios" header="Busqueda de domicilio:" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.refresh();">
 			<h:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-80, janal-wid-20">
 				<p:outputLabel for="calleBusqueda" value="Calle:"/>
-				<p:inputText id="calleBusqueda" value="#{manticCatalogosProveedoresAccion.attrs.calle}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('calleBusqueda')"/>
+				<p:inputText id="calleBusqueda" value="#{manticCatalogosProveedoresAccion.attrs.calle}" styleClass="janal-wid-100-txt"/>
 				<p:commandButton icon="fa fa-search" actionListener="#{manticCatalogosProveedoresAccion.doBusquedaDomicilios}" process="@this calleBusqueda" update="domiciliosBusqueda totalResultados" styleClass="janal-text-white" onstart="return janal.partial('dialogo')"/>
 				<p:outputLabel for="domiciliosBusqueda" value="Domicilio:"/>
 				<p:selectOneMenu id="domiciliosBusqueda" value="#{manticCatalogosProveedoresAccion.domicilioBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
