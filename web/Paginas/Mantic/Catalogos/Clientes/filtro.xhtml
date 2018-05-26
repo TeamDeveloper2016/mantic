@@ -10,9 +10,9 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'razonSocial': {validaciones: 'cambiar-mayusculas', mascara: 'libre'},
-        'clave': {validaciones: 'cambiar-mayusculas', mascara: 'libre'},
-        'rfc': {validaciones: 'cambiar-mayusculas', mascara: 'rfc'}       
+        'razonSocial': {validaciones: 'cambiar-mayusculas', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
+        'clave': {validaciones: 'cambiar-mayusculas', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
+        'rfc': {validaciones: 'cambiar-mayusculas', mascara: 'rfc', formatos: 'cambiar-mayusculas', individual: true}       
       };
     </script>		
   </ui:define>
@@ -28,11 +28,11 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <h:panelGrid styleClass="janal-wid-100">
               <p:outputLabel for="clave" value="Clave:"/>
-              <p:inputText id="clave" value="#{manticCatalogosClientesFiltro.attrs.clave}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('clave')"/> 
+              <p:inputText id="clave" value="#{manticCatalogosClientesFiltro.attrs.clave}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="rfc" value="RFC:"/>
-              <p:inputText id="rfc" value="#{manticCatalogosClientesFiltro.attrs.rfc}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('rfc')"/>              			                            
+              <p:inputText id="rfc" value="#{manticCatalogosClientesFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                            
               <p:outputLabel for="razonSocial" value="Razón social:"/>
-              <p:inputText id="razonSocial" value="#{manticCatalogosClientesFiltro.attrs.razonSocial}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('razonSocial')"/>              														
+              <p:inputText id="razonSocial" value="#{manticCatalogosClientesFiltro.attrs.razonSocial}" styleClass="janal-wid-100-txt"/>              														
             </h:panelGrid>
             <p:separator/>
             <div class="janal-align-right lg-pantalla">
