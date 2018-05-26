@@ -215,8 +215,8 @@
               </p:panelGrid>							
 						</p:tab>
 						<p:tab title="Articulos">
-              <p:panelGrid id="panelTablaArticulos" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-20, janal-wid-100">
-                <p:dataList id="tablaArticulos" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticulo}" var="articulo" type="unordered" itemType="none" paginator="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticulo.size() gt 10}" rows="10" styleClass="paginated" emptyMessage=" " rowIndexVar="index">						
+              <p:panelGrid id="panelTablaArticulos" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-col-450, janal-wid-100">
+                <p:dataList id="tablaArticulos" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticulo}" var="articulo" type="unordered" itemType="none"  paginator="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticulo.size() gt 10}"  rows="10" styleClass="paginated" emptyMessage=" " rowIndexVar="index">						
                   <p:commandLink update="contenedorGrupos:tablaArticulos contenedorGrupos:formularioArticulo" title="Eliminar" action="#{manticCatalogosAlamacenesAccion.registroAlmacen.doEliminarAlmacenArticulo}" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();">                    
 										<f:setPropertyActionListener value="#{articulo}" target="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticuloSeleccion}" />
 										<i class="fa fa-minus-square fa-lg"></i>   
