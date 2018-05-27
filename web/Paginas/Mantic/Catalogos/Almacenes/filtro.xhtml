@@ -11,9 +11,9 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'descripcion': {validaciones: 'cambiar-mayusculas', mascara: 'libre'},
-        'clave': {validaciones: 'cambiar-mayusculas', mascara: 'libre'},
-        'nombre': {validaciones: 'cambiar-mayusculas', mascara: 'libre'}       
+        'descripcion': {validaciones: 'cambiar-mayusculas', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
+        'clave': {validaciones: 'cambiar-mayusculas', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
+        'nombre': {validaciones: 'cambiar-mayusculas', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}       
       };
     </script>		
   </ui:define>
@@ -29,11 +29,11 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <h:panelGrid styleClass="janal-wid-100">
               <p:outputLabel for="clave" value="Clave:"/>
-              <p:inputText id="clave" value="#{manticCatalogosAlmacenesFiltro.attrs.clave}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('clave')"/> 
+              <p:inputText id="clave" value="#{manticCatalogosAlmacenesFiltro.attrs.clave}" styleClass="janal-wid-100-txt" /> 
               <p:outputLabel for="nombre" value="Nombre:"/>
-              <p:inputText id="nombre" value="#{manticCatalogosAlmacenesFiltro.attrs.nombre}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('nombre')"/>              			                            
+              <p:inputText id="nombre" value="#{manticCatalogosAlmacenesFiltro.attrs.nombre}" styleClass="janal-wid-100-txt" />
               <p:outputLabel for="descripcion" value="Descripcion:"/>
-              <p:inputText id="descripcion" value="#{manticCatalogosAlmacenesFiltro.attrs.descripcion}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('descripcion')"/>              														
+              <p:inputText id="descripcion" value="#{manticCatalogosAlmacenesFiltro.attrs.descripcion}" styleClass="janal-wid-100-txt"/>
             </h:panelGrid>
             <p:separator/>
             <div class="janal-align-right lg-pantalla">
