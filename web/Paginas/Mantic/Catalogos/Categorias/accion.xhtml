@@ -11,9 +11,9 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
-				nombre: {validaciones: 'requerido', mascara: 'libre'},
-				padre: {validaciones: 'libre', mascara: 'libre'},
-				descripcion: {validaciones: 'requerido', mascara: 'libre'}
+				nombre: {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
+				nodo: {validaciones: 'libre', mascara: 'libre'},
+				descripcion: {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
 			};
 		</script>        
 	</ui:define>
