@@ -34,7 +34,6 @@ public class Filtro extends Comun implements Serializable {
       this.attrs.put("descripcion", "");
       this.attrs.put("sortOrder", "order by clave, nivel");
       this.attrs.put(Constantes.SQL_CONDICION, "id_empresa=" + JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -67,7 +66,7 @@ public class Filtro extends Comun implements Serializable {
     try {
       eaccion = EAccion.valueOf(accion.toUpperCase());
       JsfBase.setFlashAttribute("accion", eaccion);
-      JsfBase.setFlashAttribute("idCategoria", eaccion.equals(EAccion.MODIFICAR) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
+      JsfBase.setFlashAttribute("idCategoria", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) ? ((Entity) this.attrs.get("seleccionado")).getKey() : -1L);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
