@@ -12,24 +12,24 @@
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:titulo'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:nombre'      : {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:paterno'     : {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:materno'     : {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:rfc'         : {validaciones: 'requerido|rfc|cambiar-mayusculas', mascara: 'rfc', grupo: 'general'},
-				'contenedorGrupos\\:curp'        : {validaciones: 'libre|curp|cambiar-mayusculas', mascara: 'curp', grupo: 'general'},
-				'contenedorGrupos\\:nacimiento'  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+				'contenedorGrupos\\:nombre'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:paterno'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:materno'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:rfc'         : {validaciones: 'requerido', mascara: 'rfc', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:curp'        : {validaciones: 'libre|curp', mascara: 'curp', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:nacimiento'  : {validaciones: 'libre', mascara: 'fecha', grupo: 'general'},
 				'contenedorGrupos\\:tipoPersona' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},				
 				'contenedorGrupos\\:sexo'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:entidad'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:municipio'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:localidad'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:cp'          : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:calle'       : {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:exterior'    : {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:interior'    : {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:asentamiento': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:entreCalle'  : {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:ycalle'      : {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'}
+        'contenedorGrupos\\:cp'          : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:calle'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:exterior'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:interior'    : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:asentamiento': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:entreCalle'  : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:ycalle'      : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true}
 			};						
 		</script>   
 	</ui:define>
@@ -50,15 +50,15 @@
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.titulos}"/>
 								</p:selectOneMenu>								
 								<p:outputLabel for="nombre" value="Nombre:"/>
-								<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.nombres}" onblur="janal.mayusculas('contenedorGrupos\\:nombre')"/>                    
+								<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.nombres}" />                    
 								<p:outputLabel for="paterno" value="Apellido paterno:"/>
-								<p:inputText id="paterno" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.paterno}" onblur="janal.mayusculas('contenedorGrupos\\:paterno')"/>                    
+								<p:inputText id="paterno" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.paterno}" />                    
 								<p:outputLabel for="materno" value="Apellido materno:"/>
-								<p:inputText id="materno" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.materno}" onblur="janal.mayusculas('contenedorGrupos\\:materno')"/>                    
+								<p:inputText id="materno" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.materno}" />                    
 								<p:outputLabel for="rfc" value="RFC:"/>
-								<p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.rfc}" onblur="janal.mayusculas('contenedorGrupos\\:rfc')"/>                    
+								<p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.rfc}" />                    
 								<p:outputLabel for="curp" value="CURP:"/>
-								<p:inputText id="curp" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.curp}" onblur="janal.mayusculas('contenedorGrupos\\:curp')"/>                    
+								<p:inputText id="curp" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.curp}" />                    
 								<p:outputLabel for="nacimiento" value="Fecha de nacimiento:"/>
 								<p:calendar id="nacimiento" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.persona.fechaNacimiento}" mode="popup" converter="janal.convertidor.Calendario"/>
 								<p:outputLabel for="tipoPersona" value="Tipo persona:" rendered="#{manticCatalogosPersonasAccion.attrs.general}"/>
@@ -165,7 +165,7 @@
                     <f:selectItems value="#{manticCatalogosPersonasAccion.attrs.codigosPostales}"/>
                   </p:selectOneMenu>	
                   <p:spacer id="spacerCp" rendered="#{manticCatalogosPersonasAccion.registroPersona.domicilio.nuevoCp}"/>
-                  <p:inputText placeholder="Captura el nuevo código postal. Ej. 20284" id="cp" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.codigoPostal}" onblur="janal.mayusculas('contenedorGrupos\\:cp')" rendered="#{manticCatalogosPersonasAccion.registroPersona.domicilio.nuevoCp}"/>
+                  <p:inputText placeholder="Captura el nuevo código postal. Ej. 20284" id="cp" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.codigoPostal}" rendered="#{manticCatalogosPersonasAccion.registroPersona.domicilio.nuevoCp}"/>
                   <p:outputLabel for="domicilio" value="Domicilio:"/>
                   <p:selectOneMenu id="domicilio" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.domicilio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
                     <p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doLoadAtributos}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
@@ -182,17 +182,17 @@
 										</p:column>  
 									</p:selectOneMenu>																										
                   <p:outputLabel for="calle" value="Calle:"/>
-                  <p:inputText id="calle" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.calle}" onblur="janal.mayusculas('contenedorGrupos\\:calle')"/>
+                  <p:inputText id="calle" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.calle}" />
                   <p:outputLabel for="exterior" value="Número exterior:"/>
-                  <p:inputText id="exterior" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.numeroExterior}" onblur="janal.mayusculas('contenedorGrupos\\:exterior')" />                    																																		
+                  <p:inputText id="exterior" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.numeroExterior}"  />                    																																		
                   <p:outputLabel for="interior" value="Número interior:"/>
-                  <p:inputText id="interior" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.numeroInterior}" onblur="janal.mayusculas('contenedorGrupos\\:interior')"/>	
+                  <p:inputText id="interior" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.numeroInterior}" />	
                   <p:outputLabel for="asentamiento" value="Colonia:"/>
-                  <p:inputText id="asentamiento" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.asentamiento}" onblur="janal.mayusculas('contenedorGrupos\\:asentamiento')"/>	
+                  <p:inputText id="asentamiento" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.asentamiento}" />	
                   <p:outputLabel for="entreCalle" value="Entre calle:"/>
-                  <p:inputText id="entreCalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.entreCalle}" onblur="janal.mayusculas('contenedorGrupos\\:entreCalle')"/>	
+                  <p:inputText id="entreCalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.entreCalle}" />	
                   <p:outputLabel for="ycalle" value="Y calle:"/>
-                  <p:inputText id="ycalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.ycalle}" onblur="janal.mayusculas('contenedorGrupos\\:ycalle')"/>	
+                  <p:inputText id="ycalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.ycalle}" />	
                   <p:outputLabel for="tipoDomicilio" value="Tipo domicilio:"/>
                   <p:selectOneMenu id="tipoDomicilio" value="#{manticCatalogosPersonasAccion.registroPersona.domicilio.idTipoDomicilio}" styleClass="janal-wid-100-txt">									
                     <f:selectItems value="#{manticCatalogosPersonasAccion.attrs.tiposDomicilios}"/>
