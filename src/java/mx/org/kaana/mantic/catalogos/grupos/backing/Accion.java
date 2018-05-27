@@ -79,6 +79,7 @@ public class Accion extends IBaseAttribute implements Serializable {
           this.adminGrupo= new AdminGrupo(new TcManticGruposDto(-1L, JsfBase.getAutentifica().getPersona().getIdUsuario(), "", ""));
           break;
         case MODIFICAR:					
+        case CONSULTAR:					
           this.adminGrupo= new AdminGrupo((TcManticGruposDto)DaoFactory.getInstance().findById(TcManticGruposDto.class, (Long)this.attrs.get("idGrupo")));
           break;
       } // switch
