@@ -11,7 +11,7 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-				'contenedorGrupos\\:nombre'       : {validaciones: 'requerido|libre', mascara: 'libre'},
+				'contenedorGrupos\\:nombre'       : {validaciones: 'requerido|libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
 			};						
 		</script>   
@@ -24,7 +24,7 @@
             <p:tab title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
 								<p:outputLabel for="nombre" value="Nombre:"/>
-								<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticCatalogosGruposAccion.adminGrupo.grupo.nombre}" onblur="janal.mayusculas('contenedorGrupos\\:nombre')"/>                    
+								<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticCatalogosGruposAccion.adminGrupo.grupo.nombre}"/>                    
               </p:panelGrid>
 						</p:tab>						            						            																																																
 						<p:tab title="Clientes">
@@ -56,7 +56,7 @@
               </p:panelGrid>								
 						</p:tab>
 						<p:tab title="Observaciones">
-							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticCatalogosGruposAccion.adminGrupo.grupo.observaciones}" onblur="janal.mayusculas('contenedorGrupos\\:observaciones');"/>
+							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticCatalogosGruposAccion.adminGrupo.grupo.observaciones}"/>
 						</p:tab>
 					</p:tabView>
 				</div>
