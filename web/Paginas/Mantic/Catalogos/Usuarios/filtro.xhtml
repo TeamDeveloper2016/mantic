@@ -11,9 +11,9 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'nombres': {validaciones: 'cambiar-mayusculas', mascara: 'libre'}       
-        'rfc': {validaciones: 'cambiar-mayusculas', mascara: 'rfc'},
-        'curp': {validaciones: 'cambiar-mayusculas', mascara: 'curp'},
+        'nombres': {validaciones: 'cambiar-mayusculas', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}       
+        'rfc': {validaciones: 'cambiar-mayusculas', mascara: 'rfc', formatos: 'cambiar-mayusculas', individual: true},
+        'curp': {validaciones: 'cambiar-mayusculas', mascara: 'curp', formatos: 'cambiar-mayusculas', individual: true},
         'idTipoSexo': {validaciones: 'libre', mascara: 'libre'},
         'tipoPersona': {validaciones: 'libre', mascara: 'libre'}
       };
@@ -31,11 +31,11 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <h:panelGrid styleClass="janal-wid-100">
               <p:outputLabel for="nombres" value="Nombres, paterno, materno:"/>
-              <p:inputText id="nombres" value="#{manticCatalogosUsuariosFiltro.attrs.nombres}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('nombres')"/> 
+              <p:inputText id="nombres" value="#{manticCatalogosUsuariosFiltro.attrs.nombres}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="rfc" value="RFC:"/>
-              <p:inputText id="rfc" value="#{manticCatalogosUsuariosFiltro.attrs.rfc}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('rfc')"/>              			                            
+              <p:inputText id="rfc" value="#{manticCatalogosUsuariosFiltro.attrs.rfc}" styleClass="janal-wid-100-txt" />              			                            
               <p:outputLabel for="curp" value="CURP:"/>
-              <p:inputText id="curp" value="#{manticCatalogosUsuariosFiltro.attrs.curp}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('curp')"/>              														
+              <p:inputText id="curp" value="#{manticCatalogosUsuariosFiltro.attrs.curp}" styleClass="janal-wid-100-txt" />              														
               <p:outputLabel for="idTipoSexo"  value="Sexo:"/>
               <p:selectOneMenu  id="idTipoSexo"  value="#{manticCatalogosUsuariosFiltro.attrs.idTipoSexo}"  styleClass="janal-wid-90">
                 <f:selectItem itemLabel="TODOS" itemValue="1,2,3"/>
