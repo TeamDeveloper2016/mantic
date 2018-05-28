@@ -397,9 +397,10 @@
     </unit>
     
      <unit id="TrManticPersonaDomicilioDto">
-      <select id="row">
+      <select id="row">				
         select      
-          *
+					tr_mantic_persona_domicilio.id_persona_domicilio as id_key,
+					tr_mantic_persona_domicilio.*
         from      
           tr_mantic_persona_domicilio
         where 
