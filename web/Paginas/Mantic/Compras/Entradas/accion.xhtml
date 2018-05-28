@@ -130,7 +130,6 @@
 													<p:ajax event="change" listener="#{manticComprasEntradasAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.filas) @(.recalculo)"/>
 												</p:selectBooleanCheckbox>
 											</p:panelGrid>
-											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100"/>
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 											  <p:outputLabel for="tipoDeCambio" value="Tipo de cambio (#{manticComprasEntradasAccion.attrs.proveedor.moneda}):" rendered="#{manticComprasEntradasAccion.attrs.proveedor.idTipoMoneda.toInteger ne 1}" style="display:none"/>
 												<p:inputText id="tipoDeCambio" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticComprasEntradasAccion.adminOrden.orden.tipoDeCambio}" rendered="#{manticComprasEntradasAccion.attrs.proveedor.idTipoMoneda.toInteger ne 1}"  style="display:none">
@@ -182,7 +181,7 @@
 																	<h:outputText value="Nombre:" />
 																	<h:outputText value="#{custom.nombre}" />
 																	<h:outputText value="Costo:" />
-																	<h:outputText value="#{custom.precio}" />
+																	<h:outputText value="$ #{custom.precio}" />
 																</h:panelGrid>
 															</f:facet>
 														</p:autoComplete>												

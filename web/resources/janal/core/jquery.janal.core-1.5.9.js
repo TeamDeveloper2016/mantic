@@ -82,7 +82,7 @@
       return format;
     }, // dateFormat
     console: function(msg) {
-      if("produccion"!==$self.toUnicodeString($self.stage) || $self.logger)
+      if("produccion"!== $self.toUnicodeString($self.stage) || $self.logger)
         console.log('INFO '+ this.dateFormat('yyyy-mm-dd hh:ii:ss')+ ': '+ msg);
     }, // console
     cache: function(url, options, count, items) {
@@ -145,9 +145,9 @@
         var args = false;
         if(arguments.length > 1)
           args = arguments[1];
-        if((s.charAt(0) === "-") ||(s.charAt(0) === "+") )
+        if((s.charAt(0) === "-") ||(s.charAt(0) === "+"))
           start = 1;
-        return(this.isInteger(s.substring(start, s.length), args))
+        return(this.isInteger(s.substring(start, s.length), args));
       }
     }, // isSignedInteger
     isInteger: function(s) {
@@ -263,7 +263,7 @@
        } // else  
      }, // toUnicodeString
      toContext: function() {
-       return this.toUnicodeString(this.root)
+       return this.toUnicodeString(this.root);
      }, // toContext
      labels: function(id) {
        return $('label[for$="'+ id+ '"], label[for$="'+ id+ $parent.SELECT_FOCUS+ '"], label[for$="'+ id+ $parent.INPUT_RESERVE+ '"], th.'+ (id.indexOf(':')> 0? id.substring(id.indexOf(':')+ 1): id)+ '>span');
@@ -1112,7 +1112,7 @@
       $parent.info(id, msg);
     }, // alert
     version: function() {
-      return '0.1.5.7';
+      return '0.1.5.9';
     }, // version
     align: function(pixels) {
       try {
@@ -1155,25 +1155,31 @@
 		 if(total> 100) 
 			 $parent.info(descuento, 'El importe de los descuentos excede el 100% ['+ total+ ']');
 	  }, 
+		back: function(msg) {
+			var text= 'Se gener\u00F3 el registro con \u00E9xito';
+			if(typeof(msg)!== 'undefined')
+				text= text+ '\n'+ msg;
+			alert(text);
+		},
 		readingMode: function(action){
 			actionValidate= action!== null && action!== undefined ? action.toUpperCase() : 'CONSULTAR';
-			if(actionValidate=== 'CONSULTAR'){
-			$('input:text,input:checkbox,input:file,textarea,button,a.ui-commandlink,div.ui-selectonemenu,div.ui-chkbox,span.ui-button').each(
-				function(index){  
-					if(!(this.tagName=== 'BUTTON' && (this.id=== "cancelar" || this.id=== "cancelarIcon"))){
-						if(this.tagName=== 'A'){
-							$(this).removeAttr('onclick').removeAttr('href').addClass("ui-state-disabled"); 
-					} // if 
-					else if(this.tagName=== 'DIV'){		
-						if(this.selector=== 'div.ui-selectonemenu')
-							PF('widget_' + this.id).disable();
-						else
+			if(actionValidate=== 'CONSULTAR') {
+				$('input:text,input:checkbox,input:file,textarea,button,a.ui-commandlink,div.ui-selectonemenu,div.ui-chkbox,span.ui-button').each(function(index) {  
+						if(!(this.tagName=== 'BUTTON' && (this.id=== "cancelar" || this.id=== "cancelarIcon"))){
+							if(this.tagName=== 'A'){
+								$(this).removeAttr('onclick').removeAttr('href').addClass("ui-state-disabled"); 
+						} // if
+						else if(this.tagName=== 'DIV'){		
+							if(this.selector=== 'div.ui-selectonemenu')
+								PF('widget_' + this.id).disable();
+							else
+								$(this).prop("disabled","disabled").addClass("ui-state-disabled"); 
+						} // else if
+						else {
 							$(this).prop("disabled","disabled").addClass("ui-state-disabled"); 
-					} // else if
-					else{
-						$(this).prop("disabled","disabled").addClass("ui-state-disabled"); 
+						} // else
 					} // if
-			}});
+				});
 			} // if
 		} // readingMode
   });

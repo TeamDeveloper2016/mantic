@@ -29,6 +29,13 @@ import mx.org.kaana.mantic.comun.IBaseArticulos;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.TabChangeEvent;
 
+/**
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
+ *@date 7/05/2018
+ *@time 03:29:13 PM
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
+ */
 
 @Named(value= "manticComprasEntradasAccion")
 @ViewScoped

@@ -38,6 +38,8 @@ public class TcManticOrdenesBitacoraDto implements IBaseDto, Serializable {
   private Long idOrdenEstatus;
   @Column (name="justificacion")
   private String justificacion;
+  @Column (name="id_usuario")
+  private Long idUsuario;
   @Column (name="id_orden_compra")
   private Long idOrdenCompra;
   @Id
@@ -52,13 +54,14 @@ public class TcManticOrdenesBitacoraDto implements IBaseDto, Serializable {
   }
 
   public TcManticOrdenesBitacoraDto(Long key) {
-    this(null, null, null, new Long(-1L));
+    this(null, null, null, null, new Long(-1L));
     setKey(key);
   }
 
-  public TcManticOrdenesBitacoraDto(Long idOrdenEstatus, String justificacion, Long idOrdenCompra, Long idOrdenBitacora) {
+  public TcManticOrdenesBitacoraDto(Long idOrdenEstatus, String justificacion, Long idUsuario, Long idOrdenCompra, Long idOrdenBitacora) {
     setIdOrdenEstatus(idOrdenEstatus);
     setJustificacion(justificacion);
+    setIdUsuario(idUsuario);
     setIdOrdenCompra(idOrdenCompra);
     setIdOrdenBitacora(idOrdenBitacora);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
@@ -78,6 +81,14 @@ public class TcManticOrdenesBitacoraDto implements IBaseDto, Serializable {
 
   public String getJustificacion() {
     return justificacion;
+  }
+
+  public void setIdUsuario(Long idUsuario) {
+    this.idUsuario = idUsuario;
+  }
+
+  public Long getIdUsuario() {
+    return idUsuario;
   }
 
   public void setIdOrdenCompra(Long idOrdenCompra) {
@@ -123,6 +134,8 @@ public class TcManticOrdenesBitacoraDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getJustificacion());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdUsuario());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdOrdenCompra());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdOrdenBitacora());
@@ -137,6 +150,7 @@ public class TcManticOrdenesBitacoraDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("idOrdenEstatus", getIdOrdenEstatus());
 		regresar.put("justificacion", getJustificacion());
+		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idOrdenCompra", getIdOrdenCompra());
 		regresar.put("idOrdenBitacora", getIdOrdenBitacora());
 		regresar.put("registro", getRegistro());
@@ -146,7 +160,7 @@ public class TcManticOrdenesBitacoraDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdOrdenEstatus(), getJustificacion(), getIdOrdenCompra(), getIdOrdenBitacora(), getRegistro()
+    getIdOrdenEstatus(), getJustificacion(), getIdUsuario(), getIdOrdenCompra(), getIdOrdenBitacora(), getRegistro()
     };
     return regresar;
   }

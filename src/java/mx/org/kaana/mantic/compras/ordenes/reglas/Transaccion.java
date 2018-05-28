@@ -17,6 +17,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
 import org.apache.log4j.Logger;
@@ -52,7 +53,8 @@ public class Transaccion extends IBaseTnx {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar          = false;
+		boolean regresar= false;
+		TcManticOrdenesBitacoraDto bitacora= null;
 		Map<String, Object> params= new HashMap<>();
 		try {
 			params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
@@ -66,6 +68,8 @@ public class Transaccion extends IBaseTnx {
 					if(this.orden.getIdCliente()< 0)
 						this.orden.setIdCliente(null);
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
+					bitacora= new TcManticOrdenesBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), this.orden.getIdOrdenEstatus());
+					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 					toFillArticulos(sesion);
 					break;
 				case MODIFICAR:
@@ -75,6 +79,8 @@ public class Transaccion extends IBaseTnx {
 				case ELIMINAR:
 					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticOrdenesDetallesDto.class, params)>= 1L;
 					regresar= regresar && DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
+					bitacora= new TcManticOrdenesBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), 2L);
+					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 					break;
 			} // switch
 			if(!regresar)

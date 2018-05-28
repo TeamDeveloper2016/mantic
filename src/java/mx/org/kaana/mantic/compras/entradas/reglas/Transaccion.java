@@ -13,15 +13,19 @@ import static mx.org.kaana.kajool.enums.EAccion.AGREGAR;
 import static mx.org.kaana.kajool.enums.EAccion.ELIMINAR;
 import static mx.org.kaana.kajool.enums.EAccion.MODIFICAR;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import org.apache.log4j.Logger;
@@ -59,7 +63,8 @@ public class Transaccion extends IBaseTnx {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar          = false;
+		boolean regresar= false;
+		TcManticNotasBitacoraDto bitacora= null;
 		Map<String, Object> params= new HashMap<>();
 		try {
 			params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
@@ -76,17 +81,24 @@ public class Transaccion extends IBaseTnx {
   				if(this.aplicar)
 						this.orden.setIdNotaEstatus(6L);
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
+					bitacora= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus());
+					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 					this.toFillArticulos(sesion);
 					break;
 				case MODIFICAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-  				if(this.aplicar)
+  				if(this.aplicar) {
 						this.orden.setIdNotaEstatus(6L);
+  					bitacora= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus());
+	  				regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
+					} // if	
 					this.toFillArticulos(sesion);
 					break;				
 				case ELIMINAR:
 					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params)>= 1L;
 					regresar= regresar && DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
+ 					bitacora= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L);
+  				regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 					break;
 			} // switch
 			if(!regresar)
@@ -156,6 +168,13 @@ public class Transaccion extends IBaseTnx {
 				DaoFactory.getInstance().update(sesion, ubicacion);
 			} // if
 			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, item.getIdArticulo());
+			TcManticArticulosBitacoraDto bitacora= new TcManticArticulosBitacoraDto(global.getIva(), JsfBase.getIdUsuario(), global.getMayoreo(), -1L, global.getMenudeo(), global.getCantidad(), global.getIdArticulo(), this.orden.getIdNotaEntrada(), global.getMedioMayoreo(), global.getPrecio());
+			DaoFactory.getInstance().insert(sesion, bitacora);
+			
+			global.setPrecio(Numero.toRedondear(item.getCosto()));
+			global.setMenudeo(Numero.toRedondear(item.getCosto()+ Constantes.PORCENTAJE_MENUDEO));
+			global.setMedioMayoreo(Numero.toRedondear(item.getCosto()+ Constantes.PORCENTAJE_MEDIO_MAYOREO));
+			global.setMayoreo(Numero.toRedondear(item.getCosto()+ Constantes.PORCENTAJE_MAYOREO));
 			global.setStock(global.getStock()+ item.getCantidad());
 			DaoFactory.getInstance().update(sesion, global);
 		} // try

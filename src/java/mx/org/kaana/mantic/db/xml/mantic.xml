@@ -7,6 +7,34 @@
   </model>
 
   <dml>	
+    <unit id="TcManticArticulosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_articulos_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_articulos_bitacora
+        where      
+          id_articulo = {idArticulo} and id_nota_entrada = {idNotaEntrada} and date_format(registro, '%Y%c%d%H%i%S') = '{registro}'
+      </select>
+      <select id="ultimo">
+        select      
+          registro
+        from      
+          tc_mantic_articulos_bitacora
+        where      
+          id_articulo = {idArticulo}
+				order by
+				 registro desc
+      </select>
+    </unit>		
     <unit id="TcManticPersonasDto">
       <select id="row">
         select 
