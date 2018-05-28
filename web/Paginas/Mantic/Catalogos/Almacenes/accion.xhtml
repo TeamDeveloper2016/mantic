@@ -215,35 +215,28 @@
               </p:panelGrid>							
 						</p:tab>
 						<p:tab title="Articulos">
-              <p:panelGrid id="panelTablaArticulos" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-col-450, janal-wid-100">
-                <p:dataList id="tablaArticulos" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticulo}" var="articulo" type="unordered" itemType="none"  paginator="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticulo.size() gt 10}"  rows="10" styleClass="paginated" emptyMessage=" " rowIndexVar="index">						
-                  <p:commandLink update="contenedorGrupos:tablaArticulos contenedorGrupos:formularioArticulo" title="Eliminar" action="#{manticCatalogosAlamacenesAccion.registroAlmacen.doEliminarAlmacenArticulo}" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();">                    
-										<f:setPropertyActionListener value="#{articulo}" target="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticuloSeleccion}" />
-										<i class="fa fa-minus-square fa-lg"></i>   
-                  </p:commandLink>		
-									<p:commandLink onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();" update="contenedorGrupos:tablaArticulos contenedorGrupos:formularioArticulo" title="Actualizar" action="#{manticCatalogosAlamacenesAccion.registroAlmacen.doActualizarAlmacenArticulo}" rendered="#{articulo.modificar}">
-                    <f:setPropertyActionListener value="#{articulo}" target="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticuloSeleccion}" />
-										<i class="fa fa-check-square fa-lg"></i>
-                  </p:commandLink>																				
-									<p:commandLink onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();" update="contenedorGrupos:tablaArticulos contenedorGrupos:formularioArticulo" title="Articulo #{index+1}" action="#{manticCatalogosAlamacenesAccion.doConsultarAlmacenArticulo}">
-                    <f:setPropertyActionListener value="#{articulo}" target="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticuloSeleccion}" />		
-										<p:outputLabel value="Articulo #{index+1}"/>
-                  </p:commandLink>                                                                        
-                  <f:facet name="footer" class="alinear-izquierda">																
-                    <p:commandLink title="Agregar articulo" action="#{manticCatalogosAlamacenesAccion.registroAlmacen.doAgregarAlmacenArticulo}" process="@this contenedorGrupos:formularioArticulo" update="contenedorGrupos:tablaArticulos contenedorGrupos:formularioArticulo contenedorGrupos:idAlmacen" onstart="return janal.partial('articulo', true);" oncomplete="janal.refresh();janal.desbloquear();">
-											<i class="fa fa-plus-square fa-lg"><p:spacer width="3px"/><p:outputLabel value="Agregar articulo"/></i>
-										</p:commandLink>		              										
-                  </f:facet>
-                </p:dataList>
+              <p:panelGrid id="panelTablaArticulos" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-col-200, janal-wid-100">                
+                <p:panelGrid id="formularioArticuloAcciones" columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+									<p:commandLink title="Agregar articulo" action="#{manticCatalogosAlamacenesAccion.registroAlmacen.doAgregarAlmacenArticulo}" process="@this contenedorGrupos:formularioArticulo" update="contenedorGrupos:formularioArticulo contenedorGrupos:formularioArticuloAcciones" onstart="return janal.partial('articulo', true);" oncomplete="janal.refresh();janal.desbloquear();" rendered="#{!manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticuloPivote.modificar}">
+										<i class="fa fa-plus-square fa-lg"><p:spacer width="3px"/><p:outputLabel value="Agregar articulo"/></i>
+									</p:commandLink>
+									<p:commandLink title="Actualizar articulo" action="#{manticCatalogosAlamacenesAccion.registroAlmacen.doActualizarAlmacenArticulo}" process="@this contenedorGrupos:formularioArticulo" update="contenedorGrupos:formularioArticulo contenedorGrupos:formularioArticuloAcciones" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();" rendered="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticuloPivote.modificar}">
+										<i class="fa fa-check-square fa-lg"><p:spacer width="3px"/><p:outputLabel value="Actualizar articulo"/></i>
+									</p:commandLink>
+									<p:commandLink title="Eliminar articulo" action="#{manticCatalogosAlamacenesAccion.registroAlmacen.doEliminarAlmacenArticulo}" process="@this contenedorGrupos:formularioArticulo" update="contenedorGrupos:formularioArticulo contenedorGrupos:formularioArticuloAcciones" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();" rendered="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticuloPivote.modificar}">
+										<i class="fa fa-minus-square fa-lg"><p:spacer width="3px"/><p:outputLabel value="Eliminar articulo"/></i>
+									</p:commandLink>
+								</p:panelGrid>
                 <p:panelGrid id="formularioArticulo" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 									<p:outputLabel for="busquedaArticulo" value="Buscar:"/>
 									<p:inputText id="busquedaArticulo" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.attrs.codigo}" placeholder="Busqueda por código o nombre" >
-										<p:ajax event="blur" process="@this contenedorGrupos:busquedaArticulo" update="contenedorGrupos:articulo" listener="#{manticCatalogosAlamacenesAccion.doConsultarArticulos}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<p:ajax event="blur" process="@this contenedorGrupos:busquedaArticulo" update="contenedorGrupos:articulo contenedorGrupos:stock contenedorGrupos:minimo contenedorGrupos:maximo contenedorGrupos:idAlmacen contenedorGrupos:formularioArticuloAcciones" listener="#{manticCatalogosAlamacenesAccion.doConsultarArticulos}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									</p:inputText>
 									<p:spacer/><p:spacer/>
 									<p:outputLabel for="articulo" value="Articulo:"/>
                   <p:selectOneMenu id="articulo" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticuloPivote.articulo}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
-                    <f:selectItem itemValue="" itemLabel="Seleccione"/>
+                    <p:ajax event="change" process="@this" update="contenedorGrupos:formularioArticuloAcciones contenedorGrupos:stock contenedorGrupos:minimo contenedorGrupos:maximo contenedorGrupos:idAlmacen" listener="#{manticCatalogosAlamacenesAccion.registroAlmacen.doSeleccionarArticuloPivote}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+										<f:selectItem itemValue="" itemLabel="Seleccione"/>
                     <f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.articulos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
 										<p:column  styleClass="janal-column-left janal-wid-col-150">
 											<h:outputText value="#{item.codigo}"/>
@@ -261,7 +254,7 @@
                   <p:outputLabel for="idAlmacen" value="Almacen:"/>
                   <p:selectOneMenu id="idAlmacen" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.idUbicacion}" styleClass="janal-wid-100-txt">									
 										<f:selectItems value="#{manticCatalogosAlamacenesAccion.registroAlmacen.ubicacionesItems}"/>
-                  </p:selectOneMenu>	                  
+                  </p:selectOneMenu>										
                 </p:panelGrid>
               </p:panelGrid>
             </p:tab>  
