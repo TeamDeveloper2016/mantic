@@ -752,7 +752,7 @@
 				order by 
 				  tc_mantic_articulos.nombre
 			</select>
-			<select id="findIdArticulo">
+			<select id="findArticulo">
 				select 
 					*
 				from (
@@ -767,7 +767,14 @@
 				inner join 
 					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
 				where 
-					tc_mantic_articulos.id_articulo= {idArticulo}
+					tc_mantic_empresas.id_empresa in ({sucursales})
+				  and (
+				    (upper(tc_mantic_articulos_codigos.codigo) like '%{codigo}%' and tc_mantic_articulos_codigos.id_principal= 1)
+				    or 
+				    upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*'
+				    or
+				    upper(tc_mantic_articulos_codigos.codigo) like '%{codigo}%' 
+				   ) 		
 				order by 
 				  tc_mantic_articulos.nombre) principal
 				group by 
