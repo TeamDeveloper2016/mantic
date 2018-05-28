@@ -7,11 +7,13 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaDomicilio;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
+import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 
 public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializable{
@@ -35,8 +37,14 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 	} // toPersona	
 	
 	public List<PersonaDomicilio> toPersonasDomicilio() throws Exception {
+		return toPersonasDomicilio(false);
+	}
+	
+	public List<PersonaDomicilio> toPersonasDomicilio(boolean update) throws Exception {
 		List<PersonaDomicilio> regresar= null;
-		Map<String, Object>params    = null;
+		TcManticDomiciliosDto domicilio= null;
+		Map<String, Object>params      = null;
+		Entity entityDomicilio         = null;
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_persona=" + this.idPersona);
@@ -45,6 +53,21 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 				personaDomicilio.setIdLocalidad(toLocalidad(personaDomicilio.getIdDomicilio()));
 				personaDomicilio.setIdMunicipio(toMunicipio(personaDomicilio.getIdLocalidad().getKey()));
 				personaDomicilio.setIdEntidad(toEntidad(personaDomicilio.getIdMunicipio().getKey()));
+				if(update){
+					domicilio= toDomicilio(personaDomicilio.getIdDomicilio());
+					personaDomicilio.setCalle(domicilio.getCalle());
+					personaDomicilio.setCodigoPostal(domicilio.getCodigoPostal());
+					personaDomicilio.setColonia(domicilio.getAsentamiento());
+					personaDomicilio.setEntreCalle(domicilio.getEntreCalle());
+					personaDomicilio.setyCalle(domicilio.getYcalle());
+					personaDomicilio.setExterior(domicilio.getNumeroExterior());
+					personaDomicilio.setInterior(domicilio.getNumeroInterior());
+					entityDomicilio= new Entity(personaDomicilio.getIdDomicilio());
+					entityDomicilio.put("idEntidad", new Value("idEntidad", personaDomicilio.getIdEntidad().getKey()));
+					entityDomicilio.put("idMunicipio", new Value("idMunicipio", personaDomicilio.getIdMunicipio().getKey()));
+					entityDomicilio.put("idLocalidad", new Value("idLocalidad", personaDomicilio.getIdLocalidad().getKey()));
+					personaDomicilio.setDomicilio(entityDomicilio);
+				} // if				
 			} // for
 		} // try
 		catch (Exception e) {		
