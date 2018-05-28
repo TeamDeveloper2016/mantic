@@ -448,7 +448,8 @@
 					tc_mantic_ordenes_compras.total,
 				  tc_mantic_ordenes_estatus.nombre as estatus,
 					tc_mantic_ordenes_compras.id_orden_estatus,
-					tc_mantic_ordenes_compras.registro
+					tc_mantic_ordenes_compras.registro,
+					tc_mantic_ordenes_estatus.estatus_asociados
 				from 
 					tc_mantic_ordenes_compras
 				inner join 
