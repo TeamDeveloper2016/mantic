@@ -1931,7 +1931,7 @@
     <unit id="TcManticNotasEstatusDto">
       <select id="row">
         select      
-				  tc_mantic_notas_estatus.id_orden_estatus as id_key,
+				  tc_mantic_notas_estatus.id_nota_estatus as id_key,
           tc_mantic_notas_estatus.*
         from      
           tc_mantic_notas_estatus
