@@ -309,6 +309,7 @@
             tc_mantic_notas_entradas.total,
             tc_mantic_notas_estatus.id_nota_estatus,
             tc_mantic_notas_estatus.nombre as estatus,
+            tc_mantic_notas_estatus.estatus_asociados,
             tc_mantic_notas_entradas.registro     
         from
             tc_mantic_notas_entradas         
