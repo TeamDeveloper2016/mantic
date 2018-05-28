@@ -58,12 +58,12 @@
                 <p:inputText id="clave" styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.clave}"/>                    
                 <p:outputLabel for="prefijo" value="Prefijo:"/>
                 <p:inputText id="prefijo" styleClass="janal-wid-100-txt" maxlength="50" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.prefijo}"/>                    
-                <p:separator/><p:separator/>
+                <p:spacer width="1px"/><p:separator/>
                 <p:outputLabel for="rfc" value="RFC:"/>
                 <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.rfc}"/>                    
                 <p:outputLabel for="razonSocial" value="Razón social:"/>
                 <p:inputText id="razonSocial" styleClass="janal-wid-100-txt" maxlength="255" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.razonSocial}"/>                    
-                <p:separator/><p:separator/>
+                <p:spacer width="1px"/><p:separator/>
                 <p:outputLabel for="idTipoProveedor"  value="Tipo proveedor:"/>
                 <p:selectOneMenu  id="idTipoProveedor" value="#{manticCatalogosProveedoresAccion.attrs.tipoProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt">
                   <f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.tiposProveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>

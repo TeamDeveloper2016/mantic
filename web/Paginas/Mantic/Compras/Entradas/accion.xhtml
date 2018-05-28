@@ -65,7 +65,7 @@
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
 								<p:outputLabel for="consecutivo" value="No. nota:"/>
 								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticComprasEntradasAccion.adminOrden.orden.consecutivo}" readonly="true"/>
-								<p:separator/><p:separator/>
+								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="idOrdenCompra" value="No. orden:" style="display:#{empty manticComprasEntradasAccion.titulo? '': 'none'}"/>
 								<p:selectOneMenu id="idOrdenCompra" value="#{manticComprasEntradasAccion.adminOrden.orden.ikOrdenCompra}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98 faltantes" effect="fade" filter="true" filterMatchMode="startsWith" style="display:#{empty manticComprasEntradasAccion.titulo? '': 'none'}">
 									<f:selectItems value="#{manticComprasEntradasAccion.attrs.ordenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{element.razonSocial}"/>
@@ -88,7 +88,7 @@
 								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{manticComprasEntradasAccion.adminOrden.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 								<p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>
 								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{manticComprasEntradasAccion.adminOrden.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
-								<p:separator/><p:separator/>
+								<p:spacer width="1px"/><p:separator/>
                 <p:outputLabel for="idAlmacen" value="Almacen:"/>
 								<p:selectOneMenu id="idAlmacen" value="#{manticComprasEntradasAccion.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98 faltantes" effect="fade" filter="true" filterMatchMode="startsWith">
 									<p:ajax event="change" listener="#{manticComprasEntradasAccion.doUpdateAlmacen}" process="@this" update="tabla @(.total) @(.recalculo)"/>
@@ -100,7 +100,7 @@
 										<h:outputText value="#{item.nombre}"/>
 									</p:column>   
 								</p:selectOneMenu>
-								<p:separator/><p:separator/>
+								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
 								<p:selectOneMenu id="idProveedor" value="#{manticComprasEntradasAccion.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98 faltantes" effect="fade" filter="true" filterMatchMode="startsWith">
 									<p:ajax event="change" listener="#{manticComprasEntradasAccion.doUpdateProveedor}" update="datosArticulos" process="@form" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
