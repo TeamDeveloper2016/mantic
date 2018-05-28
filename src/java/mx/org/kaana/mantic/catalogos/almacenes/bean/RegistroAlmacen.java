@@ -11,6 +11,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.mantic.catalogos.clientes.bean.Domicilio;
 import mx.org.kaana.mantic.catalogos.almacenes.reglas.MotorBusqueda;
@@ -41,6 +42,7 @@ public class RegistroAlmacen implements Serializable{
 	private Long countIndice;
 	private Domicilio domicilio;
 	private Domicilio domicilioPivote;
+	private UISelectEntity resultadoBusquedaArticulo;
 
 	public RegistroAlmacen() {
 		this(-1L, new TcManticAlmacenesDto(), new ArrayList<AlmacenDomicilio>(), new ArrayList<AlmacenTipoContacto>(), new ArrayList<AlmacenUbicacion>(), new Domicilio(), new ArrayList<AlmacenArticulo>(), new AlmacenArticulo());
@@ -209,6 +211,14 @@ public class RegistroAlmacen implements Serializable{
 
 	public void setIdUbicacion(Long idUbicacion) {
 		this.idUbicacion = idUbicacion;
+	}
+
+	public UISelectEntity getResultadoBusquedaArticulo() {
+		return resultadoBusquedaArticulo;
+	}
+
+	public void setResultadoBusquedaArticulo(UISelectEntity resultadoBusquedaArticulo) {
+		this.resultadoBusquedaArticulo = resultadoBusquedaArticulo;
 	}
 		
 	private void init(){
@@ -423,6 +433,51 @@ public class RegistroAlmacen implements Serializable{
 		} // catch			
 	} // doEliminarAlamcenTipoContacto
 	
+	public void doSeleccionarArticulo(){
+		boolean existe= false;
+		try {
+			for(AlmacenArticulo articulo: this.almacenArticulo){
+				if(articulo.getIdArticulo().equals(this.resultadoBusquedaArticulo.getKey())){
+					this.almacenArticuloSeleccion= articulo;
+					doConsultarAlmacenArticulo();
+					existe= true;
+				} // if
+			} // for
+			if(!existe){
+				this.almacenArticuloPivote= new AlmacenArticulo();
+				this.almacenArticuloSeleccion= new AlmacenArticulo();
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);		
+		} // catch
+	} // doSeleccionarArticulo
+	
+	public void doSeleccionarArticuloPivote(){
+		boolean existe= false;
+		try {
+			if(this.almacenArticuloPivote.getArticulo()!= null){
+				for(AlmacenArticulo articulo: this.almacenArticulo){
+					if(articulo.getIdArticulo().equals(this.almacenArticuloPivote.getArticulo().getKey())){
+						this.almacenArticuloSeleccion= articulo;
+						doConsultarAlmacenArticulo();
+						existe= true;
+					} // if
+				} // for
+				if(!existe){
+					this.almacenArticuloPivote= new AlmacenArticulo();
+				} // if
+			} // if
+			else
+				this.almacenArticuloPivote= new AlmacenArticulo();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);		
+		} // catch
+	} // doSeleccionarArticulo
+	
 	public void doAgregarAlmacenArticulo(){
 		AlmacenArticulo articulo= null;
 		AlmacenUbicacion ubicacion= null;
@@ -514,23 +569,22 @@ public class RegistroAlmacen implements Serializable{
 	
 	public void doConsultarAlmacenArticulo(){
 		AlmacenArticulo articulo         = null;
-		MotorBusqueda motor              = null;
 		AlmacenUbicacion almacenUbicacion= null;
 		AlmacenUbicacion ubicacionDefault= null;
 		try {					
 			articulo= this.almacenArticulo.get(this.almacenArticulo.indexOf(this.almacenArticuloSeleccion));			
 			articulo.setModificar(true);
+			this.almacenArticuloPivote.setModificar(true);
 			this.almacenArticuloPivote.setIdArticulo(articulo.getIdArticulo());
 			this.almacenArticuloPivote.setMaximo(articulo.getMaximo());
 			this.almacenArticuloPivote.setMinimo(articulo.getMinimo());
 			this.almacenArticuloPivote.setStock(articulo.getStock());
-			motor= new MotorBusqueda(articulo.getIdArticulo());
-			this.almacenArticuloPivote.setArticulo(motor.toArticulo());
+			this.almacenArticuloPivote.setArticulo(this.resultadoBusquedaArticulo);
 			if(articulo.getIdAlmacenUbicacion()!= null){
 				for(AlmacenUbicacion recordAlmacenUbicacion: this.ubicaciones){
 					if(recordAlmacenUbicacion.getKey().equals(articulo.getIdAlmacenUbicacion()))
 						almacenUbicacion= recordAlmacenUbicacion;				
-					else if(recordAlmacenUbicacion.getPiso().equals("GENERAL"))
+					else if(recordAlmacenUbicacion.getPiso()!= null && recordAlmacenUbicacion.getPiso().equals("GENERAL"))
 						ubicacionDefault= recordAlmacenUbicacion;			
 				} // for
 				if(almacenUbicacion== null)
