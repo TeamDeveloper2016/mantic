@@ -219,7 +219,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
       columns.add(new Columna("salidas", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
-      this.attrs.put("inventarios", (List<UISelectEntity>) UIEntity.build("TcManticInventariosDto", "inventario", this.attrs, columns));
+			Entity inventario= (Entity)DaoFactory.getInstance().toEntity("TcManticInventariosDto", "inventario", this.attrs);
+			UIBackingUtilities.toFormatEntity(inventario, columns);
+      this.attrs.put("inventario", inventario);
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);

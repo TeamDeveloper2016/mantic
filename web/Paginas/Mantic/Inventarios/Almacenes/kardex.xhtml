@@ -172,7 +172,7 @@
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
-		<pe:remoteCommand name="locate" process="@this" update="@(.filas) @(.recalculo)" actionListener="#{manticInventariosAlmacenesKardex.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();">  
+		<pe:remoteCommand name="locate" process="@this" update="@(.filas) @(.recalculo) @(.inventario)" actionListener="#{manticInventariosAlmacenesKardex.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();">  
 			<pe:methodSignature parameters="java.lang.String"/>  
 			<pe:methodParam name="codigo"/>  
 		</pe:remoteCommand>		
@@ -350,19 +350,19 @@
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-4 janal-column-center">
 										<p:outputLabel value="Inicial:"/><br/>
-										<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.inventarios.inicial}" styleClass="janal-wid-100-txt janal-column-right inventario" readonly="true"/>
+										<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.inventario.inicial}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
 									</div>
 									<div class="ui-grid-col-4 janal-column-center">
 										<p:outputLabel value="Entradas:"/><br/>
-										<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.inventarios.entradas}" styleClass="janal-wid-100-txt janal-column-right inventario" readonly="true"/>
+										<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.inventario.entradas}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
 									</div>
 									<div class="ui-grid-col-4 janal-column-center">
 										<p:outputLabel value="Salidas:"/><br/>
-										<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.inventarios.salidas}" styleClass="janal-wid-100-txt janal-column-right inventario" readonly="true"/>
+										<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.inventario.salidas}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
 									</div>
 									<div class="ui-grid-col-4 janal-column-center">
 										<p:outputLabel value="# Existencias:"/><br/>
-										<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.inventarios.stock}" styleClass="janal-wid-100-txt janal-column-right inventario" readonly="true"/>
+										<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.inventario.stock}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
 									</div>
 								</div>	
 							</p:fieldset>
