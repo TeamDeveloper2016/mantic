@@ -7,6 +7,36 @@
   </model>
 
   <dml>	
+    <unit id="TcManticInventariosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_inventarios
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_inventarios
+        where      
+          id_almacen = {idAlmacen} and id_articulo = {idArticulo} and ejercicio = {ejercicio} and date_format(registro, '%Y%c%d%H%i%S')= '{registro}'
+      </select>
+			<select id="inventario">
+				select
+				  tc_mantic_inventarios.id_inventario as id_key,
+				  tc_mantic_inventarios.*
+				from 
+				  tc_mantic_inventarios
+				where
+				  id_almacen= {idAlmacen}
+				  and id_articulo= {idArticulo}
+				order by
+				  registro desc
+			</select>
+    </unit>		
     <unit id="TcManticArticulosBitacoraDto">
       <select id="row">
         select      

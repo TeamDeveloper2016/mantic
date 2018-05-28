@@ -20,15 +20,21 @@ public class AdminKardex implements Serializable {
 	private double costo;
 	private double iva;
 	private List<TiposVentas> tiposVentas;
+	
+	public AdminKardex(Long idArticulo) {
+		this(idArticulo, 1D, 16D, 0D, 0D, 0D, 10L, 20L);
+	}
 
 	public AdminKardex(Long idArticulo, double costo, double iva, double menudeo, double medioMayoreo, double mayoreo, long limiteMedioMayoreo, long limiteMayoreo) {
 		this.idArticulo=idArticulo;
 		this.costo=costo;
 		this.iva=iva;
 		this.tiposVentas= new ArrayList<>();
-		this.add(0, "MENUDEO", menudeo, limiteMedioMayoreo);
-		this.add(1, "MEDIO-MAYOREO", medioMayoreo, limiteMayoreo);
-		this.add(2, "MAYOREO", mayoreo, 99999999);
+		if(this.idArticulo> 0) {
+			this.add(0, "MENUDEO", menudeo, limiteMedioMayoreo);
+			this.add(1, "MEDIO-MAYOREO", medioMayoreo, limiteMayoreo);
+			this.add(2, "MAYOREO", mayoreo, 99999999);
+		} // if	
 	}
 
 	public Long getIdArticulo() {
@@ -63,13 +69,13 @@ public class AdminKardex implements Serializable {
 		this.tiposVentas.add(new TiposVentas(index, nombre, this.costo, precio, this.iva, limite));
 	}	
 
-	public void doUpdateUtilidad(Integer index, Double value) {
+	public void toUpdateUtilidad(Integer index, Double value) {
 		int posicion= this.tiposVentas.indexOf(new TiposVentas(index));
 		if(posicion>= 0)
 			((TiposVentas)this.tiposVentas.get(posicion)).toUpdateUtilidad(value);
 	}
 	
-	public void doCalculate(Integer index) {
+	public void toCalculate(Integer index) {
 		int posicion= this.tiposVentas.indexOf(new TiposVentas(index));
 		if(posicion>= 0)
 			((TiposVentas)this.tiposVentas.get(posicion)).toCalculate();

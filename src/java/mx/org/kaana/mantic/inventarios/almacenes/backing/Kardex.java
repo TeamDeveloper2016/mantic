@@ -24,7 +24,9 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.inventarios.almacenes.beans.AdminKardex;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
+import org.primefaces.model.SelectableDataModel;
 
 /**
  *@company KAANA
@@ -53,7 +55,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	@Override
 	@PostConstruct
 	protected void init() {
-		this.adminKardex= new AdminKardex(-1L, 1D, 16D, 0D, 0D, 0D, 10L, 20L);
+		this.adminKardex= new AdminKardex(-1L);
 	}
 	
 	private void updateArticulo(UISelectEntity articulo) throws Exception {
@@ -65,8 +67,8 @@ public class Kardex extends IBaseAttribute implements Serializable {
       columns.add(new Columna("empaque", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("unidadMedida", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("fecha", EFormatoDinamicos.FECHA_CORTA));
-      columns.add(new Columna("utilidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+			this.attrs.put("idArticulo", null);
 			if(articulo.size()> 1) {
   			this.attrs.put("idArticulo", articulo.toLong("idArticulo"));
 				Entity solicitado= (Entity)DaoFactory.getInstance().toEntity("VistaKardexDto", "row", this.attrs);
@@ -87,28 +89,32 @@ public class Kardex extends IBaseAttribute implements Serializable {
 						solicitado.toLong("limiteMedioMayoreo"),
 						solicitado.toLong("limiteMayoreo")
 					);
-					this.toLoadCodigos();
-					this.toLoadAlmacenes();
 				} // if	
 			} // if
-			else
+			else {
 				this.attrs.put("existe", "<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
+				this.attrs.put("articulo", null);
+				this.adminKardex.getTiposVentas().clear();
+			} // if	
+			this.toInventario();
+			this.toLoadCodigos();
+			this.toLoadAlmacenes();
 		} // try
 		finally {
       Methods.clean(columns);
     }// finally
 	}
 	
-	public String doMoneyFormat(Double value) {
+	public String doMoneyValueFormat(Double value) {
 		return value== null? "": Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, value);
 	}
 	
 	public String doMoneyFormat(Value value) {
-		return value== null? "": this.doMoneyFormat(value.toDouble());
+		return value== null? "": this.doMoneyValueFormat(value.toDouble());
 	}
 	
 	public String doPercenageFormat(Value value) {
-		return value== null? "": Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, value.toDouble())+ "%";
+		return value== null? "": Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, value.toDouble())+ "  %";
 	}
 	
 	public String doNumberFormat(Value value) {
@@ -196,6 +202,34 @@ public class Kardex extends IBaseAttribute implements Serializable {
     } // catch   
 	} 
 
+	public void doUpdateInventario(SelectEvent event) {
+		UISelectEntity almacen= (UISelectEntity)event.getObject();
+		this.attrs.put("idAlmacen", null);
+		if(almacen!= null)
+		  this.attrs.put("idAlmacen", almacen.toLong("idAlmacen"));
+		this.toInventario();
+	}
+	
+	private void toInventario() {
+		List<Columna> columns= null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("inicial", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("entradas", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("salidas", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+      this.attrs.put("inventarios", (List<UISelectEntity>) UIEntity.build("TcManticInventariosDto", "inventario", this.attrs, columns));
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+		finally {
+      Methods.clean(columns);
+    }// finally
+	}
+	
 	private void toLoadCodigos() {
 		List<Columna> columns= null;
     try {
@@ -235,5 +269,13 @@ public class Kardex extends IBaseAttribute implements Serializable {
       Methods.clean(columns);
     }// finally
 	}
+
+	public void doUpdateUtilidad(Integer index, Double value) {
+		this.adminKardex.toUpdateUtilidad(index, value);
+	}
 	
+	public void doCalculate(Integer index) {
+		this.adminKardex.toCalculate(index);
+	}
+
 }
