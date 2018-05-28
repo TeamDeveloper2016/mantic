@@ -87,7 +87,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente);
-			regresar= DaoFactory.getInstance().toEntitySet(ClienteRepresentante.class, "TrManticClientesRepresentantesDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+			regresar= DaoFactory.getInstance().toEntitySet(ClienteRepresentante.class, "TrManticClienteRepresentanteDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {		
 			throw e;
@@ -139,7 +139,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente);
-			regresar= DaoFactory.getInstance().toEntitySet(ClienteContactoRepresentante.class, "TrManticClientesRepresentantesDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+			regresar= DaoFactory.getInstance().toEntitySet(ClienteContactoRepresentante.class, "TrManticClienteRepresentanteDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 			if(!regresar.isEmpty()){
 				for(ClienteContactoRepresentante contacto: regresar){
 					contacto.setContactos(toPersonaContacto(contacto.getIdRepresentante()));

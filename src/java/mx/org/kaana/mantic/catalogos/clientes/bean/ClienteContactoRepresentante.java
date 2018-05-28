@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
-import mx.org.kaana.mantic.db.dto.TrManticClientesRepresentantesDto;
+import mx.org.kaana.mantic.db.dto.TrManticClienteRepresentanteDto;
 
-public class ClienteContactoRepresentante extends TrManticClientesRepresentantesDto implements Serializable{
+public class ClienteContactoRepresentante extends TrManticClienteRepresentanteDto implements Serializable{
 	
 	private static final long serialVersionUID = -5420245452200987754L;
 	private ESql sqlAccion;

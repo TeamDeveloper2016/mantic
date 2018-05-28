@@ -30,8 +30,8 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tr_mantic_proveedores_agentes")
-public class TrManticProveedoresAgentesDto implements IBaseDto, Serializable {
+@Table(name="tr_mantic_proveedor_agente")
+public class TrManticProveedorAgenteDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="id_proveedor")
@@ -51,16 +51,16 @@ public class TrManticProveedoresAgentesDto implements IBaseDto, Serializable {
   @Column (name="registro")
   private Timestamp registro;
 
-  public TrManticProveedoresAgentesDto() {
+  public TrManticProveedorAgenteDto() {
     this(new Long(-1L));
   }
 
-  public TrManticProveedoresAgentesDto(Long key) {
+  public TrManticProveedorAgenteDto(Long key) {
     this(null, new Long(-1L), null, null, null, null);
     setKey(key);
   }
 
-  public TrManticProveedoresAgentesDto(Long idProveedor, Long idProveedorAgente, Long idUsuario, Long idPrincipal, String observaciones, Long idAgente) {
+  public TrManticProveedorAgenteDto(Long idProveedor, Long idProveedorAgente, Long idUsuario, Long idPrincipal, String observaciones, Long idAgente) {
     setIdProveedor(idProveedor);
     setIdProveedorAgente(idProveedorAgente);
     setIdUsuario(idUsuario);
@@ -203,7 +203,7 @@ public class TrManticProveedoresAgentesDto implements IBaseDto, Serializable {
 
   @Override
   public Class toHbmClass() {
-    return TrManticProveedoresAgentesDto.class;
+    return TrManticProveedorAgenteDto.class;
   }
 
   @Override
@@ -219,7 +219,7 @@ public class TrManticProveedoresAgentesDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TrManticProveedoresAgentesDto other = (TrManticProveedoresAgentesDto) obj;
+    final TrManticProveedorAgenteDto other = (TrManticProveedorAgenteDto) obj;
     if (getIdProveedorAgente() != other.idProveedorAgente && (getIdProveedorAgente() == null || !getIdProveedorAgente().equals(other.idProveedorAgente))) {
       return false;
     }

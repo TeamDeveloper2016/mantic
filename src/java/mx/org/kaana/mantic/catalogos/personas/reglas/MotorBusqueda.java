@@ -103,7 +103,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_representante=" + this.idPersona + " and id_principal=1");
-			registro= (Entity) DaoFactory.getInstance().toEntity("TrManticClientesRepresentantesDto", "row", params);
+			registro= (Entity) DaoFactory.getInstance().toEntity("TrManticClienteRepresentanteDto", "row", params);
 			if(registro!= null)
 				regresar= registro.toLong("idCliente");
 		} // try
@@ -120,7 +120,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_agente=" + this.idPersona + " and id_principal=1");
-			registro= (Entity) DaoFactory.getInstance().toEntity("TrManticProveedoresAgentesDto", "row", params);
+			registro= (Entity) DaoFactory.getInstance().toEntity("TrManticProveedorAgenteDto", "row", params);
 			if(registro!= null)
 				regresar= registro.toLong("idProveedor");
 		} // try

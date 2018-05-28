@@ -62,9 +62,9 @@
 				left join 
 					tr_mantic_proveedor_tipo_contacto correo_proveedor on tc_mantic_proveedores.id_proveedor = correo_proveedor.id_proveedor and correo_proveedor.id_tipo_contacto=9
 				left join 
-					tr_mantic_proveedores_agentes on tc_mantic_proveedores.id_proveedor = tr_mantic_proveedores_agentes.id_proveedor and tr_mantic_proveedores_agentes.id_principal=1
+					tr_mantic_proveedor_agente on tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_agente.id_proveedor and tr_mantic_proveedor_agente.id_principal=1
 				left join 
-					tc_mantic_personas agentes on tr_mantic_proveedores_agentes.id_agente= agentes.id_persona
+					tc_mantic_personas agentes on tr_mantic_proveedor_agente.id_agente= agentes.id_persona
 				inner join 
 					tc_mantic_almacenes on tc_mantic_ordenes_compras.id_almacen = tc_mantic_almacenes.id_almacen
 				left join 

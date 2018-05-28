@@ -1,9 +1,9 @@
 package mx.org.kaana.mantic.catalogos.clientes.bean;
 
 import mx.org.kaana.kajool.enums.ESql;
-import mx.org.kaana.mantic.db.dto.TrManticClientesRepresentantesDto;
+import mx.org.kaana.mantic.db.dto.TrManticClienteRepresentanteDto;
 
-public class ClienteRepresentante extends TrManticClientesRepresentantesDto{
+public class ClienteRepresentante extends TrManticClienteRepresentanteDto{
 	
 	private static final long serialVersionUID = 3147968352567619231L;
 	private ESql sqlAccion;

@@ -116,7 +116,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_proveedor=" + this.idProveedor);
-			regresar= DaoFactory.getInstance().toEntitySet(ProveedorContactoAgente.class, "TrManticProveedoresAgentesDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+			regresar= DaoFactory.getInstance().toEntitySet(ProveedorContactoAgente.class, "TrManticProveedorAgenteDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 			if(!regresar.isEmpty()){
 				for(ProveedorContactoAgente contacto: regresar){
 					contacto.setContactos(toPersonaContacto(contacto.getIdAgente()));

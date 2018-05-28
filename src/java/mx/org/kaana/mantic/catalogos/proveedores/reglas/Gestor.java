@@ -171,7 +171,7 @@ public class Gestor implements Serializable {
     Map<String, Object> params = new HashMap<>();
     try {
       params.put(Constantes.SQL_CONDICION, "id_proveedor=".concat(idProveedor.toString()));
-      regresar = DaoFactory.getInstance().toEntitySet(Agente.class, "TrManticProveedoresAgentesDto", "row", params);
+      regresar = DaoFactory.getInstance().toEntitySet(Agente.class, "TrManticProveedorAgenteDto", "row", params);
     } // try
     catch (Exception e) {
       throw e;

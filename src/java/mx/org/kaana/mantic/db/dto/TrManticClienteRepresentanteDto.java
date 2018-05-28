@@ -30,8 +30,8 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tr_mantic_clientes_representantes")
-public class TrManticClientesRepresentantesDto implements IBaseDto, Serializable {
+@Table(name="tr_mantic_cliente_representante")
+public class TrManticClienteRepresentanteDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="id_cliente")
@@ -51,16 +51,16 @@ public class TrManticClientesRepresentantesDto implements IBaseDto, Serializable
   @Column (name="registro")
   private Timestamp registro;
 
-  public TrManticClientesRepresentantesDto() {
+  public TrManticClienteRepresentanteDto() {
     this(new Long(-1L));
   }
 
-  public TrManticClientesRepresentantesDto(Long key) {
+  public TrManticClienteRepresentanteDto(Long key) {
     this(null, new Long(-1L), null, null, null, null);
     setKey(key);
   }
 
-  public TrManticClientesRepresentantesDto(Long idCliente, Long idClienteRepresentante, Long idUsuario, Long idRepresentante, Long idPrincipal, String observaciones) {
+  public TrManticClienteRepresentanteDto(Long idCliente, Long idClienteRepresentante, Long idUsuario, Long idRepresentante, Long idPrincipal, String observaciones) {
     setIdCliente(idCliente);
     setIdClienteRepresentante(idClienteRepresentante);
     setIdUsuario(idUsuario);
@@ -203,7 +203,7 @@ public class TrManticClientesRepresentantesDto implements IBaseDto, Serializable
 
   @Override
   public Class toHbmClass() {
-    return TrManticClientesRepresentantesDto.class;
+    return TrManticClienteRepresentanteDto.class;
   }
 
   @Override
@@ -219,7 +219,7 @@ public class TrManticClientesRepresentantesDto implements IBaseDto, Serializable
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TrManticClientesRepresentantesDto other = (TrManticClientesRepresentantesDto) obj;
+    final TrManticClienteRepresentanteDto other = (TrManticClienteRepresentanteDto) obj;
     if (getIdClienteRepresentante() != other.idClienteRepresentante && (getIdClienteRepresentante() == null || !getIdClienteRepresentante().equals(other.idClienteRepresentante))) {
       return false;
     }

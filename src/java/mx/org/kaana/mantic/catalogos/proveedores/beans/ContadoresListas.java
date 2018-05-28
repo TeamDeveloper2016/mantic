@@ -109,7 +109,7 @@ public class ContadoresListas {
 	} // toMaxArticuloCodigo
 	
 	private Long toMaxProveedorAgentes() throws Exception{		
-		return toMax("TrManticProveedoresAgentesDto");
+		return toMax("TrManticProveedorAgenteDto");
 	} // toMaxProveedorRepresentantes
 	
 	private Long toMaxProveedorTiposContactos() throws Exception{		

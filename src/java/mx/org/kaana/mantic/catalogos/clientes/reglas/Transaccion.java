@@ -22,7 +22,7 @@ import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
-import mx.org.kaana.mantic.db.dto.TrManticClientesRepresentantesDto;
+import mx.org.kaana.mantic.db.dto.TrManticClienteRepresentanteDto;
 import mx.org.kaana.mantic.db.dto.TrManticPersonaTipoContactoDto;
 import mx.org.kaana.mantic.enums.ETipoPersona;
 import org.hibernate.Session;
@@ -120,13 +120,13 @@ public class Transaccion extends IBaseTnx {
       params = new HashMap<>();
       params.put("idCliente", this.registroCliente.getIdCliente());
       if (DaoFactory.getInstance().deleteAll(sesion, TrManticClienteDomicilioDto.class, params) > -1L) {
-        if (DaoFactory.getInstance().deleteAll(sesion, TrManticClientesRepresentantesDto.class, params) > -1L) {
+        if (DaoFactory.getInstance().deleteAll(sesion, TrManticClienteRepresentanteDto.class, params) > -1L) {
           if (DaoFactory.getInstance().deleteAll(sesion, TrManticClienteTipoContactoDto.class, params) > -1L) {
             regresar = DaoFactory.getInstance().delete(sesion, TcManticClientesDto.class, this.registroCliente.getIdCliente()) >= 1L;
           }
         } // if
       } // if
-    } // try
+    } // try // try
     catch (Exception e) {
       throw e;
     } // catch		
@@ -181,7 +181,7 @@ public class Transaccion extends IBaseTnx {
   } // registraClientesDomicilios
 
   private boolean registraClientesRepresentantes(Session sesion, Long idCliente) throws Exception {
-    TrManticClientesRepresentantesDto dto = null;
+    TrManticClienteRepresentanteDto dto = null;
     ESql sqlAccion = null;
     int count = 0;
     int countPrincipal = 0;
@@ -198,7 +198,7 @@ public class Transaccion extends IBaseTnx {
         clienteRepresentante.setIdCliente(idCliente);
         clienteRepresentante.setIdUsuario(JsfBase.getIdUsuario());
         clienteRepresentante.setIdRepresentante(addRepresentante(sesion, clienteRepresentante));
-        dto = (TrManticClientesRepresentantesDto) clienteRepresentante;
+        dto = (TrManticClienteRepresentanteDto) clienteRepresentante;
         sqlAccion = clienteRepresentante.getSqlAccion();
         switch (sqlAccion) {
           case INSERT:
@@ -214,7 +214,7 @@ public class Transaccion extends IBaseTnx {
         }
       } // for		
       regresar = count == this.registroCliente.getPersonasTiposContacto().size();
-    } // try
+    } // try // try
     catch (Exception e) {
       throw e;
     } // catch		

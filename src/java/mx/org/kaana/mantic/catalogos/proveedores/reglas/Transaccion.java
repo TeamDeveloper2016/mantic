@@ -32,7 +32,7 @@ import mx.org.kaana.mantic.db.dto.TrManticProveedorDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticPersonaTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorPagoDto;
-import mx.org.kaana.mantic.db.dto.TrManticProveedoresAgentesDto;
+import mx.org.kaana.mantic.db.dto.TrManticProveedorAgenteDto;
 import mx.org.kaana.mantic.enums.ETipoPago;
 import mx.org.kaana.mantic.enums.ETipoPersona;
 import org.apache.commons.logging.Log;
@@ -159,14 +159,14 @@ public class Transaccion extends IBaseTnx {
       params = new HashMap<>();
       params.put("idProveedor", this.registroProveedor.getIdProveedor());
       if (DaoFactory.getInstance().deleteAll(sesion, TrManticProveedorDomicilioDto.class, params) > -1L) {
-        if (DaoFactory.getInstance().deleteAll(sesion, TrManticProveedoresAgentesDto.class, params) > -1L) {
+        if (DaoFactory.getInstance().deleteAll(sesion, TrManticProveedorAgenteDto.class, params) > -1L) {
           if (DaoFactory.getInstance().deleteAll(sesion, TrManticProveedorTipoContactoDto.class, params) > -1L) {
             if(DaoFactory.getInstance().deleteAll(sesion, TrManticProveedorPagoDto.class, params)> -1L)
 						  regresar = DaoFactory.getInstance().delete(sesion, TcManticProveedoresDto.class, this.registroProveedor.getIdProveedor()) >= 1L;
           }
         } // if
       } // if
-    } // try
+    } // try // try
     catch (Exception e) {
       throw e;
     } // catch		
@@ -221,7 +221,7 @@ public class Transaccion extends IBaseTnx {
   } // registraProveedoresDomicilios
 
   private boolean registraProveedoresAgentes(Session sesion, Long idProveedor) throws Exception {
-    TrManticProveedoresAgentesDto dto = null;
+    TrManticProveedorAgenteDto dto = null;
     ESql sqlAccion = null;
     int count = 0;
     int countPrincipal = 0;
@@ -238,7 +238,7 @@ public class Transaccion extends IBaseTnx {
         proveedorRepresentante.setIdProveedor(idProveedor);
         proveedorRepresentante.setIdUsuario(JsfBase.getIdUsuario());
         proveedorRepresentante.setIdAgente(addAgente(sesion, proveedorRepresentante));
-        dto = (TrManticProveedoresAgentesDto) proveedorRepresentante;
+        dto = (TrManticProveedorAgenteDto) proveedorRepresentante;
         sqlAccion = proveedorRepresentante.getSqlAccion();
         switch (sqlAccion) {
           case INSERT:
@@ -254,7 +254,7 @@ public class Transaccion extends IBaseTnx {
         }
       } // for		
       regresar = count == this.registroProveedor.getPersonasTiposContacto().size();
-    } // try
+    } // try // try
     catch (Exception e) {
       throw e;
     } // catch		

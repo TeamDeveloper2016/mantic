@@ -299,12 +299,12 @@
         delete from tr_mantic_articulo_tipo_venta where id_articulo={idArticulo} 
       </delete>
     </unit>
-    <unit id="TrManticClientesRepresentantesDto">
+    <unit id="TrManticClienteRepresentanteDto">
       <select id="row">
         select      
           *
         from      
-          tr_mantic_clientes_representantes
+          tr_mantic_cliente_representante
         where 
           {condicion} 
       </select>
@@ -312,7 +312,7 @@
         select      
           *
         from      
-          tr_mantic_clientes_representantes
+          tr_mantic_cliente_representante
         where      
           id_cliente = {idCliente} and id_cliente_representante = {idClienteRepresentante} and id_representante = {idRepresentante} and id_principal = {idPrincipal}
       </select>
@@ -320,10 +320,10 @@
         select      
           max(id_cliente_representante) maximo
         from      
-          tr_mantic_clientes_representantes
+          tr_mantic_cliente_representante
       </select>
 			<delete id="rows">
-        delete from tr_mantic_clientes_representantes where id_cliente={idCliente}
+        delete from tr_mantic_cliente_representante where id_cliente={idCliente}
       </delete>
     </unit>
     
@@ -587,13 +587,13 @@
       </delete>  
     </unit>
     
-    <unit id="TrManticProveedoresAgentesDto">
+    <unit id="TrManticProveedorAgenteDto">
       <select id="row">
         select      
-					tr_mantic_proveedores_agentes.id_proveedor_agente as id_key,
-          tr_mantic_proveedores_agentes.*
+					tr_mantic_proveedor_agente.id_proveedor_agente as id_key,
+          tr_mantic_proveedor_agente.*
         from      
-          tr_mantic_proveedores_agentes
+          tr_mantic_proveedor_agente
         where 
           {condicion} 
       </select>
@@ -601,7 +601,7 @@
         select      
           *
         from      
-          tr_mantic_proveedores_agentes
+          tr_mantic_proveedor_agente
         where      
           id_proveedor = {idProveedor} and id_proveedor_agente = {idProveedorAgente} and id_principal = {idPrincipal} and id_agente = {idAgente}
       </select>
@@ -609,10 +609,10 @@
         select      
           max(id_proveedor_agente) maximo
         from      
-          tr_mantic_proveedores_agentes
+          tr_mantic_proveedor_agente
       </select>	
       <delete id="rows">
-        delete from tr_mantic_proveedores_agentes where id_proveedor = {idProveedor}
+        delete from tr_mantic_proveedor_agente where id_proveedor = {idProveedor}
       </delete>  
     </unit>		
 		<unit id="TcManticArticulosDto">
