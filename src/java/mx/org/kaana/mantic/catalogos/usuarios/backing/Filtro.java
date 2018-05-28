@@ -69,7 +69,7 @@ public class Filtro extends mx.org.kaana.mantic.catalogos.personas.backing.Filtr
 			JsfBase.setFlashAttribute("accion", eaccion);		
 			JsfBase.setFlashAttribute("tipoPersona", this.attrs.get("idTipoPersona"));		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Usuarios/filtro");		
-			JsfBase.setFlashAttribute("idPersona", eaccion.equals(EAccion.MODIFICAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+			JsfBase.setFlashAttribute("idPersona", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

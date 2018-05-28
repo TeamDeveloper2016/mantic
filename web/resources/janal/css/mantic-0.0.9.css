@@ -490,3 +490,9 @@ div.ui-panelgrid-content {
 .janal-wid-100-txt {
 	width: -webkit-fill-available;
 }
+
+.ui-datalist .ui-paginator{
+	background-color: transparent !important; 
+	margin: 0px;
+	padding: 5px 0px;
+}

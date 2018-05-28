@@ -52,6 +52,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 					this.attrs.put("dto", new TcManticCategoriasDto());
 					break;
 				case MODIFICAR:
+				case CONSULTAR:
 					busqueda= new MotorBusqueda(Long.valueOf(this.attrs.get("idCategoria").toString()));
 					this.attrs.put("dto", busqueda.toCategoria());					
 					idCategoriaParent= busqueda.toParent();

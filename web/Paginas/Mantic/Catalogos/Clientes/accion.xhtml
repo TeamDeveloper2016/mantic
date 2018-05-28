@@ -11,25 +11,27 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'contenedorGrupos\\:clave': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:rfc': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:razonSocial': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:clave': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:rfc': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:limiteCredito': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:plazo': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:observaciones': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:tipoVenta': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:entidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:municipio': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:localidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:cp': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:calle': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:exterior': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:interior': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:asentamiento': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:entreCalle': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:ycalle': {validaciones: 'libre|cambiar-mayusculas', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:nombreRepresentante': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre', mensaje:'La captura del campo nombres es obligatorio', grupo: 'representantes'},
-        'calleBusqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'}
+        'contenedorGrupos\\:cp': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:calle': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:exterior': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:interior': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:asentamiento': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:entreCalle': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:ycalle': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:nombreRepresentante': {validaciones: 'requerido', mascara: 'libre', mensaje:'La captura del campo nombres es obligatorio', grupo: 'representantes', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:paternoRepresentante': {validaciones: 'requerido', mascara: 'libre', mensaje:'La captura del campo apellido paterno es obligatorio', grupo: 'representantes', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:maternoRepresentante': {validaciones: 'requerido', mascara: 'libre', mensaje:'La captura del campo apellido materno es obligatorio', grupo: 'representantes', formatos: 'cambiar-mayusculas', individual: true},
+        'calleBusqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
       };		
 			
 			$(document).ready(function(){janal.readingMode('#{manticCatalogosClientesAccion.attrs.nombreAccion}');});
@@ -44,11 +46,11 @@
             <p:tab title="General">
               <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								
                 <p:outputLabel for="clave" value="Clave:"/>
-                <p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.clave}" onblur="janal.mayusculas('contenedorGrupos\\:clave')"/>                    
+                <p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.clave}"/>                    
                 <p:outputLabel for="rfc" value="RFC:"/>
-                <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.rfc}" onblur="janal.mayusculas('contenedorGrupos\\:rfc')"/>                    
+                <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.rfc}" />                    
                 <p:outputLabel for="razonSocial" value="Razon social:"/>
-                <p:inputText id="razonSocial" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.razonSocial}" onblur="janal.mayusculas('contenedorGrupos\\:razonSocial')"/>                    
+                <p:inputText id="razonSocial" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.razonSocial}"/>                    
                 <p:outputLabel for="limiteCredito" value="Limite de credito:"/>
                 <p:inputNumber id="limiteCredito" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosClientesAccion.registroCliente.cliente.limiteCredito}"/>                    																	
                 <p:outputLabel for="plazo" value="Plazo de días:"/>
@@ -145,19 +147,19 @@
                     <f:selectItems value="#{manticCatalogosClientesAccion.attrs.codigosPostales}"/>
                   </p:selectOneMenu>	
                   <p:spacer id="spacerCp" rendered="#{!manticCatalogosClientesAccion.registroCliente.domicilio.nuevoCp}"/>
-                  <p:inputText placeholder="Captura el nuevo código postal. Ej. 20284" id="cp" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.codigoPostal}" onblur="janal.mayusculas('contenedorGrupos\\:cp')" rendered="#{!manticCatalogosClientesAccion.registroCliente.domicilio.nuevoCp}"/>                  																								
+                  <p:inputText placeholder="Captura el nuevo código postal. Ej. 20284" id="cp" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.codigoPostal}" rendered="#{!manticCatalogosClientesAccion.registroCliente.domicilio.nuevoCp}"/>
                   <p:outputLabel for="calle" value="Calle:"/>
-                  <p:inputText id="calle" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.calle}" onblur="janal.mayusculas('contenedorGrupos\\:calle')"/>
+                  <p:inputText id="calle" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.calle}" />
                   <p:outputLabel for="exterior" value="Número exterior:"/>
-                  <p:inputText id="exterior" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.numeroExterior}" onblur="janal.mayusculas('contenedorGrupos\\:exterior')" />                    																																		
+                  <p:inputText id="exterior" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.numeroExterior}" />
                   <p:outputLabel for="interior" value="Número interior:"/>
-                  <p:inputText id="interior" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.numeroInterior}" onblur="janal.mayusculas('contenedorGrupos\\:interior')"/>	
+                  <p:inputText id="interior" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.numeroInterior}"/>	
                   <p:outputLabel for="asentamiento" value="Colonia:"/>
-                  <p:inputText id="asentamiento" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.asentamiento}" onblur="janal.mayusculas('contenedorGrupos\\:asentamiento')"/>	
+                  <p:inputText id="asentamiento" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.asentamiento}"/>	
                   <p:outputLabel for="entreCalle" value="Entre calle:"/>
-                  <p:inputText id="entreCalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.entreCalle}" onblur="janal.mayusculas('contenedorGrupos\\:entreCalle')"/>	
+                  <p:inputText id="entreCalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.entreCalle}"/>	
                   <p:outputLabel for="ycalle" value="Y calle:"/>
-                  <p:inputText id="ycalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.ycalle}" onblur="janal.mayusculas('contenedorGrupos\\:ycalle')"/>	
+                  <p:inputText id="ycalle" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.ycalle}"/>	
                   <p:outputLabel for="tipoDomicilio" value="Tipo domicilio:"/>
                   <p:selectOneMenu id="tipoDomicilio" value="#{manticCatalogosClientesAccion.registroCliente.domicilio.idTipoDomicilio}" styleClass="janal-wid-100-txt">									
                     <f:selectItems value="#{manticCatalogosClientesAccion.attrs.tiposDomicilios}"/>
@@ -212,9 +214,9 @@
                 </p:dataList>
 								<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">
 								<p:panelGrid id="formularioNombreRepresentantes" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-40, janal-wid-30, janal-wid-30">
-									<p:inputText id="nombreRepresentante" value="#{manticCatalogosClientesAccion.registroCliente.personaTipoContactoPivote.nombres}" styleClass="janal-wid-100-txt" placeholder="Nombres" onblur="janal.mayusculas('contenedorGrupos\\:nombreRepresentante')"/>
-									<p:inputText id="paternoRepresentante" value="#{manticCatalogosClientesAccion.registroCliente.personaTipoContactoPivote.paterno}" styleClass="janal-wid-100-txt" placeholder="Ap. Paterno" onblur="janal.mayusculas('contenedorGrupos\\:paternoRepresentante')"/>
-									<p:inputText id="maternoRepresentante" value="#{manticCatalogosClientesAccion.registroCliente.personaTipoContactoPivote.materno}" styleClass="janal-wid-100-txt" placeholder="Ap. Materno" onblur="janal.mayusculas('contenedorGrupos\\:maternoRepresentante')"/>
+									<p:inputText id="nombreRepresentante" value="#{manticCatalogosClientesAccion.registroCliente.personaTipoContactoPivote.nombres}" styleClass="janal-wid-100-txt" placeholder="Nombres" />
+									<p:inputText id="paternoRepresentante" value="#{manticCatalogosClientesAccion.registroCliente.personaTipoContactoPivote.paterno}" styleClass="janal-wid-100-txt" placeholder="Ap. Paterno" />
+									<p:inputText id="maternoRepresentante" value="#{manticCatalogosClientesAccion.registroCliente.personaTipoContactoPivote.materno}" styleClass="janal-wid-100-txt" placeholder="Ap. Materno" />
 								</p:panelGrid>
 								<p:panelGrid id="formularioTablaRepresentantes" columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
 									<p:dataTable id="tablaContacto" rowIndexVar="index" var="contactoRepresentante" value="#{manticCatalogosClientesAccion.registroCliente.personaTipoContactoPivote.contactos}" rows="6" paginator="false" reflow="true" rowKey="#{contactoRepresentante.key}" emptyMessage=" " styleClass="paginated">
@@ -224,7 +226,7 @@
 											</p:selectOneMenu> 				
 										</p:column>	
 										<p:column headerText="Valor" styleClass="janal-wid-50">		
-											<p:inputText id="valor#{contactoRepresentante.key}" styleClass="janal-wid-100-txt" value="#{contactoRepresentante.valor}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaContactos', #{index}, 'valor')" disabled="#{!contactoRepresentante.nuevo}"/>                    																																			
+											<p:inputText id="valor#{contactoRepresentante.key}" styleClass="janal-wid-100-txt" value="#{contactoRepresentante.valor}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaContacto', #{index}, 'valor')" disabled="#{!contactoRepresentante.nuevo}"/>                    																																			
 										</p:column>
 										<p:column style="width:32px;text-align: center">
 											<p:commandButton update="tablaContacto" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosClientesAccion.registroCliente.doEliminarRepresentanteContacto}" styleClass="janal-text-white">
@@ -241,7 +243,7 @@
             </p:tab>          
             <p:tab title="Observaciones">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
-                <p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.observaciones}" onblur="janal.mayusculas('contenedorGrupos\\:observaciones')"/>  
+                <p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.observaciones}"/>  
               </p:panelGrid>
             </p:tab>
           </p:tabView>
@@ -251,7 +253,7 @@
 		<p:dialog id="dialogoDomicilios" widgetVar="dlgDomicilios" header="Busqueda de domicilio:" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.refresh();">
 			<h:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-80, janal-wid-20">
 				<p:outputLabel for="calleBusqueda" value="Calle:"/>
-				<p:inputText id="calleBusqueda" value="#{manticCatalogosClientesAccion.attrs.calle}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('calleBusqueda')"/>
+				<p:inputText id="calleBusqueda" value="#{manticCatalogosClientesAccion.attrs.calle}" styleClass="janal-wid-100-txt"/>
 				<p:commandButton icon="fa fa-search" actionListener="#{manticCatalogosClientesAccion.doBusquedaDomicilios}" process="@this calleBusqueda" update="domiciliosBusqueda totalResultados" styleClass="janal-text-white" onstart="return janal.partial('dialogo')"/>
 				<p:outputLabel for="domiciliosBusqueda" value="Domicilio:"/>
 				<p:selectOneMenu id="domiciliosBusqueda" value="#{manticCatalogosClientesAccion.domicilioBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									

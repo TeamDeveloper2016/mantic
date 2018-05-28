@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.RandomCuenta;
@@ -13,9 +14,11 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.BouncyEncryption;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.clientes.bean.ClienteDomicilio;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaDomicilio;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.catalogos.personas.beans.RegistroPersona;
+import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import mx.org.kaana.mantic.db.dto.TrManticClientesRepresentantesDto;
 import mx.org.kaana.mantic.db.dto.TrManticEmpresaPersonalDto;
@@ -204,6 +207,7 @@ public class Transaccion  extends IBaseTnx{
 					personaDomicilio.setIdPrincipal(1L);
         personaDomicilio.setIdPersona(idPersona);
         personaDomicilio.setIdUsuario(JsfBase.getIdUsuario());
+				personaDomicilio.setIdDomicilio(toIdDomicilio(sesion, personaDomicilio));		
         dto = (TrManticPersonaDomicilioDto) personaDomicilio;
         sqlAccion = personaDomicilio.getSqlAccion();
         switch (sqlAccion) {
@@ -381,4 +385,66 @@ public class Transaccion  extends IBaseTnx{
 		} // finally	
 		return regresar;
 	} // actualizaCliente
+	
+	private Long toIdDomicilio(Session sesion, PersonaDomicilio personaDomicilio) throws Exception{		
+		Entity entityDomicilio= null;
+		Long regresar= -1L;
+		try {
+			entityDomicilio= toDomicilio(sesion, personaDomicilio);
+			if(entityDomicilio!= null)
+				regresar= entityDomicilio.getKey();
+			else
+				regresar= insertDomicilio(sesion, personaDomicilio);					
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // registrarDomicilio	
+	
+	private Long insertDomicilio(Session sesion, PersonaDomicilio personaDomicilio) throws Exception{
+		TcManticDomiciliosDto domicilio= null;
+		Long regresar= -1L;
+		try {
+			domicilio= new TcManticDomiciliosDto();
+			domicilio.setIdLocalidad(personaDomicilio.getIdLocalidad().getKey());
+			domicilio.setAsentamiento(personaDomicilio.getColonia());
+			domicilio.setCalle(personaDomicilio.getCalle());
+			domicilio.setCodigoPostal(personaDomicilio.getCodigoPostal());
+			domicilio.setEntreCalle(personaDomicilio.getEntreCalle());
+			domicilio.setIdUsuario(JsfBase.getIdUsuario());
+			domicilio.setNumeroExterior(personaDomicilio.getExterior());
+			domicilio.setNumeroInterior(personaDomicilio.getInterior());
+			domicilio.setYcalle(personaDomicilio.getyCalle());
+			regresar= DaoFactory.getInstance().insert(sesion, domicilio);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
+		return regresar;
+	} // insertDomicilio
+	
+	private Entity toDomicilio(Session sesion, PersonaDomicilio personaDomicilio) throws Exception{
+		Entity regresar= null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idLocalidad", personaDomicilio.getIdLocalidad().getKey());
+			params.put("codigoPostal", personaDomicilio.getCodigoPostal());
+			params.put("calle", personaDomicilio.getCalle());
+			params.put("numeroExterior", personaDomicilio.getExterior());
+			params.put("numeroInterior", personaDomicilio.getInterior());
+			params.put("asentamiento", personaDomicilio.getColonia());
+			params.put("entreCalle", personaDomicilio.getEntreCalle());
+			params.put("yCalle", personaDomicilio.getyCalle());
+			regresar= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticDomiciliosDto", "domicilioExiste", params);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toDomicilio
 }

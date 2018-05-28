@@ -9,7 +9,7 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'nombre' : {validaciones: 'libre', mascara: 'libre'},
+        'nombre' : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
         'cliente': {validaciones: 'libre', mascara: 'libre'} 
       };
     </script>		
@@ -26,7 +26,7 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <h:panelGrid styleClass="janal-wid-100">
               <p:outputLabel for="nombre" value="Nombre:"/>
-              <p:inputText id="nombre" value="#{manticCatalogosGruposFiltro.attrs.nombre}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('nombre')"/> 
+              <p:inputText id="nombre" value="#{manticCatalogosGruposFiltro.attrs.nombre}" styleClass="janal-wid-100-txt"/> 
 							<p:outputLabel for="cliente" value="Cliente:"/>
 							<p:selectOneMenu id="cliente" styleClass="janal-wid-100-txt" var="item" value="#{manticCatalogosGruposFiltro.attrs.idCliente}" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="startsWith">
                 <f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
@@ -85,7 +85,9 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="modificar" action="#{manticCatalogosGruposFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="consultar" action="#{manticCatalogosGruposFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:separator/>
+						<p:menuitem id="modificar" action="#{manticCatalogosGruposFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
           </p:contextMenu>
         </div>

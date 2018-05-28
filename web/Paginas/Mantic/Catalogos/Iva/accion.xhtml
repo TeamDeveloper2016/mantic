@@ -12,8 +12,10 @@
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:importe'      : {validaciones: 'requerido|flotante', mascara: 'flotante'},
-				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre'}				
+				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}				
 			};						
+			
+			$(document).ready(function(){janal.readingMode('#{manticCatalogosIvaAccion.attrs.nombreAccion}');});
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
@@ -32,7 +34,7 @@
               </p:panelGrid>
 						</p:tab>						            						            																																																
 						<p:tab title="Observaciones">
-							<p:editor id="observaciones" styleClass="janal-wid-100-txt" height="200" value="#{manticCatalogosIvaAccion.iva.observaciones}"/>  
+							<p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{manticCatalogosIvaAccion.iva.observaciones}"/>  
 						</p:tab>
 					</p:tabView>
 				</div>

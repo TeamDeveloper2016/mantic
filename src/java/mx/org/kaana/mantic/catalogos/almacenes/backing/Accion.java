@@ -110,10 +110,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 						this.registroAlmacen.setAlmacenDomicilioSelecion(this.registroAlmacen.getAlmacenDomicilio().get(0));
 						doConsultarAlmacenDomicilio();
 					} // if
-					if(!this.registroAlmacen.getAlmacenArticulo().isEmpty()){
+					/*if(!this.registroAlmacen.getAlmacenArticulo().isEmpty()){
 						this.registroAlmacen.setAlmacenArticuloSeleccion(this.registroAlmacen.getAlmacenArticulo().get(0));
 						doConsultarAlmacenArticulo();
-					} // if
+					} // if*/
           break;
       } // switch      
     } // try
@@ -692,15 +692,19 @@ public class Accion extends IBaseAttribute implements Serializable {
 		Map<String, Object>params     = null;
 		List<Columna>campos           = null;
 		try {
-			if(this.attrs.get("codigo")!= null && !Cadena.isVacio(this.attrs.get("codigo").toString())){
+			if(this.attrs.get("codigo")!= null && !Cadena.isVacio(this.attrs.get("codigo").toString()) && this.attrs.get("codigo").toString().length() > 3){
 				params= new HashMap<>();
 				params.put("codigo", this.attrs.get("codigo"));
 				params.put("sucursales", JsfBase.getAutentifica().getIdsSucursales());
 				campos= new ArrayList<>();
 				campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-				articulos= UIEntity.build("VistaArticulosAlmacenDto", "articulos", params, campos, Constantes.SQL_TODOS_REGISTROS);
+				articulos= UIEntity.build("VistaArticulosAlmacenDto", "findArticulo", params, campos, Constantes.SQL_TODOS_REGISTROS);
 				this.attrs.put("articulos", articulos);
+				this.registroAlmacen.setResultadoBusquedaArticulo(articulos.get(0));
+				this.registroAlmacen.doSeleccionarArticulo();
 			} // if
+			else
+				JsfBase.addMessage("Cosultar articulos", "Captura un criterio de busqueda mayor a 3 caracteres", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

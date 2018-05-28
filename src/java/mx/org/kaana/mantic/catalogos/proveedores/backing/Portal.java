@@ -65,7 +65,7 @@ public class Portal extends IBaseFilter implements Serializable {
 			} // if
 			else{
 				this.attrs.put("proveedores", new ArrayList<>());
-				this.attrs.put("proveedor", -1L);
+				this.attrs.put("proveedor", new UISelectEntity("-1"));
 				this.attrs.put("pagina", "");
 				this.attrs.put("cuenta", "");
 				this.attrs.put("contrasenia", "");
@@ -140,5 +140,5 @@ public class Portal extends IBaseFilter implements Serializable {
 			Methods.clean(params);
 			Methods.clean(campos);
 		} // finally		
-	}
+	} // loadBanca
 }

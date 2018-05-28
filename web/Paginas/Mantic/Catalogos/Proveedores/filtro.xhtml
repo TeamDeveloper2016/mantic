@@ -11,9 +11,9 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'razonSocial': {validaciones: 'cambiar-mayusculas', mascara: 'libre'},
-        'clave': {validaciones: 'cambiar-mayusculas', mascara: 'libre'},
-        'rfc': {validaciones: 'cambiar-mayusculas', mascara: 'rfc'}       
+        'razonSocial': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
+        'clave': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
+        'rfc': {validaciones: 'libre', mascara: 'rfc', formatos: 'cambiar-mayusculas', individual: true}       
       };
     </script>		
   </ui:define>
@@ -29,11 +29,11 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <h:panelGrid styleClass="janal-wid-100">
               <p:outputLabel for="clave" value="Clave:"/>
-              <p:inputText id="clave" value="#{manticCatalogosProveedoresFiltro.attrs.clave}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('clave')"/> 
+              <p:inputText id="clave" value="#{manticCatalogosProveedoresFiltro.attrs.clave}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="rfc" value="RFC:"/>
-              <p:inputText id="rfc" value="#{manticCatalogosProveedoresFiltro.attrs.rfc}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('rfc')"/>              			                            
+              <p:inputText id="rfc" value="#{manticCatalogosProveedoresFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                            
               <p:outputLabel for="razonSocial" value="Razón social:"/>
-              <p:inputText id="razonSocial" value="#{manticCatalogosProveedoresFiltro.attrs.razonSocial}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('razonSocial')"/>              														
+              <p:inputText id="razonSocial" value="#{manticCatalogosProveedoresFiltro.attrs.razonSocial}" styleClass="janal-wid-100-txt"/>
               <p:outputLabel for="tipoProveedor"  value="Tipo proveedor:"/>
               <p:selectOneMenu  id="tipoProveedor" value="#{manticCatalogosProveedoresFiltro.attrs.tipoProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-90">
                 <f:selectItems value="#{manticCatalogosProveedoresFiltro.attrs.tiposProveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>

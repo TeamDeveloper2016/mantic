@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.mantic.catalogos.clientes.bean.Domicilio;
@@ -145,7 +145,7 @@ public class RegistroPersona implements Serializable{
 	private void initCollections(MotorBusqueda motor) throws Exception{
 		int count= 0;
 		try {
-			this.personasDomicilio= motor.toPersonasDomicilio();
+			this.personasDomicilio= motor.toPersonasDomicilio(true);
 			for(PersonaDomicilio personaDomicilio: this.personasDomicilio){
 				count++;
 				personaDomicilio.setConsecutivo(Long.valueOf(count));
@@ -198,13 +198,20 @@ public class RegistroPersona implements Serializable{
 			this.domicilioPivote= new Domicilio();
 			this.domicilioPivote.setIdTipoDomicilio(pivote.getIdTipoDomicilio());
 			this.domicilioPivote.setPrincipal(pivote.getIdPrincipal().equals(1L));	
-			this.domicilioPivote.setIdDomicilio(pivote.getIdDomicilio());
-			this.domicilioPivote.setDomicilio(new Entity(pivote.getIdDomicilio()));
+			this.domicilioPivote.setIdDomicilio(pivote.getDomicilio().getKey());
+			this.domicilioPivote.setDomicilio(pivote.getDomicilio());
 			this.domicilioPivote.setIdEntidad(pivote.getIdEntidad());
 			this.domicilioPivote.setIdMunicipio(pivote.getIdMunicipio());
 			this.domicilioPivote.setLocalidad(pivote.getIdLocalidad());
 			this.domicilioPivote.setIdLocalidad(pivote.getIdLocalidad().getKey());
 			this.domicilioPivote.setCodigoPostal(pivote.getCodigoPostal());
+			this.domicilioPivote.setCalle(pivote.getCalle());
+			this.domicilioPivote.setNumeroExterior(pivote.getExterior());
+			this.domicilioPivote.setNumeroInterior(pivote.getInterior());
+			this.domicilioPivote.setAsentamiento(pivote.getColonia());
+			this.domicilioPivote.setEntreCalle(pivote.getEntreCalle());
+			this.domicilioPivote.setYcalle(pivote.getyCalle());
+			this.domicilioPivote.setNuevoCp(pivote.getCodigoPostal()!= null && !Cadena.isVacio(pivote.getCodigoPostal()));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -231,19 +238,24 @@ public class RegistroPersona implements Serializable{
 				for(PersonaDomicilio record: this.personasDomicilio)
 					record.setIdPrincipal(0L);
 			} // if
-			personaDomicilio.setIdPrincipal(this.domicilio.getPrincipal() ? 1L : 2L);
-			if(this.domicilio.getIdDomicilio().equals(-1L))
-				personaDomicilio.setIdDomicilio(registrarDomicilio());
-			else
-				personaDomicilio.setIdDomicilio(this.domicilio.getIdDomicilio());
+			personaDomicilio.setIdPrincipal(this.domicilio.getPrincipal() ? 1L : 2L);			
+			personaDomicilio.setDomicilio(this.domicilio.getDomicilio());
+			personaDomicilio.setIdDomicilio(this.domicilio.getDomicilio().getKey());
 			personaDomicilio.setIdUsuario(JsfBase.getIdUsuario());
 			personaDomicilio.setIdTipoDomicilio(this.domicilio.getIdTipoDomicilio());
 			if(!actualizar)
 				personaDomicilio.setConsecutivo(this.personasDomicilio.size() + 1L);
 			personaDomicilio.setIdEntidad(this.domicilio.getIdEntidad());
-			personaDomicilio.setIdMunicipio(this.domicilio.getIdMunicipio());			
+			personaDomicilio.setIdMunicipio(this.domicilio.getIdMunicipio());
 			personaDomicilio.setIdLocalidad(this.domicilio.getLocalidad());
 			personaDomicilio.setCodigoPostal(this.domicilio.getCodigoPostal());
+			personaDomicilio.setCalle(this.domicilio.getCalle());
+			personaDomicilio.setExterior(this.domicilio.getNumeroExterior());
+			personaDomicilio.setInterior(this.domicilio.getNumeroInterior());
+			personaDomicilio.setEntreCalle(this.domicilio.getEntreCalle());
+			personaDomicilio.setyCalle(this.domicilio.getYcalle());
+			personaDomicilio.setColonia(this.domicilio.getAsentamiento());
+			personaDomicilio.setNuevoCp(this.domicilio.getCodigoPostal()!= null && !Cadena.isVacio(this.domicilio.getCodigoPostal()));
 		} // try
 		catch (Exception e) {			
 			throw e;

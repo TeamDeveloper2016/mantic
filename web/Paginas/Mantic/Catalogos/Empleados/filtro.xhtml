@@ -11,8 +11,8 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'nombres': {validaciones: 'cambiar-mayusculas', mascara: 'libre'}       
-        'rfc': {validaciones: 'cambiar-mayusculas', mascara: 'rfc'},
+        'nombres': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}       
+        'rfc': {validaciones: 'libre', mascara: 'rfc', formatos: 'cambiar-mayusculas', individual: true},
         'idTipoSexo': {validaciones: 'libre', mascara: 'libre'}
       };
     </script>		
@@ -29,9 +29,9 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <h:panelGrid styleClass="janal-wid-100">
               <p:outputLabel for="nombres" value="Nombre(s), paterno, materno:"/>
-              <p:inputText id="nombres" value="#{manticCatalogosEmpleadosFiltro.attrs.nombres}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('nombres')"/> 
+              <p:inputText id="nombres" value="#{manticCatalogosEmpleadosFiltro.attrs.nombres}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="rfc" value="RFC:"/>
-              <p:inputText id="rfc" value="#{manticCatalogosEmpleadosFiltro.attrs.rfc}" styleClass="janal-wid-100-txt" onblur="janal.mayusculas('rfc')"/>              			                            
+              <p:inputText id="rfc" value="#{manticCatalogosEmpleadosFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                            
               <p:outputLabel for="idTipoSexo"  value="Sexo:"/>
               <p:selectOneMenu  id="idTipoSexo"  value="#{manticCatalogosEmpleadosFiltro.attrs.idTipoSexo}"  styleClass="janal-wid-90">
                 <f:selectItem itemLabel="TODOS" itemValue="1,2,3"/>
@@ -96,7 +96,9 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="modificar" action="#{manticCatalogosEmpleadosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="consultar" action="#{manticCatalogosEmpleadosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+						<p:separator/>
+						<p:menuitem id="modificar" action="#{manticCatalogosEmpleadosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
           </p:contextMenu>
         </div>

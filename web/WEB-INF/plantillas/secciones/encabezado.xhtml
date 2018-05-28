@@ -82,7 +82,7 @@
       <h:outputText value="#{kajoolUtilAplicacion.notificacion}" escape="false" styleClass="Fs14"/>
     </p:panelGrid>
   </p:notificationBar>
-	<p:idleMonitor timeout="2400000" onidle="janal.bloquear(); PF('dialogoInactivo').show(); $('#dialogo_modal').removeClass('ui-widget-overlay');  console.log('Clase ui-widget-overlay eliminada');"/>		
+	<p:idleMonitor timeout="1800000" onidle="janal.bloquear(); PF('dialogoInactivo').show(); $('#dialogo_modal').removeClass('ui-widget-overlay');  console.log('Clase ui-widget-overlay eliminada');"/>		
 	<p:dialog id="dialogo" header="Inactividad" resizable="false" widgetVar="dialogoInactivo" onShow="janal.monitor(1);" closable="false">														
 		<div class="alinear-derecha">														
 			<h:outputText id="segundos"/>
@@ -97,5 +97,5 @@
 			<p:commandButton value="Aceptar" onstart="janal.monitor(0);" oncomplete="PF('dialogoInactivo').hide(); janal.desbloquear();"/>							
 		</div>				
 	</p:dialog>
-	<a id="salir" href="/MANTIC/Exclusiones/salir.jsf"/>
+	<p:commandButton id="salir" action="/Exclusiones/salir.jsf?faces-redirect=true" style="display: none"/>
 </html>

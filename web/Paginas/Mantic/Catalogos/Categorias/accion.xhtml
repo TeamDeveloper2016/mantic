@@ -11,10 +11,12 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {
-				nombre: {validaciones: 'requerido', mascara: 'libre'},
-				padre: {validaciones: 'libre', mascara: 'libre'},
-				descripcion: {validaciones: 'requerido', mascara: 'libre'}
+				nombre: {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
+				nodo: {validaciones: 'libre', mascara: 'libre'},
+				descripcion: {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
 			};
+			
+			$(document).ready(function(){janal.readingMode('#{manticCatalogosCategoriasAccion.attrs.nombreAccion}');});
 		</script>        
 	</ui:define>
 	<ui:define name="contenido">
@@ -30,7 +32,7 @@
 							<f:selectItems value="#{manticCatalogosCategoriasAccion.attrs.nodos}"/>					
 						</p:selectOneMenu>              			
 						<p:outputLabel for="descripcion" value="Descripcion:"/>
-						<p:textEditor id="descripcion" value="#{manticCatalogosCategoriasAccion.attrs.dto.descripcion}" styleClass="janal-wid-100-txt" height="250"/>
+						<p:inputTextarea id="descripcion" value="#{manticCatalogosCategoriasAccion.attrs.dto.descripcion}" styleClass="janal-wid-100-txt"/>
 					</p:panelGrid>
 					<div class="EmptyBox30"></div>
 				</div>

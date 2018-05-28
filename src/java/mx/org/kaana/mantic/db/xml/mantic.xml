@@ -425,9 +425,10 @@
     </unit>
     
      <unit id="TrManticPersonaDomicilioDto">
-      <select id="row">
+      <select id="row">				
         select      
-          *
+					tr_mantic_persona_domicilio.id_persona_domicilio as id_key,
+					tr_mantic_persona_domicilio.*
         from      
           tr_mantic_persona_domicilio
         where 
@@ -589,7 +590,8 @@
     <unit id="TrManticProveedoresAgentesDto">
       <select id="row">
         select      
-          *
+					tr_mantic_proveedores_agentes.id_proveedor_agente as id_key,
+          tr_mantic_proveedores_agentes.*
         from      
           tr_mantic_proveedores_agentes
         where 
@@ -1957,7 +1959,7 @@
     <unit id="TcManticNotasEstatusDto">
       <select id="row">
         select      
-				  tc_mantic_notas_estatus.id_orden_estatus as id_key,
+				  tc_mantic_notas_estatus.id_nota_estatus as id_key,
           tc_mantic_notas_estatus.*
         from      
           tc_mantic_notas_estatus
