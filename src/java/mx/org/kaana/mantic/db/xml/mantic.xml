@@ -2162,7 +2162,7 @@
         from      
           tc_mantic_ordenes_bitacora
         where      
-          id_orden_compra = {idOrdenCompra} and id_orden_bitacora = {idOrdenBitacora} and id_compras_estatus = {idComprasEstatus}
+          id_orden_compra = {idOrdenCompra} and id_orden_bitacora = {idOrdenBitacora} and id_orden_estatus = {idComprasEstatus}
       </select>
     </unit>
 		<unit id="TcManticBancosDto">
