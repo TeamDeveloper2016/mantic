@@ -7,7 +7,6 @@ import java.util.Map;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import static mx.org.kaana.kajool.enums.EAccion.AGREGAR;
 import static mx.org.kaana.kajool.enums.EAccion.ELIMINAR;
@@ -46,7 +45,12 @@ public class Transaccion extends IBaseTnx {
 	private List<Articulo> articulos;
 	private boolean aplicar;
 	private String messageError;
+	private TcManticNotasBitacoraDto bitacora;
 
+	public Transaccion(TcManticNotasBitacoraDto bitacora) {
+		this.bitacora= bitacora;
+	}
+	
 	public Transaccion(TcManticNotasEntradasDto orden) {
 		this(orden, new ArrayList<Articulo>(), false);
 	}
@@ -63,12 +67,15 @@ public class Transaccion extends IBaseTnx {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar= false;
-		TcManticNotasBitacoraDto bitacora= null;
-		Map<String, Object> params= new HashMap<>();
+		boolean regresar                     = false;
+		TcManticNotasBitacoraDto bitacoraNota= null;
+		Map<String, Object> params           = null;
 		try {
-			params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
-			params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
+			if(this.orden!= null){
+				params= new HashMap<>();
+				params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
+				params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
+			} // if
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la nota de entrada");
 			switch(accion) {
 				case AGREGAR:
@@ -81,24 +88,31 @@ public class Transaccion extends IBaseTnx {
   				if(this.aplicar)
 						this.orden.setIdNotaEstatus(6L);
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
-					bitacora= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus());
-					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
+					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus());
+					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 					this.toFillArticulos(sesion);
 					break;
 				case MODIFICAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
   				if(this.aplicar) {
 						this.orden.setIdNotaEstatus(6L);
-  					bitacora= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus());
-	  				regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
+  					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus());
+	  				regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 					} // if	
 					this.toFillArticulos(sesion);
 					break;				
 				case ELIMINAR:
 					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params)>= 1L;
 					regresar= regresar && DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
- 					bitacora= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L);
-  				regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
+ 					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L);
+  				regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
+					break;
+				case JUSTIFICAR:
+					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L){
+						this.orden= (TcManticNotasEntradasDto) DaoFactory.getInstance().findById(sesion, TcManticNotasEntradasDto.class, this.bitacora.getIdNotaEntrada());
+						this.orden.setIdNotaEstatus(this.bitacora.getIdNotaEstatus());
+						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
+					} // if
 					break;
 			} // switch
 			if(!regresar)
