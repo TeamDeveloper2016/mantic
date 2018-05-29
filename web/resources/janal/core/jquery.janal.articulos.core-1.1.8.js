@@ -6,6 +6,7 @@
  *author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
+
 (function(window) {
 	var jsArticulos;
 	
@@ -30,7 +31,7 @@
 		dialog      : 'dialogo',
 		typingTimer : null,
 		doneInterval: 10000,
-		continue    : false,
+		continue    : true,
 		leavePage   : true,
 		VK_ENTER    : 13, 
 		VK_ESC      : 27,
@@ -73,7 +74,7 @@
 				$articulos.index($(this).attr('id'));
 			});  
       $(document).on('focus', this.selector, function() {
-				$articulos.index($(this).attr('id'));
+			  $articulos.index($(this).attr('id'));
 			});  
       $(document).on('keydown', this.porcentajes, function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
@@ -124,10 +125,12 @@
 						return $articulos.find();
 						break;
 					case $articulos.VK_UP:
-						return $articulos.up(true);
+						if($('div[id$='+ $articulos.panels+ ']:visible').length<= 0)
+  						return $articulos.up(true);
 						break;
 					case $articulos.VK_DOWN:
-						return $articulos.down(true);
+						if($('div[id$='+ $articulos.panels+ ']:visible').length<= 0)
+   						return $articulos.down(true);
 						break;
 					case $articulos.VK_ASTERISK:
 						return $articulos.asterisk();
@@ -149,7 +152,8 @@
 						break;
 					case $articulos.VK_MINUS:
 						$articulos.leavePage= true;
-						$('#aceptar').click();
+						if(confirm('¿Esta seguro que desea terminar con la orden de compra?'))
+						  $('#aceptar').click();
 						return false;
 						break;
 					case $articulos.VK_MAYOR:
@@ -159,7 +163,7 @@
 						break;
 				} // switch
       });
-			setTimeout('$articulos.goto()', 1000);
+			setTimeout('$articulos.move()', 1000);
 		},
 		xup: function() {
 			this.up(false);
@@ -176,10 +180,12 @@
 			return false;
 		},
 		index: function(id) {
+			janal.console('Index: '+ id+ " => "+ this.cursor.index);
 			id= id.replace(/:/gi, '\\:');
 			var start= id.indexOf(this.joker)>= 0? this.joker.length: -1;
-			if(start> 0)
+			if(start> 0 && this.continue) {
 				this.cursor.index= parseInt(id.substring(start, id.lastIndexOf('\\:')), 10);
+			} // if	
 		},
 		move: function() {
 			var id= this.name();
@@ -215,21 +221,23 @@
 			return $(this.name())? $(this.name()).val(): '';
 		},
 		up: function(jump) {
+			janal.console('Up: '+ jump+ " => "+ this.cursor.index);
 			if(this.cursor.index> 0)
 				this.cursor.index--;
 			else
 				this.cursor.index= this.cursor.top;
 			if(jump)
-			  this.move();
+				this.move();
 			return false;
 		},
 		down: function(jump) {
+			janal.console('Down: '+ jump+ " => "+ this.cursor.index);
 			if(this.cursor.index< this.cursor.top)
 				this.cursor.index++;
 			else
 				this.cursor.index= 0;
 			if(jump)
-  			this.move();
+				this.move();
 			return false;
 		},
 		valid: function() {
@@ -281,10 +289,17 @@
 			return true;
 		},
 		plus: function() {
-			var value = this.get().trim();
+			var value= this.get().trim();
+			var temp = $(this.price()).val();
 			if($(this.price()) && value.length> 0 && this.isOk(value)) {
+			  $(this.price()).val(value);
 				var ok= janal.precio($(this.price()), value);
-			  this.refresh();
+				if(ok.error)
+				  $(this.precio()).val(temp);
+				else {
+					this.set('');
+  				this.refresh();
+				} // if
 			  return ok.error;
 			} // if	
 			return true;
@@ -306,25 +321,25 @@
 			return true;
 		},
 		find: function() {
+			janal.console('Find: '+ this.cursor.index+ " => "+ this.valid());
 			var value = this.get().trim();
-			if(value.length> 0)
+			if(value.length> 0 && !this.valid())
 			  locate(value, this.cursor.index);
 			return false;
 		},
-		exists: function(index) {
-			alert('El articulo ya existe en la orden y se encuentra en la fila '+ (index+ 1)+ '.');
-			if(index>= 0 && index< this.cursor.top) {
-				if(index=== 0)
-					this.cursor.index= this.cursor.top;
-				else
-			    this.cursor.index= index- 1;
-				this.continue= true;
-			} // if	
-		}, 
-		goto: function() {
-			if($(this.name())) 
-				$(this.name()).focus();
+		next: function() {
+			janal.console('Next: '+ this.cursor.index);
+			if(this.valid() || !this.continue)
+  			this.down(true);
+			this.continue= true;
 		},
+		exists: function(index) {
+			janal.console('Exists: '+ index);
+			this.continue= false;
+			alert('El articulo ya existe en la orden y se encuentra en la fila '+ (index+ 1)+ '.');
+      this.cursor.index= index;
+			this.up(true);
+		}, 
 		clean: function() {
 			$(this.price()).val('0');
 			$(this.amount()).val('0');
@@ -346,38 +361,36 @@
     				this.refresh();
 			return false;	
 		},
-		next: function() {
-			if(($(this.key()) && parseInt($(this.key()).val(), 10)> 0) || this.continue) {
-				this.continue= false;
-  			this.down(true);
-			} // if	
-		},
 		reset: function(name) {
 			if($(name).attr('id').endsWith(this.prices.substring(2)))
 				$(name).val($(this.value()).val());
 			return false;
 		},
 		search: function() {
+			janal.console('Search: '+ this.cursor.index);
 			if(this.valid())
 				search($(this.key()).val(), this.cursor.index);
 			return false;
 		},
 		show: function(name) {
-			janal.bloquear();
-			PF(this.dialog).show();
-			return false;
+			if(!this.valid()) {
+			  janal.bloquear();
+			  PF(this.dialog).show();
+  			return false;
+			} // if	
 		},
 	  callback: function(code) {
-			console.log('Call back: '+ code);
+			janal.console('Callback: '+ code);
 		  return false;
 		},
 		close: function() {
-		  replace(this.cursor.index);
-      this.continue= true;
+			janal.console('Close: '+ this.cursor.index);
+			if(!this.valid())
+		    replace(this.cursor.index);
 			return false;
 		},
 		look: function(name) {
-			console.log('look: '+ $(name).val());
+			janal.console('look: '+ $(name).val());
 			lookup();
 		},
 		back: function(tipo, count) {
