@@ -101,7 +101,7 @@ public class Transaccion extends IBaseTnx {
 		} // try
 		catch (Exception e) {		
 			Error.mensaje(e);
-			throw new Exception(this.messageError);
+			throw new Exception(this.messageError.concat("\n\n")+ e.getMessage());
 		} // catch		
 		LOG.info("Se genero de forma correcta la orden: "+ this.orden.getConsecutivo());
 		return regresar;
