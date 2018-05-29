@@ -152,9 +152,10 @@
 						break;
 					case $articulos.VK_MINUS:
 						$articulos.leavePage= true;
-						if(confirm('¿Esta seguro que desea terminar con la orden de compra?'))
+						if(confirm('¿ Esta seguro que desea terminar con la captura ?')) {
 						  $('#aceptar').click();
-						return false;
+						  return false;
+						} // if	
 						break;
 					case $articulos.VK_MAYOR:
 						return $articulos.show($(this));

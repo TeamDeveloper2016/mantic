@@ -74,7 +74,7 @@ public class Transaccion extends IBaseTnx {
 					if(this.orden.getIdCliente()< 0)
 						this.orden.setIdCliente(null);
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
-					bitacoraOrden= new TcManticOrdenesBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), this.orden.getIdOrdenEstatus());
+					bitacoraOrden= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L);
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
 					toFillArticulos(sesion);
 					break;

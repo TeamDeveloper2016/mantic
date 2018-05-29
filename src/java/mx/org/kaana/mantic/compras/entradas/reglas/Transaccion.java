@@ -182,8 +182,8 @@ public class Transaccion extends IBaseTnx {
 				DaoFactory.getInstance().update(sesion, ubicacion);
 			} // if
 			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, item.getIdArticulo());
-			TcManticArticulosBitacoraDto bitacora= new TcManticArticulosBitacoraDto(global.getIva(), JsfBase.getIdUsuario(), global.getMayoreo(), -1L, global.getMenudeo(), global.getCantidad(), global.getIdArticulo(), this.orden.getIdNotaEntrada(), global.getMedioMayoreo(), global.getPrecio());
-			DaoFactory.getInstance().insert(sesion, bitacora);
+			TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(global.getIva(), JsfBase.getIdUsuario(), global.getMayoreo(), -1L, global.getMenudeo(), global.getCantidad(), global.getIdArticulo(), this.orden.getIdNotaEntrada(), global.getMedioMayoreo(), global.getPrecio());
+			DaoFactory.getInstance().insert(sesion, movimiento);
 			
 			global.setPrecio(Numero.toRedondear(item.getCosto()));
 			global.setMenudeo(Numero.toRedondear(item.getCosto()+ Constantes.PORCENTAJE_MENUDEO));
