@@ -9,14 +9,22 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'idEmpresa'    : {validaciones: 'libre', mascara: 'libre'},
-        'ordenCompra'  : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true},
-        'notaEntrada'  : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true},
-        'idProveedor'  : {validaciones: 'libre', mascara: 'libre'},
-        'fechaInicio'  : {validaciones: 'fecha', mascara: 'fecha'},
-        'fechaTermino' : {validaciones: 'fecha', mascara: 'fecha'},
-        'idNotaEstatus': {validaciones: 'libre', mascara: 'libre'}
+        'idEmpresa'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'ordenCompra'  : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
+        'notaEntrada'  : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
+        'idProveedor'  : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'fechaInicio'  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'fechaTermino' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'idNotaEstatus': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'justificacion': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
       };
+			
+			function validaJustificacion(){
+				var ok= janal.partial('dialogo');
+				if(ok)
+					PF('dlgEstatus').hide();
+				return ok;
+			} // validaJustificacion
     </script>		
 		<style>
 			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield {
@@ -78,10 +86,10 @@
               </p:selectOneMenu>
             </p:panelGrid>
             <div class="janal-align-right lg-pantalla">
-              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.execute();" process="@form" actionListener="#{manticComprasEntradasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
+              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticComprasEntradasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
             </div>
             <div class="janal-align-right xs-pantalla">
-              <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.execute();" process="@form" actionListener="#{manticComprasEntradasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"  styleClass="janal-text-white"/>
+              <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticComprasEntradasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"  styleClass="janal-text-white"/>
             </div>
           </p:panel>
         </div>
@@ -163,12 +171,27 @@
             <p:menuitem id="modificar" action="#{manticComprasEntradasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{!(manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '6')}"/>					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{!(manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '6')}"/>					
             <p:separator rendered="#{!(manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '6')}"/>					
-            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{!(manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '6')}"/>					
-            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{(manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '6')}"/>					
+            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasEntradasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '6')}"/>					
+            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasEntradasFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{(manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '6')}"/>					
           </p:contextMenu>						
         </div>
       </div>
-    </div>		           				
+    </div>
+		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.refresh();">
+			<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+				<p:outputLabel for="estatusDlg" value="Estatus:"/>												
+				<p:selectOneMenu id="estatusDlg" value="#{manticComprasEntradasFiltro.attrs.estatus}" styleClass="janal-wid-100-txt">									
+					<f:selectItems value="#{manticComprasEntradasFiltro.attrs.allEstatus}"/>					
+				</p:selectOneMenu>
+				<p:outputLabel for="justificacion" value="Justificación:"/>
+				<p:inputTextarea id="justificacion" value="#{manticComprasEntradasFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
+			</h:panelGrid>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticComprasEntradasFiltro.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+        <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+			</div>
+		</p:dialog>
   </ui:define>   
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
   <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la nota de entrada ?" />
