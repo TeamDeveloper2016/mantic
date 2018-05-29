@@ -24,10 +24,13 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import org.primefaces.context.RequestContext;
@@ -172,9 +175,12 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
       this.attrs.put("proveedores", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "proveedores", params, columns));
+			this.attrs.put("idProveedor", new UISelectEntity("-1"));
 			columns.remove(0);
       this.attrs.put("estatus", (List<UISelectEntity>) UIEntity.build("TcManticOrdenesEstatusDto", "row", params, columns));
+			this.attrs.put("idOrdenEstatus", new UISelectEntity("-1"));
     } // try
     catch (Exception e) {
       throw e;
@@ -218,4 +224,51 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.addMessage("Generar reporte","No se encontraron registros para el reporte", ETipoMensaje.ERROR);
 		} // else
 	} // doVerificarReporte		
+	
+	public void doLoadEstatus(){
+		Entity seleccionado          = null;
+		Map<String, Object>params    = null;
+		List<UISelectItem> allEstatus= null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_orden_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
+			allEstatus= UISelect.build("TcManticOrdenesEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
+			this.attrs.put("allEstatus", allEstatus);
+			this.attrs.put("estatus", allEstatus.get(0));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // doLoadEstatus
+	
+	public void doActualizarEstatus(){
+		Transaccion transaccion            = null;
+		TcManticOrdenesBitacoraDto bitacora= null;
+		Entity seleccionado                = null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");
+			bitacora= new TcManticOrdenesBitacoraDto();
+			bitacora.setIdOrdenCompra(seleccionado.getKey());
+			bitacora.setIdOrdenEstatus(Long.valueOf(this.attrs.get("estatus").toString()));
+			bitacora.setJustificacion((String) this.attrs.get("justificacion"));
+			bitacora.setIdUsuario(JsfBase.getIdUsuario());
+			transaccion= new Transaccion(bitacora);
+			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
+				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
+			else
+				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally{
+			this.attrs.put("justificacion", "");
+		} // finally
+	}	// doActualizaEstatus
 }
