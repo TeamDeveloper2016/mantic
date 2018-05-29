@@ -7,16 +7,23 @@
   <ui:define name="librerias"/>
   <ui:define name="contenido">
     <br/>
-    <i class="icon-cancel Fs60 blue"></i>
+    <i class="icon-cancel Fs100 blue"></i>
     <br/>
     <span class="softblue Fs40 Wid100 DispBlock lg-pantalla">#{pfExceptionHandler.type}</span>
     <span class="softblue Fs20 Wid100 DispBlock xs-pantalla">#{pfExceptionHandler.type}</span>
     <br/>
-    <br/>
     A unexpected error occured! Message: #{pfExceptionHandler.message}
-    <br/>
     <br/>
     <h:outputText value="#{pfExceptionHandler.formattedStackTrace}" escape="false"/>
     <br/>
+		<div id="login-box" class="Container80 MaxWid500 Fnone MarAuto BordRad10" style="border: transparent;">
+			<div class="janal-content-center">
+				<div class="Container60 Fnone MarAuto TexAlCenter TabContent">
+					<p:panelGrid layout="grid" columns="1">
+						<p:button value="Regresar al acceso" icon="fa fa-user" styleClass="janal-button-alone Fs20 janal-text-white" href="/indice.jsf?faces-redirect=true"/> 
+					</p:panelGrid>   
+				</div>  
+			</div>  
+		</div>    
   </ui:define>
 </ui:composition>
