@@ -7,6 +7,78 @@
   </model>
 
   <dml>	
+    <unit id="TcManticServiciosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_servicios
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_servicios
+        where      
+          consecutivo = {consecutivo} and id_cliente = {idCliente} and id_empresa = {idEmpresa}
+      </select>
+    </unit>		
+    <unit id="TcManticServiciosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_servicios_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_servicios_bitacora
+        where      
+          id_servicio_estatus = {idServicioEstatus} and id_servicio = {idServicio} and date_format(registro, '%Y%c%d%H%i%S')= '{registro}'
+      </select>
+    </unit>		
+    <unit id="TcManticServiciosDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_servicios_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_servicios_detalles
+        where      
+          concepto = '{concepto}' and id_servicio = {idServicio}
+      </select>
+    </unit>		
+    <unit id="TcManticServiciosEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_servicios_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_servicios_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
     <unit id="TcManticInventariosDto">
       <select id="row">
         select      
@@ -1920,6 +1992,24 @@
           id_venta_bitacora = {idVentaBitacora} and id_venta = {idVenta} and id_venta_estatus = {idVentaEstatus}
       </select>
     </unit>				
+    <unit id="TcManticVentasDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_ventas_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ventas_detalles
+        where      
+          id_venta_detalle = {idVentaDetalle} and id_articulo = {idArticulo} and id_venta = {idVenta}
+      </select>
+    </unit>		
     <unit id="TcManticNotasEntradasDto">
       <select id="row">
         select      

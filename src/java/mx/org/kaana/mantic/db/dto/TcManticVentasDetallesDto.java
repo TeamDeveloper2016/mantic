@@ -34,6 +34,8 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
+  @Column (name="descuentos")
+  private Double descuentos;
   @Column (name="codigo")
   private String codigo;
   @Column (name="unidad_medida")
@@ -45,7 +47,7 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
   @Column (name="sat")
   private String sat;
   @Column (name="extras")
-  private String extras;
+  private Double extras;
   @Column (name="nombre")
   private String nombre;
   @Column (name="importe")
@@ -58,29 +60,28 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
   private Long idVentaDetalle;
   @Column (name="iva")
   private Double iva;
+  @Column (name="impuestos")
+  private Double impuestos;
   @Column (name="sub_total")
   private Double subTotal;
   @Column (name="cantidad")
   private Long cantidad;
   @Column (name="id_articulo")
   private Long idArticulo;
-  @Column (name="descuentos")
-  private Double descuentos;
   @Column (name="id_venta")
   private Long idVenta;
-  @Column (name="impuestos")
-  private Double impuestos;
 
   public TcManticVentasDetallesDto() {
     this(new Long(-1L));
   }
 
   public TcManticVentasDetallesDto(Long key) {
-    this(null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null);
+    this(null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticVentasDetallesDto(String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, String nombre, Double importe, Long idVentaDetalle, Double iva, Double subTotal, Long cantidad, Long idArticulo, Double descuentos, Long idVenta, Double impuestos) {
+  public TcManticVentasDetallesDto(Double descuentos, String codigo, String unidadMedida, Double costo, String descuento, String sat, Double extras, String nombre, Double importe, Long idVentaDetalle, Double iva, Double impuestos, Double subTotal, Long cantidad, Long idArticulo, Long idVenta) {
+    setDescuentos(descuentos);
     setCodigo(codigo);
     setUnidadMedida(unidadMedida);
     setCosto(costo);
@@ -92,14 +93,21 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
     setIdVentaDetalle(idVentaDetalle);
     setIva(iva);
+    setImpuestos(impuestos);
     setSubTotal(subTotal);
     setCantidad(cantidad);
     setIdArticulo(idArticulo);
-    setDescuentos(descuentos);
     setIdVenta(idVenta);
-    setImpuestos(impuestos);
   }
 	
+  public void setDescuentos(Double descuentos) {
+    this.descuentos = descuentos;
+  }
+
+  public Double getDescuentos() {
+    return descuentos;
+  }
+
   public void setCodigo(String codigo) {
     this.codigo = codigo;
   }
@@ -140,11 +148,11 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
     return sat;
   }
 
-  public void setExtras(String extras) {
+  public void setExtras(Double extras) {
     this.extras = extras;
   }
 
-  public String getExtras() {
+  public Double getExtras() {
     return extras;
   }
 
@@ -188,6 +196,14 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
     return iva;
   }
 
+  public void setImpuestos(Double impuestos) {
+    this.impuestos = impuestos;
+  }
+
+  public Double getImpuestos() {
+    return impuestos;
+  }
+
   public void setSubTotal(Double subTotal) {
     this.subTotal = subTotal;
   }
@@ -212,28 +228,12 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
     return idArticulo;
   }
 
-  public void setDescuentos(Double descuentos) {
-    this.descuentos = descuentos;
-  }
-
-  public Double getDescuentos() {
-    return descuentos;
-  }
-
   public void setIdVenta(Long idVenta) {
     this.idVenta = idVenta;
   }
 
   public Long getIdVenta() {
     return idVenta;
-  }
-
-  public void setImpuestos(Double impuestos) {
-    this.impuestos = impuestos;
-  }
-
-  public Double getImpuestos() {
-    return impuestos;
   }
 
   @Transient
@@ -251,6 +251,8 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
+		regresar.append(getDescuentos());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCodigo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getUnidadMedida());
@@ -273,17 +275,15 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIva());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getImpuestos());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getSubTotal());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCantidad());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdArticulo());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getDescuentos());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdVenta());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getImpuestos());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -291,6 +291,7 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
+		regresar.put("descuentos", getDescuentos());
 		regresar.put("codigo", getCodigo());
 		regresar.put("unidadMedida", getUnidadMedida());
 		regresar.put("costo", getCosto());
@@ -302,19 +303,18 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
 		regresar.put("registro", getRegistro());
 		regresar.put("idVentaDetalle", getIdVentaDetalle());
 		regresar.put("iva", getIva());
+		regresar.put("impuestos", getImpuestos());
 		regresar.put("subTotal", getSubTotal());
 		regresar.put("cantidad", getCantidad());
 		regresar.put("idArticulo", getIdArticulo());
-		regresar.put("descuentos", getDescuentos());
 		regresar.put("idVenta", getIdVenta());
-		regresar.put("impuestos", getImpuestos());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getCodigo(), getUnidadMedida(), getCosto(), getDescuento(), getSat(), getExtras(), getNombre(), getImporte(), getRegistro(), getIdVentaDetalle(), getIva(), getSubTotal(), getCantidad(), getIdArticulo(), getDescuentos(), getIdVenta(), getImpuestos()
+    getDescuentos(), getCodigo(), getUnidadMedida(), getCosto(), getDescuento(), getSat(), getExtras(), getNombre(), getImporte(), getRegistro(), getIdVentaDetalle(), getIva(), getImpuestos(), getSubTotal(), getCantidad(), getIdArticulo(), getIdVenta()
     };
     return regresar;
   }

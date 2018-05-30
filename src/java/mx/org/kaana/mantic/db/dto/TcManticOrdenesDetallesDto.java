@@ -66,7 +66,7 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
   private Long idOrdenDetalle;
   @Column (name="id_articulo")
   private Long idArticulo;
-  @Column (name="total_descuentos")
+  @Column (name="descuentos")
   private Double descuentos;
 
   public TcManticOrdenesDetallesDto() {
