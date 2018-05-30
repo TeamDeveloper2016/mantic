@@ -208,7 +208,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 	
 	private double toDiferencia() {
-  	return this.valor> 0? Numero.toRedondear(this.getCosto()* 100/ this.valor- 100): 0D;
+		Descuentos descuentos= new Descuentos(this.getCosto(), this.getDescuento().concat(",").concat(this.getExtras()));
+  	return this.valor> 0? Numero.toRedondear(descuentos.toImporte()): 0D;
 	}
 	
 	public TcManticNotasDetallesDto toNotaDetalle() {

@@ -65,6 +65,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
+			this.attrs.put("buscaPorCodigo", false);
 			doLoad();
     } // try
     catch (Exception e) {

@@ -38,11 +38,11 @@
 			<pe:methodParam name="codigo"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="suppress" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticComprasEntradasAccion.doDeleteArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.goto();">  
+		<pe:remoteCommand name="suppress" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticComprasEntradasAccion.doDeleteArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="refresh" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticComprasEntradasAccion.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.goto();">  
+		<pe:remoteCommand name="refresh" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticComprasEntradasAccion.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
@@ -60,7 +60,7 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{manticComprasEntradasAccion.doTabChange}" process="@this idAlmacen idProveedor" oncomplete="jsArticulos.goto();"/>						
+            <p:ajax event="tabChange" listener="#{manticComprasEntradasAccion.doTabChange}" process="@this idAlmacen idProveedor" oncomplete="jsArticulos.move();"/>						
             <p:tab title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
 								<p:outputLabel for="consecutivo" value="No. nota:"/>
@@ -158,6 +158,9 @@
 											</p:column>		
 											<p:column  class="MarAuto Responsive janal-wid-13">
 												<f:facet name="header">
+                          <p:selectBooleanCheckbox value="#{manticComprasOrdendesAccion.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
+														<p:ajax event="change" process="@this" update="@this"/>
+													</p:selectBooleanCheckbox>
 													<h:outputText value="Código"/>
 													<span class="janal-help-icon janal-help-9 fa fa-fw fa-question-circle Fright" onclick="countHelp(9);"/>	
 													<pe:tooltip for="@(.janal-help-9)" showEvent="click">
@@ -435,7 +438,7 @@
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
 				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this buscados" update="@(.filas) @(.recalculo)" value="Aceptar" oncomplete="PF('dialogo').hide(); jsArticulos.close();"/>
-				<p:commandButton process="@none" styleClass="janal-text-white" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide();jsArticulos.goto();"/>
+				<p:commandButton process="@none" styleClass="janal-text-white" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide();jsArticulos.move();"/>
 			</div>
 		</p:dialog>
 	</ui:define>
