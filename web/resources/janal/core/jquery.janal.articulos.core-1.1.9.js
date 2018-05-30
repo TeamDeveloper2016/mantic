@@ -17,6 +17,7 @@
 		codes       : '\\:codigos_input', 
 		panels      : 'codigos_panel', 
 		itemtips    : 'codigos_itemtip', 
+		itemtips    : 'codigos_itemtip', 
 		discounts   : '\\:descuentos',
 		additionals : '\\:extras',
 		amounts     : '\\:cantidades',
@@ -31,7 +32,7 @@
 		dialog      : 'dialogo',
 		typingTimer : null,
 		doneInterval: 10000,
-		continue    : true,
+		continue    : false,
 		leavePage   : true,
 		VK_ENTER    : 13, 
 		VK_ESC      : 27,
@@ -74,7 +75,7 @@
 				$articulos.index($(this).attr('id'));
 			});  
       $(document).on('focus', this.selector, function() {
-			  $articulos.index($(this).attr('id'));
+				$articulos.index($(this).attr('id'));
 			});  
       $(document).on('keydown', this.porcentajes, function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
@@ -125,12 +126,10 @@
 						return $articulos.find();
 						break;
 					case $articulos.VK_UP:
-						if($('div[id$='+ $articulos.panels+ ']:visible').length<= 0)
-  						return $articulos.up(true);
+						return $articulos.up(true);
 						break;
 					case $articulos.VK_DOWN:
-						if($('div[id$='+ $articulos.panels+ ']:visible').length<= 0)
-   						return $articulos.down(true);
+						return $articulos.down(true);
 						break;
 					case $articulos.VK_ASTERISK:
 						return $articulos.asterisk();
@@ -164,7 +163,7 @@
 						break;
 				} // switch
       });
-			setTimeout('$articulos.move()', 1000);
+			setTimeout('$articulos.goto()', 1000);
 		},
 		xup: function() {
 			this.up(false);
@@ -181,12 +180,10 @@
 			return false;
 		},
 		index: function(id) {
-			janal.console('Index: '+ id+ " => "+ this.cursor.index);
 			id= id.replace(/:/gi, '\\:');
 			var start= id.indexOf(this.joker)>= 0? this.joker.length: -1;
-			if(start> 0 && this.continue) {
+			if(start> 0)
 				this.cursor.index= parseInt(id.substring(start, id.lastIndexOf('\\:')), 10);
-			} // if	
 		},
 		move: function() {
 			var id= this.name();
@@ -222,23 +219,21 @@
 			return $(this.name())? $(this.name()).val(): '';
 		},
 		up: function(jump) {
-			janal.console('Up: '+ jump+ " => "+ this.cursor.index);
 			if(this.cursor.index> 0)
 				this.cursor.index--;
 			else
 				this.cursor.index= this.cursor.top;
 			if(jump)
-				this.move();
+			  this.move();
 			return false;
 		},
 		down: function(jump) {
-			janal.console('Down: '+ jump+ " => "+ this.cursor.index);
 			if(this.cursor.index< this.cursor.top)
 				this.cursor.index++;
 			else
 				this.cursor.index= 0;
 			if(jump)
-				this.move();
+  			this.move();
 			return false;
 		},
 		valid: function() {
@@ -290,17 +285,10 @@
 			return true;
 		},
 		plus: function() {
-			var value= this.get().trim();
-			var temp = $(this.price()).val();
+			var value = this.get().trim();
 			if($(this.price()) && value.length> 0 && this.isOk(value)) {
-			  $(this.price()).val(value);
 				var ok= janal.precio($(this.price()), value);
-				if(ok.error)
-				  $(this.precio()).val(temp);
-				else {
-					this.set('');
-  				this.refresh();
-				} // if
+			  this.refresh();
 			  return ok.error;
 			} // if	
 			return true;
@@ -322,32 +310,34 @@
 			return true;
 		},
 		find: function() {
-			janal.console('Find: '+ this.cursor.index+ " => "+ this.valid());
 			var value = this.get().trim();
-			if(value.length> 0 && !this.valid())
+			if(value.length> 0)
 			  locate(value, this.cursor.index);
 			return false;
 		},
-		next: function() {
-			janal.console('Next: '+ this.cursor.index);
-			if(this.valid() || !this.continue)
-  			this.down(true);
-			this.continue= true;
-		},
 		exists: function(index) {
-			janal.console('Exists: '+ index);
-			this.continue= false;
 			alert('El articulo ya existe en la orden y se encuentra en la fila '+ (index+ 1)+ '.');
-      this.cursor.index= index;
-			this.up(true);
+			if(index>= 0 && index< this.cursor.top) {
+				if(index=== 0)
+					this.cursor.index= this.cursor.top;
+				else
+			    this.cursor.index= index- 1;
+				this.continue= true;
+			} // if	
 		}, 
+		goto: function() {
+			if($(this.name())) 
+				$(this.name()).focus();
+		},
 		clean: function() {
+			janal.console('Clean: '+ this.cursor.index+ ' => '+ this.cursor.top);
 			$(this.price()).val('0');
 			$(this.amount()).val('0');
 			$(this.discount()).val('0');
 			$(this.additional()).val('0');
 			$(this.key()).val('-1');
-			suppress(this.cursor.index);
+			if(this.cursor.top> 0)
+			  suppress(this.cursor.index);
 			return false;
 		},
 		update: function(top) {
@@ -362,40 +352,48 @@
     				this.refresh();
 			return false;	
 		},
+		next: function() {
+			if(($(this.key()) && parseInt($(this.key()).val(), 10)> 0) || this.continue) {
+				if($('ul.ui-autocomplete-items:visible').length> 0) {
+          $('ul.ui-autocomplete-items:visible').hide();
+					this.refresh();
+				} // if	
+				else {	
+				  this.continue= false;
+  			  this.down(true);
+				} // else	
+			} // if	
+		},
 		reset: function(name) {
 			if($(name).attr('id').endsWith(this.prices.substring(2)))
 				$(name).val($(this.value()).val());
 			return false;
 		},
 		search: function() {
-			janal.console('Search: '+ this.cursor.index);
 			if(this.valid())
 				search($(this.key()).val(), this.cursor.index);
 			return false;
 		},
 		show: function(name) {
-			if(!this.valid()) {
-			  janal.bloquear();
-			  PF(this.dialog).show();
-  			return false;
-			} // if	
+			janal.bloquear();
+			PF(this.dialog).show();
+			return false;
 		},
 	  callback: function(code) {
-			janal.console('Callback: '+ code);
+			console.log('Call back: '+ code);
 		  return false;
 		},
 		close: function() {
-			janal.console('Close: '+ this.cursor.index);
-			if(!this.valid())
-		    replace(this.cursor.index);
+		  replace(this.cursor.index);
+      this.continue= true;
 			return false;
 		},
 		look: function(name) {
-			janal.console('look: '+ $(name).val());
+			console.log('look: '+ $(name).val());
 			lookup();
 		},
-		back: function(tipo, count) {
-			alert('Se gener\u00F3 la '+ tipo+ ' con # consecutivo: '+ count);
+		back: function(title, count) {
+			alert('Se generó la '+ title+ ' con consecutivo: '+ count);
 		}
 	});
 	
