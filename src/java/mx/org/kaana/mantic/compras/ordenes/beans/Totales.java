@@ -158,14 +158,13 @@ public final class Totales implements Serializable {
 		this.extra    = 0;
 		this.importe  = 0;
 		this.iva      = 0;
-		this.sinIva   = 0;
 		this.subTotal = 0;
 		this.total    = 0;
 	}
 	
 	@Override
 	public String toString() {
-		return "Totales{"+"articulos="+articulos+", importe="+importe+", iva="+iva+", sinIva="+sinIva+", descuento="+descuento+", extra="+extra+", subTotal="+subTotal+", total="+total+'}';
+		return "Totales{"+"articulos="+articulos+", importe="+importe+", iva="+iva+", descuento="+descuento+", extra="+extra+", subTotal="+subTotal+", total="+total+'}';
 	}
 	
 }

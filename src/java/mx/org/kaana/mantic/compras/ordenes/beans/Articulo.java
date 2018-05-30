@@ -13,6 +13,8 @@ import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.comun.beans.ArticuloDetalle;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *@company KAANA
@@ -24,7 +26,8 @@ import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
 
 public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, Serializable {
 
-	private static final long serialVersionUID=329661715469035396L;
+	private static final Log LOG              = LogFactory.getLog(ArticuloDetalle.class);
+	private static final long serialVersionUID= 329661715469035396L;
 
   private Long idProveedor;	
 	private Totales importes;
@@ -41,7 +44,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 
 	public Articulo(Long key) {
-		this(true, 1.0, "", "", 0.0, "0", -1L, "0", 0D, "", 16D, 0D, 0D, 1L, -1L, key, 0D, -1L, false, false);
+		this(false, 1.0, "", "", 0.0, "0", -1L, "0", 0D, "", 16D, 0D, 0D, 1L, -1L, key, 0D, -1L, false, false);
 	}
 
 	public Articulo(boolean conIva, double tipoDeCambio, String nombre, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Long cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos, Long idProveedor, boolean ultimo, boolean solicitado) {
@@ -168,24 +171,26 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 	
 	private void toCalculate() {
-		double costoMoneda= this.getCosto()* this.tipoDeCambio;
-		double costoReal  = this.getCantidad()* costoMoneda;
-		double costoSinIva= Numero.toRedondear(this.getCosto()* (1- (this.getIva()/ 100)));
+		double porcentajeIva = this.getIva()/ 100;       
+		double costoMoneda   = this.getCosto()* this.tipoDeCambio;
+		double costoReal     = this.getCantidad()* costoMoneda;
+		double costoSinIva   = Numero.toRedondear(this.getCosto()* (1- porcentajeIva));
 		if(this.sinIva) 
 		  this.importes.setImporte(Numero.toRedondear(this.getCantidad()* costoSinIva* this.tipoDeCambio));
 		else
 			this.importes.setImporte(Numero.toRedondear(costoReal));
-		this.importes.setIva(Numero.toRedondear((this.getIva()/ 100)* (this.sinIva? costoReal: this.importes.getImporte())));
-		Descuentos descuentos= new Descuentos(this.importes.getImporte());
-		this.importes.setDescuento(Numero.toRedondear(descuentos.toImporte(this.getDescuento())));
-		this.importes.setExtra(Numero.toRedondear(descuentos.toImporte(this.getExtras())));
-		this.importes.setSubTotal(Numero.toRedondear(this.importes.getImporte()- this.importes.getDescuento()- this.importes.getExtra()));
+		Descuentos descuentos= new Descuentos(this.importes.getImporte(), this.getDescuento().concat(",").concat(this.getExtras()));
+		this.importes.setSubTotal(Numero.toRedondear(descuentos.toImporte()));
+		this.importes.setDescuento(Numero.toRedondear(this.importes.getImporte()- this.importes.getSubTotal()));
+		this.importes.setExtra(0D);
+		this.importes.setIva(Numero.toRedondear((this.importes.getSubTotal()* (1+ porcentajeIva))- this.importes.getSubTotal()));
 		this.importes.setTotal(Numero.toRedondear(this.importes.getSubTotal()+ this.importes.getIva()));
-		this.setImporte(Numero.toRedondear(this.importes.getTotal()));
-		
+		/*
+		*/
+		this.setSubTotal(this.importes.getSubTotal());
 		this.setTotalImpuesto(this.importes.getIva());
 		this.setTotalDescuentos(this.importes.getDescuentos());
-		this.setSubTotal(this.importes.getSubTotal());
+		this.setImporte(Numero.toRedondear(this.importes.getTotal()));
 	}
 
 	public void toCalculate(boolean sinIva, double tipoDeCambio) {
@@ -247,10 +252,22 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getTotalDescuentos()
 		);
 	}
+
+	@Override
+	public String toString() {
+		return "Articulo{"+"idProveedor="+idProveedor+", importes="+importes+", sinIva="+sinIva+", tipoDeCambio="+tipoDeCambio+", idRedondear="+idRedondear+", valor="+valor+", ultimo="+ultimo+", solicitado="+solicitado+'}';
+	}
+	
 	
 	public static void main(String ... args) {
-		String search= "hola   como estas    ";
-		System.out.println(search.replaceAll("( |\\t)+", ".*.*"));
+		Articulo articulo= new Articulo(-1L);
+		articulo.setCosto(1131.63);
+		articulo.setCantidad(10L);
+		articulo.setDescuento("5");
+		articulo.setExtras("5");
+		articulo.setIva(16D);
+		articulo.toCalculate();
+		LOG.info(articulo);
 	}	
 	
 }

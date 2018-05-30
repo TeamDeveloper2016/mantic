@@ -53,7 +53,7 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 			temporal.setIdArticulo(articulo.toLong("idArticulo"));
 			temporal.setIdProveedor(articulo.toLong("idProveedor"));
 			temporal.setIdRedondear(articulo.toLong("idRedondear"));
-			temporal.setCodigo(articulo.toString("codigo"));
+			temporal.setCodigo(articulo.toString("propio"));
 			temporal.setPropio(articulo.toString("propio"));
 			temporal.setNombre(articulo.toString("nombre"));
 			temporal.setValor(articulo.toDouble("precio"));
@@ -77,14 +77,19 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 	public void doUpdateArticulo(String codigo, Integer index) {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
+		List<UISelectEntity> articulos= null;
     try {
 			columns= new ArrayList<>();
-      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
   		params.put("codigo", codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*"));
-      List<UISelectEntity> articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "codigos", params, columns);
+			if((boolean)this.attrs.get("buscaPorCodigo"))
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L);
+			else
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 20L);
+      //List<UISelectEntity> articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "codigos", params, columns);
 			UISelectEntity articulo= UIBackingUtilities.toFirstKeySelectEntity(articulos);
 			if(articulo.size()> 1) {
 				int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(articulo.toLong("idArticulo")));
@@ -110,17 +115,22 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 
 	public void doDeleteArticulo(Integer index) {
     try {
-			Articulo temporal= this.adminOrden.getArticulos().get(index);
-			temporal.setKey(-1L);
-			temporal.setIdArticulo(-1L);
-			temporal.setIdProveedor(-1L);
-			temporal.setCodigo("");
-			temporal.setPropio("");
-			temporal.setNombre("");
-			temporal.setValor(0.0);
-			temporal.setIva(0.0);
-			temporal.setCantidad(0L);
+			if(this.adminOrden.getArticulos().size()== 1 || index.equals(this.adminOrden.getArticulos().size()- 1)) {			
+				Articulo temporal= this.adminOrden.getArticulos().get(index.intValue());
+				temporal.setKey(-1L);
+				temporal.setIdArticulo(-1L);
+				temporal.setIdProveedor(-1L);
+				temporal.setCodigo("");
+				temporal.setPropio("");
+				temporal.setNombre("");
+				temporal.setValor(0.0);
+				temporal.setIva(0.0);
+				temporal.setCantidad(0L);
+			} // if
+			else 
+  			this.adminOrden.getArticulos().remove(index.intValue());
 			this.adminOrden.toCalculate();
+			RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -228,7 +238,7 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
     Map<String, Object> params= new HashMap<>();
     try {
 			columns= new ArrayList<>();
-      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
@@ -238,7 +248,10 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 			else
 				search= "WXYZ";
   		params.put("codigo", search);
-      this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "codigos", params, columns, 20L));
+			if((boolean)this.attrs.get("buscaPorCodigo"))
+        this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
+			else
+        this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 20L));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);

@@ -51,25 +51,34 @@ public class Descuentos implements Serializable {
 				count++;	
 	}
 	
-	public double getImporte() {
-		double regresar= 0D;
-		return this.tokens.stream().map((item) -> (this.importe* (Double.valueOf(item)/100))).reduce(regresar, (accumulator, value) -> accumulator+value); 
+	public double getFactor() {
+		double regresar= 1D;
+		for (String token: tokens) {
+			if(!token.equals("0"))
+			  regresar*= 1-(Double.valueOf(token)/100);
+		} // for
+		return regresar; 
 	}
 
   public double toImporte(String porcentajes, char token) {
 		this.porcentajes= porcentajes;
 		this.token      = token;
 		split();
-	  return getImporte();
+	  return getFactor()* this.importe;
 	}
 	
   public double toImporte(String porcentajes) {
 		return toImporte(porcentajes, ',');
 	}	
 	
+  public double toImporte() {
+		return this.importe* this.getFactor();
+	}	
+	
+	
   public static void main(String ... args) {
-		Descuentos descuentos= new Descuentos(500D, "a,10.00,5.00");
-		LOG.info(descuentos.getImporte());
+		Descuentos descuentos= new Descuentos(1131.63* 10, "a,5.00,5.00");
+		LOG.info(descuentos.toImporte());
 	}	
 
 }

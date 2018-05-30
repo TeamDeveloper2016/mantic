@@ -113,7 +113,7 @@ public abstract class IAdminArticulos implements Serializable {
 	public void toCalculate() {
 		this.totales.reset();
 		for (Articulo articulo : this.articulos) {
-		  articulo.toCalculate(this.getIdSinIva().equals(1L), this.getTipoDeCambio());
+		  articulo.toCalculate(this.getIdSinIva().equals(2L), this.getTipoDeCambio());
 			this.totales.addImporte(articulo.getImportes().getImporte());
 			this.totales.addDescuento(articulo.getImportes().getDescuento());
 			this.totales.addExtra(articulo.getImportes().getExtra());
