@@ -59,7 +59,7 @@
 		}, // init
 		events: function() {
 			$(window).bind('beforeunload', function() { 
-				if(jsArticulos.leavePage)
+				if(typeof(jsArticulos)=== 'undefined' || jsArticulos.leavePage)
 					return ;
 				else
 				  return 'Es probable que los cambios no se hayan guardado\n¿Aun asi deseas salir de esta opción?.';
@@ -117,6 +117,7 @@
 			});	
       $(document).on('keydown', this.selector, function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('Keydown: '+  key);
 				if(($articulos.change.indexOf(key)>= 0)) {
 					$articulos.leavePage= false;
 				  setTimeout("$('div[id$='+ jsArticulos.panels+ ']').hide();$('div[id$='+ jsArticulos.itemtips+ ']').hide();", 500);
@@ -126,10 +127,12 @@
 						return $articulos.find();
 						break;
 					case $articulos.VK_UP:
-						return $articulos.up(true);
+   				  if($('ul.ui-autocomplete-items:visible').length<=0)
+						  return $articulos.up(true);
 						break;
 					case $articulos.VK_DOWN:
-						return $articulos.down(true);
+   				  if($('ul.ui-autocomplete-items:visible').length<= 0)
+  						return $articulos.down(true);
 						break;
 					case $articulos.VK_ASTERISK:
 						return $articulos.asterisk();
@@ -144,14 +147,15 @@
 						return $articulos.point();
 						break;
 					case $articulos.VK_ESC:
-						return $articulos.clean();
+						if($('ul.ui-autocomplete-items:visible').length<= 0)
+						  return $articulos.clean();
 						break;
 					case $articulos.VK_PIPE:
 						return $articulos.search();
 						break;
 					case $articulos.VK_MINUS:
 						$articulos.leavePage= true;
-						if(confirm('¿ Esta seguro que desea terminar con la captura ?')) {
+						if($('ul.ui-autocomplete-items:visible').length<= 0 && confirm('¿ Esta seguro que desea terminar con la captura ?')) {
 						  $('#aceptar').click();
 						  return false;
 						} // if	
@@ -189,6 +193,8 @@
 			var id= this.name();
 			if($(id))
 				$(id).focus();
+			$('div[id$='+ this.panels+ ']').hide();
+			$('div[id$='+ this.itemtips+ ']').hide();
 		},
 		name: function() {
 			return '#'+ this.joker+ this.cursor.index+ this.codes;
@@ -286,9 +292,16 @@
 		},
 		plus: function() {
 			var value = this.get().trim();
+			var temp = $(this.price()).val();
 			if($(this.price()) && value.length> 0 && this.isOk(value)) {
+			  $(this.price()).val(value);
 				var ok= janal.precio($(this.price()), value);
-			  this.refresh();
+				if(ok.error)
+				  $(this.price()).val(temp);
+				else {
+					this.set('');
+	 				this.refresh();
+				} // if
 			  return ok.error;
 			} // if	
 			return true;
@@ -335,9 +348,9 @@
 			$(this.amount()).val('0');
 			$(this.discount()).val('0');
 			$(this.additional()).val('0');
-			$(this.key()).val('-1');
-			if(this.cursor.top> 0)
+			if(this.cursor.top> 0 && this.valid())
 			  suppress(this.cursor.index);
+			$(this.key()).val('-1');
 			return false;
 		},
 		update: function(top) {
@@ -356,7 +369,7 @@
 			if(($(this.key()) && parseInt($(this.key()).val(), 10)> 0) || this.continue) {
 				if($('ul.ui-autocomplete-items:visible').length> 0) {
           $('ul.ui-autocomplete-items:visible').hide();
-					this.refresh();
+					refresh(this.cursor.index);
 				} // if	
 				else {	
 				  this.continue= false;
@@ -398,5 +411,4 @@
 	});
 	
 	console.info('Iktan.Control.Articulos initialized');
-})(window);
-			
+})(window);			
