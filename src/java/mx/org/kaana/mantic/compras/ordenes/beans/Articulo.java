@@ -181,12 +181,11 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.importes.setImporte(Numero.toRedondear(costoReal));
 		Descuentos descuentos= new Descuentos(this.importes.getImporte(), this.getDescuento().concat(",").concat(this.getExtras()));
 		this.importes.setSubTotal(Numero.toRedondear(descuentos.toImporte()));
-		this.importes.setDescuento(Numero.toRedondear(this.importes.getImporte()- this.importes.getSubTotal()));
-		this.importes.setExtra(0D);
+		double temporal= Numero.toRedondear(this.importes.getImporte()- this.importes.getSubTotal());
+		this.importes.setDescuento(Numero.toRedondear(descuentos.toImporte(this.getDescuento())- this.importes.getSubTotal()));
+		this.importes.setExtra(temporal- this.importes.getDescuento());
 		this.importes.setIva(Numero.toRedondear((this.importes.getSubTotal()* (1+ porcentajeIva))- this.importes.getSubTotal()));
 		this.importes.setTotal(Numero.toRedondear(this.importes.getSubTotal()+ this.importes.getIva()));
-		/*
-		*/
 		this.setSubTotal(this.importes.getSubTotal());
 		this.setTotalImpuesto(this.importes.getIva());
 		this.setTotalDescuentos(this.importes.getDescuentos());
