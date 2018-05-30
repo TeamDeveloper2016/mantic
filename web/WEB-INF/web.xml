@@ -92,7 +92,7 @@
   </error-page>
   <error-page>
     <exception-type>javax.faces.application.ViewExpiredException</exception-type>
-    <location>/Exclusiones/throwable.jsf</location>
+    <location>/Exclusiones/salir.jsf</location>
   </error-page>  
    
   <!-- Filters -->
