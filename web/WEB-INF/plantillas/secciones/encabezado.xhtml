@@ -82,7 +82,7 @@
       <h:outputText value="#{kajoolUtilAplicacion.notificacion}" escape="false" styleClass="Fs14"/>
     </p:panelGrid>
   </p:notificationBar>
-	<p:idleMonitor timeout="1800000" onidle="janal.bloquear(); PF('dialogoInactivo').show(); $('#dialogo_modal').removeClass('ui-widget-overlay');  console.log('Clase ui-widget-overlay eliminada');"/>		
+	<p:idleMonitor timeout="1620000" onidle="janal.bloquear(); PF('dialogoInactivo').show(); $('#dialogo_modal').removeClass('ui-widget-overlay');  console.log('Clase ui-widget-overlay eliminada');"/>		
 	<p:dialog id="dialogo" header="Inactividad" resizable="false" widgetVar="dialogoInactivo" onShow="janal.monitor(1);" closable="false">														
 		<div class="alinear-derecha">														
 			<h:outputText id="segundos"/>
