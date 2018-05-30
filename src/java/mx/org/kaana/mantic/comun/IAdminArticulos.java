@@ -102,7 +102,7 @@ public abstract class IAdminArticulos implements Serializable {
 	public void remove(Articulo seleccionado) {
 		if(this.articulos.indexOf(seleccionado)>= 0) {
 		  this.articulos.remove(seleccionado);
-  		toCalculate();
+  		this.toCalculate();
 		} // if
 	}
 

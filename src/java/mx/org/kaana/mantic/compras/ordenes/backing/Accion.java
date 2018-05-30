@@ -97,7 +97,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			eaccion= (EAccion) this.attrs.get("accion");
 			((OrdenCompra)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
 			((OrdenCompra)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
-			((OrdenCompra)this.getAdminOrden().getOrden()).setSubtotal(this.getAdminOrden().getTotales().getSubTotal());
+			((OrdenCompra)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
 			((OrdenCompra)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
 			transaccion = new Transaccion(((OrdenCompra)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 			this.getAdminOrden().toAdjustArticulos();

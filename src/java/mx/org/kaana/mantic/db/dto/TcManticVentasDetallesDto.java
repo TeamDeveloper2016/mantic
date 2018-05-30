@@ -64,12 +64,12 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
   private Long cantidad;
   @Column (name="id_articulo")
   private Long idArticulo;
-  @Column (name="total_descuentos")
-  private Double totalDescuentos;
+  @Column (name="descuentos")
+  private Double descuentos;
   @Column (name="id_venta")
   private Long idVenta;
-  @Column (name="total_impuestos")
-  private Double totalImpuestos;
+  @Column (name="impuestos")
+  private Double impuestos;
 
   public TcManticVentasDetallesDto() {
     this(new Long(-1L));
@@ -80,7 +80,7 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticVentasDetallesDto(String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, String nombre, Double importe, Long idVentaDetalle, Double iva, Double subTotal, Long cantidad, Long idArticulo, Double totalDescuentos, Long idVenta, Double totalImpuestos) {
+  public TcManticVentasDetallesDto(String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, String nombre, Double importe, Long idVentaDetalle, Double iva, Double subTotal, Long cantidad, Long idArticulo, Double descuentos, Long idVenta, Double impuestos) {
     setCodigo(codigo);
     setUnidadMedida(unidadMedida);
     setCosto(costo);
@@ -95,9 +95,9 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
     setSubTotal(subTotal);
     setCantidad(cantidad);
     setIdArticulo(idArticulo);
-    setTotalDescuentos(totalDescuentos);
+    setDescuentos(descuentos);
     setIdVenta(idVenta);
-    setTotalImpuestos(totalImpuestos);
+    setImpuestos(impuestos);
   }
 	
   public void setCodigo(String codigo) {
@@ -212,12 +212,12 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
     return idArticulo;
   }
 
-  public void setTotalDescuentos(Double totalDescuentos) {
-    this.totalDescuentos = totalDescuentos;
+  public void setDescuentos(Double descuentos) {
+    this.descuentos = descuentos;
   }
 
-  public Double getTotalDescuentos() {
-    return totalDescuentos;
+  public Double getDescuentos() {
+    return descuentos;
   }
 
   public void setIdVenta(Long idVenta) {
@@ -228,12 +228,12 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
     return idVenta;
   }
 
-  public void setTotalImpuestos(Double totalImpuestos) {
-    this.totalImpuestos = totalImpuestos;
+  public void setImpuestos(Double impuestos) {
+    this.impuestos = impuestos;
   }
 
-  public Double getTotalImpuestos() {
-    return totalImpuestos;
+  public Double getImpuestos() {
+    return impuestos;
   }
 
   @Transient
@@ -279,11 +279,11 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdArticulo());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getTotalDescuentos());
+		regresar.append(getDescuentos());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdVenta());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getTotalImpuestos());
+		regresar.append(getImpuestos());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -305,16 +305,16 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
 		regresar.put("subTotal", getSubTotal());
 		regresar.put("cantidad", getCantidad());
 		regresar.put("idArticulo", getIdArticulo());
-		regresar.put("totalDescuentos", getTotalDescuentos());
+		regresar.put("descuentos", getDescuentos());
 		regresar.put("idVenta", getIdVenta());
-		regresar.put("totalImpuestos", getTotalImpuestos());
+		regresar.put("impuestos", getImpuestos());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getCodigo(), getUnidadMedida(), getCosto(), getDescuento(), getSat(), getExtras(), getNombre(), getImporte(), getRegistro(), getIdVentaDetalle(), getIva(), getSubTotal(), getCantidad(), getIdArticulo(), getTotalDescuentos(), getIdVenta(), getTotalImpuestos()
+    getCodigo(), getUnidadMedida(), getCosto(), getDescuento(), getSat(), getExtras(), getNombre(), getImporte(), getRegistro(), getIdVentaDetalle(), getIva(), getSubTotal(), getCantidad(), getIdArticulo(), getDescuentos(), getIdVenta(), getImpuestos()
     };
     return regresar;
   }

@@ -25,7 +25,7 @@
 					tc_mantic_ordenes_compras.registro as registro_orden_compra,
 					tc_mantic_ordenes_compras.entrega_estimada,
 					tc_mantic_ordenes_compras.impuestos,					
-					tc_mantic_ordenes_compras.subtotal,
+					tc_mantic_ordenes_compras.sub_total,
 					tc_mantic_ordenes_compras.descuentos,					
 					tc_mantic_ordenes_compras.observaciones,
 					telefono.valor as contacto_telefono,

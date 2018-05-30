@@ -56,8 +56,8 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
   private Long idUsuario;
   @Column (name="id_almacen")
   private Long idAlmacen;
-  @Column (name="subtotal")
-  private Double subtotal;
+  @Column (name="sub_total")
+  private Double subTotal;
   @Column (name="impuestos")
   private Double impuestos;
   @Column (name="tipo_de_cambio")
@@ -90,7 +90,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticVentasDto(Double descuentos, Long idFactura, Long idTipoMedioPago, Long idCliente, String descuento, String extras, Long consecutivo, Double total, Long idUsuario, Long idAlmacen, Double subtotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String tipoTarjeta, Double efectivo, String observaciones, String tarjeta, Long idVenta, Date dia, Long idVentaEstatus) {
+  public TcManticVentasDto(Double descuentos, Long idFactura, Long idTipoMedioPago, Long idCliente, String descuento, String extras, Long consecutivo, Double total, Long idUsuario, Long idAlmacen, Double subTotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String tipoTarjeta, Double efectivo, String observaciones, String tarjeta, Long idVenta, Date dia, Long idVentaEstatus) {
     setDescuentos(descuentos);
     setIdFactura(idFactura);
     setIdTipoMedioPago(idTipoMedioPago);
@@ -102,7 +102,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
     setTotal(total);
     setIdUsuario(idUsuario);
     setIdAlmacen(idAlmacen);
-    setSubtotal(subtotal);
+    setSubTotal(subTotal);
     setImpuestos(impuestos);
     setTipoDeCambio(tipoDeCambio);
     setIdSinIva(idSinIva);
@@ -203,12 +203,12 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
     return idAlmacen;
   }
 
-  public void setSubtotal(Double subtotal) {
-    this.subtotal = subtotal;
+  public void setSubTotal(Double subTotal) {
+    this.subTotal = subTotal;
   }
 
-  public Double getSubtotal() {
-    return subtotal;
+  public Double getSubTotal() {
+    return subTotal;
   }
 
   public void setImpuestos(Double impuestos) {
@@ -328,7 +328,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdAlmacen());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getSubtotal());
+		regresar.append(getSubTotal());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImpuestos());
 		regresar.append(Constantes.SEPARADOR);
@@ -367,7 +367,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		regresar.put("total", getTotal());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idAlmacen", getIdAlmacen());
-		regresar.put("subtotal", getSubtotal());
+		regresar.put("subTotal", getSubTotal());
 		regresar.put("impuestos", getImpuestos());
 		regresar.put("tipoDeCambio", getTipoDeCambio());
 		regresar.put("idSinIva", getIdSinIva());
@@ -384,7 +384,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescuentos(), getIdFactura(), getIdTipoMedioPago(), getIdCliente(), getDescuento(), getExtras(), getRegistro(), getConsecutivo(), getTotal(), getIdUsuario(), getIdAlmacen(), getSubtotal(), getImpuestos(), getTipoDeCambio(), getIdSinIva(), getTipoTarjeta(), getEfectivo(), getObservaciones(), getTarjeta(), getIdVenta(), getDia(), getIdVentaEstatus()
+    getDescuentos(), getIdFactura(), getIdTipoMedioPago(), getIdCliente(), getDescuento(), getExtras(), getRegistro(), getConsecutivo(), getTotal(), getIdUsuario(), getIdAlmacen(), getSubTotal(), getImpuestos(), getTipoDeCambio(), getIdSinIva(), getTipoTarjeta(), getEfectivo(), getObservaciones(), getTarjeta(), getIdVenta(), getDia(), getIdVentaEstatus()
     };
     return regresar;
   }

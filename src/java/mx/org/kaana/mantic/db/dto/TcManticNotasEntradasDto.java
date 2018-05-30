@@ -70,8 +70,8 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   private Long idUsuario;
   @Column (name="id_almacen")
   private Long idAlmacen;
-  @Column (name="subtotal")
-  private Double subtotal;
+  @Column (name="sub_total")
+  private Double subTotal;
   @Column (name="impuestos")
   private Double impuestos;
   @Column (name="tipo_de_cambio")
@@ -94,7 +94,7 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticNotasEntradasDto(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idDirecta, Date fechaRecepcion, String extras, Long idNotaEntrada, Date fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subtotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden) {
+  public TcManticNotasEntradasDto(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idDirecta, Date fechaRecepcion, String extras, Long idNotaEntrada, Date fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subTotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden) {
     setDescuentos(descuentos);
     setIdProveedor(idProveedor);
     setDescuento(descuento);
@@ -112,7 +112,7 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
     setFactura(factura);
     setIdUsuario(idUsuario);
     setIdAlmacen(idAlmacen);
-    setSubtotal(subtotal);
+    setSubTotal(subTotal);
     setImpuestos(impuestos);
     setTipoDeCambio(tipoDeCambio);
     setIdSinIva(idSinIva);
@@ -257,12 +257,12 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
     return idAlmacen;
   }
 
-  public void setSubtotal(Double subtotal) {
-    this.subtotal = subtotal;
+  public void setSubTotal(Double subTotal) {
+    this.subTotal = subTotal;
   }
 
-  public Double getSubtotal() {
-    return subtotal;
+  public Double getSubTotal() {
+    return subTotal;
   }
 
   public void setImpuestos(Double impuestos) {
@@ -362,7 +362,7 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdAlmacen());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getSubtotal());
+		regresar.append(getSubTotal());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImpuestos());
 		regresar.append(Constantes.SEPARADOR);
@@ -399,7 +399,7 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
 		regresar.put("factura", getFactura());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idAlmacen", getIdAlmacen());
-		regresar.put("subtotal", getSubtotal());
+		regresar.put("subTotal", getSubTotal());
 		regresar.put("impuestos", getImpuestos());
 		regresar.put("tipoDeCambio", getTipoDeCambio());
 		regresar.put("idSinIva", getIdSinIva());
@@ -412,7 +412,7 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescuentos(), getIdProveedor(), getDescuento(), getIdOrdenCompra(), getIdDirecta(), getFechaRecepcion(), getExtras(), getIdNotaEntrada(), getFechaFactura(), getIdNotaEstatus(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getFactura(), getIdUsuario(), getIdAlmacen(), getSubtotal(), getImpuestos(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden()
+    getDescuentos(), getIdProveedor(), getDescuento(), getIdOrdenCompra(), getIdDirecta(), getFechaRecepcion(), getExtras(), getIdNotaEntrada(), getFechaFactura(), getIdNotaEstatus(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getFactura(), getIdUsuario(), getIdAlmacen(), getSubTotal(), getImpuestos(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden()
     };
     return regresar;
   }

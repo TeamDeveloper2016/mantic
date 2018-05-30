@@ -66,10 +66,10 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
   private Long cantidad;
   @Column (name="id_articulo")
   private Long idArticulo;
-  @Column (name="total_descuentos")
-  private Double totalDescuentos;
-  @Column (name="total_impuestos")
-  private Double totalImpuestos;
+  @Column (name="descuentos")
+  private Double descuentos;
+  @Column (name="impuestos")
+  private Double impuestos;
 
   public TcManticNotasDetallesDto() {
     this(new Long(-1L));
@@ -80,7 +80,7 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticNotasDetallesDto(String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, Long idNotaEntrada, String nombre, Double importe, Double iva, Long idNotaDetalle, Double subTotal, Long cantidad, Long idArticulo, Double totalDescuentos, Double totalImpuestos) {
+  public TcManticNotasDetallesDto(String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, Long idNotaEntrada, String nombre, Double importe, Double iva, Long idNotaDetalle, Double subTotal, Long cantidad, Long idArticulo, Double descuentos, Double impuestos) {
     setCodigo(codigo);
     setUnidadMedida(unidadMedida);
     setCosto(costo);
@@ -96,8 +96,8 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
     setSubTotal(subTotal);
     setCantidad(cantidad);
     setIdArticulo(idArticulo);
-    setTotalDescuentos(totalDescuentos);
-    setTotalImpuestos(totalImpuestos);
+    setDescuentos(descuentos);
+    setImpuestos(impuestos);
   }
 	
   public void setCodigo(String codigo) {
@@ -220,20 +220,20 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
     return idArticulo;
   }
 
-  public void setTotalDescuentos(Double totalDescuentos) {
-    this.totalDescuentos = totalDescuentos;
+  public void setDescuentos(Double descuentos) {
+    this.descuentos = descuentos;
   }
 
-  public Double getTotalDescuentos() {
-    return totalDescuentos;
+  public Double getDescuentos() {
+    return descuentos;
   }
 
-  public void setTotalImpuestos(Double totalImpuestos) {
-    this.totalImpuestos = totalImpuestos;
+  public void setImpuestos(Double impuestos) {
+    this.impuestos = impuestos;
   }
 
-  public Double getTotalImpuestos() {
-    return totalImpuestos;
+  public Double getImpuestos() {
+    return impuestos;
   }
 
   @Transient
@@ -281,9 +281,9 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdArticulo());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getTotalDescuentos());
+		regresar.append(getDescuentos());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getTotalImpuestos());
+		regresar.append(getImpuestos());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -306,15 +306,15 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
 		regresar.put("subTotal", getSubTotal());
 		regresar.put("cantidad", getCantidad());
 		regresar.put("idArticulo", getIdArticulo());
-		regresar.put("totalDescuentos", getTotalDescuentos());
-		regresar.put("totalImpuestos", getTotalImpuestos());
+		regresar.put("descuentos", getDescuentos());
+		regresar.put("impuestos", getImpuestos());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getCodigo(), getUnidadMedida(), getCosto(), getDescuento(), getSat(), getExtras(), getIdNotaEntrada(), getNombre(), getImporte(), getRegistro(), getIva(), getIdNotaDetalle(), getSubTotal(), getCantidad(), getIdArticulo(), getTotalDescuentos(), getTotalImpuestos()
+    getCodigo(), getUnidadMedida(), getCosto(), getDescuento(), getSat(), getExtras(), getIdNotaEntrada(), getNombre(), getImporte(), getRegistro(), getIva(), getIdNotaDetalle(), getSubTotal(), getCantidad(), getIdArticulo(), getDescuentos(), getImpuestos()
     };
     return regresar;
   }

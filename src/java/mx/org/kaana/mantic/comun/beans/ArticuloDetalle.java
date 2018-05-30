@@ -30,10 +30,10 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
   private Timestamp registro;
   private String propio;
   private Double iva;
-  private Double totalImpuesto;
+  private Double impuestos;
   private Double subTotal;
   private Long cantidad;
-  private Double totalDescuentos;
+  private Double descuentos;
   private String nombre;
   private String sat;
   private String unidadMedida;
@@ -46,7 +46,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		this(key, "", 0D, "", "", 0D, new Timestamp(Calendar.getInstance().getTimeInMillis()), "", 16D, 0D, 0D, 1L, 0D, "", "", "");
   }
 
-	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double totalImpuesto, Double subTotal, Long cantidad, Double totalDescuentos, String nombre, String sat, String unidadMedida) {
+	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Long cantidad, Double descuentos, String nombre, String sat, String unidadMedida) {
 		this.idArticulo=idArticulo;
 		this.codigo=codigo;
 		this.costo=costo;
@@ -56,10 +56,10 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		this.registro=registro;
 		this.propio=propio;
 		this.iva=iva;
-		this.totalImpuesto=totalImpuesto;
+		this.impuestos=impuestos;
 		this.subTotal=subTotal;
 		this.cantidad=cantidad;
-		this.totalDescuentos=totalDescuentos;
+		this.descuentos=descuentos;
 		this.nombre=nombre;
 		this.sat=sat;
 		this.unidadMedida=unidadMedida;
@@ -129,12 +129,12 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
     return iva;
   }
 
-  public void setTotalImpuesto(Double totalImpuesto) {
-    this.totalImpuesto = totalImpuesto;
+  public void setImpuestos(Double impuestos) {
+    this.impuestos = impuestos;
   }
 
-  public Double getTotalImpuesto() {
-    return totalImpuesto;
+  public Double getImpuestos() {
+    return impuestos;
   }
 
   public void setSubTotal(Double subTotal) {
@@ -161,12 +161,12 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
     return idArticulo;
   }
 
-  public void setTotalDescuentos(Double totalDescuentos) {
-    this.totalDescuentos = totalDescuentos;
+  public void setDescuentos(Double descuentos) {
+    this.descuentos = descuentos;
   }
 
-  public Double getTotalDescuentos() {
-    return totalDescuentos;
+  public Double getDescuentos() {
+    return descuentos;
   }
 
 	public String getNombre() {
@@ -223,7 +223,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIva());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getTotalImpuesto());
+		regresar.append(getImpuestos());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getSubTotal());
 		regresar.append(Constantes.SEPARADOR);
@@ -231,13 +231,14 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdArticulo());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getTotalDescuentos());
+		regresar.append(getDescuentos());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
     regresar.append("]");
   	return regresar.toString();
   }
 
+	@Override
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("codigo", getCodigo());
@@ -248,15 +249,16 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		regresar.put("registro", getRegistro());
 		regresar.put("propio", getPropio());
 		regresar.put("iva", getIva());
-		regresar.put("totalImpuesto", getTotalImpuesto());
+		regresar.put("impuestos", getImpuestos());
 		regresar.put("subTotal", getSubTotal());
 		regresar.put("cantidad", getCantidad());
 		regresar.put("idArticulo", getIdArticulo());
-		regresar.put("totalDescuentos", getTotalDescuentos());
+		regresar.put("descuentos", getDescuentos());
 		regresar.put("nombre", getNombre());
   	return regresar;
   }
 
+	@Override
   public boolean isValid() {
   	return this.idArticulo!= null && this.idArticulo!=-1L;
   }

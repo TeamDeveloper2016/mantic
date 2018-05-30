@@ -164,8 +164,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(this.ultimo? "": "none").concat("' title='El articulo tiene un precio especial de un proveedor !'></i>");
 	}
 	
-	public void toPrepare(boolean conIva, Double tipoDeCambio, Long idProvedores) {
-		this.sinIva      = conIva;
+	public void toPrepare(boolean sinIva, Double tipoDeCambio, Long idProvedores) {
+		this.sinIva      = sinIva;
 		this.tipoDeCambio= tipoDeCambio;
 		this.idProveedor = idProvedores;
 	}
@@ -187,8 +187,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.importes.setIva(Numero.toRedondear((this.importes.getSubTotal()* (1+ porcentajeIva))- this.importes.getSubTotal()));
 		this.importes.setTotal(Numero.toRedondear(this.importes.getSubTotal()+ this.importes.getIva()));
 		this.setSubTotal(this.importes.getSubTotal());
-		this.setTotalImpuesto(this.importes.getIva());
-		this.setTotalDescuentos(this.importes.getDescuentos());
+		this.setImpuestos(this.importes.getIva());
+		this.setDescuentos(this.importes.getDescuentos());
 		this.setImporte(Numero.toRedondear(this.importes.getTotal()));
 	}
 
@@ -227,8 +227,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getSubTotal(), 
 			this.getCantidad(), 
 			this.getIdArticulo(), 
-			this.getTotalDescuentos(), 
-			this.getTotalImpuesto()
+			this.getDescuentos(), 
+			this.getImpuestos()
 		);
 	}
 
@@ -243,12 +243,12 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getImporte(), 
 			this.getPropio(), 
 			this.getIva(), 
-			this.getTotalImpuesto(), 
+			this.getImpuestos(), 
 			this.getSubTotal(), 
 			this.getCantidad(), 
 			-1L , /*idOrdenDetalle, */
 			this.getIdArticulo(), 
-			this.getTotalDescuentos()
+			this.getDescuentos()
 		);
 	}
 
