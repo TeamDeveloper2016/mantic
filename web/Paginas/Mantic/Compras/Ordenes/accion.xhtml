@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="#{manticComprasOrdendesAccion.attrs.nombreAccion} una orden de compra #{manticComprasOrdendesAccion.tipoOrden.titulo}"/>
 	<ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.janal.articulos.core-1.2.0.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.articulos.core-1.2.2.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:consecutivo'    : {validaciones: 'requerido', mascara: 'libre'},
@@ -22,7 +22,7 @@
 				'contenedorGrupos\\:idGasto'        : {validaciones: 'libre', mascara: 'libre'},
 				'contenedorGrupos\\:articulos'      : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
 				'contenedorGrupos\\:total'          : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
-				'contenedorGrupos\\:tipoDeCambio'   : {validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'flotante', grupo: 'articulo'},			
+				'contenedorGrupos\\:tipoDeCambio'   : {validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'articulo'},			
 				'contenedorGrupos\\:descuento'      : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'articulo'},			
 				'contenedorGrupos\\:extra'          : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'articulo'},			
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
@@ -165,7 +165,7 @@
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 											  <p:outputLabel for="tipoDeCambio" value="Tipo de cambio (#{manticComprasOrdendesAccion.attrs.proveedor.moneda}):" rendered="#{manticComprasOrdendesAccion.attrs.proveedor.idTipoMoneda.toInteger ne 1}"/>
 												<p:inputText id="tipoDeCambio" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticComprasOrdendesAccion.adminOrden.orden.tipoDeCambio}" rendered="#{manticComprasOrdendesAccion.attrs.proveedor.idTipoMoneda.toInteger ne 1}">
-													<p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.filas) @(.recalculo)" onstart="return !janal.cantidad($('#contenedorGrupos\\:tipoDeCambio'), '1').error;"/>
+													<p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.filas) @(.recalculo)" onstart="return !janal.precio($('#contenedorGrupos\\:tipoDeCambio'), '1').error;"/>
 												</p:inputText>	
 											</p:panelGrid>	
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
@@ -202,7 +202,7 @@
 												<div class="ui-grid-row janal-grid-row">
 													<div class="ui-grid-col-12" style="padding-right: 14px;">
   	 										  	<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
-														<p:autoComplete id="codigos" widgetVar="submenu" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticComprasOrdendesAccion.attrs.articulo}" completeMethod="#{manticComprasOrdendesAccion.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2">
+														<p:autoComplete id="codigos" widgetVar="submenu" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticComprasOrdendesAccion.attrs.articulo}" completeMethod="#{manticComprasOrdendesAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2"  maxResults="10">
 															<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
 															<f:facet name="itemtip">
 																<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
@@ -231,7 +231,14 @@
 												<f:facet name="header">
 													<h:outputText value="Articulo"/>
 												</f:facet>
-												<h:outputText id="nombres" value="#{row['nombre']}" title="Código propio: #{row['propio']}" escape="false"/>
+												<h:outputText id="nombres" value="[#{row['codigo']}] #{row['nombre']}" title="Código propio: #{row['propio']}  Existencias almacen: #{row['stock']}" escape="false"/>
+											</p:column>		
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+												<f:facet name="header">
+													<h:outputText value="Cantidad"/>
+												</f:facet>
+												<p:outputLabel value="#{row['cantidad']}"/>
+												<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.cantidad($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
 											</p:column>		
 											<p:column class="MarAuto Responsive janal-wid-10">
 												<f:facet name="header">
@@ -251,13 +258,6 @@
 												    <h:outputText value="#{row['costoMayorMenor']}" escape="false"/>
 												   </div>
 												</div>	
-											</p:column>		
-											<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
-												<f:facet name="header">
-													<h:outputText value="Cantidad"/>
-												</f:facet>
-												<p:outputLabel value="#{row['cantidad']}"/>
-												<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.cantidad($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 												<f:facet name="header">

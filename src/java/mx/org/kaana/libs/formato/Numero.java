@@ -68,15 +68,26 @@ public final class Numero {
     return numberString;
   }; // redondea
 
-  public static String redondear(double valor){
+  public static String redondear(double valor) {
     int operador= valor< 0? -1: 1;
     valor= operador* (Math.floor(Math.abs(valor)*100+ 0.5001)/100.0);
+    return String.valueOf(valor);
+  } // redondear
+
+  public static String toTruncate(double valor) {
+    int operador= valor< 0? -1: 1;
+    valor= operador* (Math.floor(Math.abs(valor)*100000+ 0.5000001)/100000.0);
     return String.valueOf(valor);
   } // redondear
 
   public static double toRedondear(double valor) {
     int operador= valor< 0? -1: 1;
     return operador* (Math.floor(Math.abs(valor)*100+ 0.5001)/100.0);
+  } // redondear
+
+  public static double toRedondearSat(double valor) {
+    int operador= valor< 0? -1: 1;
+    return operador* (Math.floor(Math.abs(valor)*100000+ 0.50000001)/100000.0);
   } // redondear
 
   private static Number getNumber(Class objeto, String value) {

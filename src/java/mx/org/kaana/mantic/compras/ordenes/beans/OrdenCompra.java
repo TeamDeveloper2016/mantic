@@ -28,7 +28,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 	}
 
 	public OrdenCompra(Long key) {
-		this(-1L, 0D, -1L, -1L, "0", -1L, "0", new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", 2L, 0D, 1L, new Date(Calendar.getInstance().getTimeInMillis()), 1L, -1L, 0D, 0D, 10D, 1L, "", -1L, 1L);
+		this(-1L, 0D, -1L, -1L, "0", -1L, "0", new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", 2L, 0D, 1L, new Date(Calendar.getInstance().getTimeInMillis()), 1L, -1L, 0D, 0D, 1D, 2L, "", -1L, 1L);
 	}
 
 	public OrdenCompra(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Long idOrdenEstatus, Date entregaEstimada, Long idUsuario, Long idAlmacen, Double impuestos, Double subTotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden) {

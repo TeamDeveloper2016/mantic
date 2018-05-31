@@ -96,6 +96,17 @@
         where      
           id_almacen = {idAlmacen} and id_articulo = {idArticulo} and ejercicio = {ejercicio} and date_format(registro, '%Y%c%d%H%i%S')= '{registro}'
       </select>
+      <select id="stock">
+        select      
+          stock
+        from      
+          tc_mantic_inventarios
+        where      
+          id_almacen = {idAlmacen} 
+				  and id_articulo = {idArticulo}
+				order by
+				 registro desc
+      </select>
 			<select id="inventario">
 				select
 				  tc_mantic_inventarios.id_inventario as id_key,
@@ -771,6 +782,24 @@
           tc_mantic_articulos_codigos
         where      
           codigo = '{codigo}' and id_articulo_codigo = {idArticuloCodigo} and id_articulo = {idArticulo}
+      </select>
+      <select id="propio">
+        select      
+          codigo
+        from      
+          tc_mantic_articulos_codigos
+        where      
+          id_articulo = {idArticulo} 
+          and id_principal= 1
+      </select>
+      <select id="codigo">
+        select      
+          codigo
+        from      
+          tc_mantic_articulos_codigos
+        where      
+          id_articulo = {idArticulo}
+			    and id_proveedor= {idProveedor}
       </select>
 			<select id="maximo">
         select      

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.formato.Cadena;
@@ -45,33 +46,45 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 		this.adminOrden=adminOrden;
 	}
 
-  private void toMoveData(UISelectEntity articulo, Integer index) {
+  private void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
 		Articulo temporal= this.adminOrden.getArticulos().get(index);
-		if(articulo.size()> 1) {
-			this.doSearchArticulo(articulo.toLong("idArticulo"), index);
-			temporal.setKey(articulo.toLong("idArticulo"));
-			temporal.setIdArticulo(articulo.toLong("idArticulo"));
-			temporal.setIdProveedor(articulo.toLong("idProveedor"));
-			temporal.setIdRedondear(articulo.toLong("idRedondear"));
-			temporal.setCodigo(articulo.toString("propio"));
-			temporal.setPropio(articulo.toString("propio"));
-			temporal.setNombre(articulo.toString("nombre"));
-			temporal.setValor(articulo.toDouble("precio"));
-			temporal.setIva(articulo.toDouble("iva"));
-			temporal.setDescuento(this.adminOrden.getDescuento());
-			temporal.setExtras(this.adminOrden.getExtras());
-			temporal.setCantidad(1L);
-			temporal.setUltimo(this.attrs.get("ultimo")!= null);
-			temporal.setSolicitado(this.attrs.get("solicitado")!= null);
-			if(index== this.adminOrden.getArticulos().size()- 1) {
-				this.adminOrden.getArticulos().add(new Articulo(-1L));
-				RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
+		Map<String, Object> params= new HashMap<>();
+		try {
+			if(articulo.size()> 1) {
+				this.doSearchArticulo(articulo.toLong("idArticulo"), index);
+				params.put("idArticulo", articulo.toLong("idArticulo"));
+				params.put("idProveedor", this.adminOrden.getIdProveedor());
+				params.put("idAlmacen", this.adminOrden.getIdAlmacen());
+				temporal.setKey(articulo.toLong("idArticulo"));
+				temporal.setIdArticulo(articulo.toLong("idArticulo"));
+				temporal.setIdProveedor(this.adminOrden.getIdProveedor());
+				temporal.setIdRedondear(articulo.toLong("idRedondear"));
+				Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
+				temporal.setCodigo(codigo== null? "": codigo.toString());
+				temporal.setPropio(articulo.toString("propio"));
+				temporal.setNombre(articulo.toString("nombre"));
+				temporal.setValor(articulo.toDouble("precio"));
+				temporal.setIva(articulo.toDouble("iva"));
+				temporal.setDescuento(this.adminOrden.getDescuento());
+				temporal.setExtras(this.adminOrden.getExtras());
+				temporal.setCantidad(1L);
+				temporal.setUltimo(this.attrs.get("ultimo")!= null);
+				temporal.setSolicitado(this.attrs.get("solicitado")!= null);
+				Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+				temporal.setStock(stock== null? 0L: stock.toLong());
+				if(index== this.adminOrden.getArticulos().size()- 1) {
+					this.adminOrden.getArticulos().add(new Articulo(-1L));
+					RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
+				} // if	
+				RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
+				this.adminOrden.toCalculate();
 			} // if	
-			RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
-			this.adminOrden.toCalculate();
-		} // if	
-		else
-			temporal.setNombre("<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
+			else
+				temporal.setNombre("<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
+		} // try
+		finally {
+			Methods.clean(params);
+		}
 	}
 	
 	public void doUpdateArticulo(String codigo, Integer index) {
@@ -89,7 +102,6 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
         articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L);
 			else
         articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 20L);
-      //List<UISelectEntity> articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "codigos", params, columns);
 			UISelectEntity articulo= UIBackingUtilities.toFirstKeySelectEntity(articulos);
 			if(articulo.size()> 1) {
 				int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(articulo.toLong("idArticulo")));
@@ -305,30 +317,45 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 	public void toAddArticulo(UISelectEntity seleccionado) throws Exception {
 		Long idOrdenDetalle= new Long((int)(Math.random()*10000));
   	this.doSearchArticulo(seleccionado.toLong("idArticulo"), 0);
-		Articulo item= new Articulo(
-			(Boolean)this.attrs.get("sinIva"),
-			this.getAdminOrden().getTipoDeCambio(),
-			seleccionado.toString("nombre"), 
-			seleccionado.toString("codigo"),
-			seleccionado.toDouble("precio"),
-			this.getAdminOrden().getDescuento(), 
-			-1L,
-			this.getAdminOrden().getExtras(), 
-			0D,
-			seleccionado.toString("propio"),
-			seleccionado.toDouble("iva"), 
-			0D,
-			0D,
-			seleccionado.toLong("cantidad"), 
-			-1* idOrdenDetalle, 
-			seleccionado.toLong("idArticulo"), 
-			0.0,
-			((UISelectEntity)this.attrs.get("idProveedor")).getKey(),
-		  this.attrs.get("ultimo")!= null,
-		  this.attrs.get("solicitado")!= null);
-		if(this.getAdminOrden().add(item))
-			RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
-		RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ item.toMap()+ "');");
+		Map<String, Object> params= null;
+		Value codigo, stock       = null;
+		try {
+			params=new HashMap<>();
+			params.put("idArticulo", seleccionado.toLong("idArticulo"));
+			params.put("idProveedor", this.adminOrden.getIdProveedor());
+			params.put("idAlmacen", this.adminOrden.getIdAlmacen());
+			codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
+  		stock = (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+			Articulo item= new Articulo(
+				(Boolean)this.attrs.get("sinIva"),
+				this.getAdminOrden().getTipoDeCambio(),
+				seleccionado.toString("nombre"), 
+				codigo== null? "": codigo.toString(),
+				seleccionado.toDouble("precio"),
+				this.getAdminOrden().getDescuento(), 
+				-1L,
+				this.getAdminOrden().getExtras(), 
+				0D,
+				seleccionado.toString("propio"),
+				seleccionado.toDouble("iva"), 
+				0D,
+				0D,
+				seleccionado.toLong("cantidad"), 
+				-1* idOrdenDetalle, 
+				seleccionado.toLong("idArticulo"), 
+				0.0,
+				((UISelectEntity)this.attrs.get("idProveedor")).getKey(),
+				this.attrs.get("ultimo")!= null,
+				this.attrs.get("solicitado")!= null,
+				stock== null? 0L: stock.toLong()
+			);
+			if(this.getAdminOrden().add(item))
+				RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
+			RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ item.toMap()+ "');");
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
 	}
 	
 	public void doFaltanteArticulo() {

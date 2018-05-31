@@ -38,6 +38,9 @@
 		VK_ESC      : 27,
 		VK_ASTERISK : 106,
 		VK_MINUS    : 109,
+		VK_COMA     : 188,
+		VK_OPEN     : 122,
+		VK_CLOSE    : 123,
 		VK_PLUS     : 107,
 		VK_DIV      : 111,
 		VK_POINT    : 110,
@@ -47,7 +50,7 @@
 		VK_PIPE     : 220,
 		VK_CTRL     : 17,
 		VK_MAYOR    : 226,
-	  change      : [13, 106, 111, 107, 110, 27, 226, 189, 220],
+	  change      : [13, 27, 106, 107, 110, 111, 188, 189, 191, 220, 222, 226],
 		cursor: {
 			top: 1, // el top debera ser elementos que van de 0 a n-1
 			index: 0
@@ -107,7 +110,7 @@
 					case $articulos.VK_ENTER:
 						return $articulos.calculate($(this));
 						break;
-					case $articulos.VK_ESC:
+					case $articulos.VK_MINUS:
 						return $articulos.reset($(this));
 						break;
 					case $articulos.VK_REST:
@@ -146,14 +149,14 @@
 					case $articulos.VK_REST:
 						return $articulos.point();
 						break;
-					case $articulos.VK_ESC:
+					case $articulos.VK_MINUS:
 						if($('ul.ui-autocomplete-items:visible').length<= 0)
 						  return $articulos.clean();
 						break;
 					case $articulos.VK_PIPE:
 						return $articulos.search();
 						break;
-					case $articulos.VK_MINUS:
+					case $articulos.VK_COMA:
 						$articulos.leavePage= true;
 						if($('ul.ui-autocomplete-items:visible').length<= 0 && confirm('¿ Esta seguro que desea terminar con la captura ?')) {
 						  $('#aceptar').click();
@@ -324,7 +327,7 @@
 		},
 		find: function() {
 			var value = this.get().trim();
-			if(value.length> 0)
+			if(value.length> 0 && !this.valid())
 			  locate(value, this.cursor.index);
 			return false;
 		},
