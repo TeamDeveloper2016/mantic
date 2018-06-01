@@ -14,7 +14,6 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.BouncyEncryption;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.clientes.bean.ClienteDomicilio;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaDomicilio;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.catalogos.personas.beans.RegistroPersona;
