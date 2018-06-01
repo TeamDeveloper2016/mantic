@@ -115,9 +115,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 						this.registroCliente.doConsultarRepresentante();
 					} // if
           break;
-      } // switch 
-			//if(eaccion.equals(EAccion.CONSULTAR))
-				//RequestContext.getCurrentInstance().execute("readingMode();");
+      } // switch 			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
