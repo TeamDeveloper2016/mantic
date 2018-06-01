@@ -57,12 +57,13 @@
     logger      : false,
     stage       : 'desarrollo',
 		source      : '/resources/janal/', /* /janal/ inside of jar file */ /* '/resources/janal/ inside of webapp */
+		decimals    : 4,
     init: function(root) {
       $self= this;
       $self.console('Janal.Control.Function.init');
       if(typeof(root)!== 'undefined')
         this.root   = root;
-      $self.load(0, ['/resources/janal/core/jquery.janal.sticky.min-1.0.0.js','/resources/janal/js/jquery.janal.menu-2.0.1.js','/resources/janal/core/jquery.longclick-1.0.0.js', '/resources/janal/core/jquery.validate.min-1.15.0.js', '/resources/janal/core/jquery.meio.mask.min-1.1.15.js', '/resources/janal/core/jquery.janal.fns-1.2.4.js']);
+      $self.load(0, ['/resources/janal/core/jquery.janal.sticky.min-1.0.0.js','/resources/janal/js/jquery.janal.menu-2.0.1.js','/resources/janal/core/jquery.longclick-1.0.0.js', '/resources/janal/core/jquery.validate.min-1.15.0.js', '/resources/janal/core/jquery.meio.mask.min-1.1.15.js', '/resources/janal/core/jquery.janal.fns-1.2.5.js']);
       $self.console('Janal.Control.Function.init resource loaded');
     },
     dateFormat: function(format) {
@@ -329,7 +330,7 @@
 				} // else	
 				if(text.trim().length> 0)
 					text= text.substring(0, text.length- 2);
-				return {"suma": regresar.toFixed(2), "text": text, "error": text.length> 0};
+				return {"suma": regresar.toFixed(this.decimals), "text": text, "error": text.length> 0};
 		 },
 		 cantidad: function(element, value) {
 				var val= $(element)? $(element).val().trim(): value;
@@ -347,13 +348,13 @@
 		 precio: function(element, value) {
 				var val= $(element)? $(element).val().trim(): value;
 				if(val=== 'undefined' || val.length=== 0) {
-					$(element).val(parseFloat(value).toFixed(2));
+					$(element).val(parseFloat(value).toFixed(this.decimals));
 				} // if	
 				else {
 					if(Number.isNaN(parseFloat(val, 10)) || parseFloat(val, 10)< parseFloat(value, 10))
-						$(element).val(parseFloat(value).toFixed(2));
+						$(element).val(parseFloat(value).toFixed(this.decimals));
 					else
-						$(element).val(parseFloat(val, 10).toFixed(2));
+						$(element).val(parseFloat(val, 10).toFixed(this.decimals));
 				} // else
 			  return {"value": $(element).val(), "error": false};	
 		 },
@@ -1112,7 +1113,7 @@
       $parent.info(id, msg);
     }, // alert
     version: function() {
-      return '0.1.5.9';
+      return '0.1.6.0';
     }, // version
     align: function(pixels) {
       try {

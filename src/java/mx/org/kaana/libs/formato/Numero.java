@@ -13,9 +13,13 @@ import java.lang.reflect.Constructor;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public final class Numero {
-
+	
+  private static final Log LOG=LogFactory.getLog(Numero.class);
+	
   public static final int MONEDA_CON_DECIMALES= 1;
   public static final int MILES_CON_DECIMALES = 2;
   public static final int MILES_SIN_DECIMALES = 3;
@@ -74,11 +78,22 @@ public final class Numero {
     return String.valueOf(valor);
   } // redondear
 
-  public static String toTruncate(double valor) {
+  public static String redondearSat(double valor) {
     int operador= valor< 0? -1: 1;
     valor= operador* (Math.floor(Math.abs(valor)*100000+ 0.5000001)/100000.0);
     return String.valueOf(valor);
   } // redondear
+
+  public static String toTruncate(double valor, int decimals) {
+    int operador= valor< 0? -1: 1;
+    valor= operador* (Math.floor(Math.abs(valor)*100000+ 0.5000001)/100000.0);
+		String regresar= String.valueOf(valor);
+    return regresar.indexOf(".")> 0? regresar.substring(0, regresar.indexOf(".")+ decimals+ 1): regresar;
+  } // redondear
+
+  public static String toTruncate(double valor) {
+		return toTruncate(valor, 2);
+	}
 
   public static double toRedondear(double valor) {
     int operador= valor< 0? -1: 1;
@@ -157,4 +172,12 @@ public final class Numero {
     return numeroEntero;
   }
 
-}; // Numero
+	public static void main(String ... args) {
+    LOG.info(10D/3D);		
+    LOG.info(Numero.toRedondearSat(3.123455));		
+    LOG.info(Numero.toRedondearSat(10D/3D));		
+    LOG.info(Numero.toTruncate(10D/3D));		
+    LOG.info(Numero.toTruncate(3.123455, 3));		
+	}	
+	
+} // Numero

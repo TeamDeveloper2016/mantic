@@ -185,23 +185,23 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		double porcentajeIva = this.getIva()/ 100;       
 		double costoMoneda   = this.getCosto()* this.tipoDeCambio;
 		double costoReal     = this.getCantidad()* costoMoneda;
-		this.importes.setImporte(Numero.toRedondear(costoReal));
+		this.importes.setImporte(Numero.toRedondearSat(costoReal));
 		Descuentos descuentos= new Descuentos(this.importes.getImporte(), this.getDescuento().concat(",").concat(this.getExtras()));
-		this.importes.setSubTotal(Numero.toRedondear(descuentos.toImporte()));
-		double temporal= Numero.toRedondear(this.importes.getImporte()- this.importes.getSubTotal());
-		this.importes.setDescuento(Numero.toRedondear(descuentos.toImporte(this.getDescuento())- this.importes.getSubTotal()));
+		this.importes.setSubTotal(Numero.toRedondearSat(descuentos.toImporte()));
+		double temporal= Numero.toRedondearSat(this.importes.getImporte()- this.importes.getSubTotal());
+		this.importes.setDescuento(Numero.toRedondearSat(descuentos.toImporte(this.getDescuento())- this.importes.getSubTotal()));
 		this.importes.setExtra(temporal- this.importes.getDescuento());
     if(this.sinIva) {
-	  	this.importes.setIva(Numero.toRedondear(this.importes.getSubTotal()- (this.importes.getSubTotal()/(1+ porcentajeIva))));
-	  	this.importes.setSubTotal(Numero.toRedondear(this.importes.getSubTotal()- this.importes.getIva()));
+	  	this.importes.setIva(Numero.toRedondearSat(this.importes.getSubTotal()- (this.importes.getSubTotal()/(1+ porcentajeIva))));
+	  	this.importes.setSubTotal(Numero.toRedondearSat(this.importes.getSubTotal()- this.importes.getIva()));
 		} // else	
 		else 
-	  	this.importes.setIva(Numero.toRedondear((this.importes.getSubTotal()* (1+ porcentajeIva))- this.importes.getSubTotal()));
-		this.importes.setTotal(Numero.toRedondear(this.importes.getSubTotal()+ this.importes.getIva()));
+	  	this.importes.setIva(Numero.toRedondearSat((this.importes.getSubTotal()* (1+ porcentajeIva))- this.importes.getSubTotal()));
+		this.importes.setTotal(Numero.toRedondearSat(this.importes.getSubTotal()+ this.importes.getIva()));
 		this.setSubTotal(this.importes.getSubTotal());
 		this.setImpuestos(this.importes.getIva());
 		this.setDescuentos(this.importes.getDescuentos());
-		this.setImporte(Numero.toRedondear(this.importes.getTotal()));
+		this.setImporte(Numero.toRedondearSat(this.importes.getTotal()));
 	}
 
 	public void toCalculate(boolean sinIva, double tipoDeCambio) {
@@ -221,7 +221,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	
 	private double toDiferencia() {
 		Descuentos descuentos= new Descuentos(this.getCosto(), this.getDescuento().concat(",").concat(this.getExtras()));
-  	return Numero.toRedondear(descuentos.toImporte()- this.valor);
+  	return Numero.toRedondearSat(descuentos.toImporte()- this.valor);
 	}
 	
 	public TcManticNotasDetallesDto toNotaDetalle() {

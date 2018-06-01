@@ -176,12 +176,12 @@ $.mask.masks = $.extend($.mask.masks, {
 		  if(typeof(params.default)=== 'undefined')
 				params.default= '0';
       if (janal.empty(value))
-				$(element).val(parseFloat(params.default).toFixed(2));
+				$(element).val(parseFloat(params.default).toFixed(janal.decimals));
 		  else		
         if(Number.isNaN(parseFloat(value, 10)) || parseFloat(value, 10)< parseFloat(params.default, 10))
-					$(element).val(parseFloat(params.default).toFixed(2));
+					$(element).val(parseFloat(params.default).toFixed(janal.decimals));
 				else
-					$(element).val(parseFloat(value, 10).toFixed(2)); 
+					$(element).val(parseFloat(value, 10).toFixed(janal.decimals)); 
       return true;
 		}, function(params, element) {
       return 'No se logro verificar el valor del porcentaje.';

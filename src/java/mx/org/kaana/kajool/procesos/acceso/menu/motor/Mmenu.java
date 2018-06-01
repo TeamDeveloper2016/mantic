@@ -51,14 +51,14 @@ public class Mmenu extends IBaseMenu implements Serializable{
 					getMenu().append(treeObject.getUrl());
 					getMenu().append("\"><i class=\"");
 					getMenu().append(treeObject.getIcono());
-					getMenu().append(" janal-mmenu-click\"></i>");
+					getMenu().append(" janal-mmenu-click\">&nbsp;&nbsp;</i>");
 					getMenu().append(treeObject.getName());
 					getMenu().append("</a></li>");
 				} // if
 				else {
 					getMenu().append("<li><a style=\"font-size: 18px;font-family: titillium_webregular;\"><i class=\"");
 					getMenu().append(treeObject.getIcono());
-					getMenu().append("\"></i>          ");
+					getMenu().append("\">&nbsp;&nbsp;</i>");
 					getMenu().append(treeObject.getName());
 					getMenu().append("</a><ul>");
 					TreeNode treeNode=(TreeNode) treeObject;
