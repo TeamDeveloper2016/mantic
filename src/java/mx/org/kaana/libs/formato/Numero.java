@@ -1,9 +1,9 @@
-/*
- * Clase: Numero.java
- *
- * Creado: 21 de mayo de 2007, 12:16 AM
- *
- * Write by: alejandro.jimenez
+/**
+ * @company KAANA
+ * @project KAJOOL (Control system polls)
+ * @date 21/05/2015
+ * @time 10:28:10 PM
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
 package mx.org.kaana.libs.formato;
@@ -133,7 +133,7 @@ public final class Numero {
   }
 
   public static Integer getInteger(String value) {
-    return getInteger(value, new Integer(0));
+    return getInteger(value, 0);
   }
 
   public static Long getLong(String value, Long defecto) {
@@ -152,7 +152,7 @@ public final class Numero {
 
   public Short getShort(String value) {
     short number  = 0;
-    return getShort(value,new Short(number));
+    return getShort(value, number);
   }
 
   public static Byte getByte(String value,Byte defecto) {
@@ -162,7 +162,7 @@ public final class Numero {
 
   public static Byte getByte(String value) {
     byte number  = 0;
-    return getByte(value, new Byte(number));
+    return getByte(value, number);
   }
 
   public static Integer redondeaEnteroProximo(Double numero){

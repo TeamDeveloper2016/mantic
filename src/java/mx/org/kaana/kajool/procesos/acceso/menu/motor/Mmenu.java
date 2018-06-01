@@ -9,7 +9,6 @@ import java.util.List;
 import javax.faces.context.FacesContext;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.kajool.procesos.acceso.menu.reglas.IBaseMenu;
-import mx.org.kaana.libs.recurso.Configuracion;
 
 /**
  *@company KAANA
