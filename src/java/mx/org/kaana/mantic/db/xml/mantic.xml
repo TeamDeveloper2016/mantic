@@ -457,12 +457,12 @@
         where      
           id_unidad_medida = {idUnidadMedida} and id_empaque_unidad_medida = {idEmpaqueUnidadMedida} and id_empaque = {idEmpaque}
       </select>
-    </unit>
-    
+    </unit>    
      <unit id="TrManticEmpresaDomicilioDto">
       <select id="row">
         select      
-          *
+					tr_mantic_empresa_domicilio.id_empresa_domicilio as id_key,
+          tr_mantic_empresa_domicilio.*
         from      
           tr_mantic_empresa_domicilio
         where 
@@ -476,6 +476,15 @@
         where      
           id_usuario = {idUsuario} and id_tipo_domicilio = {idTipoDomicilio} and id_domicilio = {idDomicilio} and id_principal = {idPrincipal} and id_empresa_domicilio = {idEmpresaDomicilio} and id_empresa = {idEmpresa}
       </select>
+			<select id="maximo">
+        select      
+          max(id_empresa_domicilio) maximo
+        from      
+          tr_mantic_empresa_domicilio
+      </select>
+			<delete id="rows">
+         delete from tr_mantic_empresa_domicilio where id_empresa = {idEmpresa}
+      </delete>
     </unit>
     <unit id="TrManticEmpresaPersonalDto">
       <select id="row">
@@ -497,12 +506,12 @@
 			<delete id="rows">
 				delete from tr_mantic_empresa_personal where id_persona = {idPersona}
 			</delete>
-    </unit>
-    
+    </unit>    
     <unit id="TrManticEmpresaTipoContactoDto">
       <select id="row">
         select      
-          *
+          tr_mantic_empresa_tipo_contacto.id_empresa_tipo_contacto as id_key,
+					tr_mantic_empresa_tipo_contacto.*
         from      
           tr_mantic_empresa_tipo_contacto
         where 
@@ -516,8 +525,16 @@
         where      
           id_empresa_tipo_contacto = {idEmpresaTipoContacto} and id_empresa = {idEmpresa} and id_tipo_contacto = {idTipoContacto}
       </select>
-    </unit>
-    
+			<select id="maximo">
+        select      
+          max(id_empresa_tipo_contacto) maximo
+        from      
+          tr_mantic_empresa_tipo_contacto
+      </select>
+			<delete id="rows">
+         delete from tr_mantic_empresa_tipo_contacto where id_empresa = {idEmpresa}
+      </delete> 
+    </unit>    
      <unit id="TrManticOrdenCompraCargoDto">
       <select id="row">
         select      
