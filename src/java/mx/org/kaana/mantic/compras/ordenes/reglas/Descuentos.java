@@ -57,15 +57,14 @@ public class Descuentos implements Serializable {
 			if(!token.equals("0"))
 			  regresar*= 1-(Double.valueOf(token)/100);
 		} // for
-		return regresar; 
+		return regresar== 1? 0: regresar; 
 	}
 
   public double toImporte(String porcentajes, char token) {
 		this.porcentajes= porcentajes;
 		this.token      = token;
 		split();
-		double regresar= getFactor()* this.importe;
-	  return regresar== 1? 0: regresar; 
+	  return getFactor()* this.importe; 
 	}
 	
   public double toImporte(String porcentajes) {

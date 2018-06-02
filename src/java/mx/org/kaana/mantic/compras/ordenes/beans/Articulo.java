@@ -187,11 +187,16 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		double costoReal     = this.getCantidad()* costoMoneda;
 		this.importes.setImporte(Numero.toRedondearSat(costoReal));
 		Descuentos descuentos= new Descuentos(this.importes.getImporte(), this.getDescuento().concat(",").concat(this.getExtras()));
-		this.importes.setSubTotal(Numero.toRedondearSat(descuentos.toImporte()));
-		double temporal= Numero.toRedondearSat(this.importes.getImporte()- this.importes.getSubTotal());
-		this.importes.setDescuento(Numero.toRedondearSat(descuentos.toImporte(this.getDescuento())- this.importes.getSubTotal()));
-		this.importes.setExtra(temporal- this.importes.getDescuento());
-    if(this.sinIva) {
+		double temporal= descuentos.toImporte();
+		this.importes.setSubTotal(Numero.toRedondearSat(temporal== 0? this.importes.getImporte(): temporal));
+	  
+		temporal= descuentos.toImporte(this.getDescuento());
+		this.importes.setDescuento(Numero.toRedondearSat(temporal> 0? this.importes.getImporte()- temporal: 0D));
+		
+		temporal= descuentos.toImporte(this.getExtras());
+		this.importes.setExtra(Numero.toRedondearSat(temporal> 0? (this.importes.getImporte()- this.importes.getSubTotal())- this.importes.getDescuento(): 0D));
+
+		if(this.sinIva) {
 	  	this.importes.setIva(Numero.toRedondearSat(this.importes.getSubTotal()- (this.importes.getSubTotal()/(1+ porcentajeIva))));
 	  	this.importes.setSubTotal(Numero.toRedondearSat(this.importes.getSubTotal()- this.importes.getIva()));
 		} // else	
