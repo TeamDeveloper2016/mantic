@@ -934,5 +934,29 @@
 					 tc_mantic_proveedores_bancos.id_tipo_cuenta= {idTipoCuenta}
 			</select>
 		</unit>
+		<unit id="VistaEmpresasDto">
+			<select id="row">
+				select 
+					tc_mantic_empresas.id_empresa as id_key,
+					tc_mantic_empresas.id_tipo_empresa,
+					tc_mantic_empresas.clave, 
+					tc_mantic_empresas.nombre,
+					tc_mantic_empresas.titulo,
+					tc_mantic_tipos_empresas.nombre tipo 
+				from 
+					tc_mantic_empresas
+				inner join 
+					tc_mantic_tipos_empresas on tc_mantic_tipos_empresas.id_tipo_empresa = tc_mantic_empresas.id_tipo_empresa
+				where 
+					upper(tc_mantic_empresas.clave) like upper('%{clave}%')
+				and 
+					upper(tc_mantic_empresas.nombre) like upper('%{nombre}%')
+				and
+					upper(tc_mantic_empresas.titulo) like upper('%{titulo}%')
+				and 
+					tc_mantic_tipos_empresas.id_tipo_empresa in ({tipoEmpresa}) 					
+				{sortOrder}
+			</select>
+		</unit>
 	</dml>    
 </process>
