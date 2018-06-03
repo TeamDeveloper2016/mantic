@@ -1418,7 +1418,8 @@
 	  <unit id="TcManticEmpresasDto">
       <select id="row">
         select      
-          *
+					tc_mantic_empresas.id_empresa as id_key,
+          tc_mantic_empresas.*
         from      
           tc_mantic_empresas
         where 
