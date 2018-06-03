@@ -1,7 +1,5 @@
 package mx.org.kaana.mantic.enums;
 
-import mx.org.kaana.kajool.enums.*;
-
 /**
  * @company KAANA
  * @project KAJOOL (Control system polls)
@@ -23,5 +21,4 @@ public enum ETipoEmpresa {
   public Long getIdTipoEmpresa() {
     return idTipoEmpresa;
   }
-
 }
