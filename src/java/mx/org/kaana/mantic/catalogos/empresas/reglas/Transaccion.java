@@ -74,8 +74,8 @@ public class Transaccion extends IBaseTnx{
         this.registroEmpresa.getEmpresa().setIdUsuarios(JsfBase.getIdUsuario());
         this.registroEmpresa.getEmpresa().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
         idEmpresa = DaoFactory.getInstance().insert(sesion, this.registroEmpresa.getEmpresa());
-        if (registraClientesDomicilios(sesion, idEmpresa)) {
-					regresar = registraClientesTipoContacto(sesion, idEmpresa);
+        if (registraEmpresaDomicilios(sesion, idEmpresa)) {
+					regresar = registraEmpresaTipoContacto(sesion, idEmpresa);
 					if(this.registroEmpresa.getEmpresa().getIdTipoEmpresa().equals(ETipoEmpresa.MATRIZ.getIdTipoEmpresa())){
 						this.registroEmpresa.getEmpresa().setIdEmpresaDepende(idEmpresa);
 						regresar= DaoFactory.getInstance().update(sesion, this.registroEmpresa.getEmpresa())>= 1L;
@@ -94,8 +94,8 @@ public class Transaccion extends IBaseTnx{
     Long idEmpresa = -1L;
     try {
       idEmpresa = this.registroEmpresa.getIdEmpresa();
-      if (registraClientesDomicilios(sesion, idEmpresa)) {
-				if (registraClientesTipoContacto(sesion, idEmpresa)) {
+      if (registraEmpresaDomicilios(sesion, idEmpresa)) {
+				if (registraEmpresaTipoContacto(sesion, idEmpresa)) {
 					regresar = DaoFactory.getInstance().update(sesion, this.registroEmpresa.getEmpresa()) >= 1L;
 				} // if
       } // if
@@ -127,7 +127,7 @@ public class Transaccion extends IBaseTnx{
     return regresar;
   } // eliminarCliente
 
-  private boolean registraClientesDomicilios(Session sesion, Long idEmpresa) throws Exception {
+  private boolean registraEmpresaDomicilios(Session sesion, Long idEmpresa) throws Exception {
     TrManticEmpresaDomicilioDto dto = null;
     ESql sqlAccion = null;
     int count = 0;
@@ -171,7 +171,7 @@ public class Transaccion extends IBaseTnx{
     return regresar;
   } // registraClientesDomicilios
 	
-	private boolean registraClientesTipoContacto(Session sesion, Long idEmpresa) throws Exception {
+	private boolean registraEmpresaTipoContacto(Session sesion, Long idEmpresa) throws Exception {
     TrManticEmpresaTipoContactoDto dto = null;
     ESql sqlAccion = null;
     int count = 0;
