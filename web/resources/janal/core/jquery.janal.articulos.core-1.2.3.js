@@ -5,8 +5,6 @@
  *time 11:15:55 PM
  *author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-
-
 (function(window) {
 	var jsArticulos;
 	
@@ -150,7 +148,8 @@
 						return $articulos.point();
 						break;
 					case $articulos.VK_MINUS:
-						if($('ul.ui-autocomplete-items:visible').length<= 0)
+						var txt= $(this).val().trim().length<= 0;
+						if(txt && $('ul.ui-autocomplete-items:visible').length<= 0)
 						  return $articulos.clean();
 						break;
 					case $articulos.VK_PIPE:
@@ -158,7 +157,8 @@
 						break;
 					case $articulos.VK_COMA:
 						$articulos.leavePage= true;
-						if($('ul.ui-autocomplete-items:visible').length<= 0 && confirm('¿ Esta seguro que desea terminar con la captura ?')) {
+						var txt= $(this).val().trim().length<= 0;
+						if(txt && $('ul.ui-autocomplete-items:visible').length<= 0 && confirm('¿ Esta seguro que desea terminar con la captura ?')) {
 						  $('#aceptar').click();
 						  return false;
 						} // if	
@@ -409,7 +409,7 @@
 			lookup();
 		},
 		back: function(title, count) {
-			alert('Se generó la '+ title+ ' con consecutivo: '+ count);
+			alert('Se genero la '+ title+ ' con consecutivo: '+ count);
 		}
 	});
 	

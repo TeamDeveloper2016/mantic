@@ -228,7 +228,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		Descuentos descuentos= new Descuentos(this.getCosto(), this.getDescuento().concat(",").concat(this.getExtras()));
 		double value= descuentos.toImporte();
 		value=  (value== 0? this.getCosto(): value)- this.valor; 
-  	return Numero.toRedondearSat(value* 100/ this.valor);
+  	return this.valor== 0? 0: Numero.toRedondearSat(value* 100/ this.valor);
 	}	
 
 	public TcManticNotasDetallesDto toNotaDetalle() {
