@@ -29,6 +29,7 @@ import mx.org.kaana.mantic.catalogos.empresas.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.empresas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.catalogos.empresas.beans.RegistroEmpresa;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
+import mx.org.kaana.mantic.enums.ETipoEmpresa;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.enums.ETiposDomicilios;
 
@@ -63,6 +64,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa"));
 			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin());
+			this.attrs.put("isMatriz", false);
       doLoad();      					
     } // try
     catch (Exception e) {
@@ -72,6 +74,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // init
 
 	private void loadCollections(){
+		loadTiposEmpresas();
 		loadTiposContactos();
 		loadTiposDomicilios();	
 		loadDomicilios();
@@ -107,6 +110,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 					} // if					
           break;
       } // switch 			
+			if(this.registroEmpresa.getEmpresa().getIdTipoEmpresa().equals(ETipoEmpresa.SUCURSAL.getIdTipoEmpresa())){
+				doLoadMatrices();
+				this.attrs.put("isMatriz", true);
+			} // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -651,4 +658,46 @@ public class Accion extends IBaseAttribute implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch
 	} // doActualizaDomicilio
+	
+	public void loadTiposEmpresas(){
+		List<UISelectItem> tiposEmpresas= null;
+		try {
+			tiposEmpresas= new ArrayList<>();
+			for(ETipoEmpresa tipoEmpresa: ETipoEmpresa.values())
+				tiposEmpresas.add(new UISelectItem(tipoEmpresa.getIdTipoEmpresa(), tipoEmpresa.name().toUpperCase()));
+			this.attrs.put("tiposEmpresas", tiposEmpresas);
+			this.registroEmpresa.getEmpresa().setIdTipoEmpresa(Long.valueOf(tiposEmpresas.get(0).getValue().toString()));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // loadTiposEmpresas
+	
+	public void doLoadMatrices(){
+		List<UISelectItem> matrices= null;
+		Map<String, Object> params = null;
+		List<String> campos       = null;
+		try {
+			if(this.registroEmpresa.getEmpresa().getIdTipoEmpresa().equals(ETipoEmpresa.SUCURSAL.getIdTipoEmpresa())){
+				params= new HashMap<>();
+				campos= new ArrayList<>();
+				params.put(Constantes.SQL_CONDICION, "id_tipo_empresa=".concat(ETipoEmpresa.MATRIZ.getIdTipoEmpresa().toString()));
+				campos.add("nombre");
+				matrices= UISelect.build("TcManticEmpresasDto", "row", params, campos, " ", EFormatoDinamicos.MAYUSCULAS);
+				this.attrs.put("matrices", matrices);
+				this.attrs.put("isMatriz", true);
+			} // if
+			else
+				this.attrs.put("isMatriz", false);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally{
+			Methods.clean(params);
+			Methods.clean(campos);
+		} // finally
+	} // doLoadMatrices
 }
