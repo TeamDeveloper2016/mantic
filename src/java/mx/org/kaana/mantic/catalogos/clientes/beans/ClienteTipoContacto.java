@@ -1,27 +1,27 @@
-package mx.org.kaana.mantic.catalogos.almacenes.bean;
+package mx.org.kaana.mantic.catalogos.clientes.beans;
 
 import mx.org.kaana.kajool.enums.ESql;
-import mx.org.kaana.mantic.db.dto.TrManticAlmacenTipoContactoDto;
+import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 
-public class AlmacenTipoContacto extends TrManticAlmacenTipoContactoDto{
+public class ClienteTipoContacto extends TrManticClienteTipoContactoDto{
 	
 	private static final long serialVersionUID = 4804251646663919847L;
 	private ESql sqlAccion;
 	private Boolean nuevo;
 
-	public AlmacenTipoContacto() {
+	public ClienteTipoContacto() {
 		this(-1L);
 	}
 
-	public AlmacenTipoContacto(Long key) {
+	public ClienteTipoContacto(Long key) {
 		this(key, ESql.UPDATE);
 	}
 	
-	public AlmacenTipoContacto(Long key, ESql sqlAccion) {
+	public ClienteTipoContacto(Long key, ESql sqlAccion) {
 		this(key, sqlAccion, false);
 	}
 	
-	public AlmacenTipoContacto(Long key, ESql sqlAccion, Boolean nuevo) {
+	public ClienteTipoContacto(Long key, ESql sqlAccion, Boolean nuevo) {
 		super(key);
 		this.sqlAccion= sqlAccion;
 		this.nuevo    = nuevo;

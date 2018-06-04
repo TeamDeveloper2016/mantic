@@ -1,27 +1,27 @@
-package mx.org.kaana.mantic.catalogos.articulos.bean;
+package mx.org.kaana.mantic.catalogos.almacenes.beans;
 
 import mx.org.kaana.kajool.enums.ESql;
-import mx.org.kaana.mantic.db.dto.TrManticArticuloPrecioSugeridoDto;
+import mx.org.kaana.mantic.db.dto.TrManticAlmacenTipoContactoDto;
 
-public class PrecioSugerido extends TrManticArticuloPrecioSugeridoDto{
+public class AlmacenTipoContacto extends TrManticAlmacenTipoContactoDto{
 	
-	private static final long serialVersionUID = 5136123009517907872L;
+	private static final long serialVersionUID = 4804251646663919847L;
 	private ESql sqlAccion;
 	private Boolean nuevo;
 
-	public PrecioSugerido() {
+	public AlmacenTipoContacto() {
 		this(-1L);
 	}
 
-	public PrecioSugerido(Long key) {
+	public AlmacenTipoContacto(Long key) {
 		this(key, ESql.UPDATE);
 	}
 	
-	public PrecioSugerido(Long key, ESql sqlAccion) {
+	public AlmacenTipoContacto(Long key, ESql sqlAccion) {
 		this(key, sqlAccion, false);
 	}
 	
-	public PrecioSugerido(Long key, ESql sqlAccion, Boolean nuevo) {
+	public AlmacenTipoContacto(Long key, ESql sqlAccion, Boolean nuevo) {
 		super(key);
 		this.sqlAccion= sqlAccion;
 		this.nuevo    = nuevo;
@@ -42,5 +42,4 @@ public class PrecioSugerido extends TrManticArticuloPrecioSugeridoDto{
 	public void setNuevo(Boolean nuevo) {
 		this.nuevo = nuevo;
 	}
-	
 }

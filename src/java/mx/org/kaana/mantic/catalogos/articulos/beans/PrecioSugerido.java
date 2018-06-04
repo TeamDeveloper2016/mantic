@@ -1,27 +1,27 @@
-package mx.org.kaana.mantic.catalogos.clientes.bean;
+package mx.org.kaana.mantic.catalogos.articulos.beans;
 
 import mx.org.kaana.kajool.enums.ESql;
-import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
+import mx.org.kaana.mantic.db.dto.TrManticArticuloPrecioSugeridoDto;
 
-public class ClienteTipoContacto extends TrManticClienteTipoContactoDto{
+public class PrecioSugerido extends TrManticArticuloPrecioSugeridoDto{
 	
-	private static final long serialVersionUID = 4804251646663919847L;
+	private static final long serialVersionUID = 5136123009517907872L;
 	private ESql sqlAccion;
 	private Boolean nuevo;
 
-	public ClienteTipoContacto() {
+	public PrecioSugerido() {
 		this(-1L);
 	}
 
-	public ClienteTipoContacto(Long key) {
+	public PrecioSugerido(Long key) {
 		this(key, ESql.UPDATE);
 	}
 	
-	public ClienteTipoContacto(Long key, ESql sqlAccion) {
+	public PrecioSugerido(Long key, ESql sqlAccion) {
 		this(key, sqlAccion, false);
 	}
 	
-	public ClienteTipoContacto(Long key, ESql sqlAccion, Boolean nuevo) {
+	public PrecioSugerido(Long key, ESql sqlAccion, Boolean nuevo) {
 		super(key);
 		this.sqlAccion= sqlAccion;
 		this.nuevo    = nuevo;
@@ -42,4 +42,5 @@ public class ClienteTipoContacto extends TrManticClienteTipoContactoDto{
 	public void setNuevo(Boolean nuevo) {
 		this.nuevo = nuevo;
 	}
+	
 }

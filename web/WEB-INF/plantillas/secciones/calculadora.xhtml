@@ -1,0 +1,35 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+		xmlns:p="http://primefaces.org/ui"   
+		xmlns:pe="http://primefaces.org/ui/extensions">   
+	<style type="text/css">
+		.calculator-result {
+			clear: both;
+			margin: 2px;
+			padding: 0 2px;
+			text-align: right;
+			background-color: #175787 !important;
+			border: 1px inset #000;
+			-moz-border-radius: 4px;
+			-webkit-border-radius: 4px;
+			border-radius: 4px;
+			font-size: 110%;
+		}
+	</style>
+	<script type="text/javascript">
+		$(document).keydown(function(e){
+      if(e.ctrlKey &amp;&amp; e.which === 67){
+        PF('dlgCalculadora').show();
+				PF('calc1').show();
+      } // if
+		});
+	</script>	
+	<p:dialog id="dialogoCalculadora" widgetVar="dlgCalculadora" header="Calculadora" onShow="PF('calc1').show();" height="200px" width="235px" resizable="false"  position="right bottom">
+		<p:inputText styleClass="janal-wid-100-txt janal-align-right">  			
+			<pe:calculator id="calculator1" widgetVar="calc1">                  
+      </pe:calculator> 
+		</p:inputText>  
+	</p:dialog>    
+</ui:composition>

@@ -18,7 +18,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.almacenes.bean.RegistroAlmacen;
+import mx.org.kaana.mantic.catalogos.almacenes.beans.RegistroAlmacen;
 import mx.org.kaana.mantic.catalogos.almacenes.reglas.Transaccion;
 
 @Named(value = "manticCatalogosAlmacenesFiltro")

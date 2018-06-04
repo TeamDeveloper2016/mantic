@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.catalogos.clientes.bean;
+package mx.org.kaana.mantic.catalogos.clientes.beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;

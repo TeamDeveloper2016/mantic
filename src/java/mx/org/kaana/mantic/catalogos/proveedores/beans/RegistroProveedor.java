@@ -11,7 +11,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
-import mx.org.kaana.mantic.catalogos.clientes.bean.Domicilio;
+import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.catalogos.proveedores.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.catalogos.proveedores.reglas.Transaccion;

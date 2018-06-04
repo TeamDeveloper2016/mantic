@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.catalogos.articulos.bean;
+package mx.org.kaana.mantic.catalogos.articulos.beans;
 
 import java.util.Calendar;
 import java.util.Date;

@@ -1,10 +1,10 @@
-package mx.org.kaana.mantic.catalogos.clientes.bean;
+package mx.org.kaana.mantic.catalogos.almacenes.beans;
 
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.ESql;
-import mx.org.kaana.mantic.db.dto.TrManticClienteDomicilioDto;
+import mx.org.kaana.mantic.db.dto.TrManticAlmacenDomicilioDto;
 
-public class ClienteDomicilio extends TrManticClienteDomicilioDto{
+public class AlmacenDomicilio extends TrManticAlmacenDomicilioDto{
 	
 	private static final long serialVersionUID = 731679150148040999L;	
 	private ESql sqlAccion;
@@ -23,24 +23,24 @@ public class ClienteDomicilio extends TrManticClienteDomicilioDto{
 	private String entreCalle;
 	private String yCalle;
 	private boolean nuevoCp;
-	
-	public ClienteDomicilio() {
+
+	public AlmacenDomicilio() {
 		this(-1L);
 	}
 
-	public ClienteDomicilio(Long key) {
+	public AlmacenDomicilio(Long key) {
 		this(key, ESql.UPDATE);
 	}
 	
-	public ClienteDomicilio(Long key, ESql sqlAccion) {
+	public AlmacenDomicilio(Long key, ESql sqlAccion) {
 		this(key, sqlAccion, false);
 	}
 	
-	public ClienteDomicilio(Long key, ESql sqlAccion, Boolean nuevo) {		
+	public AlmacenDomicilio(Long key, ESql sqlAccion, Boolean nuevo) {		
 		this(key, sqlAccion, nuevo, 0L, false, null, null, null, null, null, null, null, null, null, null, null, false);
 	}
 	
-	public ClienteDomicilio(Long key, ESql sqlAccion, Boolean nuevo, Long consecutivo, Boolean modificar, Entity idEntidad, Entity idMunicipio, Entity idLocalidad, Entity domicilio, String codigoPostal, String calle, String exterior, String interior, String colonia, String entreCalle, String yCalle, boolean nuevoCp) {		
+	public AlmacenDomicilio(Long key, ESql sqlAccion, Boolean nuevo, Long consecutivo, Boolean modificar, Entity idEntidad, Entity idMunicipio, Entity idLocalidad, Entity domicilio, String codigoPostal, String calle, String exterior, String interior, String colonia, String entreCalle, String yCalle, boolean nuevoCp) {		
 		super(key);
 		this.sqlAccion   = sqlAccion;
 		this.nuevo       = nuevo;
@@ -50,6 +50,7 @@ public class ClienteDomicilio extends TrManticClienteDomicilioDto{
 		this.idMunicipio = idMunicipio;
 		this.idLocalidad = idLocalidad;
 		this.codigoPostal= codigoPostal;
+		this.domicilio   = domicilio;
 		this.calle       = calle;
 		this.exterior    = exterior;
 		this.interior    = interior;
@@ -121,7 +122,7 @@ public class ClienteDomicilio extends TrManticClienteDomicilioDto{
 
 	public void setDomicilio(Entity domicilio) {
 		this.domicilio = domicilio;
-	}	
+	}
 
 	public String getCodigoPostal() {
 		return codigoPostal;
@@ -129,7 +130,7 @@ public class ClienteDomicilio extends TrManticClienteDomicilioDto{
 
 	public void setCodigoPostal(String codigoPostal) {
 		this.codigoPostal = codigoPostal;
-	}
+	}	
 
 	public String getCalle() {
 		return calle;
