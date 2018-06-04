@@ -17,9 +17,11 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.empresas.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.empresas.beans.RegistroEmpresa;
+import mx.org.kaana.mantic.enums.ETipoEmpresa;
 
 @Named(value = "manticCatalogosEmpresasFiltro")
 @ViewScoped
@@ -31,7 +33,11 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
+      this.attrs.put("clave", "");
+      this.attrs.put("nombre", "");
+      this.attrs.put("titulo", "");
       this.attrs.put("sortOrder", "order by tc_mantic_empresas.nombre");
+			loadTiposEmpresa();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -57,6 +63,23 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad
 
+	private void loadTiposEmpresa(){
+		List<UISelectItem> tiposEmpresas= null;
+		String all                      = "";
+		try {
+			tiposEmpresas= new ArrayList<>();
+			for(ETipoEmpresa tipoEmpresa: ETipoEmpresa.values()){
+				tiposEmpresas.add(new UISelectItem(tipoEmpresa.getIdTipoEmpresa(), tipoEmpresa.name().toUpperCase()));
+				all= all.concat(tipoEmpresa.getIdTipoEmpresa().toString().concat(","));
+			} // for
+			tiposEmpresas.add(0, new UISelectItem(all.substring(0, all.length()-1), "TODOS"));
+			this.attrs.put("tiposEmpresa", tiposEmpresas);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // loadTiposEmpresa
+	
   public String doAccion(String accion) {
     EAccion eaccion= null;
 		try {
