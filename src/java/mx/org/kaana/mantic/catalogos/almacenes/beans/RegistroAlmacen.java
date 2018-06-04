@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.catalogos.almacenes.bean;
+package mx.org.kaana.mantic.catalogos.almacenes.beans;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
-import mx.org.kaana.mantic.catalogos.clientes.bean.Domicilio;
+import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.catalogos.almacenes.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.catalogos.almacenes.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesDto;

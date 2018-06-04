@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.catalogos.almacenes.bean;
+package mx.org.kaana.mantic.catalogos.almacenes.beans;
 
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;

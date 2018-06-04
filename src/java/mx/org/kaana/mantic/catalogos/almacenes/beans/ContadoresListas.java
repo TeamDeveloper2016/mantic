@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.catalogos.almacenes.bean;
+package mx.org.kaana.mantic.catalogos.almacenes.beans;
 
 import java.util.Collections;
 import mx.org.kaana.libs.formato.Error;
