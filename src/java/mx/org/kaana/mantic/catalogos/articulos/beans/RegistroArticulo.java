@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.catalogos.articulos.bean;
+package mx.org.kaana.mantic.catalogos.articulos.beans;
 
 import java.io.File;
 import java.io.FileOutputStream;

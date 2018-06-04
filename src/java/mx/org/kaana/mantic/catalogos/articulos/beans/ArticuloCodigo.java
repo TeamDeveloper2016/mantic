@@ -1,28 +1,28 @@
-package mx.org.kaana.mantic.catalogos.articulos.bean;
+package mx.org.kaana.mantic.catalogos.articulos.beans;
 
 import java.io.Serializable;
 import mx.org.kaana.kajool.enums.ESql;
-import mx.org.kaana.mantic.db.dto.TrManticArticuloTipoVentaDto;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosCodigosDto;
 
-public class TipoVenta extends TrManticArticuloTipoVentaDto implements Serializable{
+public class ArticuloCodigo extends TcManticArticulosCodigosDto implements Serializable{
 	
 	private static final long serialVersionUID = -8447000750173028692L;
 	private ESql sqlAccion;
 	private Boolean nuevo;
 
-	public TipoVenta() {
+	public ArticuloCodigo() {
 		this(-1L);
 	}
 
-	public TipoVenta(Long key) {
-		this(key, ESql.INSERT);
+	public ArticuloCodigo(Long key) {
+		this(key, ESql.UPDATE);
 	}
 	
-	public TipoVenta(Long key, ESql sqlAccion) {
-		this(key, sqlAccion, true);
+	public ArticuloCodigo(Long key, ESql sqlAccion) {
+		this(key, sqlAccion, false);
 	}
 	
-	public TipoVenta(Long key, ESql sqlAccion, Boolean nuevo) {
+	public ArticuloCodigo(Long key, ESql sqlAccion, Boolean nuevo) {
 		super(key);
 		this.sqlAccion= sqlAccion;
 		this.nuevo    = nuevo;
