@@ -226,9 +226,11 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	
 	private double toDiferencia() {
 		Descuentos descuentos= new Descuentos(this.getCosto(), this.getDescuento().concat(",").concat(this.getExtras()));
-  	return Numero.toRedondearSat(descuentos.toImporte()- this.valor);
-	}
-	
+		double value= descuentos.toImporte();
+		value=  (value== 0? this.getCosto()- this.valor: value); 
+  	return Numero.toRedondearSat(value* 100/ this.valor);
+	}	
+
 	public TcManticNotasDetallesDto toNotaDetalle() {
 		return new TcManticNotasDetallesDto(
 			Cadena.isVacio(this.getCodigo())? this.getPropio(): this.getCodigo(), 
