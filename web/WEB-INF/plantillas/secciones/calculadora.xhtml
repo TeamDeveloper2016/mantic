@@ -18,18 +18,17 @@
 			font-size: 110%;
 		}
 	</style>
-	<script type="text/javascript">
-		$(document).keydown(function(e){
-      if(e.ctrlKey &amp;&amp; e.which === 67){
-        PF('dlgCalculadora').show();
-				PF('calc1').show();
-      } // if
-		});
-	</script>	
-	<p:dialog id="dialogoCalculadora" widgetVar="dlgCalculadora" header="Calculadora" onShow="PF('calc1').show();" height="200px" width="235px" resizable="false"  position="right bottom">
-		<p:inputText styleClass="janal-wid-100-txt janal-align-right">  			
-			<pe:calculator id="calculator1" widgetVar="calc1">                  
-      </pe:calculator> 
-		</p:inputText>  
-	</p:dialog>    
+	<script type="text/javascript">						
+		function applyStyleCalculate(){
+			$('#calculadora').calculator();
+			$('.calculator-keyentry').css('border', 'transparent');
+			$( "#calculadora" ).focus();
+		} // applyStyleCalculate
+	</script>		
+	<p:dialog id="dialogoCalculadora" widgetVar="dlgCalculadora" header="Calculadora" onShow="applyStyleCalculate();" height="165px" width="235px" resizable="false"  position="right bottom">
+		<p:inputText styleClass="janal-wid-100-txt janal-align-right" rendered="true" style="display: none">  			
+			<pe:calculator id="calculator1" widgetVar="calc1"/>                  
+		</p:inputText>  		
+		<span id="calculadora"/>
+	</p:dialog>  	
 </ui:composition>
