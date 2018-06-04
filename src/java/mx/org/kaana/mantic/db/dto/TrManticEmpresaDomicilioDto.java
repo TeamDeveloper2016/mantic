@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -33,9 +27,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 @Table(name="tr_mantic_empresa_domicilio")
 public class TrManticEmpresaDomicilioDto implements IBaseDto, Serializable {
 		
-  private static final long serialVersionUID=1L;
-  @Id
-  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
+  private static final long serialVersionUID=1L;  
 	@Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="id_tipo_domicilio")
@@ -46,6 +38,8 @@ public class TrManticEmpresaDomicilioDto implements IBaseDto, Serializable {
   private Long idPrincipal;
   @Column (name="observaciones")
   private String observaciones;
+	@Id
+  @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
   @Column (name="id_empresa_domicilio")
   private Long idEmpresaDomicilio;
   @Column (name="id_empresa")
@@ -140,12 +134,12 @@ public class TrManticEmpresaDomicilioDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdUsuario();
+  	return getIdEmpresaDomicilio();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idUsuario = key;
+  	this.idEmpresaDomicilio = key;
   }
 
   @Override
@@ -202,8 +196,8 @@ public class TrManticEmpresaDomicilioDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idUsuario~");
-    regresar.append(getIdUsuario());
+    regresar.append("idEmpresaDomicilio~");
+    regresar.append(getIdEmpresaDomicilio());
     regresar.append("|");
     return regresar.toString();
   }
@@ -211,7 +205,7 @@ public class TrManticEmpresaDomicilioDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdUsuario());
+    regresar.append(getIdEmpresaDomicilio());
     return regresar.toString();
   }
 
@@ -222,7 +216,7 @@ public class TrManticEmpresaDomicilioDto implements IBaseDto, Serializable {
 
   @Override
   public boolean isValid() {
-  	return getIdUsuario()!= null && getIdUsuario()!=-1L;
+  	return getIdEmpresaDomicilio()!= null && getIdEmpresaDomicilio()!=-1L;
   }
 
   @Override
@@ -234,7 +228,7 @@ public class TrManticEmpresaDomicilioDto implements IBaseDto, Serializable {
       return false;
     }
     final TrManticEmpresaDomicilioDto other = (TrManticEmpresaDomicilioDto) obj;
-    if (getIdUsuario() != other.idUsuario && (getIdUsuario() == null || !getIdUsuario().equals(other.idUsuario))) {
+    if (getIdEmpresaDomicilio() != other.idEmpresaDomicilio && (getIdEmpresaDomicilio() == null || !getIdEmpresaDomicilio().equals(other.idEmpresaDomicilio))) {
       return false;
     }
     return true;
@@ -243,10 +237,7 @@ public class TrManticEmpresaDomicilioDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdUsuario() != null ? getIdUsuario().hashCode() : 0);
+    hash = 67 * hash + (getIdEmpresaDomicilio()!= null ? getIdEmpresaDomicilio().hashCode() : 0);
     return hash;
   }
-
 }
-
-
