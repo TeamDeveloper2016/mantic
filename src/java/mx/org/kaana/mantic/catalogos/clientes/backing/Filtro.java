@@ -19,7 +19,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion;
-import mx.org.kaana.mantic.catalogos.clientes.bean.RegistroCliente;
+import mx.org.kaana.mantic.catalogos.clientes.beans.RegistroCliente;
 
 @Named(value = "manticCatalogosClientesFiltro")
 @ViewScoped

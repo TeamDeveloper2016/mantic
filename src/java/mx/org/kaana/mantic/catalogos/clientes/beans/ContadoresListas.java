@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.catalogos.clientes.bean;
+package mx.org.kaana.mantic.catalogos.clientes.beans;
 
 import java.util.Collections;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
