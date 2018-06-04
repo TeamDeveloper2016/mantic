@@ -18,6 +18,7 @@ import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDto;
 import mx.org.kaana.mantic.db.dto.TrManticEmpresaDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticEmpresaTipoContactoDto;
+import mx.org.kaana.mantic.enums.ETipoEmpresa;
 import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx{
@@ -75,6 +76,10 @@ public class Transaccion extends IBaseTnx{
         idEmpresa = DaoFactory.getInstance().insert(sesion, this.registroEmpresa.getEmpresa());
         if (registraClientesDomicilios(sesion, idEmpresa)) {
 					regresar = registraClientesTipoContacto(sesion, idEmpresa);
+					if(this.registroEmpresa.getEmpresa().getIdTipoEmpresa().equals(ETipoEmpresa.MATRIZ.getIdTipoEmpresa())){
+						this.registroEmpresa.getEmpresa().setIdEmpresaDepende(idEmpresa);
+						regresar= DaoFactory.getInstance().update(sesion, this.registroEmpresa.getEmpresa())>= 1L;
+					} // if
         } // if
       } // if
     } // try
