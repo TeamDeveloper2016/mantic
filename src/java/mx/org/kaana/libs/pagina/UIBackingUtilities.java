@@ -76,15 +76,16 @@ public class UIBackingUtilities {
 	} 	
 
   public static Entity toFormatEntity(Entity entity, List<Columna> columns) {
-		columns.forEach((column) -> { 
-			if(entity.containsKey(column.getName())) {
-				Value value= new Value(column.getName(), entity.get(column.getName()));          
-				value.setData(Global.format(column.getFormat(), value.getData()));
-				entity.put(column.getName(), value);          
-			} // if
-			else
-				throw new RuntimeException("No existe la columna "+ column.getName()+ " en la lista de items.");
-		});
+		if(entity!= null)
+			columns.forEach((column) -> { 
+				if(entity.containsKey(column.getName())) {
+					Value value= new Value(column.getName(), entity.get(column.getName()));          
+					value.setData(Global.format(column.getFormat(), value.getData()));
+					entity.put(column.getName(), value);          
+				} // if
+				else
+					throw new RuntimeException("No existe la columna "+ column.getName()+ " en la lista de items.");
+			});
 		return entity;
 	}
 	

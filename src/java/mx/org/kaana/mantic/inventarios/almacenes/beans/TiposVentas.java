@@ -134,14 +134,14 @@ public class TiposVentas implements Serializable {
 	}
 
 	public void toUpdateUtilidad(double utilidadad) {
-		 this.precio= Numero.toRedondear(((utilidadad/ 100)+ 1)* this.costo);
+		 this.precio= Numero.toRedondearSat(((utilidadad/ 100)+ 1)* this.costo);
 		 this.toCalculate();
 	}
 	
   public void toCalculate() {
-		this.utilidad= Numero.toRedondear((this.precio*100/(this.costo<= 0? 1: this.costo))- 100);
-	  this.impuesto= Numero.toRedondear(this.precio* ((this.iva/100)+ 1));
-		this.importe = Numero.toRedondear(this.precio+ this.iva);
+		this.utilidad= Numero.toRedondearSat((this.precio*100/(this.costo<= 0? 1: this.costo))- 100);
+	  this.impuesto= Numero.toRedondearSat((this.precio* ((this.iva/100)+ 1))- this.precio);
+		this.importe = Numero.toRedondearSat(this.precio+ this.impuesto);
 	}	
 	
 }

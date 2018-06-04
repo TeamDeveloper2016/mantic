@@ -26,7 +26,6 @@ import mx.org.kaana.mantic.inventarios.almacenes.beans.AdminKardex;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
-import org.primefaces.model.SelectableDataModel;
 
 /**
  *@company KAANA
@@ -55,6 +54,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	@Override
 	@PostConstruct
 	protected void init() {
+  	this.attrs.put("buscaPorCodigo", false);
 		this.adminKardex= new AdminKardex(-1L);
 	}
 	
@@ -136,9 +136,10 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	public void doUpdateArticulos() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
+		List<UISelectEntity> articulos= null;
     try {
 			columns= new ArrayList<>();
-      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);
@@ -148,7 +149,11 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			else
 				search= "WXYZ";
   		params.put("codigo", search);
-      this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "codigos", params, columns, 20L));
+			if((boolean)this.attrs.get("buscaPorCodigo"))
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L);
+			else
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 20L);
+      this.attrs.put("articulos", articulos);
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);

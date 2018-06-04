@@ -26,11 +26,11 @@
 			<pe:methodSignature parameters="java.lang.String"/>  
 			<pe:methodParam name="codigo"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="calculate" process="@this" update="@(.recalculo)" actionListener="#{manticInventariosAlmacenesKardex.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();">  
+		<pe:remoteCommand name="calculate" process="@this" update="@(.filas) @(.recalculo)" actionListener="#{manticInventariosAlmacenesKardex.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="utilidad" process="@this" update="@(.recalculo)" actionListener="#{manticInventariosAlmacenesKardex.doUpdateUtilidad}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();">  
+		<pe:remoteCommand name="utilidad" process="@this" update="@(.filas) @(.recalculo)" actionListener="#{manticInventariosAlmacenesKardex.doUpdateUtilidad}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();">  
 			<pe:methodSignature parameters="java.lang.Integer, java.lang.Double"/>  
 			<pe:methodParam name="index"/>  
 			<pe:methodParam name="value"/>  
@@ -39,10 +39,15 @@
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-2">
-					<p:outputLabel for="codigos" value="Código, nombre del articulo:"/>
+					<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-90, janal-wid-3">
+  					<p:outputLabel for="codigos" value="Código, nombre del articulo:"/>
+	  				<p:selectBooleanCheckbox value="#{manticInventariosAlmacenesKardex.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
+		  				<p:ajax event="change" process="@this" update="@this"/>
+			  		</p:selectBooleanCheckbox>
+					</p:panelGrid>	
 				</div>
 				<div class="ui-grid-col-7">
-					<p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-80 key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticInventariosAlmacenesKardex.attrs.custom}" completeMethod="#{manticInventariosAlmacenesKardex.doCompleteArticulo}" maxResults="5" converter="janal.convertidor.Entity" minQueryLength="2">
+					<p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-80 key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticInventariosAlmacenesKardex.attrs.custom}" completeMethod="#{manticInventariosAlmacenesKardex.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2">
 						<p:ajax event="itemSelect" oncomplete="jsKardex.close();"/>
 						<f:facet name="itemtip">
 							<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
@@ -133,22 +138,22 @@
 									<h:outputText value="#{item.nombre}"/>
 								</p:column>   
 								<p:column headerText="# Unidades minimas" styleClass="janal-wid-10">
-									<p:inputText id="limites" value="#{item.limite}" styleClass="janal-wid-100-txt janal-column-right key-focus-event recalculo"/>
+									<p:inputText id="limites" value="#{item.limite}" styleClass="janal-wid-100-txt janal-column-right key-focus-event"/>
 								</p:column>   
 								<p:column headerText="% Utilidad" styleClass="janal-wid-10">
-									<p:inputText id="utilidades" value="#{item.utilidad}" styleClass="janal-wid-100-txt janal-column-right key-focus-event recalculo"/>
+									<p:inputText id="utilidades" value="#{item.utilidad}" styleClass="janal-wid-100-txt janal-column-right key-focus-event"/>
 								</p:column>   
 								<p:column headerText="$ Precio venta" styleClass="janal-wid-10">
-									<p:inputText id="precios" value="#{item.precio}" styleClass="janal-wid-100-txt janal-column-right key-focus-event recalculo"/>
+									<p:inputText id="precios" value="#{item.precio}" styleClass="janal-wid-100-txt janal-column-right key-focus-event"/>
 								</p:column>   
 								<p:column headerText="% IVA" styleClass="janal-wid-10">
-									<p:inputText id="ivas" value="#{item.iva}" styleClass="janal-wid-100-txt janal-column-right key-focus-event recalculo"/>
+									<p:inputText id="ivas" value="#{item.iva}" styleClass="janal-wid-100-txt janal-column-right key-focus-event"/>
 								</p:column>   
 								<p:column headerText="$ Impuesto" styleClass="janal-wid-10 janal-column-right">
-									<h:outputText value="#{manticInventariosAlmacenesKardex.doMoneyValueFormat(item.impuesto)}" styleClass="recalculo"/>
+									<h:outputText value="#{manticInventariosAlmacenesKardex.doMoneyValueFormat(item.impuesto)}"/>
 								</p:column>   
 								<p:column headerText="$ Precio con IVA" styleClass="janal-wid-10 janal-column-right">
-									<h:outputText value="#{manticInventariosAlmacenesKardex.doMoneyValueFormat(item.importe)}" styleClass="recalculo"/>
+									<h:outputText value="#{manticInventariosAlmacenesKardex.doMoneyValueFormat(item.importe)}"/>
 								</p:column>   
 							</p:dataTable>	
 						</p:tab>
@@ -204,19 +209,19 @@
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-4 janal-column-center">
 										<p:outputLabel value="Inicial:"/><br/>
-										<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.inventario.inicial}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+										<p:inputText value="#{empty manticInventariosAlmacenesKardex.attrs.inventario ? 0: manticInventariosAlmacenesKardex.attrs.inventario.inicial}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
 									</div>
 									<div class="ui-grid-col-4 janal-column-center">
 										<p:outputLabel value="Entradas:"/><br/>
-										<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.inventario.entradas}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+										<p:inputText value="#{empty manticInventariosAlmacenesKardex.attrs.inventario ? 0: manticInventariosAlmacenesKardex.attrs.inventario.entradas}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
 									</div>
 									<div class="ui-grid-col-4 janal-column-center">
 										<p:outputLabel value="Salidas:"/><br/>
-										<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.inventario.salidas}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+										<p:inputText value="#{empty manticInventariosAlmacenesKardex.attrs.inventario ? 0: manticInventariosAlmacenesKardex.attrs.inventario.salidas}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
 									</div>
 									<div class="ui-grid-col-4 janal-column-center">
 										<p:outputLabel value="# Existencias:"/><br/>
-										<p:inputText value="#{manticInventariosAlmacenesKardex.attrs.inventario.stock}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+										<p:inputText value="#{empty manticInventariosAlmacenesKardex.attrs.inventario ? 0: manticInventariosAlmacenesKardex.attrs.inventario.stock}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
 									</div>
 								</div>	
 							</p:fieldset>
