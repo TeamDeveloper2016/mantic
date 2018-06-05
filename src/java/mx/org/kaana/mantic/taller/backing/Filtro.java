@@ -1,0 +1,131 @@
+package mx.org.kaana.mantic.taller.backing;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.PostConstruct;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.procesos.comun.Comun;
+import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UISelect;
+import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.taller.beans.RegistroServicio;
+import mx.org.kaana.mantic.taller.reglas.Transaccion;
+
+@Named(value = "manticTallerFiltro")
+@ViewScoped
+public class Filtro extends Comun implements Serializable {
+
+  private static final long serialVersionUID = 8793667741599428879L;
+
+  @PostConstruct
+  @Override
+  protected void init() {
+    try {
+			this.attrs.put("herramienta", "");
+			this.attrs.put("cliente", "");
+			this.attrs.put("consecutivo", "");
+      this.attrs.put("sortOrder", "order by tc_mantic_servicios.herramienta");
+      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			loadEstatusServicios();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+  } // init
+
+  @Override
+  public void doLoad() {
+    List<Columna> campos = null;
+    try {
+      campos = new ArrayList<>();
+      campos.add(new Columna("herramienta", EFormatoDinamicos.MAYUSCULAS));
+      campos.add(new Columna("consecutivo", EFormatoDinamicos.MAYUSCULAS));
+      campos.add(new Columna("marca", EFormatoDinamicos.MAYUSCULAS));
+      campos.add(new Columna("modelo", EFormatoDinamicos.MAYUSCULAS));      
+      campos.add(new Columna("fechaEstimada", EFormatoDinamicos.FECHA_HORA_CORTA));      
+      this.lazyModel = new FormatCustomLazy("VistaTallerServiciosDto", "principal", this.attrs, campos);
+      UIBackingUtilities.resetDataTable();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(campos);
+    } // finally		
+  } // doLoad
+
+  public String doAccion(String accion) {
+    EAccion eaccion= null;
+		try {
+			eaccion= EAccion.valueOf(accion.toUpperCase());
+			JsfBase.setFlashAttribute("accion", eaccion);		
+			JsfBase.setFlashAttribute("idServicio", (eaccion.equals(EAccion.MODIFICAR)||eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return "accion".concat(Constantes.REDIRECIONAR);
+  } // doAccion
+
+  public void doEliminar() {
+		Transaccion transaccion  = null;
+		Entity seleccionado      = null;
+		RegistroServicio registro= null;
+    try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");			
+			registro= new RegistroServicio();
+			registro.setIdServicio(seleccionado.getKey());
+			transaccion= new Transaccion(registro);
+			if(transaccion.ejecutar(EAccion.ELIMINAR))
+				JsfBase.addMessage("Eliminar servicio", "El servicio de taller se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
+			else
+				JsfBase.addMessage("Eliminar servicio", "Ocurrió un error al eliminar el servicio de taller.", ETipoMensaje.ERROR);								
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+  } // doEliminar
+	
+	private void loadEstatusServicios(){
+		List<UISelectItem> allEstatus= null;
+		Map<String, Object>params    = null;
+		List<String> campos          = null;
+		String all                   = ""; 
+		try {
+			params= new HashMap<>();
+			campos= new ArrayList<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			campos.add("nombre");
+			allEstatus= UISelect.build("TcManticServiciosEstatusDto", "row", params, campos, " ", EFormatoDinamicos.MAYUSCULAS);
+			for(UISelectItem record: allEstatus)
+				all= all.concat(record.getValue().toString()).concat(",");
+			allEstatus.add(0, new UISelectItem(all.substring(0, all.length()-1), "TODOS"));
+			this.attrs.put("allEstatus", allEstatus);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+			Methods.clean(campos);
+		} // finally
+	} // loadEstatusServicios
+}
