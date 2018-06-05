@@ -22,8 +22,8 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.almacenes.beans.RegistroAlmacen;
-import mx.org.kaana.mantic.catalogos.almacenes.reglas.Transaccion;
+import mx.org.kaana.mantic.taller.beans.RegistroServicio;
+import mx.org.kaana.mantic.taller.reglas.Transaccion;
 
 @Named(value = "manticTallerFiltro")
 @ViewScoped
@@ -85,18 +85,18 @@ public class Filtro extends Comun implements Serializable {
   } // doAccion
 
   public void doEliminar() {
-		Transaccion transaccion = null;
-		Entity seleccionado     = null;
-		RegistroAlmacen registro= null;
+		Transaccion transaccion  = null;
+		Entity seleccionado      = null;
+		RegistroServicio registro= null;
     try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			registro= new RegistroAlmacen();
-			registro.setIdAlmacen(seleccionado.getKey());
+			registro= new RegistroServicio();
+			registro.setIdServicio(seleccionado.getKey());
 			transaccion= new Transaccion(registro);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar cliente", "El servicio de taller se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Eliminar servicio", "El servicio de taller se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Eliminar cliente", "Ocurrió un error al eliminar el servicio de taller.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar servicio", "Ocurrió un error al eliminar el servicio de taller.", ETipoMensaje.ERROR);								
     } // try
     catch (Exception e) {
       Error.mensaje(e);
