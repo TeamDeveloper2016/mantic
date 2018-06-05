@@ -56,6 +56,10 @@ public class TcManticArticulosBitacoraDto implements IBaseDto, Serializable {
   private Long idNotaEntrada;
   @Column (name="medio_mayoreo")
   private Double medioMayoreo;
+  @Column (name="limite_medio_mayoreo")
+  private Long limiteMedioMayoreo;
+  @Column (name="limite_mayoreo")
+  private Long limiteMayoreo;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -64,11 +68,11 @@ public class TcManticArticulosBitacoraDto implements IBaseDto, Serializable {
   }
 
   public TcManticArticulosBitacoraDto(Long key) {
-    this(16D, null, 0D, new Long(-1L), 0D, 0L, null, null, 0D, 0D);
+    this(16D, null, 0D, new Long(-1L), 0D, 0L, null, null, 0D, 0D, 0L, 0L);
     setKey(key);
   }
 
-  public TcManticArticulosBitacoraDto(Double iva, Long idUsuario, Double mayoreo, Long idArticuloBitacora, Double menudeo, Long cantidad, Long idArticulo, Long idNotaEntrada, Double medioMayoreo, Double costo) {
+  public TcManticArticulosBitacoraDto(Double iva, Long idUsuario, Double mayoreo, Long idArticuloBitacora, Double menudeo, Long cantidad, Long idArticulo, Long idNotaEntrada, Double medioMayoreo, Double costo, Long limiteMedioMayoreo, Long limiteMayoreo) {
     setIva(iva);
     setIdUsuario(idUsuario);
     setMayoreo(mayoreo);
@@ -79,6 +83,8 @@ public class TcManticArticulosBitacoraDto implements IBaseDto, Serializable {
     setIdArticulo(idArticulo);
     setIdNotaEntrada(idNotaEntrada);
     setMedioMayoreo(medioMayoreo);
+    setLimiteMedioMayoreo(limiteMedioMayoreo);
+    setLimiteMayoreo(limiteMayoreo);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -162,6 +168,22 @@ public class TcManticArticulosBitacoraDto implements IBaseDto, Serializable {
     return medioMayoreo;
   }
 
+	public Long getLimiteMedioMayoreo() {
+		return limiteMedioMayoreo;
+	}
+
+	public void setLimiteMedioMayoreo(Long limiteMedioMayoreo) {
+		this.limiteMedioMayoreo=limiteMedioMayoreo;
+	}
+
+	public Long getLimiteMayoreo() {
+		return limiteMayoreo;
+	}
+
+	public void setLimiteMayoreo(Long limiteMayoreo) {
+		this.limiteMayoreo=limiteMayoreo;
+	}
+
   public void setRegistro(Timestamp registro) {
     this.registro = registro;
   }
@@ -205,6 +227,10 @@ public class TcManticArticulosBitacoraDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getMedioMayoreo());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getLimiteMedioMayoreo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getLimiteMayoreo());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -223,14 +249,16 @@ public class TcManticArticulosBitacoraDto implements IBaseDto, Serializable {
 		regresar.put("idArticulo", getIdArticulo());
 		regresar.put("idNotaEntrada", getIdNotaEntrada());
 		regresar.put("medioMayoreo", getMedioMayoreo());
+		regresar.put("limiteMedioMayoreo", getLimiteMedioMayoreo());
+		regresar.put("limiteMayoreo", getLimiteMayoreo());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getIva(), getIdUsuario(), getMayoreo(), getIdArticuloBitacora(), getCosto(), getMenudeo(), getCantidad(), getIdArticulo(), getIdNotaEntrada(), getMedioMayoreo(), getRegistro()
+    Object[] regresar = new Object[] {
+      getIva(), getIdUsuario(), getMayoreo(), getIdArticuloBitacora(), getCosto(), getMenudeo(), getCantidad(), getIdArticulo(), getIdNotaEntrada(), getMedioMayoreo(), getRegistro(), getLimiteMedioMayoreo(), getLimiteMayoreo()
     };
     return regresar;
   }

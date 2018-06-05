@@ -56,7 +56,7 @@ public class Transaccion extends IBaseTnx {
 					articulo.setLimiteMayoreo(this.articulos.get(1).getLimite());
 					articulo.setMayoreo(this.articulos.get(2).getPrecio());
 				  regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
-					TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(articulo.getIva(), JsfBase.getIdUsuario(), articulo.getMayoreo(), -1L, articulo.getMenudeo(), articulo.getCantidad(), articulo.getIdArticulo(), null, articulo.getMedioMayoreo(), this.precio);
+					TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(articulo.getIva(), JsfBase.getIdUsuario(), articulo.getMayoreo(), -1L, articulo.getMenudeo(), articulo.getCantidad(), articulo.getIdArticulo(), null, articulo.getMedioMayoreo(), this.precio, articulo.getLimiteMedioMayoreo(), articulo.getLimiteMayoreo());
 					regresar= DaoFactory.getInstance().insert(sesion, movimiento)>= 1L;
 					break;				
 			} // switch

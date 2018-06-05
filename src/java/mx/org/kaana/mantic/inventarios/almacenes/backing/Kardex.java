@@ -214,6 +214,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		else
 			if(event.getTab().getTitle().equals("Almacenes")) 
 				this.toLoadAlmacenes();
+	    else	
+			  if(event.getTab().getTitle().equals("Historial")) 
+				  this.toLoadHistorial();
 	}
 
   public void doFindArticulo() {
@@ -295,6 +298,29 @@ public class Kardex extends IBaseAttribute implements Serializable {
       columns.add(new Columna("maximo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
       this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "almacenes", this.attrs, columns));
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+		finally {
+      Methods.clean(columns);
+    }// finally
+	}
+
+	private void toLoadHistorial() {
+		List<Columna> columns= null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("costo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
+      columns.add(new Columna("menudeo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
+      columns.add(new Columna("medioMayoreo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
+      columns.add(new Columna("mayoreo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
+      columns.add(new Columna("limiteMedioMayoreo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
+      columns.add(new Columna("limiteMayoreo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+      this.attrs.put("historial", (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "historial", this.attrs, columns));
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);

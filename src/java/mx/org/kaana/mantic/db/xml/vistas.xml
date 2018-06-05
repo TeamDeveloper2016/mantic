@@ -47,6 +47,25 @@
 				order by
 					tc_mantic_articulos.registro
 			</select>	
+			<select id="historial">
+				select
+					tc_mantic_articulos_bitacora.id_articulo_bitacora as id_key,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
+					tc_mantic_notas_entradas.consecutivo,
+					tc_mantic_articulos_bitacora.*
+				from
+					tc_mantic_articulos_bitacora
+				inner join
+					tc_janal_usuarios on tc_mantic_articulos_bitacora.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				left join
+					tc_mantic_notas_entradas on tc_mantic_articulos_bitacora.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+				where
+					tc_mantic_articulos_bitacora.id_articulo= {idArticulo}
+				order by
+					tc_mantic_articulos_bitacora.registro desc				
+			</select>
 			<select id="codigos">
         select      
           tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
