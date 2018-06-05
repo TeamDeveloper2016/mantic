@@ -22,7 +22,7 @@ public class AdminKardex implements Serializable {
 	private List<TiposVentas> tiposVentas;
 	
 	public AdminKardex(Long idArticulo) {
-		this(idArticulo, 1D, 16D, 0D, 0D, 0D, 10L, 20L);
+		this(idArticulo, 1D, 16D, 0D, 0D, 0D, 3L, 8L);
 	}
 
 	public AdminKardex(Long idArticulo, double costo, double iva, double menudeo, double medioMayoreo, double mayoreo, long limiteMedioMayoreo, long limiteMayoreo) {
@@ -33,7 +33,7 @@ public class AdminKardex implements Serializable {
 		if(this.idArticulo> 0) {
 			this.add(0, "MENUDEO", menudeo, limiteMedioMayoreo);
 			this.add(1, "MEDIO-MAYOREO", medioMayoreo, limiteMayoreo);
-			this.add(2, "MAYOREO", mayoreo, 99999999);
+			this.add(2, "MAYOREO", mayoreo, 0);
 		} // if	
 	}
 

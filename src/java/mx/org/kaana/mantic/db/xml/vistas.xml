@@ -16,6 +16,7 @@
 					tc_mantic_articulos.cantidad,
 					if(tc_mantic_articulos.id_redondear= 1, "Si", "NO") as redondear,
 					tc_mantic_articulos.precio,
+					tc_mantic_articulos.precio as value,
 					tc_mantic_articulos.iva,
 					tc_mantic_articulos.menudeo,
 					tc_mantic_articulos.limite_medio_mayoreo,
