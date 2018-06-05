@@ -23,9 +23,11 @@ public enum EFormatoDinamicos implements IFormatosKajool {
   MILES_CON_DECIMALES("###,##0.00"),
   MILES_SIN_DECIMALES("###,##0"),
   MONEDA_CON_DECIMALES("$ ###,##0.00"),
+  MONEDA_SAT_DECIMALES("$ ###,##0.0000"),
   MONEDA_SIN_DECIMALES("$ ###,##0"),
   NUMERO_SIN_DECIMALES("#####0"),
   NUMERO_CON_DECIMALES("#####0.00"),
+  NUMERO_SAT_DECIMALES("#####0.0000"),
   FECHA_CORTA("dd/MM/yyyy"),
   FECHA_NOMBRE_DIA("Dia, dd/MM/yyyy"),
   FECHA_EXTENDIDA("dd del Mes del yyyy"),
@@ -84,11 +86,17 @@ public enum EFormatoDinamicos implements IFormatosKajool {
         case MONEDA_CON_DECIMALES:
           regresar = Numero.formatear(Numero.MONEDA_CON_DECIMALES, Numero.getDouble(regresar));
           break;
+        case MONEDA_SAT_DECIMALES:
+          regresar = Numero.formatear(Numero.MONEDA_SAT_DECIMALES, Numero.getDouble(regresar));
+          break;
         case NUMERO_SIN_DECIMALES:
           regresar = Numero.formatear(Numero.NUMERO_SIN_DECIMALES, Numero.getDouble(regresar));
           break;
         case NUMERO_CON_DECIMALES:
           regresar = Numero.formatear(Numero.NUMERO_CON_DECIMALES, Numero.getDouble(regresar));
+          break;
+        case NUMERO_SAT_DECIMALES:
+          regresar = Numero.formatear(Numero.NUMERO_SAT_DECIMALES, Numero.getDouble(regresar));
           break;
         case FECHA_CORTA:
           regresar = Fecha.formatear(Fecha.FECHA_CORTA, Fecha.getFechaHora(regresar));

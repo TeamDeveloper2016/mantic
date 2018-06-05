@@ -26,6 +26,8 @@ public final class Numero {
   public static final int MONEDA_SIN_DECIMALES= 4;
   public static final int NUMERO_CON_DECIMALES= 5;
   public static final int NUMERO_SIN_DECIMALES= 6;
+  public static final int MONEDA_SAT_DECIMALES= 7;
+  public static final int NUMERO_SAT_DECIMALES= 8;
 
   private Numero() {
   }
@@ -57,8 +59,14 @@ public final class Numero {
       case NUMERO_CON_DECIMALES: // formato numero con decimales
         regresar= formatear("########0.00", valor);
         break;
+      case NUMERO_SAT_DECIMALES: // formato numero con decimales
+        regresar= formatear("########0.0000", valor);
+        break;
       case NUMERO_SIN_DECIMALES: // formato numoer sin decimales
         regresar= formatear("########0", valor);
+        break;
+      case MONEDA_SAT_DECIMALES: // formato moneda
+        regresar= formatear("$ ###,##0.0000", valor);
         break;
     } // switch
     return regresar;

@@ -54,9 +54,12 @@
 				switch(key) {
 					case $kardex.VK_ENTER:
 						if($kardex.id.endsWith('costos'))
-							return $kardex.calculate(this);
+							return $kardex.costo(this);
 						else
-						  return $kardex.id.endsWith('limites')? false: $kardex.id.endsWith('utilidades')? $kardex.utilidad(this): $kardex.calculate(this);
+							if($kardex.id.endsWith('utilidades'))
+								$kardex.utilidad(this);
+						  else
+								return $kardex.calculate(this);
 						break;
 					case $kardex.VK_UP:
 						if($kardex.id.endsWith('costos'))
@@ -80,7 +83,13 @@
 			});	
       $(document).on('blur', this.focus, function(e) {
 				$kardex.leavePage= false;
-				return $kardex.id.endsWith('limites')? false: $kardex.id.endsWith('utilidades')? $kardex.utilidad(this): $kardex.calculate(this);
+				if($kardex.id.endsWith('costos'))
+					return $kardex.costo(this);
+				else
+					if($kardex.id.endsWith('utilidades'))
+						$kardex.utilidad(this);
+					else
+						return $kardex.calculate(this);
 			});	
       $(document).on('keydown', this.selector, function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
@@ -156,6 +165,15 @@
 				this.current= value;
 			  calculate(this.cursor.index);
 			} // if
+			return false;
+		},
+		costo: function(name) {
+			var value= $(name).val().trim();
+ 			janal.console('costo: '+ this.id+ " => "+ value);
+			if(this.different(value)) {
+				this.current= value;
+  			costo(value);
+			} // if	
 			return false;
 		},
 		utilidad: function(name) {

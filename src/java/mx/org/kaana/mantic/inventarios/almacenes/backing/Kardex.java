@@ -11,11 +11,14 @@ import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -23,6 +26,8 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.inventarios.almacenes.beans.AdminKardex;
+import mx.org.kaana.mantic.inventarios.almacenes.beans.TiposVentas;
+import mx.org.kaana.mantic.inventarios.almacenes.reglas.Transaccion;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -55,6 +60,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	@PostConstruct
 	protected void init() {
   	this.attrs.put("buscaPorCodigo", false);
+		this.attrs.put("costoMayorMenor", 0);
 		this.adminKardex= new AdminKardex(-1L);
 	}
 	
@@ -75,6 +81,8 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				if(solicitado!= null) {
 					UIBackingUtilities.toFormatEntity(solicitado, columns);
 					this.attrs.put("articulo", solicitado);
+					this.attrs.put("precio", solicitado.toDouble("precio"));
+					this.attrs.put("costoMayorMenor", this.getCostoMayorMenor(solicitado.toDouble("value"), solicitado.toDouble("precio")));
 					Value ultimo= (Value)DaoFactory.getInstance().toField("TcManticArticulosBitacoraDto", "ultimo", this.attrs, "registro");
 					if(ultimo!= null)
 					  this.attrs.put("ultimo", Global.format(EFormatoDinamicos.FECHA_HORA, ultimo.toTimestamp()));
@@ -106,15 +114,19 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	}
 	
 	public String doMoneyValueFormat(Double value) {
-		return value== null? "": Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, value);
+		return value== null? "": Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, value);
 	}
 	
 	public String doMoneyFormat(Value value) {
 		return value== null? "": this.doMoneyValueFormat(value.toDouble());
 	}
 	
-	public String doPercenageFormat(Value value) {
+	public String doPercentageFormat(Value value) {
 		return value== null? "": Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, value.toDouble())+ "  %";
+	}
+
+	public String doPercentageValueFormat(Double value) {
+		return value== null? "": Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, value)+ "  %";
 	}
 	
 	public String doNumberFormat(Value value) {
@@ -137,6 +149,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
 		List<UISelectEntity> articulos= null;
+		boolean buscaPorCodigo    = false;
     try {
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
@@ -144,12 +157,16 @@ public class Kardex extends IBaseAttribute implements Serializable {
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);
 			String search= (String)this.attrs.get("codigo"); 
-			if(!Cadena.isVacio(search)) 
-				search= search.trim().toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			if(!Cadena.isVacio(search)) {
+				buscaPorCodigo= search.startsWith(".");
+				if(buscaPorCodigo)
+					search= search.trim().substring(1);
+				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			} // if	
 			else
 				search= "WXYZ";
   		params.put("codigo", search);
-			if((boolean)this.attrs.get("buscaPorCodigo"))
+			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
         articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L);
 			else
         articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 20L);
@@ -173,10 +190,21 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	}	
 
 	public String doAceptar() {
-		return null;
-	}
-	
-	public String doCancelar() {
+    Transaccion transaccion= null;
+		EAccion eaccion        = EAccion.MODIFICAR;
+    try {			
+			transaccion = new Transaccion((Long)this.attrs.get("idArticulo"),  (Double)this.attrs.get("precio"), this.adminKardex.getTiposVentas());
+			if (transaccion.ejecutar(eaccion)) {
+				JsfBase.addMessage("Se modificaron los precios de tipos de ventas del articulo.", ETipoMensaje.INFORMACION);
+   			RequestContext.getCurrentInstance().execute("jsKardex.callback('"+ this.adminKardex.getTiposVentas()+ "');");
+			}	// if
+			else 
+				JsfBase.addMessage("Ocurrió un error al registrar los precios de los tipos de ventas del articulo.", ETipoMensaje.ERROR);      			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
 		return null;
 	}
 	
@@ -281,8 +309,28 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		this.adminKardex.toUpdateUtilidad(index, value);
 	}
 	
+	public void doUpdateCosto(Double precio) {
+		double value= ((Entity)this.attrs.get("articulo")).toDouble("value");
+		this.attrs.put("costoMayorMenor", this.getCostoMayorMenor(value, precio));
+		for (TiposVentas item : this.adminKardex.getTiposVentas()) {
+			item.setPrecio(Numero.toRedondearSat((1+ (item.getUtilidad()/ 100))* precio));
+			item.setCosto(precio);
+  		item.toCalculate();
+		} // for
+	}
+	
 	public void doCalculate(Integer index) {
 		this.adminKardex.toCalculate(index);
+	}
+
+	private String getCostoMayorMenor(double value, double precio) {
+		double diferencia= precio- value;
+		diferencia= value== 0? 0: Numero.toRedondearSat(diferencia* 100/ value);
+		String color     = diferencia< -5? "janal-color-orange": diferencia> 5? "janal-color-blue": "janal-color-green";
+		boolean display  = diferencia!= 0D;
+		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(display? "": "none").concat("' title='Costo anterior: ").concat(
+			Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, value)
+		).concat("\n\nDiferencia: ").concat(String.valueOf(diferencia)).concat("%'></i>");
 	}
 
 }
