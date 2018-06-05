@@ -42,6 +42,9 @@
         where      
           id_servicio_estatus = {idServicioEstatus} and id_servicio = {idServicio} and date_format(registro, '%Y%c%d%H%i%S')= '{registro}'
       </select>
+			<delete id="rows">
+        delte from tc_mantic_servicios_bitacora where id_servicio= {idServicio} 
+      </delete>
     </unit>		
     <unit id="TcManticServiciosDetallesDto">
       <select id="row">
@@ -60,6 +63,9 @@
         where      
           concepto = '{concepto}' and id_servicio = {idServicio}
       </select>
+			<delete id="rows">
+        delte from tc_mantic_servicios_detalles where id_servicio= {idServicio} 
+      </delete>
     </unit>		
     <unit id="TcManticServiciosEstatusDto">
       <select id="row">
