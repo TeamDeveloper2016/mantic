@@ -256,8 +256,7 @@
             and 
               tr_mantic_cliente_domicilio.id_principal={idPrincipal}            
             {sortOrder}            
-          </select>
-         
+          </select>         
         </unit>
         <unit id="VistaAlmacenesDto">
           <select id="row">
