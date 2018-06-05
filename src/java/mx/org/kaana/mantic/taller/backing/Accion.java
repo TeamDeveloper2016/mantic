@@ -14,7 +14,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.mantic.taller.reglas.Transaccion;
 import mx.org.kaana.mantic.taller.beans.RegistroServicio;
 
-@Named(value = "manticCatalogosClientesAccion")
+@Named(value = "manticTallerAccion")
 @ViewScoped
 public class Accion extends IBaseAttribute implements Serializable {
 
