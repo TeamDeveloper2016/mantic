@@ -1,9 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -56,6 +51,8 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_servicio")
   private Long idServicio;
+	@Column (name="id_garantia")
+  private Long idGarantia;
   @Column (name="modelo")
   private String modelo;
   @Column (name="ejercicio")
@@ -63,7 +60,7 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
   @Column (name="registro")
   private Timestamp registro;
   @Column (name="consecutivo")
-  private Long consecutivo;
+  private String consecutivo;
   @Column (name="marca")
   private String marca;
   @Column (name="total")
@@ -90,11 +87,11 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
   }
 
   public TcManticServiciosDto(Long key) {
-    this(null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null);
+    this(null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticServiciosDto(Double descuentos, Long idFactura, String caracteristicas, Date fechaEstimada, Long idTipoMedioPago, Long idCliente, String herramienta, Long idServicioEstatus, String descuento, Long idServicio, String modelo, Long ejercicio, Long consecutivo, String marca, Double total, Long idUsuario, Double impuestos, String observaciones, Double subTotal, Double efectivo, Long idEmpresa, String reparacion, Long orden) {
+  public TcManticServiciosDto(Double descuentos, Long idFactura, String caracteristicas, Date fechaEstimada, Long idTipoMedioPago, Long idCliente, String herramienta, Long idServicioEstatus, String descuento, Long idServicio, String modelo, Long ejercicio, String consecutivo, String marca, Double total, Long idUsuario, Double impuestos, String observaciones, Double subTotal, Double efectivo, Long idEmpresa, String reparacion, Long orden, Long idGarantia) {
     setDescuentos(descuentos);
     setIdFactura(idFactura);
     setCaracteristicas(caracteristicas);
@@ -119,8 +116,17 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
     setIdEmpresa(idEmpresa);
     setReparacion(reparacion);
     setOrden(orden);
+		setIdGarantia(idGarantia);
   }
-	
+
+	public Long getIdGarantia() {
+		return idGarantia;
+	}
+
+	public void setIdGarantia(Long idGarantia) {
+		this.idGarantia = idGarantia;
+	}
+		
   public void setDescuentos(Double descuentos) {
     this.descuentos = descuentos;
   }
@@ -225,11 +231,11 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
     return registro;
   }
 
-  public void setConsecutivo(Long consecutivo) {
+  public void setConsecutivo(String consecutivo) {
     this.consecutivo = consecutivo;
   }
 
-  public Long getConsecutivo() {
+  public String getConsecutivo() {
     return consecutivo;
   }
 
@@ -375,6 +381,8 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
 		regresar.append(getReparacion());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdGarantia());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -406,13 +414,14 @@ public class TcManticServiciosDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("reparacion", getReparacion());
 		regresar.put("orden", getOrden());
+		regresar.put("idGarantia", getIdGarantia());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescuentos(), getIdFactura(), getCaracteristicas(), getFechaEstimada(), getIdTipoMedioPago(), getIdCliente(), getHerramienta(), getIdServicioEstatus(), getDescuento(), getIdServicio(), getModelo(), getEjercicio(), getRegistro(), getConsecutivo(), getMarca(), getTotal(), getIdUsuario(), getImpuestos(), getObservaciones(), getSubTotal(), getEfectivo(), getIdEmpresa(), getReparacion(), getOrden()
+    getDescuentos(), getIdFactura(), getCaracteristicas(), getFechaEstimada(), getIdTipoMedioPago(), getIdCliente(), getHerramienta(), getIdServicioEstatus(), getDescuento(), getIdServicio(), getModelo(), getEjercicio(), getRegistro(), getConsecutivo(), getMarca(), getTotal(), getIdUsuario(), getImpuestos(), getObservaciones(), getSubTotal(), getEfectivo(), getIdEmpresa(), getReparacion(), getOrden(), getIdGarantia()
     };
     return regresar;
   }
