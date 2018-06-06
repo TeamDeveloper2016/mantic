@@ -24,6 +24,15 @@
         where      
           consecutivo = {consecutivo} and id_cliente = {idCliente} and id_empresa = {idEmpresa}
       </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_servicios
+				where
+				  ejercicio= {ejercicio} 
+				  and id_empresa= {idEmpresa}				
+			</select>	
     </unit>		
     <unit id="TcManticServiciosBitacoraDto">
       <select id="row">
