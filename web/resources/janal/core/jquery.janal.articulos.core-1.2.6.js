@@ -53,9 +53,11 @@
 			top: 1, // el top debera ser elementos que van de 0 a n-1
 			index: 0
 		},
-		init: function(top) { // Constructor
+		init: function(top, content) { // Constructor
 			$articulos= this;
 			this.cursor.top= top-1;
+			if(typeof(content)!== 'undefined')
+			  this.joker= content;
 			this.events();
 		}, // init
 		events: function() {
@@ -327,8 +329,11 @@
 		},
 		find: function() {
 			var value = this.get().trim();
-			if(value.length> 0 && !this.valid())
-			  locate(value, this.cursor.index);
+			if(value.startsWith('='))
+				this.set(eval(value.substring(1)));
+			else
+			  if(value.length> 0 && !this.valid())
+			    locate(value, this.cursor.index);
 			return false;
 		},
 		exists: function(index) {

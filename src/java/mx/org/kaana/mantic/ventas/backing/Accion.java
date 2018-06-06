@@ -36,6 +36,10 @@ public class Accion extends IBaseArticulos implements Serializable {
   private static final long serialVersionUID = 327393488565639367L;
 	private EOrdenes tipoOrden;
 
+	public Accion() {
+		super("menudeo");
+	}
+	
 	public String getTitulo() {
 		return "(".concat(tipoOrden.name()).concat(")");
 	}
