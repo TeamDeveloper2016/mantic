@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="#{manticTallerAccion.attrs.nombreAccion} servicio de taller"/>
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {
+        'contenedorGrupos\\:consecutivo': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:herramienta': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:marca': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:modelo': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:caracteristicas': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:reparacion': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:idTipoMedioPago': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},        
+        'busqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:clave': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:rfc': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:limiteCredito': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:plazo': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},        
+        'contenedorGrupos\\:fechaEstimada': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},        
+        'contenedorGrupos\\:correo': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},        
+        'contenedorGrupos\\:telefono': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'}        
+      };		
+			
+			$(document).ready(function(){janal.readingMode('#{manticTallerAccion.attrs.nombreAccion}');});
+    </script>   
+  </ui:define>
+  <ui:define name="contenido">
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">
+        <div class="ui-grid-col-12">
+          <p:tabView id="contenedorGrupos">            
+            <p:ajax event="tabChange" process="@this" oncomplete="janal.refresh(janal.tabView('contenedorGrupos'))"/>
+            <p:tab title="General">
+              <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								                
+                <p:outputLabel for="consecutivo" value="Consecutivo:"/>
+                <p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.servicio.consecutivo}" readonly="true"/>                    
+                <p:outputLabel for="herramienta" value="Herramienta:"/>
+                <p:inputText id="herramienta" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.servicio.herramienta}" />                    
+                <p:outputLabel for="marca" value="Marca:"/>
+                <p:inputText id="marca" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.servicio.marca}"/>                    
+                <p:outputLabel for="modelo" value="Modelo:"/>
+                <p:inputText id="modelo" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.servicio.modelo}"/>                    
+                <p:outputLabel for="caracteristicas" value="Caracteristicas:"/>
+                <p:inputTextarea id="caracteristicas" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.servicio.caracteristicas}"/>                    
+                <p:outputLabel for="reparacion" value="Reparación:"/>
+                <p:inputTextarea id="reparacion" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.servicio.reparacion}"/>                                    
+								<p:outputLabel for="ingreso" value="Tipo de ingreso:"/>
+								<p:selectOneMenu id="ingreso" value="#{manticTallerAccion.registroServicio.servicio.idGarantia}" styleClass="janal-wid-100-txt">
+									<f:selectItem itemValue="1" itemLabel="GARANTIA"/>
+									<f:selectItem itemValue="2" itemLabel="REPARACIÓN"/>
+								</p:selectOneMenu>
+								<p:outputLabel for="idTipoMedioPago" value="Medio de pago:"/>
+								<p:selectOneMenu id="idTipoMedioPago" value="#{manticTallerAccion.registroServicio.servicio.idTipoMedioPago}" styleClass="janal-wid-100-txt">
+									<f:selectItems value="#{manticTallerAccion.attrs.mediosPagos}"/>
+								</p:selectOneMenu>
+								<p:outputLabel for="fechaEstimada" value="Fecha estimada:"/>
+								<p:calendar id="fechaEstimada" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.servicio.fechaEstimada}" mode="popup" pattern="dd/MM/yyyy" converter="janal.convertidor.Calendario"/>
+              </p:panelGrid>
+            </p:tab>
+						<p:tab title="Cliente">
+              <p:panelGrid id="formularioCliente" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								
+								
+								<p:spacer/>
+								<p:commandButton process="@this" update="dialogoClientes" icon="fa fa-search" styleClass="janal-text-white" onstart="return janal.bloquear();" oncomplete="PF('dlgClientes').show();" title="Buscar cliente" style="float: right !important"/>						
+								<p:outputLabel for="cliente" value="Cliente:"/>
+								<p:selectOneMenu id="cliente" value="#{manticTallerAccion.registroServicio.clienteSeleccion}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">
+									<p:ajax event="change" listener="#{manticTallerAccion.doLoadAtributos}" process="@this cliente" update="contenedorGrupos:formularioCliente" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
+									<f:selectItem itemValue="-1" itemLabel="Seleccione"/>
+									<f:selectItems value="#{manticTallerAccion.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
+									<p:column  styleClass="janal-column-left janal-wid-30">
+										<h:outputText value="#{item.rfc}"/>
+									</p:column>   																			
+									<p:column  styleClass="janal-column-left janal-wid-100">
+										<h:outputText value="#{item.razonSocial}"/>
+									</p:column>   																			
+								</p:selectOneMenu>									
+								<p:spacer height="10px"/><p:spacer height="10px"/>
+								
+                <p:outputLabel for="clave" value="Clave:"/>
+                <p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.cliente.clave}"/>                    
+                <p:outputLabel for="rfc" value="RFC:"/>
+                <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.cliente.rfc}" />                    
+                <p:outputLabel for="razonSocial" value="Razon social:"/>
+                <p:inputText id="razonSocial" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.cliente.razonSocial}"/>                    
+                <p:outputLabel for="limiteCredito" value="Limite de credito:"/>
+                <p:inputNumber id="limiteCredito" styleClass="janal-wid-100-txt janal-column-right" value="#{manticTallerAccion.registroServicio.cliente.limiteCredito}"/>                    																	
+                <p:outputLabel for="plazo" value="Plazo de días:"/>
+                <p:inputNumber id="plazo" styleClass="janal-wid-100-txt janal-column-right" value="#{manticTallerAccion.registroServicio.cliente.plazoDias}" decimalPlaces="0"/>                    																																	                								
+								<p:outputLabel for="telefono" value="Teléfono:"/>
+								<p:inputText id="telefono" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.contactoCliente.telefono}" />                    
+								<p:outputLabel for="correo" value="Correo electrónico:"/>
+								<p:inputText id="correo" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.contactoCliente.email}" />                    
+                
+              </p:panelGrid>
+            </p:tab>
+            <p:tab title="Observaciones">
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+                <p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.servicio.observaciones}"/>  
+              </p:panelGrid>
+            </p:tab>
+          </p:tabView>
+        </div>
+      </div>
+    </div>	
+		<p:dialog id="dialogoClientes" widgetVar="dlgClientes" header="Busqueda de domicilio:" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.refresh();">
+			<h:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-80, janal-wid-20">
+				<p:outputLabel for="busqueda" value="Cliente:"/>
+				<p:inputText id="busqueda" value="#{manticTallerAccion.attrs.busqueda}" styleClass="janal-wid-100-txt"/>
+				<p:commandButton icon="fa fa-search" actionListener="#{manticTallerAccion.doBusquedaClientes}" process="@this busqueda" update="clientesBusqueda totalResultados" styleClass="janal-text-white" onstart="return janal.partial('dialogo')"/>
+				<p:outputLabel for="clientesBusqueda" value="Cliente:"/>
+				<p:selectOneMenu id="clientesBusqueda" value="#{manticTallerAccion.clienteBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
+					<f:selectItems value="#{manticTallerAccion.attrs.clientesBusqueda}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
+					<p:column  styleClass="janal-column-left janal-wid-30">
+						<h:outputText value="#{item.rfc}"/>
+					</p:column>   																			
+					<p:column  styleClass="janal-column-left janal-wid-100">
+						<h:outputText value="#{item.razonSocial}"/>
+					</p:column>  
+				</p:selectOneMenu>
+				<p:spacer/><p:spacer/><p:spacer/>
+				<p:outputLabel id="totalResultados" value="Total [#{manticTallerAccion.attrs.resultados}]"/>
+			</h:panelGrid>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton id="aceptarBusqueda" icon="fa fa-check" process="@this clientesBusqueda" update="contenedorGrupos:formularioCliente"  value="Aceptar" actionListener="#{manticTallerAccion.doAsignaCliente}" onstart="return PF('dlgClientes').hide();" oncomplete="janal.desbloquear();janal.refresh();" styleClass="janal-text-white"/>
+        <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgClientes').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+			</div>
+		</p:dialog> 
+  </ui:define>    
+  <ui:define name="acciones">
+    <div class="lg-pantalla">
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticTallerAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticTallerAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+    </div>		
+    <div class="xs-pantalla">
+      <p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticTallerAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticTallerAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+    </div>		
+  </ui:define>
+</ui:composition>

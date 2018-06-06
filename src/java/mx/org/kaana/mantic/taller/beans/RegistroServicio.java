@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.taller.beans;
 
 import java.io.Serializable;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosDto;
 import mx.org.kaana.mantic.taller.reglas.MotorBusqueda;
@@ -13,6 +14,7 @@ public class RegistroServicio implements Serializable{
 	private TcManticServiciosDto servicio;
 	private TcManticClientesDto cliente;
 	private ContactoCliente contactoCliente;
+	private UISelectEntity clienteSeleccion;
 
 	public RegistroServicio() {
 		this(-1L, new TcManticServiciosDto(), new TcManticClientesDto(), new ContactoCliente());
@@ -60,6 +62,16 @@ public class RegistroServicio implements Serializable{
 
 	public void setContactoCliente(ContactoCliente contactoCliente) {
 		this.contactoCliente = contactoCliente;
+	}
+
+	public UISelectEntity getClienteSeleccion() {
+		return clienteSeleccion;
+	}
+
+	public void setClienteSeleccion(UISelectEntity clienteSeleccion) {
+		this.clienteSeleccion = clienteSeleccion;
+		if(this.clienteSeleccion!= null && !this.clienteSeleccion.getKey().equals(-1L))
+			this.cliente.setIdCliente(this.clienteSeleccion.getKey());
 	}
 	
 	private void init(){
