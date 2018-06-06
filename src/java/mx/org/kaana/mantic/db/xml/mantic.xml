@@ -85,6 +85,8 @@
           tc_mantic_servicios_estatus
         where 
           {condicion} 
+				order by 
+					id_servicio_estatus
       </select>
       <select id="identically">
         select      
