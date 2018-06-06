@@ -50,7 +50,7 @@
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
-
+		<p:remoteCommand name="lookup" actionListener="#{manticVentasAccion.doUpdateArticulos}" process="@this codigo" update="buscados"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
@@ -94,7 +94,7 @@
 										</pe:tooltip>
 									</f:facet>
 									<div class="ui-grid-row janal-grid-row">
-										<div class="ui-grid-col-12" style="padding-right: 14px;">
+										<div class="ui-grid-col-12">
 											<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
 											<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticVentasAccion.attrs.articulo}" completeMethod="#{manticVentasAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10">
 												<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
@@ -115,10 +115,6 @@
 												</f:facet>
 											</p:autoComplete>												
 										</div>	
-										<div style="width: 10px; margin-left: -5px; margin-top: 1px;">
-											<h:outputText value="#{row['estaSolicitado']}" escape="false"/>
-											<h:outputText value="#{row['precioSugerido']}" escape="false"/>
-										</div>
 									</div>	
 								</p:column>
 								<p:column  class="MarAuto Responsive">
@@ -195,6 +191,45 @@
 		</div>
 		<p:inputText id="articulos" value="#{manticVentasAccion.adminOrden.totales.articulos}" style="display:none"/>
 		<p:inputText id="total" value="#{manticVentasAccion.adminOrden.totales.articulos}" style="display:none"/>
+		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" onHide="janal.desbloquear();">
+			<h:outputText value="Nota: Si desea buscar un articulo se puede usar la coma como separador de palabras ej. cable,coaxial ó cable coaxial" escape="false"/>
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:outputLabel for="codigo" value="Código o nombre:"/>
+					<span class="janal-help-icon janal-help-8 fa fa-fw fa-question-circle Fright" onclick="countHelp(8);"/>	
+					<pe:tooltip for="@(.janal-help-8)" showEvent="click">
+						<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(8)}" styleClass="Fs15" escape="false"/>
+					</pe:tooltip>
+				</div>			
+			</div>	
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:inputText id="codigo" value="#{manticVentasAccion.attrs.codigo}" styleClass="janal-wid-100-txt key-up-event"/>
+				</div>			
+			</div>
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:outputLabel for="buscados" value="Articulos:"/><br/>
+					<p:selectOneMenu id="buscados" value="#{manticVentasAccion.attrs.articulo}" var="item" styleClass="janal-wid-98" converter="janal.convertidor.Entity">
+						<f:selectItems value="#{manticVentasAccion.attrs.articulos}" var="element" itemValue="#{element}" itemLabel="Código: [#{element.propio}] Precio: [$ #{element.precio}] #{element.nombre}"/>
+						<p:column headerText="Propio">
+							<h:outputText value="#{item.propio}"/>
+						</p:column>   
+						<p:column headerText="Nombre">
+							<h:outputText value="#{item.nombre}"/>
+						</p:column>   
+						<p:column headerText="Proveedor">
+							<h:outputText value="#{item.codigo}"/>
+						</p:column>   
+					</p:selectOneMenu>
+				</div>
+			</div>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this buscados" update="@(.filas) @(.recalculo)" value="Aceptar" oncomplete="PF('dialogo').hide(); jsArticulos.close();"/>
+				<p:commandButton process="@none" styleClass="janal-text-white" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide();jsArticulos.move();"/>
+			</div>
+		</p:dialog>		
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
