@@ -1775,10 +1775,11 @@
           id_tipo_medio = {idTipoMedio} and nombre = '{nombre}'
       </select>
     </unit>
-	    <unit id="TcManticTiposMediosPagosDto">
+	  <unit id="TcManticTiposMediosPagosDto">
       <select id="row">
         select      
-          *
+					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago as id_key,
+          tc_mantic_tipos_medios_pagos.*
         from      
           tc_mantic_tipos_medios_pagos
         where 
