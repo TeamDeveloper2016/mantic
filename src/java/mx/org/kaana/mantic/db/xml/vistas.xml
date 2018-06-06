@@ -1061,7 +1061,9 @@
 					tc_mantic_servicios.herramienta,
 					tc_mantic_servicios.marca,
 					tc_mantic_servicios.modelo,
-					tc_mantic_servicios.fecha_estimada
+					tc_mantic_servicios.fecha_estimada,
+          tc_mantic_clientes.razon_social, 
+					tc_mantic_servicios_estatus.nombre estatus
 				from 
 					tc_mantic_servicios
 				inner join 
