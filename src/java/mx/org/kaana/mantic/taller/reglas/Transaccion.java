@@ -40,7 +40,9 @@ public class Transaccion extends IBaseTnx{
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
-		boolean regresar = false;
+		boolean regresar                     = false;
+		TcManticServiciosDto servicio        = null;
+		TcManticServiciosBitacoraDto bitacora= null;
     try {
 			if(this.registroServicio!= null)
 				this.registroServicio.getServicio().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
@@ -56,6 +58,14 @@ public class Transaccion extends IBaseTnx{
           break;
 				case DEPURAR:
 					regresar= DaoFactory.getInstance().delete(sesion, this.dto)>= 1L;
+					break;
+				case JUSTIFICAR:
+					bitacora= (TcManticServiciosBitacoraDto) this.dto;
+					if(DaoFactory.getInstance().insert(sesion, this.dto)>= 1L){
+						servicio= (TcManticServiciosDto) DaoFactory.getInstance().findById(sesion, TcManticServiciosDto.class, bitacora.getIdServicio());
+						servicio.setIdServicioEstatus(bitacora.getIdServicioEstatus());
+						regresar= DaoFactory.getInstance().update(sesion, servicio)>= 1L;
+					} // if
 					break;
       } // switch
       if (!regresar) {
