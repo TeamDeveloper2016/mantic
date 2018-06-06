@@ -230,7 +230,7 @@
     												<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
 												    <p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:precios'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:precios'));" style="display:none"/>
 													</div>	 
-												  <div style="width: 10px; margin-left: -5px; margin-top: 8px;">
+												  <div style="width: 10px; margin-left: -4px; margin-top: 1px;">
 												    <h:outputText value="#{row['costoMayorMenor']}" escape="false"/>
 												   </div>
 												</div>	
@@ -272,19 +272,19 @@
 									    </div>	
 											<div class="ui-grid-col-2 janal-column-center">
   											<p:outputLabel value="IVA:"/><br/>
-												<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticComprasEntradasAccion.adminOrden.totales.iva$}"/>
+												<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticComprasEntradasAccion.adminOrden.totales.iva$}"/>
 									    </div>	
 											<div class="ui-grid-col-2 janal-column-center">
 											  <p:outputLabel value="Descuento:"/><br/>
-											  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticComprasEntradasAccion.adminOrden.totales.descuento$}"/>
+											  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticComprasEntradasAccion.adminOrden.totales.descuento$}"/>
 									    </div>	
 											<div class="ui-grid-col-2 janal-column-center">
 											  <p:outputLabel value="Extra:"/><br/>
-											  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticComprasEntradasAccion.adminOrden.totales.extra$}"/>
+											  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticComprasEntradasAccion.adminOrden.totales.extra$}"/>
 									    </div>	
 											<div class="ui-grid-col-2 janal-column-center">
 											  <p:outputLabel value="Subtotal:"/><br/>
-											  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticComprasEntradasAccion.adminOrden.totales.subTotal$}"/>
+											  <p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticComprasEntradasAccion.adminOrden.totales.subTotal$}"/>
 									    </div>	
 											<div class="ui-grid-col-2 janal-column-center ">
   											<p:outputLabel for="total" value="Total:"/><br/>

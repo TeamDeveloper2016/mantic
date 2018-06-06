@@ -12,7 +12,7 @@
     <h:outputScript library="janal" name="core/jquery.janal.articulos.core-1.2.3.js"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
-				'descuento': {validaciones: 'libre', mascara: 'libre', formatos: 'descuento', grupo: 'articulo'}			
+				'descuento': {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'articulo'}			
 			};	
 			
     	$(document).ready(function() {
@@ -144,24 +144,17 @@
 											<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
 											<p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>
 										</div>	 
-										<div style="width: 10px; margin-left: -5px; margin-top: 8px;">
+										<div style="width: 10px; margin-left: -4px; margin-top: 1px;">
 											<h:outputText value="#{row['costoMayorMenor']}" escape="false"/>
 										 </div>
 									</div>	
 								</p:column>		
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 									<f:facet name="header">
-										<h:outputText value="Descuento (%)"/>
+										<h:outputText value="% Descuento"/>
 									</f:facet>
 									<p:outputLabel value="#{row['descuento']}"/>
 									<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'));" style="display: none"/>
-								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
-									<f:facet name="header">
-										<h:outputText value="Extras (%)"/>
-									</f:facet>
-									<p:outputLabel value="#{row['extras']}"/>
-									<p:inputText id="extras" value="#{row['extras']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:extras'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:extras'));" style="display: none"/>
 								</p:column>		
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-5">
 									<f:facet name="header">
@@ -187,11 +180,11 @@
 								<p:outputLabel for="articulos" value="Articulos:"/>
 								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasAccion.adminOrden.totales.articulos}"/>
 								<p:outputLabel value="Descuento:"/>
-								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticVentasAccion.adminOrden.totales.descuento$}"/>
+								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasAccion.adminOrden.totales.descuento$}"/>
 								<p:outputLabel value="Subtotal:"/>
-								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticVentasAccion.adminOrden.totales.subTotal$}"/>
+								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasAccion.adminOrden.totales.subTotal$}"/>
 								<p:outputLabel value="IVA:"/>
-								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticVentasAccion.adminOrden.totales.iva$}"/>
+								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasAccion.adminOrden.totales.iva$}"/>
 								<p:outputLabel for="total" value="Total:" styleClass="janal-total-compra janal-color-orange"/>
 								<p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticVentasAccion.adminOrden.totales.total$}"/>
 							</p:panelGrid>
