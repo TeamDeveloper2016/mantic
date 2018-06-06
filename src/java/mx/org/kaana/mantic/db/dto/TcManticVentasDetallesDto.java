@@ -47,7 +47,7 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
   @Column (name="sat")
   private String sat;
   @Column (name="extras")
-  private Double extras;
+  private String extras;
   @Column (name="nombre")
   private String nombre;
   @Column (name="importe")
@@ -80,7 +80,7 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticVentasDetallesDto(Double descuentos, String codigo, String unidadMedida, Double costo, String descuento, String sat, Double extras, String nombre, Double importe, Long idVentaDetalle, Double iva, Double impuestos, Double subTotal, Long cantidad, Long idArticulo, Long idVenta) {
+  public TcManticVentasDetallesDto(Double descuentos, String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, String nombre, Double importe, Long idVentaDetalle, Double iva, Double impuestos, Double subTotal, Long cantidad, Long idArticulo, Long idVenta) {
     setDescuentos(descuentos);
     setCodigo(codigo);
     setUnidadMedida(unidadMedida);
@@ -148,11 +148,11 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
     return sat;
   }
 
-  public void setExtras(Double extras) {
+  public void setExtras(String extras) {
     this.extras = extras;
   }
 
-  public Double getExtras() {
+  public String getExtras() {
     return extras;
   }
 

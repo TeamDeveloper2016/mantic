@@ -40,7 +40,7 @@
         from      
           tc_mantic_servicios_bitacora
         where      
-          id_servicio_estatus = {idServicioEstatus} and id_servicio = {idServicio} and date_format(registro, '%Y%c%d%H%i%S')= '{registro}'
+          id_servicio_estatus = {idServicioEstatus} and id_servicio = {idServicio} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
       </select>
 			<delete id="rows">
         delte from tc_mantic_servicios_bitacora where id_servicio= {idServicio} 
@@ -101,7 +101,7 @@
         from      
           tc_mantic_inventarios
         where      
-          id_almacen = {idAlmacen} and id_articulo = {idArticulo} and ejercicio = {ejercicio} and date_format(registro, '%Y%c%d%H%i%S')= '{registro}'
+          id_almacen = {idAlmacen} and id_articulo = {idArticulo} and ejercicio = {ejercicio} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
       </select>
       <select id="stock">
         select      
@@ -142,7 +142,7 @@
         from      
           tc_mantic_articulos_bitacora
         where      
-          id_articulo = {idArticulo} and id_nota_entrada = {idNotaEntrada} and date_format(registro, '%Y%c%d%H%i%S') = '{registro}'
+          id_articulo = {idArticulo} and id_nota_entrada = {idNotaEntrada} and date_format(registro, '%Y%m%d%H%i%S') = '{registro}'
       </select>
       <select id="ultimo">
         select      
@@ -2009,6 +2009,25 @@
         where      
           consecutivo = {consecutivo} and dia = {dia} and id_empresa = {idEmpresa}
       </select>
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_ventas
+        where 
+          id_venta = {idVenta} 
+      </select>
+      <select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_ventas
+				where
+				  ejercicio= {ejercicio} 
+				  and date_format(dia, '%Y%m%d') = '{dia}'
+				  and id_empresa= {idEmpresa}				
+			</select>			
+			
     </unit>
     <unit id="TcManticVentasDetallesDto">
       <select id="row">
@@ -2027,8 +2046,21 @@
         where      
           id_venta_detalle = {idVentaDetalle} and id_articulo = {idArticulo} and id_venta = {idVenta}
       </select>
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_ventas_detalles
+        where      
+          id_venta = {idVenta}
+				order by
+				  tc_mantic_ventas_detalles.registro
+      </select>
+			<delete id="rows">
+				delete from tc_mantic_ventas_detalles where tc_mantic_ventas_detalles.id_venta= {idVenta}
+			</delete>
     </unit>
-	    <unit id="TcManticVentasBitacoraDto">
+	  <unit id="TcManticVentasBitacoraDto">
       <select id="row">
         select      
           *

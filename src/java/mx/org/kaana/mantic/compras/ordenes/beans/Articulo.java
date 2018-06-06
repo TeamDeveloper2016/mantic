@@ -13,6 +13,7 @@ import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.comun.beans.ArticuloDetalle;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -269,6 +270,27 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			-1L , /*idOrdenDetalle, */
 			this.getIdArticulo(), 
 			this.getDescuentos()
+		);
+	}
+	
+	public TcManticVentasDetallesDto toVentaDetalle() {
+		return new TcManticVentasDetallesDto(
+			this.getDescuentos(),
+			Cadena.isVacio(this.getCodigo())? this.getPropio(): this.getCodigo(), 
+			"PZA",
+			this.getCosto(), 
+			this.getDescuento(), 
+			this.getSat(),
+			this.getExtras(), 
+			this.getNombre(), 
+			this.getImporte(), 
+      -1L , /*idVentaDetalle, */
+			this.getIva(), 
+			this.getImpuestos(), 
+			this.getSubTotal(), 
+			this.getCantidad(), 
+			this.getIdArticulo(),
+			-1L
 		);
 	}
 
