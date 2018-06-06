@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="#{manticComprasEntradasAccion.attrs.nombreAccion} una nota de entrada #{manticComprasEntradasAccion.titulo}"/>
 	<ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.janal.articulos.core-1.2.3.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.articulos.core-1.2.6.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:consecutivo'    : {validaciones: 'requerido', mascara: 'libre'},
@@ -160,7 +160,7 @@
 											</p:column>		
 											<p:column  class="MarAuto Responsive janal-wid-13">
 												<f:facet name="header">
-                          <p:selectBooleanCheckbox value="#{manticComprasOrdendesAccion.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
+                          <p:selectBooleanCheckbox value="#{manticComprasEntradasAccion.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
 														<p:ajax event="change" process="@this" update="@this"/>
 													</p:selectBooleanCheckbox>
 													<h:outputText value="Código"/>

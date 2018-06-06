@@ -37,13 +37,30 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 	private static final long serialVersionUID=-7378726801437171894L;
 	
   private IAdminArticulos adminOrden;
+	private String precio;
 
+	public IBaseArticulos() {
+		this("precio");
+	}
+
+	public IBaseArticulos(String precio) {
+		this.precio= precio;
+	}
+	
 	public IAdminArticulos getAdminOrden() {
 		return adminOrden;
 	}
 
 	public void setAdminOrden(IAdminArticulos adminOrden) {
 		this.adminOrden=adminOrden;
+	}
+
+	public String getPrecio() {
+		return precio;
+	}
+
+	public void setPrecio(String precio) {
+		this.precio=precio;
 	}
 
   private void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
@@ -63,7 +80,7 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 				temporal.setCodigo(codigo== null? "": codigo.toString());
 				temporal.setPropio(articulo.toString("propio"));
 				temporal.setNombre(articulo.toString("nombre"));
-				temporal.setValor(articulo.toDouble("precio"));
+				temporal.setValor(articulo.toDouble(this.precio));
 				temporal.setIva(articulo.toDouble("iva"));
 				temporal.setDescuento(this.adminOrden.getDescuento());
 				temporal.setExtras(this.adminOrden.getExtras());
@@ -341,7 +358,7 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 				this.getAdminOrden().getTipoDeCambio(),
 				seleccionado.toString("nombre"), 
 				codigo== null? "": codigo.toString(),
-				seleccionado.toDouble("precio"),
+				seleccionado.toDouble(this.precio),
 				this.getAdminOrden().getDescuento(), 
 				-1L,
 				this.getAdminOrden().getExtras(), 
