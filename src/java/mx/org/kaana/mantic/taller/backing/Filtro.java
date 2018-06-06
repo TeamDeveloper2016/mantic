@@ -57,7 +57,7 @@ public class Filtro extends Comun implements Serializable {
       campos.add(new Columna("consecutivo", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("marca", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("modelo", EFormatoDinamicos.MAYUSCULAS));      
-      campos.add(new Columna("fechaEstimada", EFormatoDinamicos.FECHA_HORA_CORTA));      
+      campos.add(new Columna("fechaEstimada", EFormatoDinamicos.FECHA_CORTA));      
       this.lazyModel = new FormatCustomLazy("VistaTallerServiciosDto", "principal", this.attrs, campos);
       UIBackingUtilities.resetDataTable();
     } // try
