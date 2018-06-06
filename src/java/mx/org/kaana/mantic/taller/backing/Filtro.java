@@ -22,6 +22,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticServiciosBitacoraDto;
 import mx.org.kaana.mantic.taller.beans.RegistroServicio;
 import mx.org.kaana.mantic.taller.reglas.Transaccion;
 
@@ -128,4 +129,51 @@ public class Filtro extends Comun implements Serializable {
 			Methods.clean(campos);
 		} // finally
 	} // loadEstatusServicios
+	
+	public void doLoadEstatus(){
+		Entity seleccionado          = null;
+		Map<String, Object>params    = null;
+		List<UISelectItem> allEstatus= null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_servicio_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
+			allEstatus= UISelect.build("TcManticServiciosEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
+			this.attrs.put("allEstatusAsigna", allEstatus);
+			this.attrs.put("estatusAsigna", allEstatus.get(0));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // doLoadEstatus
+	
+	public void doActualizarEstatus(){
+		Transaccion transaccion              = null;
+		TcManticServiciosBitacoraDto bitacora= null;
+		Entity seleccionado                  = null;
+		try {
+			seleccionado= (Entity)this.attrs.get("seleccionado");
+			bitacora= new TcManticServiciosBitacoraDto();
+			bitacora.setIdServicio(seleccionado.getKey());
+			bitacora.setIdServicioEstatus(Long.valueOf(this.attrs.get("estatusAsigna").toString()));
+			bitacora.setSeguimiento((String) this.attrs.get("justificacion"));
+			bitacora.setIdUsuario(JsfBase.getIdUsuario());
+			transaccion= new Transaccion(bitacora);
+			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
+				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
+			else
+				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally{
+			this.attrs.put("justificacion", "");
+		} // finally
+	}	// doActualizaEstatus
 }
