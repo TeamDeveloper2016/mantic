@@ -814,6 +814,11 @@
 				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
 				  tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.precio,
+				  tc_mantic_articulos.menudeo,
+				  tc_mantic_articulos.medio_mayoreo,
+				  tc_mantic_articulos.mayoreo,
+				  tc_mantic_articulos.limite_medio_mayoreo,
+				  tc_mantic_articulos.limite_mayoreo,
 				  tc_mantic_articulos.iva,
 				  tc_mantic_articulos.id_redondear
 				from 
@@ -838,6 +843,11 @@
 				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
 				  tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.precio,
+				  tc_mantic_articulos.menudeo,
+				  tc_mantic_articulos.medio_mayoreo,
+				  tc_mantic_articulos.mayoreo,
+				  tc_mantic_articulos.limite_medio_mayoreo,
+				  tc_mantic_articulos.limite_mayoreo,
 				  tc_mantic_articulos.iva,
 				  tc_mantic_articulos.id_redondear
 				from 
