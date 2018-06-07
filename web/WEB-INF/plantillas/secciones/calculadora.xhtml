@@ -9,7 +9,7 @@
 	</style>
 	<script type="text/javascript">	
 	</script>		
-	<p:dialog id="dialogoCalculadora" widgetVar="dlgCalculadora" header="Calculadora" onShow="$('#calculadoraValue').focus();" height="420px" width="250px" resizable="false"  position="right bottom">
+	<p:dialog id="dialogoCalculadora" widgetVar="dlgCalculadora" header="Calculadora" onShow="$('#calculadoraValue').focus();" onHide="janal.sendLastFocus();" height="420px" width="250px" resizable="false"  position="right bottom" closeOnEscape="true">
 		<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" >
   		<p:inputText id="calculadoraValue" styleClass="janal-wid-100-txt janal-column-right janal-key-calculator janal-not-focus"/>  
       <p:inputTextarea id="results" rows="18" styleClass="janal-wid-100-txt janal-column-right janal-not-focus" readonly="true" scrollHeight="100" autoResize="false"/>			

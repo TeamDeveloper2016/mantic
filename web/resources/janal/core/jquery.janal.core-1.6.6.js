@@ -1194,6 +1194,10 @@
 			this.console('janal.valueLastFocus: '+ $(this.lastNameFocus).attr('id')+ ' => '+ value);
 			if($(this.lastNameFocus))
 				$(this.lastNameFocus).val(value);
+		},
+		sendLastFocus: function() {
+			if($(this.lastNameFocus))
+				$(this.lastNameFocus).focus();
 		}
   });
   window.Janal= Janal;
