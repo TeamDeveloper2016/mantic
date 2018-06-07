@@ -4,31 +4,16 @@
     xmlns:ui="http://java.sun.com/jsf/facelets"
 		xmlns:p="http://primefaces.org/ui"   
 		xmlns:pe="http://primefaces.org/ui/extensions">   
-	<style type="text/css">
-		.calculator-result {
-			clear: both;
-			margin: 2px;
-			padding: 0 2px;
-			text-align: right;
-			background-color: #175787 !important;
-			border: 1px inset #000;
-			-moz-border-radius: 4px;
-			-webkit-border-radius: 4px;
-			border-radius: 4px;
-			font-size: 110%;
-		}
+  <h:outputScript library="janal" name="core/jquery.janal.calc.core-0.0.1.js"/>
+  <style type="text/css">
 	</style>
-	<script type="text/javascript">						
-		function applyStyleCalculate(){
-			$('#calculadora').calculator();
-			$('.calculator-keyentry').css('border', 'transparent');
-			$( "#calculadora" ).focus();
-		} // applyStyleCalculate
+	<script type="text/javascript">	
 	</script>		
-	<p:dialog id="dialogoCalculadora" widgetVar="dlgCalculadora" header="Calculadora" onShow="applyStyleCalculate();" height="165px" width="235px" resizable="false"  position="right bottom">
-		<p:inputText styleClass="janal-wid-100-txt janal-align-right" rendered="true" style="display: none">  			
-			<pe:calculator id="calculator1" widgetVar="calc1"/>                  
-		</p:inputText>  		
-		<span id="calculadora"/>
+	<p:dialog id="dialogoCalculadora" widgetVar="dlgCalculadora" header="Calculadora" height="420px" width="250px" resizable="false"  position="right bottom">
+		<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" >
+  		<p:inputText styleClass="janal-wid-100-txt janal-column-right janal-key-calculator janal-not-focus"/>  
+      <p:inputTextarea id="results" rows="18" styleClass="janal-wid-100-txt janal-column-right janal-not-focus" readonly="true" scrollHeight="100" autoResize="false"/>			
+		</p:panelGrid>
+		<p:outputLabel value="c: Limpiar i: Importar"/>
 	</p:dialog>  	
 </ui:composition>

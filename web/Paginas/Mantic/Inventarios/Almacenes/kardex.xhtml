@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Kardex de un articulo"/>
 	<ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.janal.kardex.core-0.0.7.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.kardex.core-0.0.8.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:codigos': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -25,7 +25,7 @@
 			<pe:methodSignature parameters="java.lang.String"/>  
 			<pe:methodParam name="codigo"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="calculate" process="@this @(.recalculo)" update="@(.filas) @(.recalculo)" actionListener="#{manticInventariosAlmacenesKardex.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();">  
+		<pe:remoteCommand name="calculate" process="@this @(.filas) @(.recalculo)" update="@(.filas) @(.recalculo)" actionListener="#{manticInventariosAlmacenesKardex.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
@@ -34,7 +34,7 @@
 			<pe:methodParam name="index"/>  
 			<pe:methodParam name="value"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="costo" process="@this @(.recalculo)" update="@(.filas) @(.recalculo)" actionListener="#{manticInventariosAlmacenesKardex.doUpdateCosto}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();">  
+		<pe:remoteCommand name="costo" process="@this @(.filas) @(.recalculo)" update="@(.filas) @(.recalculo)" actionListener="#{manticInventariosAlmacenesKardex.doUpdateCosto}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();">  
 			<pe:methodSignature parameters="java.lang.Double"/>  
 			<pe:methodParam name="value"/>  
 		</pe:remoteCommand>		

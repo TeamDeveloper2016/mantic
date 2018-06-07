@@ -42,6 +42,7 @@
 		}, // init
 		events: function() {
       $(document).on('focus', this.focus, function() {
+				janal.lastNameFocus= this;
 				$kardex.id= $(this).attr('id');
   			janal.console('Focus: '+ $kardex.id);
 				$kardex.current= $(this).val().trim();

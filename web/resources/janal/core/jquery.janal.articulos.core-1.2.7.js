@@ -76,9 +76,11 @@
       $(document).on('focus', this.focus, function() {
 				$articulos.current= $(this).val();
 				$articulos.index($(this).attr('id'));
+				janal.lastNameFocus= this;
 			});  
       $(document).on('focus', this.selector, function() {
 				$articulos.index($(this).attr('id'));
+				janal.lastNameFocus= this;
 			});  
       $(document).on('keydown', this.porcentajes, function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;

@@ -436,6 +436,7 @@
     JANAL_RESERVE : '\u0049\u004B\u0054\u0041\u004E',
     initialized   : false,
     offContextMenu: true,
+		lastNameFocus : null,
   	errors        : {
       inputs      : [],
       masks       : [],
@@ -454,7 +455,7 @@
     init: function(root, form, fields, kind, stage, growl, lock, showMaxError) {
       this._super(root, stage);
       this.console('Janal.Control.Validations.init');
-      $parent= this;
+      $parent        = this;
       $parent.kind   = kind;
       $parent.stage  = stage;
       $parent.message= growl;
@@ -464,6 +465,12 @@
       $parent.overrideContextMenu();
       $parent.prepare(form, fields, showMaxError);  
       $parent.ready();
+			$(document).on('focus', 'input, select, textarea', function(e) {
+				if(!$(this).hasClass('.janal-not-focus') && ($(this).attr('readonly')=== 'false' || $(this).attr('disabled')=== 'false')) {
+  				$parent.console('janal.focus: '+ $(this).attr('id'));
+				  $parent.lastNameFocus= this;
+				} // if	
+			});
     }, // init
     prepare: function(form, fields, showMaxError) {
       $parent.console('Janal.Control.Validations.prepare');
@@ -1182,7 +1189,12 @@
 					} // if
 				});
 			} // if
-		} // readingMode
+		}, // readingMode
+		valueLastFocus: function(value) {
+			this.console('janal.valueLastFocus: '+ $(this.lastNameFocus).attr('id')+ ' => '+ value);
+			if($(this.lastNameFocus))
+				$(this.lastNameFocus).val(value);
+		}
   });
   window.Janal= Janal;
 })(window);
