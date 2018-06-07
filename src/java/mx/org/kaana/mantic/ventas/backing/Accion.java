@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -27,6 +28,7 @@ import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
 
 @Named(value= "manticVentasAccion")
@@ -163,4 +165,51 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // if	
 	}
   
+	public List<UISelectEntity> doCompleteCliente(String query) {
+		this.attrs.put("codigoCliente", query);
+    this.doUpdateClientes();		
+		return (List<UISelectEntity>)this.attrs.get("clientes");
+	}	// doCompleteCliente
+
+	public void doUpdateClientes() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {
+			params= new HashMap<>();
+			columns= new ArrayList<>();
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			String search= (String) this.attrs.get("codigoCliente"); 
+			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*") : "WXYZ";
+  		params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_clientes.razon_social) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*'")));			
+      this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("VistaClientesDto", "findRazonSocial", params, columns, 20L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}	// doUpdateClientes
+	
+	public void doAsignaCliente(SelectEvent event){
+		UISelectEntity seleccion              = null;
+		List<UISelectEntity> clientes         = null;
+		List<UISelectEntity> clientesSeleccion= null;
+		try {
+			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
+			seleccion= clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
+			clientesSeleccion= new ArrayList<>();
+			clientesSeleccion.add(seleccion);
+			this.attrs.put("clientesSeleccion", clientesSeleccion);
+			this.attrs.put("clienteSeleccion", seleccion);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaCliente
 }

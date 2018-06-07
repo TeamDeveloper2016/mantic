@@ -54,15 +54,41 @@
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
-					<p:panelGrid columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-100, janal-wid-20">
+					<p:panelGrid columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-30, janal-wid-100, janal-wid-20">
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-							<p:outputLabel for="clienteBusqueda" value="Buscar cliente:"/>
-							<p:inputText id="clienteBusqueda" placeholder="Nombre o clave" styleClass="janal-wid-100-txt"/>
+							<p:outputLabel for="consecutivo" value="Buscar ticket:"/>
+							<p:inputText id="consecutivo" placeholder="No. de ticket" styleClass="janal-wid-100-txt"/>
+						</p:panelGrid>
+						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+							<p:outputLabel for="clientes" value="Buscar cliente:"/>							
+							<p:autoComplete id="clientes" placeholder="Nombre o rfc" widgetVar="listadoClientes" var="customCliente" itemLabel="#{customCliente.rfc}" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{customCliente}" value="#{manticVentasAccion.attrs.cliente}" completeMethod="#{manticVentasAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this" listener="#{manticVentasAccion.doAsignaCliente}" update="cliente" oncomplete="janal.desbloquear();"/>
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
+										<h:outputText value="Clave" />
+										<h:outputText value="#{customCliente.clave}"/>
+										<h:outputText value="RFC:" />
+										<h:outputText value="#{customCliente.rfc}"/>
+										<h:outputText value="Razón social:"/>
+										<h:outputText value="#{customCliente.razonSocial}"/>												
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
 						</p:panelGrid>	
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-wid-100-txt" columnClasses="janal-wid-100-txt">
-							<p:outputLabel for="cliente" value="Cliente:"/>
-							<p:selectOneMenu id="cliente" styleClass="janal-wid-100-txt">
+							<p:outputLabel for="cliente" value="Cliente:"/>							
+							<p:selectOneMenu id="cliente" value="#{manticVentasAccion.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">
 								<f:selectItem itemValue="-1" itemLabel="PUBLICO EN GENERAL"/>
+								<f:selectItems value="#{manticVentasAccion.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
+								<p:column headerText="Clave">
+									<h:outputText value="#{item.clave}"/>
+								</p:column>   
+								<p:column headerText="RFC">
+									<h:outputText value="#{item.rfc}"/>
+								</p:column>   
+								<p:column headerText="Razón social">
+									<h:outputText value="#{item.razonSocial}"/>
+								</p:column>   
 							</p:selectOneMenu>
 						</p:panelGrid>
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">

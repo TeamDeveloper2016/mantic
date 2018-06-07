@@ -1073,7 +1073,8 @@
 					tc_mantic_servicios.modelo,
 					tc_mantic_servicios.fecha_estimada,
           tc_mantic_clientes.razon_social, 
-					tc_mantic_servicios_estatus.nombre estatus
+					tc_mantic_servicios_estatus.nombre estatus,
+					tc_mantic_servicios_estatus.estatus_asociados
 				from 
 					tc_mantic_servicios
 				inner join 
@@ -1091,7 +1092,7 @@
 				and 
 					upper(tc_mantic_clientes.razon_social) like upper('%{cliente}%')
 				{sortOrder}
-			</select>			
+			</select>		
 		</unit>
 	</dml>    
 </process>
