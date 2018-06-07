@@ -17,8 +17,10 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -320,6 +322,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
       columns.add(new Columna("limiteMedioMayoreo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
       columns.add(new Columna("limiteMayoreo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+			Periodo periodo= new Periodo();
+			periodo.addMeses(-6);
+			this.attrs.put("registro", periodo.toString());
       this.attrs.put("historial", (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "historial", this.attrs, columns));
 		} // try
 	  catch (Exception e) {

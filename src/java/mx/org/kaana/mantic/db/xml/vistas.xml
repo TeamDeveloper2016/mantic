@@ -116,6 +116,7 @@
 					tc_mantic_notas_entradas on tc_mantic_articulos_bitacora.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
 				where
 					tc_mantic_articulos_bitacora.id_articulo= {idArticulo}
+				  and date_format(tc_mantic_articulos_bitacora.registro, '%Y%m%d')&gt;= '{registro}'
 				order by
 					tc_mantic_articulos_bitacora.registro desc				
 			</select>
