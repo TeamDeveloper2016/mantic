@@ -224,6 +224,7 @@ shortcut = {
 
 shortcut.add("Ctrl+C", function() {
 	janal.console('Shortcut calculadora:');
-	PF('dlgCalculadora').show();
+	if(PF('dlgCalculadora'))
+	  PF('dlgCalculadora').show();
 });
 
