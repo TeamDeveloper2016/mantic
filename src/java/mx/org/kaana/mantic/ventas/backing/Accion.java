@@ -22,11 +22,14 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.articulos.reglas.MotorBusqueda;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -206,10 +209,36 @@ public class Accion extends IBaseArticulos implements Serializable {
 			clientesSeleccion.add(seleccion);
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
+			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
+			doReCalculatePreciosArticulos();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doAsignaCliente
+	
+	public void doReCalculatePreciosArticulos(){
+		MotorBusqueda motor          = null;
+		TcManticArticulosDto articulo= null;
+		try {
+			if(!getAdminOrden().getArticulos().isEmpty()){					
+				for(Articulo beanArticulo: getAdminOrden().getArticulos()){
+					if(beanArticulo.getIdArticulo()!= null && !beanArticulo.getIdArticulo().equals(-1L)){
+						motor= new MotorBusqueda(beanArticulo.getIdArticulo());
+						articulo= motor.toArticulo();
+						beanArticulo.setValor((Double) articulo.toValue(getPrecio()));
+					} // if
+				} // for					
+				if(getAdminOrden().getArticulos().size()>1){
+					getAdminOrden().toCalculate();
+					RequestContext.getCurrentInstance().update("@(.filas) @(.recalculo) @(.informacion)");
+				} // if
+			} // if			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // doReCalculatePreciosArticulos
 }
