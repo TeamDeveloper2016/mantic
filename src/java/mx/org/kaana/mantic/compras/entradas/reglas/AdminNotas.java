@@ -158,5 +158,10 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 		} // finally
 		return regresar;
 	}
+
+	@Override
+	public void setDescuento(String descuento) {
+		this.orden.setDescuento(descuento);
+	}
 	
 }
