@@ -9,7 +9,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -210,7 +209,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
 			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
-			doReCalculatePreciosArticulos();
+			doReCalculatePreciosArticulos();			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -241,4 +240,24 @@ public class Accion extends IBaseArticulos implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch		
 	} // doReCalculatePreciosArticulos
+	
+	public void doActualizaPrecioCliente(){
+		List<UISelectEntity> clientesSeleccion= null;
+		UISelectEntity clienteSeleccion       = null;
+		try {
+			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");
+			if(clienteSeleccion!= null && !clienteSeleccion.getKey().equals(-1L)){
+				clientesSeleccion= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
+				clienteSeleccion= clientesSeleccion.get(clientesSeleccion.indexOf(clienteSeleccion));
+				setPrecio(Cadena.toBeanNameEspecial(clienteSeleccion.toString("tipoVenta")));				
+			} // if
+			else
+				setPrecio("menudeo");
+			doReCalculatePreciosArticulos();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doActualizaPrecioCliente
 }

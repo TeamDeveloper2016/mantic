@@ -12,15 +12,15 @@
     <script type="text/javascript">
       //<![CDATA[
       Janal.Control.fields = {
-        'contenedorGrupos\\:persona': {validaciones: 'requerido', mascara: 'libre'},
-        'contenedorGrupos\\:nombres': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre'},
-        'contenedorGrupos\\:materno': {validaciones: 'cambiar-mayusculas', mascara: 'libre'},
-        'contenedorGrupos\\:paterno': {validaciones: 'requerido|cambiar-mayusculas', mascara: 'libre'},
+        'contenedorGrupos\\:persona': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:nombres': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:materno': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:paterno': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:idTituloPersona': {validaciones: 'requerido', mascara: 'libre'},
         'contenedorGrupos\\:idTipoSexo': {validaciones: 'requerido', mascara: 'libre'},
         'contenedorGrupos\\:tipoPerfil': {validaciones: 'requerido', mascara: 'libre'},
-        'contenedorGrupos\\:curp': {validaciones: 'requerido|curp|cambiar-mayusculas', mascara: 'curp', mensaje: 'La CURP es requerida'},
-        'contenedorGrupos\\:rfc': {validaciones: 'requerido|rfc|cambiar-mayusculas', mascara: 'rfc'}
+        'contenedorGrupos\\:curp': {validaciones: 'requerido|curp', mascara: 'curp', mensaje: 'La CURP es requerida', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:rfc': {validaciones: 'requerido', mascara: 'rfc', formatos: 'cambiar-mayusculas', individual: true}
       };
 
       function checkEmptyValue() {
@@ -51,14 +51,8 @@
                   </p:column>                
                 </p:selectOneMenu>
                 <p:outputLabel for="idTituloPersona"  value="Título persona:"/>
-                <p:selectOneMenu disabled="#{kajoolUsuariosAccion.lockField}" id="idTituloPersona" filter="true" filterMatchMode="startsWith" value="#{kajoolUsuariosAccion.attrs.idTituloPersona}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt">
-                  <f:selectItems value="#{kajoolUsuariosAccion.attrs.titulosPersonas}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-                  <p:column>
-                    <h:outputText value="#{item.nombre}"/>
-                  </p:column>                
-                  <p:column>
-                    <h:outputText value="#{item.descripcion}"/>
-                  </p:column>      
+                <p:selectOneMenu disabled="#{kajoolUsuariosAccion.lockField}" id="idTituloPersona" filter="true" filterMatchMode="startsWith" value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.idPersonaTitulo}" styleClass="janal-wid-100-txt">
+                  <f:selectItems value="#{kajoolUsuariosAccion.attrs.titulos}"/>                  
                 </p:selectOneMenu>
                 <p:outputLabel for="nombres" value="Nombres:"/>                   
                 <p:inputText id="nombres" readonly="#{kajoolUsuariosAccion.lockField}" styleClass="janal-wid-100-txt" value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.nombres}" onblur="janal.mayusculas('contenedorGrupos\\:nombres')">
@@ -100,9 +94,8 @@
               </p:panelGrid>	
             </p:tab>            
             <p:tab title="Observaciones">
-              <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
-                <p:outputLabel for="observaciones" value="Observaciones:"/>
-                <p:editor id="observaciones" styleClass="janal-wid-100-txt" height="200" value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.observaciones}"/>  
+              <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+                <p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.observaciones}"/>  
               </p:panelGrid>
             </p:tab>
           </p:tabView>
@@ -110,8 +103,7 @@
       </div>
     </div>		
   </ui:define>
-  <ui:param name="componenteBloqueo"  value="aceptar contenedorGrupos:persona contenedorGrupos:nombres contenedorGrupos:paterno contenedorGrupos:materno contenedorGrupos:curp"/>
- 
+  <ui:param name="componenteBloqueo"  value="aceptar contenedorGrupos:persona contenedorGrupos:nombres contenedorGrupos:paterno contenedorGrupos:materno contenedorGrupos:curp"/> 
   <ui:param name="tituloConfirmacion" value="Confirmar datos del usuario"/>
   <ui:param name="textoConfirmacion" value="#{kajoolUsuariosAccion.attrs.texto}"/>
   <ui:param name="updateComponent" value="contenedorGrupos:persona contenedorGrupos:cuenta contenedorGrupos:nombres contenedorGrupos:materno contenedorGrupos:paterno contenedorGrupos:curp contenedorGrupos:idTipoSexo contenedorGrupos:rfc contenedorGrupos:idTituloPersona"/>
@@ -131,7 +123,6 @@
       <p:inputText value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.materno}" size="80" readonly="true"/>
       <label class="una-sola-linea">Cuenta de acceso:</label>						
       <p:inputText value="#{kajoolUsuariosAccion.attrs.tcManticPersonaDto.cuenta}" size="50" readonly="true"/>
-
     </p:panelGrid>  
   </ui:define>    
   <ui:define name="acciones">
