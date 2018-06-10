@@ -146,9 +146,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     Entity seleccionado = (Entity) this.attrs.get("seleccionado");
     try {
       JsfBase.setFlashAttribute("accion", accion);
-      if (accion.equals(EAccion.MODIFICAR)) {
-        JsfBase.setFlashAttribute("idUsuario", seleccionado.toLong("idKeyUsuario"));
-      }
+      JsfBase.setFlashAttribute("idUsuario", accion.equals(EAccion.MODIFICAR) || accion.equals(EAccion.CONSULTAR) ? seleccionado.toLong("idKeyUsuario") : null);
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
