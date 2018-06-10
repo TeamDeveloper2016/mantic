@@ -34,8 +34,6 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private Totales importes;
 	private boolean sinIva;
 	private double tipoDeCambio;
-	private Long idRedondear;
-	private double valor;
 	private boolean ultimo;
 	private boolean solicitado;
 	private long stock;
@@ -56,7 +54,6 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.sinIva      = sinIva;
 		this.importes    = new Totales();
 		this.tipoDeCambio= tipoDeCambio;
-		this.valor       = costo;
 		this.ultimo      = ultimo;
 		this.solicitado  = solicitado;
     this.stock       = stock;
@@ -106,23 +103,6 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.idProveedor=idProveedor;
 	}
 
-	public Long getIdRedondear() {
-		return idRedondear;
-	}
-
-	public void setIdRedondear(Long idRedondear) {
-		this.idRedondear=idRedondear;
-	}
-
-	public void setValor(double valor) {
-		this.valor=valor;
-		super.setCosto(valor);
-	}
-
-	public double getValor() {
-		return valor;
-	}
-
 	public boolean isUltimo() {
 		return ultimo;
 	}
@@ -162,7 +142,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		String color     = diferencia< -5? "janal-color-orange": diferencia> 5? "janal-color-blue": "janal-color-green";
 		boolean display  = diferencia!= 0D;
 		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(display? "": "none").concat("' title='Costo anterior: ").concat(
-			Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, this.valor)
+			Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, this.getValor())
 		).concat("\n\nDiferencia: ").concat(String.valueOf(diferencia)).concat("%'></i>");
 	}
 
@@ -237,8 +217,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private double toDiferencia() {
 		Descuentos descuentos= new Descuentos(this.getCosto(), this.getDescuento().concat(",").concat(this.getExtras()));
 		double value= descuentos.toImporte();
-		value=  (value== 0? this.getCosto(): value)- this.valor; 
-  	return this.valor== 0? 0: Numero.toRedondearSat(value* 100/ this.valor);
+		value=  (value== 0? this.getCosto(): value)- this.getValor(); 
+  	return this.getValor()== 0? 0: Numero.toRedondearSat(value* 100/ this.getValor());
 	}	
 
 	public TcManticNotasDetallesDto toNotaDetalle() {
@@ -263,22 +243,26 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 
 	public TcManticOrdenesDetallesDto toOrdenDetalle() {
+		//this(iva, impuestos, subTotal, cantidad, idOrdenDetalle, idArticulo);
 		return new TcManticOrdenesDetallesDto(
+			this.getImporte(),
+			this.getDescuentos(), 
 			Cadena.isVacio(this.getCodigo())? this.getPropio(): this.getCodigo(), 
 			this.getCosto(), 
-			this.getDescuento(), 
+			this.getDescuento(),
 			-1L, /*idOrdenCompra, */
 			this.getExtras(), 
 			this.getNombre(), 
-			this.getImporte(), 
+			this.getImporte(),
+			this.getCosto(),
 			this.getPropio(), 
+			this.getCantidad(),
 			this.getIva(), 
 			this.getImpuestos(), 
 			this.getSubTotal(), 
 			this.getCantidad(), 
 			-1L , /*idOrdenDetalle, */
-			this.getIdArticulo(), 
-			this.getDescuentos()
+			this.getIdArticulo() 
 		);
 	}
 	
@@ -305,9 +289,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 
 	@Override
 	public String toString() {
-		return "Articulo{"+"idProveedor="+idProveedor+", importes="+importes+", sinIva="+sinIva+", tipoDeCambio="+tipoDeCambio+", idRedondear="+idRedondear+", valor="+valor+", ultimo="+ultimo+", solicitado="+solicitado+'}';
+		return "Articulo{"+"idProveedor="+idProveedor+", importes="+importes+", sinIva="+sinIva+", tipoDeCambio="+tipoDeCambio+", ultimo="+ultimo+", solicitado="+solicitado+'}';
 	}
-	
 	
 	public static void main(String ... args) {
 		Articulo articulo= new Articulo(-1L);

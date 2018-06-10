@@ -1980,7 +1980,7 @@
         where      
           id_nota_entrada = {idNotaEntrada}
 				order by
-				  tc_mantic_notas_detalles.registro
+				  registro
       </select>
 			<delete id="rows">
 				delete from tc_mantic_notas_detalles where tc_mantic_notas_detalles.id_nota_entrada= {idNotaEntrada}
@@ -2141,7 +2141,7 @@
 				where
 				  ejercicio= {ejercicio} 
 				  and id_empresa= {idEmpresa}				
-			</select>			
+			</select>		
     </unit>
     <unit id="TcManticOrdenesDetallesDto">
       <select id="row">
@@ -2170,6 +2170,19 @@
 				order by
 				  tc_mantic_ordenes_detalles.registro
       </select>
+			<select id="incompleto">
+				select
+					count(*) as total
+				from 
+					tc_mantic_ordenes_detalles
+				where
+					id_orden_compra= {idOrdenCompra}
+					and (
+						cantidades<> 0
+						or precios<> 0
+						or importes<> 0
+					)				
+			</select>
 			<delete id="rows">
 				delete from tc_mantic_ordenes_detalles where tc_mantic_ordenes_detalles.registro.id_orden_compra= {idOrdenCompra}
 			</delete>

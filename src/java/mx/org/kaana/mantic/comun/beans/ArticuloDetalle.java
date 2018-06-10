@@ -39,6 +39,9 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
   private String unidadMedida;
 	private Long idOrdenDetalle;
 	private Long solicitados;
+	private Double valor;
+	private Long idRedondear;
+	private Double total;
 
   public ArticuloDetalle() {
     this(new Long(-1L));
@@ -49,10 +52,10 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
   }
 
 	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Long cantidad, Double descuentos, String nombre, String sat, String unidadMedida) {
-		this(idArticulo, codigo, costo, descuento, extras, importe, registro, propio, iva, impuestos, subTotal, cantidad, descuentos, nombre, sat, unidadMedida, null, 0L);
+		this(idArticulo, codigo, costo, descuento, extras, importe, registro, propio, iva, impuestos, subTotal, cantidad, descuentos, nombre, sat, unidadMedida, null, 0L, 1L);
 	}
 	
-	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Long cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Long solicitados) {
+	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Long cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Long solicitados, Long idRedondear) {
 		this.idArticulo=idArticulo;
 		this.codigo=codigo;
 		this.costo=costo;
@@ -71,6 +74,9 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		this.unidadMedida=unidadMedida;
     this.idOrdenDetalle= idOrdenDetalle;
 		this.solicitados= solicitados;
+		this.valor= costo;
+		this.idRedondear= idRedondear;
+		this.total= importe;
 	}
 	
   public void setCodigo(String codigo) {
@@ -216,7 +222,31 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 	public void setSolicitados(Long solicitados) {
 		this.solicitados=solicitados;
 	}
+
+	public Double getValor() {
+		return valor;
+	}
+
+	public void setValor(Double valor) {
+		this.valor=valor;
+	}
 	
+	public Long getIdRedondear() {
+		return idRedondear;
+	}
+
+	public void setIdRedondear(Long idRedondear) {
+		this.idRedondear=idRedondear;
+	}
+
+	public Double getTotal() {
+		return total;
+	}
+
+	public void setTotal(Double total) {
+		this.total=total;
+	}
+
 	@Override
   public Long getKey() {
   	return getIdArticulo();
@@ -262,6 +292,10 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		regresar.append(getIdOrdenDetalle());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getSolicitados());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getValor());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getTotal());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -285,6 +319,8 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		regresar.put("nombre", getNombre());
 		regresar.put("idOrdenDetalle", getIdOrdenDetalle());
 		regresar.put("solicitados", getSolicitados());
+		regresar.put("valor", getValor());
+		regresar.put("valor", getTotal());
   	return regresar;
   }
 

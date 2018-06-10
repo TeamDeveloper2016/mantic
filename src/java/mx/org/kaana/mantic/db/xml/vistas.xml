@@ -510,6 +510,18 @@
 					and {condicion}
 				{sortOrder}
 			</select>
+      <select id="incompleto">
+				select
+					count(*) as total
+				from 
+					tc_mantic_notas_entradas
+				inner join 
+					tc_mantic_notas_detalles on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_notas_detalles.id_nota_entrada
+				where
+					tc_mantic_notas_entradas.id_nota_entrada= {idNotaEntrada}
+					and tc_mantic_notas_entradas.id_orden_compra= {idOrdenCompra}
+					and tc_mantic_notas_detalles.id_orden_detalle is null				
+			</select>	
       <select id="diferencia">
         select      
           1 as sin_iva, 
@@ -517,16 +529,18 @@
 					tc_mantic_articulos.nombre, 
 					tc_mantic_ordenes_detalles.codigo, 
 					tc_mantic_ordenes_detalles.costo, 
+					tc_mantic_ordenes_detalles.costo as valor, 
 					"0" as descuento, 
 					tc_mantic_ordenes_detalles.id_orden_compra, 
 					"0" as extras, 
 					0 as importe, 
+					tc_mantic_ordenes_detalles.importes as total, 
 					tc_mantic_ordenes_detalles.propio, 
 					tc_mantic_ordenes_detalles.iva, 
 					0 as total_impuesto, 
 					0 as sub_total, 
 					0 as cantidad, 
-					tc_mantic_ordenes_detalles.cantidad as solicitados, 
+					tc_mantic_ordenes_detalles.cantidades as solicitados, 
 					tc_mantic_ordenes_detalles.id_orden_detalle, 
 					tc_mantic_ordenes_detalles.id_articulo, 
 					0 as total_descuentos, 
@@ -868,6 +882,12 @@
 					tc_mantic_articulos
 				inner join 
 					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+				left join
+				  tr_mantic_articulo_presentacion on tc_mantic_articulos.id_articulo= tr_mantic_articulo_presentacion.id_articulo
+				left join
+				  tr_mantic_empaque_unidad_medida on tr_mantic_articulo_presentacion.id_empaque_unidad_medida= tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+        left join 
+          tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida= tc_mantic_unidades_medidas.id_unidad_medida
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and 
@@ -899,6 +919,12 @@
 					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
 				inner join 
 					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+				left join
+				  tr_mantic_articulo_presentacion on tc_mantic_articulos.id_articulo= tr_mantic_articulo_presentacion.id_articulo
+				left join
+				  tr_mantic_empaque_unidad_medida on tr_mantic_articulo_presentacion.id_empaque_unidad_medida= tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
+        left join 
+          tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida= tc_mantic_unidades_medidas.id_unidad_medida
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and (
