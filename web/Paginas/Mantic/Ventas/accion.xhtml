@@ -77,7 +77,8 @@
 						</p:panelGrid>	
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-wid-100-txt" columnClasses="janal-wid-100-txt">
 							<p:outputLabel for="cliente" value="Cliente:"/>							
-							<p:selectOneMenu id="cliente" value="#{manticVentasAccion.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">
+							<p:selectOneMenu id="cliente" value="#{manticVentasAccion.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
+								<p:ajax event="change" process="@this" onstart="return janal.bloquear();" listener="#{manticVentasAccion.doActualizaPrecioCliente}" oncomplete="janal.desbloquear();" update="tabla descuento clientes"/>
 								<f:selectItem itemValue="-1" itemLabel="PUBLICO EN GENERAL"/>
 								<f:selectItems value="#{manticVentasAccion.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
 								<p:column headerText="Clave">
