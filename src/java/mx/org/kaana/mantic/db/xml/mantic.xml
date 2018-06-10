@@ -2178,9 +2178,9 @@
 				where
 					id_orden_compra= {idOrdenCompra}
 					and (
-						cantidades<> 0
-						or precios<> 0
-						or importes<> 0
+						cantidades &lt;&gt; 0
+						or precios &lt;&gt; 0
+						or importes &lt;&gt; 0
 					)				
 			</select>
 			<delete id="rows">
