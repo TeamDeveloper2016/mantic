@@ -36,7 +36,9 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import mx.org.kaana.mantic.enums.ETipoPersona;
 import org.primefaces.context.RequestContext;
@@ -60,39 +62,16 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("accion", (EAccion) JsfBase.getFlashAttribute("accion"));
       this.attrs.put("showConfirmDialog", true);
       loadPerfiles();
-      loadPersonas();
-      loadTipoPersonas();
+      loadPersonas();      
       cargarUsuario(JsfBase.getFlashAttribute("idUsuario") != null ? (Long) JsfBase.getFlashAttribute("idUsuario") : -1L);
-      this.attrs.put("titulo", ((EAccion) this.attrs.get("accion")).equals(EAccion.MODIFICAR) ? "Modificar usuario cuenta [".concat(((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto")).getCuenta()) : "Agregar usuario [...]");
+			loadTitulos();
+      this.attrs.put("titulo", ((EAccion) this.attrs.get("accion")).equals(EAccion.MODIFICAR) ? "Modificar usuario cuenta [".concat(((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto")).getCuenta()).concat("]") : "Agregar usuario [...]");
       doBuscar();
     } // try // try
     catch (Exception e) {
       Error.mensaje(e);
     } // catch
-  }
-
-  private void loadTipoPersonas() {
-    List<Columna> formatos = null;
-    Map<String, Object> params = null;
-    List<UISelectEntity> personasTitulos;
-    try {
-      formatos = new ArrayList<>();
-      params = new HashMap<>();
-      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      formatos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
-      formatos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      personasTitulos = UIEntity.build("TcManticPersonasTitulosDto", "row", params, formatos);
-      this.attrs.put("titulosPersonas", personasTitulos);
-      this.attrs.put("idTituloPersona", UIBackingUtilities.toFirstKeySelectEntity(personasTitulos));
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch
-    finally {
-      Methods.clean(params);
-      Methods.clean(formatos);
-    } // finally
-  }
+  }  
 
   private void loadPersonas() {
     List<Columna> formatos = null;
@@ -175,25 +154,20 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public void doBuscar() {
     Map<String, String> params = null;
-    TcManticPersonasDto persona = null;
+    TcManticPersonasDto persona= null;
     TcJanalUsuariosDto usuario = null;
-    Long idKeyPersona = null;
-    int posPerfil = -1;
-    int posTituloPersona = -1;
-    List<UISelectEntity> titulosPersona = null;
+    Long idKeyPersona          = null;
+    int posPerfil              = -1;
     try {
       params = new HashMap();
       idKeyPersona = this.criteriosBusqueda.getPersona().getKey();
       if (!idKeyPersona.equals(-1L)) {
         persona = (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, idKeyPersona);
         this.attrs.put("tcManticPersonaDto", persona);
-        titulosPersona = (List<UISelectEntity>) this.attrs.get("titulosPersonas");
-        posTituloPersona = titulosPersona.indexOf(new UISelectEntity(persona.getIdPersonaTitulo().toString()));
-        this.attrs.put("idTituloPersona", titulosPersona.get(posTituloPersona));
       } // if      
       usuario = (TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto");
       if (usuario.isValid()) {
-        posPerfil = this.getCriteriosBusqueda().getListaPerfiles().indexOf(new UISelectEntity(new Entity(idKeyPersona)));
+        posPerfil = this.getCriteriosBusqueda().getListaPerfiles().indexOf(new UISelectEntity(new Entity(usuario.getIdPerfil())));
         this.criteriosBusqueda.setPerfil(this.getCriteriosBusqueda().getListaPerfiles().get(posPerfil));
       } else {
         this.attrs.put("tcJanalEmpleadoDto", new TcManticPersonasDto());
@@ -273,4 +247,24 @@ public class Accion extends IBaseAttribute implements Serializable {
     doBuscar();
   }
 
+	private void loadTitulos() {
+    List<UISelectItem> titulos= null;
+    Map<String, Object> params= null;
+    EAccion eaccion           = null;
+    try {
+      params = new HashMap<>();
+      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      titulos = UISelect.build("TcManticPersonasTitulosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+      this.attrs.put("titulos", titulos);
+      eaccion = (EAccion) this.attrs.get("accion");
+      if (eaccion.equals(EAccion.AGREGAR)) 
+        ((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto")).setIdPersonaTitulo((Long) UIBackingUtilities.toFirstKeySelectItem(titulos));			
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+  } // loadTitulos
 }
