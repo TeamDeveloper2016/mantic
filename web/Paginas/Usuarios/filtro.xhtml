@@ -47,7 +47,7 @@
               <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.execute();" process="@this nombre tipoPerfil" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
             </div>
 						<div class="janal-align-right xs-pantalla">
-							<p:commandButton id="buscarSentinelIcon" icon="fa fa-filter"  oncomplete="janal.execute()"  process="@this nombre tipoPerfil" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
+							<p:commandButton id="buscarSentinelIcon" icon="fa fa-filter"  onstart="janal.execute()"  process="@this nombre tipoPerfil" actionListener="#{kajoolUsuariosFiltro.doLoad()}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
 						</div>
           </p:panel>
         </div>
