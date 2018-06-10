@@ -72,7 +72,7 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 	
 	@Override
 	public String getDescuento() {
-		return this.orden.getDescuento();
+		return this.orden.getDescuento();		
 	}
 	
 	@Override
@@ -95,4 +95,8 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 		return -1L;
 	}
 
+	@Override
+	public void setDescuento(String descuento){
+		this.orden.setDescuento(descuento);
+	}
 }
