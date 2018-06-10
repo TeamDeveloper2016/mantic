@@ -112,7 +112,7 @@ public class Transaccion extends IBaseTnx {
 										if(registraArticulosTipoVenta(sesion, idArticulo)){
 											this.articulo.getArticuloDimencion().setIdArticulo(idArticulo);											
 											if(DaoFactory.getInstance().insert(sesion, this.articulo.getArticuloDimencion()) >= 1L){												
-												idImagen= DaoFactory.getInstance().insert(sesion, loadImage());
+												idImagen= DaoFactory.getInstance().insert(sesion, loadImage(sesion, null));
 												this.articulo.getArticulo().setIdImagen(idImagen);
 												regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
 			} } } } } } } } } // if
@@ -124,6 +124,7 @@ public class Transaccion extends IBaseTnx {
 	} // procesarArticulo
 	
 	private boolean actualizarArticulo(Session sesion) throws Exception{
+		TcManticArticulosDimencionesDto dimencion= null;
 		boolean regresar= false;
 		Long idArticulo = -1L;
 		try {
@@ -135,10 +136,17 @@ public class Transaccion extends IBaseTnx {
 								if(registraPreciosSugeridos(sesion, idArticulo)){
 									if(registraArticulosProveedor(sesion, idArticulo)){
 										if(registraArticulosTipoVenta(sesion, idArticulo)){
-											if(DaoFactory.getInstance().update(sesion, this.articulo.getArticuloDimencion()) >= 1L){												
-												if(DaoFactory.getInstance().update(sesion, loadImage())>= 1L)
+											dimencion= this.articulo.getArticuloDimencion();
+											regresar= dimencion.isValid() ? DaoFactory.getInstance().update(sesion, this.articulo.getArticuloDimencion()) >= 0L : true;
+											if(regresar){
+												regresar= this.articulo.getArticulo().getIdImagen()!= null && !this.articulo.getArticulo().getIdImagen().equals(-1L);
+												if(regresar){				
+													if(DaoFactory.getInstance().update(sesion, loadImage(sesion, this.articulo.getArticulo().getIdImagen()))>= 0L)
+														regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
+												} // if 
+												else
 													regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
-			} } } } } } } }
+			} } } } } } } } 
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -146,12 +154,15 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // actualizarArticulo	
 	
-	private TcManticImagenesDto loadImage(){
+	private TcManticImagenesDto loadImage(Session sesion, Long idImagen) throws Exception{
 		TcManticImagenesDto regresar= null;
 		Long tipoImagen             = null;
 		String name                 = null;
 		try {
-			regresar= new TcManticImagenesDto();
+			if(idImagen!= null)
+				regresar= (TcManticImagenesDto) DaoFactory.getInstance().findById(sesion, TcManticImagenesDto.class, idImagen);
+			else
+				regresar= new TcManticImagenesDto();
 			name= this.articulo.getImportado().getName();
 			tipoImagen= ETipoImagen.valueOf(name.substring(name.lastIndexOf(".")+1, name.length()).toUpperCase()).getIdTipoImagen();
 			regresar.setNombre(name);
@@ -200,7 +211,7 @@ public class Transaccion extends IBaseTnx {
 				codigo.setIdArticulo(idArticulo);				
 				codigo.setIdUsuario(JsfBase.getIdUsuario());
 				codigo.setObservaciones(this.articulo.getObservaciones());
-				codigo.setIdPrincipal(count==0 ? 1L : 0L);
+				codigo.setIdPrincipal(count==0 ? 1L : 2L);
 				codigo.setOrden(count + 1L);
 				dto= (TcManticArticulosCodigosDto) codigo;				
 				sqlAccion= codigo.getSqlAccion();
