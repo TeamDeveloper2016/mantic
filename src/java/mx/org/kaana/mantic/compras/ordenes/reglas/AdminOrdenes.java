@@ -92,5 +92,9 @@ public final class AdminOrdenes extends IAdminArticulos  implements Serializable
 	public void setIdSinIva(Long idSinIva) {
 		this.orden.setIdSinIva(idSinIva);
 	}
-	
+
+	@Override
+	public void setDescuento(String descuento) {
+		this.orden.setDescuento(descuento);;
+	}	
 }
