@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -21,7 +22,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.articulos.reglas.MotorBusqueda;
+import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.reglas.Transaccion;
@@ -260,4 +261,33 @@ public class Accion extends IBaseArticulos implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doActualizaPrecioCliente
+
+	@Override
+	protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
+		UISelectEntity clienteSeleccion= null;
+		MotorBusqueda motorBusqueda    = null;
+		String descuentoPivote         = null;
+		Entity descuentoVigente        = null;
+		try {
+			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");
+			if(clienteSeleccion!= null && !clienteSeleccion.getKey().equals(-1L)){
+				motorBusqueda= new MotorBusqueda(articulo.toLong("idArticulo"), clienteSeleccion.getKey());
+				descuentoVigente= motorBusqueda.toDescuentoGrupo();
+				if(descuentoVigente!= null){
+					descuentoPivote= getAdminOrden().getDescuento();
+					getAdminOrden().setDescuento(descuentoVigente.toString("porcentaje"));
+					super.toMoveData(articulo, index);			
+					getAdminOrden().setDescuento(descuentoPivote);
+				} // if
+				else
+					super.toMoveData(articulo, index);			
+			} // if
+			else
+				super.toMoveData(articulo, index);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch	
+	} // toMoveData
 }
