@@ -58,6 +58,8 @@ public abstract class IAdminArticulos implements Serializable {
 	
 	public abstract String getDescuento();
 	
+	public abstract void setDescuento(String descuento);
+	
 	public abstract String getExtras();
 	
 	public abstract Long getIdSinIva();
