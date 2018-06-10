@@ -63,7 +63,7 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 		this.precio=precio;
 	}
 
-  private void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
+  protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
 		Articulo temporal= this.adminOrden.getArticulos().get(index);
 		Map<String, Object> params= new HashMap<>();
 		try {
