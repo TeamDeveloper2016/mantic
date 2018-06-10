@@ -56,6 +56,27 @@
 				order by
 				  tc_mantic_clientes.clave
 			</select>
+			<select id="descuentoGrupoVigente">
+				select 
+					tc_mantic_articulos.id_articulo as id_key,
+					tr_mantic_articulo_grupo_descuento.porcentaje
+				from 
+					tc_mantic_articulos
+				inner join 
+					tr_mantic_articulo_grupo_descuento on tc_mantic_articulos.id_articulo = tr_mantic_articulo_grupo_descuento.id_articulo	    
+				inner join 
+					tc_mantic_grupos on tr_mantic_articulo_grupo_descuento.id_grupo= tc_mantic_grupos.id_grupo
+				inner join
+					tc_mantic_grupos_clientes on tc_mantic_grupos.id_grupo = tc_mantic_grupos_clientes.id_grupo
+				where
+					tc_mantic_articulos.id_articulo= {idArticulo}
+				and 
+					tc_mantic_grupos_clientes.id_cliente= {idCliente}
+				and 
+					(sysdate() between tr_mantic_articulo_grupo_descuento.vigencia_inicial and tr_mantic_articulo_grupo_descuento.vigencia_final)
+				and 
+					tc_mantic_articulos.id_empresa= {idEmpresa}
+			</select>
 		</unit>		
 		<unit id="VistaKardexDto">
 			<select id="row">
