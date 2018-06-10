@@ -165,6 +165,15 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, this.valor)
 		).concat("\n\nDiferencia: ").concat(String.valueOf(diferencia)).concat("%'></i>");
 	}
+
+	public String getCantidadMayorMenor() {
+		double diferencia= this.getSolicitados()- this.getCantidad();
+		String color     = diferencia< -5? "janal-color-orange": diferencia> 5? "janal-color-blue": "janal-color-green";
+		boolean display  = diferencia!= 0D;
+		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(display? "": "none").concat("' title='Cantidad solicitada: ").concat(
+			Global.format(EFormatoDinamicos.NUMERO_SIN_DECIMALES, this.getSolicitados())
+		).concat("\n\nDiferencia: ").concat(Global.format(EFormatoDinamicos.NUMERO_SIN_DECIMALES, diferencia)).concat("'></i>");
+	}
 	
 	public String getEstaSolicitado() {
 		String color= "janal-color-green";

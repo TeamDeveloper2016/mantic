@@ -11,6 +11,434 @@
 	<ui:define name="librerias">
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.articulosJs}"/>
 		<script type="text/javascript">
+(function(window) {
+	var jsArticulos;
+	
+	Janal.Control.Articulos= {};
+	
+	Janal.Control.Articulos.Core= Class.extend({
+		joker       : 'contenedorGrupos\\:tabla\\:', // Attributes 
+		codes       : '\\:codigos_input', 
+		panels      : 'codigos_panel', 
+		itemtips    : 'codigos_itemtip', 
+		itemtips    : 'codigos_itemtip', 
+		discounts   : '\\:descuentos',
+		additionals : '\\:extras',
+		amounts     : '\\:cantidades',
+		prices      : '\\:precios',
+		keys        : '\\:keys',
+		locks       : '\\:locks',
+		values      : '\\:values',
+		selector    : '.key-down-event',
+		focus       : '.key-focus-event',
+		lookup      : '.key-up-event',
+		porcentajes : '.key-press-enter',
+		current     : '',
+		dialog      : 'dialogo',
+		typingTimer : null,
+		doneInterval: 10000,
+		continue    : false,
+		leavePage   : true,
+		VK_ENTER    : 13, 
+		VK_ESC      : 27,
+		VK_ASTERISK : 106,
+		VK_MINUS    : 109,
+		VK_COMA     : 188,
+		VK_OPEN     : 122,
+		VK_CLOSE    : 123,
+		VK_PLUS     : 107,
+		VK_DIV      : 111,
+		VK_POINT    : 110,
+		VK_UP       : 38,
+		VK_DOWN     : 40,
+		VK_REST     : 189,
+		VK_PIPE     : 220,
+		VK_CTRL     : 17,
+		VK_MAYOR    : 226,
+	  change      : [13, 27, 106, 107, 110, 111, 188, 189, 191, 220, 222, 226],
+		cursor: {
+			top: 1, // el top debera ser elementos que van de 0 a n-1
+			index: 0
+		},
+		init: function(top, content) { // Constructor
+			$articulos= this;
+			this.cursor.top= top-1;
+			if(typeof(content)!== 'undefined')
+			  this.joker= content;
+			this.events();
+		}, // init
+		events: function() {
+			$(window).bind('beforeunload', function() { 
+				if(typeof(jsArticulos)=== 'undefined' || jsArticulos.leavePage)
+					return ;
+				else
+				  return 'Es probable que los cambios no se hayan guardado\n¿Aun asi deseas salir de esta opción?.';
+			});			
+      $(document).on('keyup', this.lookup, function(e) {
+				clearTimeout($articulos.typingTimer);
+        if ($(this).val() &amp;&amp; $(this).val().trim().length&gt; 0) 
+          $articulos.typingTimer= setTimeout($articulos.look($(this)), $articulos.doneInterval);
+				return false;
+			});  
+      $(document).on('focus', this.focus, function() {
+				$articulos.current= $(this).val();
+				$articulos.index($(this).attr('id'));
+				janal.lastNameFocus= this;
+			});  
+      $(document).on('focus', this.selector, function() {
+				$articulos.index($(this).attr('id'));
+				janal.lastNameFocus= this;
+			});  
+      $(document).on('keydown', this.porcentajes, function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
+				if(($articulos.change.indexOf(key)&gt;= 0)) 
+					$articulos.leavePage= false;
+				switch(key) {
+					case $articulos.VK_ENTER:
+						$(this).blur();
+						return false;
+						break;
+				} // switch
+			});	
+			$(document).on('keydown', '.key-event-sat', function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
+				switch(key) {
+					case $articulos.VK_UP:
+						return $articulos.xup();
+						break;
+					case $articulos.VK_DOWN:
+						return $articulos.xdown();
+						break;
+				} // switch
+			});	
+      $(document).on('keydown', this.focus, function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
+				if(($articulos.change.indexOf(key)&gt;= 0))
+					$articulos.leavePage= false;
+				switch(key) {
+					case $articulos.VK_ENTER:
+						return $articulos.calculate($(this));
+						break;
+					case $articulos.VK_MINUS:
+						return $articulos.reset($(this));
+						break;
+					case $articulos.VK_REST:
+						return $articulos.show($(this));
+						break;
+				} // switch
+			});	
+      $(document).on('keydown', this.selector, function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('Keydown: '+  key);
+				if(($articulos.change.indexOf(key)&gt;= 0)) {
+					$articulos.leavePage= false;
+				  setTimeout("$('div[id$='+ jsArticulos.panels+ ']').hide();$('div[id$='+ jsArticulos.itemtips+ ']').hide();", 500);
+				} // if	 
+				switch(key) {
+					case $articulos.VK_ENTER:
+						return $articulos.find();
+						break;
+					case $articulos.VK_UP:
+   				  if($('ul.ui-autocomplete-items:visible').length&lt;=0)
+						  return $articulos.up(true);
+						break;
+					case $articulos.VK_DOWN:
+   				  if($('ul.ui-autocomplete-items:visible').length&lt;= 0)
+  						return $articulos.down(true);
+						break;
+					case $articulos.VK_ASTERISK:
+						return $articulos.asterisk();
+						break;
+					case $articulos.VK_DIV:
+            return $articulos.div();
+						break;
+					case $articulos.VK_PLUS:
+						return $articulos.plus();
+						break;
+					case $articulos.VK_REST:
+						return $articulos.point();
+						break;
+					case $articulos.VK_MINUS:
+						var txt  = $(this).val().trim().length&lt;= 0;
+						var token= $($articulos.lock())? $articulos.remove(): true;
+						if(txt &amp;&amp; $('ul.ui-autocomplete-items:visible').length&lt;= 0  &amp;&amp; token)
+						  return $articulos.clean();
+						break;
+					case $articulos.VK_PIPE:
+						return $articulos.search();
+						break;
+					case $articulos.VK_COMA:
+						$articulos.leavePage= true;
+						var txt= $(this).val().trim().length&lt;= 0;
+						if(txt &amp;&amp; $('ul.ui-autocomplete-items:visible').length&lt;= 0 &amp;&amp; confirm('¿ Esta seguro que desea terminar con la captura ?')) {
+						  $('#aceptar').click();
+						  return false;
+						} // if	
+						break;
+					case $articulos.VK_MAYOR:
+						return $articulos.show($(this));
+						break;
+					default:
+						break;
+				} // switch
+      });
+			setTimeout('$articulos.goto()', 1000);
+		},
+		xup: function() {
+			this.up(false);
+			var id= '#'+ this.joker+ this.cursor.index+ '\\:sat';
+			if($(id))
+				$(id).focus();
+			return false;
+		},
+		xdown: function() {
+			this.down(false);
+			var id= '#'+ this.joker+ this.cursor.index+ '\\:sat';
+			if($(id))
+				$(id).focus();
+			return false;
+		},
+		index: function(id) {
+			id= id.replace(/:/gi, '\\:');
+			var start= id.indexOf(this.joker)&gt;= 0? this.joker.length: -1;
+			if(start&gt; 0)
+				this.cursor.index= parseInt(id.substring(start, id.lastIndexOf('\\:')), 10);
+		},
+		move: function() {
+			var id= this.name();
+			if($(id))
+				$(id).focus();
+			$('div[id$='+ this.panels+ ']').hide();
+			$('div[id$='+ this.itemtips+ ']').hide();
+		},
+		name: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.codes;
+		},
+		amount: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.amounts;
+		},
+		discount: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.discounts;
+		},
+		additional: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.additionals;
+		},
+		price: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.prices;
+		},
+		key: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.keys;
+		},
+		lock: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.locks;
+		},
+		value: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.values;
+		},
+		set: function(value) {
+		  if($(this.name()))
+				$(this.name()).val(value);	
+		},
+		get: function() {
+			return $(this.name())? $(this.name()).val(): '';
+		},
+		up: function(jump) {
+			if(this.cursor.index&gt; 0)
+				this.cursor.index--;
+			else
+				this.cursor.index= this.cursor.top;
+			if(jump)
+			  this.move();
+			return false;
+		},
+		down: function(jump) {
+			if(this.cursor.index&lt; this.cursor.top)
+				this.cursor.index++;
+			else
+				this.cursor.index= 0;
+			if(jump)
+  			this.move();
+			return false;
+		},
+		valid: function() {
+			return $(this.key()) &amp;&amp; parseInt($(this.key()).val(), 10)&gt; 0;
+		}, 
+		remove: function() {
+			return this.valid() &amp;&amp; $(this.lock()) &amp;&amp; ($(this.lock()).val().length=== 0 || parseInt($(this.lock()).val(), 10)&lt;= 0);
+		}, 
+		refresh: function() {
+			if(this.valid()) {
+				refresh(this.cursor.index);
+			} // if
+			return false;
+		},
+		asterisk: function() {
+			var value = this.get().trim();
+			if($(this.amount()) &amp;&amp; value.length&gt; 0 &amp;&amp; janal.isInteger(value)) {
+				$(this.amount()).val(value);
+				this.set('');
+				this.refresh();
+			  return false;
+			} // if	
+			return true;
+		},
+		isOk: function(s) {
+      if(janal.empty(s))
+        if(arguments.length === 1)
+          return false;
+        else
+          return(arguments[1] === true);
+      for(var i= 0; i&lt; s.length; i++) {
+        var c= s.charAt(i);
+        if(!janal.isDigit(c) &amp;&amp; (c!==' ') &amp;&amp; (c!==',') &amp;&amp; (c!=='.'))
+          return false;
+      } // for
+      return true;
+		},
+		div: function() {
+			var value= this.get().trim();
+			var temp = $(this.discount()).val();
+			if($(this.discount()) &amp;&amp; value.length&gt; 0 &amp;&amp; this.isOk(value)) {
+			  $(this.discount()).val(value);
+				var ok= janal.descuentos($(this.discount()));
+				if(ok.error)
+				  $(this.discount()).val(temp);
+				else {
+					this.set('');
+  				this.refresh();
+				} // if
+			  return ok.error;
+			} // if	
+			return true;
+		},
+		plus: function() {
+			var value = this.get().trim();
+			var temp = $(this.price()).val();
+			if($(this.price()) &amp;&amp; value.length&gt; 0 &amp;&amp; this.isOk(value)) {
+			  $(this.price()).val(value);
+				var ok= janal.precio($(this.price()), value);
+				if(ok.error)
+				  $(this.price()).val(temp);
+				else {
+					this.set('');
+	 				this.refresh();
+				} // if
+			  return ok.error;
+			} // if	
+			return true;
+		},
+		point: function() {
+			var value = this.get().trim();
+			var temp = $(this.additional()).val();
+			if($(this.additional()) &amp;&amp; value.length&gt; 0 &amp;&amp; this.isOk(value)) {
+			  $(this.additional()).val(value);
+				var ok= janal.descuentos($(this.additional()));
+				if(ok.error)
+				  $(this.additional()).val(temp);
+				else {
+					this.set('');
+	 				this.refresh();
+				} // if
+		  return ok.error;
+			} // if	
+			return true;
+		},
+		find: function() {
+			var value = this.get().trim();
+			if(value.startsWith('='))
+				this.set(eval(value.substring(1)));
+			else
+			  if(value.length&gt; 0 &amp;&amp; !this.valid())
+			    locate(value, this.cursor.index);
+			return false;
+		},
+		exists: function(index) {
+			alert('El articulo ya existe en la orden y se encuentra en la fila '+ (index+ 1)+ '.');
+			if(index&gt;= 0 &amp;&amp; index&lt; this.cursor.top) {
+				if(index=== 0)
+					this.cursor.index= this.cursor.top;
+				else
+			    this.cursor.index= index- 1;
+				this.continue= true;
+			} // if	
+		}, 
+		goto: function() {
+			if($(this.name())) 
+				$(this.name()).focus();
+		},
+		clean: function() {
+			janal.console('Clean: '+ this.cursor.index+ ' =&gt; '+ this.cursor.top);
+			if(this.cursor.top&gt; 0 &amp;&amp; this.valid()) {
+			  suppress(this.cursor.index);
+				$(this.price()).val('0');
+				$(this.amount()).val('0');
+				$(this.discount()).val('0');
+				$(this.additional()).val('0');
+			  $(this.key()).val('-1');
+			} // if
+			return false;
+		},
+		update: function(top) {
+			this.cursor.top= top;
+		},
+		calculate: function(active) {
+			if($(active).val()!== this.current)
+				if(parseFloat($(active).val(), 10)!== parseFloat(this.current, 10))
+  				this.refresh();
+			  else
+  				if($(active).val().indexOf(',')&gt;= 0 || this.current.indexOf(',')&gt;= 0)
+    				this.refresh();
+			return false;	
+		},
+		next: function() {
+			if(($(this.key()) &amp;&amp; parseInt($(this.key()).val(), 10)&gt; 0) || this.continue) {
+				if($('ul.ui-autocomplete-items:visible').length&gt; 0) {
+          $('ul.ui-autocomplete-items:visible').hide();
+					refresh(this.cursor.index);
+				} // if	
+				else {	
+				  this.continue= false;
+  			  this.down(true);
+				} // else	
+			} // if	
+		},
+		reset: function(name) {
+			if($(name).attr('id').endsWith(this.prices.substring(2)))
+				$(name).val($(this.value()).val());
+			return false;
+		},
+		search: function() {
+			if(this.valid())
+				search($(this.key()).val(), this.cursor.index);
+			return false;
+		},
+		show: function(name) {
+			janal.bloquear();
+			PF(this.dialog).show();
+			return false;
+		},
+	  callback: function(code) {
+			console.log('Call back: '+ code);
+		  return false;
+		},
+		close: function() {
+		  replace(this.cursor.index);
+      this.continue= true;
+			return false;
+		},
+		look: function(name) {
+			console.log('look: '+ $(name).val());
+			lookup();
+		},
+		back: function(title, count) {
+			alert('Se genero la '+ title+ ' con consecutivo: '+ count);
+		}
+	});
+	
+	console.info('Iktan.Control.Articulos initialized');
+})(window);			
+			
+			
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:consecutivo'    : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:idOrdenCompra'  : {validaciones: '#{manticComprasEntradasAccion.validacion}', mascara: 'libre', grupo: 'general'},
@@ -172,6 +600,7 @@
 												<div class="ui-grid-row janal-grid-row">
 													<div class="ui-grid-col-12" style="padding-right: 14px;">
   	 										  	<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
+  	 										  	<p:inputText id="locks" value="#{row['idOrdenDetalle']}" style="display:none"/>
 														<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticComprasEntradasAccion.attrs.articulo}" completeMethod="#{manticComprasEntradasAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10">
 															<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
 															<f:facet name="itemtip">
@@ -203,18 +632,31 @@
 												</f:facet>
 	  									  <p:inputText id="sat" value="#{row['sat']}" styleClass="janal-wid-100-txt key-event-sat fila"/>
 											</p:column>		
+											<p:column class="MarAuto Responsive janal-wid-10">
+												<f:facet name="header">
+													<h:outputText value="Proveedor"/>
+												</f:facet>
+	  									  <p:inputText id="auxiliares" value="#{row['codigo']}" styleClass="janal-wid-100-txt key-event-sat fila"/>
+											</p:column>		
 											<p:column  class="MarAuto Responsive">
 												<f:facet name="header">
 													<h:outputText value="Articulo"/>
 												</f:facet>
-												<h:outputText id="nombres" value="[#{row['codigo']}] #{row['nombre']}" title="Código propio: #{row['propio']}    Existencias almacen: #{row['stock']}" escape="false"/>
+												<h:outputText id="nombres" value="#{row['nombre']}" title="Código propio: #{row['propio']}    Existencias almacen: #{row['stock']}" escape="false"/>
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
 													<h:outputText value="Cantidad"/>
 												</f:facet>
-												<p:outputLabel value="#{row['cantidad']}"/>
-												<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.cantidad($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
+												<div class="ui-grid-row janal-grid-row">
+													<div class="ui-grid-col-12 janal-column-right" style="padding-right: 14px;">
+														<p:outputLabel value="#{row['cantidad']}"/>
+														<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.cantidad($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
+													</div>
+													<div style="width: 10px; margin-left: -4px; margin-top: 1px;">
+												    <h:outputText value="#{row['cantidadMayorMenor']}" escape="false"/>
+												   </div>
+												</div>
 											</p:column>		
 											<p:column class="MarAuto Responsive janal-wid-10">
 												<f:facet name="header">
@@ -232,7 +674,7 @@
 													</div>	 
 												  <div style="width: 10px; margin-left: -4px; margin-top: 1px;">
 												    <h:outputText value="#{row['costoMayorMenor']}" escape="false"/>
-												   </div>
+												  </div>
 												</div>	
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-10">

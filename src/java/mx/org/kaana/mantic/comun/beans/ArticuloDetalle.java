@@ -37,6 +37,8 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
   private String nombre;
   private String sat;
   private String unidadMedida;
+	private Long idOrdenDetalle;
+	private Long solicitados;
 
   public ArticuloDetalle() {
     this(new Long(-1L));
@@ -47,6 +49,10 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
   }
 
 	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Long cantidad, Double descuentos, String nombre, String sat, String unidadMedida) {
+		this(idArticulo, codigo, costo, descuento, extras, importe, registro, propio, iva, impuestos, subTotal, cantidad, descuentos, nombre, sat, unidadMedida, null, 0L);
+	}
+	
+	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Long cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Long solicitados) {
 		this.idArticulo=idArticulo;
 		this.codigo=codigo;
 		this.costo=costo;
@@ -63,6 +69,8 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		this.nombre=nombre;
 		this.sat=sat;
 		this.unidadMedida=unidadMedida;
+    this.idOrdenDetalle= idOrdenDetalle;
+		this.solicitados= solicitados;
 	}
 	
   public void setCodigo(String codigo) {
@@ -193,6 +201,22 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		this.unidadMedida=unidadMedida;
 	}
 
+	public Long getIdOrdenDetalle() {
+		return idOrdenDetalle;
+	}
+
+	public void setIdOrdenDetalle(Long idOrdenDetalle) {
+		this.idOrdenDetalle=idOrdenDetalle;
+	}
+
+	public Long getSolicitados() {
+		return solicitados;
+	}
+
+	public void setSolicitados(Long solicitados) {
+		this.solicitados=solicitados;
+	}
+	
 	@Override
   public Long getKey() {
   	return getIdArticulo();
@@ -234,6 +258,10 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		regresar.append(getDescuentos());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdOrdenDetalle());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getSolicitados());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -255,6 +283,8 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		regresar.put("idArticulo", getIdArticulo());
 		regresar.put("descuentos", getDescuentos());
 		regresar.put("nombre", getNombre());
+		regresar.put("idOrdenDetalle", getIdOrdenDetalle());
+		regresar.put("solicitados", getSolicitados());
   	return regresar;
   }
 

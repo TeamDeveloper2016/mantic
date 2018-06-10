@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Date;
 import java.util.Calendar;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 
 /**
@@ -22,12 +23,12 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
 	private UISelectEntity ikProveedor;
 	private UISelectEntity ikOrdenCompra;
 
-	public NotaEntrada() {
-		this(-1L);
+	public NotaEntrada(Long idOrdenCompra) {
+		this(-1L, idOrdenCompra);
 	}
 
-	public NotaEntrada(Long key) {
-		super(0D, null, "0", null, 1L, new Date(Calendar.getInstance().getTimeInMillis()), "0", key, new Date(Calendar.getInstance().getTimeInMillis()), 1L, new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", 0D, "", 1L, -1L, 0D, 0D, 1D, 2L, "", -1L, 1L);
+	public NotaEntrada(Long key, Long idOrdenCompra) {
+		super(0D, null, "0", idOrdenCompra, 1L, new Date(Calendar.getInstance().getTimeInMillis()), "0", key, new Date(Calendar.getInstance().getTimeInMillis()), 1L, new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", 0D, "", 1L, -1L, 0D, 0D, 1D, 2L, "", -1L, 1L);
 	}
 
 	public NotaEntrada(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idDirecta, Date fechaRecepcion, String extras, Long idNotaEntrada, Date fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subTotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden) {

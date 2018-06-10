@@ -226,7 +226,7 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 			if(ultimoPrecio!= null && !ultimoPrecio.isEmpty())
 				ultimoPrecio.values().stream().map((value) -> {
 					if("|costo|".indexOf(value.getName())> 0)
-						value.setData(Numero.toRedondear(value.toDouble()));
+						value.setData(Numero.toRedondearSat(value.toDouble()));
 					return value;
 				}).filter((value) -> ("|registro|".indexOf(value.getName())> 0)).forEachOrdered((value) -> {
 					value.setData(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, value.toTimestamp()));

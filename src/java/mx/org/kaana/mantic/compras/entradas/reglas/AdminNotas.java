@@ -2,14 +2,20 @@ package mx.org.kaana.mantic.compras.entradas.reglas;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.entradas.beans.NotaEntrada;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.comun.IAdminArticulos;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,15 +35,22 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 
 	private NotaEntrada orden;
 
-	public AdminNotas(NotaEntrada orden) throws Exception {
-		this.orden  = orden;
+	public AdminNotas(NotaEntrada orden, EOrdenes tipoOrden) throws Exception {
+		this.orden= orden;
+		this.orden.setIdDirecta(tipoOrden.equals(EOrdenes.NORMAL)? 1L: 2L);
 		if(this.orden.isValid()) {
-  	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticNotasDetallesDto", "detalle", orden.toMap()));
+			if(this.orden.getIdDirecta().equals(1L))
+  	    this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticNotasDetallesDto", "detalle", orden.toMap()));
+			else	
+  	    this.setArticulos(this.toLoadOrdenDetalle());
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
       this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdProveedor())));
 		}	// if
-		else	{
-		  this.setArticulos(new ArrayList<>());
+		else {
+			if(this.orden.getIdDirecta().equals(1L))
+		    this.setArticulos(new ArrayList<>());
+			else
+			  this.setArticulos(this.toDefaultOrdenDetalle());
 			this.orden.setConsecutivo(this.toConsecutivo("0"));
 			this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
 			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
@@ -91,4 +104,59 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 		this.orden.setIdSinIva(idSinIva);
 	}
 
+	private ArrayList<Articulo> toLoadOrdenDetalle() throws Exception {
+		ArrayList<Articulo> regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticNotasDetallesDto", "detalle", orden.toMap()));
+		ArrayList<Articulo> loaded  = new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "diferencia", orden.toMap()));
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("idProveedor", this.orden.getIdProveedor());
+			params.put("idAlmacen", this.orden.getIdAlmacen());
+			for (Articulo item: loaded) {
+  			params.put("idArticulo", item.getIdArticulo());
+        Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", this.orden.toMap(), "stock");
+        int index= regresar.indexOf(item);
+				item.setStock(stock== null? 0L: stock.toLong());
+				if(index<= 0) 
+					regresar.add(item);
+				else {
+					((Articulo)regresar.get(index)).setValor(item.getCosto());
+					((Articulo)regresar.get(index)).setStock(stock== null? 0L: stock.toLong());
+				} // else	
+			} // for
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+			Methods.clean(loaded);
+		} // finally
+		return regresar;
+	}
+	private ArrayList<Articulo> toDefaultOrdenDetalle() throws Exception {
+		ArrayList<Articulo> regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "diferencia", orden.toMap()));
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("idProveedor", this.orden.getIdProveedor());
+			params.put("idAlmacen", this.orden.getIdAlmacen());
+			for (Articulo item: regresar) {
+  			params.put("idArticulo", item.getIdArticulo());
+        Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", this.orden.toMap(), "stock");
+				item.setValor(item.getCosto());
+				item.setStock(stock== null? 0L: stock.toLong());
+			} // for
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+	
 }

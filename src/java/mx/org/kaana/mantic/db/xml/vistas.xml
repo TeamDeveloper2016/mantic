@@ -510,6 +510,45 @@
 					and {condicion}
 				{sortOrder}
 			</select>
+      <select id="diferencia">
+        select      
+          1 as sin_iva, 
+					1 as tipo_de_cambio, 
+					tc_mantic_articulos.nombre, 
+					tc_mantic_ordenes_detalles.codigo, 
+					tc_mantic_ordenes_detalles.costo, 
+					"0" as descuento, 
+					tc_mantic_ordenes_detalles.id_orden_compra, 
+					"0" as extras, 
+					0 as importe, 
+					tc_mantic_ordenes_detalles.propio, 
+					tc_mantic_ordenes_detalles.iva, 
+					0 as total_impuesto, 
+					0 as sub_total, 
+					0 as cantidad, 
+					tc_mantic_ordenes_detalles.cantidad as solicitados, 
+					tc_mantic_ordenes_detalles.id_orden_detalle, 
+					tc_mantic_ordenes_detalles.id_articulo, 
+					0 as total_descuentos, 
+					tc_mantic_ordenes_compras.id_proveedor, 
+					false as ultimo, 
+					false as solicitado, 
+					0 stock
+        from      
+          tc_mantic_ordenes_compras
+        inner join      
+          tc_mantic_ordenes_detalles on tc_mantic_ordenes_compras.id_orden_compra= tc_mantic_ordenes_detalles.id_orden_compra
+        inner join
+          tc_mantic_articulos on tc_mantic_ordenes_detalles.id_articulo= tc_mantic_articulos.id_articulo
+        where      
+          tc_mantic_ordenes_compras.id_orden_compra = {idOrdenCompra}
+				  and (
+				    tc_mantic_ordenes_detalles.cantidades&lt;&gt; 0 or 
+				    tc_mantic_ordenes_detalles.precios&lt;&gt; 0
+				  )
+				order by
+				  tc_mantic_ordenes_detalles.registro				
+      </select>
 			<select id="ordenes">
 				select
 				  tc_mantic_ordenes_compras.id_orden_compra as id_key,

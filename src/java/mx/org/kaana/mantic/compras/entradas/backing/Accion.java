@@ -61,7 +61,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
-      this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? -1L: JsfBase.getFlashAttribute("idOrdenCompra"));
+      this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? null: JsfBase.getFlashAttribute("idOrdenCompra"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
@@ -81,10 +81,10 @@ public class Accion extends IBaseArticulos implements Serializable {
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
       switch (eaccion) {
         case AGREGAR:											
-          this.setAdminOrden(new AdminNotas(new NotaEntrada(-1L)));
+          this.setAdminOrden(new AdminNotas(new NotaEntrada(-1L, (Long)this.attrs.get("idOrdenCompra")), this.tipoOrden));
           break;
         case MODIFICAR:					
-          this.setAdminOrden(new AdminNotas((NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradaDto", "detalle", this.attrs)));
+          this.setAdminOrden(new AdminNotas((NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradaDto", "detalle", this.attrs), this.tipoOrden));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
           break;
       } // switch
