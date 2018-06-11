@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import static mx.org.kaana.kajool.enums.EAccion.AGREGAR;
 import static mx.org.kaana.kajool.enums.EAccion.ELIMINAR;
@@ -19,6 +21,7 @@ import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
+import mx.org.kaana.mantic.enums.EEstatusVentas;
 import org.apache.log4j.Logger;
 
 /**
@@ -31,8 +34,8 @@ import org.apache.log4j.Logger;
 
 public class Transaccion extends IBaseTnx {
 
-  private static final Logger LOG = Logger.getLogger(Transaccion.class);
- 
+  private static final Logger LOG  = Logger.getLogger(Transaccion.class);
+	private static final String VENTA= "VENTA";
 	private TcManticVentasDto orden;	
 	private List<Articulo> articulos;
 	private String messageError;
@@ -71,9 +74,9 @@ public class Transaccion extends IBaseTnx {
 					this.orden.setOrden(consecutivo);
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
 					if(this.orden.getIdCliente()< 0)
-						this.orden.setIdCliente(null);
+						this.orden.setIdCliente(toClienteDefault(sesion));
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
-					bitacoraOrden= new TcManticVentasBitacoraDto(this.orden.getIdVentaEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdVenta(), -1L);
+					bitacoraOrden= new TcManticVentasBitacoraDto(this.orden.getIdVentaEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdVenta(), EEstatusVentas.ELABORADA.getIdEstatusVenta());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
 					toFillArticulos(sesion);
 					break;
@@ -120,14 +123,17 @@ public class Transaccion extends IBaseTnx {
 	}
 	
 	private Long toSiguiente(Session sesion) throws Exception {
-		Long regresar= 1L;
-		Map<String, Object> params=null;
+		Long regresar             = 1L;
+		Map<String, Object> params= null;
+		Value siguiente           = null;
 		try {
 			params=new HashMap<>();
 			params.put("ejercicio", Fecha.getAnioActual());
 			params.put("dia", Fecha.getHoyEstandar());
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			regresar= DaoFactory.getInstance().toField(sesion, "TcManticVentasDto", "siguiente", params, "siguiente").toLong();
+			siguiente= DaoFactory.getInstance().toField(sesion, "TcManticVentasDto", "siguiente", params, "siguiente");
+			if(siguiente.getData()!= null)
+				regresar= siguiente.toLong();
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -138,4 +144,21 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	}
 	
+	private Long toClienteDefault(Session sesion) throws Exception{
+		Long regresar            = -1L;
+		Entity cliente           = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("clave", VENTA);
+			params.put("sucursales", JsfBase.getAutentifica().getIdsSucursales());
+			cliente= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticClientesDto", "clienteDefault", params);
+			if(cliente!= null)
+				regresar= cliente.getKey();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toClienteDefault
 } 
