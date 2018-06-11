@@ -98,8 +98,11 @@ public class Accion extends IBaseArticulos implements Serializable {
     Transaccion transaccion= null;
     String regresar        = null;
 		EAccion eaccion        = null;
+		UISelectEntity cliente = null;
     try {			
-			eaccion= (EAccion) this.attrs.get("accion");
+			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");
+			eaccion= (EAccion) this.attrs.get("accion");			
+			((TicketVenta)this.getAdminOrden().getOrden()).setIdCliente(cliente.getKey());
 			((TicketVenta)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
 			((TicketVenta)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
 			((TicketVenta)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
