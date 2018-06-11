@@ -210,7 +210,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
 			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
-			doReCalculatePreciosArticulos();			
+			doReCalculatePreciosArticulos(seleccion.getKey());			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -218,19 +218,32 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // catch		
 	} // doAsignaCliente
 	
-	public void doReCalculatePreciosArticulos(){
+	public void doReCalculatePreciosArticulos(Long idCliente){
+		doReCalculatePreciosArticulos(true, idCliente);
+	}
+	
+	public void doReCalculatePreciosArticulos(boolean descuentoVigente, Long idCliente){
 		MotorBusqueda motor          = null;
 		TcManticArticulosDto articulo= null;
+		String descuento             = null;
+		String sinDescuento          = "0";
 		try {
-			if(!getAdminOrden().getArticulos().isEmpty()){					
+			if(!getAdminOrden().getArticulos().isEmpty()){
 				for(Articulo beanArticulo: getAdminOrden().getArticulos()){
 					if(beanArticulo.getIdArticulo()!= null && !beanArticulo.getIdArticulo().equals(-1L)){
 						motor= new MotorBusqueda(beanArticulo.getIdArticulo());
 						articulo= motor.toArticulo();
 						beanArticulo.setValor((Double) articulo.toValue(getPrecio()));
+						beanArticulo.setCosto((Double) articulo.toValue(getPrecio()));
+						if(descuentoVigente){
+							descuento= toDescuentoVigente(beanArticulo.getIdArticulo(), idCliente);
+							beanArticulo.setDescuento(descuento!= null ? descuento : sinDescuento);							
+						} // if
+						else
+							beanArticulo.setDescuento(sinDescuento);
 					} // if
 				} // for					
-				if(getAdminOrden().getArticulos().size()>1){
+				if(getAdminOrden().getArticulos().size()>1){					
 					getAdminOrden().toCalculate();
 					RequestContext.getCurrentInstance().update("@(.filas) @(.recalculo) @(.informacion)");
 				} // if
@@ -245,16 +258,18 @@ public class Accion extends IBaseArticulos implements Serializable {
 	public void doActualizaPrecioCliente(){
 		List<UISelectEntity> clientesSeleccion= null;
 		UISelectEntity clienteSeleccion       = null;
+		boolean precioVigente                 = false;
 		try {
 			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");
-			if(clienteSeleccion!= null && !clienteSeleccion.getKey().equals(-1L)){
+			precioVigente= clienteSeleccion!= null && !clienteSeleccion.getKey().equals(-1L);
+			if(precioVigente){
 				clientesSeleccion= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
 				clienteSeleccion= clientesSeleccion.get(clientesSeleccion.indexOf(clienteSeleccion));
 				setPrecio(Cadena.toBeanNameEspecial(clienteSeleccion.toString("tipoVenta")));				
 			} // if
 			else
 				setPrecio("menudeo");
-			doReCalculatePreciosArticulos();
+			doReCalculatePreciosArticulos(precioVigente, clienteSeleccion.getKey());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -264,18 +279,16 @@ public class Accion extends IBaseArticulos implements Serializable {
 
 	@Override
 	protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
-		UISelectEntity clienteSeleccion= null;
-		MotorBusqueda motorBusqueda    = null;
+		UISelectEntity clienteSeleccion= null;		
 		String descuentoPivote         = null;
-		Entity descuentoVigente        = null;
+		String descuentoVigente        = null;		
 		try {
 			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");
 			if(clienteSeleccion!= null && !clienteSeleccion.getKey().equals(-1L)){
-				motorBusqueda= new MotorBusqueda(articulo.toLong("idArticulo"), clienteSeleccion.getKey());
-				descuentoVigente= motorBusqueda.toDescuentoGrupo();
+				descuentoVigente= toDescuentoVigente(articulo.toLong("idArticulo"), clienteSeleccion.getKey());				
 				if(descuentoVigente!= null){
 					descuentoPivote= getAdminOrden().getDescuento();
-					getAdminOrden().setDescuento(descuentoVigente.toString("porcentaje"));
+					getAdminOrden().setDescuento(descuentoVigente);
 					super.toMoveData(articulo, index);			
 					getAdminOrden().setDescuento(descuentoPivote);
 				} // if
@@ -290,4 +303,20 @@ public class Accion extends IBaseArticulos implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch	
 	} // toMoveData
+	
+	private String toDescuentoVigente(Long idArticulo, Long idCliente) throws Exception{
+		MotorBusqueda motorBusqueda= null;
+		Entity descuentoVigente    = null;
+		String regresar            = null;
+		try {
+			motorBusqueda= new MotorBusqueda(idArticulo, idCliente);
+			descuentoVigente= motorBusqueda.toDescuentoGrupo();
+			if(descuentoVigente!= null)
+				regresar= descuentoVigente.toString("porcentaje");
+		} // try
+		catch (Exception e) {			
+			throw e;			
+		} // catch		
+		return regresar;
+	} // toDescuentoVigente
 }
