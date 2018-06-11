@@ -1002,6 +1002,17 @@
 				order by
 				  tc_mantic_clientes.clave
       </select>
+			<select id="clienteDefault">
+        select      
+					tc_mantic_clientes.id_cliente as id_key,
+          tc_mantic_clientes.*
+        from      
+          tc_mantic_clientes
+        where 
+          tc_mantic_clientes.id_empresa in ({sucursales})
+				and 
+					tc_mantic_clientes.clave='{clave}'				
+      </select>
     </unit>		
 		<unit id="TcManticImagenesDto">
       <select id="row">
@@ -2038,8 +2049,7 @@
 				  ejercicio= {ejercicio} 
 				  and date_format(dia, '%Y%m%d') = '{dia}'
 				  and id_empresa= {idEmpresa}				
-			</select>			
-			
+			</select>						
     </unit>
     <unit id="TcManticVentasDetallesDto">
       <select id="row">
