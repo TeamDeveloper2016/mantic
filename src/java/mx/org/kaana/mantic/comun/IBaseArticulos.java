@@ -81,6 +81,7 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 				temporal.setPropio(articulo.toString("propio"));
 				temporal.setNombre(articulo.toString("nombre"));
 				temporal.setValor(articulo.toDouble(this.precio));
+				temporal.setCosto(articulo.toDouble(this.precio));
 				temporal.setIva(articulo.toDouble("iva"));
 				temporal.setDescuento(this.adminOrden.getDescuento());
 				temporal.setExtras(this.adminOrden.getExtras());
@@ -430,5 +431,4 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
     this.doUpdateArticulos();		
 		return (List<UISelectEntity>)this.attrs.get("articulos");
 	}	
-
 }
