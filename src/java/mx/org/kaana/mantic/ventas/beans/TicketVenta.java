@@ -26,7 +26,7 @@ public class TicketVenta extends TcManticVentasDto implements Serializable {
 	}
 
 	public TicketVenta(Long key) {
-		super(0D, -1L, "0", 0D, -1L, 1D, 1L, "", -1L, -1L, "0", new Long(Calendar.getInstance().get(Calendar.YEAR)), 1L, -1L, 0D, 2L, 0D, "", 0D, "", -1L, -1L, new Date(Calendar.getInstance().getTimeInMillis()), 1L);
+		super(0D, null, "0", 0D, -1L, 1D, 1L, "", null, -1L, "0", new Long(Calendar.getInstance().get(Calendar.YEAR)), 1L, -1L, 0D, 2L, 0D, "", 0D, "", -1L, -1L, new Date(Calendar.getInstance().getTimeInMillis()), 1L);
 	}
 
 	public TicketVenta(Double descuentos, Long idFactura, String extras, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, String tarjeta, Long idTipoMedioPago, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idSinIva, Double subTotal, String tipoTarjeta, Double efectivo, String observaciones, Long idEmpresa, Long idVenta, Date dia, Long idVentaEstatus) {
