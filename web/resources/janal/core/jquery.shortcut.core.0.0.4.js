@@ -220,11 +220,27 @@ shortcut = {
 		else if(ele.removeEventListener) ele.removeEventListener(type, callback, false);
 		else ele['on'+type] = false;
 	}
-}
+};
 
 shortcut.add("Ctrl+C", function() {
 	janal.console('Shortcut calculadora:');
 	if(PF('dlgCalculadora'))
 	  PF('dlgCalculadora').show();
+});
+
+shortcut.add("Ctrl+P", function() {
+	janal.console('Shortcut tickets abiertos:');
+	if(PF('dlgOpenTickets')){
+		janal.bloquear();
+		loadTicketAbiertos();
+	} // if
+});
+
+shortcut.add("Ctrl+U", function() {
+	janal.console('Shortcut cierre ticket:');
+	if(PF('dlgCloseTicket')){
+		janal.bloquear();
+	  PF('dlgCloseTicket').show();
+	} // if
 });
 
