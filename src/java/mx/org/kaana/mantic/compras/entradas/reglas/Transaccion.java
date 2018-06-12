@@ -28,6 +28,8 @@ import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
 import org.apache.log4j.Logger;
 
@@ -93,6 +95,7 @@ public class Transaccion extends IBaseTnx {
 					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 					this.toFillArticulos(sesion);
+					this.toCheckOrden(sesion);
 					break;
 				case MODIFICAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
@@ -103,6 +106,7 @@ public class Transaccion extends IBaseTnx {
 					} // if	
 					this.toRemoveOrdenDetalle(sesion);
 					this.toFillArticulos(sesion);
+					this.toCheckOrden(sesion);
 					break;				
 				case ELIMINAR:
 					this.toRemoveOrdenDetalle(sesion);
@@ -110,12 +114,20 @@ public class Transaccion extends IBaseTnx {
 					regresar= regresar && DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
  					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L);
   				regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
+					this.toCheckOrden(sesion);
 					break;
 				case JUSTIFICAR:
-					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L){
+					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.orden= (TcManticNotasEntradasDto) DaoFactory.getInstance().findById(sesion, TcManticNotasEntradasDto.class, this.bitacora.getIdNotaEntrada());
 						this.orden.setIdNotaEstatus(this.bitacora.getIdNotaEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
+						if(this.bitacora.getIdNotaEstatus().equals(2L) || this.bitacora.getIdNotaEstatus().equals(7L)) 
+							this.toRemoveOrdenDetalle(sesion);
+						else
+  						if(this.bitacora.getIdNotaEstatus().equals(6L)) {
+            		for (Articulo articulo: this.articulos)
+									this.toAffectAlmacenes(sesion, articulo.toNotaDetalle());
+							} // if	
 					} // if
 					break;
 			} // switch
@@ -142,7 +154,10 @@ public class Transaccion extends IBaseTnx {
 			item.setIdNotaEntrada(this.orden.getIdNotaEntrada());
 			if(DaoFactory.getInstance().findIdentically(sesion, TcManticNotasDetallesDto.class, item.toMap())== null) {
 				this.toAffectOrdenDetalle(sesion, articulo);
-				DaoFactory.getInstance().insert(sesion, item);
+				if(item.isValid())
+			    DaoFactory.getInstance().update(sesion, item);
+				else
+			    DaoFactory.getInstance().insert(sesion, item);
 				if(this.aplicar)
 				  this.toAffectAlmacenes(sesion, item);
 			} // if
@@ -152,19 +167,20 @@ public class Transaccion extends IBaseTnx {
 	private void toRemoveOrdenDetalle(Session sesion) throws Exception {
 		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticNotasDetallesDto", "detalle", this.orden.toMap());
 		for (Articulo articulo: todos) {
-			if(articulo.getIdOrdenDetalle()!= null && articulo.getIdOrdenDetalle()>= 0L) {
-				TcManticOrdenesDetallesDto detalle= (TcManticOrdenesDetallesDto)DaoFactory.getInstance().findById(TcManticOrdenesDetallesDto.class, articulo.getIdOrdenDetalle());
+			if(articulo.getIdOrdenDetalle()!= null && articulo.getIdOrdenDetalle()> 0L) {
+				TcManticOrdenesDetallesDto detalle= (TcManticOrdenesDetallesDto)DaoFactory.getInstance().findById(sesion, TcManticOrdenesDetallesDto.class, articulo.getIdOrdenDetalle());
 				detalle.setCantidades(detalle.getCantidades()+ articulo.getCantidad());
 				detalle.setImportes(Numero.toRedondearSat(detalle.getImportes()+ articulo.getImporte()));
 				detalle.setPrecios(Numero.toRedondearSat(detalle.getCosto()- articulo.getCosto()));
 				DaoFactory.getInstance().update(sesion, detalle);
+				//DaoFactory.getInstance().delete(sesion, TcManticOrdenesDetallesDto.class, articulo.getIdComodin());
 			} // if
 		} // for
 	}
 	
 	private void toAffectOrdenDetalle(Session sesion, Articulo articulo) throws Exception {
-		if(articulo.getIdOrdenDetalle()!= null && articulo.getIdOrdenDetalle()>= 0L) {
-			TcManticOrdenesDetallesDto detalle= (TcManticOrdenesDetallesDto)DaoFactory.getInstance().findById(TcManticOrdenesDetallesDto.class, articulo.getIdOrdenDetalle());
+		if(articulo.getIdOrdenDetalle()!= null && articulo.getIdOrdenDetalle()> 0L) {
+			TcManticOrdenesDetallesDto detalle= (TcManticOrdenesDetallesDto)DaoFactory.getInstance().findById(sesion, TcManticOrdenesDetallesDto.class, articulo.getIdOrdenDetalle());
       detalle.setCantidades(detalle.getCantidades()- articulo.getCantidad());
       detalle.setImportes(Numero.toRedondearSat(detalle.getImportes()- articulo.getImporte()));
       detalle.setPrecios(Numero.toRedondearSat(articulo.getValor()- articulo.getCosto()));
@@ -231,5 +247,27 @@ public class Transaccion extends IBaseTnx {
 			Methods.clean(params);
 		} // finally
 	}
+	
+	private void toCheckOrden(Session sesion) throws Exception {
+		try {
+			if(this.orden.getIdDirecta().equals(2L)) {
+        TcManticOrdenesComprasDto ordenCompra= (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(sesion, TcManticOrdenesComprasDto.class, this.orden.getIdOrdenCompra());
+  		  Value errors= DaoFactory.getInstance().toField(sesion, "VistaNotasEntradasDto", "errores", this.orden.toMap(), "total");
+			  if(errors.toLong()!= null && errors.toLong()== 0) 
+					if(this.aplicar)
+					  ordenCompra.setIdOrdenEstatus(6L); // TERMINADA
+					else
+					  ordenCompra.setIdOrdenEstatus(4L); // CONFRONTADA
+				else
+					ordenCompra.setIdOrdenEstatus(5L); // INCOMPLETA
+				DaoFactory.getInstance().update(sesion, ordenCompra);
+				TcManticOrdenesBitacoraDto estatus= new TcManticOrdenesBitacoraDto(ordenCompra.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L);
+				DaoFactory.getInstance().insert(sesion, estatus);
+			} // if
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+	} 
 	
 } 

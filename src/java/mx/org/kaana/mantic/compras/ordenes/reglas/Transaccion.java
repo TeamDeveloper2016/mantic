@@ -77,11 +77,11 @@ public class Transaccion extends IBaseTnx {
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 					bitacoraOrden= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L);
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
-					toFillArticulos(sesion);
+					this.toFillArticulos(sesion);
 					break;
 				case MODIFICAR:
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-					toFillArticulos(sesion);
+					this.toFillArticulos(sesion);
 					break;				
 				case ELIMINAR:
 					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticOrdenesDetallesDto.class, params)>= 1L;
@@ -117,7 +117,10 @@ public class Transaccion extends IBaseTnx {
 			TcManticOrdenesDetallesDto item= articulo.toOrdenDetalle();
 			item.setIdOrdenCompra(this.orden.getIdOrdenCompra());
 			if(DaoFactory.getInstance().findIdentically(sesion, TcManticOrdenesDetallesDto.class, item.toMap())== null) 
-				DaoFactory.getInstance().insert(sesion, item);
+				if(item.isValid())
+				  DaoFactory.getInstance().update(sesion, item);
+				else	
+				  DaoFactory.getInstance().insert(sesion, item);
 		} // for
 	}
 	

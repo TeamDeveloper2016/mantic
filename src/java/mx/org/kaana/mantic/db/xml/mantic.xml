@@ -1967,7 +1967,8 @@
       </select>
       <select id="detalle">
         select      
-          *
+				  tc_mantic_notas_detalles.id_nota_detalle as id_comodin,
+          tc_mantic_notas_detalles.*
         from      
           tc_mantic_notas_detalles
         where      
@@ -2016,7 +2017,7 @@
       </select>
       <select id="detalle">
         select      
-          *
+				  *
         from      
           tc_mantic_ventas
         where 
@@ -2052,7 +2053,8 @@
       </select>
       <select id="detalle">
         select      
-          *
+				  tc_mantic_ventas_detalles.id_venta_detalle as id_comodin,
+          tc_mantic_ventas_detalles.*
         from      
           tc_mantic_ventas_detalles
         where      
@@ -2154,7 +2156,8 @@
       </select>
       <select id="detalle">
         select      
-          *
+				  tc_mantic_ordenes_detalles.id_orden_detalle as id_comodin,
+          tc_mantic_ordenes_detalles.*
         from      
           tc_mantic_ordenes_detalles
         where      

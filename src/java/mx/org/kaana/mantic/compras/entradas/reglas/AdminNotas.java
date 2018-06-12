@@ -40,7 +40,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 		this.orden.setIdDirecta(tipoOrden.equals(EOrdenes.NORMAL)? 1L: 2L);
 		if(this.orden.isValid()) {
 			if(this.orden.getIdDirecta().equals(1L))
-  	    this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticNotasDetallesDto", "detalle", orden.toMap()));
+  	    this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticNotasDetallesDto", "detalle", this.orden.toMap()));
 			else	
   	    this.setArticulos(this.toLoadOrdenDetalle());
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
@@ -55,6 +55,10 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 			this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
 			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 		} // else	
+		for (Articulo articulo : this.getArticulos()) {
+			if(articulo.getIdOrdenDetalle()!= null && articulo.getIdOrdenDetalle()<= 0)
+				articulo.setIdOrdenDetalle(null);
+		} // for
 		this.getArticulos().add(new Articulo(-1L));
 		this.toCalculate();
 	}
@@ -105,8 +109,8 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 	}
 
 	private ArrayList<Articulo> toLoadOrdenDetalle() throws Exception {
-		ArrayList<Articulo> regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticNotasDetallesDto", "detalle", orden.toMap()));
-		ArrayList<Articulo> loaded  = new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "diferencia", orden.toMap()));
+		ArrayList<Articulo> regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticNotasDetallesDto", "detalle", this.orden.toMap()));
+		ArrayList<Articulo> loaded  = new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "diferencia", this.orden.toMap()));
 		Map<String, Object> params=null;
 		try {
 			params=new HashMap<>();
@@ -117,7 +121,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
         Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", this.orden.toMap(), "stock");
         int index= regresar.indexOf(item);
 				item.setStock(stock== null? 0L: stock.toLong());
-				if(index<= 0) 
+				if(index< 0) 
 					regresar.add(item);
 				else {
 					((Articulo)regresar.get(index)).setValor(item.getCosto());
@@ -136,7 +140,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 		return regresar;
 	}
 	private ArrayList<Articulo> toDefaultOrdenDetalle() throws Exception {
-		ArrayList<Articulo> regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "diferencia", orden.toMap()));
+		ArrayList<Articulo> regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "diferencia", this.orden.toMap()));
 		Map<String, Object> params=null;
 		try {
 			params=new HashMap<>();

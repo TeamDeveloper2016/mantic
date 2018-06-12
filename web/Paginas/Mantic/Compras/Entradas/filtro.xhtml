@@ -4,6 +4,7 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
+								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Notas de entrada generadas" />
   <ui:define name="librerias">
@@ -171,7 +172,8 @@
             <p:menuitem id="modificar" action="#{manticComprasEntradasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{!(manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '6')}"/>					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{!(manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '6')}"/>					
             <p:separator rendered="#{!(manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '6')}"/>					
-            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasEntradasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '6')}"/>					
+            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasEntradasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(fn:contains(manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus, '|6|'))}"/>					
+            <p:separator rendered="#{(manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '6')}"/>					
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasEntradasFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{(manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '6')}"/>					
           </p:contextMenu>						
         </div>

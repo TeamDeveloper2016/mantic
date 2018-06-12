@@ -42,6 +42,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 	private Double valor;
 	private Long idRedondear;
 	private Double total;
+	private Long idComodin;
 
   public ArticuloDetalle() {
     this(new Long(-1L));
@@ -52,10 +53,10 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
   }
 
 	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Long cantidad, Double descuentos, String nombre, String sat, String unidadMedida) {
-		this(idArticulo, codigo, costo, descuento, extras, importe, registro, propio, iva, impuestos, subTotal, cantidad, descuentos, nombre, sat, unidadMedida, null, 0L, 1L);
+		this(idArticulo, codigo, costo, descuento, extras, importe, registro, propio, iva, impuestos, subTotal, cantidad, descuentos, nombre, sat, unidadMedida, null, 0L, 1L, -1L);
 	}
 	
-	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Long cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Long solicitados, Long idRedondear) {
+	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Long cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Long solicitados, Long idRedondear, Long idComodin) {
 		this.idArticulo=idArticulo;
 		this.codigo=codigo;
 		this.costo=costo;
@@ -77,6 +78,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		this.valor= costo;
 		this.idRedondear= idRedondear;
 		this.total= importe;
+		this.idComodin= idComodin;
 	}
 	
   public void setCodigo(String codigo) {
@@ -247,6 +249,14 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		this.total=total;
 	}
 
+	public Long getIdComodin() {
+		return idComodin;
+	}
+
+	public void setIdComodin(Long idComodin) {
+		this.idComodin= idComodin;
+	}
+
 	@Override
   public Long getKey() {
   	return getIdArticulo();
@@ -296,6 +306,8 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		regresar.append(getValor());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getTotal());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdComodin());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -320,10 +332,15 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		regresar.put("idOrdenDetalle", getIdOrdenDetalle());
 		regresar.put("solicitados", getSolicitados());
 		regresar.put("valor", getValor());
-		regresar.put("valor", getTotal());
+		regresar.put("total", getTotal());
+		regresar.put("idComodin", getIdComodin());
   	return regresar;
   }
 
+  public boolean isComodin() {
+  	return this.idComodin!= null && this.idComodin!=-1L;
+  }
+	
 	@Override
   public boolean isValid() {
   	return this.idArticulo!= null && this.idArticulo!=-1L;

@@ -114,9 +114,12 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.getAdminOrden().toAdjustArticulos();
 			transaccion = new Transaccion(((NotaEntrada)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.aplicar);
 			if (transaccion.ejecutar(eaccion)) {
-				if(eaccion.equals(EAccion.AGREGAR)) {
+				if(eaccion.equals(EAccion.AGREGAR) || this.aplicar) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-    			RequestContext.getCurrentInstance().execute("jsArticulos.back('nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+					if(eaccion.equals(EAccion.AGREGAR))
+    			  RequestContext.getCurrentInstance().execute("jsArticulos.back('generó la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+					else
+   			    RequestContext.getCurrentInstance().execute("jsArticulos.back('aplicó la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				} // if	
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
