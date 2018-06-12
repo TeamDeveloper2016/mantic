@@ -220,11 +220,23 @@ shortcut = {
 		else if(ele.removeEventListener) ele.removeEventListener(type, callback, false);
 		else ele['on'+type] = false;
 	}
-}
+};
 
 shortcut.add("Ctrl+C", function() {
 	janal.console('Shortcut calculadora:');
 	if(PF('dlgCalculadora'))
 	  PF('dlgCalculadora').show();
+});
+
+shortcut.add("Ctrl+P", function() {
+	janal.console('Shortcut tickets abiertos:');
+	if(PF('dlgOpenTickets'))
+	  PF('dlgOpenTickets').show();
+});
+
+shortcut.add("Ctrl+U", function() {
+	janal.console('Shortcut cierre ticket:');
+	if(PF('dlgCloseTicket'))
+	  PF('dlgCloseTicket').show();
 });
 
