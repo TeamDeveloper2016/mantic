@@ -1,9 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -38,20 +33,22 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
   private Double descuentos;
   @Column (name="id_factura")
   private Long idFactura;
+  @Column (name="id_credito")
+  private Long idCredito;
   @Column (name="extras")
   private String extras;
   @Column (name="total")
   private Double total;
+  @Column (name="importe_pagado")
+  private Double importePagado;
   @Column (name="id_almacen")
   private Long idAlmacen;
   @Column (name="tipo_de_cambio")
   private Double tipoDeCambio;
   @Column (name="orden")
   private Long orden;
-  @Column (name="tarjeta")
-  private String tarjeta;
-  @Column (name="id_tipo_medio_pago")
-  private Long idTipoMedioPago;
+  @Column (name="cambio_efectivo")
+  private Double cambioEfectivo;
   @Column (name="id_cliente")
   private Long idCliente;
   @Column (name="descuento")
@@ -66,14 +63,12 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
   private Long idUsuario;
   @Column (name="impuestos")
   private Double impuestos;
+  @Column (name="id_uso_cfdi")
+  private Long idUsoCfdi;
   @Column (name="id_sin_iva")
   private Long idSinIva;
   @Column (name="sub_total")
   private Double subTotal;
-  @Column (name="tipo_tarjeta")
-  private String tipoTarjeta;
-  @Column (name="efectivo")
-  private Double efectivo;
   @Column (name="observaciones")
   private String observaciones;
   @Column (name="id_empresa")
@@ -95,17 +90,18 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
     this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null);
     setKey(key);
   }
-
-  public TcManticVentasDto(Double descuentos, Long idFactura, String extras, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, String tarjeta, Long idTipoMedioPago, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idSinIva, Double subTotal, String tipoTarjeta, Double efectivo, String observaciones, Long idEmpresa, Long idVenta, Date dia, Long idVentaEstatus) {
+  
+  public TcManticVentasDto(Double descuentos, Long idFactura, Long idCredito, String extras, Double total, Double importePagado, Long idAlmacen, Double tipoDeCambio, Long orden, Double cambioEfectivo, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, Date dia, Long idVentaEstatus) {
     setDescuentos(descuentos);
     setIdFactura(idFactura);
+    setIdCredito(idCredito);
     setExtras(extras);
     setTotal(total);
+    setImportePagado(importePagado);
     setIdAlmacen(idAlmacen);
     setTipoDeCambio(tipoDeCambio);
     setOrden(orden);
-    setTarjeta(tarjeta);
-    setIdTipoMedioPago(idTipoMedioPago);
+    setCambioEfectivo(cambioEfectivo);
     setIdCliente(idCliente);
     setDescuento(descuento);
     setEjercicio(ejercicio);
@@ -113,10 +109,9 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
     setConsecutivo(consecutivo);
     setIdUsuario(idUsuario);
     setImpuestos(impuestos);
+    setIdUsoCfdi(idUsoCfdi);
     setIdSinIva(idSinIva);
     setSubTotal(subTotal);
-    setTipoTarjeta(tipoTarjeta);
-    setEfectivo(efectivo);
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
     setIdVenta(idVenta);
@@ -140,6 +135,14 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
     return idFactura;
   }
 
+  public void setIdCredito(Long idCredito) {
+    this.idCredito = idCredito;
+  }
+
+  public Long getIdCredito() {
+    return idCredito;
+  }
+
   public void setExtras(String extras) {
     this.extras = extras;
   }
@@ -154,6 +157,14 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 
   public Double getTotal() {
     return total;
+  }
+
+  public void setImportePagado(Double importePagado) {
+    this.importePagado = importePagado;
+  }
+
+  public Double getImportePagado() {
+    return importePagado;
   }
 
   public void setIdAlmacen(Long idAlmacen) {
@@ -180,20 +191,12 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
     return orden;
   }
 
-  public void setTarjeta(String tarjeta) {
-    this.tarjeta = tarjeta;
+  public void setCambioEfectivo(Double cambioEfectivo) {
+    this.cambioEfectivo = cambioEfectivo;
   }
 
-  public String getTarjeta() {
-    return tarjeta;
-  }
-
-  public void setIdTipoMedioPago(Long idTipoMedioPago) {
-    this.idTipoMedioPago = idTipoMedioPago;
-  }
-
-  public Long getIdTipoMedioPago() {
-    return idTipoMedioPago;
+  public Double getCambioEfectivo() {
+    return cambioEfectivo;
   }
 
   public void setIdCliente(Long idCliente) {
@@ -252,6 +255,14 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
     return impuestos;
   }
 
+  public void setIdUsoCfdi(Long idUsoCfdi) {
+    this.idUsoCfdi = idUsoCfdi;
+  }
+
+  public Long getIdUsoCfdi() {
+    return idUsoCfdi;
+  }
+
   public void setIdSinIva(Long idSinIva) {
     this.idSinIva = idSinIva;
   }
@@ -266,22 +277,6 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 
   public Double getSubTotal() {
     return subTotal;
-  }
-
-  public void setTipoTarjeta(String tipoTarjeta) {
-    this.tipoTarjeta = tipoTarjeta;
-  }
-
-  public String getTipoTarjeta() {
-    return tipoTarjeta;
-  }
-
-  public void setEfectivo(Double efectivo) {
-    this.efectivo = efectivo;
-  }
-
-  public Double getEfectivo() {
-    return efectivo;
   }
 
   public void setObservaciones(String observaciones) {
@@ -343,9 +338,13 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdFactura());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdCredito());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getExtras());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getTotal());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getImportePagado());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdAlmacen());
 		regresar.append(Constantes.SEPARADOR);
@@ -353,9 +352,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getTarjeta());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTipoMedioPago());
+		regresar.append(getCambioEfectivo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCliente());
 		regresar.append(Constantes.SEPARADOR);
@@ -371,13 +368,11 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImpuestos());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdUsoCfdi());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdSinIva());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getSubTotal());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getTipoTarjeta());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getEfectivo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
@@ -397,13 +392,14 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("descuentos", getDescuentos());
 		regresar.put("idFactura", getIdFactura());
+		regresar.put("idCredito", getIdCredito());
 		regresar.put("extras", getExtras());
 		regresar.put("total", getTotal());
+		regresar.put("importePagado", getImportePagado());
 		regresar.put("idAlmacen", getIdAlmacen());
 		regresar.put("tipoDeCambio", getTipoDeCambio());
 		regresar.put("orden", getOrden());
-		regresar.put("tarjeta", getTarjeta());
-		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
+		regresar.put("cambioEfectivo", getCambioEfectivo());
 		regresar.put("idCliente", getIdCliente());
 		regresar.put("descuento", getDescuento());
 		regresar.put("ejercicio", getEjercicio());
@@ -411,10 +407,9 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		regresar.put("consecutivo", getConsecutivo());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("impuestos", getImpuestos());
+		regresar.put("idUsoCfdi", getIdUsoCfdi());
 		regresar.put("idSinIva", getIdSinIva());
 		regresar.put("subTotal", getSubTotal());
-		regresar.put("tipoTarjeta", getTipoTarjeta());
-		regresar.put("efectivo", getEfectivo());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("idVenta", getIdVenta());
@@ -426,7 +421,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescuentos(), getIdFactura(), getExtras(), getTotal(), getIdAlmacen(), getTipoDeCambio(), getOrden(), getTarjeta(), getIdTipoMedioPago(), getIdCliente(), getDescuento(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdSinIva(), getSubTotal(), getTipoTarjeta(), getEfectivo(), getObservaciones(), getIdEmpresa(), getIdVenta(), getDia(), getIdVentaEstatus()
+    getDescuentos(), getIdFactura(), getIdCredito(), getExtras(), getTotal(), getImportePagado(), getIdAlmacen(), getTipoDeCambio(), getOrden(), getCambioEfectivo(), getIdCliente(), getDescuento(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getIdVenta(), getDia(), getIdVentaEstatus()
     };
     return regresar;
   }
@@ -484,7 +479,4 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdVenta() != null ? getIdVenta().hashCode() : 0);
     return hash;
   }
-
 }
-
-
