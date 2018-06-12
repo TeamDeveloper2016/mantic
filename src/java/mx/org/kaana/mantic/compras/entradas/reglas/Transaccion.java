@@ -121,8 +121,10 @@ public class Transaccion extends IBaseTnx {
 						this.orden= (TcManticNotasEntradasDto) DaoFactory.getInstance().findById(sesion, TcManticNotasEntradasDto.class, this.bitacora.getIdNotaEntrada());
 						this.orden.setIdNotaEstatus(this.bitacora.getIdNotaEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-						if(this.bitacora.getIdNotaEstatus().equals(2L) || this.bitacora.getIdNotaEstatus().equals(7L)) 
+						if(this.bitacora.getIdNotaEstatus().equals(2L) || this.bitacora.getIdNotaEstatus().equals(7L)) {
 							this.toRemoveOrdenDetalle(sesion);
+              this.toCheckOrden(sesion);
+						} // if	
 						else
   						if(this.bitacora.getIdNotaEstatus().equals(6L)) {
             		for (Articulo articulo: this.articulos)
@@ -132,7 +134,7 @@ public class Transaccion extends IBaseTnx {
 					break;
 			} // switch
 			if(!regresar)
-        throw new Exception(this.messageError);
+        throw new Exception("");
 		} // try
 		catch (Exception e) {
       Error.mensaje(e);			

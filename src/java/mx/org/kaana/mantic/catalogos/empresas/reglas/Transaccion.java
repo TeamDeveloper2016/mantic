@@ -55,9 +55,8 @@ public class Transaccion extends IBaseTnx{
 					regresar= DaoFactory.getInstance().delete(sesion, this.dto)>= 1L;
 					break;
       } // switch
-      if (!regresar) {
-        throw new Exception(this.messageError);
-      }
+      if (!regresar) 
+        throw new Exception("");
     } // try
     catch (Exception e) {
       throw new Exception(this.messageError.concat("\n\n")+ e.getMessage());

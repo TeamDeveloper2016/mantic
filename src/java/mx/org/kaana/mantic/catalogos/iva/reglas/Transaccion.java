@@ -49,7 +49,7 @@ public class Transaccion extends IBaseTnx {
 			if(this.aplicar)
 				regresar= DaoFactory.getInstance().updateAll(sesion, TcManticArticulosDto.class, params)>= 0L;
 			if(!regresar)
-        throw new Exception(this.messageError);
+        throw new Exception("");
 		} // try
 		catch (Exception e) {			
 			throw new Exception(this.messageError.concat("\n\n")+ e.getMessage());
