@@ -66,7 +66,7 @@ public class Transaccion extends IBaseTnx {
 			if(this.orden!= null)
 				params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para la orden de compra.");
-			if(this.orden.getIdCliente()< 0)
+			if(this.orden.getIdCliente()!= null && this.orden.getIdCliente()< 0)
 				this.orden.setIdCliente(null);
 			switch(accion) {
 				case AGREGAR:
