@@ -19,8 +19,11 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
@@ -30,6 +33,7 @@ import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.enums.EEstatusVentas;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -82,6 +86,7 @@ public class Accion extends IBaseArticulos implements Serializable {
           this.setAdminOrden(new AdminTickets(new TicketVenta(-1L)));
           break;
         case MODIFICAR:			
+        case CONSULTAR:			
           this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", this.attrs)));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
           break;
@@ -97,16 +102,10 @@ public class Accion extends IBaseArticulos implements Serializable {
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
-		EAccion eaccion        = null;
-		UISelectEntity cliente = null;
+		EAccion eaccion        = null;		
     try {			
-			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");
-			eaccion= (EAccion) this.attrs.get("accion");			
-			((TicketVenta)this.getAdminOrden().getOrden()).setIdCliente(cliente.getKey());
-			((TicketVenta)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
-			((TicketVenta)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
-			((TicketVenta)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
-			((TicketVenta)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
+			loadOrdenVenta();
+			eaccion= (EAccion) this.attrs.get("accion");						
 			transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(eaccion)) {
@@ -322,4 +321,104 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // catch		
 		return regresar;
 	} // toDescuentoVigente
+	
+	private void loadOrdenVenta(){		
+		UISelectEntity cliente = null;
+		try {
+			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");			
+			((TicketVenta)this.getAdminOrden().getOrden()).setIdCliente(cliente.getKey());
+			((TicketVenta)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
+			((TicketVenta)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
+			((TicketVenta)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
+			((TicketVenta)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch		
+	} // loadOrdenVenta
+	
+	public String doCerrarTicket(){
+		Transaccion transaccion= null;
+    String regresar        = null;		
+    try {						
+			if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
+				loadOrdenVenta();
+				transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+				this.getAdminOrden().toAdjustArticulos();
+				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
+					RequestContext.getCurrentInstance().execute("jsArticulos.back('ticket de venta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+					JsfBase.addMessage("Se guardo el ticket de venta.", ETipoMensaje.INFORMACION);				
+					regresar= "/Exclusiones/salir.jsf".concat(Constantes.REDIRECIONAR);
+				} // if
+				else 
+					JsfBase.addMessage("Ocurrió un error al registrar el ticket de venta.", ETipoMensaje.ERROR);      			
+			} // if
+			else
+				regresar= "/Exclusiones/salir.jsf".concat(Constantes.REDIRECIONAR);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    return regresar;		
+	} // doCerrarTicket
+	
+	public void doLoadTicketAbiertos(){
+		List<UISelectItem> ticketsAbiertos= null;
+		Map<String, Object>params         = null;
+		List<String> fields               = null;
+		try {
+			fields= new ArrayList<>();
+			params= new HashMap<>();
+			params.put("sortOrder", "");
+			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			fields.add("consecutivo");
+			fields.add("cliente");
+			fields.add("total");
+			params.put(Constantes.SQL_CONDICION, toCondicion());
+			ticketsAbiertos= UISelect.build("VistaVentasDto", "lazy", params, fields, " - ", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("ticketsAbiertos", ticketsAbiertos);
+			if(!ticketsAbiertos.isEmpty())
+				this.attrs.put("ticketAbierto", UIBackingUtilities.toFirstKeySelectItem(ticketsAbiertos));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // doLoadTicketAbiertos
+	
+	private String toCondicion(){
+		StringBuilder regresar= null;
+		try {
+			regresar= new StringBuilder();
+			regresar.append(" DATE_FORMAT(tc_mantic_ventas.registro, '%Y%m%d')= DATE_FORMAT(SYSDATE(), '%Y%m%d')");
+			regresar.append(" and tc_mantic_ventas.id_venta_estatus=");
+			regresar.append(EEstatusVentas.ELABORADA.getIdEstatusVenta());
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar.toString();
+	} // toCondicion
+	
+	public void doAsignaTicketAbierto(){
+		Map<String, Object>params = null;
+		try {
+			params= new HashMap<>();
+			params.put("idVenta", this.attrs.get("ticketAbierto"));
+			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
+    	this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
+			toLoadCatalog();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // doAsignaTicketAbierto
 }
