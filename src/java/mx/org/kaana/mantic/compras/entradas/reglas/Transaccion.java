@@ -98,23 +98,28 @@ public class Transaccion extends IBaseTnx {
 					this.toCheckOrden(sesion);
 					break;
 				case MODIFICAR:
-					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
   				if(this.aplicar) {
 						this.orden.setIdNotaEstatus(6L);
   					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus());
 	  				regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 					} // if	
+					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 					this.toRemoveOrdenDetalle(sesion);
 					this.toFillArticulos(sesion);
 					this.toCheckOrden(sesion);
 					break;				
 				case ELIMINAR:
-					this.toRemoveOrdenDetalle(sesion);
-					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params)>= 1L;
-					regresar= regresar && DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
- 					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L);
-  				regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
-					this.toCheckOrden(sesion);
+					regresar= this.toNotExistsArticulosBitacora(sesion);
+					if(regresar) {
+						this.toRemoveOrdenDetalle(sesion);
+						regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params)>= 1L;
+						regresar= regresar && DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
+						bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L);
+						regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
+						this.toCheckOrden(sesion);
+					}
+					else
+       			this.messageError= "No se puede eliminar la nota de entrada porque ya fue aplicada en los precios de los articulos.";
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
@@ -271,5 +276,14 @@ public class Transaccion extends IBaseTnx {
 			throw e;
 		} // catch
 	} 
+	
+	private boolean toNotExistsArticulosBitacora(Session sesion) throws Exception {
+		boolean regresar= true;
+		Value total= DaoFactory.getInstance().toField(sesion, "TcManticArticulosBitacoraDto", "existe", this.orden.toMap(), "total");
+		if(total.getData()!= null)
+		  regresar= total.toLong()<= 0;
+		return regresar;
+	}
+	
 	
 } 

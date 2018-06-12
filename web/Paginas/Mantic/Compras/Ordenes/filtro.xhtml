@@ -153,13 +153,13 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="modificar" action="#{manticComprasOrdenesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{!(fn:contains(manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus, '|6|2|7|'))}"/>					
+            <p:menuitem id="modificar" action="#{manticComprasOrdenesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{!(fn:contains('|6|2|7|', manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus))}"/>					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{!(manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					
             <p:separator rendered="#{!(manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					            
-            <p:menuitem id="notaEntrada" action="#{manticComprasOrdenesFiltro.doNotasEntradas('AGREGAR')}" icon="fa fa-edit" ajax="false" value="Notas entrada" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{!(fn:contains(manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus, '|6|1||2|7|'))}"/>
+            <p:menuitem id="notaEntrada" action="#{manticComprasOrdenesFiltro.doNotasEntradas('AGREGAR')}" icon="fa fa-edit" ajax="false" value="Notas entrada" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{!(fn:contains('|6|1||2|7|', manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus))}"/>
             <p:separator rendered="#{fn:contains(manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus, '|6|7|')}"/>
-            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{fn:contains(manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus, '|6|7|')}"/>					
+            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{fn:contains('|6|7|', manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus)}"/>					
           </p:contextMenu>
         </div>
       </div>

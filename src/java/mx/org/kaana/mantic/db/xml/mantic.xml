@@ -165,6 +165,14 @@
 				order by
 				 registro desc
       </select>
+			<select id="existe">
+        select      
+          count(*) as total
+        from      
+          tc_mantic_articulos_bitacora
+        where 
+          id_nota_entrada = {idNotaEntrada}
+			</select>
     </unit>		
     <unit id="TcManticPersonasDto">
       <select id="row">
@@ -2136,6 +2144,14 @@
 				  ejercicio= {ejercicio} 
 				  and id_empresa= {idEmpresa}				
 			</select>		
+			<select id="existe">
+        select      
+          count(*) as total
+        from      
+          tc_mantic_notas_entradas
+        where 
+          id_orden_compra = {idOrdenCompra}
+			</select>
     </unit>
     <unit id="TcManticOrdenesDetallesDto">
       <select id="row">

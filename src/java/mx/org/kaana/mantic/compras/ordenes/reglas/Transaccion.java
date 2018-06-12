@@ -84,10 +84,15 @@ public class Transaccion extends IBaseTnx {
 					this.toFillArticulos(sesion);
 					break;				
 				case ELIMINAR:
-					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticOrdenesDetallesDto.class, params)>= 1L;
-					regresar= regresar && DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
-					bitacoraOrden= new TcManticOrdenesBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), 2L);
-					regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
+					regresar= this.toNotExistsNotas(sesion);
+					if(regresar) {
+						regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticOrdenesDetallesDto.class, params)>= 1L;
+						regresar= regresar && DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
+						bitacoraOrden= new TcManticOrdenesBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), 2L);
+						regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
+					} // if	
+					else
+       			this.messageError= "No se puede eliminar la orden de compra porque existen notas de entrada asociadas.";
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L){
@@ -141,6 +146,14 @@ public class Transaccion extends IBaseTnx {
 		finally {
 			Methods.clean(params);
 		} // finally
+		return regresar;
+	}
+	
+	private boolean toNotExistsNotas(Session sesion) throws Exception {
+		boolean regresar= true;
+		Value total= DaoFactory.getInstance().toField(sesion, "TcManticNotasEntradasDto", "existe", this.orden.toMap(), "total");
+		if(total.getData()!= null)
+		  regresar= total.toLong()<= 0;
 		return regresar;
 	}
 	
