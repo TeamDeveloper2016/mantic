@@ -1985,7 +1985,7 @@
 				  registro
       </select>
 			<delete id="rows">
-				delete from tc_mantic_notas_detalles where tc_mantic_notas_detalles.id_nota_entrada= {idNotaEntrada}
+				delete from tc_mantic_notas_detalles where id_nota_entrada= {idNotaEntrada}
 			</delete>
     </unit>
     <unit id="TcManticNotasBitacoraDto">
@@ -2071,7 +2071,7 @@
 				  tc_mantic_ventas_detalles.registro
       </select>
 			<delete id="rows">
-				delete from tc_mantic_ventas_detalles where tc_mantic_ventas_detalles.id_venta= {idVenta}
+				delete from tc_mantic_ventas_detalles where id_venta= {idVenta}
 			</delete>
     </unit>
 	  <unit id="TcManticVentasBitacoraDto">
@@ -2195,7 +2195,7 @@
 					)				
 			</select>
 			<delete id="rows">
-				delete from tc_mantic_ordenes_detalles where tc_mantic_ordenes_detalles.registro.id_orden_compra= {idOrdenCompra}
+				delete from tc_mantic_ordenes_detalles where id_orden_compra= {idOrdenCompra}
 			</delete>
     </unit>						
     <unit id="TcManticNotasEstatusDto">
