@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import static mx.org.kaana.kajool.enums.EAccion.AGREGAR;
 import static mx.org.kaana.kajool.enums.EAccion.ELIMINAR;
@@ -121,13 +122,15 @@ public class Transaccion extends IBaseTnx {
 	}
 	
 	private Long toSiguiente(Session sesion) throws Exception {
-		Long regresar= 1L;
-		Map<String, Object> params=null;
+		Long regresar             = 1L;
+		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
 			params.put("ejercicio", Fecha.getAnioActual());
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			regresar= DaoFactory.getInstance().toField(sesion, "TcManticOrdenesComprasDto", "siguiente", params, "siguiente").toLong();
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticOrdenesComprasDto", "siguiente", params, "siguiente");
+			if(next.getData()!= null)
+			  regresar= next.toLong();
 		} // try
 		catch (Exception e) {
 			throw e;

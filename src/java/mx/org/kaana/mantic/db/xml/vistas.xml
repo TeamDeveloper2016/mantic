@@ -579,7 +579,7 @@
           tc_mantic_ordenes_compras.id_orden_compra = {idOrdenCompra}
 				  and (
 				    tc_mantic_ordenes_detalles.cantidades&lt;&gt; 0 or 
-				    tc_mantic_ordenes_detalles.precios&lt;&gt; 0
+				    tc_mantic_ordenes_detalles.importes&lt;&gt; 0
 				  )
 				order by
 				  tc_mantic_ordenes_detalles.registro				
@@ -985,13 +985,12 @@
           tr_mantic_proveedor_pago.clave,
           tr_mantic_proveedor_pago.descuento,
           tr_mantic_proveedor_pago.id_tipo_pago,
-          tc_mantic_tipos_compras.id_tipo_compra,
-          tc_mantic_tipos_compras.nombre,
+          tc_mantic_tipos_pagos.nombre,
           tr_mantic_proveedor_pago.observaciones
         from      
           tr_mantic_proveedor_pago
         inner join 
-          tc_mantic_tipos_compras on tr_mantic_proveedor_pago.id_tipo_compra= tc_mantic_tipos_compras.id_tipo_compra
+          tc_mantic_tipos_pagos on tr_mantic_proveedor_pago.id_tipo_pago= tc_mantic_tipos_pagos.id_tipo_pago
         where      
           tr_mantic_proveedor_pago.id_proveedor = {idProveedor}
 				order by

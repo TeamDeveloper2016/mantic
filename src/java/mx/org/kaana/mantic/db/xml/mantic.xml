@@ -1650,25 +1650,7 @@
           id_tipo_codigo = {idTipoCodigo}
       </select>
     </unit>
-	    <unit id="TcManticTiposComprasDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tc_mantic_tipos_compras
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tc_mantic_tipos_compras
-        where      
-          id_tipo_compra = {idTipoCompra} and nombre = '{nombre}'
-      </select>
-    </unit>
-	    <unit id="TcManticTiposContactosDto">
+    <unit id="TcManticTiposContactosDto">
       <select id="row">
         select
           tc_mantic_tipos_contactos.*,
@@ -1689,7 +1671,7 @@
           nombre = '{nombre}' and id_tipo_contacto = {idTipoContacto}
       </select>
     </unit>
-	    <unit id="TcManticTiposDiasDto">
+	  <unit id="TcManticTiposDiasDto">
       <select id="row">
         select      
           *

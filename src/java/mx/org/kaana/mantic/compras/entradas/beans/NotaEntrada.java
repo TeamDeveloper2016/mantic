@@ -23,6 +23,10 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
 	private UISelectEntity ikProveedor;
 	private UISelectEntity ikOrdenCompra;
 
+	public NotaEntrada() {
+		this(null);
+	}
+
 	public NotaEntrada(Long idOrdenCompra) {
 		this(-1L, idOrdenCompra);
 	}

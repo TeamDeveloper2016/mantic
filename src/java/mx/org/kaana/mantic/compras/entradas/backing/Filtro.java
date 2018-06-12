@@ -76,13 +76,14 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaNotasEntradasDto", params, columns);
       UIBackingUtilities.resetDataTable();
+			this.attrs.put("idNotaEstatus", null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
-    } // catch
+    } // catch      
     finally {
-      Methods.clean(params);
+			Methods.clean(params);
       Methods.clean(columns);
     } // finally		
   } // doLoad
@@ -101,7 +102,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			else
 				regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Compras/Entradas/filtro");		
-			JsfBase.setFlashAttribute("idNotaCompra", eaccion.equals(EAccion.MODIFICAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+			JsfBase.setFlashAttribute("idNotaEntrada", eaccion.equals(EAccion.MODIFICAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

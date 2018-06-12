@@ -7,6 +7,7 @@ import java.util.Map;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import static mx.org.kaana.kajool.enums.EAccion.AGREGAR;
 import static mx.org.kaana.kajool.enums.EAccion.ELIMINAR;
@@ -72,7 +73,7 @@ public class Transaccion extends IBaseTnx {
 		TcManticNotasBitacoraDto bitacoraNota= null;
 		Map<String, Object> params           = null;
 		try {
-			if(this.orden!= null){
+			if(this.orden!= null) {
 				params= new HashMap<>();
 				params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
 				params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
@@ -178,7 +179,9 @@ public class Transaccion extends IBaseTnx {
 			params=new HashMap<>();
 			params.put("ejercicio", Fecha.getAnioActual());
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			regresar= DaoFactory.getInstance().toField(sesion, "TcManticNotasEntradasDto", "siguiente", params, "siguiente").toLong();
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticNotasEntradasDto", "siguiente", params, "siguiente");
+			if(next.getData()!= null)
+			  regresar= next.toLong();
 		} // try
 		catch (Exception e) {
 			throw e;

@@ -222,6 +222,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}	
 
 	public TcManticNotasDetallesDto toNotaDetalle() {
+// 	this(codigo, unidadMedida, costo, descuento, sat, extras, idNotaEntrada, nombre, importe, iva, idNotaDetalle, subTotal, cantidad, idArticulo, descuentos, impuestos)
 		return new TcManticNotasDetallesDto(
 			Cadena.isVacio(this.getCodigo())? this.getPropio(): this.getCodigo(), 
 			this.getUnidadMedida(), 
@@ -238,7 +239,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getCantidad(), 
 			this.getIdArticulo(), 
 			this.getDescuentos(), 
-			this.getImpuestos()
+			this.getImpuestos(),
+			this.getIdOrdenDetalle()
 		);
 	}
 

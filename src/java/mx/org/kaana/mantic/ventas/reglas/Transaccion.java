@@ -185,15 +185,14 @@ public class Transaccion extends IBaseTnx {
 	private Long toSiguiente(Session sesion) throws Exception {
 		Long regresar             = 1L;
 		Map<String, Object> params= null;
-		Value siguiente           = null;
 		try {
 			params=new HashMap<>();
 			params.put("ejercicio", Fecha.getAnioActual());
 			params.put("dia", Fecha.getHoyEstandar());
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			siguiente= DaoFactory.getInstance().toField(sesion, "TcManticVentasDto", "siguiente", params, "siguiente");
-			if(siguiente.getData()!= null)
-				regresar= siguiente.toLong();
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticVentasDto", "siguiente", params, "siguiente");
+			if(next.getData()!= null)
+				regresar= next.toLong();
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -221,4 +220,5 @@ public class Transaccion extends IBaseTnx {
 		} // catch		
 		return regresar;
 	} // toClienteDefault
+	
 } 

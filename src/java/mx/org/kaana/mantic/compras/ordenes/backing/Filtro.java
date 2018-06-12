@@ -77,6 +77,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
       this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", params, columns);
       UIBackingUtilities.resetDataTable();
+			this.attrs.put("idOrdenCompra", null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);

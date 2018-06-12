@@ -84,7 +84,7 @@ public class Accion extends IBaseArticulos implements Serializable {
           this.setAdminOrden(new AdminNotas(new NotaEntrada(-1L, (Long)this.attrs.get("idOrdenCompra")), this.tipoOrden));
           break;
         case MODIFICAR:					
-          this.setAdminOrden(new AdminNotas((NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradaDto", "detalle", this.attrs), this.tipoOrden));
+          this.setAdminOrden(new AdminNotas((NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradasDto", "detalle", this.attrs), this.tipoOrden));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
           break;
       } // switch
@@ -144,6 +144,7 @@ public class Accion extends IBaseArticulos implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put("idOrdenCompra", this.attrs.get("idOrdenCompra"));
       this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(!almacenes.isEmpty()) 
