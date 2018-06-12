@@ -190,6 +190,10 @@ public class Value implements Serializable, Comparable<Value> {
   public Time getToTime() {
     return toTime(null);
   }
+	
+  public String getToString() {
+    return toString(null);
+  }
 
 	@Override
 	public boolean equals(Object obj) {
