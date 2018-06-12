@@ -17,6 +17,7 @@
 			
     	$(document).ready(function() {
         jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasAccion.adminOrden.articulos.size()}, 'tabla\\:');
+				janal.readingMode('#{manticVentasAccion.attrs.nombreAccion}');
       });
 		</script>   
 		<style type="text/css">
@@ -28,6 +29,7 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
+		<pe:remoteCommand name="loadTicketAbiertos" process="@this" update="dialogoOpenTickets" actionListener="#{manticVentasAccion.doLoadTicketAbiertos}" onstart="janal.bloquear()" oncomplete="PF('dlgOpenTickets').show();"/>  			
 		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticVentasAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
 			<pe:methodParam name="codigo"/>  
@@ -251,6 +253,30 @@
 			<div class="janal-line-button">
 				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this buscados" update="@(.filas) @(.recalculo)" value="Aceptar" oncomplete="PF('dialogo').hide(); jsArticulos.close();"/>
 				<p:commandButton process="@none" styleClass="janal-text-white" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide();jsArticulos.move();"/>
+			</div>
+		</p:dialog>		
+		<p:dialog id="dialogoOpenTickets" widgetVar="dlgOpenTickets" header="Tickets abiertos" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();">			
+			<h:panelGrid columns="2">
+				<p:outputLabel value="Ticket:"/>
+				<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasAccion.attrs.ticketAbierto}" styleClass="janal-wid-100-txt">
+					<f:selectItems value="#{manticVentasAccion.attrs.ticketsAbiertos}"/>
+				</p:selectOneMenu>
+			</h:panelGrid>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this ticketsAbiertos" value="Aceptar" onstart="PF('dlgOpenTickets').hide();" actionListener="#{manticVentasAccion.doAsignaTicketAbierto}" update="contenido clientes cliente" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-remove" styleClass="janal-text-white" process="@none" value="Cancelar" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();"/>
+			</div>
+		</p:dialog>		
+		<p:dialog id="dialogoCloseTicket" widgetVar="dlgCloseTicket" header="Cerrar ticket" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();">			
+			<h:panelGrid columns="1" columnClasses="janal-column-center">
+				<p:outputLabel value="Al cerrar la venta actual quedará abierta y podras finalizarla posteriormente"/>
+				<p:outputLabel value="¿ Deseas continuar con el cierre de la venta actual ?"/>
+			</h:panelGrid>			
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@form" value="Aceptar" onstart="PF('dlgCloseTicket').hide();" action="#{manticVentasAccion.doCerrarTicket}" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-remove" styleClass="janal-text-white" process="@none" value="Cancelar" onstart="PF('dlgCloseTicket').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>		
 	</ui:define>    
