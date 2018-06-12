@@ -60,24 +60,31 @@ public class Transaccion extends IBaseTnx {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar= false;
-		TcManticVentasBitacoraDto bitacoraOrden= null;
-		Map<String, Object> params= new HashMap<>();
+		boolean regresar                  = false;
+		TcManticVentasBitacoraDto bitVenta= null;
+		Map<String, Object> params        = null;
+		Long idEstatusVenta               = null;
 		try {
+			idEstatusVenta= EEstatusVentas.ELABORADA.getIdEstatusVenta();
+			params= new HashMap<>();
 			if(this.orden!= null)
 				params.put("idVenta", this.orden.getIdVenta());
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el ticket de venta.");
 			switch(accion) {
 				case AGREGAR:
+				case REGISTRAR:					
+					if(accion.equals(EAccion.AGREGAR))									
+						idEstatusVenta= EEstatusVentas.ABIERTA.getIdEstatusVenta();
 					Long consecutivo= this.toSiguiente(sesion);
 					this.orden.setConsecutivo(consecutivo);
 					this.orden.setOrden(consecutivo);
+					this.orden.setIdVentaEstatus(idEstatusVenta);
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
 					if(this.orden.getIdCliente()< 0)
 						this.orden.setIdCliente(toClienteDefault(sesion));
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
-					bitacoraOrden= new TcManticVentasBitacoraDto(this.orden.getIdVentaEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdVenta(), EEstatusVentas.ELABORADA.getIdEstatusVenta());
-					regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
+					bitVenta= new TcManticVentasBitacoraDto(this.orden.getIdVentaEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdVenta(), idEstatusVenta);
+					regresar= DaoFactory.getInstance().insert(sesion, bitVenta)>= 1L;
 					toFillArticulos(sesion);
 					break;
 				case MODIFICAR:
@@ -87,8 +94,8 @@ public class Transaccion extends IBaseTnx {
 				case ELIMINAR:
 					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticVentasDetallesDto.class, params)>= 1L;
 					regresar= regresar && DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
-					bitacoraOrden= new TcManticVentasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdVenta(), 2L);
-					regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
+					bitVenta= new TcManticVentasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdVenta(), 2L);
+					regresar= DaoFactory.getInstance().insert(sesion, bitVenta)>= 1L;
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L){
@@ -96,7 +103,7 @@ public class Transaccion extends IBaseTnx {
 						this.orden.setIdVentaEstatus(this.bitacora.getIdVenta());
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 					} // if
-					break;
+					break;									
 			} // switch
 			if(!regresar)
         throw new Exception(this.messageError);
