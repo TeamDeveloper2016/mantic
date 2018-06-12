@@ -232,7 +232,7 @@ shortcut.add("Ctrl+P", function() {
 	janal.console('Shortcut tickets abiertos:');
 	if(PF('dlgOpenTickets')){
 		janal.bloquear();
-	  PF('dlgOpenTickets').show();
+		loadTicketAbiertos();
 	} // if
 });
 
