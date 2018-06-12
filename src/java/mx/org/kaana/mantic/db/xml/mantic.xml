@@ -2030,7 +2030,7 @@
         from      
           tc_mantic_ventas
         where      
-          consecutivo = {consecutivo} and dia = {dia} and id_empresa = {idEmpresa}
+          consecutivo = {consecutivo} and id_empresa = {idEmpresa} and dia = {dia} and id_venta = {idVenta}
       </select>
       <select id="detalle">
         select      
@@ -2387,5 +2387,41 @@
 					{condicion}
 			</select>			
 		</unit>		
+		<unit id="TrManticVentaMedioPagoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_venta_medio_pago
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_venta_medio_pago
+        where      
+          id_tipo_medio_pago = {idTipoMedioPago} and id_venta = {idVenta} and importe = {importe} and id_venta_medio_pago = {idVentaMedioPago} and id_banco = {idBanco}
+      </select>
+    </unit>
+		<unit id="TcManticClientesPagosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_clientes_pagos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_clientes_pagos
+        where      
+          id_cliente_pago = {idClientePago}
+      </select>
+    </unit>
   </dml>    
 </process>
