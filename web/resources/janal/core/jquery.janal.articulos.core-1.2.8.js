@@ -21,6 +21,7 @@
 		amounts     : '\\:cantidades',
 		prices      : '\\:precios',
 		keys        : '\\:keys',
+		locks       : '\\:locks',
 		values      : '\\:values',
 		selector    : '.key-down-event',
 		focus       : '.key-focus-event',
@@ -48,7 +49,7 @@
 		VK_PIPE     : 220,
 		VK_CTRL     : 17,
 		VK_MAYOR    : 226,
-	  change      : [13, 27, 106, 107, 110, 111, 188, 189, 191, 220, 222, 226],
+	    change      : [13, 27, 106, 107, 110, 111, 188, 189, 191, 220, 222, 226],
 		cursor: {
 			top: 1, // el top debera ser elementos que van de 0 a n-1
 			index: 0
@@ -152,8 +153,9 @@
 						return $articulos.point();
 						break;
 					case $articulos.VK_MINUS:
-						var txt= $(this).val().trim().length<= 0;
-						if(txt && $('ul.ui-autocomplete-items:visible').length<= 0)
+						var txt  = $(this).val().trim().length<= 0;
+						var token= $($articulos.lock())? $articulos.remove(): true;
+						if(txt && $('ul.ui-autocomplete-items:visible').length<= 0  && token)
 						  return $articulos.clean();
 						break;
 					case $articulos.VK_PIPE:
@@ -221,6 +223,9 @@
 		key: function() {
 			return '#'+ this.joker+ this.cursor.index+ this.keys;
 		},
+		lock: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.locks;
+		},
 		value: function() {
 			return '#'+ this.joker+ this.cursor.index+ this.values;
 		},
@@ -251,6 +256,9 @@
 		},
 		valid: function() {
 			return $(this.key()) && parseInt($(this.key()).val(), 10)> 0;
+		}, 
+		remove: function() {
+			return this.valid() && $(this.lock()) && ($(this.lock()).val().length=== 0 || parseInt($(this.lock()).val(), 10)<= 0);
 		}, 
 		refresh: function() {
 			if(this.valid()) {
@@ -354,13 +362,14 @@
 		},
 		clean: function() {
 			janal.console('Clean: '+ this.cursor.index+ ' => '+ this.cursor.top);
-			$(this.price()).val('0');
-			$(this.amount()).val('0');
-			$(this.discount()).val('0');
-			$(this.additional()).val('0');
-			if(this.cursor.top> 0 && this.valid())
+			if(this.cursor.top> 0 && this.valid()) {
 			  suppress(this.cursor.index);
-			$(this.key()).val('-1');
+				$(this.price()).val('0');
+				$(this.amount()).val('0');
+				$(this.discount()).val('0');
+				$(this.additional()).val('0');
+			  $(this.key()).val('-1');
+			} // if
 			return false;
 		},
 		update: function(top) {
@@ -403,7 +412,7 @@
 			return false;
 		},
 	  callback: function(code) {
-			console.log('Call back: '+ code);
+			console.log('Callback: '+ code);
 		  return false;
 		},
 		close: function() {
@@ -416,9 +425,11 @@
 			lookup();
 		},
 		back: function(title, count) {
-			alert('Se genero la '+ title+ ' con consecutivo: '+ count);
+			alert('Se '+ title+ ' con consecutivo: '+ count);
 		}
 	});
 	
 	console.info('Iktan.Control.Articulos initialized');
 })(window);			
+			
+			
