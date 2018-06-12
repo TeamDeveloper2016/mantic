@@ -66,14 +66,14 @@ public class Transaccion extends IBaseTnx {
 			if(this.orden!= null)
 				params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para la orden de compra.");
+			if(this.orden.getIdCliente()< 0)
+				this.orden.setIdCliente(null);
 			switch(accion) {
 				case AGREGAR:
 					Long consecutivo= this.toSiguiente(sesion);
 					this.orden.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
 					this.orden.setOrden(consecutivo);
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
-					if(this.orden.getIdCliente()< 0)
-						this.orden.setIdCliente(null);
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 					bitacoraOrden= new TcManticOrdenesBitacoraDto(this.orden.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L);
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
@@ -122,10 +122,9 @@ public class Transaccion extends IBaseTnx {
 			TcManticOrdenesDetallesDto item= articulo.toOrdenDetalle();
 			item.setIdOrdenCompra(this.orden.getIdOrdenCompra());
 			if(DaoFactory.getInstance().findIdentically(sesion, TcManticOrdenesDetallesDto.class, item.toMap())== null) 
-				if(item.isValid())
-				  DaoFactory.getInstance().update(sesion, item);
-				else	
-				  DaoFactory.getInstance().insert(sesion, item);
+		    DaoFactory.getInstance().insert(sesion, item);
+			else
+		    DaoFactory.getInstance().update(sesion, item);
 		} // for
 	}
 	
