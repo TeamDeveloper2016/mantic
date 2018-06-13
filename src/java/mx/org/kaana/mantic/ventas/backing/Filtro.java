@@ -120,9 +120,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch			
   } // doEliminar
 
-	private Map<String, Object> toPrepare() {
+	protected Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
+		UISelectEntity estatus= (UISelectEntity) this.attrs.get("idVentaEstatus");
 		if(!Cadena.isVacio(this.attrs.get("idVenta")) && !this.attrs.get("idVenta").toString().equals("-1"))
   		sb.append("(tc_mantic_ventas.id_venta=").append(this.attrs.get("idVenta")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
@@ -133,8 +134,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1"))
   		sb.append("(tc_mantic_clientes.id_cliente= ").append(this.attrs.get("idCliente")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idVentaEstatus")) && !this.attrs.get("idVentaEstatus").toString().equals("-1"))
-  		sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(this.attrs.get("idVentaEstatus")).append(") and ");
+		if(estatus!= null && !estatus.getKey().equals(-1L))
+  		sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(estatus.getKey()).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
@@ -146,7 +147,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar;		
 	}
 	
-	private void toLoadCatalog() {
+	protected void toLoadCatalog() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
     try {
@@ -166,7 +167,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("idCliente", new UISelectEntity("-1"));
 			columns.remove(0);
 			columns.remove(1);
-      this.attrs.put("estatus", (List<UISelectEntity>) UIEntity.build("TcManticVentasEstatusDto", "row", params, columns));
+      this.attrs.put("estatusFiltro", (List<UISelectEntity>) UIEntity.build("TcManticVentasEstatusDto", "row", params, columns));
 			this.attrs.put("idVentaEstatus", new UISelectEntity("-1"));
     } // try
     catch (Exception e) {
