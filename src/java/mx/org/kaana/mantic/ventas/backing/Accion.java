@@ -412,6 +412,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
     	this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 			toLoadCatalog();
+			doAsignaClienteTicketAbierto();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -421,4 +422,23 @@ public class Accion extends IBaseArticulos implements Serializable {
 			Methods.clean(params);
 		} // finally
 	} // doAsignaTicketAbierto
+	
+	private void doAsignaClienteTicketAbierto() throws Exception{		
+		MotorBusqueda motorBusqueda           = null;
+		UISelectEntity seleccion              = null;
+		List<UISelectEntity> clientesSeleccion= null;
+		try {
+			motorBusqueda= new MotorBusqueda(-1L, ((TicketVenta)this.getAdminOrden().getOrden()).getIdCliente());
+			seleccion= new UISelectEntity(motorBusqueda.toCliente());
+			clientesSeleccion= new ArrayList<>();
+			clientesSeleccion.add(seleccion);
+			this.attrs.put("clientesSeleccion", clientesSeleccion);
+			this.attrs.put("clienteSeleccion", seleccion);
+			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
+			doReCalculatePreciosArticulos(seleccion.getKey());			
+		} // try
+		catch (Exception e) {	
+			throw e;
+		} // catch		
+	} // doAsignaClienteTicketAbierto
 }
