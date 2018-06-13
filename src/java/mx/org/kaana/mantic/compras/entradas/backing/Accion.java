@@ -203,4 +203,16 @@ public class Accion extends IBaseArticulos implements Serializable {
       this.toLoadFaltantes();
 	}
 	
+	public Boolean getIsAplicar() {
+		Boolean regresar= true;
+		try {
+			regresar= JsfBase.isAdminEncuestaOrAdmin();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		return regresar;
+	}
+	
 }

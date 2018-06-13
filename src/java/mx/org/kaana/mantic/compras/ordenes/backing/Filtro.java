@@ -253,16 +253,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Entity seleccionado                = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			bitacora= new TcManticOrdenesBitacoraDto();
-			bitacora.setIdOrdenCompra(seleccionado.getKey());
-			bitacora.setIdOrdenEstatus(Long.valueOf(this.attrs.get("estatus").toString()));
-			bitacora.setJustificacion((String) this.attrs.get("justificacion"));
-			bitacora.setIdUsuario(JsfBase.getIdUsuario());
-			transaccion= new Transaccion(bitacora);
+			bitacora    = new TcManticOrdenesBitacoraDto(Long.valueOf(this.attrs.get("estatus").toString()), (String) this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), -1L);
+			transaccion = new Transaccion(bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
-				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta.", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus.", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

@@ -59,14 +59,14 @@ public class Transaccion extends IBaseTnx {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar= false;
+		boolean regresar                        = false;
 		TcManticOrdenesBitacoraDto bitacoraOrden= null;
-		Map<String, Object> params= new HashMap<>();
+		Map<String, Object> params              = new HashMap<>();
 		try {
 			if(this.orden!= null)
 				params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" para la orden de compra.");
-			if(this.orden.getIdCliente()!= null && this.orden.getIdCliente()< 0)
+			if(this.orden!= null && this.orden.getIdCliente()!= null && this.orden.getIdCliente()< 0)
 				this.orden.setIdCliente(null);
 			switch(accion) {
 				case AGREGAR:
@@ -88,14 +88,14 @@ public class Transaccion extends IBaseTnx {
 					if(regresar) {
 						regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticOrdenesDetallesDto.class, params)>= 1L;
 						regresar= regresar && DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
-						bitacoraOrden= new TcManticOrdenesBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), 2L);
+						bitacoraOrden= new TcManticOrdenesBitacoraDto(2L, "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L);
 						regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
 					} // if	
 					else
        			this.messageError= "No se puede eliminar la orden de compra porque existen notas de entrada asociadas.";
 					break;
 				case JUSTIFICAR:
-					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L){
+					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.orden= (TcManticOrdenesComprasDto) DaoFactory.getInstance().findById(sesion, TcManticOrdenesComprasDto.class, this.bitacora.getIdOrdenCompra());
 						this.orden.setIdOrdenEstatus(this.bitacora.getIdOrdenEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;

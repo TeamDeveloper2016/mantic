@@ -411,7 +411,7 @@
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasEntradasAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="aplicar" value="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticComprasEntradasAccion.doAplicar}" styleClass="janal-text-white" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aplicar" value="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticComprasEntradasAccion.doAplicar}" styleClass="janal-text-white" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticComprasEntradasAccion.isAplicar}"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasEntradasAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">

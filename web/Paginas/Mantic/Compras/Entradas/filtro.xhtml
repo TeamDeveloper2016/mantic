@@ -185,6 +185,8 @@
 				<p:selectOneMenu id="estatusDlg" value="#{manticComprasEntradasFiltro.attrs.estatus}" styleClass="janal-wid-100-txt">									
 					<f:selectItems value="#{manticComprasEntradasFiltro.attrs.allEstatus}"/>					
 				</p:selectOneMenu>
+			</h:panelGrid>
+			<h:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
 				<p:outputLabel for="justificacion" value="Justificación:"/>
 				<p:inputTextarea id="justificacion" value="#{manticComprasEntradasFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
 			</h:panelGrid>

@@ -80,7 +80,7 @@ public class Transaccion extends IBaseTnx {
 				params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
 				params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
 			} // if
-			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la nota de entrada");
+			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la nota de entrada.");
 			switch(accion) {
 				case AGREGAR:
 					Long consecutivo= this.toSiguiente(sesion);
@@ -99,7 +99,7 @@ public class Transaccion extends IBaseTnx {
 					break;
 				case MODIFICAR:
   				if(this.aplicar) {
-						this.orden.setIdNotaEstatus(6L);
+						this.orden.setIdNotaEstatus(3L);
   					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus());
 	  				regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 					} // if	
@@ -126,12 +126,12 @@ public class Transaccion extends IBaseTnx {
 						this.orden= (TcManticNotasEntradasDto) DaoFactory.getInstance().findById(sesion, TcManticNotasEntradasDto.class, this.bitacora.getIdNotaEntrada());
 						this.orden.setIdNotaEstatus(this.bitacora.getIdNotaEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-						if(this.bitacora.getIdNotaEstatus().equals(2L) || this.bitacora.getIdNotaEstatus().equals(7L)) {
+						if(this.bitacora.getIdNotaEstatus().equals(2L) || this.bitacora.getIdNotaEstatus().equals(4L)) {
 							this.toRemoveOrdenDetalle(sesion);
               this.toCheckOrden(sesion);
 						} // if	
 						else
-  						if(this.bitacora.getIdNotaEstatus().equals(6L)) {
+  						if(this.bitacora.getIdNotaEstatus().equals(3L)) {
             		for (Articulo articulo: this.articulos)
 									this.toAffectAlmacenes(sesion, articulo.toNotaDetalle());
 							} // if	
@@ -262,7 +262,7 @@ public class Transaccion extends IBaseTnx {
   		  Value errors= DaoFactory.getInstance().toField(sesion, "VistaNotasEntradasDto", "errores", this.orden.toMap(), "total");
 			  if(errors.toLong()!= null && errors.toLong()== 0) 
 					if(this.aplicar)
-					  ordenCompra.setIdOrdenEstatus(6L); // TERMINADA
+					  ordenCompra.setIdOrdenEstatus(7L); // TERMINADA
 					else
 					  ordenCompra.setIdOrdenEstatus(4L); // CONFRONTADA
 				else
@@ -284,6 +284,5 @@ public class Transaccion extends IBaseTnx {
 		  regresar= total.toLong()<= 0;
 		return regresar;
 	}
-	
 	
 } 

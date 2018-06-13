@@ -21,7 +21,7 @@ public class JsfBase extends JsfUtilities {
 
   private static final Log LOG = LogFactory.getLog(JsfBase.class);
   private static final String ADMIN = "ADMINISTRADOR";
-  private static final String ADMIN_ENCUESTA = "GERENTE";
+  private static final String ADMIN_ENCUESTA = "ADMINISTRADORDEENCUESTA";
 
   public static Autentifica getAutentifica() {
     return (Autentifica) getSession().getAttribute(Constantes.ATRIBUTO_AUTENTIFICA);
@@ -34,7 +34,8 @@ public class JsfBase extends JsfUtilities {
   public static boolean isAdmin() throws Exception {
     boolean regresar = false;
     try {
-      regresar = Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase().equals(ADMIN);
+			String cadena= Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase();
+      regresar = cadena.equals(ADMIN) || cadena.equals("GERENTE");
     } // try
     catch (Exception e) {
       throw e;
