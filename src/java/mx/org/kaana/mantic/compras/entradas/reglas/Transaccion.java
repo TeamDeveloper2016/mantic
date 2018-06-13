@@ -304,7 +304,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	}
 	
-	private void toApplyNota(Session sesion) throws Exception {
+	private void toApplyNotaEntrada(Session sesion) throws Exception {
 		for (Articulo articulo: this.articulos) {
 			TcManticNotasDetallesDto item= articulo.toNotaDetalle();
 			item.setIdNotaEntrada(this.orden.getIdNotaEntrada());
