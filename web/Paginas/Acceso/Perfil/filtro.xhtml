@@ -15,7 +15,7 @@
 			<p:column headerText="Grupos a los que se tiene permiso" styleClass="zoomooz">
 				<h:outputText  value="#{perfil.nombre}"/>
 			</p:column>
-			<p:column class="janal-wid-col-20" headerText="Opciones"> 	
+			<p:column class="janal-wid-col-50" headerText="Opciones"> 	
 				<p:commandButton  title="#{perfil.nombre}" class="Fright" icon="fa fa-user" action="#{kajoolAccesoPerfilFiltro.doActualizarValores}" ajax="false" rendered="#{perfil.ultimoNivel}" onclick="return janal.bloquear();" oncomplete="janal.desbloquear();">
 					<f:setPropertyActionListener value="#{perfil}" target="#{kajoolAccesoPerfilFiltro.grupoPerfil}" />
 				</p:commandButton>
