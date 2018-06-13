@@ -791,7 +791,7 @@
 					tc_janal_perfiles.id_menu,
 					tc_mantic_personas.cuenta,
 				  tc_janal_usuarios.id_usuario,
-	        concat(nombres,' ',primer_apellido,' ',segundo_apellido) usuario_perfil
+	        concat(nombres,' ',materno,' ',paterno) usuario_perfil
 				 from
 					tc_janal_grupos
 				 inner join
