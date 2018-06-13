@@ -77,7 +77,7 @@
               <p:outputLabel for="idVentaEstatus" value="Estatus:"/>
               <p:selectOneMenu id="idVentaEstatus" value="#{manticVentasFiltro.attrs.idVentaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="startsWith">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-                <f:selectItems value="#{manticVentasFiltro.attrs.estatus}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <f:selectItems value="#{manticVentasFiltro.attrs.estatusFiltro}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
