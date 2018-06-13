@@ -58,7 +58,7 @@ public class Accion extends IBaseArticulos implements Serializable {
   protected void init() {		
     try {
 			this.aplicar=  false;
-			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
+			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null || JsfBase.getFlashAttribute("idOrdenCompra")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
       this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? null: JsfBase.getFlashAttribute("idOrdenCompra"));
@@ -88,7 +88,7 @@ public class Accion extends IBaseArticulos implements Serializable {
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
           break;
       } // switch
-			toLoadCatalog();
+			this.toLoadCatalog();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -160,10 +160,12 @@ public class Accion extends IBaseArticulos implements Serializable {
 				((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(proveedores.get(0));
 			  this.attrs.put("proveedor", proveedores.get(0));
 			} // if	
-      this.attrs.put("ordenes", UIEntity.build("VistaNotasEntradasDto", "ordenes", params, columns));
-			List<UISelectEntity> ordenes= (List<UISelectEntity>)this.attrs.get("ordenes");
-			if(!ordenes.isEmpty()) 
-				((NotaEntrada)this.getAdminOrden().getOrden()).setIkOrdenCompra(ordenes.get(0));
+			if(this.attrs.get("idOrdenCompra")!= null) {
+        this.attrs.put("ordenes", UIEntity.build("VistaNotasEntradasDto", "ordenes", params, columns));
+			  List<UISelectEntity> ordenes= (List<UISelectEntity>)this.attrs.get("ordenes");
+			  if(!ordenes.isEmpty()) 
+				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkOrdenCompra(ordenes.get(0));
+			} // if	
     } // try
     catch (Exception e) {
       Error.mensaje(e);

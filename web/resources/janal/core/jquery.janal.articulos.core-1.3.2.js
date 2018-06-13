@@ -98,10 +98,10 @@
 				var key= e.keyCode ? e.keyCode : e.which;
 				switch(key) {
 					case $articulos.VK_UP:
-						return $articulos.xup();
+						return $articulos.moveup('\\'+ $(this).attr('id').substring($(this).attr('id').lastIndexOf(':')));
 						break;
 					case $articulos.VK_DOWN:
-						return $articulos.xdown();
+						return $articulos.movedown('\\'+$(this).attr('id').substring($(this).attr('id').lastIndexOf(':')));
 						break;
 				} // switch
 			});	
@@ -178,16 +178,18 @@
       });
 			setTimeout('$articulos.goto()', 1000);
 		},
-		xup: function() {
+		moveup: function(which) {
+			janal.console('jsArticulos.moveup: '+ this.cursor.index+ ' =>'+ which);
 			this.up(false);
-			var id= '#'+ this.joker+ this.cursor.index+ '\\:sat';
+			var id= '#'+ this.joker+ this.cursor.index+ which;
 			if($(id))
 				$(id).focus();
 			return false;
 		},
-		xdown: function() {
+		movedown: function(which) {
+			janal.console('jsArticulos.movedown: '+ this.cursor.index+ ' =>'+ which);
 			this.down(false);
-			var id= '#'+ this.joker+ this.cursor.index+ '\\:sat';
+			var id= '#'+ this.joker+ this.cursor.index+ which;
 			if($(id))
 				$(id).focus();
 			return false;

@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.compras.entradas.reglas;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosCodigosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
@@ -91,7 +93,7 @@ public class Transaccion extends IBaseTnx {
 					if(this.orden.getIdDirecta().equals(1L))
 						this.orden.setIdOrdenCompra(null);
   				if(this.aplicar)
-						this.orden.setIdNotaEstatus(6L);
+						this.orden.setIdNotaEstatus(3L);
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
@@ -242,6 +244,16 @@ public class Transaccion extends IBaseTnx {
 			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, item.getIdArticulo());
 			TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(global.getIva(), JsfBase.getIdUsuario(), global.getMayoreo(), -1L, global.getMenudeo(), global.getCantidad(), global.getIdArticulo(), this.orden.getIdNotaEntrada(), global.getMedioMayoreo(), global.getPrecio(), global.getLimiteMedioMayoreo(), global.getLimiteMayoreo());
 			DaoFactory.getInstance().insert(sesion, movimiento);
+			
+			// afectar el inventario general de articulos dentro del almacen
+			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().findFirst(TcManticInventariosDto.class, "inventario", params);
+			if(inventario== null)
+				DaoFactory.getInstance().insert(sesion, new TcManticInventariosDto(JsfBase.getIdUsuario(), this.orden.getIdAlmacen(), item.getCantidad(), -1L, item.getIdArticulo(), 0L, item.getCantidad(), 0L, new Long(Calendar.getInstance().get(Calendar.YEAR))));
+			else {
+				inventario.setEntradas(inventario.getEntradas()+ item.getCantidad());
+				inventario.setStock(inventario.getStock()+ item.getCantidad());
+				DaoFactory.getInstance().update(sesion, inventario);
+			} // else
 			
 			// afectar los precios del catalogo de articulos
 			if(!Cadena.isVacio(codigos.getSat()))

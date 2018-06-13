@@ -270,7 +270,7 @@
        return $('label[for$="'+ id+ '"], label[for$="'+ id+ $parent.SELECT_FOCUS+ '"], label[for$="'+ id+ $parent.INPUT_RESERVE+ '"], th.'+ (id.indexOf(':')> 0? id.substring(id.indexOf(':')+ 1): id)+ '>span');
      }, // labels
      selector: function(multiple, id) {
-       return 'input[id'+ multiple+ '="'+ id+ '"], input[id'+ multiple+ '="'+ id+ $parent.INPUT_RESERVE+ '"], select[id'+ multiple+ '="'+ id+ $parent.INPUT_RESERVE+ '"], textarea[id'+ multiple+ '="'+ id+ '"], input[id^="'+ id+ ':"], input[id*=":'+ id+ ':"], input[id'+ multiple+ '="'+ id+ ':"]';       
+       return 'input[id'+ multiple+ '="'+ id+ '"], input[id'+ multiple+ '="'+ id+ $parent.INPUT_RESERVE+ '"], select[id'+ multiple+ '="'+ id+ $parent.INPUT_RESERVE+ '"], textarea[id'+ multiple+ '="'+ id+ '"], input[id^="'+ id+ ':"], input[id*=":'+ id+ ':"], input[id'+ multiple+ '=":'+ id+ '"]';       
      },
      components: function(multiple, id) {
        return $(this.selector(multiple, id));
@@ -437,6 +437,7 @@
     initialized   : false,
     offContextMenu: true,
 		lastNameFocus : null,
+		individual    : null,
   	errors        : {
       inputs      : [],
       masks       : [],
@@ -589,6 +590,7 @@
         $parent.required(id, value.validaciones, true);
         if(value.formatos!== 'libre' || value.individual)
           $(this).on('blur', function() {
+            $parent.individual= this;
             $parent.element(false, id);
           });
       });
@@ -963,13 +965,19 @@
       if(typeof(blockui)!== 'undefined' && blockui)
         $parent.bloquear();
       var validator= $('#'+ $parent.form).validate();
-      var ok=  validator.element($('#'+ $parent.form).find($parent.selector('$', field)));
+      var ok= false;
+			if($($parent.individual)) 
+				validator.element('#'+ $($parent.individual).attr('id').replace(/:/gi, '\\:'));
+			else
+				validator.element($('#'+ $parent.form).find($parent.selector('$', field)));
       if(ok) 
         $parent.cleanMarks();
       else
-        $parent.show($parent.errors.inputs);
+				if($parent.errors.inputs.length> 0)
+          $parent.show($parent.errors.inputs);
       if(typeof(blockui)!== 'undefined' && blockui)
         $parent.desbloquear();
+      $parent.individual= null;
       return ok;
     }, 
     individual: function(field, blockui) {
