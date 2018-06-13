@@ -91,6 +91,7 @@ public class Accion extends IBaseArticulos implements Serializable {
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
           break;
       } // switch
+			this.attrs.put("consecutivo", "");
 			toLoadCatalog();
     } // try
     catch (Exception e) {
@@ -348,13 +349,13 @@ public class Accion extends IBaseArticulos implements Serializable {
 				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
 					RequestContext.getCurrentInstance().execute("jsArticulos.back('ticket de venta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 					JsfBase.addMessage("Se guardo el ticket de venta.", ETipoMensaje.INFORMACION);				
-					regresar= "/Exclusiones/salir.jsf".concat(Constantes.REDIRECIONAR);
+					regresar= "/indice.jsf".concat(Constantes.REDIRECIONAR);
 				} // if
 				else 
 					JsfBase.addMessage("Ocurrió un error al registrar el ticket de venta.", ETipoMensaje.ERROR);      			
 			} // if
 			else
-				regresar= "/Exclusiones/salir.jsf".concat(Constantes.REDIRECIONAR);
+				regresar= "/indice.jsf".concat(Constantes.REDIRECIONAR);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -373,13 +374,20 @@ public class Accion extends IBaseArticulos implements Serializable {
 			params.put("sortOrder", "");
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			fields.add("consecutivo");
-			fields.add("cliente");
-			fields.add("total");
+			fields.add("cuenta");
+			fields.add("precioTotal");
 			params.put(Constantes.SQL_CONDICION, toCondicion());
 			ticketsAbiertos= UISelect.build("VistaVentasDto", "lazy", params, fields, " - ", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
-			this.attrs.put("ticketsAbiertos", ticketsAbiertos);
-			if(!ticketsAbiertos.isEmpty())
-				this.attrs.put("ticketAbierto", UIBackingUtilities.toFirstKeySelectItem(ticketsAbiertos));
+			if(!ticketsAbiertos.isEmpty()){
+				this.attrs.put("ticketsAbiertos", ticketsAbiertos);
+				if(!ticketsAbiertos.isEmpty())
+					this.attrs.put("ticketAbierto", UIBackingUtilities.toFirstKeySelectItem(ticketsAbiertos));
+				RequestContext.getCurrentInstance().execute("PF('dlgOpenTickets').show();");
+			} // if
+			else{
+				JsfBase.addMessage("Tickets", "Actualmente no hay tickets abiertos", ETipoMensaje.INFORMACION);
+				RequestContext.getCurrentInstance().execute("janal.desbloquear();");
+			} // else
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -411,6 +419,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			params.put("idVenta", this.attrs.get("ticketAbierto"));
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
     	this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
+			this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());
 			toLoadCatalog();
 			doAsignaClienteTicketAbierto();
 		} // try
