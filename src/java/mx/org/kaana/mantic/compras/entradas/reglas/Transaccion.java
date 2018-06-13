@@ -24,6 +24,7 @@ import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosCodigosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
@@ -133,7 +134,7 @@ public class Transaccion extends IBaseTnx {
 						else
   						if(this.bitacora.getIdNotaEstatus().equals(3L)) {
             		for (Articulo articulo: this.articulos)
-									this.toAffectAlmacenes(sesion, articulo.toNotaDetalle());
+									this.toAffectAlmacenes(sesion, articulo.toNotaDetalle(), articulo);
 							} // if	
 					} // if
 					break;
@@ -166,7 +167,7 @@ public class Transaccion extends IBaseTnx {
 				else
 			    DaoFactory.getInstance().insert(sesion, item);
 				if(this.aplicar)
-				  this.toAffectAlmacenes(sesion, item);
+				  this.toAffectAlmacenes(sesion, item, articulo);
 			} // if
 		} // for
 	}
@@ -215,12 +216,13 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	}
 	
-	private void toAffectAlmacenes(Session sesion, TcManticNotasDetallesDto item) throws Exception {
+	private void toAffectAlmacenes(Session sesion, TcManticNotasDetallesDto item, Articulo codigos) throws Exception {
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
 			params.put("idAlmacen", this.orden.getIdAlmacen());
 			params.put("idArticulo", item.getIdArticulo());
+			params.put("idProveedor", this.orden.getIdProveedor());
 			TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class,  params, "ubicacion");
 			if(ubicacion== null) {
 			  TcManticAlmacenesUbicacionesDto general= (TcManticAlmacenesUbicacionesDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesUbicacionesDto.class, params, "general");
@@ -236,16 +238,33 @@ public class Transaccion extends IBaseTnx {
 				ubicacion.setStock(ubicacion.getStock()+ item.getCantidad());
 				DaoFactory.getInstance().update(sesion, ubicacion);
 			} // if
+			// registar el cambio de precios en la bitacora de articulo 
 			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, item.getIdArticulo());
 			TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(global.getIva(), JsfBase.getIdUsuario(), global.getMayoreo(), -1L, global.getMenudeo(), global.getCantidad(), global.getIdArticulo(), this.orden.getIdNotaEntrada(), global.getMedioMayoreo(), global.getPrecio(), global.getLimiteMedioMayoreo(), global.getLimiteMayoreo());
 			DaoFactory.getInstance().insert(sesion, movimiento);
 			
+			// afectar los precios del catalogo de articulos
+			if(!Cadena.isVacio(codigos.getSat()))
+			  global.setSat(codigos.getSat());
 			global.setPrecio(Numero.toRedondear(item.getCosto()));
 			global.setMenudeo(Numero.toRedondear(item.getCosto()+ Constantes.PORCENTAJE_MENUDEO));
 			global.setMedioMayoreo(Numero.toRedondear(item.getCosto()+ Constantes.PORCENTAJE_MEDIO_MAYOREO));
 			global.setMayoreo(Numero.toRedondear(item.getCosto()+ Constantes.PORCENTAJE_MAYOREO));
 			global.setStock(global.getStock()+ item.getCantidad());
 			DaoFactory.getInstance().update(sesion, global);
+			
+			// afectar el catalogo de codigos del proveedor
+			TcManticArticulosCodigosDto remplazo= (TcManticArticulosCodigosDto)DaoFactory.getInstance().findFirst(TcManticArticulosCodigosDto.class, "codigo", params);
+			if(remplazo== null) {
+				Value next= DaoFactory.getInstance().toField(sesion, "TcManticArticulosCodigosDto", "siguiente", params, "siguiente");
+				if(next.getData()== null)
+					next.setData(1L);
+				DaoFactory.getInstance().insert(sesion, new TcManticArticulosCodigosDto(codigos.getCodigo(), this.orden.getIdProveedor(), JsfBase.getIdUsuario(), 2L, "", -1L, next.toLong(), codigos.getIdArticulo()));
+			} // if	
+			else {
+				remplazo.setCodigo(codigos.getCodigo());
+				DaoFactory.getInstance().update(sesion, remplazo);
+			} // else	
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -283,6 +302,17 @@ public class Transaccion extends IBaseTnx {
 		if(total.getData()!= null)
 		  regresar= total.toLong()<= 0;
 		return regresar;
+	}
+	
+	private void toApplyNota(Session sesion) throws Exception {
+		for (Articulo articulo: this.articulos) {
+			TcManticNotasDetallesDto item= articulo.toNotaDetalle();
+			item.setIdNotaEntrada(this.orden.getIdNotaEntrada());
+		  this.toAffectAlmacenes(sesion, item, articulo);
+		} // for
+		this.orden.setIdNotaEstatus(3L);
+		TcManticNotasBitacoraDto nota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus());
+		DaoFactory.getInstance().insert(sesion, nota);
 	}
 	
 } 

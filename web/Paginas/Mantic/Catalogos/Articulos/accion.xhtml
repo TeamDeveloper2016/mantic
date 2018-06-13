@@ -13,6 +13,7 @@
 			Janal.Control.fields = {				 
 				'contenedorGrupos\\:nombre'         : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:descripcion'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:sat'            : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:meta'           : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:metaDescripcion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:metaTeclado'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},				
@@ -34,6 +35,8 @@
 								<p:outputLabel for="descripcion" value="Descripción:"/>
 								<p:inputTextarea id="descripcion" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.descripcion}"/>                    
 								<p:spacer width="1px"/><p:separator/>
+								<p:outputLabel for="sat" value="Código SAT:"/>
+								<p:inputNumber id="sat" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.sat}"/>                    
 								<p:outputLabel for="iva" value="Iva:"/>
 								<p:inputNumber id="iva" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.iva}"/>                    
 								<p:outputLabel for="redondear" value="Redondear:"/>

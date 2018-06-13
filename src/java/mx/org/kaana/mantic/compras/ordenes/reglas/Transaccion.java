@@ -95,6 +95,13 @@ public class Transaccion extends IBaseTnx {
        			this.messageError= "No se puede eliminar la orden de compra porque existen notas de entrada asociadas.";
 					break;
 				case JUSTIFICAR:
+					if(this.bitacora.getIdOrdenEstatus().equals(7L)) {
+						regresar= this.toNotExistsNotas(sesion);
+					  if(!regresar) {
+							this.messageError= "No se puede cancelar la orden de compra porque existen notas de entrada asociadas.";
+							break;
+						} // if	
+				  } // if	
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.orden= (TcManticOrdenesComprasDto) DaoFactory.getInstance().findById(sesion, TcManticOrdenesComprasDto.class, this.bitacora.getIdOrdenCompra());
 						this.orden.setIdOrdenEstatus(this.bitacora.getIdOrdenEstatus());

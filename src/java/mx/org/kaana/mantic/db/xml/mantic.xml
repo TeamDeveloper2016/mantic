@@ -850,6 +850,14 @@
         from      
           tc_mantic_articulos_codigos
       </select>
+			<select id="siguiente">
+        select      
+         max(orden)+ 1 as siguiente
+        from      
+          tc_mantic_articulos_codigos
+				where
+          id_articulo = {idArticulo}
+      </select>
 			<delete id="rows">
         delete from tc_mantic_articulos_codigos where id_articulo= {idArticulo} 
       </delete>
