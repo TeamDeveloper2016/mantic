@@ -141,7 +141,7 @@ public class Privilegios implements Serializable {
       params.put("cuenta", cuenta);
       persona = (Entity) DaoFactory.getInstance().toEntity("TrJanalUsuariosDelegaDto", "findLoginActivo", params);
       if (persona == null) {
-        persona = (Entity) DaoFactory.getInstance().toEntity("TcManticPersonasDto", "findUsuario", params);
+        persona = (Entity) DaoFactory.getInstance().toEntity("VistaTcJanalUsuariosDto", "acceso", params);
       }
       if (persona != null) {
         regresar = persona.toLong("idPersona");
@@ -321,7 +321,7 @@ public class Privilegios implements Serializable {
       perfiles = DaoFactory.getInstance().toEntitySet("VistaGruposAccesoDto", "perfiles", params, Constantes.SQL_TODOS_REGISTROS);
       regresar = new ArrayList<>();
       for (Entity perfil : perfiles) {
-        regresar.add(new GrupoPerfiles(perfil.toLong("idKey"), " [ ".concat(perfil.toString("entidad").toUpperCase()).concat(" ] ").concat(perfil.toString("descripcion")), true, idGrupo, perfil.toString("cuenta"), idEmpleado, true, perfil.toString("usuarioPerfil"), perfil.toLong("idMenu"), perfil.toLong("idUsuario"), perfil.toString("entidad").toUpperCase(), perfil.toString("descripcion")));
+        regresar.add(new GrupoPerfiles(perfil.toLong("idKey"), perfil.toString("descripcion"), true, idGrupo, perfil.toString("cuenta"), idEmpleado, true, perfil.toString("usuarioPerfil"), perfil.toLong("idMenu"), perfil.toLong("idUsuario"), "", perfil.toString("descripcion")));
       }
     } // try
     catch (Exception e) {
