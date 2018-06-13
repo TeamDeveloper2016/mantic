@@ -30,6 +30,10 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 	private TicketVenta orden;
 
 	public AdminTickets(TicketVenta orden) throws Exception {
+		this(orden, true);
+	}
+	
+	public AdminTickets(TicketVenta orden, boolean loadDefault) throws Exception {
 		this.orden  = orden;
 		if(this.orden.isValid()) {
   	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticVentasDetallesDto", "detalle", orden.toMap()));
@@ -42,7 +46,8 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 			this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
 			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 		} // else	
-		this.getArticulos().add(new Articulo(-1L));
+		if(loadDefault)
+			this.getArticulos().add(new Articulo(-1L));
 		this.toCalculate();
 	}
 
