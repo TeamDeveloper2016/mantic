@@ -84,6 +84,7 @@ public class Accion extends IBaseArticulos implements Serializable {
           this.setAdminOrden(new AdminNotas(new NotaEntrada(-1L, (Long)this.attrs.get("idOrdenCompra")), this.tipoOrden));
           break;
         case MODIFICAR:					
+        case CONSULTAR:					
           this.setAdminOrden(new AdminNotas((NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradasDto", "detalle", this.attrs), this.tipoOrden));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
           break;
@@ -121,7 +122,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 					else
    			    RequestContext.getCurrentInstance().execute("jsArticulos.back('aplicó la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				} // if	
-				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra."), ETipoMensaje.INFORMACION);
+ 				if(!eaccion.equals(EAccion.CONSULTAR)) 
+  				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la nota de entrada."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
 			} // if
 			else 

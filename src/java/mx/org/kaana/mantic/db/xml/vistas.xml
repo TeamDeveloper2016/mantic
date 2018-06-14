@@ -602,7 +602,7 @@
 					  tc_mantic_ordenes_detalles.id_orden_compra= {idOrdenCompra}
 					  and (
   				    tc_mantic_ordenes_detalles.cantidades&lt;&gt; 0 or 
-	  			    (abs(tc_mantic_ordenes_detalles.importes)* 100/ (tc_mantic_ordenes_detalles.importe+ abs(tc_mantic_ordenes_detalles.importes))) between 2.1 and 100
+	  			    (abs(tc_mantic_ordenes_detalles.importes)* 100/ tc_mantic_ordenes_detalles.importe) between 2.1 and 10000
 						)
 					union
 					  select 

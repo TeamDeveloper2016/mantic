@@ -30,6 +30,7 @@
 				'auxiliares'                        : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}				
 			};			
     	$(document).ready(function() {
+				setTimeout("janal.readingMode('#{manticComprasEntradasAccion.attrs.nombreAccion}')", 500);
         jsArticulos= new Janal.Control.Articulos.Core(#{manticComprasEntradasAccion.adminOrden.articulos.size()});
       });
 		</script>   

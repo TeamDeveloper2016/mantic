@@ -107,9 +107,8 @@ public class Accion extends IBaseArticulos implements Serializable {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
     			RequestContext.getCurrentInstance().execute("jsArticulos.back('orden de compra', '"+ ((OrdenCompra)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				} // if	
-				else
-  				if(eaccion.equals(EAccion.MODIFICAR)) 
-	    			JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra."), ETipoMensaje.INFORMACION);
+ 				if(!eaccion.equals(EAccion.CONSULTAR)) 
+    			JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
 			} // if
 			else 

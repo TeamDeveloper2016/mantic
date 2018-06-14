@@ -17,7 +17,7 @@
         'fechaInicio'  : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'fechaTermino' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'idNotaEstatus': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-				'justificacion': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
+				'justificacion': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
       };
 			
 			function validaJustificacion(){
@@ -171,9 +171,10 @@
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
             <p:menuitem id="modificar" action="#{manticComprasEntradasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '1'}"/>					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '1'}"/>					
-            <p:separator rendered="#{!(manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '3')}"/>					
-            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasEntradasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '3')}"/>					
-            <p:separator rendered="#{!(manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '3')}"/>					
+            <p:menuitem id="consultar" action="#{manticComprasEntradasFiltro.doAccion('CONSULTAR')}" icon="fa fa-edit" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:separator rendered="#{manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '2'}"/>					
+            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasEntradasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '2'}"/>					
+            <p:separator rendered="#{(manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '3')}"/>					
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasEntradasFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{(manticComprasEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '3')}"/>					
           </p:contextMenu>						
         </div>

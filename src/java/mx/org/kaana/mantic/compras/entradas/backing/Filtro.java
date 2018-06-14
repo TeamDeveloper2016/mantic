@@ -9,6 +9,8 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFacade;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -97,12 +99,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 			  JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
 			else 
 			  JsfBase.setFlashAttribute("accion", eaccion);		
-			if(!eaccion.equals(EAccion.COMPLETO) || (eaccion.equals(EAccion.MODIFICAR) && ((Entity)this.attrs.get("seleccionado")).toLong("idDirecta").equals(2L))) 
+			if(!eaccion.equals(EAccion.COMPLETO) || ((eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) && ((Entity)this.attrs.get("seleccionado")).toLong("idDirecta").equals(2L))) 
 				regresar= regresar.concat("?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs");
 			else
 				regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Compras/Entradas/filtro");		
-			JsfBase.setFlashAttribute("idNotaEntrada", eaccion.equals(EAccion.MODIFICAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+			JsfBase.setFlashAttribute("idNotaEntrada", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -116,7 +118,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Entity seleccionado     = null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			transaccion= new Transaccion(new TcManticNotasEntradasDto(seleccionado.getKey()));
+			transaccion= new Transaccion((TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, seleccionado.getKey()));
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Eliminar", "La nota de entrada se ha eliminado correctamente.", ETipoMensaje.ERROR);
 			else

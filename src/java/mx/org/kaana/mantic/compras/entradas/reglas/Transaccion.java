@@ -114,12 +114,14 @@ public class Transaccion extends IBaseTnx {
 				case ELIMINAR:
 					regresar= this.toNotExistsArticulosBitacora(sesion);
 					if(regresar) {
-						this.toRemoveOrdenDetalle(sesion);
-						regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params)>= 1L;
-						regresar= regresar && DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
+//						this.toRemoveOrdenDetalle(sesion);
+//						regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params)>= 1L;
+//						regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
+            this.orden.setIdNotaEstatus(2L);
+						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 						bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L);
 						regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
-						this.toCheckOrden(sesion);
+//						this.toCheckOrden(sesion);
 					}
 					else
        			this.messageError= "No se puede eliminar la nota de entrada porque ya fue aplicada en los precios de los articulos.";
@@ -291,11 +293,11 @@ public class Transaccion extends IBaseTnx {
 			if(this.orden.getIdDirecta().equals(2L)) {
         TcManticOrdenesComprasDto ordenCompra= (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(sesion, TcManticOrdenesComprasDto.class, this.orden.getIdOrdenCompra());
   		  Value errors= DaoFactory.getInstance().toField(sesion, "VistaNotasEntradasDto", "errores", this.orden.toMap(), "total");
-			  if(errors.toLong()!= null && errors.toLong()== 0) 
-					if(this.aplicar)
-					  ordenCompra.setIdOrdenEstatus(7L); // TERMINADA
-					else
-					  ordenCompra.setIdOrdenEstatus(4L); // CONFRONTADA
+			  if(errors.toLong()!= null && errors.toLong()== 0) {
+				  ordenCompra.setIdOrdenEstatus(7L); // CONFRONTADA
+					TcManticNotasBitacoraDto registro= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 3L);
+					DaoFactory.getInstance().insert(sesion, registro);
+				} // if	
 				else
 					ordenCompra.setIdOrdenEstatus(5L); // INCOMPLETA
 				DaoFactory.getInstance().update(sesion, ordenCompra);
