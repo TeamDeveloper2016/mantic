@@ -1181,19 +1181,20 @@
 			actionValidate= action!== null && action!== undefined ? action.toUpperCase() : 'CONSULTAR';
 			if(actionValidate=== 'CONSULTAR') {
 				$('input:text,input:checkbox,input:file,textarea,button,a.ui-commandlink,div.ui-selectonemenu,div.ui-chkbox,span.ui-button').each(function(index) {  
-						if(!(this.tagName=== 'BUTTON' && (this.id=== "cancelar" || this.id=== "cancelarIcon"))){
-							if(this.tagName=== 'A'){
-								$(this).removeAttr('onclick').removeAttr('href').addClass("ui-state-disabled"); 
+					if(!(this.tagName=== 'BUTTON' && (this.id=== "cancelar" || this.id=== "cancelarIcon"))) {
+						if(this.tagName=== 'A') {
+							$(this).removeAttr('onclick').removeAttr('href').addClass("ui-state-disabled"); 
 						} // if
-						else if(this.tagName=== 'DIV'){		
-							if(this.selector=== 'div.ui-selectonemenu')
-								PF('widget_' + this.id).disable();
-							else
-								$(this).prop("disabled","disabled").addClass("ui-state-disabled"); 
-						} // else if
-						else {
-							$(this).prop("disabled","disabled").addClass("ui-state-disabled"); 
-						} // else
+						else 
+							if(this.tagName=== 'DIV') {		
+							  if(this.selector=== 'div.ui-selectonemenu')
+								  PF('widget_' + this.id).disable();
+							  else
+								  $(this).prop("disabled","disabled").addClass("ui-state-disabled"); 
+						  } // if
+						  else 
+							  $(this).prop("disabled","disabled").addClass("ui-state-disabled"); 
+  					//$parent.console('janal.readingMode: '+ this.tagName+ ' => '+ this.id+ ' => '+ $(this).attr("disabled")+ ' -> '+ $(this).attr('class'));
 					} // if
 				});
 			} // if

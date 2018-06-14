@@ -77,6 +77,7 @@ public class Accion extends IBaseArticulos implements Serializable {
           this.setAdminOrden(new AdminOrdenes(new OrdenCompra(-1L)));
           break;
         case MODIFICAR:			
+        case CONSULTAR:											
           this.setAdminOrden(new AdminOrdenes((OrdenCompra)DaoFactory.getInstance().toEntity(OrdenCompra.class, "TcManticOrdenesComprasDto", "detalle", this.attrs)));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
           break;
@@ -106,7 +107,9 @@ public class Accion extends IBaseArticulos implements Serializable {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
     			RequestContext.getCurrentInstance().execute("jsArticulos.back('orden de compra', '"+ ((OrdenCompra)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				} // if	
-				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra."), ETipoMensaje.INFORMACION);
+				else
+  				if(eaccion.equals(EAccion.MODIFICAR)) 
+	    			JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
 			} // if
 			else 

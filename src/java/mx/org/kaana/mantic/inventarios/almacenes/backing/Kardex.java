@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.inventarios.almacenes.backing;
 
+import java.io.FileInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +18,6 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.formato.Periodo;
@@ -26,6 +26,8 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.inventarios.almacenes.beans.AdminKardex;
 import mx.org.kaana.mantic.inventarios.almacenes.beans.TiposVentas;
@@ -33,6 +35,8 @@ import mx.org.kaana.mantic.inventarios.almacenes.reglas.Transaccion;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 /**
  *@company KAANA
@@ -49,6 +53,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	private static final long serialVersionUID=-6770709196941718388L;
 
 	private AdminKardex adminKardex;
+	private StreamedContent image;
 
 	public AdminKardex getAdminKardex() {
 		return adminKardex;
@@ -56,6 +61,10 @@ public class Kardex extends IBaseAttribute implements Serializable {
 
 	public void setAdminKardex(AdminKardex adminKardex) {
 		this.adminKardex=adminKardex;
+	}
+
+	public StreamedContent getImage() {
+		return image;
 	}
 	
 	@Override
@@ -78,6 +87,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
 			this.attrs.put("idArticulo", null);
 			if(articulo.size()> 1) {
+				this.image= new DefaultStreamedContent(new FileInputStream(LoadImages.getImage(articulo.toString("idArticulo"))), "image/jpg");
   			this.attrs.put("idArticulo", articulo.toLong("idArticulo"));
 				Entity solicitado= (Entity)DaoFactory.getInstance().toEntity("VistaKardexDto", "row", this.attrs);
 				if(solicitado!= null) {
