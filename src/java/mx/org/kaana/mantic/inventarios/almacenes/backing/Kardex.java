@@ -87,7 +87,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
 			this.attrs.put("idArticulo", null);
 			if(articulo.size()> 1) {
-				this.image= new DefaultStreamedContent(new FileInputStream(LoadImages.getImage(articulo.toString("idArticulo"))), "image/jpg");
+				this.image= LoadImages.getImage(articulo.toString("idArticulo"));
   			this.attrs.put("idArticulo", articulo.toLong("idArticulo"));
 				Entity solicitado= (Entity)DaoFactory.getInstance().toEntity("VistaKardexDto", "row", this.attrs);
 				if(solicitado!= null) {

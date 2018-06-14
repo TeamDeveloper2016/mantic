@@ -13,6 +13,7 @@
 		joker       : 'contenedorGrupos\\:tabla\\:',
 		selector    : '.key-down-event',
 		focus       : '.key-focus-event',
+		reference   : '#codigos_input', 
 		panels      : 'codigos_panel', 
 		itemtips    : 'codigos_itemtip', 
 		leavePage   : true,
@@ -185,6 +186,10 @@
   			utilidad(this.cursor.index, value);
 			} // if	
 			return false;
+		},
+		focus: function() {
+      $(this.reference).val(''); 
+			$(this.reference).focus();			
 		}
 	});
 	

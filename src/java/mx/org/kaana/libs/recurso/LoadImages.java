@@ -2,9 +2,12 @@ package mx.org.kaana.libs.recurso;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import mx.org.kaana.libs.pagina.JsfBase;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.primefaces.model.DefaultStreamedContent;
 
 /**
  *@company KAANA
@@ -16,13 +19,13 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 public final class LoadImages {
 
-	public static String getImage(String name) {
-		String regresar= "";
+	public static DefaultStreamedContent getImage(String name) throws FileNotFoundException {
+		DefaultStreamedContent regresar;
 		File file= toListFile(name);
 		if(file== null || !file.exists() || file.isDirectory())
-		  regresar= JsfBase.getRealPath("/resources/janal/img/sistema/bonanza.svg");
+		  regresar= new DefaultStreamedContent(new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/bonanza.svg")), "image/svg+xml");
 		else
-			regresar= file.getAbsolutePath();
+			regresar= new DefaultStreamedContent(new FileInputStream(file.getAbsolutePath()), "image/jpg");
 		return regresar;
 	} 
 	
