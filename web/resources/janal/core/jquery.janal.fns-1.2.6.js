@@ -349,9 +349,9 @@ $.mask.masks = $.extend($.mask.masks, {
           return false;
 				} // if	
         else
-         return parseFloat(janal.cleanToken(value), 10)>= params.cuanto;
+         return parseFloat(janal.cleanToken(value), 10)> params.cuanto;
     }, function(params, element) {
-      return 'Valor '+ $(element).val()+ ' tiene que ser mayor al permitido, el valor m\u00E1ximo es '+ params.cuanto+ '.';
+      return 'Valor '+ $(element).val()+ ' tiene que ser mayor al permitido, el valor tiene que ser mayor '+ params.cuanto+ '.';
     });
 		
   $.validator.addMethod('max-valor', function(value, element, params) {
@@ -377,9 +377,9 @@ $.mask.masks = $.extend($.mask.masks, {
           return false;
 				} // if	
         else
-          return parseFloat(janal.cleanToken(value), 10)<= params.cuanto;
+          return parseFloat(janal.cleanToken(value), 10)< params.cuanto;
     }, function(params, element) {
-      return 'Valor '+ $(element).val()+ ' tiene que ser menor al permitido, el valor m\u00EDnimo es '+ params.cuanto+ '.';
+      return 'Valor '+ $(element).val()+ ' tiene que ser menor al permitido, el valor tiene que ser menor '+ params.cuanto+ '.';
     });
 		
   $.validator.addMethod('min-valor', function(value, element, params) {

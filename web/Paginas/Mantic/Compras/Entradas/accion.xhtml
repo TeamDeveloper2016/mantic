@@ -27,7 +27,9 @@
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
 				'codigo'                            : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
 				'sat'                               : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
-				'auxiliares'                        : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}				
+				'auxiliares'                        : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},				
+				'precios'                           : {multiple: '$', validaciones: 'mayor({"cuanto": 0})', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},				
+				'cantidades'                        : {multiple: '$', validaciones: 'mayor({"cuanto": 0})', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}				
 			};			
     	$(document).ready(function() {
 				setTimeout("janal.readingMode('#{manticComprasEntradasAccion.attrs.nombreAccion}')", 500);
@@ -219,7 +221,7 @@
 												</f:facet>
 												<h:outputText id="nombres" value="#{row['nombre']}" title="Código propio: #{row['propio']}    Existencias almacen: #{row['stock']}" escape="false"/>
 											</p:column>		
-											<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+											<p:column class="cantidades janal-column-right MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
 													<h:outputText value="Cantidad"/>
 												</f:facet>
@@ -233,7 +235,7 @@
 												   </div>
 												</div>
 											</p:column>		
-											<p:column class="MarAuto Responsive janal-wid-10">
+											<p:column class="precios MarAuto Responsive janal-wid-10">
 												<f:facet name="header">
 													<h:outputText value="Precio"/>
 													<span class="janal-help-icon janal-help-10 fa fa-fw fa-question-circle Fright" onclick="countHelp(10);"/>	

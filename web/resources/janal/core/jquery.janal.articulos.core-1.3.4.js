@@ -149,10 +149,10 @@
 					case $articulos.VK_PLUS:
 						return $articulos.plus();
 						break;
-					case $articulos.VK_REST:
+					case $articulos.VK_COMA:
 						return $articulos.point();
 						break;
-					case $articulos.VK_MINUS:
+					case $articulos.VK_REST:
 						var txt  = $(this).val().trim().length<= 0;
 						var token= $($articulos.lock())? $articulos.remove(): true;
 						if(txt && $('ul.ui-autocomplete-items:visible').length<= 0  && token)
@@ -161,7 +161,7 @@
 					case $articulos.VK_PIPE:
 						return $articulos.search();
 						break;
-					case $articulos.VK_COMA:
+					case $articulos.VK_MINUS:
 						$articulos.leavePage= true;
 						var txt= $(this).val().trim().length<= 0;
 						if(txt && $('ul.ui-autocomplete-items:visible').length<= 0 && confirm('¿ Esta seguro que desea terminar con la captura ?')) {
