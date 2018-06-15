@@ -18,7 +18,7 @@ public class UISelectEntity extends Entity {
   private Long key;
 
   public UISelectEntity(String key) {
-    this.key = Numero.getLong(key, -1L);
+    this(new Entity(Numero.getLong(key, -1L)));
   }
 
   public UISelectEntity(Entity entity) {

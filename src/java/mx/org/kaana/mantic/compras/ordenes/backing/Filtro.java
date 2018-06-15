@@ -248,14 +248,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // finally
 	} // doLoadEstatus
 	
-	public void doActualizarEstatus(){
+	public void doActualizarEstatus() {
 		Transaccion transaccion            = null;
 		TcManticOrdenesBitacoraDto bitacora= null;
 		Entity seleccionado                = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			bitacora    = new TcManticOrdenesBitacoraDto(Long.valueOf(this.attrs.get("estatus").toString()), (String) this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), -1L);
-			transaccion = new Transaccion(bitacora);
+			transaccion = new Transaccion((TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, seleccionado.getKey()), bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta.", ETipoMensaje.INFORMACION);
 			else
@@ -272,7 +272,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public String doDiferencias() {
 		JsfBase.setFlashAttribute("idOrdenCompra",((Entity)this.attrs.get("seleccionado")).getKey());
-		return "diferencias";
+		return "diferencias".concat(Constantes.REDIRECIONAR);
 	}
 	
 }

@@ -1,0 +1,139 @@
+package mx.org.kaana.mantic.compras.ordenes.reglas;
+
+import java.io.Serializable;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosCodigosDto;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
+import org.hibernate.Session;
+
+/**
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
+ *@date 15/06/2018
+ *@time 09:59:37 AM 
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
+ */
+
+public abstract class Inventarios extends IBaseTnx implements Serializable {
+
+	private static final long serialVersionUID=-3572599320057390307L;
+	
+	private Long idAlmacen;
+	private Long idProveedor;
+
+	public Inventarios(Long idAlmacen, Long idProveedor) {
+		this.idAlmacen  = idAlmacen;
+		this.idProveedor= idProveedor;
+	}
+	
+	protected void toAffectAlmacenes(Session sesion, Long idNotaEntrada, TcManticNotasDetallesDto item, Articulo codigos) throws Exception {
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("idAlmacen", this.idAlmacen);
+			params.put("idArticulo", item.getIdArticulo());
+			params.put("idProveedor", this.idProveedor);
+			TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class,  params, "ubicacion");
+			if(ubicacion== null) {
+			  TcManticAlmacenesUbicacionesDto general= (TcManticAlmacenesUbicacionesDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesUbicacionesDto.class, params, "general");
+				if(general== null) {
+  				general= new TcManticAlmacenesUbicacionesDto("GENERAL", "", "GENERAL", "", "", JsfBase.getAutentifica().getPersona().getIdUsuario(), this.idAlmacen, -1L);
+					DaoFactory.getInstance().insert(sesion, general);
+				} // if	
+			  Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticArticulosDto", "inventario", params);
+				TcManticAlmacenesArticulosDto articulo= new TcManticAlmacenesArticulosDto(entity.toLong("minimo"), -1L, general.getIdUsuario(), general.getIdAlmacen(), entity.toLong("maximo"), general.getIdAlmacenUbicacion(), item.getIdArticulo(), item.getCantidad());
+				DaoFactory.getInstance().insert(sesion, articulo);
+		  } // if
+			else { 
+				ubicacion.setStock(ubicacion.getStock()+ item.getCantidad());
+				DaoFactory.getInstance().update(sesion, ubicacion);
+			} // if
+			// registar el cambio de precios en la bitacora de articulo 
+			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, item.getIdArticulo());
+			TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(global.getIva(), JsfBase.getIdUsuario(), global.getMayoreo(), -1L, global.getMenudeo(), global.getCantidad(), global.getIdArticulo(), idNotaEntrada, global.getMedioMayoreo(), global.getPrecio(), global.getLimiteMedioMayoreo(), global.getLimiteMayoreo());
+			DaoFactory.getInstance().insert(sesion, movimiento);
+			
+			// afectar el inventario general de articulos dentro del almacen
+			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().findFirst(sesion, TcManticInventariosDto.class, "inventario", params);
+			if(inventario== null)
+				DaoFactory.getInstance().insert(sesion, new TcManticInventariosDto(JsfBase.getIdUsuario(), this.idAlmacen, item.getCantidad(), -1L, item.getIdArticulo(), 0L, item.getCantidad(), 0L, new Long(Calendar.getInstance().get(Calendar.YEAR))));
+			else {
+				inventario.setEntradas(inventario.getEntradas()+ item.getCantidad());
+				inventario.setStock(inventario.getStock()+ item.getCantidad());
+				DaoFactory.getInstance().update(sesion, inventario);
+			} // else
+			
+			// afectar los precios del catalogo de articulos
+			if(!Cadena.isVacio(codigos.getSat()))
+			  global.setSat(codigos.getSat());
+			global.setPrecio(Numero.toRedondear(item.getCosto()));
+			global.setMenudeo(Numero.toRedondear(item.getCosto()+ Constantes.PORCENTAJE_MENUDEO));
+			global.setMedioMayoreo(Numero.toRedondear(item.getCosto()+ Constantes.PORCENTAJE_MEDIO_MAYOREO));
+			global.setMayoreo(Numero.toRedondear(item.getCosto()+ Constantes.PORCENTAJE_MAYOREO));
+			global.setStock(global.getStock()+ item.getCantidad());
+			DaoFactory.getInstance().update(sesion, global);
+			
+			// afectar el catalogo de codigos del proveedor
+			if(!Cadena.isVacio(codigos.getCodigo())) {
+				TcManticArticulosCodigosDto remplazo= (TcManticArticulosCodigosDto)DaoFactory.getInstance().findFirst(sesion, TcManticArticulosCodigosDto.class, "codigo", params);
+				if(remplazo== null) {
+					Value next= DaoFactory.getInstance().toField(sesion, "TcManticArticulosCodigosDto", "siguiente", params, "siguiente");
+					if(next.getData()== null)
+						next.setData(1L);
+					DaoFactory.getInstance().insert(sesion, new TcManticArticulosCodigosDto(codigos.getCodigo(), this.idProveedor, JsfBase.getIdUsuario(), 2L, "", -1L, next.toLong(), codigos.getIdArticulo()));
+				} // if	
+				else {
+					remplazo.setCodigo(codigos.getCodigo());
+					DaoFactory.getInstance().update(sesion, remplazo);
+				} // else	
+			} // if	
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	}	
+
+	protected void toCommonNotaEntrada(Session sesion, Long idNotaEntrada, Map<String, Object> params) throws Exception {
+		List<TcManticNotasEntradasDto> notas= (List<TcManticNotasEntradasDto>)DaoFactory.getInstance().findViewCriteria(sesion, TcManticNotasEntradasDto.class, params, "consulta");
+		// Recuperar todas las notas de entrada abiertas para cerrarlas y aplicarlas
+		for (TcManticNotasEntradasDto nota: notas) {
+			if(!nota.getIdNotaEstatus().equals(3L) && !nota.getIdNotaEntrada().equals(idNotaEntrada)) {
+				nota.setIdNotaEstatus(3L);
+				DaoFactory.getInstance().update(sesion, nota);
+				TcManticNotasBitacoraDto registro= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), nota.getIdNotaEntrada(), nota.getIdNotaEstatus());
+				DaoFactory.getInstance().insert(sesion, registro);
+				
+    		// Recuperar el detalle de las notas de entrada para afectas inventarios 
+    		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticNotasDetallesDto", "detalle", nota.toMap());
+				for (Articulo articulo: todos) {
+					TcManticNotasDetallesDto item= articulo.toNotaDetalle();
+    		  this.toAffectAlmacenes(sesion, nota.getIdNotaEntrada(), item, articulo);
+				} // for
+			} // if	
+		} // for
+	}
+	
+}

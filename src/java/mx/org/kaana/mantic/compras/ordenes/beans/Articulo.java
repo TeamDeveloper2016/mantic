@@ -223,7 +223,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 
 	public TcManticNotasDetallesDto toNotaDetalle() {
 		return new TcManticNotasDetallesDto(
-			Cadena.isVacio(this.getCodigo())? this.getPropio(): this.getCodigo(), 
+			this.getCodigo(), 
 			this.getUnidadMedida(), 
 			this.getCosto(), 
 			this.getDescuento(), 

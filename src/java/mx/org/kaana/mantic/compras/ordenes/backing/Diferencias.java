@@ -11,6 +11,7 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -46,15 +47,19 @@ public class Diferencias extends IBaseFilter implements Serializable {
     List<Columna> columns= null;
     try {
       columns = new ArrayList<>();
-      columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
-      this.attrs.put("sortOrder", "order by nombre");
-      this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", "consulta", this.attrs, columns);
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
+      columns.add(new Columna("costo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));      
+      columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       this.attrs.put("sortOrder", "order by tc_mantic_notas_entradas.consecutivo, tc_mantic_notas_detalles.nombre");
-      this.lazyNotas = new FormatCustomLazy("TcManticOrdenesDetallesDto", "consulta", this.attrs, columns);
+      this.lazyNotas = new FormatCustomLazy("VistaOrdenesComprasDto", "consulta", this.attrs, columns);
+      columns.add(new Columna("cantidades", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
+      columns.add(new Columna("importes", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
+      this.attrs.put("sortOrder", "order by nombre");
+      this.lazyModel = new FormatCustomLazy("TcManticOrdenesDetallesDto", "consulta", this.attrs, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -68,7 +73,7 @@ public class Diferencias extends IBaseFilter implements Serializable {
 	
 	public String doRegresar() {
 		JsfBase.setFlashAttribute("idOrdenCompra", this.attrs.get("idOrdenCompra"));
-		return "filtro";
+		return "filtro".concat(Constantes.REDIRECIONAR);
 	}
 	
 }

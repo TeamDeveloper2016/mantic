@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.compras.ordenes.reglas;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,6 +19,9 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.db.dto.TcManticNotasBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
@@ -31,16 +35,18 @@ import org.apache.log4j.Logger;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Transaccion extends IBaseTnx {
+public class Transaccion extends Inventarios implements Serializable {
 
   private static final Logger LOG = Logger.getLogger(Transaccion.class);
+	private static final long serialVersionUID=-3186367186737677670L;
  
 	private TcManticOrdenesComprasDto orden;	
 	private List<Articulo> articulos;
 	private String messageError;
 	private TcManticOrdenesBitacoraDto bitacora;
 
-	public Transaccion(TcManticOrdenesBitacoraDto bitacora) {
+	public Transaccion(TcManticOrdenesComprasDto orden, TcManticOrdenesBitacoraDto bitacora) {
+		this(orden);
 		this.bitacora= bitacora;
 	}
 	
@@ -49,6 +55,7 @@ public class Transaccion extends IBaseTnx {
 	}
 
 	public Transaccion(TcManticOrdenesComprasDto orden, List<Articulo> articulos) {
+		super(orden.getIdAlmacen(), orden.getIdProveedor());
 		this.orden    = orden;		
 		this.articulos= articulos;
 	} // Transaccion
@@ -105,9 +112,10 @@ public class Transaccion extends IBaseTnx {
 						} // if	
 				  } // if	
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
-						this.orden= (TcManticOrdenesComprasDto) DaoFactory.getInstance().findById(sesion, TcManticOrdenesComprasDto.class, this.bitacora.getIdOrdenCompra());
 						this.orden.setIdOrdenEstatus(this.bitacora.getIdOrdenEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
+						if(this.orden.getIdOrdenEstatus().equals(6L)) 
+							this.toCommonNotaEntrada(sesion, -1L, this.orden.toMap());
 					} // if
 					break;
 			} // switch

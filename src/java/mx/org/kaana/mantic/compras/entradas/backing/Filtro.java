@@ -9,7 +9,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFacade;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -78,7 +77,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaNotasEntradasDto", params, columns);
       UIBackingUtilities.resetDataTable();
-			this.attrs.put("idNotaEstatus", null);
+			this.attrs.put("idNotaEntrada", null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -243,18 +242,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // finally
 	} // doLoadEstatus
 	
-	public void doActualizarEstatus(){
+	public void doActualizarEstatus() {
 		Transaccion transaccion          = null;
 		TcManticNotasBitacoraDto bitacora= null;
 		Entity seleccionado              = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			bitacora= new TcManticNotasBitacoraDto();
-			bitacora.setIdNotaEntrada(seleccionado.getKey());
-			bitacora.setIdNotaEstatus(Long.valueOf(this.attrs.get("estatus").toString()));
-			bitacora.setJustificacion((String) this.attrs.get("justificacion"));
-			bitacora.setIdUsuario(JsfBase.getIdUsuario());
-			transaccion= new Transaccion(bitacora);
+			bitacora= new TcManticNotasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), Long.valueOf(this.attrs.get("estatus").toString()));
+			transaccion= new Transaccion((TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, seleccionado.getKey()), bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
 			else
