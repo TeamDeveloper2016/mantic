@@ -192,7 +192,7 @@ $.mask.masks = $.extend($.mask.masks, {
 				params= {default: 0};
 		  if(typeof(params.default)=== 'undefined')
 				params.default= 0;
-      if (janal.empty(value))
+      if (janal.empty(value) || $(element).hasClass('ignore'))
 				$(element).val(params.default);
 		  else		
         if(Number.isNaN(parseInt(value, 10)) || parseInt(value, 10)< parseInt(params.default, 10))
@@ -265,7 +265,7 @@ $.mask.masks = $.extend($.mask.masks, {
     });
 
   $.validator.addMethod('rellenar-caracter', function(value, element, params) {
-      if (janal.empty(value))
+      if (janal.empty(value) || $(element).hasClass('ignore'))
         return true;
       else
         if(typeof(params.cuantos)=== 'undefined') {
