@@ -341,7 +341,7 @@ $.mask.masks = $.extend($.mask.masks, {
     });
 
   $.validator.addMethod('mayor', function(value, element, params) {
-      if (janal.empty(value))
+      if (janal.empty(value) || $(element).hasClass('ignore'))
         return true;
       else
         if(typeof(params.cuanto)=== 'undefined') {
@@ -369,7 +369,7 @@ $.mask.masks = $.extend($.mask.masks, {
     });
 
   $.validator.addMethod('menor', function(value, element, params) {
-      if (janal.empty(value))
+      if (janal.empty(value) || $(element).hasClass('ignore'))
         return true;
       else
         if(typeof(params.cuanto)=== 'undefined') {
