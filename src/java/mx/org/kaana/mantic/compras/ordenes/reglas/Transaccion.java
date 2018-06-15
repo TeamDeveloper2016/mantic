@@ -114,7 +114,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.orden.setIdOrdenEstatus(this.bitacora.getIdOrdenEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-						if(this.orden.getIdOrdenEstatus().equals(6L)) 
+						if(this.orden.getIdOrdenEstatus().equals(8L)) 
 							this.toCommonNotaEntrada(sesion, -1L, this.orden.toMap());
 					} // if
 					break;
