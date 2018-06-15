@@ -315,7 +315,7 @@ $.mask.masks = $.extend($.mask.masks, {
     });
     
 	$.validator.addMethod('max-caracteres', function(value, element, params) {
-      if (janal.empty(value))
+      if (janal.empty(value) || $(element).hasClass('ignore'))
         return true;
       else 
         if(typeof(params.cuantos)=== 'undefined')
@@ -327,7 +327,7 @@ $.mask.masks = $.extend($.mask.masks, {
     });
     
   $.validator.addMethod('min-caracteres', function(value, element, params) {
-      if (janal.empty(value))
+      if (janal.empty(value) || $(element).hasClass('ignore'))
         return true;
       else
         if(typeof(params.cuantos)=== 'undefined') {
@@ -355,7 +355,7 @@ $.mask.masks = $.extend($.mask.masks, {
     });
 		
   $.validator.addMethod('max-valor', function(value, element, params) {
-      if (janal.empty(value))
+      if (janal.empty(value) || $(element).hasClass('ignore'))
         return true;
       else
         if(typeof(params.cuanto)=== 'undefined') {
@@ -383,7 +383,7 @@ $.mask.masks = $.extend($.mask.masks, {
     });
 		
   $.validator.addMethod('min-valor', function(value, element, params) {
-      if (janal.empty(value))
+      if (janal.empty(value) || $(element).hasClass('ignore'))
         return true;
       else
         if(typeof(params.cuanto)=== 'undefined') {
@@ -430,21 +430,21 @@ $.mask.masks = $.extend($.mask.masks, {
     });
 
 	$.validator.addMethod('entero', function(value, element, params) {
-	  	if (janal.empty(value))
+	  	if (janal.empty(value) || $(element).hasClass('ignore'))
 		  	return true;
 		  else
 			  return /^([0-9])*$/.test(janal.cleanToken(value));
 		}, 'Solo acepta n\u00FAmeros enteros.');
 
   $.validator.addMethod('entero-signo', function(value, element, params) {
-      if (janal.empty(value))
+      if (janal.empty(value) || $(element).hasClass('ignore'))
         return true;
       else
         return /^[-|+|]([0-9])*$/.test(janal.cleanToken(value));
     }, 'Solo acepta n\u00FAmeros enteros.');
 
   $.validator.addMethod('valor-simple', function(value, element, params) {
-      if (janal.empty(value))
+      if (janal.empty(value) || $(element).hasClass('ignore'))
         return true;
       else
         return /^([0-9]|[-]|[.]|[,])+$/.test(janal.cleanToken(value));
@@ -452,7 +452,7 @@ $.mask.masks = $.extend($.mask.masks, {
 
 	$.validator.addMethod('telefono', function(value, element, params) {
       value= janal.cleanToken(value);
-			if (janal.empty(value))
+			if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else {
         value= janal.remove(value, ['\\\ ', '\\\,', '\\\$', '\\\(', '\\\)', '\\\-']);
@@ -461,7 +461,7 @@ $.mask.masks = $.extend($.mask.masks, {
 		}, 'No es v\u00E1lido el n\u00FAmero de tel\u00E9fono.');
 
 	$.validator.addMethod('contiene-a', function(value, element, params) {
-		  if (janal.empty(value))
+		  if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else
         if(typeof(params.valores)=== 'undefined') {
@@ -475,7 +475,7 @@ $.mask.masks = $.extend($.mask.masks, {
     });
 
 	$.validator.addMethod('igual-a', function(value, element, params) {
-		  if (janal.empty(value))
+		  if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else
         if(typeof(params.cual)=== 'undefined') {
@@ -489,7 +489,7 @@ $.mask.masks = $.extend($.mask.masks, {
     });
 
 	$.validator.addMethod('menor-a', function(value, element, params) {
-		  if (janal.empty(value))
+		  if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else
         if(typeof(params.cual)=== 'undefined') {
@@ -503,7 +503,7 @@ $.mask.masks = $.extend($.mask.masks, {
     });
 
 	$.validator.addMethod('mayor-a', function(value, element, params) {
-		  if (janal.empty(value))
+		  if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else
         if(typeof(params.cual)=== 'undefined') {
@@ -529,14 +529,14 @@ $.mask.masks = $.extend($.mask.masks, {
 		}, 'No es v\u00E1lido, debe ser cantidad monetaria con decimales.');
 
 	$.validator.addMethod('flotante', function(value, element, params) {
-      if (janal.empty(value))
+      if (janal.empty(value) || $(element).hasClass('ignore'))
         return true;
       else
         return (/^[0-9]+[\.]{0,1}\d*$/.test(janal.cleanToken(value)) && value.search(/^[0-9]+[\.]$/));
     }, 'Solo acepta n\u00FAmeros flotantes sin signo.');
 
   $.validator.addMethod('flotante-signo', function(value, element, params){
-      if (janal.empty(value))
+      if (janal.empty(value) || $(element).hasClass('ignore'))
         return true;
       else
 			  return (/^[-|+|]([1-9])+[\.]{0,1}\d*$/.test(janal.cleanToken(value)) && value.search(/^[-|+|]([1-9])+[\.]$/));
@@ -544,28 +544,28 @@ $.mask.masks = $.extend($.mask.masks, {
 
 	$.validator.addMethod(
 		'mayusculas', function(value, element, params) {
-			if (janal.empty(value))
+			if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else
 				return /^[A-Z]|[\s]+$/.test(value);
 		}, 'Solo acepta texto en may\u00FAsculas.');
 	
 	$.validator.addMethod('minusculas', function(value, element, params) {
-			if (janal.empty(value))
+			if (janal.empty(value) || $(element).hasClass('ignore'))
 			  return true;
 			else
 			  return /^[a-z]|[\s]+$/.test(value);
 		}, 'Solo acepta texto en min\u00FAsculas.');
 
   $.validator.addMethod('vocales', function(value, element, params) {
-			if (janal.empty(value))
+			if (janal.empty(value) || $(element).hasClass('ignore'))
 			  return true;
 			else
 			  return /^[a|e|i|o|u]+$/.test(value);
 		}, 'Solo acepta un texto de puras vocales.');
 
 	$.validator.addMethod('rango', function(value, element, params) {
-			if (janal.empty(value))
+			if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else
 				return (parseInt(value, 10)>= params.min && parseInt(value,10)<= params.max);	
@@ -574,7 +574,7 @@ $.mask.masks = $.extend($.mask.masks, {
     });
 
 	$.validator.addMethod('secuencia-palabra', function(value, element, params) {
-			if (janal.empty(value))
+			if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else {
 				var count = 0;
@@ -595,7 +595,7 @@ $.mask.masks = $.extend($.mask.masks, {
 		}, 'El valor no se encuentra en el rango permitido.');
 
 	$.validator.addMethod('longitud', function(value, element, params) {
-			if (janal.empty(value))
+			if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else
         if(typeof(params.min)=== 'undefined' || typeof(params.max)=== 'undefined') {
@@ -609,7 +609,7 @@ $.mask.masks = $.extend($.mask.masks, {
     });
 		
 	$.validator.addMethod('letras', function(value, element, params) {
-		   if (janal.empty(value))
+		   if (janal.empty(value) || $(element).hasClass('ignore'))
 				 return true;
 		   else
 				 return /^([a-z]|[A-Z])+$/.test(value);
@@ -617,7 +617,7 @@ $.mask.masks = $.extend($.mask.masks, {
 
 	$.validator.addMethod(
 		'texto', function(value, element, params) {
-  		 if (janal.empty(value))
+  		 if (janal.empty(value) || $(element).hasClass('ignore'))
 	  			return true;
 		   else
 			   return /^([0-9]|[A-Z]|[a-z]|á|é|í|ó|ú|Á|É|Í|Ó|Ú|ñ|Ñ|\ |,|.|;|:)+$/.test(value);
@@ -625,56 +625,56 @@ $.mask.masks = $.extend($.mask.masks, {
 
   $.validator.addMethod(
 		'libre', function(value, element, params) {
-  		 if (janal.empty(value))
+  		 if (janal.empty(value) || $(element).hasClass('ignore'))
 	  			return true;
 		   else
 			   return /^([0-9]|[A-Z]|[a-z]|á|é|í|ó|ú|Á|É|Í|Ó|Ú|ñ|Ñ|\ |,|.|;|:|(|)|@|-|=|%|#|~|^|&|{|}|[|]|")+$/.test(value);
 		}, 'No se permite caracteres alfanum\u00E9ricos y algunos caracteres, ejemplo: ,;:.');
 		
 	$.validator.addMethod('curp', function(value, element, params) {
-			if (janal.empty(value))
+			if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 		  else
 			  return /^([A-Za-z]{4})([\d]{6})([Hh|Mm])([A-Za-z]{5})([A|0-9]{1})([0-9]{1})$/.test(value);
 		}, 'Formato de la CURP no es v\u00E1lido.');
 
 	$.validator.addMethod('rfc', function(value, element, params) {
-			if (janal.empty(value))
+			if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 	    else
   			return /^([A-Za-z]{4})([\d]{6})$/.test(value) && janal.isDate('19'+ value.substring(4,6), value.substring(6,8), value.substring(8,10));
 		}, 'Formato del RFC no es v\u00E1lido.');
 
 	$.validator.addMethod('texto-especial', function(value, element, params) {
- 		  if (janal.empty(value))
+ 		  if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 		  else
 				return /^([a-z]|[A-Z]|[0-9]|[?|+|-|\/|?|:|-|{|}|;|,|_|ñ|Ñ|@|\[|\]|\ ])+$/.test(value);
 	 }, 'No se permite caracteres alfanum\u00E9ricos y algunos caracteres, ejemplo: +-*/{}[]@|,;:.');
 
 	$.validator.addMethod('boleano',function(value, element, params){
-			if (janal.empty(value))
+			if (janal.empty(value) || $(element).hasClass('ignore'))
 		 		return true;
 		  else
 			  return /^([Ss|Nn])$/.test(value);
 		}, 'Solo se permiten los caracteres S,s o N,n.');
 
 	$.validator.addMethod('resultado-entrevista-modulo', function(value, element, params) {
-			if (janal.empty(value))
+			if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else
 				return '01|02|A1|A2|A3|A4|A5|A6|A7'.indexOf(value)>= 0;
 		}, 'No es un resultado de entrevista valido del cuestionario modulo.');
 			
 	$.validator.addMethod('resultado-entrevista-basico', function(value, element, params) {
-			if (janal.empty(value))
+			if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else
 				return '01|02|A1|A2|A3|A4|A5|A6|A7|B1|B2|B3|C1|C2|C3|C4'.indexOf(value)>= 0;
 		}, 'No es un resultado de entrevista v\u00E1lido del cuestionario b\u00E1sico.');
 
 	$.validator.addMethod('fecha', function(value, element, params) {
-			if (janal.empty(value))
+			if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else
 			  return janal.isCustomDate(value);
@@ -683,7 +683,7 @@ $.mask.masks = $.extend($.mask.masks, {
     });	
 
 	$.validator.addMethod('fecha-menor', function(value, element, params) {
-			if (janal.empty(value))
+			if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else
         if(janal.isCustomDate(value))
@@ -709,7 +709,7 @@ $.mask.masks = $.extend($.mask.masks, {
     });	
 
 	$.validator.addMethod('fecha-mayor', function(value, element, params) {
-			if (janal.empty(value))
+			if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else
         if(janal.isCustomDate(value))
@@ -735,7 +735,7 @@ $.mask.masks = $.extend($.mask.masks, {
     });	
 
 	$.validator.addMethod('registro', function(value, element, params) {
-			if(janal.empty(value))
+			if(janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else
 				if(/^([\d]{2})\/([\d]{2})\/([\d]{4})[\s]([\d]{2}):([\d]{2}):([\d]{2})$/.test(value)) {
@@ -747,21 +747,21 @@ $.mask.masks = $.extend($.mask.masks, {
 		}, 'Formato de la fecha y hora es inv\u00E1lida, el formato es [dd/mm/yyyy HH:MM:SS].');
 
 	$.validator.addMethod('hora', function(value, element, params) {
-			if(janal.empty(value))
+			if(janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else
 				return /^(0[0-9]|1\d|2[0-3]):([0-5]\d)$/.test(value);
 		}, 'Formato de la hora es incorrecta, el formato es a 24 hrs [HH:MM].');
 
 	$.validator.addMethod('hora-completa', function(value, element, params) {
-			if(janal.empty(value))
+			if(janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else
 				return /^(0[0-9]|1\d|2[0-3]):([0-5]\d):([0-5]\d)$/.test(value);
 		}, 'Formato de la hora es incorrecta, el formato es 24 hrs [HH:MM:SS].');
 
 	$.validator.addMethod('hora-menor', function(value, element, params) {
-			if (janal.empty(value))
+			if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else {
         if(value.length=== 5)
@@ -795,7 +795,7 @@ $.mask.masks = $.extend($.mask.masks, {
     });	
 
 	$.validator.addMethod('hora-mayor', function(value, element, params) {
-			if (janal.empty(value))
+			if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else {
         if(value.length=== 5)
@@ -829,7 +829,7 @@ $.mask.masks = $.extend($.mask.masks, {
     });	
 
 	$.validator.addMethod('comodin', function(value, element, params) {
-		  if (janal.empty(value))
+		  if (janal.empty(value) || $(element).hasClass('ignore'))
 			  return true;
 		  else
         if(typeof(params.expresion)=== 'undefined') {
@@ -841,7 +841,7 @@ $.mask.masks = $.extend($.mask.masks, {
 		}, 'Uno de los caracter no se encuentra en la cadena especificada.');
 
 	$.validator.addMethod('no-permitir', function(value, element, params) {
-		  if (janal.empty(value))
+		  if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 		  else
         if(typeof(params.valor)=== 'undefined') {
@@ -863,7 +863,7 @@ $.mask.masks = $.extend($.mask.masks, {
   }, 'Direcci\u00F3n IPv6 es inv\u00E1lida.');
 
 	$.validator.addMethod('esta-en', function(value, element, params) {
-		  if (janal.empty(value))
+		  if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 			else
         if(typeof(params.valores)=== 'undefined') {
@@ -888,7 +888,7 @@ $.mask.masks = $.extend($.mask.masks, {
     });
 	
 	$.validator.addMethod('correo', function(value, element) {				
-		if(janal.empty(value))
+		if(janal.empty(value) || $(element).hasClass('ignore'))
 			return true;
 		else {
 			expresionCorreo= /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
@@ -897,7 +897,7 @@ $.mask.masks = $.extend($.mask.masks, {
    }, 'Correo es inv\u00E1lido.');
    
 	$.validator.addMethod('acceso', function(value, element) {
-	  	if (janal.empty(value))
+	  	if (janal.empty(value) || $(element).hasClass('ignore'))
 		  	return true;
 		  else
 			  return /^([^%'])*$/.test(value);
