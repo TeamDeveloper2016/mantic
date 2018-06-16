@@ -214,6 +214,7 @@ public class Transaccion extends Inventarios implements Serializable {
 	
 	private void toCheckOrden(Session sesion) throws Exception {
 		try {
+			sesion.flush();
 			if(this.orden.getIdDirecta().equals(2L)) {
         TcManticOrdenesComprasDto ordenCompra= (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(sesion, TcManticOrdenesComprasDto.class, this.orden.getIdOrdenCompra());
   		  Value errors= DaoFactory.getInstance().toField(sesion, "VistaNotasEntradasDto", "errores", this.orden.toMap(), "total");

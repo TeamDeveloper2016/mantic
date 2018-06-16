@@ -555,7 +555,7 @@
 					1 as tipo_de_cambio, 
 					tc_mantic_articulos.nombre, 
 					tc_mantic_ordenes_detalles.codigo, 
-					tc_mantic_ordenes_detalles.costo, 
+					0 as costo, 
 					tc_mantic_ordenes_detalles.costo as valor, 
 					"0" as descuento, 
 					tc_mantic_ordenes_detalles.id_orden_compra, 
