@@ -450,4 +450,34 @@ public class Accion extends IBaseArticulos implements Serializable {
 			throw e;
 		} // catch		
 	} // doAsignaClienteTicketAbierto
+	
+	public String doClientes(){
+		String regresar= null;
+		try {
+			JsfBase.setFlashAttribute("puntoVenta", true);
+			regresar= "/Paginas/Mantic/Catalogos/Clientes/filtro.jsf".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		return regresar;
+	} // doClientes
+	
+	public void doDetailArticulo(Long idArticulo, Integer index) {
+		MotorBusqueda motor= null;
+		Entity detailArt   = null;
+		try {
+			if(idArticulo!= null){
+				motor= new MotorBusqueda(idArticulo);
+				detailArt= motor.toDetalleArticulo();
+				this.attrs.put("detailArticulo", detailArt);
+				RequestContext.getCurrentInstance().execute("PF('dlgDetalleArt').show();");
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doDetailArticulo
 }
