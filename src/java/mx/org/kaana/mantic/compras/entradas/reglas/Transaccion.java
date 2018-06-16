@@ -219,7 +219,7 @@ public class Transaccion extends Inventarios implements Serializable {
         TcManticOrdenesComprasDto ordenCompra= (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(sesion, TcManticOrdenesComprasDto.class, this.orden.getIdOrdenCompra());
   		  Value errors= DaoFactory.getInstance().toField(sesion, "VistaNotasEntradasDto", "errores", this.orden.toMap(), "total");
 			  if(errors.toLong()!= null && errors.toLong()== 0) {
-				  ordenCompra.setIdOrdenEstatus(7L); // TERMINADA
+				  ordenCompra.setIdOrdenEstatus(6L); // TERMINADA
 					this.toApplyNotaEntrada(sesion);
 				} // if	
 				else
