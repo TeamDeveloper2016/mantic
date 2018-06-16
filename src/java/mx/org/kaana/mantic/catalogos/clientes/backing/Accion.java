@@ -63,6 +63,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   @Override
   protected void init() {
     try {
+      this.attrs.put("puntoVenta", JsfBase.getFlashAttribute("puntoVenta"));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));
 			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin());
@@ -129,6 +130,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       transaccion = new Transaccion(this.registroCliente);
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
+				JsfBase.setFlashAttribute("puntoVenta", this.attrs.get("puntoVenta"));
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
         JsfBase.addMessage("Se registro el cliente de forma correcta.", ETipoMensaje.INFORMACION);
       } // if
@@ -144,6 +146,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 
   public String doCancelar() {
+		JsfBase.setFlashAttribute("puntoVenta", this.attrs.get("puntoVenta"));
     return "filtro".concat(Constantes.REDIRECIONAR);
   } // doAccion
 
