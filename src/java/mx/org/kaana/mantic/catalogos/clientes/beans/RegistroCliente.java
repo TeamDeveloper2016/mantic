@@ -36,6 +36,7 @@ public class RegistroCliente implements Serializable{
 	private PersonaTipoContacto personaTipoContactoSeleccion;	
 	private ClienteContactoRepresentante personaTipoContactoPivote;	
 	private ClienteContactoRepresentante personaTipoContacto;	
+	private boolean habilitarCredito;
 
 	public RegistroCliente() {
 		this(-1L, new TcManticClientesDto(), new ArrayList<ClienteDomicilio>(), new ArrayList<ClienteTipoContacto>(), new ArrayList<ClienteRepresentante>(), new Domicilio(), new ArrayList<ClienteContactoRepresentante>(), new ClienteContactoRepresentante(), new ClienteContactoRepresentante());
@@ -49,7 +50,7 @@ public class RegistroCliente implements Serializable{
 		this.domicilio  = new Domicilio();
 		this.domicilioPivote= new Domicilio();
 		this.personaTipoContactoPivote= new ClienteContactoRepresentante();
-		this.personaTipoContacto= new ClienteContactoRepresentante();
+		this.personaTipoContacto= new ClienteContactoRepresentante();		
 		init();		
 	}
 	
@@ -66,7 +67,8 @@ public class RegistroCliente implements Serializable{
 		this.domicilioPivote       = domicilio;
 		this.personasTiposContacto = personasTiposContacto;
 		this.personaTipoContactoPivote= personaTipoContactoPivote;
-		this.personaTipoContacto= personaTipoContactoPivote;
+		this.personaTipoContacto   = personaTipoContactoPivote;
+		this.habilitarCredito      = cliente.getIdCredito().equals(1L);
 	}
 	
 	public Long getIdCliente() {
@@ -188,12 +190,22 @@ public class RegistroCliente implements Serializable{
 	public void setPersonaTipoContacto(ClienteContactoRepresentante personaTipoContacto) {
 		this.personaTipoContacto = personaTipoContacto;
 	}
+
+	public boolean isHabilitarCredito() {
+		return habilitarCredito;
+	}
+
+	public void setHabilitarCredito(boolean habilitarCredito) {
+		this.habilitarCredito = habilitarCredito;
+		this.cliente.setIdCredito(this.habilitarCredito ? 1L : 2L);
+	}	
 	
 	private void init(){
 		MotorBusqueda motorBusqueda= null;
 		try {
 			motorBusqueda= new MotorBusqueda(this.idCliente);
-			this.cliente= motorBusqueda.toCliente();									
+			this.cliente= motorBusqueda.toCliente();		
+			this.habilitarCredito= this.cliente.getIdCredito().equals(1L);
 			initCollections(motorBusqueda);
 		} // try
 		catch (Exception e) {			
