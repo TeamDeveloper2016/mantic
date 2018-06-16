@@ -219,6 +219,7 @@
 												<div class="ui-grid-row janal-grid-row">
 													<div class="ui-grid-col-12" style="padding-right: 14px;">
   	 										  	<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
+														<p:inputText id="locks" value="0" style="display:none"/>
 														<p:autoComplete id="codigos" widgetVar="submenu" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticComprasOrdendesAccion.attrs.articulo}" completeMethod="#{manticComprasOrdendesAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2"  maxResults="10">
 															<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
 															<f:facet name="itemtip">
@@ -325,7 +326,7 @@
 									    </div>	
 											<div class="ui-grid-col-2 janal-column-center ">
   											<p:outputLabel for="total" value="Total:"/><br/>
-												<p:inputText id="total" value="#{manticComprasOrdendesAccion.adminOrden.totales.articulos}" styleClass="recalculo" style="display:none"/>
+												<p:inputText id="total" value="#{manticComprasOrdendesAccion.adminOrden.totales.total}" styleClass="recalculo" style="display:none"/>
 												<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticComprasOrdendesAccion.adminOrden.totales.total$}"/>
 									    </div>	
 										</div>	

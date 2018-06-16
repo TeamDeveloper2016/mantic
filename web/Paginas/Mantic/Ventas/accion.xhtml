@@ -12,6 +12,8 @@
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.articulosJs}"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
+				'articulos': {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'articulo'},			
+				'total'    : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'articulo'},			
 				'descuento': {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'articulo'}			
 			};	
 			
@@ -125,6 +127,7 @@
 									<div class="ui-grid-row janal-grid-row">
 										<div class="ui-grid-col-12">
 											<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
+                      <p:inputText id="locks" value="0" style="display:none"/>
 											<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticVentasAccion.attrs.articulo}" completeMethod="#{manticVentasAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10">
 												<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
 												<f:facet name="itemtip">
@@ -215,6 +218,8 @@
 							</p:panelGrid>
 						</p:panelGrid>
 					</p:panelGrid>
+					<p:inputText id="articulos" value="#{manticVentasAccion.adminOrden.totales.articulos}" styleClass="recalculo" style="display:none"/>
+          <p:inputText id="total" value="#{manticVentasAccion.adminOrden.totales.total}" styleClass="recalculo" style="display:none"/>
 				</div>
 			</div>
 		</div>
