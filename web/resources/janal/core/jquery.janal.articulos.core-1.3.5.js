@@ -49,6 +49,7 @@
 		VK_PIPE     : 220,
 		VK_CTRL     : 17,
 		VK_MAYOR    : 226,
+		VK_F7       : 118,
 	    change      : [13, 27, 106, 107, 110, 111, 188, 189, 191, 220, 222, 226],
 		cursor: {
 			top: 1, // el top debera ser elementos que van de 0 a n-1
@@ -160,7 +161,7 @@
 						break;
 					case $articulos.VK_PIPE:
 						return $articulos.search();
-						break;
+						break;						
 					case $articulos.VK_MINUS:
 						$articulos.leavePage= true;
 						var txt= $(this).val().trim().length<= 0;
@@ -171,6 +172,9 @@
 						break;
 					case $articulos.VK_MAYOR:
 						return $articulos.show($(this));
+						break;
+					case $articulos.VK_F7:
+						return $articulos.detail();
 						break;
 					default:
 						break;
@@ -444,6 +448,11 @@
 		back: function(title, count) {
 			janal.console('jsArticulo.back: ');
 			alert('Se '+ title+ ' con consecutivo: '+ count);
+		},
+		detail: function(){
+			if(this.valid())
+				detail($(this.key()).val(), this.cursor.index);
+			return false;
 		}
 	});
 	

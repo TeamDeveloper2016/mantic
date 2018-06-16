@@ -7,6 +7,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 
 public class MotorBusqueda implements Serializable{
@@ -65,4 +66,21 @@ public class MotorBusqueda implements Serializable{
 		} // catch		
 		return regresar;
 	} // toCliente
+	
+	public Entity toDetalleArticulo() throws Exception{
+		Entity regresar          = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();			
+			params.put("idArticulo", this.idArticulo);
+			regresar= (Entity) DaoFactory.getInstance().toEntity("VistaArticulosDto", "detalle", params);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toDetalleArticulo
 }

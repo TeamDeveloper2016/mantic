@@ -30,7 +30,10 @@ public class Filtro extends IBaseFilter implements Serializable {
   @PostConstruct
   @Override
   protected void init() {
+		Object puntoVenta= null;		
     try {
+			puntoVenta= JsfBase.getFlashAttribute("puntoVenta");			
+			this.attrs.put("puntoVenta", puntoVenta!= null);
       this.attrs.put("sortOrder", "order by tc_mantic_clientes.razon_social");
       this.attrs.put("idPrincipal", 1L);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());     
@@ -67,6 +70,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     EAccion eaccion= null;
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
+			JsfBase.setFlashAttribute("puntoVenta", this.attrs.get("puntoVenta"));		
 			JsfBase.setFlashAttribute("accion", eaccion);		
 			JsfBase.setFlashAttribute("idCliente", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 		} // try
@@ -96,4 +100,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch			
   } // doEliminar
+	
+	public String doPuntoVenta(){
+		return "/Paginas/Mantic/Ventas/accion.jsf".concat(Constantes.REDIRECIONAR);
+	} // doPuntoVenta
 }

@@ -50,11 +50,7 @@
                 <p:outputLabel for="rfc" value="RFC:"/>
                 <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.rfc}" />                    
                 <p:outputLabel for="razonSocial" value="Razon social:"/>
-                <p:inputText id="razonSocial" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.razonSocial}"/>                    
-                <p:outputLabel for="limiteCredito" value="Limite de credito:"/>
-                <p:inputNumber id="limiteCredito" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosClientesAccion.registroCliente.cliente.limiteCredito}"/>                    																	
-                <p:outputLabel for="plazo" value="Plazo de días:"/>
-                <p:inputNumber id="plazo" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosClientesAccion.registroCliente.cliente.plazoDias}" decimalPlaces="0"/>                    																																	                
+                <p:inputText id="razonSocial" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.razonSocial}"/>                                    
 								<p:outputLabel for="tipoVenta" value="Tipo de venta:" rendered="#{manticCatalogosClientesAccion.attrs.admin}"/>
 								<p:selectOneMenu id="tipoVenta" value="#{manticCatalogosClientesAccion.registroCliente.cliente.idTipoVenta}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosClientesAccion.attrs.admin}">
 									<f:selectItems value="#{manticCatalogosClientesAccion.attrs.tiposVentas}"/>
@@ -241,6 +237,18 @@
 									</p:panelGrid>
 							</p:panelGrid>
             </p:tab>          
+            <p:tab title="Credito" rendered="#{manticCatalogosClientesAccion.attrs.admin}">
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+								<p:outputLabel for="habilitarCredito" value="Habilitar credito:"/>
+                <p:selectBooleanCheckbox id="habilitarCredito" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.habilitarCredito}"/>
+								<p:outputLabel for="limiteCredito" value="Limite de credito:"/>
+                <p:inputNumber id="limiteCredito" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosClientesAccion.registroCliente.cliente.limiteCredito}"/>
+                <p:outputLabel for="plazo" value="Plazo de días:"/>
+                <p:inputNumber id="plazo" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosClientesAccion.registroCliente.cliente.plazoDias}" decimalPlaces="0"/>
+                <p:outputLabel for="saldo" value="Saldo:"/>
+                <p:inputNumber id="saldo" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosClientesAccion.registroCliente.cliente.saldo}" decimalPlaces="0" disabled="true"/>
+							</p:panelGrid>
+						</p:tab>
             <p:tab title="Observaciones">
               <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-100">
                 <p:inputTextarea id="observaciones" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesAccion.registroCliente.cliente.observaciones}"/>  
