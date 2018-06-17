@@ -31,6 +31,7 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
+		<pe:remoteCommand name="userUpdate" process="@this" update="dialogoCloseTicket" actionListener="#{manticVentasAccion.doLoadUsers}" onstart="janal.bloquear()"/>  			
 		<pe:remoteCommand name="loadTicketAbiertos" process="@this" update="dialogoOpenTickets" actionListener="#{manticVentasAccion.doLoadTicketAbiertos}" onstart="janal.bloquear()"/>  			
 		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticVentasAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
@@ -313,17 +314,27 @@
 				<p:commandButton icon="fa fa-close" styleClass="janal-text-white" process="@none" value="Cerrar" onstart="PF('dlgDetalleArt').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>		
-		<p:dialog id="dialogoCloseTicket" widgetVar="dlgCloseTicket" header="Cerrar ticket" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();">			
-			<h:panelGrid columns="1" columnClasses="janal-column-center">
-				<p:outputLabel value="Al cerrar la venta actual quedará abierta y podras finalizarla posteriormente"/>
-				<p:outputLabel value="¿ Deseas continuar con el cierre de la venta actual ?"/>
+		<p:dialog id="dialogoCloseTicket" widgetVar="dlgCloseTicket" header="Cambio de usuario" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false">			
+			<h:panelGrid columns="2" columnClasses="janal-wid-10, janal-wid-100">
+				<p:outputLabel for="vendedor" value="Vendedor:"/>
+				<p:selectOneMenu id="vendedor" value="#{manticVentasAccion.attrs.vendedor}" var="item" styleClass="janal-wid-98" converter="janal.convertidor.Entity">
+					<f:selectItems value="#{manticVentasAccion.attrs.vendedores}" var="element" itemValue="#{element}" itemLabel="#{element.cuenta} - #{element.nombreCompleto}"/>
+					<p:column headerText="Cuenta">
+						<h:outputText value="#{item.cuenta}"/>
+					</p:column>   
+					<p:column headerText="Nombre">
+						<h:outputText value="#{item.nombreCompleto}"/>
+					</p:column>   						
+				</p:selectOneMenu>
+				<p:outputLabel for="passwordUsuario" value="Password:"/>
+				<p:password id="passwordUsuario" value="#{manticVentasAccion.attrs.contraseniaCaptura}" styleClass="janal-wid-100-txt"/>
 			</h:panelGrid>			
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
 				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@form" value="Aceptar" onstart="PF('dlgCloseTicket').hide();" action="#{manticVentasAccion.doCerrarTicket}" oncomplete="janal.desbloquear();"/>
 				<p:commandButton icon="fa fa-remove" styleClass="janal-text-white" process="@none" value="Cancelar" onstart="PF('dlgCloseTicket').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
-		</p:dialog>		
+		</p:dialog>			
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
