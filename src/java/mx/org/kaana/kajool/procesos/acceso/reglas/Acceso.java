@@ -16,12 +16,9 @@ import mx.org.kaana.kajool.procesos.acceso.exceptions.AccesoDenegadoException;
 import mx.org.kaana.kajool.procesos.acceso.exceptions.BloqueoSitioException;
 import mx.org.kaana.kajool.procesos.beans.Usuario;
 import mx.org.kaana.kajool.procesos.beans.UsuariosEnLinea;
-import mx.org.kaana.kajool.seguridad.filters.control.LockUser;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.formato.Cadena;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.procesos.acceso.perfil.reglas.RegistroPerfil;
 import mx.org.kaana.libs.reflection.Methods;
 
@@ -40,15 +37,15 @@ public class Acceso implements Serializable {
   }
 
   public String toForward() throws Exception {
-    String regresar = null;
-    Transaccion transaccion = null;
-    Map<String, Object> params = null;
-    Value value = null;
-    String temaActivo = null;
+    String regresar           = null;
+    Transaccion transaccion   = null;
+    Map<String, Object> params= null;
+    Value value               = null;
+    String temaActivo         = null;
     try {
-      params = new HashMap<String,Object>();
+      params= new HashMap<>();
       params.put(Constantes.SQL_CONDICION, "cuenta='".concat(getCliente().getCuenta()).concat("'"));
-      value = DaoFactory.getInstance().toField("TcManticPersonasDto", "row", params, "curp");
+      value= DaoFactory.getInstance().toField("TcManticPersonasDto", "row", params, "curp");
       if ((value.getData() != null) && (getCliente().getContrasenia().equals(value.toString().substring(0, 10)))) {
         regresar = "/Exclusiones/confirmacion.jsf".concat(Constantes.REDIRECIONAR);
       } // if
