@@ -68,6 +68,7 @@
       <select id="cambioUsuarioAutentifica">
         select
 					tc_janal_usuarios.id_usuario as id_key, 
+					tc_janal_usuarios.id_usuario, 
 					tc_mantic_personas.cuenta, 
 					tc_mantic_personas.contrasenia, 
 					tc_janal_usuarios.registro, 
