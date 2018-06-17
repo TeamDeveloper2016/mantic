@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.compras.entradas.beans;
+package mx.org.kaana.mantic.inventarios.entradas.beans;
 
 import java.io.Serializable;
 import java.sql.Date;

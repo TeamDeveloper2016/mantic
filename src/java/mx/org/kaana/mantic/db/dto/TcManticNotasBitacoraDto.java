@@ -48,24 +48,30 @@ public class TcManticNotasBitacoraDto implements IBaseDto, Serializable {
   private Long idNotaEstatus;
   @Column (name="registro")
   private Timestamp registro;
+  @Column (name="consecutivo")
+  private String consecutivo;
+  @Column (name="importe")
+  private Double importe;
 
   public TcManticNotasBitacoraDto() {
     this(new Long(-1L));
   }
 
   public TcManticNotasBitacoraDto(Long key) {
-    this(new Long(-1L), null, null, null, null);
+    this(new Long(-1L), null, null, null, null, "", 0D);
     setKey(key);
   }
 
-  public TcManticNotasBitacoraDto(Long idNotaBitacora, String justificacion, Long idUsuario, Long idNotaEntrada, Long idNotaEstatus) {
+  public TcManticNotasBitacoraDto(Long idNotaBitacora, String justificacion, Long idUsuario, Long idNotaEntrada, Long idNotaEstatus, String consecutivo, Double importe) {
     setIdNotaBitacora(idNotaBitacora);
     setJustificacion(justificacion);
     setIdUsuario(idUsuario);
     setIdNotaEntrada(idNotaEntrada);
     setIdNotaEstatus(idNotaEstatus);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-  }
+    setConsecutivo(consecutivo);
+    setImporte(importe);
+}
 	
   public void setIdNotaBitacora(Long idNotaBitacora) {
     this.idNotaBitacora = idNotaBitacora;
@@ -115,6 +121,22 @@ public class TcManticNotasBitacoraDto implements IBaseDto, Serializable {
     return registro;
   }
 
+	public String getConsecutivo() {
+		return consecutivo;
+	}
+
+	public void setConsecutivo(String consecutivo) {
+		this.consecutivo=consecutivo;
+	}
+
+	public Double getImporte() {
+		return importe;
+	}
+
+	public void setImporte(Double importe) {
+		this.importe=importe;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -141,6 +163,10 @@ public class TcManticNotasBitacoraDto implements IBaseDto, Serializable {
 		regresar.append(getIdNotaEstatus());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getConsecutivo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getImporte());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -154,13 +180,15 @@ public class TcManticNotasBitacoraDto implements IBaseDto, Serializable {
 		regresar.put("idNotaEntrada", getIdNotaEntrada());
 		regresar.put("idNotaEstatus", getIdNotaEstatus());
 		regresar.put("registro", getRegistro());
+		regresar.put("consecutivo", getConsecutivo());
+		regresar.put("importe", getImporte());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdNotaBitacora(), getJustificacion(), getIdUsuario(), getIdNotaEntrada(), getIdNotaEstatus(), getRegistro()
+    getIdNotaBitacora(), getJustificacion(), getIdUsuario(), getIdNotaEntrada(), getIdNotaEstatus(), getRegistro(), getConsecutivo(), getImporte()
     };
     return regresar;
   }

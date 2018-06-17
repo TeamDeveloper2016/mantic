@@ -239,7 +239,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getIdArticulo(), 
 			this.getDescuentos(), 
 			this.getImpuestos(),
-			this.getIdOrdenDetalle()
+			this.getIdOrdenDetalle(),
+			this.getCantidad()
 		);
 	}
 

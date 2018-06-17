@@ -71,13 +71,13 @@
             </p:column>		
             <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.cantidades}">
               <f:facet name="header">
-                <h:outputText value="[+/-]Cantidad"/>
+                <h:outputText value="Cantidad [+/-]"/>
               </f:facet>
               <h:outputText value="#{filtro['cantidades']}"/>
             </p:column>		
             <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importes}">
               <f:facet name="header">
-                <h:outputText value="[+/-]Importe"/>
+                <h:outputText value="Importe [+/-]"/>
               </f:facet>
               <h:outputText value="#{filtro['importes']}" title="Diferencia: #{filtro['porcentaje']} %"/>
             </p:column>		
@@ -120,15 +120,15 @@
             </p:column>		
             <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{filtro.propio}">
               <f:facet name="header">
-                <h:outputText value="Código"/>
+                <h:outputText value="Propio"/>
               </f:facet>
-              <h:outputText value="#{filtro['propio']}"/>
+              <h:outputText value="#{filtro['propio']}" title="Código SAT: #{filtro['sat']}"/>
             </p:column>		
             <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{filtro.codigo}">
               <f:facet name="header">
-                <h:outputText value="Proveedor"/>
+                <h:outputText value="Código"/>
               </f:facet>
-              <h:outputText value="#{filtro['codigo']}"/>
+              <h:outputText value="#{filtro['codigo']}" title="Código SAT: #{filtro['sat']}"/>
             </p:column>		
             <p:column class="MarAuto Responsive" sortBy="#{filtro.nombre}">
               <f:facet name="header">

@@ -123,7 +123,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 			if(!nota.getIdNotaEstatus().equals(3L) && !nota.getIdNotaEntrada().equals(idNotaEntrada)) {
 				nota.setIdNotaEstatus(3L);
 				DaoFactory.getInstance().update(sesion, nota);
-				TcManticNotasBitacoraDto registro= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), nota.getIdNotaEntrada(), nota.getIdNotaEstatus());
+				TcManticNotasBitacoraDto registro= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), nota.getIdNotaEntrada(), nota.getIdNotaEstatus(), nota.getConsecutivo(), nota.getTotal());
 				DaoFactory.getInstance().insert(sesion, registro);
 				
     		// Recuperar el detalle de las notas de entrada para afectas inventarios 

@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.compras.entradas.reglas;
+package mx.org.kaana.mantic.inventarios.entradas.reglas;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -90,7 +90,7 @@ public class Transaccion extends Inventarios implements Serializable {
   				if(this.aplicar)
 						this.orden.setIdNotaEstatus(3L);
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
-					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus());
+					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 					this.toFillArticulos(sesion);
 					this.toCheckOrden(sesion);
@@ -98,7 +98,7 @@ public class Transaccion extends Inventarios implements Serializable {
 				case MODIFICAR:
   				if(this.aplicar) {
 						this.orden.setIdNotaEstatus(3L);
-  					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus());
+  					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 	  				regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 					} // if	
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
@@ -113,7 +113,7 @@ public class Transaccion extends Inventarios implements Serializable {
 						regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params)>= 1L;
 						regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
             this.orden.setIdNotaEstatus(2L);
-						bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L);
+						bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L, this.orden.getConsecutivo(), this.orden.getTotal());
 						regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 						this.toCheckOrden(sesion);
 					}
@@ -129,7 +129,7 @@ public class Transaccion extends Inventarios implements Serializable {
 							regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params)>= 1L;
 							regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
 							this.orden.setIdNotaEstatus(2L);
-							bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L);
+							bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L, this.orden.getConsecutivo(), this.orden.getTotal());
 							regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
               this.toCheckOrden(sesion);
 						} // if	
@@ -225,7 +225,7 @@ public class Transaccion extends Inventarios implements Serializable {
 				else
 					ordenCompra.setIdOrdenEstatus(5L); // INCOMPLETA
 				DaoFactory.getInstance().update(sesion, ordenCompra);
-				TcManticOrdenesBitacoraDto estatus= new TcManticOrdenesBitacoraDto(ordenCompra.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L);
+				TcManticOrdenesBitacoraDto estatus= new TcManticOrdenesBitacoraDto(ordenCompra.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), ordenCompra.getIdOrdenCompra(), -1L, ordenCompra.getConsecutivo(), this.orden.getTotal());
 				DaoFactory.getInstance().insert(sesion, estatus);
 			} // if
 		} // try
@@ -250,7 +250,7 @@ public class Transaccion extends Inventarios implements Serializable {
 		} // for
 		this.orden.setIdNotaEstatus(3L);
 		DaoFactory.getInstance().update(sesion, this.orden);
-		TcManticNotasBitacoraDto registro= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus());
+		TcManticNotasBitacoraDto registro= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 		DaoFactory.getInstance().insert(sesion, registro);
 		this.toCommonNotaEntrada(sesion, this.orden.getIdNotaEntrada(), this.orden.toMap());
 	}

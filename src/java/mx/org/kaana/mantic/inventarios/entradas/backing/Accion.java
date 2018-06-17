@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.compras.entradas.backing;
+package mx.org.kaana.mantic.inventarios.entradas.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -21,9 +21,9 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.compras.entradas.beans.NotaEntrada;
-import mx.org.kaana.mantic.compras.entradas.reglas.AdminNotas;
-import mx.org.kaana.mantic.compras.entradas.reglas.Transaccion;
+import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
+import mx.org.kaana.mantic.inventarios.entradas.reglas.AdminNotas;
+import mx.org.kaana.mantic.inventarios.entradas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import org.primefaces.context.RequestContext;
@@ -37,7 +37,7 @@ import org.primefaces.event.TabChangeEvent;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-@Named(value= "manticComprasEntradasAccion")
+@Named(value= "manticInventariosEntradasAccion")
 @ViewScoped
 public class Accion extends IBaseArticulos implements Serializable {
 

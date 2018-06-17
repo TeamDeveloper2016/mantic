@@ -156,11 +156,7 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar                  = false;
 		TcManticVentasBitacoraDto bitVenta= null;
 		try {
-			bitVenta= new TcManticVentasBitacoraDto();
-			bitVenta.setIdUsuario(JsfBase.getIdUsuario());
-			bitVenta.setIdVenta(idVenta);
-			bitVenta.setIdVentaEstatus(idVentaEstatus);
-			bitVenta.setJustificacion(justificacion);
+			bitVenta= new TcManticVentasBitacoraDto(-1L, justificacion, JsfBase.getIdUsuario(), idVenta, idVentaEstatus, this.orden.getConsecutivo(), this.orden.getTotal());
 			regresar= DaoFactory.getInstance().insert(sesion, bitVenta)>= 1L;
 		} // try
 		catch (Exception e) {			

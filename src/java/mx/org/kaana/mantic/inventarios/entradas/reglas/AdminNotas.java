@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.compras.entradas.reglas;
+package mx.org.kaana.mantic.inventarios.entradas.reglas;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.compras.entradas.beans.NotaEntrada;
+import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.comun.IAdminArticulos;

@@ -7,6 +7,89 @@
   </model>
 
   <dml>	
+   <unit id="TcManticDevolucionesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_devoluciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_devoluciones
+        where      
+          id_empresa = {idEmpresa} and orden = {orden} and id_nota_entrada = {idNotaEntrada} and ejercicio = {ejercicio} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>		
+    <unit id="TcManticDevolucionesBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_devoluciones_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_devoluciones_bitacora
+        where      
+          id_devolucion_estatus = {idDevolucionEstatus} and id_devolucion = {idDevolucion} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>		
+    <unit id="TcManticDevolucionesDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_devoluciones_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_devoluciones_detalles
+        where      
+         id_devoluciones = {idDevoluciones} and id_nota_detalle = {idNotaDetalle} and cantidad = {cantidad} and id_devolucion_detalle = {idDevolucionDetalle} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+      <select id="detalle">
+        select      
+				  tc_mantic_devoluciones_detalles.id_devolucion as id_comodin,
+          tc_mantic_devoluciones_detalles.*
+        from      
+          tc_mantic_devoluciones_detalles
+        where      
+          id_devolucion = {idDevolucion}
+				order by
+				  registro
+      </select>
+    </unit>		
+    <unit id="TcManticDevolucionesEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_devoluciones_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_devoluciones_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
     <unit id="TcManticServiciosDto">
       <select id="row">
         select      
