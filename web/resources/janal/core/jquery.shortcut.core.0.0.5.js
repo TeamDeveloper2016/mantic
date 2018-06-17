@@ -242,7 +242,7 @@ shortcut.add("Ctrl+U", function() {
 	janal.console('Shortcut cierre ticket:');
 	if(PF('dlgCloseTicket')){
 		janal.bloquear();
-	  PF('dlgCloseTicket').show();
+	  userUpdate();
 	} // if
 });
 
