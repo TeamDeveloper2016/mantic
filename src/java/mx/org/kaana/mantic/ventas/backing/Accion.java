@@ -34,6 +34,7 @@ import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
+import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -43,6 +44,7 @@ import org.primefaces.event.TabChangeEvent;
 public class Accion extends IBaseArticulos implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
+	private static final String VENDEDOR_PERFIL= "VENDEDOR";
 	private EOrdenes tipoOrden;
 
 	public Accion() {
@@ -339,29 +341,45 @@ public class Accion extends IBaseArticulos implements Serializable {
 	} // loadOrdenVenta
 	
 	public String doCerrarTicket(){
-		Transaccion transaccion= null;
-    String regresar        = null;		
+		List<UISelectEntity> vendedores    = null;
+		UISelectEntity vendedorSeleccionado= null;
+		Entity vendedor                    = null;
+		Transaccion transaccion            = null;
+		CambioUsuario cambioUsuario        = null;		
+		String regresar                    = null;
     try {						
-			if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
-				loadOrdenVenta();
-				transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
-				this.getAdminOrden().toAdjustArticulos();
-				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
-					RequestContext.getCurrentInstance().execute("jsArticulos.back('ticket de venta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-					JsfBase.addMessage("Se guardo el ticket de venta.", ETipoMensaje.INFORMACION);				
-					regresar= "/indice.jsf".concat(Constantes.REDIRECIONAR);
+			vendedores= (List<UISelectEntity>) this.attrs.get("vendedores");
+			vendedorSeleccionado= (UISelectEntity) this.attrs.get("vendedor");
+			vendedor= vendedores.get(vendedores.indexOf(vendedorSeleccionado));
+			if(vendedor!= null && vendedor.isValid()){
+				if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
+					loadOrdenVenta();
+					transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+					this.getAdminOrden().toAdjustArticulos();
+					if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
+						RequestContext.getCurrentInstance().execute("jsArticulos.back('ticket de venta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+						JsfBase.addMessage("Se guardo el ticket de venta.", ETipoMensaje.INFORMACION);				
+					} // if
+					else 
+						JsfBase.addMessage("Ocurrió un error al registrar el ticket de venta.", ETipoMensaje.ERROR);      			
 				} // if
-				else 
-					JsfBase.addMessage("Ocurrió un error al registrar el ticket de venta.", ETipoMensaje.ERROR);      			
+				cambioUsuario= new CambioUsuario(vendedor.toString("cuenta"), this.attrs.get("contraseniaCaptura").toString(), vendedor.toString("contrasenia"), vendedor.toLong("idPerfil"));
+				if(cambioUsuario.validaUsuario()){					
+					JsfBase.addMessage("Cambio de usuario", "Se realizo el cambio de usuario de forma correcta", ETipoMensaje.INFORMACION);      			
+					regresar= "/Paginas/Mantic/Ventas/accion.jsf".concat(Constantes.REDIRECIONAR);
+				} // if
+				else
+					JsfBase.addMessage("Cambio de usuario", "Ocurrió un error al autenticar el usuario seleccionado", ETipoMensaje.ERROR);      											
 			} // if
 			else
-				regresar= "/indice.jsf".concat(Constantes.REDIRECIONAR);
+				JsfBase.addMessage("Cambio de usuario", "No hay mas usuarios con este perfil", ETipoMensaje.INFORMACION);      			
+			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-    return regresar;		
+		return regresar;
 	} // doCerrarTicket
 	
 	public void doLoadTicketAbiertos(){
@@ -480,4 +498,38 @@ public class Accion extends IBaseArticulos implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doDetailArticulo
+	
+	public void doLoadUsers(){
+		List<UISelectEntity> vendedores= null;
+		Map<String, Object>params      = null;
+		List<Columna> campos           = null;
+		RequestContext rc              = null;
+		try {
+			campos= new ArrayList<>();
+			params= new HashMap<>();
+			params.put("idGrupo", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put("perfil", VENDEDOR_PERFIL);
+			params.put("idUsuario", JsfBase.getIdUsuario());
+			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
+			vendedores= UIEntity.build("VistaTcJanalUsuariosDto", "cambioUsuario", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			rc= RequestContext.getCurrentInstance();
+			if(!vendedores.isEmpty()){
+				this.attrs.put("vendedores", vendedores);
+				this.attrs.put("vendedor", UIBackingUtilities.toFirstKeySelectEntity(vendedores));
+				rc.execute("PF('dlgCloseTicket').show();");
+			} // if
+			else{
+				JsfBase.addMessage("Cambio de usuario", "No hay mas usuarios con el mismo perfil", ETipoMensaje.INFORMACION);
+				rc.execute("janal.desbloquear();");
+			} // else
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+			Methods.clean(campos);
+		} // finally
+	} // doLoadUsers
 }
