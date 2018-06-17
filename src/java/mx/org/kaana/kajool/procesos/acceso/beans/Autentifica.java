@@ -221,6 +221,43 @@ public class Autentifica implements Serializable {
     } // finally
     return regresar;
   } // tieneAccesoBD
+	
+  public boolean validaCambioUsuario(String cuenta, String contrasenia, Long idPerfil, Long idGrupo) throws Exception {
+    boolean regresar          = false;
+    Map<String, Object> params= null;
+    try {
+      this.credenciales.setCuenta(cuenta);
+      this.credenciales.setContrasenia(contrasenia);
+      params = new HashMap<>();
+      LOG.debug("[".concat(cuenta).concat("] Inicia la consulta sobre la vista VistaTcJanalUsuariosDto"));
+      params.put("cuenta", cuenta);
+      params.put("idPerfil", idPerfil);
+      params.put("idGrupo", idGrupo);
+      this.persona = (Persona) DaoFactory.getInstance().toEntity(Persona.class, "VistaTcJanalUsuariosDto", "cambioUsuarioAutentifica", params);
+      if (this.persona != null) {
+        regresar = isAdministrador() || verificaCredencial();
+        if (regresar) {
+          procesarPermisos();
+        } else {
+          this.persona = null;
+          LOG.info(" No tiene acceso al sistema, favor de verificar esta situación ");
+        } // else
+      }// if
+      else {
+        regresar = isDelegaActivo();
+      }
+      if (regresar) {
+        this.ultimoAcceso = Fecha.formatear(Fecha.DIA_FECHA_HORA, this.persona.getUltimoAcceso().equals(null)?new Timestamp(Calendar.getInstance().getTimeInMillis()):this.persona.getUltimoAcceso());        
+      }
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+  } // tieneAccesoBD
 
   private boolean isDelegaActivo() throws Exception {
     boolean regresar = false;
