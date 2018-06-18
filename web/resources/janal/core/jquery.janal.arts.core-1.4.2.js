@@ -465,18 +465,19 @@
 				for(var x= 0; x< this.cursor.top; x++) {
 					this.cursor.index= x;
 					if(parseFloat($(this.amount()).val(), 10)> parseFloat($(this.request()).val(), 10))
-						msg.push({summary: 'Informativo:', detail: 'La cantidad de la fila '+ (this.cursor.index+ 1)+ ' tiene que ser menor a '+$(this.request()).val()+ '.', severity: 'error'});
+						msg.push({summary: 'Informativo:', detail: 'La cantidad de la fila '+ (this.cursor.index+ 1)+ ' tiene que ser menor o igual a '+$(this.request()).val()+ '.', severity: 'error'});
 				} // for
 			} // if
 			else {
 				this.cursor.index= index;
 				if(parseFloat($(this.amount()).val(), 10)> parseFloat($(this.request()).val(), 10))
-					msg.push({summary: 'Informativo:', detail: 'La cantidad de la fila '+ (this.cursor.index+ 1)+ ' tiene que ser menor a '+$(this.request()).val()+ '.', severity: 'error'});
+					msg.push({summary: 'Informativo:', detail: 'La cantidad de la fila '+ (this.cursor.index+ 1)+ ' tiene que ser menor o igual a '+$(this.request()).val()+ '.', severity: 'error'});
 			} // else
 			return msg;
 		},
 		individual: function(index) {
 			janal.cantidad($('#contenedorGrupos\\:tabla\\:'+ index+ '\\:cantidades'), '0'); 
+			janal.hide();
 			var error= this.compare(index);
 			if(error.length> 0) {
 				$(this.amount()).val($(this.request()).val());

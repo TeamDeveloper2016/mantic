@@ -43,10 +43,25 @@ public class Accion extends IBaseArticulos implements Serializable {
 
   private static final long serialVersionUID = 327393488565639361L;
 
+	private boolean aplicar;
+	
+	public Boolean getIsAplicar() {
+		Boolean regresar= true;
+		try {
+			regresar= JsfBase.isAdminEncuestaOrAdmin();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		return regresar;
+	}
+	
   @Override
 	@PostConstruct
   protected void init() {		
     try {
+			this.aplicar=  false;
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idDevolucion", JsfBase.getFlashAttribute("idDevolucion")== null? -1L: JsfBase.getFlashAttribute("idDevolucion"));
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? 47L: JsfBase.getFlashAttribute("idNotaEntrada"));
@@ -71,7 +86,7 @@ public class Accion extends IBaseArticulos implements Serializable {
           break;
         case MODIFICAR:					
         case CONSULTAR:					
-          this.setAdminOrden(new AdminDevoluciones((Devolucion)DaoFactory.getInstance().toEntity(Devolucion.class, "VistaDevolucionesDto", "detalle", this.attrs), nota.getTipoDeCambio(), nota.getIdSinIva()));
+          this.setAdminOrden(new AdminDevoluciones((Devolucion)DaoFactory.getInstance().toEntity(Devolucion.class, "TcManticDevolucionesDto", "detalle", this.attrs), nota.getTipoDeCambio(), nota.getIdSinIva()));
           break;
       } // switch
 			this.toLoadCatalog();
@@ -93,7 +108,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			((Devolucion)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
 			((Devolucion)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
 			this.getAdminOrden().toAdjustArticulos();
-			transaccion = new Transaccion(((Devolucion)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+			transaccion = new Transaccion(((Devolucion)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.aplicar);
 			if (transaccion.ejecutar(eaccion)) {
 				if(eaccion.equals(EAccion.AGREGAR) || eaccion.equals(EAccion.COMPLETO)) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
@@ -117,12 +132,8 @@ public class Accion extends IBaseArticulos implements Serializable {
   } // doAccion
 	
 	public String doAplicar() {  
-		String regresar= null;
-		EAccion eaccion= (EAccion) this.attrs.get("accion");
-		this.attrs.put("accion", EAccion.COMPLETO);
-		regresar= this.doAceptar();
-		this.attrs.put("accion", eaccion);
-		return regresar;
+  	this.aplicar= true;
+		return this.doAceptar();
 	}
 
   public String doCancelar() {   

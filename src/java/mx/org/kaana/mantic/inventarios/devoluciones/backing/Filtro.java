@@ -75,7 +75,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("articulos", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
-      this.lazyModel = new FormatCustomLazy("VistaNotasEntradasDto", params, columns);
+      this.lazyModel = new FormatCustomLazy("VistaDevolucionesDto", params, columns);
       UIBackingUtilities.resetDataTable();
 			this.attrs.put("idDevolucion", null);
     } // try
@@ -171,7 +171,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
 			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
 			columns.remove(0);
-      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticDevolucinesEstatusDto", "row", params, columns));
+      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticDevolucionesEstatusDto", "row", params, columns));
 			this.attrs.put("idDevolucionEstatus", new UISelectEntity("-1"));
     } // try
     catch (Exception e) {

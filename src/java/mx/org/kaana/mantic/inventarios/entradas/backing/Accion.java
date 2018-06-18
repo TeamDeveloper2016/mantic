@@ -52,6 +52,18 @@ public class Accion extends IBaseArticulos implements Serializable {
 	public String getTitulo() {
 		return this.tipoOrden.equals(EOrdenes.NORMAL)? "(DIRECTA)": "";
 	}
+
+	public Boolean getIsAplicar() {
+		Boolean regresar= true;
+		try {
+			regresar= JsfBase.isAdminEncuestaOrAdmin();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		return regresar;
+	}
 	
 	@PostConstruct
   @Override
@@ -205,18 +217,6 @@ public class Accion extends IBaseArticulos implements Serializable {
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Faltantes") && this.attrs.get("faltantes")== null) 
       this.toLoadFaltantes();
-	}
-	
-	public Boolean getIsAplicar() {
-		Boolean regresar= true;
-		try {
-			regresar= JsfBase.isAdminEncuestaOrAdmin();
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch
-		return regresar;
 	}
 	
 }

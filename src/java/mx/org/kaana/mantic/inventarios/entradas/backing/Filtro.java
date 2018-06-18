@@ -271,4 +271,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("idNotaEntrada", ((Entity)this.attrs.get("seleccionado")).getKey());
 		return regresar.concat(Constantes.REDIRECIONAR);
 	}	
+	
+	public String doDiferencias() {
+		JsfBase.setFlashAttribute("idNotaEntrada",((Entity)this.attrs.get("seleccionado")).getKey());
+		return "diferencias".concat(Constantes.REDIRECIONAR);
+	}
+	
 }

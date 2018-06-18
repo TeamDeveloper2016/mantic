@@ -49,7 +49,7 @@ public class Devolucion extends TcManticDevolucionesDto implements Serializable 
 
 	@Override
 	public Class toHbmClass() {
-		return TcManticNotasEntradasDto.class;
+		return TcManticDevolucionesDto.class;
 	}
 	
 }
