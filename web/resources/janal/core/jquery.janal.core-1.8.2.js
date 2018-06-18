@@ -784,7 +784,7 @@
 				var all= items.concat($parent.errors.customs);
 				if(($parent.errors.show> 0) && (all.length> $parent.errors.show)) {
 					all= all.slice(0, $parent.errors.show);
-					all.push({severity: 'info', summary: 'Total de errores:', detail: items.concat($parent.errors.customs).length});
+					all.push({severity: 'Informativo', summary: 'Total de errores:', detail: items.concat($parent.errors.customs).length});
 				} // if
         PF($parent.message).show(all);
       } // if  
