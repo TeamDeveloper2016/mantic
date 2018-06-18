@@ -31,8 +31,7 @@ public class CambioUsuario extends Acceso implements Serializable{
 		boolean regresar       = false;
 		try {
 			if(verificaCredencial()){
-				valida();
-				JsfBase.getAutentifica().loadSucursales();
+				valida();				
 				regresar= JsfBase.getAutentifica().getRedirect().equals(EPaginasPrivilegios.DEFAULT) || JsfBase.getAutentifica().getRedirect().equals(EPaginasPrivilegios.PERFILES);				
 			} // if
 		} // try
@@ -51,14 +50,19 @@ public class CambioUsuario extends Acceso implements Serializable{
     if (autentifica.validaCambioUsuario(getCliente().getCuenta(), getCliente().getContrasenia(), this.idPerfil, JsfBase.getAutentifica().getEmpresa().getIdEmpresa())) {      
 			if (JsfBase.isLockUsers()) {
         throw new BloqueoSitioException();
-      }
-      registro= new RegistroPerfil(autentifica);
-      session = JsfBase.getSession();
+      } // if
+			session = JsfBase.getSession();
+			session.setAttribute("mmenu", null);
+			session.setAttribute("encabezado", null);
+			session.setAttribute("sentinel", null);
+			autentifica.getCredenciales().setMenuEncabezado(true);
+			autentifica.loadSucursales();
+      registro= new RegistroPerfil(autentifica);      
       registro.addAutentifica(session);
       agregarUsuariosSitio(session, autentifica);
       registro.addMenuSesion(session);
       registro.addTopMenuSesion(session);
-    }//if
+    } // if
     else {
       if (session != null) {
         synchronized (session) {
