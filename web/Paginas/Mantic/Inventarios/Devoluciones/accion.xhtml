@@ -17,7 +17,7 @@
 				'contenedorGrupos\\:articulos'      : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
 				'contenedorGrupos\\:total'          : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
-				'cantidades'                        : {multiple: '$', validaciones: 'mayor({"cuanto": 0})', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}				
+				'cantidades'                        : {multiple: '$', validaciones: 'mayor({"cuanto": -1})', mascara: 'libre', grupo: 'general'}				
 			};			
 			
     	$(document).ready(function() {
@@ -26,17 +26,7 @@
       });
 			
 			function execute(lock) {
-				var index= jsArticulos.cursor.index;
-				jsArticulos.cursor.index= jsArticulos.cursor.top;
-				$(jsArticulos.amount()).addClass('ignore');
-				$(jsArticulos.price()).addClass('ignore');
-				var ok= janal.execute(lock);
-				if(!ok) {
-					jsArticulos.cursor.index= index;
-  				$(jsArticulos.amount()).removeClass('ignore');
-	  			$(jsArticulos.price()).removeClass('ignore');
-				} // if	
-				return ok;
+				return janal.execute(jsArticulos.compare(), lock);
 			}
 		</script>   
 	</ui:define>
@@ -49,15 +39,14 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{manticInventariosDevolucionesAccion.doTabChange}" process="@this idAlmacen idProveedor" oncomplete="jsArticulos.move();"/>						
-            <p:tab title="General">							
+            <p:ajax event="tabChange" listener="#{manticInventariosDevolucionesAccion.doTabChange}" process="@this" oncomplete="jsArticulos.move();"/>						
+						<p:tab title="Articulos">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
 								<p:outputLabel for="consecutivo" value="No. devolucion:"/>
 								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticInventariosDevolucionesAccion.adminOrden.orden.consecutivo}" readonly="true"/>
-								<p:spacer width="1px"/><p:separator/>
-								<p:outputLabel for="idNotaEntrada" value="No. nota:" style="display:#{empty manticInventariosDevolucionesAccion.titulo? '': 'none'}"/>
-								<p:selectOneMenu id="idNotaEntrada" value="#{manticInventariosDevolucionesAccion.adminOrden.orden.ikOrdenCompra}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98 faltantes" effect="fade" filter="true" filterMatchMode="startsWith" style="display:#{empty manticInventariosDevolucionesAccion.titulo? '': 'none'}">
-									<f:selectItems value="#{manticInventariosDevolucionesAccion.attrs.ordenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{element.razonSocial}"/>
+								<p:outputLabel for="idNotaEntrada" value="No. nota:"/>
+								<p:selectOneMenu id="idNotaEntrada" value="#{manticInventariosDevolucionesAccion.adminOrden.orden.ikNotaEntrada}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="startsWith">
+									<f:selectItems value="#{manticInventariosDevolucionesAccion.attrs.notas}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.consecutivo}"/>
 									</p:column>   
@@ -72,8 +61,6 @@
 									</p:column>   
 								</p:selectOneMenu>
               </p:panelGrid>
-						</p:tab>						            						            																																																
-						<p:tab title="Articulos">
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
@@ -83,31 +70,18 @@
 													<h:outputText value="No."/>
 												</f:facet>
 												<h:outputText value="#{index+ 1}"/>
+												<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
+												<p:inputText id="locks" value="#{row['idOrdenDetalle']}" style="display:none"/>
+												<p:inputText id="codigos" styleClass="janal-wid-100-txt key-down-event filas" style="display:none"/>
 											</p:column>		
-											<p:column  class="MarAuto Responsive janal-wid-13">
-												<f:facet name="header">
-													<h:outputText value="Código"/>
-													<span class="janal-help-icon janal-help-9 fa fa-fw fa-question-circle Fright" onclick="countHelp(9);"/>	
-													<pe:tooltip for="@(.janal-help-9)" showEvent="click">
-														<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(9)}" styleClass="Fs15" escape="false"/>
-													</pe:tooltip>
-												</f:facet>
-												<div class="ui-grid-row janal-grid-row">
-													<div class="ui-grid-col-12">
-  	 										  	<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
-  	 										  	<p:inputText id="locks" value="#{row['idNotaDetalle']}" style="display:none"/>
-														<p:inputText id="codigos" styleClass="janal-wid-100-txt key-down-event filas" />
-													</div>	
-												</div>	
-											</p:column>
-											<p:column class="MarAuto Responsive janal-wid-10">
+											<p:column class="MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
 													<h:outputText value="Código SAT"/>
 												</f:facet>
 												<p:outputLabel value="#{row['sat']}"/>
 												<p:inputText id="sat" value="#{row['sat']}" styleClass="janal-wid-100-txt key-event-sat fila" style="display: none"/>
 											</p:column>		
-											<p:column class="MarAuto Responsive janal-wid-10">
+											<p:column class="MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
 													<h:outputText value="Proveedor"/>
 												</f:facet>
@@ -124,10 +98,17 @@
 												<f:facet name="header">
 													<h:outputText value="Cantidad"/>
 												</f:facet>
-												<p:outputLabel value="#{row['cantidad']}"/>
-												<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.cantidad($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
+												<div class="ui-grid-row janal-grid-row">
+													<div class="ui-grid-col-12 janal-column-right" style="padding-right: 14px;">
+    												<p:inputText id="solicitados" value="#{row['solicitados']}" style="display: none;"/>
+    												<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-move-event key-event-sat filas" onblur="jsArticulos.individual(#{index});"/>
+													</div>
+													<div style="width: 10px; margin-left: -4px; margin-top: 1px;">
+												    <h:outputText value="#{row['cantidadMayorMenor']}" escape="false"/>
+												   </div>
+												</div>
 											</p:column>		
-											<p:column class="precios MarAuto Responsive janal-wid-10">
+											<p:column class="precios janal-column-right MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
 													<h:outputText value="Precio"/>
 												</f:facet>
@@ -135,16 +116,16 @@
 												<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
 												<p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:precios'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:precios'));" style="display:none"/>
 											</p:column>		
-											<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
-													<h:outputText value="Descuento (%)"/>
+													<h:outputText value="Descuento(%)"/>
 												</f:facet>
 												<p:outputLabel value="#{row['descuento']}"/>
 												<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'));" style="display: none"/>
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
-													<h:outputText value="Extras (%)"/>
+													<h:outputText value="Extras(%)"/>
 												</f:facet>
 												<p:outputLabel value="#{row['extras']}"/>
 												<p:inputText id="extras" value="#{row['extras']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:extras'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:extras'));" style="display: none"/>
@@ -207,11 +188,12 @@
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticInventariosDevolucionesAccion.doAceptar}" styleClass="janal-text-white" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="aplicar" value="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticInventariosDevolucionesAccion.doAplicar}" styleClass="janal-text-white" onstart="return execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticInventariosDevolucionesAccion.isAplicar}"/>
+			<p:commandButton id="aplicar" value="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticInventariosDevolucionesAccion.doAplicar}" styleClass="janal-text-white" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticInventariosDevolucionesAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
 			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticInventariosDevolucionesAccion.doAceptar}" styleClass="janal-text-white" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aplicarIcon" value="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticInventariosDevolucionesAccion.doAplicar}" styleClass="janal-text-white" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticInventariosDevolucionesAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>

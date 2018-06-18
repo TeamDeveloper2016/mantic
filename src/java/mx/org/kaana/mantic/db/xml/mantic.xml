@@ -2096,6 +2096,16 @@
         where      
           id_nota_bitacora = {idNotaBitacora} and id_nota_entrada = {idNotaEntrada} and id_nota_estatus = {idNotaEstatus}
       </select>
+			<select id="ultimo">
+				select
+				  *
+				from
+				  tc_mantic_notas_bitacora
+				where
+				  id_nota_entrada= {idNotaEntrada}
+				order by
+				  registro desc
+			</select>
     </unit>		
 	   <unit id="TcManticVentasDto">
       <select id="row">
@@ -2504,6 +2514,16 @@
         where      
           id_orden_compra = {idOrdenCompra} and id_orden_bitacora = {idOrdenBitacora} and id_orden_estatus = {idComprasEstatus}
       </select>
+			<select id="ultimo">
+				select
+				  *
+				from
+				  tc_mantic_ordenes_bitacora
+				where
+				  id_orden_compra= {idOrdenCompra}
+				order by
+				  registro desc
+			</select>
     </unit>
 		<unit id="TcManticBancosDto">
 			<select id="row">

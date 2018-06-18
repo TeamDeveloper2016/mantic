@@ -566,27 +566,28 @@
 			</select>
       <select id="diferencia">
         select      
-          1 as sin_iva, 
-					1 as tipo_de_cambio, 
+          tc_mantic_notas_entradas.id_sin_iva as sin_iva, 
+					tc_mantic_notas_entradas.tipo_de_cambio, 
 					tc_mantic_articulos.nombre, 
+					tc_mantic_notas_detalles.sat, 
 					tc_mantic_notas_detalles.codigo, 
-					0 as costo, 
+					tc_mantic_notas_detalles.costo, 
 					tc_mantic_notas_detalles.costo as valor, 
-					"0" as descuento, 
+					tc_mantic_notas_detalles.descuento, 
 					tc_mantic_notas_detalles.id_nota_entrada, 
-					"0" as extras, 
-					0 as importe, 
-					0 as total, 
+					tc_mantic_notas_detalles.extras, 
+					tc_mantic_notas_detalles.importe, 
+					tc_mantic_notas_entradas.total, 
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
 					tc_mantic_notas_detalles.iva, 
-					0 as total_impuesto, 
-					0 as sub_total, 
-					0 as cantidad, 
+					tc_mantic_notas_detalles.impuestos, 
+					tc_mantic_notas_detalles.sub_total, 
+					tc_mantic_notas_detalles.cantidad, 
 					tc_mantic_notas_detalles.cantidades as solicitados, 
 					tc_mantic_notas_detalles.id_nota_detalle as id_orden_detalle, 
 					tc_mantic_notas_detalles.id_articulo, 
-					0 as total_descuentos, 
-					-1 as id_proveedor, 
+					tc_mantic_notas_detalles.descuentos, 
+					tc_mantic_notas_entradas.id_proveedor, 
 					false as ultimo, 
 					false as solicitado, 
 					0 stock
@@ -602,7 +603,32 @@
 				order by
 				  tc_mantic_notas_detalles.registro		
 			</select>
-		</unit>
+			<select id="notas">
+				select
+				  tc_mantic_notas_entradas.id_nota_entrada as id_key,
+				  tc_mantic_notas_entradas.consecutivo,
+					tc_mantic_proveedores.clave,
+					tc_mantic_proveedores.razon_social,
+				  tc_mantic_notas_entradas.total,
+					tc_mantic_notas_entradas.id_nota_estatus,
+				  tc_mantic_notas_estatus.nombre as estatus,
+				  tc_mantic_notas_entradas.registro
+				from
+				  tc_mantic_notas_entradas
+				inner join 
+					tc_mantic_empresas on tc_mantic_notas_entradas.id_empresa = tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
+				inner join 
+					tc_mantic_notas_estatus on tc_mantic_notas_entradas.id_nota_estatus=tc_mantic_notas_estatus.id_nota_estatus
+				where
+				  tc_mantic_empresas.id_empresa in ({sucursales})
+				  and tc_mantic_notas_entradas.id_nota_estatus in (3)
+				  and (tc_mantic_notas_entradas.id_nota_entrada= {idNotaEntrada} or {idNotaEntrada} is null)
+				order by
+				  tc_mantic_notas_entradas.registro						
+			</select>
+	  </unit>
 		<unit id="VistaNotasEntradasDto">
 			<select id="lazy">
         select
@@ -658,17 +684,17 @@
 					"0" as descuento, 
 					tc_mantic_ordenes_detalles.id_orden_compra, 
 					"0" as extras, 
-					0 as importe, 
+					tc_mantic_ordenes_detalles.importe, 
 					tc_mantic_ordenes_detalles.importes as total, 
 					tc_mantic_ordenes_detalles.propio, 
 					tc_mantic_ordenes_detalles.iva, 
-					0 as total_impuesto, 
-					0 as sub_total, 
+					tc_mantic_ordenes_detalles.impuestos, 
+					tc_mantic_ordenes_detalles.sub_total, 
 					0 as cantidad, 
 					tc_mantic_ordenes_detalles.cantidades as solicitados, 
 					tc_mantic_ordenes_detalles.id_orden_detalle, 
 					tc_mantic_ordenes_detalles.id_articulo, 
-					0 as total_descuentos, 
+					tc_mantic_ordenes_detalles.descuentos, 
 					tc_mantic_ordenes_compras.id_proveedor, 
 					false as ultimo, 
 					false as solicitado, 

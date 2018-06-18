@@ -11,6 +11,7 @@ import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.comun.beans.ArticuloDetalle;
+import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
@@ -178,7 +179,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.importes.setImporte(Numero.toRedondearSat(costoReal));
 		Descuentos descuentos= new Descuentos(this.importes.getImporte(), this.getDescuento().concat(",").concat(this.getExtras()));
 		double temporal= descuentos.toImporte();
-		this.importes.setSubTotal(Numero.toRedondearSat(temporal== 0? this.importes.getImporte(): temporal));
+		this.importes.setSubTotal(Numero.toRedondearSat(temporal<= 0? this.importes.getImporte(): temporal));
 	  
 		temporal= descuentos.toImporte(this.getDescuento());
 		this.importes.setDescuento(Numero.toRedondearSat(temporal> 0? this.importes.getImporte()- temporal: 0D));
@@ -289,6 +290,15 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		);
 	}
 
+	public TcManticDevolucionesDetallesDto toDevolucionDetalle() {
+	  return new TcManticDevolucionesDetallesDto(
+			this.getIdComodin(), // idDevolucion, 
+			this.getIdOrdenDetalle(),
+			this.getCantidad(), 
+			this.getIdOrdenDetalle() // idDevolucionDetalle
+		);
+	}
+	
 	@Override
 	public String toString() {
 		return "Articulo{"+"idProveedor="+idProveedor+", importes="+importes+", sinIva="+sinIva+", tipoDeCambio="+tipoDeCambio+", ultimo="+ultimo+", solicitado="+solicitado+'}';

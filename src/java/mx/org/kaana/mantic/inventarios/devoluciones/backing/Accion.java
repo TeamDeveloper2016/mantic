@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -22,6 +23,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
 import mx.org.kaana.mantic.inventarios.devoluciones.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
+import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.inventarios.devoluciones.beans.Devolucion;
 import mx.org.kaana.mantic.inventarios.devoluciones.reglas.AdminDevoluciones;
 import org.primefaces.context.RequestContext;
@@ -39,14 +41,15 @@ import org.primefaces.event.TabChangeEvent;
 @ViewScoped
 public class Accion extends IBaseArticulos implements Serializable {
 
-  private static final long serialVersionUID = 327393488565639367L;
+  private static final long serialVersionUID = 327393488565639361L;
 
   @Override
+	@PostConstruct
   protected void init() {		
     try {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idDevolucion", JsfBase.getFlashAttribute("idDevolucion")== null? -1L: JsfBase.getFlashAttribute("idDevolucion"));
-      this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? null: JsfBase.getFlashAttribute("idNotaEntrada"));
+      this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? 47L: JsfBase.getFlashAttribute("idNotaEntrada"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			doLoad();
     } // try
@@ -61,13 +64,14 @@ public class Accion extends IBaseArticulos implements Serializable {
     try {
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
+			TcManticNotasEntradasDto nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, (Long)this.attrs.get("idNotaEntrada"));
       switch (eaccion) {
         case AGREGAR:											
-          this.setAdminOrden(new AdminDevoluciones(new Devolucion(-1L, (Long)this.attrs.get("idNotaEntrada"))));
+          this.setAdminOrden(new AdminDevoluciones(new Devolucion(-1L, (Long)this.attrs.get("idNotaEntrada")), nota.getTipoDeCambio(), nota.getIdSinIva()));
           break;
         case MODIFICAR:					
         case CONSULTAR:					
-          this.setAdminOrden(new AdminDevoluciones((Devolucion)DaoFactory.getInstance().toEntity(Devolucion.class, "VistaNotasEntradasDto", "detalle", this.attrs)));
+          this.setAdminOrden(new AdminDevoluciones((Devolucion)DaoFactory.getInstance().toEntity(Devolucion.class, "VistaDevolucionesDto", "detalle", this.attrs), nota.getTipoDeCambio(), nota.getIdSinIva()));
           break;
       } // switch
 			this.toLoadCatalog();
@@ -91,19 +95,19 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.getAdminOrden().toAdjustArticulos();
 			transaccion = new Transaccion(((Devolucion)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 			if (transaccion.ejecutar(eaccion)) {
-				if(eaccion.equals(EAccion.AGREGAR)) {
+				if(eaccion.equals(EAccion.AGREGAR) || eaccion.equals(EAccion.COMPLETO)) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
 					if(eaccion.equals(EAccion.AGREGAR))
-    			  RequestContext.getCurrentInstance().execute("jsArticulos.back('generó la devolución de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+    			  RequestContext.getCurrentInstance().execute("jsArticulos.back('generó la devolución de entrada', '"+ ((Devolucion)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 					else
-   			    RequestContext.getCurrentInstance().execute("jsArticulos.back('aplicó la devolución de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+   			    RequestContext.getCurrentInstance().execute("jsArticulos.back('aplicó la devolución de entrada', '"+ ((Devolucion)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				} // if	
  				if(!eaccion.equals(EAccion.CONSULTAR)) 
-  				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la devolución de entrada."), ETipoMensaje.INFORMACION);
-  			JsfBase.setFlashAttribute("idDevolucion", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
+  				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : eaccion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" la devolución de entrada."), ETipoMensaje.INFORMACION);
+  			JsfBase.setFlashAttribute("idDevolucion", ((Devolucion)this.getAdminOrden().getOrden()).getIdDevolucion());
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la nota de entrada.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la devolución de entrada.", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -111,6 +115,15 @@ public class Accion extends IBaseArticulos implements Serializable {
     } // catch
     return regresar;
   } // doAccion
+	
+	public String doAplicar() {  
+		String regresar= null;
+		EAccion eaccion= (EAccion) this.attrs.get("accion");
+		this.attrs.put("accion", EAccion.COMPLETO);
+		regresar= this.doAceptar();
+		this.attrs.put("accion", eaccion);
+		return regresar;
+	}
 
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idDevolucion", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
@@ -122,15 +135,15 @@ public class Accion extends IBaseArticulos implements Serializable {
     Map<String, Object> params= new HashMap<>();
     try {
 			columns= new ArrayList<>();
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			params.put("idDevolucion", this.attrs.get("idDevolucion"));
-			if(this.attrs.get("idDevolucion")!= null) {
-        this.attrs.put("devoluciones", UIEntity.build("VistaDevolucionesDto", "devoluciones", params, columns));
-			  List<UISelectEntity> devoluciones= (List<UISelectEntity>)this.attrs.get("devoluciones");
-			  if(!devoluciones.isEmpty()) 
-				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkOrdenCompra(devoluciones.get(0));
+			params.put("idNotaEntrada", this.attrs.get("idNotaEntrada"));
+			if(this.attrs.get("idNotaEntrada")!= null) {
+        this.attrs.put("notas", UIEntity.build("VistaDevolucionesDto", "notas", params, columns));
+			  List<UISelectEntity> notas= (List<UISelectEntity>)this.attrs.get("notas");
+			  if(!notas.isEmpty()) 
+				  ((Devolucion)this.getAdminOrden().getOrden()).setIkNotaEntrada(notas.get(0));
 			} // if	
     } // try
     catch (Exception e) {

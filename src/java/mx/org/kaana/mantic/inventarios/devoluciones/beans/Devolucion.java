@@ -29,8 +29,8 @@ public class Devolucion extends TcManticDevolucionesDto implements Serializable 
 		this(-1L, idNotaEntrada);
 	}
 
-	public Devolucion(Long key, Long idOrdenCompra) {
-		this(0D, "", "", -1L, new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", -1L, 0D, -1L, -1L, 0D, 0D, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 1L);
+	public Devolucion(Long key, Long idNotaEntrada) {
+		this(0D, "", "", idNotaEntrada, new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", -1L, 0D, -1L, -1L, 0D, 0D, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 1L);
 	}
 
 	public Devolucion(Double descuentos, String descuento, String extras, Long idNotaEntrada, Long ejercicio, String consecutivo, Long idDevolucionEstatus, Double total, Long idDevolucion, Long idUsuario, Double impuestos, Double subTotal, String observaciones, Long idEmpresa, Long orden) {

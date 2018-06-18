@@ -45,7 +45,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	public Transaccion(TcManticDevolucionesDto orden, List<Articulo> articulos) {
 		this.orden    = orden;		
 		this.articulos= articulos;
-	} // Transaccion
+	} 
 
 	public String getMessageError() {
 		return messageError;
@@ -59,6 +59,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la devolución de entrada.");
 			switch(accion) {
 				case AGREGAR:
+					break;				
+				case COMPLETO:
 					break;				
 				case ELIMINAR:
 					break;

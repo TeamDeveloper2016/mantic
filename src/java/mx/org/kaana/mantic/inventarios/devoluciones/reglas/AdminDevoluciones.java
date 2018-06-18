@@ -31,9 +31,13 @@ public final class AdminDevoluciones extends IAdminArticulos implements Serializ
 	private static final Log LOG=LogFactory.getLog(AdminDevoluciones.class);
 
 	private Devolucion orden;
+	private Double tipoDeCambio;
+	private Long idSinIva;
 
-	public AdminDevoluciones(Devolucion orden) throws Exception {
-		this.orden= orden;
+	public AdminDevoluciones(Devolucion orden, Double tipoDeCambio, Long idSinIva) throws Exception {
+		this.orden       = orden;
+		this.tipoDeCambio= tipoDeCambio;
+		this.idSinIva    = idSinIva;
 		if(this.orden.isValid()) 
  	    this.setArticulos(this.toLoadOrdenDetalle());
 		else {
@@ -71,31 +75,32 @@ public final class AdminDevoluciones extends IAdminArticulos implements Serializ
 
 	@Override
 	public Double getTipoDeCambio() {
-		return 1D;
+		return this.tipoDeCambio;
 	}
 	
 	@Override
 	public String getDescuento() {
-		return "";
+		return this.orden.getDescuento();
 	}
 	
 	@Override
 	public String getExtras() {
-		return "";
+		return this.orden.getExtras();
 	}
 	
 	@Override
 	public Long getIdSinIva() {
-		return 1L;
+		return this.idSinIva;
 	}
 	
 	@Override
 	public void setIdSinIva(Long idSinIva) {
+		this.idSinIva= idSinIva;
 	}
 
 	private ArrayList<Articulo> toLoadOrdenDetalle() throws Exception {
-		ArrayList<Articulo> regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticNotasDetallesDto", "detalle", this.orden.toMap()));
-		ArrayList<Articulo> loaded  = new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "diferencia", this.orden.toMap()));
+		ArrayList<Articulo> regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticDevolucionesDetallesDto", "detalle", this.orden.toMap()));
+		ArrayList<Articulo> loaded  = new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaDevolucionesDto", "diferencia", this.orden.toMap()));
 		Map<String, Object> params=null;
 		try {
 			params=new HashMap<>();
@@ -123,7 +128,7 @@ public final class AdminDevoluciones extends IAdminArticulos implements Serializ
 		return regresar;
 	}
 	private ArrayList<Articulo> toDefaultOrdenDetalle() throws Exception {
-		ArrayList<Articulo> regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "diferencia", this.orden.toMap()));
+		ArrayList<Articulo> regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaDevolucionesDto", "diferencia", this.orden.toMap()));
 		Map<String, Object> params  = null;
 		try {
 			params=new HashMap<>();

@@ -249,7 +249,7 @@
 												   </div>
 												</div>
 											</p:column>		
-											<p:column class="precios MarAuto Responsive janal-wid-10">
+											<p:column class="precios janal-column-right MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
 													<h:outputText value="Precio"/>
 												</f:facet>
@@ -264,9 +264,9 @@
 												  </div>
 												</div>	
 											</p:column>		
-											<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
-													<h:outputText value="Descuento (%)"/>
+													<h:outputText value="Descuento(%)"/>
 												</f:facet>
 												<p:outputLabel value="#{row['descuento']}"/>
 												<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'));" style="display: none"/>
