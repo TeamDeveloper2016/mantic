@@ -34,6 +34,7 @@ import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
+import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
@@ -46,6 +47,7 @@ public class Accion extends IBaseArticulos implements Serializable {
   private static final long serialVersionUID = 327393488565639367L;
 	private static final String VENDEDOR_PERFIL= "VENDEDOR";
 	private EOrdenes tipoOrden;
+	private SaldoCliente saldoCliente;
 
 	public Accion() {
 		super("menudeo");
@@ -57,6 +59,14 @@ public class Accion extends IBaseArticulos implements Serializable {
 
 	public EOrdenes getTipoOrden() {
 		return tipoOrden;
+	}
+
+	public SaldoCliente getSaldoCliente() {
+		return saldoCliente;
+	}	
+
+	public void setSaldoCliente(SaldoCliente saldoCliente) {
+		this.saldoCliente = saldoCliente;
 	}
 	
 	@PostConstruct
@@ -80,17 +90,24 @@ public class Accion extends IBaseArticulos implements Serializable {
 
   public void doLoad() {
     EAccion eaccion= null;
+		Long idCliente = -1L;
     try {
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
       switch (eaccion) {
         case AGREGAR:											
           this.setAdminOrden(new AdminTickets(new TicketVenta(-1L)));
+					this.saldoCliente= new SaldoCliente();
           break;
         case MODIFICAR:			
         case CONSULTAR:			
           this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", this.attrs)));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
+					idCliente= ((TicketVenta)getAdminOrden().getOrden()).getIdCliente();
+					if(idCliente!= null && !idCliente.equals(-1L)){
+						doAsignaClienteInicial(idCliente);
+						doLoadSaldos(idCliente);
+					} // if
           break;
       } // switch
 			this.attrs.put("consecutivo", "");
@@ -215,7 +232,27 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
 			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
-			doReCalculatePreciosArticulos(seleccion.getKey());			
+			doReCalculatePreciosArticulos(seleccion.getKey());		
+			doLoadSaldos(seleccion.getKey());
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaCliente
+	
+	public void doAsignaClienteInicial(Long idCliente){
+		UISelectEntity seleccion              = null;
+		List<UISelectEntity> clientesSeleccion= null;
+		MotorBusqueda motorBusqueda           = null; 
+		try {
+			motorBusqueda= new MotorBusqueda(null, idCliente);
+			seleccion= new UISelectEntity(motorBusqueda.toCliente());
+			clientesSeleccion= new ArrayList<>();
+			clientesSeleccion.add(seleccion);
+			this.attrs.put("clientesSeleccion", clientesSeleccion);
+			this.attrs.put("clienteSeleccion", seleccion);
+			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -225,7 +262,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 	
 	public void doReCalculatePreciosArticulos(Long idCliente){
 		doReCalculatePreciosArticulos(true, idCliente);
-	}
+	} // doReCalculatePreciosArticulos
 	
 	public void doReCalculatePreciosArticulos(boolean descuentoVigente, Long idCliente){
 		MotorBusqueda motor          = null;
@@ -301,7 +338,9 @@ public class Accion extends IBaseArticulos implements Serializable {
 					super.toMoveData(articulo, index);			
 			} // if
 			else
-				super.toMoveData(articulo, index);			
+				super.toMoveData(articulo, index);
+			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
+			RequestContext.getCurrentInstance().update("deudor");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -462,7 +501,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
 			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
-			doReCalculatePreciosArticulos(seleccion.getKey());			
+			doReCalculatePreciosArticulos(seleccion.getKey());	
+			doLoadSaldos(seleccion.getKey());
 		} // try
 		catch (Exception e) {	
 			throw e;
@@ -532,4 +572,22 @@ public class Accion extends IBaseArticulos implements Serializable {
 			Methods.clean(campos);
 		} // finally
 	} // doLoadUsers
+	
+	private void doLoadSaldos(Long idCliente) throws Exception{
+		Entity cliente     = null;
+		MotorBusqueda motor= null;
+		this.saldoCliente  = null;
+		try {
+			motor= new MotorBusqueda(null, idCliente);
+			cliente= motor.toCliente();
+			this.saldoCliente= new SaldoCliente();
+			this.saldoCliente.setIdCliente(idCliente);
+			this.saldoCliente.setTotalCredito(cliente.toDouble("limiteCredito"));
+			this.saldoCliente.setTotalDeuda(motor.toDeudaCliente());
+			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // doLoadSaldos
 }
