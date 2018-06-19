@@ -59,7 +59,7 @@ public class Diferencias extends IBaseFilter implements Serializable {
       columns.add(new Columna("importes", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
       this.attrs.put("sortOrder", "order by nombre");
-      this.lazyModel = new FormatCustomLazy("TcManticOrdenesDetallesDto", "consulta", this.attrs, columns);
+      this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", "confronta", this.attrs, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {

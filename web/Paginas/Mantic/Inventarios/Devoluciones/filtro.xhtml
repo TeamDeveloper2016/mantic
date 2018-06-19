@@ -147,8 +147,8 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="modificar" action="#{manticInventariosDevolucionesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticInventariosDevolucionesFiltro.attrs.seleccionado.idDevolucionEstatus eq '1'}"/>					
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticInventariosDevolucionesFiltro.attrs.seleccionado.idDevolucionEstatus eq '1'}"/>					
+            <!--p:menuitem id="modificar" action="#{manticInventariosDevolucionesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticInventariosDevolucionesFiltro.attrs.seleccionado.idDevolucionEstatus eq '1'}"/-->					
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{fn:contains('|1|3|', manticInventariosDevolucionesFiltro.attrs.seleccionado.idDevolucionEstatus)}"/>					
             <p:menuitem id="consultar" action="#{manticInventariosDevolucionesFiltro.doAccion('CONSULTAR')}" icon="fa fa-edit" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:separator rendered="#{manticInventariosDevolucionesFiltro.attrs.seleccionado.idDevolucionEstatus eq '2'}"/>					
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosDevolucionesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{manticInventariosDevolucionesFiltro.attrs.seleccionado.idDevolucionEstatus eq '2'}"/>					

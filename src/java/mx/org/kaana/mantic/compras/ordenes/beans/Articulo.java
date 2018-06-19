@@ -292,10 +292,10 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 
 	public TcManticDevolucionesDetallesDto toDevolucionDetalle() {
 	  return new TcManticDevolucionesDetallesDto(
-			this.getIdComodin(), // idDevolucion, 
+			-1L, // idDevolucion, 
 			this.getIdOrdenDetalle(),
 			this.getCantidad(), 
-			this.getIdOrdenDetalle() // idDevolucionDetalle
+			this.getIdComodin()// idDevolucionDetalle
 		);
 	}
 	

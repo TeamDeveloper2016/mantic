@@ -33,6 +33,12 @@
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
               </div>  
             </f:facet>	            
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
+              <f:facet name="header">
+                <h:outputText value="Orden compra"/>
+              </f:facet>
+              <h:outputText value="#{filtro['consecutivo']}"/>
+            </p:column>		
             <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{filtro.propio}">
               <f:facet name="header">
                 <h:outputText value="Código"/>

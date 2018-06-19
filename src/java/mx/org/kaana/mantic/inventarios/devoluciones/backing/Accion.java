@@ -20,14 +20,12 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
 import mx.org.kaana.mantic.inventarios.devoluciones.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.inventarios.devoluciones.beans.Devolucion;
 import mx.org.kaana.mantic.inventarios.devoluciones.reglas.AdminDevoluciones;
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.TabChangeEvent;
 
 /**
  *@company KAANA
@@ -61,7 +59,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 	@PostConstruct
   protected void init() {		
     try {
-			this.aplicar=  false;
+			this.aplicar=  true;
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idDevolucion", JsfBase.getFlashAttribute("idDevolucion")== null? -1L: JsfBase.getFlashAttribute("idDevolucion"));
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? 47L: JsfBase.getFlashAttribute("idNotaEntrada"));
@@ -110,12 +108,9 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.getAdminOrden().toAdjustArticulos();
 			transaccion = new Transaccion(((Devolucion)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.aplicar);
 			if (transaccion.ejecutar(eaccion)) {
-				if(eaccion.equals(EAccion.AGREGAR) || eaccion.equals(EAccion.COMPLETO)) {
+				if(eaccion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-					if(eaccion.equals(EAccion.AGREGAR))
-    			  RequestContext.getCurrentInstance().execute("jsArticulos.back('generó la devolución de entrada', '"+ ((Devolucion)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-					else
-   			    RequestContext.getCurrentInstance().execute("jsArticulos.back('aplicó la devolución de entrada', '"+ ((Devolucion)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+   			  RequestContext.getCurrentInstance().execute("jsArticulos.back('generó la devolución de entrada', '"+ ((Devolucion)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				} // if	
  				if(!eaccion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : eaccion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" la devolución de entrada."), ETipoMensaje.INFORMACION);
@@ -137,7 +132,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 	}
 
   public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idDevolucion", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
+  	JsfBase.setFlashAttribute("idDevolucion", ((Devolucion)this.getAdminOrden().getOrden()).getIdDevolucion());
     return (String)this.attrs.get("retorno");
   } // doCancelar
 
@@ -165,11 +160,6 @@ public class Accion extends IBaseArticulos implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
-	}
-
-	public void doTabChange(TabChangeEvent event) {
-		//if(event.getTab().getTitle().equals("Faltantes") && this.attrs.get("faltantes")== null) 
-    //  this.toLoadFaltantes();
 	}
 	
 }

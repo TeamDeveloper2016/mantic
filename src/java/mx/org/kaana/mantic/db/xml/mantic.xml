@@ -2342,26 +2342,6 @@
 						or importes &lt;&gt; 0
 					)				
 			</select>
-			<select id="consulta">
-				select
-					id_orden_detalle as id_key,
-					propio,
-					codigo,
-					nombre,
-					cantidad,
-					costo,
-					descuento,
-					extras,
-					importe,
-					cantidades,
-					importes,
-				  (abs(importes)* 100/ importe) as porcentaje
-				from
-					tc_mantic_ordenes_detalles
-				where  
-					id_orden_compra= {idOrdenCompra}
-				{sortOrder}
-			</select>
 			<select id="diferencia">
 				select
 					sum(cantidades) as unidades, 

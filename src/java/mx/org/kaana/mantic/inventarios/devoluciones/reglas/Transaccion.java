@@ -55,7 +55,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	}
 	
 	public Transaccion(TcManticDevolucionesDto orden) {
-		this(orden, new ArrayList<Articulo>(), false);
+		this(orden, new ArrayList<Articulo>(), true);
 	}
 
 	public Transaccion(TcManticDevolucionesDto orden, List<Articulo> articulos, boolean aplicar) {
@@ -173,16 +173,18 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			} // if
 		for (Articulo articulo: this.articulos) {
 			TcManticDevolucionesDetallesDto item= articulo.toDevolucionDetalle();
-			item.setIdDevolucion(this.orden.getIdDevolucion());
-			if(DaoFactory.getInstance().findIdentically(sesion, TcManticDevolucionesDetallesDto.class, item.toMap())== null) {
-				this.toAffectOrdenDetalle(sesion, articulo);
-				if(item.isValid())
-			    DaoFactory.getInstance().update(sesion, item);
-				else
-			    DaoFactory.getInstance().insert(sesion, item);
-				if(this.aplicar) 
-				  this.toAffectAlmacenes(sesion, this.orden.getIdNotaEntrada(), articulo, nota.getIdAlmacen());
-			} // if
+			if(item.getCantidad()> 0) {
+				item.setIdDevolucion(this.orden.getIdDevolucion());
+				if(DaoFactory.getInstance().findIdentically(sesion, TcManticDevolucionesDetallesDto.class, item.toMap())== null) {
+					this.toAffectOrdenDetalle(sesion, articulo);
+					if(item.isValid())
+						DaoFactory.getInstance().update(sesion, item);
+					else
+						DaoFactory.getInstance().insert(sesion, item);
+					if(this.aplicar) 
+						this.toAffectAlmacenes(sesion, this.orden.getIdNotaEntrada(), articulo, nota.getIdAlmacen());
+				} // if
+		  } // if
 		} // for
 	}
 

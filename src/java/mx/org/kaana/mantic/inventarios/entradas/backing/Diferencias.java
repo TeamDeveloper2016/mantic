@@ -23,10 +23,10 @@ public class Diferencias extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428311L;
 	
-	protected FormatLazyModel lazyNotas;
+	protected FormatLazyModel lazyDevoluciones;
 
-	public FormatLazyModel getLazyNotas() {
-		return lazyNotas;
+	public FormatLazyModel getLazyDevoluciones() {
+		return lazyDevoluciones;
 	}
 	
   @PostConstruct
@@ -53,11 +53,9 @@ public class Diferencias extends IBaseFilter implements Serializable {
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
       columns.add(new Columna("costo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));      
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      this.attrs.put("sortOrder", "order by tc_mantic_devoluciones.consecutivo, tc_mantic_devoluciones.nombre");
-      this.lazyNotas = new FormatCustomLazy("VistaDevolucionesDto", "consulta", this.attrs, columns);
+      this.attrs.put("sortOrder", "order by tc_mantic_devoluciones.consecutivo, tc_mantic_notas_detalles.nombre");
+      this.lazyDevoluciones = new FormatCustomLazy("VistaDevolucionesDto", "consulta", this.attrs, columns);
       columns.add(new Columna("cantidades", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
-      columns.add(new Columna("importes", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
       this.attrs.put("sortOrder", "order by tc_mantic_notas_detalles.nombre");
       this.lazyModel = new FormatCustomLazy("VistaDevolucionesDto", "confronta", this.attrs, columns);
       UIBackingUtilities.resetDataTable();
