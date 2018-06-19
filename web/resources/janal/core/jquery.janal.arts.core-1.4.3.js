@@ -460,6 +460,7 @@
 			return false;
 		},
 		compare: function(index) {
+			janal.console('jsArticulos.compare: '+ index);
 			var msg= [];
 			if(typeof(index)=== 'undefined') {
 				for(var x= 0; x<= this.cursor.top; x++) {
@@ -476,6 +477,7 @@
 			return msg;
 		},
 		individual: function(index) {
+			janal.console('jsArticulos.individual: '+ index);
 			janal.cantidad($('#contenedorGrupos\\:tabla\\:'+ index+ '\\:cantidades'), '0'); 
 			janal.hide();
 			var error= this.compare(index);
@@ -494,6 +496,7 @@
 				if(parseFloat($(this.amount()).val(), 10)=== parseFloat($(this.request()).val(), 10))
 					count++;
 			} // for
+			janal.console('jsArticulos.zeros: '+ count+ ' => '+ this.cursor.top);
 			return this.cursor.top=== count;
 		}
 	});
