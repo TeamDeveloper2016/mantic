@@ -2591,5 +2591,31 @@
           id_cliente_pago = {idClientePago}
       </select>
     </unit>
+		<unit id="TcManticClientesDeudasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_clientes_deudas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_clientes_deudas
+        where      
+          id_cliente_deuda = {idClienteDeuda}
+      </select>
+			<select id="saldoCliente">
+				select 
+					case when sum(saldo) is null then 0 else sum(saldo) end as saldo 
+				from 
+					tc_mantic_clientes_deudas 
+				where 
+					id_cliente= {idCliente}
+			</select>
+    </unit>
   </dml>    
 </process>
