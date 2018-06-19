@@ -52,6 +52,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 		this.clienteBusqueda = clienteBusqueda;
 	}	
 	
+	public String getAgregar() {
+		return ((EAccion)this.attrs.get("accion")).equals(EAccion.AGREGAR)? "none": "";
+	}
+	
   @PostConstruct
   @Override
   protected void init() {

@@ -48,6 +48,10 @@ public class Accion extends IBaseArticulos implements Serializable {
 		return tipoOrden;
 	}
 	
+	public String getAgregar() {
+		return ((EAccion)this.attrs.get("accion")).equals(EAccion.AGREGAR)? "none": "";
+	}
+	
 	@PostConstruct
   @Override
   protected void init() {		

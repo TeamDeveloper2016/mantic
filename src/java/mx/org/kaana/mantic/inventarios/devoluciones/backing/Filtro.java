@@ -34,6 +34,7 @@ import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDto;
 import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import org.primefaces.context.RequestContext;
 
 @Named(value = "manticInventariosDevolucionesFiltro")
@@ -260,4 +261,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("justificacion", "");
 		} // finally
 	}	
+	
+	public String doMovimientos() {
+		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.DEVOLUCIONES);
+		JsfBase.setFlashAttribute(ETipoMovimiento.DEVOLUCIONES.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Inventarios/Devoluciones/filtro");
+		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
+	}
+	
 }

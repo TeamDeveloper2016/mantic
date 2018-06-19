@@ -34,6 +34,7 @@ import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import org.primefaces.context.RequestContext;
 
 @Named(value = "manticComprasOrdenesFiltro")
@@ -274,6 +275,13 @@ public class Filtro extends IBaseFilter implements Serializable {
 	public String doDiferencias() {
 		JsfBase.setFlashAttribute("idOrdenCompra",((Entity)this.attrs.get("seleccionado")).getKey());
 		return "diferencias".concat(Constantes.REDIRECIONAR);
+	}
+	
+	public String doMovimientos() {
+		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.ORDENES_COMPRAS);
+		JsfBase.setFlashAttribute(ETipoMovimiento.ORDENES_COMPRAS.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Compras/Ordenes/filtro");
+		return "movimientos".concat(Constantes.REDIRECIONAR);
 	}
 	
 }

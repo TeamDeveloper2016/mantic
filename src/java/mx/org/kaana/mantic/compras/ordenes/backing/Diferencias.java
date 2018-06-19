@@ -17,6 +17,14 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 
+/**
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
+ *@date 19/06/2018
+ *@time 07:51:53 AM 
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
+ */
+
 @Named(value = "manticComprasOrdenesDiferencias")
 @ViewScoped
 public class Diferencias extends IBaseFilter implements Serializable {

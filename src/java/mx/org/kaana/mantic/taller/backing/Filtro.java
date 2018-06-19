@@ -23,6 +23,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosBitacoraDto;
+import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import mx.org.kaana.mantic.taller.beans.RegistroServicio;
 import mx.org.kaana.mantic.taller.reglas.Transaccion;
 
@@ -176,4 +177,12 @@ public class Filtro extends Comun implements Serializable {
 			this.attrs.put("justificacion", "");
 		} // finally
 	}	// doActualizaEstatus
+	
+	public String doMovimientos() {
+		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.SERVICIOS);
+		JsfBase.setFlashAttribute(ETipoMovimiento.SERVICIOS.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Taller/filtro");
+		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
+	}
+	
 }

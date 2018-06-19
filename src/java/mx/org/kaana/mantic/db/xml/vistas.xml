@@ -5,6 +5,25 @@
 <process>
 	<dml> 
 		<unit id="VistaVentasDto">
+			<select id="movimientos">
+				select
+					tc_mantic_ventas_bitacora.id_venta_bitacora as id_key,
+					tc_mantic_ventas_bitacora.consecutivo,
+					tc_mantic_ventas_bitacora.importe,
+					tc_mantic_ventas_bitacora.justificacion,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+					tc_mantic_ventas_bitacora.registro
+				from 
+					tc_mantic_ventas_bitacora
+				inner join
+					tc_janal_usuarios on tc_mantic_ventas_bitacora.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_ventas_bitacora.id_venta= {idVenta}
+				order by
+					tc_mantic_ventas_bitacora.registro desc				
+			</select>	
 			<select id="lazy">
         select
 					tc_mantic_ventas.id_venta as id_key,
@@ -538,6 +557,72 @@
 			</select>
 		</unit>
 		<unit id="VistaDevolucionesDto">
+			<select id="movimientos">
+				select
+					tc_mantic_devoluciones_bitacora.id_devolucion_bitacora as id_key,
+					tc_mantic_devoluciones_bitacora.consecutivo,
+					tc_mantic_devoluciones_bitacora.importe,
+					tc_mantic_devoluciones_bitacora.justificacion,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+					tc_mantic_devoluciones_bitacora.registro
+				from 
+					tc_mantic_devoluciones_bitacora
+				inner join
+					tc_janal_usuarios on tc_mantic_devoluciones_bitacora.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_devoluciones_bitacora.id_devolucion= {idDevolucion}
+				order by
+					tc_mantic_devoluciones_bitacora.registro desc				
+			</select>	
+			<select id="bitacora">
+				select 
+					tc_mantic_articulos_bitacora.id_articulo_bitacora as id_key,
+					tc_mantic_notas_entradas.consecutivo,
+					tc_mantic_articulos_bitacora.id_articulo,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					tc_mantic_notas_detalles.codigo,
+					tc_mantic_notas_detalles.nombre,
+					tc_mantic_articulos_bitacora.cantidad,
+					tc_mantic_articulos_bitacora.costo,
+					tc_mantic_articulos_bitacora.menudeo,
+					tc_mantic_articulos_bitacora.medio_mayoreo,
+					tc_mantic_articulos_bitacora.mayoreo,
+					tc_mantic_articulos_bitacora.registro
+				from
+					tc_mantic_articulos_bitacora
+				inner join
+					tc_mantic_notas_entradas on tc_mantic_articulos_bitacora.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+				inner join
+					tc_mantic_notas_detalles on tc_mantic_articulos_bitacora.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_bitacora.id_nota_entrada= tc_mantic_notas_detalles.id_nota_entrada
+				where 
+					tc_mantic_articulos_bitacora.id_nota_entrada= {idNotaEntrada}
+				{sortOrder}
+			</select>	
+			<select id="articulos">
+				select 
+					tc_mantic_articulos_bitacora.id_articulo_bitacora as id_key,
+					tc_mantic_articulos_bitacora.id_articulo,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					tc_mantic_notas_detalles.codigo,
+					tc_mantic_notas_detalles.nombre,
+					tc_mantic_articulos.cantidad,
+					tc_mantic_articulos.precio as costo,
+					tc_mantic_articulos.menudeo,
+					tc_mantic_articulos.medio_mayoreo,
+					tc_mantic_articulos.mayoreo,
+					tc_mantic_notas_detalles.registro
+				from
+					tc_mantic_articulos_bitacora
+				inner join
+					tc_mantic_notas_detalles on tc_mantic_articulos_bitacora.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_bitacora.id_nota_entrada= tc_mantic_notas_detalles.id_nota_entrada
+				inner join
+					tc_mantic_articulos on tc_mantic_articulos_bitacora.id_articulo= tc_mantic_articulos.id_articulo
+				where 
+					tc_mantic_articulos_bitacora.id_nota_entrada= {idNotaEntrada}
+				{sortOrder}
+			</select>	
 			<select id="lazy">
         select
 					tc_mantic_devoluciones.id_devolucion as id_key,
@@ -677,6 +762,25 @@
 			</select>	
 		</unit>
 		<unit id="VistaNotasEntradasDto">
+			<select id="movimientos">
+				select
+					tc_mantic_notas_bitacora.id_nota_bitacora as id_key,
+					tc_mantic_notas_bitacora.consecutivo,
+					tc_mantic_notas_bitacora.importe,
+					tc_mantic_notas_bitacora.justificacion,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+					tc_mantic_notas_bitacora.registro
+				from 
+					tc_mantic_notas_bitacora
+				inner join
+					tc_janal_usuarios on tc_mantic_notas_bitacora.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_notas_bitacora.id_nota_entrada= {idNotaEntrada}
+				order by
+					tc_mantic_notas_bitacora.registro desc				
+			</select>		
 			<select id="lazy">
         select
 					tc_mantic_notas_entradas.id_nota_entrada as id_key,
@@ -814,6 +918,25 @@
 			</select>
 		</unit>
 		<unit id="VistaOrdenesComprasDto">
+			<select id="movimientos">
+				select
+					tc_mantic_ordenes_bitacora.id_orden_bitacora as id_key,
+					tc_mantic_ordenes_bitacora.consecutivo,
+					tc_mantic_ordenes_bitacora.importe,
+					tc_mantic_ordenes_bitacora.justificacion,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+					tc_mantic_ordenes_bitacora.registro
+				from 
+					tc_mantic_ordenes_bitacora
+				inner join
+					tc_janal_usuarios on tc_mantic_ordenes_bitacora.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_ordenes_bitacora.id_orden_compra= {idOrdenCompra}
+				order by
+					tc_mantic_ordenes_bitacora.registro desc				
+			</select>		
 			<select id="lazy">
 				select
 					tc_mantic_ordenes_compras.id_orden_compra as id_key,
@@ -1404,6 +1527,25 @@
 			</select>
 		</unit>
 		<unit id="VistaTallerServiciosDto">
+			<select id="movimientos">
+				select
+					tc_mantic_servicios_bitacora.id_servicio_bitacora as id_key,
+					tc_mantic_servicios_bitacora.consecutivo,
+					tc_mantic_servicios_bitacora.importe,
+					tc_mantic_servicios_bitacora.seguimiento as justificacion,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+					tc_mantic_servicios_bitacora.registro
+				from 
+					tc_mantic_servicios_bitacora
+				inner join
+					tc_janal_usuarios on tc_mantic_servicios_bitacora.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_servicios_bitacora.id_servicio_bitacora= {idServicioBitacora}
+				order by
+					tc_mantic_servicios_bitacora.registro desc				
+			</select>
 			<select id="principal">
 				select  
 					tc_mantic_servicios.id_servicio as id_key,

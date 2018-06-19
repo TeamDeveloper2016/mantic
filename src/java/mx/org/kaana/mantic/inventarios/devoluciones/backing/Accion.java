@@ -14,6 +14,8 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -41,7 +43,17 @@ public class Accion extends IBaseArticulos implements Serializable {
 
   private static final long serialVersionUID = 327393488565639361L;
 
+	private FormatLazyModel lazyModel;
+	private FormatLazyModel lazyArticulos;
 	private boolean aplicar;
+
+	public FormatLazyModel getLazyModel() {
+		return lazyModel;
+	}
+
+	public FormatLazyModel getLazyArticulos() {
+		return lazyArticulos;
+	}
 	
 	public Boolean getIsAplicar() {
 		Boolean regresar= true;
@@ -53,6 +65,10 @@ public class Accion extends IBaseArticulos implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch
 		return regresar;
+	}
+	
+	public String getAgregar() {
+		return ((EAccion)this.attrs.get("accion")).equals(EAccion.AGREGAR)? "none": "";
 	}
 	
   @Override
@@ -74,7 +90,18 @@ public class Accion extends IBaseArticulos implements Serializable {
 
   public void doLoad() {
     EAccion eaccion= null;
+    List<Columna> columns= null;
     try {
+      columns = new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
+      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
+      columns.add(new Columna("menudeo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("medioMayoreo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("mayoreo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
 			TcManticNotasEntradasDto nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, (Long)this.attrs.get("idNotaEntrada"));
@@ -87,12 +114,19 @@ public class Accion extends IBaseArticulos implements Serializable {
           this.setAdminOrden(new AdminDevoluciones((Devolucion)DaoFactory.getInstance().toEntity(Devolucion.class, "TcManticDevolucionesDto", "detalle", this.attrs), nota.getTipoDeCambio(), nota.getIdSinIva()));
           break;
       } // switch
+      this.attrs.put("sortOrder", "order by tc_mantic_notas_detalles.nombre");
+      this.lazyModel = new FormatCustomLazy("VistaDevolucionesDto", "bitacora", this.attrs, columns);
+      this.attrs.put("sortOrder", "order by tc_mantic_notas_detalles.nombre");
+      this.lazyArticulos= new FormatCustomLazy("VistaDevolucionesDto", "articulos", this.attrs, columns);
 			this.toLoadCatalog();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
+    finally {
+      Methods.clean(columns);
+    } // finally		
   } // doLoad
 
   public String doAceptar() {  
