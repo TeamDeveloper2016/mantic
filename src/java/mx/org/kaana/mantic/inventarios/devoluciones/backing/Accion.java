@@ -54,6 +54,14 @@ public class Accion extends IBaseArticulos implements Serializable {
 	public FormatLazyModel getLazyArticulos() {
 		return lazyArticulos;
 	}
+
+	public boolean isAplicar() {
+		return aplicar;
+	}
+
+	public void setAplicar(boolean aplicar) {
+		this.aplicar=aplicar;
+	}
 	
 	public Boolean getIsAplicar() {
 		Boolean regresar= true;
@@ -75,7 +83,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 	@PostConstruct
   protected void init() {		
     try {
-			this.aplicar=  true;
+			this.aplicar=  false;
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idDevolucion", JsfBase.getFlashAttribute("idDevolucion")== null? -1L: JsfBase.getFlashAttribute("idDevolucion"));
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? 47L: JsfBase.getFlashAttribute("idNotaEntrada"));

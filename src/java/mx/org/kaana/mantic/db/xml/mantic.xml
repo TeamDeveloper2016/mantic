@@ -261,6 +261,14 @@
       </select>
       <select id="ultimo">
         select      
+          *
+        from      
+          tc_mantic_articulos_bitacora
+        where      
+          id_articulo = {idArticulo} and id_nota_entrada = {idNotaEntrada}
+      </select>
+      <select id="ultimo">
+        select      
           registro
         from      
           tc_mantic_articulos_bitacora

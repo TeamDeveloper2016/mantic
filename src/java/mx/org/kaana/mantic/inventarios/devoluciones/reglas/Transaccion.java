@@ -86,10 +86,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					this.orden.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
 					this.orden.setOrden(consecutivo);
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
-  				if(this.aplicar)
-						this.orden.setIdDevolucionEstatus(3L);
-					else
-						this.orden.setIdDevolucionEstatus(1L);
+  				this.orden.setIdDevolucionEstatus(3L);
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 					bitacoraNota= new TcManticDevolucionesBitacoraDto(this.orden.getIdDevolucionEstatus(), "", this.orden.getIdDevolucion(), JsfBase.getIdUsuario(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
@@ -181,8 +178,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 						DaoFactory.getInstance().update(sesion, item);
 					else
 						DaoFactory.getInstance().insert(sesion, item);
-					if(this.aplicar) 
-						this.toAffectAlmacenes(sesion, this.orden.getIdNotaEntrada(), articulo, nota.getIdAlmacen());
+					this.toAffectAlmacenes(sesion, this.orden.getIdNotaEntrada(), articulo, nota.getIdAlmacen());
 				} // if
 		  } // if
 		} // for
@@ -212,11 +208,10 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		try {
 			params=new HashMap<>();
 			params.put("idArticulo", item.getIdArticulo());
+			params.put("idNotaEntrada", idNotaEntrada);
 			
 			// registar el cambio de precios en la bitacora de articulo 
 			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, item.getIdArticulo());
-			TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(global.getIva(), JsfBase.getIdUsuario(), global.getMayoreo(), -1L, global.getMenudeo(), global.getCantidad()* -1L, global.getIdArticulo(), idNotaEntrada, global.getMedioMayoreo(), global.getPrecio(), global.getLimiteMedioMayoreo(), global.getLimiteMayoreo());
-			DaoFactory.getInstance().insert(sesion, movimiento);
 			
 			// afectar el inventario general de articulos dentro del almacen
 			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().findFirst(sesion, TcManticInventariosDto.class, "inventario", params);
@@ -229,12 +224,17 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			} // else
 			
 			// afectar los precios del catalogo de articulos
-			/*
-			global.setPrecio(Numero.toRedondear(codigos.getCosto()));
-			global.setMenudeo(Numero.toRedondear(codigos.getCosto()* Constantes.PORCENTAJE_MENUDEO));
-			global.setMedioMayoreo(Numero.toRedondear(codigos.getCosto()* Constantes.PORCENTAJE_MEDIO_MAYOREO));
-			global.setMayoreo(Numero.toRedondear(codigos.getCosto()* Constantes.PORCENTAJE_MAYOREO));
-      */
+			if(this.aplicar) {
+  			TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(global.getIva(), JsfBase.getIdUsuario(), global.getMayoreo(), -1L, global.getMenudeo(), global.getCantidad()* -1L, global.getIdArticulo(), idNotaEntrada, global.getMedioMayoreo(), global.getPrecio(), global.getLimiteMedioMayoreo(), global.getLimiteMayoreo());
+	  		DaoFactory.getInstance().insert(sesion, movimiento);
+				TcManticArticulosBitacoraDto ultimo= (TcManticArticulosBitacoraDto)DaoFactory.getInstance().findFirst(sesion, TcManticArticulosBitacoraDto.class, "ultimo", params);
+				if(ultimo!= null) {
+					global.setPrecio(ultimo.getCosto());
+					global.setMenudeo(ultimo.getMenudeo());
+					global.setMedioMayoreo(ultimo.getMedioMayoreo());
+					global.setMayoreo(ultimo.getMayoreo());
+				} // if	
+			} // if
 			global.setStock(global.getStock()- item.getCantidad());
 			DaoFactory.getInstance().update(sesion, global);
 		} // try

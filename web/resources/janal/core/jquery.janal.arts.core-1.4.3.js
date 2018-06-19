@@ -462,7 +462,7 @@
 		compare: function(index) {
 			var msg= [];
 			if(typeof(index)=== 'undefined') {
-				for(var x= 0; x< this.cursor.top; x++) {
+				for(var x= 0; x<= this.cursor.top; x++) {
 					this.cursor.index= x;
 					if(parseFloat($(this.amount()).val(), 10)> parseFloat($(this.request()).val(), 10))
 						msg.push({summary: 'Informativo:', detail: 'La cantidad de la fila '+ (this.cursor.index+ 1)+ ' tiene que ser menor o igual a '+$(this.request()).val()+ '.', severity: 'error'});
@@ -486,6 +486,15 @@
 			else
         this.calculate($(this.amount()));
 			return error.length=== 0;
+		},
+		zeros: function() {
+			var count= 0;
+			for(var x= 0; x<= this.cursor.top; x++) {
+				this.cursor.index= x;
+				if(parseFloat($(this.amount()).val(), 10)=== parseFloat($(this.request()).val(), 10))
+					count++;
+			} // for
+			return this.cursor.top=== count;
 		}
 	});
 	
