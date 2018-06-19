@@ -83,4 +83,18 @@ public class MotorBusqueda implements Serializable{
 		} // finally
 		return regresar;
 	} // toDetalleArticulo
+	
+	public Double toDeudaCliente() throws Exception{
+		Double regresar          = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idCliente", this.idCliente);
+			regresar= DaoFactory.getInstance().toField("TcManticClientesDeudasDto", "saldoCliente", params, "saldo").toDouble();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toDeudaCliente
 }
