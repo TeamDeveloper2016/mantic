@@ -322,8 +322,8 @@
 		<p:dialog id="dialogoCloseTicket" widgetVar="dlgCloseTicket" header="Cambio de usuario" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false">			
 			<h:panelGrid columns="2" columnClasses="janal-wid-10, janal-wid-100">
 				<p:outputLabel for="vendedor" value="Vendedor:"/>
-				<p:selectOneMenu id="vendedor" value="#{manticVentasAccion.attrs.vendedor}" var="item" styleClass="janal-wid-98" converter="janal.convertidor.Entity">
-					<f:selectItems value="#{manticVentasAccion.attrs.vendedores}" var="element" itemValue="#{element}" itemLabel="#{element.cuenta} - #{element.nombreCompleto}"/>
+				<p:selectOneMenu id="vendedor" value="#{manticVentasAccion.attrs.vendedor}" var="item" styleClass="janal-wid-98" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="startsWith">
+					<f:selectItems value="#{manticVentasAccion.attrs.vendedores}" var="element" itemValue="#{element}" itemLabel="#{element.cuenta}"/>
 					<p:column headerText="Cuenta">
 						<h:outputText value="#{item.cuenta}"/>
 					</p:column>   

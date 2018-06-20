@@ -107,7 +107,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       } // if
       else {
         String perfil= this.criteriosBusqueda.getListaPerfiles().get(this.criteriosBusqueda.getListaPerfiles().indexOf(new UISelectEntity(this.criteriosBusqueda.getPerfil().getKey().toString()))).toString("descripcion");
-        JsfBase.addMessage("El usuario " + persona.getNombres() + persona.getPaterno() + " ya existe con perfil de ".concat(perfil));
+        JsfBase.addMessage("El usuario ".concat(persona.getNombres()).concat(" ").concat(persona.getPaterno()).concat(" ya existe con perfil de ").concat(perfil));
       } // else
     } // try
     catch (Exception e) {
