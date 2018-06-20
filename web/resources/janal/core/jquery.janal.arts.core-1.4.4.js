@@ -38,7 +38,7 @@
 		VK_ESC      : 27,
 		VK_ASTERISK : 106,
 		VK_MINUS    : 109,
-		VK_COMA     : 188,
+		VK_COMA     : 191,
 		VK_OPEN     : 122,
 		VK_CLOSE    : 123,
 		VK_PLUS     : 107,

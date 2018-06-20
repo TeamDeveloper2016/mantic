@@ -45,7 +45,7 @@ public class Descuentos implements Serializable {
 		this.tokens= Arrays.asList(this.porcentajes.split(String.valueOf(this.token)));
 		int count= 0;
 		while(count< this.tokens.size()) 
-			if(Cadena.isVacio(this.tokens.get(count)) || !NumberUtils.isNumber(this.tokens.get(count)))
+			if(Cadena.isVacio(this.tokens.get(count)) || !NumberUtils.isNumber(this.tokens.get(count).trim()))
 				this.tokens.set(count, "0");
 			else		
 				count++;	
