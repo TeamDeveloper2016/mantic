@@ -14,6 +14,8 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.libs.recurso.LoadImages;
+import org.primefaces.model.StreamedContent;
 
 /**
  *@company Instituto Nacional de Estadistica y Geografia
@@ -49,6 +51,42 @@ public final class UIEntity {
           } // if
           else
             throw new RuntimeException("No existe la columna "+ column.getName()+ " en la lista de items.");
+        regresar.add(new UISelectEntity(entity));
+      } // for
+    } // if
+    Methods.clean(dtos);
+    return regresar;    
+  } 
+	
+  public static List<UISelectEntity> buildImage(List<? extends IBaseDto> dtos, List<Columna> formato) {
+    List<UISelectEntity> regresar= new ArrayList<>();
+    Entity entity        = null;
+		StreamedContent sc          = null;
+    if (dtos!= null && dtos.size()>0)  {
+      for (IBaseDto item : dtos) {
+        if(!(item instanceof Entity)) {
+          entity= new Entity();
+          Map<String, Object> fields= item.toMap();
+          for (String field : fields.keySet()) 
+            entity.put(field, new Value(field, fields.get(field)));
+        } // if  
+        else
+          entity= (Entity) item;
+				try {
+					entity.put("image", new Value("image", LoadImages.getImage(entity.toString("idArticulo"))));
+				} // try
+				catch (Exception e) {
+					Error.mensaje(e);					
+				} // catch								
+        for (Columna column : formato){ 
+          if(entity.containsKey(column.getName())) {
+            Value value= new Value(column.getName(), entity.get(column.getName()));          
+            value.setData(Global.format(column.getFormat(), value.getData()));
+            entity.put(column.getName(), value);          
+          } // if
+          else
+            throw new RuntimeException("No existe la columna "+ column.getName()+ " en la lista de items.");
+				} // for				
         regresar.add(new UISelectEntity(entity));
       } // for
     } // if
@@ -119,6 +157,22 @@ public final class UIEntity {
     } // finally  
     return regresar;
   }
+	
+  public static List<UISelectEntity> buildImage(String proceso, String id, Map params, List<Columna> formato, Long records) {
+    List<UISelectEntity> regresar= null;
+    List<IBaseDto> dtos         = null;
+    try {
+      dtos    = DaoFactory.getInstance().toEntitySet(proceso, id, params, records);   			
+      regresar= buildImage(dtos, formato);
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // catch 
+    finally {
+      Methods.clean(dtos);
+    } // finally  
+    return regresar;
+  }
   
   public static List<UISelectEntity> build(String proceso, String id, Map params, List<Columna> formato) {
 		return build(proceso, id, params, formato, Constantes.SQL_MAXIMO_REGISTROS);
@@ -144,6 +198,5 @@ public final class UIEntity {
     
   public static List<UISelectEntity> build(String proceso, Map params, String fields, List<Columna> formato) {
     return build(proceso, Constantes.DML_SELECT, params, formato);
-  } 
-		
+  } 		
 }
