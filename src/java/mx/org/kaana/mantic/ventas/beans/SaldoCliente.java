@@ -11,7 +11,7 @@ public class SaldoCliente implements Serializable{
 	private Double totalVenta;
 
 	public SaldoCliente() {
-		this(-1L, 0D, 0D, 0D);
+		this(3515L, 0D, 0D, 0D);
 	}
 
 	public SaldoCliente(Long idCliente, Double totalDeuda, Double totalCredito, Double totalVenta) {

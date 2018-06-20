@@ -115,7 +115,7 @@ public class Foraneo implements Serializable {
     params.put(Constantes.SQL_CONDICION, sql.toString());
     List<UISelectItem> regresar= new ArrayList<>();
     if(selection)
-      regresar.add(new UISelectItem(-1L, "Seleccione"));
+      regresar.add(new UISelectItem(-1L, "SELECCIONE"));
     regresar.addAll(UISelect.build(this.process, this.idXml, params, this.display, " - ", EFormatoDinamicos.MAYUSCULAS));
     return regresar;
   }

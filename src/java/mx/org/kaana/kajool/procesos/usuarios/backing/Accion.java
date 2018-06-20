@@ -29,19 +29,14 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.db.dto.TcJanalUsuariosDto;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.CargaInformacionUsuarios;
-import mx.org.kaana.kajool.procesos.usuarios.reglas.RandomCuenta;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.Transaccion;
 import mx.org.kaana.kajool.procesos.usuarios.reglas.beans.CriteriosBusqueda;
 import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.BouncyEncryption;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
-import mx.org.kaana.mantic.enums.ETipoPersona;
-import org.primefaces.context.RequestContext;
 
 @Named(value = "kajoolUsuariosAccion")
 @ViewScoped
@@ -59,63 +54,49 @@ public class Accion extends IBaseAttribute implements Serializable {
   protected void init() {
     try {
       this.criteriosBusqueda = new CriteriosBusqueda();
-      this.attrs.put("accion", (EAccion) JsfBase.getFlashAttribute("accion"));
-      this.attrs.put("showConfirmDialog", true);
+      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
+      this.attrs.put("idUsuario", JsfBase.getFlashAttribute("idUsuario")!= null? (Long)JsfBase.getFlashAttribute("idUsuario"): -1L);
       loadPerfiles();
       loadPersonas();      
-      cargarUsuario(JsfBase.getFlashAttribute("idUsuario") != null ? (Long) JsfBase.getFlashAttribute("idUsuario") : -1L);
-			loadTitulos();
-      this.attrs.put("titulo", ((EAccion) this.attrs.get("accion")).equals(EAccion.MODIFICAR) ? "Modificar usuario cuenta [".concat(((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto")).getCuenta()).concat("]") : "Agregar usuario [...]");
+      loadUsuario();
+      this.attrs.put("titulo", ((EAccion) this.attrs.get("accion")).equals(EAccion.MODIFICAR) ? "Modificar usuario cuenta [".concat(((TcManticPersonasDto) this.attrs.get("tcManticPersonasDto")).getCuenta()).concat("]") : "Agregar usuario [...]");
       doBuscar();
-    } // try // try
+    } // try
     catch (Exception e) {
       Error.mensaje(e);
     } // catch
   }  
 
   private void loadPersonas() {
-    List<Columna> formatos = null;
-    Map<String, Object> params = null;
-    Entity entityDefault = null;
+    List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    Entity entity             = null;
     try {
-      formatos = new ArrayList<>();
+      columns= new ArrayList<>();
       params = new HashMap<>();
-      formatos.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
-      formatos.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
-      formatos.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
-      params.put(Constantes.SQL_CONDICION, "id_tipo_persona=".concat(ETipoPersona.USUARIO.getIdTipoPersona().toString()));
-      entityDefault = new Entity();
-      this.criteriosBusqueda.getListaPersonas().addAll(UIEntity.build("TcManticPersonasDto", "row", params, formatos));
-      entityDefault.put("idKey", new Value("idKey", -1L, "id_key"));
-      entityDefault.put("nombres", new Value("nombres", "SELECCIONE...", "nombres"));
-      // entityDefault.put("descripcion", new Value("paterno", "NUEVA...", "paterno"));
-      // entityDefault.put("descripcion", new Value("paterno", "NUEVA...", "paterno"));
-      this.criteriosBusqueda.getListaPersonas().add(0, new UISelectEntity(entityDefault));
-      if (!getCriteriosBusqueda().getListaPersonas().isEmpty()) {
-        getCriteriosBusqueda().setPersona((UISelectEntity) UIBackingUtilities.toFirstKeySelectEntity(this.criteriosBusqueda.getListaPersonas()));
-      } // if
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
+      params.put(Constantes.SQL_CONDICION, "id_tipo_persona in (1,2,6)");
+      this.criteriosBusqueda.getListaPersonas().addAll(UIEntity.build("TcManticPersonasDto", "row", params, columns));
     } // try
     catch (Exception e) {
       throw e;
     } // catch    
     finally {
       Methods.clean(params);
-      Methods.clean(formatos);
+      Methods.clean(columns);
     } // finally 
   }
 
   public String doAceptar() {
-    Transaccion transaccion = null;
-    String regresar = null;
-    TcManticPersonasDto persona = null;
+    Transaccion transaccion    = null;
+    String regresar            = null;
+    TcManticPersonasDto persona= null;
     TcJanalUsuariosDto usuario = null;
     try {
-      persona = (TcManticPersonasDto) this.attrs.get("tcManticPersonaDto");
-      usuario = (TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto");
-      usuario.setIdUsuarioModifica(JsfBase.getIdUsuario());
-      usuario.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-      persona.setIdUsuario(JsfBase.getIdUsuario());
-      usuario.setActivo(1L);
+      persona= (TcManticPersonasDto)this.attrs.get("tcManticPersonasDto");
+      usuario= (TcJanalUsuariosDto)this.attrs.get("tcJanalUsuariosDto");
       usuario.setIdPerfil(this.criteriosBusqueda.getPerfil().getKey());
       persona.setEstilo("sentinel");
       persona.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
@@ -127,7 +108,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       else {
         String perfil= this.criteriosBusqueda.getListaPerfiles().get(this.criteriosBusqueda.getListaPerfiles().indexOf(new UISelectEntity(this.criteriosBusqueda.getPerfil().getKey().toString()))).toString("descripcion");
         JsfBase.addMessage("El usuario " + persona.getNombres() + persona.getPaterno() + " ya existe con perfil de ".concat(perfil));
-      }
+      } // else
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -136,15 +117,17 @@ public class Accion extends IBaseAttribute implements Serializable {
     return regresar;
   }
 
-  private void cargarUsuario(Long idUsuario) {
+  private void loadUsuario() {
+		Long idUsuario= (Long)this.attrs.get("idUsuario");
     try {
-      if (!idUsuario.equals(-1L)) {
-        this.attrs.put("tcJanalUsuarioDto", (TcJanalUsuariosDto) DaoFactory.getInstance().findById(TcJanalUsuariosDto.class, idUsuario));
-        this.attrs.put("tcManticPersonaDto", (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, ((TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto")).getIdPersona()));
-      } else {
-        this.attrs.put("tcJanalUsuarioDto", new TcJanalUsuariosDto());
-        this.attrs.put("tcManticPersonaDto", new TcManticPersonasDto());
-      }
+      if (idUsuario> 0) {
+        this.attrs.put("tcJanalUsuariosDto", (TcJanalUsuariosDto) DaoFactory.getInstance().findById(TcJanalUsuariosDto.class, idUsuario));
+        this.attrs.put("tcManticPersonasDto", (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, ((TcJanalUsuariosDto)this.attrs.get("tcJanalUsuariosDto")).getIdPersona()));
+      } // if
+			else {
+        this.attrs.put("tcJanalUsuariosDto", new TcJanalUsuariosDto(-1L, JsfBase.getIdUsuario(), -1L, 1L, -1L));
+        this.attrs.put("tcManticPersonasDto", new TcManticPersonasDto());
+      } // else
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
@@ -153,40 +136,38 @@ public class Accion extends IBaseAttribute implements Serializable {
   }
 
   public void doBuscar() {
-    Map<String, String> params = null;
-    TcManticPersonasDto persona= null;
-    TcJanalUsuariosDto usuario = null;
-    Long idKeyPersona          = null;
-    int posPerfil              = -1;
+    TcJanalUsuariosDto usuario= null;
+    int index                 = -1;
     try {
-      params = new HashMap();
-      idKeyPersona = this.criteriosBusqueda.getPersona().getKey();
-      if (!idKeyPersona.equals(-1L)) {
-        persona = (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, idKeyPersona);
-        this.attrs.put("tcManticPersonaDto", persona);
-      } // if      
-      usuario = (TcJanalUsuariosDto) this.attrs.get("tcJanalUsuarioDto");
+			TcManticPersonasDto persona= new TcManticPersonasDto();
+      if (this.criteriosBusqueda.getPersona()!= null && this.criteriosBusqueda.getPersona().getKey()> 0L) {
+        persona= (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, this.criteriosBusqueda.getPersona().getKey());
+				persona.setContrasenia(BouncyEncryption.decrypt(persona.getContrasenia()));
+			} // else	
+      this.attrs.put("tcManticPersonasDto", persona);
+      usuario = (TcJanalUsuariosDto)this.attrs.get("tcJanalUsuariosDto");
       if (usuario.isValid()) {
-        posPerfil = this.getCriteriosBusqueda().getListaPerfiles().indexOf(new UISelectEntity(new Entity(usuario.getIdPerfil())));
-        this.criteriosBusqueda.setPerfil(this.getCriteriosBusqueda().getListaPerfiles().get(posPerfil));
-      } else {
-        this.attrs.put("tcJanalEmpleadoDto", new TcManticPersonasDto());
-        this.attrs.put("tcJanalUsuarioDto", new TcJanalUsuariosDto());
-      } // else
-    } catch (Exception e) {
+        index = this.getCriteriosBusqueda().getListaPerfiles().indexOf(new UISelectEntity(new Entity(usuario.getIdPerfil())));
+        this.criteriosBusqueda.setPerfil(this.getCriteriosBusqueda().getListaPerfiles().get(index));
+      } // if
+			else { 
+        this.attrs.put("tcJanalUsuariosDto", new TcJanalUsuariosDto(-1L, JsfBase.getIdUsuario(), -1L, 1L, persona.getKey()));
+				//**this.loadPerfiles();
+			} // if	
+			this.attrs.put("confirmar", persona.getContrasenia());
+    }  // try
+		catch (Exception e) {
       JsfBase.addMessageError(e);
       Error.mensaje(e);
-    } // exception
-    finally {
-      Methods.clean(params);
-    } // finally
+    } // catch
   }
-  	public String doCancelar(){		
+  
+	public String doCancelar() {
 		return "filtro";
-	} // doAccion
+	} 
 
   protected void loadPerfiles() {
-    CargaInformacionUsuarios cargarInformaUsuario = null;
+    CargaInformacionUsuarios cargarInformaUsuario= null;
     try {
       cargarInformaUsuario = new CargaInformacionUsuarios(this.criteriosBusqueda);
       cargarInformaUsuario.init(false);
@@ -194,77 +175,10 @@ public class Accion extends IBaseAttribute implements Serializable {
     catch (Exception e) {
       throw e;
     } // catch
-  } // loadEntidades		
-
-  public void doCuenta() {
-    TcManticPersonasDto persona = (TcManticPersonasDto) this.attrs.get("tcManticPersonaDto");
-    if (!Cadena.isVacio(persona.getNombres()) || !Cadena.isVacio(persona.getPaterno()) || !Cadena.isVacio(persona.getMaterno())) {
-      RandomCuenta random = new RandomCuenta(
-              Cadena.isVacio(persona.getNombres()) ? "kajool" : persona.getNombres(),
-              Cadena.isVacio(persona.getPaterno()) ? "kajool" : persona.getPaterno(),
-              Cadena.isVacio(persona.getMaterno()) ? "kajool" : persona.getMaterno(), -1L);
-      persona.setCuenta(random.getCuentaGenerada());
-    } // if
-    if (!isLockField() && !Cadena.isVacio(persona.getNombres()) && (!Cadena.isVacio(persona.getPaterno()) || !Cadena.isVacio(persona.getMaterno()))) {
-      if ((boolean) this.attrs.get("showConfirmDialog") && toFindUserByName(persona)) {
-        RequestContext.getCurrentInstance().execute("janal.bloquear();PF('dialogoConfirmacion').show();");
-        RequestContext.getCurrentInstance().update("confirmacion");
-        this.attrs.put("showConfirmDialog", false);
-      } // if  
-    } // if  
-  }
+  } 
 
   public boolean isLockField() {
-    return ((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto")).isValid();
+    return !((TcManticPersonasDto)this.attrs.get("tcManticPersonasDto")).isValid();
   }
 
-  private boolean toFindUserByName(TcManticPersonasDto empleado) {
-    boolean regresar = false;
-    Map<String, String> params = null;
-    try {
-      params = new HashMap();
-      params.put("nombres", empleado.getNombres());
-      params.put("paterno", empleado.getPaterno());
-      params.put("materno", empleado.getMaterno());
-      empleado = (TcManticPersonasDto) DaoFactory.getInstance().findFirst(TcManticPersonasDto.class, "nombre", params);
-      if (empleado != null) {
-        this.attrs.put("empleado", empleado);
-        regresar = true;
-      } // if
-    } // try // try
-    catch (Exception e) {
-      JsfBase.addMessageError(e);
-      Error.mensaje(e);
-    } // exception
-    finally {
-      Methods.clean(params);
-    } // finally
-    return regresar;
-  }
-
-  public void doUpdateEmpleado() {
-    ((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto")).setCurp(((TcManticPersonasDto) this.attrs.get("empleado")).getCurp());
-    doBuscar();
-  }
-
-	private void loadTitulos() {
-    List<UISelectItem> titulos= null;
-    Map<String, Object> params= null;
-    EAccion eaccion           = null;
-    try {
-      params = new HashMap<>();
-      params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      titulos = UISelect.build("TcManticPersonasTitulosDto", "row", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
-      this.attrs.put("titulos", titulos);
-      eaccion = (EAccion) this.attrs.get("accion");
-      if (eaccion.equals(EAccion.AGREGAR)) 
-        ((TcManticPersonasDto) this.attrs.get("tcManticPersonaDto")).setIdPersonaTitulo((Long) UIBackingUtilities.toFirstKeySelectItem(titulos));			
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch		
-    finally {
-      Methods.clean(params);
-    } // finally
-  } // loadTitulos
 }

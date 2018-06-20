@@ -109,10 +109,10 @@
 										<p:inputNumber id="pocentaje#{descuento.key}" styleClass="janal-wid-100-txt" value="#{descuento.porcentaje}"  symbol="%" emptyValue="zero" symbolPosition="s"/>                    																																			
 									</p:column>
 									<p:column headerText="Vigencia inicial">										
-										<p:calendar id="vigenciaInicial#{descuento.key}" styleClass="janal-wid-100-txt" value="#{descuento.vigenciaIni}" mode="popup"/>                    																																							
+										<p:calendar id="vigenciaInicial#{descuento.key}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" styleClass="janal-wid-100-txt" value="#{descuento.vigenciaIni}" mode="popup"/>                    																																							
 									</p:column>				
 									<p:column headerText="Vigencia final">										
-										<p:calendar id="vigenciaFinal#{descuento.key}" styleClass="janal-wid-100-txt" value="#{descuento.vigenciaFin}" mode="popup"/>                    																																							
+										<p:calendar id="vigenciaFinal#{descuento.key}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" styleClass="janal-wid-100-txt" value="#{descuento.vigenciaFin}" mode="popup"/>                    																																							
 									</p:column>				
 									 <p:column style="width:32px;text-align: center">
 										 <p:commandButton update="tablaDescuentos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarDescuento}" styleClass="janal-text-white">
@@ -137,10 +137,10 @@
 										<p:inputNumber id="pocentaje#{descuentoEspecial.key}" styleClass="janal-wid-100-txt" value="#{descuentoEspecial.porcentaje}" symbol="%" emptyValue="zero" symbolPosition="s"/>                    																																			
 									</p:column>
 									<p:column headerText="Vigencia inicial" styleClass="janal-wid-20">										
-										<p:calendar id="vigenciaInicial#{descuentoEspecial.key}" styleClass="janal-wid-100-txt" value="#{descuentoEspecial.vigenciaIni}" mode="popup"/>                    																																							
+										<p:calendar id="vigenciaInicial#{descuentoEspecial.key}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" styleClass="janal-wid-100-txt" value="#{descuentoEspecial.vigenciaIni}" mode="popup"/>                    																																							
 									</p:column>				
 									<p:column headerText="Vigencia final" styleClass="janal-wid-20">										
-										<p:calendar id="vigenciaFinal#{descuentoEspecial.key}" styleClass="janal-wid-100-txt" value="#{descuentoEspecial.vigenciaFin}" mode="popup"/>                    																																							
+										<p:calendar id="vigenciaFinal#{descuentoEspecial.key}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" styleClass="janal-wid-100-txt" value="#{descuentoEspecial.vigenciaFin}" mode="popup"/>                    																																							
 									</p:column>				
 									 <p:column style="width:32px;text-align: center">
 										 <p:commandButton update="tablaDescuentosEspeciales" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarDescuentoEspecial}" styleClass="janal-text-white">
@@ -207,7 +207,7 @@
 										<p:inputNumber id="descuento#{articuloProveedor.key}" styleClass="janal-wid-100-txt" value="#{articuloProveedor.descuento}" symbol="%" emptyValue="zero" symbolPosition="s"/>																													
 									</p:column>
 									<p:column headerText="Fecha compra" styleClass="janal-wid-20">										
-										<p:calendar id="fechaCompra#{articuloProveedor.key}" styleClass="janal-wid-100-txt" value="#{articuloProveedor.compra}" mode="popup"/>                    																																							
+										<p:calendar id="fechaCompra#{articuloProveedor.key}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-96" value="#{articuloProveedor.compra}" mode="popup" showOn="button"/>                    																																							
 									</p:column>												
 									 <p:column style="width:32px;text-align: center">
 										 <p:commandButton update="tablaArticulosProveedores" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarArticuloProveedor}" styleClass="janal-text-white">

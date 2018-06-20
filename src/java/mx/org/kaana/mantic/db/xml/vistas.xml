@@ -1353,7 +1353,7 @@
 				      tc_mantic_articulos.id_articulo= {idArticulo}
 				   ) 			
 				order by 
-				  tc_mantic_articulos.nombre
+				  tc_mantic_articulos_codigos.codigo
 			</select>
 			<select id="proveedores">
         select

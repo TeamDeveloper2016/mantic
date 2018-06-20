@@ -84,7 +84,7 @@
 									<p:outputLabel for="domicilio" value="Domicilio:"/>
                   <p:selectOneMenu id="domicilio" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.domicilio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
                     <p:ajax event="change" listener="#{manticCatalogosAlamacenesAccion.doLoadAtributos}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
-                    <f:selectItem itemValue="-1" itemLabel="Seleccione"/>
+                    <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
                     <f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.domicilios}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
 										<p:column  styleClass="janal-column-left janal-wid-col-150">
 											<h:outputText value="#{item.entidad}"/>
@@ -103,7 +103,7 @@
                   <p:outputLabel for="entidad" value="Entidad:"/>
                   <p:selectOneMenu id="entidad" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.idEntidad}" styleClass="janal-wid-100-txt" var="item" converter="janal.convertidor.Entity">									
                     <p:ajax event="change" listener="#{manticCatalogosAlamacenesAccion.doActualizaMunicipios}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
-                    <f:selectItem itemValue="-1" itemLabel="Seleccione"/>
+                    <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 										<f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.entidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
 										<p:column  styleClass="janal-column-center">
 											<h:outputText value="#{item.clave}"/>
@@ -115,7 +115,7 @@
                   <p:outputLabel for="municipio" value="Municipio:"/>
                   <p:selectOneMenu id="municipio" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.idMunicipio}" styleClass="janal-wid-100-txt" var="item" converter="janal.convertidor.Entity">									
                     <p:ajax event="change" listener="#{manticCatalogosAlamacenesAccion.doActualizaLocalidades}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
-                    <f:selectItem itemValue="-1" itemLabel="Seleccione"/>
+                    <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 										<f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.municipios}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
 										<p:column  styleClass="janal-column-center">
 											<h:outputText value="#{item.clave}"/>
@@ -127,7 +127,7 @@
                   <p:outputLabel for="localidad" value="Localidad:"/>
                   <p:selectOneMenu id="localidad" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.localidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
                     <p:ajax event="change" listener="#{manticCatalogosAlamacenesAccion.doActualizaCodigosPostales}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
-                    <f:selectItem itemValue="-1" itemLabel="Seleccione"/>
+                    <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 										<f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.localidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
 										<p:column  styleClass="janal-column-center">
 											<h:outputText value="#{item.clave}"/>
@@ -139,7 +139,7 @@
                   <p:outputLabel for="codigoPostal" value="Código postal:"/>
                   <p:selectOneMenu id="codigoPostal" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.idCodigoPostal}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith">									
                     <p:ajax event="change" listener="#{manticCatalogosAlamacenesAccion.doLoadDomicilios}" process="@this" update="contenedorGrupos:formularioDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
-                    <f:selectItem itemValue="-1" itemLabel="Seleccione"/>
+                    <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
                     <f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.codigosPostales}"/>
                   </p:selectOneMenu>	
                   <p:spacer id="spacerCp" rendered="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.nuevoCp}"/>
@@ -236,7 +236,7 @@
 									<p:outputLabel for="articulo" value="Articulo:"/>
                   <p:selectOneMenu id="articulo" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenArticuloPivote.articulo}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
                     <p:ajax event="change" process="@this" update="contenedorGrupos:formularioArticuloAcciones contenedorGrupos:stock contenedorGrupos:minimo contenedorGrupos:maximo contenedorGrupos:idAlmacen" listener="#{manticCatalogosAlamacenesAccion.registroAlmacen.doSeleccionarArticuloPivote}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
-										<f:selectItem itemValue="" itemLabel="Seleccione"/>
+										<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
                     <f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.articulos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
 										<p:column  styleClass="janal-column-left janal-wid-col-150">
 											<h:outputText value="#{item.codigo}"/>

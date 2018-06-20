@@ -44,36 +44,32 @@ public class Transaccion extends IBaseTnx {
 
   @Override
   protected boolean ejecutar(Session session, EAccion accion) throws Exception {
-    boolean regresar = false;
-    IBaseDto usuarioExiste = null;
-    Map<String, Object> params = null;
+    boolean regresar          = false;
+    IBaseDto usuarioExiste    = null;
+    Map<String, Object> params= null;
     try {
       params = new HashMap<>();
       switch (accion) {
         case AGREGAR:
-          if (!this.persona.isValid()) {
-            this.persona.setContrasenia(BouncyEncryption.encrypt(this.persona.getCurp().substring(0, 10)));
-            this.persona.setIdTipoPersona(ETipoPersona.USUARIO.getIdTipoPersona());
-            DaoFactory.getInstance().insert(session, this.persona);
-            this.usuario.setIdPersona(this.persona.getIdPersona());
-          }
           params.put("idPersona", this.persona.getIdPersona());
           params.put("idPerfil", this.usuario.getIdPerfil());
-          usuarioExiste = (TcJanalUsuariosDto) DaoFactory.getInstance().findIdentically(session, TcJanalUsuariosDto.class, params);
-          regresar =usuarioExiste!=null && usuarioExiste.isValid();
-          if (!regresar) {
+          usuarioExiste= (TcJanalUsuariosDto) DaoFactory.getInstance().findIdentically(session, TcJanalUsuariosDto.class, params);
+          if (usuarioExiste== null) {
             this.usuario.setIdPersona(persona.getIdPersona());
-            regresar = DaoFactory.getInstance().insert(session, this.usuario) >= 1L;
-          }
-          else {
-            regresar = false;
-          }
+            regresar = DaoFactory.getInstance().insert(session, this.usuario)>= 1L;
+            this.persona.setContrasenia(BouncyEncryption.encrypt(this.persona.getContrasenia()));
+            regresar = DaoFactory.getInstance().update(session, this.persona)>= 1;
+          } // if
+          else 
+            regresar= false;
           break;
         case MODIFICAR:
-          params.put("idPerfil", this.usuario.getIdPerfil());
           params.put("idUsuarioModifica", this.usuario.getIdUsuarioModifica());
-          regresar = DaoFactory.getInstance().update(session, this.usuario, params) >= 1L;
-          regresar = DaoFactory.getInstance().update(session, this.persona, params) >= 1L;
+          usuarioExiste= (TcJanalUsuariosDto) DaoFactory.getInstance().findIdentically(session, TcJanalUsuariosDto.class, params);
+          if (usuarioExiste== null) 
+            regresar = DaoFactory.getInstance().update(session, this.usuario, params) >= 1L;
+          this.persona.setContrasenia(BouncyEncryption.encrypt(this.persona.getContrasenia()));
+          regresar = DaoFactory.getInstance().update(session, this.persona) >= 1L;
           break;
         case ELIMINAR:
           regresar = DaoFactory.getInstance().delete(session, this.usuario.toHbmClass(), this.usuario.getKey()) >= 1L;
@@ -83,7 +79,7 @@ public class Transaccion extends IBaseTnx {
           regresar = DaoFactory.getInstance().update(session, this.usuario, params) >= 1L;
           break;
         case RESTAURAR:
-          params.put("contrasenia", BouncyEncryption.encrypt(this.persona.getCurp().substring(0, 10)));
+          params.put("contrasenia", BouncyEncryption.encrypt(this.persona.getPaterno()));
           regresar = DaoFactory.getInstance().update(session, this.persona, params) >= 1;
           break;
         case REGISTRAR:

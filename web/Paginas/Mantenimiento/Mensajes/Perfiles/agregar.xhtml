@@ -34,13 +34,13 @@
       <p:inputText id="nombre" styleClass="Wid70" value="#{kajoolMensajesPerfilesAgregar.attrs.dto.nombre}" disabled="#{kajoolMensajesPerfilesAgregar.attrs.deshabilitar}"/>
       <p:outputLabel for="idGrupo" value="Grupo:"/>
       <p:selectOneMenu id="idGrupo" value="#{kajoolMensajesPerfilesAgregar.attrs.idGrupo}" disabled="#{kajoolMensajesPerfilesAgregar.attrs.deshabilitar}">
-        <f:selectItem itemValue="" itemLabel="Seleccione"/>
+        <f:selectItem itemValue="" itemLabel="SELECCIONE"/>
         <f:selectItems value="#{kajoolMensajesPerfilesAgregar.attrs.grupos}"/>
         <p:ajax event="change" listener="#{kajoolMensajesPerfilesAgregar.doPerfiles()}" process="@this" update="idPerfil"/>
       </p:selectOneMenu>
       <h:outputLabel value="Perfil:" for="idPerfil"/>
       <p:selectOneMenu id="idPerfil" value="#{kajoolMensajesPerfilesAgregar.attrs.idPerfil}" disabled="#{kajoolMensajesPerfilesAgregar.attrs.deshabilitar}">
-        <f:selectItem itemValue="" itemLabel="Seleccione"/>
+        <f:selectItem itemValue="" itemLabel="SELECCIONE"/>
         <f:selectItems value="#{kajoolMensajesPerfilesAgregar.attrs.perfiles}"/>
       </p:selectOneMenu>
       <h:outputLabel for="vigenciaIni" value="Fecha inicial:"/>
@@ -57,7 +57,7 @@
       </p:panelGrid>
       <h:outputLabel value="Prioridad:" for="idPrioridad"/>
       <p:selectOneMenu id="idPrioridad" value="#{kajoolMensajesPerfilesAgregar.attrs.idPrioridad}" disabled="#{kajoolMensajesPerfilesAgregar.attrs.deshabilitar}">
-        <f:selectItem itemValue="" itemLabel="Seleccione"/>
+        <f:selectItem itemValue="" itemLabel="SELECCIONE"/>
         <f:selectItems value="#{kajoolMensajesPerfilesAgregar.attrs.prioridades}"/>
       </p:selectOneMenu>
     </p:panelGrid>

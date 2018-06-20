@@ -74,7 +74,7 @@
 								<p:outputLabel for="cliente" value="Cliente:"/>
 								<p:selectOneMenu id="cliente" value="#{manticTallerAccion.registroServicio.clienteSeleccion}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">
 									<p:ajax event="change" listener="#{manticTallerAccion.doLoadAtributos}" process="@this cliente" update="contenedorGrupos:formularioCliente" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
-									<f:selectItem itemValue="-1" itemLabel="Seleccione"/>
+									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 									<f:selectItems value="#{manticTallerAccion.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
 									<p:column  styleClass="janal-column-left janal-wid-30">
 										<h:outputText value="#{item.rfc}"/>

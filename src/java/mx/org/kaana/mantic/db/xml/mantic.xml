@@ -289,13 +289,14 @@
     <unit id="TcManticPersonasDto">
       <select id="row">
         select 
-          tc_mantic_personas.*,tc_mantic_personas.id_persona as id_key
+				  tc_mantic_personas.id_persona as id_key,
+          tc_mantic_personas.*
         from
           tc_mantic_personas
         where 
           {condicion}
         order by
-          paterno,materno,nombres
+          nombres, paterno, materno
       </select>
       <select id="identically">
         select 
@@ -307,29 +308,29 @@
       </select>
       <select id="curp">
         select
-        *
+          *
         from
-        tc_mantic_personas
+          tc_mantic_personas
         where
-        curp='{curp}'
+          curp='{curp}'
       </select>
       <select id="findUsuario">
         select
           *
         from
-        tc_mantic_personas
+          tc_mantic_personas
         where
-        cuenta = '{cuenta}'
+          cuenta = '{cuenta}'
       </select>
       <select id="nombre">
         select
-        *
+          *
         from
-        tc_mantic_personas
+          tc_mantic_personas
         where
-        lower(nombres)= lower('{nombres}')
-        and lower(paterno)= lower('{paterno}')
-        and lower(materno)= lower('{materno}')
+          lower(nombres)= lower('{nombres}')
+          and lower(paterno)= lower('{paterno}')
+          and lower(materno)= lower('{materno}')
       </select>
     </unit>    
 		<unit id="TcManticCategoriasDto">
@@ -1687,14 +1688,14 @@
 	    <unit id="TcManticPersonasTitulosDto">
       <select id="row">
         select  
-					tc_mantic_personas_titulos.*,
-					tc_mantic_personas_titulos.id_persona_titulo as id_key 
+				  tc_mantic_personas_titulos.id_persona_titulo as id_key,
+					tc_mantic_personas_titulos.*
 				from 
 					tc_mantic_personas_titulos 
 				where 
 					{condicion}
 				order by 
-					nombre			
+					orden
       </select>
       <select id="identically">
         select      
@@ -1732,6 +1733,8 @@
 					tc_mantic_puestos
 				where 
 					{condicion} 
+				order by
+				  orden
       </select>
       <select id="identically">
         select      

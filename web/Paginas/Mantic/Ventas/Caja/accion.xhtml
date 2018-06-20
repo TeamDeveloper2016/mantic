@@ -61,7 +61,7 @@
 							<p:outputLabel value="Ticket:"/>
 							<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasCajaAccion.attrs.ticketAbierto}" styleClass="janal-wid-100-txt">
 								<p:ajax event="change" onstart="loadTicketAbiertos();" update="" oncomplete="janal.desbloquear();" />
-								<f:selectItem itemValue="-1" itemLabel="Seleccione"/> 
+								<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/> 
 								<f:selectItems value="#{manticVentasCajaAccion.attrs.ticketsAbiertos}"/>
 							</p:selectOneMenu>
 						</p:panelGrid>	

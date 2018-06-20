@@ -63,9 +63,9 @@ public class CargaInformacionUsuarios {
    * @throws Exception
    */
   private void cargarPerfiles(boolean optionAll) throws Exception {
-    Map<String, Object> params = null;
-    List<Columna> formatos = null;
-    Entity entityDefault = null;
+    Map<String, Object> params= null;
+    List<Columna> formatos    = null;
+    Entity entityDefault      = null;
     try {
       formatos = new ArrayList<>();
       params = new HashMap<>();

@@ -28,7 +28,7 @@
       <p:panelGrid columns="2" layout="grid" columnClasses="janal-wid-10">
         <p:outputLabel value="Catálogos:" for="idCatalogo"/>
         <p:selectOneMenu id="idCatalogo" value="#{kajoolDinamicosFiltro.attrs.idCatalogo}" converter="javax.faces.Long">
-          <f:selectItem itemValue="" itemLabel="Seleccione"/>
+          <f:selectItem itemValue="" itemLabel="SELECCIONE"/>
           <f:selectItems value="#{kajoolDinamicosFiltro.attrs.catalogos}"/>
           <p:ajax event="change" listener="#{kajoolDinamicosFiltro.doRefresh()}" process="@this" update="criterio grid boton filtrar tabla" oncomplete="dinamico(xhr, status, args);"/>
         </p:selectOneMenu>

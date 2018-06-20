@@ -17,13 +17,13 @@
       <h:panelGrid columns="2">							
         <p:outputLabel for="idModulo" value="Modulo:"/>
         <p:selectOneMenu id="idModulo" value="#{kajoolMenuGaleryMenu.trJanalBuzonDto.idModulo}">
-          <f:selectItem itemValue="" itemLabel="Seleccione"/>
+          <f:selectItem itemValue="" itemLabel="SELECCIONE"/>
           <f:selectItems value="#{kajoolMenuGaleryMenu.modulos}"/>
           <p:ajax event="change" process="@this"/>
         </p:selectOneMenu>
         <p:outputLabel for="idProblematica" value="Tipo:"/>
         <p:selectOneMenu id="idProblematica" value="#{kajoolMenuGaleryMenu.trJanalBuzonDto.idProblematica}">
-          <f:selectItem itemValue="" itemLabel="Seleccione"/>
+          <f:selectItem itemValue="" itemLabel="SELECCIONE"/>
           <f:selectItems value="#{kajoolMenuGaleryMenu.problematicas}"/>
           <p:ajax event="change" process="@this"/>
         </p:selectOneMenu>

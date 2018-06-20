@@ -106,7 +106,7 @@ public class Transaccion  extends IBaseTnx{
       this.messageError = "Error al registrar el articulo";
       if (eliminarRegistros(sesion)) {
 				toCuenta();
-				this.persona.getPersona().setContrasenia(BouncyEncryption.encrypt(this.persona.getPersona().getRfc()));
+				this.persona.getPersona().setContrasenia(BouncyEncryption.encrypt(this.persona.getPersona().getPaterno()));
 				this.persona.getPersona().setCuenta(this.cuenta);
         this.persona.getPersona().setIdUsuario(JsfBase.getIdUsuario());
         idPersona = DaoFactory.getInstance().insert(sesion, this.persona.getPersona());

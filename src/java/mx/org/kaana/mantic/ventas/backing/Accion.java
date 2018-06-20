@@ -47,7 +47,7 @@ import org.primefaces.model.StreamedContent;
 public class Accion extends IBaseArticulos implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
-	private static final String VENDEDOR_PERFIL= "VENDEDOR";
+	private static final String VENDEDOR_PERFIL= "VENDEDOR DE PISO";
 	private EOrdenes tipoOrden;
 	private SaldoCliente saldoCliente;
 	private StreamedContent image;
@@ -98,7 +98,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 
   public void doLoad() {
     EAccion eaccion= null;
-		Long idCliente = -1L;
+		Long idCliente = 3515L;
     try {
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
@@ -468,7 +468,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 		StringBuilder regresar= null;
 		try {
 			regresar= new StringBuilder();
-			regresar.append(" DATE_FORMAT(tc_mantic_ventas.registro, '%Y%m%d')= DATE_FORMAT(SYSDATE(), '%Y%m%d')");
+			regresar.append(" date_format(tc_mantic_ventas.registro, '%Y%m%d')= date_format(SYSDATE(), '%Y%m%d')");
 			regresar.append(" and tc_mantic_ventas.id_venta_estatus=");
 			regresar.append(EEstatusVentas.ELABORADA.getIdEstatusVenta());
 		} // try
@@ -600,7 +600,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // catch		
 	} // doLoadSaldos
 	
-	public void doActualizaImage(String idImage){
+	public void doActualizaImage(String idImage) {
 		try {
 			if(!idImage.equals("-1")){
 				this.image= LoadImages.getImage(idImage);

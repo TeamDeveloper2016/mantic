@@ -19,14 +19,14 @@
       <p:panelGrid columns="3" layout="grid" columnClasses="janal-wid-20,Wid40,janal-wid-5">
         <p:outputLabel for="idGrupo" value="Grupo:"/>
         <p:selectOneMenu id="idGrupo" value="#{kajoolMensajesPerfilesFiltro.attrs.idGrupo}">
-          <f:selectItem itemValue="" itemLabel="Seleccione"/>
+          <f:selectItem itemValue="" itemLabel="SELECCIONE"/>
           <f:selectItems value="#{kajoolMensajesPerfilesFiltro.attrs.grupos}"/>
           <p:ajax event="change" listener="#{kajoolMensajesPerfilesFiltro.doPerfiles()}" process="@this" update="idPerfil"/>
         </p:selectOneMenu>
         <p:spacer/>
         <p:outputLabel for="idPerfil" value="Perfil:"/>
         <p:selectOneMenu id="idPerfil" value="#{kajoolMensajesPerfilesFiltro.attrs.idPerfil}">
-          <f:selectItem itemValue="" itemLabel="Seleccione"/>
+          <f:selectItem itemValue="" itemLabel="SELECCIONE"/>
           <f:selectItems value="#{kajoolMensajesPerfilesFiltro.attrs.perfiles}"/>
         </p:selectOneMenu>
         <p:commandButton id="buscar" icon="fa fa-search" value="Buscar" actionListener="#{kajoolMensajesPerfilesFiltro.doLoad()}" update="tabla"/>

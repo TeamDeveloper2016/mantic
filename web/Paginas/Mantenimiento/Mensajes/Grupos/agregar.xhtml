@@ -27,7 +27,7 @@
       <p:inputText id="nombre" value="#{kajoolMantenimientoMensajesGruposAgregar.attrs.dto.nombre}" disabled="#{kajoolMantenimientoMensajesGruposAgregar.attrs.deshabilitar}" styleClass="Container50"/>
       <h:outputLabel value="Grupo:" for="idGrupo"/>
       <p:selectOneMenu id="idGrupo" value="#{kajoolMantenimientoMensajesGruposAgregar.attrs.idGrupo}" disabled="#{kajoolMantenimientoMensajesGruposAgregar.attrs.deshabilitar}" styleClass="Container70">
-        <f:selectItem itemValue="" itemLabel="Seleccione"/>
+        <f:selectItem itemValue="" itemLabel="SELECCIONE"/>
         <f:selectItems value="#{kajoolMantenimientoMensajesGruposAgregar.attrs.grupos}"/>
       </p:selectOneMenu>
       <h:outputLabel for="vigenciaIni" value="Vigencia inicial"/>
@@ -42,7 +42,7 @@
 			<p:commandButton value="Limpiar" onclick="PF('editorWidget').clear();" icon="ui-icon-close"/>
       <h:outputLabel value="Prioridad:" for="idPrioridad"/>
       <p:selectOneMenu id="idPrioridad" value="#{kajoolMantenimientoMensajesGruposAgregar.attrs.idPrioridad}" disabled="#{kajoolMantenimientoMensajesGruposAgregar.attrs.deshabilitar}" styleClass="Container30">
-        <f:selectItem itemValue="" itemLabel="Seleccione"/>
+        <f:selectItem itemValue="" itemLabel="SELECCIONE"/>
         <f:selectItems value="#{kajoolMantenimientoMensajesGruposAgregar.attrs.prioridades}"/>
       </p:selectOneMenu>
     </p:panelGrid>
