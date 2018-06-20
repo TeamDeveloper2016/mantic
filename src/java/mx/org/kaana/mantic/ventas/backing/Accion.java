@@ -24,6 +24,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
@@ -39,6 +40,7 @@ import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
+import org.primefaces.model.StreamedContent;
 
 @Named(value= "manticVentasAccion")
 @ViewScoped
@@ -48,6 +50,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 	private static final String VENDEDOR_PERFIL= "VENDEDOR";
 	private EOrdenes tipoOrden;
 	private SaldoCliente saldoCliente;
+	private StreamedContent image;
 
 	public Accion() {
 		super("menudeo");
@@ -68,6 +71,10 @@ public class Accion extends IBaseArticulos implements Serializable {
 	public void setSaldoCliente(SaldoCliente saldoCliente) {
 		this.saldoCliente = saldoCliente;
 	}
+
+	public StreamedContent getImage() {
+		return image;
+	}
 	
 	@PostConstruct
   @Override
@@ -80,6 +87,7 @@ public class Accion extends IBaseArticulos implements Serializable {
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
+			this.image= LoadImages.getImage("-1");
 			doLoad();
     } // try
     catch (Exception e) {
@@ -335,10 +343,11 @@ public class Accion extends IBaseArticulos implements Serializable {
 					getAdminOrden().setDescuento(descuentoPivote);
 				} // if
 				else
-					super.toMoveData(articulo, index);			
+					super.toMoveData(articulo, index);				
 			} // if
 			else
-				super.toMoveData(articulo, index);
+				super.toMoveData(articulo, index);	
+			this.image= LoadImages.getImage(articulo.toLong("idArticulo").toString());
 			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
 			RequestContext.getCurrentInstance().update("deudor");
 		} // try
@@ -590,4 +599,21 @@ public class Accion extends IBaseArticulos implements Serializable {
 			throw e;
 		} // catch		
 	} // doLoadSaldos
+	
+	public void doActualizaImage(String idImage){
+		try {
+			if(!idImage.equals("-1")){
+				this.image= LoadImages.getImage(idImage);
+				this.attrs.put("imagePivote", idImage);
+			} // if
+			else if (getAdminOrden().getArticulos().isEmpty() || (getAdminOrden().getArticulos().size()== 1 && getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L)))
+				this.image= LoadImages.getImage(idImage);
+			else
+				this.image= LoadImages.getImage(this.attrs.get("imagePivote").toString());
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doActualizaImage
 }
