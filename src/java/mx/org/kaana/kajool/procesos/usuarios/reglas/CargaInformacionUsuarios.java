@@ -89,6 +89,29 @@ public class CargaInformacionUsuarios {
       Methods.clean(formatos);
     } // finally
   }
+	
+  public void cargarPerfilesDisponible() throws Exception {
+    Map<String, Object> params= null;
+    List<Columna> formatos    = null;
+    try {
+      formatos= new ArrayList<>();
+      params= new HashMap<>();
+      formatos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+      params.put("idPerfil", JsfBase.getAutentifica().getPersona().getIdPerfil());
+      params.put("idPersona", this.criteriosBusqueda.getPersona().getKey());			
+      this.criteriosBusqueda.getListaPerfiles().clear();
+      this.criteriosBusqueda.getListaPerfiles().addAll(UIEntity.build("VistaMantenimientoPerfilesDto", "jerarquiaMostrarAsignadosPersona", params, formatos));      
+      if (!getCriteriosBusqueda().getListaPerfiles().isEmpty())
+        getCriteriosBusqueda().setPerfil((UISelectEntity) UIBackingUtilities.toFirstKeySelectEntity(this.criteriosBusqueda.getListaPerfiles()));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(formatos);
+    } // finally
+  } // cargarPerfilesDisponible
 
   private String condicionEmpleado(String alias, String cadena) {
     StringBuilder like = new StringBuilder();
