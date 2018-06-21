@@ -128,9 +128,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
 			transaccion= new Transaccion((TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, seleccionado.getKey()));
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "La orden de compra se ha eliminado correctamente.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar", "La orden de compra se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la orden de compra.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la orden de compra.", ETipoMensaje.ALERTA);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -224,7 +224,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			rc.execute("start(" + this.reporte.getTotal() + ")");		
 		else{
 			rc.execute("generalHide()");		
-			JsfBase.addMessage("Generar reporte","No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+			JsfBase.addMessage("Generar reporte","No se encontraron registros para el reporte", ETipoMensaje.ALERTA);
 		} // else
 	} // doVerificarReporte		
 	

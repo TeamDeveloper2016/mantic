@@ -1443,7 +1443,7 @@
 					tc_mantic_notas_detalles.descuento,
 					tc_mantic_notas_detalles.extras,
 					tc_mantic_notas_detalles.importe,
-				  if(tc_mantic_notas_detalles.id_orden_detalle= null, '*', '') as nuevo,
+				  if(tc_mantic_notas_detalles.id_orden_detalle is null, '*', '') as nuevo,
 				  tc_mantic_notas_estatus.nombre as estatus
 				from
 					tc_mantic_notas_entradas
