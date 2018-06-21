@@ -59,11 +59,11 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
 	@Column (name="id_articulo")
   private Long idArticulo;
   @Column (name="stock")
-  private Long stock;
+  private Double stock;
   @Column (name="minimo")
-  private Long minimo;
+  private Double minimo;
   @Column (name="maximo")
-  private Long maximo;
+  private Double maximo;
   @Column (name="medio_mayoreo")
   private Double medioMayoreo;
   @Column (name="peso_estimado")
@@ -85,11 +85,11 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
   @Column (name="id_empresa")
   private Long idEmpresa;
   @Column (name="cantidad")
-  private Long cantidad;
+  private Double cantidad;
   @Column (name="limite_medio_mayoreo")
-  private Long limiteMedioMayoreo;
+  private Double limiteMedioMayoreo;
   @Column (name="limite_mayoreo")
-  private Long limiteMayoreo;
+  private Double limiteMayoreo;
   @Column (name="sat")
   private String sat;
 
@@ -98,11 +98,11 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
   }
 
   public TcManticArticulosDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, 3L, 5L, 3L, 8L, "");
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, 3D, 5D, 3D, 8D, "");
     setKey(key);
   }
 
-  public TcManticArticulosDto(String descripcion, String descuentos, Long idImagen, Long idCategoria, String extras, String metaTag, String nombre, Double precio, Double iva, Double mayoreo, Double desperdicio, String metaTagDescipcion, Long idVigente, Long idArticulo, Long stock, Double medioMayoreo, Double pesoEstimado, Long idEmpaqueUnidadMedida, Long idRedondear, Double menudeo, String metaTagTeclado, Timestamp fecha, Long idUsuario, Long idEmpresa, Long cantidad, Long minimo, Long maximo, Long limiteMedioMayoreo, Long limiteMayoreo, String sat) {
+  public TcManticArticulosDto(String descripcion, String descuentos, Long idImagen, Long idCategoria, String extras, String metaTag, String nombre, Double precio, Double iva, Double mayoreo, Double desperdicio, String metaTagDescipcion, Long idVigente, Long idArticulo, Double stock, Double medioMayoreo, Double pesoEstimado, Long idEmpaqueUnidadMedida, Long idRedondear, Double menudeo, String metaTagTeclado, Timestamp fecha, Long idUsuario, Long idEmpresa, Double cantidad, Double minimo, Double maximo, Double limiteMedioMayoreo, Double limiteMayoreo, String sat) {
     setDescripcion(descripcion);
     setDescuentos(descuentos);
     setIdImagen(idImagen);
@@ -248,27 +248,27 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
     return idArticulo;
   }
 
-  public void setStock(Long stock) {
+  public void setStock(Double stock) {
     this.stock = stock;
   }
 
-  public Long getStock() {
+  public Double getStock() {
     return stock;
   }
 
-	public Long getMinimo() {
+	public Double getMinimo() {
 		return minimo;
 	}
 
-	public void setMinimo(Long minimo) {
+	public void setMinimo(Double minimo) {
 		this.minimo=minimo;
 	}
 
-	public Long getMaximo() {
+	public Double getMaximo() {
 		return maximo;
 	}
 
-	public void setMaximo(Long maximo) {
+	public void setMaximo(Double maximo) {
 		this.maximo=maximo;
 	}
 	
@@ -352,27 +352,27 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
     return idEmpresa;
   }
 
-  public void setCantidad(Long cantidad) {
+  public void setCantidad(Double cantidad) {
     this.cantidad = cantidad;
   }
 
-  public Long getCantidad() {
+  public Double getCantidad() {
     return cantidad;
   }
 
-	public Long getLimiteMedioMayoreo() {
+	public Double getLimiteMedioMayoreo() {
 		return limiteMedioMayoreo;
 	}
 
-	public void setLimiteMedioMayoreo(Long limiteMedioMayoreo) {
+	public void setLimiteMedioMayoreo(Double limiteMedioMayoreo) {
 		this.limiteMedioMayoreo=limiteMedioMayoreo;
 	}
 
-	public Long getLimiteMayoreo() {
+	public Double getLimiteMayoreo() {
 		return limiteMayoreo;
 	}
 
-	public void setLimiteMayoreo(Long limiteMayoreo) {
+	public void setLimiteMayoreo(Double limiteMayoreo) {
 		this.limiteMayoreo=limiteMayoreo;
 	}
 

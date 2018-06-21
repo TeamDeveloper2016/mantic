@@ -85,7 +85,7 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 				temporal.setIva(articulo.toDouble("iva"));
 				temporal.setDescuento(this.adminOrden.getDescuento());
 				temporal.setExtras(this.adminOrden.getExtras());
-				temporal.setCantidad(1L);
+				temporal.setCantidad(1D);
 				temporal.setUltimo(this.attrs.get("ultimo")!= null);
 				temporal.setSolicitado(this.attrs.get("solicitado")!= null);
 				Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
@@ -160,7 +160,7 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 				temporal.setNombre("");
 				temporal.setValor(0.0);
 				temporal.setIva(0.0);
-				temporal.setCantidad(0L);
+				temporal.setCantidad(0D);
 			} // if
 			else 
   			this.adminOrden.getArticulos().remove(index.intValue());
@@ -368,7 +368,7 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 				seleccionado.toDouble("iva"), 
 				0D,
 				0D,
-				seleccionado.toLong("cantidad"), 
+				seleccionado.toDouble("cantidad"), 
 				-1* idOrdenDetalle, 
 				seleccionado.toLong("idArticulo"), 
 				0.0,

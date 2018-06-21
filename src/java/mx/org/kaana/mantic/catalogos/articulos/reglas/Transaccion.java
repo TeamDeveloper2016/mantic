@@ -101,21 +101,29 @@ public class Transaccion extends IBaseTnx {
 				this.articulo.getArticulo().setIdUsuario(JsfBase.getIdUsuario());
 				this.articulo.getArticulo().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 				this.articulo.getArticulo().setIdVigente(1L);
-				this.articulo.getArticulo().setStock(0L);
+				this.articulo.getArticulo().setStock(0D);
 				idArticulo= DaoFactory.getInstance().insert(sesion, this.articulo.getArticulo());
-				if(registraCodigos(sesion, idArticulo)){
-					if(registraEspecificaciones(sesion, idArticulo)){
+				if(registraCodigos(sesion, idArticulo)) {
+					if(registraEspecificaciones(sesion, idArticulo)) {
 						if(registraDescuentos(sesion, idArticulo)){
-							if(registraClientesDescuentos(sesion, idArticulo)){
-								if(registraPreciosSugeridos(sesion, idArticulo)){
-									if(registraArticulosProveedor(sesion, idArticulo)){
-										if(registraArticulosTipoVenta(sesion, idArticulo)){
+							if(registraClientesDescuentos(sesion, idArticulo)) {
+								if(registraPreciosSugeridos(sesion, idArticulo)) {
+									if(registraArticulosProveedor(sesion, idArticulo)) {
+										if(registraArticulosTipoVenta(sesion, idArticulo)) {
 											this.articulo.getArticuloDimencion().setIdArticulo(idArticulo);											
-											if(DaoFactory.getInstance().insert(sesion, this.articulo.getArticuloDimencion()) >= 1L){												
+											if(DaoFactory.getInstance().insert(sesion, this.articulo.getArticuloDimencion()) >= 1L) {										
 												idImagen= DaoFactory.getInstance().insert(sesion, loadImage(sesion, null));
 												this.articulo.getArticulo().setIdImagen(idImagen);
 												regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
-			} } } } } } } } } // if
+			                } 
+										} 
+									}
+								} 
+							} 
+						} 
+					} 
+				} 
+			} // if
 		} // try
 		catch (Exception e) {						
 			throw e;

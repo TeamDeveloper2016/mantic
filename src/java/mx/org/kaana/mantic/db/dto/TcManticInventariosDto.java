@@ -39,7 +39,7 @@ public class TcManticInventariosDto implements IBaseDto, Serializable {
   @Column (name="id_almacen")
   private Long idAlmacen;
   @Column (name="entradas")
-  private Long entradas;
+  private Double entradas;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_inventario")
@@ -47,11 +47,11 @@ public class TcManticInventariosDto implements IBaseDto, Serializable {
   @Column (name="id_articulo")
   private Long idArticulo;
   @Column (name="inicial")
-  private Long inicial;
+  private Double inicial;
   @Column (name="stock")
-  private Long stock;
+  private Double stock;
   @Column (name="salidas")
-  private Long salidas;
+  private Double salidas;
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
@@ -66,7 +66,7 @@ public class TcManticInventariosDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticInventariosDto(Long idUsuario, Long idAlmacen, Long entradas, Long idInventario, Long idArticulo, Long inicial, Long stock, Long salidas, Long ejercicio) {
+  public TcManticInventariosDto(Long idUsuario, Long idAlmacen, Double entradas, Long idInventario, Long idArticulo, Double inicial, Double stock, Double salidas, Long ejercicio) {
     setIdUsuario(idUsuario);
     setIdAlmacen(idAlmacen);
     setEntradas(entradas);
@@ -95,11 +95,11 @@ public class TcManticInventariosDto implements IBaseDto, Serializable {
     return idAlmacen;
   }
 
-  public void setEntradas(Long entradas) {
+  public void setEntradas(Double entradas) {
     this.entradas = entradas;
   }
 
-  public Long getEntradas() {
+  public Double getEntradas() {
     return entradas;
   }
 
@@ -119,27 +119,27 @@ public class TcManticInventariosDto implements IBaseDto, Serializable {
     return idArticulo;
   }
 
-  public void setInicial(Long inicial) {
+  public void setInicial(Double inicial) {
     this.inicial = inicial;
   }
 
-  public Long getInicial() {
+  public Double getInicial() {
     return inicial;
   }
 
-  public void setStock(Long stock) {
+  public void setStock(Double stock) {
     this.stock = stock;
   }
 
-  public Long getStock() {
+  public Double getStock() {
     return stock;
   }
 
-  public void setSalidas(Long salidas) {
+  public void setSalidas(Double salidas) {
     this.salidas = salidas;
   }
 
-  public Long getSalidas() {
+  public Double getSalidas() {
     return salidas;
   }
 

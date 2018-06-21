@@ -39,7 +39,7 @@ public class TcManticDevolucionesDetallesDto implements IBaseDto, Serializable {
   @Column (name="id_nota_detalle")
   private Long idNotaDetalle;
   @Column (name="cantidad")
-  private Long cantidad;
+  private Double cantidad;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_devolucion_detalle")
@@ -56,7 +56,7 @@ public class TcManticDevolucionesDetallesDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticDevolucionesDetallesDto(Long idDevolucion, Long idNotaDetalle, Long cantidad, Long idDevolucionDetalle) {
+  public TcManticDevolucionesDetallesDto(Long idDevolucion, Long idNotaDetalle, Double cantidad, Long idDevolucionDetalle) {
     setIdDevolucion(idDevolucion);
     setIdNotaDetalle(idNotaDetalle);
     setCantidad(cantidad);
@@ -80,11 +80,11 @@ public class TcManticDevolucionesDetallesDto implements IBaseDto, Serializable {
     return idNotaDetalle;
   }
 
-  public void setCantidad(Long cantidad) {
+  public void setCantidad(Double cantidad) {
     this.cantidad = cantidad;
   }
 
-  public Long getCantidad() {
+  public Double getCantidad() {
     return cantidad;
   }
 

@@ -49,7 +49,7 @@ public class TcManticArticulosBitacoraDto implements IBaseDto, Serializable {
   @Column (name="menudeo")
   private Double menudeo;
   @Column (name="cantidad")
-  private Long cantidad;
+  private Double cantidad;
   @Column (name="id_articulo")
   private Long idArticulo;
   @Column (name="id_nota_entrada")
@@ -57,9 +57,9 @@ public class TcManticArticulosBitacoraDto implements IBaseDto, Serializable {
   @Column (name="medio_mayoreo")
   private Double medioMayoreo;
   @Column (name="limite_medio_mayoreo")
-  private Long limiteMedioMayoreo;
+  private Double limiteMedioMayoreo;
   @Column (name="limite_mayoreo")
-  private Long limiteMayoreo;
+  private Double limiteMayoreo;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -68,11 +68,11 @@ public class TcManticArticulosBitacoraDto implements IBaseDto, Serializable {
   }
 
   public TcManticArticulosBitacoraDto(Long key) {
-    this(16D, null, 0D, new Long(-1L), 0D, 0L, null, null, 0D, 0D, 0L, 0L);
+    this(16D, null, 0D, new Long(-1L), 0D, 0D, null, null, 0D, 0D, 3D, 5D);
     setKey(key);
   }
 
-  public TcManticArticulosBitacoraDto(Double iva, Long idUsuario, Double mayoreo, Long idArticuloBitacora, Double menudeo, Long cantidad, Long idArticulo, Long idNotaEntrada, Double medioMayoreo, Double costo, Long limiteMedioMayoreo, Long limiteMayoreo) {
+  public TcManticArticulosBitacoraDto(Double iva, Long idUsuario, Double mayoreo, Long idArticuloBitacora, Double menudeo, Double cantidad, Long idArticulo, Long idNotaEntrada, Double medioMayoreo, Double costo, Double limiteMedioMayoreo, Double limiteMayoreo) {
     setIva(iva);
     setIdUsuario(idUsuario);
     setMayoreo(mayoreo);
@@ -136,11 +136,11 @@ public class TcManticArticulosBitacoraDto implements IBaseDto, Serializable {
     return menudeo;
   }
 
-  public void setCantidad(Long cantidad) {
+  public void setCantidad(Double cantidad) {
     this.cantidad = cantidad;
   }
 
-  public Long getCantidad() {
+  public Double getCantidad() {
     return cantidad;
   }
 
@@ -168,19 +168,19 @@ public class TcManticArticulosBitacoraDto implements IBaseDto, Serializable {
     return medioMayoreo;
   }
 
-	public Long getLimiteMedioMayoreo() {
+	public Double getLimiteMedioMayoreo() {
 		return limiteMedioMayoreo;
 	}
 
-	public void setLimiteMedioMayoreo(Long limiteMedioMayoreo) {
+	public void setLimiteMedioMayoreo(Double limiteMedioMayoreo) {
 		this.limiteMedioMayoreo=limiteMedioMayoreo;
 	}
 
-	public Long getLimiteMayoreo() {
+	public Double getLimiteMayoreo() {
 		return limiteMayoreo;
 	}
 
-	public void setLimiteMayoreo(Long limiteMayoreo) {
+	public void setLimiteMayoreo(Double limiteMayoreo) {
 		this.limiteMayoreo=limiteMayoreo;
 	}
 

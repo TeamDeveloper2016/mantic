@@ -45,7 +45,7 @@ public class TcManticAlmacenesArticulosDto implements IBaseDto, Serializable {
   @Column (name="id_articulo")
   private Long idArticulo;
   @Column (name="stock")
-  private Long stock;
+  private Double stock;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -58,7 +58,7 @@ public class TcManticAlmacenesArticulosDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticAlmacenesArticulosDto(Long minimo, Long idAlmacenArticulo, Long idUsuario, Long idAlmacen, Long maximo, Long idAlmacenUbicacion, Long idArticulo, Long stock) {
+  public TcManticAlmacenesArticulosDto(Long minimo, Long idAlmacenArticulo, Long idUsuario, Long idAlmacen, Long maximo, Long idAlmacenUbicacion, Long idArticulo, Double stock) {
     setMinimo(minimo);
     setIdAlmacenArticulo(idAlmacenArticulo);
     setIdUsuario(idUsuario);
@@ -126,11 +126,11 @@ public class TcManticAlmacenesArticulosDto implements IBaseDto, Serializable {
     return idArticulo;
   }
 
-  public void setStock(Long stock) {
+  public void setStock(Double stock) {
     this.stock = stock;
   }
 
-  public Long getStock() {
+  public Double getStock() {
     return stock;
   }
 

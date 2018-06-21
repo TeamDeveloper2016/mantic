@@ -65,7 +65,7 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
   @Column (name="sub_total")
   private Double subTotal;
   @Column (name="cantidad")
-  private Long cantidad;
+  private Double cantidad;
   @Column (name="id_articulo")
   private Long idArticulo;
   @Column (name="id_venta")
@@ -80,7 +80,7 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticVentasDetallesDto(Double descuentos, String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, String nombre, Double importe, Long idVentaDetalle, Double iva, Double impuestos, Double subTotal, Long cantidad, Long idArticulo, Long idVenta) {
+  public TcManticVentasDetallesDto(Double descuentos, String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, String nombre, Double importe, Long idVentaDetalle, Double iva, Double impuestos, Double subTotal, Double cantidad, Long idArticulo, Long idVenta) {
     setDescuentos(descuentos);
     setCodigo(codigo);
     setUnidadMedida(unidadMedida);
@@ -212,11 +212,11 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
     return subTotal;
   }
 
-  public void setCantidad(Long cantidad) {
+  public void setCantidad(Double cantidad) {
     this.cantidad = cantidad;
   }
 
-  public Long getCantidad() {
+  public Double getCantidad() {
     return cantidad;
   }
 

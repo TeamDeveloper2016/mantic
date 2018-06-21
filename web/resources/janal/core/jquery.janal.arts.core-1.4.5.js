@@ -285,7 +285,7 @@
 		},
 		asterisk: function() {
 			var value = this.get().trim();
-			if($(this.amount()) && value.length> 0 && janal.isInteger(value)) {
+			if($(this.amount()) && value.length> 0 && janal.isDouble(value)) {
 				$(this.amount()).val(value);
 				this.set('');
 				this.refresh();
@@ -478,7 +478,7 @@
 		},
 		individual: function(index) {
 			janal.console('jsArticulos.individual: '+ index);
-			janal.cantidad($('#contenedorGrupos\\:tabla\\:'+ index+ '\\:cantidades'), '0'); 
+			janal.precio($('#contenedorGrupos\\:tabla\\:'+ index+ '\\:cantidades'), '0'); 
 			janal.hide();
 			var error= this.compare(index);
 			if(error.length> 0) {

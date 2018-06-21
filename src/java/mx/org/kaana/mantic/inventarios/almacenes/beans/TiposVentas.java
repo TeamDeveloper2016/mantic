@@ -22,7 +22,7 @@ public class TiposVentas implements Serializable {
 	private double precio;
 	private double iva;
 	private double importe;
-	private long limite;
+	private double limite;
 	private double impuesto;
 
 	public TiposVentas(Integer index) {
@@ -30,7 +30,7 @@ public class TiposVentas implements Serializable {
 	}
 
 	
-	public TiposVentas(Integer index, String nombre, double costo, double precio, double iva, long limite) {
+	public TiposVentas(Integer index, String nombre, double costo, double precio, double iva, double limite) {
 		this.index= index;
 		this.nombre=nombre;
 		this.costo=costo;
@@ -91,11 +91,11 @@ public class TiposVentas implements Serializable {
 		this.importe=importe;
 	}
 
-	public long getLimite() {
+	public double getLimite() {
 		return limite;
 	}
 
-	public void setLimite(long limite) {
+	public void setLimite(double limite) {
 		this.limite=limite;
 	}
 

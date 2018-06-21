@@ -63,7 +63,7 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
   @Column (name="sub_total")
   private Double subTotal;
   @Column (name="cantidad")
-  private Long cantidad;
+  private Double cantidad;
   @Column (name="id_articulo")
   private Long idArticulo;
   @Column (name="descuentos")
@@ -73,7 +73,7 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
   @Column (name="id_orden_detalle")
   private Long idOrdenDetalle;
   @Column (name="cantidades")
-  private Long cantidades;
+  private Double cantidades;
 
   public TcManticNotasDetallesDto() {
     this(new Long(-1L));
@@ -84,7 +84,7 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticNotasDetallesDto(String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, Long idNotaEntrada, String nombre, Double importe, Double iva, Long idNotaDetalle, Double subTotal, Long cantidad, Long idArticulo, Double descuentos, Double impuestos, Long idOrdenDetalle, Long cantidades) {
+  public TcManticNotasDetallesDto(String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, Long idNotaEntrada, String nombre, Double importe, Double iva, Long idNotaDetalle, Double subTotal, Double cantidad, Long idArticulo, Double descuentos, Double impuestos, Long idOrdenDetalle, Double cantidades) {
     setCodigo(codigo);
     setUnidadMedida(unidadMedida);
     setCosto(costo);
@@ -210,11 +210,11 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
     return subTotal;
   }
 
-  public void setCantidad(Long cantidad) {
+  public void setCantidad(Double cantidad) {
     this.cantidad = cantidad;
   }
 
-  public Long getCantidad() {
+  public Double getCantidad() {
     return cantidad;
   }
 
@@ -250,11 +250,11 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
 		this.idOrdenDetalle=idOrdenDetalle;
 	}
 
-	public Long getCantidades() {
+	public Double getCantidades() {
 		return cantidades;
 	}
 
-	public void setCantidades(Long cantidades) {
+	public void setCantidades(Double cantidades) {
 		this.cantidades=cantidades;
 	}
 	

@@ -59,7 +59,7 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
   @Column (name="propio")
   private String propio;
   @Column (name="cantidades")
-  private Long cantidades;
+  private Double cantidades;
   @Column (name="iva")
   private Double iva;
   @Column (name="impuestos")
@@ -67,7 +67,7 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
   @Column (name="sub_total")
   private Double subTotal;
   @Column (name="cantidad")
-  private Long cantidad;
+  private Double cantidad;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_orden_detalle")
@@ -84,7 +84,7 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticOrdenesDetallesDto(Double importes, Double descuentos, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, String nombre, Double importe, Double precios, String propio, Long cantidades, Double iva, Double impuestos, Double subTotal, Long cantidad, Long idOrdenDetalle, Long idArticulo) {
+  public TcManticOrdenesDetallesDto(Double importes, Double descuentos, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, String nombre, Double importe, Double precios, String propio, Double cantidades, Double iva, Double impuestos, Double subTotal, Double cantidad, Long idOrdenDetalle, Long idArticulo) {
     setImportes(importes);
     setDescuentos(descuentos);
     setCodigo(codigo);
@@ -202,11 +202,11 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
     return propio;
   }
 
-  public void setCantidades(Long cantidades) {
+  public void setCantidades(Double cantidades) {
     this.cantidades = cantidades;
   }
 
-  public Long getCantidades() {
+  public Double getCantidades() {
     return cantidades;
   }
 
@@ -234,11 +234,11 @@ public class TcManticOrdenesDetallesDto implements IBaseDto, Serializable {
     return subTotal;
   }
 
-  public void setCantidad(Long cantidad) {
+  public void setCantidad(Double cantidad) {
     this.cantidad = cantidad;
   }
 
-  public Long getCantidad() {
+  public Double getCantidad() {
     return cantidad;
   }
 
