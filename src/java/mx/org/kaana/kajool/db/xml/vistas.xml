@@ -1076,6 +1076,21 @@
 				order by
 					tr_janal_perfiles_jerarquias.orden
 			</select>
+			<select id="jerarquiaMostrarAsignadosPersona">
+				select
+					tc_janal_perfiles.id_perfil id_key_perfil, 
+					tc_janal_perfiles.descripcion
+				from
+					tr_janal_perfiles_jerarquias
+				inner join
+				  tc_janal_perfiles on tr_janal_perfiles_jerarquias.id_perfil_alta = tc_janal_perfiles.id_perfil
+				where
+					tr_janal_perfiles_jerarquias.id_perfil ={idPerfil}
+				and 
+					tc_janal_perfiles.id_perfil not in (select id_perfil from tc_janal_usuarios where id_persona={idPersona})
+				order by
+					tr_janal_perfiles_jerarquias.orden
+			</select>
 			<select id="paginaInicial">
 				select
 					tc_janal_perfiles.id_menu, menus.id_menu id_key, menus.clave, menus.des,menus.ruta, menus.nivel, menus.ispagina
