@@ -104,9 +104,9 @@
 								<p:outputLabel for="factura" value="No factura:"/>
 								<p:inputText id="factura" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.adminOrden.orden.factura}"/>
 								<p:outputLabel for="fechaFactura" value="Fecha factura:"/>
-								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-96" styleClass="janal-wid-100" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 								<p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>
-								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-96" styleClass="janal-wid-99" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-94" styleClass="janal-wid-99" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 								<p:spacer width="1px"/><p:separator/>
                 <p:outputLabel for="idAlmacen" value="Almacen:"/>
 								<p:selectOneMenu id="idAlmacen" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="startsWith">

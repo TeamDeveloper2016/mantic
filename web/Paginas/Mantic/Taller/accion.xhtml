@@ -63,12 +63,11 @@
 									<f:selectItems value="#{manticTallerAccion.attrs.mediosPagos}"/>
 								</p:selectOneMenu>
 								<p:outputLabel for="fechaEstimada" value="Fecha estimada:"/>
-								<p:calendar id="fechaEstimada" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.servicio.fechaEstimada}" mode="popup" pattern="dd/MM/yyyy" converter="janal.convertidor.Calendario"/>
+								<p:calendar id="fechaEstimada" inputStyleClass="janal-wid-94" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.servicio.fechaEstimada}" mode="popup" showOn="button" pattern="dd/MM/yyyy" converter="janal.convertidor.Calendario"/>
               </p:panelGrid>
             </p:tab>
 						<p:tab title="Cliente">
               <p:panelGrid id="formularioCliente" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								
-								
 								<p:spacer/>
 								<p:commandButton process="@this" update="dialogoClientes" icon="fa fa-search" styleClass="janal-text-white" onstart="return janal.bloquear();" oncomplete="PF('dlgClientes').show();" title="Buscar cliente" style="float: right !important"/>						
 								<p:outputLabel for="cliente" value="Cliente:"/>
@@ -84,7 +83,6 @@
 									</p:column>   																			
 								</p:selectOneMenu>									
 								<p:spacer height="10px"/><p:spacer height="10px"/>
-								
                 <p:outputLabel for="clave" value="Clave:"/>
                 <p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.cliente.clave}"/>                    
                 <p:outputLabel for="rfc" value="RFC:"/>
