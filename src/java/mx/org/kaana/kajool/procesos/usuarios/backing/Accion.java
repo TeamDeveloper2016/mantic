@@ -60,7 +60,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       loadPersonas();      
       loadUsuario();
       this.attrs.put("titulo", ((EAccion) this.attrs.get("accion")).equals(EAccion.MODIFICAR) ? "Modificar usuario cuenta [".concat(((TcManticPersonasDto) this.attrs.get("tcManticPersonasDto")).getCuenta()).concat("]") : "Agregar usuario [...]");
-      doBuscar();
+      buscar();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -136,6 +136,19 @@ public class Accion extends IBaseAttribute implements Serializable {
   }
 
   public void doBuscar() {
+		CargaInformacionUsuarios ciu= null;
+		try {
+			ciu= new CargaInformacionUsuarios(this.criteriosBusqueda);
+			ciu.cargarPerfilesDisponible();
+			buscar();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doBuscar
+	
+  public void buscar() {
     TcJanalUsuariosDto usuario= null;
     int index                 = -1;
     try {
