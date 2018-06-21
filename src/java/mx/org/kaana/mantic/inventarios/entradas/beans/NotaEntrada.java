@@ -68,7 +68,6 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
 		if(this.ikOrdenCompra!= null)
   	  this.setIdOrdenCompra(this.ikOrdenCompra.getKey());
 	}
-
 	
 	@Override
 	public Class toHbmClass() {

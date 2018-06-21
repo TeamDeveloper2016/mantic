@@ -165,12 +165,30 @@
             </f:facet>
           </p:dataTable>
         </div>
-      </div>
     </div>		    
+  	<p:spacer height="3px"/>
+		<div class="ui-grid-row janal-grid-row">
+			<div id="collapse-content" class="ui-grid-col-12">
+				<p:outputLabel for="justificacion" value="Justificación:"/>
+			</div>
+		</div>	
+		<div class="ui-grid-row janal-grid-row">
+			<div id="collapse-content" class="ui-grid-col-12">
+				<p:inputTextarea id="justificacion" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticComprasOrdenesDiferencias.attrs.justificacion}"/>
+			</div>
+		</div>	
+	</div>
 		<hr class="ui-widget-content"/>
 		<div class="janal-line-button">
-			<p:commandButton process="@this" styleClass="janal-text-white" icon="fa fa-reply" value="Regresar" action="#{manticComprasOrdenesDiferencias.doRegresar}" immediate="true"/>
+  		<div class="lg-pantalla">
+				<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this justificacion" action="#{manticComprasOrdenesDiferencias.doAceptar}" styleClass="janal-text-white" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" rendered="#{manticComprasOrdenesDiferencias.orden.idOrdenEstatus eq 5}"/>
+	    	<p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" styleClass="janal-text-white" action="#{manticComprasOrdenesDiferencias.doRegresar}" immediate="true"/>
+			</div>	
+  		<div class="xs-pantalla">
+  			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@this justificacion" action="#{manticComprasOrdenesDiferencias.doAceptar}" styleClass="janal-text-white" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" rendered="#{manticComprasOrdenesDiferencias.orden.idOrdenEstatus eq 5}"/>
+		  	<p:commandButton id="regresarIcon" value="Regresar" icon="fa fa-reply" process="@this" styleClass="janal-text-white" action="#{manticComprasOrdenesDiferencias.doRegresar}" immediate="true"/>
+			</div>	
 		</div>
   </ui:define>   
-  <ui:param name="componenteBloqueo" value="tabla notas"/>
+  <ui:param name="componenteBloqueo" value="tabla notas aceptar aceptarIcon"/>
 </ui:composition>

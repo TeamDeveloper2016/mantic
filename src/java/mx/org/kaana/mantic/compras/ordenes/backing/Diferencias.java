@@ -6,8 +6,12 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
@@ -16,6 +20,10 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
+import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
+import org.primefaces.context.RequestContext;
 
 /**
  *@company KAANA
@@ -31,10 +39,15 @@ public class Diferencias extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428311L;
 	
+	private TcManticOrdenesComprasDto orden;
 	protected FormatLazyModel lazyNotas;
 
 	public FormatLazyModel getLazyNotas() {
 		return lazyNotas;
+	}
+
+	public TcManticOrdenesComprasDto getOrden() {
+		return orden;
 	}
 	
   @PostConstruct
@@ -42,6 +55,7 @@ public class Diferencias extends IBaseFilter implements Serializable {
   protected void init() {
     try {
       this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra"));
+      this.orden= (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, (Long)JsfBase.getFlashAttribute("idOrdenCompra"));
 		  this.doLoad();
     } // try
     catch (Exception e) {
@@ -78,7 +92,28 @@ public class Diferencias extends IBaseFilter implements Serializable {
       Methods.clean(columns);
     } // finally		
   } // doLoad
-	
+
+	public String doAceptar() {
+		Transaccion transaccion= null;
+		String regreso         = "filtro".concat(Constantes.REDIRECIONAR);
+		try {
+			TcManticOrdenesBitacoraDto bitacora= new TcManticOrdenesBitacoraDto(7L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
+			transaccion = new Transaccion(orden, bitacora);
+			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
+    		RequestContext.getCurrentInstance().execute("alert('Se aplicarón las diferencias en la orden de compra.');");
+			else {
+				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus.", ETipoMensaje.ERROR);
+				regreso= null;
+			} // else	
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		JsfBase.setFlashAttribute("idOrdenCompra", this.attrs.get("idOrdenCompra"));
+		return regreso;
+	}
+
 	public String doRegresar() {
 		JsfBase.setFlashAttribute("idOrdenCompra", this.attrs.get("idOrdenCompra"));
 		return "filtro".concat(Constantes.REDIRECIONAR);

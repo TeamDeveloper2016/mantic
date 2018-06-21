@@ -38,6 +38,7 @@ import org.primefaces.event.TabChangeEvent;
 public class Accion extends IBaseArticulos implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
+	private EAccion accion;
 	private EOrdenes tipoOrden;
 
 	public String getTitulo() {
@@ -49,15 +50,15 @@ public class Accion extends IBaseArticulos implements Serializable {
 	}
 	
 	public String getAgregar() {
-		return ((EAccion)this.attrs.get("accion")).equals(EAccion.AGREGAR)? "none": "";
+		return this.accion.equals(EAccion.AGREGAR)? "none": "";
 	}
 	
 	@PostConstruct
   @Override
   protected void init() {		
     try {
+      this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
-      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? -1L: JsfBase.getFlashAttribute("idOrdenCompra"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
@@ -72,11 +73,9 @@ public class Accion extends IBaseArticulos implements Serializable {
   } // init
 
   public void doLoad() {
-    EAccion eaccion= null;
     try {
-      eaccion= (EAccion) this.attrs.get("accion");
-      this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
-      switch (eaccion) {
+      this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
+      switch (this.accion) {
         case AGREGAR:											
           this.setAdminOrden(new AdminOrdenes(new OrdenCompra(-1L)));
           break;
@@ -97,22 +96,20 @@ public class Accion extends IBaseArticulos implements Serializable {
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
-		EAccion eaccion        = null;
     try {			
-			eaccion= (EAccion) this.attrs.get("accion");
 			((OrdenCompra)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
 			((OrdenCompra)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
 			((OrdenCompra)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
 			((OrdenCompra)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
 			transaccion = new Transaccion(((OrdenCompra)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 			this.getAdminOrden().toAdjustArticulos();
-			if (transaccion.ejecutar(eaccion)) {
-				if(eaccion.equals(EAccion.AGREGAR)) {
+			if (transaccion.ejecutar(this.accion)) {
+				if(this.accion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
     			RequestContext.getCurrentInstance().execute("jsArticulos.back('orden de compra', '"+ ((OrdenCompra)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				} // if	
- 				if(!eaccion.equals(EAccion.CONSULTAR)) 
-    			JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra."), ETipoMensaje.INFORMACION);
+ 				if(!this.accion.equals(EAccion.CONSULTAR)) 
+    			JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la orden de compra."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idOrdenCompra", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdOrdenCompra());
 			} // if
 			else 
@@ -140,7 +137,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
-			if(!almacenes.isEmpty()) 
+			if(!almacenes.isEmpty() && this.accion.equals(EAccion.AGREGAR)) 
 				((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
       columns.remove(0);
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
@@ -148,8 +145,11 @@ public class Accion extends IBaseArticulos implements Serializable {
       this.attrs.put("proveedores", UIEntity.build("VistaOrdenesComprasDto", "moneda", params, columns));
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 			if(!proveedores.isEmpty()) { 
-				((OrdenCompra)this.getAdminOrden().getOrden()).setIkProveedor(proveedores.get(0));
-				toLoadCondiciones(proveedores.get(0));
+				if(this.accion.equals(EAccion.AGREGAR))
+				  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkProveedor(proveedores.get(0));
+				else
+				  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkProveedor(proveedores.get(proveedores.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedor())));
+				this.toLoadCondiciones(((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedor());
 			} // if	
     } // try
     catch (Exception e) {
@@ -188,7 +188,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 			((OrdenCompra)this.getAdminOrden().getOrden()).setEntregaEstimada(new Date(fechaEstimada.getTimeInMillis()));
     } // try
     catch (Exception e) {
-			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+			//JsfBase.addMessageError(e);
     } // catch   
     finally {
       Methods.clean(columns);

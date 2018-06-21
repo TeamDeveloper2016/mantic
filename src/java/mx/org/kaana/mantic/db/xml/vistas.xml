@@ -12,9 +12,12 @@
 					tc_mantic_ventas_bitacora.importe,
 					tc_mantic_ventas_bitacora.justificacion,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+				  tc_mantic_ventas_estatus.nombre as estatus,
 					tc_mantic_ventas_bitacora.registro
 				from 
 					tc_mantic_ventas_bitacora
+				inner join
+					tc_mantic_ventas_estatus on tc_mantic_ventas_bitacora.id_venta_estatus= tc_mantic_ventas_estatus.id_venta_estatus
 				inner join
 					tc_janal_usuarios on tc_mantic_ventas_bitacora.id_usuario= tc_janal_usuarios.id_usuario
 				inner join
@@ -637,9 +640,12 @@
 					tc_mantic_devoluciones_bitacora.importe,
 					tc_mantic_devoluciones_bitacora.justificacion,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+				  tc_mantic_devoluciones_estatus.nombre as estatus,
 					tc_mantic_devoluciones_bitacora.registro
 				from 
 					tc_mantic_devoluciones_bitacora
+				inner join
+					tc_mantic_devoluciones_estatus on tc_mantic_devoluciones_bitacora.id_devolucion_estatus= tc_mantic_devoluciones_estatus.id_devolucion_estatus
 				inner join
 					tc_janal_usuarios on tc_mantic_devoluciones_bitacora.id_usuario= tc_janal_usuarios.id_usuario
 				inner join
@@ -842,9 +848,12 @@
 					tc_mantic_notas_bitacora.importe,
 					tc_mantic_notas_bitacora.justificacion,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+				  tc_mantic_notas_estatus.nombre as estatus,
 					tc_mantic_notas_bitacora.registro
 				from 
 					tc_mantic_notas_bitacora
+				inner join
+					tc_mantic_notas_estatus on tc_mantic_notas_bitacora.id_nota_estatus= tc_mantic_notas_estatus.id_nota_estatus
 				inner join
 					tc_janal_usuarios on tc_mantic_notas_bitacora.id_usuario= tc_janal_usuarios.id_usuario
 				inner join
@@ -998,9 +1007,12 @@
 					tc_mantic_ordenes_bitacora.importe,
 					tc_mantic_ordenes_bitacora.justificacion,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+				  tc_mantic_ordenes_estatus.nombre as estatus,
 					tc_mantic_ordenes_bitacora.registro
 				from 
 					tc_mantic_ordenes_bitacora
+				inner join
+					tc_mantic_ordenes_estatus on tc_mantic_ordenes_bitacora.id_orden_estatus= tc_mantic_ordenes_estatus.id_orden_estatus
 				inner join
 					tc_janal_usuarios on tc_mantic_ordenes_bitacora.id_usuario= tc_janal_usuarios.id_usuario
 				inner join
@@ -1607,9 +1619,12 @@
 					tc_mantic_servicios_bitacora.importe,
 					tc_mantic_servicios_bitacora.seguimiento as justificacion,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+				  tc_mantic_servicios_estatus.nombre as estatus,
 					tc_mantic_servicios_bitacora.registro
 				from 
 					tc_mantic_servicios_bitacora
+				inner join
+					tc_mantic_servicios_estatus on tc_mantic_servicios_bitacora.id_servicio_estatus= tc_mantic_servicios_estatus.id_servicio_estatus
 				inner join
 					tc_janal_usuarios on tc_mantic_servicios_bitacora.id_usuario= tc_janal_usuarios.id_usuario
 				inner join

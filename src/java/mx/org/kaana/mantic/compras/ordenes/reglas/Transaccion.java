@@ -97,7 +97,6 @@ public class Transaccion extends Inventarios implements Serializable {
 						regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticOrdenesDetallesDto.class, params)>= 1L;
 						regresar= regresar && DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
 						this.orden.setIdOrdenEstatus(2L);
-						//regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 						bitacoraOrden= new TcManticOrdenesBitacoraDto(2L, "", JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
 						regresar= DaoFactory.getInstance().insert(sesion, bitacoraOrden)>= 1L;
 					} // if	
@@ -105,17 +104,10 @@ public class Transaccion extends Inventarios implements Serializable {
        			this.messageError= "No se puede eliminar la orden de compra porque existen notas de entrada asociadas.";
 					break;
 				case JUSTIFICAR:
-					if(this.bitacora.getIdOrdenEstatus().equals(7L)) {
-						regresar= this.toNotExistsNotas(sesion);
-					  if(!regresar) {
-							this.messageError= "No se puede cancelar la orden de compra porque existen notas de entrada asociadas.";
-							break;
-						} // if	
-				  } // if	
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
 						this.orden.setIdOrdenEstatus(this.bitacora.getIdOrdenEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-						if(this.orden.getIdOrdenEstatus().equals(8L)) 
+						if(this.orden.getIdOrdenEstatus().equals(7L)) 
 							this.toCommonNotaEntrada(sesion, -1L, this.orden.toMap());
 					} // if
 					break;

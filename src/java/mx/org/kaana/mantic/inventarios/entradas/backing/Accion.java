@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -26,6 +27,7 @@ import mx.org.kaana.mantic.inventarios.entradas.reglas.AdminNotas;
 import mx.org.kaana.mantic.inventarios.entradas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
+import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.TabChangeEvent;
 
@@ -42,6 +44,7 @@ import org.primefaces.event.TabChangeEvent;
 public class Accion extends IBaseArticulos implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
+	private EAccion accion;	
 	private EOrdenes tipoOrden;
 	private boolean aplicar;
 
@@ -66,18 +69,18 @@ public class Accion extends IBaseArticulos implements Serializable {
 	}
 	
 	public String getAgregar() {
-		return ((EAccion)this.attrs.get("accion")).equals(EAccion.AGREGAR)? "none": "";
+		return this.accion.equals(EAccion.AGREGAR)? "none": "";
 	}
 	
 	@PostConstruct
   @Override
   protected void init() {		
     try {
-			this.aplicar=  false;
+			this.aplicar  =  false;
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null || JsfBase.getFlashAttribute("idOrdenCompra")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
-      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
+      this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
-      this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? null: JsfBase.getFlashAttribute("idOrdenCompra"));
+      this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? 1L: JsfBase.getFlashAttribute("idOrdenCompra"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
@@ -91,13 +94,14 @@ public class Accion extends IBaseArticulos implements Serializable {
   } // init
 
   public void doLoad() {
-    EAccion eaccion= null;
     try {
-      eaccion= (EAccion) this.attrs.get("accion");
-      this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
-      switch (eaccion) {
+      this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
+      switch (this.accion) {
         case AGREGAR:											
           this.setAdminOrden(new AdminNotas(new NotaEntrada(-1L, (Long)this.attrs.get("idOrdenCompra")), this.tipoOrden));
+          TcManticOrdenesComprasDto ordenCompra= (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, (Long)this.attrs.get("idOrdenCompra"));
+					((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(new Entity(ordenCompra.getIdAlmacen())));
+					((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(ordenCompra.getIdProveedor())));
           break;
         case MODIFICAR:					
         case CONSULTAR:					
@@ -121,25 +125,23 @@ public class Accion extends IBaseArticulos implements Serializable {
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
-		EAccion eaccion        = null;
     try {			
-			eaccion= (EAccion) this.attrs.get("accion");
 			((NotaEntrada)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
 			this.getAdminOrden().toAdjustArticulos();
 			transaccion = new Transaccion(((NotaEntrada)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.aplicar);
-			if (transaccion.ejecutar(eaccion)) {
-				if(eaccion.equals(EAccion.AGREGAR) || this.aplicar) {
+			if (transaccion.ejecutar(this.accion)) {
+				if(this.accion.equals(EAccion.AGREGAR) || this.aplicar) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-					if(eaccion.equals(EAccion.AGREGAR))
+					if(this.accion.equals(EAccion.AGREGAR))
     			  RequestContext.getCurrentInstance().execute("jsArticulos.back('generó la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 					else
    			    RequestContext.getCurrentInstance().execute("jsArticulos.back('aplicó la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				} // if	
- 				if(!eaccion.equals(EAccion.CONSULTAR)) 
-  				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la nota de entrada."), ETipoMensaje.INFORMACION);
+ 				if(!this.accion.equals(EAccion.CONSULTAR)) 
+  				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la nota de entrada."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
 			} // if
 			else 
@@ -168,15 +170,16 @@ public class Accion extends IBaseArticulos implements Serializable {
 			params.put("idOrdenCompra", this.attrs.get("idOrdenCompra"));
       this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
-			if(!almacenes.isEmpty()) 
+			if(!almacenes.isEmpty() && this.accion.equals(EAccion.AGREGAR)) 
 				((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
       columns.remove(0);
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("proveedores", UIEntity.build("VistaOrdenesComprasDto", "moneda", params, columns));
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 			if(!proveedores.isEmpty()) {
-				((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(proveedores.get(0));
-			  this.attrs.put("proveedor", proveedores.get(0));
+				int index= proveedores.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor());
+				((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(proveedores.get(index));
+			  this.attrs.put("proveedor", proveedores.get(index));
 			} // if	
 			if(this.attrs.get("idOrdenCompra")!= null) {
         this.attrs.put("ordenes", UIEntity.build("VistaNotasEntradasDto", "ordenes", params, columns));
