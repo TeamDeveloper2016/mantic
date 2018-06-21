@@ -49,29 +49,46 @@
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
 						<p:tab title="Articulos">
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
-								<p:outputLabel for="consecutivo" value="No. devolucion:" style="display: #{manticInventariosDevolucionesAccion.agregar}"/>
-								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticInventariosDevolucionesAccion.adminOrden.orden.consecutivo}" readonly="true" style="display: #{manticInventariosDevolucionesAccion.agregar}"/>
-								<p:outputLabel for="idNotaEntrada" value="No. nota:"/>
-								<p:selectOneMenu id="idNotaEntrada" value="#{manticInventariosDevolucionesAccion.adminOrden.orden.ikNotaEntrada}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="startsWith">
-									<f:selectItems value="#{manticInventariosDevolucionesAccion.attrs.notas}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{element.razonSocial}"/>
-									<p:column headerText="Clave">
-										<h:outputText value="#{item.consecutivo}"/>
-									</p:column>   
-									<p:column headerText="Proveedor">
-										<h:outputText value="#{item.razonSocial}"/>
-									</p:column>   
-									<p:column headerText="Estatus">
-										<h:outputText value="#{item.estatus}"/>
-									</p:column>   
-									<p:column headerText="Total" styleClass="janal-column-right">
-										<h:outputText value="#{item.total}"/>
-									</p:column>   
-								</p:selectOneMenu>
-								<p:outputLabel value="Ajustar costos:" styleClass="costos"/>
-								<p:inputSwitch widgetVar="costos" value="#{manticInventariosDevolucionesAccion.aplicar}" styleClass="costos" onLabel="SI" offLabel="NO"/>
-              </p:panelGrid>
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
+								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-1">
+     								<p:outputLabel for="consecutivo" value="Número devolución:" style="display: #{manticInventariosDevolucionesAccion.agregar}"/>
+									</div>	
+									<div class="ui-grid-col-12">
+	   							  <p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticInventariosDevolucionesAccion.adminOrden.orden.consecutivo}" readonly="true" style="display: #{manticInventariosDevolucionesAccion.agregar}"/>
+  	  						</div>	
+								</div>	
+								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-1">
+								    <p:outputLabel for="idNotaEntrada" value="Número nota:"/>
+									</div>
+									<div class="ui-grid-col-12">
+										<p:selectOneMenu id="idNotaEntrada" value="#{manticInventariosDevolucionesAccion.adminOrden.orden.ikNotaEntrada}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="startsWith">
+											<f:selectItems value="#{manticInventariosDevolucionesAccion.attrs.notas}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{element.razonSocial}"/>
+											<p:column headerText="Clave">
+												<h:outputText value="#{item.consecutivo}"/>
+											</p:column>   
+											<p:column headerText="Proveedor">
+												<h:outputText value="#{item.razonSocial}"/>
+											</p:column>   
+											<p:column headerText="Estatus">
+												<h:outputText value="#{item.estatus}"/>
+											</p:column>   
+											<p:column headerText="Total" styleClass="janal-column-right">
+												<h:outputText value="#{item.total}"/>
+											</p:column>   
+										</p:selectOneMenu>
+									</div>		
+								</div>	
+								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-1">
+								    <p:outputLabel value="Ajustar costos:" styleClass="costos"/>
+									</div>	
+									<div class="ui-grid-col-12">
+    								<p:inputSwitch widgetVar="costos" value="#{manticInventariosDevolucionesAccion.aplicar}" styleClass="costos" onLabel="SI" offLabel="NO"/>
+									</div>
+								</div>	
+								<p:spacer height="3px"/>
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
 										<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticInventariosDevolucionesAccion.adminOrden.articulos}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">
@@ -83,13 +100,6 @@
 												<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
 												<p:inputText id="locks" value="#{row['idOrdenDetalle']}" style="display:none"/>
 												<p:inputText id="codigos" styleClass="janal-wid-100-txt key-down-event filas" style="display:none"/>
-											</p:column>		
-											<p:column class="MarAuto Responsive janal-wid-8">
-												<f:facet name="header">
-													<h:outputText value="Código SAT"/>
-												</f:facet>
-												<p:outputLabel value="#{row['sat']}"/>
-												<p:inputText id="sat" value="#{row['sat']}" styleClass="janal-wid-100-txt key-event-sat fila" style="display: none"/>
 											</p:column>		
 											<p:column class="MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
@@ -188,7 +198,7 @@
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
 										<br/>
-										<p:outputLabel value="Nota: En caso de hacer una devolución completa de la nota de entrada, se puede definir de forma manual, si usted desea que se ajustan los costos de los articulos a como estaban anteriormente antes de aplicar la nota de entrada por favor seleccione la opcion de 'ajustar costos'."/>
+										<p:outputLabel styleClass="costos" value="Nota: En caso de hacer una devolución completa de la nota de entrada, se puede seleccionar de forma manual el ajuste de los costos de los articulos a como estaban anteriormente antes de aplicar la nota de entrada, para ello por favor seleccione la opcion de 'ajustar costos'."/>
 									</div>
 								</div>
 							</div>
@@ -245,13 +255,13 @@
 								</p:column>		
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.medioMayoreo}">
 									<f:facet name="header">
-										<h:outputText value="Medio mayore"/>
+										<h:outputText value="Medio mayoreo"/>
 									</f:facet>
 									<h:outputText value="#{filtro['medioMayoreo']}"/>
 								</p:column>		
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.mayoreo}">
 									<f:facet name="header">
-										<h:outputText value="Mayore"/>
+										<h:outputText value="Mayoreo"/>
 									</f:facet>
 									<h:outputText value="#{filtro['mayoreo']}"/>
 								</p:column>		

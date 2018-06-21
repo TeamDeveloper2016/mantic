@@ -27,21 +27,15 @@
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="Nota entrada"/>
               </f:facet>
               <h:outputText value="#{filtro['consecutivo']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{filtro.propio}">
-              <f:facet name="header">
-                <h:outputText value="Código"/>
-              </f:facet>
-              <h:outputText value="#{filtro['propio']}"/>
-            </p:column>		
             <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{filtro.codigo}">
               <f:facet name="header">
-                <h:outputText value="Proveedor"/>
+                <h:outputText value="Código"/>
               </f:facet>
               <h:outputText value="#{filtro['codigo']}"/>
             </p:column>		
@@ -49,7 +43,7 @@
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
-              <h:outputText value="#{filtro['nombre']}"/>
+              <h:outputText value="#{filtro['nombre']}" title="Código propio: #{filtro['propio']}"/>
             </p:column>		
             <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.costo}">
               <f:facet name="header">
@@ -63,7 +57,7 @@
               </f:facet>
               <h:outputText value="#{filtro['cantidad']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
@@ -100,9 +94,9 @@
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
               <f:facet name="header">
-                <h:outputText value="Devoluciones"/>
+                <h:outputText value="Devolución"/>
               </f:facet>
               <h:outputText value="#{filtro['consecutivo']}"/>
             </p:column>		
@@ -111,12 +105,6 @@
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{filtro['estatus']}"/>
-            </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{filtro.propio}">
-              <f:facet name="header">
-                <h:outputText value="Propio"/>
-              </f:facet>
-              <h:outputText value="#{filtro['propio']}" title="Código SAT: #{filtro['sat']}"/>
             </p:column>		
             <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{filtro.codigo}">
               <f:facet name="header">
@@ -128,7 +116,7 @@
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
-              <h:outputText value="#{filtro['nombre']}"/>
+              <h:outputText value="#{filtro['nombre']}" title="Código propio: #{filtro['propio']}"/>
             </p:column>		
             <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.costo}">
               <f:facet name="header">

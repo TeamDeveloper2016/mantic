@@ -166,15 +166,15 @@
           </p:dataTable>
         </div>
     </div>		    
-  	<p:spacer height="3px"/>
+  	<p:spacer height="3px" rendered="#{manticComprasOrdenesDiferencias.orden.idOrdenEstatus eq 5}"/>
 		<div class="ui-grid-row janal-grid-row">
 			<div id="collapse-content" class="ui-grid-col-12">
-				<p:outputLabel for="justificacion" value="Justificación:"/>
+				<p:outputLabel for="justificacion" value="Justificación:" rendered="#{manticComprasOrdenesDiferencias.orden.idOrdenEstatus eq 5}"/>
 			</div>
 		</div>	
 		<div class="ui-grid-row janal-grid-row">
 			<div id="collapse-content" class="ui-grid-col-12">
-				<p:inputTextarea id="justificacion" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticComprasOrdenesDiferencias.attrs.justificacion}"/>
+				<p:inputTextarea id="justificacion" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticComprasOrdenesDiferencias.attrs.justificacion}" rendered="#{manticComprasOrdenesDiferencias.orden.idOrdenEstatus eq 5}"/>
 			</div>
 		</div>	
 	</div>
