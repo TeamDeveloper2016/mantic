@@ -53,7 +53,7 @@
 			});	
 		},
 		clean: function() {
-			$('#results').val(this.last+ '=');
+			$('#results').val(this.last+ '=\n');
 			return false;
 		},
 		move: function() {

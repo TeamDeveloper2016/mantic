@@ -218,7 +218,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // else
 	} // doVerificarReporte		
 
-	public void doLoadEstatus(){
+	public void doLoadEstatus() {
 		Entity seleccionado          = null;
 		Map<String, Object>params    = null;
 		List<UISelectItem> allEstatus= null;
@@ -240,9 +240,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} 
 	
 	public void doActualizarEstatus() {
-		Transaccion transaccion          = null;
 		TcManticDevolucionesBitacoraDto bitacora= null;
-		Entity seleccionado              = null;
+		Transaccion transaccion= null;
+		Entity seleccionado    = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			TcManticDevolucionesDto orden= (TcManticDevolucionesDto)DaoFactory.getInstance().findById(TcManticDevolucionesDto.class, seleccionado.getKey());
@@ -257,7 +257,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-		finally{
+		finally {
 			this.attrs.put("justificacion", "");
 		} // finally
 	}	

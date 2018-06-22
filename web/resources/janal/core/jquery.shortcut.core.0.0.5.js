@@ -230,6 +230,12 @@ shortcut.add("Alt+C", function() {
 	  PF('dlgCalculadora').show();
 });
 
+shortcut.add("Shift+f10", function() {
+	janal.console('Shortcut verificador de precios:');
+	if(PF('dlgVerificador'))
+	  PF('dlgVerificador').show();
+});
+
 shortcut.add("Ctrl+P", function() {
 	janal.console('Shortcut tickets abiertos:');
 	if(PF('dlgOpenTickets')){

@@ -2,13 +2,8 @@
     xmlns="http://www.w3.org/1999/xhtml"
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:ui="http://java.sun.com/jsf/facelets"
-		xmlns:p="http://primefaces.org/ui"   
-		xmlns:pe="http://primefaces.org/ui/extensions">   
-  <h:outputScript library="janal" name="core/jquery.janal.calc.core-0.0.1.js"/>
-  <style type="text/css">
-	</style>
-	<script type="text/javascript">	
-	</script>		
+		xmlns:p="http://primefaces.org/ui">   
+  <h:outputScript library="janal" name="core/jquery.janal.calc.core-0.0.2.js"/>
 	<p:dialog id="dialogoCalculadora" widgetVar="dlgCalculadora" header="Calculadora" onShow="$('#calculadoraValue').focus();" onHide="janal.sendLastFocus();" height="420px" width="250px" resizable="false"  position="right bottom" closeOnEscape="true">
 		<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" >
   		<p:inputText id="calculadoraValue" styleClass="janal-wid-100-txt janal-column-right janal-key-calculator janal-not-focus"/>  
