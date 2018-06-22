@@ -51,8 +51,8 @@ public class Transaccion extends IBaseTnx {
       params = new HashMap<>();
       switch (accion) {
         case AGREGAR:
-          params.put("idPersona", this.persona.getIdPersona());
-          params.put("idPerfil", this.usuario.getIdPerfil());
+					params.put("idPersona", this.persona.getIdPersona());
+					params.put("idPerfil", this.usuario.getIdPerfil());
           usuarioExiste= (TcJanalUsuariosDto) DaoFactory.getInstance().findIdentically(session, TcJanalUsuariosDto.class, params);
           if (usuarioExiste== null) {
             this.usuario.setIdPersona(persona.getIdPersona());
@@ -64,12 +64,15 @@ public class Transaccion extends IBaseTnx {
             regresar= false;
           break;
         case MODIFICAR:
+					params.put("idPersona", this.persona.getIdPersona());
+					params.put("idPerfil", this.usuario.getIdPerfil());
           params.put("idUsuarioModifica", this.usuario.getIdUsuarioModifica());
           usuarioExiste= (TcJanalUsuariosDto) DaoFactory.getInstance().findIdentically(session, TcJanalUsuariosDto.class, params);
           if (usuarioExiste== null) 
-            regresar = DaoFactory.getInstance().update(session, this.usuario, params) >= 1L;
+            regresar = DaoFactory.getInstance().update(session, this.usuario, params)>= 1L;
           this.persona.setContrasenia(BouncyEncryption.encrypt(this.persona.getContrasenia()));
           regresar = DaoFactory.getInstance().update(session, this.persona) >= 1L;
+          this.persona.setContrasenia(BouncyEncryption.decrypt(this.persona.getContrasenia()));
           break;
         case ELIMINAR:
           regresar = DaoFactory.getInstance().delete(session, this.usuario.toHbmClass(), this.usuario.getKey()) >= 1L;
