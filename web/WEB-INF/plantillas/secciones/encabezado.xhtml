@@ -6,7 +6,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core"
 			xmlns:ui="http://java.sun.com/jsf/facelets">	
-    <h:outputScript library="janal" name="core/jquery.janal.precio.core-0.0.1.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.precio.core-0.0.2.js"/>
   <script type="text/javascript">
     $(function() {
       janal.fecha();
@@ -128,12 +128,12 @@
 					<p:outputLabel value="Limite menudeo"/>
 					<p:outputLabel value="Limite medio mayoreo"/>
 					<p:outputLabel value="Limite mayoreo"/>
-					<p:inputText styleClass="janal-column-right" value="#{kajoolEncabezado.attrs.selected.menudeo}"/>
-					<p:inputText styleClass="janal-column-right" value="#{kajoolEncabezado.attrs.selected.medioMayoreo}"/>
-					<p:inputText styleClass="janal-column-right" value="#{kajoolEncabezado.attrs.selected.mayoreo}"/>
-					<p:inputText styleClass="janal-column-center" value="&gt; 0 y &lt; #{kajoolEncabezado.attrs.selected.limiteMedioMayoreo}"/>
-					<p:inputText styleClass="janal-column-center" value="&gt;= #{kajoolEncabezado.attrs.selected.limiteMedioMayoreo} y &lt; #{kajoolEncabezado.attrs.selected.limiteMayoreo}"/>
-					<p:inputText styleClass="janal-column-center" value="&gt;= #{kajoolEncabezado.attrs.selected.limiteMayoreo}"/>
+					<p:inputText styleClass="janal-column-right" value="#{kajoolEncabezado.attrs.selected.menudeo}" readonly="true"/>
+					<p:inputText styleClass="janal-column-right" value="#{kajoolEncabezado.attrs.selected.medioMayoreo}" readonly="true"/>
+					<p:inputText styleClass="janal-column-right" value="#{kajoolEncabezado.attrs.selected.mayoreo}" readonly="true"/>
+					<p:inputText styleClass="janal-column-center" value="&gt; 0 y &lt; #{kajoolEncabezado.attrs.selected.limiteMedioMayoreo}" readonly="true"/>
+					<p:inputText styleClass="janal-column-center" value="&gt;= #{kajoolEncabezado.attrs.selected.limiteMedioMayoreo} y &lt; #{kajoolEncabezado.attrs.selected.limiteMayoreo}" readonly="true"/>
+					<p:inputText styleClass="janal-column-center" value="&gt;= #{kajoolEncabezado.attrs.selected.limiteMayoreo}" readonly="true"/>
   			</p:panelGrid>
 			</p:panel>
 			<p:spacer height="3px"/>

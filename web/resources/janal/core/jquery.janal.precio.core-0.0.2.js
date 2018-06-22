@@ -12,9 +12,11 @@
 	
 	Janal.Control.Precios.Core= Class.extend({
 		VK_TAB      : 9, 
+		VK_ESC      : 27, 
 		VK_ENTER    : 13, 
 		VK_UP       : 38,
 		VK_DOWN     : 40,
+		VK_F7       : 118,
 		init: function() { // constructor
 			$precios= this;
 			this.hide();
@@ -25,6 +27,9 @@
 					case $precios.VK_TAB:
             $('#verificadorTabla .ui-datatable-data > tr').first().find('.ui-inputfield').first().focus();		
 					  break;
+					case $precios.VK_ESC:
+            PF('dlgVerificador').hide();
+					  break;
 					case $precios.VK_ENTER:
 						return $precios.lookup();
 						break;
@@ -34,6 +39,10 @@
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('Keydown: '+ key);
 				switch(key) {
+					case $precios.VK_ESC:
+            PF('dlgVerificador').hide();
+						break;
+					case $precios.VK_F7:
 					case $precios.VK_ENTER:
 						return $precios.show();
 						break;
