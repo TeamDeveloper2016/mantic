@@ -12,7 +12,8 @@ import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 
 public class MotorBusqueda implements Serializable{
 
-	private static final long serialVersionUID = -1476191556651225342L;	
+	private static final long serialVersionUID= -1476191556651225342L;	
+	private static final String VENTA         = "VENTA";
 	private Long idArticulo;
 	private Long idCliente;
 	
@@ -97,4 +98,19 @@ public class MotorBusqueda implements Serializable{
 		} // catch		
 		return regresar;
 	} // toDeudaCliente
+	
+	public Entity toClienteDefault() throws Exception{
+		Entity regresar          = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("clave", VENTA);
+			params.put("sucursales", JsfBase.getAutentifica().getIdsSucursales());
+			regresar= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "clienteDefault", params);			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toClienteDefault
 }
