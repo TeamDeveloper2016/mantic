@@ -89,6 +89,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("activeLogin", false);
 			this.image= LoadImages.getImage("-1");
+			loadClienteDefault();
 			doLoad();
     } // try
     catch (Exception e) {
@@ -233,11 +234,14 @@ public class Accion extends IBaseArticulos implements Serializable {
 		UISelectEntity seleccion              = null;
 		List<UISelectEntity> clientes         = null;
 		List<UISelectEntity> clientesSeleccion= null;
+		MotorBusqueda motorBusqueda           = null;
 		try {
 			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
 			seleccion= clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
 			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
+			motorBusqueda= new MotorBusqueda(-1L);
+			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
 			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
@@ -259,6 +263,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			seleccion= new UISelectEntity(motorBusqueda.toCliente());
 			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
+			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
 			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
@@ -510,6 +515,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			seleccion= new UISelectEntity(motorBusqueda.toCliente());
 			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
+			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
 			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
@@ -655,4 +661,22 @@ public class Accion extends IBaseArticulos implements Serializable {
       Methods.clean(params);
     } // finally
 	} // doUpdateArticulos
+	
+	private void loadClienteDefault(){
+		UISelectEntity seleccion              = null;
+		List<UISelectEntity> clientesSeleccion= null;
+		MotorBusqueda motorBusqueda           = null;
+		try {
+			motorBusqueda= new MotorBusqueda(-1L);
+			seleccion= new UISelectEntity(motorBusqueda.toClienteDefault());
+			clientesSeleccion= new ArrayList<>();
+			clientesSeleccion.add(seleccion);			
+			this.attrs.put("clientesSeleccion", clientesSeleccion);
+			this.attrs.put("clienteSeleccion", seleccion);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // loadClienteDefault
 }
