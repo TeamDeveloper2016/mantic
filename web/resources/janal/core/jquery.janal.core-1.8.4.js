@@ -1226,6 +1226,31 @@
 		sendLastFocus: function() {
 			if($(this.lastNameFocus))
 				$(this.lastNameFocus).focus();
+		},		
+		activeLogin: function(){				
+			this.readingMode('CONSULTAR');
+			$('#cancelar').prop("disabled","disabled").addClass("ui-state-disabled"); 
+			$('#cancelarIcon').prop("disabled","disabled").addClass("ui-state-disabled");
+			$parent.desbloquear();
+			$('#panelLogin').css("display","");				
+			$('#cuenta').prop("disabled","").removeClass("ui-state-disabled"); 				
+		},			
+		toPassword: function() {
+			$('#password').focus();
+		},			
+		toLoginEnter: function(){				
+			if (window.event.keyCode === 13)
+				toPassword();
+		}, // toLoginEnter			
+		toPasswordEnter: function(){
+			if (window.event.keyCode === 13){
+				$parent.bloquear();
+				var ok= this.partial('login');
+				if(ok)
+					loginValidate();
+				else
+					$parent.desbloquear();
+			} // if
 		}
   });
   window.Janal= Janal;
