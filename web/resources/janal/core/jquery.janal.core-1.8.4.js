@@ -1234,6 +1234,7 @@
 			$parent.desbloquear();
 			$('#panelLogin').css("display","");				
 			$('#cuenta').prop("disabled","").removeClass("ui-state-disabled"); 				
+			$('#cuenta').focus();
 		},			
 		toPassword: function() {
 			$('#password').focus();
