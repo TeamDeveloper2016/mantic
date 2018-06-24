@@ -30,7 +30,7 @@ public class Autentifica implements Serializable {
   private static final Log LOG = LogFactory.getLog(Autentifica.class);
 	private static final String ADMIN= "ADMINISTRADOR";
   private static final String ADMIN_ENCUESTA= "ADMINISTRADORDEENCUESTA";
-  private static final String DIRECTOR= "DIRECTOR";
+  private static final String GERENTE= "GERENTE";
   private static final String VENDEDOR_DE_PISO= "VENDEDORDEPISO";
   private Persona persona;
   private Monitoreo monitoreo;
@@ -274,7 +274,7 @@ public class Autentifica implements Serializable {
 		if(regresar== null)
 			regresar= toSeleccionPersona(personas, ADMIN);		
 		else{ 
-			regresar= toSeleccionPersona(personas, DIRECTOR);		
+			regresar= toSeleccionPersona(personas, GERENTE);		
 			if(regresar== null)
 				regresar= toSeleccionPersona(personas, VENDEDOR_DE_PISO);		
 			else
