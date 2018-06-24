@@ -18,6 +18,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.procesos.acceso.reglas.Privilegios;
 import mx.org.kaana.kajool.enums.EPaginasPrivilegios;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDto;
 import org.apache.commons.logging.Log;
@@ -27,6 +28,10 @@ public class Autentifica implements Serializable {
 
   private static final long serialVersionUID = 8226041225011231930L;
   private static final Log LOG = LogFactory.getLog(Autentifica.class);
+	private static final String ADMIN= "ADMINISTRADOR";
+  private static final String ADMIN_ENCUESTA= "ADMINISTRADORDEENCUESTA";
+  private static final String DIRECTOR= "DIRECTOR";
+  private static final String VENDEDOR_DE_PISO= "VENDEDORDEPISO";
   private Persona persona;
   private Monitoreo monitoreo;
   private String paginaActual;   
@@ -221,19 +226,25 @@ public class Autentifica implements Serializable {
     } // finally
     return regresar;
   } // tieneAccesoBD
-	
-  public boolean validaCambioUsuario(String cuenta, String contrasenia, Long idPerfil, Long idGrupo) throws Exception {
+	  
+  public boolean validaCambioUsuario(String cuenta, String contrasenia, Long idGrupo) throws Exception {
     boolean regresar          = false;
     Map<String, Object> params= null;
+		List<Persona> personas    = null;
     try {
       this.credenciales.setCuenta(cuenta);
       this.credenciales.setContrasenia(contrasenia);
       params = new HashMap<>();
       LOG.debug("[".concat(cuenta).concat("] Inicia la consulta sobre la vista VistaTcJanalUsuariosDto"));
       params.put("cuenta", cuenta);
-      params.put("idPerfil", idPerfil);
       params.put("idGrupo", idGrupo);
-      this.persona = (Persona) DaoFactory.getInstance().toEntity(Persona.class, "VistaTcJanalUsuariosDto", "cambioUsuarioAutentifica", params);
+			personas= DaoFactory.getInstance().toEntitySet(Persona.class, "VistaTcJanalUsuariosDto", "cambioUsuarioAutentifica", params);
+			if(!personas.isEmpty()){
+				if(personas.size()== 1)
+					this.persona= personas.get(0);
+				else
+					this.persona= toEvaluaJerarquiaPersona(personas);				
+			} // if
       if (this.persona != null) {
         regresar = isAdministrador() || verificaCredencial();
         if (regresar) {
@@ -243,12 +254,10 @@ public class Autentifica implements Serializable {
           LOG.info(" No tiene acceso al sistema, favor de verificar esta situación ");
         } // else
       }// if
-      else {
+      else 
         regresar = isDelegaActivo();
-      }
-      if (regresar) {
-        this.ultimoAcceso = Fecha.formatear(Fecha.DIA_FECHA_HORA, this.persona.getUltimoAcceso().equals(null)?new Timestamp(Calendar.getInstance().getTimeInMillis()):this.persona.getUltimoAcceso());        
-      }
+      if (regresar) 
+        this.ultimoAcceso = Fecha.formatear(Fecha.DIA_FECHA_HORA, this.persona== null && this.persona.getUltimoAcceso().equals(null) ? new Timestamp(Calendar.getInstance().getTimeInMillis()) : this.persona.getUltimoAcceso());        
     } // try
     catch (Exception e) {
       throw e;
@@ -259,6 +268,30 @@ public class Autentifica implements Serializable {
     return regresar;
   } // tieneAccesoBD
 
+	private Persona toEvaluaJerarquiaPersona(List<Persona> personas){
+		Persona regresar= null;
+		regresar= toSeleccionPersona(personas, ADMIN_ENCUESTA);		
+		if(regresar== null)
+			regresar= toSeleccionPersona(personas, ADMIN);		
+		else{ 
+			regresar= toSeleccionPersona(personas, DIRECTOR);		
+			if(regresar== null)
+				regresar= toSeleccionPersona(personas, VENDEDOR_DE_PISO);		
+			else
+				regresar= personas.get(0);
+		} // else
+		return regresar;		
+	} // toEvaluaJerarquiaPersona
+	
+	private Persona toSeleccionPersona(List<Persona> personas, String perfil){
+		Persona regresar= null;
+		for(Persona recordPersona: personas){
+			if(Cadena.eliminaCaracter(recordPersona.getDescripcionPerfil(), ' ').equals(perfil))
+				regresar= recordPersona;
+		} // for
+		return regresar;
+	} // toSeleccionPersona
+	
   private boolean isDelegaActivo() throws Exception {
     boolean regresar = false;
     Privilegios privilegios = null;
