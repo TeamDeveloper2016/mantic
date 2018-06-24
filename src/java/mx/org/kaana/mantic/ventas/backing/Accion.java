@@ -83,11 +83,17 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null? -1L: JsfBase.getFlashAttribute("idVenta"));
-			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? null: JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
+			this.attrs.put("activeLogin", false);
 			this.image= LoadImages.getImage("-1");
+			loadClienteDefault();
+			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());
+			if(JsfBase.isAdminEncuestaOrAdmin())
+				loadSucursales();
 			doLoad();
     } // try
     catch (Exception e) {
@@ -212,7 +218,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-  		params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+  		params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			String search= (String) this.attrs.get("codigoCliente"); 
 			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*") : "WXYZ";
   		params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_clientes.razon_social) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*'")));			
@@ -232,11 +238,14 @@ public class Accion extends IBaseArticulos implements Serializable {
 		UISelectEntity seleccion              = null;
 		List<UISelectEntity> clientes         = null;
 		List<UISelectEntity> clientesSeleccion= null;
+		MotorBusqueda motorBusqueda           = null;
 		try {
 			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
 			seleccion= clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
 			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
+			motorBusqueda= new MotorBusqueda(-1L);
+			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
 			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
@@ -258,6 +267,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			seleccion= new UISelectEntity(motorBusqueda.toCliente());
 			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
+			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
 			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
@@ -377,6 +387,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 		UISelectEntity cliente = null;
 		try {
 			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");			
+			((TicketVenta)this.getAdminOrden().getOrden()).setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
 			((TicketVenta)this.getAdminOrden().getOrden()).setIdCliente(cliente.getKey());
 			((TicketVenta)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
 			((TicketVenta)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
@@ -388,47 +399,49 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // catch		
 	} // loadOrdenVenta
 	
-	public String doCerrarTicket(){
-		List<UISelectEntity> vendedores    = null;
-		UISelectEntity vendedorSeleccionado= null;
-		Entity vendedor                    = null;
-		Transaccion transaccion            = null;
-		CambioUsuario cambioUsuario        = null;		
-		String regresar                    = null;
-    try {						
-			vendedores= (List<UISelectEntity>) this.attrs.get("vendedores");
-			vendedorSeleccionado= (UISelectEntity) this.attrs.get("vendedor");
-			vendedor= vendedores.get(vendedores.indexOf(vendedorSeleccionado));
-			if(vendedor!= null && vendedor.isValid()){
-				if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
-					loadOrdenVenta();
-					transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
-					this.getAdminOrden().toAdjustArticulos();
-					if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
-						RequestContext.getCurrentInstance().execute("jsArticulos.back('ticket de venta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-						JsfBase.addMessage("Se guardo el ticket de venta.", ETipoMensaje.INFORMACION);				
-					} // if
-					else 
-						JsfBase.addMessage("Ocurrió un error al registrar el ticket de venta.", ETipoMensaje.ERROR);      			
+	public void doCerrarTicket(){		
+		Transaccion transaccion= null;
+    try {								
+			if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
+				loadOrdenVenta();
+				transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+				this.getAdminOrden().toAdjustArticulos();
+				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
+					RequestContext.getCurrentInstance().execute("jsArticulos.back('ticket de venta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+					JsfBase.addMessage("Se guardo el ticket de venta.", ETipoMensaje.INFORMACION);				
 				} // if
-				cambioUsuario= new CambioUsuario(vendedor.toString("cuenta"), this.attrs.get("contraseniaCaptura").toString(), vendedor.toString("contrasenia"), vendedor.toLong("idPerfil"));
-				if(cambioUsuario.validaUsuario()){					
-					JsfBase.addMessage("Cambio de usuario", "Se realizo el cambio de usuario de forma correcta", ETipoMensaje.INFORMACION);      			
-					regresar= "/Paginas/Mantic/Ventas/accion.jsf".concat(Constantes.REDIRECIONAR);
-				} // if
-				else
-					JsfBase.addMessage("Cambio de usuario", "Ocurrió un error al autenticar el usuario seleccionado", ETipoMensaje.ERROR);      											
+				else 
+					JsfBase.addMessage("Ocurrió un error al registrar el ticket de venta.", ETipoMensaje.ERROR);      			
+			} // if						
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+	} // doCerrarTicket
+	
+	public String doLogin(){		
+		CambioUsuario cambioUsuario= null;		
+		String regresar            = null;
+		String cuenta              = null;
+		String password            = null;
+    try {					
+			cuenta= this.attrs.get("cuenta").toString();
+			password= this.attrs.get("password").toString();						
+			cambioUsuario= new CambioUsuario(cuenta, password);
+			if(cambioUsuario.validaUsuario()){					
+				JsfBase.addMessage("Cambio de usuario", "Se realizo el cambio de usuario de forma correcta", ETipoMensaje.INFORMACION);      			
+				regresar= "/Paginas/Mantic/Ventas/accion.jsf".concat(Constantes.REDIRECIONAR);
 			} // if
 			else
-				JsfBase.addMessage("Cambio de usuario", "No hay mas usuarios con este perfil", ETipoMensaje.INFORMACION);      			
-			
+				JsfBase.addMessage("Cambio de usuario", "Ocurrió un error al autenticar el usuario seleccionado", ETipoMensaje.ERROR);      																	
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
 		return regresar;
-	} // doCerrarTicket
+	} // doLogin
 	
 	public void doLoadTicketAbiertos(){
 		List<UISelectItem> ticketsAbiertos= null;
@@ -438,7 +451,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			fields= new ArrayList<>();
 			params= new HashMap<>();
 			params.put("sortOrder", "");
-			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			fields.add("consecutivo");
 			fields.add("cuenta");
 			fields.add("precioTotal");
@@ -507,6 +520,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			seleccion= new UISelectEntity(motorBusqueda.toCliente());
 			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
+			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
 			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
@@ -651,5 +665,54 @@ public class Accion extends IBaseArticulos implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
-	}
+	} // doUpdateArticulos
+	
+	private void loadClienteDefault(){
+		UISelectEntity seleccion              = null;
+		List<UISelectEntity> clientesSeleccion= null;
+		MotorBusqueda motorBusqueda           = null;
+		try {
+			motorBusqueda= new MotorBusqueda(-1L);
+			seleccion= new UISelectEntity(motorBusqueda.toClienteDefault());
+			clientesSeleccion= new ArrayList<>();
+			clientesSeleccion.add(seleccion);			
+			this.attrs.put("clientesSeleccion", clientesSeleccion);
+			this.attrs.put("clienteSeleccion", seleccion);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // loadClienteDefault
+	
+	private void loadSucursales(){
+		List<UISelectEntity> sucursales= null;
+		Map<String, Object>params      = null;
+		List<Columna> columns          = null;
+		try {
+			columns= new ArrayList<>();
+			params= new HashMap<>();
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			sucursales=(List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+			this.attrs.put("sucursales", sucursales);
+			this.attrs.put("idEmpresa", sucursales.get(0));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // loadSucursales
+	
+	public void doUpdateForEmpresa(){
+		try {
+			loadClienteDefault();
+			doActualizaPrecioCliente();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doUpdateForEmpresa
 }

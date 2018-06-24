@@ -9,31 +9,27 @@ import mx.org.kaana.kajool.procesos.acceso.exceptions.AccesoDenegadoException;
 import mx.org.kaana.kajool.procesos.acceso.exceptions.BloqueoSitioException;
 import mx.org.kaana.kajool.procesos.acceso.perfil.reglas.RegistroPerfil;
 import mx.org.kaana.kajool.procesos.acceso.reglas.Acceso;
-import mx.org.kaana.libs.formato.BouncyEncryption;
 import mx.org.kaana.libs.pagina.JsfBase;
 
 public class CambioUsuario extends Acceso implements Serializable{
 
-	private String contraseniaUsuario;
-	private Long idPerfil;	
+	private boolean acceso;	
 	
-	public CambioUsuario(String cuenta, String contrasenia, String contraseniaUsuario, Long idPerfil) {
-		this(new Cliente(cuenta, contrasenia, "", "", ""), contraseniaUsuario, idPerfil);		
-	}
+	public CambioUsuario(String cuenta, String contrasenia) {
+		this(new Cliente(cuenta, contrasenia, "", "", ""));		
+	} // CambioUsuario
 		
-	public CambioUsuario(Cliente cliente, String contraseniaUsuario, Long idPerfil) {
+	public CambioUsuario(Cliente cliente) {
 		super(cliente);
-		this.contraseniaUsuario= contraseniaUsuario;
-		this.idPerfil          = idPerfil;
-	}
+		this.acceso= false;
+	} // CambioUsuario
 	
 	public boolean validaUsuario() throws Exception{
-		boolean regresar       = false;
+		boolean regresar= false;
 		try {
-			if(verificaCredencial()){
-				valida();				
+			valida();				
+			if(this.acceso)
 				regresar= JsfBase.getAutentifica().getRedirect().equals(EPaginasPrivilegios.DEFAULT) || JsfBase.getAutentifica().getRedirect().equals(EPaginasPrivilegios.PERFILES);				
-			} // if
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -47,7 +43,7 @@ public class CambioUsuario extends Acceso implements Serializable{
     HttpSession session     = null;
     RegistroPerfil registro = null;    
 		autentifica.getCredenciales().setCuentaInicial(getCliente().getCuenta());
-    if (autentifica.validaCambioUsuario(getCliente().getCuenta(), getCliente().getContrasenia(), this.idPerfil, JsfBase.getAutentifica().getEmpresa().getIdEmpresa())) {      
+    if (autentifica.validaCambioUsuario(getCliente().getCuenta(), getCliente().getContrasenia(), JsfBase.getAutentifica().getEmpresa().getIdEmpresa())) {      
 			if (JsfBase.isLockUsers()) {
         throw new BloqueoSitioException();
       } // if
@@ -62,8 +58,10 @@ public class CambioUsuario extends Acceso implements Serializable{
       agregarUsuariosSitio(session, autentifica);
       registro.addMenuSesion(session);
       registro.addTopMenuSesion(session);
+			this.acceso= true;
     } // if
     else {
+			this.acceso= false;
       if (session != null) {
         synchronized (session) {
           JsfBase.cleanSesion(session);
@@ -71,10 +69,5 @@ public class CambioUsuario extends Acceso implements Serializable{
       }
       throw new AccesoDenegadoException();
     } // else
-  } // valida
-	
-	private boolean verificaCredencial() throws Exception {
-    String frase = BouncyEncryption.decrypt(this.contraseniaUsuario);
-    return frase.equals(getCliente().getContrasenia());
-  } // verificaCredencial
+  } // valida	
 }
