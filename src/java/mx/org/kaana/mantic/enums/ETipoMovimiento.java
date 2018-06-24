@@ -13,7 +13,8 @@ public enum ETipoMovimiento {
 	NOTAS_ENTRADAS("nota(s) de entrada(s)", "notas", "idNotaEntrada", "VistaNotasEntradasDto"), 
 	VENTAS("venta(s)", "ventas", "idVenta", "VistaVentasDto"), 
 	SERVICIOS("servicio(s)", "servicios", "idServicio", "VistaTallerServiciosDto"), 
-	DEVOLUCIONES("devolucion(es)", "devoluciones", "idDevolucion", "VistaDevolucionesDto");
+	DEVOLUCIONES("devolucion(es)", "devoluciones", "idDevolucion", "VistaDevolucionesDto"),
+	NOTAS_CREDITOS("nota(s) de credito(s)", "notas de creditos", "idCreditoNota", "VistaNotasCreditosDto");
 	 
 	private final String title;
 	private final String table;

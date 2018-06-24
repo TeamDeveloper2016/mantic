@@ -222,7 +222,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 	}
 	
 	public void doTabChange(TabChangeEvent event) {
-		if(event.getTab().getTitle().equals("Faltantes") && this.attrs.get("faltantes")== null) 
+		if(event.getTab().getTitle().equals("Faltantes")) 
       this.toLoadFaltantes();
 	}
 	

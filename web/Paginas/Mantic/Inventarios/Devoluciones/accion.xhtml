@@ -48,6 +48,7 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{manticInventariosDevolucionesAccion.doTabChange}" process="@this"/>						
 						<p:tab title="Articulos">
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
 								<div class="ui-grid-row janal-grid-row">

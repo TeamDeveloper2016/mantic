@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.inventarios.devoluciones.backing;
+package mx.org.kaana.mantic.inventarios.creditos.backing;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -37,7 +37,7 @@ import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import org.primefaces.context.RequestContext;
 
-@Named(value = "manticInventariosDevolucionesFiltro")
+@Named(value = "manticInventariosCreditosFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
@@ -53,10 +53,10 @@ public class Filtro extends IBaseFilter implements Serializable {
   protected void init() {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-      this.attrs.put("idDevolucion", JsfBase.getFlashAttribute("idDevolucion"));
-      this.attrs.put("sortOrder", "order by tc_mantic_devoluciones.id_empresa, tc_mantic_devoluciones.ejercicio, tc_mantic_devoluciones.orden");
+      this.attrs.put("idCreditoNota", JsfBase.getFlashAttribute("idCreditoNota"));
+      this.attrs.put("sortOrder", "order by tc_mantic_creditos_notas.id_empresa, tc_mantic_creditos_notas.ejercicio, tc_mantic_creditos_notas.orden");
 			this.toLoadCatalog();
-      if(this.attrs.get("idDevolucion")!= null) 
+      if(this.attrs.get("idCreditoNota")!= null) 
 			  this.doLoad();
     } // try
     catch (Exception e) {
@@ -73,12 +73,12 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("articulos", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
-      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("folio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
-      this.lazyModel = new FormatCustomLazy("VistaDevolucionesDto", params, columns);
+      this.lazyModel = new FormatCustomLazy("VistaNotasCreditosDto", params, columns);
       UIBackingUtilities.resetDataTable();
-			this.attrs.put("idDevolucion", null);
+			this.attrs.put("idCreditoNota", null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -91,20 +91,13 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doLoad
 
   public String doAccion(String accion) {
-		String regresar= "/Paginas/Mantic/Inventarios/Devoluciones/accion";
+		String regresar= "/Paginas/Mantic/Inventarios/Creditos/accion";
     EAccion eaccion= null;
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
-			if(eaccion.equals(EAccion.COMPLETO)) 
-			  JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
-			else 
-			  JsfBase.setFlashAttribute("accion", eaccion);		
-			if(!eaccion.equals(EAccion.COMPLETO) || ((eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) && ((Entity)this.attrs.get("seleccionado")).toLong("idDirecta").equals(2L))) 
-				regresar= regresar.concat("?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs");
-			else
-				regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Devoluciones/filtro");		
-			JsfBase.setFlashAttribute("idDevolucion", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+		  JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Creditos/filtro");		
+			JsfBase.setFlashAttribute("idCreditoNota", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -120,31 +113,33 @@ public class Filtro extends IBaseFilter implements Serializable {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
 			transaccion= new Transaccion((TcManticDevolucionesDto)DaoFactory.getInstance().findById(TcManticDevolucionesDto.class, seleccionado.getKey()));
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "La devolución de entrada se ha eliminado correctamente.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar", "La nota de crédito se ha eliminado correctamente.", ETipoMensaje.ERROR);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la devolucion de entrada.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la nota de crédito.", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch			
-  } // doEliminar
+  } 
 
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
-		if(!Cadena.isVacio(this.attrs.get("idDevolucion")) && !this.attrs.get("idDevolucion").toString().equals("-1"))
-  		sb.append("(tc_mantic_devoluciones.id_devolucion=").append(this.attrs.get("idDevolucion")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("notaEntrada")))
-  		sb.append("(tc_mantic_notas_entradas.consecutivo like '%").append(this.attrs.get("notaEntrada")).append("%') and ");
+		if(!Cadena.isVacio(this.attrs.get("idCreditoNota")) && !this.attrs.get("idCreditoNota").toString().equals("-1"))
+  		sb.append("(tc_mantic_creditos_notas.id_credito_nota=").append(this.attrs.get("idCreditoNota")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("devolucion")))
+  		sb.append("(tc_mantic_devoluciones.consecutivo like '%").append(this.attrs.get("devolucion")).append("%') and ");
+		if(!Cadena.isVacio(this.attrs.get("folio")))
+  		sb.append("(tc_mantic_creditos_notas.folio like '%").append(this.attrs.get("folio")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_mantic_devoluciones.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+  		sb.append("(tc_mantic_creditos_notas.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_mantic_devoluciones.registro, '%Y%c%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+		  sb.append("(date_format(tc_mantic_creditos_notas.registro, '%Y%c%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_mantic_devoluciones.registro, '%Y%c%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("idDevolucionEstatus")) && !this.attrs.get("idDevolucionEstatus").toString().equals("-1"))
-  		sb.append("(tc_mantic_devoluciones.id_devolucion_estatus= ").append(this.attrs.get("idDevolucionEstatus")).append(") and ");
+		  sb.append("(date_format(tc_mantic_creditos_notas.registro, '%Y%c%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+		if(!Cadena.isVacio(this.attrs.get("idCreditoEstatus")) && !this.attrs.get("idCreditoEstatus").toString().equals("-1"))
+  		sb.append("(tc_mantic_creditos_notas.id_credito_estatus= ").append(this.attrs.get("idCreditoEstatus")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
@@ -172,8 +167,8 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
 			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
 			columns.remove(0);
-      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticDevolucionesEstatusDto", "row", params, columns));
-			this.attrs.put("idDevolucionEstatus", new UISelectEntity("-1"));
+      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticCreditosEstatusDto", "row", params, columns));
+			this.attrs.put("idCreditoEstatus", new UISelectEntity("-1"));
     } // try
     catch (Exception e) {
       throw e;
@@ -192,7 +187,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			reporteSeleccion= EReportes.ORDEN_COMPRA;
 			this.reporte= JsfBase.toReporte();
 			params= new HashMap<>();
-			params.put("idDevolucion", ((Entity)this.attrs.get("seleccionado")).getKey());			
+			params.put("idCreditoNota", ((Entity)this.attrs.get("seleccionado")).getKey());			
 			parametros= new HashMap<>();
 			parametros.put("REPORTE_EMPRESA", JsfBase.getAutentifica().getEmpresa().getNombreCorto());
 		  parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
@@ -225,8 +220,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_devolucion_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
-			allEstatus= UISelect.build("TcManticDevolucionesEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
+			params.put(Constantes.SQL_CONDICION, "id_credito_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
+			allEstatus= UISelect.build("TcManticCreditosEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("allEstatus", allEstatus);
 			this.attrs.put("estatus", allEstatus.get(0));
 		} // try
@@ -263,16 +258,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}	
 	
 	public String doMovimientos() {
-		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.DEVOLUCIONES);
-		JsfBase.setFlashAttribute(ETipoMovimiento.DEVOLUCIONES.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
-		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Inventarios/Devoluciones/filtro");
+		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.NOTAS_CREDITOS);
+		JsfBase.setFlashAttribute(ETipoMovimiento.NOTAS_CREDITOS.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Inventarios/Creditos/filtro");
 		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
-	}
-	
-	public String doNotasCredito() {
-		JsfBase.setFlashAttribute(ETipoMovimiento.DEVOLUCIONES.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
-		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Inventarios/Devoluciones/filtro");
-		return "/Paginas/Mantic/Inventarios/Creditos/accion".concat(Constantes.REDIRECIONAR);
 	}
 	
 }

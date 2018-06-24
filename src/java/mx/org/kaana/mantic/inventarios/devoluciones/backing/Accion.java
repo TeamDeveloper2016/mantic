@@ -28,6 +28,7 @@ import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.inventarios.devoluciones.beans.Devolucion;
 import mx.org.kaana.mantic.inventarios.devoluciones.reglas.AdminDevoluciones;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.TabChangeEvent;
 
 /**
  *@company KAANA
@@ -45,6 +46,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 
 	private FormatLazyModel lazyModel;
 	private FormatLazyModel lazyArticulos;
+	private EAccion accion;
 	private boolean aplicar;
 
 	public FormatLazyModel getLazyModel() {
@@ -83,8 +85,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 	@PostConstruct
   protected void init() {		
     try {
-			this.aplicar=  false;
-      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
+			this.aplicar= false;
+      this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idDevolucion", JsfBase.getFlashAttribute("idDevolucion")== null? -1L: JsfBase.getFlashAttribute("idDevolucion"));
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? 47L: JsfBase.getFlashAttribute("idNotaEntrada"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
@@ -97,23 +99,10 @@ public class Accion extends IBaseArticulos implements Serializable {
   } // init
 
   public void doLoad() {
-    EAccion eaccion= null;
-    List<Columna> columns= null;
     try {
-      columns = new ArrayList<>();
-      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
-      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
-      columns.add(new Columna("menudeo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("medioMayoreo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("mayoreo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
-      eaccion= (EAccion) this.attrs.get("accion");
-      this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
+      this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
 			TcManticNotasEntradasDto nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, (Long)this.attrs.get("idNotaEntrada"));
-      switch (eaccion) {
+      switch (this.accion) {
         case AGREGAR:											
           this.setAdminOrden(new AdminDevoluciones(new Devolucion(-1L, (Long)this.attrs.get("idNotaEntrada")), nota.getTipoDeCambio(), nota.getIdSinIva()));
           break;
@@ -122,40 +111,31 @@ public class Accion extends IBaseArticulos implements Serializable {
           this.setAdminOrden(new AdminDevoluciones((Devolucion)DaoFactory.getInstance().toEntity(Devolucion.class, "TcManticDevolucionesDto", "detalle", this.attrs), nota.getTipoDeCambio(), nota.getIdSinIva()));
           break;
       } // switch
-      this.attrs.put("sortOrder", "order by tc_mantic_notas_detalles.nombre");
-      this.lazyModel = new FormatCustomLazy("VistaDevolucionesDto", "bitacora", this.attrs, columns);
-      this.attrs.put("sortOrder", "order by tc_mantic_notas_detalles.nombre");
-      this.lazyArticulos= new FormatCustomLazy("VistaDevolucionesDto", "articulos", this.attrs, columns);
 			this.toLoadCatalog();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-    finally {
-      Methods.clean(columns);
-    } // finally		
   } // doLoad
 
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
-		EAccion eaccion        = null;
     try {			
-			eaccion= (EAccion) this.attrs.get("accion");
 			((Devolucion)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
 			((Devolucion)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
 			((Devolucion)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
 			((Devolucion)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
 			this.getAdminOrden().toAdjustArticulos();
 			transaccion = new Transaccion(((Devolucion)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.aplicar);
-			if (transaccion.ejecutar(eaccion)) {
-				if(eaccion.equals(EAccion.AGREGAR)) {
+			if (transaccion.ejecutar(this.accion)) {
+				if(this.accion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
    			  RequestContext.getCurrentInstance().execute("jsArticulos.back('generó la devolución de entrada', '"+ ((Devolucion)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				} // if	
- 				if(!eaccion.equals(EAccion.CONSULTAR)) 
-  				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : eaccion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" la devolución de entrada."), ETipoMensaje.INFORMACION);
+ 				if(!this.accion.equals(EAccion.CONSULTAR)) 
+  				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" la devolución de entrada."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idDevolucion", ((Devolucion)this.getAdminOrden().getOrden()).getIdDevolucion());
 			} // if
 			else 
@@ -202,6 +182,64 @@ public class Accion extends IBaseArticulos implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
+	}
+
+	public void doTabChange(TabChangeEvent event) {
+		if(event.getTab().getTitle().equals("Costo actual")) 
+      this.loadCostoActual();
+		else
+  		if(event.getTab().getTitle().equals("Costo anterior")) 
+        this.loadCostoAnterior();
+	}
+
+	private void loadCostoActual() {
+    List<Columna> columns= null;
+    try {
+      columns = new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
+      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
+      columns.add(new Columna("menudeo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("medioMayoreo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("mayoreo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+      this.attrs.put("sortOrder", "order by tc_mantic_notas_detalles.nombre");
+      this.lazyArticulos= new FormatCustomLazy("VistaDevolucionesDto", "articulos", this.attrs, columns);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(columns);
+		} // finally
+	}
+		
+	private void loadCostoAnterior() {
+    List<Columna> columns= null;
+    try {
+      columns = new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
+      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
+      columns.add(new Columna("menudeo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("medioMayoreo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("mayoreo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+      this.attrs.put("sortOrder", "order by tc_mantic_notas_detalles.nombre");
+      this.lazyModel = new FormatCustomLazy("VistaDevolucionesDto", "bitacora", this.attrs, columns);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(columns);
+		} // finally
 	}
 	
 }

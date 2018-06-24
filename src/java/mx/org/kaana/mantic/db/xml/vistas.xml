@@ -4,6 +4,56 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaNotasCreditosDto">
+			<select id="movimientos">
+				select
+					tc_mantic_creditos_bitacora.id_credito_bitacora as id_key,
+					tc_mantic_creditos_bitacora.consecutivo,
+					tc_mantic_creditos_bitacora.importe,
+					tc_mantic_creditos_bitacora.justificacion,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+				  tc_mantic_creditos_estatus.nombre as estatus,
+					tc_mantic_creeditos_bitacora.registro
+				from 
+					tc_mantic_creeditos_bitacora
+				inner join
+					tc_mantic_creeditos_estatus on tc_mantic_creditos_bitacora.id_credito_estatus= tc_mantic_creditos_estatus.id_credito_estatus
+				inner join
+					tc_janal_usuarios on tc_mantic_creditos_bitacora.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_creditos_bitacora.id_credito_nora= {idCreditoNota}
+				order by
+					tc_mantic_creditos_bitacora.registro desc				
+			</select>	
+			<select id="lazy">
+        select
+					tc_mantic_creditos_notas.id_credito_nota as id_key,
+					tc_mantic_creditos_notas.id_credito_nota,
+					tc_mantic_creditos_notas.id_devolucion,
+					tc_mantic_devoluciones.consecutivo as devolucion,
+					tc_mantic_creditos_notas.consecutivo,
+					tc_mantic_empresas.clave as empresa,
+					tc_mantic_creditos_notas.folio,
+					tc_mantic_creditos_notas.importe,
+		  		tc_mantic_creditos_estatus.nombre as estatus,
+					tc_mantic_creditos_estatus.id_credito_estatus,
+					tc_mantic_creditos_notas.registro     
+        from
+          tc_mantic_creditos_notas         
+        inner join
+          tc_mantic_creditos_estatus on tc_mantic_creditos_notas.id_credito_estatus=tc_mantic_creditos_estatus.id_credito_estatus      
+        inner join
+          tc_mantic_empresas on tc_mantic_creditos_notas.id_empresa= tc_mantic_empresas.id_empresa         
+        inner join
+          tc_mantic_devoluciones on tc_mantic_creditos_notas.id_devolucion= tc_mantic_devoluciones.id_devolucion
+        where
+					tc_mantic_creditos_notas.id_empresa in ({idEmpresa})
+					and {condicion}
+				{sortOrder}
+			</select> 
+		</unit>
 		<unit id="VistaVentasDto">
 			<select id="movimientos">
 				select

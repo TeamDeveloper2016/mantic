@@ -7,6 +7,61 @@
   </model>
 
   <dml>	
+   <unit id="TcManticCreditosNotasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_creditos_notas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_creditos_notas
+        where      
+          id_devolucion = {idDevolucion} and folio = '{folio}' and id_credito_nota = {idCreditoNota}
+      </select>
+   </unit>		
+    <unit id="TcManticCreditosEstatusDto">
+      <select id="row">
+        select      
+          tc_mantic_creditos_estatus.id_credito_bitacora as id_key
+				  tc_mantic_creditos_estatus.*
+				from      
+          tc_mantic_creditos_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_creditos_estatus
+        where      
+          id_credito_estatus = {idCreditoEstatus} and nombre = '{nombre}'
+      </select>
+   </unit>	 
+    <unit id="TcManticCreditosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_creditos_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_creditos_bitacora
+        where      
+          id_credito_estatus = {idCreditoEstatus} and id_credito_bitacora = {idCreditoBitacora} and id_credito_nota = {idCreditoNota}
+      </select>
+   </unit>	 
    <unit id="TcManticDevolucionesDto">
       <select id="row">
         select      

@@ -55,9 +55,9 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
-              <p:outputLabel for="ordenCompra" value="No. orden:"/>
+              <p:outputLabel for="ordenCompra" value="No. orden compra:"/>
               <p:inputText id="ordenCompra" value="#{manticInventariosEntradasFiltro.attrs.ordenCompra}" styleClass="janal-wid-100-txt"/> 
-              <p:outputLabel for="consecutivo" value="No. nota:"/>
+              <p:outputLabel for="consecutivo" value="No. nota entrada:"/>
               <p:inputText id="consecutivo" value="#{manticInventariosEntradasFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="idProveedor" value="Proveedor:"/>
               <p:selectOneMenu id="idProveedor" value="#{manticInventariosEntradasFiltro.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="startsWith">
