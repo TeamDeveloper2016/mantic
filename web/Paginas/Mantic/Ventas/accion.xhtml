@@ -67,6 +67,23 @@
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
+					<p:panelGrid columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+						<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasAccion.attrs.isMatriz}"/>
+						<p:selectOneMenu id="idEmpresa" value="#{manticVentasAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticVentasAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="startsWith">
+							<p:ajax event="change" process="@this" listener="#{manticVentasAccion.doUpdateForEmpresa}" update="clientes cliente contenido tabla descuento" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+							<f:selectItems value="#{manticVentasAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+							<p:column headerText="Clave">
+								<h:outputText value="#{item.clave}"/>
+							</p:column>   
+							<p:column headerText="Nombre">
+								<h:outputText value="#{item.nombre}"/>
+							</p:column>   
+						</p:selectOneMenu>
+					</p:panelGrid>
+				</div>
+			</div>
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
 					<p:panelGrid columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-40, janal-wid-5, janal-wid-100, janal-wid-20">						
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 							<p:outputLabel for="noTicket" value="No. Ticket:"/>
@@ -75,7 +92,7 @@
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 							<p:outputLabel for="clientes" value="Buscar cliente:"/>							
 							<p:autoComplete id="clientes" placeholder="Nombre o rfc" widgetVar="listadoClientes" var="customCliente" itemLabel="#{customCliente.rfc}" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{customCliente}" value="#{manticVentasAccion.attrs.cliente}" completeMethod="#{manticVentasAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
-								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this" listener="#{manticVentasAccion.doAsignaCliente}" update="cliente contenido" oncomplete="janal.desbloquear();"/>
+								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticVentasAccion.doAsignaCliente}" update="cliente contenido" oncomplete="janal.desbloquear();"/>
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
 										<h:outputText value="Clave" />
@@ -95,7 +112,7 @@
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-wid-100-txt" columnClasses="janal-wid-100-txt">
 							<p:outputLabel for="cliente" value="Cliente:"/>							
 							<p:selectOneMenu id="cliente" value="#{manticVentasAccion.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
-								<p:ajax event="change" process="@this" onstart="return janal.bloquear();" listener="#{manticVentasAccion.doActualizaPrecioCliente}" oncomplete="janal.desbloquear();" update="tabla descuento clientes"/>
+								<p:ajax event="change" process="@this idEmpresa" onstart="return janal.bloquear();" listener="#{manticVentasAccion.doActualizaPrecioCliente}" oncomplete="janal.desbloquear();" update="tabla descuento clientes"/>
 								<f:selectItems value="#{manticVentasAccion.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
