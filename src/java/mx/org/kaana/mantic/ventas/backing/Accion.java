@@ -83,13 +83,17 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null? -1L: JsfBase.getFlashAttribute("idVenta"));
-			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? null: JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("activeLogin", false);
 			this.image= LoadImages.getImage("-1");
 			loadClienteDefault();
+			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());
+			if(JsfBase.isAdminEncuestaOrAdmin())
+				loadSucursales();
 			doLoad();
     } // try
     catch (Exception e) {
@@ -214,7 +218,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-  		params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+  		params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			String search= (String) this.attrs.get("codigoCliente"); 
 			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*") : "WXYZ";
   		params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_clientes.razon_social) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*'")));			
@@ -383,6 +387,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 		UISelectEntity cliente = null;
 		try {
 			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");			
+			((TicketVenta)this.getAdminOrden().getOrden()).setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
 			((TicketVenta)this.getAdminOrden().getOrden()).setIdCliente(cliente.getKey());
 			((TicketVenta)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
 			((TicketVenta)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
@@ -446,7 +451,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			fields= new ArrayList<>();
 			params= new HashMap<>();
 			params.put("sortOrder", "");
-			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			fields.add("consecutivo");
 			fields.add("cuenta");
 			fields.add("precioTotal");
@@ -679,4 +684,35 @@ public class Accion extends IBaseArticulos implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // loadClienteDefault
+	
+	private void loadSucursales(){
+		List<UISelectEntity> sucursales= null;
+		Map<String, Object>params      = null;
+		List<Columna> columns          = null;
+		try {
+			columns= new ArrayList<>();
+			params= new HashMap<>();
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			sucursales=(List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+			this.attrs.put("sucursales", sucursales);
+			this.attrs.put("idEmpresa", sucursales.get(0));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // loadSucursales
+	
+	public void doUpdateForEmpresa(){
+		try {
+			loadClienteDefault();
+			doActualizaPrecioCliente();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doUpdateForEmpresa
 }
