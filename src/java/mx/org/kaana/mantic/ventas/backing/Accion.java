@@ -87,6 +87,7 @@ public class Accion extends IBaseArticulos implements Serializable {
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
+			this.attrs.put("activeLogin", false);
 			this.image= LoadImages.getImage("-1");
 			doLoad();
     } // try
@@ -388,47 +389,49 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // catch		
 	} // loadOrdenVenta
 	
-	public String doCerrarTicket(){
-		List<UISelectEntity> vendedores    = null;
-		UISelectEntity vendedorSeleccionado= null;
-		Entity vendedor                    = null;
-		Transaccion transaccion            = null;
-		CambioUsuario cambioUsuario        = null;		
-		String regresar                    = null;
-    try {						
-			vendedores= (List<UISelectEntity>) this.attrs.get("vendedores");
-			vendedorSeleccionado= (UISelectEntity) this.attrs.get("vendedor");
-			vendedor= vendedores.get(vendedores.indexOf(vendedorSeleccionado));
-			if(vendedor!= null && vendedor.isValid()){
-				if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
-					loadOrdenVenta();
-					transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
-					this.getAdminOrden().toAdjustArticulos();
-					if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
-						RequestContext.getCurrentInstance().execute("jsArticulos.back('ticket de venta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-						JsfBase.addMessage("Se guardo el ticket de venta.", ETipoMensaje.INFORMACION);				
-					} // if
-					else 
-						JsfBase.addMessage("Ocurrió un error al registrar el ticket de venta.", ETipoMensaje.ERROR);      			
+	public void doCerrarTicket(){		
+		Transaccion transaccion= null;
+    try {								
+			if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
+				loadOrdenVenta();
+				transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+				this.getAdminOrden().toAdjustArticulos();
+				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
+					RequestContext.getCurrentInstance().execute("jsArticulos.back('ticket de venta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+					JsfBase.addMessage("Se guardo el ticket de venta.", ETipoMensaje.INFORMACION);				
 				} // if
-				cambioUsuario= new CambioUsuario(vendedor.toString("cuenta"), this.attrs.get("contraseniaCaptura").toString(), vendedor.toString("contrasenia"), vendedor.toLong("idPerfil"));
-				if(cambioUsuario.validaUsuario()){					
-					JsfBase.addMessage("Cambio de usuario", "Se realizo el cambio de usuario de forma correcta", ETipoMensaje.INFORMACION);      			
-					regresar= "/Paginas/Mantic/Ventas/accion.jsf".concat(Constantes.REDIRECIONAR);
-				} // if
-				else
-					JsfBase.addMessage("Cambio de usuario", "Ocurrió un error al autenticar el usuario seleccionado", ETipoMensaje.ERROR);      											
+				else 
+					JsfBase.addMessage("Ocurrió un error al registrar el ticket de venta.", ETipoMensaje.ERROR);      			
+			} // if						
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+	} // doCerrarTicket
+	
+	public String doLogin(){		
+		CambioUsuario cambioUsuario= null;		
+		String regresar            = null;
+		String cuenta              = null;
+		String password            = null;
+    try {					
+			cuenta= this.attrs.get("cuenta").toString();
+			password= this.attrs.get("password").toString();						
+			cambioUsuario= new CambioUsuario(cuenta, password);
+			if(cambioUsuario.validaUsuario()){					
+				JsfBase.addMessage("Cambio de usuario", "Se realizo el cambio de usuario de forma correcta", ETipoMensaje.INFORMACION);      			
+				regresar= "/Paginas/Mantic/Ventas/accion.jsf".concat(Constantes.REDIRECIONAR);
 			} // if
 			else
-				JsfBase.addMessage("Cambio de usuario", "No hay mas usuarios con este perfil", ETipoMensaje.INFORMACION);      			
-			
+				JsfBase.addMessage("Cambio de usuario", "Ocurrió un error al autenticar el usuario seleccionado", ETipoMensaje.ERROR);      																	
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
 		return regresar;
-	} // doCerrarTicket
+	} // doLogin
 	
 	public void doLoadTicketAbiertos(){
 		List<UISelectItem> ticketsAbiertos= null;
@@ -651,5 +654,5 @@ public class Accion extends IBaseArticulos implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
-	}
+	} // doUpdateArticulos
 }
