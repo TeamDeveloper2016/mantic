@@ -409,7 +409,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 				this.getAdminOrden().toAdjustArticulos();
 				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
 					RequestContext.getCurrentInstance().execute("jsArticulos.back('ticket de venta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-					JsfBase.addMessage("Se guardo el ticket de venta.", ETipoMensaje.INFORMACION);				
+					JsfBase.addMessage("Se guardo el ticket de venta.", ETipoMensaje.INFORMACION);	
+					init();
 				} // if
 				else 
 					JsfBase.addMessage("Ocurrió un error al registrar el ticket de venta.", ETipoMensaje.ERROR);      			
