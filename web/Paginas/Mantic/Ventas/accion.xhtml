@@ -66,8 +66,8 @@
 		<p:remoteCommand name="lookup" actionListener="#{manticVentasAccion.doUpdateArticulos}" process="@this codigo" update="buscados"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
-				<div class="ui-grid-col-12">
-					<p:panelGrid columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+				<div class="ui-grid-col-12">					
+					<p:panelGrid id="panelEmpresa" columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 						<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasAccion.attrs.isMatriz}"/>
 						<p:selectOneMenu id="idEmpresa" value="#{manticVentasAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticVentasAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="startsWith">
 							<p:ajax event="change" process="@this" listener="#{manticVentasAccion.doUpdateForEmpresa}" update="clientes cliente contenido tabla descuento" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
@@ -83,8 +83,8 @@
 				</div>
 			</div>
 			<div class="ui-grid-row janal-grid-row">
-				<div class="ui-grid-col-12">
-					<p:panelGrid columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-40, janal-wid-5, janal-wid-100, janal-wid-20">						
+				<div class="ui-grid-col-12">					
+					<p:panelGrid id="panelCliente" columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-40, janal-wid-5, janal-wid-100, janal-wid-20">						
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 							<p:outputLabel for="noTicket" value="No. Ticket:"/>
 							<p:inputText id="noTicket" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasAccion.attrs.consecutivo}" disabled="true"/>								
@@ -135,7 +135,7 @@
 					<p:separator/>			
 					<p:panelGrid id="deudor" columns="1" layout="grid" styleClass="janal-wid-100 janal-column-center" columnClasses="janal-wid-100">
 						<p:outputLabel value="#{manticVentasAccion.saldoCliente.mensaje}" styleClass="janal-column-center janal-color-orange"/>
-					</p:panelGrid>				
+					</p:panelGrid>						
 					<p:panelGrid id="contenido" columns="2" layout="grid" styleClass="janal-wid-100" style="height:350px !important;" columnClasses="janal-wid-80, janal-wid-20">					
 						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" style="height:348px !important;overflow-y: visible" columnClasses="janal-wid-100">					
 							<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticVentasAccion.adminOrden.articulos}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">
@@ -370,13 +370,13 @@
 					<p:password id="password" value="#{manticVentasAccion.attrs.password}" onblur="janal.toPasswordEnter();" onkeydown="janal.toPasswordEnter();"/>
 				</p:panelGrid>
 				<p:panelGrid id="panelAcciones" layout="grid" columns="2" styleClass="janal-wid-100 janal-column-right" columnClasses="janal-column-right janal-wid-80, janal-column-right janal-wid-10">
-					<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('articulo', true);" oncomplete="janal.desbloquear()"/>
+					<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('articulo', true);" oncomplete="janal.desbloquear()" update="deudor contenido panelCliente panelEmpresa articulos total"/>
 					<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 				</p:panelGrid>				
 			</p:panelGrid>			
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('articulo', true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('articulo', true);" oncomplete="janal.desbloquear()" update="deudor contenido panelCliente panelEmpresa articulos total"/>
 			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 		</div>		
 	</ui:define>
