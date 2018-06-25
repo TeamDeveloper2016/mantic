@@ -63,10 +63,14 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null? -1L: JsfBase.getFlashAttribute("idVenta"));
-			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null ? null : JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
+			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());
+			if(JsfBase.isAdminEncuestaOrAdmin())
+				loadSucursales();
 			doLoadTicketAbiertos();
     } // try
     catch (Exception e) {
@@ -101,25 +105,13 @@ public class Accion extends IBaseArticulos implements Serializable {
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
-		EAccion eaccion        = null;
-		UISelectEntity cliente = null;
-    try {			
-			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");
-			eaccion= (EAccion) this.attrs.get("accion");			
-			((TicketVenta)this.getAdminOrden().getOrden()).setIdCliente(cliente.getKey());
-			((TicketVenta)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
-			((TicketVenta)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
-			((TicketVenta)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
-			((TicketVenta)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
-			transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
-			this.getAdminOrden().toAdjustArticulos();
-			if (transaccion.ejecutar(eaccion)) {
-				if(eaccion.equals(EAccion.AGREGAR)) {
- 				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-    			RequestContext.getCurrentInstance().execute("jsArticulos.back('ticket de venta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-				} // if	
-				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el ticket de venta."), ETipoMensaje.INFORMACION);
-  			JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
+    try {						
+			transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()));
+			if (transaccion.ejecutar(EAccion.REPROCESAR)) {
+ 				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
+				JsfBase.addMessage("Se finalizo el pago del ticket de venta.", ETipoMensaje.INFORMACION);
+				this.setAdminOrden(new AdminTickets(new TicketVenta()));
+				init();
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar el ticket de venta.", ETipoMensaje.ERROR);      			
@@ -189,7 +181,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-  		params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+  		params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			String search= (String) this.attrs.get("codigoCliente"); 
 			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*") : "WXYZ";
   		params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_clientes.razon_social) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*'")));			
@@ -335,7 +327,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			fields= new ArrayList<>();
 			params= new HashMap<>();
 			params.put("sortOrder", "");
-			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			fields.add("consecutivo");
 			fields.add("cliente");
 			fields.add("total");
@@ -343,6 +335,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			ticketsAbiertos= UISelect.build("VistaVentasDto", "lazy", params, fields, " - ", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("ticketsAbiertos", ticketsAbiertos);			
 			this.attrs.put("ticketAbierto", "-1");
+			this.setAdminOrden(new AdminTickets(new TicketVenta()));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -372,10 +365,14 @@ public class Accion extends IBaseArticulos implements Serializable {
 		try {
 			params= new HashMap<>();
 			params.put("idVenta", this.attrs.get("ticketAbierto"));
-			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), false));
-    	this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
-			toLoadCatalog();
-			doAsignaClienteTicketAbierto();
+			if(!this.attrs.get("ticketAbierto").toString().equals("-1")){
+				this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), false));
+				this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
+				toLoadCatalog();
+				doAsignaClienteTicketAbierto();
+			} // if
+			else
+				this.setAdminOrden(new AdminTickets(new TicketVenta()));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -404,4 +401,24 @@ public class Accion extends IBaseArticulos implements Serializable {
 			throw e;
 		} // catch		
 	} // doAsignaClienteTicketAbierto
+	
+	private void loadSucursales(){
+		List<UISelectEntity> sucursales= null;
+		Map<String, Object>params      = null;
+		List<Columna> columns          = null;
+		try {
+			columns= new ArrayList<>();
+			params= new HashMap<>();
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			sucursales=(List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+			this.attrs.put("sucursales", sucursales);
+			this.attrs.put("idEmpresa", sucursales.get(0));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // loadSucursales
 }
