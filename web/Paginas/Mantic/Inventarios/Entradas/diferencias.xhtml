@@ -5,7 +5,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-                template="/WEB-INF/plantillas/reporte.xhtml">
+                template="/WEB-INF/plantillas/accion.xhtml">
   <ui:param name="titulo" value="Diferencias de la nota de entrada contra sus devoluciones" />
   <ui:define name="contenido">
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
@@ -143,10 +143,14 @@
         </div>
       </div>
     </div>		    
-		<hr class="ui-widget-content"/>
-		<div class="janal-line-button">
-			<p:commandButton process="@this" styleClass="janal-text-white" icon="fa fa-reply" value="Regresar" action="#{manticNotasEntradasDiferencias.doRegresar}" immediate="true"/>
-		</div>
   </ui:define>   
-  <ui:param name="componenteBloqueo" value="tabla notas"/>
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+  		<p:commandButton id="regresar" process="@this" styleClass="janal-text-white" icon="fa fa-reply" value="Regresar" action="#{manticNotasEntradasDiferencias.doRegresar}" immediate="true"/>
+		</div>	
+		<div class="xs-pantalla">
+  		<p:commandButton id="regresarIcon" process="@this" styleClass="janal-text-white" icon="fa fa-reply" title="Regresar" action="#{manticNotasEntradasDiferencias.doRegresar}" immediate="true"/>
+		</div>	
+	</ui:define>	
+  <ui:param name="componenteBloqueo" value="tabla notas regresar regresarIcon"/>
 </ui:composition>

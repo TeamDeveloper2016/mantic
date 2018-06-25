@@ -182,6 +182,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			  this.attrs.put("proveedor", proveedores.get(index));
 			} // if	
 			if(this.attrs.get("idOrdenCompra")!= null) {
+        columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
         this.attrs.put("ordenes", UIEntity.build("VistaNotasEntradasDto", "ordenes", params, columns));
 			  List<UISelectEntity> ordenes= (List<UISelectEntity>)this.attrs.get("ordenes");
 			  if(!ordenes.isEmpty()) 

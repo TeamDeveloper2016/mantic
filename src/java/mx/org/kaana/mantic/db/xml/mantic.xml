@@ -24,6 +24,16 @@
         where      
           id_devolucion = {idDevolucion} and folio = '{folio}' and id_credito_nota = {idCreditoNota}
       </select>
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_creditos_notas
+        where      
+          id_credito_nota = {idCreditoNota}
+				order by
+				  registro
+      </select>
    </unit>		
     <unit id="TcManticCreditosEstatusDto">
       <select id="row">
@@ -454,7 +464,7 @@
         where      
           id_articulo = {idArticulo}
 				orden by
-				  tr_mantic_articulo_precio_sugerido.registro
+				  registro
       </select>
 			<delete id="rows">
         delte from tr_mantic_articulo_precio_sugerido where id_articulo= {idArticulo} 
@@ -1005,7 +1015,7 @@
       </select>
       <select id="codigo">
         select      
-          codigo
+          *
         from      
           tc_mantic_articulos_codigos
         where      
