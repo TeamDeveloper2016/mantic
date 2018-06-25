@@ -535,8 +535,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 	public String doClientes(){
 		String regresar= null;
 		try {
-			JsfBase.setFlashAttribute("puntoVenta", true);
-			regresar= "/Paginas/Mantic/Catalogos/Clientes/filtro.jsf".concat(Constantes.REDIRECIONAR);
+			regresar= "cliente.jsf".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
