@@ -76,7 +76,7 @@ public class Transaccion extends IBaseTnx {
     boolean regresar = false;
     Long idCliente = -1L;
     try {
-      this.messageError = "Error al registrar el articulo";
+      this.messageError = "Error al registrar el cliente";
       if (eliminarRegistros(sesion)) {
         this.registroCliente.getCliente().setIdUsuario(JsfBase.getIdUsuario());
         this.registroCliente.getCliente().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
