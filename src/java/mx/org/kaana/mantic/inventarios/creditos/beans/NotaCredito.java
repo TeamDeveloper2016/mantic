@@ -24,12 +24,12 @@ public class NotaCredito extends TcManticCreditosNotasDto implements Serializabl
 		this(null);
 	}
 
-	public NotaCredito(Long idCreditoNota) {
-		this(-1L, idCreditoNota);
+	public NotaCredito(Long idDevolucion) {
+		this(-1L, idDevolucion);
 	}
 
-	public NotaCredito(Long key, Long idCreditoNota) {
-		this(Calendar.getInstance().get(Calendar.YEAR)+ "00000", 1L, -1L, JsfBase.getIdUsuario(), "", "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 1L, idCreditoNota, 0D, new Long(Calendar.getInstance().get(Calendar.YEAR)));
+	public NotaCredito(Long key, Long idDevolucion) {
+		this(Calendar.getInstance().get(Calendar.YEAR)+ "00000", 1L, idDevolucion, JsfBase.getIdUsuario(), "", "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 1L, -1L, 0D, new Long(Calendar.getInstance().get(Calendar.YEAR)));
 	}
 
 	public NotaCredito(String consecutivo, Long idCreditoEstatus, Long idDevolucion, Long idUsuario, String folio, String observaciones, Long idEmpresa, Long orden, Long idCreditoNota, Double importe, Long ejercicio) {

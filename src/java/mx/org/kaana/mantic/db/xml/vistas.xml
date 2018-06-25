@@ -4,7 +4,7 @@
 -->
 <process>
 	<dml> 
-		<unit id="VistaNotasCreditosDto">
+		<unit id="VistaCreditosNotasDto">
 			<select id="movimientos">
 				select
 					tc_mantic_creditos_bitacora.id_credito_bitacora as id_key,

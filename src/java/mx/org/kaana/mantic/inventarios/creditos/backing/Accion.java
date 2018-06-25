@@ -16,6 +16,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -36,7 +37,8 @@ import org.primefaces.context.RequestContext;
 
 @Named(value= "manticInventariosCreditosAccion")
 @ViewScoped
-public class Accion extends IBaseArticulos implements Serializable {
+public class Accion extends IBaseAttribute
+	implements Serializable {
 
   private static final long serialVersionUID = 327393488565639361L;
 
@@ -44,7 +46,15 @@ public class Accion extends IBaseArticulos implements Serializable {
 	private NotaCredito orden;
 
 	public String getAgregar() {
-		return ((EAccion)this.attrs.get("accion")).equals(EAccion.AGREGAR)? "none": "";
+		return this.accion.equals(EAccion.AGREGAR)? "none": "";
+	}
+
+	public NotaCredito getOrden() {
+		return orden;
+	}
+
+	public void setOrden(NotaCredito orden) {
+		this.orden=orden;
 	}
 	
   @Override
@@ -53,7 +63,7 @@ public class Accion extends IBaseArticulos implements Serializable {
     try {
       this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idCreditoNota", JsfBase.getFlashAttribute("idCreditoNota")== null? -1L: JsfBase.getFlashAttribute("idCreditoNota"));
-      this.attrs.put("idNotaCredito", JsfBase.getFlashAttribute("idNotaCredito")== null? 47L: JsfBase.getFlashAttribute("idNotaCredito"));
+      this.attrs.put("idDevolucion", JsfBase.getFlashAttribute("idDevolucion")== null? 47L: JsfBase.getFlashAttribute("idDevolucion"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			doLoad();
     } // try
@@ -69,7 +79,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			TcManticDevolucionesDto devolucion= (TcManticDevolucionesDto)DaoFactory.getInstance().findById(TcManticDevolucionesDto.class, (Long)this.attrs.get("idDevolucion"));
       switch (this.accion) {
         case AGREGAR:											
-          //this.orden= new NotaCredito(-1L, devolucion.getIdNotaCredito());
+          this.orden= new NotaCredito(-1L, -1L/*devolucion.getIdDevolucion()*/);
           break;
         case MODIFICAR:					
         case CONSULTAR:					
@@ -92,7 +102,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-   			  RequestContext.getCurrentInstance().execute("jsArticulos.back('generó la nota de crédito', '"+ ((NotaCredito)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+   			  RequestContext.getCurrentInstance().execute("jsArticulos.back('generó la nota de crédito', '"+ this.orden.getConsecutivo()+ "');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" la nota de credito."), ETipoMensaje.INFORMACION);
@@ -109,9 +119,9 @@ public class Accion extends IBaseArticulos implements Serializable {
   } // doAccion
 	
   public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idCreditoNota", ((NotaCredito)this.orden).getIdCreditoNota());
+  	JsfBase.setFlashAttribute("idCreditoNota",this.orden.getIdCreditoNota());
     return (String)this.attrs.get("retorno");
-  } // doCancelar
+  } 
 
 	private void toLoadCatalog() {
 		List<Columna> columns     = null;
@@ -123,10 +133,10 @@ public class Accion extends IBaseArticulos implements Serializable {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.put("idDevolucion", this.attrs.get("idDevolucion"));
 			if(this.attrs.get("idDevolucion")!= null) {
-        this.attrs.put("devoluciones", UIEntity.build("VistasNotaCreditosDto", "devoluciones", params, columns));
+        this.attrs.put("devoluciones", UIEntity.build("VistasCreditosNotasDto", "devoluciones", params, columns));
 			  List<UISelectEntity> devoluciones= (List<UISelectEntity>)this.attrs.get("devoluciones");
-			  if(!devoluciones.isEmpty()) 
-				  ((NotaCredito)this.orden).setIkDevolucion(devoluciones.get(0));
+			  if(devoluciones!= null && !devoluciones.isEmpty()) 
+				  this.orden.setIkDevolucion(devoluciones.get(0));
 			} // if	
     } // try
     catch (Exception e) {
