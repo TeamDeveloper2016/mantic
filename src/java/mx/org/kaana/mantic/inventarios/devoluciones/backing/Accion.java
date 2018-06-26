@@ -101,7 +101,7 @@ public class Accion extends IBaseArticulos implements Serializable {
   public void doLoad() {
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
-			TcManticNotasEntradasDto nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, (Long)this.attrs.get("idNotaEntrada"));
+			TcManticNotasEntradasDto nota= this.attrs.get("idNotaEntrada").equals(-1L)? new TcManticNotasEntradasDto(): (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, (Long)this.attrs.get("idNotaEntrada"));
       switch (this.accion) {
         case AGREGAR:											
           this.setAdminOrden(new AdminDevoluciones(new Devolucion(-1L, (Long)this.attrs.get("idNotaEntrada")), nota.getTipoDeCambio(), nota.getIdSinIva()));
@@ -154,8 +154,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 	}
 
   public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idDevolucion", ((Devolucion)this.getAdminOrden().getOrden()).getIdDevolucion());
-    return (String)this.attrs.get("retorno");
+	  JsfBase.setFlashAttribute("idDevolucion", ((Devolucion)this.getAdminOrden().getOrden()).getIdDevolucion());
+    return this.attrs.get("retorno")== null? "filtro": (String)this.attrs.get("retorno");
   } // doCancelar
 
 	private void toLoadCatalog() {
