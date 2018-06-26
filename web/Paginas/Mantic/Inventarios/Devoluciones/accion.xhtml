@@ -48,7 +48,7 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{manticInventariosDevolucionesAccion.doTabChange}" process="@this"/>						
+            <p:ajax event="tabChange" listener="#{manticInventariosDevolucionesAccion.doTabChange}" process="@this" update="catalogo bitacora"/>						
 						<p:tab title="Articulos">
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
 								<div class="ui-grid-row janal-grid-row">
@@ -242,13 +242,13 @@
 									</f:facet>
 									<h:outputText value="#{filtro['costo']}"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.cantidad}">
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.cantidad}">
 									<f:facet name="header">
 										<h:outputText value="Stock"/>
 									</f:facet>
 									<h:outputText value="#{filtro['cantidad']}"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.menudeo}">
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.menudeo}">
 									<f:facet name="header">
 										<h:outputText value="Menudeo"/>
 									</f:facet>
@@ -260,13 +260,13 @@
 									</f:facet>
 									<h:outputText value="#{filtro['medioMayoreo']}"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.mayoreo}">
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.mayoreo}">
 									<f:facet name="header">
 										<h:outputText value="Mayoreo"/>
 									</f:facet>
 									<h:outputText value="#{filtro['mayoreo']}"/>
 								</p:column>		
-								<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.registro}">
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.registro}">
 									<f:facet name="header">
 										<h:outputText value="Registro"/>
 									</f:facet>
@@ -318,13 +318,13 @@
 									</f:facet>
 									<h:outputText value="#{filtro['costo']}"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.cantidad}">
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.cantidad}">
 									<f:facet name="header">
 										<h:outputText value="Existía(n)"/>
 									</f:facet>
 									<h:outputText value="#{filtro['cantidad']}"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.menudeo}">
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.menudeo}">
 									<f:facet name="header">
 										<h:outputText value="Menudeo"/>
 									</f:facet>
@@ -332,17 +332,17 @@
 								</p:column>		
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.medioMayoreo}">
 									<f:facet name="header">
-										<h:outputText value="Medio mayore"/>
+										<h:outputText value="Medio mayoreo"/>
 									</f:facet>
 									<h:outputText value="#{filtro['medioMayoreo']}"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.mayoreo}">
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.mayoreo}">
 									<f:facet name="header">
-										<h:outputText value="Mayore"/>
+										<h:outputText value="Mayoreo"/>
 									</f:facet>
 									<h:outputText value="#{filtro['mayoreo']}"/>
 								</p:column>		
-								<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.registro}">
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.registro}">
 									<f:facet name="header">
 										<h:outputText value="Registro"/>
 									</f:facet>

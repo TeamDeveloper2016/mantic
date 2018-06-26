@@ -13,6 +13,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.comun.IAdminArticulos;
+import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.inventarios.devoluciones.beans.Devolucion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -101,12 +102,14 @@ public final class AdminDevoluciones extends IAdminArticulos implements Serializ
 	private ArrayList<Articulo> toLoadOrdenDetalle() throws Exception {
 		ArrayList<Articulo> regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticDevolucionesDetallesDto", "detalle", this.orden.toMap()));
 		ArrayList<Articulo> loaded  = new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaDevolucionesDto", "diferencia", this.orden.toMap()));
-		Map<String, Object> params=null;
+		Map<String, Object> params  = null;
 		try {
+			TcManticNotasEntradasDto nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, this.orden.getIdNotaEntrada());
 			params=new HashMap<>();
 			for (Articulo item: loaded) {
   			params.put("idArticulo", item.getIdArticulo());
-        Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", this.orden.toMap(), "stock");
+  			params.put("idAlmacen", nota.getIdAlmacen());
+        Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
         int index= regresar.indexOf(item);
 				item.setStock(stock== null? 0L: stock.toLong());
 				if(index< 0) 
@@ -132,14 +135,15 @@ public final class AdminDevoluciones extends IAdminArticulos implements Serializ
 		Map<String, Object> params  = null;
 		try {
 			params=new HashMap<>();
+			TcManticNotasEntradasDto nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, this.orden.getIdNotaEntrada());
 			for (Articulo item: regresar) {
   			params.put("idArticulo", item.getIdArticulo());
-        Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", this.orden.toMap(), "stock");
+  			params.put("idAlmacen", nota.getIdAlmacen());
+        Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
 				item.setStock(stock== null? 0L: stock.toLong());
 			} // for
 		} // try
 		catch (Exception e) {
-			Error.mensaje(e);
 			throw e;
 		} // catch
 		finally {
