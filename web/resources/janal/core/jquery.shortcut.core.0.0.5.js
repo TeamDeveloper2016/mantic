@@ -246,7 +246,7 @@ shortcut.add("Ctrl+P", function() {
 
 shortcut.add("Ctrl+U", function() {
 	janal.console('Shortcut cierre ticket:');
-	if(PF('dlgCloseTicket')){
+	if(PF('dlgCloseTicket')) {
 		janal.bloquear();
 	  userUpdate();
 	} // if

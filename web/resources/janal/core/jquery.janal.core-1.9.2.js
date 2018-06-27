@@ -1196,27 +1196,43 @@
 				text= text+ '\n'+ msg;
 			alert(text);
 		},
-		readingMode: function(action){
+		readingMode: function(action) {
 			actionValidate= action!== null && action!== undefined ? action.toUpperCase() : 'CONSULTAR';
-			if(actionValidate=== 'CONSULTAR') {
-				$('input:text,input:checkbox,input:file,textarea,button,a.ui-commandlink,div.ui-selectonemenu,div.ui-chkbox,span.ui-button').each(function(index) {  
+			$('input:text,input:checkbox,input:file,textarea,button,a.ui-commandlink,div.ui-selectonemenu,div.ui-chkbox,span.ui-button').each(function(index) {  
+				if(actionValidate=== 'CONSULTAR') {
 					if(!(this.tagName=== 'BUTTON' && (this.id=== "cancelar" || this.id=== "cancelarIcon"))) {
 						if(this.tagName=== 'A') {
-							$(this).removeAttr('onclick').removeAttr('href').addClass("ui-state-disabled"); 
+							$(this).attr('iktan', $(this).attr('href'));
+							$(this).removeAttr('href').addClass('ui-state-disabled'); 
 						} // if
 						else 
 							if(this.tagName=== 'DIV') {		
-							  if(this.selector=== 'div.ui-selectonemenu')
-								  PF('widget_' + this.id).disable();
-							  else
-								  $(this).prop("disabled","disabled").addClass("ui-state-disabled"); 
-						  } // if
-						  else 
-							  $(this).prop("disabled","disabled").addClass("ui-state-disabled"); 
-  					//$parent.console('janal.readingMode: '+ this.tagName+ ' => '+ this.id+ ' => '+ $(this).attr("disabled")+ ' -> '+ $(this).attr('class'));
+								if(this.selector=== 'div.ui-selectonemenu')
+									PF('widget_' + this.id).disable();
+								else
+									$(this).prop('disabled', 'disabled').addClass('ui-state-disabled'); 
+							} // if
+							else 
+								$(this).prop('disabled', 'disabled').addClass('ui-state-disabled'); 
+						//$parent.console('janal.readingMode: '+ this.tagName+ ' => '+ this.id+ ' => '+ $(this).attr('disabled')+ ' -> '+ $(this).attr('class'));
 					} // if
-				});
-			} // if
+				} // if
+				else {
+					if(this.tagName=== 'A') {
+						$(this).removeClass('ui-state-disabled'); 
+						$(this).attr('href', $(this).attr('iktan'));
+					} // if
+					else 
+						if(this.tagName=== 'DIV') {		
+							if(this.selector=== 'div.ui-selectonemenu')
+								PF('widget_' + this.id).enabled();
+							else
+								$(this).prop('disabled', '').removeClass('ui-state-disabled'); 
+						} // if
+						else 
+							$(this).prop('disabled', '').removeClass('ui-state-disabled'); 
+				} // else
+			});
 		}, // readingMode
 		valueLastFocus: function(value) {
 			this.console('janal.valueLastFocus: '+ $(this.lastNameFocus).attr('id')+ ' => '+ value);
@@ -1229,25 +1245,33 @@
 		},		
 		activeLogin: function(){				
 			this.readingMode('CONSULTAR');
-			$('#cancelar').prop("disabled","disabled").addClass("ui-state-disabled"); 
-			$('#cancelarIcon').prop("disabled","disabled").addClass("ui-state-disabled");
+			$('#cancelar').prop('disabled', 'disabled').addClass('ui-state-disabled'); 
+			$('#cancelarIcon').prop('disabled', 'disabled').addClass('ui-state-disabled');
 			$parent.desbloquear();
-			$('#panelLogin').css("display","");				
-			$('#cuenta').prop("disabled","").removeClass("ui-state-disabled"); 				
+			$('.janal-login-view').attr('style', 'display: ');				
+			$('.janal-login-block').attr('style', 'display: none;');				
+			$('#cuenta').prop('disabled', '').removeClass('ui-state-disabled'); 				
 			$('#cuenta').focus();
 		},			
+		disabledLogin: function() {
+			this.readingMode('AGREGAR');
+			$('.janal-login-view').attr('style', 'display: none');				
+			$('.janal-login-block').attr('style', 'display: ');				
+			$('#cancelar').prop('disabled', '').removeClass('ui-state-disabled'); 
+			$('#cancelarIcon').prop('disabled', '').removeClass('ui-state-disabled');
+		},
 		toPassword: function() {
 			$('#password').focus();
 		},			
-		toLoginEnter: function(){				
+		toLoginEnter: function() {
 			if (window.event.keyCode === 13)
-				toPassword();
+				$parent.toPassword();
 		}, // toLoginEnter			
-		toPasswordEnter: function(){
-			if (window.event.keyCode === 13){
+		toPasswordEnter: function() {
+			if (window.event.keyCode === 13) {
 				$parent.bloquear();
 				var ok= this.partial('login');
-				if(ok)
+				if(ok) 
 					loginValidate();
 				else
 					$parent.desbloquear();

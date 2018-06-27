@@ -13,6 +13,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 
 public class CambioUsuario extends Acceso implements Serializable{
 
+	private static final long serialVersionUID=-1750582993624963783L;
 	private boolean acceso;	
 	
 	public CambioUsuario(String cuenta, String contrasenia) {
@@ -66,8 +67,9 @@ public class CambioUsuario extends Acceso implements Serializable{
         synchronized (session) {
           JsfBase.cleanSesion(session);
         } // synchronized
-      }
+      } // if
       throw new AccesoDenegadoException();
     } // else
-  } // valida	
+  } 
+	
 }

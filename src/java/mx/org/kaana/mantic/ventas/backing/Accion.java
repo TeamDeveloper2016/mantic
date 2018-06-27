@@ -146,10 +146,11 @@ public class Accion extends IBaseArticulos implements Serializable {
 				if(eaccion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
     			RequestContext.getCurrentInstance().execute("jsArticulos.back('ticket de venta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-					init();
+					this.init();
 				} // if	
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el ticket de venta."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
+				RequestContext.getCurrentInstance().execute("userUpdate();");
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar el ticket de venta.", ETipoMensaje.ERROR);      			
@@ -422,19 +423,19 @@ public class Accion extends IBaseArticulos implements Serializable {
     } // catch
 	} // doCerrarTicket
 	
-	public String doLogin(){		
+	public void doLogin() {		
 		CambioUsuario cambioUsuario= null;		
-		String regresar            = null;
-		String cuenta              = null;
-		String password            = null;
+		String cuenta   = null;
+		String password = null;
     try {					
-			cuenta= this.attrs.get("cuenta").toString();
-			password= this.attrs.get("password").toString();						
+			cuenta       = this.attrs.get("cuenta").toString();
+			password     = this.attrs.get("password").toString();						
 			cambioUsuario= new CambioUsuario(cuenta, password);
-			if(cambioUsuario.validaUsuario()){					
+			if(cambioUsuario.validaUsuario()) {
 				JsfBase.addMessage("Cambio de usuario", "Se realizo el cambio de usuario de forma correcta", ETipoMensaje.INFORMACION);      			
-				regresar= "/Paginas/Mantic/Ventas/accion.jsf".concat(Constantes.REDIRECIONAR);
-			} // if
+				this.init();
+			  RequestContext.getCurrentInstance().execute("janal.disabledLogin();");
+			}	// if
 			else
 				JsfBase.addMessage("Cambio de usuario", "Ocurrió un error al autenticar el usuario seleccionado", ETipoMensaje.ERROR);      																	
     } // try
@@ -442,7 +443,6 @@ public class Accion extends IBaseArticulos implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-		return regresar;
 	} // doLogin
 	
 	public void doLoadTicketAbiertos(){
@@ -479,7 +479,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // finally
 	} // doLoadTicketAbiertos
 	
-	private String toCondicion(){
+	private String toCondicion() {
 		StringBuilder regresar= null;
 		try {
 			regresar= new StringBuilder();
