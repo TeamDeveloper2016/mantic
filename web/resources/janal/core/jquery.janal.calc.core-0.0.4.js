@@ -59,6 +59,7 @@
 		move: function() {
 			janal.console('jsCalculator.move: '+ this.last);
 			janal.valueLastFocus(this.last);
+			PF('dlgCalculadora').hide();
 			return false;
 		},
 		calculate: function(element, operator) {

@@ -486,7 +486,7 @@
       $parent.prepare(form, fields, showMaxError);  
       $parent.ready();
 			$(document).on('focus', 'input, select, textarea', function(e) {
-				if(!$(this).hasClass('.janal-not-focus') && ($(this).attr('readonly')=== 'false' || $(this).attr('disabled')=== 'false')) {
+				if(!$(this).hasClass('janal-not-focus') && ($(this).attr('readonly')=== 'false' || $(this).attr('disabled')=== 'false' || !$(this).attr('readonly') || !$(this).attr('disabled'))) {
   				$parent.console('janal.focus: '+ $(this).attr('id'));
 				  $parent.lastNameFocus= this;
 				} // if	
