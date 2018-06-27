@@ -989,7 +989,7 @@
 					tc_mantic_articulos.nombre, 
 					tc_mantic_ordenes_detalles.codigo, 
 					0 as costo, 
-					tc_mantic_ordenes_detalles.costo as valor, 
+					tc_mantic_ordenes_detalles.sub_total as valor, 
 					"0" as descuento, 
 					tc_mantic_ordenes_detalles.id_orden_compra, 
 					"0" as extras, 

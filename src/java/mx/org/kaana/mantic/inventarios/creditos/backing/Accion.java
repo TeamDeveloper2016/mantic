@@ -38,8 +38,7 @@ import org.primefaces.context.RequestContext;
 
 @Named(value= "manticInventariosCreditosAccion")
 @ViewScoped
-public class Accion extends IBaseAttribute
-	implements Serializable {
+public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639361L;
 
