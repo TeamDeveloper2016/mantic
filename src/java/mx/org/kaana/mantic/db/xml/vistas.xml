@@ -798,7 +798,7 @@
         inner join
           tc_mantic_empresas on tc_mantic_devoluciones.id_empresa= tc_mantic_empresas.id_empresa         
         inner join
-          tc_mantic_notas_entradas on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+          tc_mantic_notas_entradas on tc_mantic_devoluciones.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
         where
 					tc_mantic_notas_entradas.id_empresa in ({idEmpresa})
 					and {condicion}
@@ -989,7 +989,7 @@
 					tc_mantic_articulos.nombre, 
 					tc_mantic_ordenes_detalles.codigo, 
 					0 as costo, 
-					tc_mantic_ordenes_detalles.costo as valor, 
+					tc_mantic_ordenes_detalles.sub_total as valor, 
 					"0" as descuento, 
 					tc_mantic_ordenes_detalles.id_orden_compra, 
 					"0" as extras, 

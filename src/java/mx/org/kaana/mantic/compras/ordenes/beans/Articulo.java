@@ -190,9 +190,10 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		if(this.sinIva) {
 	  	this.importes.setIva(Numero.toRedondearSat(this.importes.getSubTotal()- (this.importes.getSubTotal()/(1+ porcentajeIva))));
 	  	this.importes.setSubTotal(Numero.toRedondearSat(this.importes.getSubTotal()- this.importes.getIva()));
-		} // else	
-		else 
+		} // if	
+		else {
 	  	this.importes.setIva(Numero.toRedondearSat((this.importes.getSubTotal()* (1+ porcentajeIva))- this.importes.getSubTotal()));
+		} // else
 		this.importes.setTotal(Numero.toRedondearSat(this.importes.getSubTotal()+ this.importes.getIva()));
 		this.setSubTotal(this.importes.getSubTotal());
 		this.setImpuestos(this.importes.getIva());

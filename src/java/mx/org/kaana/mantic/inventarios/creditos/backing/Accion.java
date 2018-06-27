@@ -38,8 +38,7 @@ import org.primefaces.context.RequestContext;
 
 @Named(value= "manticInventariosCreditosAccion")
 @ViewScoped
-public class Accion extends IBaseAttribute
-	implements Serializable {
+public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639361L;
 
@@ -64,7 +63,7 @@ public class Accion extends IBaseAttribute
     try {
       this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idCreditoNota", JsfBase.getFlashAttribute("idCreditoNota")== null? -1L: JsfBase.getFlashAttribute("idCreditoNota"));
-      this.attrs.put("idDevolucion", JsfBase.getFlashAttribute("idDevolucion")== null? 47L: JsfBase.getFlashAttribute("idDevolucion"));
+      this.attrs.put("idDevolucion", JsfBase.getFlashAttribute("idDevolucion")== null? -1L: JsfBase.getFlashAttribute("idDevolucion"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			doLoad();
     } // try
@@ -77,15 +76,15 @@ public class Accion extends IBaseAttribute
   public void doLoad() {
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
-			TcManticDevolucionesDto devolucion= (TcManticDevolucionesDto)DaoFactory.getInstance().findById(TcManticDevolucionesDto.class, (Long)this.attrs.get("idDevolucion"));
+			TcManticDevolucionesDto devolucion= (Long)this.attrs.get("idDevolucion")< 0L? new TcManticDevolucionesDto(): (TcManticDevolucionesDto)DaoFactory.getInstance().findById(TcManticDevolucionesDto.class, (Long)this.attrs.get("idDevolucion"));
       switch (this.accion) {
         case AGREGAR:											
-          this.orden= new NotaCredito(-1L, -1L/*devolucion.getIdDevolucion()*/);
+          this.orden= new NotaCredito(-1L, devolucion.getIdDevolucion());
           break;
         case MODIFICAR:					
         case CONSULTAR:					
           this.orden= (NotaCredito)DaoFactory.getInstance().toEntity(NotaCredito.class, "TcManticCreditosNotasDto", "detalle", this.attrs);
-					this.orden.setIkDevolucion(new UISelectEntity(new Entity(-1L/*devolucion.getIdDevolucion()*/)));
+					this.orden.setIkDevolucion(new UISelectEntity(new Entity(devolucion.getIdDevolucion())));
           break;
       } // switch
 			this.toLoadCatalog();
@@ -134,7 +133,7 @@ public class Accion extends IBaseAttribute
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.put("idDevolucion", this.attrs.get("idDevolucion"));
-			if(this.attrs.get("idDevolucion")!= null) {
+			if((Long)this.attrs.get("idDevolucion")> 0L) {
         this.attrs.put("devoluciones", UIEntity.build("VistasCreditosNotasDto", "devoluciones", params, columns));
 			  List<UISelectEntity> devoluciones= (List<UISelectEntity>)this.attrs.get("devoluciones");
 			  if(devoluciones!= null && !devoluciones.isEmpty()) 
