@@ -5,7 +5,6 @@
 <process>
   <model>
   </model>
-
   <dml>
 		<unit id="VistaOrdenesComprasDto">
 			<select id="reporteOrden">
@@ -92,8 +91,129 @@
 				inner join 
 					tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus= tc_mantic_ordenes_estatus.id_orden_estatus
 				where
-					tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}									
+          tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}									
 			</select>
-		</unit>
+      <select id="ordenDetalle">
+        select
+					tc_mantic_ordenes_compras.id_orden_compra as id_key,
+					tc_mantic_ordenes_compras.id_empresa,  
+				  tc_mantic_empresas.clave as clave_empresa,  
+				  tc_mantic_empresas.nombre as nombre_empresa,
+				  tc_mantic_empresas.titulo as titulo_empresa,				        
+				  tc_mantic_personas.rfc rfc_contacto,
+					tc_mantic_ordenes_compras.consecutivo,  
+					tc_mantic_proveedores.id_proveedor,  
+					tc_mantic_proveedores.razon_social as proveedor,
+					tc_mantic_ordenes_compras.total,
+				  tc_mantic_ordenes_estatus.nombre as estatus,
+					tc_mantic_ordenes_compras.id_orden_estatus,
+					tc_mantic_ordenes_compras.registro as registro_orden_compra,
+					tc_mantic_ordenes_compras.entrega_estimada,
+					tc_mantic_ordenes_compras.impuestos,					
+					tc_mantic_ordenes_compras.sub_total,
+					tc_mantic_ordenes_compras.descuentos,					
+					tc_mantic_ordenes_compras.observaciones,
+					telefono.valor as contacto_telefono,
+					correo.valor as contacto_email,					
+					tc_mantic_ordenes_detalles.*,
+					concat(tc_mantic_personas.nombres, ' ' , tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as contacto,
+				  concat(agentes.nombres, ' ' , agentes.paterno, ' ', agentes.materno) as agente,	
+				  domicilio_proveedor.calle as proveedor_calle,
+				  domicilio_proveedor.asentamiento as proveedor_colonia,
+					upper(localidad_proveedor.descripcion) as proveedor_localidad,
+					upper(municipio_proveedor.descripcion) as proveedor_municipio,
+					upper(entidad_proveedor.descripcion) as proveedor_entidad,
+					upper(pais_proveedor.descripcion) as proveedor_pais,
+					telefono_proveedor.valor as proveedor_telefono,
+					correo_proveedor.valor as proveedor_email,									
+					domicilio_almacen.asentamiento as almacen_colonia,
+					domicilio_almacen.calle as almacen_calle,
+					upper(localidad_almacen.descripcion) almacen_localidad,
+					upper(municipio_almacen.descripcion) as almacen_municipio,
+					upper(entidad_almacen.descripcion) as almacen_entidad,
+					upper(pais_almacen.descripcion) as almacen_pais,
+					telefono_almacen.valor as almacen_telefono,
+					correo_almacen.valor as almacen_email,
+					domicilio_empresa.calle as empresa_calle,
+					domicilio_empresa.asentamiento as empresa_colonia,
+					domicilio_empresa.codigo_postal as empresa_cp,
+					upper(localidad_empresa.descripcion) as empresa_localidad,
+					upper(municipio_empresa.descripcion) as empresa_municipio,
+					upper(entidad_empresa.descripcion) as empresa_entidad,
+					upper(pais_empresa.descripcion) as empresa_pais,
+					tc_mantic_articulos.nombre as articulo,
+					tc_mantic_articulos.precio								
+				from 
+					tc_mantic_ordenes_compras
+				inner join 
+					tr_mantic_proveedor_pago on tc_mantic_ordenes_compras.id_proveedor_pago= tr_mantic_proveedor_pago.id_proveedor_pago
+				inner join 
+					tc_mantic_proveedores on tr_mantic_proveedor_pago.id_proveedor= tc_mantic_proveedores.id_proveedor
+				inner join 
+					tr_mantic_proveedor_domicilio on tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_domicilio.id_proveedor and tr_mantic_proveedor_domicilio.id_principal=1
+				inner join 
+					tc_mantic_domicilios  domicilio_proveedor on tr_mantic_proveedor_domicilio.id_domicilio = domicilio_proveedor.id_domicilio
+				inner join 
+					tc_janal_localidades localidad_proveedor on domicilio_proveedor.id_localidad = localidad_proveedor.id_localidad
+        inner join
+          tc_janal_municipios municipio_proveedor on localidad_proveedor.id_municipio = municipio_proveedor.id_municipio
+        inner join
+					tc_janal_entidades  entidad_proveedor on municipio_proveedor.id_entidad = entidad_proveedor.id_entidad
+				inner join
+					tc_janal_paises  pais_proveedor on entidad_proveedor.id_pais = pais_proveedor.id_pais
+				left join 
+					tr_mantic_proveedor_tipo_contacto telefono_proveedor on tc_mantic_proveedores.id_proveedor = telefono_proveedor.id_proveedor and telefono_proveedor.id_tipo_contacto=1
+				left join 
+					tr_mantic_proveedor_tipo_contacto correo_proveedor on tc_mantic_proveedores.id_proveedor = correo_proveedor.id_proveedor and correo_proveedor.id_tipo_contacto=9
+				left join 
+					tr_mantic_proveedor_agente on tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_agente.id_proveedor and tr_mantic_proveedor_agente.id_principal=1
+				left join 
+					tc_mantic_personas agentes on tr_mantic_proveedor_agente.id_agente= agentes.id_persona
+				inner join 
+					tc_mantic_almacenes on tc_mantic_ordenes_compras.id_almacen = tc_mantic_almacenes.id_almacen
+				left join 
+					tr_mantic_almacen_domicilio on tc_mantic_almacenes.id_almacen = tr_mantic_almacen_domicilio.id_almacen and tr_mantic_almacen_domicilio.id_principal=1
+				left join 
+					tc_mantic_domicilios domicilio_almacen on tr_mantic_almacen_domicilio.id_domicilio = domicilio_almacen.id_domicilio
+				left join 
+					tc_janal_localidades localidad_almacen on domicilio_almacen.id_localidad = localidad_almacen.id_localidad
+				left join
+          tc_janal_municipios municipio_almacen on localidad_almacen.id_municipio = municipio_almacen.id_municipio
+        left join
+					tc_janal_entidades  entidad_almacen on municipio_almacen.id_entidad = entidad_almacen.id_entidad
+				left join
+					tc_janal_paises  pais_almacen on entidad_almacen.id_pais = pais_almacen.id_pais
+				left join 
+					tr_mantic_almacen_tipo_contacto telefono_almacen on tc_mantic_almacenes.id_almacen = telefono_almacen.id_almacen and telefono_almacen.id_tipo_contacto=1
+				left join 
+					tr_mantic_almacen_tipo_contacto correo_almacen on tc_mantic_almacenes.id_almacen = correo_almacen.id_almacen and correo_almacen.id_tipo_contacto=9
+				inner join 
+					tc_mantic_ordenes_detalles on tc_mantic_ordenes_compras.id_orden_compra= tc_mantic_ordenes_detalles.id_orden_compra
+				inner join 
+					tc_mantic_articulos on tc_mantic_ordenes_detalles.id_articulo = tc_mantic_articulos.id_articulo
+				inner join 
+					tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_domicilios  domicilio_empresa on tr_mantic_proveedor_domicilio.id_domicilio = domicilio_empresa.id_domicilio
+				inner join 
+					tc_janal_localidades localidad_empresa on domicilio_empresa.id_localidad = localidad_empresa.id_localidad
+				inner join
+          tc_janal_municipios municipio_empresa on localidad_empresa.id_municipio = municipio_empresa.id_municipio
+        inner join
+					tc_janal_entidades  entidad_empresa on municipio_empresa.id_entidad = entidad_empresa.id_entidad
+				inner join
+					tc_janal_paises  pais_empresa on entidad_empresa.id_pais = pais_empresa.id_pais
+				left join 
+					tc_mantic_personas on tc_mantic_empresas.id_responsable = tc_mantic_personas.id_persona
+				left join 
+					tr_mantic_persona_tipo_contacto telefono on tc_mantic_personas.id_persona = telefono.id_persona and telefono.id_tipo_contacto=1
+				left join 
+					tr_mantic_persona_tipo_contacto correo on tc_mantic_personas.id_persona = correo.id_persona and correo.id_tipo_contacto=9
+				inner join 
+					tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus= tc_mantic_ordenes_estatus.id_orden_estatus
+				where
+         tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}
+      </select>
+		</unit> 
   </dml>
 </process>
