@@ -24,14 +24,16 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
-import mx.org.kaana.mantic.comun.IBaseArticulos;
+import mx.org.kaana.mantic.comun.IBaseCliente;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
@@ -39,9 +41,10 @@ import org.primefaces.event.TabChangeEvent;
 
 @Named(value= "manticVentasCajaAccion")
 @ViewScoped
-public class Accion extends IBaseArticulos implements Serializable {
+public class Accion extends IBaseCliente implements Serializable {
 
-  private static final long serialVersionUID = 327393488565639367L;
+  private static final long serialVersionUID  = 327393488565639367L;
+	private static final String CLAVE_VENTA_GRAL= "VENTA";
 	private EOrdenes tipoOrden;
 
 	public Accion() {
@@ -69,6 +72,11 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());
+			this.attrs.put("facturarVenta", false);
+			this.attrs.put("pagarVenta", false);
+			this.attrs.put("cobroVenta", false);
+			this.attrs.put("clienteAsignado", false);
+			this.attrs.put("tabIndex", 0);
 			if(JsfBase.isAdminEncuestaOrAdmin())
 				loadSucursales();
 			doLoadTicketAbiertos();
@@ -330,12 +338,14 @@ public class Accion extends IBaseArticulos implements Serializable {
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			fields.add("consecutivo");
 			fields.add("cliente");
-			fields.add("total");
+			fields.add("precioTotal");
 			params.put(Constantes.SQL_CONDICION, toCondicion());
 			ticketsAbiertos= UISelect.build("VistaVentasDto", "lazy", params, fields, " - ", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("ticketsAbiertos", ticketsAbiertos);			
 			this.attrs.put("ticketAbierto", "-1");
 			this.setAdminOrden(new AdminTickets(new TicketVenta()));
+			setDomicilio(new Domicilio());
+			this.attrs.put("registroCliente", new TcManticClientesDto());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -365,14 +375,25 @@ public class Accion extends IBaseArticulos implements Serializable {
 		try {
 			params= new HashMap<>();
 			params.put("idVenta", this.attrs.get("ticketAbierto"));
+			setDomicilio(new Domicilio());
+			this.attrs.put("registroCliente", new TcManticClientesDto());
 			if(!this.attrs.get("ticketAbierto").toString().equals("-1")){
 				this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), false));
 				this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 				toLoadCatalog();
 				doAsignaClienteTicketAbierto();
+				this.attrs.put("pagarVenta", true);
+				this.attrs.put("cobroVenta", true);				
+				this.attrs.put("tabIndex", 0);
 			} // if
-			else
+			else{
 				this.setAdminOrden(new AdminTickets(new TicketVenta()));
+				this.attrs.put("pagarVenta", false);
+				this.attrs.put("facturarVenta", false);
+				this.attrs.put("cobroVenta", false);
+				this.attrs.put("clienteAsignado", false);
+				this.attrs.put("tabIndex", 0);
+			} // else			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -390,6 +411,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 		try {
 			motorBusqueda= new MotorBusqueda(-1L, ((TicketVenta)this.getAdminOrden().getOrden()).getIdCliente());
 			seleccion= new UISelectEntity(motorBusqueda.toCliente());
+			this.attrs.put("clienteAsignado", !seleccion.toString("clave").equals(CLAVE_VENTA_GRAL));
 			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
@@ -421,4 +443,30 @@ public class Accion extends IBaseArticulos implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch		
 	} // loadSucursales
+	
+	public void doActivarCliente(){
+		boolean facturarVenta                 = true;
+		UISelectEntity cliente                = null;
+		UISelectEntity seleccionado           = null;
+		List<UISelectEntity> clientesSeleccion= null;
+		try {
+			facturarVenta= (Boolean) this.attrs.get("facturarVenta");
+			if(facturarVenta){
+				cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");		
+				clientesSeleccion= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
+				seleccionado= clientesSeleccion.get(clientesSeleccion.indexOf(cliente));
+				if(!seleccionado.toString("clave").equals(CLAVE_VENTA_GRAL))
+					doAsignaDomicilioClienteInicial(seleccionado.getKey());
+				else{
+					setDomicilio(new Domicilio());
+					this.attrs.put("registroCliente", new TcManticClientesDto());
+				} // else
+				this.attrs.put("tabIndex", 1);
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doActivarCliente
 }
