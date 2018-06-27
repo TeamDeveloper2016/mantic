@@ -344,6 +344,11 @@ public class Accion extends IBaseCliente implements Serializable {
 			this.attrs.put("ticketsAbiertos", ticketsAbiertos);			
 			this.attrs.put("ticketAbierto", "-1");
 			this.setAdminOrden(new AdminTickets(new TicketVenta()));
+			this.attrs.put("pagarVenta", false);
+			this.attrs.put("facturarVenta", false);
+			this.attrs.put("cobroVenta", false);
+			this.attrs.put("clienteAsignado", false);
+			this.attrs.put("tabIndex", 0);
 			setDomicilio(new Domicilio());
 			this.attrs.put("registroCliente", new TcManticClientesDto());
 		} // try
