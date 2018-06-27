@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -84,6 +85,7 @@ public class Accion extends IBaseAttribute
         case MODIFICAR:					
         case CONSULTAR:					
           this.orden= (NotaCredito)DaoFactory.getInstance().toEntity(NotaCredito.class, "TcManticCreditosNotasDto", "detalle", this.attrs);
+					this.orden.setIkDevolucion(new UISelectEntity(new Entity(-1L/*devolucion.getIdDevolucion()*/)));
           break;
       } // switch
 			this.toLoadCatalog();

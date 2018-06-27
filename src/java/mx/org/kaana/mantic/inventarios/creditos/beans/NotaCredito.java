@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.inventarios.creditos.beans;
 
 import java.io.Serializable;
 import java.util.Calendar;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.db.dto.TcManticCreditosNotasDto;
@@ -34,6 +35,7 @@ public class NotaCredito extends TcManticCreditosNotasDto implements Serializabl
 
 	public NotaCredito(String consecutivo, Long idCreditoEstatus, Long idDevolucion, Long idUsuario, String folio, String observaciones, Long idEmpresa, Long orden, Long idCreditoNota, Double importe, Long ejercicio) {
     super(consecutivo, idCreditoEstatus, idDevolucion, idUsuario, folio, observaciones, idEmpresa, orden, idCreditoNota, importe, ejercicio);
+		this.setIkDevolucion(new UISelectEntity(new Entity(idDevolucion)));
 	}
 
 	public UISelectEntity getIkDevolucion() {

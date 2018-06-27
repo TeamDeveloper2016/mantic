@@ -78,7 +78,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 	}
 	
 	public String getAgregar() {
-		return ((EAccion)this.attrs.get("accion")).equals(EAccion.AGREGAR)? "none": "";
+		return this.accion.equals(EAccion.AGREGAR)? "none": "";
 	}
 	
   @Override
@@ -88,7 +88,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.aplicar= false;
       this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idDevolucion", JsfBase.getFlashAttribute("idDevolucion")== null? -1L: JsfBase.getFlashAttribute("idDevolucion"));
-      this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? 47L: JsfBase.getFlashAttribute("idNotaEntrada"));
+      this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			doLoad();
     } // try
@@ -101,7 +101,7 @@ public class Accion extends IBaseArticulos implements Serializable {
   public void doLoad() {
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
-			TcManticNotasEntradasDto nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, (Long)this.attrs.get("idNotaEntrada"));
+			TcManticNotasEntradasDto nota= this.attrs.get("idNotaEntrada").equals(-1L)? new TcManticNotasEntradasDto(): (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, (Long)this.attrs.get("idNotaEntrada"));
       switch (this.accion) {
         case AGREGAR:											
           this.setAdminOrden(new AdminDevoluciones(new Devolucion(-1L, (Long)this.attrs.get("idNotaEntrada")), nota.getTipoDeCambio(), nota.getIdSinIva()));
@@ -132,14 +132,14 @@ public class Accion extends IBaseArticulos implements Serializable {
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-   			  RequestContext.getCurrentInstance().execute("jsArticulos.back('generó la devolución de entrada', '"+ ((Devolucion)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+   			  RequestContext.getCurrentInstance().execute("jsArticulos.back('generó la devolución de la nota de entrada', '"+ ((Devolucion)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" la devolución de entrada."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idDevolucion", ((Devolucion)this.getAdminOrden().getOrden()).getIdDevolucion());
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la devolución de entrada.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la devolución de la nota de entrada.", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -154,8 +154,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 	}
 
   public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idDevolucion", ((Devolucion)this.getAdminOrden().getOrden()).getIdDevolucion());
-    return (String)this.attrs.get("retorno");
+	  JsfBase.setFlashAttribute("idDevolucion", ((Devolucion)this.getAdminOrden().getOrden()).getIdDevolucion());
+    return this.attrs.get("retorno")== null? "filtro": (String)this.attrs.get("retorno");
   } // doCancelar
 
 	private void toLoadCatalog() {
@@ -168,6 +168,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.put("idNotaEntrada", this.attrs.get("idNotaEntrada"));
 			if(this.attrs.get("idNotaEntrada")!= null) {
+        columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
         this.attrs.put("notas", UIEntity.build("VistaDevolucionesDto", "notas", params, columns));
 			  List<UISelectEntity> notas= (List<UISelectEntity>)this.attrs.get("notas");
 			  if(!notas.isEmpty()) 
