@@ -1251,6 +1251,8 @@
 			$('.janal-login-view').attr('style', 'display: ');				
 			$('.janal-login-block').attr('style', 'display: none;');				
 			$('#cuenta').prop('disabled', '').removeClass('ui-state-disabled'); 				
+			$('#cuenta').val('');
+			$('#password').val('');
 			$('#cuenta').focus();
 		},			
 		disabledLogin: function() {
