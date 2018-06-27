@@ -123,13 +123,16 @@
             </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.ordenCompra}">
               <f:facet name="header">
-                <h:outputText value="No. orden"/>
+                <h:outputText value="Orden compra"/>
               </f:facet>
-              <h:outputText value="#{filtro['ordenCompra']}"/>
+							<p:commandLink action="#{manticInventariosEntradasFiltro.doOrdenCompra}">
+								<f:setPropertyActionListener target="#{manticInventariosEntradasFiltro.attrs.idOrdenCompra}" value="#{filtro.idOrdenCompra}"/>
+                <h:outputText value="#{filtro['ordenCompra']}"/>
+						  </p:commandLink>
             </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
               <f:facet name="header">
-                <h:outputText value="No. nota"/>
+                <h:outputText value="Nota entrada"/>
               </f:facet>
               <h:outputText value="#{filtro['consecutivo']}"/>
             </p:column>		
@@ -168,6 +171,10 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+            <p:menuitem id="agregar" action="#{manticInventariosEntradasFiltro.doAgregar}" icon="fa fa-plus" ajax="false" value="Agregar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|4|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus)}">
+							<f:setPropertyActionListener target="#{manticInventariosEntradasFiltro.attrs.idOrdenCompra}" value="#{manticInventariosEntradasFiltro.attrs.seleccionado.idOrdenCompra}"/>
+						</p:menuitem>	
+            <p:separator rendered="#{fn:contains('|1|2|4|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus)}"/>
             <p:menuitem id="modificar" action="#{manticInventariosEntradasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '1'}"/>					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '1'}"/>					
             <p:menuitem id="consultar" action="#{manticInventariosEntradasFiltro.doAccion('CONSULTAR')}" icon="fa fa-edit" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					

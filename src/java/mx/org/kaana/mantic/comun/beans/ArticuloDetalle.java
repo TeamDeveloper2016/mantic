@@ -34,6 +34,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
   private Double subTotal;
   private Double cantidad;
   private Double descuentos;
+  private Double excedentes;
   private String nombre;
   private String sat;
   private String unidadMedida;
@@ -49,14 +50,14 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
   }
 
   public ArticuloDetalle(Long key) {
-		this(key, "", 0D, "", "", 0D, new Timestamp(Calendar.getInstance().getTimeInMillis()), "", 16D, 0D, 0D, 1D, 0D, "", "", "");
+		this(key, "", 0D, "", "", 0D, new Timestamp(Calendar.getInstance().getTimeInMillis()), "", 16D, 0D, 0D, 1D, 0D, "", "", "", 0D);
   }
 
-	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida) {
-		this(idArticulo, codigo, costo, descuento, extras, importe, registro, propio, iva, impuestos, subTotal, cantidad, descuentos, nombre, sat, unidadMedida, null, 0L, 1L, -1L);
+	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Double excedentes) {
+		this(idArticulo, codigo, costo, descuento, extras, importe, registro, propio, iva, impuestos, subTotal, cantidad, descuentos, nombre, sat, unidadMedida, null, 0L, 1L, -1L, excedentes);
 	}
 	
-	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Long solicitados, Long idRedondear, Long idComodin) {
+	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Long solicitados, Long idRedondear, Long idComodin, Double excedentes) {
 		this.idArticulo=idArticulo;
 		this.codigo=codigo;
 		this.costo=costo;
@@ -79,6 +80,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		this.idRedondear= idRedondear;
 		this.total= importe;
 		this.idComodin= idComodin;
+		this.excedentes= excedentes;
 	}
 	
   public void setCodigo(String codigo) {
@@ -255,6 +257,14 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 
 	public void setIdComodin(Long idComodin) {
 		this.idComodin= idComodin;
+	}
+
+	public Double getExcedentes() {
+		return excedentes;
+	}
+
+	public void setExcedentes(Double excedentes) {
+		this.excedentes=excedentes;
 	}
 
 	@Override

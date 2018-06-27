@@ -38,6 +38,8 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   private Long idProveedorPago;
   @Column (name="descuentos")
   private Double descuentos;
+  @Column (name="excedentes")
+  private Double excedentes;
   @Column (name="id_proveedor")
   private Long idProveedor;
   @Column (name="id_cliente")
@@ -88,13 +90,14 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   }
 
   public TcManticOrdenesComprasDto(Long key) {
-    this(null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticOrdenesComprasDto(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Long idOrdenEstatus, Date entregaEstimada, Long idUsuario, Long idAlmacen, Double impuestos, Double subTotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden) {
+  public TcManticOrdenesComprasDto(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Long idOrdenEstatus, Date entregaEstimada, Long idUsuario, Long idAlmacen, Double impuestos, Double subTotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes) {
     setIdProveedorPago(idProveedorPago);
     setDescuentos(descuentos);
+    setExcedentes(excedentes);
     setIdProveedor(idProveedor);
     setIdCliente(idCliente);
     setDescuento(descuento);
@@ -133,6 +136,14 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   public Double getDescuentos() {
     return descuentos;
   }
+
+	public Double getExcedentes() {
+		return excedentes;
+	}
+
+	public void setExcedentes(Double excedentes) {
+		this.excedentes=excedentes;
+	}
 
   public void setIdProveedor(Long idProveedor) {
     this.idProveedor = idProveedor;
@@ -321,6 +332,8 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDescuentos());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getExcedentes());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdProveedor());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCliente());
@@ -371,6 +384,7 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("idProveedorPago", getIdProveedorPago());
 		regresar.put("descuentos", getDescuentos());
+		regresar.put("excedentes", getExcedentes());
 		regresar.put("idProveedor", getIdProveedor());
 		regresar.put("idCliente", getIdCliente());
 		regresar.put("descuento", getDescuento());
@@ -398,7 +412,7 @@ public class TcManticOrdenesComprasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdProveedorPago(), getDescuentos(), getIdProveedor(), getIdCliente(), getDescuento(), getIdOrdenCompra(), getExtras(), getEjercicio(), getRegistro(), getConsecutivo(), getIdGasto(), getTotal(), getIdOrdenEstatus(), getEntregaEstimada(), getIdUsuario(), getIdAlmacen(), getImpuestos(), getSubTotal(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden()
+    getIdProveedorPago(), getDescuentos(), getIdProveedor(), getIdCliente(), getDescuento(), getIdOrdenCompra(), getExtras(), getEjercicio(), getRegistro(), getConsecutivo(), getIdGasto(), getTotal(), getIdOrdenEstatus(), getEntregaEstimada(), getIdUsuario(), getIdAlmacen(), getImpuestos(), getSubTotal(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden(), getExcedentes()
     };
     return regresar;
   }

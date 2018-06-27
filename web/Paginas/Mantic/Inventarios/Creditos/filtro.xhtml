@@ -110,7 +110,10 @@
               <f:facet name="header">
                 <h:outputText value="No. devolución"/>
               </f:facet>
-              <h:outputText value="#{filtro['devolucion']}"/>
+							<p:commandLink action="#{manticInventariosCreditosFiltro.doDevolucion}">
+								<f:setPropertyActionListener target="#{manticInventariosCreditosFiltro.attrs.idDevolucion}" value="#{filtro.idDevolucion}"/>
+                <h:outputText value="#{filtro['devolucion']}"/>
+							</p:commandLink>	
             </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.consecutivo}">
               <f:facet name="header">

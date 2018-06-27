@@ -11,6 +11,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -283,6 +284,21 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute(ETipoMovimiento.NOTAS_ENTRADAS.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
 		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Inventarios/Entradas/filtro");
 		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
+	}
+	
+	public String doOrdenCompra() {
+		JsfBase.setFlashAttribute("idOrdenCompra", this.attrs.get("idOrdenCompra"));
+		JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Compras/Ordenes/filtro");
+		return "/Paginas/Mantic/Compras/Ordenes/accion".concat(Constantes.REDIRECIONAR);
+	}
+	
+	public String doAgregar() {
+		String regresar= "/Paginas/Mantic/Inventarios/Entradas/accion?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs";
+		JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
+  	JsfBase.setFlashAttribute("idOrdenCompra", ((Value)this.attrs.get("idOrdenCompra")).toLong());
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
+		return regresar.concat(Constantes.REDIRECIONAR_AMPERSON);
 	}
 	
 }

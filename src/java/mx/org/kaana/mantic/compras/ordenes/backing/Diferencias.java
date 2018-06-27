@@ -118,5 +118,19 @@ public class Diferencias extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("idOrdenCompra", this.attrs.get("idOrdenCompra"));
 		return "filtro".concat(Constantes.REDIRECIONAR);
 	}
+
+	public String doOrdenCompra() {
+		JsfBase.setFlashAttribute("idOrdenCompra", this.attrs.get("idOrdenCompra"));
+		JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Compras/Ordenes/filtro");
+		return "/Paginas/Mantic/Compras/Ordenes/accion".concat(Constantes.REDIRECIONAR);
+	}
+
+	public String doNotaEntrada() {
+		JsfBase.setFlashAttribute("idNotaEntrada", this.attrs.get("idNotaEntrada"));
+		JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");
+		return "/Paginas/Mantic/Inventarios/Entradas/accion".concat(Constantes.REDIRECIONAR);
+	}
 	
 }

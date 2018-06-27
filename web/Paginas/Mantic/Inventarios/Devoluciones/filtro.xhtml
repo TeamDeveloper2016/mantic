@@ -108,9 +108,12 @@
             </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.ordenCompra}">
               <f:facet name="header">
-                <h:outputText value="No. nota"/>
+                <h:outputText value="Nota entrada"/>
               </f:facet>
-              <h:outputText value="#{filtro['notaEntrada']}"/>
+							<p:commandLink action="#{manticInventariosDevolucionesFiltro.doNotaEntrada}">
+								<f:setPropertyActionListener target="#{manticInventariosDevolucionesFiltro.attrs.idNotaEntrada}" value="#{filtro.idNotaEntrada}"/>
+                <h:outputText value="#{filtro['notaEntrada']}"/>
+							</p:commandLink>	
             </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.consecutivo}">
               <f:facet name="header">

@@ -61,6 +61,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 	@PostConstruct
   protected void init() {		
     try {
+			if(JsfBase.getFlashAttribute("accion")== null)
+				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
       this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idCreditoNota", JsfBase.getFlashAttribute("idCreditoNota")== null? -1L: JsfBase.getFlashAttribute("idCreditoNota"));
       this.attrs.put("idDevolucion", JsfBase.getFlashAttribute("idDevolucion")== null? -1L: JsfBase.getFlashAttribute("idDevolucion"));

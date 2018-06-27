@@ -37,7 +37,6 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 
 	public AdminNotas(NotaEntrada orden, EOrdenes tipoOrden) throws Exception {
 		this.orden= orden;
-		this.orden.setIdDirecta(tipoOrden.equals(EOrdenes.NORMAL)? 1L: 2L);
 		if(this.orden.isValid()) {
 			if(this.orden.getIdDirecta().equals(1L))
   	    this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticNotasDetallesDto", "detalle", this.orden.toMap()));
@@ -47,6 +46,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
       this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdProveedor())));
 		}	// if
 		else {
+  		this.orden.setIdDirecta(tipoOrden.equals(EOrdenes.NORMAL)? 1L: 2L);
 			if(this.orden.getIdDirecta().equals(1L))
 		    this.setArticulos(new ArrayList<>());
 			else
@@ -118,8 +118,8 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 			params.put("idAlmacen", this.orden.getIdAlmacen());
 			for (Articulo item: loaded) {
   			params.put("idArticulo", item.getIdArticulo());
-        Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", this.orden.toMap(), "stock");
-        int index= regresar.indexOf(item);
+				Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+				int index= regresar.indexOf(item);
 				item.setStock(stock== null? 0L: stock.toLong());
 				if(index< 0) 
 					regresar.add(item);

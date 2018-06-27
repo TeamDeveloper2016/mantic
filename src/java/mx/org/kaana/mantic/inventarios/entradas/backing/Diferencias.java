@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -81,5 +82,19 @@ public class Diferencias extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("idNotaEntrada", this.attrs.get("idNotaEntrada"));
 		return "filtro".concat(Constantes.REDIRECIONAR);
 	}
-	
+
+	public String doNotaEntrada() {
+		JsfBase.setFlashAttribute("idNotaEntrada", this.attrs.get("idNotaEntrada"));
+		JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");
+		return "/Paginas/Mantic/Inventarios/Entradas/accion".concat(Constantes.REDIRECIONAR);
+	}
+
+	public String doDevolucion() {
+		JsfBase.setFlashAttribute("idDevolucion", this.attrs.get("idDevolucion"));
+		JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Devoluciones/filtro");
+		return "/Paginas/Mantic/Inventarios/Devoluciones/accion".concat(Constantes.REDIRECIONAR);
+	}
+
 }

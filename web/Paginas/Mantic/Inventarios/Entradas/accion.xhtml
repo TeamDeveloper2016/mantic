@@ -28,8 +28,8 @@
 				'codigo'                            : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
 				'sat'                               : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
 				'auxiliares'                        : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},				
-				'precios'                           : {multiple: '$', validaciones: 'mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general', individual: true},				
-				'cantidades'                        : {multiple: '$', validaciones: 'mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general', individual: true}				
+				'precios'                           : {multiple: '$', validaciones: 'mayor({"cuanto": -1})', mascara: 'libre', grupo: 'general', individual: true},				
+				'cantidades'                        : {multiple: '$', validaciones: 'mayor({"cuanto": -1})', mascara: 'libre', grupo: 'general', individual: true}				
 			};			
     	$(document).ready(function() {
 				setTimeout("janal.readingMode('#{manticInventariosEntradasAccion.attrs.nombreAccion}')", 500);

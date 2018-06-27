@@ -1252,6 +1252,9 @@
 				else
 					$parent.desbloquear();
 			} // if
+		},
+  	isPostBack: function(name) {
+	  	setTimeout($('#'+ name).click(), 50);
 		}
   });
   window.Janal= Janal;

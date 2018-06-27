@@ -812,7 +812,7 @@
 					tc_mantic_notas_detalles.sat, 
 					tc_mantic_notas_detalles.codigo, 
 					tc_mantic_notas_detalles.costo, 
-					tc_mantic_notas_detalles.costo as valor, 
+					(tc_mantic_notas_detalles.costo- (tc_mantic_notas_detalles.descuentos/ tc_mantic_notas_detalles.cantidad)) as valor, 
 					tc_mantic_notas_detalles.descuento, 
 					tc_mantic_notas_detalles.id_nota_entrada, 
 					tc_mantic_notas_detalles.extras, 
@@ -830,7 +830,8 @@
 					tc_mantic_notas_entradas.id_proveedor, 
 					false as ultimo, 
 					false as solicitado, 
-					0 stock
+					0 as stock,
+				  tc_mantic_notas_detalles.excedentes
         from      
           tc_mantic_notas_entradas
         inner join      
@@ -881,7 +882,8 @@
 					tc_mantic_notas_detalles.descuento,
 					tc_mantic_notas_detalles.extras,
 					tc_mantic_notas_detalles.importe,
-				  tc_mantic_devoluciones_estatus.nombre as estatus
+				  tc_mantic_devoluciones_estatus.nombre as estatus,
+				  tc_mantic_devoluciones.id_nota_entrada
 				from
 					tc_mantic_devoluciones
 				inner join
@@ -989,7 +991,7 @@
 					tc_mantic_articulos.nombre, 
 					tc_mantic_ordenes_detalles.codigo, 
 					0 as costo, 
-					tc_mantic_ordenes_detalles.sub_total as valor, 
+					(tc_mantic_ordenes_detalles.costo- (tc_mantic_ordenes_detalles.descuentos/ tc_mantic_ordenes_detalles.cantidad)) as valor, 
 					"0" as descuento, 
 					tc_mantic_ordenes_detalles.id_orden_compra, 
 					"0" as extras, 
@@ -1007,7 +1009,8 @@
 					tc_mantic_ordenes_compras.id_proveedor, 
 					false as ultimo, 
 					false as solicitado, 
-					0 stock
+					0 as stock,
+				  0 as excedentes
         from      
           tc_mantic_ordenes_compras
         inner join      
@@ -1520,7 +1523,9 @@
 					tc_mantic_notas_detalles.extras,
 					tc_mantic_notas_detalles.importe,
 				  if(tc_mantic_notas_detalles.id_orden_detalle is null, '*', '') as nuevo,
-				  tc_mantic_notas_estatus.nombre as estatus
+				  tc_mantic_notas_estatus.nombre as estatus,
+				  tc_mantic_notas_entradas.id_nota_entrada,
+				  tc_mantic_notas_entradas.id_orden_compra
 				from
 					tc_mantic_notas_entradas
 				inner join
@@ -1545,7 +1550,8 @@
 					tc_mantic_ordenes_detalles.importe,
 					tc_mantic_ordenes_detalles.cantidades,
 					tc_mantic_ordenes_detalles.importes,
-				  (abs(tc_mantic_ordenes_detalles.importes)* 100/ tc_mantic_ordenes_detalles.importe) as porcentaje
+				  (abs(tc_mantic_ordenes_detalles.importes)* 100/ tc_mantic_ordenes_detalles.importe) as porcentaje,
+				  tc_mantic_ordenes_compras.id_orden_compra
 				from
 					tc_mantic_ordenes_compras
 				inner join

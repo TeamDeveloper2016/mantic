@@ -36,6 +36,8 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Column (name="descuentos")
   private Double descuentos;
+  @Column (name="excedentes")
+  private Double excedentes;
   @Column (name="id_proveedor")
   private Long idProveedor;
   @Column (name="descuento")
@@ -90,12 +92,13 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   }
 
   public TcManticNotasEntradasDto(Long key) {
-    this(null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+    this(null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticNotasEntradasDto(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idDirecta, Date fechaRecepcion, String extras, Long idNotaEntrada, Date fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subTotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden) {
+  public TcManticNotasEntradasDto(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idDirecta, Date fechaRecepcion, String extras, Long idNotaEntrada, Date fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subTotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes) {
     setDescuentos(descuentos);
+    setExcedentes(excedentes);
     setIdProveedor(idProveedor);
     setDescuento(descuento);
     setIdOrdenCompra(idOrdenCompra);
@@ -128,6 +131,14 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   public Double getDescuentos() {
     return descuentos;
   }
+
+	public Double getExcedentes() {
+		return excedentes;
+	}
+
+	public void setExcedentes(Double excedentes) {
+		this.excedentes=excedentes;
+	}
 
   public void setIdProveedor(Long idProveedor) {
     this.idProveedor = idProveedor;
@@ -330,6 +341,8 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getDescuentos());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getExcedentes());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdProveedor());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDescuento());
@@ -383,6 +396,7 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("descuentos", getDescuentos());
+		regresar.put("excedentes", getExcedentes());
 		regresar.put("idProveedor", getIdProveedor());
 		regresar.put("descuento", getDescuento());
 		regresar.put("idOrdenCompra", getIdOrdenCompra());
@@ -412,7 +426,7 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescuentos(), getIdProveedor(), getDescuento(), getIdOrdenCompra(), getIdDirecta(), getFechaRecepcion(), getExtras(), getIdNotaEntrada(), getFechaFactura(), getIdNotaEstatus(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getFactura(), getIdUsuario(), getIdAlmacen(), getSubTotal(), getImpuestos(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden()
+    getDescuentos(), getIdProveedor(), getDescuento(), getIdOrdenCompra(), getIdDirecta(), getFechaRecepcion(), getExtras(), getIdNotaEntrada(), getFechaFactura(), getIdNotaEstatus(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getFactura(), getIdUsuario(), getIdAlmacen(), getSubTotal(), getImpuestos(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden(), getExcedentes()
     };
     return regresar;
   }

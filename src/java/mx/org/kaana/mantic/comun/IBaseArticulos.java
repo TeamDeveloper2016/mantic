@@ -375,7 +375,8 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 				((UISelectEntity)this.attrs.get("idProveedor")).getKey(),
 				this.attrs.get("ultimo")!= null,
 				this.attrs.get("solicitado")!= null,
-				stock== null? 0L: stock.toLong()
+				stock== null? 0L: stock.toLong(),
+				0D
 			);
 			if(this.getAdminOrden().add(item))
 				RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
