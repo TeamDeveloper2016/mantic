@@ -1524,6 +1524,7 @@
 					tc_mantic_notas_detalles.importe,
 				  if(tc_mantic_notas_detalles.id_orden_detalle is null, '*', '') as nuevo,
 				  tc_mantic_notas_estatus.nombre as estatus,
+				  tc_mantic_notas_estatus.id_nota_estatus,
 				  tc_mantic_notas_entradas.id_nota_entrada,
 				  tc_mantic_notas_entradas.id_orden_compra
 				from

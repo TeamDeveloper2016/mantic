@@ -132,5 +132,13 @@ public class Diferencias extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");
 		return "/Paginas/Mantic/Inventarios/Entradas/accion".concat(Constantes.REDIRECIONAR);
 	}
+
+	public String doDevoluciones() {
+		String regresar= "/Paginas/Mantic/Inventarios/Devoluciones/accion";		
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Devoluciones/filtro");		
+		JsfBase.setFlashAttribute("idNotaEntrada", ((Entity)this.attrs.get("seleccionado")).getKey());
+		return regresar.concat(Constantes.REDIRECIONAR);
+	}	
+	
 	
 }
