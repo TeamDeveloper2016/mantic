@@ -13,6 +13,7 @@ import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteContactoRepresentante
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteDomicilio;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteRepresentante;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
+import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
@@ -21,7 +22,7 @@ import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializable{
 	
 	private static final long serialVersionUID = -6959798935949814917L;
-	private Long idCliente;
+	protected Long idCliente;
 	
 	public MotorBusqueda(Long idCliente) {
 		this.idCliente = idCliente;
@@ -158,4 +159,37 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		} // finally		
 		return regresar;
 	} // toRepresentantes		
+	
+	public Entity toDomicilioCliente() throws Exception{
+		Entity regresar          = null;
+		Entity domicilio         = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente + " and id_principal=1");
+			domicilio= (Entity) DaoFactory.getInstance().toEntity("TrManticClienteDomicilioDto", "row", params);
+			if(domicilio!= null){
+				params.clear();
+				params.put(Constantes.SQL_CONDICION, "tc_mantic_domicilios.id_domicilio=" + domicilio.toString("idDomicilio"));
+				regresar= (Entity) DaoFactory.getInstance().toEntity("VistaDomiciliosCatalogosDto", "domicilios", params);
+			} // if
+			else{
+				params.clear();
+				params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente);
+				domicilio= (Entity) DaoFactory.getInstance().toEntity("TrManticClienteDomicilioDto", "row", params);
+				if(domicilio!= null){
+					params.clear();
+					params.put(Constantes.SQL_CONDICION, "tc_mantic_domicilios.id_domicilio=" + domicilio.toString("idDomicilio"));
+					regresar= (Entity) DaoFactory.getInstance().toEntity("VistaDomiciliosCatalogosDto", "domicilios", params);
+				} // if
+			} // else			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toDomicilioCLiente
 }
