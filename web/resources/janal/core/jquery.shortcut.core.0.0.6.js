@@ -252,3 +252,10 @@ shortcut.add("Ctrl+U", function() {
 	} // if
 });
 
+shortcut.add("Shift+P", function() {
+	janal.console('Shortcut cobrar venta:');
+	if(PF('contenedorCaja')) {
+	  cobrarVenta();
+	} // if
+});
+
