@@ -1,7 +1,10 @@
 package mx.org.kaana.mantic.ventas.caja.backing;
 
 import java.io.Serializable;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +21,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
@@ -77,6 +81,7 @@ public class Accion extends IBaseCliente implements Serializable {
 			this.attrs.put("cobroVenta", false);
 			this.attrs.put("clienteAsignado", false);
 			this.attrs.put("tabIndex", 0);
+			this.attrs.put("fecha", new Date(Calendar.getInstance().getTimeInMillis()));
 			if(JsfBase.isAdminEncuestaOrAdmin())
 				loadSucursales();
 			doLoadTicketAbiertos();
@@ -363,9 +368,11 @@ public class Accion extends IBaseCliente implements Serializable {
 	
 	private String toCondicion(){
 		StringBuilder regresar= null;
+		Date fecha            = null;
 		try {
+			fecha= (Date) this.attrs.get("fecha");
 			regresar= new StringBuilder();
-			regresar.append(" DATE_FORMAT(tc_mantic_ventas.registro, '%Y%m%d')= DATE_FORMAT(SYSDATE(), '%Y%m%d')");
+			regresar.append(" DATE_FORMAT(tc_mantic_ventas.registro, '%Y%m%d')=".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, fecha)));
 			regresar.append(" and tc_mantic_ventas.id_venta_estatus=");
 			regresar.append(EEstatusVentas.ABIERTA.getIdEstatusVenta());
 		} // try
