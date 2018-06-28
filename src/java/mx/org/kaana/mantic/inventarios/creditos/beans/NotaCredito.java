@@ -30,11 +30,11 @@ public class NotaCredito extends TcManticCreditosNotasDto implements Serializabl
 	}
 
 	public NotaCredito(Long key, Long idDevolucion) {
-		this(Calendar.getInstance().get(Calendar.YEAR)+ "00000", 1L, idDevolucion, JsfBase.getIdUsuario(), "", "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 1L, -1L, 0D, new Long(Calendar.getInstance().get(Calendar.YEAR)));
+		this(null, null, 0D, new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", 1L, 1L, idDevolucion, JsfBase.getIdUsuario(), "", "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 1L, -1L);
 	}
 
-	public NotaCredito(String consecutivo, Long idCreditoEstatus, Long idDevolucion, Long idUsuario, String folio, String observaciones, Long idEmpresa, Long orden, Long idCreditoNota, Double importe, Long ejercicio) {
-    super(consecutivo, idCreditoEstatus, idDevolucion, idUsuario, folio, observaciones, idEmpresa, orden, idCreditoNota, importe, ejercicio);
+	public NotaCredito(Long idProveedor, Long idNotaEntrada, Double importe, Long ejercicio, String consecutivo, Long idCreditoEstatus, Long idTipoCreditoNota, Long idDevolucion, Long idUsuario, String folio, String observaciones, Long idEmpresa, Long orden, Long idCreditoNota) {
+    super(idProveedor, idNotaEntrada, importe, ejercicio, consecutivo, idCreditoEstatus, idTipoCreditoNota, idDevolucion, idUsuario, folio, observaciones, idEmpresa, orden, idCreditoNota);
 		this.setIkDevolucion(new UISelectEntity(new Entity(idDevolucion)));
 	}
 

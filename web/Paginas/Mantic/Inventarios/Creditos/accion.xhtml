@@ -36,9 +36,12 @@
 						<p:spacer width="1px" style="display: #{manticInventariosCreditosAccion.agregar}"/><p:separator style="display: #{manticInventariosCreditosAccion.agregar}"/>
 						<p:outputLabel for="idDevolucion" value="No. devolución:"/>
 						<p:selectOneMenu id="idDevolucion" value="#{manticInventariosCreditosAccion.orden.ikDevolucion}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98 faltantes" effect="fade" filter="true" filterMatchMode="startsWith">
-							<f:selectItems value="#{manticInventariosCreditosAccion.attrs.devoluciones}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{element.total}"/>
+							<f:selectItems value="#{manticInventariosCreditosAccion.attrs.devoluciones}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{item.razonSocial} #{element.total}"/>
 							<p:column headerText="Clave">
 								<h:outputText value="#{item.consecutivo}"/>
+							</p:column>   
+							<p:column headerText="Proveedor">
+								<h:outputText value="#{item.razonSocial}"/>
 							</p:column>   
 							<p:column headerText="Estatus">
 								<h:outputText value="#{item.estatus}"/>

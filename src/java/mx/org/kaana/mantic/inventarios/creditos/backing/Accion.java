@@ -41,6 +41,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639361L;
 
+	private Long idTipoCreditoNota;
 	private EAccion accion;
 	private NotaCredito orden;
 
@@ -62,6 +63,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
 			if(JsfBase.getFlashAttribute("accion")== null)
 				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+      this.idTipoCreditoNota= JsfBase.getFlashAttribute("idTipoCreditoNota")== null? 1L: (Long)JsfBase.getFlashAttribute("idTipoCreditoNota");
       this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idCreditoNota", JsfBase.getFlashAttribute("idCreditoNota")== null? -1L: JsfBase.getFlashAttribute("idCreditoNota"));
       this.attrs.put("idDevolucion", JsfBase.getFlashAttribute("idDevolucion")== null? -1L: JsfBase.getFlashAttribute("idDevolucion"));
@@ -133,6 +135,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.put("idDevolucion", this.attrs.get("idDevolucion"));
 			if((Long)this.attrs.get("idDevolucion")> 0L) {

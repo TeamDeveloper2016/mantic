@@ -53,6 +53,35 @@
 					and {condicion}
 				{sortOrder}
 			</select> 
+			<select id="devoluciones">
+				select
+				  tc_mantic_devoluciones.id_devolucion as id_key,
+				  tc_mantic_devoluciones.id_devolucion,
+				  tc_mantic_devoluciones.consecutivo,
+					tc_mantic_proveedores.clave,
+					tc_mantic_proveedores.razon_social,
+				  tc_mantic_devoluciones.total,
+					tc_mantic_devoluciones.id_devolucion_estatus,
+				  tc_mantic_devoluciones_estatus.nombre as estatus,
+				  tc_mantic_devoluciones.registro,
+				  tc_mantic_notas_entradas.id_nota_entrada
+				from
+				  tc_mantic_devoluciones
+				inner join 
+					tc_mantic_empresas on tc_mantic_devoluciones.id_empresa = tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_notas_entradas on tc_mantic_devoluciones.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+				inner join 
+					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
+				inner join 
+					tc_mantic_devoluciones_estatus on tc_mantic_devoluciones.id_devolucion_estatus=tc_mantic_devoluciones_estatus.id_devolucion_estatus
+				where
+				  tc_mantic_empresas.id_empresa in ({sucursales})
+				  and tc_mantic_devoluciones.id_devolucion_estatus in (3)
+				  and (tc_mantic_devoluciones.id_devolucion= {idDevolucion} or {idDevolucion} is null)
+				order by
+				  tc_mantic_devoluciones.registro						
+			</select>
 		</unit>
 		<unit id="VistaVentasDto">
 			<select id="movimientos">
@@ -864,7 +893,7 @@
 					tc_mantic_notas_estatus on tc_mantic_notas_entradas.id_nota_estatus=tc_mantic_notas_estatus.id_nota_estatus
 				where
 				  tc_mantic_empresas.id_empresa in ({sucursales})
-				  and tc_mantic_notas_entradas.id_nota_estatus in (3)
+				  and tc_mantic_notas_entradas.id_nota_estatus in (3, 5)
 				  and (tc_mantic_notas_entradas.id_nota_entrada= {idNotaEntrada} or {idNotaEntrada} is null)
 				order by
 				  tc_mantic_notas_entradas.registro						

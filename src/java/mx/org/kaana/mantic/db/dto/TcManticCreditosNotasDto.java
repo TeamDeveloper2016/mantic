@@ -34,10 +34,22 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
+  @Column (name="id_proveedor")
+  private Long idProveedor;
+  @Column (name="id_nota_entrada")
+  private Long idNotaEntrada;
+  @Column (name="importe")
+  private Double importe;
+  @Column (name="ejercicio")
+  private Long ejercicio;
+  @Column (name="registro")
+  private Timestamp registro;
   @Column (name="consecutivo")
   private String consecutivo;
   @Column (name="id_credito_estatus")
   private Long idCreditoEstatus;
+  @Column (name="id_tipo_credito_nota")
+  private Long idTipoCreditoNota;
   @Column (name="id_devolucion")
   private Long idDevolucion;
   @Column (name="id_usuario")
@@ -54,25 +66,25 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_credito_nota")
   private Long idCreditoNota;
-  @Column (name="importe")
-  private Double importe;
-  @Column (name="ejercicio")
-  private Long ejercicio;
-  @Column (name="registro")
-  private Timestamp registro;
 
   public TcManticCreditosNotasDto() {
     this(new Long(-1L));
   }
 
   public TcManticCreditosNotasDto(Long key) {
-    this(null, null, null, null, null, null, null, null, new Long(-1L), null, null);
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L));
     setKey(key);
   }
 
-  public TcManticCreditosNotasDto(String consecutivo, Long idCreditoEstatus, Long idDevolucion, Long idUsuario, String folio, String observaciones, Long idEmpresa, Long orden, Long idCreditoNota, Double importe, Long ejercicio) {
+  public TcManticCreditosNotasDto(Long idProveedor, Long idNotaEntrada, Double importe, Long ejercicio, String consecutivo, Long idCreditoEstatus, Long idTipoCreditoNota, Long idDevolucion, Long idUsuario, String folio, String observaciones, Long idEmpresa, Long orden, Long idCreditoNota) {
+    setIdProveedor(idProveedor);
+    setIdNotaEntrada(idNotaEntrada);
+    setImporte(importe);
+    setEjercicio(ejercicio);
+    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
     setConsecutivo(consecutivo);
     setIdCreditoEstatus(idCreditoEstatus);
+    setIdTipoCreditoNota(idTipoCreditoNota);
     setIdDevolucion(idDevolucion);
     setIdUsuario(idUsuario);
     setFolio(folio);
@@ -80,11 +92,48 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
     setIdEmpresa(idEmpresa);
     setOrden(orden);
     setIdCreditoNota(idCreditoNota);
-    setImporte(importe);
-    setEjercicio(ejercicio);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
+  public void setIdProveedor(Long idProveedor) {
+    this.idProveedor = idProveedor;
+  }
+
+  public Long getIdProveedor() {
+    return idProveedor;
+  }
+
+  public void setIdNotaEntrada(Long idNotaEntrada) {
+    this.idNotaEntrada = idNotaEntrada;
+  }
+
+  public Long getIdNotaEntrada() {
+    return idNotaEntrada;
+  }
+
+  public void setImporte(Double importe) {
+    this.importe = importe;
+  }
+
+  public Double getImporte() {
+    return importe;
+  }
+
+  public void setEjercicio(Long ejercicio) {
+    this.ejercicio = ejercicio;
+  }
+
+  public Long getEjercicio() {
+    return ejercicio;
+  }
+
+  public void setRegistro(Timestamp registro) {
+    this.registro = registro;
+  }
+
+  public Timestamp getRegistro() {
+    return registro;
+  }
+
   public void setConsecutivo(String consecutivo) {
     this.consecutivo = consecutivo;
   }
@@ -99,6 +148,14 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
 
   public Long getIdCreditoEstatus() {
     return idCreditoEstatus;
+  }
+
+  public void setIdTipoCreditoNota(Long idTipoCreditoNota) {
+    this.idTipoCreditoNota = idTipoCreditoNota;
+  }
+
+  public Long getIdTipoCreditoNota() {
+    return idTipoCreditoNota;
   }
 
   public void setIdDevolucion(Long idDevolucion) {
@@ -157,30 +214,6 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
     return idCreditoNota;
   }
 
-  public void setImporte(Double importe) {
-    this.importe = importe;
-  }
-
-  public Double getImporte() {
-    return importe;
-  }
-
-  public void setEjercicio(Long ejercicio) {
-    this.ejercicio = ejercicio;
-  }
-
-  public Long getEjercicio() {
-    return ejercicio;
-  }
-
-  public void setRegistro(Timestamp registro) {
-    this.registro = registro;
-  }
-
-  public Timestamp getRegistro() {
-    return registro;
-  }
-
   @Transient
   @Override
   public Long getKey() {
@@ -196,9 +229,21 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
+		regresar.append(getIdProveedor());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdNotaEntrada());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getImporte());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getEjercicio());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getConsecutivo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCreditoEstatus());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoCreditoNota());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdDevolucion());
 		regresar.append(Constantes.SEPARADOR);
@@ -213,12 +258,6 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
 		regresar.append(getOrden());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCreditoNota());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getImporte());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getEjercicio());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -226,8 +265,14 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
+		regresar.put("idProveedor", getIdProveedor());
+		regresar.put("idNotaEntrada", getIdNotaEntrada());
+		regresar.put("importe", getImporte());
+		regresar.put("ejercicio", getEjercicio());
+		regresar.put("registro", getRegistro());
 		regresar.put("consecutivo", getConsecutivo());
 		regresar.put("idCreditoEstatus", getIdCreditoEstatus());
+		regresar.put("idTipoCreditoNota", getIdTipoCreditoNota());
 		regresar.put("idDevolucion", getIdDevolucion());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("folio", getFolio());
@@ -235,16 +280,13 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("orden", getOrden());
 		regresar.put("idCreditoNota", getIdCreditoNota());
-		regresar.put("importe", getImporte());
-		regresar.put("ejercicio", getEjercicio());
-		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getConsecutivo(), getIdCreditoEstatus(), getIdDevolucion(), getIdUsuario(), getFolio(), getObservaciones(), getIdEmpresa(), getOrden(), getIdCreditoNota(), getImporte(), getEjercicio(), getRegistro()
+    getIdProveedor(), getIdNotaEntrada(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getIdCreditoEstatus(), getIdTipoCreditoNota(), getIdDevolucion(), getIdUsuario(), getFolio(), getObservaciones(), getIdEmpresa(), getOrden(), getIdCreditoNota()
     };
     return regresar;
   }

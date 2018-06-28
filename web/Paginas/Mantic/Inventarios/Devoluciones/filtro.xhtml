@@ -99,7 +99,7 @@
               </div>  
             </f:facet>	            
 						<p:column style="width:38px; text-align: center">
-							<p:commandButton icon="fa fa-chevron-circle-right" title="Nota(s) de credito(s)" action="#{manticInventariosDevolucionesFiltro.doNotaCredito}" styleClass="janal-text-white" rendered="#{fn:contains('|3|4|', filtro['idCreditoEstatus'].toInteger)}">
+							<p:commandButton icon="fa fa-chevron-circle-right" title="Nota(s) de credito" action="#{manticInventariosDevolucionesFiltro.doNotaCredito}" styleClass="janal-text-white" rendered="#{fn:contains('|3|4|', filtro['idCreditoEstatus'].toInteger)}">
 								<f:setPropertyActionListener value="#{filtro['consecutivo']}" target="#{manticInventariosDevolucionesFiltro.attrs.devolucion}" />
 							</p:commandButton>
 						</p:column>

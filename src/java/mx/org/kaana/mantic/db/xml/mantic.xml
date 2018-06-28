@@ -22,7 +22,7 @@
         from      
           tc_mantic_creditos_notas
         where      
-          id_devolucion = {idDevolucion} and folio = '{folio}' and id_credito_nota = {idCreditoNota}
+          id_proveedor = {idProveedor} and id_devolucion = {idDevolucion} and folio = '{folio}' and id_nota_entrada = {idNotaEntrada}
       </select>
       <select id="detalle">
         select      
