@@ -50,6 +50,8 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
   private Timestamp registro;
   @Column (name="id_usuario")
   private Long idUsuario;
+  @Column (name="id_uso_cfdi")
+  private Long idUsoCfdi;
   @Column (name="observaciones")
   private String observaciones;
   @Column (name="id_empresa")
@@ -62,11 +64,11 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
   }
 
   public TcManticClientesDto(Long key) {
-    this(null, null, new Long(-1L), null, 2L, null, 0D, null, null, null, null, null);
+    this(null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticClientesDto(String clave, Long plazoDias, Long idCliente, Double limiteCredito, Long idCredito, String razonSocial, Double saldo, String rfc, Long idUsuario, String observaciones, Long idEmpresa, Long idTipoVenta) {
+  public TcManticClientesDto(String clave, Long plazoDias, Long idCliente, Double limiteCredito, Long idCredito, String razonSocial, Double saldo, String rfc, Long idUsuario, Long idUsoCfdi, String observaciones, Long idEmpresa, Long idTipoVenta) {
     setClave(clave);
     setPlazoDias(plazoDias);
     setIdCliente(idCliente);
@@ -77,6 +79,7 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
     setRfc(rfc);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
     setIdUsuario(idUsuario);
+    setIdUsoCfdi(idUsoCfdi);
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
     setIdTipoVenta(idTipoVenta);
@@ -162,6 +165,14 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
+  public void setIdUsoCfdi(Long idUsoCfdi) {
+    this.idUsoCfdi = idUsoCfdi;
+  }
+
+  public Long getIdUsoCfdi() {
+    return idUsoCfdi;
+  }
+
   public void setObservaciones(String observaciones) {
     this.observaciones = observaciones;
   }
@@ -221,6 +232,8 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdUsoCfdi());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdEmpresa());
@@ -243,6 +256,7 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
 		regresar.put("rfc", getRfc());
 		regresar.put("registro", getRegistro());
 		regresar.put("idUsuario", getIdUsuario());
+		regresar.put("idUsoCfdi", getIdUsoCfdi());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("idTipoVenta", getIdTipoVenta());
@@ -252,7 +266,7 @@ public class TcManticClientesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getClave(), getPlazoDias(), getIdCliente(), getLimiteCredito(), getIdCredito(), getRazonSocial(), getSaldo(), getRfc(), getRegistro(), getIdUsuario(), getObservaciones(), getIdEmpresa(), getIdTipoVenta()
+    getClave(), getPlazoDias(), getIdCliente(), getLimiteCredito(), getIdCredito(), getRazonSocial(), getSaldo(), getRfc(), getRegistro(), getIdUsuario(), getIdUsoCfdi(), getObservaciones(), getIdEmpresa(), getIdTipoVenta()
     };
     return regresar;
   }
