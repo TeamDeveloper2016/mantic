@@ -481,4 +481,17 @@ public class Accion extends IBaseCliente implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doActivarCliente
+	
+	public void doOpenCobro(){
+		try {
+			if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L)))))
+				this.attrs.put("tabIndex", 1);
+			else
+				JsfBase.addMessage("Cobrar venta", "No se ha seleccionado ningun ticket de venta", ETipoMensaje.INFORMACION);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doOpenCobro
 }
