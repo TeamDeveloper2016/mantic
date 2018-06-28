@@ -6,7 +6,7 @@
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Devoluciones de entradas generadas" />
+  <ui:param name="titulo" value="Devoluciones de notas de entradas generadas" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
@@ -87,8 +87,6 @@
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">
-                  <p:menuitem value="Agregar directa" action="#{manticInventariosDevolucionesFiltro.doAccion('COMPLETO')}" icon="fa fa-plus" title="Nota de entrada directa" onstart="return janal.bloquear()"/>						
-                  <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 </p:menuButton>
@@ -100,6 +98,11 @@
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
               </div>  
             </f:facet>	            
+						<p:column style="width:38px; text-align: center">
+							<p:commandButton icon="fa fa-chevron-circle-right" title="Nota(s) de credito(s)" action="#{manticInventariosDevolucionesFiltro.doNotaCredito}" styleClass="janal-text-white" rendered="#{fn:contains('|3|4|', filtro['idCreditoEstatus'].toInteger)}">
+								<f:setPropertyActionListener value="#{filtro['consecutivo']}" target="#{manticInventariosDevolucionesFiltro.attrs.devolucion}" />
+							</p:commandButton>
+						</p:column>
             <p:column class="MarAuto Responsive" sortBy="#{filtro.empresa}">
               <f:facet name="header">
                 <h:outputText value="Empresa"/>
@@ -150,13 +153,17 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+            <p:menuitem id="agregar" action="#{manticInventariosDevolucionesFiltro.doAgregar}" icon="fa fa-plus" ajax="false" value="Agregar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|3|4|', manticInventariosEntradasFiltro.attrs.seleccionado.idDevolucionEstatus)}">
+							<f:setPropertyActionListener target="#{manticInventariosDevolucionesFiltro.attrs.idNotaEntrada}" value="#{manticInventariosDevolucionesFiltro.attrs.seleccionado.idNotaEntrada}"/>
+						</p:menuitem>	
+            <p:separator rendered="#{fn:contains('|1|3|4|', manticInventariosDevolucionesFiltro.attrs.seleccionado.idDevolucionEstatus)}"/>					
             <!--p:menuitem id="modificar" action="#{manticInventariosDevolucionesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticInventariosDevolucionesFiltro.attrs.seleccionado.idDevolucionEstatus eq '1'}"/-->					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{fn:contains('|1|3|', manticInventariosDevolucionesFiltro.attrs.seleccionado.idDevolucionEstatus)}"/>					
             <p:menuitem id="consultar" action="#{manticInventariosDevolucionesFiltro.doAccion('CONSULTAR')}" icon="fa fa-edit" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticInventariosDevolucionesFiltro.doMovimientos}"/>
             <p:separator rendered="#{fn:contains('|2|3|4|', manticInventariosDevolucionesFiltro.attrs.seleccionado.idDevolucionEstatus)}"/>
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosDevolucionesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|2|', manticInventariosDevolucionesFiltro.attrs.seleccionado.idDevolucionEstatus)}"/>					
-            <p:menuitem id="notaCredito" icon="fa fa-user" value="Notas credito" onstart="return janal.bloquear()" process="@this tabla" action="#{manticInventariosDevolucionesFiltro.doNotasCredito}" rendered="#{fn:contains('|3|4|', manticInventariosDevolucionesFiltro.attrs.seleccionado.idDevolucionEstatus)}"/>
+            <p:menuitem id="notaCredito" icon="fa fa-user" value="Nota credito" onstart="return janal.bloquear()" process="@this tabla" action="#{manticInventariosDevolucionesFiltro.doNotasCreditos}" rendered="#{fn:contains('|3|4|', manticInventariosDevolucionesFiltro.attrs.seleccionado.idDevolucionEstatus)}"/>
             <p:separator rendered="#{fn:contains('|1|3|4|', manticInventariosDevolucionesFiltro.attrs.seleccionado.idDevolucionEstatus)}"/>					
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosDevolucionesFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{fn:contains('|1|3|4|', manticInventariosDevolucionesFiltro.attrs.seleccionado.idDevolucionEstatus)}"/>					
           </p:contextMenu>						

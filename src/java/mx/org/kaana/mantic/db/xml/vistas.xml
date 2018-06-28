@@ -872,6 +872,7 @@
 			<select id="consulta">
 				select
 					tc_mantic_notas_detalles.id_nota_detalle as id_key,
+					tc_mantic_devoluciones.id_devolucion,
 					tc_mantic_devoluciones.consecutivo,
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
 					tc_mantic_notas_detalles.sat,
@@ -899,6 +900,7 @@
 			<select id="confronta">
 				select
 					tc_mantic_notas_detalles.id_nota_detalle as id_key,
+				  tc_mantic_notas_entradas.id_nota_entrada,
 				  tc_mantic_notas_entradas.consecutivo,
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
 					tc_mantic_notas_detalles.codigo,
@@ -1019,10 +1021,7 @@
           tc_mantic_articulos on tc_mantic_ordenes_detalles.id_articulo= tc_mantic_articulos.id_articulo
         where      
           tc_mantic_ordenes_compras.id_orden_compra = {idOrdenCompra}
-				  and (
-				    tc_mantic_ordenes_detalles.cantidades&lt;&gt; 0 or 
-				    tc_mantic_ordenes_detalles.importes&lt;&gt; 0
-				  )
+				  and tc_mantic_ordenes_detalles.cantidades&gt; 0
 				order by
 				  tc_mantic_ordenes_detalles.registro				
       </select>

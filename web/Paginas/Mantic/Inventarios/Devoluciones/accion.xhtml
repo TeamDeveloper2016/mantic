@@ -53,7 +53,7 @@
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-1">
-     								<p:outputLabel for="consecutivo" value="Número devolución:" style="display: #{manticInventariosDevolucionesAccion.agregar}"/>
+     								<p:outputLabel for="consecutivo" value="No. devolución:" style="display: #{manticInventariosDevolucionesAccion.agregar}"/>
 									</div>	
 									<div class="ui-grid-col-12">
 	   							  <p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticInventariosDevolucionesAccion.adminOrden.orden.consecutivo}" readonly="true" style="display: #{manticInventariosDevolucionesAccion.agregar}"/>
@@ -61,7 +61,7 @@
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-1">
-								    <p:outputLabel for="idNotaEntrada" value="Número nota:"/>
+								    <p:outputLabel for="idNotaEntrada" value="Nota de entrada:"/>
 									</div>
 									<div class="ui-grid-col-12">
 										<p:selectOneMenu id="idNotaEntrada" value="#{manticInventariosDevolucionesAccion.adminOrden.orden.ikNotaEntrada}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="startsWith">

@@ -11,6 +11,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -54,9 +55,10 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idDevolucion", JsfBase.getFlashAttribute("idDevolucion"));
+      this.attrs.put("notaEntrada", JsfBase.getFlashAttribute("notaEntrada"));
       this.attrs.put("sortOrder", "order by tc_mantic_devoluciones.id_empresa, tc_mantic_devoluciones.ejercicio, tc_mantic_devoluciones.orden");
 			this.toLoadCatalog();
-      if(this.attrs.get("idDevolucion")!= null) 
+      if(this.attrs.get("idDevolucion")!= null || this.attrs.get("notaEntrada")!= null) 
 			  this.doLoad();
     } // try
     catch (Exception e) {
@@ -269,17 +271,29 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
 	}
 	
-	public String doNotasCredito() {
-		JsfBase.setFlashAttribute(ETipoMovimiento.DEVOLUCIONES.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
-		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Inventarios/Devoluciones/filtro");
+	public String doNotasCreditos() {
+		JsfBase.setFlashAttribute("idDevolucion", ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Creditos/filtro");
+		JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
 		return "/Paginas/Mantic/Inventarios/Creditos/accion".concat(Constantes.REDIRECIONAR);
 	}
 
 	public String doNotaEntrada() {
 		JsfBase.setFlashAttribute("idNotaEntrada", this.attrs.get("idNotaEntrada"));
-		JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
-		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");
-		return "/Paginas/Mantic/Inventarios/Entradas/accion".concat(Constantes.REDIRECIONAR);
+		return "/Paginas/Mantic/Inventarios/Entradas/filtro".concat(Constantes.REDIRECIONAR);
 	}
+
+	public String doNotaCredito() {
+		JsfBase.setFlashAttribute("devolucion", this.attrs.get("devolucion"));
+		return "/Paginas/Mantic/Inventarios/Creditos/filtro".concat(Constantes.REDIRECIONAR);
+	}
+
+	public String doAgregar() {
+		JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
+  	JsfBase.setFlashAttribute("idNotaEntrada", ((Value)this.attrs.get("idNotaEntrada")).toLong());
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Devoluciones/filtro");		
+		return "/Paginas/Mantic/Inventarios/Devoluciones/accion".concat(Constantes.REDIRECIONAR);
+	}
+
 
 }

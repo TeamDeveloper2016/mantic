@@ -55,9 +55,10 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada"));
+      this.attrs.put("ordenCompra", JsfBase.getFlashAttribute("ordenCompra"));
       this.attrs.put("sortOrder", "order by tc_mantic_notas_entradas.id_empresa, tc_mantic_notas_entradas.ejercicio, tc_mantic_notas_entradas.orden");
 			this.toLoadCatalog();
-      if(this.attrs.get("idNotaEntrada")!= null) 
+      if(this.attrs.get("idNotaEntrada")!= null || this.attrs.get("ordenCompra")!= null) 
 			  this.doLoad();
     } // try
     catch (Exception e) {
@@ -267,12 +268,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // finally
 	}	// doActualizaEstatus
 	
-	public String doDevoluciones() {
-		String regresar= "/Paginas/Mantic/Inventarios/Devoluciones/accion";		
+	public String doDevolucion() {
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Devoluciones/filtro");		
 		JsfBase.setFlashAttribute("idNotaEntrada", ((Entity)this.attrs.get("seleccionado")).getKey());
-		return regresar.concat(Constantes.REDIRECIONAR);
-	}	
+		JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
+		return "/Paginas/Mantic/Inventarios/Devoluciones/accion".concat(Constantes.REDIRECIONAR);
+	}		
 	
 	public String doDiferencias() {
 		JsfBase.setFlashAttribute("idNotaEntrada",((Entity)this.attrs.get("seleccionado")).getKey());
@@ -288,17 +289,19 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	public String doOrdenCompra() {
 		JsfBase.setFlashAttribute("idOrdenCompra", this.attrs.get("idOrdenCompra"));
-		JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);
-		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Compras/Ordenes/filtro");
-		return "/Paginas/Mantic/Compras/Ordenes/accion".concat(Constantes.REDIRECIONAR);
+		return "/Paginas/Mantic/Compras/Ordenes/filtro".concat(Constantes.REDIRECIONAR);
 	}
 	
 	public String doAgregar() {
-		String regresar= "/Paginas/Mantic/Inventarios/Entradas/accion?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs";
 		JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
   	JsfBase.setFlashAttribute("idOrdenCompra", ((Value)this.attrs.get("idOrdenCompra")).toLong());
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
-		return regresar.concat(Constantes.REDIRECIONAR_AMPERSON);
+		return "/Paginas/Mantic/Inventarios/Entradas/accion?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs".concat(Constantes.REDIRECIONAR_AMPERSON);
 	}
+
+	public String doDevoluciones() {
+		JsfBase.setFlashAttribute("notaEntrada", this.attrs.get("notaEntrada"));
+		return "/Paginas/Mantic/Inventarios/Devoluciones/filtro".concat(Constantes.REDIRECIONAR);
+	}		
 	
 }

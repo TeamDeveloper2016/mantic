@@ -23,7 +23,6 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.inventarios.creditos.reglas.Transaccion;
-import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDto;
 import mx.org.kaana.mantic.inventarios.creditos.beans.NotaCredito;
 import org.primefaces.context.RequestContext;
@@ -82,6 +81,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (this.accion) {
         case AGREGAR:											
           this.orden= new NotaCredito(-1L, devolucion.getIdDevolucion());
+					this.orden.setImporte(devolucion.getTotal());
           break;
         case MODIFICAR:					
         case CONSULTAR:					
@@ -136,7 +136,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.put("idDevolucion", this.attrs.get("idDevolucion"));
 			if((Long)this.attrs.get("idDevolucion")> 0L) {
-        this.attrs.put("devoluciones", UIEntity.build("VistasCreditosNotasDto", "devoluciones", params, columns));
+        this.attrs.put("devoluciones", UIEntity.build("VistaCreditosNotasDto", "devoluciones", params, columns));
 			  List<UISelectEntity> devoluciones= (List<UISelectEntity>)this.attrs.get("devoluciones");
 			  if(devoluciones!= null && !devoluciones.isEmpty()) 
 				  this.orden.setIkDevolucion(devoluciones.get(0));

@@ -170,7 +170,7 @@
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="notas">
             <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticComprasOrdenesDiferencias.doMovimientos}"/>
 						<p:separator rendered="#{fn:contains('|3|5|', manticComprasOrdenesDiferencias.attrs.seleccionado.idNotaEstatus)}"/>
-            <p:menuitem id="devoluciones" icon="fa fa-angle-double-right" value="Devoluciones" onstart="return janal.bloquear()" process="@this tabla" action="#{manticComprasOrdenesDiferencias.doDevoluciones}" rendered="#{fn:contains('|3|5|', manticComprasOrdenesDiferencias.attrs.seleccionado.idNotaEstatus)}"/>
+            <p:menuitem id="devoluciones" icon="fa fa-angle-double-right" value="Devoluciones" onstart="return janal.bloquear()" process="@this tabla" action="#{manticComprasOrdenesDiferencias.doDevolucion}" rendered="#{fn:contains('|3|5|', manticComprasOrdenesDiferencias.attrs.seleccionado.idNotaEstatus)}"/>
           </p:contextMenu>
         </div>
     </div>		    

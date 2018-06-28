@@ -112,6 +112,11 @@
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
               </div>  
             </f:facet>	            
+						<p:column style="width:38px; text-align: center">
+							<p:commandButton icon="fa fa-chevron-circle-right" title="Nota(s) de entrada(s)" action="#{manticComprasOrdenesFiltro.doNotaEntrada}" styleClass="janal-text-white" rendered="#{fn:contains('|4|5|6|7|', filtro['idOrdenEstatus'].toInteger)}">
+								<f:setPropertyActionListener value="#{filtro['consecutivo']}" target="#{manticComprasOrdenesFiltro.attrs.ordenCompra}" />
+							</p:commandButton>
+						</p:column>
             <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{filtro.empresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
@@ -120,7 +125,7 @@
             </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
               <f:facet name="header">
-                <h:outputText value="No. orden"/>
+                <h:outputText value="No. orden compra"/>
               </f:facet>
               <h:outputText value="#{filtro['consecutivo']}"/>
             </p:column>		
