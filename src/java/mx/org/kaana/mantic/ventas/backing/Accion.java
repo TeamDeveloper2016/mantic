@@ -433,7 +433,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			cambioUsuario= new CambioUsuario(cuenta, password);
 			if(cambioUsuario.validaUsuario()) {
 				this.init();
-			  RequestContext.getCurrentInstance().execute("janal.disabledLogin();");
+			  RequestContext.getCurrentInstance().execute("jsVentas.disabledLogin();");
 			}	// if
 			else
 				JsfBase.addMessage("Cambio de usuario", "Ocurrió un error al autenticar el usuario seleccionado", ETipoMensaje.ERROR);      																	
