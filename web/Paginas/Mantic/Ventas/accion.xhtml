@@ -10,6 +10,7 @@
 	<ui:param name="titulo" value="Punto de venta"/>
 	<ui:define name="librerias">
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.articulosJs}"/>
+		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.0.1.js"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
 				'articulos': {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'articulo'},			
@@ -34,7 +35,7 @@
 	</ui:define>
 	<ui:define name="contenido">
 		<pe:remoteCommand name="loginValidate" process="@this @(.janal-login-user)" update="headerCuenta panelEmpresa" actionListener="#{manticVentasAccion.doLogin}" oncomplete="janal.desbloquear();"/>  			
-		<pe:remoteCommand name="userUpdate" process="@this" onstart="janal.bloquear();" actionListener="#{manticVentasAccion.doCerrarTicket}" oncomplete="janal.activeLogin();" update="deudor contenido panelCliente panelEmpresa articulos total"/>  			
+		<pe:remoteCommand name="userUpdate" process="@this" onstart="janal.bloquear();" actionListener="#{manticVentasAccion.doCerrarTicket}" oncomplete="jsVentas.activeLogin();" update="deudor contenido panelCliente panelEmpresa articulos total"/>  			
 		<pe:remoteCommand name="loadTicketAbiertos" process="@this" update="dialogoOpenTickets" actionListener="#{manticVentasAccion.doLoadTicketAbiertos}" onstart="janal.bloquear()"/>  			
 		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticVentasAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
@@ -367,11 +368,11 @@
 				</div>	
 				<div class="ui-grid-col-2 janal-column-left janal-login-view" style="display: none;">
 					<p:outputLabel id="lblCuenta" for="cuenta" value="Usuario:"/>
-					<p:inputText id="cuenta" value="#{manticVentasAccion.attrs.cuenta}" onblur="janal.toPassword();" onkeydown="janal.toLoginEnter();" styleClass="janal-wid-100-txt janal-login-user"/>
+					<p:inputText id="cuenta" value="#{manticVentasAccion.attrs.cuenta}" onblur="jsVentas.toPassword();" onkeydown="jsVentas.toLoginEnter();" styleClass="janal-wid-100-txt janal-login-user"/>
 				</div>	
 				<div class="ui-grid-col-2 janal-column-left janal-login-view" style="display: none;">
 					<p:outputLabel id="lblPassword" for="password" value="Contraseña:"/>					
-					<p:password id="password" value="#{manticVentasAccion.attrs.password}" onblur="janal.toPasswordEnter();" onkeydown="janal.toPasswordEnter();" styleClass="janal-wid-100-txt janal-login-user"/>
+					<p:password id="password" value="#{manticVentasAccion.attrs.password}" onblur="jsVentas.toPasswordEnter();" onkeydown="jsVentas.toPasswordEnter();" styleClass="janal-wid-100-txt janal-login-user"/>
 				</div>	
 				<div class="ui-grid-col-6">
 				</div>	
