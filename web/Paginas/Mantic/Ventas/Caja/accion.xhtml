@@ -107,8 +107,8 @@
 								</p:selectOneMenu>																								
 							</p:panelGrid>	
 							<p:separator/>
-							<p:panelGrid id="contenido" columns="2" layout="grid" styleClass="janal-wid-100" style="height:350px !important;" columnClasses="janal-wid-80, janal-wid-20">					
-								<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" style="height:348px !important;overflow-y: visible" columnClasses="janal-wid-100">					
+							<p:panelGrid id="contenido" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-80, janal-wid-20">					
+								<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" style="overflow-y: visible" columnClasses="janal-wid-100">					
 									<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticVentasCajaAccion.adminOrden.articulos}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">
 										<p:column class="MarAuto Responsive janal-wid-3">
 											<f:facet name="header">
@@ -173,10 +173,10 @@
 									</p:dataTable>
 								</p:panelGrid>
 								<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" columnClasses="janal-wid-100">
-									<p:panel header="Imagen" styleClass="TexAlCenter janal-wid-100-txt" style="height:100%">
+									<!--p:panel header="Imagen" styleClass="TexAlCenter janal-wid-100-txt" style="height:100%">
 										<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini filas" width="65"/><br/>
 										<p:outputLabel value="img-#{manticVentasCajaAccion.attrs.idArticulo}" styleClass="filas"/>
-									</p:panel>
+									</p:panel-->
 									<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-100 janal-column-right">
 										<p:outputLabel for="articulos" value="Articulos:"/>
 										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.adminOrden.totales.articulos}"/>
@@ -221,12 +221,37 @@
 								<p:inputText id="descuento" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasCajaAccion.adminOrden.descuento}" disabled="true">
 									<p:ajax event="blur" listener="#{manticVentasCajaAccion.doUpdatePorcentaje}" process="@this" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#descuento'), '0'); return true;"/>
 								</p:inputText>	
-							</p:panelGrid>							
-							<p:panelGrid id="panelPago" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+							</p:panelGrid>	
+							<p:panelGrid layout="grid" columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-80, janal-wid-20">
+							<p:panelGrid id="panelPago" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-80">
 								<p:outputLabel value="Facturar:"/>
 								<p:inputSwitch value="#{manticVentasCajaAccion.attrs.facturarVenta}" onLabel="SI" offLabel="NO">
 									<p:ajax listener="#{manticVentasCajaAccion.doActivarCliente}" process="@this" update="contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 								</p:inputSwitch>
+								<p:outputLabel value="Efectivo:"/>
+								<p:inputText styleClass="janal-wid-100-txt"/>
+								<p:outputLabel value="Tarjeta de credito:"/>
+								<p:inputText styleClass="janal-wid-100-txt"/>
+								<p:outputLabel value="Tarjeta de debito:"/>
+								<p:inputText styleClass="janal-wid-100-txt"/>
+								<p:outputLabel value="Vales de despensa:"/>
+								<p:inputText styleClass="janal-wid-100-txt"/>
+								<p:outputLabel value="Cheque:"/>
+								<p:inputText styleClass="janal-wid-100-txt"/>
+							</p:panelGrid>								
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100 janal-line-button" columnClasses="janal-wid-50 janal-column-left, janal-wid-50 janal-column-right">								
+								<p:spacer height="50px"/><p:spacer height="50px"/>
+								<p:outputLabel for="articulos" value="Articulos:"/>
+								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.adminOrden.totales.articulos}"/>
+								<p:outputLabel value="Descuento:"/>
+								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.adminOrden.totales.descuento$}"/>
+								<p:outputLabel value="Subtotal:"/>
+								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.adminOrden.totales.subTotal$}"/>
+								<p:outputLabel value="IVA:"/>
+								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.adminOrden.totales.iva$}"/>
+								<p:outputLabel for="total" value="Total:" styleClass="janal-total-compra janal-color-orange"/>
+								<p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticVentasCajaAccion.adminOrden.totales.total$}"/>
+							</p:panelGrid>
 							</p:panelGrid>
 						</div>
 					</div>
