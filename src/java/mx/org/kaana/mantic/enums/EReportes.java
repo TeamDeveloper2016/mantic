@@ -5,7 +5,8 @@ import mx.org.kaana.libs.reportes.IReportAttribute;
 
 public enum EReportes implements IReportAttribute{
 
-	ORDEN_COMPRA ("VistaOrdenesComprasDto", "reporteOrden", "Orden de compra", "/Paginas/Mantic/Compras/Ordenes/Reporte/orden", EFormatos.PDF, "orden_de_compra", "/Paginas/Mantic/Compras/filtro");
+	ORDEN_COMPRA ("VistaOrdenesComprasDto", "reporteOrden", "Orden de compra", "/Paginas/Mantic/Compras/Ordenes/Reporte/orden", EFormatos.PDF, "orden_de_compra", "/Paginas/Mantic/Compras/filtro"),
+	ORDEN_DETALLE ("VistaOrdenesComprasDto", "ordenDetalle", "Orden de compra", "/Paginas/Mantic/Compras/Ordenes/Reporte/ordenDetalle", EFormatos.PDF, "orden_de_compra", "/Paginas/Mantic/Compras/filtro");
   
 	private final String proceso;
   private final String idXml;
