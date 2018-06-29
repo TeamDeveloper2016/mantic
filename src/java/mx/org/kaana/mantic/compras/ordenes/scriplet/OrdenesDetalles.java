@@ -11,10 +11,10 @@ public class OrdenesDetalles  extends BarraProgreso implements Serializable{
   @Override
   public void afterDetailEval() throws JRScriptletException {
     super.afterDetailEval();
-    String letras  = null;
+    Letras letras  = null;
     try {
-      Letras miCifras= new Letras();
-      setVariableValue("LETRAS", miCifras.getMoneda(getFieldValue("TOTAL_ORDEN").toString(), Boolean.FALSE));
+      letras = new Letras();
+      setVariableValue("LETRAS", letras.getMoneda(getFieldValue("TOTAL_ORDEN").toString(), Boolean.FALSE));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
