@@ -63,13 +63,13 @@
 			$parent.fields.credito.validaciones= 'libre|max-valor({"cuanto":'+limiteCredito+'})';
 			$parent.fields.cheque.validaciones= 'libre|max-valor({"cuanto":'+limiteCheque+'})';
 			$parent.fields.pago.validaciones= 'requerido|min-valor({"cuanto":'+totalVenta+'})';
-			this.refreshDebito(limiteDebito, totalVenta, debito);
-			this.refreshCredito(limiteCredito, totalVenta, credito);
-			this.refreshCheque(limiteCheque, totalVenta, cheque);
+			this.refreshDebito(debito);
+			this.refreshCredito(credito);
+			this.refreshCheque(cheque);
 			$parent.refresh();
 		}, // refreshCobroValidate			
-		refreshDebito: function(value, totalVenta, total){
-			if((value > 0 && value!== totalVenta)|| (total > 0)){
+		refreshDebito: function(total){
+			if(total > 0){
 				$parent.fields.referenciaDebito.validaciones= "requerido";
 				$parent.fields.bancoDebito.validaciones= "requerido";					
 			} // if
@@ -78,8 +78,8 @@
 				$parent.fields.bancoDebito.validaciones= "libre";															
 			} // else
 		}, // refreshDebito
-		refreshCredito: function(value, totalVenta, total){
-			if((value > 0 && value!== totalVenta) || (total > 0)){
+		refreshCredito: function(total){
+			if(total > 0){
 				$parent.fields.referenciaCredito.validaciones= "requerido";
 				$parent.fields.bancoCredito.validaciones= "requerido";										
 			} // if
@@ -88,8 +88,8 @@
 				$parent.fields.bancoCredito.validaciones= "libre";										
 			} // else
 		}, // refreshCredito
-		refreshCheque: function(value, totalVenta, total){
-			if((value > 0 && value!== totalVenta) || (total > 0)){
+		refreshCheque: function(total){
+			if(total > 0){
 				$parent.fields.referenciaCheque.validaciones= "requerido";
 				$parent.fields.bancoCheque.validaciones= "requerido";					
 			} // if
