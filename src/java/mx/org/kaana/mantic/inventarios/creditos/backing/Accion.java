@@ -96,6 +96,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (this.accion) {
         case AGREGAR:											
           this.orden= new NotaCredito(-1L, (Long)this.attrs.get("idDevolucion"));
+					this.orden.setIdTipoCreditoNota(this.idTipoCreditoNota);
           break;
         case MODIFICAR:					
         case CONSULTAR:					
@@ -122,7 +123,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-   			  RequestContext.getCurrentInstance().execute("jsArticulos.back('generó la nota de crédito', '"+ this.orden.getConsecutivo()+ "');");
+   			  RequestContext.getCurrentInstance().execute("janal.back('Con n\u00FAmero de consecutivo: "+ this.orden.getConsecutivo()+ "');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" la nota de credito."), ETipoMensaje.INFORMACION);
@@ -189,7 +190,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 					this.attrs.put("parcial", Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, (Double)this.attrs.get("parcial")));
 					params.put("idNotaEntrada", this.attrs.get("idNotaEntrada"));
 					if((Long)this.attrs.get("idNotaEntrada")> 0L) {
-						this.attrs.put("notas", UIEntity.build("VistaCreditosNotasDto", "notas", params, columns));
+						this.attrs.put("notas", UIEntity.build("VistaDevolucionesDto", "notas", params, columns));
 						List<UISelectEntity> notas= (List<UISelectEntity>)this.attrs.get("notas");
 						if(notas!= null && !notas.isEmpty()) 
  							if(this.accion.equals(EAccion.AGREGAR))

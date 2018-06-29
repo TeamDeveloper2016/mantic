@@ -58,14 +58,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar          = false;
 		TcManticCreditosBitacoraDto bitacoraNota= null;
-		Map<String, Object> params= null;
 		try {
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el nota de crédito.");
-			if(this.orden!= null) {
-				params= new HashMap<>();
-				params.put("idCreditoNota", this.orden.getIdCreditoNota());
-				params.put("idDevolucion", this.orden.getIdDevolucion());
-			} // if
 			switch(accion) {
 				case AGREGAR:
 					Long consecutivo= this.toSiguiente(sesion);
@@ -149,7 +143,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		try {
 			sesion.flush();
 			TcManticDevolucionesDto devolucion= (TcManticDevolucionesDto)DaoFactory.getInstance().findById(sesion, TcManticDevolucionesDto.class, this.orden.getIdDevolucion());
-			if(this.importe.equals(devolucion.getTotal()))
+			if(this.orden.getImporte().equals(devolucion.getTotal()))
 				devolucion.setIdDevolucionEstatus(5L); // TERMINADA
 			else 
   			if(this.importe.equals(this.orden.getImporte()))

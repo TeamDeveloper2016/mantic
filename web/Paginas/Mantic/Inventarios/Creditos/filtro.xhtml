@@ -161,14 +161,14 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="modificar" action="#{manticInventariosCreditosFiltro.doAccion('MODIFICAR', 1)}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticInventariosCreditosFiltro.attrs.seleccionado.idNotaEstatus eq '1'}"/>					
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticInventariosCreditosFiltro.attrs.seleccionado.idNotaEstatus eq '1'}"/>					
+            <p:menuitem id="modificar" action="#{manticInventariosCreditosFiltro.doAccion('MODIFICAR', 1)}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticInventariosCreditosFiltro.attrs.seleccionado.idCreditoEstatus eq '1'}"/>					
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticInventariosCreditosFiltro.attrs.seleccionado.idCreditoEstatus eq '1'}"/>					
             <p:menuitem id="consultar" action="#{manticInventariosCreditosFiltro.doAccion('CONSULTAR', 1)}" icon="fa fa-edit" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticInventariosCreditosFiltro.doMovimientos}"/>
-            <p:separator rendered="#{fn:contains('|2|', manticInventariosCreditosFiltro.attrs.seleccionado.idNotaEstatus)}"/>					
-            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosCreditosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{manticInventariosCreditosFiltro.attrs.seleccionado.idNotaEstatus eq '2'}"/>					
-            <p:separator rendered="#{fn:contains('|1|2|3|', manticInventariosCreditosFiltro.attrs.seleccionado.idNotaEstatus)}"/>					
-            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosCreditosFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{fn:contains('|1|2|3|', manticInventariosCreditosFiltro.attrs.seleccionado.idNotaEstatus)}"/>					
+            <p:separator rendered="#{fn:contains('|2|', manticInventariosCreditosFiltro.attrs.seleccionado.idCreditoEstatus)}"/>					
+            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosCreditosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{manticInventariosCreditosFiltro.attrs.seleccionado.idCreditoEstatus eq '2'}"/>					
+            <p:separator rendered="#{fn:contains('|1|2|3|', manticInventariosCreditosFiltro.attrs.seleccionado.idCreditoEstatus)}"/>					
+            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosCreditosFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{fn:contains('|1|2|3|', manticInventariosCreditosFiltro.attrs.seleccionado.idCreditoEstatus)}"/>					
           </p:contextMenu>						
         </div>
       </div>

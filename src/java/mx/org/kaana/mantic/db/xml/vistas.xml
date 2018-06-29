@@ -117,7 +117,7 @@
 					tc_mantic_devoluciones_estatus on tc_mantic_devoluciones.id_devolucion_estatus=tc_mantic_devoluciones_estatus.id_devolucion_estatus
 				where
 				  tc_mantic_empresas.id_empresa in ({sucursales})
-				  and tc_mantic_devoluciones.id_devolucion_estatus in (3)
+				  and tc_mantic_devoluciones.id_devolucion_estatus in (3, 4)
 				  and (tc_mantic_devoluciones.id_devolucion= {idDevolucion} or {idDevolucion} is null)
 				order by
 				  tc_mantic_devoluciones.registro						
