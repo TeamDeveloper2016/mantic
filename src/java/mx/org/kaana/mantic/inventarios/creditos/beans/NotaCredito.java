@@ -20,6 +20,8 @@ public class NotaCredito extends TcManticCreditosNotasDto implements Serializabl
 	private static final long serialVersionUID=3088884892456452481L;
 	
 	private UISelectEntity ikDevolucion;
+	private UISelectEntity ikNotaEntrada;
+	private UISelectEntity ikProveedor;
 
 	public NotaCredito() {
 		this(null);
@@ -30,12 +32,14 @@ public class NotaCredito extends TcManticCreditosNotasDto implements Serializabl
 	}
 
 	public NotaCredito(Long key, Long idDevolucion) {
-		this(null, null, 0D, new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", 1L, 1L, idDevolucion, JsfBase.getIdUsuario(), "", "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 1L, -1L);
+		this(-1L, -1L, 0D, new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", 1L, 1L, idDevolucion, JsfBase.getIdUsuario(), "", "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 1L, -1L);
 	}
 
 	public NotaCredito(Long idProveedor, Long idNotaEntrada, Double importe, Long ejercicio, String consecutivo, Long idCreditoEstatus, Long idTipoCreditoNota, Long idDevolucion, Long idUsuario, String folio, String observaciones, Long idEmpresa, Long orden, Long idCreditoNota) {
     super(idProveedor, idNotaEntrada, importe, ejercicio, consecutivo, idCreditoEstatus, idTipoCreditoNota, idDevolucion, idUsuario, folio, observaciones, idEmpresa, orden, idCreditoNota);
-		this.setIkDevolucion(new UISelectEntity(new Entity(idDevolucion)));
+		this.ikDevolucion = new UISelectEntity(new Entity(idDevolucion));
+		this.ikNotaEntrada= new UISelectEntity(new Entity(idNotaEntrada));
+		this.ikProveedor  = new UISelectEntity(new Entity(idProveedor));
 	}
 
 	public UISelectEntity getIkDevolucion() {
@@ -48,6 +52,26 @@ public class NotaCredito extends TcManticCreditosNotasDto implements Serializabl
   	  this.setIdCreditoNota(this.ikDevolucion.getKey());
 	}
 
+	public UISelectEntity getIkNotaEntrada() {
+		return ikNotaEntrada;
+	}
+
+	public void setIkNotaEntrada(UISelectEntity ikNotaEntrada) {
+		this.ikNotaEntrada=ikNotaEntrada;
+		if(this.ikNotaEntrada!= null)
+  	  this.setIdNotaEntrada(this.ikNotaEntrada.getKey());
+	}
+
+	public UISelectEntity getIkProveedor() {
+		return ikProveedor;
+	}
+
+	public void setIkProveedor(UISelectEntity ikProveedor) {
+		this.ikProveedor=ikProveedor;
+		if(this.ikProveedor!= null)
+  	  this.setIdProveedor(this.ikProveedor.getKey());
+	}
+	
 	@Override
 	public Class toHbmClass() {
 		return TcManticCreditosNotasDto.class;

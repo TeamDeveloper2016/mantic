@@ -695,7 +695,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			if(this.attrs.get("codigo")!= null && !Cadena.isVacio(this.attrs.get("codigo").toString()) && this.attrs.get("codigo").toString().length() > 3){
 				params= new HashMap<>();
 				params.put("codigo", this.attrs.get("codigo"));
-				params.put("sucursales", JsfBase.getAutentifica().getIdsSucursales());
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 				campos= new ArrayList<>();
 				campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 				articulos= UIEntity.build("VistaArticulosAlmacenDto", "findArticulo", params, campos, Constantes.SQL_TODOS_REGISTROS);

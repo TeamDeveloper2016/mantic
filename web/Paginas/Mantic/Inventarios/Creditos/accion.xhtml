@@ -13,8 +13,10 @@
 			Janal.Control.fields = {				 				
 				'consecutivo'  : {validaciones: 'requerido', mascara: 'libre'},
 				'idDevolucion' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'idNotaEntrada': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'idProveedor'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'folio'        : {validaciones: 'requerido', mascara: 'texto', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
-				'importe'      : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},
+				'importe'      : {validaciones: 'requerido|mayor-igual({"cuanto": 0})|menor-igual({"cuanto": #{manticInventariosCreditosAccion.orden.importe}})', mascara: 'no-aplica', grupo: 'general'},
 				'observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
 			};	
 			
@@ -34,9 +36,9 @@
 						<p:outputLabel for="consecutivo" value="Nota crédito:" style="display: #{manticInventariosCreditosAccion.agregar}"/>
 						<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosAccion.orden.consecutivo}" readonly="true" style="display: #{manticInventariosCreditosAccion.agregar}"/>
 						<p:spacer width="1px" style="display: #{manticInventariosCreditosAccion.agregar}"/><p:separator style="display: #{manticInventariosCreditosAccion.agregar}"/>
-						<p:outputLabel for="idDevolucion" value="No. devolución:"/>
-						<p:selectOneMenu id="idDevolucion" value="#{manticInventariosCreditosAccion.orden.ikDevolucion}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98 faltantes" effect="fade" filter="true" filterMatchMode="startsWith">
-							<f:selectItems value="#{manticInventariosCreditosAccion.attrs.devoluciones}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{item.razonSocial} #{element.total}"/>
+						<p:outputLabel for="idDevolucion" value="No. devolución:" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '1'}"/>
+						<p:selectOneMenu id="idDevolucion" value="#{manticInventariosCreditosAccion.orden.ikDevolucion}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98 faltantes" effect="fade" filter="true" filterMatchMode="startsWith" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '1'}">
+							<f:selectItems value="#{manticInventariosCreditosAccion.attrs.devoluciones}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{element.razonSocial} #{element.total}"/>
 							<p:column headerText="Clave">
 								<h:outputText value="#{item.consecutivo}"/>
 							</p:column>   
@@ -50,14 +52,52 @@
 								<h:outputText value="#{item.total}"/>
 							</p:column>   
 						</p:selectOneMenu>
+            <p:outputLabel for="idNotaEntrada" value="Nota de entrada:" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '2'}"/>
+						<p:selectOneMenu id="idNotaEntrada" value="#{manticInventariosCreditosAccion.orden.ikNotaEntrada}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="startsWith" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '2'}">
+							<f:selectItems value="#{manticInventariosCreditosAccion.attrs.notas}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{element.razonSocial}"/>
+							<p:column headerText="Clave">
+								<h:outputText value="#{item.consecutivo}"/>
+							</p:column>   
+							<p:column headerText="Proveedor">
+								<h:outputText value="#{item.razonSocial}"/>
+							</p:column>   
+							<p:column headerText="Estatus">
+								<h:outputText value="#{item.estatus}"/>
+							</p:column>   
+							<p:column headerText="Total" styleClass="janal-column-right">
+								<h:outputText value="#{item.total}"/>
+							</p:column>   
+						</p:selectOneMenu>
+						<p:outputLabel for="idProveedor" value="Proveedor:" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '3'}"/>
+						<p:selectOneMenu id="idProveedor" value="#{manticInventariosCreditosAccion.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="startsWith"  rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '3'}">
+							<f:selectItems value="#{manticInventariosCreditosAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
+							<p:column headerText="Clave">
+								<h:outputText value="#{item.clave}"/>
+							</p:column>   
+							<p:column headerText="Nombre">
+								<h:outputText value="#{item.razonSocial}"/>
+							</p:column>   
+							<p:column styleClass="janal-column-right" headerText="Entrega(dias)">
+								<h:outputText value="#{item.diasEntrega}"/>
+							</p:column>   
+						</p:selectOneMenu>
 						<p:outputLabel for="folio" value="Folio:"/>
 						<p:inputText id="folio" styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosAccion.orden.folio}"/>
 						<p:outputLabel for="importe" value="Importe:"/>
-						<p:inputText id="importe" styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosAccion.orden.importe}"/>
-						<p:outputLabel for="observaciones" value="Observaciones:"/>
-						<p:spacer width="1px"/>
+						<p:inputText id="importe" styleClass="janal-column-right janal-wid-100-txt" value="#{manticInventariosCreditosAccion.orden.importe}"/>
 					</p:panelGrid>
-					<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosAccion.orden.observaciones}"/>
+					<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">		
+						<p:outputLabel value="Importe total de la nota de entrada:" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '2'}"/>
+						<p:inputText styleClass="janal-color-orange janal-column-right janal-wid-100-txt" readonly="true" value="#{manticInventariosCreditosAccion.attrs.total}" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '2'}"/>
+						<p:outputLabel value="Importe acumulado de la nota de crédito:" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '2'}"/>
+						<p:inputText styleClass="janal-color-orange janal-column-right janal-wid-100-txt" readonly="true" value="#{manticInventariosCreditosAccion.attrs.total}" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '2'}"/>
+						<p:outputLabel value="Importe total de la devolución:" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '1'}"/>
+						<p:inputText styleClass="janal-color-orange janal-column-right janal-wid-100-txt" readonly="true" value="#{manticInventariosCreditosAccion.attrs.total}" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '1'}"/>
+						<p:outputLabel value="Importe acumulado de la notas de crédito:" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '1'}"/>
+						<p:inputText styleClass="janal-color-orange janal-column-right janal-wid-100-txt" readonly="true" value="#{manticInventariosCreditosAccion.attrs.parcial}" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '1'}"/>
+						<p:outputLabel for="observaciones" value="Observaciones:"/>
+						<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosAccion.orden.observaciones}"/>
+					</p:panelGrid>			
 				</div>
 			</div>
 		</div>		

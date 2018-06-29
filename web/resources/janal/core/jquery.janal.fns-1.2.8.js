@@ -354,6 +354,20 @@ $.mask.masks = $.extend($.mask.masks, {
       return 'Valor '+ $(element).val()+ ' tiene que ser mayor al permitido, el valor tiene que ser mayor '+ params.cuanto+ '.';
     });
 		
+  $.validator.addMethod('mayor-igual', function(value, element, params) {
+      if (janal.empty(value) || $(element).hasClass('ignore'))
+        return true;
+      else
+        if(typeof(params.cuanto)=== 'undefined') {
+					janal.programmer([{summary: 'Funci\u00F3n: mayor', detail: 'falta el parametro {cuanto}'}]);
+          return false;
+				} // if	
+        else
+         return parseFloat(janal.cleanToken(value), 10)>= params.cuanto;
+    }, function(params, element) {
+      return 'Valor '+ $(element).val()+ ' tiene que ser mayor al permitido, el valor tiene que ser mayor '+ params.cuanto+ '.';
+    });
+		
   $.validator.addMethod('max-valor', function(value, element, params) {
       if (janal.empty(value) || $(element).hasClass('ignore'))
         return true;
@@ -378,6 +392,20 @@ $.mask.masks = $.extend($.mask.masks, {
 				} // if	
         else
           return parseFloat(janal.cleanToken(value), 10)< params.cuanto;
+    }, function(params, element) {
+      return 'Valor '+ $(element).val()+ ' tiene que ser menor al permitido, el valor tiene que ser menor '+ params.cuanto+ '.';
+    });
+		
+  $.validator.addMethod('menor-igual', function(value, element, params) {
+      if (janal.empty(value) || $(element).hasClass('ignore'))
+        return true;
+      else
+        if(typeof(params.cuanto)=== 'undefined') {
+					janal.programmer([{summary: 'Funci\u00F3n: menor', detail: 'falta el parametro {cuanto}'}]);
+          return false;
+				} // if	
+        else
+          return parseFloat(janal.cleanToken(value), 10)<= params.cuanto;
     }, function(params, element) {
       return 'Valor '+ $(element).val()+ ' tiene que ser menor al permitido, el valor tiene que ser menor '+ params.cuanto+ '.';
     });
@@ -497,9 +525,9 @@ $.mask.masks = $.extend($.mask.masks, {
           return false;
 				} // if	
         else
-  			  return janal.integer(janal.cleanToken(value), 0)<= janal.integer(janal.cleanToken(params.cual), 0);
+  			  return janal.double(janal.cleanToken(value), 0)<= janal.double(janal.cleanToken(params.cual), 0);
 		}, function(params, element) {
-      return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser menor a '+ janal.value(params.cual)+ '.';
+      return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser menor o igual '+ janal.value(params.cual)+ '.';
     });
 
 	$.validator.addMethod('mayor-a', function(value, element, params) {
@@ -511,9 +539,9 @@ $.mask.masks = $.extend($.mask.masks, {
           return false;
 				}	// if
         else 
-  			  return janal.integer(janal.cleanToken(value), 0)>= janal.integer(janal.cleanToken(params.cual), 0);
+  			  return janal.double(janal.cleanToken(value), 0)>= janal.double(janal.cleanToken(params.cual), 0);
 		}, function(params, element) {
-      return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser mayor a '+ janal.value(params.cual)+ '.';
+      return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser mayor o igual '+ janal.value(params.cual)+ '.';
     });
 
 	$.validator.addMethod('asterisco', function(value, element, params) {

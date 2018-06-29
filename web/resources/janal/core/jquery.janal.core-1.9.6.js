@@ -63,7 +63,7 @@
       $self.console('Janal.Control.Function.init');
       if(typeof(root)!== 'undefined')
         this.root   = root;
-      $self.load(0, ['/resources/janal/core/jquery.shortcut.core.0.0.6.js','/resources/janal/core/jquery.janal.sticky.min-1.0.0.js','/resources/janal/js/jquery.janal.menu-2.0.1.js','/resources/janal/core/jquery.longclick-1.0.0.js', '/resources/janal/core/jquery.validate.min-1.15.0.js', '/resources/janal/core/jquery.meio.mask.min-1.1.15.js', '/resources/janal/core/jquery.janal.fns-1.2.6.js']);
+      $self.load(0, ['/resources/janal/core/jquery.shortcut.core.0.0.6.js','/resources/janal/core/jquery.janal.sticky.min-1.0.0.js','/resources/janal/js/jquery.janal.menu-2.0.1.js','/resources/janal/core/jquery.longclick-1.0.0.js', '/resources/janal/core/jquery.validate.min-1.15.0.js', '/resources/janal/core/jquery.meio.mask.min-1.1.15.js', '/resources/janal/core/jquery.janal.fns-1.2.8.js']);
       $self.console('Janal.Control.Function.init resource loaded');
     },
     dateFormat: function(format) {
@@ -465,9 +465,9 @@
       show        : 0
     },
     names         : {
-      validations : ['libre', 'max-caracteres', 'min-caracteres', 'mayor', 'max-valor', 'menor', 'min-valor', 'requerido', 'entero', 'entero-signo', 'valor-simple', 'telefono', 'contiene-a', 'igual-a', 'menor-a', 'mayor-a', 'asterisco', 'moneda', 'moneda-decimal', 'flotante-signo', 'flotante', 'mayusculas', 'minusculas', 'vocales', 'rango', 'secuencia-palabra', 'longitud', 'letras', 'texto', 'curp', 'rfc', 'texto-especial', 'boleano', 'fecha', 'fecha-menor', 'fecha-mayor', 'registro', 'hora', 'hora-completa', 'hora-mayor', 'hora-menor', 'comodin', 'no-permitir', 'ipv4', 'ipv6','no-aplica', 'esta-en','correo','acceso','porcentaje'],
+      validations : ['libre', 'max-caracteres', 'min-caracteres', 'mayor', 'mayor-igual', 'max-valor', 'menor', 'menor-igual', 'min-valor', 'requerido', 'entero', 'entero-signo', 'valor-simple', 'telefono', 'contiene-a', 'igual-a', 'menor-a', 'mayor-a', 'asterisco', 'moneda', 'moneda-decimal', 'flotante-signo', 'flotante', 'mayusculas', 'minusculas', 'vocales', 'rango', 'secuencia-palabra', 'longitud', 'letras', 'texto', 'curp', 'rfc', 'texto-especial', 'boleano', 'fecha', 'fecha-menor', 'fecha-mayor', 'registro', 'hora', 'hora-completa', 'hora-mayor', 'hora-menor', 'comodin', 'no-permitir', 'ipv4', 'ipv6','no-aplica', 'esta-en','correo','acceso','porcentaje'],
       masks       : ['libre', 'fecha', 'fecha-hora', 'registro', 'hora', 'hora-completa', 'tarjeta-credito', 'decimal', 'decimal-signo', 'letras', 'vocales', 'texto', 'numero', 'un-digito', 'dos-digitos', 'tres-digitos', 'tres-digitos-default', 'cuatro-digitos', 'cinco-digitos', 'siete-digitos', 'diez-digitos', 'entero', 'entero-blanco', 'entero-signo', 'entero-sin-signo', 'flotante', 'flotante-signo', 'rfc', 'curp', 'moneda', 'moneda-decimal', 'mayusculas', 'minusculas', 'cuenta', 'numeros-letras', 'nombre-dto', 'telefono', 'ip', 'version', 'no-aplica','correo', 'valor-simple', 'acceso'],
-      watermarks  : ['entero', 'entero-signo', 'valor-simple', 'decimal', 'decimal-signo', 'flotante', 'flotante-signo', 'moneda', 'moneda-decimal', 'mayor', 'max-valor', 'menor', 'min-valor'],
+      watermarks  : ['entero', 'entero-signo', 'valor-simple', 'decimal', 'decimal-signo', 'flotante', 'flotante-signo', 'moneda', 'moneda-decimal', 'mayor', 'mayor-igual', 'mayor-a', 'max-valor', 'menor', 'menor-a', 'menor-igual', 'min-valor'],
       formats     : ['libre', 'cambiar-mayusculas', 'cambiar-minusculas', 'rellenar-caracter', 'precio', 'cantidad', 'consecutivo', 'descuentos'],
       customs     : []
     },
@@ -1160,6 +1160,9 @@
     }, // align
     integer: function(value, start) {
       return isNaN(parseInt(value, 10))? typeof(start)!== 'undefined'? start: 0: parseInt(value, 10);
+    },
+    double: function(value, start) {
+      return isNaN(parseFloat(value, 10))? typeof(start)!== 'undefined'? start: 0: parseFloat(value, 10);
     },
 		collapsePanel: function(id) {
       var $divContent= $('#'+ id+ '-content');

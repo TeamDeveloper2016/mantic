@@ -90,12 +90,13 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad
 
-  public String doAccion(String accion) {
-		String regresar= "/Paginas/Mantic/Inventarios/Creditos/accion";
+  public String doAccion(String accion, Long idTipoCreditoNota) {
     EAccion eaccion= null;
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
-		  JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
+		  JsfBase.setFlashAttribute("accion", eaccion);		
+			if(eaccion.equals(EAccion.AGREGAR))
+				JsfBase.setFlashAttribute("idTipoCreditoNota", idTipoCreditoNota);	
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Creditos/filtro");		
 			JsfBase.setFlashAttribute("idCreditoNota", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 		} // try
@@ -103,7 +104,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return regresar.concat(Constantes.REDIRECIONAR_AMPERSON);
+		return "/Paginas/Mantic/Inventarios/Creditos/accion".concat(Constantes.REDIRECIONAR_AMPERSON);
   } // doAccion  
 	
   public void doEliminar() {
