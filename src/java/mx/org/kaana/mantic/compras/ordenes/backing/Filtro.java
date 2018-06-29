@@ -199,7 +199,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
 		try{				
-			reporteSeleccion= EReportes.ORDEN_COMPRA;
+			reporteSeleccion= EReportes.ORDEN_DETALLE;
 			this.reporte= JsfBase.toReporte();
 			params= new HashMap<>();
 			params.put("idOrdenCompra", ((Entity)this.attrs.get("seleccionado")).getKey());			
