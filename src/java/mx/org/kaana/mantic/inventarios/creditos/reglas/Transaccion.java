@@ -17,6 +17,9 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticCreditosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticCreditosNotasDto;
+import mx.org.kaana.mantic.db.dto.TcManticDevolucionesBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import org.apache.log4j.Logger;
 
 /**
@@ -33,16 +36,18 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	private static final long serialVersionUID=-6069204157451117543L;
  
 	private TcManticCreditosNotasDto orden;	
+	private Double importe;
 	private String messageError;
 	private TcManticCreditosBitacoraDto bitacora;
 
 	public Transaccion(TcManticCreditosNotasDto orden, TcManticCreditosBitacoraDto bitacora) {
-		this(orden);
+		this(orden, 0D);
 		this.bitacora= bitacora;
 	}
 	
-	public Transaccion(TcManticCreditosNotasDto orden) {
-		this.orden    = orden;		
+	public Transaccion(TcManticCreditosNotasDto orden, Double importe) {
+		this.orden  = orden;		
+		this.importe= importe;
 	} 
 
 	public String getMessageError() {
@@ -68,33 +73,45 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					this.orden.setOrden(consecutivo);
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
   				this.orden.setIdCreditoEstatus(3L);
+					switch(this.orden.getIdTipoCreditoNota().intValue()) {
+						case 1:
+							this.orden.setIdNotaEntrada(null);
+							this.orden.setIdProveedor(null);
+							break;
+						case 2:
+							this.orden.setIdDevolucion(null);
+							this.orden.setIdProveedor(null);
+							break;
+						case 3:
+							this.orden.setIdDevolucion(null);
+							this.orden.setIdNotaEntrada(null);
+							break;
+					} // switch
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 					bitacoraNota= new TcManticCreditosBitacoraDto(this.orden.getConsecutivo(), "", this.orden.getIdCreditoEstatus(), -1L, JsfBase.getIdUsuario(), this.orden.getIdCreditoNota(), this.orden.getImporte());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
+					if(this.orden.getIdTipoCreditoNota().equals(1L))
+						this.toCheckOrdenDevolucion(sesion);
 					break;				
 				case MODIFICAR:
+					TcManticCreditosNotasDto anterior= (TcManticCreditosNotasDto)DaoFactory.getInstance().findById(TcManticCreditosNotasDto.class, this.orden.getIdCreditoNota());
 					this.orden.setIdCreditoEstatus(3L);
 					bitacoraNota= new TcManticCreditosBitacoraDto(this.orden.getConsecutivo(), "", this.orden.getIdCreditoEstatus(), -1L, JsfBase.getIdUsuario(), this.orden.getIdCreditoNota(), this.orden.getImporte());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
+					
+					this.importe+= (this.orden.getImporte()- anterior.getImporte());
+					if(this.orden.getIdTipoCreditoNota().equals(1L))
+						this.toCheckOrdenDevolucion(sesion);
 					break;
 				case ELIMINAR:
 					regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
 					this.orden.setIdCreditoEstatus(2L);
 					bitacoraNota= new TcManticCreditosBitacoraDto(this.orden.getConsecutivo(), "", this.orden.getIdCreditoEstatus(), -1L, JsfBase.getIdUsuario(), this.orden.getIdCreditoNota(), this.orden.getImporte());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
-					break;
-				case JUSTIFICAR:
-					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
-						this.orden.setIdCreditoEstatus(this.bitacora.getIdCreditoEstatus());
-						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-						if(this.bitacora.getIdCreditoEstatus().equals(2L)) {
-							regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
-							this.orden.setIdCreditoEstatus(2L);
-     					bitacoraNota= new TcManticCreditosBitacoraDto(this.orden.getConsecutivo(), "", this.orden.getIdCreditoEstatus(), -1L, JsfBase.getIdUsuario(), this.orden.getIdCreditoNota(), this.orden.getImporte());
-							regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
-						} // if	
-					} // if
+					this.importe-= this.orden.getImporte();
+					if(this.orden.getIdTipoCreditoNota().equals(1L)) 
+						this.toCheckOrdenDevolucion(sesion);
 					break;
 			} // switch
 			if(!regresar)
@@ -127,5 +144,25 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		} // finally
 		return regresar;
 	}	
+	
+	private void toCheckOrdenDevolucion(Session sesion) throws Exception {
+		try {
+			sesion.flush();
+			TcManticDevolucionesDto devolucion= (TcManticDevolucionesDto)DaoFactory.getInstance().findById(sesion, TcManticDevolucionesDto.class, this.orden.getIdDevolucion());
+			if(this.importe.equals(devolucion.getTotal()))
+				devolucion.setIdDevolucionEstatus(5L); // TERMINADA
+			else 
+  			if(this.importe.equals(this.orden.getImporte()))
+  				devolucion.setIdDevolucionEstatus(6L); // SALDADA
+				else
+  				devolucion.setIdDevolucionEstatus(4L); // PARCIALIZADA
+			DaoFactory.getInstance().update(sesion, devolucion);
+			TcManticDevolucionesBitacoraDto estatus= new TcManticDevolucionesBitacoraDto(devolucion.getIdDevolucionEstatus(), "", this.orden.getIdDevolucion(), JsfBase.getIdUsuario(), -1L, devolucion.getConsecutivo(), devolucion.getTotal());
+			DaoFactory.getInstance().insert(sesion, estatus);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+	} 
 	
 } 

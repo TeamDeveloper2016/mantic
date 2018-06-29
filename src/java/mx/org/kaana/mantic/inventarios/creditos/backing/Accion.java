@@ -53,6 +53,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 		return this.accion.equals(EAccion.AGREGAR)? "none": "";
 	}
 
+	public Boolean getModificar() {
+		return this.accion.equals(EAccion.MODIFICAR);
+	}
+
 	public NotaCredito getOrden() {
 		return orden;
 	}
@@ -114,7 +118,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     Transaccion transaccion= null;
     String regresar        = null;
     try {			
-			transaccion = new Transaccion(this.orden);
+			transaccion = new Transaccion(this.orden, (Double)this.attrs.get("importe"));
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
@@ -158,6 +162,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 						this.attrs.put("parcial", 0D);
     			TcManticDevolucionesDto devolucion= (Long)this.attrs.get("idDevolucion")< 0L? new TcManticDevolucionesDto(): (TcManticDevolucionesDto)DaoFactory.getInstance().findById(TcManticDevolucionesDto.class, (Long)this.attrs.get("idDevolucion"));
 					this.orden.setImporte(Numero.toRedondearSat(devolucion.getTotal()- (Double)this.attrs.get("parcial")));
+					this.attrs.put("importe", this.orden.getImporte());
 					this.attrs.put("total", Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, devolucion.getTotal()));
 					this.attrs.put("parcial", Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, (Double)this.attrs.get("parcial")));
 					params.put("idDevolucion", this.attrs.get("idDevolucion"));
@@ -179,6 +184,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 						this.attrs.put("parcial", 0D);
     			TcManticNotasEntradasDto notaEntrada= (Long)this.attrs.get("idNotaEntrada")< 0L? new TcManticNotasEntradasDto(): (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, (Long)this.attrs.get("idNotaEntrada"));
 					this.orden.setImporte(Numero.toRedondearSat(notaEntrada.getTotal()- (Double)this.attrs.get("parcial")));
+					this.attrs.put("importe", this.orden.getImporte());
 					this.attrs.put("total", Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, notaEntrada.getTotal()));
 					this.attrs.put("parcial", Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, (Double)this.attrs.get("parcial")));
 					params.put("idNotaEntrada", this.attrs.get("idNotaEntrada"));
@@ -194,8 +200,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 					break;
 				case 3:
 					params.put("idProveedor", this.attrs.get("idProveedor"));
+					this.attrs.put("importe", 99999999D);
 					if((Long)this.attrs.get("idProveedor")> 0L) {
-						this.attrs.put("proveedores", UIEntity.build("VistaCreditosNotasDto", "proveedores", params, columns));
+						this.attrs.put("proveedores", UIEntity.build("VistaOrdenesComprasDto", "moneda", params, columns));
 						List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 						if(proveedores!= null && !proveedores.isEmpty()) 
 							if(this.accion.equals(EAccion.AGREGAR))

@@ -34,7 +34,16 @@
 				order by
 				  registro
       </select>
-   </unit>		
+      <select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_creditos_notas
+				where
+				  ejercicio= {ejercicio} 
+				  and id_empresa= {idEmpresa}				
+			</select>		
+    </unit>		
     <unit id="TcManticCreditosEstatusDto">
       <select id="row">
         select      

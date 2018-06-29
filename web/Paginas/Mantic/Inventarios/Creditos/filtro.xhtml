@@ -91,8 +91,7 @@
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">
-                  <p:menuitem value="Agregar directa" action="#{manticInventariosCreditosFiltro.doAccion('AGREGAR', 2)}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
-                  <p:menuitem value="Agregar proveedor" action="#{manticInventariosCreditosFiltro.doAccion('AGREGAR', 3)}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
+                  <p:menuitem value="Agregar directa" action="#{manticInventariosCreditosFiltro.doAccion('AGREGAR', 3)}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -112,7 +111,7 @@
               </f:facet>
               <h:outputText value="#{filtro['empresa']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.ordenCompra}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.devolucion}">
               <f:facet name="header">
                 <h:outputText value="No. devolución"/>
               </f:facet>
@@ -133,7 +132,7 @@
               </f:facet>
               <h:outputText value="#{filtro['estatus']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{filtro.directa}">
+            <p:column class="MarAuto Responsive" sortBy="#{filtro.folio}">
               <f:facet name="header">
                 <h:outputText value="Folio"/>
               </f:facet>
@@ -144,6 +143,12 @@
                 <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{filtro['importe']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-wid-13 janal-column-center" sortBy="#{filtro.nombre}">
+              <f:facet name="header">
+                <h:outputText value="Nombre"/>
+              </f:facet>
+              <h:outputText value="#{filtro['nombre']}"/>
             </p:column>		
             <p:column class="MarAuto Responsive janal-wid-13 janal-column-center" sortBy="#{filtro.fecha}">
               <f:facet name="header">

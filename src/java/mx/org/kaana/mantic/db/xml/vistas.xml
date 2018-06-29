@@ -75,9 +75,13 @@
 					tc_mantic_creditos_notas.importe,
 		  		tc_mantic_creditos_estatus.nombre as estatus,
 					tc_mantic_creditos_estatus.id_credito_estatus,
+				  tc_mantic_tipos_creditos_notas.id_tipo_credito_nota,
+				  tc_mantic_tipos_creditos_notas.nombre,
 					tc_mantic_creditos_notas.registro     
         from
           tc_mantic_creditos_notas         
+        inner join
+          tc_mantic_tipos_creditos_notas on tc_mantic_creditos_notas.id_tipo_credito_nota=tc_mantic_tipos_creditos_notas.id_tipo_credito_nota      
         inner join
           tc_mantic_creditos_estatus on tc_mantic_creditos_notas.id_credito_estatus=tc_mantic_creditos_estatus.id_credito_estatus      
         inner join
@@ -887,7 +891,7 @@
 					tc_mantic_notas_detalles.iva, 
 					tc_mantic_notas_detalles.impuestos, 
 					tc_mantic_notas_detalles.sub_total, 
-					tc_mantic_notas_detalles.cantidad, 
+					0 as cantidad, 
 					tc_mantic_notas_detalles.cantidades as solicitados, 
 					tc_mantic_notas_detalles.id_nota_detalle as id_orden_detalle, 
 					tc_mantic_notas_detalles.id_articulo, 

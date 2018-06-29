@@ -56,7 +56,6 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
       this.attrs.put("idDevolucion", JsfBase.getFlashAttribute("idDevolucion"));
       this.attrs.put("notaEntrada", JsfBase.getFlashAttribute("notaEntrada"));
-      this.attrs.put("sortOrder", "order by tc_mantic_devoluciones.id_empresa, tc_mantic_devoluciones.ejercicio, tc_mantic_devoluciones.orden");
 			this.toLoadCatalog();
       if(this.attrs.get("idDevolucion")!= null || this.attrs.get("notaEntrada")!= null) 
 			  this.doLoad();
@@ -69,9 +68,10 @@ public class Filtro extends IBaseFilter implements Serializable {
  
   @Override
   public void doLoad() {
-    List<Columna> columns= null;
+    List<Columna> columns     = null;
 		Map<String, Object> params= toPrepare();
     try {
+      params.put("sortOrder", "order by tc_mantic_devoluciones.id_empresa, tc_mantic_devoluciones.ejercicio, tc_mantic_devoluciones.orden");
       columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
