@@ -22,6 +22,14 @@ public class Pago implements Serializable{
 	private String referenciaCredito;
 	private String referenciaDebito;
 	private String referenciaCheque;
+	private String pago$;
+	private String cambio$;
+	private Double pago;
+	private Double cambio;
+	private Double limiteCredito;
+	private Double limiteDebito;
+	private Double limiteCheque;
+	private Double limiteVales;
 	
 	public Pago(){
 		this(new Totales());
@@ -58,16 +66,32 @@ public class Pago implements Serializable{
 		this.totales = totales;
 	}		
 
+	public void setPago(Double pago) {
+		this.pago= pago;
+	}
+	
 	public Double getPago() {
 		return (this.efectivo + this.credito + this.debito + this.cheque + this.vales);
+	}
+	
+	public void setPago$(String pago$) {
+		this.pago$= pago$;
 	}
 	
 	public String getPago$() {
 		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(getPago()));
 	}	
 
+	public void setCambio$(String cambio$) {
+		this.cambio$= cambio$;
+	}
+	
 	public String getCambio$() {
 		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(getCambio()));
+	}
+	
+	public void setCambio(Double cambio) {
+		this.cambio= cambio;
 	}
 	
 	public Double getCambio() {
@@ -147,6 +171,22 @@ public class Pago implements Serializable{
 		return regresar < 0D ? 0D : regresar;
 	}
 
+	public void setLimiteCredito(Double limiteCredito) {
+		this.limiteCredito= limiteCredito;
+	}
+	
+	public void setLimiteDebito(Double limiteDebito) {
+		this.limiteDebito= limiteDebito;
+	}
+	
+	public void setLimiteCheque(Double limiteCheque) {
+		this.limiteCheque= limiteCheque;
+	}
+	
+	public void setLimiteVales(Double limiteVales) {
+		this.limiteVales= limiteVales;
+	}
+	
 	public UISelectEntity getBancoCredito() {
 		return bancoCredito;
 	}
