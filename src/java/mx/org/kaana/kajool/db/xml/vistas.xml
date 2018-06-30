@@ -1175,6 +1175,60 @@
           where 
             tc_janal_proyectos.id_grupo= {idGrupo} 
       </select>      
-    </unit>        					    			
+    </unit>        	
+    <unit id="VistaInformacionProveedor">		
+      <select id="telefonos">
+        select group_concat(telefono_proveedor.valor separator ' , ') telefonos_proveedor from 
+          tc_mantic_ordenes_compras
+        inner join 
+          tc_mantic_proveedores on tc_mantic_ordenes_compras.id_proveedor= tc_mantic_proveedores.id_proveedor
+        left join 
+          tr_mantic_proveedor_tipo_contacto telefono_proveedor on tc_mantic_proveedores.id_proveedor = telefono_proveedor.id_proveedor and telefono_proveedor.id_tipo_contacto between 1 and 8
+      </select>	
+      <select id="emails">
+        select group_concat(valor separator ' , ') emails_proveedor from 
+          tc_mantic_ordenes_compras
+        inner join 
+          tc_mantic_proveedores on tc_mantic_ordenes_compras.id_proveedor= tc_mantic_proveedores.id_proveedor
+        left join 
+          tr_mantic_proveedor_tipo_contacto on tc_mantic_proveedores.id_proveedor = tc_mantic_proveedores.id_proveedor and tr_mantic_proveedor_tipo_contacto.id_tipo_contacto between 9 and 11
+      </select>
+    </unit>	    			
+    <unit id="VistaInformacionAlmacen">		
+      <select id="telefonos">
+       select group_concat(tr_mantic_almacen_tipo_contacto.valor separator ' , ') telefonos_almacen from 
+        tc_mantic_ordenes_compras
+       inner join 
+        tc_mantic_almacenes on tc_mantic_ordenes_compras.id_almacen= tc_mantic_almacenes.id_almacen
+       left join 
+        tr_mantic_almacen_tipo_contacto on tc_mantic_almacenes.id_almacen = tr_mantic_almacen_tipo_contacto.id_almacen and tr_mantic_almacen_tipo_contacto.id_tipo_contacto between 1 and 8
+      </select>	
+      <select id="emails">
+       select group_concat(tr_mantic_almacen_tipo_contacto.valor separator ' , ') emails_almacen from 
+        tc_mantic_ordenes_compras
+      inner join 
+        tc_mantic_almacenes on tc_mantic_ordenes_compras.id_almacen= tc_mantic_almacenes.id_almacen
+      left join 
+        tr_mantic_almacen_tipo_contacto on tc_mantic_almacenes.id_almacen = tr_mantic_almacen_tipo_contacto.id_almacen and tr_mantic_almacen_tipo_contacto.id_tipo_contacto between 9 and 11
+      </select>
+    </unit>	    			
+    <unit id="VistaInformacionEmpresas">		
+      <select id="telefonos">
+       select group_concat(tr_mantic_almacen_tipo_contacto.valor separator ' , ') telefonos_almacen from 
+        tc_mantic_ordenes_compras
+       inner join 
+        tc_mantic_almacenes on tc_mantic_ordenes_compras.id_almacen= tc_mantic_almacenes.id_almacen
+       left join 
+        tr_mantic_almacen_tipo_contacto on tc_mantic_almacenes.id_almacen = tr_mantic_almacen_tipo_contacto.id_almacen and tr_mantic_almacen_tipo_contacto.id_tipo_contacto between 1 and 8
+      </select>	
+      <select id="emails">
+       select group_concat(tr_mantic_almacen_tipo_contacto.valor separator ' , ') emails_almacen from 
+        tc_mantic_ordenes_compras
+       inner join 
+        tc_mantic_almacenes on tc_mantic_ordenes_compras.id_almacen= tc_mantic_almacenes.id_almacen
+       left join 
+        tr_mantic_almacen_tipo_contacto on tc_mantic_almacenes.id_almacen = tr_mantic_almacen_tipo_contacto.id_almacen and tr_mantic_almacen_tipo_contacto.id_tipo_contacto between 9 and 11
+      </select>
+    </unit>	    			
   </dml>
 </process>
