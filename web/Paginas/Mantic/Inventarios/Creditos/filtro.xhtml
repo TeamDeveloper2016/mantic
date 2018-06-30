@@ -131,7 +131,7 @@
 								<f:setPropertyActionListener target="#{manticInventariosCreditosFiltro.attrs.idDevolucion}" value="#{filtro.idDevolucion}"/>
                 <h:outputText value="#{filtro['devolucion']}"/>
 							</p:commandLink>	
-							<p:commandLink action="#{manticInventariosCreditosFiltro.doDevolucion}" title="Nota de entrada" rendered="#{filtro.idTipoCreditoNota eq '2'}">
+							<p:commandLink action="#{manticInventariosCreditosFiltro.doNotaEntrada}" title="Nota de entrada" rendered="#{filtro.idTipoCreditoNota eq '2'}">
 								<f:setPropertyActionListener target="#{manticInventariosCreditosFiltro.attrs.idNotaEntrada}" value="#{filtro.idNotaEntrada}"/>
                 <h:outputText value="#{filtro['notaEntrada']}"/>
 							</p:commandLink>	
