@@ -111,20 +111,31 @@
               </f:facet>
               <h:outputText value="#{filtro['empresa']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.devolucion}">
-              <f:facet name="header">
-                <h:outputText value="No. devolución"/>
-              </f:facet>
-							<p:commandLink action="#{manticInventariosCreditosFiltro.doDevolucion}">
-								<f:setPropertyActionListener target="#{manticInventariosCreditosFiltro.attrs.idDevolucion}" value="#{filtro.idDevolucion}"/>
-                <h:outputText value="#{filtro['devolucion']}"/>
-							</p:commandLink>	
-            </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="Nota crédito"/>
               </f:facet>
               <h:outputText value="#{filtro['consecutivo']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{filtro.nombre}">
+              <f:facet name="header">
+                <h:outputText value="Nombre"/>
+              </f:facet>
+              <h:outputText value="#{filtro['nombre']}"/>
+            </p:column>		
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-13">
+              <f:facet name="header">
+                <h:outputText value="Consecutivo"/>
+              </f:facet>
+							<p:commandLink action="#{manticInventariosCreditosFiltro.doDevolucion}" title="No. devolución" rendered="#{filtro.idTipoCreditoNota eq '1'}">
+								<f:setPropertyActionListener target="#{manticInventariosCreditosFiltro.attrs.idDevolucion}" value="#{filtro.idDevolucion}"/>
+                <h:outputText value="#{filtro['devolucion']}"/>
+							</p:commandLink>	
+							<p:commandLink action="#{manticInventariosCreditosFiltro.doDevolucion}" title="Nota de entrada" rendered="#{filtro.idTipoCreditoNota eq '2'}">
+								<f:setPropertyActionListener target="#{manticInventariosCreditosFiltro.attrs.idNotaEntrada}" value="#{filtro.idNotaEntrada}"/>
+                <h:outputText value="#{filtro['notaEntrada']}"/>
+							</p:commandLink>	
+							<h:outputText value="#{filtro['proveedor']}" rendered="#{filtro.idTipoCreditoNota eq '3'}"/>
             </p:column>		
             <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{filtro.estatus}">
               <f:facet name="header">
@@ -143,12 +154,6 @@
                 <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{filtro['importe']}"/>
-            </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-13 janal-column-center" sortBy="#{filtro.nombre}">
-              <f:facet name="header">
-                <h:outputText value="Nombre"/>
-              </f:facet>
-              <h:outputText value="#{filtro['nombre']}"/>
             </p:column>		
             <p:column class="MarAuto Responsive janal-wid-13 janal-column-center" sortBy="#{filtro.fecha}">
               <f:facet name="header">

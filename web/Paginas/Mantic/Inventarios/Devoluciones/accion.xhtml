@@ -52,18 +52,18 @@
 						<p:tab title="Articulos">
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
 								<div class="ui-grid-row janal-grid-row">
-									<div class="ui-grid-col-1">
+									<div class="ui-grid-col-2">
      								<p:outputLabel for="consecutivo" value="No. devolución:" style="display: #{manticInventariosDevolucionesAccion.agregar}"/>
 									</div>	
-									<div class="ui-grid-col-12">
+									<div class="ui-grid-col-10">
 	   							  <p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticInventariosDevolucionesAccion.adminOrden.orden.consecutivo}" readonly="true" style="display: #{manticInventariosDevolucionesAccion.agregar}"/>
   	  						</div>	
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
-									<div class="ui-grid-col-1">
+									<div class="ui-grid-col-2">
 								    <p:outputLabel for="idNotaEntrada" value="Nota de entrada:"/>
 									</div>
-									<div class="ui-grid-col-12">
+									<div class="ui-grid-col-10">
 										<p:selectOneMenu id="idNotaEntrada" value="#{manticInventariosDevolucionesAccion.adminOrden.orden.ikNotaEntrada}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="startsWith">
 											<f:selectItems value="#{manticInventariosDevolucionesAccion.attrs.notas}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{element.razonSocial}"/>
 											<p:column headerText="Clave">
@@ -82,10 +82,10 @@
 									</div>		
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
-									<div class="ui-grid-col-1">
+									<div class="ui-grid-col-2">
 								    <p:outputLabel value="Ajustar costos:" styleClass="costos"/>
 									</div>	
-									<div class="ui-grid-col-12">
+									<div class="ui-grid-col-10">
     								<p:inputSwitch widgetVar="costos" value="#{manticInventariosDevolucionesAccion.aplicar}" styleClass="costos" onLabel="SI" offLabel="NO"/>
 									</div>
 								</div>	

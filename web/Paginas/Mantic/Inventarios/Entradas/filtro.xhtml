@@ -126,6 +126,12 @@
               </f:facet>
               <h:outputText value="#{filtro['empresa']}"/>
             </p:column>		
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
+              <f:facet name="header">
+                <h:outputText value="Nota entrada"/>
+              </f:facet>
+              <h:outputText value="#{filtro['consecutivo']}"/>
+            </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.ordenCompra}">
               <f:facet name="header">
                 <h:outputText value="Orden compra"/>
@@ -134,12 +140,6 @@
 								<f:setPropertyActionListener target="#{manticInventariosEntradasFiltro.attrs.idOrdenCompra}" value="#{filtro.idOrdenCompra}"/>
                 <h:outputText value="#{filtro['ordenCompra']}"/>
 						  </p:commandLink>
-            </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
-              <f:facet name="header">
-                <h:outputText value="Nota entrada"/>
-              </f:facet>
-              <h:outputText value="#{filtro['consecutivo']}"/>
             </p:column>		
             <p:column class="MarAuto Responsive  janal-wid-10" sortBy="#{filtro.directa}">
               <f:facet name="header">

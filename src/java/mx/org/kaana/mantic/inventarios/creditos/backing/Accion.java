@@ -80,6 +80,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("idCreditoNota", JsfBase.getFlashAttribute("idCreditoNota")== null? -1L: JsfBase.getFlashAttribute("idCreditoNota"));
       this.attrs.put("idDevolucion", JsfBase.getFlashAttribute("idDevolucion")== null? -1L: JsfBase.getFlashAttribute("idDevolucion"));
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
+      this.attrs.put("idProveedor", -1L);
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			doLoad();
@@ -190,7 +191,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 					this.attrs.put("parcial", Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, (Double)this.attrs.get("parcial")));
 					params.put("idNotaEntrada", this.attrs.get("idNotaEntrada"));
 					if((Long)this.attrs.get("idNotaEntrada")> 0L) {
-						this.attrs.put("notas", UIEntity.build("VistaDevolucionesDto", "notas", params, columns));
+						this.attrs.put("notas", UIEntity.build("VistaCreditosNotasDto", "notas", params, columns));
 						List<UISelectEntity> notas= (List<UISelectEntity>)this.attrs.get("notas");
 						if(notas!= null && !notas.isEmpty()) 
  							if(this.accion.equals(EAccion.AGREGAR))
@@ -201,16 +202,15 @@ public class Accion extends IBaseAttribute implements Serializable {
 					break;
 				case 3:
 					params.put("idProveedor", this.attrs.get("idProveedor"));
-					this.attrs.put("importe", 99999999D);
-					if((Long)this.attrs.get("idProveedor")> 0L) {
-						this.attrs.put("proveedores", UIEntity.build("VistaOrdenesComprasDto", "moneda", params, columns));
-						List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
-						if(proveedores!= null && !proveedores.isEmpty()) 
-							if(this.accion.equals(EAccion.AGREGAR))
-	    					this.orden.setIkProveedor(proveedores.get(0));
-						  else
-                this.orden.setIkProveedor(proveedores.get(proveedores.indexOf(this.orden.getIkProveedor())));							
-					} // if	
+					this.orden.setImporte(0D);
+					columns.remove(columns.size()- 1);
+					this.attrs.put("proveedores", UIEntity.build("VistaOrdenesComprasDto", "moneda", params, columns));
+					List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
+					if(proveedores!= null && !proveedores.isEmpty()) 
+						if(this.accion.equals(EAccion.AGREGAR))
+							this.orden.setIkProveedor(proveedores.get(0));
+						else
+							this.orden.setIkProveedor(proveedores.get(proveedores.indexOf(this.orden.getIkProveedor())));							
 					break;
 			} // switch
     } // try
