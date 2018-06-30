@@ -90,10 +90,22 @@
 								<p:calendar id="fecha" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticVentasCajaAccion.attrs.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario">
 									<p:ajax event="dateSelect" process="@this" listener="#{manticVentasCajaAccion.doLoadTicketAbiertos}" update="encabezadoVenta contenido contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 								</p:calendar>								
-								<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasCajaAccion.attrs.ticketAbierto}" styleClass="janal-wid-100-txt">
+								<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasCajaAccion.attrs.ticketAbierto}" styleClass="janal-wid-100-txt" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="startsWith">
 									<p:ajax event="change" onstart="loadTicketAbiertos();" update="" oncomplete="janal.desbloquear();" />
 									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/> 
-									<f:selectItems value="#{manticVentasCajaAccion.attrs.ticketsAbiertos}"/>
+									<f:selectItems value="#{manticVentasCajaAccion.attrs.ticketsAbiertos}" var="element" itemValue="#{element}" itemLabel="No.: #{element.consecutivo} - Cliente: #{element.cliente} - Precio: #{element.precioTotal}"/>
+									<p:column headerText="No.">
+										<h:outputText value="#{item.consecutivo}"/>
+									</p:column>   
+									<p:column headerText="Cliente">
+										<h:outputText value="#{item.cliente}"/>
+									</p:column>
+									<p:column headerText="Total">
+										<h:outputText value="#{item.precioTotal}"/>
+									</p:column>
+									<p:column headerText="Usuario">
+										<h:outputText value="#{item.nombre}"/>
+									</p:column>
 								</p:selectOneMenu>																								
 							</p:panelGrid>	
 							<p:separator/>
