@@ -193,8 +193,9 @@
 				  tc_mantic_ventas_estatus.nombre as estatus,
 					tc_mantic_ventas.id_venta_estatus,
 					tc_mantic_ventas.registro,
-					tc_mantic_ventas_estatus.estatus_asociados, 
-					tc_mantic_personas.cuenta
+					tc_mantic_ventas_estatus.estatus_asociados, 					
+					tc_mantic_personas.cuenta,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre
 				from 
 					tc_mantic_ventas
 				inner join 
