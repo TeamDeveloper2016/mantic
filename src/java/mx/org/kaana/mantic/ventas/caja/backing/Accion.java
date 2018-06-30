@@ -243,21 +243,20 @@ public class Accion extends IBaseCliente implements Serializable {
 	} // toDescuentoVigente
 	
 	public void doLoadTicketAbiertos(){
-		List<UISelectItem> ticketsAbiertos= null;
-		Map<String, Object>params         = null;
-		List<String> fields               = null;
+		List<UISelectEntity> ticketsAbiertos= null;
+		Map<String, Object>params           = null;
+		List<Columna> campos                = null;
 		try {
-			fields= new ArrayList<>();
 			params= new HashMap<>();
 			params.put("sortOrder", "");
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
-			fields.add("consecutivo");
-			fields.add("cliente");
-			fields.add("precioTotal");
+			campos= new ArrayList<>();
+			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put(Constantes.SQL_CONDICION, toCondicion());
-			ticketsAbiertos= UISelect.build("VistaVentasDto", "lazy", params, fields, " - ", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			ticketsAbiertos= UIEntity.build("VistaVentasDto", "lazy", params, campos, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("ticketsAbiertos", ticketsAbiertos);			
-			this.attrs.put("ticketAbierto", "-1");
+			this.attrs.put("ticketAbierto", new UISelectEntity("-1"));
 			this.setAdminOrden(new AdminTickets(new TicketVenta()));
 			this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
 			this.attrs.put("pagarVenta", false);
@@ -294,13 +293,19 @@ public class Accion extends IBaseCliente implements Serializable {
 	} // toCondicion
 	
 	public void doAsignaTicketAbierto(){
-		Map<String, Object>params = null;
+		Map<String, Object>params           = null;
+		List<UISelectEntity> ticketsAbiertos= null;
+		UISelectEntity ticketAbierto        = null;
+		UISelectEntity ticketAbiertoPivote  = null;
 		try {
+			ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
+			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
+			ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));
 			params= new HashMap<>();
-			params.put("idVenta", this.attrs.get("ticketAbierto"));
+			params.put("idVenta", ticketAbiertoPivote.getKey());
 			setDomicilio(new Domicilio());
 			this.attrs.put("registroCliente", new TcManticClientesDto());
-			if(!this.attrs.get("ticketAbierto").toString().equals("-1")){
+			if(!ticketAbiertoPivote.getKey().equals(-1L)){
 				this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), false));
 				this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 				loadCatalog();
