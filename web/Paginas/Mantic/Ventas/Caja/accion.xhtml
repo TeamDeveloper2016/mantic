@@ -224,11 +224,11 @@
 									<p:ajax event="blur" listener="#{manticVentasCajaAccion.doUpdatePorcentaje}" process="@this" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#descuento'), '0'); return true;"/>
 								</p:inputText>	
 								<p:inputSwitch value="#{manticVentasCajaAccion.attrs.facturarVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt">
-										<p:ajax listener="#{manticVentasCajaAccion.doActivarCliente}" process="@this" update="contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();janal.refresh();"/>
-									</p:inputSwitch>
-								<p:inputSwitch value="#{manticVentasCajaAccion.attrs.creditoVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt">
-										<!--p:ajax listener="#{manticVentasCajaAccion.doActivarCliente}" process="@this" update="contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/-->
-									</p:inputSwitch>
+									<p:ajax listener="#{manticVentasCajaAccion.doActivarCliente}" process="@this" update="contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();janal.refresh();"/>
+								</p:inputSwitch>
+								<p:inputSwitch value="#{manticVentasCajaAccion.attrs.creditoVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt" disabled="#{!manticVentasCajaAccion.attrs.creditoCliente}">
+									<!--p:ajax listener="#{manticVentasCajaAccion.doActivarCliente}" process="@this" update="contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/-->
+								</p:inputSwitch>
 							</p:panelGrid>	
 							<p:panelGrid id="panelTotales" layout="grid" columns="3" styleClass="janal-wid-99" columnClasses="janal-wid-80, janal-wid-20">
 								<p:panelGrid id="panelPago" columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-13, janal-wid-20, janal-wid-30, janal-wid-30">																											
