@@ -498,6 +498,13 @@
 			} // for
 			janal.console('jsArticulos.zeros: '+ count+ ' => '+ this.cursor.top);
 			return this.cursor.top=== count;
+		},
+		invalidate: function(top) {
+			janal.console('jsArticulos.invalidate: '+ top);
+			if(top>= 0)
+			  this.cursor.top= top;
+			janal.reset(); 
+			janal.desbloquear();
 		}
 	});
 	

@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.comun;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +29,12 @@ public abstract class IAdminArticulos implements Serializable {
 	private static final long serialVersionUID=506956550372353914L;
 	
 	private List<Articulo> articulos;
+	private List<Articulo> filtrados;
 	private Totales totales;
 
 	public IAdminArticulos() throws Exception {
-		this.totales= new Totales();
+		this.filtrados= new ArrayList<>();
+		this.totales  = new Totales();
 	}
 
 	public List<Articulo> getArticulos() {
@@ -40,6 +43,14 @@ public abstract class IAdminArticulos implements Serializable {
 
 	public void setArticulos(List<Articulo> articulos) {
 		this.articulos=articulos;
+	}
+
+	public List<Articulo> getFiltrados() {
+		return filtrados;
+	}
+
+	public void setFiltrados(List<Articulo> filtrados) {
+		this.filtrados=filtrados;
 	}
 
 	public Totales getTotales() {
@@ -148,6 +159,12 @@ public abstract class IAdminArticulos implements Serializable {
 				  count++;
 		} // while
 		this.toCalculate();
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		Methods.clean(this.articulos);
+		Methods.clean(this.filtrados);
 	}
 	
 }

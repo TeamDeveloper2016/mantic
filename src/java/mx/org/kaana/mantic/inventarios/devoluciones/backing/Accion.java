@@ -114,6 +114,7 @@ public class Accion extends IBaseArticulos implements Serializable {
           break;
       } // switch
 			this.toLoadCatalog();
+			this.doFilterRows();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -245,4 +246,5 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // finally
 	}
 	
+
 }
