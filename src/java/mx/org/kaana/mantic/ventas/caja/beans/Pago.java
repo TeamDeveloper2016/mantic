@@ -14,14 +14,17 @@ public class Pago implements Serializable{
 	private UISelectEntity bancoCredito;
 	private UISelectEntity bancoDebito;
 	private UISelectEntity bancoCheque;
+	private UISelectEntity bancoTransferencia;
 	private Double efectivo;
 	private Double credito;
 	private Double debito;
 	private Double cheque;
 	private Double vales;	
+	private Double transferencia;	
 	private String referenciaCredito;
 	private String referenciaDebito;
 	private String referenciaCheque;
+	private String referenciaTransferencia;
 	private String pago$;
 	private String cambio$;
 	private Double pago;
@@ -30,32 +33,36 @@ public class Pago implements Serializable{
 	private Double limiteDebito;
 	private Double limiteCheque;
 	private Double limiteVales;
+	private Double limiteTransferencia;
 	
 	public Pago(){
 		this(new Totales());
 	}
 	
 	public Pago(Totales totales){
-		this(totales, 0D, 0D, 0D, 0D, 0D);
+		this(totales, 0D, 0D, 0D, 0D, 0D, 0D);
 	}			
 
-	public Pago(Totales totales, Double efectivo, Double credito, Double debito, Double cheque, Double vales) {
-		this(totales, new UISelectEntity("-1"), new UISelectEntity("-1"), new UISelectEntity("-1"), efectivo, credito, debito, cheque, vales, "", "", "");		
+	public Pago(Totales totales, Double efectivo, Double credito, Double debito, Double cheque, Double vales, Double transferencia) {
+		this(totales, new UISelectEntity("-1"), new UISelectEntity("-1"), new UISelectEntity("-1"), new UISelectEntity("-1"), efectivo, credito, debito, cheque, vales, "", "", "", transferencia, "");		
 	}
 
-	public Pago(Totales totales, UISelectEntity bancoCredito, UISelectEntity bancoDebito, UISelectEntity bancoCheque, Double efectivo, Double credito, Double debito, Double cheque, Double vales, String referenciaCredito, String referenciaDebito, String referenciaCheque) {
-		this.totales          = totales;
-		this.bancoCredito     = bancoCredito;
-		this.bancoDebito      = bancoDebito;
-		this.bancoCheque      = bancoCheque;
-		this.efectivo         = efectivo;
-		this.credito          = credito;
-		this.debito           = debito;
-		this.cheque           = cheque;
-		this.vales            = vales;
-		this.referenciaCredito= referenciaCredito;
-		this.referenciaDebito = referenciaDebito;
-		this.referenciaCheque = referenciaCheque;
+	public Pago(Totales totales, UISelectEntity bancoTransferencia, UISelectEntity bancoCredito, UISelectEntity bancoDebito, UISelectEntity bancoCheque, Double efectivo, Double credito, Double debito, Double cheque, Double vales, String referenciaCredito, String referenciaDebito, String referenciaCheque, Double transferencia, String referenciaTransferencia) {
+		this.totales           = totales;
+		this.bancoTransferencia= bancoTransferencia;
+		this.bancoCredito      = bancoCredito;
+		this.bancoDebito       = bancoDebito;
+		this.bancoCheque       = bancoCheque;
+		this.efectivo          = efectivo;
+		this.credito           = credito;
+		this.debito            = debito;
+		this.cheque            = cheque;
+		this.vales             = vales;
+		this.referenciaCredito = referenciaCredito;
+		this.referenciaDebito  = referenciaDebito;
+		this.referenciaCheque  = referenciaCheque;
+		this.transferencia     = transferencia;
+		this.referenciaTransferencia= referenciaTransferencia;
 	}
 	
 	public Totales getTotales() {
@@ -71,7 +78,7 @@ public class Pago implements Serializable{
 	}
 	
 	public Double getPago() {
-		return (this.efectivo + this.credito + this.debito + this.cheque + this.vales);
+		return (this.efectivo + this.credito + this.debito + this.cheque + this.vales + this.transferencia);
 	}
 	
 	public void setPago$(String pago$) {
@@ -139,38 +146,59 @@ public class Pago implements Serializable{
 		this.vales = vales;
 	}
 
+	public Double getTransferencia() {
+		return transferencia;
+	}
+
+	public void setTransferencia(Double transferencia) {
+		this.transferencia = transferencia;
+	}
+	
 	public Double getLimiteCredito() {
 		Double regresar= 0D;
-		if((this.cheque + this.debito) <= 0)
+		if((this.cheque + this.debito + this.transferencia) <= 0)
 			regresar= this.totales.getTotal();
 		else
-			regresar= this.totales.getTotal() - (this.cheque + this.debito + this.vales);
+			regresar= this.totales.getTotal() - (this.cheque + this.debito + this.vales + this.transferencia);
 		return regresar < 0 ? 0 : regresar;
 	}	
 
 	public Double getLimiteDebito() {
 		Double regresar= 0D;
-		if((this.cheque + this.credito) <= 0)
+		if((this.cheque + this.credito + this.transferencia) <= 0)
 			regresar= this.totales.getTotal();
 		else
-			regresar= this.totales.getTotal() - (this.cheque + this.credito + this.vales);
+			regresar= this.totales.getTotal() - (this.cheque + this.credito + this.vales + + this.transferencia);
 		return regresar < 0 ? 0 : regresar;
 	}
 
 	public Double getLimiteCheque() {
 		Double regresar= 0D;
-		if((this.debito + this.credito) <= 0)
+		if((this.debito + this.credito + this.transferencia) <= 0)
 			regresar= this.totales.getTotal();
 		else
-			regresar= this.totales.getTotal() - (this.credito + this.debito + this.vales);
+			regresar= this.totales.getTotal() - (this.credito + this.debito + this.vales + + this.transferencia);
 		return regresar < 0 ? 0 : regresar;
 	}
 
 	public Double getLimiteVales() {
-		Double regresar= this.totales.getTotal() - (this.cheque + this.debito + this.credito);
+		Double regresar= this.totales.getTotal() - (this.cheque + this.debito + this.credito + + this.transferencia);
 		return regresar < 0D ? 0D : regresar;
 	}
 
+	public Double getLimiteTransferencia() {
+		Double regresar= 0D;
+		if((this.debito + this.credito + this.cheque) <= 0)
+			regresar= this.totales.getTotal();
+		else
+			regresar= this.totales.getTotal() - (this.credito + this.debito + this.vales + this.cheque);
+		return regresar < 0 ? 0 : regresar;
+	}
+
+	public void setLimiteTransferencia(Double limiteTransferencia) {
+		this.limiteTransferencia = limiteTransferencia;
+	}	
+	
 	public void setLimiteCredito(Double limiteCredito) {
 		this.limiteCredito= limiteCredito;
 	}
@@ -185,6 +213,14 @@ public class Pago implements Serializable{
 	
 	public void setLimiteVales(Double limiteVales) {
 		this.limiteVales= limiteVales;
+	}
+
+	public UISelectEntity getBancoTransferencia() {
+		return bancoTransferencia;
+	}
+
+	public void setBancoTransferencia(UISelectEntity bancoTransferencia) {
+		this.bancoTransferencia = bancoTransferencia;
 	}
 	
 	public UISelectEntity getBancoCredito() {
@@ -233,5 +269,13 @@ public class Pago implements Serializable{
 
 	public void setReferenciaCheque(String referenciaCheque) {
 		this.referenciaCheque = referenciaCheque;
+	}	
+
+	public String getReferenciaTransferencia() {
+		return referenciaTransferencia;
+	}
+
+	public void setReferenciaTransferencia(String referenciaTransferencia) {
+		this.referenciaTransferencia = referenciaTransferencia;
 	}	
 }
