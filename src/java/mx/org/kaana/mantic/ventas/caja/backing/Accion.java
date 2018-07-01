@@ -293,8 +293,10 @@ public class Accion extends IBaseCliente implements Serializable {
 	} // toCondicion
 	
 	public void doAsignaTicketAbierto(){
-		Map<String, Object>params   = null;
-		UISelectEntity ticketAbierto= null;
+		Map<String, Object>params           = null;
+		UISelectEntity ticketAbierto        = null;
+		UISelectEntity ticketAbiertoPivote  = null;
+		List<UISelectEntity> ticketsAbiertos= null;
 		try {
 			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
 			params= new HashMap<>();
@@ -309,14 +311,18 @@ public class Accion extends IBaseCliente implements Serializable {
 				this.attrs.put("pagarVenta", true);
 				this.attrs.put("cobroVenta", true);				
 				this.attrs.put("tabIndex", 0);
+				this.attrs.put("creditoCliente", false);
 			} // if
 			else{
+				ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
+				ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));
 				this.setAdminOrden(new AdminTickets(new TicketVenta()));
 				this.attrs.put("pagarVenta", false);
 				this.attrs.put("facturarVenta", false);
 				this.attrs.put("cobroVenta", false);
 				this.attrs.put("clienteAsignado", false);
 				this.attrs.put("tabIndex", 0);
+				this.attrs.put("creditoCliente", ticketAbiertoPivote.toLong("idCredito").equals(1L));
 			} // else			
 			this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
 		} // try
