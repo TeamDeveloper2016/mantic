@@ -16,6 +16,8 @@
 		VK_ENTER    : 13, 
 		VK_UP       : 38,
 		VK_DOWN     : 40,
+		VK_PAGE_NEXT: 34,
+		VK_PAGE_PREV: 33,
 		VK_F7       : 118,
 		init: function() { // constructor
 			$precios= this;
@@ -25,13 +27,21 @@
 				janal.console('Keydown: '+ key);
 				switch(key) {
 					case $precios.VK_TAB:
-            $('#verificadorTabla .ui-datatable-data > tr').first().find('.ui-inputfield').first().focus();		
+						return $precios.next();
 					  break;
 					case $precios.VK_ESC:
             PF('dlgVerificador').hide();
 					  break;
 					case $precios.VK_ENTER:
 						return $precios.lookup();
+						break;
+					case $precios.VK_PAGE_NEXT:
+						$('#verificadorTabla_paginator_top > a.ui-paginator-next').click();
+						return setTimeout($precios.next(), 1000);
+						break;
+					case $precios.VK_PAGE_PREV:
+						$('#verificadorTabla_paginator_top > a.ui-paginator-prev').click();
+						return setTimeout($precios.next(), 1000);
 						break;
 				} // swtich
 			});	
@@ -50,6 +60,14 @@
 					case $precios.VK_DOWN:
 						return $precios.hide();
 						break;
+					case $precios.VK_PAGE_NEXT:
+						$('#verificadorTabla_paginator_top > a.ui-paginator-next').click();
+						return setTimeout($precios.next(), 1000);
+						break;
+					case $precios.VK_PAGE_PREV:
+						$('#verificadorTabla_paginator_top > a.ui-paginator-prev').click();
+						return setTimeout($precios.next(), 1000);
+						break;
 				} // swtich
 			});	
 		},
@@ -66,6 +84,13 @@
 		hide: function() {
 			janal.console('jsPrecios.hide');
 			$('#verificadorPrecio').attr('style', 'display:none');
+			return false;
+		},
+		next: function() {
+			PF('widgetVerificador').clearSelection();
+			PF('widgetVerificador').writeSelections();
+			PF('widgetVerificador').selectRow(0, true);		
+			setTimeout($('#verificadorTabla .ui-datatable-data').focus(), 100);
 			return false;
 		}
 	});

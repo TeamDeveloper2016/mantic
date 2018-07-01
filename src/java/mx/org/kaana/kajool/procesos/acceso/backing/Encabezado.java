@@ -2,7 +2,9 @@ package mx.org.kaana.kajool.procesos.acceso.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -10,9 +12,12 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -78,9 +83,31 @@ public class Encabezado extends IBaseFilter implements Serializable {
 		this.doLoad();
 	}
 
-  public void doRowSelectEvent(SelectEvent event) {
+  public void doRowDblSelectEvent(SelectEvent event) {
 		Entity entity= (Entity)event.getObject();
 		LOG.debug("doRowSelectEvent: "+ entity.getKey());
+		List<Columna> columns     = null;
+		Map<String, Object> params= null;
+		try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("ubicacion", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+			params=new HashMap<>();
+			params.put("idArticulo", entity.toLong("idArticulo"));
+			this.attrs.put("almacenes", UIEntity.build("VistaKardexDto", "almacenes", params, columns));
+			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+			if(!almacenes.isEmpty())
+				this.attrs.put("idAlmacen", almacenes.get(0));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+			Methods.clean(columns);
+		} // finally
   }	
 	
 }
