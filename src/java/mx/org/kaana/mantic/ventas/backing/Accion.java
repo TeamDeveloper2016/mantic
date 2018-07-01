@@ -483,8 +483,11 @@ public class Accion extends IBaseArticulos implements Serializable {
 		try {
 			regresar= new StringBuilder();
 			regresar.append(" date_format(tc_mantic_ventas.registro, '%Y%m%d')= date_format(SYSDATE(), '%Y%m%d')");
-			regresar.append(" and tc_mantic_ventas.id_venta_estatus=");
+			regresar.append(" and tc_mantic_ventas.id_venta_estatus in (");
 			regresar.append(EEstatusVentas.ELABORADA.getIdEstatusVenta());
+			regresar.append(" , ");
+			regresar.append(EEstatusVentas.ABIERTA.getIdEstatusVenta());
+			regresar.append(")");
 		} // try
 		catch (Exception e) {			
 			throw e;
