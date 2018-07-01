@@ -165,12 +165,15 @@
 						return $articulos.search();
 						break;						
 					case $articulos.VK_MINUS:
-						$articulos.leavePage= true;
-						var txt= $(this).val().trim().length<= 0;
-						if(txt && $('ul.ui-autocomplete-items:visible').length<= 0 && confirm('¿ Esta seguro que desea terminar con la captura ?')) {
-						  $('#aceptar').click();
-						  return false;
-						} // if	
+						var ok= janal.partial('articulo');
+						if(ok){
+							$articulos.leavePage= true;
+							var txt= $(this).val().trim().length<= 0;
+							if(txt && $('ul.ui-autocomplete-items:visible').length<= 0 && confirm('¿ Esta seguro que desea terminar con la captura ?')) {
+								$('#aceptar').click();
+								return false;
+							} // if
+						} // if
 						break;
 					case $articulos.VK_MAYOR:
 						return $articulos.show($(this));
