@@ -239,8 +239,10 @@ shortcut.add("Shift+f10", function() {
 shortcut.add("Ctrl+P", function() {
 	janal.console('Shortcut tickets abiertos:');
 	if(PF('dlgOpenTickets')){
-		janal.bloquear();
-		loadTicketAbiertos();
+		if(!($('#aceptar').prop("disabled")=== true && $('#cuenta').prop("disabled")=== false)){
+			janal.bloquear();
+			loadTicketAbiertos();
+		} // if
 	} // if
 });
 
