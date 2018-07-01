@@ -293,19 +293,15 @@ public class Accion extends IBaseCliente implements Serializable {
 	} // toCondicion
 	
 	public void doAsignaTicketAbierto(){
-		Map<String, Object>params           = null;
-		List<UISelectEntity> ticketsAbiertos= null;
-		UISelectEntity ticketAbierto        = null;
-		UISelectEntity ticketAbiertoPivote  = null;
+		Map<String, Object>params   = null;
+		UISelectEntity ticketAbierto= null;
 		try {
-			ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
 			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
-			ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));
 			params= new HashMap<>();
-			params.put("idVenta", ticketAbiertoPivote.getKey());
+			params.put("idVenta", ticketAbierto.getKey());
 			setDomicilio(new Domicilio());
 			this.attrs.put("registroCliente", new TcManticClientesDto());
-			if(!ticketAbiertoPivote.getKey().equals(-1L)){
+			if(!ticketAbierto.getKey().equals(-1L)){
 				this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), false));
 				this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 				loadCatalog();
