@@ -304,6 +304,8 @@ public class Accion extends IBaseCliente implements Serializable {
 			setDomicilio(new Domicilio());
 			this.attrs.put("registroCliente", new TcManticClientesDto());
 			if(!ticketAbierto.getKey().equals(-1L)){
+				ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
+				ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));
 				this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), false));
 				this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 				loadCatalog();
@@ -311,18 +313,16 @@ public class Accion extends IBaseCliente implements Serializable {
 				this.attrs.put("pagarVenta", true);
 				this.attrs.put("cobroVenta", true);				
 				this.attrs.put("tabIndex", 0);
-				this.attrs.put("creditoCliente", false);
+				this.attrs.put("creditoCliente", ticketAbiertoPivote.toLong("idCredito").equals(1L));
 			} // if
-			else{
-				ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
-				ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));
+			else{				
 				this.setAdminOrden(new AdminTickets(new TicketVenta()));
 				this.attrs.put("pagarVenta", false);
 				this.attrs.put("facturarVenta", false);
 				this.attrs.put("cobroVenta", false);
 				this.attrs.put("clienteAsignado", false);
 				this.attrs.put("tabIndex", 0);
-				this.attrs.put("creditoCliente", ticketAbiertoPivote.toLong("idCredito").equals(1L));
+				this.attrs.put("creditoCliente", false);				
 			} // else			
 			this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
 		} // try
