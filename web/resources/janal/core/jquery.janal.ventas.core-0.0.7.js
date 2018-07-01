@@ -55,17 +55,21 @@
 			var limiteDebito = parseFloat($('#contenedorGrupos\\:limiteDebito').text());
 			var limiteCredito= parseFloat($('#contenedorGrupos\\:limiteCredito').text());
 			var limiteCheque = parseFloat($('#contenedorGrupos\\:limiteCheque').text());
+			var limiteTransferencia = parseFloat($('#contenedorGrupos\\:limiteTransferencia').text());
 			var debito = parseFloat($('#contenedorGrupos\\:debito').val());
 			var credito= parseFloat($('#contenedorGrupos\\:credito').val());
 			var cheque = parseFloat($('#contenedorGrupos\\:cheque').val());
+			var transferencia = parseFloat($('#contenedorGrupos\\:transferencia').val());
 			var totalVenta = parseFloat($('#contenedorGrupos\\:totalVenta').text());
 			$parent.fields.debito.validaciones= 'libre|max-valor({"cuanto":'+limiteDebito+'})';
 			$parent.fields.credito.validaciones= 'libre|max-valor({"cuanto":'+limiteCredito+'})';
 			$parent.fields.cheque.validaciones= 'libre|max-valor({"cuanto":'+limiteCheque+'})';
 			$parent.fields.pago.validaciones= 'requerido|min-valor({"cuanto":'+totalVenta+'})';
+			$parent.fields.transferencia.validaciones= 'libre|max-valor({"cuanto":'+limiteTransferencia+'})';
 			this.refreshDebito(debito);
 			this.refreshCredito(credito);
 			this.refreshCheque(cheque);
+			this.refreshTransferencia(transferencia);
 			$parent.refresh();
 		}, // refreshCobroValidate			
 		refreshDebito: function(total){
@@ -96,6 +100,16 @@
 			else{
 				$parent.fields.referenciaCheque.validaciones= "libre";
 				$parent.fields.bancoCheque.validaciones= "libre";					
+			} // else
+		}, // refreshCheque
+		refreshTransferencia: function(total){
+			if(total > 0){
+				$parent.fields.referenciaTransferencia.validaciones= "requerido";
+				$parent.fields.bancoTransferencia.validaciones= "requerido";					
+			} // if
+			else{
+				$parent.fields.referenciaTransferencia.validaciones= "libre";
+				$parent.fields.bancoTransferencia.validaciones= "libre";					
 			} // else
 		} // refreshCheque
 	});	

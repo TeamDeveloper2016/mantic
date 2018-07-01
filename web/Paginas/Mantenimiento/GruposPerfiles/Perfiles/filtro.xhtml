@@ -61,7 +61,7 @@
       <p:column headerText="Descripcion" sortBy="#{row.descripcion}">
         <h:outputText value="#{row.descripcion}"/>
       </p:column>
-      <p:column headerText="Acceso" styleClass="janal-column-center" sortBy="#{row.acceso}">
+      <p:column headerText="Acceso" sortBy="#{row.acceso}">
         <h:outputText value="#{row.acceso eq '1'? 'Si':'No'}"/>
       </p:column>
       <p:column headerText="Usuarios" styleClass="janal-column-right" sortBy="#{row.usuarios}">
@@ -88,6 +88,6 @@
   </ui:define>	
   <ui:param name="componenteBloqueo" value="aceptar,tabla, accionesTabla"/>
   <ui:define name ="acciones">
-    <p:commandButton id="aceptar" icon="fa fa-mail-reply" action="/Paginas/Mantenimiento/GruposPerfiles/Grupos/filtro?faces-redirect=true" process="@this" value="Regresar" />
+    <p:commandButton id="aceptar" icon="fa fa-mail-reply" styleClass="janal-text-white" action="/Paginas/Mantenimiento/GruposPerfiles/Grupos/filtro?faces-redirect=true" process="@this" value="Regresar" />
   </ui:define>
 </ui:composition>

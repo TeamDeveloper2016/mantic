@@ -22,7 +22,7 @@
 			
     	$(document).ready(function() {
 				setTimeout("janal.readingMode('#{manticInventariosDevolucionesAccion.attrs.nombreAccion}')", 500);
-        jsArticulos= new Janal.Control.Articulos.Core(#{manticInventariosDevolucionesAccion.adminOrden.articulos.size()});
+        jsArticulos= new Janal.Control.Articulos.Core(#{manticInventariosDevolucionesAccion.adminOrden.filtrados.size()});
       });
 			
 			function affect() {
@@ -92,7 +92,7 @@
 								<p:spacer height="3px"/>
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
-										<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticInventariosDevolucionesAccion.adminOrden.articulos}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">
+										<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticInventariosDevolucionesAccion.adminOrden.filtrados}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">
 											<p:column class="MarAuto Responsive janal-wid-3">
 												<f:facet name="header">
 													<h:outputText value="No."/>
@@ -105,13 +105,19 @@
 											<p:column class="MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
 													<h:outputText value="Proveedor"/>
-												</f:facet>
-												<p:outputLabel value="#{row['codigo']}"/>
+													<p:inputText id="filterCode" value="#{manticInventariosDevolucionesAccion.attrs.filterCode}" styleClass="janal-wid-100-txt">
+														<p:ajax event="keyup" listener="#{manticInventariosDevolucionesAccion.doFilterRows}" update="tabla" process="@this filterCode filterName" onstart="return janal.bloquear();" oncomplete="jsArticulos.invalidate(#{manticInventariosDevolucionesAccion.adminOrden.filtrados.size()- 1});"/>
+													</p:inputText>	
+											  </f:facet>
 	  									  <p:inputText id="auxiliares" value="#{row['codigo']}" styleClass="janal-wid-100-txt key-event-sat fila" style="display: none"/>
+												<p:outputLabel value="#{row['codigo']}"/>
 											</p:column>		
 											<p:column class="MarAuto Responsive">
 												<f:facet name="header">
 													<h:outputText value="Articulo"/>
+													<p:inputText id="filterName" value="#{manticInventariosDevolucionesAccion.attrs.filterName}" styleClass="janal-wid-100-txt">
+														<p:ajax event="keyup" listener="#{manticInventariosDevolucionesAccion.doFilterRows}" update="tabla" process="@this filterCode filterName" onstart="return janal.bloquear();" oncomplete="jsArticulos.invalidate(#{manticInventariosDevolucionesAccion.adminOrden.filtrados.size()- 1});"/>
+													</p:inputText>	
 												</f:facet>
 												<h:outputText id="nombres" value="#{row['nombre']}" title="Código propio: #{row['propio']}    Existencias almacen: #{row['stock']}" escape="false"/>
 											</p:column>		

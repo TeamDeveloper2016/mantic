@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Listado de tickets abiertos para cobro"/>
 	<ui:define name="librerias">    
-		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.0.6.js"/>
+		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.0.7.js"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
 				'descuento': {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'general'},
@@ -35,14 +35,17 @@
 				'efectivo'         : {validaciones: 'libre', mascara: 'decimal', grupo: 'general'},
 				'credito'          : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasCajaAccion.attrs.pago.limiteCredito}})', mascara: 'decimal', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
 				'referenciaCredito': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Capturar la referencia del credito'},
-				'bancoCredito'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu tarjeta de credito'},
+				'bancoCredito'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu tarjeta de credito'},				
 				'debito'           : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasCajaAccion.attrs.pago.limiteDebito}})', mascara: 'decimal', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
 				'referenciaDebito' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Capturar la referencia de debito'},
 				'bancoDebito'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu tarjeta de debito'},
 				'cheque'           : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasCajaAccion.attrs.pago.limiteCheque}})', mascara: 'decimal', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
 				'referenciaCheque' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Capturar la referencia del cheque'},
 				'bancoCheque'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu cheque'},
-				'pago'             : {validaciones: 'requerido|min-valor({"cuanto":100})', mascara: 'libre', grupo: 'general', mensaje: 'No se a cubierto la totalidad del pago.'}
+				'pago'             : {validaciones: 'requerido|min-valor({"cuanto":100})', mascara: 'libre', grupo: 'general', mensaje: 'No se a cubierto la totalidad del pago.'},
+				'transferencia'          : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasCajaAccion.attrs.pago.limiteTransferencia}})', mascara: 'decimal', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
+				'referenciaTransferencia': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Capturar la referencia del credito'},
+				'bancoTransferencia'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu tarjeta de credito'}
 			};	
 			
     	$(document).ready(function() {
@@ -54,7 +57,7 @@
 				font-size: 30px !important;
 				font-weight: bold !important;
 				font-style: italic;	
-			}			
+			}						
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
@@ -199,10 +202,11 @@
 				<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-12">
-							<p:panelGrid layout="grid" columns="3" styleClass="janal-wid-103" columnClasses="janal-wid-80, janal-wid-20, janal-wid-5">
+							<p:panelGrid layout="grid" columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-75, janal-wid-8, janal-wid-8 janal-column-center, janal-wid-8">
 								<p:outputLabel for="cliente" value="Cliente:"/>		
 								<p:outputLabel for="descuento" value="Descuento:"/>
 								<p:outputLabel value="Facturar:"/>
+								<p:outputLabel value="Credito:"/>
 								<p:selectOneMenu id="cliente" value="#{manticVentasCajaAccion.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity" disabled="true">								
 									<f:selectItem itemValue="-1" itemLabel="PUBLICO EN GENERAL"/>
 									<f:selectItems value="#{manticVentasCajaAccion.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
@@ -220,8 +224,11 @@
 									<p:ajax event="blur" listener="#{manticVentasCajaAccion.doUpdatePorcentaje}" process="@this" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#descuento'), '0'); return true;"/>
 								</p:inputText>	
 								<p:inputSwitch value="#{manticVentasCajaAccion.attrs.facturarVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt">
-										<p:ajax listener="#{manticVentasCajaAccion.doActivarCliente}" process="@this" update="contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
-									</p:inputSwitch>
+									<p:ajax listener="#{manticVentasCajaAccion.doActivarCliente}" process="@this" update="contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();janal.refresh();"/>
+								</p:inputSwitch>
+								<p:inputSwitch value="#{manticVentasCajaAccion.attrs.creditoVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt" disabled="#{!manticVentasCajaAccion.attrs.creditoCliente}">
+									<!--p:ajax listener="#{manticVentasCajaAccion.doActivarCliente}" process="@this" update="contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/-->
+								</p:inputSwitch>
 							</p:panelGrid>	
 							<p:panelGrid id="panelTotales" layout="grid" columns="3" styleClass="janal-wid-99" columnClasses="janal-wid-80, janal-wid-20">
 								<p:panelGrid id="panelPago" columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-13, janal-wid-20, janal-wid-30, janal-wid-30">																											
@@ -262,6 +269,22 @@
 									</p:selectOneMenu>
 									<p:inputText id="referenciaCredito" value="#{manticVentasCajaAccion.attrs.pago.referenciaCredito}" styleClass="janal-wid-100-txt" placeholder="Ej. Referencia 4564"/>																		
 									
+									<p:outputLabel for="transferencia" value="Transferencia:"/>
+									<p:inputText id="transferencia" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.pago.transferencia}">
+										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria" oncomplete="jsVentas.refreshCobroValidate();"/>
+									</p:inputText>
+									<p:selectOneMenu id="bancoTransferencia" value="#{manticVentasCajaAccion.attrs.pago.bancoTransferencia}" filter="true" filterMatchMode="startsWith" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
+										<f:selectItem itemValue="" itemLabel="SELECCIONE BANCO"/>
+										<f:selectItems value="#{manticVentasCajaAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
+										<p:column headerText="Nombre">
+											<h:outputText value="#{item.nombre}"/>
+										</p:column>   
+										<p:column headerText="Razón social">
+											<h:outputText value="#{item.razonSocial}"/>
+										</p:column>   
+									</p:selectOneMenu>
+									<p:inputText id="referenciaTransferencia" value="#{manticVentasCajaAccion.attrs.pago.referenciaTransferencia}" styleClass="janal-wid-100-txt" placeholder="Ej. Referencia 4564"/>																																				
+									
 									<p:outputLabel for="cheque" value="Cheque:"/>
 									<p:inputText id="cheque" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.pago.cheque}">
 										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria" oncomplete="jsVentas.refreshCobroValidate();"/>
@@ -290,12 +313,13 @@
 									<p:outputLabel for="total" value="Total:" styleClass="janal-total-compra janal-color-orange"/>
 									<p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticVentasCajaAccion.attrs.pago.totales.total$}"/>
 									<p:outputLabel value="Pago:"/>
-									<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCajaAccion.attrs.pago.pago$}"/>
+									<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="$ #{manticVentasCajaAccion.attrs.pago.pago$}"/>
 									<p:outputLabel for="articulos" value="Cambio:" styleClass="janal-color-blue janal-total-compra "/>
 									<p:outputLabel styleClass="janal-wid-100-txt recalculo janal-color-blue janal-total-compra" value="$ #{manticVentasCajaAccion.attrs.pago.cambio$}"/>
 									<p:outputLabel id="limiteCredito" value="#{manticVentasCajaAccion.attrs.pago.limiteCredito}" style="display: none"/>
 									<p:outputLabel id="limiteDebito" value="#{manticVentasCajaAccion.attrs.pago.limiteDebito}" style="display: none"/>
 									<p:outputLabel id="limiteCheque" value="#{manticVentasCajaAccion.attrs.pago.limiteCheque}" style="display: none"/>
+									<p:outputLabel id="limiteTransferencia" value="#{manticVentasCajaAccion.attrs.pago.limiteTransferencia}" style="display: none"/>
 									<p:outputLabel id="totalVenta" value="#{manticVentasCajaAccion.attrs.pago.totales.total$}" style="display: none"/>
 									<p:inputText id="pago" value="#{manticVentasCajaAccion.attrs.pago.pago$}" style="display: none"/>
 								</p:panelGrid>

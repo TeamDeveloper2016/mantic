@@ -294,18 +294,18 @@ public class Accion extends IBaseCliente implements Serializable {
 	
 	public void doAsignaTicketAbierto(){
 		Map<String, Object>params           = null;
-		List<UISelectEntity> ticketsAbiertos= null;
 		UISelectEntity ticketAbierto        = null;
 		UISelectEntity ticketAbiertoPivote  = null;
+		List<UISelectEntity> ticketsAbiertos= null;
 		try {
-			ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
 			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
-			ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));
 			params= new HashMap<>();
-			params.put("idVenta", ticketAbiertoPivote.getKey());
+			params.put("idVenta", ticketAbierto.getKey());
 			setDomicilio(new Domicilio());
 			this.attrs.put("registroCliente", new TcManticClientesDto());
-			if(!ticketAbiertoPivote.getKey().equals(-1L)){
+			if(!ticketAbierto.getKey().equals(-1L)){
+				ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
+				ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));
 				this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), false));
 				this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 				loadCatalog();
@@ -313,14 +313,16 @@ public class Accion extends IBaseCliente implements Serializable {
 				this.attrs.put("pagarVenta", true);
 				this.attrs.put("cobroVenta", true);				
 				this.attrs.put("tabIndex", 0);
+				this.attrs.put("creditoCliente", ticketAbiertoPivote.toLong("idCredito").equals(1L));
 			} // if
-			else{
+			else{				
 				this.setAdminOrden(new AdminTickets(new TicketVenta()));
 				this.attrs.put("pagarVenta", false);
 				this.attrs.put("facturarVenta", false);
 				this.attrs.put("cobroVenta", false);
 				this.attrs.put("clienteAsignado", false);
 				this.attrs.put("tabIndex", 0);
+				this.attrs.put("creditoCliente", false);				
 			} // else			
 			this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
 		} // try
