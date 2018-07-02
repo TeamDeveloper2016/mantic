@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import mx.org.kaana.libs.pagina.JsfBase;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -19,21 +21,54 @@ import org.primefaces.model.DefaultStreamedContent;
 
 public final class LoadImages {
 
+	public static DefaultStreamedContent getImage(String project, String name) throws FileNotFoundException {
+		DefaultStreamedContent regresar;
+		File file= toListFile(project, name);
+		regresar= toReturnFile(file);
+		return regresar;
+	}
+	
 	public static DefaultStreamedContent getImage(String name) throws FileNotFoundException {
 		DefaultStreamedContent regresar;
 		File file= toListFile(name);
+		regresar= toReturnFile(file);
+		return regresar;
+	} 
+	
+	private static DefaultStreamedContent toReturnFile(File file) throws FileNotFoundException{
+		DefaultStreamedContent regresar;
 		if(file== null || !file.exists() || file.isDirectory())
 		  regresar= new DefaultStreamedContent(new FileInputStream(JsfBase.getRealPath("/resources/janal/img/sistema/bonanza.svg")), "image/svg+xml");
 		else
 			regresar= new DefaultStreamedContent(new FileInputStream(file.getAbsolutePath()), "image/jpg");
 		return regresar;
-	} 
+	}
+	
+	private static File toListFile(String project, String name) {
+		File dir = new File(Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(project).concat(File.separator));		
+		return toReturnListFile(dir, name);
+	}
 	
 	private static File toListFile(String name) {
-		File dir = new File(Configuracion.getInstance().getPropiedadSistemaServidor("path.image"));
-		FileFilter fileFilter = new WildcardFileFilter(name+ "*.jpg", IOCase.INSENSITIVE);
+		File dir = new File(Configuracion.getInstance().getPropiedadSistemaServidor("path.image"));		
+		return toReturnListFile(dir, name);
+	}
+	
+	private static File toReturnListFile(File dir, String name) {		
+		List<String> filters= new ArrayList<>();
+		filters.add(name+ "*.png");
+		filters.add(name+ "*.jpg");
+		FileFilter fileFilter = new WildcardFileFilter(filters, IOCase.INSENSITIVE);
 		File[] files = dir.listFiles(fileFilter);
 		return files== null || files.length<= 0? new File(Configuracion.getInstance().getPropiedadSistemaServidor("path.image")+ name+ ".jpg"): files[0];
 	}
 	
+	public static void main(String ... args) throws Exception{
+		try {
+			LoadImages.getImage("1");
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	}
 }
