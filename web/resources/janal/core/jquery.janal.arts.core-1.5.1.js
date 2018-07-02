@@ -52,7 +52,7 @@
 		VK_CTRL     : 17,
 		VK_MAYOR    : 226,
 		VK_F7       : 118,
-	    change      : [13, 27, 106, 107, 110, 111, 188, 189, 191, 220, 222, 226],
+	  change      : [13, 27, 106, 107, 110, 111, 188, 189, 191, 220, 222, 226],
 		cursor: {
 			top: 1, // el top debera ser elementos que van de 0 a n-1
 			index: 0
@@ -66,27 +66,17 @@
 		}, // init
 		events: function() {
       $(document).on('focus', this.filter, function() {
-				janal.console('jsArticulos.focus: '+ $(this).attr('id')+ ' =>'+ $(this).val().trim());
+				janal.console('jsArticulos.focus: '+ $(this).attr('id')+ ' value:['+ $(this).val().trim()+ ']');
 				$articulos.current= $(this).val().trim();
 				janal.lastNameFocus= this;
 			});  
-      $(document).on('keyup', this.filter, function() {
+      $(document).on('keyup', this.filter, function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
-				janal.console('jsArticulos.keyup: '+ $(this).attr('id')+ ' =>'+ $articulos.current);
-        switch(key) {
-					case $articulos.VK_ENTER:
-						if(this.current!== $(this).val().trim()) {
-							this.current= $(this).val().trim();
-							filterRows();
-						} // if	
-						break;
-					default:
-						if(this.current!== $(this).val().trim()) {
-							this.current= $(this).val().trim();
-							filterRows();
-						} // if	
-						break;
-				} // switch				
+				janal.console('jsArticulos.keyup: '+ $(this).attr('id')+ ' current: ['+ $articulos.current+ '] value: ['+ $(this).val().trim()+ ']');
+				if($articulos.current!== $(this).val().trim()) {
+					$articulos.current= $(this).val().trim();
+					filterRows();
+				} // if	
 			});  
 			$(window).bind('beforeunload', function() { 
 				if(typeof(jsArticulos)=== 'undefined' || jsArticulos.leavePage)

@@ -115,7 +115,7 @@
 						</p:column>
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.limite}">
 							<f:facet name="header">
-								<h:outputText value="Fecha limite"/>
+								<h:outputText value="Vence" title="Fecha en la que vence el crédito otorgado"/>
 							</f:facet>
 							<h:outputText value="#{filtro['limite']}"/>
 						</p:column>
@@ -133,7 +133,7 @@
 						</p:column>
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.dias}">
 							<f:facet name="header">
-								<h:outputText value="Días transcurridos"/>
+								<h:outputText value="Días" title="Días trascurridos desde la compra"/>
 							</f:facet>
 							<h:outputText value="#{filtro['dias']}"/>
 						</p:column>
