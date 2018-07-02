@@ -218,6 +218,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       parametros.put("REPORTE_EMPRESA_EMAILS", datosEmpresa.toString("emailsEmpresa"));
       parametros.put("REPORTE_EMPRESA_MUNICIPIO", datosEmpresa.toString("empresaRegion"));
       parametros.put("REPORTE_EMPRESA_RFC", datosEmpresa.toString("rfcEmpresa"));
+      parametros.put("REPORTE_EMPRESA_CLAVE", datosEmpresa.toString("clave"));
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
