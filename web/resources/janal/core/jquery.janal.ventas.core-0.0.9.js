@@ -61,17 +61,35 @@
 			var cheque = parseFloat($('#contenedorGrupos\\:cheque').val());
 			var transferencia = parseFloat($('#contenedorGrupos\\:transferencia').val());
 			var totalVenta = parseFloat($('#contenedorGrupos\\:totalVenta').text());
-			$parent.fields.debito.validaciones= 'libre|max-valor({"cuanto":'+limiteDebito+'})';
-			$parent.fields.credito.validaciones= 'libre|max-valor({"cuanto":'+limiteCredito+'})';
-			$parent.fields.cheque.validaciones= 'libre|max-valor({"cuanto":'+limiteCheque+'})';
-			$parent.fields.pago.validaciones= 'requerido|min-valor({"cuanto":'+totalVenta+'})';
-			$parent.fields.transferencia.validaciones= 'libre|max-valor({"cuanto":'+limiteTransferencia+'})';
+			this.refreshValidationsPagos(limiteDebito, limiteCredito, limiteCheque, totalVenta, limiteTransferencia);
 			this.refreshDebito(debito);
 			this.refreshCredito(credito);
 			this.refreshCheque(cheque);
 			this.refreshTransferencia(transferencia);
 			$parent.refresh();
-		}, // refreshCobroValidate			
+		}, // refreshCobroValidate		
+		validateCredito: function(){							
+			this.refreshCredito(0);
+			this.refreshCheque(0);
+			this.refreshTransferencia(0);
+			this.refreshDebito(0);
+			this.refreshFreeValidationsPagos();
+			$parent.refresh();
+		}, // validateCredito
+		refreshValidationsPagos: function(limiteDebito, limiteCredito, limiteCheque, totalVenta, limiteTransferencia){
+			$parent.fields.debito.validaciones= 'libre|max-valor({"cuanto":'+limiteDebito+'})';
+			$parent.fields.credito.validaciones= 'libre|max-valor({"cuanto":'+limiteCredito+'})';
+			$parent.fields.cheque.validaciones= 'libre|max-valor({"cuanto":'+limiteCheque+'})';
+			$parent.fields.pago.validaciones= 'requerido|min-valor({"cuanto":'+totalVenta+'})';
+			$parent.fields.transferencia.validaciones= 'libre|max-valor({"cuanto":'+limiteTransferencia+'})';
+		}, // refreshValidationsPagos
+		refreshFreeValidationsPagos: function(){
+			$parent.fields.debito.validaciones= 'libre';
+			$parent.fields.credito.validaciones= 'libre';
+			$parent.fields.cheque.validaciones= 'libre';
+			$parent.fields.pago.validaciones= 'libre';
+			$parent.fields.transferencia.validaciones= 'libre';
+		}, // refreshValidationsPagos
 		refreshDebito: function(total){
 			if(total > 0){
 				$parent.fields.referenciaDebito.validaciones= "requerido";
