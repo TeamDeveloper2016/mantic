@@ -381,6 +381,7 @@ public class Transaccion extends IBaseTnx {
 				sqlAccion= precioSugerido.getSqlAccion();
 				switch(sqlAccion){
 					case INSERT:
+						dto.setIdLeido(2L);
 						dto.setIdArticuloPrecioSugerido(-1L);
 						validate= registrar(sesion, dto);
 						break;
