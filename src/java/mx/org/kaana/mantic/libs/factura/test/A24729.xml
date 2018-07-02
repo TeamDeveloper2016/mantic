@@ -1,0 +1,869 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<cfdi:Comprobante xmlns:cfdi="http://www.sat.gob.mx/cfd/3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sat.gob.mx/cfd/3 http://www.sat.gob.mx/sitio_internet/cfd/3/cfdv33.xsd" Version="3.3" Serie="A" Folio="24729" Fecha="2018-02-27T13:18:10" Sello="D6GVxSECwuqAZokACK+2u25XYbvo6h7fUpfW5yMYk7davfZHAdWKTsh01gjj+zo7jobV1sxLraYZ3BGnOaxIOxX4wO6vNx7K2UQJOufpxE9L/UjmAWPmvYZa2+mJ4z9ZIJ+/6bN3jYJs7VMOQ5uxoZCkvKiSBhTPiaUkTSez8AOUvyZUtnlSKfqTkCyUL5k2WvVput4GrAYojEi27YEcpCK13UP8QAT4oCGONiKU3e6dcWPNqAqn44vy03eaLNOVZ1n+zEbkirOFjsLxKVL93jiHVYeBhdi1NuAm3BfGgLQQOPtNEN3krlFIcGhXmBTTM0DTGiMTCNPyMIlX1C139Q==" FormaPago="99" NoCertificado="00001000000407077904" Certificado="MIIGKDCCBBCgAwIBAgIUMDAwMDEwMDAwMDA0MDcwNzc5MDQwDQYJKoZIhvcNAQELBQAwggGyMTgwNgYDVQQDDC9BLkMuIGRlbCBTZXJ2aWNpbyBkZSBBZG1pbmlzdHJhY2nDs24gVHJpYnV0YXJpYTEvMC0GA1UECgwmU2VydmljaW8gZGUgQWRtaW5pc3RyYWNpw7NuIFRyaWJ1dGFyaWExODA2BgNVBAsML0FkbWluaXN0cmFjacOzbiBkZSBTZWd1cmlkYWQgZGUgbGEgSW5mb3JtYWNpw7NuMR8wHQYJKoZIhvcNAQkBFhBhY29kc0BzYXQuZ29iLm14MSYwJAYDVQQJDB1Bdi4gSGlkYWxnbyA3NywgQ29sLiBHdWVycmVybzEOMAwGA1UEEQwFMDYzMDAxCzAJBgNVBAYTAk1YMRkwFwYDVQQIDBBEaXN0cml0byBGZWRlcmFsMRQwEgYDVQQHDAtDdWF1aHTDqW1vYzEVMBMGA1UELRMMU0FUOTcwNzAxTk4zMV0wWwYJKoZIhvcNAQkCDE5SZXNwb25zYWJsZTogQWRtaW5pc3RyYWNpw7NuIENlbnRyYWwgZGUgU2VydmljaW9zIFRyaWJ1dGFyaW9zIGFsIENvbnRyaWJ1eWVudGUwHhcNMTcwNzI5MTY1NTE3WhcNMjEwNzI5MTY1NTE3WjCByDEkMCIGA1UEAxMbVklMQ0hFUyBGRVJSRVRFUk9TIFNBIERFIENWMSQwIgYDVQQpExtWSUxDSEVTIEZFUlJFVEVST1MgU0EgREUgQ1YxJDAiBgNVBAoTG1ZJTENIRVMgRkVSUkVURVJPUyBTQSBERSBDVjElMCMGA1UELRMcVkZFOTQwODAyQ1k3IC8gVklNSjU4MDcxNU1MNTEeMBwGA1UEBRMVIC8gVklNSjU4MDcxNUhHVExSTTA0MQ0wCwYDVQQLEwRMRU9OMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAj2kjcs4bpsoVQWPoRDabLQAc+zphEdnOXB/TZhIRoYegf8g8Z3Ig3IU9NOeGw073jEq7v0jZeN8eyf64kRRv4U7EWxvV6BteJNmQ7h4MI0F53uzxLpEaaX8XW9ebd567EgPbmIPSk//NJnxnifeXZ8TMpKTdTd70LYfE7YjXSWKV/CgF1IO3lp+En4QdiJ4IIF7k/J4644U0GS7COGrDn7coF/k8NCh1iWqNoP1gnz5/F8RPlTmaAmYfn8YGd3AbXmvUSKbNJUr1fNmDQXTEB88EQ3xpezTpzvhLvyeL8JdM3rADyceEdQTzCQeTaJ7dTJi/yOU6A3mJgljzzqseLQIDAQABox0wGzAMBgNVHRMBAf8EAjAAMAsGA1UdDwQEAwIGwDANBgkqhkiG9w0BAQsFAAOCAgEAFGHgKvjB0gYKhengi04628BpfSqTLDeUAgB/g+V6++VniZBYlNA5ttJAE4wfepvOcXZerOM9vbhDTN64EHvJaXe43efRy7e/DEA2bYDtKW3y9KeBquqc4VBXoGzitrfNGW+WoaPchz1BUr9B+15zqMtTh7znSpzkaA+7aG/ww/PIC2tXSPWf2sJ1ywOmqDlbSn19d7WJ7hjz7P0MEvYTP6VtrW/5tHxtsNsiUR2Szc9l3P52OEsNi36cEQBA+mCDfN4RapTPQKqsY47J2XTuNIu1PSGGdA5fBGNXy4SrdKknZg5XnN0Rj4cn+zJ99mSG5HWdcbkExb3+nQxXQ/TxssvBp4EYFcRbbyYoZEF11d3xdzqkWWEJSIS4kBJ41z01bAvWdmr37FjLWDx/d94dA6EFbk+kniKRs5k3dNIZ7Y5wB3HmDLtkSRLlVUTXLAbFITXIr/Pe6S9JrMNX64hQVlcPkmA1vBbzmTcT0HVOXFPkZf2rKantjW42fxQpihXU3QzHyUBiPhG88shKy0KaXbHTu9oeo4IATRzaQtgST5UODExJ602fPRn5khYLPqbPlJEkWKWvG8z+9a2w8ycaAG6AVRaXzfj5CLQlLezeAK1rO+P6aB3z3l+thYETxKP5TcvwDlsrSXDKxJm4kyo3WoVbuO1G+St3j9N0Y9nH+Q0=" CondicionesDePago="30 dias" SubTotal="37778.28" Descuento="0.00" Moneda="MXN" TipoCambio="1" Total="43822.80" TipoDeComprobante="I" MetodoPago="PPD" LugarExpedicion="37290">
+  <cfdi:Emisor Rfc="VFE940802CY7" Nombre="VILCHES FERRETEROS SA DE CV" RegimenFiscal="601" />
+  <cfdi:Receptor Rfc="DAPA580117TK4" Nombre="DAVALOS PADILLA JOSE ANTONIO" UsoCFDI="G01" />
+  <cfdi:Conceptos>
+    <cfdi:Concepto ClaveProdServ="27131600" NoIdentificacion="4526" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="COPLE Y CONECTORES NEUMATICOS RAPIDOS 5PZS LATON LION T" ValorUnitario="35.400000" Importe="424.80" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="424.800000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="67.97" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27112200" NoIdentificacion="1612" Cantidad="6.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CUCHARA ALBAÑIL TIPO FILADELFIA 10&quot; MADERA LION TOOLS" ValorUnitario="13.700000" Importe="82.20" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="82.200000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="13.15" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="52141535" NoIdentificacion="0435" Cantidad="4.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="PARRILLA ELECTRICA 1 QUEMADOR C/TERMOSTATO LION TOOLS B761-6 BLANCA" ValorUnitario="87.700000" Importe="350.80" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="350.800000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="56.13" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27112029" NoIdentificacion="2602" Cantidad="4.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="PISTOLA JARDIN PLASTICO 2 FUNCIONES CON RECUBRIMIENTO" ValorUnitario="43.800000" Importe="175.20" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="175.200000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="28.03" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31151600" NoIdentificacion="4252" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CADENA PARA PERRO 3.0 mm 48&quot; LION TOOLS" ValorUnitario="9.200000" Importe="110.40" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="110.400000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="17.66" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="43211609" NoIdentificacion="2412" Cantidad="4.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CABLE AUDIO 2 PLUG - 1 MONO 1.8 MT 5 PZS LION TOOLS" ValorUnitario="23.800000" Importe="95.20" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="95.200000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="15.23" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27131600" NoIdentificacion="2124" Cantidad="24.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="COPLE NEUMATICO RAPIDO TIPO M LATON 1/4 HEMBRA LT" ValorUnitario="14.760000" Importe="354.24" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="354.240000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="56.68" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="32101517" NoIdentificacion="2417" Cantidad="20.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="ADAPTADOR VIDEO EXTERIOR CON CAPUCHON  5 PZS LION TOOLS" ValorUnitario="15.400000" Importe="308.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="308.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="49.28" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111701" NoIdentificacion="1060" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="DESARMADOR PLANO PLASTICO 3/16x6 LION TOOLS" ValorUnitario="8.460000" Importe="101.52" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="101.520000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="16.25" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="40141616" NoIdentificacion="8155" Cantidad="20.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="FLOTADOR DE POLIURETANO 6&quot; CON VARILLA FLEXIMATIC 557" ValorUnitario="18.540000" Importe="370.80" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="370.800000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="59.33" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="46171501" NoIdentificacion="4490" Cantidad="24.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CANDADO HIERRO 30 mm LION TOOLS" ValorUnitario="10.000000" Importe="240.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="240.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="38.40" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111713" NoIdentificacion="2989" Cantidad="4.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="LLAVE COMBINADA 11 PZS STD LION TOOLS" ValorUnitario="134.400000" Importe="537.60" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="537.600000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="86.01" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="10191506" NoIdentificacion="1382" Cantidad="1.000000" ClaveUnidad="XEN" Unidad="PZA" Descripcion="MATA RATAS CHURRITO 20 GR R-201 CUBETA 50 SOBRES RAT KILL 7273" ValorUnitario="302.000000" Importe="302.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="302.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="48.32" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="15111500" NoIdentificacion="2843" Cantidad="24.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="GAS PARA ENCENDEDOR 285 ml LION TOOLS" ValorUnitario="14.520000" Importe="348.48" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="348.480000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="55.76" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="40141746" NoIdentificacion="1606" Cantidad="2.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="NIVEL ALUMINIO PROFESIONAL 24&quot; LION TOOLS" ValorUnitario="60.600000" Importe="121.20" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="121.200000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="19.39" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27112222" NoIdentificacion="6165" Cantidad="3.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CORTAZULEJO 3 EN 1 24&quot; MT124A LION TOOLS" ValorUnitario="350.000000" Importe="1050.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1050.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="168.00" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="43211609" NoIdentificacion="2409" Cantidad="4.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CABLE AUDIO AUXILIAR 3.5 MM 1.5 M  5 PZS LION TOOLS" ValorUnitario="18.700000" Importe="74.80" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="74.800000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="11.97" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27131600" NoIdentificacion="4526" Cantidad="4.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="COPLE Y CONECTORES NEUMATICOS RAPIDOS 5PZS LATON LION T" ValorUnitario="35.400000" Importe="141.60" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="141.600000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="22.65" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31162008" NoIdentificacion="1919" Cantidad="6.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="PASADOR CON CADENA CROMO MATE LION TOOLS" ValorUnitario="40.800000" Importe="244.80" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="244.800000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="39.17" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="15121520" NoIdentificacion="0156" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="ACEITE MULTIUSOS SELANUSA 100 ML" ValorUnitario="10.650000" Importe="127.80" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="127.800000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="20.45" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="23151607" NoIdentificacion="3320" Cantidad="6.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="PRENSA 8&quot; CARPINTERO LION TOOLS" ValorUnitario="76.800000" Importe="460.80" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="460.800000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="73.73" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111731" NoIdentificacion="0861" Cantidad="5.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="DESARMADOR RELOJERO 6 PZS LION TOOLS" ValorUnitario="8.800000" Importe="44.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="44.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="7.04" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27112500" NoIdentificacion="3055" Cantidad="30.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CINCEL PUNTAL 14&quot; ECONOMICO APROX" ValorUnitario="22.800000" Importe="684.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="684.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="109.44" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27131600" NoIdentificacion="2124" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="COPLE NEUMATICO RAPIDO TIPO M LATON 1/4 HEMBRA LT" ValorUnitario="14.760000" Importe="177.12" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="177.120000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="28.34" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27112029" NoIdentificacion="1889" Cantidad="4.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="PISTOLA JARDIN PLASTICO 7 FUNCIONES LION TOOLS" ValorUnitario="17.400000" Importe="69.60" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="69.600000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="11.13" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111701" NoIdentificacion="1057" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="DESARMADOR PLANO PLASTICO 1/8x6 LION TOOLS" ValorUnitario="4.380000" Importe="52.56" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="52.560000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="8.41" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111701" NoIdentificacion="1066" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="DESARMADOR CRUZ PLASTICO 3/16x8 LION TOOLS" ValorUnitario="10.800000" Importe="129.60" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="129.600000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="20.73" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31151503" NoIdentificacion="0786" Cantidad="31.000000" ClaveUnidad="KGM" Unidad="PZA" Descripcion="LAZO#13    1/2&quot; AMARILLO PRECIO X Kg ROLLO APROX. 30Kg" ValorUnitario="45.500000" Importe="1410.50" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1410.500000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="225.68" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="49131600" NoIdentificacion="0800" Cantidad="6.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="NAVAJA 3 1/4&quot; AUTO PAVONADA CLIP LION TOOLS" ValorUnitario="57.000000" Importe="342.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="342.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="54.72" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="46181811" NoIdentificacion="2798" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="LENTE DE SEGURIDAD LIGERO ESPEJO VERDE LION TOOLS" ValorUnitario="15.000000" Importe="180.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="180.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="28.80" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="39121440" NoIdentificacion="1348" Cantidad="6.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="EXTENSION DOMESTICA COBRE   8 MT LION TOOLS CAL.20" ValorUnitario="36.420000" Importe="218.52" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="218.520000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="34.97" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27112500" NoIdentificacion="3055" Cantidad="30.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CINCEL PUNTAL 14&quot; ECONOMICO APROX" ValorUnitario="22.800000" Importe="684.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="684.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="109.44" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31151503" NoIdentificacion="0784" Cantidad="22.000000" ClaveUnidad="KGM" Unidad="PZA" Descripcion="LAZO#10   3/8&quot; AMARILLO PRECIO X Kg ROLLO  APROX. 22 Kg" ValorUnitario="45.500000" Importe="1001.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1001.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="160.16" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27112222" NoIdentificacion="6167" Cantidad="2.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CORTAZULEJO 800 MM LION TOOLS" ValorUnitario="772.000000" Importe="1544.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1544.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="247.04" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="46181811" NoIdentificacion="2784" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="LENTE DE SEGURIDAD LIGERO NEGRO PATITA VERDE LION TOOLS" ValorUnitario="12.540000" Importe="150.48" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="150.480000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="24.08" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="43221703" NoIdentificacion="6828" Cantidad="4.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="ANTENA PVC PARA INTERIOR Y EXTERIOR SIN CABLE LION TOOLS" ValorUnitario="32.600000" Importe="130.40" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="130.400000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="20.86" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27112200" NoIdentificacion="1611" Cantidad="6.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CUCHARA ALBAÑIL TIPO FILADELFIA  9&quot; MADERA LION TOOLS" ValorUnitario="12.900000" Importe="77.40" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="77.400000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="12.38" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="39121311" NoIdentificacion="6042" Cantidad="30.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="LAMPARA FOCO LED  9 W 765 LUMENES LION TOOLS" ValorUnitario="18.000000" Importe="540.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="540.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="86.40" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31151503" NoIdentificacion="0783" Cantidad="18.000000" ClaveUnidad="KGM" Unidad="PZA" Descripcion="LAZO# 8  5/16&quot; AMARILLO PRECIO X Kg ROLLO  APROX. 18 Kg" ValorUnitario="45.500000" Importe="819.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="819.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="131.04" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31211906" NoIdentificacion="1070" Cantidad="10.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="RODILLO PARA PINTAR 4&quot; LION TOOLS FELPA 3/4&quot;" ValorUnitario="10.800000" Importe="108.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="108.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="17.28" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111701" NoIdentificacion="1061" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="DESARMADOR PLANO PLASTICO 3/16x8 LION TOOLS" ValorUnitario="8.880000" Importe="106.56" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="106.560000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="17.05" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="25172511" NoIdentificacion="0857" Cantidad="24.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="PARCHE PARA CAMARA 49 PZS LION TOOLS" ValorUnitario="8.500000" Importe="204.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="204.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="32.64" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31151600" NoIdentificacion="3548" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CADENA PARA PERRO CASTIGO 5 mm 29&quot; LION TOOLS" ValorUnitario="17.520000" Importe="210.24" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="210.240000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="33.64" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="39121700" NoIdentificacion="1648" Cantidad="5.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CONECTOR PARA VARILLA COOPER WELL DE 1/2&quot; 10 PIEZAS" ValorUnitario="34.300000" Importe="171.50" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="171.500000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="27.44" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31151516" NoIdentificacion="0790" Cantidad="24.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="RAFIA BLANCA CALIBRE 2 GRANDE 546 METROS 975 GR APROX" ValorUnitario="46.100000" Importe="1106.40" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1106.400000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="177.02" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111701" NoIdentificacion="1068" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="DESARMADOR CRUZ PLASTICO 1/4x6 LION TOOLS" ValorUnitario="9.600000" Importe="115.20" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="115.200000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="18.43" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="12161803" NoIdentificacion="4917" Cantidad="5.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="INFLALLANTAS LION TOOLS 475 GR" ValorUnitario="31.740000" Importe="158.70" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="158.700000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="25.39" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111804" NoIdentificacion="0035" Cantidad="3.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="PLOMADA ZAMAC #1 210 gms LION TOOLS" ValorUnitario="30.000000" Importe="90.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="90.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="14.40" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="39121311" NoIdentificacion="6043" Cantidad="30.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="LAMPARA FOCO LED  12 W 1 020 LUMENES LION TOOLS" ValorUnitario="21.000000" Importe="630.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="630.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="100.80" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111512" NoIdentificacion="6288" Cantidad="2.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CORTAPERNO 14&quot; LION TOOLS" ValorUnitario="76.500000" Importe="153.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="153.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="24.48" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="46171500" NoIdentificacion="2514" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CERRADURA POMO BAÑO ACERO INOXIDABLE LION TOOLS" ValorUnitario="49.500000" Importe="594.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="594.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="95.04" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27131603" NoIdentificacion="2129" Cantidad="2.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="REGULADOR DE AIRE NEUMATICO 1/4 LION TOOLS" ValorUnitario="42.000000" Importe="84.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="84.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="13.44" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27112200" NoIdentificacion="1610" Cantidad="6.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CUCHARA ALBAÑIL TIPO FILADELFIA  6&quot; MADERA LION TOOLS" ValorUnitario="12.200000" Importe="73.20" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="73.200000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="11.71" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="40142008" NoIdentificacion="3140" Cantidad="2.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="MANGUERA EXPANDIBLE DE 2.5 M A 7.5 M LION TOOLS" ValorUnitario="77.400000" Importe="154.80" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="154.800000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="24.77" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31151600" NoIdentificacion="3546" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CADENA PARA PERRO CASTIGO 3 mm 20&quot; LION TOOLS" ValorUnitario="5.100000" Importe="61.20" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="61.200000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="9.79" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111801" NoIdentificacion="3102" Cantidad="3.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CINTA LARGA 20 METROS FIBRA DE VIDRIO LION TOOLS" ValorUnitario="64.800000" Importe="194.40" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="194.400000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="31.10" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111801" NoIdentificacion="3104" Cantidad="3.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CINTA LARGA 50 METROS FIBRA DE VIDRIO LION TOOLS" ValorUnitario="116.000000" Importe="348.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="348.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="55.68" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111701" NoIdentificacion="1059" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="DESARMADOR PLANO PLASTICO 3/16x4 LION TOOLS" ValorUnitario="8.160000" Importe="97.92" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="97.920000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="15.67" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="46181504" NoIdentificacion="0860" Cantidad="36.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="GUANTE PALMA NITRILO NEGRO GRANDE LION TOOLS" ValorUnitario="7.260000" Importe="261.36" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="261.360000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="41.82" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="10141600" NoIdentificacion="8207" Cantidad="2.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="BANDOLA ACERO SEGURO  2 1/2&quot; 6 PZS LION TOOLS" ValorUnitario="17.900000" Importe="35.80" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="35.800000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="5.73" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="46181811" NoIdentificacion="2783" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="LENTE DE SEGURIDAD LIGERO CLARO PATITA VERDE LION TOOLS" ValorUnitario="12.540000" Importe="150.48" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="150.480000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="24.08" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="26121536" NoIdentificacion="1904" Cantidad="4.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CABLE PARA GRABADORA 5 PZS LION TOOLS" ValorUnitario="24.000000" Importe="96.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="96.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="15.36" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="46171501" NoIdentificacion="4483" Cantidad="6.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CANDADO HIERRO 70 MM CORTINA LION TOOLS" ValorUnitario="50.520000" Importe="303.12" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="303.120000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="48.50" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27112500" NoIdentificacion="3052" Cantidad="20.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CINCEL PLANO 1&quot; X 10&quot; ECONOMICO APROX" ValorUnitario="16.380000" Importe="327.60" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="327.600000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="52.41" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="26121536" NoIdentificacion="2733" Cantidad="3.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CABLE PASACORRIENTE 3.5 MTS CAL 10 LION TOOLS" ValorUnitario="72.600000" Importe="217.80" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="217.800000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="34.85" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27131600" NoIdentificacion="2123" Cantidad="24.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="COPLE NEUMATICO RAPIDO TIPO M LATON 1/4 MACHO LT" ValorUnitario="15.000000" Importe="360.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="360.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="57.60" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="49161704" NoIdentificacion="4686" Cantidad="15.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="DIABOLO MAGNUM CAL 5.5 MENDOZA 120 PIEZAS DP-M-5.5" ValorUnitario="23.800000" Importe="357.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="357.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="57.12" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111701" NoIdentificacion="1069" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="DESARMADOR CRUZ PLASTICO 1/4X8 LION TOOLS" ValorUnitario="11.340000" Importe="136.08" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="136.080000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="21.78" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111702" NoIdentificacion="0039" Cantidad="5.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="JUEGO AFINACION 4 PZS RIGIDO LION TOOLS" ValorUnitario="49.900000" Importe="249.50" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="249.500000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="39.92" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="52151700" NoIdentificacion="2534" Cantidad="3.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CUCHARA DE MESA SOPERA 12 PZS LION TOOLS" ValorUnitario="19.500000" Importe="58.50" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="58.500000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="9.36" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27112903" NoIdentificacion="1888" Cantidad="4.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="FUMIGADOR DOMESTICO 2.0 LITROS LION TOOLS" ValorUnitario="37.800000" Importe="151.20" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="151.200000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="24.19" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="24101611" NoIdentificacion="1631" Cantidad="4.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="SUJETADOR DE CARGA 1 1/2&quot;X6 M 1 PZA LION TOOLS" ValorUnitario="88.200000" Importe="352.80" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="352.800000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="56.45" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="40142002" NoIdentificacion="7714" Cantidad="2.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="MANGUERA AIRE NEUMATICA ESPIRAL 1/4&quot; 15 MTS LION TOOLS" ValorUnitario="41.500000" Importe="83.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="83.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="13.28" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="41112414" NoIdentificacion="2715" Cantidad="4.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="MEDIDOR DE PRESION NEUMATICO 150 PSI CAMION LION TOOLS" ValorUnitario="43.800000" Importe="175.20" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="175.200000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="28.03" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111907" NoIdentificacion="8513" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CEPILLO ALAMBRE 6 X 19 LION TOOLS" ValorUnitario="16.800000" Importe="201.60" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="201.600000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="32.25" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27131600" NoIdentificacion="2122" Cantidad="3.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="ACCESORIOS AIRE NEUMATICOS 12 PZS LION TOOLS" ValorUnitario="103.200000" Importe="309.60" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="309.600000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="49.53" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="39121311" NoIdentificacion="1323" Cantidad="10.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="PLACA PARA CONTACTO DUPLEX PLASTICO ABS IUSA 659 310787" ValorUnitario="4.300000" Importe="43.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="43.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="6.88" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="15111500" NoIdentificacion="4918" Cantidad="36.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="GAS BUTANO PARA ESTUFA 380 mls LION TOOLS" ValorUnitario="18.180000" Importe="654.48" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="654.480000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="104.72" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111701" NoIdentificacion="1065" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="DESARMADOR CRUZ PLASTICO 3/16x6 LION TOOLS" ValorUnitario="7.560000" Importe="90.72" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="90.720000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="14.52" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27131600" NoIdentificacion="2123" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="COPLE NEUMATICO RAPIDO TIPO M LATON 1/4 MACHO LT" ValorUnitario="15.000000" Importe="180.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="180.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="28.80" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="10111300" NoIdentificacion="0089" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="COLLAR PARA PERRO PIEL O VAQUETA #2 MINI" ValorUnitario="8.400000" Importe="100.80" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="100.800000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="16.13" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="23241615" NoIdentificacion="1898" Cantidad="30.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="LLAVE PARA JARDIN DE NARIZ 1/2&quot; ZINC 110 GMS LION TOOLS" ValorUnitario="16.100000" Importe="483.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="483.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="77.28" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111801" NoIdentificacion="3103" Cantidad="3.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CINTA LARGA 30 METROS FIBRA DE VIDRIO LION TOOLS" ValorUnitario="78.000000" Importe="234.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="234.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="37.44" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31151503" NoIdentificacion="0781" Cantidad="5.000000" ClaveUnidad="KGM" Unidad="PZA" Descripcion="LAZO# 4  5/32&quot; AMARILLO PRECIO X Kg ROLLO  APROX.  6 Kg" ValorUnitario="45.500000" Importe="227.50" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="227.500000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="36.40" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27112132" NoIdentificacion="2328" Cantidad="15.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="ABRAZADERA TIPO OMEGA 1 1/4&quot; 5 PZS LION TOOLS" ValorUnitario="7.200000" Importe="108.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="108.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="17.28" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="46181811" NoIdentificacion="2780" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="LENTE DE SEGURIDAD DEPORTIVO CLARO LION TOOLS" ValorUnitario="15.840000" Importe="190.08" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="190.080000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="30.42" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="40142008" NoIdentificacion="3141" Cantidad="2.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="MANGUERA EXPANDIBLE DE 5.0 M A 15 M LION TOOLS" ValorUnitario="124.800000" Importe="249.60" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="249.600000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="39.93" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111723" NoIdentificacion="1456" Cantidad="2.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="EXTENSION DADO 4 PZS 3/8&quot; 3&quot; 5&quot; 8&quot; 10&quot; LION TOOLS" ValorUnitario="49.800000" Importe="99.60" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="99.600000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="15.93" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="39121311" NoIdentificacion="6040" Cantidad="30.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="LAMPARA FOCO LED  4 W 300 LUMENES LION TOOLS" ValorUnitario="12.000000" Importe="360.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="360.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="57.60" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27112500" NoIdentificacion="3053" Cantidad="20.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CINCEL PLANO 1 1/4&quot; X 15&quot; ECONOMICO APRO" ValorUnitario="22.800000" Importe="456.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="456.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="72.96" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31151516" NoIdentificacion="0845" Cantidad="60.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="RAFIA BLANCA CALIBRE 2 CHICA     57 METROS 100 GR APROX" ValorUnitario="6.350000" Importe="381.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="381.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="60.96" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31151503" NoIdentificacion="0782" Cantidad="15.000000" ClaveUnidad="KGM" Unidad="PZA" Descripcion="LAZO# 6   1/4&quot; AMARILLO PRECIO X Kg ROLLO  APROX. 14 Kg" ValorUnitario="45.500000" Importe="682.50" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="682.500000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="109.20" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31151600" NoIdentificacion="4400" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CADENA PARA PERRO 4.0 mm 48&quot; LION TOOLS" ValorUnitario="13.900000" Importe="166.80" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="166.800000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="26.69" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="10111300" NoIdentificacion="4431" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="COLLAR PARA PERRO PIEL O VAQUETA #3 CHICO" ValorUnitario="12.000000" Importe="144.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="144.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="23.04" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="46171501" NoIdentificacion="4491" Cantidad="24.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CANDADO HIERRO 40 mm LION TOOLS" ValorUnitario="12.800000" Importe="307.20" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="307.200000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="49.15" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="39101803" NoIdentificacion="0834" Cantidad="100.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="PORTALAMPARA BAQUELITA SENCILLO LION TOOLS" ValorUnitario="2.400000" Importe="240.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="240.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="38.40" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="49221515" NoIdentificacion="2901" Cantidad="4.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="BOMBA DE AIRE MANUAL 20&quot; X 1 3/4&quot; CROMADA LION TOOLS" ValorUnitario="81.000000" Importe="324.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="324.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="51.84" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31171523" NoIdentificacion="6683" Cantidad="6.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="LLANTA CARRETILLA COMPLETA 16&quot; X 4 CAPAS CON TORNILLOS LION" ValorUnitario="99.000000" Importe="594.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="594.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="95.04" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="23241615" NoIdentificacion="1901" Cantidad="30.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="LLAVE DE ESFERA ZINC 1/2&quot; 110GMS LION TOOLS" ValorUnitario="15.000000" Importe="450.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="450.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="72.00" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111804" NoIdentificacion="0036" Cantidad="3.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="PLOMADA ZAMAC #2 320 gms LION TOOLS" ValorUnitario="40.800000" Importe="122.40" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="122.400000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="19.58" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="39121311" NoIdentificacion="6041" Cantidad="30.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="LAMPARA FOCO LED  7 W 532 LUMENES LION TOOLS" ValorUnitario="15.000000" Importe="450.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="450.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="72.00" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="10141600" NoIdentificacion="8208" Cantidad="2.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="BANDOLA ACERO SEGURO  3&quot; 6 PZS LION TOOLS" ValorUnitario="31.020000" Importe="62.04" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="62.040000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="9.93" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="39121311" NoIdentificacion="6044" Cantidad="20.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="LAMPARA FOCO LED  15 W 1275 LUMENES LION TOOLS" ValorUnitario="24.000000" Importe="480.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="480.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="76.80" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="15111500" NoIdentificacion="4919" Cantidad="36.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="GAS BUTANO PARA SOPLETE 250 GRS  LION TOOLS" ValorUnitario="19.740000" Importe="710.64" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="710.640000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="113.71" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27112200" NoIdentificacion="1613" Cantidad="6.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CUCHARA ALBAÑIL TIPO FILADELFIA 11&quot; MADERA LION TOOLS" ValorUnitario="15.000000" Importe="90.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="90.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="14.40" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="40101815" NoIdentificacion="4555" Cantidad="50.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CALENTADOR INMERSION AGUA 2000 W 35L LION TOOLS" ValorUnitario="22.800000" Importe="1140.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="1140.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="182.40" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="52151700" NoIdentificacion="2535" Cantidad="3.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="TENEDOR DE MESA 12 PZS LION TOOLS" ValorUnitario="19.500000" Importe="58.50" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="58.500000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="9.36" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="10191701" NoIdentificacion="0086" Cantidad="48.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="PEGA RATON 2 TRAMPAS LION TOOLS" ValorUnitario="7.140000" Importe="342.72" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="342.720000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="54.84" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31211906" NoIdentificacion="0331" Cantidad="30.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="RODILLO PINTAR 9&quot; LION TOOLS FELPA 1 1/4&quot; ASPERA REC3649" ValorUnitario="15.900000" Importe="477.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="477.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="76.32" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="40141746" NoIdentificacion="1609" Cantidad="3.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="NIVEL PLASTICO TORPEDO 9&quot; LION TOOLS" ValorUnitario="15.000000" Importe="45.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="45.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="7.20" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31211906" NoIdentificacion="0331" Cantidad="30.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="RODILLO PINTAR 9&quot; LION TOOLS FELPA 1 1/4&quot; ASPERA REC3649" ValorUnitario="15.900000" Importe="477.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="477.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="76.32" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31211906" NoIdentificacion="0330" Cantidad="30.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="RODILLO PINTAR 9&quot; LION TOOLS FELPA 3/8&quot; SUAVE REC3619" ValorUnitario="14.900000" Importe="447.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="447.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="71.52" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111506" NoIdentificacion="3041" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CORTATUBO 1 1/4&quot;  LION TOOLS" ValorUnitario="65.400000" Importe="784.80" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="784.800000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="125.57" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="49221515" NoIdentificacion="2900" Cantidad="4.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="BOMBA DE AIRE MANUAL 20&quot; X 1 3/8&quot; CROMADA LION TOOLS" ValorUnitario="55.000000" Importe="220.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="220.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="35.20" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111701" NoIdentificacion="1058" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="DESARMADOR PLANO PLASTICO 1/8x8 LION TOOLS" ValorUnitario="5.880000" Importe="70.56" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="70.560000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="11.29" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31211906" NoIdentificacion="0330" Cantidad="30.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="RODILLO PINTAR 9&quot; LION TOOLS FELPA 3/8&quot; SUAVE REC3619" ValorUnitario="14.900000" Importe="447.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="447.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="71.52" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27111701" NoIdentificacion="1067" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="DESARMADOR CRUZ PLASTICO 1/4x4 LION TOOLS" ValorUnitario="8.880000" Importe="106.56" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="106.560000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="17.05" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="31151600" NoIdentificacion="3545" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CADENA PARA PERRO CASTIGO 2 mm 16&quot; LION TOOLS" ValorUnitario="3.600000" Importe="43.20" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="43.200000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="6.91" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="46171500" NoIdentificacion="2513" Cantidad="12.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="CERRADURA POMO RECAMARA ACERO INOXIDABLE LION TOOLS" ValorUnitario="59.900000" Importe="718.80" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="718.800000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="115.01" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="27112029" NoIdentificacion="2601" Cantidad="4.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="PISTOLA JARDIN PLASTICO 8 FUNCIONES CON RECUBRIMIENTO" ValorUnitario="30.000000" Importe="120.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="120.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="19.20" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="39121440" NoIdentificacion="1345" Cantidad="20.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="EXTENSION DOMESTICA COBRE   4 MT LION TOOLS CAL.20" ValorUnitario="21.180000" Importe="423.60" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="423.600000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="67.77" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="10191509" NoIdentificacion="1135" Cantidad="10.000000" ClaveUnidad="H87" Unidad="PZA" Descripcion="INSECTICIDA URBANO D.D.V.P. LIQUIDO 240ml" ValorUnitario="41.100000" Importe="411.00" Descuento="0.00">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="411.000000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="65.76" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+  </cfdi:Conceptos>
+  <cfdi:Impuestos TotalImpuestosTrasladados="6044.52">
+    <cfdi:Traslados>
+      <cfdi:Traslado Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="6044.52" />
+    </cfdi:Traslados>
+  </cfdi:Impuestos>
+  <cfdi:Complemento>
+    <tfd:TimbreFiscalDigital FechaTimbrado="2018-02-27T13:24:20" NoCertificadoSAT="00001000000404477432" RfcProvCertif="EME000602QR9" SelloCFD="D6GVxSECwuqAZokACK+2u25XYbvo6h7fUpfW5yMYk7davfZHAdWKTsh01gjj+zo7jobV1sxLraYZ3BGnOaxIOxX4wO6vNx7K2UQJOufpxE9L/UjmAWPmvYZa2+mJ4z9ZIJ+/6bN3jYJs7VMOQ5uxoZCkvKiSBhTPiaUkTSez8AOUvyZUtnlSKfqTkCyUL5k2WvVput4GrAYojEi27YEcpCK13UP8QAT4oCGONiKU3e6dcWPNqAqn44vy03eaLNOVZ1n+zEbkirOFjsLxKVL93jiHVYeBhdi1NuAm3BfGgLQQOPtNEN3krlFIcGhXmBTTM0DTGiMTCNPyMIlX1C139Q==" SelloSAT="kIxOgGMzcnRH2OniMgA+vrF/nN+PquVFnNzsVojRsOlp0MMNwzXzo/uaCYE/EAqFFgaLqvlnt7ZII6+A3iPuj+2mgN2+FVhLVCuNgBE7OGIU/vcWvDJVcMhFI5l6+B9bsMtm2lJBuFqxcEbLkAYGkf0nxmi0lUKggM2C7m1Vhn8q6Z+2m9ESfmU6PBQfqBAUqokvbmw9YIdn+oLsksN2EYS4ZaPPCKcSMqushG8p6VGtLLHEbiHW46f7pZEV75+dfiw9/ZFXy5CoXVDDBfuYRnZeNPXulu7kq7sCjZPko2idbMGdDh6iiRvdaA+gDIaAi40KNclRXp2oRCKFr61ixA==" UUID="DF2282B8-6BF8-4A4A-B19D-F8D04B5A6495" Version="1.1" xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital" xsi:schemaLocation="http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/cfd/TimbreFiscalDigital/TimbreFiscalDigitalv11.xsd" />
+  </cfdi:Complemento>
+</cfdi:Comprobante>

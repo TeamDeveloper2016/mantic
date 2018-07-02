@@ -395,7 +395,8 @@ public class Reader implements Serializable{
 					regresar.setTfd(mapAttrs.getNamedItem("xmlns:tfd").getNodeValue());
 					regresar.setUuid(mapAttrs.getNamedItem("UUID").getNodeValue());
 					regresar.setVersion(mapAttrs.getNamedItem("Version").getNodeValue());
-					regresar.setXsi(mapAttrs.getNamedItem("xmlns:xsi").getNodeValue());
+					if(mapAttrs.getNamedItem("xmlns:xsi")!= null)
+					  regresar.setXsi(mapAttrs.getNamedItem("xmlns:xsi").getNodeValue());
 				} // if
 			} // for			
 		} // try

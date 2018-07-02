@@ -22,4 +22,10 @@ public class Articulo implements Serializable{
 	public void setImporte(String importe) {
 		this.importe = importe;
 	}	
+
+	@Override
+	public String toString() {
+		return "Articulo{"+"importe="+importe+'}';
+	}
+	
 }

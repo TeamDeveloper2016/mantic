@@ -22,4 +22,11 @@ public class Emisor extends FiguraFiscal implements Serializable{
 	public void setRegimenFiscal(String regimenFiscal) {
 		this.regimenFiscal = regimenFiscal;
 	}		
+
+	@Override
+	public String toString() {
+		return "Emisor{"+ super.toString()+ ", regimenFiscal="+regimenFiscal+'}';
+	}
+	
+	
 }

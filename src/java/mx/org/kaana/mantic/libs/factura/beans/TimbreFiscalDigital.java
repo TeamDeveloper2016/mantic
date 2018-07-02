@@ -112,4 +112,10 @@ public class TimbreFiscalDigital implements Serializable{
 	public void setSelloSat(String selloSat) {
 		this.selloSat = selloSat;
 	}	
+
+	@Override
+	public String toString() {
+		return "TimbreFiscalDigital{"+"tfd="+tfd+", xsi="+xsi+", schemaLocation="+schemaLocation+", version="+version+", uuid="+uuid+", fechaTimbrado="+fechaTimbrado+", rfcProvCertif="+rfcProvCertif+", selloCfd="+selloCfd+", noCertificadoSat="+noCertificadoSat+", selloSat="+selloSat+'}';
+	}
+	
 }

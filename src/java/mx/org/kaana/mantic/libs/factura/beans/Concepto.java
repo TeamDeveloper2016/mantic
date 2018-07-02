@@ -103,4 +103,10 @@ public class Concepto extends Articulo implements Serializable{
 	public void setInformacionAduanera(InformacionAduanera informacionAduanera) {
 		this.informacionAduanera = informacionAduanera;
 	}	
+
+	@Override
+	public String toString() {
+		return "Concepto{"+"claveProdServ="+claveProdServ+", noIdentificacion="+noIdentificacion+", cantidad="+cantidad+", claveUnidad="+claveUnidad+", unidad="+unidad+", descripcion="+descripcion+", valorUnitario="+valorUnitario+", importe="+ this.getImporte()+", traslado="+traslado+", informacionAduanera="+informacionAduanera+'}';
+	}
+	
 }

@@ -53,4 +53,10 @@ public class Traslado extends Articulo implements Serializable {
 	public void setTasaCuota(String tasaCuota) {
 		this.tasaCuota = tasaCuota;
 	}	
+
+	@Override
+	public String toString() {
+		return "Traslado{"+"base="+base+", impuesto="+impuesto+", tipoFactor="+tipoFactor+", tasaCuota="+tasaCuota+'}';
+	}
+	
 }

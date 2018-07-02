@@ -234,4 +234,10 @@ public class ComprobanteFiscal implements Serializable{
 	public void setTimbreFiscalDigital(TimbreFiscalDigital timbreFiscalDigital) {
 		this.timbreFiscalDigital = timbreFiscalDigital;
 	}	
+
+	@Override
+	public String toString() {
+		return "ComprobanteFiscal{"+"emisor="+emisor+", receptor="+receptor+", conceptos="+conceptos+", impuesto="+impuesto+", timbreFiscalDigital="+timbreFiscalDigital+", xsi="+xsi+", schemaLocation="+schemaLocation+", version="+version+", folio="+folio+", fecha="+fecha+", sello="+sello+", formaPago="+formaPago+", noCertificado="+noCertificado+", certificado="+certificado+", subTotal="+subTotal+", moneda="+moneda+", tipoCambio="+tipoCambio+", total="+total+", tipoDeComprobante="+tipoDeComprobante+", metodoPago="+metodoPago+", lugarExpedicion="+lugarExpedicion+", cfdi="+cfdi+'}';
+	}
+	
 }

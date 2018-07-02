@@ -2,7 +2,7 @@ package mx.org.kaana.mantic.libs.factura.beans;
 
 import java.io.Serializable;
 
-public class FiguraFiscal implements Serializable{
+public class FiguraFiscal implements Serializable {
 
 	private static final long serialVersionUID = 1L;	
 	private String rfc;
@@ -32,4 +32,10 @@ public class FiguraFiscal implements Serializable{
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}		
+
+	@Override
+	public String toString() {
+		return "FiguraFiscal{"+"rfc="+rfc+", nombre="+nombre+'}';
+	}
+	
 }

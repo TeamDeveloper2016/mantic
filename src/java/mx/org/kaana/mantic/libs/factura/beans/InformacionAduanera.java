@@ -22,4 +22,10 @@ public class InformacionAduanera implements Serializable{
 	public void setNumeroPedimento(String numeroPedimento) {
 		this.numeroPedimento = numeroPedimento;
 	}	
+
+	@Override
+	public String toString() {
+		return "InformacionAduanera{"+"numeroPedimento="+numeroPedimento+'}';
+	}
+	
 }

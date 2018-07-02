@@ -22,4 +22,10 @@ public class Receptor extends FiguraFiscal implements Serializable{
 	public void setUsoCfdi(String usoCfdi) {
 		this.usoCfdi = usoCfdi;
 	}			
+
+	@Override
+	public String toString() {
+		return "Receptor{"+ super.toString()+ ", usoCfdi="+usoCfdi+'}';
+	}
+	
 }

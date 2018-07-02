@@ -32,4 +32,10 @@ public class Impuesto implements Serializable{
 	public void setTraslado(Traslado traslado) {
 		this.traslado = traslado;
 	}	
+
+	@Override
+	public String toString() {
+		return "Impuesto{"+"totalImpuestosTrasladados="+totalImpuestosTrasladados+", traslado="+traslado+'}';
+	}
+	
 }
