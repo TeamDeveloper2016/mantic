@@ -425,14 +425,29 @@
 								</p:panelGrid>					
 							</p:fieldset>
 							<p:fieldset id="fieldContacto" legend="Contacto">
-								<p:panelGrid id="panelContacto" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-40, janal-wid-30, janal-wid-30">
-									<p:outputLabel for="correo" value="Correo:"/>
+								<p:panelGrid id="panelContacto" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-50, janal-wid-50">
 									<p:outputLabel for="telefono" value="Teléfono:"/>
-									<p:outputLabel for="celular" value="Celular:"/>												
-									<p:inputText id="correo" placeholder="nombre.apellido@empresa.com.mx" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.correo}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>                    						
-									<p:inputText id="telefono" placeholder="4498563214" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.telefono}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>                    						
-									<p:inputText id="celular" placeholder="4497856324" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.celular}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>                                    												
+									<p:outputLabel for="celular" value="Celular:"/>																					
+									<p:inputText id="telefono" placeholder="4498563214" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.telefono.valor}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>                    						
+									<p:inputText id="celular" placeholder="4497856324" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.celular.valor}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>                                    												
 								</p:panelGrid>								
+								
+								<p:panelGrid id="panelTablaCorreos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
+									<p:dataTable id="tablaCorreos" rowIndexVar="index" var="contacto" value="#{manticVentasCajaAccion.clientesTiposContacto}" rows="6" paginator="false" reflow="true" rowKey="#{contacto.key}" emptyMessage=" " styleClass="paginated">																															
+										<p:column headerText="Correo electronico">		
+											<p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" placeholder="nombre.apellido@empresa.com.mx" value="#{contacto.valor}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaCorreos', #{index}, 'valor')" disabled="#{!contacto.nuevo}"/>                    																																			
+										</p:column>
+										<p:column style="width:32px;text-align: center">
+											<p:commandButton update="tablaCorreos" icon="fa fa-close" title="Eliminar" action="#{manticVentasCajaAccion.doEliminarClienteTipoContacto}" styleClass="janal-text-white">
+												<f:setPropertyActionListener value="#{contacto}" target="#{manticVentasCajaAccion.clienteTipoContactoSeleccion}" />
+											</p:commandButton>
+										</p:column>
+										<f:facet name="footer">
+											<p:commandButton actionListener="#{manticVentasCajaAccion.doAgregarClienteTipoContacto}" process="@this tablaCorreos" update="tablaCorreos" icon="fa fa-plus" styleClass="janal-text-white"/>						
+										</f:facet>
+									</p:dataTable>	
+								</p:panelGrid>
+								
 							</p:fieldset>
 						</div>
 					</div>
