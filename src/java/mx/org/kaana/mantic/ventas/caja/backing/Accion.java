@@ -10,11 +10,13 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
@@ -27,6 +29,8 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ContadoresListas;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
@@ -38,6 +42,7 @@ import mx.org.kaana.mantic.comun.IBaseCliente;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
+import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.ventas.caja.beans.Pago;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
@@ -48,8 +53,10 @@ public class Accion extends IBaseCliente implements Serializable {
 
   private static final long serialVersionUID  = 327393488565639367L;
 	private static final String CLAVE_VENTA_GRAL= "VENTA";
-	private EOrdenes tipoOrden;
-
+	private List<ClienteTipoContacto> clientesTiposContacto;
+	private ClienteTipoContacto clienteTipoContactoSeleccion;
+	private EOrdenes tipoOrden;	
+	
 	public Accion() {
 		super("menudeo");
 	}
@@ -60,6 +67,14 @@ public class Accion extends IBaseCliente implements Serializable {
 
 	public EOrdenes getTipoOrden() {
 		return tipoOrden;
+	}
+	
+	public List<ClienteTipoContacto> getClientesTiposContacto() {
+		return clientesTiposContacto;
+	}
+
+	public void setClientesTiposContacto(List<ClienteTipoContacto> clientesTiposContacto) {
+		this.clientesTiposContacto = clientesTiposContacto;
 	}
 	
 	@PostConstruct
@@ -81,6 +96,7 @@ public class Accion extends IBaseCliente implements Serializable {
 			this.attrs.put("clienteAsignado", false);
 			this.attrs.put("tabIndex", 0);
 			this.attrs.put("fecha", new Date(Calendar.getInstance().getTimeInMillis()));
+			this.attrs.put("contador", 0L);
 			if(JsfBase.isAdminEncuestaOrAdmin())
 				loadSucursales();
 			doLoadTicketAbiertos();			
@@ -380,17 +396,26 @@ public class Accion extends IBaseCliente implements Serializable {
 		UISelectEntity cliente                = null;
 		UISelectEntity seleccionado           = null;
 		List<UISelectEntity> clientesSeleccion= null;
+		MotorBusqueda motor                   = null;
 		try {
 			facturarVenta= (Boolean) this.attrs.get("facturarVenta");
 			if(facturarVenta){
 				cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");		
 				clientesSeleccion= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
 				seleccionado= clientesSeleccion.get(clientesSeleccion.indexOf(cliente));
-				if(!seleccionado.toString("clave").equals(CLAVE_VENTA_GRAL))
+				if(!seleccionado.toString("clave").equals(CLAVE_VENTA_GRAL)){
 					doAsignaDomicilioClienteInicial(seleccionado.getKey());
+					motor= new MotorBusqueda(-1L, seleccionado.getKey());
+					this.clientesTiposContacto= motor.toCorreosCliente();
+					this.attrs.put("telefono", motor.toTelefonoCliente());
+					this.attrs.put("celular", motor.toCelularCliente());
+				} // if
 				else{
 					setDomicilio(new Domicilio());
 					this.attrs.put("registroCliente", new TcManticClientesDto());
+					this.clientesTiposContacto= new ArrayList<>();
+					this.attrs.put("telefono", new ClienteTipoContacto());
+					this.attrs.put("celular", new ClienteTipoContacto());
 				} // else
 				this.attrs.put("tabIndex", 1);
 			} // if
@@ -452,4 +477,54 @@ public class Accion extends IBaseCliente implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doValidaCreditoCliente
+	
+	public void doAgregarClienteTipoContacto(){
+		ClienteTipoContacto clienteTipoContacto= null;
+		ContadoresListas contadores            = null;
+		Long contador                          = 0L;
+		try {					
+			contador= (Long) this.attrs.get("contador");
+			contadores= new ContadoresListas();
+			clienteTipoContacto= new ClienteTipoContacto(contadores.getTotalClientesTipoContacto() + contador, ESql.INSERT, true);				
+			clienteTipoContacto.setOrden(this.clientesTiposContacto.size() + 1L);
+			clienteTipoContacto.setIdTipoContacto(ETiposContactos.CORREO.getKey());
+			this.clientesTiposContacto.add(clienteTipoContacto);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
+		finally{
+			contador++;
+			this.attrs.put("contador", contador);
+		} // finally
+	} // doAgregarClienteTipoContacto
+	
+	public void doEliminarClienteTipoContacto(){
+		try {			
+			if(this.clientesTiposContacto.remove(this.clienteTipoContactoSeleccion)){
+				if(!this.clienteTipoContactoSeleccion.getNuevo())
+					addDeleteList(this.clienteTipoContactoSeleccion);
+				JsfBase.addMessage("Se eliminó correctamente el tipo de contacto", ETipoMensaje.INFORMACION);
+			} // if
+			else
+				JsfBase.addMessage("No fue porsible eliminar el tipo de contacto", ETipoMensaje.INFORMACION);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
+	} // doEliminarClienteTipoContacto
+	
+	private void addDeleteList(IBaseDto dto) throws Exception{
+		mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion transaccion= null;
+		try {
+			transaccion= new mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion(dto);
+			transaccion.ejecutar(EAccion.DEPURAR);
+			//this.deleteList.add(dto);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // addDeleteList
 }
