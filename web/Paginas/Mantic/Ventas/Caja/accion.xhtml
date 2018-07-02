@@ -32,18 +32,18 @@
         'celular': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},        
         'calleBusqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true},
 				
-				'efectivo'         : {validaciones: 'libre', mascara: 'decimal', grupo: 'general'},
-				'credito'          : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasCajaAccion.attrs.pago.limiteCredito}})', mascara: 'decimal', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
+				'efectivo'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'credito'          : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasCajaAccion.attrs.pago.limiteCredito}})', mascara: 'libre', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
 				'referenciaCredito': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Capturar la referencia del credito'},
 				'bancoCredito'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu tarjeta de credito'},				
-				'debito'           : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasCajaAccion.attrs.pago.limiteDebito}})', mascara: 'decimal', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
+				'debito'           : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasCajaAccion.attrs.pago.limiteDebito}})', mascara: 'libre', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
 				'referenciaDebito' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Capturar la referencia de debito'},
 				'bancoDebito'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu tarjeta de debito'},
-				'cheque'           : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasCajaAccion.attrs.pago.limiteCheque}})', mascara: 'decimal', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
+				'cheque'           : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasCajaAccion.attrs.pago.limiteCheque}})', mascara: 'libre', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
 				'referenciaCheque' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Capturar la referencia del cheque'},
 				'bancoCheque'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu cheque'},
 				'pago'             : {validaciones: 'requerido|min-valor({"cuanto":100})', mascara: 'libre', grupo: 'general', mensaje: 'No se a cubierto la totalidad del pago.'},
-				'transferencia'          : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasCajaAccion.attrs.pago.limiteTransferencia}})', mascara: 'decimal', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
+				'transferencia'          : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasCajaAccion.attrs.pago.limiteTransferencia}})', mascara: 'libre', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
 				'referenciaTransferencia': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Capturar la referencia del credito'},
 				'bancoTransferencia'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu tarjeta de credito'}
 			};	
@@ -234,14 +234,14 @@
 							<p:panelGrid id="panelTotales" layout="grid" columns="3" styleClass="janal-wid-99" columnClasses="janal-wid-80, janal-wid-20">
 								<p:panelGrid id="panelPago" columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-13, janal-wid-20, janal-wid-30, janal-wid-30">																											
 									<p:outputLabel for="efectivo" value="Efectivo:"/>
-									<p:inputText id="efectivo" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.pago.efectivo}">
+									<p:inputNumber id="efectivo" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.pago.efectivo}" inputStyleClass="janal-column-right">
 										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria"/>
-									</p:inputText>									
+									</p:inputNumber>
 									<p:spacer/><p:spacer/>									
 									<p:outputLabel for="debito" value="Tarjeta de debito:"/>
-									<p:inputText id="debito" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.pago.debito}">
+									<p:inputNumber id="debito" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.pago.debito}" inputStyleClass="janal-column-right">
 										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria" oncomplete="applyValidacionesCredito();"/>
-									</p:inputText>									
+									</p:inputNumber>									
 									<p:selectOneMenu id="bancoDebito" value="#{manticVentasCajaAccion.attrs.pago.bancoDebito}" filter="true" filterMatchMode="startsWith" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
 										<f:selectItem itemValue="" itemLabel="SELECCIONE BANCO"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
@@ -255,9 +255,9 @@
 									<p:inputText id="referenciaDebito" value="#{manticVentasCajaAccion.attrs.pago.referenciaDebito}" styleClass="janal-wid-100-txt" placeholder="Ej. Referencia 4564"/>
 									
 									<p:outputLabel for="credito" value="Tarjeta de credito:"/>
-									<p:inputText id="credito" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.pago.credito}">
+									<p:inputNumber id="credito" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.pago.credito}" inputStyleClass="janal-column-right">
 										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria" oncomplete="applyValidacionesCredito();"/>
-									</p:inputText>
+									</p:inputNumber>
 									<p:selectOneMenu id="bancoCredito" value="#{manticVentasCajaAccion.attrs.pago.bancoCredito}" filter="true" filterMatchMode="startsWith" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
 										<f:selectItem itemValue="" itemLabel="SELECCIONE BANCO"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
@@ -271,9 +271,9 @@
 									<p:inputText id="referenciaCredito" value="#{manticVentasCajaAccion.attrs.pago.referenciaCredito}" styleClass="janal-wid-100-txt" placeholder="Ej. Referencia 4564"/>																		
 									
 									<p:outputLabel for="transferencia" value="Transferencia:"/>
-									<p:inputText id="transferencia" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.pago.transferencia}">
+									<p:inputNumber id="transferencia" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.pago.transferencia}" inputStyleClass="janal-column-right">
 										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria" oncomplete="applyValidacionesCredito();"/>
-									</p:inputText>
+									</p:inputNumber>
 									<p:selectOneMenu id="bancoTransferencia" value="#{manticVentasCajaAccion.attrs.pago.bancoTransferencia}" filter="true" filterMatchMode="startsWith" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
 										<f:selectItem itemValue="" itemLabel="SELECCIONE BANCO"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
@@ -287,9 +287,9 @@
 									<p:inputText id="referenciaTransferencia" value="#{manticVentasCajaAccion.attrs.pago.referenciaTransferencia}" styleClass="janal-wid-100-txt" placeholder="Ej. Referencia 4564"/>																																				
 									
 									<p:outputLabel for="cheque" value="Cheque:"/>
-									<p:inputText id="cheque" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.pago.cheque}">
+									<p:inputNumber id="cheque" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.pago.cheque}" inputStyleClass="janal-column-right">
 										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria" oncomplete="applyValidacionesCredito();"/>
-									</p:inputText>
+									</p:inputNumber>
 									<p:selectOneMenu id="bancoCheque" value="#{manticVentasCajaAccion.attrs.pago.bancoCheque}" filter="true" filterMatchMode="startsWith" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
 										<f:selectItem itemValue="" itemLabel="SELECCIONE BANCO"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
