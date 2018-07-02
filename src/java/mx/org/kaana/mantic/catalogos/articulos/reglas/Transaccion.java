@@ -1,6 +1,7 @@
 
 package mx.org.kaana.mantic.catalogos.articulos.reglas;
 
+import java.io.File;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,7 +11,10 @@ import mx.org.kaana.mantic.db.dto.TcManticImagenesDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloCodigo;
 import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloProveedor;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Descuento;
@@ -112,7 +116,7 @@ public class Transaccion extends IBaseTnx {
 										if(registraArticulosTipoVenta(sesion, idArticulo)) {
 											this.articulo.getArticuloDimencion().setIdArticulo(idArticulo);											
 											if(DaoFactory.getInstance().insert(sesion, this.articulo.getArticuloDimencion()) >= 1L) {										
-												idImagen= DaoFactory.getInstance().insert(sesion, loadImage(sesion, null));
+												idImagen= DaoFactory.getInstance().insert(sesion, loadImage(sesion, null, idArticulo));
 												this.articulo.getArticulo().setIdImagen(idImagen);
 												regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
 			                } 
@@ -149,7 +153,7 @@ public class Transaccion extends IBaseTnx {
 											if(regresar){
 												regresar= this.articulo.getArticulo().getIdImagen()!= null && !this.articulo.getArticulo().getIdImagen().equals(-1L);
 												if(regresar){				
-													if(DaoFactory.getInstance().update(sesion, loadImage(sesion, this.articulo.getArticulo().getIdImagen()))>= 0L)
+													if(DaoFactory.getInstance().update(sesion, loadImage(sesion, this.articulo.getArticulo().getIdImagen(), idArticulo))>= 0L)
 														regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
 												} // if 
 												else
@@ -162,10 +166,12 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // actualizarArticulo	
 	
-	private TcManticImagenesDto loadImage(Session sesion, Long idImagen) throws Exception{
+	private TcManticImagenesDto loadImage(Session sesion, Long idImagen, Long idArticulo) throws Exception{
 		TcManticImagenesDto regresar= null;
 		Long tipoImagen             = null;
 		String name                 = null;
+		File result                 = null;
+		String genericPath          = null;
 		try {
 			if(idImagen!= null)
 				regresar= (TcManticImagenesDto) DaoFactory.getInstance().findById(sesion, TcManticImagenesDto.class, idImagen);
@@ -173,12 +179,18 @@ public class Transaccion extends IBaseTnx {
 				regresar= new TcManticImagenesDto();
 			name= this.articulo.getImportado().getName();
 			tipoImagen= ETipoImagen.valueOf(name.substring(name.lastIndexOf(".")+1, name.length()).toUpperCase()).getIdTipoImagen();
-			regresar.setNombre(name);
+			regresar.setNombre(idArticulo.toString().concat(".").concat(name.substring(name.lastIndexOf(".")+1, name.length())));
 			regresar.setIdTipoImagen(tipoImagen);
 			regresar.setIdUsuario(JsfBase.getIdUsuario());
 			regresar.setArchivo(name);
 			regresar.setTamanio(this.articulo.getImportado().getFileSize());
 			regresar.setRuta(this.articulo.getImportado().getRuta());			
+			genericPath= Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat(File.separator);
+			result= new File(genericPath.concat(this.articulo.getImportado().getName()));			
+			if(result.exists()){
+				Archivo.copy(genericPath.concat(this.articulo.getImportado().getName()), genericPath.concat(regresar.getNombre()), true);							
+				Archivo.delete(genericPath.concat(this.articulo.getImportado().getName()));
+			} // if
 		} // try
 		catch (Exception e) {						
 			throw e;
