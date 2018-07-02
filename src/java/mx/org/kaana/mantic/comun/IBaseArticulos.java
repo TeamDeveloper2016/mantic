@@ -439,13 +439,15 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 	}	
 
 	private boolean isInsideArticulo(String code, String name) {
-		String filterCode= this.attrs.get("filterCode")== null? "": (String)this.attrs.get("filterCode");
-		String filterName= this.attrs.get("filterName")== null? "": (String)this.attrs.get("filterName");
+		String filterCode= (String)this.attrs.get("filterCode");
+		String filterName= (String)this.attrs.get("filterName");
 	  return (Cadena.isVacio(filterCode) || code.contains(filterCode.toUpperCase())) && (Cadena.isVacio(filterName) || name.contains(filterName.toUpperCase()));	
 	}
 	
 	public void doFilterRows() {
 		LOG.info("doFilterRows: "+ this.attrs.get("filterCode")+ " => "+ this.attrs.get("filterName"));
+		this.attrs.put("filterCode", this.attrs.get("filterCode")== null? "": ((String)this.attrs.get("filterCode")).trim());
+		this.attrs.put("filterName", this.attrs.get("filterName")== null? "": ((String)this.attrs.get("filterName")).trim());
 		this.getAdminOrden().getFiltrados().clear();
 		for (Articulo articulo : this.getAdminOrden().getArticulos()) {
 			if(this.isInsideArticulo("|"+ articulo.getCodigo()+ "|"+ articulo.getPropio()+ "|", articulo.getNombre()))
