@@ -97,6 +97,7 @@ public class Accion extends IBaseCliente implements Serializable {
 			this.attrs.put("tabIndex", 0);
 			this.attrs.put("fecha", new Date(Calendar.getInstance().getTimeInMillis()));
 			this.attrs.put("contador", 0L);
+			this.attrs.put("creditoVenta", false);
 			if(JsfBase.isAdminEncuestaOrAdmin())
 				loadSucursales();
 			doLoadTicketAbiertos();			
