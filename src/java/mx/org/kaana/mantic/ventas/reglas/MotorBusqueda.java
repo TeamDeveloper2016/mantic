@@ -1,29 +1,33 @@
 package mx.org.kaana.mantic.ventas.reglas;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
+import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.enums.ETiposContactos;
 
-public class MotorBusqueda implements Serializable{
+public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializable{
 
 	private static final long serialVersionUID= -1476191556651225342L;	
 	private static final String VENTA         = "VENTA";
 	private Long idArticulo;
-	private Long idCliente;
 	
 	public MotorBusqueda(Long idArticulo) {
 		this(idArticulo, null);
 	}	// MotorBusqueda
 
 	public MotorBusqueda(Long idArticulo, Long idCliente) {
+		super(idCliente);
 		this.idArticulo= idArticulo;
-		this.idCliente = idCliente;
 	}	
 	
 	public TcManticArticulosDto toArticulo() throws Exception {
@@ -112,5 +116,62 @@ public class MotorBusqueda implements Serializable{
 			throw e;
 		} // catch		
 		return regresar;
-	} // toClienteDefault
+	} // toClienteDefault	
+	
+	public List<ClienteTipoContacto> toCorreosCliente() throws Exception {
+		List<ClienteTipoContacto> regresar= null;
+		List<ClienteTipoContacto> pivote  = null;
+		try {
+			regresar= new ArrayList<>();
+			pivote= super.toClientesTipoContacto();
+			if(!pivote.isEmpty()){
+				for(ClienteTipoContacto contacto: pivote){
+					if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CORREO_NEGOCIO.getKey()) || contacto.getIdTipoContacto().equals(ETiposContactos.CORREO_PERSONAL.getKey()))
+						regresar.add(contacto);
+				} // for					
+			} // if							
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toClientesTipoContacto
+	
+	public ClienteTipoContacto toTelefonoCliente() throws Exception {
+		ClienteTipoContacto regresar    = null;
+		List<ClienteTipoContacto> pivote= null;
+		try {
+			regresar= new ClienteTipoContacto();
+			pivote= super.toClientesTipoContacto();
+			if(!pivote.isEmpty()){
+				for(ClienteTipoContacto contacto: pivote){
+					if(contacto.getIdTipoContacto().equals(ETiposContactos.TELEFONO.getKey()))
+						regresar= contacto;
+				} // for					
+			} // if							
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toClientesTipoContacto
+	
+	public ClienteTipoContacto toCelularCliente() throws Exception {
+		ClienteTipoContacto regresar    = null;
+		List<ClienteTipoContacto> pivote= null;
+		try {
+			regresar= new ClienteTipoContacto();
+			pivote= super.toClientesTipoContacto();
+			if(!pivote.isEmpty()){
+				for(ClienteTipoContacto contacto: pivote){
+					if(contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR.getKey()))
+						regresar= contacto;
+				} // for					
+			} // if							
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toClientesTipoContacto
 }
