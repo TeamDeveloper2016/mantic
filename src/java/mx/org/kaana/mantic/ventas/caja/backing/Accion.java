@@ -435,4 +435,21 @@ public class Accion extends IBaseCliente implements Serializable {
 			Methods.clean(params);
 		} // finally
 	} // loadBancos
+	
+	public void doValidaCreditoCliente(){
+		Boolean credito  = false;
+		RequestContext rc= null;
+		try {
+			credito= (Boolean) this.attrs.get("creditoVenta");
+			rc= RequestContext.getCurrentInstance();
+			if(credito)
+				rc.execute("jsVentas.validateCredito();");
+			else
+				rc.execute("jsVentas.refreshCobroValidate();");
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doValidaCreditoCliente
 }
