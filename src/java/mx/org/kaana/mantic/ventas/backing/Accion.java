@@ -359,7 +359,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			} // if
 			else
 				super.toMoveData(articulo, index);	
-			this.image= LoadImages.getImage(articulo.toLong("idArticulo").toString());
+			this.image= LoadImages.getImage(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), articulo.toLong("idArticulo").toString());
 			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
 			RequestContext.getCurrentInstance().update("deudor");
 		} // try
@@ -618,15 +618,17 @@ public class Accion extends IBaseArticulos implements Serializable {
 	} // doLoadSaldos
 	
 	public void doActualizaImage(String idImage) {
+		String idEmpresa= null;
 		try {
+			idEmpresa= JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString();
 			if(!idImage.equals("-1")){
-				this.image= LoadImages.getImage(idImage);
+				this.image= LoadImages.getImage(idEmpresa, idImage);
 				this.attrs.put("imagePivote", idImage);
 			} // if
 			else if (getAdminOrden().getArticulos().isEmpty() || (getAdminOrden().getArticulos().size()== 1 && getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L)))
-				this.image= LoadImages.getImage(idImage);
+				this.image= LoadImages.getImage(idEmpresa, idImage);
 			else
-				this.image= LoadImages.getImage(this.attrs.get("imagePivote").toString());
+				this.image= LoadImages.getImage(idEmpresa, this.attrs.get("imagePivote").toString());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
