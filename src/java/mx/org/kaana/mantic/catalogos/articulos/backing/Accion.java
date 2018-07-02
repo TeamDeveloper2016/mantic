@@ -18,9 +18,12 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named(value = "manticCatalogosArticulosAccion")
 @ViewScoped
@@ -28,6 +31,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
   private RegistroArticulo registroArticulo;
+	private StreamedContent image;
 
   public RegistroArticulo getRegistroArticulo() {
     return registroArticulo;
@@ -37,6 +41,10 @@ public class Accion extends IBaseAttribute implements Serializable {
     this.registroArticulo = registroArticulo;
   }
 
+	public StreamedContent getImage() {
+		return image;
+	}
+	
   @PostConstruct
   @Override
   protected void init() {
@@ -66,11 +74,13 @@ public class Accion extends IBaseAttribute implements Serializable {
       switch (eaccion) {
         case AGREGAR:
           this.registroArticulo = new RegistroArticulo();
+					this.image= new DefaultStreamedContent();
           break;
         case MODIFICAR:
         case CONSULTAR:
           idArticulo = Long.valueOf(this.attrs.get("idArticulo").toString());
           this.registroArticulo = new RegistroArticulo(idArticulo);
+					this.image= LoadImages.getImage(this.registroArticulo.getArticulo().getIdEmpresa().toString(), this.registroArticulo.getImportado().getName().substring(0, this.registroArticulo.getImportado().getName().lastIndexOf(".")));
           break;
       } // switch
     } // try
