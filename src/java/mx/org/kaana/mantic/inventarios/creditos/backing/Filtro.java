@@ -29,8 +29,10 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.inventarios.devoluciones.reglas.Transaccion;
+import mx.org.kaana.mantic.inventarios.creditos.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.db.dto.TcManticCreditosBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticCreditosNotasDto;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDto;
 import mx.org.kaana.mantic.enums.EReportes;
@@ -112,7 +114,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Entity seleccionado     = null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			transaccion= new Transaccion((TcManticDevolucionesDto)DaoFactory.getInstance().findById(TcManticDevolucionesDto.class, seleccionado.getKey()));
+			transaccion= new Transaccion((TcManticCreditosNotasDto)DaoFactory.getInstance().findById(TcManticCreditosNotasDto.class, seleccionado.getKey()), seleccionado.toDouble("importe"));
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Eliminar", "La nota de crédito se ha eliminado correctamente.", ETipoMensaje.ERROR);
 			else
@@ -236,13 +238,13 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} 
 	
 	public void doActualizarEstatus() {
-		TcManticDevolucionesBitacoraDto bitacora= null;
+		TcManticCreditosBitacoraDto bitacora= null;
 		Transaccion transaccion= null;
 		Entity seleccionado    = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			TcManticDevolucionesDto orden= (TcManticDevolucionesDto)DaoFactory.getInstance().findById(TcManticDevolucionesDto.class, seleccionado.getKey());
-			bitacora= new TcManticDevolucionesBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), Long.valueOf(this.attrs.get("estatus").toString()), orden.getConsecutivo(), orden.getTotal());
+			TcManticCreditosNotasDto orden= (TcManticCreditosNotasDto)DaoFactory.getInstance().findById(TcManticCreditosNotasDto.class, seleccionado.getKey());
+			bitacora= new TcManticCreditosBitacoraDto(orden.getConsecutivo(), (String)this.attrs.get("justificacion"), Long.valueOf((String)this.attrs.get("estatus")), -1L, JsfBase.getIdUsuario(), seleccionado.getKey(), orden.getImporte());
 			transaccion= new Transaccion(orden, bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);

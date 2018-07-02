@@ -19,7 +19,6 @@ import mx.org.kaana.mantic.db.dto.TcManticCreditosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticCreditosNotasDto;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDto;
-import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import org.apache.log4j.Logger;
 
 /**
@@ -106,6 +105,12 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					this.importe-= this.orden.getImporte();
 					if(this.orden.getIdTipoCreditoNota().equals(1L)) 
 						this.toCheckOrdenDevolucion(sesion);
+					break;
+				case JUSTIFICAR:
+					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
+						this.orden.setIdCreditoEstatus(this.bitacora.getIdCreditoEstatus());
+						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
+					} // if
 					break;
 			} // switch
 			if(!regresar)

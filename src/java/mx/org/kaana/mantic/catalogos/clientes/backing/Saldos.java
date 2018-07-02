@@ -31,6 +31,7 @@ public class Saldos extends IBaseFilter implements Serializable {
   private static final long serialVersionUID = 8793667741599428879L;
 	private UISelectEntity encontrado;
   private Long idCliente;
+	private boolean filtro;
 
 	public UISelectEntity getEncontrado() {
 		return encontrado;
@@ -39,12 +40,17 @@ public class Saldos extends IBaseFilter implements Serializable {
 	public void setEncontrado(UISelectEntity encontrado) {
 		this.encontrado=encontrado;
 	}
+
+	public boolean isFiltro() {
+		return filtro;
+	}
 	
   @PostConstruct
   @Override
   protected void init() {
     try {
 			this.idCliente= JsfBase.getFlashAttribute("idCliente")== null? -1L: (Long)JsfBase.getFlashAttribute("idCliente");			
+			this.filtro = this.idCliente.equals(-1L);
       this.attrs.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");
       this.attrs.put("idCliente", this.idCliente);     
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
@@ -58,15 +64,18 @@ public class Saldos extends IBaseFilter implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns = null;
+    List<Columna> columns     = null;
+	  Map<String, Object> params= null;	
     try {
-      columns = new ArrayList<>();
+  	  params = toPrepare();	
+			params.put("idCliente", this.idCliente);
+      columns= new ArrayList<>();
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
       columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));    
       columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));    
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_EXTENDIDA));    
-      this.lazyModel = new FormatCustomLazy("VistaClientesDto", "cuentas", this.attrs, columns);
+      this.lazyModel = new FormatCustomLazy("VistaClientesDto", "cuentas", params, columns);
       UIBackingUtilities.resetDataTable();
 			this.toLoadCatalog();
     } // try
@@ -75,6 +84,7 @@ public class Saldos extends IBaseFilter implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     finally {
+      Methods.clean(params);
       Methods.clean(columns);
     } // finally		
   } // doLoad
@@ -82,18 +92,16 @@ public class Saldos extends IBaseFilter implements Serializable {
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
-		if(!Cadena.isVacio(this.attrs.get("idOrdenCompra")) && !this.attrs.get("idOrdenCompra").toString().equals("-1"))
-  		sb.append("(tc_mantic_ordenes_compras.id_orden_compra=").append(this.attrs.get("idOrdenCompra")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_mantic_ordenes_compras.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+  		sb.append("(tc_mantic_ventas.consecutivo= ").append(this.attrs.get("consecutivo")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_mantic_ordenes_compras.registro, '%Y%c%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+		  sb.append("(date_format(tc_mantic_clientes_deudas.registro, '%Y%c%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_mantic_ordenes_compras.registro, '%Y%c%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("idProveedor")) && !this.attrs.get("idProveedor").toString().equals("-1"))
-  		sb.append("(tc_mantic_proveedores.id_proveedor= ").append(this.attrs.get("idProveedor")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idOrdenEstatus")) && !this.attrs.get("idOrdenEstatus").toString().equals("-1"))
-  		sb.append("(tc_mantic_ordenes_compras.id_orden_estatus= ").append(this.attrs.get("idOrdenEstatus")).append(") and ");
+		  sb.append("(date_format(tc_mantic_clientes_deudas.registro, '%Y%c%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+		if(!Cadena.isVacio(this.attrs.get("vencidos")) && this.attrs.get("vencidos").toString().equals("1"))
+  		sb.append("(now()> tc_mantic_clientes_deudas.limite) and ");
+		if(!Cadena.isVacio(this.attrs.get("dias")))
+  		sb.append("(datediff(tc_mantic_clientes_deudas.limite, now())>= ").append(this.attrs.get("dias")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
@@ -135,15 +143,15 @@ public class Saldos extends IBaseFilter implements Serializable {
 		return "filtro".concat(Constantes.REDIRECIONAR);
 	} 
 	
-	public void doClientes(){
+	public void doClientes() {
 		List<UISelectEntity> clientes= null;
     Map<String, Object> params   = null;
-		List<Columna>columns         = null;
+		List<Columna> columns        = null;
     try {
 			columns= new ArrayList<>();
 			if(this.attrs.get("busqueda")!= null && this.attrs.get("busqueda").toString().length()> 3) {
 				params = new HashMap<>();      
-				params.put(Constantes.SQL_CONDICION, "upper(razon_social) like upper('%".concat(this.attrs.get("busqueda").toString()).concat("%')"));
+				params.put(Constantes.SQL_CONDICION, "upper(razon_social) like upper('%".concat((String)this.attrs.get("busqueda")).concat("%')"));
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 				columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));			
 				columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));			
@@ -151,26 +159,29 @@ public class Saldos extends IBaseFilter implements Serializable {
 				this.attrs.put("clientes", clientes);      
 				this.attrs.put("resultados", clientes.size());      
 			} // if
-			else {
+			else 
 				JsfBase.addMessage("Cliente", "Favor de teclear por lo menos 3 caracteres.", ETipoMensaje.ALERTA);
-			} // else
     } // try
     catch (Exception e) {
       throw e;
     } // catch		
     finally {
       Methods.clean(params);
+      Methods.clean(columns);
     } // finally
 	} 
 
 	public void doSeleccionado() {
-		List<UISelectEntity> listado = null;
-		UISelectEntity cliente       = null;
+		List<UISelectEntity> listado= null;
+		List<UISelectEntity> unico  = null;
+		UISelectEntity cliente      = null;
 		try {
 			listado= (List<UISelectEntity>) this.attrs.get("clientes");
 			cliente= listado.get(listado.indexOf(this.encontrado));
 			this.attrs.put("cliente", cliente);						
-			this.attrs.put("unico", (new ArrayList<>()).add(cliente));						
+			unico  = new ArrayList<>();
+			unico.add(cliente);
+			this.attrs.put("unico", unico);						
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

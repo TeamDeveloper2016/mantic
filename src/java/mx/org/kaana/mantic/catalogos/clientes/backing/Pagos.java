@@ -11,6 +11,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
@@ -28,8 +29,22 @@ import mx.org.kaana.libs.reflection.Methods;
 public class Pagos extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
-	private Long idCliente;
+	private UISelectEntity encontrado;
+  private Long idCliente;
+	private boolean filtro;
 
+	public UISelectEntity getEncontrado() {
+		return encontrado;
+	}
+
+	public void setEncontrado(UISelectEntity encontrado) {
+		this.encontrado=encontrado;
+	}
+
+	public boolean isFiltro() {
+		return filtro;
+	}
+	
   @PostConstruct
   @Override
   protected void init() {
@@ -48,8 +63,11 @@ public class Pagos extends IBaseFilter implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> columns = null;
+	  Map<String, Object> params= null;	
+    List<Columna> columns     = null;
     try {
+  	  params = toPrepare();	
+			params.put("idCliente", this.idCliente);
       columns = new ArrayList<>();
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
       columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));    
@@ -65,6 +83,7 @@ public class Pagos extends IBaseFilter implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     finally {
+      Methods.clean(params);
       Methods.clean(columns);
     } // finally		
   } // doLoad
@@ -72,18 +91,16 @@ public class Pagos extends IBaseFilter implements Serializable {
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
-		if(!Cadena.isVacio(this.attrs.get("idOrdenCompra")) && !this.attrs.get("idOrdenCompra").toString().equals("-1"))
-  		sb.append("(tc_mantic_ordenes_compras.id_orden_compra=").append(this.attrs.get("idOrdenCompra")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_mantic_ordenes_compras.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+  		sb.append("(tc_mantic_ventas.consecutivo= ").append(this.attrs.get("consecutivo")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_mantic_ordenes_compras.registro, '%Y%c%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+		  sb.append("(date_format(tc_mantic_clientes_deudas.registro, '%Y%c%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_mantic_ordenes_compras.registro, '%Y%c%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("idProveedor")) && !this.attrs.get("idProveedor").toString().equals("-1"))
-  		sb.append("(tc_mantic_proveedores.id_proveedor= ").append(this.attrs.get("idProveedor")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idOrdenEstatus")) && !this.attrs.get("idOrdenEstatus").toString().equals("-1"))
-  		sb.append("(tc_mantic_ordenes_compras.id_orden_estatus= ").append(this.attrs.get("idOrdenEstatus")).append(") and ");
+		  sb.append("(date_format(tc_mantic_clientes_deudas.registro, '%Y%c%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+		if(!Cadena.isVacio(this.attrs.get("vencidos")) && this.attrs.get("vencidos").toString().equals("1"))
+  		sb.append("(now()> tc_mantic_clientes_deudas.limite) and ");
+		if(!Cadena.isVacio(this.attrs.get("dias")))
+  		sb.append("(datediff(tc_mantic_clientes_deudas.limite, now())>= ").append(this.attrs.get("dias")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
@@ -124,5 +141,51 @@ public class Pagos extends IBaseFilter implements Serializable {
 	  JsfBase.setFlashAttribute("idCliente", this.attrs.get("idCliente"));		
 		return "filtro".concat(Constantes.REDIRECIONAR);
 	} 
+
+	public void doClientes() {
+		List<UISelectEntity> clientes= null;
+    Map<String, Object> params   = null;
+		List<Columna> columns        = null;
+    try {
+			columns= new ArrayList<>();
+			if(this.attrs.get("busqueda")!= null && this.attrs.get("busqueda").toString().length()> 3) {
+				params = new HashMap<>();      
+				params.put(Constantes.SQL_CONDICION, "upper(razon_social) like upper('%".concat((String)this.attrs.get("busqueda")).concat("%')"));
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+				columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));			
+				columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));			
+				clientes = UIEntity.build("VistaClientesDto", "findRazonSocial", params, columns, Constantes.SQL_TODOS_REGISTROS);      
+				this.attrs.put("clientes", clientes);      
+				this.attrs.put("resultados", clientes.size());      
+			} // if
+			else 
+				JsfBase.addMessage("Cliente", "Favor de teclear por lo menos 3 caracteres.", ETipoMensaje.ALERTA);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally
+	} 
+
+	public void doSeleccionado() {
+		List<UISelectEntity> listado= null;
+		List<UISelectEntity> unico  = null;
+		UISelectEntity cliente      = null;
+		try {
+			listado= (List<UISelectEntity>) this.attrs.get("clientes");
+			cliente= listado.get(listado.indexOf(this.encontrado));
+			this.attrs.put("cliente", cliente);						
+			unico  = new ArrayList<>();
+			unico.add(cliente);
+			this.attrs.put("unico", unico);						
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} 	
 	
 }
