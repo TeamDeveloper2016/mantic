@@ -15,6 +15,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TrManticEmpaqueUnidadMedidaDto;
@@ -502,7 +503,7 @@ public class RegistroArticulo implements Serializable{
 		try {
 			if (this.importado != null && !Cadena.isVacio(this.importado.getName())) 
 				doCancelar();
-			genericPath= JsfBase.getRealPath().concat("Temporal").concat(File.separator).concat("Img").concat(File.separator);
+			genericPath= Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat(File.separator);
 			result= new File(genericPath.concat(event.getFile().getFileName()));		
 			filePath= new File(genericPath);
 			if (!filePath.exists())
