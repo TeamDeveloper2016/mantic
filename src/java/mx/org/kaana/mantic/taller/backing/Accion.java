@@ -167,21 +167,21 @@ public class Accion extends IBaseAttribute implements Serializable {
 	public void doBusquedaClientes(){
 		List<UISelectEntity> clientes= null;
     Map<String, Object> params   = null;
-		List<Columna>campos          = null;
+		List<Columna>columns         = null;
     try {
+			columns= new ArrayList<>();
 			if(this.attrs.get("busqueda")!= null && this.attrs.get("busqueda").toString().length()> 3){
 				params = new HashMap<>();      
 				params.put(Constantes.SQL_CONDICION, "upper(razon_social) like upper('%".concat(this.attrs.get("busqueda").toString()).concat("%')"));
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-				campos= new ArrayList<>();
-				campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));			
-				campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));			
-				clientes = UIEntity.build("VistaClientesDto", "findRazonSocial", params, campos, Constantes.SQL_TODOS_REGISTROS);      
+				columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));			
+				columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));			
+				clientes = UIEntity.build("VistaClientesDto", "findRazonSocial", params, columns, Constantes.SQL_TODOS_REGISTROS);      
 				this.attrs.put("clientesBusqueda", clientes);      
 				this.attrs.put("resultados", clientes.size());      
 			} // if
 			else{
-				JsfBase.addMessage("Busqueda cliente", "Captura un criterio de busqueda mayor a 3 caracteres", ETipoMensaje.ALERTA);
+				JsfBase.addMessage("Cliente", "Favor de teclear por lo menos 3 caracteres.", ETipoMensaje.ALERTA);
 			} // else
     } // try
     catch (Exception e) {

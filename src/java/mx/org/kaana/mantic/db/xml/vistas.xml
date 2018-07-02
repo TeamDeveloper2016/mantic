@@ -454,287 +454,284 @@
 					id_empaque= {idEmpaque}
 			</select>
 		</unit>
-        <unit id="VistaProveedoresDto">
-          <select id="row">
-            select 
-              tc_mantic_proveedores.id_proveedor as id_key,
-              tc_mantic_proveedores.clave,
-              tc_mantic_proveedores.rfc,
-              tc_mantic_proveedores.razon_social,
-              tc_mantic_tipos_proveedores.nombre as tipo_proveedor,
-              tc_mantic_proveedores.dias_entrega,
-              tc_mantic_tipos_dias.nombre as tipo_dia,
-              tc_mantic_proveedores.descuento  
-             from   
-               tc_mantic_proveedores
-             inner join
-               tc_mantic_tipos_proveedores   on  tc_mantic_tipos_proveedores.id_tipo_proveedor= tc_mantic_proveedores.id_tipo_proveedor
-             inner  join
-               tc_mantic_tipos_dias  on tc_mantic_tipos_dias.id_tipo_dia=tc_mantic_proveedores.id_tipo_dia             
-             where
-               tc_mantic_proveedores.razon_social like '%{razonSocial}%'
-              and
-               (tc_mantic_proveedores.rfc like '%{rfc}%' or tc_mantic_proveedores.rfc is null)
-              and
-               tc_mantic_proveedores.clave like '%{clave}%'
-              and 
-                tc_mantic_proveedores.id_tipo_proveedor  in ({idTipoProveedor}) 
-              and
-                tc_mantic_proveedores.id_empresa={idEmpresa}            
-              {sortOrder}
-          </select>
-          <select id="portal">
-            select 
-              tc_mantic_proveedores.id_proveedor as id_key,
-              tc_mantic_proveedores.clave,
-              tc_mantic_proveedores.rfc,
-              tc_mantic_proveedores.razon_social,
-              tc_mantic_tipos_proveedores.nombre as tipo_proveedor,
-              tc_mantic_proveedores.dias_entrega,
-              tc_mantic_tipos_dias.nombre as tipo_dia,
-              tc_mantic_proveedores.descuento  
-             from   
-               tc_mantic_proveedores
-             inner join
-               tc_mantic_tipos_proveedores   on  tc_mantic_tipos_proveedores.id_tipo_proveedor= tc_mantic_proveedores.id_tipo_proveedor
-             inner  join
-               tc_mantic_tipos_dias  on tc_mantic_tipos_dias.id_tipo_dia=tc_mantic_proveedores.id_tipo_dia             
-             where
-               upper(tc_mantic_proveedores.razon_social) like upper('%{codigo}%')
-              or
-               (upper(tc_mantic_proveedores.rfc) like upper('%{codigo}%') or upper(tc_mantic_proveedores.rfc is null))
-              or
-               upper(tc_mantic_proveedores.clave like '%{codigo}%')
-              and
-                tc_mantic_proveedores.id_empresa in ({sucursales})
-          </select>
-          <select id="proveedorCondicionPago">
-            select 
-                tc_mantic_tipos_pagos.id_tipo_pago,
-                tc_mantic_tipos_pagos.id_tipo_pago as id_key,            
-                tc_mantic_tipos_pagos.nombre as nombre_pago,
-                tc_mantic_tipos_formas_pagos.clave,
-                tc_mantic_tipos_formas_pagos.nombre
-            from 
-              tc_mantic_tipos_pagos
-            inner join 
-              tc_mantic_tipos_formas_pagos on tc_mantic_tipos_formas_pagos.id_tipo_medio_pago=tc_mantic_tipos_pagos.id_tipo_medio_pago              
-          </select>  
-           <select id="direccionProveedor">
-            select 
-            tc_janal_entidades.id_entidad,tc_janal_municipios.id_municipio,tc_janal_localidades.id_localidad, tc_janal_entidades.id_entidad as id_key
-          from 
-            tc_janal_entidades 
-          inner join
-            tc_janal_municipios  on tc_janal_municipios.id_entidad=tc_janal_entidades.id_entidad
-          inner join    
-            tc_janal_localidades on tc_janal_localidades.id_municipio=tc_janal_municipios.id_municipio
-           inner join
-            tc_mantic_domicilios on tc_mantic_domicilios.id_localidad=tc_janal_localidades.id_localidad
-           where 
-            tc_mantic_domicilios.id_domicilio={idDomicilio}
-          </select>            
-        </unit> 
-        <unit id="VistaClientesDto"> 
-          <select id="row">
-            select 
-              tc_mantic_clientes.id_cliente as id_key,
-              tc_mantic_clientes.clave,
-              tc_mantic_clientes.rfc,
-              tc_mantic_clientes.razon_social,
-              tc_mantic_clientes.limite_credito,
-              tc_mantic_clientes.plazo_dias,
-              tc_mantic_domicilios.calle,
-              tc_mantic_domicilios.numero_exterior,
-              tc_mantic_domicilios.asentamiento,
-              tc_mantic_domicilios.codigo_postal  
-            from
-              tc_mantic_clientes 
-            left join
-              tr_mantic_cliente_domicilio on tr_mantic_cliente_domicilio.id_cliente=tc_mantic_clientes.id_cliente
-            left join
-              tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_cliente_domicilio.id_domicilio
-            where   
-              tc_mantic_clientes.razon_social like '%{razonSocial}%'
-            and
-              tc_mantic_clientes.rfc like '%{rfc}%'
-            and
-              tc_mantic_clientes.clave like '%{clave}%' 
-            and
-              tc_mantic_clientes.id_empresa={idEmpresa} 
-            and 
-              (tr_mantic_cliente_domicilio.id_principal={idPrincipal} or tr_mantic_cliente_domicilio.id_principal is null)
-            {sortOrder}            
-          </select>         
-          <select id="findRazonSocial">
-            select 
-              tc_mantic_clientes.id_cliente as id_key,
-              tc_mantic_clientes.clave,
-              tc_mantic_clientes.rfc,
-              tc_mantic_clientes.razon_social,
-              tc_mantic_clientes.limite_credito,
-              tc_mantic_clientes.plazo_dias,
-              tc_mantic_domicilios.calle,
-              tc_mantic_domicilios.numero_exterior,
-              tc_mantic_domicilios.asentamiento,
-              tc_mantic_domicilios.codigo_postal, 
-							tc_mantic_tipos_ventas.nombre tipo_venta
-            from
-              tc_mantic_clientes 
-						inner join 
-							tc_mantic_tipos_ventas on tc_mantic_clientes.id_tipo_venta = tc_mantic_tipos_ventas.id_tipo_venta
-            left join
-              tr_mantic_cliente_domicilio  on tr_mantic_cliente_domicilio.id_cliente=tc_mantic_clientes.id_cliente
-            left join
-              tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_cliente_domicilio.id_domicilio
-            where   
-              {condicion}
-            and
-              tc_mantic_clientes.id_empresa={idEmpresa}                        
-          </select>    
-          <select id="clienteDefault">
-            select 
-              tc_mantic_clientes.id_cliente as id_key,
-              tc_mantic_clientes.clave,
-              tc_mantic_clientes.rfc,
-              tc_mantic_clientes.razon_social,
-              tc_mantic_clientes.limite_credito,
-              tc_mantic_clientes.plazo_dias,
-              tc_mantic_domicilios.calle,
-              tc_mantic_domicilios.numero_exterior,
-              tc_mantic_domicilios.asentamiento,
-              tc_mantic_domicilios.codigo_postal, 
-							tc_mantic_tipos_ventas.nombre tipo_venta
-            from
-              tc_mantic_clientes 
-						inner join 
-							tc_mantic_tipos_ventas on tc_mantic_clientes.id_tipo_venta = tc_mantic_tipos_ventas.id_tipo_venta
-            left join
-              tr_mantic_cliente_domicilio  on tr_mantic_cliente_domicilio.id_cliente=tc_mantic_clientes.id_cliente
-            left join
-              tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_cliente_domicilio.id_domicilio
-            where   
-              tc_mantic_clientes.id_empresa in ({sucursales})
-						and 
-							tc_mantic_clientes.clave='{clave}'				                       
-          </select>    
-					<select id="cuentas">
-						select
-							tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
-							tc_mantic_ventas.consecutivo,
-							tc_mantic_clientes_deudas.importe,
-							tc_mantic_clientes_deudas.saldo,
-							concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
-							tc_mantic_clientes_deudas.limite,
-							tc_mantic_clientes_deudas.registro,
-							datediff(tc_mantic_clientes_deudas.limite, now()) as dias
-						from
-							tc_mantic_clientes_deudas
-						inner join
-							tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
-						inner join
-							tc_janal_usuarios on tc_mantic_clientes_deudas.id_usuario= tc_janal_usuarios.id_usuario
-						inner join
-							tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
-						where
-							tc_mantic_clientes_deudas.id_cliente= {idCliente}
-						order by
-							tc_mantic_clientes_deudas.registro desc						
-					</select>		
-					<select id="pagos">
-						select
-							tc_mantic_clientes_pagos.id_cliente_pago as id_key,
-							tc_mantic_ventas.consecutivo,
-							tc_mantic_clientes_deudas.importe,
-							tc_mantic_clientes_deudas.saldo,
-							tc_mantic_clientes_pagos.pago,
-							concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
-							tc_mantic_clientes_pagos.registro
-						from
-							tc_mantic_clientes_pagos
-						inner join
-							tc_mantic_clientes_deudas on tc_mantic_clientes_pagos.id_cliente_deuda= tc_mantic_clientes_deudas.id_cliente_deuda
-						inner join
-							tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
-						inner join
-							tc_janal_usuarios on tc_mantic_clientes_pagos.id_usuario= tc_janal_usuarios.id_usuario
-						inner join
-							tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
-						where
-							tc_mantic_clientes_deudas.id_cliente= {idCliente}
-						order by
-							tc_mantic_ventas.consecutivo, 
-							tc_mantic_clientes_deudas.registro desc						
-					</select>
-					<select id="venta">
-						select
-							tc_mantic_clientes_pagos.id_cliente_pago as id_key,
-							tc_mantic_ventas.consecutivo,
-							tc_mantic_clientes_deudas.importe,
-							tc_mantic_clientes_deudas.saldo,
-							tc_mantic_clientes_pagos.pago,
-							concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
-							tc_mantic_clientes_pagos.registro
-						from
-							tc_mantic_clientes_pagos
-						inner join
-							tc_mantic_clientes_deudas on tc_mantic_clientes_pagos.id_cliente_deuda= tc_mantic_clientes_deudas.id_cliente_deuda
-						inner join
-							tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
-						inner join
-							tc_janal_usuarios on tc_mantic_clientes_pagos.id_usuario= tc_janal_usuarios.id_usuario
-						inner join
-							tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
-						where
-							tc_mantic_clientes_deudas.id_venta= {idVenta}
-						order by
-							tc_mantic_ventas.consecutivo, 
-							tc_mantic_clientes_deudas.registro desc						
-					</select>
-        </unit>
-        <unit id="VistaAlmacenesDto">
-          <select id="row">
-            select 
-             tc_mantic_almacenes.id_almacen as id_key,
-             tc_mantic_almacenes.clave,
-             tc_mantic_almacenes.nombre,
-             tc_mantic_almacenes.descripcion,
-             tc_mantic_personas.nombres,
-             tc_mantic_personas.paterno,
-             tc_mantic_personas.materno,
-             tc_mantic_domicilios.calle,
-             tc_mantic_domicilios.numero_exterior,
-             tc_mantic_domicilios.asentamiento,
-             tc_mantic_domicilios.codigo_postal,
-             tc_janal_entidades.descripcion as entidad,
-             tc_janal_municipios.descripcion as municipio             
-           from 
-             tc_mantic_almacenes
-           inner join
-             tc_mantic_personas on tc_mantic_personas.id_persona=tc_mantic_almacenes.id_responsable
-           inner join
-             tr_mantic_almacen_domicilio on  tr_mantic_almacen_domicilio.id_almacen= tc_mantic_almacenes.id_almacen
-           inner join
-            tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_almacen_domicilio.id_domicilio
-           inner join
-             tc_janal_localidades  on tc_mantic_domicilios.id_localidad=tc_janal_localidades.id_localidad
-           inner join 
-             tc_janal_municipios on tc_janal_municipios.id_municipio= tc_janal_localidades.id_municipio
-            inner join
-              tc_janal_entidades  on tc_janal_municipios.id_entidad=tc_janal_entidades.id_entidad
-             where
-              (tc_mantic_almacenes.clave like '%{clave}%' or tc_mantic_almacenes.clave is null)
-             and
-               tc_mantic_almacenes.nombre like '%{nombre}%'
-              and 
-                (tc_mantic_almacenes.descripcion  like '%{descripcion}%' or  tc_mantic_almacenes.descripcion is null)
-              and
-                tr_mantic_almacen_domicilio.id_principal={idPrincipal}  
-              and
-                  tc_mantic_almacenes.id_empresa={idEmpresa} 
-             {sortOrder} 
-          </select>  
-        </unit>
+		<unit id="VistaProveedoresDto">
+			<select id="row">
+				select 
+					tc_mantic_proveedores.id_proveedor as id_key,
+					tc_mantic_proveedores.clave,
+					tc_mantic_proveedores.rfc,
+					tc_mantic_proveedores.razon_social,
+					tc_mantic_tipos_proveedores.nombre as tipo_proveedor,
+					tc_mantic_proveedores.dias_entrega,
+					tc_mantic_tipos_dias.nombre as tipo_dia,
+					tc_mantic_proveedores.descuento  
+				 from   
+					 tc_mantic_proveedores
+				 inner join
+					 tc_mantic_tipos_proveedores   on  tc_mantic_tipos_proveedores.id_tipo_proveedor= tc_mantic_proveedores.id_tipo_proveedor
+				 inner  join
+					 tc_mantic_tipos_dias  on tc_mantic_tipos_dias.id_tipo_dia=tc_mantic_proveedores.id_tipo_dia             
+				 where
+					 tc_mantic_proveedores.razon_social like '%{razonSocial}%'
+					and
+					 (tc_mantic_proveedores.rfc like '%{rfc}%' or tc_mantic_proveedores.rfc is null)
+					and
+					 tc_mantic_proveedores.clave like '%{clave}%'
+					and 
+						tc_mantic_proveedores.id_tipo_proveedor  in ({idTipoProveedor}) 
+					and
+						tc_mantic_proveedores.id_empresa={idEmpresa}            
+					{sortOrder}
+			</select>
+			<select id="portal">
+				select 
+					tc_mantic_proveedores.id_proveedor as id_key,
+					tc_mantic_proveedores.clave,
+					tc_mantic_proveedores.rfc,
+					tc_mantic_proveedores.razon_social,
+					tc_mantic_tipos_proveedores.nombre as tipo_proveedor,
+					tc_mantic_proveedores.dias_entrega,
+					tc_mantic_tipos_dias.nombre as tipo_dia,
+					tc_mantic_proveedores.descuento  
+				 from   
+					 tc_mantic_proveedores
+				 inner join
+					 tc_mantic_tipos_proveedores   on  tc_mantic_tipos_proveedores.id_tipo_proveedor= tc_mantic_proveedores.id_tipo_proveedor
+				 inner  join
+					 tc_mantic_tipos_dias  on tc_mantic_tipos_dias.id_tipo_dia=tc_mantic_proveedores.id_tipo_dia             
+				 where
+					 upper(tc_mantic_proveedores.razon_social) like upper('%{codigo}%')
+					or
+					 (upper(tc_mantic_proveedores.rfc) like upper('%{codigo}%') or upper(tc_mantic_proveedores.rfc is null))
+					or
+					 upper(tc_mantic_proveedores.clave like '%{codigo}%')
+					and
+						tc_mantic_proveedores.id_empresa in ({sucursales})
+			</select>
+			<select id="proveedorCondicionPago">
+				select 
+						tc_mantic_tipos_pagos.id_tipo_pago,
+						tc_mantic_tipos_pagos.id_tipo_pago as id_key,            
+						tc_mantic_tipos_pagos.nombre as nombre_pago,
+						tc_mantic_tipos_formas_pagos.clave,
+						tc_mantic_tipos_formas_pagos.nombre
+				from 
+					tc_mantic_tipos_pagos
+				inner join 
+					tc_mantic_tipos_formas_pagos on tc_mantic_tipos_formas_pagos.id_tipo_medio_pago=tc_mantic_tipos_pagos.id_tipo_medio_pago              
+			</select>  
+			 <select id="direccionProveedor">
+				select 
+				tc_janal_entidades.id_entidad,tc_janal_municipios.id_municipio,tc_janal_localidades.id_localidad, tc_janal_entidades.id_entidad as id_key
+			from 
+				tc_janal_entidades 
+			inner join
+				tc_janal_municipios  on tc_janal_municipios.id_entidad=tc_janal_entidades.id_entidad
+			inner join    
+				tc_janal_localidades on tc_janal_localidades.id_municipio=tc_janal_municipios.id_municipio
+			 inner join
+				tc_mantic_domicilios on tc_mantic_domicilios.id_localidad=tc_janal_localidades.id_localidad
+			 where 
+				tc_mantic_domicilios.id_domicilio={idDomicilio}
+			</select>            
+		</unit> 
+		<unit id="VistaClientesDto"> 
+			<select id="row">
+				select 
+					tc_mantic_clientes.id_cliente as id_key,
+					tc_mantic_clientes.clave,
+					tc_mantic_clientes.rfc,
+					tc_mantic_clientes.razon_social,
+					tc_mantic_clientes.limite_credito,
+					tc_mantic_clientes.plazo_dias,
+					tc_mantic_domicilios.calle,
+					tc_mantic_domicilios.numero_exterior,
+					tc_mantic_domicilios.asentamiento,
+					tc_mantic_domicilios.codigo_postal  
+				from
+					tc_mantic_clientes 
+				left join
+					tr_mantic_cliente_domicilio on tr_mantic_cliente_domicilio.id_cliente=tc_mantic_clientes.id_cliente
+				left join
+					tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_cliente_domicilio.id_domicilio
+				where   
+					tc_mantic_clientes.razon_social like '%{razonSocial}%'
+				and
+					tc_mantic_clientes.rfc like '%{rfc}%'
+				and
+					tc_mantic_clientes.clave like '%{clave}%' 
+				and
+					tc_mantic_clientes.id_empresa={idEmpresa} 
+				and 
+					(tr_mantic_cliente_domicilio.id_principal={idPrincipal} or tr_mantic_cliente_domicilio.id_principal is null)
+				{sortOrder}            
+			</select>         
+			<select id="findRazonSocial">
+				select 
+					tc_mantic_clientes.id_cliente as id_key,
+					tc_mantic_clientes.clave,
+					tc_mantic_clientes.rfc,
+					tc_mantic_clientes.razon_social,
+					tc_mantic_clientes.limite_credito,
+					tc_mantic_clientes.plazo_dias,
+					tc_mantic_domicilios.calle,
+					tc_mantic_domicilios.numero_exterior,
+					tc_mantic_domicilios.asentamiento,
+					tc_mantic_domicilios.codigo_postal, 
+					tc_mantic_tipos_ventas.nombre tipo_venta
+				from
+					tc_mantic_clientes 
+				inner join 
+					tc_mantic_tipos_ventas on tc_mantic_clientes.id_tipo_venta = tc_mantic_tipos_ventas.id_tipo_venta
+				left join
+					tr_mantic_cliente_domicilio  on tr_mantic_cliente_domicilio.id_cliente=tc_mantic_clientes.id_cliente
+				left join
+					tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_cliente_domicilio.id_domicilio
+				where   
+					{condicion}
+				and
+					tc_mantic_clientes.id_empresa={idEmpresa}                        
+			</select>    
+			<select id="clienteDefault">
+				select 
+					tc_mantic_clientes.id_cliente as id_key,
+					tc_mantic_clientes.clave,
+					tc_mantic_clientes.rfc,
+					tc_mantic_clientes.razon_social,
+					tc_mantic_clientes.limite_credito,
+					tc_mantic_clientes.plazo_dias,
+					tc_mantic_domicilios.calle,
+					tc_mantic_domicilios.numero_exterior,
+					tc_mantic_domicilios.asentamiento,
+					tc_mantic_domicilios.codigo_postal, 
+					tc_mantic_tipos_ventas.nombre tipo_venta
+				from
+					tc_mantic_clientes 
+				inner join 
+					tc_mantic_tipos_ventas on tc_mantic_clientes.id_tipo_venta = tc_mantic_tipos_ventas.id_tipo_venta
+				left join
+					tr_mantic_cliente_domicilio  on tr_mantic_cliente_domicilio.id_cliente=tc_mantic_clientes.id_cliente
+				left join
+					tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_cliente_domicilio.id_domicilio
+				where   
+					tc_mantic_clientes.id_empresa in ({sucursales})
+				and 
+					tc_mantic_clientes.clave='{clave}'				                       
+			</select>    
+			<select id="cuentas">
+				select
+					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
+					tc_mantic_ventas.consecutivo,
+					tc_mantic_clientes_deudas.importe,
+					tc_mantic_clientes_deudas.saldo,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
+					tc_mantic_clientes_deudas.limite,
+					tc_mantic_clientes_deudas.registro,
+					datediff(tc_mantic_clientes_deudas.limite, now()) as dias
+				from
+					tc_mantic_clientes_deudas
+				inner join
+					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
+				inner join
+					tc_janal_usuarios on tc_mantic_clientes_deudas.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_clientes_deudas.id_cliente= {idCliente}
+				{sortOrder}						
+			</select>		
+			<select id="pagos">
+				select
+					tc_mantic_clientes_pagos.id_cliente_pago as id_key,
+					tc_mantic_ventas.consecutivo,
+					tc_mantic_clientes_deudas.importe,
+					tc_mantic_clientes_deudas.saldo,
+					tc_mantic_clientes_pagos.pago,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
+					tc_mantic_clientes_pagos.registro
+				from
+					tc_mantic_clientes_pagos
+				inner join
+					tc_mantic_clientes_deudas on tc_mantic_clientes_pagos.id_cliente_deuda= tc_mantic_clientes_deudas.id_cliente_deuda
+				inner join
+					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
+				inner join
+					tc_janal_usuarios on tc_mantic_clientes_pagos.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_clientes_deudas.id_cliente= {idCliente}
+				order by
+					tc_mantic_ventas.consecutivo, 
+					tc_mantic_clientes_deudas.registro desc						
+			</select>
+			<select id="venta">
+				select
+					tc_mantic_clientes_pagos.id_cliente_pago as id_key,
+					tc_mantic_ventas.consecutivo,
+					tc_mantic_clientes_deudas.importe,
+					tc_mantic_clientes_deudas.saldo,
+					tc_mantic_clientes_pagos.pago,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
+					tc_mantic_clientes_pagos.registro
+				from
+					tc_mantic_clientes_pagos
+				inner join
+					tc_mantic_clientes_deudas on tc_mantic_clientes_pagos.id_cliente_deuda= tc_mantic_clientes_deudas.id_cliente_deuda
+				inner join
+					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
+				inner join
+					tc_janal_usuarios on tc_mantic_clientes_pagos.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_clientes_deudas.id_venta= {idVenta}
+				{sortOrder}
+			</select>
+		</unit>
+		<unit id="VistaAlmacenesDto">
+			<select id="row">
+				select 
+				 tc_mantic_almacenes.id_almacen as id_key,
+				 tc_mantic_almacenes.clave,
+				 tc_mantic_almacenes.nombre,
+				 tc_mantic_almacenes.descripcion,
+				 tc_mantic_personas.nombres,
+				 tc_mantic_personas.paterno,
+				 tc_mantic_personas.materno,
+				 tc_mantic_domicilios.calle,
+				 tc_mantic_domicilios.numero_exterior,
+				 tc_mantic_domicilios.asentamiento,
+				 tc_mantic_domicilios.codigo_postal,
+				 tc_janal_entidades.descripcion as entidad,
+				 tc_janal_municipios.descripcion as municipio             
+			 from 
+				 tc_mantic_almacenes
+			 inner join
+				 tc_mantic_personas on tc_mantic_personas.id_persona=tc_mantic_almacenes.id_responsable
+			 inner join
+				 tr_mantic_almacen_domicilio on  tr_mantic_almacen_domicilio.id_almacen= tc_mantic_almacenes.id_almacen
+			 inner join
+				tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_almacen_domicilio.id_domicilio
+			 inner join
+				 tc_janal_localidades  on tc_mantic_domicilios.id_localidad=tc_janal_localidades.id_localidad
+			 inner join 
+				 tc_janal_municipios on tc_janal_municipios.id_municipio= tc_janal_localidades.id_municipio
+				inner join
+					tc_janal_entidades  on tc_janal_municipios.id_entidad=tc_janal_entidades.id_entidad
+				 where
+					(tc_mantic_almacenes.clave like '%{clave}%' or tc_mantic_almacenes.clave is null)
+				 and
+					 tc_mantic_almacenes.nombre like '%{nombre}%'
+					and 
+						(tc_mantic_almacenes.descripcion  like '%{descripcion}%' or  tc_mantic_almacenes.descripcion is null)
+					and
+						tr_mantic_almacen_domicilio.id_principal={idPrincipal}  
+					and
+							tc_mantic_almacenes.id_empresa={idEmpresa} 
+				 {sortOrder} 
+			</select>  
+		</unit>
 		<unit id="VistaPersonasDto">
 			<select id="row">
 				select 
