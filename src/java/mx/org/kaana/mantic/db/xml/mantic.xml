@@ -2157,7 +2157,8 @@
 	  <unit id="TcManticUsosCfdiDto">
       <select id="row">
         select      
-          *
+					tc_mantic_usos_cfdi.id_uso_cfdi as id_key,
+          tc_mantic_usos_cfdi.*
         from      
           tc_mantic_usos_cfdi
         where 
