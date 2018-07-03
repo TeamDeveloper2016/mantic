@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.ventas.caja.beans;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
@@ -7,8 +8,9 @@ import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 
-public class VentaFinalizada {
+public class VentaFinalizada implements Serializable{
 
+	private static final long serialVersionUID = 6598582355031809104L;
 	private TicketVenta ticketVenta;
 	private List<ClienteTipoContacto> correosContacto;
 	private ClienteTipoContacto telefono;
