@@ -25,9 +25,7 @@ import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ContadoresListas;
@@ -44,6 +42,7 @@ import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.ventas.caja.beans.Pago;
+import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
@@ -134,9 +133,11 @@ public class Accion extends IBaseCliente implements Serializable {
   } // doLoad
 
   public String doAceptar() {  
-    Transaccion transaccion= null;
-    String regresar        = null;
+    Transaccion transaccion        = null;
+    String regresar                = null;
+		VentaFinalizada ventaFinalizada= null;
     try {						
+			ventaFinalizada= loadVentaFinalizada();
 			transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()));
 			if (transaccion.ejecutar(EAccion.REPROCESAR)) {
  				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
@@ -360,6 +361,7 @@ public class Accion extends IBaseCliente implements Serializable {
 			motorBusqueda= new MotorBusqueda(-1L, ((TicketVenta)this.getAdminOrden().getOrden()).getIdCliente());
 			seleccion= new UISelectEntity(motorBusqueda.toCliente());
 			this.attrs.put("clienteAsignado", !seleccion.toString("clave").equals(CLAVE_VENTA_GRAL));
+			this.attrs.put("nombreCliente", seleccion.toString("razonSocial"));
 			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
@@ -528,4 +530,22 @@ public class Accion extends IBaseCliente implements Serializable {
 			throw e;
 		} // catch		
 	} // addDeleteList
+	
+	private VentaFinalizada loadVentaFinalizada(){
+		VentaFinalizada regresar= null;
+		try {
+			regresar= new VentaFinalizada();
+			regresar.setTicketVenta((TicketVenta)this.getAdminOrden().getOrden());
+			regresar.setCorreosContacto(this.clientesTiposContacto);
+			regresar.setCelular((ClienteTipoContacto) this.attrs.get("celular"));
+			regresar.setTelefono((ClienteTipoContacto) this.attrs.get("telefono"));
+			regresar.setTotales((Pago) this.attrs.get("pago"));
+			regresar.setCliente((TcManticClientesDto) this.attrs.get("registroCliente"));
+			regresar.setDomicilio(getDomicilio());
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // loadVentaFinalizada
 }
