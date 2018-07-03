@@ -82,6 +82,7 @@ public class Reporte extends BaseReportes implements Serializable{
 		this.idTitulos= ireporte.getTitulo();		
     this.total    = ireporte instanceof IReporteDataSource ? 1L : toSize();		
     this.prefijo  = prefijo;
+    this.idFormato    = ireporte.getFormato();
     this.fileName = Archivo.toFormatNameFile(ireporte.getNombre(), this.prefijo);
 		this.nombre   = this.idFormato.toPath().concat(this.fileName).concat(".").concat(this.idFormato.name().toLowerCase());
 	} // toAsiganarReporte
