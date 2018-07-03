@@ -1,6 +1,12 @@
 package mx.org.kaana.mantic.compras.ordenes.scriplet;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import java.io.Serializable;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -22,9 +28,14 @@ public class OrdenesDetalles  extends BarraProgreso implements Serializable{
    Value tels_proveedor     = null;
    Value emails_almacen     = null;
    Value emails_prveedor    = null;
+   QRCodeWriter writer = new QRCodeWriter();
+   BitMatrix matrix = null;
     try {
       letras = new Letras();
       params= new HashMap<>();
+      Map<EncodeHintType, Object> hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
+      hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
+      hints.put(EncodeHintType.MARGIN, 0); /* default = 4 */
       tels_almacen=DaoFactory.getInstance().toField("VistaInformacionAlmacen", "telefonos", params, "tels");
       tels_proveedor=DaoFactory.getInstance().toField("VistaInformacionProveedor", "telefonos", params, "tels");
       emails_almacen=DaoFactory.getInstance().toField("VistaInformacionAlmacen", "emails", params, "emails");
@@ -37,6 +48,8 @@ public class OrdenesDetalles  extends BarraProgreso implements Serializable{
       setVariableValue("EMAILS_ALMACEN", emails_almacen.getData() != null?emails_almacen.getData(): " N.E. " );
       setVariableValue("TELEFONOS_PROVEEDOR", tels_proveedor.getData() != null?tels_proveedor.getData(): " N.E. " );
       setVariableValue("EMAILS_PROVEEDOR", emails_prveedor.getData() != null?emails_prveedor.getData(): " N.E. " );
+      matrix = writer.encode(getParameterValue("NOMBRE_REPORTE").toString().concat(":").concat(getFieldValue("CONSECUTIVO").toString()).toString().concat("-").concat("http://bonanzaj.jvmhost.net/MANTIC/"), BarcodeFormat.QR_CODE, 400, 400, hints);
+      setVariableValue("CODE_QR", MatrixToImageWriter.toBufferedImage(matrix) );
     } // try
     catch (Exception e) {
       Error.mensaje(e);
