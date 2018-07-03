@@ -89,11 +89,11 @@
 					<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100">		
 						<p:outputLabel value="Importe total de la nota de entrada:" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '2'}"/>
 						<p:inputText styleClass="janal-color-orange janal-column-right janal-wid-100-txt" readonly="true" value="#{manticInventariosCreditosAccion.attrs.total}" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '2'}"/>
-						<p:outputLabel value="Importe acumulado de la nota de crédito:" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '2'}"/>
+						<p:outputLabel value="Importe acumulado de la(s) nota(s) de crédito(s):" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '2'}"/>
 						<p:inputText styleClass="janal-color-orange janal-column-right janal-wid-100-txt" readonly="true" value="#{manticInventariosCreditosAccion.attrs.parcial}" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '2'}"/>
 						<p:outputLabel value="Importe total de la devolución:" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '1'}"/>
 						<p:inputText styleClass="janal-color-orange janal-column-right janal-wid-100-txt" readonly="true" value="#{manticInventariosCreditosAccion.attrs.total}" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '1'}"/>
-						<p:outputLabel value="Importe acumulado de la notas de crédito:" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '1'}"/>
+						<p:outputLabel value="Importe acumulado de la(s) nota(s) de crédito(s):" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '1'}"/>
 						<p:inputText styleClass="janal-color-orange janal-column-right janal-wid-100-txt" readonly="true" value="#{manticInventariosCreditosAccion.attrs.parcial}" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '1'}"/>
 						<p:outputLabel for="observaciones" value="Observaciones:"/>
 						<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosAccion.orden.observaciones}"/>

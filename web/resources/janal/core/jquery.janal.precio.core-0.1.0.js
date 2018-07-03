@@ -66,11 +66,11 @@
 						break;
 					case $precios.VK_PAGE_NEXT:
 						$('#verificadorTabla_paginator_top > a.ui-paginator-next').click();
-						return setTimeout($precios.next(true), 1000);
+						return setTimeout($precios.next(false), 1000);
 						break;
 					case $precios.VK_PAGE_PREV:
 						$('#verificadorTabla_paginator_top > a.ui-paginator-prev').click();
-						return setTimeout($precios.next(true), 1000);
+						return setTimeout($precios.next(false), 1000);
 						break;
 				} // swtich
 			});	
@@ -96,7 +96,7 @@
 			PF('widgetVerificador').writeSelections();
 			PF('widgetVerificador').selectRow(0, true);	
 			if(focus)
-			  setTimeout($('#verificadorTabla .ui-datatable-data').focus(), 100);
+			  $('#verificadorTabla .ui-datatable-data').focus();
 			return false;
 		}
 	});
