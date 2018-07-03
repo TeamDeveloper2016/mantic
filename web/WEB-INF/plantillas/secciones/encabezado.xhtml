@@ -6,7 +6,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core"
 			xmlns:ui="http://java.sun.com/jsf/facelets">	
-    <h:outputScript library="janal" name="core/jquery.janal.precio.core-0.0.6.js"/>
+    <h:outputScript library="janal" name="#{kajoolUtilAplicacion.preciosJs}"/>
   <script type="text/javascript">
     $(function() {
       janal.fecha();
@@ -16,7 +16,7 @@
     });
 		
     $(document).ready(function() {
-     jsPrecios= new Janal.Control.Precios.Core();
+      jsPrecios= new Janal.Control.Precios.Core();
     });			
   </script>
   <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
@@ -103,9 +103,9 @@
 			<p:commandButton value="Aceptar" onstart="janal.monitor(0);" oncomplete="PF('dialogoInactivo').hide(); janal.desbloquear();"/>							
 		</div>				
 	</p:dialog>
-	<p:dialog id="dialogoVerificador" widgetVar="dlgVerificador" header="Verificador de precios" onShow="$('#verificadorValue').focus();" onHide="janal.sendLastFocus();" height="550px" width="950px" resizable="false" closeOnEscape="true">
+	<p:dialog id="dialogoVerificador" widgetVar="dlgVerificador" header="Verificador de precios" onShow="$('#verificadorValue').val('.*.');verificadorLookup();$('#verificadorValue').focus();" onHide="janal.sendLastFocus();" height="550px" width="950px" resizable="false" closeOnEscape="true">
 		<h:form prependId="false">
-  		<p:remoteCommand name="verificadorLookup" actionListener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor verificadorValue" update="verificadorPrecio verificadorTabla"/>
+			<p:remoteCommand name="verificadorLookup" actionListener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor verificadorValue" update="verificadorPrecio verificadorTabla" oncomplete="if($('#verificadorValue').val()==='.*.') $('#verificadorValue').val('');"/>
 			<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-90, janal-wid-15">
 				<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 					<p:outputLabel for="verificadorValue" value="Código o articulo:"/>
@@ -131,9 +131,9 @@
 					<p:inputText styleClass="janal-column-right" value="#{kajoolEncabezado.attrs.selected.menudeo}" readonly="true"/>
 					<p:inputText styleClass="janal-column-right" value="#{kajoolEncabezado.attrs.selected.medioMayoreo}" readonly="true"/>
 					<p:inputText styleClass="janal-column-right" value="#{kajoolEncabezado.attrs.selected.mayoreo}" readonly="true"/>
-					<p:inputText styleClass="janal-column-center" value="&gt; 0 y &lt; #{kajoolEncabezado.attrs.selected.limiteMedioMayoreo}" readonly="true"/>
-					<p:inputText styleClass="janal-column-center" value="&gt;= #{kajoolEncabezado.attrs.selected.limiteMedioMayoreo} y &lt; #{kajoolEncabezado.attrs.selected.limiteMayoreo}" readonly="true"/>
-					<p:inputText styleClass="janal-column-center" value="&gt;= #{kajoolEncabezado.attrs.selected.limiteMayoreo}" readonly="true"/>
+					<p:inputText styleClass="janal-column-center" value="0 - #{kajoolEncabezado.attrs.selected.limiteMedioMayoreo}" readonly="true"/>
+					<p:inputText styleClass="janal-column-center" value="#{kajoolEncabezado.attrs.selected.limiteMedioMayoreo} - #{kajoolEncabezado.attrs.selected.limiteMayoreo}" readonly="true"/>
+					<p:inputText styleClass="janal-column-center" value="#{kajoolEncabezado.attrs.selected.limiteMayoreo} - #######" readonly="true"/>
   			</p:panelGrid>
 				<p:outputLabel value="Existencias por almacen:" styleClass="janal-wid-100"/>
 				<p:selectOneMenu value="#{kajoolEncabezado.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="startsWith">
