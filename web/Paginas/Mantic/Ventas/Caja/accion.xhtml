@@ -51,6 +51,15 @@
     	$(document).ready(function() {
 				janal.readingMode('#{manticVentasCajaAccion.attrs.nombreAccion}');
       });																		
+			
+			function ventaFinished(){
+				var ok= janal.partial('general', true);
+				if(ok){
+					janal.bloquear();					
+					PF('dlgCerrarVenta').show();
+				} // if
+				return ok;
+			} // ventaFinished
 		</script>   
 		<style type="text/css">
 			.janal-total-compra {
@@ -58,6 +67,15 @@
 				font-weight: bold !important;
 				font-style: italic;	
 			}						
+			.font-resume-venta{
+				font-size: large !important;
+				font-weight: bold !important;
+				color: darkslategray;
+				font-style: italic;
+			}
+			.font-resume-venta-detail{
+				font-weight: bold !important;				
+			}
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
@@ -484,14 +502,51 @@
         <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgDomicilios').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
 			</div>
 		</p:dialog> 
+		<p:dialog id="dialogoCerrarVenta" widgetVar="dlgCerrarVenta" header="Finalizar venta" resizable="false" closable="false" responsive="true" width="40%">
+			<h:panelGrid columns="4" columnClasses="janal-wid-70, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center">
+				<p:outputLabel value="Resumen de venta" styleClass="font-resume-venta"/><p:spacer/><p:spacer/><p:spacer/>				
+				<p:outputLabel value="Cliente" styleClass="font-resume-venta-detail"/>
+				<p:outputLabel value="Descuento" styleClass="font-resume-venta-detail"/>
+				<p:outputLabel value="Facturar" styleClass="font-resume-venta-detail"/>
+				<p:outputLabel value="Credito" styleClass="font-resume-venta-detail"/>				
+				<p:outputLabel value="#{manticVentasCajaAccion.attrs.nombreCliente}"/>				
+				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.totales.descuento$}"/>				
+				<p:outputLabel value="#{manticVentasCajaAccion.attrs.facturarVenta ? 'SI' : 'NO'}"/>				
+				<p:outputLabel value="#{manticVentasCajaAccion.attrs.creditoVenta ? 'SI' : 'NO'}"/>				
+			</h:panelGrid>
+			<h:panelGrid columns="3" columnClasses="janal-wid-75, janal-wid-5 janal-column-center, janal-wid-20 janal-column-right">
+				<p:outputLabel value="Formas de pago" styleClass="font-resume-venta"/><p:spacer/><p:spacer/>
+				<p:outputLabel value="Total:" styleClass="font-resume-venta-detail janal-color-orange"/><p:outputLabel value="$" styleClass="janal-color-orange"/>
+				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.totales.total$}" styleClass="janal-color-orange"/>
+				<p:outputLabel value="Pago:" styleClass="font-resume-venta-detail janal-color-green"/><p:outputLabel value="$" styleClass="janal-color-green"/>
+				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.pago$}" styleClass="janal-color-green"/>
+				<p:outputLabel value="Efectivo:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
+				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.efectivo}"/>
+				<p:outputLabel value="Tarjeta de debito:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
+				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.debito}"/>
+				<p:outputLabel value="Tarjeta de credito:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
+				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.credito}"/>
+				<p:outputLabel value="Transferencia:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
+				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.transferencia}"/>
+				<p:outputLabel value="Cheque:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
+				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.cheque}"/>				
+				<p:outputLabel value="Cambio:" styleClass="font-resume-venta-detail janal-color-blue"/><p:outputLabel value="$" styleClass="janal-color-blue"/>
+				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.cambio$}" styleClass="janal-color-blue"/>
+			</h:panelGrid>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton id="aceptarFinalizar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaAccion.doAceptar}" styleClass="janal-text-white" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear()" update="contenedorGrupos" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>
+				<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+			</div>
+		</p:dialog>
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('general', true);" oncomplete="janal.desbloquear()" update="contenedorGrupos" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this" styleClass="janal-text-white" oncomplete="ventaFinished();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('general', true);" oncomplete="janal.desbloquear()" update="contenedorGrupos" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>
+			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@this" styleClass="janal-text-white" oncomplete="ventaFinished();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>
 			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 		</div>		
 	</ui:define>
