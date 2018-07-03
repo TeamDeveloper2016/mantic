@@ -211,6 +211,14 @@
 				  ejercicio= {ejercicio} 
 				  and id_empresa= {idEmpresa}				
 			</select>	
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_servicios
+        where 
+          id_servicio = {idServicio} 
+      </select>
     </unit>		
     <unit id="TcManticServiciosBitacoraDto">
       <select id="row">
@@ -249,6 +257,17 @@
           tc_mantic_servicios_detalles
         where      
           concepto = '{concepto}' and id_servicio = {idServicio}
+      </select>
+      <select id="detalle">
+        select      
+				  tc_mantic_servicios_detalles.id_servicio_detalle as id_comodin,
+          tc_mantic_servicios_detalles.*
+        from      
+          tc_mantic_servicios_detalles
+        where      
+          id_servicio = {idServicio}
+				order by
+				  tc_mantic_servicios_detalles.registro
       </select>
 			<delete id="rows">
         delte from tc_mantic_servicios_detalles where id_servicio= {idServicio} 

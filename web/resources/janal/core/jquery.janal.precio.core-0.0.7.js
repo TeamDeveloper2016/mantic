@@ -27,7 +27,7 @@
 				janal.console('Keydown: '+ key);
 				switch(key) {
 					case $precios.VK_TAB:
-						return $precios.next();
+						return $precios.next(true);
 					  break;
 					case $precios.VK_ESC:
             PF('dlgVerificador').hide();
@@ -37,11 +37,11 @@
 						break;
 					case $precios.VK_PAGE_NEXT:
 						$('#verificadorTabla_paginator_top > a.ui-paginator-next').click();
-						return setTimeout($precios.next(), 1000);
+						return setTimeout($precios.next(false), 1000);
 						break;
 					case $precios.VK_PAGE_PREV:
 						$('#verificadorTabla_paginator_top > a.ui-paginator-prev').click();
-						return setTimeout($precios.next(), 1000);
+						return setTimeout($precios.next(false), 1000);
 						break;
 				} // swtich
 			});	
@@ -49,6 +49,10 @@
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('Keydown: '+ key);
 				switch(key) {
+					case $precios.VK_TAB:
+					  $('#verificadorValue').focus();
+						return false;
+					  break;
 					case $precios.VK_ESC:
             PF('dlgVerificador').hide();
 						break;
@@ -62,11 +66,11 @@
 						break;
 					case $precios.VK_PAGE_NEXT:
 						$('#verificadorTabla_paginator_top > a.ui-paginator-next').click();
-						return setTimeout($precios.next(), 1000);
+						return setTimeout($precios.next(true), 1000);
 						break;
 					case $precios.VK_PAGE_PREV:
 						$('#verificadorTabla_paginator_top > a.ui-paginator-prev').click();
-						return setTimeout($precios.next(), 1000);
+						return setTimeout($precios.next(true), 1000);
 						break;
 				} // swtich
 			});	
@@ -86,11 +90,13 @@
 			$('#verificadorPrecio').attr('style', 'display:none');
 			return false;
 		},
-		next: function() {
+		next: function(focus) {
+			janal.console('jsPrecios.next');
 			PF('widgetVerificador').clearSelection();
 			PF('widgetVerificador').writeSelections();
-			PF('widgetVerificador').selectRow(0, true);		
-			setTimeout($('#verificadorTabla .ui-datatable-data').focus(), 100);
+			PF('widgetVerificador').selectRow(0, true);	
+			if(focus)
+			  setTimeout($('#verificadorTabla .ui-datatable-data').focus(), 100);
 			return false;
 		}
 	});

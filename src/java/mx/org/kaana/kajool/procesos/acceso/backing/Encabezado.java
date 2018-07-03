@@ -72,15 +72,19 @@ public class Encabezado extends IBaseFilter implements Serializable {
 
 	public void doChange() {
 		String codigo= (String)this.attrs.get("buscarPor");
-		boolean buscaPorCodigo= codigo.startsWith(".");
-		if(buscaPorCodigo)
-			codigo= codigo.trim().substring(1);
-		codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
-		this.attrs.put("codigo", codigo);
-		this.attrs.put("idXml", "porNombre");
-		if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
-			this.attrs.put("idXml", "porCodigo");
-		this.doLoad();
+		if(codigo!= null && codigo.equals(".*.")) 
+			this.lazyModel= null;
+		else {
+			boolean buscaPorCodigo= codigo.startsWith(".");
+			if(buscaPorCodigo)
+				codigo= codigo.trim().substring(1);
+			codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			this.attrs.put("codigo", codigo);
+			this.attrs.put("idXml", "porNombre");
+			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
+				this.attrs.put("idXml", "porCodigo");
+			this.doLoad();
+		} // else
 	}
 
   public void doRowDblSelectEvent(SelectEvent event) {
