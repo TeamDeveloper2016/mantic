@@ -70,6 +70,18 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
 		toAsignaCodigoPostal();
 	}
 	
+	protected void loadDefaultCollections(){				
+		loadDomicilios();
+		loadEntidades();
+		toAsignaEntidad();
+		loadMunicipios();
+		toAsignaMunicipio();
+		loadLocalidades();
+		toAsignaLocalidad();
+		loadCodigosPostales();      
+		toAsignaCodigoPostal();
+	}
+	
 	public void initCliente() { 
 		TcManticClientesDto registroCliente= null;
     try {      
