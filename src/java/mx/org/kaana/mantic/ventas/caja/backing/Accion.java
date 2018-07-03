@@ -101,6 +101,7 @@ public class Accion extends IBaseCliente implements Serializable {
 				loadSucursales();
 			doLoadTicketAbiertos();			
 			loadBancos();
+			loadCfdis();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -415,6 +416,7 @@ public class Accion extends IBaseCliente implements Serializable {
 				} // if
 				else{
 					setDomicilio(new Domicilio());
+					loadDefaultCollections();					
 					this.attrs.put("registroCliente", new TcManticClientesDto());
 					this.clientesTiposContacto= new ArrayList<>();
 					this.attrs.put("telefono", new ClienteTipoContacto());
@@ -548,4 +550,23 @@ public class Accion extends IBaseCliente implements Serializable {
 		} // catch		
 		return regresar;
 	} // loadVentaFinalizada
+	
+	private void loadCfdis(){
+		List<UISelectEntity> cfdis= null;
+		List<Columna> campos      = null;
+		Map<String, Object>params = null;
+		try {
+			params= new HashMap<>();
+			campos= new ArrayList<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			cfdis= UIEntity.build("TcManticUsosCfdiDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("cfdis", cfdis);
+			this.attrs.put("cfdi", new UISelectEntity("-1"));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	}
 }
