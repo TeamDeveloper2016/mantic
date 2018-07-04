@@ -418,6 +418,68 @@
 						<p:tab title="Observaciones">
 							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.adminOrden.orden.observaciones}"/>
 						</p:tab>
+						<p:tab title="Importar">
+								<p:fileUpload fileUploadListener="#{manticInventariosEntradasAccion.doFileUpload}"
+									mode="advanced" update="importados" label="Selecciona" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+									multiple="#{manticInventariosEntradasAccion.multiple}" allowTypes="#{manticInventariosEntradasAccion.attrs.formatos}"
+									invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !"
+									invalidFileMessage="Solo se permiten archivos en formato #{manticInventariosEntradasAccion.attrs.formatos}"
+								/>
+							<p:dataTable id="importados" var="row" value="#{manticInventariosEntradasAccion.attrs.importados}" rows="6" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " styleClass="paginated" rowIndexVar="index">
+								<p:column  class="MarAuto Responsive janal-wid-10">
+									<f:facet name="header">
+										<h:outputText value="Código SAT"/>
+									</f:facet>
+									<h:outputText value="#{row['sat']}"/>
+								</p:column>		
+								<p:column  class="MarAuto Responsive janal-wid-10">
+									<f:facet name="header">
+										<h:outputText value="Código"/>
+									</f:facet>
+									<h:outputText value="#{row['codigo']}"/>
+								</p:column>		
+								<p:column  class="MarAuto Responsive">
+									<f:facet name="header">
+										<h:outputText value="Articulo"/>
+									</f:facet>
+									<h:outputText value="#{row['nombre']}"/>
+								</p:column>		
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+									<f:facet name="header">
+										<h:outputText value="Cantidad"/>
+									</f:facet>
+									<h:outputText value="#{row['cantidad']}"/>	
+								</p:column>		
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+									<f:facet name="header">
+										<h:outputText value="Costo"/>
+									</f:facet>
+									<h:outputText value="#{row['costo']}"/>
+								</p:column>		
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+									<f:facet name="header">
+										<h:outputText value="Impuesto"/>
+									</f:facet>
+									<h:outputText value="#{row['impuesto']}"/>
+								</p:column>		
+								<p:column  class="MarAuto Responsive janal-wid-13">
+									<f:facet name="header">
+										<h:outputText value="Unidad medida"/>
+									</f:facet>
+									<h:outputText value="#{row['unidadMedida']}"/>
+								</p:column>		
+								<p:column style="width:38px; text-align: center">
+									<f:facet name="header">
+										<h:outputText value="Opc"/>
+									</f:facet>
+									<p:commandButton update="importados @(.filas) @(.recalculo)" icon="fa fa-plus" title="Agregar" action="#{manticInventariosEntradasAccion.doFaltanteArticulo}" styleClass="janal-text-white" rendered="true">
+										<f:setPropertyActionListener value="#{row}" target="#{manticInventariosEntradasAccion.attrs.faltante}" />
+										<f:setPropertyActionListener value="#{manticInventariosEntradasAccion.adminOrden.orden.ikAlmacen}" target="#{manticInventariosEntradasAccion.attrs.idAlmacen}" />
+										<f:setPropertyActionListener value="#{manticInventariosEntradasAccion.adminOrden.orden.ikProveedor}" target="#{manticInventariosEntradasAccion.attrs.idProveedor}" />
+									</p:commandButton>
+								</p:column>
+							</p:dataTable>
+						</p:tab>
 					</p:tabView>
 				</div>
 			</div>

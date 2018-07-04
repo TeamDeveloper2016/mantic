@@ -37,7 +37,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private double tipoDeCambio;
 	private boolean ultimo;
 	private boolean solicitado;
-	private long stock;
+	private double stock;
 	private UISelectEntity idEntity;
 
 	public Articulo() {
@@ -45,11 +45,11 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 
 	public Articulo(Long key) {
-		this(false, 1.0, "", "", 0.0, "0", -1L, "0", 0D, "", 16D, 0D, 0D, 1D, -1L, key, 0D, -1L, false, false, 0L, 0D);
+		this(false, 1.0, "", "", 0.0, "0", -1L, "0", 0D, "", 16D, 0D, 0D, 1D, -1L, key, 0D, -1L, false, false, 0L, 0D, "", "");
 	}
 
-	public Articulo(boolean sinIva, double tipoDeCambio, String nombre, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Double cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos, Long idProveedor, boolean ultimo, boolean solicitado, long stock, Double excedentes) {
-		super(idArticulo, codigo, costo, descuento, extras, importe, new Timestamp(Calendar.getInstance().getTimeInMillis()), propio, iva, totalImpuesto, subTotal, cantidad, totalDescuentos, nombre, "", "", excedentes);
+	public Articulo(boolean sinIva, double tipoDeCambio, String nombre, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Double cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos, Long idProveedor, boolean ultimo, boolean solicitado, double stock, Double excedentes, String sat, String unidadMedida) {
+		super(idArticulo, codigo, costo, descuento, extras, importe, new Timestamp(Calendar.getInstance().getTimeInMillis()), propio, iva, totalImpuesto, subTotal, cantidad, totalDescuentos, nombre, sat, unidadMedida, excedentes);
 		this.idEntity    = new UISelectEntity(new Entity(-1L));
 		this.idProveedor = idProveedor;
 		this.sinIva      = sinIva;
@@ -120,11 +120,11 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.solicitado=solicitado;
 	}
 
-	public long getStock() {
+	public double getStock() {
 		return stock;
 	}
 
-	public void setStock(long stock) {
+	public void setStock(double stock) {
 		this.stock=stock;
 	}
 	

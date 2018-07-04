@@ -7,7 +7,115 @@
   </model>
 
   <dml>	
-   <unit id="TcManticCreditosNotasDto">
+   <unit id="TcManticNotasArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_notas_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_notas_archivos
+        where      
+          id_tipo_archivo = {idTipoArchivo} and id_nota_entrada = {idNotaEntrada} and nombre = '{nombre}'
+      </select>
+   </unit>		
+   <unit id="TcManticCreditosArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_creditos_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_creditos_archivos
+        where      
+          id_tipo_archivo = {idTipoArchivo} and id_credito_nota = {idCreditoNota} and nombre = '{nombre}'
+      </select>
+   </unit>
+   <unit id="TcManticTiposArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_archivos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+   <unit id="TcManticEmpresasDeudasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_empresas_deudas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_empresas_deudas
+        where      
+          id_empresa = {idEmpresa} and id_nota_entrada = {idNotaEntrada} and importe = {importe} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>
+    <unit id="TcManticEmpresasPagosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_empresas_pagos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_empresas_pagos
+        where      
+          id_tipo_medio_pago = {idTipoMedioPago} and id_empresa_deuda = {idEmpresaDeuda} and pago = {pago} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>
+    <unit id="TcManticEmpresasEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_empresas_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_empresas_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcManticCreditosNotasDto">
       <select id="row">
         select      
           *
@@ -2678,24 +2786,6 @@
           id_tipo_medio_pago = {idTipoMedioPago} and id_venta = {idVenta} and importe = {importe} and id_venta_medio_pago = {idVentaMedioPago} and id_banco = {idBanco}
       </select>
     </unit>
-		<unit id="TcManticClientesPagosDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tc_mantic_clientes_pagos
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tc_mantic_clientes_pagos
-        where      
-          id_cliente_pago = {idClientePago}
-      </select>
-    </unit>
 		<unit id="TcManticClientesDeudasDto">
       <select id="row">
         select      
@@ -2711,16 +2801,52 @@
         from      
           tc_mantic_clientes_deudas
         where      
-          id_cliente_deuda = {idClienteDeuda}
+          id_cliente = {idCliente} and and id_venta = {idVenta} and importe = {importe} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
       </select>
-			<select id="saldoCliente">
+      <select id="saldoCliente">
 				select 
 					case when sum(saldo) is null then 0 else sum(saldo) end as saldo 
 				from 
 					tc_mantic_clientes_deudas 
 				where 
-					id_cliente= {idCliente}
+					id_cliente= {idCliente} and id_cliente_estatus in (1, 2)
 			</select>
     </unit>
-  </dml>    
+    <unit id="TcManticClientesPagosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_clientes_pagos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_clientes_pagos
+        where      
+          id_cliente_deuda = {idClienteDeuda} and pago = {pago} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>
+    <unit id="TcManticClientesEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_clientes_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_clientes_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+	</dml>    
 </process>

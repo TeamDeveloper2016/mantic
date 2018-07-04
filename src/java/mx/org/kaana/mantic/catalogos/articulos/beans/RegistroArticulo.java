@@ -495,7 +495,7 @@ public class RegistroArticulo implements Serializable{
 		} // catch			
 	} // doEliminarEspecificacion
 	
-	public void doFileUpload(FileUploadEvent event){
+	public void doFileUpload(FileUploadEvent event) {
 		String genericPath= null;  
     File result       = null;		
 		Long fileSize     = 0L;

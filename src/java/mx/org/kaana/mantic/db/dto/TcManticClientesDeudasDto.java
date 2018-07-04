@@ -1,7 +1,9 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
+import java.sql.Blob;
 import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -11,6 +13,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -29,6 +34,8 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
+  @Column (name="id_cliente_estatus")
+  private Long idClienteEstatus;
   @Column (name="id_cliente")
   private Long idCliente;
   @Column (name="id_usuario")
@@ -55,11 +62,12 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
   }
 
   public TcManticClientesDeudasDto(Long key) {
-    this(null, null, new Long(-1L), null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null);
+    this(null, null, null, new Long(-1L), null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, null);
     setKey(key);
   }
 
-  public TcManticClientesDeudasDto(Long idCliente, Long idUsuario, Long idClienteDeuda, String observaciones, Double saldo, Date limite, Long idVenta, Double importe) {
+  public TcManticClientesDeudasDto(Long idClienteEstatus, Long idCliente, Long idUsuario, Long idClienteDeuda, String observaciones, Double saldo, Date limite, Long idVenta, Double importe) {
+    setIdClienteEstatus(idClienteEstatus);
     setIdCliente(idCliente);
     setIdUsuario(idUsuario);
     setIdClienteDeuda(idClienteDeuda);
@@ -71,6 +79,14 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
+  public void setIdClienteEstatus(Long idClienteEstatus) {
+    this.idClienteEstatus = idClienteEstatus;
+  }
+
+  public Long getIdClienteEstatus() {
+    return idClienteEstatus;
+  }
+
   public void setIdCliente(Long idCliente) {
     this.idCliente = idCliente;
   }
@@ -158,6 +174,8 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
+		regresar.append(getIdClienteEstatus());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCliente());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
@@ -182,6 +200,7 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
+		regresar.put("idClienteEstatus", getIdClienteEstatus());
 		regresar.put("idCliente", getIdCliente());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idClienteDeuda", getIdClienteDeuda());
@@ -197,7 +216,7 @@ public class TcManticClientesDeudasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdCliente(), getIdUsuario(), getIdClienteDeuda(), getObservaciones(), getSaldo(), getLimite(), getIdVenta(), getImporte(), getRegistro()
+    getIdClienteEstatus(), getIdCliente(), getIdUsuario(), getIdClienteDeuda(), getObservaciones(), getSaldo(), getLimite(), getIdVenta(), getImporte(), getRegistro()
     };
     return regresar;
   }

@@ -1,7 +1,11 @@
 package mx.org.kaana.mantic.inventarios.entradas.backing;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,22 +17,31 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
 import mx.org.kaana.mantic.inventarios.entradas.reglas.AdminNotas;
 import mx.org.kaana.mantic.inventarios.entradas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
+import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
+import mx.org.kaana.mantic.libs.factura.beans.Concepto;
+import mx.org.kaana.mantic.libs.factura.reglas.Reader;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 
 /**
@@ -43,10 +56,14 @@ import org.primefaces.event.TabChangeEvent;
 @ViewScoped
 public class Accion extends IBaseArticulos implements Serializable {
 
-  private static final long serialVersionUID = 327393488565639367L;
+  private static final long serialVersionUID= 327393488565639367L;
+	private static final int BUFFER_SIZE      = 6124;
+	
+	
 	private EAccion accion;	
 	private EOrdenes tipoOrden;
 	private boolean aplicar;
+	private Importado importado;
 
 	public String getValidacion() {
 		return this.tipoOrden.equals(EOrdenes.NORMAL)? "libre": "requerido";
@@ -87,6 +104,7 @@ public class Accion extends IBaseArticulos implements Serializable {
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
+			this.attrs.put("formatos", "/(\\.|\\/)(xml|txt)$/");
 			doLoad();
     } // try
     catch (Exception e) {
@@ -228,6 +246,110 @@ public class Accion extends IBaseArticulos implements Serializable {
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Faltantes")) 
       this.toLoadFaltantes();
+	}
+	
+	public void doFileUpload(FileUploadEvent event) {
+		StringBuilder path= new StringBuilder();  
+    File result       = null;		
+		Long fileSize     = 0L;
+		try {
+      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("facturas"));
+      path.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString());
+      path.append(File.separator);
+      path.append(Calendar.getInstance().get(Calendar.YEAR));
+      path.append(File.separator);
+      path.append(Cadena.letraCapital(Fecha.getNombreMes(Calendar.getInstance().get(Calendar.MONTH))));
+      path.append(File.separator);
+      path.append(((UISelectEntity)this.attrs.get("proveedor")).toString("prefijo"));
+      path.append(File.separator);
+			result= new File(path.toString());		
+			if (!result.exists())
+				result.mkdirs();
+      path.append(event.getFile().getFileName());
+			result = new File(path.toString());
+			if (result.exists())
+				result.delete();			      
+			this.toWriteFile(result, event.getFile().getInputstream());
+			fileSize= event.getFile().getSize();
+			this.importado= new Importado(event.getFile().getFileName(), event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", result.getCanonicalPath());      
+	    this.toUpdateDeleteXml();	
+			this.toReadFactura(result);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessage("Importar:", "El archivo no pudo ser importado !", ETipoMensaje.ERROR);
+		} // catch
+	} // doFileUpload	
+	
+	private void toWriteFile(File result, InputStream upload) throws Exception {
+		FileOutputStream fileOutputStream= null;
+		InputStream inputStream          = null;
+		try {
+			fileOutputStream= new FileOutputStream(result);
+      byte[] buffer= new byte[BUFFER_SIZE];
+      int bulk;
+      inputStream= upload;
+      while(true) {
+        bulk= inputStream.read(buffer);
+        if (bulk < 0) 
+          break;        
+        fileOutputStream.write(buffer, 0, bulk);
+        fileOutputStream.flush();
+      } // while
+      fileOutputStream.close();
+      inputStream.close();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} 
+
+	private void toUpdateDeleteXml() {
+		
+	}
+
+	private void toReadFactura(File file) throws Exception {
+    Reader reader            = null;
+		ComprobanteFiscal factura= null;
+		List<Articulo> importados= null;
+		try {
+			importados= new ArrayList<>();
+			reader = new Reader(file.getAbsolutePath(), file.getName());
+			factura= reader.execute();
+			for (Concepto concepto: factura.getConceptos()) {
+		    //this(sinIva, tipoDeCambio, nombre, codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos, idProveedor, ultimo, solicitado, stock, excedentes, sat, unidadMedida);
+		    importados.add(new Articulo(
+				  (boolean)this.attrs.get("sinIva"),
+					this.getAdminOrden().getTipoDeCambio(),
+					concepto.getDescripcion(),
+					concepto.getNoIdentificacion(),
+					Double.parseDouble(concepto.getValorUnitario()),
+					"",
+					-1L,
+					"",
+					0D,
+					"",
+					Double.parseDouble(concepto.getTraslado().getTasaCuota()),
+					0D,
+					Double.parseDouble(concepto.getImporte()),
+					Double.parseDouble(concepto.getCantidad()),
+					-1L,
+					-1L,
+					0D,
+					this.getAdminOrden().getIdProveedor(),
+					false,
+					false,
+					0D,
+					0D,
+					concepto.getClaveProdServ(),
+					concepto.getUnidad()
+				));
+			} // for
+			this.attrs.put("importados", importados);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
 	}
 	
 }

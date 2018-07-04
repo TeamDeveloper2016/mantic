@@ -376,12 +376,14 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 				seleccionado.toDouble("cantidad"), 
 				-1* idOrdenDetalle, 
 				seleccionado.toLong("idArticulo"), 
-				0.0,
+				0D,
 				((UISelectEntity)this.attrs.get("idProveedor")).getKey(),
 				this.attrs.get("ultimo")!= null,
 				this.attrs.get("solicitado")!= null,
-				stock== null? 0L: stock.toLong(),
-				0D
+				stock== null? 0D: stock.toDouble(),
+				0D,
+				"",
+				""
 			);
 			if(this.getAdminOrden().add(item))
 				RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
