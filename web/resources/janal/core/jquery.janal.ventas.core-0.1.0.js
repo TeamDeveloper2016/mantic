@@ -56,10 +56,10 @@
 			var limiteCredito= parseFloat($('#contenedorGrupos\\:limiteCredito').text());
 			var limiteCheque = parseFloat($('#contenedorGrupos\\:limiteCheque').text());
 			var limiteTransferencia = parseFloat($('#contenedorGrupos\\:limiteTransferencia').text());
-			var debito = parseFloat($('#contenedorGrupos\\:debito').val());
-			var credito= parseFloat($('#contenedorGrupos\\:credito').val());
-			var cheque = parseFloat($('#contenedorGrupos\\:cheque').val());
-			var transferencia = parseFloat($('#contenedorGrupos\\:transferencia').val());
+			var debito = parseFloat($('#contenedorGrupos\\:debito_input').val());
+			var credito= parseFloat($('#contenedorGrupos\\:credito_input').val());
+			var cheque = parseFloat($('#contenedorGrupos\\:cheque_input').val());
+			var transferencia = parseFloat($('#contenedorGrupos\\:transferencia_input').val());
 			var totalVenta = parseFloat($('#contenedorGrupos\\:totalVenta').text());
 			this.refreshValidationsPagos(limiteDebito, limiteCredito, limiteCheque, totalVenta, limiteTransferencia);
 			this.refreshDebito(debito);
