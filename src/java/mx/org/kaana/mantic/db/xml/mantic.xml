@@ -2737,7 +2737,7 @@
         from      
           tc_mantic_facturas
         where      
-          id_factura = {idFactura} and id_venta = {idVenta} and registro = {registro}
+          id_factura = {idFactura} and id_venta = {idVenta}
       </select>
     </unit>
   </dml>    
