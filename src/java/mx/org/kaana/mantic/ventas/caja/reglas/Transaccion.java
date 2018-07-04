@@ -21,6 +21,7 @@ import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticVentaMedioPagoDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
+import mx.org.kaana.mantic.enums.ETiposDomicilios;
 import mx.org.kaana.mantic.ventas.beans.ClienteVenta;
 import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
 import org.apache.log4j.Logger;
@@ -76,7 +77,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	private boolean procesarVenta(Session sesion) throws Exception{
 		boolean regresar= false;
 		try {
-			regresar= pagarVenta(sesion, EEstatusVentas.PAGADA.getIdEstatusVenta());
+			regresar= pagarVenta(sesion, this.ventaFinalizada.isCredito() ? EEstatusVentas.CREDITO.getIdEstatusVenta() : EEstatusVentas.PAGADA.getIdEstatusVenta());
 			if(regresar){
 				if(this.ventaFinalizada.isFacturar())
 					regresar= registrarFactura(sesion);
@@ -96,11 +97,13 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			getOrden().setIdVentaEstatus(idEstatusVenta);			
 			getOrden().setIdFactura(this.ventaFinalizada.isFacturar() ? SI : NO);
 			getOrden().setIdCredito(this.ventaFinalizada.isCredito() ? SI : NO);
-			if(this.ventaFinalizada.isFacturar()){
-				this.ventaFinalizada.getCorreosContacto().add(this.ventaFinalizada.getCelular());
-				this.ventaFinalizada.getCorreosContacto().add(this.ventaFinalizada.getTelefono());
+			if(this.ventaFinalizada.isFacturar()){				
 				this.clienteDeault= getOrden().getIdCliente().equals(toClienteDefault(sesion));
 				if(this.clienteDeault){
+					this.ventaFinalizada.getCorreosContacto().add(this.ventaFinalizada.getCelular());
+					this.ventaFinalizada.getCorreosContacto().add(this.ventaFinalizada.getTelefono());
+					this.ventaFinalizada.getDomicilio().setIdTipoDomicilio(ETiposDomicilios.FISCAL.getKey());
+					this.ventaFinalizada.getCliente().setIdUsoCfdi(getOrden().getIdUsoCfdi());
 					setClienteVenta(new ClienteVenta(this.ventaFinalizada.getCliente(), this.ventaFinalizada.getDomicilio(), null));
 					procesarCliente(sesion);
 					getOrden().setIdCliente(getIdClienteNuevo());
@@ -175,6 +178,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		catch (Exception e) {			
 			throw e;
 		} // catch		
+		finally{
+			setMessageError("Error al registrar la factura.");
+		} // finally
 		return regresar;
 	} // registrarFactura
 	
@@ -193,6 +199,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		catch (Exception e) {			
 			throw e;
 		} // catch		
+		finally{
+			setMessageError("Error al registrar los pagos.");
+		} // finally
 		return regresar;
 	} // registrarPagos
 	
@@ -241,7 +250,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			throw e;
 		} // catch		
 		return regresar;
-	}
+	} // toPagoEfectivo
 	
 	private TrManticVentaMedioPagoDto toPagoTDebito(){
 		TrManticVentaMedioPagoDto regresar= null;
@@ -260,7 +269,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			throw e;
 		} // catch		
 		return regresar;
-	}
+	} // toPagoTDebito
 	
 	private TrManticVentaMedioPagoDto toPagoTCredito(){
 		TrManticVentaMedioPagoDto regresar= null;
@@ -279,7 +288,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			throw e;
 		} // catch		
 		return regresar;
-	}
+	} // toPagoTCredito
 	
 	private TrManticVentaMedioPagoDto toPagoTransferencia(){
 		TrManticVentaMedioPagoDto regresar= null;
@@ -298,7 +307,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			throw e;
 		} // catch		
 		return regresar;
-	}
+	} // toPagoTransferencia
 	
 	private TrManticVentaMedioPagoDto toPagoCredito(Session sesion) throws Exception{
 		TrManticVentaMedioPagoDto regresar= null;
@@ -320,7 +329,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			throw e;
 		} // catch		
 		return regresar;
-	}
+	} // toPagoCredito
 	
 	private TrManticVentaMedioPagoDto toPagoCheque(){
 		TrManticVentaMedioPagoDto regresar= null;
@@ -339,7 +348,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			throw e;
 		} // catch		
 		return regresar;
-	}
+	} // toPagoCheque
 	
 	private void registrarDeuda(Session sesion, Double importe) throws Exception{
 		TcManticClientesDeudasDto deuda= null;
@@ -377,5 +386,5 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			throw e;
 		} // catch				
 		return regresar;
-	}
+	} // toLimiteCredito
 }
