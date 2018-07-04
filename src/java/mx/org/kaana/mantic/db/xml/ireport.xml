@@ -279,17 +279,19 @@
           tc_mantic_ventas.total total_venta,
           tc_mantic_ventas.registro,
           tc_mantic_ventas.observaciones,
-          tc_mantic_ventas_detalles.*
+          tc_mantic_ventas_detalles.*,
+        	tc_mantic_personas.cuenta,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre
          from 
           tc_mantic_ventas 
          inner join 
           tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta
          inner join 
           tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus = tc_mantic_ventas_estatus.id_venta_estatus
-         left join 
-          tr_mantic_venta_medio_pago on tc_mantic_ventas.id_venta = tr_mantic_venta_medio_pago.id_venta
-         left join 
-          tc_mantic_tipos_medios_pagos on tr_mantic_venta_medio_pago.id_tipo_medio_pago = tr_mantic_venta_medio_pago.id_tipo_medio_pago
+        inner join 
+				  tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
          where
           tc_mantic_ventas.id_venta = {idVenta}   
          order by 
