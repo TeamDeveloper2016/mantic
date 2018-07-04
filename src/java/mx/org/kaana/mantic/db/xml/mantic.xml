@@ -2848,5 +2848,23 @@
           nombre = '{nombre}'
       </select>
     </unit>
-	</dml>    
+		<unit id="TcManticFacturasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_facturas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_facturas
+        where      
+          id_factura = {idFactura} and id_venta = {idVenta}
+      </select>
+    </unit>
+  </dml>    
 </process>
