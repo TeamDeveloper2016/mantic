@@ -15,6 +15,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EBooleanos;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -39,6 +40,7 @@ import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.comun.IBaseCliente;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
+import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.ventas.caja.beans.Pago;
@@ -136,17 +138,26 @@ public class Accion extends IBaseCliente implements Serializable {
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
-    try {						
-			transaccion = new Transaccion(loadVentaFinalizada());
-			if (transaccion.ejecutar(EAccion.REPROCESAR)) {
- 				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
-				JsfBase.addMessage("Se finalizo el pago del ticket de venta.", ETipoMensaje.INFORMACION);
-				this.setAdminOrden(new AdminTickets(new TicketVenta()));
-				this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
-				init();
+		Boolean validarCredito = true;
+		Boolean creditoVenta   = null;
+    try {	
+			creditoVenta= (Boolean) this.attrs.get("creditoVenta");
+			if(creditoVenta)
+				validarCredito= doValidaCreditoVenta();
+			if(validarCredito){
+				transaccion = new Transaccion(loadVentaFinalizada());
+				if (transaccion.ejecutar(EAccion.REPROCESAR)) {
+					regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
+					JsfBase.addMessage("Se finalizo el pago del ticket de venta.", ETipoMensaje.INFORMACION);
+					this.setAdminOrden(new AdminTickets(new TicketVenta()));
+					this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
+					init();
+				} // if
+				else 
+					JsfBase.addMessage("Ocurrió un error al registrar el ticket de venta.", ETipoMensaje.ERROR);
 			} // if
-			else 
-				JsfBase.addMessage("Ocurrió un error al registrar el ticket de venta.", ETipoMensaje.ERROR);
+			else
+				JsfBase.addMessage(this.attrs.get("mensajeErrorCredito").toString(), ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -399,6 +410,7 @@ public class Accion extends IBaseCliente implements Serializable {
 		UISelectEntity seleccionado           = null;
 		List<UISelectEntity> clientesSeleccion= null;
 		MotorBusqueda motor                   = null;
+		ClienteTipoContacto contactoNuevo     = null;
 		try {
 			facturarVenta= (Boolean) this.attrs.get("facturarVenta");
 			if(facturarVenta){
@@ -417,8 +429,10 @@ public class Accion extends IBaseCliente implements Serializable {
 					loadDefaultCollections();					
 					this.attrs.put("registroCliente", new TcManticClientesDto());
 					this.clientesTiposContacto= new ArrayList<>();
-					this.attrs.put("telefono", new ClienteTipoContacto());
-					this.attrs.put("celular", new ClienteTipoContacto());
+					contactoNuevo= new ClienteTipoContacto();
+					contactoNuevo.setSqlAccion(ESql.INSERT);
+					this.attrs.put("telefono", contactoNuevo);
+					this.attrs.put("celular", contactoNuevo);
 				} // else
 				this.attrs.put("tabIndex", 1);
 			} // if
@@ -579,4 +593,33 @@ public class Accion extends IBaseCliente implements Serializable {
 			throw e;
 		} // catch		
 	} // loadCfdis
+	
+	private boolean doValidaCreditoVenta() throws Exception, Exception{
+		boolean regresar               = true;
+		TcManticVentasDto venta        = null;
+		MotorBusqueda motor            = null;
+		Double totalCredito            = null;
+		Pago pago                      = null;
+		List<UISelectEntity>clientes   = null;
+		UISelectEntity clienteSeleccion= null;
+		UISelectEntity cliente         = null;
+		try {
+			motor= new MotorBusqueda(null);
+			venta= motor.toVenta(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
+			if(!EBooleanos.SI.getIdBooleano().equals(venta.getIdAutorizar())){
+				pago= (Pago) this.attrs.get("pago");				
+				totalCredito= getAdminOrden().getTotales().getTotal() - (pago.getPago() - pago.getCambio());
+				clientes= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
+				cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");
+				clienteSeleccion= clientes.get(clientes.indexOf(cliente));
+				regresar= totalCredito <= clienteSeleccion.toDouble("saldo");
+				if(!regresar)
+					this.attrs.put("mensajeErrorCredito", "El saldo de tu credito es insuficiente para cubrir la venta.");
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // doValidaCreditoVenta
 }
