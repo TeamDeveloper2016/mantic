@@ -544,6 +544,8 @@ public class Accion extends IBaseCliente implements Serializable {
 			regresar.setTotales((Pago) this.attrs.get("pago"));
 			regresar.setCliente((TcManticClientesDto) this.attrs.get("registroCliente"));
 			regresar.setDomicilio(getDomicilio());
+			regresar.setFacturar((Boolean) this.attrs.get("facturarVenta"));
+			regresar.setFacturar((Boolean) this.attrs.get("creditoVenta"));			
 		} // try
 		catch (Exception e) {			
 			throw e;
