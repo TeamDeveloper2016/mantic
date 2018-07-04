@@ -33,7 +33,7 @@ import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
-import mx.org.kaana.mantic.ventas.reglas.Transaccion;
+import mx.org.kaana.mantic.ventas.caja.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.comun.IBaseCliente;
@@ -134,12 +134,10 @@ public class Accion extends IBaseCliente implements Serializable {
   } // doLoad
 
   public String doAceptar() {  
-    Transaccion transaccion        = null;
-    String regresar                = null;
-		VentaFinalizada ventaFinalizada= null;
+    Transaccion transaccion= null;
+    String regresar        = null;
     try {						
-			ventaFinalizada= loadVentaFinalizada();
-			transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()));
+			transaccion = new Transaccion(loadVentaFinalizada());
 			if (transaccion.ejecutar(EAccion.REPROCESAR)) {
  				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
 				JsfBase.addMessage("Se finalizo el pago del ticket de venta.", ETipoMensaje.INFORMACION);
@@ -522,11 +520,10 @@ public class Accion extends IBaseCliente implements Serializable {
 	} // doEliminarClienteTipoContacto
 	
 	private void addDeleteList(IBaseDto dto) throws Exception{
-		mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion transaccion= null;
+		Transaccion transaccion= null;
 		try {
-			transaccion= new mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion(dto);
+			transaccion= new Transaccion(dto);
 			transaccion.ejecutar(EAccion.DEPURAR);
-			//this.deleteList.add(dto);
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -534,16 +531,29 @@ public class Accion extends IBaseCliente implements Serializable {
 	} // addDeleteList
 	
 	private VentaFinalizada loadVentaFinalizada(){
-		VentaFinalizada regresar= null;
+		VentaFinalizada regresar  = null;
+		TicketVenta ticketVenta   = null;
+		List<UISelectEntity> cfdis= null;
+		UISelectEntity cfdi       = null;
+		Boolean facturarVenta     = false;
 		try {
+			ticketVenta= (TicketVenta)this.getAdminOrden().getOrden();
+			facturarVenta= (Boolean) this.attrs.get("facturarVenta");
+			if(facturarVenta){
+				cfdis= (List<UISelectEntity>) this.attrs.get("cfdis");
+				cfdi= (UISelectEntity) this.attrs.get("cfdi");
+				ticketVenta.setIdUsoCfdi(cfdis.get(cfdis.indexOf(cfdi)).getKey());
+			} // if
 			regresar= new VentaFinalizada();
-			regresar.setTicketVenta((TicketVenta)this.getAdminOrden().getOrden());
+			regresar.setTicketVenta(ticketVenta);
 			regresar.setCorreosContacto(this.clientesTiposContacto);
 			regresar.setCelular((ClienteTipoContacto) this.attrs.get("celular"));
 			regresar.setTelefono((ClienteTipoContacto) this.attrs.get("telefono"));
 			regresar.setTotales((Pago) this.attrs.get("pago"));
 			regresar.setCliente((TcManticClientesDto) this.attrs.get("registroCliente"));
 			regresar.setDomicilio(getDomicilio());
+			regresar.setFacturar(facturarVenta);
+			regresar.setCredito((Boolean) this.attrs.get("creditoVenta"));			
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -568,5 +578,5 @@ public class Accion extends IBaseCliente implements Serializable {
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-	}
+	} // loadCfdis
 }

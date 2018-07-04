@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Listado de tickets abiertos para cobro"/>
 	<ui:define name="librerias">    
-		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.0.9.js"/>
+		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.1.0.js"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
 				'descuento': {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'general'},
@@ -244,7 +244,7 @@
 									<p:ajax event="blur" listener="#{manticVentasCajaAccion.doUpdatePorcentaje}" process="@this" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#descuento'), '0'); return true;"/>
 								</p:inputText>	
 								<p:inputSwitch value="#{manticVentasCajaAccion.attrs.facturarVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt">
-									<p:ajax listener="#{manticVentasCajaAccion.doActivarCliente}" process="@this" update="contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();janal.refresh();"/>
+									<p:ajax listener="#{manticVentasCajaAccion.doActivarCliente}" process="@this contenedorGrupos:panelTotales" update="contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();janal.refresh();"/>
 								</p:inputSwitch>
 								<p:inputSwitch id="creditoCliente" value="#{manticVentasCajaAccion.attrs.creditoVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt" disabled="#{!manticVentasCajaAccion.attrs.creditoCliente}">
 									<p:ajax process="@this" update="contenedorGrupos:panelSumatoria" onstart="janal.bloquear();" oncomplete="applyValidacionesCredito();" />
@@ -358,9 +358,9 @@
 									<p:outputLabel for="rfc" value="RFC:"/>
 									<p:outputLabel for="razonSocial" value="Razon social:"/>																		
 									<p:outputLabel for="cfdi" value="CFDI:"/>																		
-									<p:inputText id="clave" placeholder="00001" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.registroCliente.clave}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>                    						
-									<p:inputText id="rfc" placeholder="AAA000000AA0" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.registroCliente.rfc}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>                    						
-									<p:inputText id="razonSocial" placeholder="Nombre de la empresa" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.registroCliente.razonSocial}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>                                    															
+									<p:inputText id="clave" placeholder="Ej. 00001" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.registroCliente.clave}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>                    						
+									<p:inputText id="rfc" placeholder="Ej. AAA000000AA0" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.registroCliente.rfc}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>                    						
+									<p:inputText id="razonSocial" placeholder="Ej. Nombre de la empresa" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.registroCliente.razonSocial}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>                                    															
 									<p:selectOneMenu id="cfdi" value="#{manticVentasCajaAccion.attrs.cfdi}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">																			
 										<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.cfdis}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
@@ -442,30 +442,30 @@
 									<p:outputLabel for="exterior" value="Número exterior:"/>
 									<p:outputLabel for="interior" value="Número interior:"/>
 									<p:outputLabel for="asentamiento" value="Colonia:"/>
-									<p:inputText id="calle" placeholder="Calle canario" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.domicilio.calle}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>						
-									<p:inputText id="exterior" placeholder="4655" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.domicilio.numeroExterior}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>						
-									<p:inputText id="interior" placeholder="C4" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.domicilio.numeroInterior}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>	
-									<p:inputText id="asentamiento" placeholder="Potreros del Oeste" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.domicilio.asentamiento}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>							
+									<p:inputText id="calle" placeholder="Ej. Calle canario" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.domicilio.calle}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>						
+									<p:inputText id="exterior" placeholder="Ej. 4655" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.domicilio.numeroExterior}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>						
+									<p:inputText id="interior" placeholder="Ej. C4" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.domicilio.numeroInterior}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>	
+									<p:inputText id="asentamiento" placeholder="Ej. Potreros del Oeste" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.domicilio.asentamiento}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>							
 								</p:panelGrid>		
 								<p:panelGrid id="panelDetalleCalle" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-50, janal-wid-50">
 									<p:outputLabel for="entreCalle" value="Entre calle:"/>
 									<p:outputLabel for="ycalle" value="Y calle:"/>									
-									<p:inputText id="entreCalle" placeholder="Aguila" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.domicilio.entreCalle}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>							
-									<p:inputText id="ycalle" placeholder="3er Anillo" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.domicilio.ycalle}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>	
+									<p:inputText id="entreCalle" placeholder="Ej. Aguila" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.domicilio.entreCalle}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>							
+									<p:inputText id="ycalle" placeholder="Ej. 3er Anillo" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.domicilio.ycalle}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>	
 								</p:panelGrid>					
 							</p:fieldset>
 							<p:fieldset id="fieldContacto" legend="Contacto">
 								<p:panelGrid id="panelContacto" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-50, janal-wid-50">
 									<p:outputLabel for="telefono" value="Teléfono:"/>
 									<p:outputLabel for="celular" value="Celular:"/>																					
-									<p:inputText id="telefono" placeholder="4498563214" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.telefono.valor}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>                    						
-									<p:inputText id="celular" placeholder="4497856324" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.celular.valor}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>                                    												
+									<p:inputText id="telefono" placeholder="Ej. 4499999999" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.telefono.valor}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>                    						
+									<p:inputText id="celular" placeholder="Ej. 4499999999" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.celular.valor}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}"/>                                    												
 								</p:panelGrid>								
 								
 								<p:panelGrid id="panelTablaCorreos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 									<p:dataTable id="tablaCorreos" rowIndexVar="index" var="contacto" value="#{manticVentasCajaAccion.clientesTiposContacto}" rows="6" paginator="false" reflow="true" rowKey="#{contacto.key}" emptyMessage=" " styleClass="paginated">																															
 										<p:column headerText="Correo electronico">		
-											<p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" placeholder="nombre.apellido@empresa.com.mx" value="#{contacto.valor}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaCorreos', #{index}, 'valor')" disabled="#{!contacto.nuevo}"/>                    																																			
+											<p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" placeholder="Ej. nombre.apellido@empresa.com.mx" value="#{contacto.valor}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaCorreos', #{index}, 'valor')" disabled="#{!contacto.nuevo}"/>                    																																			
 										</p:column>
 										<p:column style="width:32px;text-align: center">
 											<p:commandButton update="tablaCorreos" icon="fa fa-close" title="Eliminar" action="#{manticVentasCajaAccion.doEliminarClienteTipoContacto}" styleClass="janal-text-white">

@@ -18,12 +18,14 @@ public class VentaFinalizada implements Serializable{
 	private Pago totales;
 	private Domicilio domicilio;
 	private TcManticClientesDto cliente;
+	private Boolean facturar;
+	private Boolean credito;
 
 	public VentaFinalizada() {
-		this(new TicketVenta(), new ArrayList<ClienteTipoContacto>(), new ClienteTipoContacto(), new ClienteTipoContacto(), new Pago(), new Domicilio(), new TcManticClientesDto());
+		this(new TicketVenta(), new ArrayList<ClienteTipoContacto>(), new ClienteTipoContacto(), new ClienteTipoContacto(), new Pago(), new Domicilio(), new TcManticClientesDto(), false, false);
 	}
 	
-	public VentaFinalizada(TicketVenta ticketVenta, List<ClienteTipoContacto> correosContacto, ClienteTipoContacto telefono, ClienteTipoContacto celular, Pago totales, Domicilio domicilio, TcManticClientesDto cliente) {
+	public VentaFinalizada(TicketVenta ticketVenta, List<ClienteTipoContacto> correosContacto, ClienteTipoContacto telefono, ClienteTipoContacto celular, Pago totales, Domicilio domicilio, TcManticClientesDto cliente, Boolean facturar, Boolean credito) {
 		this.ticketVenta    = ticketVenta;
 		this.correosContacto= correosContacto;
 		this.telefono       = telefono;
@@ -31,6 +33,8 @@ public class VentaFinalizada implements Serializable{
 		this.totales        = totales;
 		this.domicilio      = domicilio;
 		this.cliente        = cliente;
+		this.facturar       = facturar;
+		this.credito        = credito;
 	}
 
 	public TicketVenta getTicketVenta() {
@@ -88,4 +92,20 @@ public class VentaFinalizada implements Serializable{
 	public void setCliente(TcManticClientesDto cliente) {
 		this.cliente = cliente;
 	}
+
+	public boolean isFacturar() {
+		return facturar;
+	}
+
+	public void setFacturar(Boolean facturar) {
+		this.facturar = facturar;
+	}
+
+	public boolean isCredito() {
+		return credito;
+	}
+
+	public void setCredito(Boolean credito) {
+		this.credito = credito;
+	}	
 }
