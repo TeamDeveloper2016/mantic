@@ -14,23 +14,23 @@
 			Janal.Control.fields = {				 				
 				'descuento': {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'general'},
 				
-				'clave': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'rfc': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'cfdi': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-        'tipoVenta': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'entidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-        'municipio': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-        'localidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-        'calle': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'exterior': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'interior': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'asentamiento': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'entreCalle': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'ycalle': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},        
-        'telefono': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},        
-        'correo': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},        
-        'celular': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},        
+				'clave'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'rfc'          : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'razonSocial'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'cfdi'         : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', mensaje:'Selecciona en tipo de CFDI en la pestaña de cliente, es obligatorio.'},
+        'tipoVenta'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'entidad'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        'municipio'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        'localidad'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        'calle'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'exterior'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'interior'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'asentamiento' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'entreCalle'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'ycalle'       : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},        
+        'telefono'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},        
+        'correo'       : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},        
+        'celular'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},        
         'calleBusqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true},
 				
 				'efectivo'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -377,7 +377,7 @@
 								<p:panelGrid id="panelDetalleDomicilio" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100, janal-wid-5">
 									<p:outputLabel for="domicilio" value="Domicilio:"/>
 									<p:selectOneMenu id="domicilio" value="#{manticVentasCajaAccion.domicilio.domicilio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}">									
-										<p:ajax event="change" listener="#{manticVentasCajaAccion.doLoadAtributos}" process="@this domicilio" update="entidad municipio localidad codigoPostal calle exterior interior asentamiento entreCalle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
+										<p:ajax event="change" listener="#{manticVentasCajaAccion.doLoadAtributos}" process="@this domicilio panelDetalleDomicilio" update="entidad municipio localidad codigoPostal calle exterior interior asentamiento entreCalle" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
 										<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.domicilios}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
 										<p:column  styleClass="janal-column-left janal-wid-col-150">
@@ -401,7 +401,7 @@
 									<p:outputLabel for="localidad" value="Localidad:"/>
 									<p:outputLabel for="codigoPostal" value="Código postal:"/>
 									<p:selectOneMenu id="entidad" value="#{manticVentasCajaAccion.domicilio.idEntidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}">									
-										<p:ajax event="change" listener="#{manticVentasCajaAccion.doActualizaMunicipios}" process="@this" update="municipio localidad codigoPostal calle exterior interior asentamiento entreCalle " onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
+										<p:ajax event="change" listener="#{manticVentasCajaAccion.doActualizaMunicipios}" process="@this panelDetalleDireccion" update="municipio localidad codigoPostal calle exterior interior asentamiento entreCalle " onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
 										<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.entidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
 										<p:column  styleClass="janal-column-center">
@@ -412,7 +412,7 @@
 										</p:column>  
 									</p:selectOneMenu>														
 									<p:selectOneMenu id="municipio" value="#{manticVentasCajaAccion.domicilio.idMunicipio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}">									
-										<p:ajax event="change" listener="#{manticVentasCajaAccion.doActualizaLocalidades}" process="@this" update="localidad codigoPostal calle exterior interior asentamiento entreCalle" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
+										<p:ajax event="change" listener="#{manticVentasCajaAccion.doActualizaLocalidades}" process="@this panelDetalleDireccion" update="localidad codigoPostal calle exterior interior asentamiento entreCalle" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
 										<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.municipios}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
 										<p:column  styleClass="janal-column-center">
@@ -423,7 +423,7 @@
 										</p:column>  
 									</p:selectOneMenu>														
 									<p:selectOneMenu id="localidad" value="#{manticVentasCajaAccion.domicilio.localidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}" style="min-width: 100px !important">									
-										<p:ajax event="change" listener="#{manticVentasCajaAccion.doActualizaCodigosPostales}" process="@this" update="codigoPostal calle exterior interior asentamiento entreCalle " onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
+										<p:ajax event="change" listener="#{manticVentasCajaAccion.doActualizaCodigosPostales}" process="@this panelDetalleDireccion" update="codigoPostal calle exterior interior asentamiento entreCalle " onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
 										<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.localidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
 										<p:column  styleClass="janal-column-center">
@@ -434,7 +434,7 @@
 										</p:column>  
 									</p:selectOneMenu>																																			
 									<p:selectOneMenu id="codigoPostal" value="#{manticVentasCajaAccion.domicilio.idCodigoPostal}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado}">									
-										<p:ajax event="change" listener="#{manticVentasCajaAccion.doLoadDomicilios}" process="@this" update="panelDetalleDomicilio panelDetalleDireccion panelDetalleCalle calle exterior interior asentamiento entreCalle " onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
+										<p:ajax event="change" listener="#{manticVentasCajaAccion.doLoadDomicilios}" process="@this panelDetalleDireccion" update="panelDetalleDomicilio panelDetalleDireccion panelDetalleCalle calle exterior interior asentamiento entreCalle " onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
 										<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.codigosPostales}"/>
 									</p:selectOneMenu>
