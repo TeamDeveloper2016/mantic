@@ -2722,5 +2722,23 @@
 					id_cliente= {idCliente}
 			</select>
     </unit>
+		<unit id="TcManticFacturasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_facturas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_facturas
+        where      
+          id_factura = {idFactura} and id_venta = {idVenta} and registro = {registro}
+      </select>
+    </unit>
   </dml>    
 </process>
