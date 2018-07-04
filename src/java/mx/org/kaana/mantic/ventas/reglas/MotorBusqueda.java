@@ -13,6 +13,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 
 public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializable{
@@ -174,4 +175,15 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		} // catch		
 		return regresar;
 	} // toClientesTipoContacto
+	
+	public TcManticVentasDto toVenta(Long idVenta) throws Exception{
+		TcManticVentasDto regresar= null;
+		try {
+			regresar= (TcManticVentasDto) DaoFactory.getInstance().findById(TcManticVentasDto.class, idVenta);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch				
+		return regresar;
+	} // toVenta
 }
