@@ -45,9 +45,9 @@ public class Transaccion extends IBaseTnx {
 	private TcManticVentasBitacoraDto bitacora;
 	private TcManticVentasDto orden;	
 	private List<Articulo> articulos;
-	private String messageError;
-	
+	private String messageError;	
 	private String justificacion;
+	private Long idClienteNuevo;
 
 	public Transaccion(TcManticVentasBitacoraDto bitacora) {
 		this.bitacora= bitacora;
@@ -78,6 +78,22 @@ public class Transaccion extends IBaseTnx {
 		return messageError;
 	} // Transaccion
 
+	public void setMessageError(String messageError) {
+		this.messageError = messageError;
+	}	
+	
+	public TcManticVentasDto getOrden() {
+		return orden;
+	}	
+
+	public void setClienteVenta(ClienteVenta clienteVenta) {
+		this.clienteVenta = clienteVenta;
+	}	
+
+	public Long getIdClienteNuevo() {
+		return idClienteNuevo;
+	}
+	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar          = false;
@@ -117,7 +133,7 @@ public class Transaccion extends IBaseTnx {
 				case REPROCESAR:
 				case COPIAR:
 					regresar= actualizarVenta(sesion, accion.equals(EAccion.REPROCESAR) ? EEstatusVentas.PAGADA.getIdEstatusVenta() : EEstatusVentas.CREDITO.getIdEstatusVenta());				
-					break;
+					break;				
 			} // switch
 			if(!regresar)
         throw new Exception("");
@@ -148,7 +164,7 @@ public class Transaccion extends IBaseTnx {
 		} // try
 		catch (Exception e) {			
 			throw e;
-		} // catch		
+		} // catch				
 		return regresar;
 	} // registrarVenta
 	
@@ -170,10 +186,13 @@ public class Transaccion extends IBaseTnx {
 		catch (Exception e) {			
 			throw e;
 		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally			
 		return regresar;
 	} // actualizarVenta
 	
-	private boolean registraBitacora(Session sesion, Long idVenta, Long idVentaEstatus, String justificacion) throws Exception{
+	protected boolean registraBitacora(Session sesion, Long idVenta, Long idVentaEstatus, String justificacion) throws Exception{
 		boolean regresar                  = false;
 		TcManticVentasBitacoraDto bitVenta= null;
 		try {
@@ -220,7 +239,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toSiguiente
 	
-	private Long toClienteDefault(Session sesion) throws Exception{
+	protected Long toClienteDefault(Session sesion) throws Exception{
 		Long regresar            = -1L;
 		Entity cliente           = null;
 		Map<String, Object>params= null;
@@ -238,7 +257,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toClienteDefault
 	
-	private boolean procesarCliente(Session sesion) throws Exception {
+	protected boolean procesarCliente(Session sesion) throws Exception {
     boolean regresar= false;
     Long idCliente  = -1L;
     try {
@@ -246,10 +265,11 @@ public class Transaccion extends IBaseTnx {
 			this.clienteVenta.getCliente().setIdTipoVenta(ETipoVenta.MENUDEO.getIdTipoVenta());
 			this.clienteVenta.getCliente().setIdCredito(2L);
 			this.clienteVenta.getCliente().setLimiteCredito(0D);
-			this.clienteVenta.getCliente().setPlazoDias(0L);
+			this.clienteVenta.getCliente().setPlazoDias(15L);
 			this.clienteVenta.getCliente().setIdUsuario(JsfBase.getIdUsuario());
 			this.clienteVenta.getCliente().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			idCliente = DaoFactory.getInstance().insert(sesion, this.clienteVenta.getCliente());
+			this.idClienteNuevo= idCliente;
 			if (registraClientesDomicilios(sesion, idCliente)) 
 				regresar = registraClientesTipoContacto(sesion, idCliente);			
     } // try
@@ -372,7 +392,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toDomicilio
 	
-	private boolean registraClientesTipoContacto(Session sesion, Long idCliente) throws Exception {
+	public boolean registraClientesTipoContacto(Session sesion, Long idCliente) throws Exception {
     TrManticClienteTipoContactoDto dto = null;
     int count       = 0;
     boolean validate= false;
