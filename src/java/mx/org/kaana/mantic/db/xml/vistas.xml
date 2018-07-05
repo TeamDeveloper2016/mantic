@@ -1917,7 +1917,7 @@
         	tc_mantic_empresas.id_empresa) emails_empresa,
         	concat(responsable_empresa.nombres,' ' ,responsable_empresa.paterno,' ',responsable_empresa.materno) as responsable_empresa,
           responsable_empresa.rfc rfc_empresa,
-	        concat(upper(municipio_empresa.descripcion),', ' ,upper(entidad_empresa.descripcion),', ',upper(pais_empresa.descripcion)) as empresa_region,
+	        concat(replace(replace(upper(municipio_empresa.descripcion),char(10),' '),char(13),' '),', ' ,upper(entidad_empresa.descripcion),', ',upper(pais_empresa.descripcion)) as empresa_region,
           (select 
 					  group_concat(tr_mantic_persona_tipo_contacto.valor separator ' , ') emails 
 					 from 
