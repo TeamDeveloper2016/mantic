@@ -1974,5 +1974,22 @@
           tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}
       </select>
     </unit>	    		
+		<unit id="VistaTrabajosDto">
+			<select id="row">
+				select 
+					tc_mantic_trabajos.id_trabajo as id_key,
+					tc_mantic_trabajos.*
+				from 
+					tc_mantic_trabajos
+				where 
+					codigo like '%{codigo}%'
+				and 
+					nombre like '%{nombre}%'
+				and 
+					descripcion like '%{descripcion}%'
+				and 
+					id_empresa= {idEmpresa}
+			</select>
+		</unit>
 	</dml>    
 </process>
