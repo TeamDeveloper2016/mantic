@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 
@@ -20,12 +21,13 @@ public class VentaFinalizada implements Serializable{
 	private TcManticClientesDto cliente;
 	private Boolean facturar;
 	private Boolean credito;
+	private List<Articulo> articulos;
 
 	public VentaFinalizada() {
-		this(new TicketVenta(), new ArrayList<ClienteTipoContacto>(), new ClienteTipoContacto(), new ClienteTipoContacto(), new Pago(), new Domicilio(), new TcManticClientesDto(), false, false);
+		this(new TicketVenta(), new ArrayList<ClienteTipoContacto>(), new ClienteTipoContacto(), new ClienteTipoContacto(), new Pago(), new Domicilio(), new TcManticClientesDto(), false, false, new ArrayList<Articulo>());
 	}
 	
-	public VentaFinalizada(TicketVenta ticketVenta, List<ClienteTipoContacto> correosContacto, ClienteTipoContacto telefono, ClienteTipoContacto celular, Pago totales, Domicilio domicilio, TcManticClientesDto cliente, Boolean facturar, Boolean credito) {
+	public VentaFinalizada(TicketVenta ticketVenta, List<ClienteTipoContacto> correosContacto, ClienteTipoContacto telefono, ClienteTipoContacto celular, Pago totales, Domicilio domicilio, TcManticClientesDto cliente, Boolean facturar, Boolean credito, List<Articulo> articulos) {
 		this.ticketVenta    = ticketVenta;
 		this.correosContacto= correosContacto;
 		this.telefono       = telefono;
@@ -35,6 +37,7 @@ public class VentaFinalizada implements Serializable{
 		this.cliente        = cliente;
 		this.facturar       = facturar;
 		this.credito        = credito;
+		this.articulos      = articulos;
 	}
 
 	public TicketVenta getTicketVenta() {
@@ -107,5 +110,13 @@ public class VentaFinalizada implements Serializable{
 
 	public void setCredito(Boolean credito) {
 		this.credito = credito;
+	}	
+
+	public List<Articulo> getArticulos() {
+		return articulos;
+	}
+
+	public void setArticulos(List<Articulo> articulos) {
+		this.articulos = articulos;
 	}	
 }
