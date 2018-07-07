@@ -8,7 +8,10 @@ public enum EReportes implements IReportAttribute{
 	ORDEN_COMPRA   ("VistaReportesOrdenesComprasDto", "reporteOrden", "Orden de compra", "/Paginas/Mantic/Compras/Ordenes/Reporte/orden", EFormatos.PDF, "orden_de_compra", "/Paginas/Mantic/Compras/filtro"),
 	ORDENES_COMPRA ("VistaReportesOrdenesComprasDto", "ordenesCompra", "Ordenes de compra", "/Paginas/Mantic/Compras/Ordenes/Reporte/ordenesCompra", EFormatos.PDF, "ordenes_de_compra", "/Paginas/Mantic/Compras/filtro"),
 	ORDEN_DETALLE  ("VistaReportesOrdenesComprasDto", "ordenDetalle", "Orden de compra detalle", "/Paginas/Mantic/Compras/Ordenes/Reporte/ordenDetalle", EFormatos.PDF, "orden_de_compra_detalle", "/Paginas/Mantic/Compras/filtro"),
-	TICKET_VENTA   ("VistaTicketVentaDto", "ticket", "ticket", "/Paginas/Mantic/Ventas/Caja/Reportes/ticketVenta", EFormatos.PDF, "ticket_venta", "/Paginas/Mantic/Ventas/Caja/accion");
+	TICKET_VENTA   ("VistaTicketVentaDto", "ticket", "ticketVenta", "/Paginas/Mantic/Ventas/Caja/Reportes/ticketVenta", EFormatos.XLS, "ticket_venta", "/Paginas/Mantic/Ventas/Caja/accion"),
+	NOTAS_ENTRADA  ("VistaNotasEntradasDto", "lazy", "notasEntrada", "/Paginas/Mantic/Inventarios/Entradas/Reportes/notasEntrada", EFormatos.PDF, "ordenes_de_entrada", "/Paginas/Mantic/Inventarios/Entradas/filtro"),
+	DEVOLUCIONES   ("VistaDevolucionesDto", "lazy", "devoluciones", "/Paginas/Mantic/Inventarios/Devoluciones/Reportes/devoluciones", EFormatos.PDF, "devoluciones", "/Paginas/Mantic/Inventarios/Devoluciones/filtro"),
+	NOTA_CREDITO   ("VistaCreditosNotasDto", "lazy", "notasCredito", "/Paginas/Mantic/Inventarios/Creditos/Reportes/notasCredito", EFormatos.PDF, "notas_de_credito", "/Paginas/Mantic/Inventarios/Caja/Creditos/filtro");
   
 	private final String proceso;
   private final String idXml;
