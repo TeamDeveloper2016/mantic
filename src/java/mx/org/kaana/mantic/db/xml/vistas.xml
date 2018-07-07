@@ -1900,7 +1900,7 @@
 					tc_mantic_empresas.id_empresa,
           tc_mantic_empresas.clave,
 					domicilio_empresa.numero_interior,
-					concat(domicilio_empresa.calle, ' #',domicilio_empresa.numero_exterior, ' INT. ', case  when domicilio_empresa.numero_interior is null then 'N/A' else domicilio_empresa.numero_interior end) as empresa_direccion,
+					concat(domicilio_empresa.calle, ' #',domicilio_empresa.numero_exterior, case  when domicilio_empresa.numero_interior is null then ' ' else concat(' INT. ',domicilio_empresa.numero_interior) end) as empresa_direccion,
 					domicilio_empresa.codigo_postal,
 					domicilio_empresa.asentamiento as colonia,
 				  (select 
