@@ -568,6 +568,7 @@ public class Accion extends IBaseCliente implements Serializable {
 			regresar.setDomicilio(getDomicilio());
 			regresar.setFacturar(facturarVenta);
 			regresar.setCredito((Boolean) this.attrs.get("creditoVenta"));			
+			regresar.setArticulos(getAdminOrden().getArticulos());
 		} // try
 		catch (Exception e) {			
 			throw e;
