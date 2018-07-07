@@ -1642,7 +1642,7 @@
         delte from tc_mantic_proveedores_portales where id_proveedor={idProveedor} 
       </delete>
     </unit>
-	    <unit id="TcManticAlmacenesUbicacionesDto">
+	  <unit id="TcManticAlmacenesUbicacionesDto">
       <select id="row">
         select      
           *
@@ -1676,7 +1676,8 @@
       </select>
 			<select id="general">
 				select
-					*
+					tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion as id_key,
+					tc_mantic_almacenes_ubicaciones.*
 				from 
 					tc_mantic_almacenes_ubicaciones
 				where
@@ -2864,6 +2865,24 @@
           tc_mantic_facturas
         where      
           id_factura = {idFactura} and id_venta = {idVenta}
+      </select>
+    </unit>
+		<unit id="TcManticTrabajosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_trabajos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_trabajos
+        where      
+          codigo = '{codigo}' and id_trabajo = {idTrabajo} and id_empresa = {idEmpresa}
       </select>
     </unit>
   </dml>    
