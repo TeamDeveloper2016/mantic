@@ -32,6 +32,10 @@ public final class ParametrosComunes implements Serializable{
     this.idAlmacen = idAlmacen;
     this.idProveedor = idProveedor;
     setParametrosComunes(toDatosEmpresa());
+    if(this.idProveedor != null & this.idProveedor != -1L)
+      toComplementarProveedor();
+    if(this.idAlmacen != null & this.idAlmacen != -1L)
+      toComplementarAlmacen();
   }
   
   private Map<String, Object> toDatosEmpresa() throws Exception {

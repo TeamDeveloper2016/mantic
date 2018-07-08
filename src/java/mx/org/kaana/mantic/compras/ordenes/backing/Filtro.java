@@ -203,23 +203,12 @@ public class Filtro extends IBaseFilter implements Serializable {
       params= toPrepare();	
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
       params.put("sortOrder", "order by tc_mantic_ordenes_compras.id_empresa, tc_mantic_ordenes_compras.ejercicio, tc_mantic_ordenes_compras.orden");
-      datosEmpresa = (Entity) DaoFactory.getInstance().toEntity("VistaInformacionEmpresas", "datosEmpresa", params);
       reporteSeleccion= EReportes.valueOf(nombre);
       if(reporteSeleccion.equals(EReportes.ORDEN_DETALLE))
         params.put("idOrdenCompra", ((Entity)this.attrs.get("seleccionado")).getKey());
       this.reporte= JsfBase.toReporte();	
       ParametrosComunes parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       parametros= parametrosComunes.getParametrosComunes();
-      /*parametros.put("REPORTE_EMPRESA", JsfBase.getAutentifica().getEmpresa().getNombreCorto());
-      parametros.put("REPORTE_EMPRESA_DIRECCION", datosEmpresa.toString("empresaDireccion"));
-      parametros.put("REPORTE_EMPRESA_COLONIA", datosEmpresa.toString("colonia"));
-      parametros.put("REPORTE_EMPRESA_CP", datosEmpresa.toString("codigoPostal"));
-      parametros.put("REPORTE_EMPRESA_CONTACTO", datosEmpresa.toString("responsableEmpresa"));
-      parametros.put("REPORTE_EMPRESA_TELEFONOS", datosEmpresa.toString("telefonosEmpresa"));
-      parametros.put("REPORTE_EMPRESA_EMAILS", datosEmpresa.toString("emailsEmpresa"));
-      parametros.put("REPORTE_EMPRESA_MUNICIPIO", datosEmpresa.toString("empresaRegion"));
-      parametros.put("REPORTE_EMPRESA_RFC", datosEmpresa.toString("rfcEmpresa"));
-      parametros.put("REPORTE_EMPRESA_CLAVE", datosEmpresa.toString("clave"));*/
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
