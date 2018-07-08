@@ -29,6 +29,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.Reportes.reglas.ParametrosComunes;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
@@ -207,9 +208,10 @@ public class Filtro extends IBaseFilter implements Serializable {
       reporteSeleccion= EReportes.valueOf(nombre);
       if(reporteSeleccion.equals(EReportes.ORDEN_DETALLE))
         params.put("idOrdenCompra", ((Entity)this.attrs.get("seleccionado")).getKey());
-      this.reporte= JsfBase.toReporte();		
-      parametros= new HashMap<>();
-      parametros.put("REPORTE_EMPRESA", JsfBase.getAutentifica().getEmpresa().getNombreCorto());
+      this.reporte= JsfBase.toReporte();	
+      ParametrosComunes parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      parametros= parametrosComunes.getParametrosComunes();
+      /*parametros.put("REPORTE_EMPRESA", JsfBase.getAutentifica().getEmpresa().getNombreCorto());
       parametros.put("REPORTE_EMPRESA_DIRECCION", datosEmpresa.toString("empresaDireccion"));
       parametros.put("REPORTE_EMPRESA_COLONIA", datosEmpresa.toString("colonia"));
       parametros.put("REPORTE_EMPRESA_CP", datosEmpresa.toString("codigoPostal"));
@@ -218,7 +220,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       parametros.put("REPORTE_EMPRESA_EMAILS", datosEmpresa.toString("emailsEmpresa"));
       parametros.put("REPORTE_EMPRESA_MUNICIPIO", datosEmpresa.toString("empresaRegion"));
       parametros.put("REPORTE_EMPRESA_RFC", datosEmpresa.toString("rfcEmpresa"));
-      parametros.put("REPORTE_EMPRESA_CLAVE", datosEmpresa.toString("clave"));
+      parametros.put("REPORTE_EMPRESA_CLAVE", datosEmpresa.toString("clave"));*/
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
       parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
