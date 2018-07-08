@@ -1899,9 +1899,10 @@
         select
 					tc_mantic_empresas.id_empresa,
           tc_mantic_empresas.clave,
+          tc_mantic_empresas.nombre,
 					domicilio_empresa.numero_interior,
-					concat(domicilio_empresa.calle, ' #',domicilio_empresa.numero_exterior, case  when domicilio_empresa.numero_interior is null then ' ' else concat(' INT. ',domicilio_empresa.numero_interior) end) as empresa_direccion,
-					domicilio_empresa.codigo_postal,
+					concat(domicilio_empresa.calle, case  when domicilio_empresa.numero_exterior is null then ' ' else concat(' # ',domicilio_empresa.numero_exterior) end, case  when domicilio_empresa.numero_interior is null then ' ' else concat(' INT. ',domicilio_empresa.numero_interior) end) as empresa_direccion,
+          domicilio_empresa.codigo_postal,
 					domicilio_empresa.asentamiento as colonia,
 				  (select 
 					  group_concat(tr_mantic_empresa_tipo_contacto.valor separator ' , ') tels 
@@ -1953,6 +1954,109 @@
 				where
 					tc_mantic_empresas.id_empresa in ({idEmpresa})
       </select>	
+      <select id="datosAlmacen">
+        select
+					tc_mantic_almacenes.id_almacen,
+        	tc_mantic_almacenes.clave,
+					domicilio_almacen.numero_interior,
+					concat(domicilio_almacen.calle, case  when domicilio_almacen.numero_exterior is null then ' ' else concat(' # ',domicilio_almacen.numero_exterior) end, case  when domicilio_almacen.numero_interior is null then ' ' else concat(' INT. ',domicilio_almacen.numero_interior) end) as almacen_direccion,	
+          domicilio_almacen.codigo_postal,
+					domicilio_almacen.asentamiento as colonia,
+				  (select 
+					  group_concat(tr_mantic_almacen_tipo_contacto.valor separator ' , ') tels 
+					 from 
+					   tc_mantic_almacenes left join tr_mantic_almacen_tipo_contacto on tc_mantic_almacenes.id_almacen = tr_mantic_almacen_tipo_contacto.id_almacen and tr_mantic_almacen_tipo_contacto.id_tipo_contacto between 1 and 8 
+					 where 
+        				tc_mantic_almacenes.id_almacen) telefonos_almacen,
+        	(select 
+					  group_concat(tr_mantic_almacen_tipo_contacto.valor separator ' , ') emails 
+					 from 
+					   tc_mantic_almacenes left join tr_mantic_almacen_tipo_contacto on tc_mantic_almacenes.id_almacen = tr_mantic_almacen_tipo_contacto.id_almacen and tr_mantic_almacen_tipo_contacto.id_tipo_contacto between 9 and 11 
+					 where 
+        	tc_mantic_almacenes.id_almacen) emails_almacen,
+        	concat(responsable_almacen.nombres,' ' ,responsable_almacen.paterno,' ',responsable_almacen.materno) as responsable_almacen,
+          responsable_almacen.rfc rfc_almacen,
+	        concat(replace(replace(upper(municipio_almacen.descripcion),char(10),' '),char(13),' '),', ' ,upper(entidad_almacen.descripcion),', ',upper(pais_almacen.descripcion)) as almacen_region,
+          (select 
+					  group_concat(tr_mantic_persona_tipo_contacto.valor separator ' , ') emails 
+					 from 
+					   tc_mantic_personas left join tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona  = tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto between 9 and 11 
+					 where 
+        				tc_mantic_personas.id_persona= responsable_almacen.id_persona) emails_contacto,
+          (select 
+            group_concat(tr_mantic_persona_tipo_contacto.valor separator ' , ') tels 
+          from 
+            tc_mantic_personas left join tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona  = tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto between 1 and 8 
+          where 
+            tc_mantic_personas.id_persona= responsable_almacen.id_persona) telefonos_contacto
+				from 
+					tc_mantic_almacenes 
+				inner join 
+					tr_mantic_almacen_domicilio  on tc_mantic_almacenes.id_almacen= tr_mantic_almacen_domicilio.id_almacen
+				inner join 
+					tc_mantic_domicilios  domicilio_almacen on tr_mantic_almacen_domicilio.id_domicilio = domicilio_almacen.id_domicilio
+				inner join 
+					tc_janal_localidades localidad_almacen on domicilio_almacen.id_localidad = localidad_almacen.id_localidad
+				inner join
+          tc_janal_municipios municipio_almacen on localidad_almacen.id_municipio = municipio_almacen.id_municipio
+        inner join
+					tc_janal_entidades  entidad_almacen on municipio_almacen.id_entidad = entidad_almacen.id_entidad
+				inner join
+					tc_janal_paises  pais_almacen on entidad_almacen.id_pais = pais_almacen.id_pais
+				left join 
+					tc_mantic_personas responsable_almacen on tc_mantic_almacenes.id_responsable = responsable_almacen.id_persona
+				left join 
+					tr_mantic_persona_tipo_contacto telefono on responsable_almacen.id_persona = telefono.id_persona and telefono.id_tipo_contacto=1
+				left join 
+					tr_mantic_persona_tipo_contacto correo on telefono.id_persona = correo.id_persona and correo.id_tipo_contacto=9
+				where
+					tc_mantic_almacenes.id_almacen in ({idAlmacen})
+      </select>
+      <select id="datosProveedor">
+        select
+					tc_mantic_proveedores.id_proveedor,
+          tc_mantic_proveedores.clave,
+          tc_mantic_proveedores.rfc,
+          tc_mantic_proveedores.razon_social,
+					domicilio_proveedor.numero_interior,
+					domicilio_proveedor.calle,
+					concat(domicilio_proveedor.calle, case  when domicilio_proveedor.numero_exterior is null then ' ' else concat(' # ',domicilio_proveedor.numero_exterior) end, case  when domicilio_proveedor.numero_interior is null then ' ' else concat(' INT. ',domicilio_proveedor.numero_interior) end) as proveedor_direccion,
+					domicilio_proveedor.codigo_postal,
+					domicilio_proveedor.asentamiento as colonia,
+          concat(agentes.nombres, ' ' ,  agentes.paterno, ' ',agentes.materno) as agente,
+				  (select 
+					  group_concat(tr_mantic_proveedor_tipo_contacto.valor separator ' , ') tels 
+           from 
+					   tc_mantic_proveedores left join tr_mantic_proveedor_tipo_contacto on tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_tipo_contacto.id_proveedor and tr_mantic_proveedor_tipo_contacto.id_tipo_contacto between 1 and 8 
+					 where 
+        				tc_mantic_proveedores.id_proveedor) telefonos_proveedor,
+        	(select 
+					  group_concat(tr_mantic_proveedor_tipo_contacto.valor separator ' , ') emails 
+          from 
+            tc_mantic_proveedores left join tr_mantic_proveedor_tipo_contacto on tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_tipo_contacto.id_proveedor and tr_mantic_proveedor_tipo_contacto.id_tipo_contacto between 9 and 11 
+          where 
+            tc_mantic_proveedores.id_proveedor) emails_proveedor
+        from 
+          tc_mantic_proveedores 
+        inner join 
+          tr_mantic_proveedor_domicilio  on tc_mantic_proveedores.id_proveedor= tr_mantic_proveedor_domicilio.id_proveedor
+        inner join 
+          tc_mantic_domicilios  domicilio_proveedor on tr_mantic_proveedor_domicilio.id_domicilio = domicilio_proveedor.id_domicilio
+        inner join 
+          tc_janal_localidades localidad_proveedor on domicilio_proveedor.id_localidad = localidad_proveedor.id_localidad
+        inner join
+          tc_janal_municipios municipio_proveedor on localidad_proveedor.id_municipio = municipio_proveedor.id_municipio
+        inner join
+          tc_janal_entidades  entidad_proveedor on municipio_proveedor.id_entidad = entidad_proveedor.id_entidad
+        inner join
+          tc_janal_paises  pais_proveedor on entidad_proveedor.id_pais = pais_proveedor.id_pais
+        left join 
+					tr_mantic_proveedor_agente on tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_agente.id_proveedor and tr_mantic_proveedor_agente.id_principal=1
+				left join 
+					tc_mantic_personas agentes on tr_mantic_proveedor_agente.id_agente= agentes.id_persona
+        where
+          tc_mantic_proveedores.id_proveedor in ({idProveedor})
+      </select>
       <select id="telefonos">
         select group_concat(tr_mantic_empresa_tipo_contacto.valor separator ' , ') tels from 
           tc_mantic_ordenes_compras
