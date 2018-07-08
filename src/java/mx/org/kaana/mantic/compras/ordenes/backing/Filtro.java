@@ -199,7 +199,6 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
-    Entity datosEmpresa          = null;
 		try{		
       params= toPrepare();	
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
