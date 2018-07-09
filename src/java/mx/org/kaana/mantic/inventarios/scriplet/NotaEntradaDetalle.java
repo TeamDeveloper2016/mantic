@@ -26,8 +26,8 @@ public class NotaEntradaDetalle  extends BarraProgreso implements Serializable{
       Map<EncodeHintType, Object> hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
       hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
       hints.put(EncodeHintType.MARGIN, 0); /* default = 4 */
-      setVariableValue("LETRAS", letras.getMoneda(getFieldValue("TOTAL_NOTA").toString(), Boolean.FALSE));
-      matrix = writer.encode(getParameterValue("NOMBRE_REPORTE").toString().concat(":").concat(getFieldValue("CONSECUTIVO_NOTA").toString()).toString().concat("-").concat("http://bonanzaj.jvmhost.net/MANTIC/"), BarcodeFormat.QR_CODE, 400, 400, hints);
+      setVariableValue("LETRAS", letras.getMoneda(getFieldValue("TOTAL_FINAL").toString(), Boolean.FALSE));
+      matrix = writer.encode(getParameterValue("NOMBRE_REPORTE").toString().concat(":").concat(getFieldValue("CONSECUTIVO").toString()).toString().concat("-").concat("http://bonanzaj.jvmhost.net/MANTIC/"), BarcodeFormat.QR_CODE, 400, 400, hints);
       setVariableValue("CODE_QR", MatrixToImageWriter.toBufferedImage(matrix) );
     } // try
     catch (Exception e) {
