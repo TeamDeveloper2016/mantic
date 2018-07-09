@@ -117,6 +117,7 @@
 				  tc_mantic_empresas.id_tipo_empresa,
 				  tc_mantic_empresas.nombre,
           tc_mantic_empresas.clave,
+          tc_mantic_empresas.clave as nombre_corto,
 				  tc_mantic_empresas.titulo
         from 
           tr_mantic_empresa_personal

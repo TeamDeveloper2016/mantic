@@ -14,6 +14,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -73,6 +74,10 @@ public class Accion extends IBaseArticulos implements Serializable {
 		return this.tipoOrden.equals(EOrdenes.NORMAL)? "(DIRECTA)": "";
 	}
 
+	public Boolean getIsDirecta() {
+		return this.tipoOrden.equals(EOrdenes.NORMAL);
+	}
+
 	public Boolean getIsAplicar() {
 		Boolean regresar= true;
 		try {
@@ -120,8 +125,14 @@ public class Accion extends IBaseArticulos implements Serializable {
         case AGREGAR:											
           this.setAdminOrden(new AdminNotas(new NotaEntrada(-1L, (Long)this.attrs.get("idOrdenCompra")), this.tipoOrden));
           TcManticOrdenesComprasDto ordenCompra= this.attrs.get("idOrdenCompra").equals(-1L)? new TcManticOrdenesComprasDto(): (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, (Long)this.attrs.get("idOrdenCompra"));
-					((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(new Entity(ordenCompra.getIdAlmacen())));
-					((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(ordenCompra.getIdProveedor())));
+					if(this.tipoOrden.equals(EOrdenes.NORMAL)) {
+						((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(new Entity(-1L)));
+						((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(-1L)));
+					} // if
+					else {
+						((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(new Entity(ordenCompra.getIdAlmacen())));
+						((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(ordenCompra.getIdProveedor())));
+					} // else	
           break;
         case MODIFICAR:					
         case CONSULTAR:					
@@ -130,6 +141,7 @@ public class Accion extends IBaseArticulos implements Serializable {
           break;
       } // switch
 			this.toLoadCatalog();
+			this.doFilterRows();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -197,10 +209,15 @@ public class Accion extends IBaseArticulos implements Serializable {
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("proveedores", UIEntity.build("VistaOrdenesComprasDto", "moneda", params, columns));
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
+			int index= 0;
 			if(!proveedores.isEmpty()) {
-				int index= proveedores.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor());
-				((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(proveedores.get(index));
-			  this.attrs.put("proveedor", proveedores.get(index));
+				if(this.tipoOrden.equals(EOrdenes.NORMAL))
+			   ((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(proveedores.get(0));
+				else {
+				  index= proveedores.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor());
+				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(proveedores.get(index));
+				} // else
+		    this.attrs.put("proveedor", proveedores.get(index));
 			} // if	
 			if(this.attrs.get("idOrdenCompra")!= null) {
         columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
@@ -254,7 +271,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 		Long fileSize     = 0L;
 		try {
       path.append(Configuracion.getInstance().getPropiedadSistemaServidor("facturas"));
-      path.append(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString());
+      path.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
       path.append(File.separator);
       path.append(Calendar.getInstance().get(Calendar.YEAR));
       path.append(File.separator);
@@ -311,14 +328,14 @@ public class Accion extends IBaseArticulos implements Serializable {
 	private void toReadFactura(File file) throws Exception {
     Reader reader            = null;
 		ComprobanteFiscal factura= null;
-		List<Articulo> importados= null;
+		List<Articulo> faltantes = null;
 		try {
-			importados= new ArrayList<>();
-			reader = new Reader(file.getAbsolutePath(), file.getName());
+			faltantes= new ArrayList<>();
+			reader = new Reader(file.getAbsolutePath());
 			factura= reader.execute();
 			for (Concepto concepto: factura.getConceptos()) {
 		    //this(sinIva, tipoDeCambio, nombre, codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos, idProveedor, ultimo, solicitado, stock, excedentes, sat, unidadMedida);
-		    importados.add(new Articulo(
+		    faltantes.add(new Articulo(
 				  (boolean)this.attrs.get("sinIva"),
 					this.getAdminOrden().getTipoDeCambio(),
 					concepto.getDescripcion(),
@@ -329,7 +346,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 					"",
 					0D,
 					"",
-					Double.parseDouble(concepto.getTraslado().getTasaCuota()),
+					Double.parseDouble(concepto.getTraslado().getTasaCuota())* 100,
 					0D,
 					Double.parseDouble(concepto.getImporte()),
 					Double.parseDouble(concepto.getCantidad()),
@@ -345,11 +362,26 @@ public class Accion extends IBaseArticulos implements Serializable {
 					concepto.getUnidad()
 				));
 			} // for
-			this.attrs.put("importados", importados);
+			this.attrs.put("faltantes", faltantes);
 		} // try
 		catch (Exception e) {
 			throw e;
 		} // catch
 	}
 	
+	@Override
+	public void doFaltanteArticulo() {
+		try {
+			Articulo faltante= (Articulo)this.attrs.get("faltante");
+   		this.toAddFaltante(faltante);
+		  List<Articulo> faltantes= (List<Articulo>)this.attrs.get("faltantes");
+			faltantes.remove(faltantes.indexOf(faltante));
+  		this.doFilterRows();
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	}
+
 }

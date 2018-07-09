@@ -14,7 +14,7 @@ public class ReadFactura {
 		Reader reader            = null;
 		ComprobanteFiscal factura= null;
 		try {
-			reader= new Reader(new File("").getAbsolutePath().concat("\\src\\java\\mx\\org\\kaana\\mantic\\libs\\factura\\test\\"), "A24729.xml");
+			reader= new Reader(new File("").getAbsolutePath().concat("\\src\\java\\mx\\org\\kaana\\mantic\\libs\\factura\\test\\A24729.xml"));
 			//reader= new Reader(new File("").getAbsolutePath().concat("\\src\\java\\mx\\org\\kaana\\mantic\\libs\\factura\\test\\"), "factura.xml");
 			factura= reader.execute();
 			LOG.info("Factura con folio: " + factura.getFolio());

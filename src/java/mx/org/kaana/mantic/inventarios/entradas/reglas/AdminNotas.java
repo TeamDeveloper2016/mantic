@@ -149,7 +149,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 			for (Articulo item: regresar) {
   			params.put("idArticulo", item.getIdArticulo());
         Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", this.orden.toMap(), "stock");
-				item.setStock(stock== null? 0L: stock.toLong());
+				item.setStock(stock== null? 0D: stock.toDouble());
 			} // for
 		} // try
 		catch (Exception e) {

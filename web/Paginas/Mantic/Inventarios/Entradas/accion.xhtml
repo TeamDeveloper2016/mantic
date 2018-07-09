@@ -26,10 +26,10 @@
 				'contenedorGrupos\\:extra'          : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'articulo'},			
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
 				'codigo'                            : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
-				'sat'                               : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
+				'sat'                               : {multiple: '$', validaciones: 'entero|igual-caracteres({"cuantos": 8})', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
 				'auxiliares'                        : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},				
-				'precios'                           : {multiple: '$', validaciones: 'mayor({"cuanto": -1})', mascara: 'libre', grupo: 'general', individual: true},				
-				'cantidades'                        : {multiple: '$', validaciones: 'mayor({"cuanto": -1})', mascara: 'libre', grupo: 'general', individual: true}				
+				'precios'                           : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general', individual: true},				
+				'cantidades'                        : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general', individual: true}				
 			};			
     	$(document).ready(function() {
 				setTimeout("janal.readingMode('#{manticInventariosEntradasAccion.attrs.nombreAccion}')", 500);
@@ -50,6 +50,13 @@
 				return ok;
 			}
 		</script>   
+		<style>
+			.janal-upload-frame {
+        border: solid 1px #D1D3D4;
+        margin-bottom: 6px;
+        border-radius: 5px;				
+			}
+		</style>
 	</ui:define>
 	<ui:define name="contenido">
 		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticInventariosEntradasAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.reset(); janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
@@ -75,6 +82,7 @@
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
 		<p:remoteCommand name="lookup" actionListener="#{manticInventariosEntradasAccion.doUpdateArticulos}" process="@this codigo" update="buscados"/>
+		<p:remoteCommand name="filterRows" actionListener="#{manticInventariosEntradasAccion.doFilterRows}" update="contenedorGrupos:tabla" process="@this @(.key-filter-event)" onstart="return janal.bloquear();" oncomplete="jsArticulos.invalidate(#{manticInventariosDevolucionesAccion.adminOrden.filtrados.size()- 1});"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
@@ -121,7 +129,7 @@
 								</p:selectOneMenu>
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
-								<p:selectOneMenu id="idProveedor" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="startsWith">
+								<p:selectOneMenu id="idProveedor" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="startsWith" disabled="#{not manticInventariosEntradasAccion.isDirecta}">
 									<p:ajax event="change" listener="#{manticInventariosEntradasAccion.doUpdateProveedor}" update="datosArticulos" process="@form" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{manticInventariosEntradasAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 									<p:column headerText="Clave">
@@ -170,7 +178,7 @@
 												</p:inputText>
 											</p:panelGrid>	 
 										</p:panelGrid>	
-										<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticInventariosEntradasAccion.adminOrden.articulos}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">
+										<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticInventariosEntradasAccion.adminOrden.filtrados}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">
 											<p:column class="MarAuto Responsive janal-wid-3">
 												<f:facet name="header">
 													<h:outputText value="No."/>
@@ -187,6 +195,7 @@
 													<pe:tooltip for="@(.janal-help-9)" showEvent="click">
 														<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(9)}" styleClass="Fs15" escape="false"/>
 													</pe:tooltip>
+													<p:inputText id="filterCode" value="#{manticInventariosEntradasAccion.attrs.filterCode}" styleClass="janal-wid-70 key-filter-event"/>
 												</f:facet>
 												<div class="ui-grid-row janal-grid-row">
 													<div class="ui-grid-col-12" style="padding-right: 14px;">
@@ -232,6 +241,7 @@
 											<p:column  class="MarAuto Responsive">
 												<f:facet name="header">
 													<h:outputText value="Articulo"/>
+													<p:inputText id="filterName" value="#{manticInventariosEntradasAccion.attrs.filterName}" styleClass="janal-wid-100-txt key-filter-event"/>
 												</f:facet>
 												<h:outputText id="nombres" value="#{row['nombre']}" title="Código propio: #{row['propio']}    Existencias almacen: #{row['stock']}" escape="false"/>
 											</p:column>		
@@ -419,13 +429,11 @@
 							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.adminOrden.orden.observaciones}"/>
 						</p:tab>
 						<p:tab title="Importar">
-								<p:fileUpload fileUploadListener="#{manticInventariosEntradasAccion.doFileUpload}"
-									mode="advanced" update="importados" label="Selecciona" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
-									multiple="#{manticInventariosEntradasAccion.multiple}" allowTypes="#{manticInventariosEntradasAccion.attrs.formatos}"
-									invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !"
-									invalidFileMessage="Solo se permiten archivos en formato #{manticInventariosEntradasAccion.attrs.formatos}"
-								/>
-							<p:dataTable id="importados" var="row" value="#{manticInventariosEntradasAccion.attrs.importados}" rows="6" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " styleClass="paginated" rowIndexVar="index">
+							<p:fileUpload fileUploadListener="#{manticInventariosEntradasAccion.doFileUpload}"
+								mode="advanced" update="importados" label="Selecciona" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+								multiple="false" allowTypes="#{manticInventariosEntradasAccion.attrs.formatos}" dragDropSupport="true" auto="false" styleClass="janal-wid-100 janal-upload-frame"
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticInventariosEntradasAccion.attrs.formatos}"/>
+							<p:dataTable id="importados" var="row" value="#{manticInventariosEntradasAccion.attrs.faltantes}" rows="6" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " styleClass="paginated" rowIndexVar="index">
 								<p:column  class="MarAuto Responsive janal-wid-10">
 									<f:facet name="header">
 										<h:outputText value="Código SAT"/>
@@ -458,9 +466,9 @@
 								</p:column>		
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 									<f:facet name="header">
-										<h:outputText value="Impuesto"/>
+										<h:outputText value="IVA"/>
 									</f:facet>
-									<h:outputText value="#{row['impuesto']}"/>
+									<h:outputText value="#{row['iva']}"/>
 								</p:column>		
 								<p:column  class="MarAuto Responsive janal-wid-13">
 									<f:facet name="header">
@@ -470,7 +478,6 @@
 								</p:column>		
 								<p:column style="width:38px; text-align: center">
 									<f:facet name="header">
-										<h:outputText value="Opc"/>
 									</f:facet>
 									<p:commandButton update="importados @(.filas) @(.recalculo)" icon="fa fa-plus" title="Agregar" action="#{manticInventariosEntradasAccion.doFaltanteArticulo}" styleClass="janal-text-white" rendered="true">
 										<f:setPropertyActionListener value="#{row}" target="#{manticInventariosEntradasAccion.attrs.faltante}" />

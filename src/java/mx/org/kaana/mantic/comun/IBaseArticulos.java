@@ -394,6 +394,52 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 		} // finally
 	}
 	
+	public void toAddFaltante(Articulo seleccionado) throws Exception {
+		Long idOrdenDetalle= new Long((int)(Math.random()*10000));
+  	this.doSearchArticulo(seleccionado.getIdArticulo(), 0);
+		Map<String, Object> params= null;
+		Value stock               = null;
+		try {
+			params=new HashMap<>();
+			params.put("idArticulo", seleccionado.getIdArticulo());
+			params.put("idProveedor", this.attrs.get("idProveedor"));
+			params.put("idAlmacen", this.attrs.get("idAlmacen"));
+  		stock = (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+			Articulo item= new Articulo(
+				(Boolean)this.attrs.get("sinIva"),
+				this.getAdminOrden().getTipoDeCambio(),
+				seleccionado.getNombre(), 
+				seleccionado.getCodigo(),
+				seleccionado.getCosto(),
+				this.getAdminOrden().getDescuento(), 
+				-1L,
+				this.getAdminOrden().getExtras(), 
+				0D,
+				"",
+				seleccionado.getIva(), 
+				0D,
+				0D,
+				seleccionado.getCantidad(), 
+				-1* idOrdenDetalle, 
+				seleccionado.getIdArticulo(), 
+				0D,
+				(Long)this.attrs.get("idProveedor"),
+				this.attrs.get("ultimo")!= null,
+				this.attrs.get("solicitado")!= null,
+				stock== null? 0D: stock.toDouble(),
+				0D,
+				seleccionado.getSat(),
+				seleccionado.getUnidadMedida()
+			);
+			if(this.getAdminOrden().add(item))
+				RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
+			RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ item.toMap()+ "');");
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+
 	public void doFaltanteArticulo() {
 		try {
 			UISelectEntity faltante= (UISelectEntity)this.attrs.get("faltante");

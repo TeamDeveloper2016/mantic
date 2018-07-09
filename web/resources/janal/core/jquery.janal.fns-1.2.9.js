@@ -340,6 +340,20 @@ $.mask.masks = $.extend($.mask.masks, {
       return 'N\u00FAmero de caracteres '+ $(element).val().length+ ' es menor al permitido, el m\u00EDnimo es '+ params.cuantos+ '.';
     });
 
+  $.validator.addMethod('igual-caracteres', function(value, element, params) {
+      if (janal.empty(value) || $(element).hasClass('ignore'))
+        return true;
+      else
+        if(typeof(params.cuantos)=== 'undefined') {
+					janal.programmer([{summary: 'Funci\u00F3n: igual-caracteres', detail: 'falta el parametro {cuantos}'}]);
+          return false;
+				} // if	
+        else
+          return $.trim(value).length=== params.cuantos;
+    }, function(params, element) {
+      return 'N\u00FAmero de caracteres '+ $(element).val().length+ ' no es igual al permitido, el n\u00FAmero de caracteres debe ser '+ params.cuantos+ '.';
+    });
+
   $.validator.addMethod('mayor', function(value, element, params) {
       if (janal.empty(value) || $(element).hasClass('ignore'))
         return true;

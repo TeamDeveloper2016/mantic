@@ -25,11 +25,9 @@ import org.w3c.dom.NodeList;
 public class Reader implements Serializable{
 	
 	private static final long serialVersionUID = -7129012131006642751L;
-	private String path;
 	private String fileName;
 
-	public Reader(String path, String fileName) {
-		this.path = path;
+	public Reader(String fileName) {
 		this.fileName = fileName;
 	}	
 			
@@ -42,7 +40,7 @@ public class Reader implements Serializable{
 		try {        
 			dbf= DocumentBuilderFactory.newInstance();
       db = dbf.newDocumentBuilder();
-			inputStream= new FileInputStream(new File(this.path.concat(this.fileName)));        
+			inputStream= new FileInputStream(new File(this.fileName));        
 			document= db.parse(inputStream);
       document.getDocumentElement().normalize();					
 			regresar= readHeader(document);			
