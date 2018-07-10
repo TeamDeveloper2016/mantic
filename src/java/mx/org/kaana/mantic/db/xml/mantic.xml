@@ -2514,6 +2514,18 @@
         where 
           id_orden_compra = {idOrdenCompra}
 			</select>
+			<select id="folio">
+				select
+				  consecutivo, registro
+				from
+				  tc_mantic_notas_entradas
+				where
+				  factura = '{factura}'
+				  and id_proveedor= {idProveedor}
+				  and date_format(registro, '%Y%m%d')&gt;= '{inicio}' and date_format(registro, '%Y%m%d')&lt;= '{termino}'
+				order by
+				  registro desc				
+			</select>
     </unit>
     <unit id="TcManticOrdenesDetallesDto">
       <select id="row">

@@ -25,6 +25,8 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -384,4 +386,31 @@ public class Accion extends IBaseArticulos implements Serializable {
     } // catch   
 	}
 
+	public void doCheckFolio() {
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("factura", ((NotaEntrada)this.getAdminOrden().getOrden()).getFactura());
+			params.put("idProveedor", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdProveedor());
+			int month= Calendar.getInstance().get(Calendar.MONTH);
+			if(month<= 5) {
+				params.put("inicio", Calendar.getInstance().get(Calendar.YEAR)+ "0101");
+				params.put("termino", Calendar.getInstance().get(Calendar.YEAR)+ "0630");
+			} // if
+			else {
+				params.put("inicio", Calendar.getInstance().get(Calendar.YEAR)+ "0701");
+				params.put("termino", Calendar.getInstance().get(Calendar.YEAR)+ "1231");
+			} // else
+			Entity entity= (Entity)DaoFactory.getInstance().toEntity("TcManticNotasEntradasDto", "folio", params);
+			if(entity!= null && entity.size()> 0) 
+				RequestContext.getCurrentInstance().execute("$('#contenedorGrupos\\\\:factura').val('');janal.show([{summary: 'Error:', detail: 'El folio ["+ ((NotaEntrada)this.getAdminOrden().getOrden()).getFactura()+ "] se registró en la nota de entrada "+ entity.toString("consecutivo")+ ", el dia "+ Global.format(EFormatoDinamicos.FECHA_HORA, entity.toTimestamp("registro"))+ ".'}]);");
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
 }
