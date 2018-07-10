@@ -140,7 +140,7 @@ public final class AdminDevoluciones extends IAdminArticulos implements Serializ
   			params.put("idArticulo", item.getIdArticulo());
   			params.put("idAlmacen", nota.getIdAlmacen());
         Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
-				item.setStock(stock== null? 0L: stock.toLong());
+				item.setStock(stock== null? 0D: stock.toDouble());
 			} // for
 		} // try
 		catch (Exception e) {

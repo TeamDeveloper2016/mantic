@@ -271,7 +271,7 @@
 				  registro
       </select>
 			<delete id="rows">
-				delete from tc_mantic_devoluciones_detalles where id_nota_entrada= {idDevolucion}
+				delete from tc_mantic_devoluciones_detalles where id_devolucion= {idDevolucion}
 			</delete>
     </unit>		
     <unit id="TcManticDevolucionesEstatusDto">
