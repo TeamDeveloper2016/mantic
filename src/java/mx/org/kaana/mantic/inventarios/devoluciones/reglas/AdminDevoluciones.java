@@ -100,7 +100,7 @@ public final class AdminDevoluciones extends IAdminArticulos implements Serializ
 	}
 
 	private ArrayList<Articulo> toLoadOrdenDetalle() throws Exception {
-		ArrayList<Articulo> regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticDevolucionesDetallesDto", "detalle", this.orden.toMap()));
+		ArrayList<Articulo> regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaDevolucionesDto", "detalle", this.orden.toMap()));
 		ArrayList<Articulo> loaded  = new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaDevolucionesDto", "diferencia", this.orden.toMap()));
 		Map<String, Object> params  = null;
 		try {
