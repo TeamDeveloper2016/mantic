@@ -106,11 +106,11 @@ public class Accion extends IBaseArticulos implements Serializable {
 			TcManticNotasEntradasDto nota= this.attrs.get("idNotaEntrada").equals(-1L)? new TcManticNotasEntradasDto(): (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, (Long)this.attrs.get("idNotaEntrada"));
       switch (this.accion) {
         case AGREGAR:											
-          this.setAdminOrden(new AdminDevoluciones(new Devolucion(-1L, (Long)this.attrs.get("idNotaEntrada")), nota.getTipoDeCambio(), nota.getIdSinIva()));
+          this.setAdminOrden(new AdminDevoluciones(new Devolucion(-1L, (Long)this.attrs.get("idNotaEntrada")), nota.getTipoDeCambio(), nota.getIdSinIva(), this.accion));
           break;
         case MODIFICAR:					
         case CONSULTAR:					
-          this.setAdminOrden(new AdminDevoluciones((Devolucion)DaoFactory.getInstance().toEntity(Devolucion.class, "TcManticDevolucionesDto", "detalle", this.attrs), nota.getTipoDeCambio(), nota.getIdSinIva()));
+          this.setAdminOrden(new AdminDevoluciones((Devolucion)DaoFactory.getInstance().toEntity(Devolucion.class, "TcManticDevolucionesDto", "detalle", this.attrs), nota.getTipoDeCambio(), nota.getIdSinIva(), this.accion));
           break;
       } // switch
 			this.toLoadCatalog();

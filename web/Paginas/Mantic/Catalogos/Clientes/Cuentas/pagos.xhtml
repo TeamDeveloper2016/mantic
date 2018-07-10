@@ -19,7 +19,7 @@
         'fechaInicio' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'fechaTermino': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'encontrados' : {validaciones: 'requerido', mascara: 'libre', grupo: 'aceptado'}
-      };		
+      };		9
     </script>		
   </ui:define>
   <ui:define name="contenido">
@@ -33,10 +33,10 @@
 					<p:panel id="panelBusqueda" header="Busqueda:" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
 						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
-							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosClientesPagos.attrs.isMatriz}"/>
-							<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosClientesPagos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosClientesCuentasPagos.attrs.isMatriz}"/>
+							<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosClientesCuentasPagos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-								<f:selectItems value="#{manticCatalogosClientesPagos.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+								<f:selectItems value="#{manticCatalogosClientesCuentasPagos.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
 								</p:column>   
@@ -45,32 +45,32 @@
 								</p:column>   
 							</p:selectOneMenu>
 							<p:outputLabel for="cliente" value="Cliente:"/>
-							<p:inputText id="cliente" value="#{manticCatalogosClientesPagos.attrs.cliente}" styleClass="janal-wid-100-txt" title="Código, RFC ó Razón social"/> 
+							<p:inputText id="cliente" value="#{manticCatalogosClientesCuentasPagos.attrs.cliente}" styleClass="janal-wid-100-txt" title="Código, RFC ó Razón social"/> 
 							<p:outputLabel for="consecutivo" value="No. ticket:"/>
-							<p:inputText id="consecutivo" value="#{manticCatalogosClientesPagos.attrs.ticket}" styleClass="janal-wid-100-txt janal-column-right"/> 
+							<p:inputText id="consecutivo" value="#{manticCatalogosClientesCuentasPagos.attrs.ticket}" styleClass="janal-wid-100-txt janal-column-right"/> 
 							<p:outputLabel for="dias" value="Días vencidos:"/>
-							<p:inputText id="dias" value="#{manticCatalogosClientesPagos.attrs.dias}" styleClass="janal-wid-100-txt janal-column-right"/> 
+							<p:inputText id="dias" value="#{manticCatalogosClientesCuentasPagos.attrs.dias}" styleClass="janal-wid-100-txt janal-column-right"/> 
 							<p:outputLabel for="vencidos" value="Vencidos:"/>
-							<p:selectOneMenu id="vencidos" value="#{manticCatalogosClientesPagos.attrs.vencidos}" converter="javax.faces.Long" styleClass="janal-wid-96">
+							<p:selectOneMenu id="vencidos" value="#{manticCatalogosClientesCuentasPagos.attrs.vencidos}" converter="javax.faces.Long" styleClass="janal-wid-96">
 								<f:selectItem itemLabel="NO" itemValue="2"/>
 								<f:selectItem itemLabel="SI" itemValue="1"/>
 							</p:selectOneMenu>
 							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticCatalogosClientesPagos.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticCatalogosClientesCuentasPagos.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticCatalogosClientesPagos.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticCatalogosClientesCuentasPagos.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 						</p:panelGrid>
 						<div class="janal-align-right lg-pantalla">
-							<p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.partial('general', true);" process="panelBusqueda" actionListener="#{manticCatalogosClientesPagos.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
+							<p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.partial('general', true);" process="panelBusqueda" actionListener="#{manticCatalogosClientesCuentasPagos.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
 						</div>
 						<div class="janal-align-right xs-pantalla">
-							<p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general', true);" process="panelBusqueda" actionListener="#{manticCatalogosClientesPagos.doLoad}" oncomplete="janal.desbloquear();" update="tabla"  styleClass="janal-text-white"/>
+							<p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general', true);" process="panelBusqueda" actionListener="#{manticCatalogosClientesCuentasPagos.doLoad}" oncomplete="janal.desbloquear();" update="tabla"  styleClass="janal-text-white"/>
 						</div>
 					</p:panel>
 				</div>
 				<p:spacer/>
 				<div id="collapse-content" class="ui-grid-col-9">
-					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosClientesPagos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesPagos.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosClientesPagos.lazyModel.rowCount gt manticCatalogosClientesPagos.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosClientesCuentasPagos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesCuentasPagos.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosClientesCuentasPagos.lazyModel.rowCount gt manticCatalogosClientesCuentasPagos.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
 						<f:facet name="header" >
 							<div class="lg-pantalla">
 								<p:menuButton   value="Opciones">
@@ -120,7 +120,7 @@
 							<h:outputText value="#{filtro['registro']}"/>
 						</p:column>
 						<f:facet name="footer">
-							<p:outputLabel value="Total [#{manticCatalogosClientesPagos.lazyModel==null?0:manticCatalogosClientesPagos.lazyModel.rowCount}] registros"/>
+							<p:outputLabel value="Total [#{manticCatalogosClientesCuentasPagos.lazyModel==null?0:manticCatalogosClientesCuentasPagos.lazyModel.rowCount}] registros"/>
 						</f:facet>
 					</p:dataTable>
 				</div>
@@ -130,12 +130,12 @@
 			<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-col-60, janal-wid-100">
 				<p:outputLabel for="busqueda" value="Nombre:"/>
   			<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-40">
-	  			<p:inputText id="busqueda" value="#{manticCatalogosClientesPagos.attrs.busqueda}" styleClass="janal-wid-100-txt" placeholder="Ej. razón social del cliente DANIEL DAVALOS"/>
-					<p:commandButton icon="fa fa-search" actionListener="#{manticCatalogosClientesPagos.doClientes}" process="@this busqueda" update="encontrados resultados" styleClass="janal-text-white" onstart="return janal.partial('dialogo');"/>
+	  			<p:inputText id="busqueda" value="#{manticCatalogosClientesCuentasPagos.attrs.busqueda}" styleClass="janal-wid-100-txt" placeholder="Ej. razón social del cliente DANIEL DAVALOS"/>
+					<p:commandButton icon="fa fa-search" actionListener="#{manticCatalogosClientesCuentasPagos.doClientes}" process="@this busqueda" update="encontrados resultados" styleClass="janal-text-white" onstart="return janal.partial('dialogo');"/>
 				</h:panelGrid>
 				<p:outputLabel for="encontrados" value="Encontrados:"/>
-				<p:selectOneMenu id="encontrados" value="#{manticCatalogosClientesPagos.encontrado}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
-					<f:selectItems value="#{manticCatalogosClientesPagos.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.rfc} - #{element.razonSocial}"/>
+				<p:selectOneMenu id="encontrados" value="#{manticCatalogosClientesCuentasPagos.encontrado}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
+					<f:selectItems value="#{manticCatalogosClientesCuentasPagos.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.rfc} - #{element.razonSocial}"/>
 					<p:column styleClass="janal-column-left janal-wid-30" headerText="Clave">
 						<h:outputText value="#{item.clave}"/>
 					</p:column>   																			
@@ -147,21 +147,21 @@
 					</p:column>  
 				</p:selectOneMenu>
 				<p:spacer/>
-				<p:outputLabel id="resultados" value="Registros encontrados: [#{manticCatalogosClientesPagos.attrs.resultados}]" style="float: right !important"/>
+				<p:outputLabel id="resultados" value="Registros encontrados: [#{manticCatalogosClientesCuentasPagos.attrs.resultados}]" style="float: right !important"/>
 			</h:panelGrid>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton value="Aceptar" icon="fa fa-check" process="@this encontrados" update="tabla" actionListener="#{manticCatalogosClientesPagos.doSeleccionado}" onstart="return janal.partial('aceptado');" oncomplete="PF('dlgClientes').hide(); janal.desbloquear();" styleClass="janal-text-white"/>
+				<p:commandButton value="Aceptar" icon="fa fa-check" process="@this encontrados" update="tabla" actionListener="#{manticCatalogosClientesCuentasPagos.doSeleccionado}" onstart="return janal.partial('aceptado');" oncomplete="PF('dlgClientes').hide(); janal.desbloquear();" styleClass="janal-text-white"/>
         <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgClientes').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
 			</div>
 		</p:dialog> 
   </ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" styleClass="janal-text-white" action="#{manticCatalogosClientesPagos.doRegresar}" immediate="true"/>
+			<p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" styleClass="janal-text-white" action="#{manticCatalogosClientesCuentasPagos.doRegresar}" immediate="true"/>
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" styleClass="janal-text-white" action="#{manticCatalogosClientesPagos.doRegresar}" immediate="true"/>
+			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" styleClass="janal-text-white" action="#{manticCatalogosClientesCuentasPagos.doRegresar}" immediate="true"/>
 		</div>	
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="tabla" />

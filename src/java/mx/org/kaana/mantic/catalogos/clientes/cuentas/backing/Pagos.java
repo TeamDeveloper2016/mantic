@@ -24,7 +24,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 
-@Named(value = "manticCatalogosClientesPagos")
+@Named(value = "manticCatalogosClientesCuentasPagos")
 @ViewScoped
 public class Pagos extends IBaseFilter implements Serializable {
 
