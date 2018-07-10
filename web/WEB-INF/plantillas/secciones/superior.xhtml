@@ -131,7 +131,7 @@
 					<p:inputText styleClass="janal-column-center" value="#{kajoolEncabezado.attrs.selected.limiteMayoreo} - #######" readonly="true"/>
   			</p:panelGrid>
 				<p:outputLabel value="Existencias por almacen:" styleClass="janal-wid-100"/>
-				<p:selectOneMenu value="#{kajoolEncabezado.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="startsWith">
+				<p:selectOneMenu value="#{kajoolEncabezado.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="contains">
 					<f:selectItems value="#{kajoolEncabezado.attrs.almacenes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre} - #{element.stock}"/>
 					<p:column headerText="Clave">
 						<h:outputText value="#{item.clave}"/>

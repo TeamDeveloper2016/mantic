@@ -71,7 +71,7 @@
 								<p:spacer/>
 								<p:commandButton process="@this" update="dialogoClientes" icon="fa fa-search" styleClass="janal-text-white" onstart="return janal.bloquear();" oncomplete="PF('dlgClientes').show();" title="Buscar cliente" style="float: right !important"/>						
 								<p:outputLabel for="cliente" value="Cliente:"/>
-								<p:selectOneMenu id="cliente" value="#{manticTallerAccion.registroServicio.clienteSeleccion}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">
+								<p:selectOneMenu id="cliente" value="#{manticTallerAccion.registroServicio.clienteSeleccion}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">
 									<p:ajax event="change" listener="#{manticTallerAccion.doLoadAtributos}" process="@this cliente" update="contenedorGrupos:formularioCliente" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
 									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 									<f:selectItems value="#{manticTallerAccion.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
@@ -117,7 +117,7 @@
 					<p:commandButton icon="fa fa-search" actionListener="#{manticTallerAccion.doBusquedaClientes}" process="@this busqueda" update="clientesBusqueda totalResultados" styleClass="janal-text-white" onstart="return janal.partial('dialogo')"/>
 				</h:panelGrid>		
 				<p:outputLabel for="clientesBusqueda" value="Encontrados:"/>
-				<p:selectOneMenu id="clientesBusqueda" value="#{manticTallerAccion.clienteBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
+				<p:selectOneMenu id="clientesBusqueda" value="#{manticTallerAccion.clienteBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
 					<f:selectItems value="#{manticTallerAccion.attrs.clientesBusqueda}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
 					<p:column  styleClass="janal-column-left janal-wid-30" headerText="Clave">
 						<h:outputText value="#{item.clave}"/>

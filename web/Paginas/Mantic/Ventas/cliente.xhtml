@@ -63,7 +63,7 @@
 							<f:selectItems value="#{manticVentasCliente.attrs.tiposDomicilios}"/>
 						</p:selectOneMenu>												  						
 						<p:outputLabel for="domicilio" value="Domicilio:"/>
-						<p:selectOneMenu id="domicilio" value="#{manticVentasCliente.domicilio.domicilio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
+						<p:selectOneMenu id="domicilio" value="#{manticVentasCliente.domicilio.domicilio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
 							<p:ajax event="change" listener="#{manticVentasCliente.doLoadAtributos}" process="@this domicilio" update="entidad municipio localidad codigoPostal spacerCp calle exterior interior asentamiento entreCalle tipoDomicilio" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
 							<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 							<f:selectItems value="#{manticVentasCliente.attrs.domicilios}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
@@ -85,7 +85,7 @@
 						<p:outputLabel for="entidad" value="Entidad:"/>
 						<p:outputLabel for="municipio" value="Municipio:"/>
 						<p:outputLabel for="localidad" value="Localidad:"/>
-						<p:selectOneMenu id="entidad" value="#{manticVentasCliente.domicilio.idEntidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
+						<p:selectOneMenu id="entidad" value="#{manticVentasCliente.domicilio.idEntidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
 							<p:ajax event="change" listener="#{manticVentasCliente.doActualizaMunicipios}" process="@this" update="municipio localidad codigoPostal spacerCp calle exterior interior asentamiento entreCalle tipoDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
 							<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 							<f:selectItems value="#{manticVentasCliente.attrs.entidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
@@ -96,7 +96,7 @@
 								<h:outputText value="#{item.descripcion}"/>
 							</p:column>  
 						</p:selectOneMenu>														
-						<p:selectOneMenu id="municipio" value="#{manticVentasCliente.domicilio.idMunicipio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
+						<p:selectOneMenu id="municipio" value="#{manticVentasCliente.domicilio.idMunicipio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
 							<p:ajax event="change" listener="#{manticVentasCliente.doActualizaLocalidades}" process="@this" update="localidad codigoPostal spacerCp calle exterior interior asentamiento entreCalle tipoDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
 							<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 							<f:selectItems value="#{manticVentasCliente.attrs.municipios}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
@@ -107,7 +107,7 @@
 								<h:outputText value="#{item.descripcion}"/>
 							</p:column>  
 						</p:selectOneMenu>														
-						<p:selectOneMenu id="localidad" value="#{manticVentasCliente.domicilio.localidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
+						<p:selectOneMenu id="localidad" value="#{manticVentasCliente.domicilio.localidad}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
 							<p:ajax event="change" listener="#{manticVentasCliente.doActualizaCodigosPostales}" process="@this" update="codigoPostal spacerCp calle exterior interior asentamiento entreCalle tipoDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
 							<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 							<f:selectItems value="#{manticVentasCliente.attrs.localidades}" var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
@@ -122,7 +122,7 @@
 						<p:spacer id="spacerCp" rendered="#{!manticVentasCliente.domicilio.nuevoCp}"/>
 						<p:spacer rendered="#{manticVentasCliente.domicilio.nuevoCp}"/>
 						<p:spacer/>
-						<p:selectOneMenu id="codigoPostal" value="#{manticVentasCliente.domicilio.idCodigoPostal}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith">									
+						<p:selectOneMenu id="codigoPostal" value="#{manticVentasCliente.domicilio.idCodigoPostal}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains">									
 							<p:ajax event="change" listener="#{manticVentasCliente.doLoadDomicilios}" process="@this" update="panelDetalleDomicilio spacerCp calle exterior interior asentamiento entreCalle tipoDomicilio" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();"/>
 							<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 							<f:selectItems value="#{manticVentasCliente.attrs.codigosPostales}"/>
@@ -163,7 +163,7 @@
 				<p:inputText id="calleBusqueda" value="#{manticVentasCliente.attrs.calle}" styleClass="janal-wid-100-txt"/>
 				<p:commandButton icon="fa fa-search" actionListener="#{manticVentasCliente.doBusquedaDomicilios}" process="@this calleBusqueda" update="domiciliosBusqueda totalResultados" styleClass="janal-text-white" onstart="return janal.partial('dialogo')"/>
 				<p:outputLabel for="domiciliosBusqueda" value="Domicilio:"/>
-				<p:selectOneMenu id="domiciliosBusqueda" value="#{manticVentasCliente.domicilioBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
+				<p:selectOneMenu id="domiciliosBusqueda" value="#{manticVentasCliente.domicilioBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
 					<f:selectItems value="#{manticVentasCliente.attrs.domiciliosBusqueda}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
 					<p:column  styleClass="janal-column-left janal-wid-col-150">
 						<h:outputText value="#{item.entidad}"/>

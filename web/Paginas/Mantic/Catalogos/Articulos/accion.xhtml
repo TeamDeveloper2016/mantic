@@ -58,7 +58,7 @@
 										<p:inputText id="codigo#{codigo.key}" styleClass="janal-wid-100-txt" value="#{codigo.codigo}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaCodigos', #{index}, 'codigo')"/>                    																																			
 									</p:column>
 									<p:column headerText="Proveedor">										
-										<p:selectOneMenu id="proveedor#{codigo.key}" styleClass="janal-wid-100-txt" value="#{codigo.idProveedor}" filter="true" filterMatchMode="startsWith">
+										<p:selectOneMenu id="proveedor#{codigo.key}" styleClass="janal-wid-100-txt" value="#{codigo.idProveedor}" filter="true" filterMatchMode="contains">
 											<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.proveedoresGeneral}"/>
 										</p:selectOneMenu> 				
 									</p:column>				
@@ -132,7 +132,7 @@
 							<p:panelGrid id="panelTablaDescuentosEspeciales" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaDescuentosEspeciales" var="descuentoEspecial" value="#{manticCatalogosArticulosAccion.registroArticulo.clientesDescuentos}" rows="6" paginator="false" reflow="true" rowKey="#{descuentoEspecial.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Grupo">										
-										<p:selectOneMenu id="cliente#{descuentoEspecial.key}" styleClass="janal-wid-100-txt" value="#{descuentoEspecial.idGrupo}" filter="true" filterMatchMode="startsWith">
+										<p:selectOneMenu id="cliente#{descuentoEspecial.key}" styleClass="janal-wid-100-txt" value="#{descuentoEspecial.idGrupo}" filter="true" filterMatchMode="contains">
 											<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.gruposGeneral}"/>
 										</p:selectOneMenu> 				
 									</p:column>		
@@ -168,7 +168,7 @@
 							<p:panelGrid id="panelTablaPreciosSugeridos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaPreciosSugeridos" rowIndexVar="index" var="precioSugerido" value="#{manticCatalogosArticulosAccion.registroArticulo.preciosSugeridos}" rows="6" paginator="false" reflow="true" rowKey="#{precioSugerido.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Proveedor">										
-										<p:selectOneMenu id="proveedorPrecioSugerido#{precioSugerido.key}" styleClass="janal-wid-100-txt" value="#{precioSugerido.idProveedor}" filter="true" filterMatchMode="startsWith">
+										<p:selectOneMenu id="proveedorPrecioSugerido#{precioSugerido.key}" styleClass="janal-wid-100-txt" value="#{precioSugerido.idProveedor}" filter="true" filterMatchMode="contains">
 											<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.proveedoresGeneral}"/>
 										</p:selectOneMenu> 				
 									</p:column>		
@@ -196,7 +196,7 @@
 							<p:panelGrid id="panelTablaArticulosProveedores" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaArticulosProveedores" var="articuloProveedor" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosProveedores}" rows="6" paginator="false" reflow="true" rowKey="#{articuloProveedor.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Proveedor">										
-										<p:selectOneMenu id="proveedorPrecioSugerido#{articuloProveedor.key}" styleClass="janal-wid-100-txt" value="#{articuloProveedor.idProveedor}" filter="true" filterMatchMode="startsWith">
+										<p:selectOneMenu id="proveedorPrecioSugerido#{articuloProveedor.key}" styleClass="janal-wid-100-txt" value="#{articuloProveedor.idProveedor}" filter="true" filterMatchMode="contains">
 											<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.proveedoresGeneral}"/>
 										</p:selectOneMenu> 				
 									</p:column>		
@@ -227,7 +227,7 @@
 							<p:panelGrid id="panelTablaTiposVenta" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaTiposVenta" var="tipoVenta" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosTiposVenta}" rows="6" paginator="false" reflow="true" rowKey="#{tipoVenta.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Tipo venta">										
-										<p:selectOneMenu id="tipoVenta#{tipoVenta.key}" styleClass="janal-wid-100-txt" value="#{tipoVenta.idTipoVenta}" filter="true" filterMatchMode="startsWith">
+										<p:selectOneMenu id="tipoVenta#{tipoVenta.key}" styleClass="janal-wid-100-txt" value="#{tipoVenta.idTipoVenta}" filter="true" filterMatchMode="contains">
 											<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.tiposVentasGeneral}"/>
 										</p:selectOneMenu> 				
 									</p:column>											

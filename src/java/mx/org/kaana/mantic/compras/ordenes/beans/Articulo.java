@@ -148,7 +148,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 
 	public String getCantidadMayorMenor() {
-		double diferencia= this.getSolicitados()- this.getCantidad();
+		double diferencia= this.getCantidad()- this.getSolicitados();
 		String color     = diferencia< -5? "janal-color-orange": diferencia> 5? "janal-color-blue": "janal-color-green";
 		boolean display  = diferencia!= 0D;
 		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(display? "": "none").concat("' title='Cantidad solicitada: ").concat(
@@ -220,7 +220,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private double toDiferencia() {
 		Descuentos descuentos= new Descuentos(this.getCosto(), this.getDescuento().concat(",").concat(this.getExtras()));
 		double value= descuentos.toImporte();
-		value=  (value== 0? this.getCosto(): value)- this.getValor(); 
+		value=  this.getValor()- (value== 0? this.getCosto(): value); 
   	return this.getValor()== 0? 0: Numero.toRedondearSat(value* 100/ this.getValor());
 	}	
 

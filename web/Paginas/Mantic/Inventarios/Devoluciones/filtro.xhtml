@@ -44,7 +44,7 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
               <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticInventariosDevolucionesFiltro.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idEmpresa" value="#{manticInventariosDevolucionesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="startsWith">
+              <p:selectOneMenu id="idEmpresa" value="#{manticInventariosDevolucionesFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticInventariosDevolucionesFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
                 <p:column headerText="Clave">
@@ -63,7 +63,7 @@
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticInventariosDevolucionesFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="idDevolucionEstatus" value="Estatus:"/>
-              <p:selectOneMenu id="idDevolucionEstatus" value="#{manticInventariosDevolucionesFiltro.attrs.idDevolucionEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="startsWith">
+              <p:selectOneMenu id="idDevolucionEstatus" value="#{manticInventariosDevolucionesFiltro.attrs.idDevolucionEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticInventariosDevolucionesFiltro.attrs.catalogo}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">

@@ -49,7 +49,7 @@ public class UtilAplicacion {
   private static final String STYLE_SHEET = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{0}/javax.faces.resource/css/{1}.jsf?ln={2}\">";
 
   private static final String LESS = "less.min-2.5.0.js";
-  private static final String CORE = "jquery.janal.core-1.9.8.js";
+  private static final String CORE = "jquery.janal.core-1.9.9.js";
   private static final String CALC = "jquery.janal.arts.core-1.5.3.js";
   private static final String DLGS = "jquery.janal.precio.core-0.1.0.js";
   private static final String CSS  = "mantic-0.0.9.css";

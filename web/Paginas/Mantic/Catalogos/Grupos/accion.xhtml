@@ -33,7 +33,7 @@
               <p:panelGrid id="panelTablaClientes" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaClientes" rowIndexVar="index" var="cliente" value="#{manticCatalogosGruposAccion.adminGrupo.clientes}" rows="6" paginator="false" reflow="true" rowKey="#{cliente.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Clientes">										
-                    <p:selectOneMenu id="cliente#{cliente.key}" styleClass="janal-wid-100-txt" var="item" value="#{cliente.idEntity}" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="startsWith" disabled="#{cliente.idGrupoCliente gt 0}">
+                    <p:selectOneMenu id="cliente#{cliente.key}" styleClass="janal-wid-100-txt" var="item" value="#{cliente.idEntity}" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="contains" disabled="#{cliente.idGrupoCliente gt 0}">
                       <f:selectItems value="#{manticCatalogosGruposAccion.attrs.clientes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave} - #{element.rfc}"/>
 											<p:column headerText="Clave">
 												<h:outputText value="#{item.clave}"/>

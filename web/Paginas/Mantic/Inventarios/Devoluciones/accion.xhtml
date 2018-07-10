@@ -65,7 +65,7 @@
 								    <p:outputLabel for="idNotaEntrada" value="Nota de entrada:"/>
 									</div>
 									<div class="ui-grid-col-10">
-										<p:selectOneMenu id="idNotaEntrada" value="#{manticInventariosDevolucionesAccion.adminOrden.orden.ikNotaEntrada}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="startsWith">
+										<p:selectOneMenu id="idNotaEntrada" value="#{manticInventariosDevolucionesAccion.adminOrden.orden.ikNotaEntrada}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="contains">
 											<f:selectItems value="#{manticInventariosDevolucionesAccion.attrs.notas}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{element.razonSocial}"/>
 											<p:column headerText="Clave">
 												<h:outputText value="#{item.consecutivo}"/>

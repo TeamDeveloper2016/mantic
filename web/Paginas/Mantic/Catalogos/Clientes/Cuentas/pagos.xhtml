@@ -47,7 +47,7 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
 						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
 							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosClientesPagos.attrs.isMatriz}"/>
-							<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosClientesPagos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="startsWith">
+							<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosClientesPagos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
 								<f:selectItems value="#{manticCatalogosClientesPagos.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 								<p:column headerText="Clave">
@@ -145,7 +145,7 @@
 					<p:commandButton icon="fa fa-search" actionListener="#{manticCatalogosClientesPagos.doClientes}" process="@this busqueda" update="encontrados resultados" styleClass="janal-text-white" onstart="return janal.partial('dialogo');"/>
 				</h:panelGrid>
 				<p:outputLabel for="encontrados" value="Encontrados:"/>
-				<p:selectOneMenu id="encontrados" value="#{manticCatalogosClientesPagos.encontrado}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
+				<p:selectOneMenu id="encontrados" value="#{manticCatalogosClientesPagos.encontrado}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
 					<f:selectItems value="#{manticCatalogosClientesPagos.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.rfc} - #{element.razonSocial}"/>
 					<p:column styleClass="janal-column-left janal-wid-30" headerText="Clave">
 						<h:outputText value="#{item.clave}"/>

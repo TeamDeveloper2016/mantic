@@ -24,7 +24,7 @@
             <p:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(173)}" styleClass="Fs18" escape="false"/>
           </pe:tooltip>
         </p:panelGrid>
-        <p:selectOneMenu id="busqueda" value="#{kajoolAccesoAyudasFiltro.attrs.idAyuda}" filter="true" filterMatchMode="startsWith" >
+        <p:selectOneMenu id="busqueda" value="#{kajoolAccesoAyudasFiltro.attrs.idAyuda}" filter="true" filterMatchMode="contains" >
           <f:selectItems value="#{kajoolAccesoAyudasFiltro.attrs.ayudas}"/>
           <p:ajax event="change" listener="#{kajoolAccesoAyudasFiltro.doMostrar()}" process="@this" update="tabla" />
         </p:selectOneMenu>

@@ -31,7 +31,7 @@
             <p:tab title="General">
               <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								
                 <p:outputLabel for="persona"  value="Persona:"/>
-                <p:selectOneMenu  id="persona" value="#{kajoolUsuariosAccion.criteriosBusqueda.persona}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="startsWith">
+                <p:selectOneMenu  id="persona" value="#{kajoolUsuariosAccion.criteriosBusqueda.persona}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains">
                   <p:ajax event="change" process="@this" update="@(.information)" listener="#{kajoolUsuariosAccion.doBuscar}"/>
                   <f:selectItem itemValue="" itemLabel="SELECCIONE"/>
                   <f:selectItems value="#{kajoolUsuariosAccion.criteriosBusqueda.listaPersonas}"  var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>
@@ -46,7 +46,7 @@
                   </p:column>                
                 </p:selectOneMenu>
                 <p:outputLabel for="tipoPerfil" value="Perfil:"/>
-                <p:selectOneMenu id="tipoPerfil" value="#{kajoolUsuariosAccion.criteriosBusqueda.perfil}" var="item" converter="janal.convertidor.Entity" styleClass="information janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="startsWith">
+                <p:selectOneMenu id="tipoPerfil" value="#{kajoolUsuariosAccion.criteriosBusqueda.perfil}" var="item" converter="janal.convertidor.Entity" styleClass="information janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains">
                   <f:selectItems value="#{kajoolUsuariosAccion.criteriosBusqueda.listaPerfiles}"  var="element" itemValue="#{element}" itemLabel="#{element.descripcion}"/>
                   <p:column>
                     <h:outputText value="#{item.descripcion}"/>

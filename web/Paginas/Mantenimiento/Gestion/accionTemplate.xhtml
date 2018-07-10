@@ -145,13 +145,13 @@
 							<p:commandButton id="agregarConverter" icon="ui-icon-plusthick" actionListener="#{kajoolMantenimientoGestionAccionTemplate.doGuardarCampoSeleccionado(row.nombre)}" style="vertical-align: middle; #{(row.tipoComponente==kajoolMantenimientoGestionAccionTemplate.getComponente('DATE_ACCION')?'':'display: none')}"  onclick="janal.bloquear(); PF('dialogoConverter').show();"/>
 						</p:column>
 						<p:column headerText="Validación">
-							<p:selectCheckboxMenu id="validacion" value="#{row.validacion}" label="#{kajoolMantenimientoGestionAccionTemplate.doObtenerStringValidacion(row.validacion)}" filter="true" filterMatchMode="startsWith" style="width: 85%">
+							<p:selectCheckboxMenu id="validacion" value="#{row.validacion}" label="#{kajoolMantenimientoGestionAccionTemplate.doObtenerStringValidacion(row.validacion)}" filter="true" filterMatchMode="contains" style="width: 85%">
 								<p:ajax event="change" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" update="@this"/>
 								<f:selectItems value="#{kajoolMantenimientoGestionAccionTemplate.validaciones}" />
 							</p:selectCheckboxMenu>
 						</p:column>
 						<p:column headerText="Máscara">
-							<p:selectOneMenu id="mascara" value="#{row.mascara}" style="width: 70%" filter="true" filterMatchMode="startsWith">
+							<p:selectOneMenu id="mascara" value="#{row.mascara}" style="width: 70%" filter="true" filterMatchMode="contains">
 								<p:ajax event="change" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 								<f:selectItems value="#{kajoolMantenimientoGestionAccionTemplate.mascaras}"/>
 							</p:selectOneMenu>
@@ -246,13 +246,13 @@
               <div class="janal-content-table">
                 <h:panelGrid columns="2">
                   <h:outputLabel styleClass="janal-text-one-line" value="Unit:" for="unitsCombo"/>
-                  <p:selectOneMenu id="unitsCombo" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.unitCombo}" style="width: 305px" filter="true" filterMatchMode="startsWith">
+                  <p:selectOneMenu id="unitsCombo" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.unitCombo}" style="width: 305px" filter="true" filterMatchMode="contains">
                     <p:ajax event="change" process="@this selectCombo" update="sqlCombo nombreVistaCombo selectCombo" listener="#{kajoolMantenimientoGestionAccionTemplate.actualizarSelects()}"/>
                     <f:selectItem itemLabel="INSERTAR UNIT" itemValue="INSERTAR"/>
                     <f:selectItems value="#{kajoolMantenimientoGestionAccionTemplate.units}"/>
                   </p:selectOneMenu>
                   <h:outputLabel styleClass="janal-text-one-line" value="Select:" for="selectCombo"/>
-                  <p:selectOneMenu id="selectCombo" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.selectCombo}" style="width: 305px" filter="true" filterMatchMode="startsWith" disabled="#{kajoolMantenimientoGestionAccionTemplate.attrs.unit=='INSERTAR'}">
+                  <p:selectOneMenu id="selectCombo" value="#{kajoolMantenimientoGestionAccionTemplate.attrs.selectCombo}" style="width: 305px" filter="true" filterMatchMode="contains" disabled="#{kajoolMantenimientoGestionAccionTemplate.attrs.unit=='INSERTAR'}">
                     <p:ajax event="change" process="@this" update="sqlCombo nombreVistaCombo" listener="#{kajoolMantenimientoGestionAccionTemplate.actualizaConsulta()}"/>
                     <f:selectItems value="#{kajoolMantenimientoGestionAccionTemplate.selects}"/>
                   </p:selectOneMenu>

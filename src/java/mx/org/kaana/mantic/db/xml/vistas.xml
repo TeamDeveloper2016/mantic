@@ -1094,6 +1094,7 @@
 					1 as tipo_de_cambio, 
 					tc_mantic_articulos.nombre, 
 					tc_mantic_ordenes_detalles.codigo, 
+				  tc_mantic_articulos.sat,
 					0 as costo, 
 					(tc_mantic_ordenes_detalles.costo- (tc_mantic_ordenes_detalles.descuentos/ tc_mantic_ordenes_detalles.cantidad)) as valor, 
 					"0" as descuento, 
