@@ -14,7 +14,6 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -26,7 +25,6 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
-import mx.org.kaana.libs.formato.Periodo;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -39,6 +37,7 @@ import mx.org.kaana.mantic.inventarios.entradas.reglas.AdminNotas;
 import mx.org.kaana.mantic.inventarios.entradas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
+import mx.org.kaana.mantic.db.dto.TcManticNotasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
@@ -112,6 +111,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("formatos", "/(\\.|\\/)(xml|txt)$/");
+			this.importado= null;
 			doLoad();
     } // try
     catch (Exception e) {
@@ -174,6 +174,7 @@ public class Accion extends IBaseArticulos implements Serializable {
     			  RequestContext.getCurrentInstance().execute("jsArticulos.back('generó la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 					else
    			    RequestContext.getCurrentInstance().execute("jsArticulos.back('aplicó la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+     	    this.toUpdateDeleteXml();	
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la nota de entrada."), ETipoMensaje.INFORMACION);
@@ -291,7 +292,6 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.toWriteFile(result, event.getFile().getInputstream());
 			fileSize= event.getFile().getSize();
 			this.importado= new Importado(event.getFile().getFileName(), event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", result.getCanonicalPath());      
-	    this.toUpdateDeleteXml();	
 			this.toReadFactura(result);
 		} // try
 		catch (Exception e) {
@@ -301,30 +301,41 @@ public class Accion extends IBaseArticulos implements Serializable {
 	} // doFileUpload	
 	
 	private void toWriteFile(File result, InputStream upload) throws Exception {
-		FileOutputStream fileOutputStream= null;
-		InputStream inputStream          = null;
-		try {
-			fileOutputStream= new FileOutputStream(result);
-      byte[] buffer= new byte[BUFFER_SIZE];
-      int bulk;
-      inputStream= upload;
-      while(true) {
-        bulk= inputStream.read(buffer);
-        if (bulk < 0) 
-          break;        
-        fileOutputStream.write(buffer, 0, bulk);
-        fileOutputStream.flush();
-      } // while
-      fileOutputStream.close();
-      inputStream.close();
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
+		FileOutputStream fileOutputStream= new FileOutputStream(result);
+		InputStream inputStream          = upload;
+		byte[] buffer                    = new byte[BUFFER_SIZE];
+		int bulk;
+		while(true) {
+			bulk= inputStream.read(buffer);
+			if (bulk < 0) 
+				break;        
+			fileOutputStream.write(buffer, 0, bulk);
+			fileOutputStream.flush();
+		} // while
+		fileOutputStream.close();
+		inputStream.close();
 	} 
 
-	private void toUpdateDeleteXml() {
-		
+	private void toUpdateDeleteXml() throws Exception {
+		//		this(idNotaArchivo, ruta, tamanio, idUsuario, idTipoArchivo, alias, mes, idNotaEntrada, nombre, observacion, ejercicio);
+		if(this.importado!= null) {
+			TcManticNotasArchivosDto xml= new TcManticNotasArchivosDto(
+				-1L,
+				this.importado.getRuta(),
+				this.importado.getFileSize(),
+				JsfBase.getIdUsuario(),
+				1L,
+				this.importado.getRuta().concat(File.separator).concat(this.importado.getName()),
+				new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
+				this.getAdminOrden().getOrden().getKey(),
+				this.importado.getName(),
+				"",
+				new Long(Calendar.getInstance().get(Calendar.YEAR))
+			);
+			TcManticNotasArchivosDto exists= (TcManticNotasArchivosDto)DaoFactory.getInstance().toEntity(TcManticNotasArchivosDto.class, "TcManticNotasArchivosDto", "identically", xml.toMap());
+			if(exists== null) 
+				DaoFactory.getInstance().insert(xml);
+		} // if	
 	}
 
 	private void toReadFactura(File file) throws Exception {

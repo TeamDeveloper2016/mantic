@@ -14,7 +14,7 @@
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:consecutivo'    : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:idOrdenCompra'  : {validaciones: '#{manticInventariosEntradasAccion.validacion}', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:factura'        : {validaciones: '#{manticInventariosEntradasAccion.validacion}', mascara: 'texto', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
+				'contenedorGrupos\\:factura'        : {validaciones: '#{manticInventariosEntradasAccion.validacion}', mascara: 'texto', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:fechaFactura'   : {validaciones: 'fecha|#{manticInventariosEntradasAccion.validacion}', mascara: 'fecha', grupo: 'general'},
 				'contenedorGrupos\\:fechaRecepcion' : {validaciones: 'fecha|#{manticInventariosEntradasAccion.validacion}', mascara: 'fecha', grupo: 'general'},
 				'contenedorGrupos\\:idAlmacen'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
@@ -111,7 +111,7 @@
 									</p:column>   
 								</p:selectOneMenu>
 								<p:outputLabel for="factura" value="No factura:"/>
-								<p:inputText id="factura" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.adminOrden.orden.factura}" onblur="if($('#contenedorGrupos\\:factura').val().trim().length> 0) factura();"/>
+								<p:inputText id="factura" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.adminOrden.orden.factura}" onblur="janal.individual('contenedorGrupos\\:factura'); if($('#contenedorGrupos\\:factura').val().trim().length> 0) factura();"/>
 								<p:outputLabel for="fechaFactura" value="Fecha factura:"/>
 								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 								<p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>

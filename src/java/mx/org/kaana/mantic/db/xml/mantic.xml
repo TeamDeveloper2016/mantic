@@ -23,6 +23,8 @@
           tc_mantic_notas_archivos
         where      
           id_tipo_archivo = {idTipoArchivo} and id_nota_entrada = {idNotaEntrada} and nombre = '{nombre}'
+				order by
+				  registro desc
       </select>
    </unit>		
    <unit id="TcManticCreditosArchivosDto">
