@@ -11,7 +11,7 @@ public enum ETipoMediosPago {
   TRANSFERENCIA  (3L),
   TARJETA_CREDITO(4L),
   TARJETA_DEBITO (18L),
-  POR_DEFINIR    (99L);
+  POR_DEFINIR    (22L);
 
   private Long idTipoMedioPago;
 	private static final Map<Long, ETipoMediosPago> lookup= new HashMap<>();
