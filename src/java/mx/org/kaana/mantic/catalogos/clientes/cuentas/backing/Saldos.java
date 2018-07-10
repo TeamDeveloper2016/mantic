@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.catalogos.clientes.backing;
+package mx.org.kaana.mantic.catalogos.clientes.cuentas.backing;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -55,6 +55,8 @@ public class Saldos extends IBaseFilter implements Serializable {
       this.attrs.put("idCliente", this.idCliente);     
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+				loadSucursales();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -69,15 +71,18 @@ public class Saldos extends IBaseFilter implements Serializable {
     try {
   	  params = toPrepare();	
 			params.put("idCliente", this.idCliente);
+			params.put("cliente", this.attrs.get("cliente"));
       columns= new ArrayList<>();
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
       columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));    
       columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));    
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_EXTENDIDA));    
-      this.lazyModel = new FormatCustomLazy("VistaClientesDto", "cuentas", params, columns);
-      UIBackingUtilities.resetDataTable();
-			this.toLoadCatalog();
+			if(!this.idCliente.equals(-1L))
+				this.lazyModel = new FormatCustomLazy("VistaClientesDto", "cuentas", params, columns);
+			else
+				this.lazyModel = new FormatCustomLazy("VistaClientesDto", "cuentasBusqueda", params, columns);
+      UIBackingUtilities.resetDataTable();		
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -187,6 +192,24 @@ public class Saldos extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} 
-
+	}
+	
+	private void loadSucursales(){
+		List<UISelectEntity> sucursales= null;
+		Map<String, Object>params      = null;
+		List<Columna> columns          = null;
+		try {
+			columns= new ArrayList<>();
+			params= new HashMap<>();
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			sucursales=(List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+			this.attrs.put("sucursales", sucursales);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // loadSucursales
 }

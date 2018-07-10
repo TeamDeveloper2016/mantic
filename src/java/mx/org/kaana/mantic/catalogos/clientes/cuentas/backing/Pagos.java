@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.catalogos.clientes.backing;
+package mx.org.kaana.mantic.catalogos.clientes.cuentas.backing;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -49,11 +49,13 @@ public class Pagos extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
-			this.idCliente= JsfBase.getFlashAttribute("idCliente")== null? -1L: (Long)JsfBase.getFlashAttribute("idCliente");			
+			this.idCliente= JsfBase.getFlashAttribute("idCliente")== null ? -1L: (Long)JsfBase.getFlashAttribute("idCliente");			
       this.attrs.put("sortOrder", "order by tc_mantic_ventas.consecutivo, tc_mantic_clientes_deudas.registro desc");
       this.attrs.put("idCliente", this.idCliente);     
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+				loadSucursales();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -65,18 +67,22 @@ public class Pagos extends IBaseFilter implements Serializable {
   public void doLoad() {
 	  Map<String, Object> params= null;	
     List<Columna> columns     = null;
-    try {
+    try {			
   	  params = toPrepare();	
-			params.put("idCliente", this.idCliente);
+			params.put("cliente", this.attrs.get("cliente"));			
       columns = new ArrayList<>();
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
       columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));    
       columns.add(new Columna("pago", EFormatoDinamicos.MONEDA_SAT_DECIMALES));    
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_EXTENDIDA));    
-      this.lazyModel = new FormatCustomLazy("VistaClientesDto", "pagos", this.attrs, columns);
-      UIBackingUtilities.resetDataTable();
-			this.toLoadCatalog();
+			if(!this.idCliente.equals(-1L)){
+				params.put("idCliente", this.idCliente);
+				this.lazyModel = new FormatCustomLazy("VistaClientesDto", "pagos", params, columns);
+			} // if
+			else
+				this.lazyModel = new FormatCustomLazy("VistaClientesDto", "pagosBusqueda", params, columns);
+      UIBackingUtilities.resetDataTable();			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -168,7 +174,7 @@ public class Pagos extends IBaseFilter implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally
-	} 
+	} // doClientes
 
 	public void doSeleccionado() {
 		List<UISelectEntity> listado= null;
@@ -186,6 +192,24 @@ public class Pagos extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} 	
+	} // doSeleccionado		
 	
+	private void loadSucursales(){
+		List<UISelectEntity> sucursales= null;
+		Map<String, Object>params      = null;
+		List<Columna> columns          = null;
+		try {
+			columns= new ArrayList<>();
+			params= new HashMap<>();
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			sucursales=(List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+			this.attrs.put("sucursales", sucursales);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // loadSucursales
 }
