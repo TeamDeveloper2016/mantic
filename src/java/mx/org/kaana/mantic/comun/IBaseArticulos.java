@@ -94,7 +94,7 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 				temporal.setUltimo(this.attrs.get("ultimo")!= null);
 				temporal.setSolicitado(this.attrs.get("solicitado")!= null);
 				Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
-				temporal.setStock(stock== null? 0L: stock.toLong());
+				temporal.setStock(stock== null? 0D: stock.toDouble());
 				if(index== this.adminOrden.getArticulos().size()- 1) {
 					this.adminOrden.getArticulos().add(new Articulo(-1L));
 					RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
