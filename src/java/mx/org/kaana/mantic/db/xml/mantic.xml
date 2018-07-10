@@ -262,6 +262,7 @@
       <select id="detalle">
         select      
 				  tc_mantic_devoluciones_detalles.id_devolucion as id_comodin,
+          tc_mantic_devoluciones_detalles.id_nota_detalle as id_orden_detalle,
           tc_mantic_devoluciones_detalles.*
         from      
           tc_mantic_devoluciones_detalles

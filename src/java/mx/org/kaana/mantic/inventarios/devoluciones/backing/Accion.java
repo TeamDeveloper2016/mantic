@@ -138,7 +138,7 @@ public class Accion extends IBaseArticulos implements Serializable {
    			  RequestContext.getCurrentInstance().execute("jsArticulos.back('generó la devolución de la nota de entrada', '"+ ((Devolucion)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
-  				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" la devolución de entrada."), ETipoMensaje.INFORMACION);
+  				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" la devolución de la nota de entrada."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idDevolucion", ((Devolucion)this.getAdminOrden().getOrden()).getIdDevolucion());
 			} // if
 			else 
