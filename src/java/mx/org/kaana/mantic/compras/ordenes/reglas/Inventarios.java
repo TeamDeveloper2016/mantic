@@ -86,10 +86,15 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 			// afectar los precios del catalogo de articulos
 			if(!Cadena.isVacio(codigos.getSat()))
 			  global.setSat(codigos.getSat());
-			global.setPrecio(Numero.toRedondear(item.getCosto()));
-			global.setMenudeo(Numero.toRedondear(item.getCosto()* Constantes.PORCENTAJE_MENUDEO));
-			global.setMedioMayoreo(Numero.toRedondear(item.getCosto()* Constantes.PORCENTAJE_MEDIO_MAYOREO));
-			global.setMayoreo(Numero.toRedondear(item.getCosto()* Constantes.PORCENTAJE_MAYOREO));
+			
+			// si esta marcado como afectar los costos se aplicara el cambio en el catalogo de articulos
+			if(codigos.isAplicar()) {
+			  global.setPrecio(Numero.toRedondear(item.getCosto()));
+			  global.setMenudeo(Numero.toRedondear(item.getCosto()* Constantes.PORCENTAJE_MENUDEO));
+			  global.setMedioMayoreo(Numero.toRedondear(item.getCosto()* Constantes.PORCENTAJE_MEDIO_MAYOREO));
+			  global.setMayoreo(Numero.toRedondear(item.getCosto()* Constantes.PORCENTAJE_MAYOREO));
+			} // if	
+			
 			global.setStock(global.getStock()+ item.getCantidad());
 			DaoFactory.getInstance().update(sesion, global);
 			

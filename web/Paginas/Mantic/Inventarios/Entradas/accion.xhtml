@@ -302,6 +302,14 @@
 												</f:facet>
 												<p:outputLabel value="#{row['importe$']}"/>
 											</p:column>		
+											<p:column class="janal-column-center MarAuto Responsive janal-wid-col-20">
+												<f:facet name="header">
+													<h:outputText value="*" title="Ajustar el costo en caso de ser menor al que se tiene registrado"/>
+												</f:facet>
+												<p:selectBooleanCheckbox value="#{row['aplicar']}" title="Click para ajustar el costo" rendered="#{row['diferenciaCosto'] gt 0}">
+													<p:ajax event="change" process="@this" update="@(.filas)"/>
+												</p:selectBooleanCheckbox>
+											</p:column>		
 										</p:dataTable>
 										<p:spacer width="5"/>
 										<div class="ui-grid-row janal-grid-row">

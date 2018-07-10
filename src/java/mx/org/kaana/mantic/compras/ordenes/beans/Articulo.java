@@ -217,6 +217,10 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			return current.getCosto().compareTo(this.getCosto());
 	}
 	
+	public double getDiferenciaCosto() {
+		return this.toDiferencia();
+	}
+		
 	private double toDiferencia() {
 		Descuentos descuentos= new Descuentos(this.getCosto(), this.getDescuento().concat(",").concat(this.getExtras()));
 		double value= descuentos.toImporte();
