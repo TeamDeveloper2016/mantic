@@ -10,8 +10,15 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'busqueda'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true},
-        'encontrados': {validaciones: 'requerido', mascara: 'libre', grupo: 'aceptado'}
+        'busqueda'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true},
+        'encontrados' : {validaciones: 'requerido', mascara: 'libre', grupo: 'aceptado'},
+        'idEmpresa'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'cliente'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'consecutivo' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'dias'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'vencidos'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'fechaInicio' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'fechaTermino': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
       };		
     </script>		
   </ui:define>
@@ -20,27 +27,7 @@
       <p:commandButton icon="fa fa-search" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white"/>
       <p:spacer height="5px"/>		
     </div>			
-    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
-			<div class="ui-grid-row janal-grid-row">
-				<div class="ui-grid-col-12">
-					<p:panelGrid id="seleccionado" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-60, janal-wid-100, janal-wid-col-40">
-						<p:outputLabel value="Cliente:"/>
-						<p:selectOneMenu value="#{manticCatalogosClientesSaldos.attrs.cliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" placeholder="SELECCIONE">
-							<f:selectItems value="#{manticCatalogosClientesSaldos.attrs.unico}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
-							<p:column headerText="Clave">
-								<h:outputText value="#{item.clave}"/>
-							</p:column>   
-							<p:column headerText="RFC">
-								<h:outputText value="#{item.rfc}"/>
-							</p:column>   
-							<p:column headerText="Nombre">
-								<h:outputText value="#{item.razonSocial}"/>
-							</p:column>   
-						</p:selectOneMenu>
-						<p:commandButton process="@this" update="dialogoClientes" icon="fa fa-search" styleClass="janal-text-white" onstart="return janal.bloquear();" oncomplete="PF('dlgClientes').show();" title="Buscar cliente" style="float: right !important; display: #{manticCatalogosClientesSaldos.filtro? 'none': ''}}"/>
-					</p:panelGrid>
-				</div>
-			</div>
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
 			<div class="ui-grid-row janal-grid-row">
 				<div id="collapse-find" class="ui-grid-col-3">
 					<p:panel id="panelBusqueda" header="Busqueda:" toggleable="true" toggleOrientation="horizontal">
@@ -57,6 +44,8 @@
 									<h:outputText value="#{item.nombre}"/>
 								</p:column>   
 							</p:selectOneMenu>
+							<p:outputLabel for="cliente" value="Cliente:"/>
+							<p:inputText id="cliente" value="#{manticCatalogosClientesSaldos.attrs.cliente}" styleClass="janal-wid-100-txt"/> 
 							<p:outputLabel for="consecutivo" value="No. ticket:"/>
 							<p:inputText id="consecutivo" value="#{manticCatalogosClientesSaldos.attrs.ticket}" styleClass="janal-wid-100-txt janal-column-right"/> 
 							<p:outputLabel for="dias" value="Días vencidos:"/>
@@ -72,10 +61,10 @@
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticCatalogosClientesSaldos.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 						</p:panelGrid>
 						<div class="janal-align-right lg-pantalla">
-							<p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticCatalogosClientesSaldos.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
+							<p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.partial('general', true);" process="panelBusqueda" actionListener="#{manticCatalogosClientesSaldos.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
 						</div>
 						<div class="janal-align-right xs-pantalla">
-							<p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticCatalogosClientesSaldos.doLoad}" oncomplete="janal.desbloquear();" update="tabla"  styleClass="janal-text-white"/>
+							<p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general', true);" process="panelBusqueda" actionListener="#{manticCatalogosClientesSaldos.doLoad}" oncomplete="janal.desbloquear();" update="tabla"  styleClass="janal-text-white"/>
 						</div>
 					</p:panel>
 				</div>
@@ -105,6 +94,12 @@
 								<h:outputText value="Vendedor"/>
 							</f:facet>
 							<h:outputText value="#{filtro['persona']}"/>
+						</p:column>					
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.razonSocial}">
+							<f:facet name="header">
+								<h:outputText value="Cliente"/>
+							</f:facet>
+							<h:outputText value="#{filtro['razonSocial']}"/>
 						</p:column>					
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
 							<f:facet name="header">
@@ -168,7 +163,7 @@
 			</h:panelGrid>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton value="Aceptar" icon="fa fa-check" process="@this encontrados" update="seleccionado" actionListener="#{manticCatalogosClientesSaldos.doSeleccionado}" onstart="return janal.partial('aceptado');" oncomplete="PF('dlgClientes').hide(); janal.desbloquear();" styleClass="janal-text-white"/>
+				<p:commandButton value="Aceptar" icon="fa fa-check" process="@this encontrados" update="tabla" actionListener="#{manticCatalogosClientesSaldos.doSeleccionado}" onstart="return janal.partial('aceptado');" oncomplete="PF('dlgClientes').hide(); janal.desbloquear();" styleClass="janal-text-white"/>
         <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgClientes').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
 			</div>
 		</p:dialog> 
