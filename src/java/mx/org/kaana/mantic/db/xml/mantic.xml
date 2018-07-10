@@ -2814,7 +2814,7 @@
         from      
           tc_mantic_clientes_deudas
         where      
-          id_cliente = {idCliente} and and id_venta = {idVenta} and importe = {importe} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+          id_cliente = {idCliente} and id_venta = {idVenta} and importe = {importe} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
       </select>
       <select id="saldoCliente">
 				select 
