@@ -186,7 +186,7 @@
 												</f:facet>
 												<h:outputText value="#{index+ 1}"/>
 											</p:column>		
-											<p:column  class="MarAuto Responsive janal-wid-13">
+											<p:column  class="MarAuto Responsive janal-wid-10">
 												<f:facet name="header">
                           <p:selectBooleanCheckbox value="#{manticInventariosEntradasAccion.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
 														<p:ajax event="change" process="@this" update="@this"/>
@@ -227,13 +227,13 @@
 												  </div>
 												</div>	
 											</p:column>
-											<p:column class="MarAuto Responsive janal-wid-10">
+											<p:column class="MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
 													<h:outputText value="Código SAT"/>
 												</f:facet>
 	  									  <p:inputText id="sat" value="#{row['sat']}" styleClass="janal-wid-100-txt key-event-sat fila"/>
 											</p:column>		
-											<p:column class="MarAuto Responsive janal-wid-10">
+											<p:column class="MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
 													<h:outputText value="Proveedor"/>
 												</f:facet>
@@ -302,9 +302,9 @@
 												</f:facet>
 												<p:outputLabel value="#{row['importe$']}"/>
 											</p:column>		
-											<p:column class="janal-column-center MarAuto Responsive janal-wid-col-20">
+											<p:column class="janal-column-center MarAuto Responsive janal-wid-col-80">
 												<f:facet name="header">
-													<h:outputText value="*" title="Ajustar el costo en caso de ser menor al que se tiene registrado"/>
+													<h:outputText value="Afectar" title="Ajustar el costo en caso de ser menor al que se tiene registrado"/>
 												</f:facet>
 												<p:selectBooleanCheckbox value="#{row['aplicar']}" title="Click para ajustar el costo" rendered="#{row['diferenciaCosto'] gt 0}">
 													<p:ajax event="change" process="@this" update="@(.filas)"/>
