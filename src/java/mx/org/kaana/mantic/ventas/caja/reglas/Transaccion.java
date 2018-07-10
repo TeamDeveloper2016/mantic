@@ -370,6 +370,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			deuda.setImporte(0D);
 			deuda.setSaldo(importe);
 			deuda.setLimite(toLimiteCredito(sesion));
+			deuda.setIdClienteEstatus(1L);
+			DaoFactory.getInstance().insert(sesion, deuda);
 		} // try
 		catch (Exception e) {			
 			throw e;
