@@ -137,5 +137,5 @@ public class Abono extends IBaseFilter implements Serializable {
 			throw e;
 		} // catch
 		return regresar;
-	} // validaPago
+	} // validaPago	
 }

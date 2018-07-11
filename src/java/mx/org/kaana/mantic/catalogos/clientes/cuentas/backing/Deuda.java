@@ -157,7 +157,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-	} 
+	} // onRowToggle
 	
 	private void loadHistorialPagos() throws Exception{
 		List<Columna> columns     = null;
@@ -182,5 +182,48 @@ public class Deuda extends IBaseFilter implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally			
-	}
+	} // loadHistorialPagos
+	
+	public void doRegistrarPagoGeneral(){
+		Transaccion transaccion      = null;
+		TcManticClientesPagosDto pago= null;
+		try {
+			if(validaPagoGeneral()){
+				pago= new TcManticClientesPagosDto();
+				pago.setIdUsuario(JsfBase.getIdUsuario());
+				pago.setObservaciones(this.attrs.get("observacionesGeneral").toString());
+				pago.setPago(Double.valueOf(this.attrs.get("pagoGeneral").toString()));
+				transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("idCliente").toString()));
+				if(transaccion.ejecutar(EAccion.PROCESAR)){
+					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta");
+					loadClienteDeuda();
+				} // if
+				else
+					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
+			} // if
+			else
+				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante.", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // doRegistrarPago
+	
+	private boolean validaPagoGeneral(){
+		boolean regresar= false;
+		Double pago     = 0D;
+		Double saldo    = 0D;
+		Entity deuda    = null;
+		try {
+			pago= Double.valueOf(this.attrs.get("pagoGeneral").toString());
+			deuda= (Entity) this.attrs.get("deuda");
+			saldo= Double.valueOf(deuda.toString("saldo"));
+			regresar= pago<= saldo;
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch
+		return regresar;
+	} // validaPagoGeneral
 }
