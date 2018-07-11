@@ -391,7 +391,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 	private void toPrepareDisponibles() {
 		List<Articulo> disponibles= new ArrayList<>();
 		for (Articulo disponible : this.getAdminOrden().getArticulos()) {
-			if(disponible.isDisponible())
+			if(disponible.isDisponible() && disponible.getIdArticulo()> -1L)
 				disponibles.add(disponible);
 		} // for
 		this.attrs.put("disponibles", disponibles);
