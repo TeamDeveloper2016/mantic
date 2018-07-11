@@ -1201,7 +1201,7 @@
 		},
 		readingMode: function(action) {
 			actionValidate= action!== null && action!== undefined ? action.toUpperCase() : 'CONSULTAR';
-			$('input:text,input:checkbox,input:file,textarea,button,a.ui-commandlink,div.ui-selectonemenu,div.ui-chkbox,span.ui-button').each(function(index) {  
+			$('input:text,input:checkbox,input:file,textarea,button,a.ui-commandlink,div.ui-selectonemenu,div.ui-chkbox,span.ui-button,div.ui-inputswitch').each(function(index) {  
 				if(actionValidate=== 'CONSULTAR') {
 					if(!(this.tagName=== 'BUTTON' && (this.id=== "cancelar" || this.id=== "cancelarIcon"))) {
 						if(this.tagName=== 'A') {
