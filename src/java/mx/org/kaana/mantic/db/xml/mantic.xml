@@ -7,7 +7,25 @@
   </model>
 
   <dml>	
-   <unit id="TcManticNotasArchivosDto">
+    <unit id="TcManticFaltantesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_faltantes
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_faltantes
+        where      
+          id_faltante = {idFaltante} and cantidad = {cantidad} and id_articulo = {idArticulo} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>
+		<unit id="TcManticNotasArchivosDto">
       <select id="row">
         select      
           *

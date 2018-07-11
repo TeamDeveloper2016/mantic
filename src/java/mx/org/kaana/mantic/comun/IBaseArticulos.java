@@ -444,7 +444,7 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 	public void doFaltanteArticulo() {
 		try {
 			UISelectEntity faltante= (UISelectEntity)this.attrs.get("faltante");
-   		toAddArticulo(faltante);
+   		this.toAddArticulo(faltante);
 		  List<UISelectEntity> faltantes= (List<UISelectEntity>)this.attrs.get("faltantes");
 			faltantes.remove(faltantes.indexOf(faltante));
 		} // try

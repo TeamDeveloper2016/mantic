@@ -1,12 +1,15 @@
 package mx.org.kaana.mantic.comun;
 
+import java.io.Serializable;
 import java.util.Map;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.procesos.reportes.reglas.IReporte;
 import mx.org.kaana.libs.reportes.IReportAttribute;
 import mx.org.kaana.mantic.enums.EReportes;
 
-public class ParametrosReporte implements IReporte{
+public class ParametrosReporte implements Serializable, IReporte {
+
+	private static final long serialVersionUID=631768500919598939L;
 
 	private EReportes reporte;
 	private Map<String, Object> params;
