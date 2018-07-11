@@ -236,6 +236,12 @@ shortcut.add("Shift+f10", function() {
 	  PF('dlgVerificador').show();
 });
 
+shortcut.add("Shift+f9", function() {
+	janal.console('Shortcut registro de faltantes:');
+	if(PF('dlgFaltantes'))
+	  PF('dlgFaltantes').show();
+});
+
 shortcut.add("Ctrl+P", function() {
 	janal.console('Shortcut tickets abiertos:');
 	if(PF('dlgOpenTickets')){

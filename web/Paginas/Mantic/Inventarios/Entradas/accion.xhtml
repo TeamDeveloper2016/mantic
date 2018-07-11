@@ -437,7 +437,7 @@
 						<p:tab title="Observaciones">
 							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.adminOrden.orden.observaciones}"/>
 						</p:tab>
-						<p:tab title="Importar">
+						<p:tab title="Importar" rendered="#{not manticInventariosEntradasAccion.isDirecta}">
 							<p:fileUpload fileUploadListener="#{manticInventariosEntradasAccion.doFileUpload}" 
 								mode="advanced" update="@(.importado)" label="Selecciona" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 								multiple="false" allowTypes="#{manticInventariosEntradasAccion.attrs.formatos}" dragDropSupport="true" auto="false" styleClass="janal-wid-100 janal-upload-frame"

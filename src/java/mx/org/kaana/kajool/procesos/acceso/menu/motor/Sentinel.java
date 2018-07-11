@@ -128,6 +128,8 @@ public class Sentinel extends IBaseMenu implements Serializable {
       regresar.append("<li class=\"Animated05\">");
       regresar.append("<a href=\"").append(context);
       regresar.append("/Paginas/Mantenimiento/Mensajes/Notificacion/filtro.jsf\" class=\"janal-text-white Unselectable\"><i class=\"icon-mail\"></i>Mensajes</a></li>");      
+			regresar.append("<li onclick=\"PF('dlgFaltantes').show();\" class=\"Animated05\">");
+      regresar.append("<a class=\"janal-text-white Unselectable\"><i class=\"icon-list-numbered\"></i>Faltantes</a></li>");			
 			regresar.append("<li onclick=\"PF('dlgVerificador').show();\" class=\"Animated05\">");
       regresar.append("<a class=\"janal-text-white Unselectable\"><i class=\"icon-list-numbered\"></i>Precios</a></li>");			
 			regresar.append("<li onclick=\"PF('dlgCalculadora').show();\" class=\"Animated05\">");
