@@ -71,14 +71,14 @@ public class Abono extends IBaseFilter implements Serializable {
 	  Map<String, Object> params= null;	
     try {  	  
 			params= new HashMap<>();
-			params.put("idCliente", this.attrs.get("idCliente"));			
+			params.put("idClienteDeuda", this.attrs.get("idClienteDeuda"));			
       columns= new ArrayList<>();  
 			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			columns.add(new Columna("pago", EFormatoDinamicos.MONEDA_CON_DECIMALES));
 			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
 			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
 			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
-			this.lazyModel = new FormatCustomLazy("VistaClientesDto", "pagos", params, columns);
+			this.lazyModel = new FormatCustomLazy("VistaClientesDto", "pagosDeuda", params, columns);
       UIBackingUtilities.resetDataTable();		
     } // try
     catch (Exception e) {
