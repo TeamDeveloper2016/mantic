@@ -29,6 +29,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.Reportes.reglas.ParametrosComunes;
 import mx.org.kaana.mantic.inventarios.creditos.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticCreditosBitacoraDto;
@@ -44,9 +45,38 @@ public class Filtro extends IBaseFilter implements Serializable {
 	private static final long serialVersionUID=1368701967796774746L;
   private Reporte reporte;
 	
-	public Reporte getReporte() {
-		return reporte;
-	}	// getReporte
+	public void doReporte(String nombre) throws Exception{
+    ParametrosComunes parametrosComunes = null;
+		Map<String, Object>params    = null;
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;
+    Entity seleccionado          = null;
+		try{		
+      params= toPrepare();
+      seleccionado = ((Entity)this.attrs.get("seleccionado"));
+      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
+      params.put("sortOrder", "order by tc_mantic_creditos_notas.id_empresa, tc_mantic_creditos_notas.ejercicio, tc_mantic_creditos_notas.orden");
+      reporteSeleccion= EReportes.valueOf(nombre);
+      if(reporteSeleccion.equals(EReportes.NOTA_CREDITO_DETALLE)){
+        params.put("idDevolucion", seleccionado.toLong("idDevolucion"));
+        parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), seleccionado.toLong("idAlmacen"), seleccionado.toLong("idProveedor"));
+      }
+      else
+        parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.reporte= JsfBase.toReporte();	
+      parametros= parametrosComunes.getParametrosComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+      doVerificarReporte();
+      this.reporte.doAceptar();			
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+} // doReporte
 	
   @PostConstruct
   @Override

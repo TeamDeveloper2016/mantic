@@ -16,8 +16,8 @@ import net.sf.jasperreports.engine.JRScriptletException;
 public class NotaEntradaDetalle  extends BarraProgreso implements Serializable{
   
   @Override
-  public void afterColumnInit() throws JRScriptletException {
-   super.afterColumnInit();
+  public void afterDetailEval() throws JRScriptletException {
+   super.afterDetailEval();
    Letras letras            = null;
    QRCodeWriter writer      = new QRCodeWriter();
    BitMatrix matrix         = null;

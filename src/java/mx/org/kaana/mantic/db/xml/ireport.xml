@@ -140,9 +140,7 @@
           domicilio_empresa.codigo_postal as empresa_cp,
           concat(replace(replace(upper(municipio_empresa.descripcion),char(10),' '),char(13),' '),', ' ,upper(entidad_empresa.descripcion),', ',upper(pais_empresa.descripcion)) as empresa_region,
           upper(localidad_empresa.descripcion) as empresa_localidad,
-          concat(ifnull((select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 2),'-'),' ',tc_mantic_articulos.nombre) as articulo,
-          (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 2) as codigo_proveedor,
-          (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+          concat('(',ifnull((select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_proveedor= tc_mantic_ordenes_compras.id_proveedor),''),' ) ',tc_mantic_articulos.nombre) as articulo,
           tc_mantic_articulos.precio            												
 				from 
 					tc_mantic_ordenes_compras
@@ -282,7 +280,7 @@
       </select>
     </unit>
     <unit id="VistaReporteNotaEntrada">
-      <select i= "detalleNotaEntrada">
+      <select id= "detalleNotaEntrada">
         select      
           tc_mantic_notas_entradas.id_sin_iva as sin_iva, 
           tc_mantic_notas_entradas.registro registro_nota_entrada,
@@ -293,7 +291,7 @@
 					tc_mantic_notas_entradas.impuestos impuestos_nota,
 					tc_mantic_notas_entradas.descuentos descuentos_nota,
 					tc_mantic_notas_entradas.descuento descuento_nota,
-					tc_mantic_notas_entradas.extras extas_notas,
+					tc_mantic_notas_entradas.extras extras_nota,
 					tc_mantic_notas_entradas.factura factura_nota,
 					tc_mantic_notas_entradas.fecha_factura,
 					tc_mantic_notas_entradas.fecha_recepcion,
@@ -312,17 +310,12 @@
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
 					tc_mantic_notas_detalles.iva, 
 					tc_mantic_notas_detalles.impuestos, 
-					tc_mantic_notas_detalles.descuentos, 
 					tc_mantic_notas_detalles.sub_total, 
-					0 as cantidad, 
 					tc_mantic_notas_detalles.cantidades as solicitados, 
 					tc_mantic_notas_detalles.id_nota_detalle, 
 					tc_mantic_notas_detalles.id_articulo, 
 					tc_mantic_notas_detalles.descuentos, 
 					tc_mantic_notas_entradas.id_proveedor, 
-					false as ultimo, 
-					false as solicitado, 
-					0 as stock,
 				  tc_mantic_notas_detalles.excedentes
         from      
           tc_mantic_notas_entradas
@@ -338,7 +331,7 @@
       </select>
     </unit>
     <unit id="VistaReporteDevoluciones">
-      <select i= "detalleDevolucion">
+      <select id= "detalleDevolucion">
         select
 					tc_mantic_notas_detalles.id_nota_detalle,
 					tc_mantic_devoluciones.id_devolucion,
@@ -349,8 +342,7 @@
 					tc_mantic_devoluciones.impuestos impuestos_dev,
 					tc_mantic_devoluciones.descuentos descuentos_dev,
 					tc_mantic_devoluciones.descuento descuento_dev,
-					tc_mantic_devoluciones.extras extas_devs,
-					tc_mantic_devoluciones.consecutivo, 
+					tc_mantic_devoluciones.extras extras_dev,
 					tc_mantic_devoluciones.registro registro_dev,
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_notas_detalles.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
 					tc_mantic_notas_detalles.sat,
@@ -384,7 +376,7 @@
       </select>
     </unit>
     <unit id="VistaReporteNotasCredito">
-      <select i= "detalleNostasCredito">
+      <select id= "detalleNostasCredito">
         select notas_credito.* , ifnull(sum(importe), 0) as total_final from(select
           tc_mantic_creditos_notas.id_credito_nota as id_key,
           tc_mantic_creditos_notas.id_credito_nota,
