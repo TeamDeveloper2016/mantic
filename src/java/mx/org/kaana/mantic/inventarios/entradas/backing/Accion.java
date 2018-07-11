@@ -43,6 +43,7 @@ import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
 import mx.org.kaana.mantic.libs.factura.reglas.Reader;
+import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Collections;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -380,6 +381,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 					concepto.getUnidad()
 				));
 			} // for
+			Collections.sort(faltantes);
 			this.attrs.put("faltantes", faltantes);
 			this.toPrepareDisponibles();
 		} // try
@@ -394,6 +396,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			if(disponible.isDisponible() && disponible.getIdArticulo()> -1L)
 				disponibles.add(disponible);
 		} // for
+		Collections.sort(disponibles);
 		this.attrs.put("disponibles", disponibles);
 	}
 		

@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.comun;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -501,6 +502,7 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 			if(this.isInsideArticulo("|"+ articulo.getCodigo()+ "|"+ articulo.getPropio()+ "|", articulo.getNombre()))
 				this.getAdminOrden().getFiltrados().add(articulo);
 		} // for
+		Collections.sort(this.getAdminOrden().getFiltrados());
 	}
 	
 

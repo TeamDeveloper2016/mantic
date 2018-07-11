@@ -210,7 +210,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 
 	@Override
 	public int compareTo(Articulo current) {
-		int x= this.getIdArticulo().compareTo(current.getIdArticulo());
+		int x= this.getNombre().compareTo(current.getNombre());
 		if (x!= 0) 
       return x;
 		else 
