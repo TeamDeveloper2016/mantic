@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -49,7 +50,7 @@ public class Saldos extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
-			this.idCliente= JsfBase.getFlashAttribute("idCliente")== null? -1L: (Long)JsfBase.getFlashAttribute("idCliente");			
+			this.idCliente= JsfBase.getFlashAttribute("idCliente")== null? -1L: Long.valueOf(JsfBase.getFlashAttribute("idCliente").toString());			
 			this.filtro = this.idCliente.equals(-1L);
       this.attrs.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");
       this.attrs.put("idCliente", this.idCliente);     
@@ -212,4 +213,35 @@ public class Saldos extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch		
 	} // loadSucursales
+	
+	public String doPago(){
+		String regresar    = null;
+		Entity seleccionado= null;
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");
+			JsfBase.setFlashAttribute("idClienteDeuda", seleccionado.getKey());
+			JsfBase.setFlashAttribute("idCliente", seleccionado.toString("idCliente"));
+			regresar= "abono".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		return regresar;
+	} // doPago
+	
+	public String doDeuda(){
+		String regresar    = null;
+		Entity seleccionado= null;
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");
+			JsfBase.setFlashAttribute("idCliente", seleccionado.toString("idCliente"));
+			regresar= "deuda".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		return regresar;
+	} // doPago
 }
