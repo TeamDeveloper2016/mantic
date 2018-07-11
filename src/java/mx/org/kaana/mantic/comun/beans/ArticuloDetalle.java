@@ -45,6 +45,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 	private Double total;
 	private Long idComodin;
 	private boolean aplicar;
+	private boolean disponible;
 
   public ArticuloDetalle() {
     this(new Long(-1L));
@@ -83,6 +84,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		this.idComodin= idComodin;
 		this.excedentes= excedentes;
 		this.aplicar= true;
+		this.disponible= true;
 	}
 	
   public void setCodigo(String codigo) {
@@ -360,7 +362,15 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 	public void setAplicar(boolean aplicar) {
 		this.aplicar=aplicar;
 	}
-	
+
+	public boolean isDisponible() {
+		return disponible;
+	}
+
+	public void setDisponible(boolean disponible) {
+		this.disponible=disponible;
+	}
+
 	@Override
   public boolean isValid() {
   	return this.idArticulo!= null && this.idArticulo!=-1L;

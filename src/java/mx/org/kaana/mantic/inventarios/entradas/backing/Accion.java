@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -93,6 +94,10 @@ public class Accion extends IBaseArticulos implements Serializable {
 	
 	public String getAgregar() {
 		return this.accion.equals(EAccion.AGREGAR)? "none": "";
+	}
+
+	public Importado getImportado() {
+		return importado;
 	}
 	
 	@PostConstruct
@@ -318,7 +323,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 
 	private void toUpdateDeleteXml() throws Exception {
 		//		this(idNotaArchivo, ruta, tamanio, idUsuario, idTipoArchivo, alias, mes, idNotaEntrada, nombre, observacion, ejercicio);
-		if(this.importado!= null) {
+		if(this.importado!= null && ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada()!= -1L) {
 			TcManticNotasArchivosDto xml= new TcManticNotasArchivosDto(
 				-1L,
 				this.importado.getRuta(),
@@ -327,7 +332,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 				1L,
 				this.importado.getRuta().concat(File.separator).concat(this.importado.getName()),
 				new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
-				this.getAdminOrden().getOrden().getKey(),
+				((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada(),
 				this.importado.getName(),
 				"",
 				new Long(Calendar.getInstance().get(Calendar.YEAR))
@@ -364,7 +369,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 					Double.parseDouble(concepto.getImporte()),
 					Double.parseDouble(concepto.getCantidad()),
 					-1L,
-					-1L,
+					new Random().nextLong(),
 					0D,
 					this.getAdminOrden().getIdProveedor(),
 					false,
@@ -376,20 +381,42 @@ public class Accion extends IBaseArticulos implements Serializable {
 				));
 			} // for
 			this.attrs.put("faltantes", faltantes);
+			this.toPrepareDisponibles();
 		} // try
 		catch (Exception e) {
 			throw e;
 		} // catch
 	}
 	
+	private void toPrepareDisponibles() {
+		List<Articulo> disponibles= new ArrayList<>();
+		for (Articulo disponible : this.getAdminOrden().getArticulos()) {
+			if(disponible.isDisponible())
+				disponibles.add(disponible);
+		} // for
+		this.attrs.put("disponibles", disponibles);
+	}
+		
 	@Override
 	public void doFaltanteArticulo() {
 		try {
-			Articulo faltante= (Articulo)this.attrs.get("faltante");
-   		this.toAddFaltante(faltante);
+			Long idFaltante  = new Long((String)this.attrs.get("faltante"));
 		  List<Articulo> faltantes= (List<Articulo>)this.attrs.get("faltantes");
-			faltantes.remove(faltantes.indexOf(faltante));
-  		this.doFilterRows();
+			Articulo faltante= faltantes.get(faltantes.indexOf(new Articulo(idFaltante)));
+			faltantes.remove(faltante);
+			
+			Long idDisponible = new Long((String)this.attrs.get("disponible"));
+		  List<Articulo> disponibles= (List<Articulo>)this.attrs.get("disponibles");
+			Articulo disponible= disponibles.get(disponibles.indexOf(new Articulo(idDisponible)));
+			disponibles.remove(disponible);
+			
+   		disponible.setSat(faltante.getSat());
+   		disponible.setCodigo(faltante.getCodigo());
+   		disponible.setCosto(faltante.getCosto());
+   		disponible.setCantidad(faltante.getCantidad());
+   		disponible.setIva(faltante.getIva());
+   		disponible.setUnidadMedida(faltante.getUnidadMedida());
+			disponible.setDisponible(false);
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);

@@ -308,7 +308,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	
 	@Override
 	public String toString() {
-		return "Articulo{"+"idProveedor="+idProveedor+", importes="+importes+", sinIva="+sinIva+", tipoDeCambio="+tipoDeCambio+", ultimo="+ultimo+", solicitado="+solicitado+'}';
+		return String.valueOf(this.getIdArticulo());
 	}
 	
 	public static void main(String ... args) {
