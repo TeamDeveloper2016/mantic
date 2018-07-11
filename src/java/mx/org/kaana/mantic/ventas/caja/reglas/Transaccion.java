@@ -367,7 +367,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			deuda.setIdVenta(getOrden().getIdVenta());
 			deuda.setIdCliente(getOrden().getIdCliente());
 			deuda.setIdUsuario(JsfBase.getIdUsuario());
-			deuda.setImporte(0D);
+			deuda.setImporte(importe);
 			deuda.setSaldo(importe);
 			deuda.setLimite(toLimiteCredito(sesion));
 			deuda.setIdClienteEstatus(1L);
