@@ -114,7 +114,7 @@ public class Abono extends IBaseFilter implements Serializable {
 					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
 			} // if
 			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y mayor a 0.", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -129,9 +129,11 @@ public class Abono extends IBaseFilter implements Serializable {
 		Entity deuda    = null;
 		try {
 			pago= Double.valueOf(this.attrs.get("pago").toString());
-			deuda= (Entity) this.attrs.get("deuda");
-			saldo= Double.valueOf(deuda.toString("saldo"));
-			regresar= pago<= saldo;
+			if(pago > 0D){
+				deuda= (Entity) this.attrs.get("deuda");
+				saldo= Double.valueOf(deuda.toString("saldo"));
+				regresar= pago<= saldo;
+			} // if
 		} // try
 		catch (Exception e) {		
 			throw e;
