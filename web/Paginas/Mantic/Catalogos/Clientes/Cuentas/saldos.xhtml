@@ -135,6 +135,10 @@
 							<p:outputLabel value="Total [#{manticCatalogosClientesCuentasSaldos.lazyModel==null?0:manticCatalogosClientesCuentasSaldos.lazyModel.rowCount}] registros"/>
 						</f:facet>
 					</p:dataTable>
+					<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">            
+            <p:menuitem id="pago" icon="fa fa-money" value="Pago" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doPago}" process="@this tabla" />					
+            <p:menuitem id="deuda" icon="fa fa-minus-circle" value="Deuda" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doDeuda}" process="@this tabla"/>					
+          </p:contextMenu>
 				</div>
 			</div>	
     </div>		       
