@@ -220,7 +220,9 @@
       <select id="diferenciasOrdenCompra">
          select
           tc_mantic_ordenes_compras.id_orden_compra as id_key,
-          tc_mantic_ordenes_compras.id_empresa,
+          tc_mantic_ordenes_compras.id_empresa,  
+				  tc_mantic_empresas.clave as clave_empresa,  
+				  tc_mantic_empresas.nombre as nombre_empresa,
           tc_mantic_ordenes_compras.consecutivo,
           tc_mantic_ordenes_compras.total total_orden,
           tc_mantic_ordenes_estatus.nombre as estatus,
@@ -242,6 +244,8 @@
            tc_mantic_ordenes_detalles on tc_mantic_ordenes_compras.id_orden_compra= tc_mantic_ordenes_detalles.id_orden_compra
          inner join 
            tc_mantic_articulos on tc_mantic_ordenes_detalles.id_articulo = tc_mantic_articulos.id_articulo
+         inner join 
+					tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
          inner join 
            tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus= tc_mantic_ordenes_estatus.id_orden_estatus
          left join 
