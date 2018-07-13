@@ -196,18 +196,24 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 	
 	public void doReporte(String nombre) throws Exception{
+		ParametrosComunes parametrosComunes = null;
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
+    Entity seleccionado          = null;
 		try{		
       params= toPrepare();	
+      seleccionado = ((Entity)this.attrs.get("seleccionado"));
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
       params.put("sortOrder", "order by tc_mantic_ordenes_compras.id_empresa, tc_mantic_ordenes_compras.ejercicio, tc_mantic_ordenes_compras.orden");
       reporteSeleccion= EReportes.valueOf(nombre);
-      if(reporteSeleccion.equals(EReportes.ORDEN_DETALLE))
+      if(!reporteSeleccion.equals(EReportes.ORDENES_COMPRA)){
         params.put("idOrdenCompra", ((Entity)this.attrs.get("seleccionado")).getKey());
+        parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), seleccionado.toLong("idAlmacen"), seleccionado.toLong("idProveedor"));
+      }
+      else
+        parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.reporte= JsfBase.toReporte();	
-      ParametrosComunes parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       parametros= parametrosComunes.getParametrosComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
       parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());

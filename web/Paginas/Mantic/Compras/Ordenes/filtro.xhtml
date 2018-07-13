@@ -172,6 +172,7 @@
             <p:menuitem id="notas" icon="fa fa-angle-double-right" action="#{manticComprasOrdenesFiltro.doNotasEntradas('AGREGAR')}" ajax="false" value="Notas entrada" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|3|4|5|', manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus)}"/>
             <p:separator rendered="#{fn:contains('|1|3|4|6|7|', manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus)}"/>
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doReporte('ORDEN_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{fn:contains('|1|3|4|6|7|', manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus)}"/>
+            <p:menuitem id="reporteDiferencias" icon="fa fa-file-pdf" value="Reporte diferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesFiltro.doReporte('ORDEN_DETALLE_DIF')}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{fn:contains('|1|3|4|6|7|', manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus)}"/>
           </p:contextMenu>
         </div>
       </div>
