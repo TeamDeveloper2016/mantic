@@ -62,7 +62,6 @@ public class Accion extends IBaseArticulos implements Serializable {
       this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra")== null? -1L: JsfBase.getFlashAttribute("idOrdenCompra"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
-			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
 			doLoad();
     } // try
@@ -78,6 +77,7 @@ public class Accion extends IBaseArticulos implements Serializable {
       switch (this.accion) {
         case AGREGAR:											
           this.setAdminOrden(new AdminOrdenes(new OrdenCompra(-1L)));
+    			this.attrs.put("sinIva", false);
           break;
         case MODIFICAR:			
         case CONSULTAR:											

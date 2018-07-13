@@ -39,6 +39,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private boolean solicitado;
 	private double stock;
 	private UISelectEntity idEntity;
+	private String observacion;
 
 	public Articulo() {
 		this(-1L);
@@ -58,6 +59,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.ultimo      = ultimo;
 		this.solicitado  = solicitado;
     this.stock       = stock;
+		this.observacion = "";
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -126,6 +128,14 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 
 	public void setStock(double stock) {
 		this.stock=stock;
+	}
+
+	public String getObservacion() {
+		return observacion;
+	}
+
+	public void setObservacion(String observacion) {
+		this.observacion=observacion;
 	}
 	
 	public String getImporte$() {
