@@ -5,9 +5,10 @@
  *time 09:39:15 PM
  *author Team Developer 2016 <team.developer@kaana.org.mx>
  */
+
 (function(window) {
-	var jsPrecios;
-	
+	var jsPrecios;	
+
 	Janal.Control.Precios= {};
 	
 	Janal.Control.Precios.Core= Class.extend({
@@ -19,9 +20,43 @@
 		VK_PAGE_NEXT: 34,
 		VK_PAGE_PREV: 33,
 		VK_F7       : 118,
+		VK_MINUS    : 109,
+		VK_REST     : 189,
+		fields      : {
+			'faltantesCantidad'  : {validaciones: 'requerido|mayor-igual({"cuanto": 0})', mascara: 'entero', formatos: 'precio', grupo: 'faltantes'},
+			'faltantesIdArticulo': {validaciones: 'requerido', mascara: 'libre', grupo: 'faltantes'}
+		},
 		init: function() { // constructor
 			$precios= this;
 			this.hide();
+	    $(document).on('keydown', '.janal-key-event', function(e) {
+				var key= e.keyCode? e.keyCode: e.which;
+				janal.console('Keydown: '+ key);
+				switch(key) {
+					case $precios.VK_TAB:
+					case $precios.VK_ENTER:
+						janal.console('jsPrecios.keydown: '+ $(this).attr('alt'));
+						if($('#'+ $(this).attr('alt'))) {
+						  $('#'+ $(this).attr('alt')).focus();
+							if('agregarFaltantes'=== $(this).attr('id'))
+                $(this).click();								
+						} // if	
+            return false;  					
+					case $precios.VK_ESC:
+            PF('dlgFaltantes').hide();
+					  break;
+   		    case $precios.VK_MINUS:
+		      case $precios.VK_REST:
+						if('codigosFaltantes_input'=== $(this).attr('id')) {
+							$('.janal-clean-input').val('');
+							return false;
+						} // if	
+					default: 
+						if('faltantesCantidad'=== $(this).attr('id'))
+						  return (key>=48 && key<=57) || (key>=96 && key<=105) || key===8 || key===37 || key===39 || key===110 || key===190;
+						break;
+				} // swtich
+			});	
 	    $(document).on('keydown', '.janal-key-precios', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('Keydown: '+ key);
@@ -98,8 +133,28 @@
 			if(focus)
 			  $('#verificadorTabla .ui-datatable-data').focus();
 			return false;
+		},
+		ask: function(text) {
+			janal.console('jsPrecios.ask');
+      return confirm('¿ Esta seguro que desea eliminar el articulo ?\n ['+ text+ ']');			
+		},
+		refresh: function() {
+			janal.console('jsPrecios.refresh');
+  		$('.janal-clean-input').val('');
+			janal.change('faltantes', $precios.fields);
+		},
+		execute: function() {
+			var ok= janal.partial('faltantes');
+			janal.console('jsPrecios.execute: '+ ok);
+			if(ok)
+				faltantesVerificar();
+		},
+		update: function() {
+			janal.console('jsPrecios.update');
+			janal.restore();
 		}
 	});
 	
 	console.info('Iktan.Control.Precios initialized');
 })(window);	
+

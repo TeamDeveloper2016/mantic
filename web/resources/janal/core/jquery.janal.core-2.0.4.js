@@ -446,6 +446,7 @@
     // privates atributtes for class
     form          : 'datos',
     fields        : {},
+		backup        : {},
     kind          : 'inline',
     message       : 'mensajes',
     stage         : 'desarrollo',
@@ -496,18 +497,20 @@
       $parent.console('Janal.Control.Validations.prepare');
       if (typeof(form)!== 'undefined')
         this.form= form;
-      if (typeof(fields)!== 'undefined')
+      if (typeof(fields)!== 'undefined') {
         this.fields= fields;  
+				this.backup= fields;
+			};
       if ((typeof(showMaxError)!== 'undefined') && ($parent.isNonnegativeInteger(''+showMaxError)))
         this.errors.show= showMaxError;
-      $form= $('#'+ $parent.form).validate({ignore: "ignore", onkeyup: false, onfocusout: false, focusInvalid: true, onsubmit: false, 
+      $form= $('#'+ $parent.form).validate({	ignore: "ignore", onkeyup: false, onfocusout: false, focusInvalid: true, onsubmit: false, 
         errorPlacement: function(error, element) {
           $parent.format(error.text(), element.is(':checkbox')||element.is(':radio')? element.attr('name'): element.attr('id'), $parent.errors.inputs);
         }
       });      
       if(typeof($parent.lazy)!== 'undefined')
         $parent.lazy($form);
-      $parent.reset();
+      $parent.reset(false);
       this.addTabIndex();
       this.initialized= true;
     }, // startUp
@@ -607,7 +610,7 @@
       $.each($components, function() {
         $parent.mask(id, $(this), value.mascara);
         $parent.required(id, value.validaciones, true);
-        if(value.formatos!== 'libre' || value.individual)
+        if(value.formatos!== 'libre' && value.individual)
           $(this).on('blur', function() {
             $parent.individual= this;
             $parent.element(false, id);
@@ -615,9 +618,10 @@
       });
       $parent.programmer($parent.errors.masks);
     },
-    reset: function() {
+    reset: function(clean) {
       $parent.console('Janal.Control.Validations.reset');
-      $parent.clean();
+			if(clean)
+        $parent.clean();
       $parent.errors.masks= [];
       $.each($parent.fields, function(id, value) {
         $parent.blank(id, value);
@@ -939,12 +943,15 @@
       $parent.console('Janal.Control.Validations.update '+ fields);
       $parent.clean();
       $parent.fields= fields;
-      $parent.reset();
+      $parent.reset(false);
     }, // update
+		restore: function() {
+			$parent.change('datos', $parent.backup);
+		},
     change: function(form, fields) {
       $parent.console('Janal.Control.Validations.update '+ fields);
       $parent.clean();
-      $parent.prepare(form, fields);
+      $parent.prepare(form, fields, $parent.errors.show);
     }, // update
     execute: function(customs, blockui) {
       $parent.console('Janal.Control.Validations.execute');

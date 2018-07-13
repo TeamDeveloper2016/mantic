@@ -24,6 +24,14 @@
         where      
           id_faltante = {idFaltante} and cantidad = {cantidad} and id_articulo = {idArticulo} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
       </select>
+      <select id="existe">
+        select      
+          *
+        from      
+          tc_mantic_faltantes
+        where      
+          id_articulo = {idArticulo} and id_vigente= 1
+      </select>
     </unit>
 		<unit id="TcManticNotasArchivosDto">
       <select id="row">

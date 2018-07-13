@@ -27,6 +27,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
 /**
@@ -94,7 +95,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 
 	public void doChange() {
 		String codigo= (String)this.attrs.get("buscarPor");
-		if(codigo!= null && codigo.equals(".*.")) 
+		if(codigo== null || codigo.equals(".*.")) 
 			this.lazyModel= null;
 		else {
 			boolean buscaPorCodigo= codigo.startsWith(".");
@@ -138,10 +139,22 @@ public class Encabezado extends IBaseFilter implements Serializable {
 
   public void doFaltanteArticulo() {
 		try {
-			if(DaoFactory.getInstance().insert(this.faltante)> 0L) {
-				JsfBase.addMessage("Agregado:", "El articulo fue agregado a la relación de faltantes. !", ETipoMensaje.INFORMACION);
-				this.faltante= new Faltante(JsfBase.getIdUsuario(), -1L, "", 1D, 1L, -1L);
-			} // if	
+      TcManticFaltantesDto existe= (TcManticFaltantesDto)DaoFactory.getInstance().findFirst(TcManticFaltantesDto.class, "existe", this.faltante.toMap());
+			if(existe== null) {
+				if(DaoFactory.getInstance().insert(this.faltante)> 0L) {
+	  			JsfBase.addMessage("Agregado:", "El articulo fue agregado a la relación de faltantes. !", ETipoMensaje.INFORMACION);
+  				this.faltante= new Faltante(JsfBase.getIdUsuario(), -1L, "", 1D, 1L, -1L);
+				} // if	
+		  }	// if
+			else {
+				existe.setCantidad(existe.getCantidad()+ this.faltante.getCantidad());
+				if(DaoFactory.getInstance().update(existe)> 0L) {
+	  			JsfBase.addMessage("Agregado:", "El articulo fue actualizado en la relación de faltantes. !", ETipoMensaje.INFORMACION);
+  				this.faltante= new Faltante(JsfBase.getIdUsuario(), -1L, "", 1D, 1L, -1L);
+				} // if	
+			} // else	
+			RequestContext.getCurrentInstance().execute("$('#codigosFaltantes').focus();");
+			RequestContext.getCurrentInstance().update("@(.faltantes)");
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -236,9 +249,11 @@ public class Encabezado extends IBaseFilter implements Serializable {
 
   public void doEliminarFaltante() {
 		try {
-			UISelectEntity eliminado= (UISelectEntity)this.attrs.get("eliminado");
+			Entity eliminado= (Entity)this.attrs.get("eliminado");
 			if(DaoFactory.getInstance().delete(TcManticFaltantesDto.class, eliminado.getKey())> 0L)
 				JsfBase.addMessage("Eliminado:", "El articulo fue eliminado de la relación de faltantes. !", ETipoMensaje.INFORMACION);
+			RequestContext.getCurrentInstance().execute("$('#codigosFaltantes').focus();");
+			RequestContext.getCurrentInstance().update("@(.faltantes)");
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -246,4 +261,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
     } // catch   
 	}	
 	
+	public String doCleanChars(String text) {
+		return Cadena.reemplazarCaracter(text, (char)39, ' ');
+	}
 }

@@ -425,7 +425,7 @@
 												<h:outputText value="#{row.observacion}"/>
 											</p:column>   
 											<p:column style="text-align: center" styleClass="janal-wid-col-38">
-												<p:commandButton update="sugeridos" icon="fa fa-check" title="Marcar como leido" action="#{manticInventariosEntradasAccion.doUpdateSugeridos}" styleClass="janal-text-white">
+												<p:commandButton update="sugeridos" icon="fa fa-check" title="Marcar como leido" actionListener="#{manticInventariosEntradasAccion.doUpdateSugeridos}" styleClass="janal-text-white">
 													<f:setPropertyActionListener value="#{row}" target="#{manticInventariosEntradasAccion.attrs.sugerido}" />
 												</p:commandButton>
 											</p:column>
@@ -538,7 +538,7 @@
 											<h:outputText value="#{row['unidadMedida']}"/>
 										</p:column>		
 									</p:selectOneMenu>
-                  <p:commandButton update="@(.importado) @(.filas) @(.recalculo)" process="@this @(.importado)" icon="fa fa-sort-alpha-desc" title="Asociar articulo" action="#{manticInventariosEntradasAccion.doFaltanteArticulo}" styleClass="janal-text-white" rendered="true"/>
+                  <p:commandButton update="@(.importado) @(.filas) @(.recalculo)" process="@this @(.importado)" icon="fa fa-sort-alpha-desc" title="Asociar articulo" actionListener="#{manticInventariosEntradasAccion.doFaltanteArticulo}" styleClass="janal-text-white" rendered="true"/>
 								</p:panelGrid>	
   							<p:outputLabel value="Total: #{manticInventariosEntradasAccion.attrs.disponibles.size()}" styleClass="importado janal-color-orange janal-steps-boton-siguiente janal-font-bold"/>
 							</p:panelGrid>	
