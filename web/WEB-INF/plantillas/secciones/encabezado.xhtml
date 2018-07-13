@@ -161,7 +161,7 @@
 			<p:dataTable lazy="true" id="verificadorTabla" widgetVar="widgetVerificador" var="filtro" styleClass="janal-key-registros janal-wid-100" value="#{kajoolEncabezado.lazyModel}" selection="#{kajoolEncabezado.attrs.selected}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="6" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="6, 4, 2" paginator="#{kajoolEncabezado.lazyModel.rowCount gt kajoolEncabezado.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
 				<p:ajax event="rowSelect" process="@this" update="verificadorPrecio" listener="#{kajoolEncabezado.doRowDblSelectEvent}" />
 				<p:ajax event="rowDblselect" process="@this" update="verificadorPrecio" listener="#{kajoolEncabezado.doRowDblSelectEvent}" oncomplete="jsPrecios.show();"/>
-				<p:column class="MarAuto Responsive janal-wid-col-15">
+				<p:column class="MarAuto Responsive janal-wid-col-20">
 					<f:facet name="header">
 						<h:outputText value="No."/>
 					</f:facet>

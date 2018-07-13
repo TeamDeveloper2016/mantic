@@ -378,7 +378,7 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 				-1* idOrdenDetalle, 
 				seleccionado.toLong("idArticulo"), 
 				0D,
-				((UISelectEntity)this.attrs.get("idProveedor")).getKey(),
+				this.adminOrden.getIdProveedor(),
 				this.attrs.get("ultimo")!= null,
 				this.attrs.get("solicitado")!= null,
 				stock== null? 0D: stock.toDouble(),
@@ -454,6 +454,19 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
     } // catch   
 	}
 
+	public void doAgregarPerdido() {
+		try {
+			UISelectEntity perdido= (UISelectEntity)this.attrs.get("perdido");
+   		this.toAddArticulo(perdido);
+		  List<UISelectEntity> perdidos= (List<UISelectEntity>)this.attrs.get("perdidos");
+			perdidos.remove(perdidos.indexOf(perdido));
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	}
+
 	public void toLoadFaltantes() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
@@ -477,6 +490,25 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
     } // catch   
     finally {
       Methods.clean(params);
+      Methods.clean(columns);
+    }// finally
+	}
+	
+	public void toLoadPerdidas() {
+		List<Columna> columns= null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+      this.attrs.put("perdidos", UIEntity.build("VistaOrdenesComprasDto", "registrados", this.attrs, columns));
+    } // try
+    catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
       Methods.clean(columns);
     }// finally
 	}

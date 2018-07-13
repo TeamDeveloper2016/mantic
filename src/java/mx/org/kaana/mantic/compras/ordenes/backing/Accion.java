@@ -240,6 +240,9 @@ public class Accion extends IBaseArticulos implements Serializable {
 		else 
 			if(event.getTab().getTitle().equals("Faltantes") && this.attrs.get("faltantes")== null) 
         this.toLoadFaltantes();
+			else 
+			  if(event.getTab().getTitle().equals("Ventas perdidas") && this.attrs.get("perdidos")== null) 
+           this.toLoadPerdidas();
 	}
   
 	public void toLoadArticulos(String idXml) {

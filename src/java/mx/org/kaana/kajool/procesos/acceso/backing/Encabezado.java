@@ -192,7 +192,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_SIN_DECIMALES));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       this.lazyFaltantes = new FormatCustomLazy("VistaOrdenesComprasDto", "registrados", this.attrs, columns);
       UIBackingUtilities.resetDataTable();

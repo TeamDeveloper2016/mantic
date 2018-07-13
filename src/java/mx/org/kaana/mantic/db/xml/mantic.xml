@@ -32,6 +32,14 @@
         where      
           id_articulo = {idArticulo} and id_vigente= 1
       </select>
+			<update id="rows">
+				update 
+				  tc_mantic_faltantes 
+				set 
+				  id_vigente= 2 
+				where 
+				  id_articulo = {idArticulo} and id_vigente= 1
+			</update>
     </unit>
 		<unit id="TcManticNotasArchivosDto">
       <select id="row">
