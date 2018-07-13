@@ -45,10 +45,6 @@ public class Filtro extends IBaseFilter implements Serializable {
   private static final long serialVersionUID = 8793667741599428332L;
 	private Reporte reporte;
 	
-	public Reporte getReporte() {
-		return reporte;
-	}	// getReporte
-	
   @PostConstruct
   @Override
   protected void init() {
