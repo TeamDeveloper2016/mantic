@@ -12,14 +12,17 @@ import mx.org.kaana.kajool.enums.EAccion;
 import static mx.org.kaana.kajool.enums.EAccion.AGREGAR;
 import static mx.org.kaana.kajool.enums.EAccion.ELIMINAR;
 import static mx.org.kaana.kajool.enums.EAccion.MODIFICAR;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Inventarios;
+import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
@@ -165,6 +168,8 @@ public class Transaccion extends Inventarios implements Serializable {
 			    DaoFactory.getInstance().insert(sesion, item);
 				if(this.aplicar)
 				  this.toAffectAlmacenes(sesion, this.orden.getIdNotaEntrada(), item, articulo);
+	  		articulo.setObservacion("ARTICULO SURTIDO EN LA NOTA DE ENTRADA ".concat(this.orden.getConsecutivo()).concat(" EL DIA ").concat(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, this.orden.getRegistro())));
+   			DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, articulo.toMap());
 			} // if
 		} // for
 	}

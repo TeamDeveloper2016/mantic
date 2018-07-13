@@ -36,7 +36,7 @@
 				update 
 				  tc_mantic_faltantes 
 				set 
-				  id_vigente= 2 
+				  id_vigente= 2, actualizado= current_timestamp, observaciones= '{observacion}'
 				where 
 				  id_articulo = {idArticulo} and id_vigente= 1
 			</update>
