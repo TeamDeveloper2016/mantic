@@ -18,7 +18,7 @@ public class Search {
 	public static void main(String[] args) {
     FileSearch fileSearch = new FileSearch();
     //try different directory and filename :)
-    fileSearch.searchDirectory(new File("D:/Temporal/Mantic/Programa"), ".xml");
+    fileSearch.searchDirectory(new File("d:/temporal/facturas/PILARBLANCO\\2018\\JULIO\\PCO060104B16\\"), ".xml");
     int count = fileSearch.getResult().size();
     if (count == 0)
       System.out.println("\nNo result found!");

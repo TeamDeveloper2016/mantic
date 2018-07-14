@@ -32,6 +32,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
@@ -44,7 +45,9 @@ import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
 import mx.org.kaana.mantic.libs.factura.reglas.Reader;
-import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Collections;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import java.util.Collections;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -61,6 +64,7 @@ import org.primefaces.event.TabChangeEvent;
 @ViewScoped
 public class Accion extends IBaseArticulos implements Serializable {
 
+	private static final Log LOG=LogFactory.getLog(Accion.class);
   private static final long serialVersionUID= 327393488565639367L;
 	private static final int BUFFER_SIZE      = 6124;
 	
@@ -292,7 +296,7 @@ public class Accion extends IBaseArticulos implements Serializable {
       temp.append(File.separator);
       temp.append(Calendar.getInstance().get(Calendar.YEAR));
       temp.append(File.separator);
-      temp.append(Cadena.letraCapital(Fecha.getNombreMes(Calendar.getInstance().get(Calendar.MONTH))));
+      temp.append(Fecha.getNombreMes(Calendar.getInstance().get(Calendar.MONTH)).toUpperCase());
       temp.append(File.separator);
       temp.append(((UISelectEntity)this.attrs.get("proveedor")).toString("prefijo"));
       temp.append(File.separator);
@@ -300,20 +304,20 @@ public class Accion extends IBaseArticulos implements Serializable {
 			result= new File(path.toString());		
 			if (!result.exists())
 				result.mkdirs();
-      path.append(event.getFile().getFileName());
+      path.append(event.getFile().getFileName().toUpperCase());
 			result = new File(path.toString());
 			if (result.exists())
 				result.delete();			      
 			this.toWriteFile(result, event.getFile().getInputstream());
 			fileSize= event.getFile().getSize();
 			if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
-			  this.xml= new Importado(event.getFile().getFileName(), event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString());
+			  this.xml= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString());
 				this.toReadFactura(result);
 				this.toCheckArticulos();
 			} //
 			else
 			  if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.PDF.name())) 
-			    this.pdf= new Importado(event.getFile().getFileName(), event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString());
+			    this.pdf= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -339,18 +343,32 @@ public class Accion extends IBaseArticulos implements Serializable {
 		inputStream.close();
 	} 
 
+	private void toDeleteAll(String path, String type, String name) {
+    FileSearch fileSearch = new FileSearch();
+    fileSearch.searchDirectory(new File(path), type.toLowerCase());
+    if(fileSearch.getResult().size()> 0)
+		  for (String matched: fileSearch.getResult()) {
+        LOG.warn("delete: ".concat(matched));
+				if(!matched.endsWith(name)) {
+				  File file= new File(matched);
+				  file.delete();
+				} // if
+      } // for
+	}
+	
 	private void toUpdateDeleteXml() throws Exception {
 		//		this(idNotaArchivo, ruta, tamanio, idUsuario, idTipoArchivo, alias, mes, idNotaEntrada, nombre, observacion, ejercicio);
 		TcManticNotasArchivosDto tmp= null;
 		if(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada()!= -1L) {
 			if(this.xml!= null) {
+				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.xml.getName());
 				tmp= new TcManticNotasArchivosDto(
 					-1L,
 					this.xml.getRuta(),
 					this.xml.getFileSize(),
 					JsfBase.getIdUsuario(),
 					1L,
-					Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.xml.getRuta()).concat(File.separator).concat(this.xml.getName()),
+					Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.xml.getRuta()).concat(this.xml.getName()),
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
 					((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada(),
 					this.xml.getName(),
@@ -362,13 +380,14 @@ public class Accion extends IBaseArticulos implements Serializable {
 					DaoFactory.getInstance().insert(tmp);
 			} // if	
 			if(this.pdf!= null) {
+				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.pdf.getName());
 				tmp= new TcManticNotasArchivosDto(
 					-1L,
 					this.pdf.getRuta(),
 					this.pdf.getFileSize(),
 					JsfBase.getIdUsuario(),
 					2L,
-					Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.xml.getRuta()).concat(File.separator).concat(this.pdf.getName()),
+					Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.xml.getRuta()).concat(this.pdf.getName()),
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
 					((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada(),
 					this.pdf.getName(),

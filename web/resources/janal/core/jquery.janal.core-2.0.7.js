@@ -457,7 +457,7 @@
     initialized   : false,
     offContextMenu: true,
 		lastNameFocus : null,
-		individual    : null,
+		reference     : null,
   	errors        : {
       inputs      : [],
       masks       : [],
@@ -610,9 +610,9 @@
       $.each($components, function() {
         $parent.mask(id, $(this), value.mascara);
         $parent.required(id, value.validaciones, true);
-        if(value.formatos!== 'libre' && value.individual)
+        if(value.formatos!== 'libre' || value.individual)
           $(this).on('blur', function() {
-            $parent.individual= this;
+            $parent.reference= this;
             $parent.element(false, id);
           });
       });
@@ -992,8 +992,8 @@
         $parent.bloquear();
       var validator= $('#'+ $parent.form).validate();
       var ok= false;
-			if($($parent.individual)) 
-				validator.element('#'+ $($parent.individual).attr('id').replace(/:/gi, '\\:'));
+			if($parent.reference!== null) 
+				validator.element('#'+ $($parent.reference).attr('id').replace(/:/gi, '\\:'));
 			else
 				validator.element($('#'+ $parent.form).find($parent.selector('$', field)));
       if(ok) 
@@ -1003,7 +1003,7 @@
           $parent.show($parent.errors.inputs);
       if(typeof(blockui)!== 'undefined' && blockui)
         $parent.desbloquear();
-      $parent.individual= null;
+      $parent.reference= null;
       return ok;
     }, 
     individual: function(field, blockui) {
