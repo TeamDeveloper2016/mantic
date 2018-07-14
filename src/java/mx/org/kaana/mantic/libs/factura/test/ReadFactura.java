@@ -36,9 +36,9 @@ public class ReadFactura {
 //				}	
 
 			
-			//reader= new Reader("D:\\Temporal\\mantic\\Programa\\ELEKTRON.xml");
+			reader= new Reader("D:\\Temporal\\mantic\\Programa\\ELEKTRON.xml");
 			//reader= new Reader("D:\\Temporal\\mantic\\Programa\\Anbec.xml");
-			reader= new Reader(new File("").getAbsolutePath().concat("\\src\\java\\mx\\org\\kaana\\mantic\\libs\\factura\\test\\A24729.xml"));
+			//reader= new Reader(new File("").getAbsolutePath().concat("\\src\\java\\mx\\org\\kaana\\mantic\\libs\\factura\\test\\A24729.xml"));
 			//reader= new Reader(new File("").getAbsolutePath().concat("\\src\\java\\mx\\org\\kaana\\mantic\\libs\\factura\\test\\"), "factura.xml");
 			factura= reader.execute();
 			LOG.info("Factura con folio: " + factura.getFolio());

@@ -449,7 +449,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 				int y= 0;
 				while (y< disponibles.size()) {
 					disponible= disponibles.get(y);
-					if(faltante.getCodigo().equals(disponible.getCodigo())) {
+					if(faltante.getCodigo()!= null && faltante.getCodigo().equals(disponible.getCodigo())) {
       			faltantes.remove(faltante);
     			  disponibles.remove(disponible);
     			  this.toMoveArticulo(disponible, faltante);
