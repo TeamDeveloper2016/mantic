@@ -17,13 +17,15 @@ import mx.org.kaana.mantic.libs.factura.beans.InformacionAduanera;
 import mx.org.kaana.mantic.libs.factura.beans.Receptor;
 import mx.org.kaana.mantic.libs.factura.beans.TimbreFiscalDigital;
 import mx.org.kaana.mantic.libs.factura.beans.Traslado;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class Reader implements Serializable{
-	
+	private static final Log LOG=LogFactory.getLog(Reader.class);
 	private static final long serialVersionUID = -7129012131006642751L;
 	private String fileName;
 
@@ -39,6 +41,8 @@ public class Reader implements Serializable{
 		DocumentBuilder db        = null;
 		try {        
 			dbf= DocumentBuilderFactory.newInstance();
+			dbf.setIgnoringComments(true);
+			dbf.setIgnoringElementContentWhitespace(true);
       db = dbf.newDocumentBuilder();
 			inputStream= new FileInputStream(new File(this.fileName));        
 			document= db.parse(inputStream);
@@ -155,6 +159,7 @@ public class Reader implements Serializable{
 		catch (Exception e) {			
 			throw e;
 		} // catch		
+		LOG.info("Reader.readEmisor: "+ regresar.getNombre());
 		return regresar;
 	} // readEmisor
 	
@@ -185,6 +190,7 @@ public class Reader implements Serializable{
 		catch (Exception e) {			
 			throw e;
 		} // catch		
+		LOG.info("Reader.readReceptor: "+ regresar.getNombre());
 		return regresar;
 	} // readReceptor
 	
@@ -237,7 +243,8 @@ public class Reader implements Serializable{
 									break;
 							} // switc						
 						} // for		
-						concepto.setTraslado(readTraslado(node.getFirstChild()));
+        		LOG.info("Reader.readConceptos: "+ concepto.getDescripcion());
+ 						concepto.setTraslado(readTraslado(node.getFirstChild().getNodeName().equals("cfdi:Impuestos")? node.getFirstChild(): node.getFirstChild().getNextSibling()));
 						concepto.setInformacionAduanera(readInformacionAduanera(node));
 						regresar.add(concepto);
 					} // if
@@ -250,53 +257,48 @@ public class Reader implements Serializable{
 		return regresar;
 	} // readConceptos
 	
-	private Traslado readTraslado(Node node){
+	private Traslado readTraslado(Node impuestos) {
 		Traslado regresar    = null;
-		Node impuestos       = null;
 		Node traslados       = null;
 		Node traslado        = null;
-		Node pivote          = null;
 		NamedNodeMap mapAttrs= null;
 		String nameAttr      = null;
 		String valAttr       = null;
 		try {			
-			regresar= new Traslado();
-			pivote= node;			
-			impuestos= pivote.getNextSibling();
-			if(impuestos.getNodeName().equals("cfdi:Impuestos")){
-				traslados= impuestos.getChildNodes().item(0).getNextSibling();
-				if(traslados.getNodeName().equals("cfdi:Traslados")){
-					traslado= traslados.getChildNodes().item(0).getNextSibling();
-					if(traslado.getNodeName().equals("cfdi:Traslado")){
-						mapAttrs= traslado.getAttributes();
-						for (int count = 0; count < mapAttrs.getLength(); count++){
-							nameAttr= mapAttrs.item(count).getNodeName();
-							valAttr= mapAttrs.item(count).getNodeValue();
-							switch(nameAttr){
-								case "Base":
-									regresar.setBase(valAttr);
-									break;
-								case "Importe":
-									regresar.setImporte(valAttr);
-									break;
-								case "Impuesto":
-									regresar.setImpuesto(valAttr);
-									break;
-								case "TasaOCuota":
-									regresar.setTasaCuota(valAttr);
-									break;
-								case "TipoFactor":
-									regresar.setTipoFactor(valAttr);
-									break;
-							} // switch
-						} // for
-					} // if
+			regresar = new Traslado();
+			traslados= impuestos.getFirstChild()== null? impuestos.getNextSibling(): impuestos.getFirstChild().getNodeName().equals("#text")? impuestos.getFirstChild().getNextSibling(): impuestos.getFirstChild();
+			if(traslados.getNodeName().equals("cfdi:Traslados")){
+				traslado= traslados.getFirstChild().getNodeName().equals("#text")? traslados.getFirstChild().getNextSibling(): traslados.getFirstChild();
+				if(traslado.getNodeName().equals("cfdi:Traslado")){
+					mapAttrs= traslado.getAttributes();
+					for (int count = 0; count < mapAttrs.getLength(); count++){
+						nameAttr= mapAttrs.item(count).getNodeName();
+						valAttr= mapAttrs.item(count).getNodeValue();
+						switch(nameAttr){
+							case "Base":
+								regresar.setBase(valAttr);
+								break;
+							case "Importe":
+								regresar.setImporte(valAttr);
+								break;
+							case "Impuesto":
+								regresar.setImpuesto(valAttr);
+								break;
+							case "TasaOCuota":
+								regresar.setTasaCuota(valAttr);
+								break;
+							case "TipoFactor":
+								regresar.setTipoFactor(valAttr);
+								break;
+						} // switch
+					} // for
 				} // if
 			} // if
 		} // try
 		catch (Exception e) {		
 			throw e;
 		} // catch		
+ 		LOG.info("Reader.readTraslado: "+ regresar);
 		return regresar;
 	} // readTraslado
 	
@@ -329,12 +331,12 @@ public class Reader implements Serializable{
 		catch (Exception e) {		
 			throw e;
 		} // catch		
+ 		LOG.info("Reader.readInformacionAduanera: "+ regresar.getNumeroPedimento());
 		return regresar;
 	} // readInformacionAduanera
 	
 	private Impuesto readImpuesto(Document document){
 		Impuesto regresar    = null;
-		Traslado traslado    = null;
 		String nameAttr      = null;
 		String valAttr       = null;
 		NamedNodeMap mapAttrs= null;
@@ -342,7 +344,6 @@ public class Reader implements Serializable{
 		NodeList list        = null;
 		try {
 			regresar= new Impuesto();
-			traslado= new Traslado();
 			list= document.getChildNodes().item(0).getChildNodes();
 			for(int count =0; count< list.getLength(); count++){
 				node= list.item(count);
@@ -357,18 +358,14 @@ public class Reader implements Serializable{
 							break;										
 						} // switch
 					} // for
-					mapAttrs= node.getFirstChild().getNextSibling().getFirstChild().getNextSibling().getAttributes();					
-					traslado.setImporte(mapAttrs.getNamedItem("Importe").getNodeValue());
-					traslado.setImpuesto(mapAttrs.getNamedItem("Impuesto").getNodeValue());
-					traslado.setTasaCuota(mapAttrs.getNamedItem("TasaOCuota").getNodeValue());
-					traslado.setTipoFactor(mapAttrs.getNamedItem("TipoFactor").getNodeValue());
-					regresar.setTraslado(traslado);
+					regresar.setTraslado(readTraslado(node));
 				} // if
 			} // for			
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
+ 		LOG.info("Reader.readImpuesto: "+ regresar.getTraslado());
 		return regresar;
 	} // readImpuesto
 	
@@ -383,7 +380,7 @@ public class Reader implements Serializable{
 			for(int count =0; count< list.getLength(); count++){
 				node= list.item(count);
 				if(node.getNodeName().equals("cfdi:Complemento")){
-					mapAttrs= node.getFirstChild().getNextSibling().getAttributes();					
+					mapAttrs= node.getFirstChild().getAttributes()!= null? node.getFirstChild().getAttributes(): node.getFirstChild().getNextSibling().getAttributes();					
 					regresar.setFechaTimbrado(mapAttrs.getNamedItem("FechaTimbrado").getNodeValue());
 					regresar.setNoCertificadoSat(mapAttrs.getNamedItem("NoCertificadoSAT").getNodeValue());
 					regresar.setRfcProvCertif(mapAttrs.getNamedItem("RfcProvCertif").getNodeValue());

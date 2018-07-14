@@ -1,0 +1,33 @@
+package mx.org.kaana.mantic.test.files;
+
+import java.io.File;
+import mx.org.kaana.libs.reportes.FileSearch;
+
+/**
+ * @company INEGI
+ * @project IKTAN (Sistema de seguimiento y control de proyectos)
+ * @date 13/07/2018
+ * @time 10:00:01 PM
+ * @author Alejandro Jimenez Garcia <alejandro.jimenez@inegi.org.mx>
+ */
+public class Search {
+
+	/**
+	 * @param args the command line arguments
+	 */
+	public static void main(String[] args) {
+    FileSearch fileSearch = new FileSearch();
+    //try different directory and filename :)
+    fileSearch.searchDirectory(new File("D:/Temporal/Mantic/Programa"), ".xml");
+    int count = fileSearch.getResult().size();
+    if (count == 0)
+      System.out.println("\nNo result found!");
+    else {
+      System.out.println("\nFound " + count + " result!\n");
+      for (String matched : fileSearch.getResult()) {
+        System.out.println("Found : " + matched);
+      } // for
+    }	
+	}
+
+}

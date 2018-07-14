@@ -26,6 +26,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -67,7 +68,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 	private EAccion accion;	
 	private EOrdenes tipoOrden;
 	private boolean aplicar;
-	private Importado importado;
+	private Importado xml;
+	private Importado pdf;
 
 	public String getValidacion() {
 		return this.tipoOrden.equals(EOrdenes.NORMAL)? "libre": "requerido";
@@ -97,8 +99,12 @@ public class Accion extends IBaseArticulos implements Serializable {
 		return this.accion.equals(EAccion.AGREGAR)? "none": "";
 	}
 
-	public Importado getImportado() {
-		return importado;
+	public Importado getXml() {
+		return xml;
+	}
+	
+	public Importado getPdf() {
+		return pdf;
 	}
 	
 	@PostConstruct
@@ -116,8 +122,9 @@ public class Accion extends IBaseArticulos implements Serializable {
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
-			this.attrs.put("formatos", "/(\\.|\\/)(xml|txt)$/");
-			this.importado= null;
+			this.attrs.put("formatos", "/(\\.|\\/)(xml|pdf)$/");
+			this.xml= null;
+			this.pdf= null;
 			doLoad();
     } // try
     catch (Exception e) {
@@ -276,18 +283,20 @@ public class Accion extends IBaseArticulos implements Serializable {
 	
 	public void doFileUpload(FileUploadEvent event) {
 		StringBuilder path= new StringBuilder();  
+		StringBuilder temp= new StringBuilder();  
     File result       = null;		
 		Long fileSize     = 0L;
 		try {
       path.append(Configuracion.getInstance().getPropiedadSistemaServidor("facturas"));
-      path.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
-      path.append(File.separator);
-      path.append(Calendar.getInstance().get(Calendar.YEAR));
-      path.append(File.separator);
-      path.append(Cadena.letraCapital(Fecha.getNombreMes(Calendar.getInstance().get(Calendar.MONTH))));
-      path.append(File.separator);
-      path.append(((UISelectEntity)this.attrs.get("proveedor")).toString("prefijo"));
-      path.append(File.separator);
+      temp.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
+      temp.append(File.separator);
+      temp.append(Calendar.getInstance().get(Calendar.YEAR));
+      temp.append(File.separator);
+      temp.append(Cadena.letraCapital(Fecha.getNombreMes(Calendar.getInstance().get(Calendar.MONTH))));
+      temp.append(File.separator);
+      temp.append(((UISelectEntity)this.attrs.get("proveedor")).toString("prefijo"));
+      temp.append(File.separator);
+			path.append(temp.toString());
 			result= new File(path.toString());		
 			if (!result.exists())
 				result.mkdirs();
@@ -297,12 +306,20 @@ public class Accion extends IBaseArticulos implements Serializable {
 				result.delete();			      
 			this.toWriteFile(result, event.getFile().getInputstream());
 			fileSize= event.getFile().getSize();
-			this.importado= new Importado(event.getFile().getFileName(), event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", result.getCanonicalPath());      
-			this.toReadFactura(result);
+			if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
+			  this.xml= new Importado(event.getFile().getFileName(), event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString());
+				this.toReadFactura(result);
+				this.toCheckArticulos();
+			} //
+			else
+			  if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.PDF.name())) 
+			    this.pdf= new Importado(event.getFile().getFileName(), event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessage("Importar:", "El archivo no pudo ser importado !", ETipoMensaje.ERROR);
+			if(result!= null)
+			  result.delete();
 		} // catch
 	} // doFileUpload	
 	
@@ -324,24 +341,45 @@ public class Accion extends IBaseArticulos implements Serializable {
 
 	private void toUpdateDeleteXml() throws Exception {
 		//		this(idNotaArchivo, ruta, tamanio, idUsuario, idTipoArchivo, alias, mes, idNotaEntrada, nombre, observacion, ejercicio);
-		if(this.importado!= null && ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada()!= -1L) {
-			TcManticNotasArchivosDto xml= new TcManticNotasArchivosDto(
-				-1L,
-				this.importado.getRuta(),
-				this.importado.getFileSize(),
-				JsfBase.getIdUsuario(),
-				1L,
-				this.importado.getRuta().concat(File.separator).concat(this.importado.getName()),
-				new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
-				((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada(),
-				this.importado.getName(),
-				"",
-				new Long(Calendar.getInstance().get(Calendar.YEAR))
-			);
-			TcManticNotasArchivosDto exists= (TcManticNotasArchivosDto)DaoFactory.getInstance().toEntity(TcManticNotasArchivosDto.class, "TcManticNotasArchivosDto", "identically", xml.toMap());
-			if(exists== null) 
-				DaoFactory.getInstance().insert(xml);
-		} // if	
+		TcManticNotasArchivosDto tmp= null;
+		if(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada()!= -1L) {
+			if(this.xml!= null) {
+				tmp= new TcManticNotasArchivosDto(
+					-1L,
+					this.xml.getRuta(),
+					this.xml.getFileSize(),
+					JsfBase.getIdUsuario(),
+					1L,
+					Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.xml.getRuta()).concat(File.separator).concat(this.xml.getName()),
+					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
+					((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada(),
+					this.xml.getName(),
+					"",
+					new Long(Calendar.getInstance().get(Calendar.YEAR))
+				);
+				TcManticNotasArchivosDto exists= (TcManticNotasArchivosDto)DaoFactory.getInstance().toEntity(TcManticNotasArchivosDto.class, "TcManticNotasArchivosDto", "identically", tmp.toMap());
+				if(exists== null) 
+					DaoFactory.getInstance().insert(tmp);
+			} // if	
+			if(this.pdf!= null) {
+				tmp= new TcManticNotasArchivosDto(
+					-1L,
+					this.pdf.getRuta(),
+					this.pdf.getFileSize(),
+					JsfBase.getIdUsuario(),
+					2L,
+					Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.xml.getRuta()).concat(File.separator).concat(this.pdf.getName()),
+					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
+					((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada(),
+					this.pdf.getName(),
+					"",
+					new Long(Calendar.getInstance().get(Calendar.YEAR))
+				);
+				TcManticNotasArchivosDto exists= (TcManticNotasArchivosDto)DaoFactory.getInstance().toEntity(TcManticNotasArchivosDto.class, "TcManticNotasArchivosDto", "identically", tmp.toMap());
+				if(exists== null) 
+					DaoFactory.getInstance().insert(tmp);
+			} // if	
+  	} // if	
 	}
 
 	private void toReadFactura(File file) throws Exception {
@@ -359,7 +397,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 					this.getAdminOrden().getTipoDeCambio(),
 					concepto.getDescripcion(),
 					concepto.getNoIdentificacion(),
-					Double.parseDouble(concepto.getValorUnitario()),
+					Numero.toRedondearSat(Double.parseDouble(concepto.getValorUnitario())),
 					"",
 					-1L,
 					"",
@@ -367,7 +405,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 					"",
 					Double.parseDouble(concepto.getTraslado().getTasaCuota())* 100,
 					0D,
-					Double.parseDouble(concepto.getImporte()),
+					Numero.toRedondearSat(Double.parseDouble(concepto.getImporte())),
 					Double.parseDouble(concepto.getCantidad()),
 					-1L,
 					new Random().nextLong(),
@@ -399,27 +437,54 @@ public class Accion extends IBaseArticulos implements Serializable {
 		Collections.sort(disponibles);
 		this.attrs.put("disponibles", disponibles);
 	}
-		
+
+	private void toCheckArticulos() {
+		Articulo faltante, disponible= null;
+		try {
+		  List<Articulo> faltantes= (List<Articulo>)this.attrs.get("faltantes");
+			int x= 0;
+			while(x< faltantes.size()) {
+				faltante= faltantes.get(x);
+  		  List<Articulo> disponibles= (List<Articulo>)this.attrs.get("disponibles");
+				int y= 0;
+				while (y< disponibles.size()) {
+					disponible= disponibles.get(y);
+					if(faltante.getCodigo().equals(disponible.getCodigo())) {
+      			faltantes.remove(faltante);
+    			  disponibles.remove(disponible);
+    			  this.toMoveArticulo(disponible, faltante);
+						break;
+					} // if	
+					y++;
+				} // for
+				if(y>= disponibles.size())
+					x++;
+			} // for
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	}
+	
 	@Override
 	public void doFaltanteArticulo() {
+		Articulo faltante= null, disponible= null;
 		try {
 			Long idFaltante  = new Long((String)this.attrs.get("faltante"));
 		  List<Articulo> faltantes= (List<Articulo>)this.attrs.get("faltantes");
-			Articulo faltante= faltantes.get(faltantes.indexOf(new Articulo(idFaltante)));
-			faltantes.remove(faltante);
-			
+			if(faltantes.size()> 0) {
+  			faltante= faltantes.get(faltantes.indexOf(new Articulo(idFaltante)));
+			  faltantes.remove(faltante);
+		  } // if
 			Long idDisponible = new Long((String)this.attrs.get("disponible"));
 		  List<Articulo> disponibles= (List<Articulo>)this.attrs.get("disponibles");
-			Articulo disponible= disponibles.get(disponibles.indexOf(new Articulo(idDisponible)));
-			disponibles.remove(disponible);
-			
-   		disponible.setSat(faltante.getSat());
-   		disponible.setCodigo(faltante.getCodigo());
-   		disponible.setCosto(faltante.getCosto());
-   		disponible.setCantidad(faltante.getCantidad());
-   		disponible.setIva(faltante.getIva());
-   		disponible.setUnidadMedida(faltante.getUnidadMedida());
-			disponible.setDisponible(false);
+			if(disponibles.size()> 0) {
+			  disponible= disponibles.get(disponibles.indexOf(new Articulo(idDisponible)));
+			  disponibles.remove(disponible);
+			} // if
+			if(faltante!= null && disponible!= null)
+			  this.toMoveArticulo(disponible, faltante);
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -427,6 +492,17 @@ public class Accion extends IBaseArticulos implements Serializable {
     } // catch   
 	}
 
+	private void toMoveArticulo(Articulo disponible, Articulo faltante) {
+ 		disponible.setSat(faltante.getSat());
+		disponible.setCodigo(faltante.getCodigo());
+		disponible.setCosto(faltante.getCosto());
+		disponible.setCantidad(faltante.getCantidad());
+		disponible.setIva(faltante.getIva());
+		disponible.setUnidadMedida(faltante.getUnidadMedida());
+		disponible.setDisponible(false);
+		this.getAdminOrden().toCalculate();
+	}
+	
 	public void doCheckFolio() {
 		Map<String, Object> params=null;
 		try {

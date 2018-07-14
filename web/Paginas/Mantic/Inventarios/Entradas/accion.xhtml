@@ -439,10 +439,12 @@
 						</p:tab>
 						<p:tab title="Importar" rendered="#{not manticInventariosEntradasAccion.isDirecta}">
 							<p:fileUpload fileUploadListener="#{manticInventariosEntradasAccion.doFileUpload}" 
-								mode="advanced" update="@(.importado)" label="Selecciona" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
-								multiple="false" allowTypes="#{manticInventariosEntradasAccion.attrs.formatos}" dragDropSupport="true" auto="false" styleClass="janal-wid-100 janal-upload-frame"
+								mode="advanced" update="@(.importado)" label="XML / PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+								multiple="false" allowTypes="#{manticInventariosEntradasAccion.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticInventariosEntradasAccion.attrs.formatos}"/>
-							<p:outputLabel value="Archivo importado: #{manticInventariosEntradasAccion.importado.name}" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold"/>
+							<p:outputLabel value="XML importado: #{manticInventariosEntradasAccion.xml.ruta}#{manticInventariosEntradasAccion.xml.name}" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold"/>
+							<br/>
+							<p:outputLabel value="PDF importado: #{manticInventariosEntradasAccion.pdf.ruta}#{manticInventariosEntradasAccion.pdf.name}" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold"/>
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 								<p:outputLabel value="Articulos XML:"/>
 								<p:selectOneMenu value="#{manticInventariosEntradasAccion.attrs.faltante}" var="row" styleClass="importado janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
@@ -538,7 +540,7 @@
 											<h:outputText value="#{row['unidadMedida']}"/>
 										</p:column>		
 									</p:selectOneMenu>
-                  <p:commandButton update="@(.importado) @(.filas) @(.recalculo)" process="@this @(.importado)" icon="fa fa-sort-alpha-desc" title="Asociar articulo" actionListener="#{manticInventariosEntradasAccion.doFaltanteArticulo}" styleClass="janal-text-white" rendered="true"/>
+                  <p:commandButton update="@(.importado) @(.filas) @(.recalculo)" process="@this @(.importado)" icon="fa fa-sort-alpha-desc" title="Asociar articulo" actionListener="#{manticInventariosEntradasAccion.doFaltanteArticulo}" styleClass="janal-text-white" disabled="#{manticInventariosEntradasAccion.attrs.disponibles.size() eq 0 or manticInventariosEntradasAccion.attrs.faltantes.size() eq 0}"/>
 								</p:panelGrid>	
   							<p:outputLabel value="Total: #{manticInventariosEntradasAccion.attrs.disponibles.size()}" styleClass="importado janal-color-orange janal-steps-boton-siguiente janal-font-bold"/>
 							</p:panelGrid>	
