@@ -241,7 +241,7 @@
         left join 
           tc_mantic_notas_entradas on tc_mantic_ordenes_compras.id_orden_compra= tc_mantic_notas_entradas.id_orden_compra
         left join 
-          tc_mantic_notas_estatus on tc_mantic_notas_entradas.id_nota_estatus=tc_mantic_ordenes_estatus.id_orden_estatus
+          tc_mantic_notas_estatus on tc_mantic_notas_entradas.id_nota_estatus=tc_mantic_notas_estatus.id_nota_estatus
         left join
           tc_mantic_devoluciones on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_devoluciones.id_nota_entrada
         left join 
