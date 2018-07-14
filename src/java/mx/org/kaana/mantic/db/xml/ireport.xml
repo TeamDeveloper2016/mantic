@@ -100,9 +100,6 @@
           tc_mantic_empresas.clave as clave_empresa,
           tc_mantic_empresas.nombre as nombre_empresa,
           tc_mantic_empresas.titulo as titulo_empresa,
-          empresa_telefonos.valor empresa_telefono,
-          upper(empresa_email.valor) empresa_email,
-          responsable_empresa.rfc rfc_contacto,
           tc_mantic_ordenes_compras.consecutivo,
           tc_mantic_proveedores.id_proveedor,
           tc_mantic_proveedores.razon_social as proveedor,
@@ -116,30 +113,7 @@
           tc_mantic_ordenes_compras.sub_total sub_total_orden,
           tc_mantic_ordenes_compras.descuentos descuentos_orden,
           tc_mantic_ordenes_compras.observaciones,
-          telefono.valor as contacto_telefono,
-          correo.valor as contacto_email,
           tc_mantic_ordenes_detalles.*,
-          concat(responsable_empresa.nombres, ' ' , responsable_empresa.paterno, ' ', responsable_empresa.materno) as contacto, 
-          concat(agentes.nombres, ' ' ,  agentes.paterno, ' ',agentes.materno) as agente,
-          domicilio_proveedor.calle as proveedor_calle,
-          domicilio_proveedor.asentamiento as proveedor_colonia,
-          domicilio_proveedor.codigo_postal as proveedor_cp,
-          concat(replace(replace(upper(municipio_proveedor.descripcion),char(10),' '),char(13),' '),', ' ,upper(entidad_proveedor.descripcion),', ',upper(pais_proveedor.descripcion)) as proveedor_region,
-          upper(localidad_proveedor.descripcion) as proveedor_localidad,
-          telefono_proveedor.valor as proveedor_telefono,
-          correo_proveedor.valor as proveedor_email,
-          domicilio_almacen.asentamiento as almacen_colonia,
-          domicilio_almacen.calle as almacen_calle,
-          domicilio_almacen.codigo_postal as almacen_cp,
-          concat(replace(replace(upper(municipio_almacen.descripcion),char(10),' '),char(13),' '),', ' ,upper(entidad_almacen.descripcion),', ',upper(pais_almacen.descripcion)) as almacen_region,
-          upper(localidad_almacen.descripcion) almacen_localidad,
-          telefono_almacen.valor as almacen_telefono,
-          correo_almacen.valor as almacen_email,
-          domicilio_empresa.calle as empresa_calle,
-          domicilio_empresa.asentamiento as empresa_colonia,
-          domicilio_empresa.codigo_postal as empresa_cp,
-          concat(replace(replace(upper(municipio_empresa.descripcion),char(10),' '),char(13),' '),', ' ,upper(entidad_empresa.descripcion),', ',upper(pais_empresa.descripcion)) as empresa_region,
-          upper(localidad_empresa.descripcion) as empresa_localidad,
           concat('(',ifnull((select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_proveedor= tc_mantic_ordenes_compras.id_proveedor),''),' ) ',tc_mantic_articulos.nombre) as articulo,
           tc_mantic_articulos.precio            												
 				from 
@@ -149,73 +123,15 @@
 				inner join 
 					tc_mantic_proveedores on tr_mantic_proveedor_pago.id_proveedor= tc_mantic_proveedores.id_proveedor
 				inner join 
-					tr_mantic_proveedor_domicilio on tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_domicilio.id_proveedor and tr_mantic_proveedor_domicilio.id_principal=1
-				inner join 
-					tc_mantic_domicilios  domicilio_proveedor on tr_mantic_proveedor_domicilio.id_domicilio = domicilio_proveedor.id_domicilio
-				inner join 
-					tc_janal_localidades localidad_proveedor on domicilio_proveedor.id_localidad = localidad_proveedor.id_localidad
-        inner join
-          tc_janal_municipios municipio_proveedor on localidad_proveedor.id_municipio = municipio_proveedor.id_municipio
-        inner join
-					tc_janal_entidades  entidad_proveedor on municipio_proveedor.id_entidad = entidad_proveedor.id_entidad
-				inner join
-					tc_janal_paises  pais_proveedor on entidad_proveedor.id_pais = pais_proveedor.id_pais
-				left join 
-					tr_mantic_proveedor_tipo_contacto telefono_proveedor on tc_mantic_proveedores.id_proveedor = telefono_proveedor.id_proveedor and telefono_proveedor.id_tipo_contacto=1
-				left join 
-					tr_mantic_proveedor_tipo_contacto correo_proveedor on tc_mantic_proveedores.id_proveedor = correo_proveedor.id_proveedor and correo_proveedor.id_tipo_contacto=9
-				left join 
-					tr_mantic_proveedor_agente on tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_agente.id_proveedor and tr_mantic_proveedor_agente.id_principal=1
-				left join 
-					tc_mantic_personas agentes on tr_mantic_proveedor_agente.id_agente= agentes.id_persona
-				inner join 
-					tc_mantic_almacenes on tc_mantic_ordenes_compras.id_almacen = tc_mantic_almacenes.id_almacen
-				left join 
-					tr_mantic_almacen_domicilio on tc_mantic_almacenes.id_almacen = tr_mantic_almacen_domicilio.id_almacen and tr_mantic_almacen_domicilio.id_principal=1
-				left join 
-					tc_mantic_domicilios domicilio_almacen on tr_mantic_almacen_domicilio.id_domicilio = domicilio_almacen.id_domicilio
-				left join 
-					tc_janal_localidades localidad_almacen on domicilio_almacen.id_localidad = localidad_almacen.id_localidad
-				left join
-          tc_janal_municipios municipio_almacen on localidad_almacen.id_municipio = municipio_almacen.id_municipio
-        left join
-					tc_janal_entidades  entidad_almacen on municipio_almacen.id_entidad = entidad_almacen.id_entidad
-				left join
-					tc_janal_paises  pais_almacen on entidad_almacen.id_pais = pais_almacen.id_pais
-				left join 
-					tr_mantic_almacen_tipo_contacto telefono_almacen on tc_mantic_almacenes.id_almacen = telefono_almacen.id_almacen and telefono_almacen.id_tipo_contacto=1
-				left join 
-					tr_mantic_almacen_tipo_contacto correo_almacen on tc_mantic_almacenes.id_almacen = correo_almacen.id_almacen and correo_almacen.id_tipo_contacto=9
-				inner join 
 					tc_mantic_ordenes_detalles on tc_mantic_ordenes_compras.id_orden_compra= tc_mantic_ordenes_detalles.id_orden_compra
 				inner join 
 					tc_mantic_articulos on tc_mantic_ordenes_detalles.id_articulo = tc_mantic_articulos.id_articulo
 				inner join 
 					tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
 				inner join 
-					tr_mantic_empresa_tipo_contacto empresa_telefonos on tc_mantic_empresas.id_empresa = empresa_telefonos.id_empresa and empresa_telefonos.id_tipo_contacto = 1
-				inner join 
-					tr_mantic_empresa_tipo_contacto empresa_email on tc_mantic_empresas.id_empresa = empresa_email.id_empresa and empresa_email.id_tipo_contacto = 9
-				inner join 
-					tc_mantic_domicilios  domicilio_empresa on tr_mantic_proveedor_domicilio.id_domicilio = domicilio_empresa.id_domicilio
-				inner join 
-					tc_janal_localidades localidad_empresa on domicilio_empresa.id_localidad = localidad_empresa.id_localidad
-				inner join
-          tc_janal_municipios municipio_empresa on localidad_empresa.id_municipio = municipio_empresa.id_municipio
-        inner join
-					tc_janal_entidades  entidad_empresa on municipio_empresa.id_entidad = entidad_empresa.id_entidad
-				inner join
-					tc_janal_paises  pais_empresa on entidad_empresa.id_pais = pais_empresa.id_pais
-				left join 
-					tc_mantic_personas responsable_empresa on tc_mantic_empresas.id_responsable = responsable_empresa.id_persona
-				left join 
-					tr_mantic_persona_tipo_contacto telefono on responsable_empresa.id_persona = telefono.id_persona and telefono.id_tipo_contacto=1
-				left join 
-					tr_mantic_persona_tipo_contacto correo on telefono.id_persona = correo.id_persona and correo.id_tipo_contacto=9
-				inner join 
 					tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus= tc_mantic_ordenes_estatus.id_orden_estatus
 				where 
-        tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}	
+          tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}	
       </select>
       <select id="diferenciasOrdenCompra">
          select
@@ -281,6 +197,61 @@
 					tc_mantic_ordenes_compras.id_empresa in ({idEmpresa})
 					and {condicion}
 				{sortOrder}
+      </select>
+      <select id="detalleCompletoOrdenCompra">
+        select
+          tc_mantic_ordenes_compras.id_orden_compra,
+          tc_mantic_ordenes_compras.id_empresa,  
+          tc_mantic_empresas.clave as clave_empresa,
+          tc_mantic_empresas.nombre as nombre_empresa,
+          tc_mantic_empresas.titulo as titulo_empresa,
+          tc_mantic_ordenes_compras.id_almacen,
+          tc_mantic_ordenes_compras.consecutivo consecutivo,  
+          tc_mantic_proveedores.id_proveedor,  
+          tc_mantic_proveedores.razon_social as proveedor,
+          tc_mantic_ordenes_compras.total importe_orden_compra,
+          tc_mantic_ordenes_estatus.nombre estatus_orden_compra,
+          tc_mantic_ordenes_compras.registro registro_orden_compra,
+          tc_mantic_ordenes_compras.observaciones,
+          tc_mantic_notas_entradas.id_nota_entrada,
+          tc_mantic_notas_entradas.consecutivo consecutivo_nota_entrada,
+          tc_mantic_notas_entradas.registro registro_nota_entrada,
+          tc_mantic_notas_entradas.total importe_nota_entrada,
+          tc_mantic_notas_estatus.nombre estatus_nota_entrada,
+          tc_mantic_devoluciones.id_devolucion,
+          tc_mantic_devoluciones.consecutivo consecutivo_devolucion,
+          tc_mantic_devoluciones.registro registro_devolucion,
+          tc_mantic_devoluciones.total importe_devolucion,
+          tc_mantic_devoluciones_estatus.nombre estatus_devolucion,
+          tc_mantic_creditos_notas.id_credito_nota,
+          tc_mantic_creditos_notas.consecutivo consecutivo_credito_nota,
+          tc_mantic_creditos_notas.registro registro_credito_nota,
+          tc_mantic_creditos_notas.importe importe_credito_nota,
+          tc_mantic_creditos_estatus.nombre estatus_credito_nota
+        from 
+          tc_mantic_ordenes_compras
+        inner join 
+          tr_mantic_proveedor_pago on tc_mantic_ordenes_compras.id_proveedor_pago= tr_mantic_proveedor_pago.id_proveedor_pago
+        inner join 
+          tc_mantic_proveedores on tr_mantic_proveedor_pago.id_proveedor= tc_mantic_proveedores.id_proveedor
+        inner join 
+          tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
+        inner join 
+          tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus=tc_mantic_ordenes_estatus.id_orden_estatus
+        left join 
+          tc_mantic_notas_entradas on tc_mantic_ordenes_compras.id_orden_compra= tc_mantic_notas_entradas.id_orden_compra
+        left join 
+          tc_mantic_notas_estatus on tc_mantic_notas_entradas.id_nota_estatus=tc_mantic_ordenes_estatus.id_orden_estatus
+        left join
+          tc_mantic_devoluciones on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_devoluciones.id_nota_entrada
+        left join 
+          tc_mantic_devoluciones_estatus on tc_mantic_devoluciones.id_devolucion_estatus=tc_mantic_devoluciones_estatus.id_devolucion_estatus
+        left join
+          tc_mantic_creditos_notas on tc_mantic_devoluciones.id_devolucion = tc_mantic_creditos_notas.id_devolucion 
+        left join 
+          tc_mantic_creditos_estatus on tc_mantic_creditos_notas.id_credito_estatus=tc_mantic_creditos_estatus.id_credito_estatus
+        where 
+          tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}	        
       </select>
 		</unit> 
     <unit id="VistaTicketVentaDto">
