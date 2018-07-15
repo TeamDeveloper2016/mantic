@@ -20,6 +20,7 @@ import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosCodigosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
@@ -130,6 +131,10 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 				DaoFactory.getInstance().update(sesion, nota);
 				TcManticNotasBitacoraDto registro= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), nota.getIdNotaEntrada(), nota.getIdNotaEstatus(), nota.getConsecutivo(), nota.getTotal());
 				DaoFactory.getInstance().insert(sesion, registro);
+        
+				// Afectar todas las notas de entrada que ya fueron aceptadas
+				TcManticEmpresasDeudasDto deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), nota.getDeuda(), nota.getIdNotaEntrada(), nota.getFechaPago(), nota.getDeuda());
+				DaoFactory.getInstance().insert(sesion, deuda);
 				
     		// Recuperar el detalle de las notas de entrada para afectas inventarios 
     		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticNotasDetallesDto", "detalle", nota.toMap());

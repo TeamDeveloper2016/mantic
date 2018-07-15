@@ -1,7 +1,9 @@
 package mx.org.kaana.mantic.inventarios.entradas.reglas;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,10 +21,15 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.reportes.FileSearch;
+import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Inventarios;
+import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
@@ -47,23 +54,29 @@ public class Transaccion extends Inventarios implements Serializable {
 	private TcManticNotasEntradasDto orden;	
 	private List<Articulo> articulos;
 	private boolean aplicar;
+	private Importado xml;
+	private Importado pdf;
 	private String messageError;
 	private TcManticNotasBitacoraDto bitacora;
 
 	public Transaccion(TcManticNotasEntradasDto orden, TcManticNotasBitacoraDto bitacora) {
 		this(orden);
+		this.xml= null;
+		this.pdf= null;
 		this.bitacora= bitacora;
 	}
 	
 	public Transaccion(TcManticNotasEntradasDto orden) {
-		this(orden, new ArrayList<Articulo>(), false);
+		this(orden, new ArrayList<Articulo>(), false, null, null);
 	}
 
-	public Transaccion(TcManticNotasEntradasDto orden, List<Articulo> articulos, boolean aplicar) {
+	public Transaccion(TcManticNotasEntradasDto orden, List<Articulo> articulos, boolean aplicar, Importado xml, Importado pdf) {
 		super(orden.getIdAlmacen(), orden.getIdProveedor());
 		this.orden    = orden;		
 		this.articulos= articulos;
 		this.aplicar  = aplicar;
+		this.xml      = xml;
+		this.pdf      = pdf;
 	} // Transaccion
 
 	public String getMessageError() {
@@ -97,6 +110,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 					this.toFillArticulos(sesion);
 					this.toCheckOrden(sesion);
+     	    this.toUpdateDeleteXml(sesion);	
 					break;
 				case MODIFICAR:
   				if(this.aplicar) {
@@ -108,17 +122,20 @@ public class Transaccion extends Inventarios implements Serializable {
 					this.toRemoveOrdenDetalle(sesion);
 					this.toFillArticulos(sesion);
 					this.toCheckOrden(sesion);
+     	    this.toUpdateDeleteXml(sesion);	
 					break;				
 				case ELIMINAR:
 					regresar= this.toNotExistsArticulosBitacora(sesion);
 					if(regresar) {
 						this.toRemoveOrdenDetalle(sesion);
+						regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticNotasArchivosDto.class, params)>= 1L;
 						regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticNotasDetallesDto.class, params)>= 1L;
 						regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
             this.orden.setIdNotaEstatus(2L);
 						bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), 2L, this.orden.getConsecutivo(), this.orden.getTotal());
 						regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 						this.toCheckOrden(sesion);
+       	    this.toDeleteXmlPdf();	
 					}
 					else
        			this.messageError= "No se puede eliminar la nota de entrada porque ya fue aplicada en los precios de los articulos.";
@@ -255,9 +272,81 @@ public class Transaccion extends Inventarios implements Serializable {
 		} // for
 		this.orden.setIdNotaEstatus(3L);
 		DaoFactory.getInstance().update(sesion, this.orden);
+		// Una vez que la nota de entrada es cambiada a terminar se registra la cuenta por cobrar
+		TcManticEmpresasDeudasDto deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), this.orden.getDeuda(), this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda());
+		DaoFactory.getInstance().insert(sesion, deuda);
+		
 		TcManticNotasBitacoraDto registro= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 		DaoFactory.getInstance().insert(sesion, registro);
 		this.toCommonNotaEntrada(sesion, this.orden.getIdNotaEntrada(), this.orden.toMap());
 	}
 	
+	private void toDeleteAll(String path, String type, String name) {
+    FileSearch fileSearch = new FileSearch();
+    fileSearch.searchDirectory(new File(path), type.toLowerCase());
+    if(fileSearch.getResult().size()> 0)
+		  for (String matched: fileSearch.getResult()) {
+				if(!matched.endsWith(name)) {
+          LOG.warn("Nota entrada: "+ this.orden.getConsecutivo()+ " delete file: ".concat(matched));
+				  File file= new File(matched);
+				  file.delete();
+				} // if
+      } // for
+	}
+	
+	private void toUpdateDeleteXml(Session sesion) throws Exception {
+		//		this(idNotaArchivo, ruta, tamanio, idUsuario, idTipoArchivo, alias, mes, idNotaEntrada, nombre, observacion, ejercicio);
+		TcManticNotasArchivosDto tmp= null;
+		if(this.orden.getIdNotaEntrada()!= -1L) {
+			if(this.xml!= null) {
+				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.xml.getName());
+				tmp= new TcManticNotasArchivosDto(
+					-1L,
+					this.xml.getRuta(),
+					this.xml.getFileSize(),
+					JsfBase.getIdUsuario(),
+					1L,
+					Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.xml.getRuta()).concat(this.xml.getName()),
+					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
+					this.orden.getIdNotaEntrada(),
+					this.xml.getName(),
+					"",
+					new Long(Calendar.getInstance().get(Calendar.YEAR))
+				);
+				TcManticNotasArchivosDto exists= (TcManticNotasArchivosDto)DaoFactory.getInstance().toEntity(TcManticNotasArchivosDto.class, "TcManticNotasArchivosDto", "identically", tmp.toMap());
+				if(exists== null) 
+					DaoFactory.getInstance().insert(sesion, tmp);
+			} // if	
+			if(this.pdf!= null) {
+				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.pdf.getName());
+				tmp= new TcManticNotasArchivosDto(
+					-1L,
+					this.pdf.getRuta(),
+					this.pdf.getFileSize(),
+					JsfBase.getIdUsuario(),
+					2L,
+					Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.pdf.getRuta()).concat(this.pdf.getName()),
+					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
+					this.orden.getIdNotaEntrada(),
+					this.pdf.getName(),
+					"",
+					new Long(Calendar.getInstance().get(Calendar.YEAR))
+				);
+				TcManticNotasArchivosDto exists= (TcManticNotasArchivosDto)DaoFactory.getInstance().toEntity(TcManticNotasArchivosDto.class, "TcManticNotasArchivosDto", "identically", tmp.toMap());
+				if(exists== null) 
+					DaoFactory.getInstance().insert(sesion, tmp);
+			} // if	
+  	} // if	
+	}
+
+	public void toDeleteXmlPdf() throws Exception {
+		List<TcManticNotasArchivosDto> list= (List<TcManticNotasArchivosDto>)DaoFactory.getInstance().findViewCriteria(TcManticNotasArchivosDto.class, this.orden.toMap(), "all");
+		if(list!= null)
+			for (TcManticNotasArchivosDto item: list) {
+				LOG.info("Nota entrada: "+ this.orden.getConsecutivo()+ " delete file: "+ item.getAlias());
+				File file= new File(item.getAlias());
+				file.delete();
+			} // for
+	}	
+
 } 

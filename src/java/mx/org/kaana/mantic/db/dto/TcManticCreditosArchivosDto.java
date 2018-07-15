@@ -54,8 +54,8 @@ public class TcManticCreditosArchivosDto implements IBaseDto, Serializable {
   private Long idCreditoNota;
   @Column (name="nombre")
   private String nombre;
-  @Column (name="observacion")
-  private String observacion;
+  @Column (name="observaciones")
+  private String observaciones;
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
@@ -70,7 +70,7 @@ public class TcManticCreditosArchivosDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticCreditosArchivosDto(Long idCreditoArchivo, String ruta, Long tamanio, Long idUsuario, Long idTipoArchivo, String alias, Long mes, Long idCreditoNota, String nombre, String observacion, Long ejercicio) {
+  public TcManticCreditosArchivosDto(Long idCreditoArchivo, String ruta, Long tamanio, Long idUsuario, Long idTipoArchivo, String alias, Long mes, Long idCreditoNota, String nombre, String observaciones, Long ejercicio) {
     setIdCreditoArchivo(idCreditoArchivo);
     setRuta(ruta);
     setTamanio(tamanio);
@@ -80,7 +80,7 @@ public class TcManticCreditosArchivosDto implements IBaseDto, Serializable {
     setMes(mes);
     setIdCreditoNota(idCreditoNota);
     setNombre(nombre);
-    setObservacion(observacion);
+    setObservaciones(observaciones);
     setEjercicio(ejercicio);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
@@ -157,12 +157,12 @@ public class TcManticCreditosArchivosDto implements IBaseDto, Serializable {
     return nombre;
   }
 
-  public void setObservacion(String observacion) {
-    this.observacion = observacion;
+  public void setObservaciones(String observaciones) {
+    this.observaciones = observaciones;
   }
 
-  public String getObservacion() {
-    return observacion;
+  public String getObservaciones() {
+    return observaciones;
   }
 
   public void setEjercicio(Long ejercicio) {
@@ -214,7 +214,7 @@ public class TcManticCreditosArchivosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getObservacion());
+		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
@@ -235,7 +235,7 @@ public class TcManticCreditosArchivosDto implements IBaseDto, Serializable {
 		regresar.put("mes", getMes());
 		regresar.put("idCreditoNota", getIdCreditoNota());
 		regresar.put("nombre", getNombre());
-		regresar.put("observacion", getObservacion());
+		regresar.put("observaciones", getObservaciones());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
   	return regresar;
@@ -244,7 +244,7 @@ public class TcManticCreditosArchivosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdCreditoArchivo(), getRuta(), getTamanio(), getIdUsuario(), getIdTipoArchivo(), getAlias(), getMes(), getIdCreditoNota(), getNombre(), getObservacion(), getEjercicio(), getRegistro()
+    getIdCreditoArchivo(), getRuta(), getTamanio(), getIdUsuario(), getIdTipoArchivo(), getAlias(), getMes(), getIdCreditoNota(), getNombre(), getObservaciones(), getEjercicio(), getRegistro()
     };
     return regresar;
   }

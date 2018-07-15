@@ -108,6 +108,11 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 		this.orden.setIdSinIva(idSinIva);
 	}
 
+	@Override
+	public void setAjusteDeuda(double deuda) {
+		this.orden.setDeuda(deuda);
+	}
+
 	private ArrayList<Articulo> toLoadOrdenDetalle() throws Exception {
 		ArrayList<Articulo> regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticNotasDetallesDto", "detalle", this.orden.toMap()));
 		ArrayList<Articulo> loaded  = new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "diferencia", this.orden.toMap()));

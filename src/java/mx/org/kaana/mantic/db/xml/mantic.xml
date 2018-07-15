@@ -60,6 +60,27 @@
 				order by
 				  registro desc
       </select>
+      <select id="exists">
+        select      
+          *
+        from      
+          tc_mantic_notas_archivos
+        where      
+          id_tipo_archivo = {idTipoArchivo} and id_nota_entrada = {idNotaEntrada}
+				order by
+				  registro desc
+      </select>
+      <select id="all">
+        select      
+          *
+        from      
+          tc_mantic_notas_archivos
+        where      
+          id_nota_entrada = {idNotaEntrada}
+      </select>
+			<delete id="rows">
+				delete from tc_mantic_notas_archivos where id_nota_entrada = {idNotaEntrada}
+			</delete>
    </unit>		
    <unit id="TcManticCreditosArchivosDto">
       <select id="row">

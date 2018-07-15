@@ -85,7 +85,7 @@ public class Accion extends IBaseArticulos implements Serializable {
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
           break;
       } // switch
-			toLoadCatalog();
+			this.toLoadCatalog();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -205,7 +205,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 				this.getAdminOrden().toCalculate();
 			} // if	
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
-			toLoadCondiciones(proveedores.get(proveedores.indexOf((UISelectEntity)((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedor())));
+			this.toLoadCondiciones(proveedores.get(proveedores.indexOf((UISelectEntity)((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedor())));
 		}	
 	  catch (Exception e) {
       Error.mensaje(e);

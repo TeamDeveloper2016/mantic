@@ -15,6 +15,7 @@ import mx.org.kaana.libs.pagina.KajoolBaseException;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.beans.Totales;
+import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
 
 /**
  *@company KAANA
@@ -77,6 +78,9 @@ public abstract class IAdminArticulos implements Serializable {
 	
 	public abstract void setIdSinIva(Long idSinIva);
 	
+	public void setAjusteDeuda(double deuda) {
+	}
+	
   public boolean add(Articulo articulo) throws Exception {
 		if(this.articulos.indexOf(articulo)< 0) {
 			this.toFillCodigo(articulo);
@@ -135,6 +139,7 @@ public abstract class IAdminArticulos implements Serializable {
 			this.totales.addTotal(articulo.getImportes().getTotal());
 			this.totales.addArticulo(articulo.getIdArticulo());
 		} // for
+		this.setAjusteDeuda(this.totales.getTotal());
 	}
 
 	public void toUpdatePorcentajes() {

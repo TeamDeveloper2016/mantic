@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -67,7 +68,6 @@ public class Accion extends IBaseArticulos implements Serializable {
 	private static final Log LOG=LogFactory.getLog(Accion.class);
   private static final long serialVersionUID= 327393488565639367L;
 	private static final int BUFFER_SIZE      = 6124;
-	
 	
 	private EAccion accion;	
 	private EOrdenes tipoOrden;
@@ -152,6 +152,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(new Entity(ordenCompra.getIdAlmacen())));
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(ordenCompra.getIdProveedor())));
 					} // else	
+					this.doCalculateFechaPago();
           break;
         case MODIFICAR:					
         case CONSULTAR:					
@@ -183,7 +184,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			((NotaEntrada)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
 			((NotaEntrada)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
 			this.getAdminOrden().toAdjustArticulos();
-			transaccion = new Transaccion(((NotaEntrada)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.aplicar);
+			transaccion = new Transaccion(((NotaEntrada)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.aplicar, this.xml, this.pdf);
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR) || this.aplicar) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
@@ -191,7 +192,6 @@ public class Accion extends IBaseArticulos implements Serializable {
     			  RequestContext.getCurrentInstance().execute("jsArticulos.back('generó la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 					else
    			    RequestContext.getCurrentInstance().execute("jsArticulos.back('aplicó la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-     	    this.toUpdateDeleteXml();	
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la nota de entrada."), ETipoMensaje.INFORMACION);
@@ -281,8 +281,32 @@ public class Accion extends IBaseArticulos implements Serializable {
 	}
 	
 	public void doTabChange(TabChangeEvent event) {
-		if(event.getTab().getTitle().equals("Faltantes")) 
-      this.toLoadFaltantes();
+		TcManticNotasArchivosDto tmp= null;
+		if(event.getTab().getTitle().equals("Importar")) {
+			Long idNotaEntrada= ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada();
+			if(idNotaEntrada!= null && idNotaEntrada> 0) {
+				Map<String, Object> params=null;
+				try {
+					params=new HashMap<>();
+					params.put("idNotaEntrada", idNotaEntrada);
+					params.put("idTipoArchivo", 1L);
+				  tmp= (TcManticNotasArchivosDto)DaoFactory.getInstance().findFirst(TcManticNotasArchivosDto.class, "exists", params);
+					if(tmp!= null) 
+						this.xml= new Importado(tmp.getNombre(), "XML", EFormatos.XML, 0L, tmp.getTamanio(), "", tmp.getRuta());
+					params.put("idTipoArchivo", 2L);
+				  tmp= (TcManticNotasArchivosDto)DaoFactory.getInstance().findFirst(TcManticNotasArchivosDto.class, "exists", params);
+					if(tmp!= null) 
+						this.pdf= new Importado(tmp.getNombre(), "PDF", EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta());
+				} // try
+				catch (Exception e) {
+					Error.mensaje(e);
+          JsfBase.addMessageError(e);
+				} // catch
+				finally {
+					Methods.clean(params);
+				} // finally
+			} // if
+		} // if
 	}
 	
 	public void doFileUpload(FileUploadEvent event) {
@@ -298,7 +322,7 @@ public class Accion extends IBaseArticulos implements Serializable {
       temp.append(File.separator);
       temp.append(Fecha.getNombreMes(Calendar.getInstance().get(Calendar.MONTH)).toUpperCase());
       temp.append(File.separator);
-      temp.append(((UISelectEntity)this.attrs.get("proveedor")).toString("prefijo"));
+      temp.append(((UISelectEntity)this.attrs.get("proveedor")).toString("clave"));
       temp.append(File.separator);
 			path.append(temp.toString());
 			result= new File(path.toString());		
@@ -342,64 +366,6 @@ public class Accion extends IBaseArticulos implements Serializable {
 		fileOutputStream.close();
 		inputStream.close();
 	} 
-
-	private void toDeleteAll(String path, String type, String name) {
-    FileSearch fileSearch = new FileSearch();
-    fileSearch.searchDirectory(new File(path), type.toLowerCase());
-    if(fileSearch.getResult().size()> 0)
-		  for (String matched: fileSearch.getResult()) {
-        LOG.warn("delete: ".concat(matched));
-				if(!matched.endsWith(name)) {
-				  File file= new File(matched);
-				  file.delete();
-				} // if
-      } // for
-	}
-	
-	private void toUpdateDeleteXml() throws Exception {
-		//		this(idNotaArchivo, ruta, tamanio, idUsuario, idTipoArchivo, alias, mes, idNotaEntrada, nombre, observacion, ejercicio);
-		TcManticNotasArchivosDto tmp= null;
-		if(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada()!= -1L) {
-			if(this.xml!= null) {
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.xml.getName());
-				tmp= new TcManticNotasArchivosDto(
-					-1L,
-					this.xml.getRuta(),
-					this.xml.getFileSize(),
-					JsfBase.getIdUsuario(),
-					1L,
-					Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.xml.getRuta()).concat(this.xml.getName()),
-					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
-					((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada(),
-					this.xml.getName(),
-					"",
-					new Long(Calendar.getInstance().get(Calendar.YEAR))
-				);
-				TcManticNotasArchivosDto exists= (TcManticNotasArchivosDto)DaoFactory.getInstance().toEntity(TcManticNotasArchivosDto.class, "TcManticNotasArchivosDto", "identically", tmp.toMap());
-				if(exists== null) 
-					DaoFactory.getInstance().insert(tmp);
-			} // if	
-			if(this.pdf!= null) {
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.pdf.getName());
-				tmp= new TcManticNotasArchivosDto(
-					-1L,
-					this.pdf.getRuta(),
-					this.pdf.getFileSize(),
-					JsfBase.getIdUsuario(),
-					2L,
-					Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.xml.getRuta()).concat(this.pdf.getName()),
-					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
-					((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada(),
-					this.pdf.getName(),
-					"",
-					new Long(Calendar.getInstance().get(Calendar.YEAR))
-				);
-				TcManticNotasArchivosDto exists= (TcManticNotasArchivosDto)DaoFactory.getInstance().toEntity(TcManticNotasArchivosDto.class, "TcManticNotasArchivosDto", "identically", tmp.toMap());
-				if(exists== null) 
-					DaoFactory.getInstance().insert(tmp);
-			} // if	
-  	} // if	
-	}
 
 	private void toReadFactura(File file) throws Exception {
     Reader reader            = null;
@@ -549,4 +515,13 @@ public class Accion extends IBaseArticulos implements Serializable {
 			Methods.clean(params);
 		} // finally
 	}
+	
+	public void doCalculateFechaPago() {
+		Date fechaFactura= ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura();
+		Calendar calendar= Calendar.getInstance();
+		calendar.setTimeInMillis(fechaFactura.getTime());
+		calendar.add(Calendar.DATE, ((NotaEntrada)this.getAdminOrden().getOrden()).getDiasPlazo().intValue());
+		((NotaEntrada)this.getAdminOrden().getOrden()).setFechaPago(new Date(calendar.getTimeInMillis()));
+	}
+	
 }
