@@ -149,12 +149,14 @@ public class Importar extends IBaseAttribute implements Serializable {
     File result       = null;		
 		Long fileSize     = 0L;
 		try {
+			Calendar calendar= Calendar.getInstance();
+			calendar.setTimeInMillis(this.orden.getFechaFactura().getTime());
       path.append(Configuracion.getInstance().getPropiedadSistemaServidor("facturas"));
       temp.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
       temp.append(File.separator);
       temp.append(Calendar.getInstance().get(Calendar.YEAR));
       temp.append(File.separator);
-      temp.append(Fecha.getNombreMes(Calendar.getInstance().get(Calendar.MONTH)).toUpperCase());
+      temp.append(Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase());
       temp.append(File.separator);
       temp.append(this.proveedor.getClave());
       temp.append(File.separator);
