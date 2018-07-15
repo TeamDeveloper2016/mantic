@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Importar los archivos de la factura asociada XML/PDF"/>
+	<ui:param name="titulo" value="Importar los archivos XML/PDF de la factura correspondiente"/>
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
@@ -91,11 +91,11 @@
 								<p:column styleClass="janal-wid-13 janal-column-center" headerText="Fecha">
 									<h:outputText value="#{row.registro}"/>
 								</p:column>   
-								<p:column headerText="Observación">
-									<h:outputText value="#{row.observacion}"/>
+								<p:column headerText="Observaciones">
+									<h:outputText value="#{row.observaciones}"/>
 								</p:column>   
 								<p:column style="text-align: center" styleClass="janal-wid-col-38">
-									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="janal-text-white">
+									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="janal-text-white" rendered="#{row.idPrincipal.toLong() eq 1}">
 										<p:fileDownload value="#{manticInventariosEntradasImportar.doFileDownload(row)}" />
 									</p:commandButton>
 								</p:column>
@@ -105,7 +105,7 @@
 							<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
 							<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasImportar.attrs.observaciones}"/>
 							<p:fileUpload fileUploadListener="#{manticInventariosEntradasImportar.doFileUpload}" 
-								mode="advanced" update="@(.importado)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+								mode="advanced" process="@this observaciones" update="@(.importado)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 								multiple="false" allowTypes="#{manticInventariosEntradasImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticInventariosEntradasImportar.attrs.formatos}"/>
 							<p:outputLabel value="XML importado: #{manticInventariosEntradasImportar.xml.ruta}#{manticInventariosEntradasImportar.xml.name}" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold"/>

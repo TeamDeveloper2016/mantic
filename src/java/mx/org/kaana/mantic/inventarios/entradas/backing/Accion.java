@@ -292,11 +292,11 @@ public class Accion extends IBaseArticulos implements Serializable {
 					params.put("idTipoArchivo", 1L);
 				  tmp= (TcManticNotasArchivosDto)DaoFactory.getInstance().findFirst(TcManticNotasArchivosDto.class, "exists", params);
 					if(tmp!= null) 
-						this.xml= new Importado(tmp.getNombre(), "XML", EFormatos.XML, 0L, tmp.getTamanio(), "", tmp.getRuta());
+						this.xml= new Importado(tmp.getNombre(), "XML", EFormatos.XML, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
 					params.put("idTipoArchivo", 2L);
 				  tmp= (TcManticNotasArchivosDto)DaoFactory.getInstance().findFirst(TcManticNotasArchivosDto.class, "exists", params);
 					if(tmp!= null) 
-						this.pdf= new Importado(tmp.getNombre(), "PDF", EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta());
+						this.pdf= new Importado(tmp.getNombre(), "PDF", EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
 				} // try
 				catch (Exception e) {
 					Error.mensaje(e);
@@ -337,13 +337,13 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.toWriteFile(result, event.getFile().getInputstream());
 			fileSize= event.getFile().getSize();
 			if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
-			  this.xml= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString());
+			  this.xml= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
 				this.toReadFactura(result);
 				this.toCheckArticulos();
 			} //
 			else
 			  if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.PDF.name())) 
-			    this.pdf= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString());
+			    this.pdf= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

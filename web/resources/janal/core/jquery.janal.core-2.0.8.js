@@ -607,7 +607,9 @@
     data: function(id, value) {
       $parent.hide();
       var $components= $parent.components(value.multiple, id);
+      $parent.console('Janal.Control.Validations.data: '+ id+ ' encontrados: '+ $components.length);
       $.each($components, function() {
+        $parent.console('Janal.Control.Validations.data: '+ id+ ' formatos: '+ value.formatos+ '  individual: '+ value.individual);
         $parent.mask(id, $(this), value.mascara);
         $parent.required(id, value.validaciones, true);
         if(value.formatos!== 'libre' || value.individual)

@@ -37,9 +37,11 @@ import mx.org.kaana.mantic.libs.factura.reglas.Reader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.util.Collections;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
+import mx.org.kaana.mantic.inventarios.entradas.reglas.Importados;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -171,13 +173,13 @@ public class Importar extends IBaseAttribute implements Serializable {
 			this.toWriteFile(result, event.getFile().getInputstream());
 			fileSize= event.getFile().getSize();
 			if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
-			  this.xml= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString());
+			  this.xml= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
 				this.toReadFactura(result);
 				this.toUpdateDeleteXml(this.xml, 1L);
 			} //
 			else
 			  if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.PDF.name())) {
-			    this.pdf= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString());
+			    this.pdf= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
 					this.toUpdateDeleteXml(this.pdf, 2L);
 				} // if
 		} // try
@@ -210,8 +212,8 @@ public class Importar extends IBaseAttribute implements Serializable {
     fileSearch.searchDirectory(new File(path), type.toLowerCase());
     if(fileSearch.getResult().size()> 0)
 		  for (String matched: fileSearch.getResult()) {
-        LOG.warn("delete: ".concat(matched));
 				if(!matched.endsWith(name)) {
+          LOG.warn("Importar.toDelleteAll delete: ".concat(matched));
 				  File file= new File(matched);
 				  file.delete();
 				} // if
@@ -233,12 +235,16 @@ public class Importar extends IBaseAttribute implements Serializable {
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
 					this.orden.getIdNotaEntrada(),
 					importado.getName(),
-					(String)this.attrs.get("observacion"),
-					new Long(Calendar.getInstance().get(Calendar.YEAR))
+					importado.getObservaciones(),
+					new Long(Calendar.getInstance().get(Calendar.YEAR)),
+					1L
 				);
 				TcManticNotasArchivosDto exists= (TcManticNotasArchivosDto)DaoFactory.getInstance().toEntity(TcManticNotasArchivosDto.class, "TcManticNotasArchivosDto", "identically", tmp.toMap());
-				if(exists== null) 
-					DaoFactory.getInstance().insert(tmp);
+				if(exists== null) {
+					Importados importados= new Importados(tmp);
+					if(importados.ejecutar(EAccion.AGREGAR))
+      			JsfBase.addMessage("Importar:", "El archivo se importo de forma correcta. !", ETipoMensaje.ERROR);
+				} // if
 			} // if	
   	} // if	
 	}
@@ -306,11 +312,11 @@ public class Importar extends IBaseAttribute implements Serializable {
 				params.put("idTipoArchivo", 1L);
 				tmp= (TcManticNotasArchivosDto)DaoFactory.getInstance().findFirst(TcManticNotasArchivosDto.class, "exists", params);
 				if(tmp!= null) 
-					this.xml= new Importado(tmp.getNombre(), "XML", EFormatos.XML, 0L, tmp.getTamanio(), "", tmp.getRuta());
+					this.xml= new Importado(tmp.getNombre(), "XML", EFormatos.XML, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
 				params.put("idTipoArchivo", 2L);
 				tmp= (TcManticNotasArchivosDto)DaoFactory.getInstance().findFirst(TcManticNotasArchivosDto.class, "exists", params);
 				if(tmp!= null) 
-					this.pdf= new Importado(tmp.getNombre(), "PDF", EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta());
+					this.pdf= new Importado(tmp.getNombre(), "PDF", EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
 			} // try
 			catch (Exception e) {
 				Error.mensaje(e);

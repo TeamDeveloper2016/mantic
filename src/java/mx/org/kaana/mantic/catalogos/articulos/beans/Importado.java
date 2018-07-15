@@ -13,12 +13,13 @@ public class Importado implements Serializable {
   private Long fileSize;
 	private String medicion;
 	private String ruta;
+	private String observaciones;
 
   public Importado() {
-		this("", "", EFormatos.FREE, 0L, 0L, "", "");
+		this("", "", EFormatos.FREE, 0L, 0L, "", "", "");
 	}
 	
-  public Importado(String name, String content, EFormatos format, Long size, Long fileSize, String medicion, String ruta) {
+  public Importado(String name, String content, EFormatos format, Long size, Long fileSize, String medicion, String ruta, String observaciones) {
     this.name    = name;
     this.content = content;
     this.format  = format;
@@ -26,6 +27,7 @@ public class Importado implements Serializable {
 		this.fileSize= fileSize;
 		this.medicion= medicion;
 		this.ruta    = ruta;
+		this.observaciones= observaciones;
   }
 
   public String getName() {
@@ -84,6 +86,14 @@ public class Importado implements Serializable {
 		this.ruta = ruta;
 	}
 
+	public String getObservaciones() {
+		return observaciones;
+	}
+
+	public void setObservaciones(String observaciones) {
+		this.observaciones=observaciones;
+	}
+	
   @Override
   public int hashCode() {
     int hash=5;
@@ -108,6 +118,6 @@ public class Importado implements Serializable {
 
   @Override
   public String toString() {
-    return "Importado{"+"name="+name+", content="+content+", format="+format+", size="+size+", fileSize="+fileSize+", medicion="+ruta+", fileSize="+ruta+'}';
+    return "Importado{"+"name="+name+", content="+content+", format="+format+", size="+size+", fileSize="+fileSize+", medicion="+medicion+", ruta="+ruta+", observaciones="+observaciones+'}';
   }	// toString
 }

@@ -311,11 +311,14 @@ public class Transaccion extends Inventarios implements Serializable {
 					this.orden.getIdNotaEntrada(),
 					this.xml.getName(),
 					"",
-					new Long(Calendar.getInstance().get(Calendar.YEAR))
+					new Long(Calendar.getInstance().get(Calendar.YEAR)),
+					1L
 				);
 				TcManticNotasArchivosDto exists= (TcManticNotasArchivosDto)DaoFactory.getInstance().toEntity(TcManticNotasArchivosDto.class, "TcManticNotasArchivosDto", "identically", tmp.toMap());
-				if(exists== null) 
+				if(exists== null) {
+					DaoFactory.getInstance().updateAll(sesion, TcManticNotasArchivosDto.class, tmp.toMap());
 					DaoFactory.getInstance().insert(sesion, tmp);
+				} // if
 			} // if	
 			if(this.pdf!= null) {
 				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.pdf.getName());
@@ -330,11 +333,14 @@ public class Transaccion extends Inventarios implements Serializable {
 					this.orden.getIdNotaEntrada(),
 					this.pdf.getName(),
 					"",
-					new Long(Calendar.getInstance().get(Calendar.YEAR))
+					new Long(Calendar.getInstance().get(Calendar.YEAR)),
+					1L
 				);
 				TcManticNotasArchivosDto exists= (TcManticNotasArchivosDto)DaoFactory.getInstance().toEntity(TcManticNotasArchivosDto.class, "TcManticNotasArchivosDto", "identically", tmp.toMap());
-				if(exists== null) 
+				if(exists== null) {
+					DaoFactory.getInstance().updateAll(sesion, TcManticNotasArchivosDto.class, tmp.toMap());
 					DaoFactory.getInstance().insert(sesion, tmp);
+				} // if
 			} // if	
   	} // if	
 	}

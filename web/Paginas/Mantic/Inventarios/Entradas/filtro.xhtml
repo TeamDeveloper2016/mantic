@@ -180,14 +180,14 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="agregar" action="#{manticInventariosEntradasFiltro.doAgregar}" icon="fa fa-plus" ajax="false" value="Agregar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|4|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus)}">
+            <p:menuitem id="agregar" value="Agregar" action="#{manticInventariosEntradasFiltro.doAgregar}" icon="fa fa-plus" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|4|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus)}">
 							<f:setPropertyActionListener target="#{manticInventariosEntradasFiltro.attrs.idOrdenCompra}" value="#{manticInventariosEntradasFiltro.attrs.seleccionado.idOrdenCompra}"/>
 						</p:menuitem>	
             <p:separator rendered="#{fn:contains('|1|2|4|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus)}"/>
-            <p:menuitem id="modificar" action="#{manticInventariosEntradasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '1'}"/>					
+            <p:menuitem id="modificar" value="Modificar" action="#{manticInventariosEntradasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '1'}"/>					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '1'}"/>					
             <p:menuitem id="consultar" action="#{manticInventariosEntradasFiltro.doAccion('CONSULTAR')}" icon="fa fa-edit" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-            <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticInventariosEntradasFiltro.doMovimientos}"/>
+            <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora movimientos" onstart="return janal.bloquear()" process="@this tabla" action="#{manticInventariosEntradasFiltro.doMovimientos}"/>
             <p:separator rendered="#{fn:contains('|2|3|5|6|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus)}"/>					
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosEntradasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '2'}"/>					
             <p:menuitem id="devoluciones" icon="fa fa-angle-double-right" value="Devoluciones" onstart="return janal.bloquear()" process="@this tabla" action="#{manticInventariosEntradasFiltro.doDevolucion}" rendered="#{fn:contains('|3|5|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus)}"/>					
@@ -197,7 +197,7 @@
             <p:separator rendered="#{fn:contains('|1|3|5|6|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus)}"/>			
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosEntradasFiltro.doReporte('NOTA_ENTRADA_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{fn:contains('|1|3|4|6|7|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus)}"/>
             <p:separator rendered="#{fn:contains('|1|3|5|6|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus)}"/>			
-            <p:menuitem id="importar" icon="fa fa-external-link" value="Importar" onstart="return janal.bloquear()" process="@this tabla" action="#{manticInventariosEntradasFiltro.doImportar}" rendered="#{fn:contains('|1|3|5|6|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus)}"/>
+            <p:menuitem id="importar" icon="fa fa-external-link" value="Importar XML/PDF" onstart="return janal.bloquear()" process="@this tabla" action="#{manticInventariosEntradasFiltro.doImportar}" rendered="#{fn:contains('|1|3|5|6|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus)}"/>
           </p:contextMenu>						
         </div>
       </div>
