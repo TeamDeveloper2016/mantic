@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.inventarios.entradas.backing;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -33,7 +34,6 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
@@ -52,6 +52,8 @@ import java.util.Collections;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 /**
  *@company KAANA
@@ -101,6 +103,10 @@ public class Accion extends IBaseArticulos implements Serializable {
 	
 	public String getAgregar() {
 		return this.accion.equals(EAccion.AGREGAR)? "none": "";
+	}
+
+	public String getConsultar() {
+		return this.accion.equals(EAccion.CONSULTAR)? "none": "";
 	}
 
 	public Importado getXml() {
@@ -156,7 +162,9 @@ public class Accion extends IBaseArticulos implements Serializable {
           break;
         case MODIFICAR:					
         case CONSULTAR:					
-          this.setAdminOrden(new AdminNotas((NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradasDto", "detalle", this.attrs), this.tipoOrden));
+					NotaEntrada notaEntrada= (NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradasDto", "detalle", this.attrs);
+					this.tipoOrden         = notaEntrada.getIdDirecta().equals(1L)? EOrdenes.NORMAL: EOrdenes.PROVEEDOR;
+          this.setAdminOrden(new AdminNotas(notaEntrada, this.tipoOrden));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
           break;
       } // switch
@@ -524,6 +532,34 @@ public class Accion extends IBaseArticulos implements Serializable {
 		calendar.setTimeInMillis(fechaFactura.getTime());
 		calendar.add(Calendar.DATE, ((NotaEntrada)this.getAdminOrden().getOrden()).getDiasPlazo().intValue());
 		((NotaEntrada)this.getAdminOrden().getOrden()).setFechaPago(new Date(calendar.getTimeInMillis()));
+	}
+
+	public StreamedContent doFileDownload() {
+		StreamedContent regresar= null;
+		try {
+		  InputStream stream = new FileInputStream(new File(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.pdf.getRuta()).concat(this.pdf.getName())));
+	    regresar= new DefaultStreamedContent(stream, "application/pdf", this.pdf.getName());
+		} // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+		return regresar;
+	}	
+	
+	public void doViewDocument() {
+		try {
+			this.attrs.put("temporal", JsfBase.getContext().concat("/").concat(Constantes.RUTA_TEMPORALES).concat(this.pdf.getName()).concat("?pfdrid_c=true"));
+			String name= JsfBase.getRealPath(Constantes.RUTA_TEMPORALES).concat(this.pdf.getName());
+  		File file= new File(name);
+	  	FileInputStream input= new FileInputStream(new File(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.pdf.getRuta()).concat(this.pdf.getName())));
+      this.toWriteFile(file, input);		
+			RequestContext.getCurrentInstance().update("dialogoPDF");
+		} // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
 	}
 	
 }

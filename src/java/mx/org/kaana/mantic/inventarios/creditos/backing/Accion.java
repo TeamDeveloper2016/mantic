@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.inventarios.creditos.backing;
 
 import static codec.pkcs7.Verifier.BUFFER_SIZE;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -48,6 +49,8 @@ import mx.org.kaana.mantic.libs.factura.reglas.Reader;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 /**
  *@company KAANA
@@ -401,5 +404,32 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // if
 	}
 	
-
+	public StreamedContent doFileDownload() {
+		StreamedContent regresar= null;
+		try {
+		  InputStream stream = new FileInputStream(new File(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.pdf.getRuta()).concat(this.pdf.getName())));
+	    regresar= new DefaultStreamedContent(stream, "application/pdf", this.pdf.getName());
+		} // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+		return regresar;
+	}
+	
+	public void doViewDocument() {
+		try {
+			this.attrs.put("temporal", JsfBase.getContext().concat("/").concat(Constantes.RUTA_TEMPORALES).concat(this.pdf.getName()).concat("?pfdrid_c=true"));
+			String name= JsfBase.getRealPath(Constantes.RUTA_TEMPORALES).concat(this.pdf.getName());
+  		File file= new File(name);
+	  	FileInputStream input= new FileInputStream(new File(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.pdf.getRuta()).concat(this.pdf.getName())));
+      this.toWriteFile(file, input);		
+			RequestContext.getCurrentInstance().update("dialogoPDF");
+		} // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+	}
+	
 }

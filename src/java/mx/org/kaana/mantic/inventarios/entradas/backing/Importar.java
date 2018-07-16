@@ -352,4 +352,27 @@ public class Importar extends IBaseAttribute implements Serializable {
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 
+	
+	public void doViewPdfDocument(UISelectEntity item) {
+		this.toCopyDocument(item.toString("alias"), item.toString("nombre"));
+	}
+	
+	public void doViewDocument() {
+		this.toCopyDocument(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.pdf.getRuta()).concat(this.pdf.getName()), this.pdf.getName());
+	}
+
+  private void toCopyDocument(String alias, String name) {
+		try {
+			this.attrs.put("temporal", JsfBase.getContext().concat("/").concat(Constantes.RUTA_TEMPORALES).concat(name).concat("?pfdrid_c=true"));
+  		File file= new File(JsfBase.getRealPath(Constantes.RUTA_TEMPORALES).concat(name));
+	  	FileInputStream input= new FileInputStream(new File(alias));
+      this.toWriteFile(file, input);		
+			RequestContext.getCurrentInstance().update("dialogoPDF");
+		} // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+	}	
+	
 }
