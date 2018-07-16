@@ -120,6 +120,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("idProveedor", -1L);
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
 			doLoad();
     } // try
     catch (Exception e) {
@@ -269,14 +270,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 		try {
 			Calendar calendar= Calendar.getInstance();
 			calendar.setTimeInMillis(this.orden.getRegistro().getTime());
-      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("facturas"));
+      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos"));
       temp.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
       temp.append(File.separator);
       temp.append(Calendar.getInstance().get(Calendar.YEAR));
       temp.append(File.separator);
       temp.append(Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase());
-      temp.append(File.separator);
-      temp.append(((UISelectEntity)this.attrs.get("proveedor")).toString("clave"));
       temp.append(File.separator);
 			path.append(temp.toString());
 			result= new File(path.toString());		

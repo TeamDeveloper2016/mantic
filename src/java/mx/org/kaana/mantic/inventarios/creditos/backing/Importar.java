@@ -162,8 +162,6 @@ public class Importar extends IBaseAttribute implements Serializable {
       temp.append(File.separator);
       temp.append(Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase());
       temp.append(File.separator);
-      temp.append(this.proveedor.getClave());
-      temp.append(File.separator);
 			path.append(temp.toString());
 			result= new File(path.toString());		
 			if (!result.exists())
@@ -224,7 +222,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 	
 	private void toUpdateDeleteXml(Importado importado, Long tipo) throws Exception {
 		TcManticCreditosArchivosDto tmp= null;
-		if(this.orden.getIdNotaEntrada()!= -1L) {
+		if(this.orden.getIdCreditoNota()!= -1L) {
 			if(importado!= null) {
 				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(importado.getRuta()), ".".concat(importado.getFormat().name()), importado.getName());
 				tmp= new TcManticCreditosArchivosDto(
@@ -235,7 +233,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 					tipo,
 					Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(importado.getRuta()).concat(importado.getName()),
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
-					this.orden.getIdNotaEntrada(),
+					this.orden.getIdCreditoNota(),
 					importado.getName(),
 					importado.getObservaciones(),
 					new Long(Calendar.getInstance().get(Calendar.YEAR)),
@@ -306,11 +304,11 @@ public class Importar extends IBaseAttribute implements Serializable {
 
 	private void doLoadFiles() {
 		TcManticCreditosArchivosDto tmp= null;
-		if(this.orden.getIdNotaEntrada()> 0) {
+		if(this.orden.getIdCreditoNota()> 0) {
 			Map<String, Object> params=null;
 			try {
 				params=new HashMap<>();
-				params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
+				params.put("idCreditoNota", this.orden.getIdCreditoNota());
 				params.put("idTipoArchivo", 1L);
 				tmp= (TcManticCreditosArchivosDto)DaoFactory.getInstance().findFirst(TcManticCreditosArchivosDto.class, "exists", params);
 				if(tmp!= null) 
