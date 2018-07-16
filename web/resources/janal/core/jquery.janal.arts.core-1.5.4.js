@@ -471,7 +471,7 @@
 			janal.console('jsArticulo.back: ');
 			alert('Se '+ title+ ' con consecutivo: '+ count);
 		},
-		detail: function(){
+		detail: function() {
 			if(this.valid())
 				detail($(this.key()).val(), this.cursor.index);
 			return false;
@@ -500,6 +500,7 @@
 			var error= this.compare(index);
 			if(error.length> 0) {
 				$(this.amount()).val($(this.request()).val());
+				this.calculate($(this.amount()));
 				janal.show(error);
 			} // if	
 			else

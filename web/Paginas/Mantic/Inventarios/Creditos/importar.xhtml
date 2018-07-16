@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Importar los archivos XML/PDF de la factura correspondiente"/>
+	<ui:param name="titulo" value="Importar los archivos XML/PDF de la nota de crédito"/>
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
@@ -35,44 +35,38 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{manticInventariosEntradasImportar.doTabChange}" process="@this" update="@(.importado)"/>						
+            <p:ajax event="tabChange" listener="#{manticInventariosCreditosImportar.doTabChange}" process="@this" update="@(.importado)"/>						
             <p:tab title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
-								<p:outputLabel for="consecutivo" value="No. nota:"/>
-								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasImportar.orden.consecutivo}" readonly="true"/>
+								<p:outputLabel value="Nota crédito:"/>
+								<p:inputText styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosImportar.orden.consecutivo}" readonly="true"/>
+								<p:outputLabel value="No. devolución:"/>
+								<p:inputText styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosImportar.orden.devolucion}" readonly="true"/>
 								<p:spacer width="1px"/><p:separator/>
-								<p:outputLabel for="idOrdenCompra" value="No. orden:"/>
-								<p:selectOneMenu id="idOrdenCompra" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="contains">
-									<f:selectItems value="#{manticInventariosEntradasImportar.attrs.ordenes}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{element.razonSocial}"/>
+								<p:outputLabel value="Proveedor:"/>
+								<p:selectOneMenu var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="contains">
+									<f:selectItems value="#{manticInventariosCreditosImportar.attrs.proveedores}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{element.razonSocial}"/>
 									<p:column headerText="Clave">
-										<h:outputText value="#{item.consecutivo}"/>
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="RFC">
+										<h:outputText value="#{item.rfc}"/>
 									</p:column>   
 									<p:column headerText="Proveedor">
 										<h:outputText value="#{item.razonSocial}"/>
-									</p:column>   
-									<p:column headerText="Estatus">
-										<h:outputText value="#{item.estatus}"/>
 									</p:column>   
 									<p:column headerText="Total" styleClass="janal-column-right">
 										<h:outputText value="#{item.total}"/>
 									</p:column>   
 								</p:selectOneMenu>
-								<p:outputLabel for="factura" value="No factura:"/>
-								<p:inputText id="factura" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasImportar.orden.factura}" readonly="true"/>
-								<p:outputLabel for="fechaFactura" value="Fecha factura:"/>
-								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{manticInventariosEntradasImportar.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"  disabled="true"/>
-								<p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>
-								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-94" styleClass="janal-wid-99" value="#{manticInventariosEntradasImportar.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" disabled="true"/>
-								<p:outputLabel for="diasPlazo" value="Dias plazo:"/>
-								<p:inputText id="diasPlazo" styleClass="janal-wid-100-txt janal-column-right" value="#{manticInventariosEntradasImportar.orden.diasPlazo}" readonly="true"/>
-								<p:outputLabel for="deuda" value="Deuda:"/>
-								<p:inputText id="deuda" styleClass="janal-wid-100-txt janal-column-right" value="#{manticInventariosEntradasImportar.orden.deuda}" readonly="true"/>
-								<p:outputLabel for="fechaPago" value="Fecha pago:"/>
-								<p:calendar id="fechaPago" inputStyleClass="janal-wid-94" styleClass="janal-wid-99" value="#{manticInventariosEntradasImportar.orden.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" disabled="true"/>
+								<p:outputLabel value="Folio:"/>
+								<p:inputText styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosImportar.orden.folio}" readonly="true"/>
+								<p:outputLabel value="Importe:"/>
+								<p:inputText styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosImportar.orden.importe}" readonly="true"/>
               </p:panelGrid>
 						</p:tab>						            						            																																																
 						<p:tab title="Archivos">
-							<p:dataTable id="importados" var="row" value="#{manticInventariosEntradasImportar.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
+							<p:dataTable id="importados" var="row" value="#{manticInventariosCreditosImportar.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
 								<p:column styleClass="janal-wid-col-30" headerText="No.">
 									<h:outputText value="#{index+ 1}"/>
 								</p:column>   
@@ -96,25 +90,25 @@
 								</p:column>   
 								<p:column style="text-align: center" styleClass="janal-wid-col-38">
 									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="janal-text-white" rendered="#{row.idPrincipal.toLong() eq 1}">
-										<p:fileDownload value="#{manticInventariosEntradasImportar.doFileDownload(row)}" />
+										<p:fileDownload value="#{manticInventariosCreditosImportar.doFileDownload(row)}" />
 									</p:commandButton>
 								</p:column>
 							</p:dataTable>
 						</p:tab>						            						            																																																
 						<p:tab title="Importar">
 							<p:outputLabel value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
-							<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasImportar.attrs.observaciones}"/>
-							<p:fileUpload fileUploadListener="#{manticInventariosEntradasImportar.doFileUpload}" 
-							  mode="advanced" process="@this observaciones" update="@(.importado)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
-								multiple="false" allowTypes="#{manticInventariosEntradasImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
-								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticInventariosEntradasImportar.attrs.formatos}"/>
-							<p:outputLabel value="XML importado: #{manticInventariosEntradasImportar.xml.ruta}#{manticInventariosEntradasImportar.xml.name}" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold"/>
+							<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosImportar.attrs.observaciones}"/>
+							<p:fileUpload fileUploadListener="#{manticInventariosCreditosImportar.doFileUpload}" 
+								mode="advanced" process="@this observaciones" update="@(.importado)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+								multiple="false" allowTypes="#{manticInventariosCreditosImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticInventariosCreditosImportar.attrs.formatos}"/>
+							<p:outputLabel value="XML importado: #{manticInventariosCreditosImportar.xml.ruta}#{manticInventariosCreditosImportar.xml.name}" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold"/>
 							<br/>
-							<p:outputLabel value="PDF importado: #{manticInventariosEntradasImportar.pdf.ruta}#{manticInventariosEntradasImportar.pdf.name}" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold"/>
+							<p:outputLabel value="PDF importado: #{manticInventariosCreditosImportar.pdf.ruta}#{manticInventariosCreditosImportar.pdf.name}" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold"/>
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 								<p:outputLabel value="Articulos XML:"/>
-								<p:selectOneMenu value="#{manticInventariosEntradasImportar.attrs.faltante}" var="row" styleClass="importado janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
-									<f:selectItems value="#{manticInventariosEntradasImportar.attrs.faltantes}"  var="element" itemValue="#{element}" itemLabel="[#{element.sat}] [#{element.codigo}] #{element.nombre}  [#{element.cantidad}] $#{element.costo}"/>
+								<p:selectOneMenu value="#{manticInventariosCreditosImportar.attrs.faltante}" var="row" styleClass="importado janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
+									<f:selectItems value="#{manticInventariosCreditosImportar.attrs.faltantes}"  var="element" itemValue="#{element}" itemLabel="[#{element.sat}] [#{element.codigo}] #{element.nombre}  [#{element.cantidad}] $#{element.costo}"/>
 									<p:column class="MarAuto Responsive janal-wid-10">
 										<f:facet name="header">
 											<h:outputText value="Código SAT"/>
@@ -158,7 +152,7 @@
 										<h:outputText value="#{row['unidadMedida']}"/>
 									</p:column>		
 								</p:selectOneMenu>
-  							<p:outputLabel value="Total: #{manticInventariosEntradasImportar.attrs.faltantes.size()}" styleClass="importado janal-color-orange janal-steps-boton-siguiente janal-font-bold"/>
+  							<p:outputLabel value="Total: #{manticInventariosCreditosImportar.attrs.faltantes.size()}" styleClass="importado janal-color-orange janal-steps-boton-siguiente janal-font-bold"/>
 							</p:panelGrid>	
 						</p:tab>
 					</p:tabView>
@@ -171,10 +165,10 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticInventariosEntradasImportar.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticInventariosCreditosImportar.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticInventariosEntradasImportar.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticInventariosCreditosImportar.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
 </ui:composition>

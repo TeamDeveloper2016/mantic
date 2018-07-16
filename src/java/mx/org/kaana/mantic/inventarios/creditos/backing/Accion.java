@@ -1,10 +1,17 @@
 package mx.org.kaana.mantic.inventarios.creditos.backing;
 
+import static codec.pkcs7.Verifier.BUFFER_SIZE;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -14,22 +21,34 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.inventarios.creditos.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDto;
+import mx.org.kaana.mantic.db.dto.TcManticCreditosArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.inventarios.creditos.beans.NotaCredito;
+import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
+import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
+import mx.org.kaana.mantic.libs.factura.beans.Concepto;
+import mx.org.kaana.mantic.libs.factura.reglas.Reader;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.event.TabChangeEvent;
 
 /**
  *@company KAANA
@@ -48,6 +67,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 	private Long idTipoCreditoNota;
 	private EAccion accion;
 	private NotaCredito orden;
+	private Importado xml;
+	private Importado pdf;
 
 	public String getAgregar() {
 		return this.accion.equals(EAccion.AGREGAR)? "none": "";
@@ -67,6 +88,22 @@ public class Accion extends IBaseAttribute implements Serializable {
 
 	public Long getIdTipoCreditoNota() {
 		return idTipoCreditoNota;
+	}
+
+	public Importado getXml() {
+		return xml;
+	}
+
+	public void setXml(Importado xml) {
+		this.xml=xml;
+	}
+
+	public Importado getPdf() {
+		return pdf;
+	}
+
+	public void setPdf(Importado pdf) {
+		this.pdf=pdf;
 	}
 	
   @Override
@@ -124,7 +161,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-   			  RequestContext.getCurrentInstance().execute("janal.back('Con n\u00FAmero de consecutivo: "+ this.orden.getConsecutivo()+ "');");
+   			  RequestContext.getCurrentInstance().execute("janal.back(' generó la nota de crédito ', '"+ this.orden.getConsecutivo()+ "');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" la nota de credito."), ETipoMensaje.INFORMACION);
@@ -223,5 +260,139 @@ public class Accion extends IBaseAttribute implements Serializable {
       Methods.clean(params);
     } // finally
 	}
+
+	public void doFileUpload(FileUploadEvent event) {
+		StringBuilder path= new StringBuilder();  
+		StringBuilder temp= new StringBuilder();  
+    File result       = null;		
+		Long fileSize     = 0L;
+		try {
+			Calendar calendar= Calendar.getInstance();
+			calendar.setTimeInMillis(this.orden.getRegistro().getTime());
+      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("facturas"));
+      temp.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
+      temp.append(File.separator);
+      temp.append(Calendar.getInstance().get(Calendar.YEAR));
+      temp.append(File.separator);
+      temp.append(Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase());
+      temp.append(File.separator);
+      temp.append(((UISelectEntity)this.attrs.get("proveedor")).toString("clave"));
+      temp.append(File.separator);
+			path.append(temp.toString());
+			result= new File(path.toString());		
+			if (!result.exists())
+				result.mkdirs();
+      path.append(event.getFile().getFileName().toUpperCase());
+			result = new File(path.toString());
+			if (result.exists())
+				result.delete();			      
+			this.toWriteFile(result, event.getFile().getInputstream());
+			fileSize= event.getFile().getSize();
+			if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
+			  this.xml= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
+				this.toReadFactura(result);
+			} //
+			else
+			  if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.PDF.name())) 
+			    this.pdf= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessage("Importar:", "El archivo no pudo ser importado !", ETipoMensaje.ERROR);
+			if(result!= null)
+			  result.delete();
+		} // catch
+	} // doFileUpload	
+	
+	private void toWriteFile(File result, InputStream upload) throws Exception {
+		FileOutputStream fileOutputStream= new FileOutputStream(result);
+		InputStream inputStream          = upload;
+		byte[] buffer                    = new byte[BUFFER_SIZE];
+		int bulk;
+		while(true) {
+			bulk= inputStream.read(buffer);
+			if (bulk < 0) 
+				break;        
+			fileOutputStream.write(buffer, 0, bulk);
+			fileOutputStream.flush();
+		} // while
+		fileOutputStream.close();
+		inputStream.close();
+	} 
+
+	private void toReadFactura(File file) throws Exception {
+    Reader reader            = null;
+		ComprobanteFiscal factura= null;
+		List<Articulo> faltantes = null;
+		try {
+			faltantes= new ArrayList<>();
+			reader = new Reader(file.getAbsolutePath());
+			factura= reader.execute();
+			for (Concepto concepto: factura.getConceptos()) {
+		    //this(sinIva, tipoDeCambio, nombre, codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos, idProveedor, ultimo, solicitado, stock, excedentes, sat, unidadMedida);
+		    faltantes.add(new Articulo(
+				  true,
+					-1L,
+					concepto.getDescripcion(),
+					concepto.getNoIdentificacion(),
+					Numero.toRedondearSat(Double.parseDouble(concepto.getValorUnitario())),
+					"",
+					-1L,
+					"",
+					0D,
+					"",
+					Double.parseDouble(concepto.getTraslado().getTasaCuota())* 100,
+					0D,
+					Numero.toRedondearSat(Double.parseDouble(concepto.getImporte())),
+					Double.parseDouble(concepto.getCantidad()),
+					-1L,
+					new Random().nextLong(),
+					0D,
+					this.orden.getIdProveedor(),
+					false,
+					false,
+					0D,
+					0D,
+					concepto.getClaveProdServ(),
+					concepto.getUnidad()
+				));
+			} // for
+			Collections.sort(faltantes);
+			this.attrs.put("faltantes", faltantes);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+	}
+	
+	public void doTabChange(TabChangeEvent event) {
+		TcManticCreditosArchivosDto tmp= null;
+		if(event.getTab().getTitle().equals("Importar")) {
+			Long idCreditoNota= this.orden.getIdCreditoNota();
+			if(idCreditoNota!= null && idCreditoNota> 0) {
+				Map<String, Object> params=null;
+				try {
+					params=new HashMap<>();
+					params.put("idCreditoNota", idCreditoNota);
+					params.put("idTipoArchivo", 1L);
+				  tmp= (TcManticCreditosArchivosDto)DaoFactory.getInstance().findFirst(TcManticCreditosArchivosDto.class, "exists", params);
+					if(tmp!= null) 
+						this.xml= new Importado(tmp.getNombre(), "XML", EFormatos.XML, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
+					params.put("idTipoArchivo", 2L);
+				  tmp= (TcManticCreditosArchivosDto)DaoFactory.getInstance().findFirst(TcManticCreditosArchivosDto.class, "exists", params);
+					if(tmp!= null) 
+						this.pdf= new Importado(tmp.getNombre(), "PDF", EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
+				} // try
+				catch (Exception e) {
+					Error.mensaje(e);
+          JsfBase.addMessageError(e);
+				} // catch
+				finally {
+					Methods.clean(params);
+				} // finally
+			} // if
+		} // if
+	}
+	
 
 }

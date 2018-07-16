@@ -289,7 +289,7 @@ public class Transaccion extends Inventarios implements Serializable {
 				if(!matched.endsWith(name)) {
           LOG.warn("Nota entrada: "+ this.orden.getConsecutivo()+ " delete file: ".concat(matched));
 				  File file= new File(matched);
-				  file.delete();
+				  // file.delete();
 				} // if
       } // for
 	}

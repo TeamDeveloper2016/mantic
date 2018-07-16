@@ -28,6 +28,7 @@ public final class Constantes {
   public static final String NOMBRE_ARCHIVO_DEFAULT = "SinNombre";
   public static final String CAMPO_LLAVE = "id";
   public static final String NOMBRE_FINAL_CLASE_DTO = "Dto";
+  public static final String PATRON_IMPORTAR_FACTURA= "/(\\.|\\/)(xml|pdf)$/";
 
   // Constantes de separadores y caracteres
   public static final String SEPARADOR = "|";

@@ -178,6 +178,8 @@
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosCreditosFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', manticInventariosCreditosFiltro.attrs.seleccionado.idCreditoEstatus)}"/>
             <p:separator rendered="#{fn:contains('|1|2|3|', manticInventariosCreditosFiltro.attrs.seleccionado.idCreditoEstatus)}"/>					
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosCreditosFiltro.doReporte('NOTA_CREDITO_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{fn:contains('|1|2|3|', manticInventariosCreditosFiltro.attrs.seleccionado.idCreditoEstatus)}"/>
+            <p:separator rendered="#{fn:contains('|1|2|3|', manticInventariosCreditosFiltro.attrs.seleccionado.idCreditoEstatus)}"/>			
+            <p:menuitem id="importar" icon="fa fa-external-link" value="Importar XML/PDF" onstart="return janal.bloquear()" process="@this tabla" action="#{manticInventariosCreditosFiltro.doImportar}" rendered="#{fn:contains('|1|2|3|', manticInventariosCreditosFiltro.attrs.seleccionado.idCreditoEstatus)}"/>
           </p:contextMenu>						
         </div>
       </div>

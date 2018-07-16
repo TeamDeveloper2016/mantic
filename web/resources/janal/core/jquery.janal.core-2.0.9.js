@@ -475,7 +475,7 @@
     // methods publics for class
     init: function(root, form, fields, kind, stage, growl, lock, showMaxError) {
       this._super(root, stage);
-      this.console('Janal.Control.Validations.init');
+      this.console('janal.init');
       $parent        = this;
       $parent.kind   = kind;
       $parent.stage  = stage;
@@ -494,7 +494,7 @@
 			});
     }, // init
     prepare: function(form, fields, showMaxError) {
-      $parent.console('Janal.Control.Validations.prepare');
+      $parent.console('janal.prepare');
       if (typeof(form)!== 'undefined')
         this.form= form;
       if (typeof(fields)!== 'undefined') {
@@ -535,7 +535,7 @@
       $parent.errors.validations= [];
     }, // add
     format: function(error, id, items) {
-      //$parent.console('Janal.Control.Validations.format: '+ id+ ': '+ String(error));
+      //$parent.console('janal.format: '+ id+ ': '+ String(error));
 			var name= id.indexOf(':')> 0? id.substring(id.lastIndexOf(':')+ 1): id;
 					name=	name.indexOf($parent.INPUT_RESERVE)> 0? name.substring(0, name.lastIndexOf($parent.INPUT_RESERVE)): name;
 			if(!$('#'+ name).hasClass('janal-input-error'))
@@ -596,7 +596,7 @@
         $parent.fields[id].individual= value.individual;
     },
     cleanForm: function() {
-      $parent.console('Janal.Control.Validations.cleanForm');
+      $parent.console('janal.cleanForm');
       $.each($parent.fields, function(id, value) {
         var $components= $parent.components(value.multiple, id);
         $.each($components, function() {
@@ -607,9 +607,9 @@
     data: function(id, value) {
       $parent.hide();
       var $components= $parent.components(value.multiple, id);
-      $parent.console('Janal.Control.Validations.data: '+ id+ ' encontrados: '+ $components.length);
+      $parent.console('janal.data: '+ id+ ' encontrados: '+ $components.length);
       $.each($components, function() {
-        $parent.console('Janal.Control.Validations.data: '+ id+ ' formatos: '+ value.formatos+ '  individual: '+ value.individual);
+        $parent.console('janal.data: '+ id+ ' formatos: '+ value.formatos+ '  individual: '+ value.individual);
         $parent.mask(id, $(this), value.mascara);
         $parent.required(id, value.validaciones, true);
         if(value.formatos!== 'libre' || value.individual)
@@ -621,7 +621,7 @@
       $parent.programmer($parent.errors.masks);
     },
     reset: function(clean) {
-      $parent.console('Janal.Control.Validations.reset');
+      $parent.console('janal.reset');
 			if(clean)
         $parent.clean();
       $parent.errors.masks= [];
@@ -631,7 +631,7 @@
       }); // each
     }, // reset
     refresh: function(items) {
-      $parent.console('Janal.Control.Validations.refresh');
+      $parent.console('janal.refresh');
       $parent.errors.masks= [];
       if (typeof(items)=== "string")
         items= $parent.vector(items, ['\\\|', '\\\,', '\\\ ']);
@@ -641,7 +641,7 @@
       }); // each
     }, // refresh
     renovate: function(id, value) {
-      $parent.console('Janal.Control.Validations.renovate');
+      $parent.console('janal.renovate');
       if($parent.fields[id]) {
         $parent.blank(id, value);
         $parent.refresh([id]);
@@ -755,7 +755,7 @@
       $parent.errors.inputs= [];
     }, // hide
     clean: function() {
-      $parent.console('Janal.Control.Validations.clean');
+      $parent.console('janal.clean');
       $.each($parent.fields, function(id, value) {
         $parent.blank(id, value);
         var $components= $parent.components(value.multiple, id);
@@ -911,7 +911,7 @@
       } // if
     }, // move    
     apply: function(group, clear) {
-      $parent.console('Janal.Control.Validations.apply');
+      $parent.console('janal.apply');
       $parent.errors.validations= [];
       $.each($parent.fields, function(id, value) {
         var $components= $parent.components(value.multiple, id);
@@ -925,7 +925,7 @@
       $parent.programmer($parent.errors.validations);
     }, // apply
     check: function(customs, blockui) {
-      $parent.console('Janal.Control.Validations.check');
+      $parent.console('janal.check');
       $parent.hide();
       if(typeof(customs)!== 'undefined' && typeof(customs)!== 'boolean')
         $parent.errors.customs= customs;
@@ -942,7 +942,7 @@
       return ok;
     }, // check    
     update: function(fields) {
-      $parent.console('Janal.Control.Validations.update '+ fields);
+      $parent.console('janal.update '+ fields);
       $parent.clean();
       $parent.fields= fields;
       $parent.reset(false);
@@ -951,17 +951,17 @@
 			$parent.change('datos', $parent.backup);
 		},
     change: function(form, fields) {
-      $parent.console('Janal.Control.Validations.update '+ fields);
+      $parent.console('janal.update '+ fields);
       $parent.clean();
       $parent.prepare(form, fields, $parent.errors.show);
     }, // update
     execute: function(customs, blockui) {
-      $parent.console('Janal.Control.Validations.execute');
+      $parent.console('janal.execute');
       $parent.apply($parent.JANAL_RESERVE);
       return $parent.check(customs, blockui);
     }, // execute
     partial: function(group, customs, blockui) {
-      $parent.console('Janal.Control.Validations.partial');
+      $parent.console('janal.partial');
       var tokens= $parent.vector(group, ['\\\|', '\\\ ', '\\\,']);
       $.each(tokens, function(idx) {
         $parent.apply(String(this), idx=== 0);
@@ -969,7 +969,7 @@
       return $parent.check(customs, blockui);
     }, // partial
     element: function(all, field, blockui) {
-      $parent.console('Janal.Control.Validations.element');
+      $parent.console('janal.element');
       $parent.errors.validations= [];
       $.each($parent.fields, function(id, value) {
         if(id=== field) {
@@ -1009,7 +1009,7 @@
       return ok;
     }, 
     individual: function(field, blockui) {
-      $parent.console('Janal.Control.Validations.individual');
+      $parent.console('janal.individual');
       var ok= true;
       if($parent.fields[field] && !$parent.fields[field].individual)
         ok= $parent.element(true, field, blockui);
@@ -1042,7 +1042,7 @@
       });
     },// overrideContextMenu  
     lockContextMenu: function(server) {
-      $parent.console('Janal.Control.Validations.lockContextMenu');
+      $parent.console('janal.lockContextMenu');
       if(typeof(server)!== 'undefined')
         $parent.offContextMenu= server;
       $(document).bind('contextmenu', function(e) { 
@@ -1050,7 +1050,7 @@
       });       
     },
     hideStackMenu: function() {
-      $parent.console('Janal.Control.Validations.hideStackMenu');
+      $parent.console('janal.hideStackMenu');
       if(PF('stackMenu'))
         PF('stackMenu').collapse(PF('stackMenu').jq.children('img'));
       $('.ui-stack').bind('mousedown', function(e) { 
@@ -1153,7 +1153,8 @@
 			  $parent.notify('Error:', 'error', id, msg);
     }, // error
     alert: function(id, msg) {
-      $parent.info(id, msg);
+			janal.console('janal.alert: ');
+			alert(msg);
     }, // alert
     version: function() {
       return '0.1.6.0';
@@ -1188,11 +1189,11 @@
 			  $('#' + id).removeClass('xs-pantalla').addClass('lg-pantalla');			
 		},
     ready: function() {
-      $parent.console('Janal.Control.Validations.ready');
+      $parent.console('janal.ready');
       if(typeof($parent.start)!== 'undefined')
         $parent.start();
       else
-        $parent.console('Janal.Control.Validations.start not implemented !');
+        $parent.console('janal.start not implemented !');
     }, // ready		
 		maxDescuentos: function(descuento, extra) {
 		 $parent.hide();
@@ -1202,11 +1203,9 @@
 		 if(total> 100) 
 			 $parent.info(descuento, 'El importe de los descuentos excede el 100% ['+ total+ ']');
 	  }, 
-		back: function(msg) {
-			var text= 'Se gener\u00F3 el registro con \u00E9xito';
-			if(typeof(msg)!== 'undefined')
-				text= text+ '\n'+ msg;
-			alert(text);
+		back: function(title, count) {
+      $parent.console('janal.back');
+			alert('Se '+ title+ ' con consecutivo: '+ count);
 		},
 		readingMode: function(action) {
 			actionValidate= action!== null && action!== undefined ? action.toUpperCase() : 'CONSULTAR';

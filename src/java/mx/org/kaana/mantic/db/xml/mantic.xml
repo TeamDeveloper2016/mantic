@@ -79,7 +79,7 @@
           id_nota_entrada = {idNotaEntrada}
       </select>
 			<update id="rows">
-				update tc_mantic_notas_archivos set id_principal= 2 where id_nota_entrada = {idNotaEntrada}
+				update tc_mantic_notas_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_nota_entrada = {idNotaEntrada}
 			</update>
 			<delete id="rows">
 				delete from tc_mantic_notas_archivos where id_nota_entrada = {idNotaEntrada}
@@ -121,7 +121,7 @@
           id_credito_nota = {idCreditoNota}
       </select>
 			<update id="rows">
-				update tc_mantic_creditos_archivos set id_principal= 2 where id_credito_nota = {idCreditoNota}
+				update tc_mantic_creditos_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_credito_nota = {idCreditoNota}
 			</update>
 			<delete id="rows">
 				delete from tc_mantic_creditos_archivos where id_credito_nota = {idCreditoNota}

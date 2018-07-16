@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.inventarios.entradas.backing;
+package mx.org.kaana.mantic.inventarios.creditos.backing;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,7 +30,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
-import mx.org.kaana.mantic.db.dto.TcManticNotasArchivosDto;
+import mx.org.kaana.mantic.db.dto.TcManticCreditosArchivosDto;
 import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
 import mx.org.kaana.mantic.libs.factura.reglas.Reader;
@@ -40,9 +40,9 @@ import java.util.Collections;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
-import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
+import mx.org.kaana.mantic.db.dto.TcManticCreditosNotasDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
-import mx.org.kaana.mantic.inventarios.entradas.reglas.Importados;
+import mx.org.kaana.mantic.inventarios.creditos.reglas.Importados;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -57,7 +57,7 @@ import org.primefaces.model.StreamedContent;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-@Named(value= "manticInventariosEntradasImportar")
+@Named(value= "manticInventariosCreditosImportar")
 @ViewScoped
 public class Importar extends IBaseAttribute implements Serializable {
 
@@ -65,9 +65,8 @@ public class Importar extends IBaseAttribute implements Serializable {
   private static final long serialVersionUID= 327353488565639367L;
 	private static final int BUFFER_SIZE      = 6124;
 	
-	private TcManticNotasEntradasDto orden;
+	private TcManticCreditosNotasDto orden;
 	private TcManticProveedoresDto proveedor;
-	private Long idNotaEntrada;
 	private Importado xml;
 	private Importado pdf;
 
@@ -79,7 +78,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 		return pdf;
 	}
 
-	public TcManticNotasEntradasDto getOrden() {
+	public TcManticCreditosNotasDto getOrden() {
 		return orden;
 	}
 	
@@ -87,10 +86,10 @@ public class Importar extends IBaseAttribute implements Serializable {
   @Override
   protected void init() {		
     try {
-			if(JsfBase.getFlashAttribute("idNotaEntrada")== null)
+			if(JsfBase.getFlashAttribute("idCreditoNota")== null)
 				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
-      idNotaEntrada= JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: (Long)JsfBase.getFlashAttribute("idNotaEntrada");
-			this.orden= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, idNotaEntrada);
+      Long idCreditoNota= JsfBase.getFlashAttribute("idCreditoNota")== null? -1L: (Long)JsfBase.getFlashAttribute("idCreditoNota9");
+			this.orden= (TcManticCreditosNotasDto)DaoFactory.getInstance().findById(TcManticCreditosNotasDto.class, idCreditoNota);
 			if(this.orden!= null) {
 			  this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.orden.getIdProveedor());
 				this.toLoadCatalog();
@@ -115,8 +114,8 @@ public class Importar extends IBaseAttribute implements Serializable {
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			params.put("idOrdenCompra", this.orden.getIdOrdenCompra());
-			this.attrs.put("ordenes", UIEntity.build("VistaNotasEntradasDto", "ordenes", params, columns));
+			params.put("idProveedor", this.orden.getIdProveedor());
+			this.attrs.put("proveedores", UIEntity.build("VistaCreditosNotasDto", "proveedores", params, columns));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -137,7 +136,7 @@ public class Importar extends IBaseAttribute implements Serializable {
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-		  this.attrs.put("importados", UIEntity.build("VistaNotasEntradasDto", "importados", this.orden.toMap(), columns));
+		  this.attrs.put("importados", UIEntity.build("VistaCreditosNotasDto", "importados", this.orden.toMap(), columns));
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -145,7 +144,7 @@ public class Importar extends IBaseAttribute implements Serializable {
     } // catch		
     finally {
       Methods.clean(columns);
-    }// finally
+    } // finally
   } // doLoad
 
 	public void doFileUpload(FileUploadEvent event) {
@@ -155,8 +154,8 @@ public class Importar extends IBaseAttribute implements Serializable {
 		Long fileSize     = 0L;
 		try {
 			Calendar calendar= Calendar.getInstance();
-			calendar.setTimeInMillis(this.orden.getFechaFactura().getTime());
-      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("facturas"));
+			calendar.setTimeInMillis(this.orden.getRegistro().getTime());
+      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos"));
       temp.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
       temp.append(File.separator);
       temp.append(Calendar.getInstance().get(Calendar.YEAR));
@@ -224,17 +223,17 @@ public class Importar extends IBaseAttribute implements Serializable {
 	}
 	
 	private void toUpdateDeleteXml(Importado importado, Long tipo) throws Exception {
-		TcManticNotasArchivosDto tmp= null;
+		TcManticCreditosArchivosDto tmp= null;
 		if(this.orden.getIdNotaEntrada()!= -1L) {
 			if(importado!= null) {
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(importado.getRuta()), ".".concat(importado.getFormat().name()), importado.getName());
-				tmp= new TcManticNotasArchivosDto(
+				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(importado.getRuta()), ".".concat(importado.getFormat().name()), importado.getName());
+				tmp= new TcManticCreditosArchivosDto(
 					-1L,
 					importado.getRuta(),
 					importado.getFileSize(),
 					JsfBase.getIdUsuario(),
 					tipo,
-					Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(importado.getRuta()).concat(importado.getName()),
+					Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(importado.getRuta()).concat(importado.getName()),
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
 					this.orden.getIdNotaEntrada(),
 					importado.getName(),
@@ -242,7 +241,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 					new Long(Calendar.getInstance().get(Calendar.YEAR)),
 					1L
 				);
-				TcManticNotasArchivosDto exists= (TcManticNotasArchivosDto)DaoFactory.getInstance().toEntity(TcManticNotasArchivosDto.class, "TcManticNotasArchivosDto", "identically", tmp.toMap());
+				TcManticCreditosArchivosDto exists= (TcManticCreditosArchivosDto)DaoFactory.getInstance().toEntity(TcManticCreditosArchivosDto.class, "TcManticCreditosArchivosDto", "identically", tmp.toMap());
 				if(exists== null) {
 					Importados importados= new Importados(tmp);
 					if(importados.ejecutar(EAccion.AGREGAR))
@@ -306,18 +305,18 @@ public class Importar extends IBaseAttribute implements Serializable {
 	}		
 
 	private void doLoadFiles() {
-		TcManticNotasArchivosDto tmp= null;
+		TcManticCreditosArchivosDto tmp= null;
 		if(this.orden.getIdNotaEntrada()> 0) {
 			Map<String, Object> params=null;
 			try {
 				params=new HashMap<>();
 				params.put("idNotaEntrada", this.orden.getIdNotaEntrada());
 				params.put("idTipoArchivo", 1L);
-				tmp= (TcManticNotasArchivosDto)DaoFactory.getInstance().findFirst(TcManticNotasArchivosDto.class, "exists", params);
+				tmp= (TcManticCreditosArchivosDto)DaoFactory.getInstance().findFirst(TcManticCreditosArchivosDto.class, "exists", params);
 				if(tmp!= null) 
 					this.xml= new Importado(tmp.getNombre(), "XML", EFormatos.XML, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
 				params.put("idTipoArchivo", 2L);
-				tmp= (TcManticNotasArchivosDto)DaoFactory.getInstance().findFirst(TcManticNotasArchivosDto.class, "exists", params);
+				tmp= (TcManticCreditosArchivosDto)DaoFactory.getInstance().findFirst(TcManticCreditosArchivosDto.class, "exists", params);
 				if(tmp!= null) 
 					this.pdf= new Importado(tmp.getNombre(), "PDF", EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
 			} // try
@@ -346,10 +345,5 @@ public class Importar extends IBaseAttribute implements Serializable {
     } // catch		
 		return regresar;
 	}
-
-  public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idNotaEntrada", this.idNotaEntrada);
-    return (String)this.attrs.get("retorno");
-  } // doCancelar
-
+	
 }

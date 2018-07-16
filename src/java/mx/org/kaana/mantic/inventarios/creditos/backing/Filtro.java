@@ -305,4 +305,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return "/Paginas/Mantic/Inventarios/Entradas/filtro".concat(Constantes.REDIRECIONAR);
 	}
 	
+	public String doImportar() {
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Creditos/filtro");		
+		JsfBase.setFlashAttribute("idCreditoNota",((Entity)this.attrs.get("seleccionado")).getKey());
+		return "importar".concat(Constantes.REDIRECIONAR);
+	}
+	
 }
