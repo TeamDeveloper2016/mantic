@@ -40,12 +40,10 @@
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
 								<p:outputLabel value="Nota crédito:"/>
 								<p:inputText styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosImportar.orden.consecutivo}" readonly="true"/>
-								<p:outputLabel value="No. devolución:"/>
-								<p:inputText styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosImportar.orden.devolucion}" readonly="true"/>
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel value="Proveedor:"/>
 								<p:selectOneMenu var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="contains">
-									<f:selectItems value="#{manticInventariosCreditosImportar.attrs.proveedores}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{element.razonSocial}"/>
+									<f:selectItems value="#{manticInventariosCreditosImportar.attrs.proveedores}" var="element" itemValue="#{element.key}" itemLabel="#{element.clave}-#{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -55,14 +53,11 @@
 									<p:column headerText="Proveedor">
 										<h:outputText value="#{item.razonSocial}"/>
 									</p:column>   
-									<p:column headerText="Total" styleClass="janal-column-right">
-										<h:outputText value="#{item.total}"/>
-									</p:column>   
 								</p:selectOneMenu>
 								<p:outputLabel value="Folio:"/>
 								<p:inputText styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosImportar.orden.folio}" readonly="true"/>
 								<p:outputLabel value="Importe:"/>
-								<p:inputText styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosImportar.orden.importe}" readonly="true"/>
+								<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="#{manticInventariosCreditosImportar.orden.importe}" readonly="true"/>
               </p:panelGrid>
 						</p:tab>						            						            																																																
 						<p:tab title="Archivos">

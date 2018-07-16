@@ -17,7 +17,8 @@
 				'contenedorGrupos\\:idProveedor'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:folio'        : {validaciones: 'requerido', mascara: 'texto', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
 				'contenedorGrupos\\:importe'      : {validaciones: 'requerido|mayor-igual({"cuanto": 0})|menor-igual({"cuanto": #{manticInventariosCreditosAccion.idTipoCreditoNota eq '3'? 9999999999: manticInventariosCreditosAccion.orden.importe}})', mascara: 'no-aplica', grupo: 'general'},
-				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
+				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
+				'contenedorGrupos\\:comentarios'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
 			};	
 			
     	$(document).ready(function() {
@@ -40,7 +41,7 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{manticInventariosCreditosAccion.doTabChange}" process="@this" update="@(.importado)"/>						
+            <p:ajax event="tabChange" listener="#{manticInventariosCreditosAccion.doTabChange}" process="@this"/>						
 						<p:tab title="General">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
 								<p:outputLabel for="consecutivo" value="Nota crédito:" style="display: #{manticInventariosCreditosAccion.agregar}"/>
@@ -113,7 +114,7 @@
 							<p:outputLabel for="comentarios" value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
 							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="importado janal-wid-100-txt" value="#{manticInventariosCreditosAccion.attrs.observaciones}"/>
 							<p:fileUpload fileUploadListener="#{manticInventariosCreditosAccion.doFileUpload}" 
-								mode="advanced" process="@this observaciones" update="@(.importado)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+								mode="advanced" process="@this comentarios" update="@(.importado)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 								multiple="false" allowTypes="#{manticInventariosCreditosAccion.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticInventariosCreditosAccion.attrs.formatos}"/>
 							<p:outputLabel value="XML importado: #{manticInventariosCreditosAccion.xml.ruta}#{manticInventariosCreditosAccion.xml.name}" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold"/>

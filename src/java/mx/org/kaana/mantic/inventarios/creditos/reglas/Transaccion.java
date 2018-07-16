@@ -1,7 +1,10 @@
 package mx.org.kaana.mantic.inventarios.creditos.reglas;
 
+import java.io.File;
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -14,7 +17,11 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.reportes.FileSearch;
+import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
+import mx.org.kaana.mantic.db.dto.TcManticCreditosArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticCreditosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticCreditosNotasDto;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesBitacoraDto;
@@ -36,17 +43,21 @@ public class Transaccion extends IBaseTnx implements Serializable {
  
 	private TcManticCreditosNotasDto orden;	
 	private Double importe;
+	private Importado xml;
+	private Importado pdf;
 	private String messageError;
 	private TcManticCreditosBitacoraDto bitacora;
 
 	public Transaccion(TcManticCreditosNotasDto orden, TcManticCreditosBitacoraDto bitacora) {
-		this(orden, 0D);
+		this(orden, 0D, null, null);
 		this.bitacora= bitacora;
 	}
 	
-	public Transaccion(TcManticCreditosNotasDto orden, Double importe) {
+	public Transaccion(TcManticCreditosNotasDto orden, Double importe, Importado xml, Importado pdf) {
 		this.orden  = orden;		
 		this.importe= importe;
+		this.xml    = xml;
+	  this.pdf    = pdf;
 	} 
 
 	public String getMessageError() {
@@ -85,6 +96,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 					if(this.orden.getIdTipoCreditoNota().equals(1L))
 						this.toCheckOrdenDevolucion(sesion);
+     	    this.toUpdateDeleteXml(sesion);	
 					break;				
 				case MODIFICAR:
 					TcManticCreditosNotasDto anterior= (TcManticCreditosNotasDto)DaoFactory.getInstance().findById(TcManticCreditosNotasDto.class, this.orden.getIdCreditoNota());
@@ -96,6 +108,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					this.importe+= (this.orden.getImporte()- anterior.getImporte());
 					if(this.orden.getIdTipoCreditoNota().equals(1L))
 						this.toCheckOrdenDevolucion(sesion);
+     	    this.toUpdateDeleteXml(sesion);	
 					break;
 				case ELIMINAR:
 					regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
@@ -105,6 +118,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					this.importe-= this.orden.getImporte();
 					if(this.orden.getIdTipoCreditoNota().equals(1L)) 
 						this.toCheckOrdenDevolucion(sesion);
+     	    this.toDeleteXmlPdf();	
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L) {
@@ -164,4 +178,77 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		} // catch
 	} 
 	
+	private void toDeleteAll(String path, String type, String name) {
+    FileSearch fileSearch = new FileSearch();
+    fileSearch.searchDirectory(new File(path), type.toLowerCase());
+    if(fileSearch.getResult().size()> 0)
+		  for (String matched: fileSearch.getResult()) {
+				if(!matched.endsWith(name)) {
+          LOG.warn("Nota crédito: "+ this.orden.getConsecutivo()+ " delete file: ".concat(matched));
+				  File file= new File(matched);
+				  // file.delete();
+				} // if
+      } // for
+	}
+	
+	private void toUpdateDeleteXml(Session sesion) throws Exception {
+		//		this(idNotaArchivo, ruta, tamanio, idUsuario, idTipoArchivo, alias, mes, idNotaEntrada, nombre, observacion, ejercicio);
+		TcManticCreditosArchivosDto tmp= null;
+		if(this.orden.getIdCreditoNota()!= -1L) {
+			if(this.xml!= null) {
+				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.xml.getName());
+				tmp= new TcManticCreditosArchivosDto(
+					-1L,
+					this.xml.getRuta(),
+					this.xml.getFileSize(),
+					JsfBase.getIdUsuario(),
+					1L,
+					Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.xml.getRuta()).concat(this.xml.getName()),
+					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
+					this.orden.getIdCreditoNota(),
+					this.xml.getName(),
+					"",
+					new Long(Calendar.getInstance().get(Calendar.YEAR)),
+					1L
+				);
+				TcManticCreditosArchivosDto exists= (TcManticCreditosArchivosDto)DaoFactory.getInstance().toEntity(TcManticCreditosArchivosDto.class, "TcManticCreditosArchivosDto", "identically", tmp.toMap());
+				if(exists== null) {
+					DaoFactory.getInstance().updateAll(sesion, TcManticCreditosArchivosDto.class, tmp.toMap());
+					DaoFactory.getInstance().insert(sesion, tmp);
+				} // if
+			} // if	
+			if(this.pdf!= null) {
+				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.pdf.getName());
+				tmp= new TcManticCreditosArchivosDto(
+					-1L,
+					this.pdf.getRuta(),
+					this.pdf.getFileSize(),
+					JsfBase.getIdUsuario(),
+					2L,
+					Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.pdf.getRuta()).concat(this.pdf.getName()),
+					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
+					this.orden.getIdCreditoNota(),
+					this.pdf.getName(),
+					"",
+					new Long(Calendar.getInstance().get(Calendar.YEAR)),
+					1L
+				);
+				TcManticCreditosArchivosDto exists= (TcManticCreditosArchivosDto)DaoFactory.getInstance().toEntity(TcManticCreditosArchivosDto.class, "TcManticCreditosArchivosDto", "identically", tmp.toMap());
+				if(exists== null) {
+					DaoFactory.getInstance().updateAll(sesion, TcManticCreditosArchivosDto.class, tmp.toMap());
+					DaoFactory.getInstance().insert(sesion, tmp);
+				} // if
+			} // if	
+  	} // if	
+	}
+
+	public void toDeleteXmlPdf() throws Exception {
+		List<TcManticCreditosArchivosDto> list= (List<TcManticCreditosArchivosDto>)DaoFactory.getInstance().findViewCriteria(TcManticCreditosArchivosDto.class, this.orden.toMap(), "all");
+		if(list!= null)
+			for (TcManticCreditosArchivosDto item: list) {
+				LOG.info("Nota crédito: "+ this.orden.getConsecutivo()+ " delete file: "+ item.getAlias());
+				File file= new File(item.getAlias());
+				file.delete();
+			} // for
+	}		
 } 

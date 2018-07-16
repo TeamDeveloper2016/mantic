@@ -42,7 +42,6 @@ import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticCreditosArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.inventarios.creditos.beans.NotaCredito;
-import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
 import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
 import mx.org.kaana.mantic.libs.factura.reglas.Reader;
@@ -121,6 +120,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
+			this.attrs.put("carpeta", "TEMPORAL");
 			doLoad();
     } // try
     catch (Exception e) {
@@ -158,7 +158,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     Transaccion transaccion= null;
     String regresar        = null;
     try {			
-			transaccion = new Transaccion(this.orden, (Double)this.attrs.get("importe"));
+			transaccion = new Transaccion(this.orden, (Double)this.attrs.get("importe"), this.xml, this.pdf);
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
@@ -209,11 +209,13 @@ public class Accion extends IBaseAttribute implements Serializable {
 					if((Long)this.attrs.get("idDevolucion")> 0L) {
 						this.attrs.put("devoluciones", UIEntity.build("VistaCreditosNotasDto", "devoluciones", params, columns));
 						List<UISelectEntity> devoluciones= (List<UISelectEntity>)this.attrs.get("devoluciones");
-						if(devoluciones!= null && !devoluciones.isEmpty()) 
+						if(devoluciones!= null && !devoluciones.isEmpty()) {
 							if(this.accion.equals(EAccion.AGREGAR))
 							  this.orden.setIkDevolucion(devoluciones.get(0));
 						  else
                 this.orden.setIkDevolucion(devoluciones.get(devoluciones.indexOf(this.orden.getIkDevolucion())));							
+						  this.attrs.put("carpeta", this.orden.getIkDevolucion().toString("clave"));
+						} // if	
 					} // if	
 					break;
 				case 2:
@@ -231,11 +233,13 @@ public class Accion extends IBaseAttribute implements Serializable {
 					if((Long)this.attrs.get("idNotaEntrada")> 0L) {
 						this.attrs.put("notas", UIEntity.build("VistaCreditosNotasDto", "notas", params, columns));
 						List<UISelectEntity> notas= (List<UISelectEntity>)this.attrs.get("notas");
-						if(notas!= null && !notas.isEmpty()) 
+						if(notas!= null && !notas.isEmpty()) {
  							if(this.accion.equals(EAccion.AGREGAR))
   							this.orden.setIkNotaEntrada(notas.get(0));
 						  else
                 this.orden.setIkNotaEntrada(notas.get(notas.indexOf(this.orden.getIkNotaEntrada())));							
+   						this.attrs.put("carpeta", this.orden.getIkNotaEntrada().toString("clave"));
+						} // if	
 					} // if	
 					break;
 				case 3:
@@ -244,11 +248,13 @@ public class Accion extends IBaseAttribute implements Serializable {
 					columns.remove(columns.size()- 1);
 					this.attrs.put("proveedores", UIEntity.build("VistaOrdenesComprasDto", "moneda", params, columns));
 					List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
-					if(proveedores!= null && !proveedores.isEmpty()) 
+					if(proveedores!= null && !proveedores.isEmpty()) {
 						if(this.accion.equals(EAccion.AGREGAR))
 							this.orden.setIkProveedor(proveedores.get(0));
 						else
 							this.orden.setIkProveedor(proveedores.get(proveedores.indexOf(this.orden.getIkProveedor())));							
+ 						this.attrs.put("carpeta", this.orden.getIkProveedor().toString("clave"));
+					} // if	
 					break;
 			} // switch
     } // try
@@ -276,6 +282,8 @@ public class Accion extends IBaseAttribute implements Serializable {
       temp.append(Calendar.getInstance().get(Calendar.YEAR));
       temp.append(File.separator);
       temp.append(Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase());
+      temp.append(File.separator);
+      temp.append(this.attrs.get("carpeta"));
       temp.append(File.separator);
 			path.append(temp.toString());
 			result= new File(path.toString());		

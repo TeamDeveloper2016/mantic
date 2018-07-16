@@ -142,7 +142,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Entity seleccionado     = null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			transaccion= new Transaccion((TcManticCreditosNotasDto)DaoFactory.getInstance().findById(TcManticCreditosNotasDto.class, seleccionado.getKey()), seleccionado.toDouble("importe"));
+			transaccion= new Transaccion((TcManticCreditosNotasDto)DaoFactory.getInstance().findById(TcManticCreditosNotasDto.class, seleccionado.getKey()), seleccionado.toDouble("importe"), null, null);
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Eliminar", "La nota de crédito se ha eliminado correctamente.", ETipoMensaje.ERROR);
 			else
@@ -288,13 +288,6 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // finally
 	}	
 	
-	public String doMovimientos() {
-		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.NOTAS_CREDITOS);
-		JsfBase.setFlashAttribute(ETipoMovimiento.NOTAS_CREDITOS.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
-		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Inventarios/Creditos/filtro");
-		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
-	}
-
 	public String doDevolucion() {
 		JsfBase.setFlashAttribute("idDevolucion", this.attrs.get("idDevolucion"));
 		return "/Paginas/Mantic/Inventarios/Devoluciones/filtro".concat(Constantes.REDIRECIONAR);

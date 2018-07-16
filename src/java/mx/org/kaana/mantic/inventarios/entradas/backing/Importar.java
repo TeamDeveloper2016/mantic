@@ -349,7 +349,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idNotaEntrada", this.idNotaEntrada);
-    return (String)this.attrs.get("retorno");
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 
 }

@@ -41,6 +41,8 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.mantic.db.dto.TcManticCreditosNotasDto;
+import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.inventarios.creditos.reglas.Importados;
 import org.primefaces.context.RequestContext;
@@ -69,6 +71,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 	private TcManticProveedoresDto proveedor;
 	private Importado xml;
 	private Importado pdf;
+	private Long idCreditoNota;
 
 	public Importado getXml() {
 		return xml;
@@ -85,14 +88,29 @@ public class Importar extends IBaseAttribute implements Serializable {
 	@PostConstruct
   @Override
   protected void init() {		
+		TcManticDevolucionesDto devolucion  = null;
+		TcManticNotasEntradasDto notaEntrada= null;
     try {
 			if(JsfBase.getFlashAttribute("idCreditoNota")== null)
 				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
-      Long idCreditoNota= JsfBase.getFlashAttribute("idCreditoNota")== null? -1L: (Long)JsfBase.getFlashAttribute("idCreditoNota9");
+      idCreditoNota= JsfBase.getFlashAttribute("idCreditoNota")== null? -1L: (Long)JsfBase.getFlashAttribute("idCreditoNota");
 			this.orden= (TcManticCreditosNotasDto)DaoFactory.getInstance().findById(TcManticCreditosNotasDto.class, idCreditoNota);
 			if(this.orden!= null) {
-			  this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.orden.getIdProveedor());
-				this.toLoadCatalog();
+  			switch(this.orden.getIdTipoCreditoNota().intValue()) {
+	  			case 1:
+  			    devolucion = (TcManticDevolucionesDto)DaoFactory.getInstance().findById(TcManticDevolucionesDto.class, this.orden.getIdDevolucion());
+  			    notaEntrada= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, devolucion.getIdNotaEntrada());
+  			    this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, notaEntrada.getIdProveedor());
+					  break;
+	  			case 2:
+  			    notaEntrada= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, this.orden.getIdNotaEntrada());
+  			    this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, notaEntrada.getIdProveedor());
+					  break;
+	  			case 3:
+  			    this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.orden.getIdProveedor());
+					  break;
+				} // switch
+ 			  this.toLoadCatalog();
 			} // if
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
@@ -111,10 +129,10 @@ public class Importar extends IBaseAttribute implements Serializable {
     try {
 			columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			params.put("idProveedor", this.orden.getIdProveedor());
+			params.put("idProveedor", this.proveedor.getIdProveedor());
 			this.attrs.put("proveedores", UIEntity.build("VistaCreditosNotasDto", "proveedores", params, columns));
     } // try
     catch (Exception e) {
@@ -161,6 +179,8 @@ public class Importar extends IBaseAttribute implements Serializable {
       temp.append(Calendar.getInstance().get(Calendar.YEAR));
       temp.append(File.separator);
       temp.append(Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase());
+      temp.append(File.separator);
+      temp.append(this.proveedor.getClave());
       temp.append(File.separator);
 			path.append(temp.toString());
 			result= new File(path.toString());		
@@ -343,5 +363,11 @@ public class Importar extends IBaseAttribute implements Serializable {
     } // catch		
 		return regresar;
 	}
-	
+
+  public String doCancelar() {   
+  	JsfBase.setFlashAttribute("idCreditoNota", this.idCreditoNota);
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+  } // doCancelar
+
+
 }
