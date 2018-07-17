@@ -13,6 +13,7 @@ public final class ParametrosComunes implements Serializable{
   private Long idEmpresa;
   private Long idAlmacen;
   private Long idProveedor;
+  private Long idCliente;
 
   public Map<String, Object> getParametrosComunes() {
     return parametrosComunes;
@@ -27,15 +28,18 @@ public final class ParametrosComunes implements Serializable{
     setParametrosComunes(toDatosEmpresa());
   }
 
-  public ParametrosComunes(Long idEmpresa, Long idAlmacen, Long idProveedor) throws Exception {
-    this.idEmpresa = idEmpresa;
-    this.idAlmacen = idAlmacen;
+  public ParametrosComunes(Long idEmpresa, Long idAlmacen, Long idProveedor, Long idCliente) throws Exception {
+    this.idEmpresa   = idEmpresa;
+    this.idAlmacen   = idAlmacen;
     this.idProveedor = idProveedor;
+    this.idCliente   = idCliente;
     setParametrosComunes(toDatosEmpresa());
-    if(this.idProveedor != null & this.idProveedor != -1L)
+    if(this.idProveedor != -1L)
       toComplementarProveedor();
-    if(this.idAlmacen != null & this.idAlmacen != -1L)
+    if(this.idAlmacen != -1L)
       toComplementarAlmacen();
+    if(this.idCliente != -1L)
+      toComplementarCliente();
   }
   
   private Map<String, Object> toDatosEmpresa() throws Exception {
@@ -120,7 +124,35 @@ public final class ParametrosComunes implements Serializable{
     finally {
 			Methods.clean(params);
 		} // finally
-	} // toEmpresa
+	} // toComplementarProveedor
+  
+  public void toComplementarCliente() throws Exception {
+		Map<String, Object>params   = null;
+    Entity datosProveedor         = null;
+		try {
+      params= new HashMap<>();	
+      params.put("idCliente", this.idCliente);	
+			datosProveedor = (Entity) DaoFactory.getInstance().toEntity("VistaInformacionEmpresas", "datosCliente", params);
+      if(datosProveedor != null){
+        this.parametrosComunes.put("REPORTE_CLIENTE", datosProveedor.toString("razonSocial"));
+        this.parametrosComunes.put("REPORTE_CLIENTE_DIRECCION", datosProveedor.toString("clienteDireccion"));
+        this.parametrosComunes.put("REPORTE_CLIENTE_COLONIA", datosProveedor.toString("colonia"));
+        this.parametrosComunes.put("REPORTE_CLIENTE_CP", datosProveedor.toString("codigoPostal"));
+        this.parametrosComunes.put("REPORTE_CLIENTE_CONTACTO", datosProveedor.toString("agente"));
+        this.parametrosComunes.put("REPORTE_CLIENTE_TELEFONOS", datosProveedor.toString("telefonosCliente"));
+        this.parametrosComunes.put("REPORTE_CLIENTE_EMAILS", datosProveedor.toString("emailsCliente"));
+        this.parametrosComunes.put("REPORTE_CLIENTE_MUNICIPIO", datosProveedor.toString("clienteRegion"));
+        this.parametrosComunes.put("REPORTE_CLIENTE_RFC", datosProveedor.toString("rfc"));
+        this.parametrosComunes.put("REPORTE_CLIENTE_CLAVE", datosProveedor.toString("clave"));
+      }
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch	
+    finally {
+			Methods.clean(params);
+		} // finally
+	} // toComplementarCliente
 
   @Override
   protected void finalize() throws Throwable {
