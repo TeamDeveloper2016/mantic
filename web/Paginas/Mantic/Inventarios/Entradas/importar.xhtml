@@ -198,7 +198,7 @@
 				</object>							
   			<hr class="ui-widget-content"/>
 	  		<div class="janal-line-button">
-			  	<p:commandButton process="@none" styleClass="janal-text-white" icon="fa fa-remove" value="Cerrar" oncomplete="PF('dlgPDF').hide();"/>
+					<p:commandButton process="@this" styleClass="janal-text-white" icon="fa fa-remove" value="Cerrar" actionListener="#{manticInventariosEntradasImportar.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
 			  </div>
 			</p:dialog>
 		</h:form>

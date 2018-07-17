@@ -372,5 +372,18 @@ public class Importar extends IBaseAttribute implements Serializable {
 		} // catch
     return regresar;
 	}
+
+	public void doCerrar() {
+		try {
+			String name= (String)this.attrs.get("temporal");
+			File file= new File(JsfBase.getRealPath(name.substring(0, name.lastIndexOf("?"))));
+			file.delete();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+	}
 	
+
 }
