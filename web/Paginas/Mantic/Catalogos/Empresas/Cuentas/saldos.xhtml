@@ -10,7 +10,7 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'empresa'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'idEmpresa'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'consecutivo' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'dias'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'vencidos'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -30,8 +30,21 @@
 					<p:panel id="panelBusqueda" header="Busqueda:" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
 						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >							
-							<p:outputLabel for="empresa" value="Empresa:"/>
-							<p:inputText id="empresa" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.empresa}" styleClass="janal-wid-100-txt"/> 
+							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosEmpresasCuentasSaldos.attrs.isMatriz}"/>
+							<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+								<f:selectItems value="#{manticCatalogosEmpresasCuentasSaldos.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+								<p:column headerText="Clave">
+									<h:outputText value="#{item.clave}"/>
+								</p:column>   
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column>   
+							</p:selectOneMenu>
+							<p:outputLabel for="almacen" value="Almacen:"/>
+							<p:inputText id="almacen" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.almacen}" styleClass="janal-wid-100-txt"/> 
+							<p:outputLabel for="proveedor" value="Proveedor:"/>
+							<p:inputText id="proveedor" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.proveedor}" styleClass="janal-wid-100-txt"/> 							
 							<p:outputLabel for="consecutivo" value="No. ticket:"/>
 							<p:inputText id="consecutivo" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.consecutivo}" styleClass="janal-wid-100-txt janal-column-right"/> 
 							<p:outputLabel for="dias" value="Días vencidos:"/>
@@ -69,7 +82,7 @@
 								<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
 							</div>  
 						</f:facet>												
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.consecutivo}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.consecutivo}">
 							<f:facet name="header">
 								<h:outputText value="Ticket"/>
 							</f:facet>
@@ -79,7 +92,19 @@
 							<f:facet name="header">
 								<h:outputText value="Empresa"/>
 							</f:facet>
-							<h:outputText value="#{filtro['empresa']}"/>
+							<h:outputText value="#{filtro['nombre']}"/>
+						</p:column>											
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
+							<f:facet name="header">
+								<h:outputText value="Almacen"/>
+							</f:facet>
+							<h:outputText value="#{filtro['almacen']}"/>
+						</p:column>											
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
+							<f:facet name="header">
+								<h:outputText value="Proveedor"/>
+							</f:facet>
+							<h:outputText value="#{filtro['proveedor']}"/>
 						</p:column>											
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
 							<f:facet name="header">
@@ -87,7 +112,7 @@
 							</f:facet>
 							<h:outputText value="#{filtro['importe']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.limite}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.limite}">
 							<f:facet name="header">
 								<h:outputText value="Vence" title="Fecha en la que vence el crédito otorgado"/>
 							</f:facet>
@@ -116,8 +141,7 @@
 						</f:facet>
 					</p:dataTable>
 					<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">            
-            <p:menuitem id="pago" icon="fa fa-money" value="Pago" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doPago}" process="@this tabla" />					
-            <p:menuitem id="deuda" icon="fa fa-minus-circle" value="Deuda" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doDeuda}" process="@this tabla"/>					
+            <p:menuitem id="pago" icon="fa fa-money" value="Pago" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doPago}" process="@this tabla" />					            
           </p:contextMenu>
 				</div>
 			</div>	
