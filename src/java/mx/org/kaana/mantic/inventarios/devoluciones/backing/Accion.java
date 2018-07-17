@@ -135,7 +135,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-   			  RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la devolución de la nota de entrada', '"+ ((Devolucion)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+   			  RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la devolución ', '"+ ((Devolucion)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" la devolución de la nota de entrada."), ETipoMensaje.INFORMACION);
@@ -203,7 +203,7 @@ public class Accion extends IBaseArticulos implements Serializable {
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));      
       columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
       columns.add(new Columna("menudeo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("medioMayoreo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
@@ -228,7 +228,7 @@ public class Accion extends IBaseArticulos implements Serializable {
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));      
       columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
       columns.add(new Columna("menudeo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("medioMayoreo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));

@@ -57,7 +57,7 @@
     logger      : false,
     stage       : 'desarrollo',
 		source      : '/resources/janal/', /* /janal/ inside of jar file */ /* '/resources/janal/ inside of webapp */
-		decimals    : 4,
+		decimals    : 2,
     init: function(root) {
       $self= this;
       $self.console('Janal.Control.Function.init');
