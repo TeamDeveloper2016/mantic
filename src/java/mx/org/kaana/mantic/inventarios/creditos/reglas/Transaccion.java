@@ -188,7 +188,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
     fileSearch.searchDirectory(new File(path), type.toLowerCase());
     if(fileSearch.getResult().size()> 0)
 		  for (String matched: fileSearch.getResult()) {
-				String name= matched.substring(matched.lastIndexOf("/")+ 1);
+				String name= matched.substring((matched.lastIndexOf("/")< 0? matched.lastIndexOf("\\"): matched.lastIndexOf("/"))+ 1);
 				if(listado.indexOf(new ListadoArchivos(name))< 0) {
           LOG.warn("Nota crédito: "+ this.orden.getConsecutivo()+ " delete file: ".concat(matched));
 				  File file= new File(matched);
@@ -222,7 +222,6 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		TcManticCreditosArchivosDto tmp= null;
 		if(this.orden.getIdCreditoNota()!= -1L) {
 			if(this.xml!= null) {
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, this.xml, 1L));
 				tmp= new TcManticCreditosArchivosDto(
 					-1L,
 					this.xml.getRuta(),
@@ -233,7 +232,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
 					this.orden.getIdCreditoNota(),
 					this.xml.getName(),
-					"",
+					this.xml.getObservaciones(),
 					new Long(Calendar.getInstance().get(Calendar.YEAR)),
 					1L
 				);
@@ -242,9 +241,10 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					DaoFactory.getInstance().updateAll(sesion, TcManticCreditosArchivosDto.class, tmp.toMap());
 					DaoFactory.getInstance().insert(sesion, tmp);
 				} // if
+				sesion.flush();
+				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, this.xml, 1L));
 			} // if	
 			if(this.pdf!= null) {
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
 				tmp= new TcManticCreditosArchivosDto(
 					-1L,
 					this.pdf.getRuta(),
@@ -255,7 +255,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
 					this.orden.getIdCreditoNota(),
 					this.pdf.getName(),
-					"",
+					this.pdf.getObservaciones(),
 					new Long(Calendar.getInstance().get(Calendar.YEAR)),
 					1L
 				);
@@ -264,6 +264,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					DaoFactory.getInstance().updateAll(sesion, TcManticCreditosArchivosDto.class, tmp.toMap());
 					DaoFactory.getInstance().insert(sesion, tmp);
 				} // if
+				sesion.flush();
+				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
 			} // if	
   	} // if	
 	}

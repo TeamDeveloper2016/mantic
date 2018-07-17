@@ -292,7 +292,7 @@ public class Transaccion extends Inventarios implements Serializable {
     fileSearch.searchDirectory(new File(path), type.toLowerCase());
     if(fileSearch.getResult().size()> 0)
 		  for (String matched: fileSearch.getResult()) {
-				String name= matched.substring(matched.lastIndexOf("/")+ 1);
+				String name= matched.substring((matched.lastIndexOf("/")< 0? matched.lastIndexOf("\\"): matched.lastIndexOf("/"))+ 1);
 				if(listado.indexOf(new ListadoArchivos(name))< 0) {
           LOG.warn("Nota crédito: "+ this.orden.getConsecutivo()+ " delete file: ".concat(matched));
 				  File file= new File(matched);
@@ -326,7 +326,6 @@ public class Transaccion extends Inventarios implements Serializable {
 		TcManticNotasArchivosDto tmp= null;
 		if(this.orden.getIdNotaEntrada()!= -1L) {
 			if(this.xml!= null) {
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, this.xml, 1L));
 				tmp= new TcManticNotasArchivosDto(
 					-1L,
 					this.xml.getRuta(),
@@ -337,7 +336,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
 					this.orden.getIdNotaEntrada(),
 					this.xml.getName(),
-					"",
+					this.xml.getObservaciones(),
 					new Long(Calendar.getInstance().get(Calendar.YEAR)),
 					1L
 				);
@@ -346,9 +345,10 @@ public class Transaccion extends Inventarios implements Serializable {
 					DaoFactory.getInstance().updateAll(sesion, TcManticNotasArchivosDto.class, tmp.toMap());
 					DaoFactory.getInstance().insert(sesion, tmp);
 				} // if
+				sesion.flush();
+				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, this.xml, 1L));
 			} // if	
 			if(this.pdf!= null) {
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
 				tmp= new TcManticNotasArchivosDto(
 					-1L,
 					this.pdf.getRuta(),
@@ -359,7 +359,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
 					this.orden.getIdNotaEntrada(),
 					this.pdf.getName(),
-					"",
+					this.pdf.getObservaciones(),
 					new Long(Calendar.getInstance().get(Calendar.YEAR)),
 					1L
 				);
@@ -368,6 +368,8 @@ public class Transaccion extends Inventarios implements Serializable {
 					DaoFactory.getInstance().updateAll(sesion, TcManticNotasArchivosDto.class, tmp.toMap());
 					DaoFactory.getInstance().insert(sesion, tmp);
 				} // if
+				sesion.flush();
+				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
 			} // if	
   	} // if	
 	}

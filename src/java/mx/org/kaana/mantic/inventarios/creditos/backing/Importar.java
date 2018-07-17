@@ -116,6 +116,8 @@ public class Importar extends IBaseAttribute implements Serializable {
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
   		this.xml= null;
 			this.pdf= null;
+  		this.attrs.put("xml", ""); 
+			this.attrs.put("pdf", ""); 
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -195,10 +197,12 @@ public class Importar extends IBaseAttribute implements Serializable {
 			if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
 			  this.xml= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
 				this.toReadFactura(result);
+ 				this.attrs.put("xml", this.xml.getName()); 
 			} //
 			else
 			  if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.PDF.name())) {
 			    this.pdf= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
+  				this.attrs.put("pdf", this.pdf.getName()); 
 				} // if
 		} // try
 		catch (Exception e) {
@@ -287,12 +291,17 @@ public class Importar extends IBaseAttribute implements Serializable {
 				params.put("idCreditoNota", this.orden.getIdCreditoNota());
 				params.put("idTipoArchivo", 1L);
 				tmp= (TcManticCreditosArchivosDto)DaoFactory.getInstance().findFirst(TcManticCreditosArchivosDto.class, "exists", params);
-				if(tmp!= null) 
+				if(tmp!= null) {
 					this.xml= new Importado(tmp.getNombre(), "XML", EFormatos.XML, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
+					this.toReadFactura(new File(tmp.getAlias()));
+  				this.attrs.put("xml", this.xml.getName()); 
+				} // if	
 				params.put("idTipoArchivo", 2L);
 				tmp= (TcManticCreditosArchivosDto)DaoFactory.getInstance().findFirst(TcManticCreditosArchivosDto.class, "exists", params);
-				if(tmp!= null) 
+				if(tmp!= null) {
 					this.pdf= new Importado(tmp.getNombre(), "PDF", EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
+  				this.attrs.put("pdf", this.pdf.getName()); 
+				} // if	
 			} // try
 			catch (Exception e) {
 				Error.mensaje(e);

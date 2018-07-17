@@ -106,10 +106,10 @@
 								mode="advanced" process="@this observaciones" update="@(.importado)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 								multiple="false" allowTypes="#{manticInventariosCreditosImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticInventariosCreditosImportar.attrs.formatos}"/>
-							<p:inputText id="xml" value="#{manticInventariosEntradasImportar.xml.name}" class="importado" style="display:none"/>
+							<p:inputText id="xml" value="#{manticInventariosEntradasImportar.attrs.xml}" class="importado" style="display:none"/>
 							<p:outputLabel for="xml" value="XML importado: #{manticInventariosCreditosImportar.xml.ruta}#{manticInventariosCreditosImportar.xml.name}" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold"/>
 							<br/>
-							<p:inputText id="pdf" value="#{manticInventariosEntradasImportar.pdf.name}" class="importado" style="display:none"/>
+							<p:inputText id="pdf" value="#{manticInventariosEntradasImportar.attrs.pdf}" class="importado" style="display:none"/>
 							<p:commandLink value="PDF importado: #{manticInventariosCreditosImportar.pdf.ruta}#{manticInventariosCreditosImportar.pdf.name}" onclick="viewDocument();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento" style="#{(empty manticInventariosCreditosImportar.pdf)? 'display: none': ''}"/>
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 								<p:outputLabel value="Articulos XML:"/>
