@@ -11,6 +11,8 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
+				'contenedorGrupos\\:xml': {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:pdf': {validaciones: 'libre', mascara: 'libre'},
 				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
 			};	
 			
@@ -104,9 +106,11 @@
 								mode="advanced" process="@this observaciones" update="@(.importado)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 								multiple="false" allowTypes="#{manticInventariosCreditosImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticInventariosCreditosImportar.attrs.formatos}"/>
-							<p:outputLabel value="XML importado: #{manticInventariosCreditosImportar.xml.ruta}#{manticInventariosCreditosImportar.xml.name}" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold"/>
+							<p:inputText id="xml" value="#{manticInventariosEntradasImportar.xml.name}" class="importado" style="display:none"/>
+							<p:outputLabel for="xml" value="XML importado: #{manticInventariosCreditosImportar.xml.ruta}#{manticInventariosCreditosImportar.xml.name}" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold"/>
 							<br/>
-							<p:commandLink value="PDF importado: #{manticInventariosCreditosImportar.pdf.ruta}#{manticInventariosCreditosImportar.pdf.name}" onclick="viewDocument();" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento" style="#{(empty manticInventariosCreditosImportar.pdf)? 'display: none': ''}"/>
+							<p:inputText id="pdf" value="#{manticInventariosEntradasImportar.pdf.name}" class="importado" style="display:none"/>
+							<p:commandLink value="PDF importado: #{manticInventariosCreditosImportar.pdf.ruta}#{manticInventariosCreditosImportar.pdf.name}" onclick="viewDocument();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento" style="#{(empty manticInventariosCreditosImportar.pdf)? 'display: none': ''}"/>
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 								<p:outputLabel value="Articulos XML:"/>
 								<p:selectOneMenu value="#{manticInventariosCreditosImportar.attrs.faltante}" var="row" styleClass="importado janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
@@ -167,9 +171,11 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticInventariosCreditosImportar.doAceptar}" styleClass="janal-text-white" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticInventariosCreditosImportar.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticInventariosCreditosImportar.doAceptar}" styleClass="janal-text-white" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticInventariosCreditosImportar.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>

@@ -175,13 +175,13 @@ public class Importar extends IBaseAttribute implements Serializable {
 			calendar.setTimeInMillis(this.orden.getRegistro().getTime());
       path.append(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos"));
       temp.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
-      temp.append(File.separator);
+      temp.append("/");
       temp.append(Calendar.getInstance().get(Calendar.YEAR));
-      temp.append(File.separator);
+      temp.append("/");
       temp.append(Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase());
-      temp.append(File.separator);
+      temp.append("/");
       temp.append(this.proveedor.getClave());
-      temp.append(File.separator);
+      temp.append("/");
 			path.append(temp.toString());
 			result= new File(path.toString());		
 			if (!result.exists())
@@ -195,12 +195,10 @@ public class Importar extends IBaseAttribute implements Serializable {
 			if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
 			  this.xml= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
 				this.toReadFactura(result);
-				this.toUpdateDeleteXml(this.xml, 1L);
 			} //
 			else
 			  if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.PDF.name())) {
 			    this.pdf= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
-					this.toUpdateDeleteXml(this.pdf, 2L);
 				} // if
 		} // try
 		catch (Exception e) {
@@ -226,48 +224,6 @@ public class Importar extends IBaseAttribute implements Serializable {
 		fileOutputStream.close();
 		inputStream.close();
 	} 
-
-	private void toDeleteAll(String path, String type, String name) {
-    FileSearch fileSearch = new FileSearch();
-    fileSearch.searchDirectory(new File(path), type.toLowerCase());
-    if(fileSearch.getResult().size()> 0)
-		  for (String matched: fileSearch.getResult()) {
-				if(!matched.endsWith(name)) {
-          LOG.warn("Importar.toDelleteAll delete: ".concat(matched));
-				  File file= new File(matched);
-				  // file.delete();
-				} // if
-      } // for
-	}
-	
-	private void toUpdateDeleteXml(Importado importado, Long tipo) throws Exception {
-		TcManticCreditosArchivosDto tmp= null;
-		if(this.orden.getIdCreditoNota()!= -1L) {
-			if(importado!= null) {
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(importado.getRuta()), ".".concat(importado.getFormat().name()), importado.getName());
-				tmp= new TcManticCreditosArchivosDto(
-					-1L,
-					importado.getRuta(),
-					importado.getFileSize(),
-					JsfBase.getIdUsuario(),
-					tipo,
-					Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(importado.getRuta()).concat(importado.getName()),
-					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
-					this.orden.getIdCreditoNota(),
-					importado.getName(),
-					importado.getObservaciones(),
-					new Long(Calendar.getInstance().get(Calendar.YEAR)),
-					1L
-				);
-				TcManticCreditosArchivosDto exists= (TcManticCreditosArchivosDto)DaoFactory.getInstance().toEntity(TcManticCreditosArchivosDto.class, "TcManticCreditosArchivosDto", "identically", tmp.toMap());
-				if(exists== null) {
-					Importados importados= new Importados(tmp);
-					if(importados.ejecutar(EAccion.AGREGAR))
-      			JsfBase.addMessage("Importar:", "El archivo se importo de forma correcta. !", ETipoMensaje.ERROR);
-				} // if
-			} // if	
-  	} // if	
-	}
 
 	private void toReadFactura(File file) throws Exception {
     Reader reader            = null;
@@ -391,5 +347,21 @@ public class Importar extends IBaseAttribute implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
 	}	
+
+	public String doAceptar() {
+		String regresar= null;
+		try {
+			Importados importados= new Importados(this.orden, this.xml, this.pdf);
+      if(importados.ejecutar(EAccion.AGREGAR)) {
+      	RequestContext.getCurrentInstance().execute("janal.alert('Se importaron los archivos de forma correcta !');");
+				regresar= this.doCancelar();
+			} // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+    return regresar;
+	}
 	
 }

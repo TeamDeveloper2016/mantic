@@ -27,6 +27,7 @@ import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Inventarios;
+import mx.org.kaana.mantic.db.dto.TcManticNotasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasArchivosDto;
@@ -36,6 +37,7 @@ import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
+import mx.org.kaana.mantic.inventarios.entradas.beans.ListadoArchivos;
 import org.apache.log4j.Logger;
 
 /**
@@ -78,6 +80,10 @@ public class Transaccion extends Inventarios implements Serializable {
 		this.xml      = xml;
 		this.pdf      = pdf;
 	} // Transaccion
+
+	protected void setMessageError(String messageError) {
+		this.messageError=messageError;
+	}
 
 	public String getMessageError() {
 		return messageError;
@@ -281,25 +287,46 @@ public class Transaccion extends Inventarios implements Serializable {
 		this.toCommonNotaEntrada(sesion, this.orden.getIdNotaEntrada(), this.orden.toMap());
 	}
 	
-	private void toDeleteAll(String path, String type, String name) {
+	private void toDeleteAll(String path, String type, List<ListadoArchivos> listado) {
     FileSearch fileSearch = new FileSearch();
     fileSearch.searchDirectory(new File(path), type.toLowerCase());
     if(fileSearch.getResult().size()> 0)
 		  for (String matched: fileSearch.getResult()) {
-				if(!matched.endsWith(name)) {
-          LOG.warn("Nota entrada: "+ this.orden.getConsecutivo()+ " delete file: ".concat(matched));
+				String name= matched.substring(matched.lastIndexOf("/")+ 1);
+				if(listado.indexOf(new ListadoArchivos(name))< 0) {
+          LOG.warn("Nota crédito: "+ this.orden.getConsecutivo()+ " delete file: ".concat(matched));
 				  File file= new File(matched);
-				  // file.delete();
+				  file.delete();
 				} // if
-      } // for
+      } // for // for
 	}
 	
-	private void toUpdateDeleteXml(Session sesion) throws Exception {
+	private List<ListadoArchivos> toListFile(Session sesion, Importado tmp, Long idTipoArchivo) throws Exception {
+		List<ListadoArchivos> regresar= null;
+		Map<String, Object> params=null;
+		try {
+			params  = new HashMap<>();
+			params.put("idTipoArchivo", idTipoArchivo);
+			params.put("ruta", tmp.getRuta());
+			regresar= (List<ListadoArchivos>)DaoFactory.getInstance().toEntitySet(sesion, ListadoArchivos.class, "TcManticNotasArchivosDto", "listado", params);
+			regresar.add(new ListadoArchivos(tmp.getName()));
+		} // try // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} 
+	
+	protected void toUpdateDeleteXml(Session sesion) throws Exception {
 		//		this(idNotaArchivo, ruta, tamanio, idUsuario, idTipoArchivo, alias, mes, idNotaEntrada, nombre, observacion, ejercicio);
 		TcManticNotasArchivosDto tmp= null;
 		if(this.orden.getIdNotaEntrada()!= -1L) {
 			if(this.xml!= null) {
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.xml.getName());
+				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, this.xml, 1L));
 				tmp= new TcManticNotasArchivosDto(
 					-1L,
 					this.xml.getRuta(),
@@ -321,7 +348,7 @@ public class Transaccion extends Inventarios implements Serializable {
 				} // if
 			} // if	
 			if(this.pdf!= null) {
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.pdf.getName());
+				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
 				tmp= new TcManticNotasArchivosDto(
 					-1L,
 					this.pdf.getRuta(),

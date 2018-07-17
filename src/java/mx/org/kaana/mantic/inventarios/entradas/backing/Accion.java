@@ -327,13 +327,13 @@ public class Accion extends IBaseArticulos implements Serializable {
 			calendar.setTimeInMillis(((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura().getTime());
       path.append(Configuracion.getInstance().getPropiedadSistemaServidor("facturas"));
       temp.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
-      temp.append(File.separator);
+      temp.append("/");
       temp.append(Calendar.getInstance().get(Calendar.YEAR));
-      temp.append(File.separator);
+      temp.append("/");
       temp.append(Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase());
-      temp.append(File.separator);
+      temp.append("/");
       temp.append(((UISelectEntity)this.attrs.get("proveedor")).toString("clave"));
-      temp.append(File.separator);
+      temp.append("/");
 			path.append(temp.toString());
 			result= new File(path.toString());		
 			if (!result.exists())

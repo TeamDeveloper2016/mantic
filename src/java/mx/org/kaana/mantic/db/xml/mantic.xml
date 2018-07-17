@@ -78,6 +78,18 @@
         where      
           id_nota_entrada = {idNotaEntrada}
       </select>
+      <select id="listado">
+        select      
+          *
+        from      
+          tc_mantic_notas_archivos
+        where      
+          ruta = '{ruta}'
+				  and id_tipo_archivo= {idTipoArchivo}
+				  and id_principal= 1
+				order by
+				  ruta
+      </select>
 			<update id="rows">
 				update tc_mantic_notas_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_nota_entrada = {idNotaEntrada}
 			</update>
@@ -119,6 +131,18 @@
           tc_mantic_creditos_archivos
         where      
           id_credito_nota = {idCreditoNota}
+      </select>
+      <select id="listado">
+        select      
+          *
+        from      
+          tc_mantic_creditos_archivos
+        where      
+          ruta = '{ruta}'
+				  and id_tipo_archivo= {idTipoArchivo}
+				  and id_principal= 1
+				order by
+				  ruta
       </select>
 			<update id="rows">
 				update tc_mantic_creditos_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_credito_nota = {idCreditoNota}

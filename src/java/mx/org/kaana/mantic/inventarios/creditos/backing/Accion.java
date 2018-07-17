@@ -281,13 +281,13 @@ public class Accion extends IBaseAttribute implements Serializable {
 			calendar.setTimeInMillis(this.orden.getRegistro().getTime());
       path.append(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos"));
       temp.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
-      temp.append(File.separator);
+      temp.append("/");
       temp.append(Calendar.getInstance().get(Calendar.YEAR));
-      temp.append(File.separator);
+      temp.append("/");
       temp.append(Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase());
-      temp.append(File.separator);
+      temp.append("/");
       temp.append(this.attrs.get("carpeta"));
-      temp.append(File.separator);
+      temp.append("/");
 			path.append(temp.toString());
 			result= new File(path.toString());		
 			if (!result.exists())

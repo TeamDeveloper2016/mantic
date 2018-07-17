@@ -286,7 +286,7 @@
        return this.toUnicodeString(this.root);
      }, // toContext
      labels: function(id) {
-       return $('label[for$="'+ id+ '"], label[for$="'+ id+ $parent.SELECT_FOCUS+ '"], label[for$="'+ id+ $parent.INPUT_RESERVE+ '"], th.'+ (id.indexOf(':')> 0? id.substring(id.indexOf(':')+ 1): id)+ '>span');
+       return $('label[for$="'+ id+ '"], label[for$="'+ id+ $parent.SELECT_FOCUS+ '"], label[for$="'+ id+ $parent.INPUT_RESERVE+ '"], th.'+ (id.indexOf(':')> 0? id.substring(id.indexOf(':')+ 1): id)+ '>span, a.'+ id);
      }, // labels
      selector: function(multiple, id) {
        return 'input[id'+ multiple+ '="'+ id+ '"], input[id'+ multiple+ '="'+ id+ $parent.INPUT_RESERVE+ '"], select[id'+ multiple+ '="'+ id+ $parent.INPUT_RESERVE+ '"], textarea[id'+ multiple+ '="'+ id+ '"], input[id^="'+ id+ ':"], input[id*=":'+ id+ ':"], input[id'+ multiple+ '=":'+ id+ '"]';       

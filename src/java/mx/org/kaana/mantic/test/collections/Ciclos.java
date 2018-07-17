@@ -29,6 +29,8 @@ public class Ciclos {
 			LOG.info(item);
 			//list.remove(item);
 		} // for
+		String name= "c:\\hola\\como\\estas\\hola.pdf";
+		LOG.info(name.substring(name.lastIndexOf("\\")+ 1));
 	}
 
 }

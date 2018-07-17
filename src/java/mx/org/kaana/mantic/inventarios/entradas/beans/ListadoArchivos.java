@@ -1,0 +1,68 @@
+package mx.org.kaana.mantic.inventarios.entradas.beans;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+/**
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
+ *@date 8/05/2018
+ *@time 10:29:26 PM 
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
+ */
+
+public class ListadoArchivos implements Serializable {
+
+	private static final long serialVersionUID=323884892456452488L;
+	
+	private String nombre;
+	private String ruta;
+	private String alias;
+
+	public ListadoArchivos() {
+		this("XYZ");
+	}
+
+	public ListadoArchivos(String nombre) {
+		this.nombre=nombre;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre=nombre;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash=3;
+		hash=67*hash+Objects.hashCode(this.nombre);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this==obj) {
+			return true;
+		}
+		if (obj==null) {
+			return false;
+		}
+		if (getClass()!=obj.getClass()) {
+			return false;
+		}
+		final ListadoArchivos other=(ListadoArchivos) obj;
+		if (!Objects.equals(this.nombre, other.nombre)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Listado{nombre="+ nombre+ '}';
+	}
+	
+}

@@ -2,12 +2,11 @@ package mx.org.kaana.mantic.inventarios.creditos.reglas;
 
 import java.io.Serializable;
 import org.hibernate.Session;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import static mx.org.kaana.kajool.enums.EAccion.AGREGAR;
-import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.mantic.db.dto.TcManticCreditosArchivosDto;
+import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
+import mx.org.kaana.mantic.db.dto.TcManticCreditosNotasDto;
 import org.apache.log4j.Logger;
 
 /**
@@ -18,41 +17,32 @@ import org.apache.log4j.Logger;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Importados extends IBaseTnx implements Serializable {
+public class Importados extends Transaccion implements Serializable {
 
   private static final Logger LOG = Logger.getLogger(Importados.class);
 	private static final long serialVersionUID=-6063204157451117549L;
  
-	private TcManticCreditosArchivosDto file;
-	private String messageError;
-
-	public Importados(TcManticCreditosArchivosDto file) {
-		this.file= file;
+	public Importados(TcManticCreditosNotasDto orden, Importado xml, Importado pdf) {
+		super(orden, 0D, xml, pdf);
 	} // Transaccion
-
-	public String getMessageError() {
-		return messageError;
-	}
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar= false;
+		boolean regresar= true;
 		try {
-			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" al importar el archivo.");
+			this.setMessageError("Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" al importar el archivo."));
 			switch(accion) {
 				case AGREGAR:
-					regresar= DaoFactory.getInstance().updateAll(sesion, TcManticCreditosArchivosDto.class, this.file.toMap())>= 1L;
-					regresar= DaoFactory.getInstance().insert(sesion, this.file)>= 1L;
+     	    this.toUpdateDeleteXml(sesion);	
 					break;
 			} // switch
-			if(!regresar)
-        throw new Exception("");
 		} // try
 		catch (Exception e) {
+			regresar= false;
       Error.mensaje(e);			
-			throw new Exception(this.messageError.concat("\n\n")+ e.getMessage());
+			throw new Exception(this.getMessageError().concat("\n\n")+ e.getMessage());
 		} // catch		
-		LOG.info("Se agrego el archivo de forma correcta: "+ this.file.getNombre());
+		LOG.info("Se importaron de forma correcta los archivos !");
 		return regresar;
 	}	// ejecutar
 
