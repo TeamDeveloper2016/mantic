@@ -20,6 +20,8 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 
 @Named(value = "manticCatalogosEmpresasCuentasSaldos")
@@ -32,9 +34,14 @@ public class Saldos extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
+			this.attrs.put("proveedor", "");
+			this.attrs.put("empresa", "");
+			this.attrs.put("almacen", "");
       this.attrs.put("sortOrder", "order by	tc_mantic_empresas_deudas.registro desc");
       this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa")== null? JsfBase.getAutentifica().getEmpresa().getIdEmpresa() : Long.valueOf(JsfBase.getFlashAttribute("idEmpresa").toString()));     
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+				loadSucursales();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -49,6 +56,9 @@ public class Saldos extends IBaseFilter implements Serializable {
     try {
   	  params = toPrepare();	
 			params.put("empresa", this.attrs.get("empresa"));
+			params.put("idEmpresa", this.attrs.get("idEmpresa").toString().equals("-1") ? this.attrs.get("allEmpresa") : this.attrs.get("idEmpresa"));			
+			params.put("almacen", this.attrs.get("almacen"));			
+			params.put("proveedor", this.attrs.get("proveedor"));			
       columns= new ArrayList<>();
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
       columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));    
@@ -93,6 +103,31 @@ public class Saldos extends IBaseFilter implements Serializable {
 		return "filtro".concat(Constantes.REDIRECIONAR);
 	} // doRegresar 	 	
 	
+	private void loadSucursales(){
+		List<UISelectEntity> sucursales= null;
+		Map<String, Object>params      = null;
+		List<Columna> columns          = null;
+		String allEmpresa              = "";
+		try {
+			columns= new ArrayList<>();
+			params= new HashMap<>();
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			sucursales=(List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+			if(!sucursales.isEmpty()){
+				for(UISelectEntity sucursal: sucursales)
+					allEmpresa= allEmpresa.concat(sucursal.getKey().toString()).concat(",");
+				this.attrs.put("allEmpresa", allEmpresa.substring(0, allEmpresa.length()-1));
+			} // 
+			this.attrs.put("sucursales", sucursales);						
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // loadSucursales
+	
 	public String doPago(){
 		String regresar    = null;
 		Entity seleccionado= null;
@@ -107,20 +142,5 @@ public class Saldos extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch		
 		return regresar;
-	} // doPago
-	
-	public String doDeuda(){
-		String regresar    = null;
-		Entity seleccionado= null;
-		try {
-			seleccionado= (Entity) this.attrs.get("seleccionado");
-			JsfBase.setFlashAttribute("idEmpresa", seleccionado.toString("idEmpresa"));
-			regresar= "deuda".concat(Constantes.REDIRECIONAR);
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch		
-		return regresar;
-	} // doPago
+	} // doPago	
 }
