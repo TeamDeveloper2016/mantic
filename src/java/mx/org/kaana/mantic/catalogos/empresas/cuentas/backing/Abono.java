@@ -23,8 +23,9 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.clientes.cuentas.reglas.Transaccion;
+import mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticClientesPagosDto;
+import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
 
 @Named(value = "manticCatalogosEmpresasCuentasAbono")
 @ViewScoped
@@ -99,14 +100,15 @@ public class Abono extends IBaseFilter implements Serializable {
 	
 	public void doRegistrarPago(){
 		Transaccion transaccion      = null;
-		TcManticClientesPagosDto pago= null;
+		TcManticEmpresasPagosDto pago= null;
 		try {
 			if(validaPago()){
-				pago= new TcManticClientesPagosDto();
-				pago.setIdClienteDeuda(Long.valueOf(this.attrs.get("idEmpresaDeuda").toString()));
+				pago= new TcManticEmpresasPagosDto();
+				pago.setIdEmpresaDeuda(Long.valueOf(this.attrs.get("idEmpresaDeuda").toString()));
 				pago.setIdUsuario(JsfBase.getIdUsuario());
 				pago.setObservaciones(this.attrs.get("observaciones").toString());
 				pago.setPago(Double.valueOf(this.attrs.get("pago").toString()));
+				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
 				transaccion= new Transaccion(pago);
 				if(transaccion.ejecutar(EAccion.AGREGAR)){
 					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta", ETipoMensaje.INFORMACION);
