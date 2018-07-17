@@ -110,7 +110,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 
 	@Override
 	public void setAjusteDeuda(double deuda) {
-		this.orden.setDeuda(deuda);
+		this.orden.setDeuda(deuda* 100);
 	}
 
 	private ArrayList<Articulo> toLoadOrdenDetalle() throws Exception {
