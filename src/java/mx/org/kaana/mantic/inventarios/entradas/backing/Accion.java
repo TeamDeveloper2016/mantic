@@ -217,7 +217,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
-    return (String)this.attrs.get("retorno");
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 
 	private void toLoadCatalog() {

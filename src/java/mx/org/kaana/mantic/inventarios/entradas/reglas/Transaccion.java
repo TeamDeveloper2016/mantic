@@ -27,7 +27,6 @@ import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Inventarios;
-import mx.org.kaana.mantic.db.dto.TcManticNotasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasArchivosDto;
@@ -278,9 +277,12 @@ public class Transaccion extends Inventarios implements Serializable {
 		} // for
 		this.orden.setIdNotaEstatus(3L);
 		DaoFactory.getInstance().update(sesion, this.orden);
+		
 		// Una vez que la nota de entrada es cambiada a terminar se registra la cuenta por cobrar
-		TcManticEmpresasDeudasDto deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), this.orden.getDeuda(), this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda());
-		DaoFactory.getInstance().insert(sesion, deuda);
+		if(this.orden.getDiasPlazo()> 0) {
+		  TcManticEmpresasDeudasDto deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), this.orden.getDeuda(), this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda());
+		  DaoFactory.getInstance().insert(sesion, deuda);
+		} // if	
 		
 		TcManticNotasBitacoraDto registro= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 		DaoFactory.getInstance().insert(sesion, registro);

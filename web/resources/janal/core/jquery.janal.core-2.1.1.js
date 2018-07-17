@@ -769,11 +769,12 @@
       $parent.hide();
     }, // clean
     isWaterMark: function(methods) {
+			var count= 0;
       $.each(methods, function() {
         if($parent.names.watermarks.indexOf($parent.cut(this))>= 0)
-          return true;
+          count++;
       });
-      return false;
+      return count> 0;
     }, // isWaterMark
     cleanMarks: function() {
       $.each($parent.fields, function(id, value) {

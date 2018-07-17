@@ -12,6 +12,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
@@ -110,7 +111,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 
 	@Override
 	public void setAjusteDeuda(double deuda) {
-		this.orden.setDeuda(deuda* 100);
+		this.orden.setDeuda(Numero.toRedondear(deuda* 10));
 	}
 
 	private ArrayList<Articulo> toLoadOrdenDetalle() throws Exception {
