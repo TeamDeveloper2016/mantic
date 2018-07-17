@@ -20,21 +20,23 @@
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
 			<div class="ui-grid-row janal-grid-row">								
 				<div id="collapse-content" class="ui-grid-col-12">
-					<p:panelGrid id="panelDetalle" columns="7" styleClass="janal-wid-100" columnClasses="janal-wid-5, janal-wid-40, janal-wid-40, janal-wid-5, janal-wid-5, janal-wid-5">
+					<p:panelGrid id="panelDetalle" columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-80, janal-wid-10">
 						<p:outputLabel value="Ticket:"/>						
-						<p:outputLabel value="Empresa:"/>						
+						<p:outputLabel value="Proveedor:"/>												
+						<p:outputLabel value="Fecha limite:"/>						
+						<p:inputText value="#{manticCatalogosEmpresasCuentasAbono.attrs.deuda.consecutivo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>
+						<p:inputText value="#{manticCatalogosEmpresasCuentasAbono.attrs.deuda.proveedor}" styleClass="janal-wid-100-txt" disabled="true"/>						
+						<p:inputText value="#{manticCatalogosEmpresasCuentasAbono.attrs.deuda.limite}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>						
+					</p:panelGrid>					
+					<p:panelGrid id="panelDetalleDos" columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-40, janal-wid-40, janal-wid-10, janal-wid-10">												
+						<p:outputLabel value="Empresa:"/>			
 						<p:outputLabel value="Almacen:"/>						
-						<p:outputLabel value="Proveedor:"/>						
 						<p:outputLabel value="Importe:"/>						
 						<p:outputLabel value="Saldo:"/>						
-						<p:outputLabel value="Fecha limite:"/>
-						<p:inputText value="#{manticCatalogosEmpresasCuentasAbono.attrs.deuda.consecutivo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>
-						<p:inputText value="#{manticCatalogosEmpresasCuentasAbono.attrs.deuda.nombre}" styleClass="janal-wid-100-txt" disabled="true"/>
-						<p:inputText value="#{manticCatalogosEmpresasCuentasAbono.attrs.deuda.almacen}" styleClass="janal-wid-100-txt" disabled="true"/>
-						<p:inputText value="#{manticCatalogosEmpresasCuentasAbono.attrs.deuda.proveedor}" styleClass="janal-wid-100-txt" disabled="true"/>
+						<p:inputText value="#{manticCatalogosEmpresasCuentasAbono.attrs.deuda.nombre}" styleClass="janal-wid-100-txt" disabled="true"/>		
+						<p:inputText value="#{manticCatalogosEmpresasCuentasAbono.attrs.deuda.almacen}" styleClass="janal-wid-100-txt" disabled="true"/>						
 						<p:inputText value="$ #{manticCatalogosEmpresasCuentasAbono.attrs.deuda.importe}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>
 						<p:inputText value="$ #{manticCatalogosEmpresasCuentasAbono.attrs.deuda.saldo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>
-						<p:inputText value="#{manticCatalogosEmpresasCuentasAbono.attrs.deuda.limite}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>
 						<p:spacer/>
 					</p:panelGrid>					
 				</div>
@@ -95,7 +97,7 @@
 				<p:inputNumber id="pago" value="#{manticCatalogosEmpresasCuentasAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right"/>
 				<p:outputLabel for="tipoPago" value="Tipo de pago:"/>
 				<p:selectOneMenu id="tipoPago" value="#{manticCatalogosEmpresasCuentasAbono.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="contains">					
-					<f:selectItems value="#{manticCatalogosEmpresasCuentasAbono.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+					<f:selectItems value="#{manticCatalogosEmpresasCuentasAbono.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
 					<p:column headerText="Clave">
 						<h:outputText value="#{item.clave}"/>
 					</p:column>   
@@ -108,7 +110,7 @@
 			</h:panelGrid>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPago pago observaciones" update="tabla panelDetalle" actionListener="#{manticCatalogosEmpresasCuentasAbono.doRegistrarPago}" onstart="return janal.partial('dialogo');" oncomplete="PF('dlgPago').hide(); janal.desbloquear();" styleClass="janal-text-white"/>
+				<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPago pago observaciones" update="tabla panelDetalle panelDetalleDos" actionListener="#{manticCatalogosEmpresasCuentasAbono.doRegistrarPago}" onstart="return janal.partial('dialogo');" oncomplete="PF('dlgPago').hide(); janal.desbloquear();" styleClass="janal-text-white"/>
         <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPago').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
 			</div>
 		</p:dialog>
