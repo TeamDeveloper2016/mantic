@@ -5,12 +5,12 @@ import mx.org.kaana.libs.reportes.IReportAttribute;
 
 public enum EReportes implements IReportAttribute{
 
-	ORDEN_COMPRA        ("VistaReportesOrdenesComprasDto", "reporteOrden", "Orden de compra", "/Paginas/Mantic/Compras/Ordenes/Reporte/orden", EFormatos.PDF, "orden_de_compra", "/Paginas/Mantic/Compras/filtro"),
-	ORDENES_COMPRA      ("VistaReportesOrdenesComprasDto", "ordenesCompra", "Ordenes de compra", "/Paginas/Mantic/Compras/Ordenes/Reporte/ordenesCompra", EFormatos.PDF, "ordenes_de_compra", "/Paginas/Mantic/Compras/filtro"),
-	ORDEN_DETALLE       ("VistaReportesOrdenesComprasDto", "ordenDetalle", "Orden de compra", "/Paginas/Mantic/Compras/Ordenes/Reporte/ordenDetalle", EFormatos.PDF, "orden_de_compra_detalle", "/Paginas/Mantic/Compras/filtro"),
-	ORDEN_DETALLE_DIF   ("VistaReportesOrdenesComprasDto", "diferenciasOrdenCompra", "Orden de compra", "/Paginas/Mantic/Compras/Ordenes/Reporte/ordenDetalleDiferencias", EFormatos.PDF, "orden_de_compra_diferencias_detalle", "/Paginas/Mantic/Compras/filtro"),
-	ORDEN_DETALLES_COMP ("VistaReportesOrdenesComprasDto", "detalleCompletoOrdenCompra", "Orden de compra", "/Paginas/Mantic/Compras/Ordenes/Reporte/detCompletoOrdenCompra", EFormatos.PDF, "orden_de_compra_detalles_completos", "/Paginas/Mantic/Compras/filtro"),
-	ORDEN_DETALLES_COMP2("VistaReportesOrdenesComprasDto", "detalleCompletoOrdenCompra", "Orden de compra", "/Paginas/Mantic/Compras/Ordenes/Reporte/detalleCompletoOrdenCompra", EFormatos.PDF, "orden_de_compra_detalles_completos", "/Paginas/Mantic/Compras/filtro"),
+	ORDEN_COMPRA        ("VistaReportesOrdenesComprasDto", "reporteOrden", "Orden de compra", "/Paginas/Mantic/Compras/Ordenes/Reportes/orden", EFormatos.PDF, "orden_de_compra", "/Paginas/Mantic/Compras/filtro"),
+	ORDENES_COMPRA      ("VistaReportesOrdenesComprasDto", "ordenesCompra", "Ordenes de compra", "/Paginas/Mantic/Compras/Ordenes/Reportes/ordenesCompra", EFormatos.PDF, "ordenes_de_compra", "/Paginas/Mantic/Compras/filtro"),
+	ORDEN_DETALLE       ("VistaReportesOrdenesComprasDto", "ordenDetalle", "Orden de compra", "/Paginas/Mantic/Compras/Ordenes/Reportes/ordenDetalle", EFormatos.PDF, "orden_de_compra_detalle", "/Paginas/Mantic/Compras/filtro"),
+	ORDEN_DETALLE_DIF   ("VistaReportesOrdenesComprasDto", "diferenciasOrdenCompra", "Orden de compra", "/Paginas/Mantic/Compras/Ordenes/Reportes/ordenDetalleDiferencias", EFormatos.PDF, "orden_de_compra_diferencias_detalle", "/Paginas/Mantic/Compras/filtro"),
+	ORDEN_DETALLES_COMP ("VistaReportesOrdenesComprasDto", "detalleCompletoOrdenCompra", "Orden de compra", "/Paginas/Mantic/Compras/Ordenes/Reportes/detCompletoOrdenCompra", EFormatos.PDF, "orden_de_compra_detalles_completos", "/Paginas/Mantic/Compras/filtro"),
+	ORDEN_DETALLES_COMP2("VistaReportesOrdenesComprasDto", "detalleCompletoOrdenCompra", "Orden de compra", "/Paginas/Mantic/Compras/Ordenes/Reportes/detalleCompletoOrdenCompra", EFormatos.PDF, "orden_de_compra_detalles_completos", "/Paginas/Mantic/Compras/filtro"),
 	TICKET_VENTA        ("VistaTicketVentaDto", "ticket", "Ticket de venta", "/Paginas/Mantic/Ventas/Caja/Reportes/ticketVenta", EFormatos.XLS, "ticket_venta", "/Paginas/Mantic/Ventas/Caja/accion"),
 	NOTAS_ENTRADA       ("VistaNotasEntradasDto", "lazy", "Notas de Entrada", "/Paginas/Mantic/Inventarios/Entradas/Reportes/notasEntrada", EFormatos.PDF, "ordenes_de_entrada", "/Paginas/Mantic/Inventarios/Entradas/filtro"),
 	NOTA_ENTRADA_DETALLE("VistaReporteNotaEntrada", "detalleNotaEntrada", "Nota de Entrada", "/Paginas/Mantic/Inventarios/Entradas/Reportes/notaEntradaDetalle", EFormatos.PDF, "orden_de_entrada_detalle", "/Paginas/Mantic/Inventarios/Entradas/filtro"),
