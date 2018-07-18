@@ -10,7 +10,9 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'empresa'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'idEmpresa'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'proveedor'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'almacen'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'consecutivo' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'dias'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'vencidos'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -30,8 +32,21 @@
 					<p:panel id="panelBusqueda" header="Busqueda:" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
 						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >							
-							<p:outputLabel for="empresa" value="Empresa:"/>
-							<p:inputText id="empresa" value="#{manticCatalogosEmpresasCuentasPagos.attrs.empresa}" styleClass="janal-wid-100-txt" title="Código, RFC ó Razón social"/> 
+							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosEmpresasCuentasPagos.attrs.isMatriz}"/>
+							<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosEmpresasCuentasPagos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+								<f:selectItems value="#{manticCatalogosEmpresasCuentasPagos.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+								<p:column headerText="Clave">
+									<h:outputText value="#{item.clave}"/>
+								</p:column>   
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column>   
+							</p:selectOneMenu>
+							<p:outputLabel for="almacen" value="Almacen:"/>
+							<p:inputText id="almacen" value="#{manticCatalogosEmpresasCuentasPagos.attrs.almacen}" styleClass="janal-wid-100-txt"/> 
+							<p:outputLabel for="proveedor" value="Proveedor:"/>
+							<p:inputText id="proveedor" value="#{manticCatalogosEmpresasCuentasPagos.attrs.proveedor}" styleClass="janal-wid-100-txt"/> 							
 							<p:outputLabel for="consecutivo" value="No. ticket:"/>
 							<p:inputText id="consecutivo" value="#{manticCatalogosEmpresasCuentasPagos.attrs.consecutivo}" styleClass="janal-wid-100-txt janal-column-right"/> 
 							<p:outputLabel for="dias" value="Días vencidos:"/>
@@ -69,7 +84,7 @@
 								<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
 							</div>  
 						</f:facet>												
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.consecutivo}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.consecutivo}">
 							<f:facet name="header">
 								<h:outputText value="Ticket"/>
 							</f:facet>
@@ -111,36 +126,7 @@
 					</p:dataTable>
 				</div>
 			</div>
-    </div>		           				
-		<p:dialog id="dialogoClientes" widgetVar="dlgClientes" header="Busqueda de cliente" resizable="false" closable="false" responsive="true" width="60%">
-			<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-col-60, janal-wid-100">
-				<p:outputLabel for="busqueda" value="Nombre:"/>
-  			<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-40">
-	  			<p:inputText id="busqueda" value="#{manticCatalogosEmpresasCuentasPagos.attrs.busqueda}" styleClass="janal-wid-100-txt" placeholder="Ej. razón social del cliente DANIEL DAVALOS"/>
-					<p:commandButton icon="fa fa-search" actionListener="#{manticCatalogosEmpresasCuentasPagos.doClientes}" process="@this busqueda" update="encontrados resultados" styleClass="janal-text-white" onstart="return janal.partial('dialogo');"/>
-				</h:panelGrid>
-				<p:outputLabel for="encontrados" value="Encontrados:"/>
-				<p:selectOneMenu id="encontrados" value="#{manticCatalogosEmpresasCuentasPagos.encontrado}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
-					<f:selectItems value="#{manticCatalogosEmpresasCuentasPagos.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.rfc} - #{element.razonSocial}"/>
-					<p:column styleClass="janal-column-left janal-wid-30" headerText="Clave">
-						<h:outputText value="#{item.clave}"/>
-					</p:column>   																			
-					<p:column styleClass="janal-column-left janal-wid-30" headerText="RFC">
-						<h:outputText value="#{item.rfc}"/>
-					</p:column>   																			
-					<p:column styleClass="janal-column-left janal-wid-100" headerText="Razón social">
-						<h:outputText value="#{item.razonSocial}"/>
-					</p:column>  
-				</p:selectOneMenu>
-				<p:spacer/>
-				<p:outputLabel id="resultados" value="Registros encontrados: [#{manticCatalogosEmpresasCuentasPagos.attrs.resultados}]" style="float: right !important"/>
-			</h:panelGrid>
-			<hr class="ui-widget-content"/>
-			<div class="janal-line-button">
-				<p:commandButton value="Aceptar" icon="fa fa-check" process="@this encontrados" update="tabla" actionListener="#{manticCatalogosEmpresasCuentasPagos.doSeleccionado}" onstart="return janal.partial('aceptado');" oncomplete="PF('dlgClientes').hide(); janal.desbloquear();" styleClass="janal-text-white"/>
-        <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgClientes').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
-			</div>
-		</p:dialog> 
+    </div>		           						
   </ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
