@@ -185,7 +185,7 @@
          left join 
            tc_mantic_notas_entradas on tc_mantic_ordenes_compras.id_orden_compra = tc_mantic_notas_entradas.id_orden_compra
          where 
-             tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}	 
+          tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra} and (tc_mantic_ordenes_detalles.cantidades &lt;&gt; 0 or tc_mantic_ordenes_detalles.precios &lt;&gt; 0)
       </select>
       <select id="ordenesCompra">
         select
@@ -439,6 +439,39 @@
         where
           tc_mantic_creditos_notas.id_credito_nota in ({idCreditoNota})) as notas_credito	
       </select>
+    </unit>
+    <unit id="VistaReporteCuentaPorPagarDetalle">
+      <select id="pagosDeuda">
+				select
+					tc_mantic_empresas_pagos.id_empresa_pago as id_key,
+					tc_mantic_notas_entradas.consecutivo,
+					tc_mantic_empresas_deudas.importe,
+					tc_mantic_empresas_deudas.saldo,
+					tc_mantic_empresas_pagos.pago,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
+					tc_mantic_empresas_pagos.registro,
+          tc_mantic_empresas_deudas.registro registro_deuda,
+          tc_mantic_empresas_deudas.limite,
+					tc_mantic_empresas_deudas.saldo total_final,
+					tc_mantic_empresas_deudas.importe importe_deuda,
+          tc_mantic_empresas_deudas.observaciones observaciones_deuda,
+					tc_mantic_empresas_pagos.observaciones
+				from
+					tc_mantic_empresas_deudas
+				left join
+					tc_mantic_empresas_pagos on tc_mantic_empresas_deudas.id_empresa_deuda = tc_mantic_empresas_pagos.id_empresa_deuda
+				left join
+					tc_mantic_notas_entradas on tc_mantic_empresas_deudas.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+				left join
+					tc_janal_usuarios on tc_mantic_empresas_pagos.id_usuario= tc_janal_usuarios.id_usuario
+				left join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_empresas_deudas.id_empresa_deuda= {idEmpresaDeuda}									
+				order by
+					tc_mantic_notas_entradas.consecutivo, 
+					tc_mantic_empresas_deudas.registro desc						
+			</select>
     </unit>
   </dml>
 </process>

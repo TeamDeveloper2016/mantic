@@ -3031,5 +3031,41 @@
           codigo = '{codigo}' and id_trabajo = {idTrabajo} and id_empresa = {idEmpresa}
       </select>
     </unit>
+		<unit id="TcManticClientesArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_clientes_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_clientes_archivos
+        where      
+          id_cliente_representante = {idClienteRepresentante} and id_tipo_archivo = {idTipoArchivo} and id_cliente_archivo = {idClienteArchivo} and nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcManticEmpresasArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_empresas_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_empresas_archivos
+        where      
+          id_tipo_archivo = {idTipoArchivo} and id_empresa_pago = {idEmpresaPago} and id_empresa_archivo = {idEmpresaArchivo} and nombre = '{nombre}'
+      </select>
+    </unit>
   </dml>    
 </process>
