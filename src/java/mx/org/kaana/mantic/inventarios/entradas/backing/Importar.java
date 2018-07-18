@@ -157,7 +157,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 		try {
 			Calendar calendar= Calendar.getInstance();
 			calendar.setTimeInMillis(this.orden.getFechaFactura().getTime());
-      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("facturas"));
+      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"));
       temp.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
       temp.append("/");
       temp.append(Calendar.getInstance().get(Calendar.YEAR));
@@ -322,7 +322,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 	}
 	
 	public void doViewDocument() {
-		this.toCopyDocument(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.pdf.getRuta()).concat(this.pdf.getName()), this.pdf.getName());
+		this.toCopyDocument(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.pdf.getRuta()).concat(this.pdf.getName()), this.pdf.getName());
 	}
 
   private void toCopyDocument(String alias, String name) {

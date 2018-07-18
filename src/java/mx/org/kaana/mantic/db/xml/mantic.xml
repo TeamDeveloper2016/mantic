@@ -7,6 +7,33 @@
   </model>
 
   <dml>	
+	  <unit id="TcManticTiposCreditosNotasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_creditos_notas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_creditos_notas
+        where      
+          nombre = {nombre}
+      </select>
+      <select id="todos">
+        select      
+				  tc_mantic_tipos_creditos_notas.id_tipo_credito_nota as id_key,
+          tc_mantic_tipos_creditos_notas.*
+        from      
+          tc_mantic_tipos_creditos_notas
+        order by
+          tc_mantic_tipos_creditos_notas.id_tipo_credito_nota
+      </select>
+    </unit>
     <unit id="TcManticFaltantesDto">
       <select id="row">
         select      
@@ -152,6 +179,14 @@
 				order by
 				  ruta
       </select>
+			<select id="ejercicios">
+        select      
+          distinct(ejercicio) as id_key
+        from      
+          tc_mantic_creditos_archivos
+ 				order by
+				  ejercicio
+			</select>
 			<update id="rows">
 				update tc_mantic_creditos_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_credito_nota = {idCreditoNota}
 			</update>
@@ -2080,24 +2115,6 @@
           tc_mantic_sino
         where      
           clave = '{clave}' and id_sino = {idSino}
-      </select>
-    </unit>
-	    <unit id="TcManticTiposCodigosDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tc_mantic_tipos_codigos
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tc_mantic_tipos_codigos
-        where      
-          id_tipo_codigo = {idTipoCodigo}
       </select>
     </unit>
     <unit id="TcManticTiposContactosDto">

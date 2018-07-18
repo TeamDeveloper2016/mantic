@@ -325,7 +325,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 		try {
 			Calendar calendar= Calendar.getInstance();
 			calendar.setTimeInMillis(((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura().getTime());
-      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("facturas"));
+      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"));
       temp.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
       temp.append("/");
       temp.append(Calendar.getInstance().get(Calendar.YEAR));
@@ -537,7 +537,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 	public StreamedContent doFileDownload() {
 		StreamedContent regresar= null;
 		try {
-		  InputStream stream = new FileInputStream(new File(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.pdf.getRuta()).concat(this.pdf.getName())));
+		  InputStream stream = new FileInputStream(new File(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.pdf.getRuta()).concat(this.pdf.getName())));
 	    regresar= new DefaultStreamedContent(stream, "application/pdf", this.pdf.getName());
 		} // try
     catch (Exception e) {
@@ -552,7 +552,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("temporal", JsfBase.getContext().concat("/").concat(Constantes.RUTA_TEMPORALES).concat(this.pdf.getName()).concat("?pfdrid_c=true"));
 			String name= JsfBase.getRealPath(Constantes.RUTA_TEMPORALES).concat(this.pdf.getName());
   		File file= new File(name);
-	  	FileInputStream input= new FileInputStream(new File(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.pdf.getRuta()).concat(this.pdf.getName())));
+	  	FileInputStream input= new FileInputStream(new File(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.pdf.getRuta()).concat(this.pdf.getName())));
       this.toWriteFile(file, input);		
 			RequestContext.getCurrentInstance().update("dialogoPDF");
 		} // try

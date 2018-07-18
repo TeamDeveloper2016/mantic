@@ -334,7 +334,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					this.xml.getFileSize(),
 					JsfBase.getIdUsuario(),
 					1L,
-					Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.xml.getRuta()).concat(this.xml.getName()),
+					Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.xml.getRuta()).concat(this.xml.getName()),
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
 					this.orden.getIdNotaEntrada(),
 					this.xml.getName(),
@@ -348,7 +348,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					DaoFactory.getInstance().insert(sesion, tmp);
 				} // if
 				sesion.flush();
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, this.xml, 1L));
+				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, this.xml, 1L));
 			} // if	
 			if(this.pdf!= null) {
 				tmp= new TcManticNotasArchivosDto(
@@ -357,7 +357,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					this.pdf.getFileSize(),
 					JsfBase.getIdUsuario(),
 					2L,
-					Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.pdf.getRuta()).concat(this.pdf.getName()),
+					Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.pdf.getRuta()).concat(this.pdf.getName()),
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1),
 					this.orden.getIdNotaEntrada(),
 					this.pdf.getName(),
@@ -371,7 +371,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					DaoFactory.getInstance().insert(sesion, tmp);
 				} // if
 				sesion.flush();
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("facturas").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
+				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
 			} // if	
   	} // if	
 	}

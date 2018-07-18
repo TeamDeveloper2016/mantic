@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.inventarios.entradas.backing;
+package mx.org.kaana.mantic.inventarios.creditos.backing;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -34,7 +34,7 @@ import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
-@Named(value = "manticInventariosEntradasFacturas")
+@Named(value = "manticInventariosCreditosFacturas")
 @ViewScoped
 public class Facturas extends IBaseFilter implements Serializable {
 
@@ -60,13 +60,11 @@ public class Facturas extends IBaseFilter implements Serializable {
     List<Columna> columns     = null;
 		Map<String, Object> params= toPrepare();
     try {
-      params.put("sortOrder", "order by tc_mantic_notas_entradas.id_empresa, tc_mantic_notas_archivos.ejercicio, tc_mantic_notas_archivos.mes");
+      params.put("sortOrder", "order by tc_mantic_creditos_notas.id_empresa, tc_mantic_creditos_archivos.ejercicio, tc_mantic_creditos_archivos.mes");
       columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
-      this.lazyModel = new FormatCustomLazy("VistaNotasEntradasDto", "facturas", params, columns);
+      columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      this.lazyModel = new FormatCustomLazy("VistaCreditosNotasDto", "facturas", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -101,14 +99,14 @@ public class Facturas extends IBaseFilter implements Serializable {
 	
 	private StreamedContent toZipFile(String[] files) {
 		String zipName    = null;
-		String temporal   = Archivo.toFormatNameFile("FACTURAS.").concat(EFormatos.ZIP.name().toLowerCase());
+		String temporal   = Archivo.toFormatNameFile("NOTAS_CREDITOS.").concat(EFormatos.ZIP.name().toLowerCase());
 		InputStream stream= null;
 		try {
 			Zip zip= new Zip();
 			zipName= "/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.ZIP.name()).concat("/").concat(temporal));
 			zip.setDebug(true);
 			zip.setEliminar(false);
-			zip.compactar(JsfBase.getRealPath(zipName), Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").length(), files);
+			zip.compactar(JsfBase.getRealPath(zipName), Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").length(), files);
   	  stream = new FileInputStream(new File(JsfBase.getRealPath(zipName)));
 		} // try // try
 		catch (Exception e) {
@@ -121,7 +119,7 @@ public class Facturas extends IBaseFilter implements Serializable {
 		StreamedContent regresar  = null;
 		Map<String, Object> params= toPrepare();
 		try {
-			List<Nombres> list= (List<Nombres>)DaoFactory.getInstance().toEntitySet(Nombres.class, "VistaNotasEntradasDto", "exportar", params);
+			List<Nombres> list= (List<Nombres>)DaoFactory.getInstance().toEntitySet(Nombres.class, "VistaCreditosNotasDto", "exportar", params);
 			String[] files= new String[list.size()];
 			int count= 0;
 			for (Nombres nombre: list) {
@@ -148,8 +146,8 @@ public class Facturas extends IBaseFilter implements Serializable {
 				params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			else
 				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			params.put(Constantes.SQL_CONDICION, "tc_mantic_notas_archivos.id_nota_entrada="+ seleccionado.getKey());
-			List<Nombres> list= (List<Nombres>)DaoFactory.getInstance().toEntitySet(Nombres.class, "VistaNotasEntradasDto", "exportar", params);
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_creditos_archivos.id_credito_nota="+ seleccionado.getKey());
+			List<Nombres> list= (List<Nombres>)DaoFactory.getInstance().toEntitySet(Nombres.class, "VistaCreditosNotasDto", "exportar", params);
 			String[] files= new String[list.size()];
 			int count= 0;
 			for (Nombres nombre: list) {
@@ -170,11 +168,11 @@ public class Facturas extends IBaseFilter implements Serializable {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("ejercicio")) && !this.attrs.get("ejercicio").toString().equals("-1"))
-  		sb.append("(tc_mantic_notas_archivos.ejercicio=").append(this.attrs.get("ejercicio")).append(") and ");
+  		sb.append("(tc_mantic_creditos_archivos.ejercicio=").append(this.attrs.get("ejercicio")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("mes")) && !this.attrs.get("mes").toString().equals("-1"))
-  		sb.append("(tc_mantic_notas_archivos.mes= ").append(this.attrs.get("mes")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idProveedor")) && !this.attrs.get("idProveedor").toString().equals("-1"))
-  		sb.append("(tc_mantic_proveedores.id_proveedor= ").append(this.attrs.get("idProveedor")).append(") and ");
+  		sb.append("(tc_mantic_creditos_archivos.mes= ").append(this.attrs.get("mes")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idTipo")) && !this.attrs.get("idTipo").toString().equals("-1"))
+  		sb.append("(tc_mantic_tipos_creditos_notas.id_tipo_credito_nota= ").append(this.attrs.get("idTipo")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
@@ -202,7 +200,9 @@ public class Facturas extends IBaseFilter implements Serializable {
       this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
 			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
 			columns.clear();
-      this.attrs.put("ejercicios", (List<UISelectEntity>) UIEntity.build("TcManticNotasArchivosDto", "ejercicios", params, columns));
+      this.attrs.put("tipos", (List<UISelectEntity>) UIEntity.build("TcManticTiposCreditosNotasDto", "todos", params, columns));
+			this.attrs.put("idTipo", new UISelectEntity("-1"));
+      this.attrs.put("ejercicios", (List<UISelectEntity>) UIEntity.build("TcManticCreditosArchivosDto", "ejercicios", params, columns));
 			this.attrs.put("ejercicio", "");
     } // try
     catch (Exception e) {
@@ -221,7 +221,7 @@ public class Facturas extends IBaseFilter implements Serializable {
 			columns= new ArrayList<>();
 			params =new HashMap<>();
 			params.put("ejercicio", this.attrs.get("ejercicio"));
-      this.attrs.put("meses", (List<UISelectEntity>) UIEntity.build("VistaNotasEntradasDto", "meses", params, columns));
+      this.attrs.put("meses", (List<UISelectEntity>) UIEntity.build("VistaCreditosNotasDto", "meses", params, columns));
 			this.attrs.put("mes", new UISelectEntity("-1"));
 		} // try
 		catch (Exception e) {
@@ -233,33 +233,13 @@ public class Facturas extends IBaseFilter implements Serializable {
 		} // finally
 	}
   
-	public void doLoadProveedores() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
-    try {
-			columns= new ArrayList<>();
-			params =new HashMap<>();
-			params.put("ejercicio", this.attrs.get("ejercicio"));
-			params.put("mes", this.attrs.get("mes"));
-      this.attrs.put("proveedores", (List<UISelectEntity>) UIEntity.build("VistaNotasEntradasDto", "surtidores", params, columns));
-			this.attrs.put("idProveedor", new UISelectEntity("-1"));
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			throw e;
-		} // catch
-		finally {
-			Methods.clean(params);
-		} // finally
-	}
-	
 	public String doCancelar() {
 		return "filtro".concat(Constantes.REDIRECIONAR);
 	}
 	
-	public String doNotaEntrada() {
-		JsfBase.setFlashAttribute("idNotaEntrada", this.attrs.get("idNotaEntrada"));
-		return "/Paginas/Mantic/Inventarios/Entradas/filtro".concat(Constantes.REDIRECIONAR);
+	public String doNotaCredito() {
+		JsfBase.setFlashAttribute("idCreditoNota", this.attrs.get("idCreditoNota"));
+		return "/Paginas/Mantic/Inventarios/Creditos/filtro".concat(Constantes.REDIRECIONAR);
 	}
 	
 }
