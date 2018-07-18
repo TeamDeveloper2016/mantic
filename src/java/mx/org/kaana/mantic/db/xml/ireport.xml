@@ -437,7 +437,7 @@
         left join
           tc_mantic_proveedores on tc_mantic_creditos_notas.id_proveedor= tc_mantic_proveedores.id_proveedor
         where
-          tc_mantic_creditos_notas.id_devolucion in ({idDevolucion})) as notas_credito	
+          tc_mantic_creditos_notas.id_credito_nota in ({idCreditoNota})) as notas_credito	
       </select>
     </unit>
   </dml>
