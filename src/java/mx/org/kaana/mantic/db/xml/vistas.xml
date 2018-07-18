@@ -2460,6 +2460,64 @@
         where 
           tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}
       </select>
+      <select id="datosCliente">
+        select
+					tc_mantic_clientes.id_cliente,
+        	tc_mantic_clientes.clave,
+					domicilio_cliente.numero_interior,
+					concat(domicilio_cliente.calle, case  when domicilio_cliente.numero_exterior is null then ' ' else concat(' # ',domicilio_cliente.numero_exterior) end, case  when domicilio_cliente.numero_interior is null then ' ' else concat(' INT. ',domicilio_cliente.numero_interior) end) as cliente_direccion,	
+          domicilio_cliente.codigo_postal,
+					domicilio_cliente.asentamiento as colonia,
+				  (select 
+					  group_concat(tr_mantic_cliente_tipo_contacto.valor separator ' , ') tels 
+					 from 
+					   tc_mantic_clientes left join tr_mantic_cliente_tipo_contacto on tc_mantic_clientes.id_cliente = tr_mantic_cliente_tipo_contacto.id_cliente and tr_mantic_cliente_tipo_contacto.id_tipo_contacto between 1 and 8 
+					 where 
+        				tc_mantic_clientes.id_cliente) telefonos_cliente,
+        	(select 
+					  group_concat(tr_mantic_cliente_tipo_contacto.valor separator ' , ') emails 
+					 from 
+					   tc_mantic_clientes left join tr_mantic_cliente_tipo_contacto on tc_mantic_clientes.id_cliente = tr_mantic_cliente_tipo_contacto.id_cliente and tr_mantic_cliente_tipo_contacto.id_tipo_contacto between 9 and 11 
+					 where 
+        	tc_mantic_clientes.id_cliente) emails_cliente,
+        	concat(responsable_cliente.nombres,' ' ,responsable_cliente.paterno,' ',responsable_cliente.materno) as responsable_cliente,
+          responsable_cliente.rfc rfc_cliente,
+	        concat(replace(replace(upper(municipio_cliente.descripcion),char(10),' '),char(13),' '),', ' ,upper(entidad_cliente.descripcion),', ',upper(pais_cliente.descripcion)) as cliente_region,
+          (select 
+					  group_concat(tr_mantic_persona_tipo_contacto.valor separator ' , ') emails 
+					 from 
+					   tc_mantic_personas left join tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona  = tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto between 9 and 11 
+					 where 
+        				tc_mantic_personas.id_persona= responsable_cliente.id_persona) emails_contacto,
+          (select 
+            group_concat(tr_mantic_persona_tipo_contacto.valor separator ' , ') tels 
+          from 
+            tc_mantic_personas left join tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona  = tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto between 1 and 8 
+          where 
+            tc_mantic_personas.id_persona= responsable_cliente.id_persona) telefonos_contacto
+				from 
+					tc_mantic_clientes 
+				inner join 
+					tr_mantic_cliente_domicilio  on tc_mantic_clientes.id_cliente= tr_mantic_cliente_domicilio.id_cliente
+				inner join 
+					tc_mantic_domicilios  domicilio_cliente on tr_mantic_cliente_domicilio.id_domicilio = domicilio_cliente.id_domicilio
+				inner join 
+					tc_janal_localidades localidad_cliente on domicilio_cliente.id_localidad = localidad_cliente.id_localidad
+				inner join
+          tc_janal_municipios municipio_cliente on localidad_cliente.id_municipio = municipio_cliente.id_municipio
+        inner join
+					tc_janal_entidades  entidad_cliente on municipio_cliente.id_entidad = entidad_cliente.id_entidad
+				inner join
+					tc_janal_paises  pais_cliente on entidad_cliente.id_pais = pais_cliente.id_pais
+				left join 
+					tc_mantic_personas responsable_cliente on tc_mantic_clientes.id_cliente = responsable_cliente.id_persona
+				left join 
+					tr_mantic_persona_tipo_contacto telefono on responsable_cliente.id_persona = telefono.id_persona and telefono.id_tipo_contacto=1
+				left join 
+					tr_mantic_persona_tipo_contacto correo on telefono.id_persona = correo.id_persona and correo.id_tipo_contacto=9
+        where
+          tc_mantic_clientes.id_cliente in ({idCliente})
+      </select>
     </unit>	    		
 		<unit id="VistaTrabajosDto">
 			<select id="row">
