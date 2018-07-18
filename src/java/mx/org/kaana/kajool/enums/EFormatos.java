@@ -31,7 +31,7 @@ public enum EFormatos implements IFormatos {
 	ODS("icono-xls",    "icon/acciones/doc.png",    "application/vnd.oasis.opendocument.spreadsheet",                            ETipoFormato.IREPORT,   "(Sun Microsystems, OASIS)Almacen de datos operacional"),
 	ODT("icono-rtf",    "icon/acciones/doc.png",    "application/vnd.oasis.opendocument.text",                                   ETipoFormato.IREPORT,   "(Sun Microsystems, OASIS) OpenDocument"),
 	HTML("icono-html",  "icon/acciones/html.png",   "text/html",                                                                 ETipoFormato.IREPORT,   "(World Wide Web Consortium & WHATWG) Lenguaje de marcado de hipertexto"),
-	XML("icono-xml",    "icon/acciones/xml.png",    "text/html",                                                                 ETipoFormato.IREPORT,   "(World Wide Web Consortium) Lenguaje de marcas extensible"),
+	XML("icono-xml",    "icon/acciones/xml.png",    "application/xml",                                                           ETipoFormato.IREPORT,   "(World Wide Web Consortium) Lenguaje de marcas extensible"),
 	XHTML("icono-html", "icon/acciones/html.png",   "text/xhtml",                                                                ETipoFormato.IREPORT,   "(World Wide Web Consortium) Lenguaje de Marcado de Hipertexto Extensible"),
 	JXL("icono-html",   "icon/acciones/html.png",   "application/vnd.ms-excel; charset=ISO-8859-1",                              ETipoFormato.IREPORT,   ""),
 	DBF("icono-dbf",    "icon/acciones/foxpro.png", "text/dbf",                                                                  ETipoFormato.LIBRE,     "(Microsoft) Base de datos del archivo"),

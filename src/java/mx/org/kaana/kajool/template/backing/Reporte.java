@@ -248,7 +248,7 @@ public class Reporte extends BaseReportes implements Serializable{
 		super.doSeleccionarReporte();		
 	} 
 	
-	 private StreamedContent getDescargarVarios() {
+  private StreamedContent getDescargarVarios() {
 		Zip zip           = new Zip();
 		String contentType= EFormatos.PDF.getContent();
 		try {

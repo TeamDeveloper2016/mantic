@@ -15,6 +15,14 @@
         'mes'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'idProveedor': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
       };
+			
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
     </script>		
 		<style>
 			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield {
@@ -47,7 +55,7 @@
               <p:outputLabel for="ejercicio" value="Ejercicios:"/>
               <p:selectOneMenu id="ejercicio" value="#{manticInventariosEntradasFacturas.attrs.ejercicio}" converter="janal.convertidor.Entity" styleClass="janal-wid-96">
 								<p:ajax event="change" process="@this" update="mes idProveedor" listener="#{manticInventariosEntradasFacturas.doLoadMeses}" />
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+								<f:selectItem itemLabel="SELECCIONE" itemValue=""/>
                 <f:selectItems value="#{manticInventariosEntradasFacturas.attrs.ejercicios}" var="element" itemValue="#{element}" itemLabel="#{element.idKey}"/>
               </p:selectOneMenu>
               <p:outputLabel for="mes" value="Meses:"/>
@@ -87,21 +95,29 @@
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">
-                  <p:menuitem value="Descargar facturas" action="#{manticInventariosEntradasFacturas.doAccion('COMPLETO')}" icon="fa fa-download" title="Descargar todas las facturas" onstart="return janal.bloquear()"/>						
+                  <p:menuitem value="Descargar facturas" icon="fa fa-download" ajax="false" onclick="if(janal.partial('general')) PrimeFaces.monitorDownload(start, stop); else return false;" title="Descargar todas las facturas" oncomplete="janal.desbloquear();">
+										<p:fileDownload value="#{manticInventariosEntradasFacturas.doAccion('COMPLETO')}" />
+									</p:menuitem>
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:commandButton value="Descargar facturas" action="#{manticInventariosEntradasFacturas.doAccion('COMPLETO')}" icon="fa fa-plus" title="Descargar todas las facturas" onstart="return janal.bloquear()" styleClass="janal-text-white"/>						
+                <p:menuitem icon="fa fa-download" ajax="false" onclick="if(janal.partial('general')) PrimeFaces.monitorDownload(start, stop); else return false;" title="Descargar todas las facturas" oncomplete="janal.desbloquear();">
+									<p:fileDownload value="#{manticInventariosEntradasFacturas.doAccion('COMPLETO')}" />
+								</p:menuitem>
                 <p:separator/>
                 <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
-                <p:separator/>
-                <p:menuitem id="reporteIconXs" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosEntradasFacturas.doReporte('NOTAS_ENTRADA')}" oncomplete="janal.desbloquear();"/>
               </div>  
             </f:facet>	            
+            <p:column class="MarAuto Responsive janal-wid-col-50">
+              <f:facet name="header">
+                <h:outputText value="No."/>
+              </f:facet>
+              <h:outputText value="#{index+ 1}"/>
+            </p:column>		
             <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{filtro.empresa}">
               <f:facet name="header">
                 <h:outputText value="Empresa"/>
@@ -135,12 +151,6 @@
               </f:facet>
               <h:outputText value="#{filtro['razonSocial']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{filtro.usuario}">
-              <f:facet name="header">
-                <h:outputText value="Usuario"/>
-              </f:facet>
-              <h:outputText value="#{filtro['usuario']}"/>
-            </p:column>		
             <p:column class="MarAuto Responsive janal-wid-10 janal-column-right" sortBy="#{filtro.total}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
@@ -152,11 +162,14 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem value="Descargar facturas" action="#{manticInventariosEntradasFacturas.doAccion('CONSULTAR')}" icon="fa fa-download" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
+            <p:menuitem value="Descargar facturas" action="#{manticInventariosEntradasFacturas.doAccion('PROCESAR')}" icon="fa fa-download" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>					
           </p:contextMenu>						
         </div>
       </div>
     </div>
+		<p:dialog modal="true" widgetVar="statusDialog" header="Estatus de la descarga del archivo" draggable="false" closable="false" resizable="false">
+			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
+		</p:dialog>		
   </ui:define>   
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
 </ui:composition>

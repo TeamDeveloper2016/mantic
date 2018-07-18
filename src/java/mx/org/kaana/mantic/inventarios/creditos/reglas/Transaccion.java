@@ -26,7 +26,7 @@ import mx.org.kaana.mantic.db.dto.TcManticCreditosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticCreditosNotasDto;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDto;
-import mx.org.kaana.mantic.inventarios.entradas.beans.ListadoArchivos;
+import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import org.apache.log4j.Logger;
 
 /**
@@ -183,30 +183,30 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		} // catch
 	} 
 	
-	private void toDeleteAll(String path, String type, List<ListadoArchivos> listado) {
+	private void toDeleteAll(String path, String type, List<Nombres> listado) {
     FileSearch fileSearch = new FileSearch();
     fileSearch.searchDirectory(new File(path), type.toLowerCase());
     if(fileSearch.getResult().size()> 0)
 		  for (String matched: fileSearch.getResult()) {
 				String name= matched.substring((matched.lastIndexOf("/")< 0? matched.lastIndexOf("\\"): matched.lastIndexOf("/"))+ 1);
-				if(listado.indexOf(new ListadoArchivos(name))< 0) {
+				if(listado.indexOf(new Nombres(name))< 0) {
           LOG.warn("Nota crédito: "+ this.orden.getConsecutivo()+ " delete file: ".concat(matched));
 				  File file= new File(matched);
 				  file.delete();
 				} // if
-      } // for // for
+      } // for // for // for // for
 	}
 	
-	private List<ListadoArchivos> toListFile(Session sesion, Importado tmp, Long idTipoArchivo) throws Exception {
-		List<ListadoArchivos> regresar= null;
+	private List<Nombres> toListFile(Session sesion, Importado tmp, Long idTipoArchivo) throws Exception {
+		List<Nombres> regresar= null;
 		Map<String, Object> params=null;
 		try {
 			params  = new HashMap<>();
 			params.put("idTipoArchivo", idTipoArchivo);
 			params.put("ruta", tmp.getRuta());
-			regresar= (List<ListadoArchivos>)DaoFactory.getInstance().toEntitySet(sesion, ListadoArchivos.class, "TcManticCreditosArchivosDto", "listado", params);
-			regresar.add(new ListadoArchivos(tmp.getName()));
-		} // try 
+			regresar= (List<Nombres>)DaoFactory.getInstance().toEntitySet(sesion, Nombres.class, "TcManticCreditosArchivosDto", "listado", params);
+			regresar.add(new Nombres(tmp.getName()));
+		} // try  // try 
 		catch (Exception e) {
 			Error.mensaje(e);
 			throw e;

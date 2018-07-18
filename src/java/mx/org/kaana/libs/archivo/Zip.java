@@ -171,10 +171,9 @@ public class Zip {
         rutaArchivo = new File(getNombre().substring(0,getNombre().lastIndexOf("\\")));
       else
         if (getNombre().contains("/"))
-           rutaArchivo = new File(getNombre().substring(0,getNombre().lastIndexOf("/")));
-      if (!(rutaArchivo.exists())) {
-          rutaArchivo.mkdirs();
-      }
+          rutaArchivo = new File(getNombre().substring(0,getNombre().lastIndexOf("/")));
+      if (!(rutaArchivo.exists())) 
+        rutaArchivo.mkdirs();
       FileOutputStream destino = new FileOutputStream(getNombre());
       if (isDebug())
         LOG.debug("nombre zip: " + getNombre());
@@ -189,7 +188,7 @@ public class Zip {
       String files[] = f.list();
       if (isDebug())
         LOG.debug("Archivos: " + (files != null ? 0 : files.length));
-      for (int i = 0; files != null && i < files.length; i++) {
+      for (int i= 0; files != null && i < files.length; i++) {
         if (isDebug())
           LOG.debug("Sumando: " + getDirectorio(true) + files[i]);
         if (acceptFile(getPatron(), files[i], true)) {
@@ -205,7 +204,7 @@ public class Zip {
           if (isEliminar()) {
             f = new File(getDirectorio(true) + files[i]);
             f.delete();
-          }
+          } // if
         }// if zip
       }// for
       out.close();
@@ -214,6 +213,62 @@ public class Zip {
       Error.mensaje(e);
       throw e;
     }// try
+  }
+
+  public void compactar(int token, String files[]) throws Exception {
+    try {
+      BufferedInputStream origen = null;
+      File rutaArchivo = null;
+      if (getNombre().contains("\\"))
+        rutaArchivo = new File(getNombre().substring(0,getNombre().lastIndexOf("\\")));
+      else
+        if (getNombre().contains("/"))
+          rutaArchivo = new File(getNombre().substring(0,getNombre().lastIndexOf("/")));
+      if (!(rutaArchivo.exists())) 
+        rutaArchivo.mkdirs();
+      FileOutputStream destino = new FileOutputStream(getNombre());
+      if (isDebug())
+        LOG.debug("nombre zip: " + getNombre());
+      CheckedOutputStream checksum = new CheckedOutputStream(destino, new Adler32());
+      ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(checksum));
+      byte data[] = new byte[BUFFER];
+      if (isDebug())
+        LOG.debug("Archivos: " + (files!= null? 0: files.length));
+      for (String name: files) {
+        if (isDebug())
+          LOG.debug("Sumando: " + name);
+				FileInputStream fi = new FileInputStream(name);
+				origen = new BufferedInputStream(fi, BUFFER);
+				ZipEntry entry = new ZipEntry(name.substring(token));
+				out.putNextEntry(entry);
+				int count;
+				while ((count = origen.read(data, 0, BUFFER)) != -1) {
+					out.write(data, 0, count);
+				} // while
+				origen.close();
+				if (isEliminar()) {
+					File file= new File(name);
+					file.delete();
+				} // if
+      }// for
+      out.close();
+    }
+    catch (Exception e) {
+      Error.mensaje(e);
+      throw e;
+    }// try
+  }
+	
+/**
+ * Compacta el zip con un nombre y un patron
+ * @param nombre Nombre del archivo que se quiere poner al zip
+ * @param archivos Es la lista de archivos que se van a compactar
+ * @throws Exception
+ */
+
+  public void compactar(String nombre, int token, String[] archivos) throws Exception {
+    setNombre(nombre);
+    compactar(token, archivos);
   }
 
 /**

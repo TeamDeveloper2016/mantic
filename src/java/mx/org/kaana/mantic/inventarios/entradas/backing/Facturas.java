@@ -1,18 +1,28 @@
 package mx.org.kaana.mantic.inventarios.entradas.backing;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.servlet.ServletContext;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.archivo.Zip;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -20,7 +30,11 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Named(value = "manticInventariosEntradasFacturas")
 @ViewScoped
@@ -52,7 +66,6 @@ public class Facturas extends IBaseFilter implements Serializable {
       columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaNotasEntradasDto", "facturas", params, columns);
@@ -68,17 +81,57 @@ public class Facturas extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad
 
-  public void doAccion(String accion) {
+  public StreamedContent doAccion(String accion) {
+		StreamedContent regresar= null;
     EAccion eaccion= EAccion.valueOf(accion.toUpperCase());
 		try {
-			
+			switch (eaccion) {
+				case COMPLETO:
+					regresar= this.toAllFile();
+					break;
+				case PROCESAR:
+					break;
+			} // switch
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
+		return regresar;
   } 
 	
+	private StreamedContent toAllFile() {
+		String zipName            = null;
+		String temporal           = Archivo.toFormatNameFile("FACTURAS.").concat(EFormatos.ZIP.name().toLowerCase());
+		Map<String, Object> params= toPrepare();
+		InputStream stream        = null;
+		try {
+			List<Nombres> list= (List<Nombres>)DaoFactory.getInstance().toEntitySet(Nombres.class, "VistaNotasEntradasDto", "exportar", params);
+			String[] files= new String[list.size()];
+			int count= 0;
+			for (Nombres nombre: list) {
+				files[count++]= nombre.getNombre();
+			} // for
+			Zip zip= new Zip();
+			zipName= "/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.ZIP.name()).concat("/").concat(temporal));
+			zip.setDebug(true);
+			zip.setEliminar(false);
+			zip.compactar(JsfBase.getRealPath(zipName), Configuracion.getInstance().getPropiedadSistemaServidor("facturas").length(), files);
+  	  stream = new FileInputStream(new File(JsfBase.getRealPath(zipName)));
+		} // try // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+    return new DefaultStreamedContent(stream, EFormatos.ZIP.getContent(), temporal);		
+	}
+	
+	private void toSingleFile() {
+		
+	}
+		
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
@@ -116,7 +169,7 @@ public class Facturas extends IBaseFilter implements Serializable {
 			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
 			columns.clear();
       this.attrs.put("ejercicios", (List<UISelectEntity>) UIEntity.build("TcManticNotasArchivosDto", "ejercicios", params, columns));
-			this.attrs.put("ejercicio", new UISelectEntity("-1"));
+			this.attrs.put("ejercicio", "");
     } // try
     catch (Exception e) {
       throw e;

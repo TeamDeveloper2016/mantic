@@ -11,7 +11,7 @@ import java.util.Objects;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class ListadoArchivos implements Serializable {
+public class Nombres implements Serializable {
 
 	private static final long serialVersionUID=323884892456452488L;
 	
@@ -19,11 +19,11 @@ public class ListadoArchivos implements Serializable {
 	private String ruta;
 	private String alias;
 
-	public ListadoArchivos() {
+	public Nombres() {
 		this("XYZ");
 	}
 
-	public ListadoArchivos(String nombre) {
+	public Nombres(String nombre) {
 		this.nombre=nombre;
 	}
 
@@ -53,7 +53,7 @@ public class ListadoArchivos implements Serializable {
 		if (getClass()!=obj.getClass()) {
 			return false;
 		}
-		final ListadoArchivos other=(ListadoArchivos) obj;
+		final Nombres other=(Nombres) obj;
 		if (!Objects.equals(this.nombre, other.nombre)) {
 			return false;
 		}

@@ -300,9 +300,9 @@ public class Importar extends IBaseAttribute implements Serializable {
 		try {
 		  InputStream stream = new FileInputStream(new File(file.toString("alias")));
 			if(file.toLong("idTipoArchivo").equals(1L))
-		    regresar= new DefaultStreamedContent(stream, "application/xml", file.toString("nombre"));
+		    regresar= new DefaultStreamedContent(stream, EFormatos.XML.getContent(), file.toString("nombre"));
 			else
-		    regresar= new DefaultStreamedContent(stream, "application/pdf", file.toString("nombre"));
+		    regresar= new DefaultStreamedContent(stream, EFormatos.PDF.getContent(), file.toString("nombre"));
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
