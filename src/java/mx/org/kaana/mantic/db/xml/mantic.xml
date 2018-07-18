@@ -90,6 +90,14 @@
 				order by
 				  ruta
       </select>
+			<select id="ejercicios">
+        select      
+          distinct(ejercicio) as id_key
+        from      
+          tc_mantic_notas_archivos
+ 				order by
+				  ejercicio
+			</select>
 			<update id="rows">
 				update tc_mantic_notas_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_nota_entrada = {idNotaEntrada}
 			</update>

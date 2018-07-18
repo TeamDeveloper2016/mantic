@@ -1217,6 +1217,83 @@
 			</select>	
 		</unit>
 		<unit id="VistaNotasEntradasDto">
+			<select id="surtidores">
+				select
+					tc_mantic_proveedores.id_proveedor as id_key,
+					tc_mantic_proveedores.rfc,
+					tc_mantic_proveedores.clave,
+					tc_mantic_proveedores.razon_social
+				from
+					tc_mantic_proveedores
+				where
+					tc_mantic_proveedores.id_proveedor in (
+					select
+						distinct(tc_mantic_notas_entradas.id_proveedor) 
+					from
+						tc_mantic_notas_archivos
+					inner join
+						tc_mantic_notas_entradas on tc_mantic_notas_archivos.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+					where
+						tc_mantic_notas_archivos.ejercicio= {ejercicio}
+						and tc_mantic_notas_archivos.mes= {mes}
+				)
+				order by
+					tc_mantic_proveedores.clave				
+			</select>
+			<select id="meses">
+        select
+          tc_janal_meses.id_mes as id_key,
+          tc_janal_meses.nombre
+        from
+          tc_janal_meses 
+        where
+          tc_janal_meses.id_mes in (
+        select      
+          distinct(tc_mantic_notas_archivos.mes)
+        from      
+          tc_mantic_notas_archivos
+				where
+				  tc_mantic_notas_archivos.ejercicio= {ejercicio}
+				)
+ 				order by
+				  tc_janal_meses.id_mes				  
+			</select>	
+			<select id="facturas">
+        select
+					tc_mantic_notas_archivos.id_nota_archivo as id_key,
+					tc_mantic_notas_archivos.ejercicio,
+					tc_mantic_notas_archivos.mes,
+				  tc_janal_meses.nombre,
+					tc_mantic_notas_entradas.id_nota_entrada,
+          tc_mantic_notas_entradas.id_almacen,
+          tc_mantic_notas_entradas.id_empresa,
+          tc_mantic_proveedores.id_proveedor,
+					tc_mantic_notas_entradas.consecutivo,
+					tc_mantic_empresas.clave as empresa,
+					tc_mantic_proveedores.razon_social,
+					tc_mantic_notas_entradas.total,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
+					tc_mantic_notas_archivos.registro     
+        from
+          tc_mantic_notas_archivos
+				inner join
+					tc_janal_meses on tc_mantic_notas_archivos.mes= tc_janal_meses.id_mes          
+				inner join
+					tc_janal_usuarios on tc_mantic_notas_archivos.id_usuario= tc_janal_usuarios.id_usuario          
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+        inner join
+          tc_mantic_notas_entradas on tc_mantic_notas_archivos.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada       
+        inner join
+          tc_mantic_empresas on tc_mantic_notas_entradas.id_empresa= tc_mantic_empresas.id_empresa         
+        inner join
+          tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor         
+        where
+					tc_mantic_notas_entradas.id_empresa in ({idEmpresa})
+					and tc_mantic_notas_archivos.id_principal= 2
+					and {condicion}
+				{sortOrder}				
+			</select>
 			<select id="movimientos">
 				select
 					tc_mantic_notas_bitacora.id_nota_bitacora as id_key,
