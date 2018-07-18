@@ -86,7 +86,7 @@ public class Pago implements Serializable{
 	}
 	
 	public String getPago$() {
-		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(getPago()));
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(getPago()));
 	}	
 
 	public void setCambio$(String cambio$) {
@@ -94,7 +94,7 @@ public class Pago implements Serializable{
 	}
 	
 	public String getCambio$() {
-		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(getCambio()));
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(getCambio()));
 	}
 	
 	public void setCambio(Double cambio) {

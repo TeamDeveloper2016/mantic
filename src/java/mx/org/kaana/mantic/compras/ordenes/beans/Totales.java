@@ -49,11 +49,11 @@ public final class Totales implements Serializable {
 	}
 
 	public double getImporte() {
-		return Numero.toRedondear(importe);
+		return Numero.toRedondearSat(importe);
 	}
 
 	public String getImporte$() {
-		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(importe));
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(importe));
 	}
 
 	public void setImporte(double importe) {
@@ -61,11 +61,11 @@ public final class Totales implements Serializable {
 	}
 	
 	public double getIva() {
-		return Numero.toRedondear(iva);
+		return Numero.toRedondearSat(iva);
 	}
 
 	public String getIva$() {
-		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(iva));
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(iva));
 	}
 
 	public void setIva(double iva) {
@@ -73,11 +73,11 @@ public final class Totales implements Serializable {
 	}
 
 	public double getDescuento() {
-		return Numero.toRedondear(descuento);
+		return Numero.toRedondearSat(descuento);
 	}
 
 	public String getDescuento$() {
-		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(descuento));
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(descuento));
 	}
 
 	public void setDescuento(double descuento) {
@@ -85,11 +85,11 @@ public final class Totales implements Serializable {
 	}
 
 	public double getExtra() {
-		return Numero.toRedondear(extra);
+		return Numero.toRedondearSat(extra);
 	}
 
 	public String getExtra$() {
-		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(extra));
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(extra));
 	}
 
 	public void setExtra(double extra) {
@@ -97,11 +97,11 @@ public final class Totales implements Serializable {
 	}
 
 	public double getSubTotal() {
-		return Numero.toRedondear(subTotal);
+		return Numero.toRedondearSat(subTotal);
 	}
 
 	public String getSubTotal$() {
-		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(subTotal));
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(subTotal));
 	}
 
 	public void setSubTotal(double subTotal) {
@@ -109,11 +109,11 @@ public final class Totales implements Serializable {
 	}
 
 	public double getTotal() {
-		return Numero.toRedondear(total);
+		return Numero.toRedondearSat(total);
 	}
 
 	public String getTotal$() {
-		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(total));
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(total));
 	}
 
 	public void setTotal(double total) {
@@ -121,7 +121,7 @@ public final class Totales implements Serializable {
 	}
 
 	public double getDescuentos() {
-		return Numero.toRedondear(this.descuento+ this.extra);
+		return Numero.toRedondearSat(this.descuento+ this.extra);
 	}
 
 	public void addImporte(double importe) {

@@ -90,10 +90,10 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 			
 			// si esta marcado como afectar los costos se aplicara el cambio en el catalogo de articulos
 			if(codigos.isAplicar()) {
-			  global.setPrecio(Numero.toRedondear(item.getCosto()));
-			  global.setMenudeo(Numero.toRedondear(item.getCosto()* Constantes.PORCENTAJE_MENUDEO));
-			  global.setMedioMayoreo(Numero.toRedondear(item.getCosto()* Constantes.PORCENTAJE_MEDIO_MAYOREO));
-			  global.setMayoreo(Numero.toRedondear(item.getCosto()* Constantes.PORCENTAJE_MAYOREO));
+			  global.setPrecio(Numero.toRedondearSat(item.getCosto()));
+			  global.setMenudeo(Numero.toRedondearSat(item.getCosto()* Constantes.PORCENTAJE_MENUDEO));
+			  global.setMedioMayoreo(Numero.toRedondearSat(item.getCosto()* Constantes.PORCENTAJE_MEDIO_MAYOREO));
+			  global.setMayoreo(Numero.toRedondearSat(item.getCosto()* Constantes.PORCENTAJE_MAYOREO));
 			} // if	
 			
 			global.setStock(global.getStock()+ item.getCantidad());
