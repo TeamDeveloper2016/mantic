@@ -204,7 +204,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
       params.put("sortOrder", "order by tc_mantic_notas_entradas.id_empresa, tc_mantic_notas_entradas.ejercicio, tc_mantic_notas_entradas.orden");
       reporteSeleccion= EReportes.valueOf(nombre);
-      if(reporteSeleccion.equals(EReportes.NOTA_ENTRADA_DETALLE)){
+      if(!reporteSeleccion.equals(EReportes.NOTAS_ENTRADA)){
         params.put("idNotaEntrada", seleccionado.getKey());	
         parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), seleccionado.toLong("idAlmacen"), seleccionado.toLong("idProveedor"), -1L);
       }
