@@ -32,11 +32,12 @@ public class ArticulosLazyLoad extends FormatCustomLazy implements Serializable 
 		List<IBaseDto> regresar= (List<IBaseDto>)super.load(first, pageSize, sortField, sortOrder, filters);
 		Value value= null;
 		for (IBaseDto item: regresar) {
-			value= new Value("afectar", ((Entity)item).toLong("idAplicar").equals(1L));
+			Long idAplicar= new Long(((Entity)item).toString("idAplicar"));
+			value= new Value("afectar", idAplicar.equals(1L));
 			((Entity)item).put(value.getName(), value);
       
-			Double costo= ((Entity)item).toDouble("costo");
-			Double valor= ((Entity)item).toDouble("valor");
+			Double costo= new Double(((Entity)item).toString("costo"));
+			Double valor= new Double(((Entity)item).toString("valor"));
 		  Descuentos descuentos= new Descuentos(costo, ((Entity)item).toString("descuento")+ ","+ ((Entity)item).toString("extras"));
 		  double importe= descuentos.toImporte();
 		  importe= Numero.toRedondearSat(valor- (importe== 0? costo: importe)); 

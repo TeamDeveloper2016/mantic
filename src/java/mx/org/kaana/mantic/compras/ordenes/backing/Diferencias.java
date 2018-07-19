@@ -82,12 +82,12 @@ public class Diferencias extends IBaseFilter implements Serializable {
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 			this.attrs.put(Constantes.SQL_CONDICION, " ");
       this.attrs.put("sortOrder", "order by tc_mantic_notas_entradas.consecutivo, tc_mantic_notas_detalles.nombre");
-      this.lazyNotas = new FormatCustomLazy("VistaOrdenesComprasDto", "consulta", this.attrs, columns);
+      this.lazyNotas = new ArticulosLazyLoad("VistaOrdenesComprasDto", "consulta", this.attrs, columns);
       columns.add(new Columna("cantidades", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
       columns.add(new Columna("importes", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
       this.attrs.put("sortOrder", "order by nombre");
-      this.lazyModel = new ArticulosLazyLoad("VistaOrdenesComprasDto", "confronta", this.attrs, columns);
+      this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", "confronta", this.attrs, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {

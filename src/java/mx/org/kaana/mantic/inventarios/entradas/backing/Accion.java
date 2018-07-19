@@ -565,5 +565,18 @@ public class Accion extends IBaseArticulos implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
 	}
+
+	@Override
+	public void doUpdateArticulo(String codigo, Integer index) {
+		super.doUpdateArticulo(codigo, index);
+    this.doFilterRows();
+	}
 	
+	@Override
+	public void doDeleteArticulo(Integer index) {
+		super.doDeleteArticulo(index);
+    this.doFilterRows();
+	}
+
+
 }
