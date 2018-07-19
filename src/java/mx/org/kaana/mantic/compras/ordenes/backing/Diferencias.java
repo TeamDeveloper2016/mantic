@@ -2,7 +2,9 @@ package mx.org.kaana.mantic.compras.ordenes.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -20,7 +22,9 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.compras.ordenes.reglas.ArticulosLazyLoad;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
+import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
@@ -76,13 +80,14 @@ public class Diferencias extends IBaseFilter implements Serializable {
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
       columns.add(new Columna("costo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));      
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			this.attrs.put(Constantes.SQL_CONDICION, " ");
       this.attrs.put("sortOrder", "order by tc_mantic_notas_entradas.consecutivo, tc_mantic_notas_detalles.nombre");
       this.lazyNotas = new FormatCustomLazy("VistaOrdenesComprasDto", "consulta", this.attrs, columns);
       columns.add(new Columna("cantidades", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
       columns.add(new Columna("importes", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
       this.attrs.put("sortOrder", "order by nombre");
-      this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", "confronta", this.attrs, columns);
+      this.lazyModel = new ArticulosLazyLoad("VistaOrdenesComprasDto", "confronta", this.attrs, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -140,6 +145,50 @@ public class Diferencias extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute(ETipoMovimiento.NOTAS_ENTRADAS.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
 		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Compras/Ordenes/filtro");
 		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
+	}
+
+  public void doChangeAplicar(Entity afectado) {
+		Entity entity= (Entity)this.attrs.get("seleccionado");
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("idAplicar", (boolean)entity.toBoolean("afectar")? 1L: 2L);
+			DaoFactory.getInstance().update(TcManticNotasDetallesDto.class, entity.getKey(), params);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	}	
+	
+	public void doRowSelectEvent() {
+		Entity entity= (Entity)this.attrs.get("seleccionado");
+    List<Columna> columns     = null;
+	  Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+      columns = new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
+      columns.add(new Columna("costo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));      
+      columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+			params.put("idOrdenCompra", entity.toLong("idOrdenCompra"));
+			params.put(Constantes.SQL_CONDICION, " and tc_mantic_notas_detalles.id_articulo= "+ entity.toLong("idArticulo"));
+      params.put("sortOrder", "order by tc_mantic_notas_entradas.consecutivo, tc_mantic_notas_detalles.nombre");
+      this.lazyNotas = new FormatCustomLazy("VistaOrdenesComprasDto", "consulta", params, columns);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally	
 	}
 	
 }

@@ -94,7 +94,7 @@
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
 		<p:remoteCommand name="lookup" actionListener="#{manticInventariosEntradasAccion.doUpdateArticulos}" process="@this codigo" update="buscados"/>
-		<p:remoteCommand name="filterRows" actionListener="#{manticInventariosEntradasAccion.doFilterRows}" update="contenedorGrupos:tabla" process="@this @(.key-filter-event)" onstart="return janal.bloquear();" oncomplete="jsArticulos.invalidate(#{manticInventariosDevolucionesAccion.adminOrden.filtrados.size()- 1});"/>
+		<p:remoteCommand name="filterRows" actionListener="#{manticInventariosEntradasAccion.doFilterRows}" update="contenedorGrupos:tabla" process="@this @(.key-filter-event)" onstart="return janal.bloquear();" oncomplete="jsArticulos.invalidate(#{manticInventariosEntradasAccion.adminOrden.filtrados.size()- 1});"/>
 		<p:remoteCommand name="factura" actionListener="#{manticInventariosEntradasAccion.doCheckFolio}" process="@this contenedorGrupos:factura contenedorGrupos:idProveedor" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 		<p:remoteCommand name="viewDocument" actionListener="#{manticInventariosEntradasAccion.doViewDocument}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
@@ -323,7 +323,7 @@
 												</f:facet>
 												<p:outputLabel value="#{row['importe$']}"/>
 											</p:column>		
-											<p:column class="janal-column-center MarAuto Responsive janal-wid-col-40">
+											<p:column class="janal-column-center MarAuto Responsive janal-wid-col-40" rendered="#{manticInventariosEntradasAccion.isAplicar}">
 												<f:facet name="header">
 													<h:outputText value="Afectar" title="Ajustar el costo en caso de ser menor al que se tiene registrado"/>
 												</f:facet>

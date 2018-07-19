@@ -383,7 +383,8 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 				stock== null? 0D: stock.toDouble(),
 				0D,
 				"",
-				""
+				"",
+				2L
 			);
 			if(this.getAdminOrden().add(item))
 				RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
@@ -429,7 +430,8 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 				stock== null? 0D: stock.toDouble(),
 				0D,
 				seleccionado.getSat(),
-				seleccionado.getUnidadMedida()
+				seleccionado.getUnidadMedida(),
+				2L
 			);
 			if(this.getAdminOrden().add(item))
 				RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");

@@ -18,7 +18,8 @@
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-content" class="ui-grid-col-12">
-          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticComprasOrdenesDiferencias.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticComprasOrdenesDiferencias.lazyModel.rowCount gt manticComprasOrdenesDiferencias.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticComprasOrdenesDiferencias.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticComprasOrdenesDiferencias.lazyModel.rowCount gt manticComprasOrdenesDiferencias.lazyModel.pageSize}" selection="#{manticInventariosEntradasFiltro.attrs.seleccionado}" selectionMode="single" rowIndexVar="index" reflow="true" rowStyleClass="#{not(row.cantidades.toDouble() eq 0) or not(row.diferencias.toDouble() eq 0)? 'janal-color-orange' : null}">
+						<p:ajax event="rowDblSelect" listener="#{manticComprasOrdenesDiferencias.doRowSelectEvent}" update="notas" process="@this" />
             <f:facet name="header" >
 							<div style="float: left; font-weight: normal !important;">
 							  <h:outputText value="Detalle de los articulos de la orden de compra"/>
@@ -27,74 +28,88 @@
                 <p:menuButton value="Opciones">
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:separator/>
+                  <p:menuitem icon="fa fa-rotate-right" value="Recargar orden" actionListener="#{manticComprasOrdenesDiferencias.doLoad}" process="@this" update="tabla notas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
                 <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+								<p:separator/>
+                <p:menuitem icon="fa fa-rotate-right" title="Recargar la orden de compra" actionListener="#{manticComprasOrdenesDiferencias.doLoad}" process="@this" update="tabla notas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="Orden compra"/>
               </f:facet>
 							<p:commandLink action="#{manticComprasOrdenesDiferencias.doOrdenCompra}">
-								<f:setPropertyActionListener target="#{manticComprasOrdenesDiferencias.attrs.idOrdenCompra}" value="#{filtro.idOrdenCompra}"/>
-                <h:outputText value="#{filtro['consecutivo']}"/>
+								<f:setPropertyActionListener target="#{manticComprasOrdenesDiferencias.attrs.idOrdenCompra}" value="#{row.idOrdenCompra}"/>
+                <h:outputText value="#{row['consecutivo']}"/>
 							</p:commandLink>	
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{filtro.codigo}">
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.codigo}">
               <f:facet name="header">
                 <h:outputText value="Código"/>
               </f:facet>
-              <h:outputText value="#{filtro['codigo']}"/>
+              <h:outputText value="#{row['codigo']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{filtro.nombre}">
+            <p:column class="MarAuto Responsive" sortBy="#{row.nombre}">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
-              <h:outputText value="#{filtro['nombre']}" title="Código propio: #{filtro['propio']}"/>
+              <h:outputText value="#{row['nombre']}" title="Código propio: #{row['propio']}"/>
             </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.costo}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.costo}">
               <f:facet name="header">
                 <h:outputText value="Costo"/>
               </f:facet>
-              <h:outputText value="#{filtro['costo']}"/>
+              <h:outputText value="#{row['costo']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.cantidad}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidad}">
               <f:facet name="header">
                 <h:outputText value="Cantidad"/>
               </f:facet>
-              <h:outputText value="#{filtro['cantidad']}"/>
+              <h:outputText value="#{row['cantidad']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
-              <h:outputText value="#{filtro['importe']}"/>
+              <h:outputText value="#{row['importe']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.cantidades}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidades}">
               <f:facet name="header">
                 <h:outputText value="Cantidad [+/-]"/>
               </f:facet>
-              <h:outputText value="#{filtro['cantidades']}"/>
+              <h:outputText value="#{row['cantidades']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importes}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importes}">
               <f:facet name="header">
                 <h:outputText value="Importe [+/-]"/>
               </f:facet>
-              <h:outputText value="#{filtro['importes']}" title="Diferencia: #{filtro['porcentaje']} %"/>
+              <h:outputText value="#{row['importes']}" title="Diferencia: #{row['porcentaje']} %"/>
             </p:column>		
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-40">
+							<f:facet name="header">
+								<h:outputText value="Afectar" title="Ajustar el costo en caso de ser menor al que se tiene registrado"/>
+							</f:facet>
+							<p:selectBooleanCheckbox value="#{row['afectar']}" title="Click para ajustar el costo" rendered="#{row['diferencias'] gt 0}">
+								<p:ajax event="change" process="@this" update="tabla" listener="#{manticComprasOrdenesDiferencias.doChangeAplicar(row)}"/>
+							</p:selectBooleanCheckbox>
+						</p:column>		
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticComprasOrdenesDiferencias.lazyModel==null?0:manticComprasOrdenesDiferencias.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
+					<p:spacer height="3px"/>
+					<p:outputLabel value="Doble click sobre la fila para filtrar los registro de las notas de entrada del articulo seleccionado."/>
         </div>
 			</div>
 			<p:spacer height="3px"/>
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-content" class="ui-grid-col-12">
-          <p:dataTable lazy="true" id="notas" widgetVar="kajoolNotas" var="filtro" value="#{manticComprasOrdenesDiferencias.lazyNotas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticComprasOrdenesDiferencias.lazyNotas.rowCount gt manticComprasOrdenesDiferencias.lazyNotas.pageSize}" rowIndexVar="index" reflow="true" selection="#{manticComprasOrdenesDiferencias.attrs.seleccionado}" selectionMode="single">
+          <p:dataTable lazy="true" id="notas" widgetVar="kajoolNotas" var="row" value="#{manticComprasOrdenesDiferencias.lazyNotas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticComprasOrdenesDiferencias.lazyNotas.rowCount gt manticComprasOrdenesDiferencias.lazyNotas.pageSize}" rowIndexVar="index" reflow="true" selection="#{manticComprasOrdenesDiferencias.attrs.seleccionado}" selectionMode="single">
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolNotas').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolNotas').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
@@ -112,56 +127,56 @@
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'notas')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="Nota entrada"/>
               </f:facet>
 							<p:commandLink action="#{manticComprasOrdenesDiferencias.doNotaEntrada}">
-								<f:setPropertyActionListener target="#{manticComprasOrdenesDiferencias.attrs.idNotaEntrada}" value="#{filtro.idNotaEntrada}"/>
-                <h:outputText value="#{filtro['consecutivo']}"/>
+								<f:setPropertyActionListener target="#{manticComprasOrdenesDiferencias.attrs.idNotaEntrada}" value="#{row.idNotaEntrada}"/>
+                <h:outputText value="#{row['consecutivo']}"/>
 							</p:commandLink>	
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.estatus}">
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
-              <h:outputText value="#{filtro['estatus']}"/>
+              <h:outputText value="#{row['estatus']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{filtro.codigo}">
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.codigo}">
               <f:facet name="header">
                 <h:outputText value="Código"/>
               </f:facet>
-              <h:outputText value="#{filtro['codigo']}" title="Código SAT: #{filtro['sat']}"/>
+              <h:outputText value="#{row['codigo']}" title="Código SAT: #{row['sat']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{filtro.nombre}">
+            <p:column class="MarAuto Responsive" sortBy="#{row.nombre}">
               <f:facet name="header">
                 <h:outputText value="Nombre"/>
               </f:facet>
-              <h:outputText value="#{filtro['nombre']}" title="Código propio: #{filtro['propio']}"/>
+              <h:outputText value="#{row['nombre']}" title="Código propio: #{row['propio']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.costo}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.costo}">
               <f:facet name="header">
                 <h:outputText value="Costo"/>
               </f:facet>
-              <h:outputText value="#{filtro['costo']}"/>
+              <h:outputText value="#{row['costo']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.cantidad}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidad}">
               <f:facet name="header">
                 <h:outputText value="Cantidad"/>
               </f:facet>
-              <h:outputText value="#{filtro['cantidad']}"/>
+              <h:outputText value="#{row['cantidad']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
-              <h:outputText value="#{filtro['importe']}"/>
+              <h:outputText value="#{row['importe']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.nuevo}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.nuevo}">
               <f:facet name="header">
                 <h:outputText value="Nuevo"/>
               </f:facet>
-              <h:outputText value="#{filtro['nuevo']}"/>
+              <h:outputText value="#{row['nuevo']}"/>
             </p:column>		
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticComprasOrdenesDiferencias.lazyNotas==null?0:manticComprasOrdenesDiferencias.lazyNotas.rowCount}] registros"/>

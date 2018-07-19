@@ -89,7 +89,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 			  global.setSat(codigos.getSat());
 			
 			// si esta marcado como afectar los costos se aplicara el cambio en el catalogo de articulos
-			if(codigos.isAplicar()) {
+			if(codigos.getIdAplicar().equals(1L)) {
 			  global.setPrecio(Numero.toRedondearSat(item.getCosto()));
 			  global.setMenudeo(Numero.toRedondearSat(item.getCosto()* Constantes.PORCENTAJE_MENUDEO));
 			  global.setMedioMayoreo(Numero.toRedondearSat(item.getCosto()* Constantes.PORCENTAJE_MEDIO_MAYOREO));

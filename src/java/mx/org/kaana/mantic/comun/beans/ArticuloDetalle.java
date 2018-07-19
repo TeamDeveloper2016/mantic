@@ -45,22 +45,24 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 	private Long idRedondear;
 	private Double total;
 	private Long idComodin;
+	private Long idAplicar;
 	private boolean aplicar;
 	private boolean disponible;
+	
 
   public ArticuloDetalle() {
     this(new Long(-1L));
   }
 
   public ArticuloDetalle(Long key) {
-		this(key, "", 0D, "", "", 0D, new Timestamp(Calendar.getInstance().getTimeInMillis()), "", 16D, 0D, 0D, 1D, 0D, "", "", "", 0D);
+		this(key, "", 0D, "", "", 0D, new Timestamp(Calendar.getInstance().getTimeInMillis()), "", 16D, 0D, 0D, 1D, 0D, "", "", "", 0D, 2L);
   }
 
-	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Double excedentes) {
-		this(idArticulo, codigo, costo, descuento, extras, importe, registro, propio, iva, impuestos, subTotal, cantidad, descuentos, nombre, sat, unidadMedida, null, 0L, 1L, -1L, excedentes);
+	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Double excedentes, Long idAplicar) {
+		this(idArticulo, codigo, costo, descuento, extras, importe, registro, propio, iva, impuestos, subTotal, cantidad, descuentos, nombre, sat, unidadMedida, null, 0L, 1L, -1L, excedentes, idAplicar);
 	}
 	
-	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Long solicitados, Long idRedondear, Long idComodin, Double excedentes) {
+	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Long solicitados, Long idRedondear, Long idComodin, Double excedentes, Long idAplicar) {
 		this.idArticulo=idArticulo;
 		this.codigo=codigo;
 		this.costo=costo;
@@ -84,7 +86,8 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		this.total= importe;
 		this.idComodin= idComodin;
 		this.excedentes= excedentes;
-		this.aplicar= true;
+		this.idAplicar= idAplicar;
+		this.aplicar= idAplicar== null || idAplicar.equals(1L);
 		this.disponible= true;
 	}
 	
@@ -356,12 +359,26 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
   	return this.idComodin!= null && this.idComodin!=-1L;
   }
 
+	public Long getIdAplicar() {
+		return idAplicar;
+	}
+
+	public void setIdAplicar(Long idAplicar) {
+		this.idAplicar=idAplicar;
+		if(this.idAplicar!= null)
+			this.aplicar= this.idAplicar.equals(1L);
+	} 
+
 	public boolean isAplicar() {
 		return aplicar;
 	}
 
 	public void setAplicar(boolean aplicar) {
 		this.aplicar=aplicar;
+		if(this.aplicar)
+			this.idAplicar= 1L;
+		else
+			this.idAplicar= 2L;
 	}
 
 	public boolean isDisponible() {
