@@ -2657,6 +2657,7 @@
 				  factura = '{factura}'
 				  and id_proveedor= {idProveedor}
 				  and date_format(registro, '%Y%m%d')&gt;= '{inicio}' and date_format(registro, '%Y%m%d')&lt;= '{termino}'
+					and id_nota_entrada&lt;&gt; {idNotaEntrada}
 				order by
 				  registro desc				
 			</select>
