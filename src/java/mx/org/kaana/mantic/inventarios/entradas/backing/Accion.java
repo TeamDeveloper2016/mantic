@@ -299,8 +299,10 @@ public class Accion extends IBaseArticulos implements Serializable {
 					params.put("idNotaEntrada", idNotaEntrada);
 					params.put("idTipoArchivo", 1L);
 				  tmp= (TcManticNotasArchivosDto)DaoFactory.getInstance().findFirst(TcManticNotasArchivosDto.class, "exists", params);
-					if(tmp!= null) 
+					if(tmp!= null) {
 						this.xml= new Importado(tmp.getNombre(), "XML", EFormatos.XML, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
+    				this.toReadFactura(new File(tmp.getAlias()));
+					} // if	
 					params.put("idTipoArchivo", 2L);
 				  tmp= (TcManticNotasArchivosDto)DaoFactory.getInstance().findFirst(TcManticNotasArchivosDto.class, "exists", params);
 					if(tmp!= null) 
