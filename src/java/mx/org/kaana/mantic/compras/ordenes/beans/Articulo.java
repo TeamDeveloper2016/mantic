@@ -154,6 +154,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		boolean display  = diferencia!= 0D;
 		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(display? "": "none").concat("' title='Costo anterior: ").concat(
 			Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, this.getValor())
+		).concat("\n\nCosto digitado:").concat(Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, this.getCosto())
 		).concat("\n\nDiferencia: ").concat(String.valueOf(diferencia)).concat("%'></i>");
 	}
 
@@ -234,7 +235,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private double toDiferencia() {
 		Descuentos descuentos= new Descuentos(this.getCosto(), this.getDescuento().concat(",").concat(this.getExtras()));
 		double value= descuentos.toImporte();
-		value=  this.getValor()- (value== 0? this.getCosto(): value); 
+		value= Numero.toRedondearSat(this.getValor()- (value== 0? this.getCosto(): value)); 
   	return this.getValor()== 0? 0: Numero.toRedondearSat(value* 100/ this.getValor());
 	}	
 

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Numero;
 
 /**
  *@company KAANA
@@ -100,7 +101,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
   }
 
   public Double getCosto() {
-    return costo;
+    return Numero.toRedondearSat(costo);
   }
 
   public void setDescuento(String descuento) {
@@ -124,7 +125,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
   }
 
   public Double getImporte() {
-    return importe;
+    return Numero.toRedondearSat(importe);
   }
 
   public void setRegistro(Timestamp registro) {
@@ -172,7 +173,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
   }
 
   public Double getCantidad() {
-    return cantidad;
+    return Numero.toRedondearSat(cantidad);
   }
 
   public void setIdArticulo(Long idArticulo) {

@@ -182,7 +182,7 @@ public class Transaccion extends Inventarios implements Serializable {
 		for (Articulo articulo: this.articulos) {
 			TcManticNotasDetallesDto item= articulo.toNotaDetalle();
 			item.setIdNotaEntrada(this.orden.getIdNotaEntrada());
-			if(DaoFactory.getInstance().findIdentically(sesion, TcManticNotasDetallesDto.class, item.toMap())== null && articulo.getCantidad()> 0L) {
+			if(DaoFactory.getInstance().findIdentically(sesion, TcManticNotasDetallesDto.class, item.toMap())== null && articulo.getCantidad()> 0D && articulo.getCosto()> 0D) {
 				this.toAffectOrdenDetalle(sesion, articulo);
 				if(item.isValid())
 			    DaoFactory.getInstance().update(sesion, item);
