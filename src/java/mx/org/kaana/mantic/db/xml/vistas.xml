@@ -2138,7 +2138,9 @@
 					datediff(tc_mantic_empresas_deudas.limite, now()) as dias,
 					tc_mantic_empresas.nombre,
 					tc_mantic_proveedores.razon_social proveedor,
-					tc_mantic_almacenes.nombre almacen
+					tc_mantic_almacenes.nombre almacen,
+          tc_mantic_almacenes.id_almacen,
+					tc_mantic_proveedores.id_proveedor
 				from
 					tc_mantic_empresas_deudas
 				inner join

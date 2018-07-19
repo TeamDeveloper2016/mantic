@@ -12,8 +12,10 @@ import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -23,12 +25,17 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.Reportes.reglas.ParametrosComunes;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.enums.EReportes;
+import org.primefaces.context.RequestContext;
 
 @Named(value = "manticCatalogosEmpresasCuentasSaldos")
 @ViewScoped
 public class Saldos extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;	
+  private Reporte reporte;
 	
   @PostConstruct
   @Override
@@ -143,4 +150,50 @@ public class Saldos extends IBaseFilter implements Serializable {
 		} // catch		
 		return regresar;
 	} // doPago	
+  
+  public void doReporte(String nombre) throws Exception{
+    ParametrosComunes parametrosComunes = null;
+		Map<String, Object>params    = null;
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;
+    Entity seleccionado          = null;
+		try{		
+      params= toPrepare();
+      params.put("empresa", this.attrs.get("empresa"));
+			params.put("idEmpresa", this.attrs.get("idEmpresa").toString().equals("-1") ? this.attrs.get("allEmpresa") : this.attrs.get("idEmpresa"));			
+			params.put("almacen", this.attrs.get("almacen"));			
+			params.put("proveedor", this.attrs.get("proveedor"));	
+      seleccionado = ((Entity)this.attrs.get("seleccionado"));
+      params.put("sortOrder", "order by	tc_mantic_empresas_deudas.registro desc");
+      reporteSeleccion= EReportes.valueOf(nombre);
+      if(reporteSeleccion.equals(EReportes.CUENTA_PAGAR_DETALLE)){
+        params.put("idEmpresaDeuda", seleccionado.toLong("idKey"));
+        parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), seleccionado.toLong("idAlmacen"), seleccionado.toLong("idProveedor"), -1L);
+      }
+      else
+        parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.reporte= JsfBase.toReporte();	
+      parametros= parametrosComunes.getParametrosComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+      doVerificarReporte();
+      this.reporte.doAceptar();			
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+  } // doReporte
+  
+  public void doVerificarReporte() {
+		RequestContext rc= RequestContext.getCurrentInstance();
+		if(this.reporte.getTotal()> 0L)
+			rc.execute("start(" + this.reporte.getTotal() + ")");		
+		else{
+			rc.execute("generalHide();");		
+			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+		} // else
+	} // doVerificarReporte		
 }
