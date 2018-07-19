@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.ventas.backing;
+package mx.org.kaana.mantic.ventas.autorizacion.backing;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -29,15 +29,13 @@ import mx.org.kaana.mantic.enums.EEstatusVentas;
 import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.Visibility;
 
-@Named(value = "manticVentasAutorizacion")
+@Named(value = "manticVentasAutorizacionFiltro")
 @ViewScoped
-public class Autorizacion extends IBaseFilter implements Serializable {
+public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;
 	private FormatLazyModel detallePagos;
-	private UISelectEntity encontrado;
-  private Long idCliente;
-	private boolean filtro;
+	private UISelectEntity encontrado;  
 	
 	public FormatLazyModel getDetallePagos() {
 		return detallePagos;
@@ -49,24 +47,14 @@ public class Autorizacion extends IBaseFilter implements Serializable {
 
 	public void setEncontrado(UISelectEntity encontrado) {
 		this.encontrado=encontrado;
-	}
-
-	public boolean isFiltro() {
-		return filtro;
-	}
+	}	
 	
   @PostConstruct
   @Override
   protected void init() {
-    try {
-			this.idCliente= JsfBase.getFlashAttribute("idCliente")== null? -1L: Long.valueOf(JsfBase.getFlashAttribute("idCliente").toString());			
-			this.filtro = this.idCliente.equals(-1L);
-      this.attrs.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");
-      this.attrs.put("idCliente", this.idCliente);     
-      this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-				loadSucursales();
+    try {			
+      this.attrs.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");      
+			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -80,7 +68,7 @@ public class Autorizacion extends IBaseFilter implements Serializable {
 	  Map<String, Object> params= null;	
     try {  	  
 			params= new HashMap<>();
-			params.put("idCliente", this.attrs.get("idCliente"));						
+			params.put("idCliente", this.attrs.get("cliente"));						
 			params.put("sortOrder", this.attrs.get("sortOrder"));			
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);			
       columns= new ArrayList<>();  
@@ -101,61 +89,7 @@ public class Autorizacion extends IBaseFilter implements Serializable {
       Methods.clean(params);
       Methods.clean(columns);
     } // finally		
-  } // doLoad
-
-	private Map<String, Object> toPrepare() {
-	  Map<String, Object> regresar= new HashMap<>();	
-		StringBuilder sb= new StringBuilder();
-		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_mantic_ventas.consecutivo= ").append(this.attrs.get("consecutivo")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_mantic_clientes_deudas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_mantic_clientes_deudas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("vencidos")) && this.attrs.get("vencidos").toString().equals("1"))
-  		sb.append("(now()> tc_mantic_clientes_deudas.limite) and ");
-		if(!Cadena.isVacio(this.attrs.get("dias")))
-  		sb.append("(datediff(tc_mantic_clientes_deudas.limite, now())>= ").append(this.attrs.get("dias")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
-		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
-		else
-		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
-		if(sb.length()== 0)
-		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-		else	
-		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
-		return regresar;		
-	}
-	
-	private void toLoadCatalog() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
-    try {
-			columns= new ArrayList<>();
-			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
-			else
-				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
-			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch   
-    finally {
-      Methods.clean(columns);
-      Methods.clean(params);
-    }// finally
-	}
-
-	public String doRegresar() {
-	  JsfBase.setFlashAttribute("idCliente", this.attrs.get("idCliente"));		
-		return "filtro".concat(Constantes.REDIRECIONAR);
-	} 
+  } // doLoad	
 	
 	public void doClientes() {
 		List<UISelectEntity> clientes= null;
@@ -163,7 +97,7 @@ public class Autorizacion extends IBaseFilter implements Serializable {
 		List<Columna> columns        = null;
     try {
 			columns= new ArrayList<>();
-			if(this.attrs.get("busqueda")!= null && this.attrs.get("busqueda").toString().length()> 3) {
+			if(this.attrs.get("busqueda")!= null && this.attrs.get("busqueda").toString().length()> 2) {
 				params = new HashMap<>();      
 				params.put(Constantes.SQL_CONDICION, "upper(razon_social) like upper('%".concat((String)this.attrs.get("busqueda")).concat("%')"));
 				params.put("idEmpresa", this.attrs.get("idEmpresa"));
@@ -232,32 +166,15 @@ public class Autorizacion extends IBaseFilter implements Serializable {
 			this.attrs.put("cliente", cliente);						
 			unico  = new ArrayList<>();
 			unico.add(cliente);
-			this.attrs.put("unico", unico);						
+			this.attrs.put("unico", unico);				
+			doLoadTicketAbiertos();
+			doLoad();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	}
-	
-	private void loadSucursales(){
-		List<UISelectEntity> sucursales= null;
-		Map<String, Object>params      = null;
-		List<Columna> columns          = null;
-		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			sucursales=(List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
-			this.attrs.put("sucursales", sucursales);			
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch		
-	} // loadSucursales
+	} // doSeleccionado	
 	
 	public void doAutorizar(){
 		try {
@@ -301,7 +218,7 @@ public class Autorizacion extends IBaseFilter implements Serializable {
 			regresar.append(" tc_mantic_ventas.id_venta_estatus=");
 			regresar.append(EEstatusVentas.ABIERTA.getIdEstatusVenta());
 			regresar.append(" and tc_mantic_clientes.id_cliente=");
-			regresar.append(this.attrs.get("idCliente"));
+			regresar.append(this.attrs.get("cliente"));
 		} // try
 		catch (Exception e) {			
 			throw e;
