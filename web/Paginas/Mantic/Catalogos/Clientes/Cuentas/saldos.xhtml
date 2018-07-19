@@ -5,7 +5,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
-                template="/WEB-INF/plantillas/accion.xhtml">
+                template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Estado de cuenta del cliente" />
   <ui:define name="librerias">
     <script type="text/javascript">
@@ -76,11 +76,15 @@
 								<p:menuButton   value="Opciones">
 									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:separator/>
+                  <p:menuitem id="reporteIcon" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTAS_POR_COBRAR')}" oncomplete="janal.desbloquear();" update="descargar"/>
 								</p:menuButton>
 							</div>  
 							<div class="xs-pantalla">              
 								<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
 								<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+                <p:separator/>
+                <p:menuitem id="reporteIconXs" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTAS_POR_COBRAR')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</div>  
 						</f:facet>												
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.consecutivo}">
@@ -138,6 +142,8 @@
 					<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">            
             <p:menuitem id="pago" icon="fa fa-money" value="Pago" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doPago}" process="@this tabla" />					
             <p:menuitem id="deuda" icon="fa fa-minus-circle" value="Deuda" onstart="return janal.bloquear()" action="#{manticCatalogosClientesCuentasSaldos.doDeuda}" process="@this tabla"/>					
+            <p:separator/>					
+            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosClientesCuentasSaldos.doReporte('CUENTA_COBRAR_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
           </p:contextMenu>
 				</div>
 			</div>	
