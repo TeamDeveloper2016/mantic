@@ -507,6 +507,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			params=new HashMap<>();
 			params.put("factura", ((NotaEntrada)this.getAdminOrden().getOrden()).getFactura());
 			params.put("idProveedor", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdProveedor());
+			params.put("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
 			int month= Calendar.getInstance().get(Calendar.MONTH);
 			if(month<= 5) {
 				params.put("inicio", Calendar.getInstance().get(Calendar.YEAR)+ "0101");
@@ -564,5 +565,18 @@ public class Accion extends IBaseArticulos implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
 	}
+
+	@Override
+	public void doUpdateArticulo(String codigo, Integer index) {
+		super.doUpdateArticulo(codigo, index);
+    this.doFilterRows();
+	}
 	
+	@Override
+	public void doDeleteArticulo(Integer index) {
+		super.doDeleteArticulo(index);
+    this.doFilterRows();
+	}
+
+
 }

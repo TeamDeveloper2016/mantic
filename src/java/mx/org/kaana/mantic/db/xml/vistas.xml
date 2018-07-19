@@ -1258,15 +1258,11 @@
 					tc_mantic_notas_detalles.descuento,
 					tc_mantic_notas_detalles.extras,
 					tc_mantic_notas_detalles.importe,
-					tc_mantic_notas_detalles.cantidades,
-				  if(tc_mantic_ordenes_detalles.costo is null, 0, tc_mantic_ordenes_detalles.costo) as valor,
-				  if(tc_mantic_ordenes_detalles.costo is null, tc_mantic_notas_detalles.costo, tc_mantic_ordenes_detalles.costo- tc_mantic_notas_detalles.costo) as temporal
+					tc_mantic_notas_detalles.cantidades
 				from
 					tc_mantic_notas_entradas
 				inner join
 					tc_mantic_notas_detalles on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_notas_detalles.id_nota_entrada
-				left join
-				  tc_mantic_ordenes_detalles on tc_mantic_notas_detalles.id_orden_detalle= tc_mantic_ordenes_detalles.id_orden_detalle
 				where  
 					tc_mantic_notas_entradas.id_nota_entrada= {idNotaEntrada}
 				{sortOrder}
@@ -2037,13 +2033,18 @@
 				  tc_mantic_notas_estatus.nombre as estatus,
 				  tc_mantic_notas_estatus.id_nota_estatus,
 				  tc_mantic_notas_entradas.id_nota_entrada,
-				  tc_mantic_notas_entradas.id_orden_compra
+				  tc_mantic_notas_entradas.id_orden_compra,
+				  if(tc_mantic_ordenes_detalles.costo is null, 0, tc_mantic_ordenes_detalles.costo) as valor,
+				  if(tc_mantic_ordenes_detalles.costo is null, tc_mantic_notas_detalles.costo, tc_mantic_ordenes_detalles.costo- tc_mantic_notas_detalles.costo) as temporal,				
+				  tc_mantic_notas_detalles.id_aplicar
 				from
 					tc_mantic_notas_entradas
 				inner join
 					tc_mantic_notas_detalles on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_notas_detalles.id_nota_entrada
 				inner join
 				  tc_mantic_notas_estatus on tc_mantic_notas_entradas.id_nota_estatus= tc_mantic_notas_estatus.id_nota_estatus
+				left join
+				  tc_mantic_ordenes_detalles on tc_mantic_notas_detalles.id_orden_detalle= tc_mantic_ordenes_detalles.id_orden_detalle
 				where  
 					tc_mantic_notas_entradas.id_orden_compra= {idOrdenCompra}
 				  {condicion}
