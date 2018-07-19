@@ -643,7 +643,7 @@
 				where   
 					{condicion}
 				and
-					tc_mantic_clientes.id_empresa={idEmpresa}                        
+					tc_mantic_clientes.id_empresa in ({idEmpresa})
 			</select>    
 			<select id="clienteDefault">
 				select 
