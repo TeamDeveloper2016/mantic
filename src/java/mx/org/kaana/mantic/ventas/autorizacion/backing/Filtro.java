@@ -1,7 +1,6 @@
 package mx.org.kaana.mantic.ventas.autorizacion.backing;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,6 +9,8 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EBooleanos;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -17,8 +18,6 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -26,6 +25,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
+import mx.org.kaana.mantic.ventas.autorizacion.reglas.Transaccion;
 import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.Visibility;
 
@@ -33,7 +33,7 @@ import org.primefaces.model.Visibility;
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
-  private static final long serialVersionUID = 8793667741599428879L;
+	private static final long serialVersionUID = 5570593377763068163L;
 	private FormatLazyModel detallePagos;
 	private UISelectEntity encontrado;  
 	
@@ -174,17 +174,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} // doSeleccionado	
-	
-	public void doAutorizar(){
-		try {
-			
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch		
-	} // doAutorizar
+	} // doSeleccionado		
 	
 	public void doLoadTicketAbiertos(){
 		List<UISelectEntity> ticketsAbiertos= null;
@@ -199,8 +189,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put(Constantes.SQL_CONDICION, toCondicion());
 			ticketsAbiertos= UIEntity.build("VistaVentasDto", "lazy", params, campos, Constantes.SQL_TODOS_REGISTROS);
-			this.attrs.put("ticketsAbiertos", ticketsAbiertos);			
-			this.attrs.put("ticketAbierto", UIBackingUtilities.toFirstKeySelectEntity(ticketsAbiertos));			
+			if(!ticketsAbiertos.isEmpty()){
+				this.attrs.put("ticketsAbiertos", ticketsAbiertos);			
+				this.attrs.put("ticketAbierto", UIBackingUtilities.toFirstKeySelectEntity(ticketsAbiertos));			
+				this.attrs.put("ventaDetalle", ticketsAbiertos.get(0));			
+			} // if
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -219,10 +212,61 @@ public class Filtro extends IBaseFilter implements Serializable {
 			regresar.append(EEstatusVentas.ABIERTA.getIdEstatusVenta());
 			regresar.append(" and tc_mantic_clientes.id_cliente=");
 			regresar.append(this.attrs.get("cliente"));
+			regresar.append(" and tc_mantic_ventas.id_autorizar=");
+			regresar.append(EBooleanos.NO.getIdBooleano());
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
 		return regresar.toString();
 	} // toCondicion
+	
+	public void doAutorizar(){
+		Transaccion transaccion= null;
+		try {
+			transaccion= new Transaccion(((Entity)this.attrs.get("ventaDetalle")).getKey());
+			if(transaccion.ejecutar(EAccion.MODIFICAR))
+				JsfBase.addMessage("Autorizar venta", "Se autorizo la venta de forma correcta", ETipoMensaje.INFORMACION);
+			else
+				JsfBase.addMessage("Autorizar venta", "Ocurrió un error al autorizar la venta", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // doAutorizar
+	
+	public String doDetalleVenta(){
+		String regresar= null;
+		Entity venta   = null;
+		try {
+			if(this.attrs.get("ventaDetalle")!= null){
+				venta= (Entity) this.attrs.get("ventaDetalle");
+				JsfBase.setFlashAttribute("idVenta", venta.getKey());
+				regresar= "detalle".concat(Constantes.REDIRECIONAR);
+			} // if
+			else
+				JsfBase.addMessage("Detalle de la venta", "No se tiene ninguna venta pendiente por autorizar", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		return regresar;
+	} // doDetalleArticulos
+	
+	public String doDetalleCredito(){
+		String regresar= null;
+		Entity venta   = null;
+		try {
+			venta= (Entity) this.attrs.get("seleccionado");
+			JsfBase.setFlashAttribute("idVenta", venta.getKey());			
+			regresar= "detalle".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		return regresar;
+	} // doDetalleArticulos
 }
