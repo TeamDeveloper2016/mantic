@@ -17,16 +17,20 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.Reportes.reglas.ParametrosComunes;
 import mx.org.kaana.mantic.compras.ordenes.reglas.ArticulosLazyLoad;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
+import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import org.primefaces.context.RequestContext;
 
@@ -43,6 +47,7 @@ import org.primefaces.context.RequestContext;
 public class Diferencias extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428311L;
+  private Reporte reporte;
 	
 	private TcManticOrdenesComprasDto orden;
 	protected FormatLazyModel lazyNotas;
@@ -60,6 +65,8 @@ public class Diferencias extends IBaseFilter implements Serializable {
   protected void init() {
     try {
       this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra"));
+      this.attrs.put("idProveedor", JsfBase.getFlashAttribute("idProveedor"));
+      this.attrs.put("idAlmacen", JsfBase.getFlashAttribute("idAlmacen"));
       this.orden= (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, (Long)JsfBase.getFlashAttribute("idOrdenCompra"));
 		  this.doLoad();
     } // try
@@ -193,6 +200,42 @@ public class Diferencias extends IBaseFilter implements Serializable {
 			Methods.clean(params);
 		} // finally	
 	}
+  
+  public void doReporte(String nombre) throws Exception{
+		ParametrosComunes parametrosComunes = null;
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;
+		try{		
+      reporteSeleccion= EReportes.valueOf(nombre);
+      if(!reporteSeleccion.equals(EReportes.ORDENES_COMPRA)){
+        parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), Long.valueOf(this.attrs.get("idAlmacen").toString()), Long.valueOf(this.attrs.get("idProveedor").toString()), -1L);
+      }
+      else
+        parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.reporte= JsfBase.toReporte();	
+      parametros= parametrosComunes.getParametrosComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, this.attrs, parametros));		
+      doVerificarReporte();
+      this.reporte.doAceptar();			
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+} // doReporte
+	
+	public void doVerificarReporte() {
+		RequestContext rc= RequestContext.getCurrentInstance();
+		if(this.reporte.getTotal()> 0L)
+			rc.execute("start(" + this.reporte.getTotal() + ")");		
+		else{
+			rc.execute("generalHide()");		
+			JsfBase.addMessage("Generar reporte","No se encontraron registros para el reporte", ETipoMensaje.ALERTA);
+		} // else
+	} // doVerificarReporte		
 	
 	public String toColor(Entity row) {
 		return !row.toDouble("unidades").equals(0D) || !row.toDouble("valores").equals(0D)? "janal-tr-orange": "";
