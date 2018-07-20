@@ -170,8 +170,8 @@
             ' ) ',
             tc_mantic_articulos.nombre) as articulo,
           tc_mantic_articulos.precio,
-          tc_mantic_notas_entradas.consecutivo consecutivo_nota_entrada,
-          tc_mantic_notas_entradas.factura          												
+          (select group_concat(tc_mantic_notas_entradas.factura separator ' , ') fac from  tc_mantic_notas_entradas where   tc_mantic_notas_entradas.id_orden_compra = tc_mantic_ordenes_compras.id_orden_compra order by tc_mantic_notas_entradas.id_nota_entrada asc) factura,
+			    (select group_concat(tc_mantic_notas_entradas.consecutivo separator ' , ') fac from  tc_mantic_notas_entradas where   tc_mantic_notas_entradas.id_orden_compra = tc_mantic_ordenes_compras.id_orden_compra order by tc_mantic_notas_entradas.id_nota_entrada asc) consecutivo_nota_entrada           												
          from 
            tc_mantic_ordenes_compras
          inner join 
@@ -182,10 +182,9 @@
 					tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
          inner join 
            tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus= tc_mantic_ordenes_estatus.id_orden_estatus
-         left join 
-           tc_mantic_notas_entradas on tc_mantic_ordenes_compras.id_orden_compra = tc_mantic_notas_entradas.id_orden_compra
          where 
-          tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra} and (tc_mantic_ordenes_detalles.cantidades &lt;&gt; 0 or tc_mantic_ordenes_detalles.precios &lt;&gt; 0)
+          tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra} 
+          and (tc_mantic_ordenes_detalles.cantidades &lt;&gt; 0 or tc_mantic_ordenes_detalles.precios &lt;&gt; 0)
       </select>
       <select id="ordenesCompra">
         select
@@ -534,6 +533,7 @@
 					tc_mantic_clientes_deudas.importe importe_deuda,
 					tc_mantic_clientes_deudas.saldo total_final,
 					tc_mantic_clientes_deudas.saldo,
+          tc_mantic_clientes_deudas.limite,
 					tc_mantic_clientes_pagos.pago,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
 					tc_mantic_clientes_pagos.registro,
