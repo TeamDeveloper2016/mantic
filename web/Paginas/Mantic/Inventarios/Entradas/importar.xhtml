@@ -17,7 +17,6 @@
 	  <h:outputScript library="janal" name="js/shAutoloader.js"/>
 	  <h:outputScript library="janal" name="js/shBrushXml.js"/>
 	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
-	  <h:outputScript library="janal" name="js/jquery.format.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:xml': {validaciones: 'requerido', mascara: 'libre'},
@@ -34,10 +33,6 @@
       };
 			
 			function load() {
-				var text= $.format($('#documentXml').html(), {method: 'xml'});
-				//text= text.replace(/\n/g, '&lt;br\&gt;');
-				//janal.console(text);
-				$('#documentXml').html(text);
 			  SyntaxHighlighter.highlight();	
 			}
 		</script>
@@ -47,6 +42,11 @@
         margin-bottom: 6px;
         border-radius: 5px;				
 			}
+			.syntaxhighlighter {
+					overflow-y: auto !important;
+					overflow-x: auto !important;
+					max-height: 470px;
+			}			
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
@@ -221,7 +221,7 @@
 			  </div>
 			</p:dialog>
 			<p:dialog id="dialogoXML" widgetVar="dlgXML" header="Factura en formato digital" onShow="load();" onHide="janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
-				<pre id="documentXml" class="brush: xml;" style="width: 925px; height: 470px; word-wrap: break-word;">
+				<pre id="documentXml" class="brush: xml;" style="width: 925px; height: 470px;">
 					<h:outputText value="#{manticInventariosEntradasImportar.attrs.temporal}" escape="true"/>
 				</pre>
   			<hr class="ui-widget-content"/>

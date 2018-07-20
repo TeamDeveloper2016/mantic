@@ -8,6 +8,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -39,6 +41,12 @@ import mx.org.kaana.mantic.libs.factura.reglas.Reader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.util.Collections;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
@@ -330,6 +338,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 	}
 
 	public void doViewFile() {
+		String regresar   = "";
 		String name       = Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.xml.getRuta()).concat(this.xml.getName());
     StringBuilder sb  = new StringBuilder("");
     FileReader in     = null;
@@ -341,6 +350,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 			while ((line = br.readLine()) != null) {
   			sb.append(line);
 			} // while
+			regresar= this.prettyFormat(sb.substring(3), 2);
 		} // try
 		catch (Exception e) {
       Error.mensaje(e);
@@ -357,8 +367,20 @@ public class Importar extends IBaseAttribute implements Serializable {
         JsfBase.addMessageError(e);
 			} // catch
 		} // finally
-		this.attrs.put("temporal", sb.substring(3));
+		this.attrs.put("temporal", regresar);
 	}
+	
+	public String prettyFormat(String input, int indent) throws Exception {
+		Source xmlInput = new StreamSource(new StringReader(input));
+		StringWriter stringWriter = new StringWriter();
+		StreamResult xmlOutput = new StreamResult(stringWriter);
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		transformerFactory.setAttribute("indent-number", indent);
+		Transformer transformer = transformerFactory.newTransformer(); 
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.transform(xmlInput, xmlOutput);
+		return xmlOutput.getWriter().toString();
+  }
 	
   private void toCopyDocument(String alias, String name) {
 		try {
