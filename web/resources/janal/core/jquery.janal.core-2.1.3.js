@@ -1153,8 +1153,8 @@
 		  else
 			  $parent.notify('Error:', 'error', id, msg);
     }, // error
-    alert: function(id, msg) {
-			janal.console('janal.alert: ');
+    alert: function(msg) {
+			$parent.console('janal.alert: ');
 			alert(msg);
     }, // alert
     version: function() {

@@ -535,7 +535,6 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 			if(this.isInsideArticulo("|"+ articulo.getCodigo()+ "|"+ articulo.getPropio()+ "|", articulo.getNombre()))
 				this.getAdminOrden().getFiltrados().add(articulo);
 		} // for
-		//Collections.sort(this.getAdminOrden().getFiltrados());
 	}
 	
 

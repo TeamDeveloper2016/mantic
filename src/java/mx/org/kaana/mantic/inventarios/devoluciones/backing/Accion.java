@@ -115,6 +115,8 @@ public class Accion extends IBaseArticulos implements Serializable {
       } // switch
 			this.toLoadCatalog();
 			this.doFilterRows();
+			if(this.getAdminOrden().getFiltrados().isEmpty())
+				RequestContext.getCurrentInstance().execute("janal.alert('Ya no existen articulos que devolver asociados a esta nota de entrada !');janal.isPostBack('cancelar')");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
