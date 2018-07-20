@@ -2567,6 +2567,17 @@
 				order by
 				  tc_mantic_ventas_detalles.registro
       </select>
+      <select id="detalleVenta">
+        select      
+				  tc_mantic_ventas_detalles.id_venta_detalle as id_key,
+          tc_mantic_ventas_detalles.*
+        from      
+          tc_mantic_ventas_detalles
+        where      
+          id_venta = {idVenta}
+				order by
+				  tc_mantic_ventas_detalles.registro
+      </select>
 			<delete id="rows">
 				delete from tc_mantic_ventas_detalles where id_venta= {idVenta}
 			</delete>

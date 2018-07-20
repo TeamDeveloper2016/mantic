@@ -633,9 +633,9 @@
 				where 
 					tc_mantic_empresas.id_empresa = {idEmpresa}
 				and 
-					upper(tc_mantic_articulos_codigos.codigo) like upper('%{codigo}%')
-				and 
-					upper(tc_mantic_articulos.nombre) like upper('%{nombre}%')				
+					(upper(tc_mantic_articulos_codigos.codigo) like upper('%{codigo}%')
+				or
+					upper(tc_mantic_articulos.nombre) like upper('%{nombre}%'))
 				group by 
 				  tc_mantic_articulos.nombre,          
 				  tc_mantic_articulos.menudeo,          
