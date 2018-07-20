@@ -9,6 +9,14 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Importar los archivos XML/PDF de la nota de crédito"/>
 	<ui:define name="librerias">
+		<h:outputStylesheet library="janal" name="css/sh.css"/>
+		<h:outputStylesheet library="janal" name="css/shCore.css"/>
+		<h:outputStylesheet library="janal" name="css/shThemeDefault.css"/>
+		<h:outputScript library="janal" name="js/sh.js"/>
+	  <h:outputScript library="janal" name="js/shCore.js"/>
+	  <h:outputScript library="janal" name="js/shAutoloader.js"/>
+	  <h:outputScript library="janal" name="js/shBrushXml.js"/>
+	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:xml': {validaciones: 'requerido', mascara: 'libre'},
@@ -23,6 +31,10 @@
       function stop() {
         PF('statusDialog').hide();
       };
+			
+			function load() {
+			  SyntaxHighlighter.highlight();	
+			}
 		</script>
 		<style>
 			.janal-upload-frame {
@@ -34,6 +46,7 @@
 	</ui:define>
 	<ui:define name="contenido">
 		<p:remoteCommand name="viewDocument" actionListener="#{manticInventariosCreditosImportar.doViewDocument}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
+		<p:remoteCommand name="viewFile" actionListener="#{manticInventariosCreditosImportar.doViewFile}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
@@ -94,6 +107,9 @@
 								<p:column style="text-align: center" styleClass="janal-wid-col-38">
 									<p:commandLink  actionListener="#{manticInventariosCreditosImportar.doViewPdfDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 2}">
 									  <p:commandButton icon="fa fa-eye-slash" title="Ver documento" ajax="false" type="button" styleClass="janal-text-white"/>
+									</p:commandLink>	
+									<p:commandLink  actionListener="#{manticInventariosCreditosImportar.doViewXmlDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 1}">
+									  <p:commandButton icon="fa fa-eye" title="Ver documento XML" ajax="false" type="button" styleClass="janal-text-white"/>
 									</p:commandLink>	
 								</p:column>
 							</p:dataTable>
@@ -188,6 +204,15 @@
   			<hr class="ui-widget-content"/>
 	  		<div class="janal-line-button">
 					<p:commandButton process="@this" styleClass="janal-text-white" icon="fa fa-remove" value="Cerrar" actionListener="#{manticInventariosCreditosImportar.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
+			  </div>
+			</p:dialog>
+			<p:dialog id="dialogoXML" widgetVar="dlgXML" header="Factura en formato XML" onShow="load();" onHide="janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+				<pre id="documentXml" class="brush: xml;" style="width: 925px; height: 470px;">
+					<h:outputText value="#{manticInventariosCreditosImportar.attrs.temporal}" escape="true"/>
+				</pre>
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" styleClass="janal-text-white" icon="fa fa-remove" value="Cerrar" oncomplete="PF('dlgXML').hide();"/>
 			  </div>
 			</p:dialog>
 		</h:form>

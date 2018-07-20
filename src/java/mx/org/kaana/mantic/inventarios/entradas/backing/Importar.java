@@ -337,9 +337,17 @@ public class Importar extends IBaseAttribute implements Serializable {
 		this.toCopyDocument(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.pdf.getRuta()).concat(this.pdf.getName()), this.pdf.getName());
 	}
 
+	public void doViewXmlDocument(UISelectEntity item) {
+		this.doViewFile(item.toString("alias"));
+	}
+
 	public void doViewFile() {
+		this.doViewFile(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.xml.getRuta()).concat(this.xml.getName()));
+	}
+	
+	public void doViewFile(String nameXml) {
 		String regresar   = "";
-		String name       = Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.xml.getRuta()).concat(this.xml.getName());
+		String name       = nameXml;
     StringBuilder sb  = new StringBuilder("");
     FileReader in     = null;
 		BufferedReader br = null;

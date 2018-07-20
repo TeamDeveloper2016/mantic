@@ -122,7 +122,10 @@
 								</p:column>
 								<p:column style="text-align: center" styleClass="janal-wid-col-38">
 									<p:commandLink  actionListener="#{manticInventariosEntradasImportar.doViewPdfDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 2}">
-									  <p:commandButton icon="fa fa-eye-slash" title="Ver documento" ajax="false" type="button" styleClass="janal-text-white"/>
+									  <p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button" styleClass="janal-text-white"/>
+									</p:commandLink>	
+									<p:commandLink  actionListener="#{manticInventariosEntradasImportar.doViewXmlDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 1}">
+									  <p:commandButton icon="fa fa-eye" title="Ver documento XML" ajax="false" type="button" styleClass="janal-text-white"/>
 									</p:commandLink>	
 								</p:column>
 							</p:dataTable>
@@ -220,7 +223,7 @@
 					<p:commandButton process="@this" styleClass="janal-text-white" icon="fa fa-remove" value="Cerrar" actionListener="#{manticInventariosEntradasImportar.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
 			  </div>
 			</p:dialog>
-			<p:dialog id="dialogoXML" widgetVar="dlgXML" header="Factura en formato digital" onShow="load();" onHide="janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+			<p:dialog id="dialogoXML" widgetVar="dlgXML" header="Factura en formato XML" onShow="load();" onHide="janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
 				<pre id="documentXml" class="brush: xml;" style="width: 925px; height: 470px;">
 					<h:outputText value="#{manticInventariosEntradasImportar.attrs.temporal}" escape="true"/>
 				</pre>

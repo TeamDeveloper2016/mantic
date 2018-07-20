@@ -1,10 +1,15 @@
 package mx.org.kaana.mantic.inventarios.creditos.backing;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -37,6 +42,12 @@ import mx.org.kaana.mantic.libs.factura.reglas.Reader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.util.Collections;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
@@ -344,6 +355,59 @@ public class Importar extends IBaseAttribute implements Serializable {
 		this.toCopyDocument(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.pdf.getRuta()).concat(this.pdf.getName()), this.pdf.getName());
 	}
 
+	public void doViewXmlDocument(UISelectEntity item) {
+		this.doViewFile(item.toString("alias"));
+	}
+
+	public void doViewFile() {
+		this.doViewFile(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.xml.getRuta()).concat(this.xml.getName()));
+	}
+	
+	public void doViewFile(String nameXml) {
+		String regresar   = "";
+		String name       = nameXml;
+    StringBuilder sb  = new StringBuilder("");
+    FileReader in     = null;
+		BufferedReader br = null;
+		try {
+			in= new FileReader(name);
+			br= new BufferedReader(in);
+			String line;
+			while ((line = br.readLine()) != null) {
+  			sb.append(line);
+			} // while
+			regresar= this.prettyFormat(sb.substring(3), 2);
+		} // try
+		catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			try {
+        if(br != null)
+					br.close();
+				if(in != null)
+  				in.close();
+			} // try
+			catch (IOException e) {
+        JsfBase.addMessageError(e);
+			} // catch
+		} // finally
+		this.attrs.put("temporal", regresar);
+	}
+	
+	public String prettyFormat(String input, int indent) throws Exception {
+		Source xmlInput = new StreamSource(new StringReader(input));
+		StringWriter stringWriter = new StringWriter();
+		StreamResult xmlOutput = new StreamResult(stringWriter);
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		transformerFactory.setAttribute("indent-number", indent);
+		Transformer transformer = transformerFactory.newTransformer(); 
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.transform(xmlInput, xmlOutput);
+		return xmlOutput.getWriter().toString();
+  }
+	
   private void toCopyDocument(String alias, String name) {
 		try {
 			this.attrs.put("temporal", JsfBase.getContext().concat("/").concat(Constantes.RUTA_TEMPORALES).concat(name).concat("?pfdrid_c=true"));
