@@ -1,8 +1,11 @@
 package mx.org.kaana.mantic.inventarios.entradas.backing;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -326,13 +329,43 @@ public class Importar extends IBaseAttribute implements Serializable {
 		this.toCopyDocument(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.pdf.getRuta()).concat(this.pdf.getName()), this.pdf.getName());
 	}
 
+	public void doViewFile() {
+		String name       = Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.xml.getRuta()).concat(this.xml.getName());
+    StringBuilder sb  = new StringBuilder("");
+    FileReader in     = null;
+		BufferedReader br = null;
+		try {
+			in= new FileReader(name);
+			br= new BufferedReader(in);
+			String line;
+			while ((line = br.readLine()) != null) {
+  			sb.append(line);
+			} // while
+		} // try
+		catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			try {
+        if(br != null)
+					br.close();
+				if(in != null)
+  				in.close();
+			} // try
+			catch (IOException e) {
+        JsfBase.addMessageError(e);
+			} // catch
+		} // finally
+		this.attrs.put("temporal", sb.substring(3));
+	}
+	
   private void toCopyDocument(String alias, String name) {
 		try {
-			this.attrs.put("temporal", JsfBase.getContext().concat("/").concat(Constantes.RUTA_TEMPORALES).concat(name).concat("?pfdrid_c=true"));
+  	  this.attrs.put("temporal", JsfBase.getContext().concat("/").concat(Constantes.RUTA_TEMPORALES).concat(name).concat("?pfdrid_c=true"));
   		File file= new File(JsfBase.getRealPath(Constantes.RUTA_TEMPORALES).concat(name));
 	  	FileInputStream input= new FileInputStream(new File(alias));
       this.toWriteFile(file, input);		
-			RequestContext.getCurrentInstance().update("dialogoPDF");
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -359,7 +392,11 @@ public class Importar extends IBaseAttribute implements Serializable {
 	public void doCerrar() {
 		try {
 			String name= (String)this.attrs.get("temporal");
-			File file= new File(JsfBase.getRealPath(name.substring(0, name.lastIndexOf("?"))));
+			if(name.endsWith("XML"))
+				name= JsfBase.getContext().concat(name);
+			else
+				name= name.substring(0, name.lastIndexOf("?"));
+			File file= new File(JsfBase.getRealPath(name));
 			file.delete();
 		} // try
 		catch (Exception e) {
