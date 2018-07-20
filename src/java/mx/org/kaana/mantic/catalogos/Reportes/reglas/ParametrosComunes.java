@@ -138,7 +138,6 @@ public final class ParametrosComunes implements Serializable{
         this.parametrosComunes.put("REPORTE_CLIENTE_DIRECCION", datosCiente.toString("clienteDireccion")!=null? datosCiente.toString("clienteDireccion"):" ");
         this.parametrosComunes.put("REPORTE_CLIENTE_COLONIA", datosCiente.toString("colonia")!=null? datosCiente.toString("colonia"):" ");
         this.parametrosComunes.put("REPORTE_CLIENTE_CP", datosCiente.toString("codigoPostal")!=null? datosCiente.toString("codigoPostal"):" ");
-        this.parametrosComunes.put("REPORTE_CLIENTE_CONTACTO", datosCiente.toString("agente")!=null? datosCiente.toString("agente"):" ");
         this.parametrosComunes.put("REPORTE_CLIENTE_TELEFONOS", datosCiente.toString("telefonosCliente")!=null? datosCiente.toString("telefonosCliente"):" ");
         this.parametrosComunes.put("REPORTE_CLIENTE_EMAILS", datosCiente.toString("emailsCliente")!=null? datosCiente.toString("emailsCliente"):" ");
         this.parametrosComunes.put("REPORTE_CLIENTE_MUNICIPIO", datosCiente.toString("clienteRegion")!=null? datosCiente.toString("clienteRegion"):" ");

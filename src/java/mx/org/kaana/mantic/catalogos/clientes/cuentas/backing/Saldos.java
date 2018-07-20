@@ -264,7 +264,7 @@ public class Saldos extends IBaseFilter implements Serializable {
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
       params.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");
       reporteSeleccion= EReportes.valueOf(nombre);
-      if(reporteSeleccion.equals(EReportes.CUENTA_PAGAR_DETALLE)){
+      if(reporteSeleccion.equals(EReportes.CUENTA_COBRAR_DETALLE)){
         params.put("idClienteDeuda", seleccionado.toLong("idKey"));
         parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), -1L, -1L , seleccionado.toLong("idCliente"));
       }
