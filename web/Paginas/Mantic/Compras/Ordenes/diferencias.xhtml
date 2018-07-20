@@ -15,7 +15,7 @@
 		</script>   
 		<style>
 			.janal-tr-orange {
-				background-color: #FFE771 !important;
+				background-color: #dfeffc !important;
 			}
 		</style>
 	</ui:define>
@@ -34,7 +34,7 @@
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 									<p:separator/>
-                  <p:menuitem id="reporteDiferencias" icon="fa fa-file-pdf-o" value="Reporte diferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesDiferencias.doReporte('ORDEN_DETALLE_DIF_DIF')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                  <p:menuitem icon="fa fa-file-pdf-o" value="Reporte diferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesDiferencias.doReporte('ORDEN_DETALLE_DIF_DIF')}" oncomplete="janal.desbloquear();" update="descargar"/>
                   <p:separator/>
                   <p:menuitem icon="fa fa-rotate-right" value="Recargar orden" actionListener="#{manticComprasOrdenesDiferencias.doLoad}" process="@this" update="tabla notas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
                 </p:menuButton>
@@ -43,7 +43,7 @@
                 <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
 								<p:separator/>
-                  <p:menuitem id="reporteDiferenciasXs" icon="fa fa-file-pdf-o" value="Reporte diferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesDiferencias.doReporte('ORDEN_DETALLE_DIF_DIF')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                <p:menuitem icon="fa fa-file-pdf-o" value="Reporte diferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesDiferencias.doReporte('ORDEN_DETALLE_DIF_DIF')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 <p:separator/>
                 <p:menuitem icon="fa fa-rotate-right" title="Recargar la orden de compra" actionListener="#{manticComprasOrdenesDiferencias.doLoad}" process="@this" update="tabla notas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
               </div>  

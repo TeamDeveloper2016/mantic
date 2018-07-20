@@ -2,10 +2,13 @@ package mx.org.kaana.mantic.inventarios.entradas.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -17,6 +20,7 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.compras.ordenes.reglas.ArticulosLazyLoad;
 
 /**
  *@company KAANA
@@ -62,12 +66,12 @@ public class Diferencias extends IBaseFilter implements Serializable {
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
       columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      this.attrs.put("sortOrder", "order by tc_mantic_devoluciones.consecutivo, tc_mantic_notas_detalles.nombre");
-      this.lazyDevoluciones = new FormatCustomLazy("VistaDevolucionesDto", "consulta", this.attrs, columns);
       columns.add(new Columna("cantidades", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
       this.attrs.put("sortOrder", "order by tc_mantic_notas_detalles.nombre");
       this.lazyModel = new FormatCustomLazy("VistaDevolucionesDto", "confronta", this.attrs, columns);
       UIBackingUtilities.resetDataTable();
+			this.attrs.put("seleccionado", null);
+			this.doRowSelectEvent();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -93,4 +97,40 @@ public class Diferencias extends IBaseFilter implements Serializable {
 		return "/Paginas/Mantic/Inventarios/Devoluciones/filtro".concat(Constantes.REDIRECIONAR);
 	}
 
+	public void doRowSelectEvent() {
+		Entity entity= (Entity)this.attrs.get("seleccionado");
+    List<Columna> columns     = null;
+	  Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+      columns = new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
+      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
+      columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+		  params.put(Constantes.SQL_CONDICION, " ");
+			if(entity!= null) {
+			  params.put("idNotaEntrada", entity.toLong("idNotaEntrada"));
+			  params.put(Constantes.SQL_CONDICION, " and tc_mantic_notas_detalles.id_articulo= "+ entity.toLong("idArticulo"));
+			} // if
+			else 
+			  params.put("idNotaEntrada", this.attrs.get("idNotaEntrada"));
+      params.put("sortOrder", "order by tc_mantic_devoluciones.consecutivo, tc_mantic_notas_detalles.nombre");
+      this.lazyDevoluciones = new FormatCustomLazy("VistaDevolucionesDto", "consulta", params, columns);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally	
+	}
+	
+	public String toColor(Entity row) {
+		return !row.toDouble("unidades").equals(0D)? "janal-tr-orange": "";
+	} 
+	
 }

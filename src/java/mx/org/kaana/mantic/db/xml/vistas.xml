@@ -1354,6 +1354,7 @@
 				  tc_mantic_devoluciones_estatus on tc_mantic_devoluciones.id_devolucion_estatus= tc_mantic_devoluciones_estatus.id_devolucion_estatus
 				where  
 					tc_mantic_devoluciones.id_nota_entrada= {idNotaEntrada}
+				  {condicion}
 				{sortOrder}
 			</select>
 			<select id="confronta">
@@ -1369,7 +1370,9 @@
 					tc_mantic_notas_detalles.descuento,
 					tc_mantic_notas_detalles.extras,
 					tc_mantic_notas_detalles.importe,
-					tc_mantic_notas_detalles.cantidades
+					tc_mantic_notas_detalles.cantidades as unidades,
+					tc_mantic_notas_detalles.cantidades,
+				  tc_mantic_notas_detalles.id_articulo
 				from
 					tc_mantic_notas_entradas
 				inner join
