@@ -184,7 +184,7 @@
            tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus= tc_mantic_ordenes_estatus.id_orden_estatus
          where 
           tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra} 
-          and (tc_mantic_ordenes_detalles.cantidades &lt;&gt; 0 or tc_mantic_ordenes_detalles.precios &lt;&gt; 0)
+          and (tc_mantic_ordenes_detalles.cantidades &lt;&gt; 0 or tc_mantic_ordenes_detalles.importes &lt;&gt; 0)
       </select>
       <select id="ordenesCompra">
         select
