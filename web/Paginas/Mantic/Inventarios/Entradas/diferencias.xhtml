@@ -10,7 +10,7 @@
 	<ui:define name="librerias">
 		<style>
 			.janal-tr-orange {
-				background-color: #dfeffc !important;
+				background-color: #ABEBC6 !important;
 			}
 		</style>
 	</ui:define>
@@ -85,9 +85,11 @@
               <h:outputText value="#{row['cantidades']}"/>
             </p:column>		
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{manticNotasEntradasDiferencias.lazyModel==null?0:manticNotasEntradasDiferencias.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Suma de la columna de cantidad: #{manticNotasEntradasDiferencias.suma}   Total [#{manticNotasEntradasDiferencias.lazyModel==null?0:manticNotasEntradasDiferencias.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
+					<p:spacer height="3px"/>
+					<p:outputLabel value="Click sobre la fila para filtrar los registro de las devoluciones de los articulo seleccionado."/>
         </div>
 			</div>
 			<p:spacer height="3px"/>
@@ -155,7 +157,7 @@
               <h:outputText value="#{row['estatus']}"/>
             </p:column>		
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{manticNotasEntradasDiferencias.lazyDevoluciones==null?0:manticNotasEntradasDiferencias.lazyDevoluciones.rowCount}] registros"/>
+              <p:outputLabel value="Suma de la columna de cantidad: #{manticNotasEntradasDiferencias.cantidades}   Total [#{manticNotasEntradasDiferencias.lazyDevoluciones==null?0:manticNotasEntradasDiferencias.lazyDevoluciones.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
         </div>

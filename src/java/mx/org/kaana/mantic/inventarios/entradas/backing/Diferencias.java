@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
@@ -16,6 +17,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -132,5 +134,23 @@ public class Diferencias extends IBaseFilter implements Serializable {
 	public String toColor(Entity row) {
 		return !row.toDouble("unidades").equals(0D)? "janal-tr-orange": "";
 	} 
+
+  public String getSuma() {
+		Double sum= 0D;
+		for (IBaseDto item: (List<IBaseDto>)lazyModel.getWrappedData()) {
+			Entity row= (Entity)item;
+			sum+= new Double(row.toString("cantidad"));
+		} // for
+	  return Global.format(EFormatoDinamicos.NUMERO_SAT_DECIMALES, sum);
+	}	
+	
+  public String getCantidades() {
+		Double sum= 0D;
+		for (IBaseDto item: (List<IBaseDto>)lazyDevoluciones.getWrappedData()) {
+			Entity row= (Entity)item;
+			sum+= new Double(row.toString("cantidad"));
+		} // for
+	  return Global.format(EFormatoDinamicos.NUMERO_SAT_DECIMALES, sum);
+	}	
 	
 }
