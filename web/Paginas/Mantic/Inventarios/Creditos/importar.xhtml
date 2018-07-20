@@ -106,7 +106,7 @@
 								</p:column>
 								<p:column style="text-align: center" styleClass="janal-wid-col-38">
 									<p:commandLink  actionListener="#{manticInventariosCreditosImportar.doViewPdfDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 2}">
-									  <p:commandButton icon="fa fa-eye-slash" title="Ver documento" ajax="false" type="button" styleClass="janal-text-white"/>
+									  <p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button" styleClass="janal-text-white"/>
 									</p:commandLink>	
 									<p:commandLink  actionListener="#{manticInventariosCreditosImportar.doViewXmlDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 1}">
 									  <p:commandButton icon="fa fa-eye" title="Ver documento XML" ajax="false" type="button" styleClass="janal-text-white"/>
