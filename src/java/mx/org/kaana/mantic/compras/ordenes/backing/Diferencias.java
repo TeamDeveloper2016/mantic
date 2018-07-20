@@ -80,15 +80,14 @@ public class Diferencias extends IBaseFilter implements Serializable {
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
       columns.add(new Columna("costo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));      
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-			this.attrs.put(Constantes.SQL_CONDICION, " ");
-      this.attrs.put("sortOrder", "order by tc_mantic_notas_entradas.consecutivo, tc_mantic_notas_detalles.nombre");
-      this.lazyNotas = new ArticulosLazyLoad("VistaOrdenesComprasDto", "consulta", this.attrs, columns);
       columns.add(new Columna("cantidades", EFormatoDinamicos.NUMERO_CON_DECIMALES));      
       columns.add(new Columna("importes", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
       this.attrs.put("sortOrder", "order by nombre");
       this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", "confronta", this.attrs, columns);
       UIBackingUtilities.resetDataTable();
+			this.attrs.put("seleccionado", null);
+			this.doRowSelectEvent();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -148,12 +147,11 @@ public class Diferencias extends IBaseFilter implements Serializable {
 	}
 
   public void doChangeAplicar(Entity afectado) {
-		Entity entity= (Entity)this.attrs.get("seleccionado");
 		Map<String, Object> params=null;
 		try {
 			params=new HashMap<>();
-			params.put("idAplicar", (boolean)entity.toBoolean("afectar")? 1L: 2L);
-			DaoFactory.getInstance().update(TcManticNotasDetallesDto.class, entity.getKey(), params);
+			params.put("idAplicar", (boolean)afectado.toBoolean("afectar")? 1L: 2L);
+			DaoFactory.getInstance().update(TcManticNotasDetallesDto.class, afectado.getKey(), params);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -177,9 +175,14 @@ public class Diferencias extends IBaseFilter implements Serializable {
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
       columns.add(new Columna("costo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));      
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-			params.put("idOrdenCompra", entity.toLong("idOrdenCompra"));
-			params.put(Constantes.SQL_CONDICION, " and tc_mantic_notas_detalles.id_articulo= "+ entity.toLong("idArticulo"));
-      params.put("sortOrder", "order by tc_mantic_notas_entradas.consecutivo, tc_mantic_notas_detalles.nombre");
+		  params.put(Constantes.SQL_CONDICION, " ");
+			if(entity!= null) {
+			  params.put("idOrdenCompra", entity.toLong("idOrdenCompra"));
+			  params.put(Constantes.SQL_CONDICION, " and tc_mantic_notas_detalles.id_articulo= "+ entity.toLong("idArticulo"));
+			} // if
+			else 
+			  params.put("idOrdenCompra", this.attrs.get("idOrdenCompra"));
+			params.put("sortOrder", "order by tc_mantic_notas_entradas.consecutivo, tc_mantic_notas_detalles.nombre");
       this.lazyNotas = new ArticulosLazyLoad("VistaOrdenesComprasDto", "consulta", params, columns);
 		} // try
 		catch (Exception e) {

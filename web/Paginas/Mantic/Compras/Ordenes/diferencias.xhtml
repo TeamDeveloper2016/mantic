@@ -169,18 +169,18 @@
               </f:facet>
               <h:outputText value="#{row['importe']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.nuevo}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-col-50">
               <f:facet name="header">
                 <h:outputText value="Nuevo"/>
               </f:facet>
               <h:outputText value="#{row['nuevo']}"/>
             </p:column>		
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-40">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-50">
 							<f:facet name="header">
 								<h:outputText value="Afectar" title="Ajustar el costo en caso de ser menor al que se tiene registrado"/>
 							</f:facet>
 							<p:selectBooleanCheckbox value="#{row.afectar.data}" title="Click para ajustar el costo" rendered="#{row.diferencias.data gt 0}">
-								<p:ajax event="change" process="@this" update="tabla" listener="#{manticComprasOrdenesDiferencias.doChangeAplicar(row)}"/>
+								<p:ajax event="change" process="@this notas" update="notas" listener="#{manticComprasOrdenesDiferencias.doChangeAplicar(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 							</p:selectBooleanCheckbox>
 						</p:column>		
             <f:facet name="footer">
