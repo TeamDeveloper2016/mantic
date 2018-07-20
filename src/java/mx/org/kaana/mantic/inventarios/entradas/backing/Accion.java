@@ -578,5 +578,10 @@ public class Accion extends IBaseArticulos implements Serializable {
     this.doFilterRows();
 	}
 
+	@Override
+  public void doFindArticulo(Integer index) {
+		super.doFindArticulo(index);
+		this.doFilterRows();
+	}
 
 }
