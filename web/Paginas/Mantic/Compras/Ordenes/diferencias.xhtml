@@ -149,12 +149,6 @@
                 <h:outputText value="#{row['consecutivo']}"/>
 							</p:commandLink>	
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
-              <f:facet name="header">
-                <h:outputText value="Estatus"/>
-              </f:facet>
-              <h:outputText value="#{row['estatus']}"/>
-            </p:column>		
             <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.codigo}">
               <f:facet name="header">
                 <h:outputText value="Código"/>
@@ -184,6 +178,12 @@
                 <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{row['importe']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
+              <f:facet name="header">
+                <h:outputText value="Estatus"/>
+              </f:facet>
+              <h:outputText value="#{row['estatus']}"/>
             </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-col-50">
               <f:facet name="header">
