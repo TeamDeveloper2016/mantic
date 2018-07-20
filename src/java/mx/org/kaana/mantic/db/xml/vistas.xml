@@ -2025,9 +2025,10 @@
 					tc_mantic_notas_detalles.codigo,
 					tc_mantic_notas_detalles.nombre,
 					tc_mantic_notas_detalles.cantidad,
+					tc_mantic_notas_detalles.extras,
+					tc_mantic_notas_detalles.cantidades,
 					tc_mantic_notas_detalles.costo,
 					tc_mantic_notas_detalles.descuento,
-					tc_mantic_notas_detalles.extras,
 					tc_mantic_notas_detalles.importe,
 				  if(tc_mantic_notas_detalles.id_orden_detalle is null, '*', '') as nuevo,
 				  tc_mantic_notas_estatus.nombre as estatus,
@@ -2036,7 +2037,8 @@
 				  tc_mantic_notas_entradas.id_orden_compra,
 				  if(tc_mantic_ordenes_detalles.costo is null, 0, tc_mantic_ordenes_detalles.costo) as valor,
 				  if(tc_mantic_ordenes_detalles.costo is null, tc_mantic_notas_detalles.costo, tc_mantic_ordenes_detalles.costo- tc_mantic_notas_detalles.costo) as temporal,				
-				  tc_mantic_notas_detalles.id_aplicar
+				  tc_mantic_notas_detalles.id_aplicar,
+					tc_mantic_notas_detalles.id_articulo
 				from
 					tc_mantic_notas_entradas
 				inner join
@@ -2063,9 +2065,12 @@
 					tc_mantic_ordenes_detalles.extras,
 					tc_mantic_ordenes_detalles.importe,
 					tc_mantic_ordenes_detalles.cantidades,
+					tc_mantic_ordenes_detalles.cantidades as unidades,
 					tc_mantic_ordenes_detalles.importes,
+					tc_mantic_ordenes_detalles.importes as valores,
 				  (abs(tc_mantic_ordenes_detalles.importes)* 100/ tc_mantic_ordenes_detalles.importe) as porcentaje,
-				  tc_mantic_ordenes_compras.id_orden_compra
+				  tc_mantic_ordenes_compras.id_orden_compra,
+					tc_mantic_ordenes_detalles.id_articulo
 				from
 					tc_mantic_ordenes_compras
 				inner join

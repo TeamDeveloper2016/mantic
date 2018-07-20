@@ -414,7 +414,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 					0D,
 					concepto.getClaveProdServ(),
 					concepto.getUnidad(),
-					2L
+					1L
 				));
 			} // for
 			Collections.sort(faltantes);

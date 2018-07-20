@@ -329,5 +329,4 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return "/Paginas/Mantic/Inventarios/Creditos/accion".concat(Constantes.REDIRECIONAR);
 	}
 
-	
 }

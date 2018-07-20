@@ -384,7 +384,7 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 				0D,
 				"",
 				"",
-				2L
+				1L
 			);
 			if(this.getAdminOrden().add(item))
 				RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
@@ -431,7 +431,7 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 				0D,
 				seleccionado.getSat(),
 				seleccionado.getUnidadMedida(),
-				2L
+				1L
 			);
 			if(this.getAdminOrden().add(item))
 				RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");

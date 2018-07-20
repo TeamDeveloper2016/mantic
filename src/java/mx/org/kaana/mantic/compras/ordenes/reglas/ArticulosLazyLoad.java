@@ -43,6 +43,7 @@ public class ArticulosLazyLoad extends FormatCustomLazy implements Serializable 
 		  importe= Numero.toRedondearSat(valor- (importe== 0? costo: importe)); 
 			value= new Value("diferencias", valor== 0? 0: Numero.toRedondearSat(importe* 100/ valor));
 			((Entity)item).put(value.getName(), value);
+			
 		} // for 
 		return regresar;
 	}

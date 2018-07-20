@@ -83,7 +83,7 @@ public class Diferencias extends IBaseFilter implements Serializable {
 			this.attrs.put(Constantes.SQL_CONDICION, " ");
       this.attrs.put("sortOrder", "order by tc_mantic_notas_entradas.consecutivo, tc_mantic_notas_detalles.nombre");
       this.lazyNotas = new ArticulosLazyLoad("VistaOrdenesComprasDto", "consulta", this.attrs, columns);
-      columns.add(new Columna("cantidades", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
+      columns.add(new Columna("cantidades", EFormatoDinamicos.NUMERO_CON_DECIMALES));      
       columns.add(new Columna("importes", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
       this.attrs.put("sortOrder", "order by nombre");
@@ -136,13 +136,13 @@ public class Diferencias extends IBaseFilter implements Serializable {
 	}
 
 	public String doDevolucion() {
-		JsfBase.setFlashAttribute("idNotaEntrada", ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("idNotaEntrada", ((Entity)this.attrs.get("filtrado")).getKey());
 		return "/Paginas/Mantic/Inventarios/Devoluciones/filtro".concat(Constantes.REDIRECIONAR);
 	}	
 	
 	public String doMovimientos() {
 		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.NOTAS_ENTRADAS);
-		JsfBase.setFlashAttribute(ETipoMovimiento.NOTAS_ENTRADAS.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute(ETipoMovimiento.NOTAS_ENTRADAS.getIdKey(), ((Entity)this.attrs.get("filtrado")).getKey());
 		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Compras/Ordenes/filtro");
 		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
 	}
@@ -180,7 +180,7 @@ public class Diferencias extends IBaseFilter implements Serializable {
 			params.put("idOrdenCompra", entity.toLong("idOrdenCompra"));
 			params.put(Constantes.SQL_CONDICION, " and tc_mantic_notas_detalles.id_articulo= "+ entity.toLong("idArticulo"));
       params.put("sortOrder", "order by tc_mantic_notas_entradas.consecutivo, tc_mantic_notas_detalles.nombre");
-      this.lazyNotas = new FormatCustomLazy("VistaOrdenesComprasDto", "consulta", params, columns);
+      this.lazyNotas = new ArticulosLazyLoad("VistaOrdenesComprasDto", "consulta", params, columns);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -190,5 +190,9 @@ public class Diferencias extends IBaseFilter implements Serializable {
 			Methods.clean(params);
 		} // finally	
 	}
+	
+	public String toColor(Entity row) {
+		return !row.toDouble("unidades").equals(0D) || !row.toDouble("valores").equals(0D)? "janal-tr-orange": "";
+	} 
 	
 }

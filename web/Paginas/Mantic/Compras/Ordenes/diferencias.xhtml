@@ -13,13 +13,18 @@
 				'justificacion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
 			};			
 		</script>   
+		<style>
+			.janal-tr-orange {
+				background-color: #FFE771 !important;
+			}
+		</style>
 	</ui:define>
   <ui:define name="contenido">
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-content" class="ui-grid-col-12">
-          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticComprasOrdenesDiferencias.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticComprasOrdenesDiferencias.lazyModel.rowCount gt manticComprasOrdenesDiferencias.lazyModel.pageSize}" selection="#{manticInventariosEntradasFiltro.attrs.seleccionado}" selectionMode="single" rowIndexVar="index" reflow="true">
-						<p:ajax event="rowSelect" listener="#{manticComprasOrdenesDiferencias.doRowSelectEvent}" update="notas" process="@this" />
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticComprasOrdenesDiferencias.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticComprasOrdenesDiferencias.lazyModel.rowCount gt manticComprasOrdenesDiferencias.lazyModel.pageSize}" selection="#{manticComprasOrdenesDiferencias.attrs.seleccionado}" selectionMode="single" rowIndexVar="index" reflow="true" rowStyleClass="#{manticComprasOrdenesDiferencias.toColor(row)}">
+						<p:ajax event="rowSelect" listener="#{manticComprasOrdenesDiferencias.doRowSelectEvent}" update="notas tabla" process="@this tabla"  skipChildren="false"/>
             <f:facet name="header" >
 							<div style="float: left; font-weight: normal !important;">
 							  <h:outputText value="Detalle de los articulos de la orden de compra"/>
@@ -101,9 +106,9 @@
 			<p:spacer height="3px"/>
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-content" class="ui-grid-col-12">
-          <p:dataTable lazy="true" id="notas" widgetVar="kajoolNotas" var="row" value="#{manticComprasOrdenesDiferencias.lazyNotas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticComprasOrdenesDiferencias.lazyNotas.rowCount gt manticComprasOrdenesDiferencias.lazyNotas.pageSize}" rowIndexVar="index" reflow="true" selection="#{manticComprasOrdenesDiferencias.attrs.seleccionado}" selectionMode="single">
-            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolNotas').writeSelections()" process="tabla" skipChildren="false"/>
-						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolNotas').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+          <p:dataTable lazy="true" id="notas" widgetVar="kajoolNotas" var="row" value="#{manticComprasOrdenesDiferencias.lazyNotas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticComprasOrdenesDiferencias.lazyNotas.rowCount gt manticComprasOrdenesDiferencias.lazyNotas.pageSize}" rowIndexVar="index" reflow="true" selection="#{manticComprasOrdenesDiferencias.attrs.filtrado}" selectionMode="single">
+            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolNotas').writeSelections()" process="notas" skipChildren="false"/>
+						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolNotas').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this notas" skipChildren="false"/>
             <f:facet name="header" >
 							<div style="float: left; font-weight: normal !important;">
   							<h:outputText value="Detalle de los articulos de la(s) nota(s) entradas asociadas"/>
@@ -174,7 +179,7 @@
 							<f:facet name="header">
 								<h:outputText value="Afectar" title="Ajustar el costo en caso de ser menor al que se tiene registrado"/>
 							</f:facet>
-							<p:selectBooleanCheckbox value="#{row.afectar.data}" title="Click para ajustar el costo" rendered="#{row.diferencias.toDouble() gt 0}">
+							<p:selectBooleanCheckbox value="#{row.afectar.data}" title="Click para ajustar el costo" rendered="#{row.diferencias.data gt 0}">
 								<p:ajax event="change" process="@this" update="tabla" listener="#{manticComprasOrdenesDiferencias.doChangeAplicar(row)}"/>
 							</p:selectBooleanCheckbox>
 						</p:column>		
@@ -184,8 +189,8 @@
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="notas">
             <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticComprasOrdenesDiferencias.doMovimientos}"/>
-						<p:separator rendered="#{fn:contains('|3|5|', manticComprasOrdenesDiferencias.attrs.seleccionado.idNotaEstatus)}"/>
-            <p:menuitem id="devoluciones" icon="fa fa-angle-double-right" value="Devoluciones" onstart="return janal.bloquear()" process="@this tabla" action="#{manticComprasOrdenesDiferencias.doDevolucion}" rendered="#{fn:contains('|3|5|', manticComprasOrdenesDiferencias.attrs.seleccionado.idNotaEstatus)}"/>
+						<p:separator rendered="#{fn:contains('|3|5|', manticComprasOrdenesDiferencias.attrs.filtrado.idNotaEstatus)}"/>
+            <p:menuitem id="devoluciones" icon="fa fa-angle-double-right" value="Devoluciones" onstart="return janal.bloquear()" process="@this tabla" action="#{manticComprasOrdenesDiferencias.doDevolucion}" rendered="#{fn:contains('|3|5|', manticComprasOrdenesDiferencias.attrs.filtrado.idNotaEstatus)}"/>
           </p:contextMenu>
         </div>
     </div>		    
