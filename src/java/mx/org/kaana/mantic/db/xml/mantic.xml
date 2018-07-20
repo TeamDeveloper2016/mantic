@@ -594,6 +594,15 @@
 				order by
 				  registro desc
 			</select>
+			<select id="maximo">
+        select      
+          max(id_inventario) maximo
+        from      
+          tc_mantic_inventarios
+      </select>
+			<delete id="rows">
+        delte from tc_mantic_inventarios where id_inventario = {idInventario}
+      </delete>
     </unit>		
     <unit id="TcManticArticulosBitacoraDto">
       <select id="row">
