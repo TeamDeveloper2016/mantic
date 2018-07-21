@@ -84,8 +84,8 @@
 							<div class="xs-pantalla">              
 								<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
 								<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
-                 <p:separator/>
-                  <p:menuitem id="reporteIconXs" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doReporte('CUENTAS_POR_PAGAR')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                <p:separator/>
+                <p:menuitem id="reporteIconXs" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doReporte('CUENTAS_POR_PAGAR')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</div>  
 						</f:facet>												
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.consecutivo}">

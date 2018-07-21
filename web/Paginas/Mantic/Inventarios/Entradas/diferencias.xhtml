@@ -5,7 +5,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-                template="/WEB-INF/plantillas/accion.xhtml">
+                template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Diferencias de la nota de entrada contra sus devoluciones" />
 	<ui:define name="librerias">
 		<style>
@@ -29,12 +29,16 @@
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:separator/>
+                  <p:menuitem icon="fa fa-file-pdf-o" value="Reporte diferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticNotasEntradasDiferencias.doReporte('NOTA_ENTRADA_DETALLE_D')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                  <p:separator/>
                   <p:menuitem icon="fa fa-rotate-right" value="Recargar nota" actionListener="#{manticNotasEntradasDiferencias.doLoad}" process="@this" update="tabla notas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
                 <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+                 <p:separator/>
+                <p:menuitem icon="fa fa-file-pdf-o" value="Reporte diferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticNotasEntradasDiferencias.doReporte('NOTA_ENTRADA_DETALLE_D')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 <p:separator/>
                 <p:menuitem icon="fa fa-rotate-right" title="Recargar la nota de entrada" actionListener="#{manticNotasEntradasDiferencias.doLoad}" process="@this" update="tabla notas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
               </div>  
@@ -162,15 +166,16 @@
           </p:dataTable>
         </div>
       </div>
-    </div>		    
-  </ui:define>   
-	<ui:define name="acciones">
-		<div class="lg-pantalla">
-  		<p:commandButton id="regresar" process="@this" styleClass="janal-text-white" icon="fa fa-reply" value="Regresar" action="#{manticNotasEntradasDiferencias.doRegresar}" immediate="true"/>
-		</div>	
-		<div class="xs-pantalla">
-  		<p:commandButton id="regresarIcon" process="@this" styleClass="janal-text-white" icon="fa fa-reply" title="Regresar" action="#{manticNotasEntradasDiferencias.doRegresar}" immediate="true"/>
-		</div>	
-	</ui:define>	
+    </div>		
+    <hr class="ui-widget-content" style="#{empty lineaSeparacion? '': 'display:none'}"/>
+    <div class="janal-line-button">
+      <div class="lg-pantalla">
+        <p:commandButton id="regresar" process="@this" styleClass="janal-text-white" icon="fa fa-reply" value="Regresar" action="#{manticNotasEntradasDiferencias.doRegresar}" immediate="true"/>
+      </div>	
+      <div class="xs-pantalla">
+        <p:commandButton id="regresarIcon" process="@this" styleClass="janal-text-white" icon="fa fa-reply" title="Regresar" action="#{manticNotasEntradasDiferencias.doRegresar}" immediate="true"/>
+      </div>		
+    </div>
+  </ui:define>  
   <ui:param name="componenteBloqueo" value="tabla notas regresar regresarIcon"/>
 </ui:composition>
