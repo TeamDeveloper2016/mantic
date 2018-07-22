@@ -614,7 +614,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			while ((line = br.readLine()) != null) {
   			sb.append(line);
 			} // while
-			regresar= this.prettyFormat(sb.substring(3), 2);
+			regresar= this.prettyFormat(sb.toString(), 2);
 		} // try
 		catch (Exception e) {
       Error.mensaje(e);

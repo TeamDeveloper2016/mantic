@@ -74,7 +74,7 @@
 								<p:outputLabel for="consecutivo" value="Nota crédito:" style="display: #{manticInventariosCreditosAccion.agregar}"/>
 								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosAccion.orden.consecutivo}" readonly="true" style="display: #{manticInventariosCreditosAccion.agregar}"/>
 								<p:spacer width="1px" style="display: #{manticInventariosCreditosAccion.agregar}"/><p:separator style="display: #{manticInventariosCreditosAccion.agregar}"/>
-								<p:outputLabel for="idDevolucion" value="No. devolución:" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '1'}"/>
+								<p:outputLabel for="idDevolucion" value="Proveedor:" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '1'}"/>
 								<p:selectOneMenu id="idDevolucion" value="#{manticInventariosCreditosAccion.orden.ikDevolucion}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="contains" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '1'}">
 									<f:selectItems value="#{manticInventariosCreditosAccion.attrs.devoluciones}"  var="element" itemValue="#{element.key}" itemLabel="#{element.consecutivo} #{element.razonSocial} #{element.total}"/>
 									<p:column headerText="Clave">
@@ -216,7 +216,7 @@
 	<ui:define name="dialogos">
 		<h:form prependId="true">
 			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" header="Factura en formato digital" onHide="janal.sendLastFocus();janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
-				<object type="application/pdf" data="#{manticInventariosCreditosAccion.attrs.temporal}" height="430px" width="100%" internalinstanceid="5">
+				<object type="application/pdf" data="#{manticInventariosCreditosAccion.attrs.temporal}" height="410px" width="100%" internalinstanceid="5">
 					 Tu navegador no soporta el desplegado de archivos PDF's,
 					 <p:commandLink ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" value=" click ">
 							<p:fileDownload value="#{manticInventariosCreditosAccion.doFileDownload}" />
