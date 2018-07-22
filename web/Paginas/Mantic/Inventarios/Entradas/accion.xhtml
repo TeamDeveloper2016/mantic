@@ -10,6 +10,14 @@
 	<ui:param name="titulo" value="#{manticInventariosEntradasAccion.attrs.nombreAccion} una nota de entrada #{manticInventariosEntradasAccion.titulo}"/>
 	<ui:define name="librerias">
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.articulosJs}"/>
+		<h:outputStylesheet library="janal" name="css/sh.css"/>
+		<h:outputStylesheet library="janal" name="css/shCore.css"/>
+		<h:outputStylesheet library="janal" name="css/shThemeDefault.css"/>
+		<h:outputScript library="janal" name="js/sh.js"/>
+	  <h:outputScript library="janal" name="js/shCore.js"/>
+	  <h:outputScript library="janal" name="js/shAutoloader.js"/>
+	  <h:outputScript library="janal" name="js/shBrushXml.js"/>
+	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:consecutivo'    : {validaciones: 'requerido', mascara: 'libre'},
@@ -61,6 +69,10 @@
       function stop() {
         PF('statusDialog').hide();
       };
+			
+			function load() {
+			  SyntaxHighlighter.highlight();	
+			}
 		</script>   
 		<style>
 			.janal-upload-frame {
@@ -68,6 +80,11 @@
         margin-bottom: 6px;
         border-radius: 5px;				
 			}
+			.syntaxhighlighter {
+					overflow-y: auto !important;
+					overflow-x: auto !important;
+					max-height: 470px;
+			}			
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
