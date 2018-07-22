@@ -1,11 +1,16 @@
 package mx.org.kaana.mantic.inventarios.creditos.backing;
 
 import static codec.pkcs7.Verifier.BUFFER_SIZE;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -16,6 +21,12 @@ import java.util.Random;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -425,7 +436,6 @@ public class Accion extends IBaseAttribute implements Serializable {
   		File file= new File(name);
 	  	FileInputStream input= new FileInputStream(new File(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.pdf.getRuta()).concat(this.pdf.getName())));
       this.toWriteFile(file, input);		
-			RequestContext.getCurrentInstance().update("dialogoPDF");
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -433,4 +443,69 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
 	}
 	
+	public void doViewFile() {
+		this.doViewFile(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.xml.getRuta()).concat(this.xml.getName()));
+	}
+	
+	public void doViewFile(String nameXml) {
+		String regresar   = "";
+		String name       = nameXml;
+    StringBuilder sb  = new StringBuilder("");
+    FileReader in     = null;
+		BufferedReader br = null;
+		try {
+			in= new FileReader(name);
+			br= new BufferedReader(in);
+			String line;
+			while ((line = br.readLine()) != null) {
+  			sb.append(line);
+			} // while
+			regresar= this.prettyFormat(sb.substring(3), 2);
+		} // try
+		catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			try {
+        if(br != null)
+					br.close();
+				if(in != null)
+  				in.close();
+			} // try
+			catch (IOException e) {
+        JsfBase.addMessageError(e);
+			} // catch
+		} // finally
+		this.attrs.put("temporal", regresar);
+	}
+	
+	public String prettyFormat(String input, int indent) throws Exception {
+		Source xmlInput = new StreamSource(new StringReader(input));
+		StringWriter stringWriter = new StringWriter();
+		StreamResult xmlOutput = new StreamResult(stringWriter);
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		transformerFactory.setAttribute("indent-number", indent);
+		Transformer transformer = transformerFactory.newTransformer(); 
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.transform(xmlInput, xmlOutput);
+		return xmlOutput.getWriter().toString();
+  }
+
+	public void doCerrar() {
+		try {
+			String name= (String)this.attrs.get("temporal");
+			if(name.endsWith("XML"))
+				name= JsfBase.getContext().concat(name);
+			else
+				name= name.substring(0, name.lastIndexOf("?"));
+			File file= new File(JsfBase.getRealPath(name));
+			file.delete();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+	}
+
 }

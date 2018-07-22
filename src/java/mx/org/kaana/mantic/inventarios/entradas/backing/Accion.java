@@ -1,10 +1,15 @@
 package mx.org.kaana.mantic.inventarios.entradas.backing;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -49,6 +54,15 @@ import mx.org.kaana.mantic.libs.factura.reglas.Reader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.util.Collections;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
+import mx.org.kaana.mantic.libs.factura.beans.Emisor;
+import mx.org.kaana.mantic.libs.factura.beans.Receptor;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -74,8 +88,11 @@ public class Accion extends IBaseArticulos implements Serializable {
 	private EAccion accion;	
 	private EOrdenes tipoOrden;
 	private boolean aplicar;
+	private TcManticProveedoresDto proveedor;
 	private Importado xml;
 	private Importado pdf;
+	private Emisor emisor;
+	private Receptor receptor;
 
 	public String getValidacion() {
 		return this.tipoOrden.equals(EOrdenes.NORMAL)? "libre": "requerido";
@@ -115,6 +132,22 @@ public class Accion extends IBaseArticulos implements Serializable {
 	
 	public Importado getPdf() {
 		return pdf;
+	}
+
+	public TcManticProveedoresDto getProveedor() {
+		return proveedor;
+	}
+
+	public Emisor getEmisor() {
+		return emisor;
+	}
+
+	public Receptor getReceptor() {
+		return receptor;
+	}
+	
+	public Boolean getDiferente() {
+	  return this.emisor!= null && this.proveedor!= null &&	!this.emisor.getRfc().equals(this.proveedor.getRfc());
 	}
 	
 	@PostConstruct
@@ -246,6 +279,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(proveedores.get(index));
 				} // else
 		    this.attrs.put("proveedor", proveedores.get(index));
+			  this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, ((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor().getKey());
 			} // if	
 			if(this.attrs.get("idOrdenCompra")!= null) {
         columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
@@ -387,6 +421,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 			faltantes= new ArrayList<>();
 			reader = new Reader(file.getAbsolutePath());
 			factura= reader.execute();
+			this.emisor  = factura.getEmisor();
+			this.receptor= factura.getReceptor();
 			for (Concepto concepto: factura.getConceptos()) {
 		    //this(sinIva, tipoDeCambio, nombre, codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos, idProveedor, ultimo, solicitado, stock, excedentes, sat, unidadMedida);
 		    faltantes.add(new Articulo(
@@ -558,13 +594,61 @@ public class Accion extends IBaseArticulos implements Serializable {
   		File file= new File(name);
 	  	FileInputStream input= new FileInputStream(new File(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.pdf.getRuta()).concat(this.pdf.getName())));
       this.toWriteFile(file, input);		
-			RequestContext.getCurrentInstance().update("dialogoPDF");
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
 	}
+
+	public void doViewFile() {
+		this.doViewFile(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.xml.getRuta()).concat(this.xml.getName()));
+	}
+	
+	public void doViewFile(String nameXml) {
+		String regresar   = "";
+		String name       = nameXml;
+    StringBuilder sb  = new StringBuilder("");
+    FileReader in     = null;
+		BufferedReader br = null;
+		try {
+			in= new FileReader(name);
+			br= new BufferedReader(in);
+			String line;
+			while ((line = br.readLine()) != null) {
+  			sb.append(line);
+			} // while
+			regresar= this.prettyFormat(sb.substring(3), 2);
+		} // try
+		catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			try {
+        if(br != null)
+					br.close();
+				if(in != null)
+  				in.close();
+			} // try
+			catch (IOException e) {
+        JsfBase.addMessageError(e);
+			} // catch
+		} // finally
+		this.attrs.put("temporal", regresar);
+	}
+	
+	public String prettyFormat(String input, int indent) throws Exception {
+		Source xmlInput = new StreamSource(new StringReader(input));
+		StringWriter stringWriter = new StringWriter();
+		StreamResult xmlOutput = new StreamResult(stringWriter);
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		transformerFactory.setAttribute("indent-number", indent);
+		Transformer transformer = transformerFactory.newTransformer(); 
+		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		transformer.transform(xmlInput, xmlOutput);
+		return xmlOutput.getWriter().toString();
+  }
 
 	@Override
 	public void doUpdateArticulo(String codigo, Integer index) {
@@ -582,6 +666,34 @@ public class Accion extends IBaseArticulos implements Serializable {
   public void doFindArticulo(Integer index) {
 		super.doFindArticulo(index);
 		this.doFilterRows();
+	}
+
+	public void doUpdateRfc() {
+		try {
+			this.proveedor.setRfc(this.emisor.getRfc());
+			if(DaoFactory.getInstance().update(this.proveedor)>= 1L)
+				RequestContext.getCurrentInstance().execute("janal.alert('Proveedor actualizado de forma correcta, con RFC "+ this.proveedor.getRfc()+ " !');");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch		
+	}
+
+	public void doCerrar() {
+		try {
+			String name= (String)this.attrs.get("temporal");
+			if(name.endsWith("XML"))
+				name= JsfBase.getContext().concat(name);
+			else
+				name= name.substring(0, name.lastIndexOf("?"));
+			File file= new File(JsfBase.getRealPath(name));
+			file.delete();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
 	}
 
 }

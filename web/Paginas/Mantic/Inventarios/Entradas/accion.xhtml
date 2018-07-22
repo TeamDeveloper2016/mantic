@@ -97,6 +97,7 @@
 		<p:remoteCommand name="filterRows" actionListener="#{manticInventariosEntradasAccion.doFilterRows}" update="contenedorGrupos:tabla" process="@this @(.key-filter-event)" onstart="return janal.bloquear();" oncomplete="jsArticulos.invalidate(#{manticInventariosEntradasAccion.adminOrden.filtrados.size()- 1});"/>
 		<p:remoteCommand name="factura" actionListener="#{manticInventariosEntradasAccion.doCheckFolio}" process="@this contenedorGrupos:factura contenedorGrupos:idProveedor" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 		<p:remoteCommand name="viewDocument" actionListener="#{manticInventariosEntradasAccion.doViewDocument}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
+		<p:remoteCommand name="viewFile" actionListener="#{manticInventariosEntradasAccion.doViewFile}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
@@ -459,14 +460,20 @@
 							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.adminOrden.orden.observaciones}"/>
 						</p:tab>
 						<p:tab title="Importar" rendered="#{not manticInventariosEntradasAccion.isDirecta}">
+							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-column-center involucrados" style="display: #{manticInventariosEntradasAccion.diferente? '': 'none'}">
+  							<p:commandLink actionListener="#{manticInventariosEntradasAccion.doUpdateRfc}" process="@this" update="@(.involucrados)">
+									<p:outputLabel value="El RFC del proveedor [#{manticInventariosEntradasAccion.proveedor.rfc}] no coincide con el de la factura [#{manticInventariosEntradasAccion.emisor.rfc}], click aqui para actualizarlo !" styleClass="janal-color-orange" style="cursor: pointer;"/>
+		  					  <p:spacer height="5px"/>
+			  				</p:commandLink>
+							</p:panelGrid>	
 							<p:outputLabel for="comentarios" value="Observaciones:" styleClass="janal-wid-100-txt" style="display:#{manticInventariosEntradasAccion.consultar};"/><br style="display:#{manticInventariosEntradasAccion.consultar};"/>
 							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.attrs.observaciones}" style="display:#{manticInventariosEntradasAccion.consultar};"/>
 							<p:spacer height="5px"/>
 							<p:fileUpload fileUploadListener="#{manticInventariosEntradasAccion.doFileUpload}" 
-								mode="advanced" process="@this comentarios" update="@(.importado)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+								mode="advanced" process="@this comentarios" update="@(.importado) @(.involucrados)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 								multiple="false" allowTypes="#{manticInventariosEntradasAccion.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
-								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticInventariosEntradasAccion.attrs.formatos}"/>
-							<p:outputLabel value="XML importado: #{manticInventariosEntradasAccion.xml.ruta}#{manticInventariosEntradasAccion.xml.name}" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold"/>
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticInventariosEntradasAccion.attrs.formatos}" oncomplete="PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>
+							<p:commandLink value="XML importado: #{manticInventariosEntradasAccion.xml.ruta}#{manticInventariosEntradasAccion.xml.name}" onclick="viewFile();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento XML" style="#{(empty manticInventariosEntradasAccion.xml)? 'display: none': ''}"/>
 							<br/>
 							<p:commandLink value="PDF importado: #{manticInventariosEntradasAccion.pdf.ruta}#{manticInventariosEntradasAccion.pdf.name}" onclick="viewDocument();" process="@this" styleClass="importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento" style="#{(empty manticInventariosEntradasAccion.pdf)? 'display: none': ''}"/>
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
@@ -568,6 +575,26 @@
 								</p:panelGrid>	
   							<p:outputLabel value="Total: #{manticInventariosEntradasAccion.attrs.disponibles.size()}" styleClass="importado janal-color-orange janal-steps-boton-siguiente janal-font-bold"/>
 							</p:panelGrid>	
+							<p:panel header="Emisor" styleClass="involucrados" style="display: #{empty manticInventariosEntradasAccion.emisor? 'none': ''};margin-bottom:20px" toggleable="true" toggleSpeed="500" widgetVar="panelEmisor">
+								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
+								  <p:outputLabel value="Nombre:"/>
+								  <p:inputText styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.emisor.nombre}" readonly="true"/>
+								  <p:outputLabel value="RFC:"/>
+								  <p:inputText styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.emisor.rfc}" readonly="true"/>
+								  <p:outputLabel value="Regimen fiscal:"/>
+									<p:inputText styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.emisor.regimenFiscal}" readonly="true"/>
+								</p:panelGrid>
+							</p:panel>
+							<p:panel header="Receptor" styleClass="involucrados" style="display: #{empty manticInventariosEntradasAccion.receptor? 'none': ''};margin-bottom:20px" toggleable="true" toggleSpeed="500" widgetVar="panelReceptor">
+								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
+								  <p:outputLabel value="Nombre:"/>
+								  <p:inputText styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.receptor.nombre}" readonly="true"/>
+								  <p:outputLabel value="RFC:"/>
+								  <p:inputText styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.receptor.rfc}" readonly="true"/>
+								  <p:outputLabel value="Uso CFDI:"/>
+									<p:inputText styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.receptor.usoCfdi}" readonly="true"/>
+								</p:panelGrid>
+							</p:panel>
 						</p:tab>
 					</p:tabView>
 				</div>
@@ -637,7 +664,16 @@
 				</object>							
   			<hr class="ui-widget-content"/>
 	  		<div class="janal-line-button">
-			  	<p:commandButton process="@none" styleClass="janal-text-white" icon="fa fa-remove" value="Cerrar" oncomplete="PF('dlgPDF').hide();"/>
+					<p:commandButton process="@this" styleClass="janal-text-white" icon="fa fa-remove" value="Cerrar" actionListener="#{manticInventariosEntradasAccion.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
+			  </div>
+			</p:dialog>
+			<p:dialog id="dialogoXML" widgetVar="dlgXML" header="Factura en formato XML" onShow="load();" onHide="janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+				<pre id="documentXml" class="brush: xml;" style="width: 925px; height: 470px;">
+					<h:outputText value="#{manticInventariosEntradasAccion.attrs.temporal}" escape="true"/>
+				</pre>
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" styleClass="janal-text-white" icon="fa fa-remove" value="Cerrar" oncomplete="PF('dlgXML').hide();"/>
 			  </div>
 			</p:dialog>
 		</h:form>
