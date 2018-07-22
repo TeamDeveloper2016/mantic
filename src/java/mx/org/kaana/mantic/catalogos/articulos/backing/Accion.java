@@ -22,7 +22,6 @@ import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
-import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
 @Named(value = "manticCatalogosArticulosAccion")
