@@ -187,6 +187,7 @@
 				  tc_mantic_devoluciones.id_devolucion as id_key,
 				  tc_mantic_devoluciones.id_devolucion,
 				  tc_mantic_devoluciones.consecutivo,
+					tc_mantic_proveedores.id_proveedor,
 					tc_mantic_proveedores.clave,
 					tc_mantic_proveedores.razon_social,
 				  tc_mantic_devoluciones.total,
@@ -215,6 +216,7 @@
 				select
 				  tc_mantic_notas_entradas.id_nota_entrada as id_key,
 				  tc_mantic_notas_entradas.consecutivo,
+					tc_mantic_proveedores.id_proveedor,
 					tc_mantic_proveedores.clave,
 					tc_mantic_proveedores.razon_social,
 				  tc_mantic_notas_entradas.total,

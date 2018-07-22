@@ -601,7 +601,7 @@ public class Accion extends IBaseArticulos implements Serializable {
     } // catch		
 	}
 
-	public void doViewFile(String nameXml) {
+	public void doViewFile() {
 		String regresar   = "";
 		String name       = Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.xml.getRuta()).concat(this.xml.getName());
     StringBuilder sb  = new StringBuilder("");
@@ -614,7 +614,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			while ((line = br.readLine()) != null) {
   			sb.append(line);
 			} // while
-			regresar= this.prettyFormat(sb.toString(), 2);
+			regresar= this.prettyFormat(sb.toString().startsWith("<")? sb.toString(): sb.substring(3), 2);
 		} // try
 		catch (Exception e) {
       Error.mensaje(e);

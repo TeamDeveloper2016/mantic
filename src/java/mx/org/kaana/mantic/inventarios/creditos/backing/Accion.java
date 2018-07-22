@@ -53,9 +53,12 @@ import mx.org.kaana.mantic.inventarios.creditos.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticCreditosArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
+import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.inventarios.creditos.beans.NotaCredito;
 import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
 import mx.org.kaana.mantic.libs.factura.beans.Concepto;
+import mx.org.kaana.mantic.libs.factura.beans.Emisor;
+import mx.org.kaana.mantic.libs.factura.beans.Receptor;
 import mx.org.kaana.mantic.libs.factura.reglas.Reader;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
@@ -77,11 +80,14 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639361L;
 
+	private TcManticProveedoresDto proveedor;
 	private Long idTipoCreditoNota;
 	private EAccion accion;
 	private NotaCredito orden;
 	private Importado xml;
 	private Importado pdf;
+	private Emisor emisor;
+	private Receptor receptor;
 
 	public String getAgregar() {
 		return this.accion.equals(EAccion.AGREGAR)? "none": "";
@@ -117,6 +123,22 @@ public class Accion extends IBaseAttribute implements Serializable {
 
 	public void setPdf(Importado pdf) {
 		this.pdf=pdf;
+	}
+
+	public Emisor getEmisor() {
+		return emisor;
+	}
+
+	public Receptor getReceptor() {
+		return receptor;
+	}
+	
+	public Boolean getDiferente() {
+	  return this.emisor!= null && this.proveedor!= null &&	!this.emisor.getRfc().equals(this.proveedor.getRfc());
+	}
+
+	public TcManticProveedoresDto getProveedor() {
+		return proveedor;
 	}
 	
   @Override
@@ -193,8 +215,8 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doAccion
 	
   public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idCreditoNota",this.orden.getIdCreditoNota());
-    return (String)this.attrs.get("retorno");
+  	JsfBase.setFlashAttribute("idCreditoNota", this.attrs.get("idCreditoNota"));
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } 
 
 	private void toLoadCatalog() {
@@ -229,6 +251,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 						  else
                 this.orden.setIkDevolucion(devoluciones.get(devoluciones.indexOf(this.orden.getIkDevolucion())));							
 						  this.attrs.put("carpeta", this.orden.getIkDevolucion().toString("clave"));
+      			  this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.orden.getIkDevolucion().toLong("idProveedor"));
 						} // if	
 					} // if	
 					break;
@@ -253,6 +276,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 						  else
                 this.orden.setIkNotaEntrada(notas.get(notas.indexOf(this.orden.getIkNotaEntrada())));							
    						this.attrs.put("carpeta", this.orden.getIkNotaEntrada().toString("clave"));
+    			  this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.orden.getIkNotaEntrada().toLong("idProveedor"));
 						} // if	
 					} // if	
 					break;
@@ -268,6 +292,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 						else
 							this.orden.setIkProveedor(proveedores.get(proveedores.indexOf(this.orden.getIkProveedor())));							
  						this.attrs.put("carpeta", this.orden.getIkProveedor().toString("clave"));
+    			  this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.orden.getIkProveedor().toLong("idProveedor"));
 					} // if	
 					break;
 			} // switch
@@ -349,6 +374,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 			faltantes= new ArrayList<>();
 			reader = new Reader(file.getAbsolutePath());
 			factura= reader.execute();
+			this.emisor  = factura.getEmisor();
+			this.receptor= factura.getReceptor();
 			for (Concepto concepto: factura.getConceptos()) {
 		    //this(sinIva, tipoDeCambio, nombre, codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos, idProveedor, ultimo, solicitado, stock, excedentes, sat, unidadMedida);
 		    faltantes.add(new Articulo(
@@ -398,8 +425,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 					params.put("idCreditoNota", idCreditoNota);
 					params.put("idTipoArchivo", 1L);
 				  tmp= (TcManticCreditosArchivosDto)DaoFactory.getInstance().findFirst(TcManticCreditosArchivosDto.class, "exists", params);
-					if(tmp!= null) 
+					if(tmp!= null) {
 						this.xml= new Importado(tmp.getNombre(), "XML", EFormatos.XML, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
+    				this.toReadFactura(new File(tmp.getAlias()));
+					} // if
 					params.put("idTipoArchivo", 2L);
 				  tmp= (TcManticCreditosArchivosDto)DaoFactory.getInstance().findFirst(TcManticCreditosArchivosDto.class, "exists", params);
 					if(tmp!= null) 
@@ -456,7 +485,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			while ((line = br.readLine()) != null) {
   			sb.append(line);
 			} // while
-			regresar= this.prettyFormat(sb.toString(), 2);
+			regresar= this.prettyFormat(sb.toString().startsWith("<")? sb.toString(): sb.substring(3), 2);
 		} // try
 		catch (Exception e) {
       Error.mensaje(e);
@@ -502,6 +531,18 @@ public class Accion extends IBaseAttribute implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);
 		} // catch
+	}
+
+	public void doUpdateRfc() {
+		try {
+			this.proveedor.setRfc(this.emisor.getRfc());
+			if(DaoFactory.getInstance().update(this.proveedor)>= 1L)
+				RequestContext.getCurrentInstance().execute("janal.alert('Proveedor actualizado de forma correcta, con RFC "+ this.proveedor.getRfc()+ " !');");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch		
 	}
 
 }

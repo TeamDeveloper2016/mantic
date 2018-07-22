@@ -32,7 +32,6 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticCreditosArchivosDto;
@@ -56,6 +55,8 @@ import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.inventarios.creditos.reglas.Importados;
+import mx.org.kaana.mantic.libs.factura.beans.Emisor;
+import mx.org.kaana.mantic.libs.factura.beans.Receptor;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -82,6 +83,8 @@ public class Importar extends IBaseAttribute implements Serializable {
 	private TcManticProveedoresDto proveedor;
 	private Importado xml;
 	private Importado pdf;
+	private Emisor emisor;
+	private Receptor receptor;
 	private Long idCreditoNota;
 
 	public Importado getXml() {
@@ -94,6 +97,22 @@ public class Importar extends IBaseAttribute implements Serializable {
 
 	public TcManticCreditosNotasDto getOrden() {
 		return orden;
+	}
+
+	public TcManticProveedoresDto getProveedor() {
+		return proveedor;
+	}
+
+	public Emisor getEmisor() {
+		return emisor;
+	}
+
+	public Receptor getReceptor() {
+		return receptor;
+	}
+	
+	public Boolean getDiferente() {
+	  return this.emisor!= null && this.proveedor!= null &&	!this.emisor.getRfc().equals(this.proveedor.getRfc());
 	}
 	
 	@PostConstruct
@@ -248,6 +267,8 @@ public class Importar extends IBaseAttribute implements Serializable {
 			faltantes= new ArrayList<>();
 			reader = new Reader(file.getAbsolutePath());
 			factura= reader.execute();
+			this.emisor  = factura.getEmisor();
+			this.receptor= factura.getReceptor();
 			for (Concepto concepto: factura.getConceptos()) {
 		    //this(sinIva, tipoDeCambio, nombre, codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos, idProveedor, ultimo, solicitado, stock, excedentes, sat, unidadMedida);
 		    faltantes.add(new Articulo(
@@ -363,7 +384,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 		this.doViewFile(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.xml.getRuta()).concat(this.xml.getName()));
 	}
 	
-	public void doViewFile(String nameXml) {
+	private void doViewFile(String nameXml) {
 		String regresar   = "";
 		String name       = nameXml;
     StringBuilder sb  = new StringBuilder("");
@@ -376,7 +397,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 			while ((line = br.readLine()) != null) {
   			sb.append(line);
 			} // while
-			regresar= this.prettyFormat(sb.toString(), 2);
+			regresar= this.prettyFormat(sb.toString().startsWith("<")? sb.toString(): sb.substring(3), 2);
 		} // try
 		catch (Exception e) {
       Error.mensaje(e);
@@ -450,5 +471,16 @@ public class Importar extends IBaseAttribute implements Serializable {
 		} // catch
 	}
 	
-
+	public void doUpdateRfc() {
+		try {
+			this.proveedor.setRfc(this.emisor.getRfc());
+			if(DaoFactory.getInstance().update(this.proveedor)>= 1L)
+				RequestContext.getCurrentInstance().execute("janal.alert('Proveedor actualizado de forma correcta, con RFC "+ this.proveedor.getRfc()+ " !');");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch		
+	}
+	
 }

@@ -27,12 +27,12 @@ public class NotaCredito extends TcManticCreditosNotasDto implements Serializabl
 		this(null);
 	}
 
-	public NotaCredito(Long idDevolucion) {
-		this(-1L, idDevolucion);
+	public NotaCredito(Long key) {
+		this(key, -1L);
 	}
 
 	public NotaCredito(Long key, Long idDevolucion) {
-		this(-1L, -1L, 0D, new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", 1L, 1L, idDevolucion, JsfBase.getIdUsuario(), "", "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 1L, -1L);
+		this(-1L, -1L, 0D, new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", 1L, 1L, idDevolucion, JsfBase.getIdUsuario(), "", "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 1L, key);
 	}
 
 	public NotaCredito(Long idProveedor, Long idNotaEntrada, Double importe, Long ejercicio, String consecutivo, Long idCreditoEstatus, Long idTipoCreditoNota, Long idDevolucion, Long idUsuario, String folio, String observaciones, Long idEmpresa, Long orden, Long idCreditoNota) {
@@ -49,7 +49,7 @@ public class NotaCredito extends TcManticCreditosNotasDto implements Serializabl
 	public void setIkDevolucion(UISelectEntity ikDevolucion) {
 		this.ikDevolucion= ikDevolucion;
 		if(this.ikDevolucion!= null)
-  	  this.setIdCreditoNota(this.ikDevolucion.getKey());
+  	  this.setIdDevolucion(this.ikDevolucion.getKey());
 	}
 
 	public UISelectEntity getIkNotaEntrada() {

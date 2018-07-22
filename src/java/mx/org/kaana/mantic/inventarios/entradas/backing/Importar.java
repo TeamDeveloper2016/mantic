@@ -110,7 +110,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 	}
 	
 	public Boolean getDiferente() {
-	  return this.emisor!= null && 	!this.emisor.getRfc().equals(this.proveedor.getRfc());
+	  return this.emisor!= null && this.proveedor!= null &&	!this.emisor.getRfc().equals(this.proveedor.getRfc());
 	}
 	
 	@PostConstruct
@@ -369,7 +369,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 		this.doViewFile(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.xml.getRuta()).concat(this.xml.getName()));
 	}
 	
-	public void doViewFile(String nameXml) {
+	private void doViewFile(String nameXml) {
 		String regresar   = "";
 		String name       = nameXml;
     StringBuilder sb  = new StringBuilder("");
@@ -382,7 +382,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 			while ((line = br.readLine()) != null) {
   			sb.append(line);
 			} // while
-			regresar= this.prettyFormat(sb.toString(), 2);
+			regresar= this.prettyFormat(sb.toString().startsWith("<")? sb.toString(): sb.substring(3), 2);
 		} // try
 		catch (Exception e) {
       Error.mensaje(e);
