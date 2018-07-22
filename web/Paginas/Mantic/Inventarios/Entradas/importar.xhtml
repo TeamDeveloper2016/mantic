@@ -45,7 +45,7 @@
 			.syntaxhighlighter {
 					overflow-y: auto !important;
 					overflow-x: auto !important;
-					max-height: 470px;
+					max-height: 370px;
 			}			
 		</style>
 	</ui:define>
@@ -239,8 +239,8 @@
 	</ui:define>
 	<ui:define name="dialogos">
 		<h:form prependId="true">
-			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" header="Factura en formato digital" onHide="janal.sendLastFocus();janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
-				<object type="application/pdf" data="#{manticInventariosEntradasImportar.attrs.temporal}" height="490px" width="100%" internalinstanceid="5">
+			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" header="Factura en formato digital" onHide="janal.sendLastFocus();janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+				<object type="application/pdf" data="#{manticInventariosEntradasImportar.attrs.temporal}" height="430px" width="100%" internalinstanceid="5">
 					 Tu navegador no soporta el desplegado de archivos PDF's, por favor da click en el boton de descargar
 				</object>
   			<hr class="ui-widget-content"/>
@@ -248,8 +248,8 @@
 					<p:commandButton process="@this" styleClass="janal-text-white" icon="fa fa-remove" value="Cerrar" actionListener="#{manticInventariosEntradasImportar.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
 			  </div>
 			</p:dialog>
-			<p:dialog id="dialogoXML" widgetVar="dlgXML" header="Factura en formato XML" onShow="load();" onHide="janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
-				<pre id="documentXml" class="brush: xml;" style="width: 925px; height: 470px;">
+			<p:dialog id="dialogoXML" widgetVar="dlgXML" header="Factura en formato XML" onShow="load();" onHide="janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+				<pre id="documentXml" class="brush: xml;" style="width: 925px; height: 370px;">
 					<h:outputText value="#{manticInventariosEntradasImportar.attrs.temporal}" escape="true"/>
 				</pre>
   			<hr class="ui-widget-content"/>
