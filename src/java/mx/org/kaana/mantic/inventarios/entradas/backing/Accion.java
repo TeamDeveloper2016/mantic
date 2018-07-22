@@ -601,13 +601,9 @@ public class Accion extends IBaseArticulos implements Serializable {
     } // catch		
 	}
 
-	public void doViewFile() {
-		this.doViewFile(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.xml.getRuta()).concat(this.xml.getName()));
-	}
-	
 	public void doViewFile(String nameXml) {
 		String regresar   = "";
-		String name       = nameXml;
+		String name       = Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.xml.getRuta()).concat(this.xml.getName());
     StringBuilder sb  = new StringBuilder("");
     FileReader in     = null;
 		BufferedReader br = null;

@@ -444,12 +444,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 	}
 	
 	public void doViewFile() {
-		this.doViewFile(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.xml.getRuta()).concat(this.xml.getName()));
-	}
-	
-	public void doViewFile(String nameXml) {
 		String regresar   = "";
-		String name       = nameXml;
+		String name       = Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.xml.getRuta()).concat(this.xml.getName());
     StringBuilder sb  = new StringBuilder("");
     FileReader in     = null;
 		BufferedReader br = null;
