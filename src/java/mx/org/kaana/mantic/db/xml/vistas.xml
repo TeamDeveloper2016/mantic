@@ -2913,5 +2913,125 @@
 				  tc_mantic_clientes_archivos.registro desc
       </select>
 		</unit>
+    <unit id="VistaAlmacenesTransferenciasDto">
+      <select id="row">
+        select 
+          tc_mantic_transferencias.id_transferencia as id_key,
+          tc_mantic_transferencias.id_transferencia,
+          tc_mantic_transferencias.id_almacen,
+          (select tc_mantic_almacenes.nombre from tc_mantic_almacenes where tc_mantic_almacenes.id_almacen = tc_mantic_transferencias.id_almacen and (tc_mantic_almacenes.clave like '%{clave}%' or tc_mantic_almacenes.clave is null) and tc_mantic_almacenes.nombre like '%{nombre}%') nombre_origen,
+          (select tc_mantic_almacenes.clave from tc_mantic_almacenes where tc_mantic_almacenes.id_almacen = tc_mantic_transferencias.id_almacen and (tc_mantic_almacenes.clave like '%{clave}%' or tc_mantic_almacenes.clave is null) and tc_mantic_almacenes.nombre like '%{nombre}%') clave_origen,
+          tc_mantic_transferencias.id_destino,
+          (select tc_mantic_almacenes.nombre from tc_mantic_almacenes where tc_mantic_almacenes.id_almacen = tc_mantic_transferencias.id_destino and (tc_mantic_almacenes.clave like '%{clave}%' or tc_mantic_almacenes.clave is null) and tc_mantic_almacenes.nombre like '%{nombre}%') nombre_destino,
+          (select tc_mantic_almacenes.clave from tc_mantic_almacenes where tc_mantic_almacenes.id_almacen = tc_mantic_transferencias.id_destino and (tc_mantic_almacenes.clave like '%{clave}%' or tc_mantic_almacenes.clave is null) and tc_mantic_almacenes.nombre like '%{nombre}%') clave_destino,
+          tc_mantic_transferencias.id_articulo,
+          tc_mantic_articulos.nombre,
+          tc_mantic_articulos_codigos.codigo,
+          tc_mantic_transferencias.id_solicito,
+          concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as solicito,
+          tc_mantic_transferencias.id_usuario,
+          tc_mantic_transferencias.cantidad,
+          tc_mantic_transferencias.registro,
+          tc_mantic_transferencias.observaciones,
+          tc_mantic_transferencias_estatus.nombre estatus
+        from
+          tc_mantic_transferencias
+        inner join
+          tc_mantic_transferencias_estatus on tc_mantic_transferencias.id_transferencia_estatus = tc_mantic_transferencias_estatus.id_transferencias_estatus
+        inner join 
+          tc_mantic_articulos on tc_mantic_transferencias.id_articulo = tc_mantic_articulos.id_articulo
+        inner join 
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+        inner join
+           tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
+        inner join 
+          tc_mantic_personas  on tc_mantic_transferencias.id_solicito = tc_mantic_personas.id_persona
+        where 
+          tc_mantic_empresas.id_empresa in ({idEmpresa}) and
+          (upper(tc_mantic_articulos_codigos.codigo) like upper('%{codigoArticulo}%') and tc_mantic_articulos_codigos.id_principal= 1)
+         and 
+           upper(tc_mantic_articulos.nombre) like upper('%{nombreArticulo}%')				
+        {sortOrder}
+      </select>  
+      <select id="porNombre">
+				select 
+				  tc_mantic_articulos.id_articulo as id_key,
+				  tc_mantic_articulos.id_articulo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+				  tc_mantic_articulos.nombre,
+				  tc_mantic_articulos.precio,
+				  tc_mantic_articulos.menudeo,
+				  tc_mantic_articulos.medio_mayoreo,
+				  tc_mantic_articulos.mayoreo,
+				  tc_mantic_articulos.limite_medio_mayoreo,
+				  tc_mantic_articulos.limite_mayoreo,
+				  tc_mantic_articulos.iva,
+          tc_mantic_almacenes_articulos.stock,
+          tc_mantic_almacenes_articulos.minimo,
+          tc_mantic_almacenes_articulos.maximo,
+				  tc_mantic_articulos.id_redondear
+				from 
+					tc_mantic_articulos
+				inner join 
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo = tc_mantic_almacenes_articulos.id_articulo 
+				inner join 
+				  tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_almacenes.id_almacen
+				inner join 
+				  tc_mantic_almacenes_ubicaciones on tc_mantic_almacenes_articulos.id_almacen_ubicacion= tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion
+				where 
+					tc_mantic_empresas.id_empresa in ({sucursales})
+				  and 
+				  (
+				    upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*'
+				  or
+				    tc_mantic_articulos.id_articulo= {idArticulo}
+				  )
+				  and 
+					tc_mantic_almacenes.id_almacen = {idAlmacenOrigen} 			
+				order by 
+				  tc_mantic_articulos.nombre				
+			</select>
+			<select id="porCodigo">
+				select 
+				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
+				  tc_mantic_articulos.id_articulo,
+				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+				  tc_mantic_articulos.nombre,
+				  tc_mantic_articulos.precio,
+				  tc_mantic_articulos.menudeo,
+				  tc_mantic_articulos.medio_mayoreo,
+				  tc_mantic_articulos.mayoreo,
+				  tc_mantic_articulos.limite_medio_mayoreo,
+				  tc_mantic_articulos.limite_mayoreo,
+				  tc_mantic_articulos.iva,
+          tc_mantic_almacenes_articulos.stock,
+          tc_mantic_almacenes_articulos.minimo,
+          tc_mantic_almacenes_articulos.maximo,
+				  tc_mantic_articulos.id_redondear
+				from 
+					tc_mantic_articulos
+				inner join 
+					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_almacenes_articulos on tc_mantic_articulos.id_articulo = tc_mantic_almacenes_articulos.id_articulo 
+				inner join 
+				  tc_mantic_almacenes on tc_mantic_almacenes_articulos.id_almacen= tc_mantic_almacenes.id_almacen
+				inner join 
+				  tc_mantic_almacenes_ubicaciones on tc_mantic_almacenes_articulos.id_almacen_ubicacion= tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion
+				where 
+					tc_mantic_empresas.id_empresa in ({sucursales})
+				  and (
+				      upper(tc_mantic_articulos_codigos.codigo) like '%{codigo}%'
+				    or
+				      tc_mantic_articulos.id_articulo= {idArticulo}
+				   ) 
+          and 
+          tc_mantic_almacenes.id_almacen = {idAlmacenOrigen} 						   
+        order by 
+				  tc_mantic_articulos_codigos.codigo
+			</select>
+    </unit>
 	</dml>    
 </process>

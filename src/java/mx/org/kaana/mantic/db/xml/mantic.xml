@@ -3089,5 +3089,37 @@
           id_tipo_archivo = {idTipoArchivo} and id_empresa_pago = {idEmpresaPago} and id_empresa_archivo = {idEmpresaArchivo} and nombre = '{nombre}'
       </select>
     </unit>
+    <unit id="TcManticTransferenciasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_transferencias
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_transferencias
+        where      
+          id_almacen= {idAlmacen},
+          id_destino= {idDestino},
+          id_articulo= {idArticulo},
+          id_usuario= {idUsuario},
+          id_solicito= {idSolicito},
+          id_transferencia_estatus= {idTransferenciaEstatus}
+      </select>
+      <select id="todos">
+        select      
+          tc_mantic_transferencias.id_tipo_credito_nota as id_key,
+          tc_mantic_transferencias.*
+        from      
+          tc_mantic_transferencias
+        order by
+          tc_mantic_transferencias.id_articulo
+      </select>
+    </unit>
   </dml>    
 </process>
