@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.nombreAccion} categoria" />
+	<ui:define name="librerias">
+    <h:outputScript library="janal" name="core/jquery.janal.kardex.core-0.0.9.js"/>
+		<script type="text/javascript">
+			Janal.Control.fields = {
+				cantidad:{validaciones: 'requerido|entero|mayor-igual({"cuanto": 0})', mascara: 'entero'}
+			};
+		</script>        
+	</ui:define>
+	<ui:define name="contenido">
+    <pe:remoteCommand name="locate" process="@this" update="@(.filas)" actionListener="#{manticCatalogosAlmacenesTransferenciasAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();setTimeout(jsKardex.focus(), 500);">  
+			<pe:methodSignature parameters="java.lang.String"/>  
+			<pe:methodParam name="codigo"/>  
+		</pe:remoteCommand>		
+    <p:remoteCommand name="replace" actionListener="#{manticCatalogosAlmacenesTransferenciasAccion.doFindArticulo}" process="@this" update="@(.filas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();setTimeout(jsKardex.focus(), 500);"/>
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">						
+					<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+            <p:outputLabel for="idAlmacenOrigen" value="Almacen origen:"/>
+            <p:selectOneMenu id="idAlmacenOrigen" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.idAlmacenOrigen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
+              <p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doUpdateAlmacenDestino}" process="@this" update="idAlmacenDestino "/>
+              <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
+              <f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.almacenesOrigen}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave}"/>
+              <p:column headerText="Clave">
+                <h:outputText value="#{item.clave}"/>
+              </p:column>   
+              <p:column headerText="Nombre">
+                <h:outputText value="#{item.nombre}"/>
+              </p:column>   
+            </p:selectOneMenu>
+            <p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-90, janal-wid-3">
+              <p:outputLabel for="codigos" value="Código, nombre del articulo:"/>
+              <p:selectBooleanCheckbox value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
+                <p:ajax event="change" process="@this" update="@this"/>
+              </p:selectBooleanCheckbox>
+            </p:panelGrid>	
+            <div class="ui-grid-col-10">
+              <p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticInventariosAlmacenesKardex.attrs.custom}" completeMethod="#{manticInventariosAlmacenesKardex.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+                <p:ajax event="itemSelect" oncomplete="jsKardex.close();"/>
+                <f:facet name="itemtip">
+                  <h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+                    <f:facet name="header" class="TexAlCenter">
+                      <p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>
+                    </f:facet>
+                    <h:outputText value="Propio:" />
+                    <h:outputText value="#{custom.propio}" />
+                    <h:outputText value="Nombre:" />
+                    <h:outputText value="#{custom.nombre}" />
+                    <h:outputText value="IVA:" />
+                    <h:outputText value="#{custom.iva}" />
+                    <h:outputText value="Costo:" />
+                    <h:outputText value="$ #{custom.precio}" />
+                  </h:panelGrid>
+                </f:facet>
+              </p:autoComplete>			
+              </div>
+              <p:outputLabel for="cantidad" value="Cantidad:"/>
+							<p:inputText id="cantidad" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.cantidad}"/>
+              <p:outputLabel for="idAlmacenDestino" value="Almacen destino:"/>
+              <p:selectOneMenu id="idAlmacenDestino" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.idAlmacenDestino}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
+                <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
+                <f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.almacenesDestino}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>	
+					</p:panelGrid>
+        </div>
+			</div>
+		</div>
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this nodo nombre descripcion" action="#{manticCatalogosAlmacenesTransferenciasAccion.doAceptar}" ajax="false" styleClass="janal-text-white"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosAlmacenesTransferenciasAccion.doCancelar}" ajax="false" styleClass="janal-text-white"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@this nodo nombre descripcion" action="#{manticCatalogosAlmacenesTransferenciasAccion.doAceptar}" ajax="false" styleClass="janal-text-white"/>
+			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosAlmacenesTransferenciasAccion.doCancelar}" ajax="false" styleClass="janal-text-white"/>
+		</div>		
+	</ui:define>
+</ui:composition>
