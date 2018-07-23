@@ -27,6 +27,7 @@ import mx.org.kaana.mantic.taller.beans.ContactoCliente;
 import mx.org.kaana.mantic.taller.reglas.Transaccion;
 import mx.org.kaana.mantic.taller.beans.RegistroServicio;
 import mx.org.kaana.mantic.taller.reglas.MotorBusqueda;
+import org.primefaces.context.RequestContext;
 
 @Named(value = "manticTallerAccion")
 @ViewScoped
@@ -60,6 +61,8 @@ public class Accion extends IBaseAttribute implements Serializable {
   @Override
   protected void init() {
     try {
+			if(JsfBase.getFlashAttribute("accion")== null)
+				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idServicio", JsfBase.getFlashAttribute("idServicio"));
 			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin());
