@@ -2437,7 +2437,9 @@
 					tc_mantic_empresas_pagos.pago,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
 					tc_mantic_empresas_pagos.registro,
-					tc_mantic_empresas_pagos.observaciones
+					tc_mantic_empresas_pagos.observaciones,
+					tc_mantic_tipos_medios_pagos.clave,
+					tc_mantic_tipos_medios_pagos.nombre
 				from
 					tc_mantic_empresas_pagos
 				inner join
@@ -2448,11 +2450,13 @@
 					tc_janal_usuarios on tc_mantic_empresas_pagos.id_usuario= tc_janal_usuarios.id_usuario
 				inner join
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				inner join 
+					tc_mantic_tipos_medios_pagos on tc_mantic_empresas_pagos.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
 				where
 					tc_mantic_empresas_deudas.id_empresa_deuda= {idEmpresaDeuda}									
 				order by
 					tc_mantic_notas_entradas.consecutivo, 
-					tc_mantic_empresas_deudas.registro desc						
+					tc_mantic_empresas_deudas.registro desc				
 			</select>
 			<select id="pagosBusqueda">
 				select
@@ -2494,6 +2498,51 @@
 					tc_mantic_notas_entradas.consecutivo, 
 					tc_mantic_empresas_deudas.registro desc						
 			</select>
+			<select id="importados">
+				select
+					tc_mantic_empresas_archivos.id_empresa_archivo as id_key,
+					tc_mantic_empresas_archivos.id_empresa_pago,
+			  	tc_mantic_empresas_archivos.id_tipo_archivo,
+					tc_mantic_tipos_archivos.nombre as tipo,
+					tc_mantic_empresas_archivos.nombre,
+					tc_mantic_empresas_archivos.alias,
+					tc_mantic_empresas_archivos.ruta,
+					tc_mantic_empresas_archivos.id_principal,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
+					tc_mantic_empresas_archivos.observaciones,
+					tc_mantic_empresas_archivos.registro
+				from
+					tc_mantic_empresas_archivos
+				inner join
+					tc_mantic_tipos_archivos on tc_mantic_empresas_archivos.id_tipo_archivo= tc_mantic_tipos_archivos.id_tipo_archivo				
+				inner join 
+					tc_mantic_empresas_pagos on tc_mantic_empresas_archivos.id_empresa_pago = tc_mantic_empresas_pagos.id_empresa_pago
+				inner join 
+					tc_mantic_empresas_deudas on tc_mantic_empresas_pagos.id_empresa_deuda = tc_mantic_empresas_deudas.id_empresa_deuda
+				inner join
+					tc_janal_usuarios on tc_mantic_empresas_archivos.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_empresas_deudas.id_empresa_deuda= {idEmpresaDeuda}
+				order by
+					tc_mantic_empresas_archivos.id_tipo_archivo, 
+				  tc_mantic_empresas_archivos.registro desc				
+			</select>
+			<select id="exists">
+        select      
+          tc_mantic_empresas_archivos.*
+        from      
+          tc_mantic_empresas_archivos
+				inner join 
+					tc_mantic_empresas_pagos on tc_mantic_empresas_archivos.id_empresa_pago = tc_mantic_empresas_pagos.id_empresa_pago
+				inner join 
+					tc_mantic_empresas_deudas on tc_mantic_empresas_pagos.id_empresa_deuda = tc_mantic_empresas_deudas.id_empresa_deuda
+        where      
+          tc_mantic_clientes_archivos.id_tipo_archivo = {idTipoArchivo} and tc_mantic_empresas_deudas.id_empresa_deuda = {idEmpresaDeuda}
+				order by
+				  tc_mantic_clientes_archivos.registro desc
+      </select>
 		</unit>
 		<unit id="VistaTallerServiciosDto">
 			<select id="movimientos">
