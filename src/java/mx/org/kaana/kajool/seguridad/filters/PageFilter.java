@@ -221,8 +221,8 @@ public class PageFilter extends HttpServlet implements Filter {
       if(response.getContentType()== null || response.getContentType().indexOf("text/html")>= 0) {
         writer= response.getWriter();
         writer.print("<div class=\"DispNone\">");
-        writer.print("<span>Copyright(c) KAJOOL 2016 application</span><br/>");
-        writer.print("<span>Usuario:Team Developer 2016 <team.developer@kaana.org.mx>@kaana.org.mx></span>");
+        writer.print("<span>Copyright(c) MANTIC 2018 application</span><br/>");
+        writer.print("<span>Usuario:Team Developer 2018 <team.developer@kaana.org.mx>@kaana.org.mx></span>");
         writer.print("</div>");
         UsuariosEnLinea users= (UsuariosEnLinea)application.getAttribute(Constantes.ATRIBUTO_USUARIOS_SITIO);
         Usuario user         = (Usuario)users.getCuenta(session.getId(), autentifica.getPersona().getCuenta());

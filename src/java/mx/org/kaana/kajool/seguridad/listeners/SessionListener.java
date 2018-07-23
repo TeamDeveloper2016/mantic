@@ -10,6 +10,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
+import mx.org.kaana.kajool.procesos.acceso.perfil.reglas.RegistroPerfil;
 import mx.org.kaana.kajool.procesos.acceso.reglas.Transaccion;
 import mx.org.kaana.kajool.procesos.beans.UsuariosEnLinea;
 import org.apache.commons.logging.Log;
@@ -28,7 +29,13 @@ public class SessionListener implements HttpSessionListener {
     if (autentifica.tieneAccesoBD(Configuracion.getInstance().getPropiedad("sistema.autenticar.cuenta"), password, "127.0.0.1")) {
       LOG.warn("Acceso libre con autentifica [".concat(autentifica.toString()).concat("]"));
       synchronized (session) {
-        session.setAttribute(Constantes.ATRIBUTO_AUTENTIFICA, autentifica);
+		    session.setAttribute(Constantes.ATRIBUTO_AUTENTIFICA, autentifica);
+  			autentifica.getCredenciales().setMenuEncabezado(true);
+	  		autentifica.loadSucursales();
+        RegistroPerfil registro= new RegistroPerfil(autentifica);      
+        registro.addAutentifica(session);
+        registro.addMenuSesion(session);
+        registro.addTopMenuSesion(session);
       } // synchronized
     } // if
   } // loadUser
