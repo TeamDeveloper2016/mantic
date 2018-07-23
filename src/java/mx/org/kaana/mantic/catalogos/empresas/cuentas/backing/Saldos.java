@@ -196,4 +196,18 @@ public class Saldos extends IBaseFilter implements Serializable {
 			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
 		} // else
 	} // doVerificarReporte		
+	
+	public String doImportar(){
+		String regresar= null;
+		try {
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/saldos");		
+			JsfBase.setFlashAttribute("idEmpresaDeuda",((Entity)this.attrs.get("seleccionado")).getKey());
+			regresar= "importar".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		return regresar;
+	} // doImportar
 }
