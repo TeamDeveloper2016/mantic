@@ -3070,6 +3070,18 @@
         where      
           id_cliente_representante = {idClienteRepresentante} and id_tipo_archivo = {idTipoArchivo} and id_cliente_archivo = {idClienteArchivo} and nombre = '{nombre}'
       </select>
+			<select id="listado">
+        select      
+          *
+        from      
+          tc_mantic_clientes_archivos
+        where      
+          ruta = '{ruta}'
+				  and id_tipo_archivo= {idTipoArchivo}
+				  and id_principal= 1
+				order by
+				  ruta
+      </select>
     </unit>
 		<unit id="TcManticEmpresasArchivosDto">
       <select id="row">
@@ -3087,6 +3099,18 @@
           tc_mantic_empresas_archivos
         where      
           id_tipo_archivo = {idTipoArchivo} and id_empresa_pago = {idEmpresaPago} and id_empresa_archivo = {idEmpresaArchivo} and nombre = '{nombre}'
+      </select>
+			<select id="listado">
+        select      
+          *
+        from      
+          tc_mantic_empresas_archivos
+        where      
+          ruta = '{ruta}'
+				  and id_tipo_archivo= {idTipoArchivo}
+				  and id_principal= 1
+				order by
+				  ruta
       </select>
     </unit>
     <unit id="TcManticTransferenciasDto">
