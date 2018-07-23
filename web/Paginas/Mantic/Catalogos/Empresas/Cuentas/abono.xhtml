@@ -66,6 +66,12 @@
 							</f:facet>
 							<h:outputText value="#{filtro['pago']}"/>
 						</p:column>														
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.nombre}">
+							<f:facet name="header">
+								<h:outputText value="Forma de pago"/>
+							</f:facet>
+							<h:outputText value="#{filtro['nombre']}"/>
+						</p:column>														
 						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
 							<f:facet name="header">
 								<h:outputText value="Usuario"/>
