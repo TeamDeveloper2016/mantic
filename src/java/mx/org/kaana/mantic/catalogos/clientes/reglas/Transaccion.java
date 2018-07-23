@@ -478,7 +478,7 @@ public class Transaccion extends IBaseTnx {
 			params  = new HashMap<>();
 			params.put("idTipoArchivo", idTipoArchivo);
 			params.put("ruta", tmp.getRuta());
-			regresar= (List<Nombres>)DaoFactory.getInstance().toEntitySet(sesion, Nombres.class, "TcManticCreditosArchivosDto", "listado", params);
+			regresar= (List<Nombres>)DaoFactory.getInstance().toEntitySet(sesion, Nombres.class, "TcManticClientesArchivosDto", "listado", params);
 			regresar.add(new Nombres(tmp.getName()));
 		} // try  // try 
 		catch (Exception e) {
