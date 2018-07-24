@@ -2513,7 +2513,9 @@
 					tc_mantic_empresas_archivos.id_principal,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
 					tc_mantic_empresas_archivos.observaciones,
-					tc_mantic_empresas_archivos.registro
+					tc_mantic_empresas_archivos.registro,
+				  tc_mantic_empresas_pagos.pago,
+				  tc_mantic_empresas_pagos.registro registro_pago
 				from
 					tc_mantic_empresas_archivos
 				inner join
@@ -2542,9 +2544,9 @@
 				inner join 
 					tc_mantic_empresas_deudas on tc_mantic_empresas_pagos.id_empresa_deuda = tc_mantic_empresas_deudas.id_empresa_deuda
         where      
-          tc_mantic_clientes_archivos.id_tipo_archivo = {idTipoArchivo} and tc_mantic_empresas_deudas.id_empresa_deuda = {idEmpresaDeuda}
+          tc_mantic_empresas_archivos.id_tipo_archivo = {idTipoArchivo} and tc_mantic_empresas_deudas.id_empresa_deuda = {idEmpresaDeuda}
 				order by
-				  tc_mantic_clientes_archivos.registro desc
+				  tc_mantic_empresas_archivos.registro desc
       </select>
 		</unit>
 		<unit id="VistaTallerServiciosDto">
