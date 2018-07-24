@@ -186,6 +186,7 @@ public class Filtro extends Comun implements Serializable {
 	}
 	
 	public String doRefacciones() {
+  	JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
 		JsfBase.setFlashAttribute(ETipoMovimiento.SERVICIOS.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
 		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Taller/filtro");
 		return "/Paginas/Mantic/Taller/detalle".concat(Constantes.REDIRECIONAR);

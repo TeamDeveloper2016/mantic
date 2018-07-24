@@ -279,10 +279,12 @@ public class Transaccion extends Inventarios implements Serializable {
 		DaoFactory.getInstance().update(sesion, this.orden);
 		
 		// Una vez que la nota de entrada es cambiada a terminar se registra la cuenta por cobrar
-		if(this.orden.getDiasPlazo()> 0) {
-		  TcManticEmpresasDeudasDto deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), this.orden.getDeuda(), this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda());
-		  DaoFactory.getInstance().insert(sesion, deuda);
-		} // if	
+		TcManticEmpresasDeudasDto deuda= null;
+		if(this.orden.getDiasPlazo()> 0) 
+		  deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), this.orden.getDeuda(), this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda());
+		else
+		  deuda= new TcManticEmpresasDeudasDto(3L, JsfBase.getIdUsuario(), -1L, "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 0D, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda());
+	  DaoFactory.getInstance().insert(sesion, deuda);
 		
 		TcManticNotasBitacoraDto registro= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 		DaoFactory.getInstance().insert(sesion, registro);

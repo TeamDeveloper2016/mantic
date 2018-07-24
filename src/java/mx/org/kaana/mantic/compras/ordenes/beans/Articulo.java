@@ -147,9 +147,9 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 
 	public String getDiferencia() {
-		double diferencia= this.toDiferencia();
+		double diferencia= Numero.toRedondear(this.toDiferencia());
 		String color     = diferencia< -5? "janal-color-orange": diferencia> 5? "janal-color-blue": "janal-color-green";
-		return "<span class='".concat(color).concat("' style='float:right;'>").concat(String.valueOf(diferencia)).concat("</span>");
+		return "<span class='".concat(color).concat("' style='float:left;'>[").concat(String.valueOf(diferencia)).concat("%]</span>");
 	}
 
 	public String getCostoMayorMenor() {
@@ -233,7 +233,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 	
 	public double getDiferenciaCosto() {
-		return this.toDiferencia();
+		return Numero.toRedondearSat(this.toDiferencia());
 	}
 		
 	private double toDiferencia() {

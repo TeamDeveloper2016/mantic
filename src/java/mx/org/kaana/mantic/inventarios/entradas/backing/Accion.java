@@ -570,8 +570,14 @@ public class Accion extends IBaseArticulos implements Serializable {
 		Date fechaFactura= ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura();
 		Calendar calendar= Calendar.getInstance();
 		calendar.setTimeInMillis(fechaFactura.getTime());
-		calendar.add(Calendar.DATE, ((NotaEntrada)this.getAdminOrden().getOrden()).getDiasPlazo().intValue());
+		calendar.add(Calendar.DATE, ((NotaEntrada)this.getAdminOrden().getOrden()).getDiasPlazo().intValue()- 1);
 		((NotaEntrada)this.getAdminOrden().getOrden()).setFechaPago(new Date(calendar.getTimeInMillis()));
+	}
+
+	public void doCalculatePagoFecha() {
+		Date fechaFactura= ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura();
+		Date fechaPago   = ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaPago();
+		((NotaEntrada)this.getAdminOrden().getOrden()).setDiasPlazo(new Long(Fecha.getBetweenDays(fechaFactura, fechaPago)));
 	}
 
 	public StreamedContent doFileDownload() {

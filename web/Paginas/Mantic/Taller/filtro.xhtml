@@ -63,15 +63,15 @@
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
               <div class="lg-pantalla">
-                <p:menuButton   value="Opciones">
-                  <p:menuitem  value="Agregar" action="#{manticTallerFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
+                <p:menuButton value="Opciones">
+                  <p:menuitem value="Agregar" action="#{manticTallerFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:commandButton title="Agregar" action="#{manticTallerFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" styleClass="janal-text-white"/>						
+                <p:commandButton action="#{manticTallerFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" styleClass="janal-text-white"/>						
                 <p:separator/>
                 <p:menuitem id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
@@ -119,7 +119,7 @@
 						<p:separator rendered="#{!(manticTallerFiltro.attrs.seleccionado.estatus eq '5')}"/>					
             <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticTallerFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticTallerFiltro.attrs.seleccionado.estatus eq '5')}"/>					            
 						<p:separator/>
-            <p:menuitem icon="fa fa-twitch" value="Refacciones" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" process="@this tabla" actionListener="#{manticTallerFiltro.doRefacciones}"/> 
+            <p:menuitem icon="fa fa-twitch" value="Refacciones" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" process="@this tabla" action="#{manticTallerFiltro.doRefacciones}"/> 
           </p:contextMenu>
         </div>
       </div>

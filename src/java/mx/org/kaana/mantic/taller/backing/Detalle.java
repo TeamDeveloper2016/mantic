@@ -40,8 +40,8 @@ public class Detalle extends IBaseArticulos implements Serializable {
   @Override
   protected void init() {		
     try {
-			//if(JsfBase.getFlashAttribute("accion")== null)
-			//	RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+			if(JsfBase.getFlashAttribute("accion")== null)
+				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
       this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.MODIFICAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idServicio", JsfBase.getFlashAttribute("idServicio")== null? -1L: JsfBase.getFlashAttribute("idServicio"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
