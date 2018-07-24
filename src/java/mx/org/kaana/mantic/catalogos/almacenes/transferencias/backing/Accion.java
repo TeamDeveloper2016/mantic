@@ -10,22 +10,26 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.dto.TcJanalUsuariosDto;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.mantic.db.dto.TcManticCategoriasDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.procesos.usuarios.reglas.CargaInformacionUsuarios;
+import mx.org.kaana.kajool.procesos.usuarios.reglas.beans.CriteriosBusqueda;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.BouncyEncryption;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.categorias.reglas.MotorBusqueda;
+import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
+import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.Transaccion;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
 
@@ -34,26 +38,115 @@ import org.primefaces.model.StreamedContent;
 public class Accion extends IBaseAttribute implements Serializable {
   
   private StreamedContent image;
+  private CriteriosBusqueda criteriosBusqueda;
   
   public StreamedContent getImage() {
 		return image;
 	}
+  
+  public CriteriosBusqueda getCriteriosBusqueda() {
+    return criteriosBusqueda;
+  }
 
 	@PostConstruct
 	@Override
 	protected void init() {
 		try {
+      this.criteriosBusqueda = new CriteriosBusqueda();
       this.attrs.put("buscaPorCodigo", false);
       this.attrs.put("cantidad", 0);
+      this.attrs.put("observaciones", "");
+      this.attrs.put("idUsuario", JsfBase.getFlashAttribute("idUsuario")!= null? (Long)JsfBase.getFlashAttribute("idUsuario"): -1L);
 			this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));										
 			toLoadAlmacenes();
-			//doLoad();			
+      loadPersonas(); 
+      loadUsuario();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
 	} // init
+  
+  private void loadPersonas() {
+    List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {
+      columns= new ArrayList<>();
+      params = new HashMap<>();
+      columns.add(new Columna("nombres", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("materno", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("paterno", EFormatoDinamicos.MAYUSCULAS));
+      params.put(Constantes.SQL_CONDICION, "id_tipo_persona in (1,2,6)");
+      this.criteriosBusqueda.getListaPersonas().addAll(UIEntity.build("TcManticPersonasDto", "row", params, columns));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch    
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally 
+  }
+  
+  private void loadUsuario() {
+		Long idUsuario= (Long)this.attrs.get("idUsuario")!=null?(Long)this.attrs.get("idUsuario"):0L;
+    try {
+      if (idUsuario> 0) {
+        this.attrs.put("tcJanalUsuariosDto", (TcJanalUsuariosDto) DaoFactory.getInstance().findById(TcJanalUsuariosDto.class, idUsuario));
+        this.attrs.put("tcManticPersonasDto", (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, ((TcJanalUsuariosDto)this.attrs.get("tcJanalUsuariosDto")).getIdPersona()));
+      } // if
+			else {
+        this.attrs.put("tcJanalUsuariosDto", new TcJanalUsuariosDto(-1L, JsfBase.getIdUsuario(), -1L, 1L, -1L));
+        this.attrs.put("tcManticPersonasDto", new TcManticPersonasDto());
+      } // else
+    } // try
+    catch (Exception e) {
+      JsfBase.addMessageError(e);
+      Error.mensaje(e);
+    } // catch		
+  }
+  
+  public void doBuscar() {
+		CargaInformacionUsuarios ciu= null;
+		try {
+			ciu= new CargaInformacionUsuarios(this.criteriosBusqueda);
+			ciu.cargarPerfilesDisponible();
+			buscar();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doBuscar
+  
+  public void buscar() {
+    TcJanalUsuariosDto usuario= null;
+    int index                 = -1;
+    UISelectEntity personaSel = null;
+    try {
+			TcManticPersonasDto persona= (TcManticPersonasDto)this.attrs.get("tcManticPersonasDto");
+      if (persona.isValid()) {
+				persona.setContrasenia(BouncyEncryption.decrypt(persona.getContrasenia()));
+        index = this.getCriteriosBusqueda().getListaPersonas().indexOf(new UISelectEntity(new Entity(persona.getIdPersona())));
+				if(index>= 0){
+          personaSel = this.getCriteriosBusqueda().getListaPersonas().get(index);
+          this.criteriosBusqueda.setPersona(personaSel);
+        }
+			} // if
+      usuario = (TcJanalUsuariosDto)this.attrs.get("tcJanalUsuariosDto");
+      if (usuario.isValid()) {
+        index = this.getCriteriosBusqueda().getListaPerfiles().indexOf(new UISelectEntity(new Entity(usuario.getIdPerfil())));
+				if(index>= 0)
+          this.criteriosBusqueda.setPerfil(this.getCriteriosBusqueda().getListaPerfiles().get(index));
+      } // if
+			this.attrs.put("confirmar", persona.getContrasenia());
+    }  // try
+		catch (Exception e) {
+      JsfBase.addMessageError(e);
+      Error.mensaje(e);
+    } // catch
+  }
   
   private void toLoadAlmacenes() {
     List<UISelectEntity> almacenes= null;
@@ -81,7 +174,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	}//toLoadAlmacenes
   
   public void doCalculate() {
-    this.attrs.put("nuevaExistenciaOrigen", (Numero.getInteger(((UISelectEntity)this.attrs.get("articulo")).get("stock").toString())-Numero.getInteger(this.attrs.get("cantidad").toString()))) ;
+    this.attrs.put("nuevaExistenciaOrigen", (Float.valueOf(this.attrs.get("articulo")!=null?((UISelectEntity)this.attrs.get("articulo")).get("stock").toString():"0")-Float.valueOf(this.attrs.get("cantidad").toString()))) ;
   } // doCalculate
   
   public void doUpdateAlmacenOrigen() {
@@ -94,12 +187,10 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doUpdateAlmacenDestino() {
     Entity articuloDestino = null;
 		try {
-      this.attrs.put("almacenesDestino", ((ArrayList<UISelectEntity>)this.attrs.get("almacenesOrigen")).clone());
-      int index = ((List<UISelectEntity>)this.attrs.get("almacenesDestino")).indexOf(new UISelectEntity(new Entity(Long.valueOf(this.attrs.get("idAlmacenOrigen").toString()))));
-      ((List<UISelectEntity>)this.attrs.get("almacenesDestino")).remove(index);
       articuloDestino = (Entity) DaoFactory.getInstance().toEntity("VistaAlmacenesTransferenciasDto", "articuloAlmacen", this.attrs);
       this.attrs.put("articuloDestino", articuloDestino);
-      this.attrs.put("nuevaExistenciaDestino", (Numero.getInteger(((UISelectEntity)this.attrs.get("articuloDestino")).get("stock").toString())+Numero.getInteger(this.attrs.get("cantidad").toString()))) ;
+      this.attrs.put("nuevaExistenciaOrigen", (Float.valueOf(this.attrs.get("articulo")!=null?((UISelectEntity)this.attrs.get("articulo")).get("stock").toString():"0")-Float.valueOf(this.attrs.get("cantidad").toString()))) ;
+      this.attrs.put("nuevaExistenciaDestino", (Float.valueOf(this.attrs.get("articuloDestino")!=null?((UISelectEntity)this.attrs.get("articuloDestino")).get("stock").toString():"0")+Float.valueOf(this.attrs.get("cantidad").toString()))) ;
     } // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -169,45 +260,26 @@ public class Accion extends IBaseAttribute implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
     return (List<UISelectEntity>)this.attrs.get("articulos");
-	}	
-         	
-	public void doLoad() {
-		EAccion eaccion       = null;
-		MotorBusqueda busqueda= null;		
-		Long idCategoriaParent= null;
-		try {
-			eaccion= (EAccion) this.attrs.get("accion");
-			this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
-			switch(eaccion){
-				case AGREGAR:
-					this.attrs.put("dto", new TcManticCategoriasDto());
-					break;
-				case MODIFICAR:
-				case CONSULTAR:
-					busqueda= new MotorBusqueda(Long.valueOf(this.attrs.get("idCategoria").toString()));
-					this.attrs.put("dto", busqueda.toCategoria());					
-					idCategoriaParent= busqueda.toParent();
-					this.attrs.put("nodo", idCategoriaParent);
-					this.attrs.put("parentNodo", idCategoriaParent);
-					break;
-			} // switch
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch		
-	} // doLoad
-	
+	}
+
 	public String doAceptar(){
 		TcManticTransferenciasDto dto= null;
-		//Transaccion transaccion  = null;
+		Transaccion transaccion  = null;
 		try {
-			//transaccion= new Transaccion(dto);
-			//if(transaccion.ejecutar((EAccion) this.attrs.get("accion")))
-      if(true)
-				JsfBase.addMessage("Se aplico el cambio de forma correcta", ETipoMensaje.INFORMACION);
+      dto = new TcManticTransferenciasDto();
+      dto.setIdAlmacen(Long.valueOf(this.attrs.get("idAlmacenOrigen").toString()));
+      dto.setIdArticulo(Long.valueOf(this.attrs.get("idArticulo").toString()));
+      dto.setCantidad(Long.valueOf(this.attrs.get("cantidad").toString()));
+      dto.setIdDestino(Long.valueOf(this.attrs.get("idAlmacenDestino").toString()));
+      dto.setIdSolicito(this.criteriosBusqueda.getPersona().getKey());
+      dto.setObservaciones(this.attrs.get("observaciones").toString());
+      dto.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdPersona());
+      dto.setIdTransferenciaEstatus(1L);
+			transaccion= new Transaccion(dto, this.criteriosBusqueda.getListaPersonas().get(this.criteriosBusqueda.getListaPersonas().indexOf(this.criteriosBusqueda.getPersona())).get("paterno").toString());
+			if(transaccion.ejecutar((EAccion) this.attrs.get("accion")))
+				JsfBase.addMessage("Se registró la transferencia de correcta", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Ocurrió un error al registrar el cambio", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Ocurrió un error al registrar la transferencia", ETipoMensaje.ERROR);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

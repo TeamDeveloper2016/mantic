@@ -24,94 +24,58 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_mantic_transferencias")
-public class TcManticTransferenciasDto implements IBaseDto, Serializable {
+@Table(name="tc_mantic_transferencias_bitacora")
+public class TcManticTransferenciasBitacoraDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
+	@Column (name="id_transferencia_bitacora")
+  private Long idTransferenciaBitacora;
 	@Column (name="id_transferencia")
   private Long idTransferencia;
-  @Column (name="id_almacen")
-  private Long idAlmacen;
-  @Column (name="id_destino")
-  private Long idDestino;
-  @Column (name="id_articulo")
-  private Long idArticulo;
-  @Column (name="id_solicito")
-  private Long idSolicito;
   @Column (name="id_usuario")
   private Long idUsuario;
-  @Column (name="id_transferencia_estatus")
+  @Column (name="idTransferenciaEstatus")
   private Long idTransferenciaEstatus;
-  @Column (name="cantidad")
-  private Long cantidad;
-  @Column (name="observaciones")
-  private String observaciones;
+  @Column (name="justificacion")
+  private String justificacion;
   @Column (name="registro")
   private Timestamp registro;
   
   
-  public TcManticTransferenciasDto() {
+  public TcManticTransferenciasBitacoraDto() {
     this(new Long(-1L));
   }
 
-  public TcManticTransferenciasDto(Long key) {
-    this(new Long(-1L),new Long(-1L),new Long(-1L),new Long(-1L),new Long(-1L),new Long(-1L),new Long(-1L),new Long(-1L),null,null);
+  public TcManticTransferenciasBitacoraDto(Long key) {
+    this(new Long(-1L),new Long(-1L),new Long(-1L),new Long(-1L),null);
     setKey(key);
   }
 
-  public TcManticTransferenciasDto(Long idTransferencia, Long idAlmacen, Long idDestino, Long idArticulo, Long idSolicito, Long idUsuario, Long idTransferenciaEstatus, Long cantidad, String observaciones, Timestamp registro) {
+  public TcManticTransferenciasBitacoraDto(Long idTransferenciaBitacora, Long idTransferencia, Long idUsuario, Long idTransferenciaEstatus, String justificacion) {
     setIdTransferencia(idTransferencia);
-    setIdAlmacen(idAlmacen);
-    setIdDestino(idDestino);
-    setIdArticulo(idArticulo);
-    setIdSolicito(idSolicito);
+    setIdTransferenciaBitacora(idTransferenciaBitacora);
     setIdUsuario(idUsuario);
     setIdTransferenciaEstatus(idTransferenciaEstatus);
-    setCantidad(cantidad);
-    setObservaciones(observaciones);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setJustificacion(justificacion);
+    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));;
   }
-  
+
+  public Long getIdTransferenciaBitacora() {
+    return idTransferenciaBitacora;
+  }
+
+  public void setIdTransferenciaBitacora(Long idTransferenciaBitacora) {
+    this.idTransferenciaBitacora = idTransferenciaBitacora;
+  }
+
   public Long getIdTransferencia() {
     return idTransferencia;
   }
 
   public void setIdTransferencia(Long idTransferencia) {
     this.idTransferencia = idTransferencia;
-  }
-
-  public Long getIdAlmacen() {
-    return idAlmacen;
-  }
-
-  public void setIdAlmacen(Long idAlmacen) {
-    this.idAlmacen = idAlmacen;
-  }
-
-  public Long getIdDestino() {
-    return idDestino;
-  }
-
-  public void setIdDestino(Long idDestino) {
-    this.idDestino = idDestino;
-  }
-
-  public Long getIdArticulo() {
-    return idArticulo;
-  }
-
-  public void setIdArticulo(Long idArticulo) {
-    this.idArticulo = idArticulo;
-  }
-
-  public Long getIdSolicito() {
-    return idSolicito;
-  }
-
-  public void setIdSolicito(Long idSolicito) {
-    this.idSolicito = idSolicito;
   }
 
   public Long getIdUsuario() {
@@ -130,20 +94,12 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
     this.idTransferenciaEstatus = idTransferenciaEstatus;
   }
 
-  public Long getCantidad() {
-    return cantidad;
+  public String getJustificacion() {
+    return justificacion;
   }
 
-  public void setCantidad(Long cantidad) {
-    this.cantidad = cantidad;
-  }
-
-  public String getObservaciones() {
-    return observaciones;
-  }
-
-  public void setObservaciones(String observaciones) {
-    this.observaciones = observaciones;
+  public void setJustificacion(String justificacion) {
+    this.justificacion = justificacion;
   }
 
   public Timestamp getRegistro() {
@@ -169,15 +125,7 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getCantidad());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdAlmacen());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdArticulo());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdDestino());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdSolicito());
+		regresar.append(getIdTransferenciaBitacora());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTransferencia());
 		regresar.append(Constantes.SEPARADOR);
@@ -185,7 +133,7 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getObservaciones());
+		regresar.append(getJustificacion());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -195,15 +143,11 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("cantidad", getCantidad());
-    regresar.put("idAlmacen", getIdAlmacen());
-    regresar.put("idArticulo", getIdArticulo());
-    regresar.put("idDestino", getIdDestino());
-    regresar.put("idSolicito", getIdSolicito());
+		regresar.put("idTransferenciaBitacora", getIdTransferenciaBitacora());
     regresar.put("idTransferencia", getIdTransferencia());
     regresar.put("idTransferenciaEstatus", getIdTransferenciaEstatus());
     regresar.put("idUsuario", getIdUsuario());
-    regresar.put("observaciones", getObservaciones());
+    regresar.put("justificacion", getJustificacion());
     regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -211,15 +155,11 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getCantidad(),
-      getIdAlmacen(),
-      getIdArticulo(),
-      getIdDestino(),
-      getIdSolicito(),
+      getIdTransferenciaBitacora(),
       getIdTransferencia(),
       getIdTransferenciaEstatus(),
       getIdUsuario(),
-      getObservaciones(),
+      getJustificacion(),
       getRegistro()
     };
     return regresar;
@@ -234,8 +174,8 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idTransferencia~");
-    regresar.append(getIdTransferencia());
+    regresar.append("idTransferenciaBitacora~");
+    regresar.append(getIdTransferenciaBitacora());
     regresar.append("|");
     return regresar.toString();
   }
@@ -243,18 +183,18 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdTransferencia());
+    regresar.append(getIdTransferenciaBitacora());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcManticTransferenciasDto.class;
+    return TcManticTransferenciasBitacoraDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdTransferencia()!= null && getIdTransferencia()!=-1L;
+  	return getIdTransferenciaBitacora()!= null && getIdTransferenciaBitacora()!=-1L;
   }
 
   @Override
@@ -265,8 +205,8 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcManticTransferenciasDto other = (TcManticTransferenciasDto) obj;
-    if (getIdTransferencia() != other.idTransferencia && (getIdTransferencia() == null || !getIdTransferencia().equals(other.idTransferencia))) {
+    final TcManticTransferenciasBitacoraDto other = (TcManticTransferenciasBitacoraDto) obj;
+    if (getIdTransferenciaBitacora() != other.idTransferenciaBitacora && (getIdTransferenciaBitacora() == null || !getIdTransferenciaBitacora().equals(other.idTransferenciaBitacora))) {
       return false;
     }
     return true;
@@ -275,7 +215,7 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdTransferencia()!= null ? getIdTransferencia().hashCode() : 0);
+    hash = 67 * hash + (getIdTransferenciaBitacora()!= null ? getIdTransferenciaBitacora().hashCode() : 0);
     return hash;
   }
 
