@@ -36,7 +36,7 @@ public class TcManticTransferenciasBitacoraDto implements IBaseDto, Serializable
   private Long idTransferencia;
   @Column (name="id_usuario")
   private Long idUsuario;
-  @Column (name="idTransferenciaEstatus")
+  @Column (name="id_transferencia_estatus")
   private Long idTransferenciaEstatus;
   @Column (name="justificacion")
   private String justificacion;
