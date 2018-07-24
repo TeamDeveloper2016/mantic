@@ -128,6 +128,7 @@ public class Transaccion extends IBaseTnx{
 			registroPago.setIdUsuario(JsfBase.getIdUsuario());
 			registroPago.setObservaciones("Pago aplicado a la deuda general del cliente. ".concat(this.pago.getObservaciones()));
 			registroPago.setPago(pagoParcial);
+			registroPago.setIdTipoMedioPago(this.pago.getIdTipoMedioPago());
 			regresar= DaoFactory.getInstance().insert(sesion, registroPago)>= 1L;
 		} // try
 		catch (Exception e) {			
