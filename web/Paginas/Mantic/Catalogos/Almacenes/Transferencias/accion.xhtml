@@ -23,7 +23,7 @@
             <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-70">
               <p:outputLabel for="idAlmacenOrigen" value="Almacen origen:"/>
               <p:selectOneMenu id="idAlmacenOrigen" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.idAlmacenOrigen}" var="almacen" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
-                <p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doUpdateAlmacenDestino}" process="@this" update="idAlmacenDestino "/>
+                <p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doUpdateAlmacenOrigen}" process="@this" update="contenido "/>
                 <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
                 <f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.almacenesOrigen}"  var="elementA" itemValue="#{elementA.key}" itemLabel="#{elementA.clave}"/>
                 <p:column headerText="Clave">
@@ -50,7 +50,18 @@
                 </p:column>
               </p:autoComplete>
               <p:outputLabel for="cantidad" value="Cantidad:"/>
-              <p:inputText id="cantidad" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.cantidad}"/>
+              <p:inputText id="cantidad" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.cantidad}">
+                <p:ajax event="blur" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doCalculate}" process="@this" update="contenido"/>
+              </p:inputText>
+              <p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-70">
+                <p:outputLabel value="Existencia:" for="stockOrigen" />
+                <p:inputText id="stockOrigen" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo==null?0:manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo.stock}" readonly="true"/>	
+              </p:panelGrid>
+              <p:panelGrid layout="grid" columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-60, janal-wid-10, janal-wid-30">
+                <p:spacer height="1"/>
+                <p:outputLabel value="Quedarán:" for="nuevaExistenciaOrigen" />
+                <p:inputText id="nuevaExistenciaOrigen" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo==null?0:manticCatalogosAlmacenesTransferenciasAccion.attrs.nuevaExistenciaOrigen}" readonly="true"/>	
+              </p:panelGrid>
               <p:outputLabel for="idAlmacenDestino" value="Almacen destino:"/>
               <p:selectOneMenu id="idAlmacenDestino" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.idAlmacenDestino}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
                 <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
@@ -62,6 +73,15 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
+              <p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-70">
+                <p:outputLabel value="Existencia:" for="stockDestino" />
+                <p:inputText id="stockDestino" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articuloDestino==null?0:manticCatalogosAlmacenesTransferenciasAccion.attrs.articuloDestino.stock}" readonly="true"/>	
+              </p:panelGrid>
+              <p:panelGrid layout="grid" columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-60, janal-wid-10, janal-wid-30">
+                <p:spacer height="1"/>
+                <p:outputLabel value="Quedarán:" for="nuevaExistenciaDestino" />
+                <p:inputText id="nuevaExistenciaDestino" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articuloDestino==null?0:manticCatalogosAlmacenesTransferenciasAccion.attrs.nuevaExistenciaDestino}" readonly="true"/>	
+              </p:panelGrid>
               <p:outputLabel for="observaciones" value="Observaciones:"/>
               <p:inputTextarea id="observaciones" rows="6" cols="50" styleClass="janal-wid-100-txt" value="#{manticTallerDetalle.attrs.observaciones}"/>
             </p:panelGrid>

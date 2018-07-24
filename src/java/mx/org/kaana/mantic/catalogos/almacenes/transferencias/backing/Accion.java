@@ -17,6 +17,7 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -43,6 +44,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	protected void init() {
 		try {
       this.attrs.put("buscaPorCodigo", false);
+      this.attrs.put("cantidad", 0);
 			this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));										
 			toLoadAlmacenes();
 			//doLoad();			
@@ -78,11 +80,31 @@ public class Accion extends IBaseAttribute implements Serializable {
     }// finally
 	}//toLoadAlmacenes
   
-  public void doUpdateAlmacenDestino() {
+  public void doCalculate() {
+    this.attrs.put("nuevaExistenciaOrigen", (Numero.getInteger(((UISelectEntity)this.attrs.get("articulo")).get("stock").toString())-Numero.getInteger(this.attrs.get("cantidad").toString()))) ;
+  } // doCalculate
+  
+  public void doUpdateAlmacenOrigen() {
     this.attrs.put("almacenesDestino", ((ArrayList<UISelectEntity>)this.attrs.get("almacenesOrigen")).clone());
 		int index = ((List<UISelectEntity>)this.attrs.get("almacenesDestino")).indexOf(new UISelectEntity(new Entity(Long.valueOf(this.attrs.get("idAlmacenOrigen").toString()))));
     ((List<UISelectEntity>)this.attrs.get("almacenesDestino")).remove(index);
     doUpdateArticulos();
+  }
+  
+  public void doUpdateAlmacenDestino() {
+    Entity articuloDestino = null;
+		try {
+      this.attrs.put("almacenesDestino", ((ArrayList<UISelectEntity>)this.attrs.get("almacenesOrigen")).clone());
+      int index = ((List<UISelectEntity>)this.attrs.get("almacenesDestino")).indexOf(new UISelectEntity(new Entity(Long.valueOf(this.attrs.get("idAlmacenOrigen").toString()))));
+      ((List<UISelectEntity>)this.attrs.get("almacenesDestino")).remove(index);
+      articuloDestino = (Entity) DaoFactory.getInstance().toEntity("VistaAlmacenesTransferenciasDto", "articuloAlmacen", this.attrs);
+      this.attrs.put("articuloDestino", articuloDestino);
+      this.attrs.put("nuevaExistenciaDestino", (Numero.getInteger(((UISelectEntity)this.attrs.get("articuloDestino")).get("stock").toString())+Numero.getInteger(this.attrs.get("cantidad").toString()))) ;
+    } // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch	
   }
   
   public void doUpdateArticulos() {
@@ -124,15 +146,12 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doAsignaArticulo(SelectEvent event){
 		UISelectEntity seleccion       = null;
 		List<UISelectEntity> articulos = null;
-    Entity articuloDestino = null;
 		try {
 			articulos= (List<UISelectEntity>) this.attrs.get("articulos");
 			seleccion= articulos.get(articulos.indexOf((UISelectEntity)event.getObject()));
 			this.attrs.put("articulo", seleccion);
       this.attrs.put("idArticulo",seleccion.get("idArticulo"));
       this.image= LoadImages.getImage(seleccion.toString("archivo"));
-      articuloDestino = (Entity) DaoFactory.getInstance().toEntity("VistaAlmacenesTransferenciasDto", "articuloAlmacen", this.attrs);
-      this.attrs.put("articuloDestino", articuloDestino);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -141,7 +160,6 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} // doAsignaCliente
   
   public List<UISelectEntity> doCompleteArticulo(String query) {
-    Entity articuloDestino = null;
 		try {
       this.attrs.put("codigo", query);
       this.doUpdateArticulos();		
