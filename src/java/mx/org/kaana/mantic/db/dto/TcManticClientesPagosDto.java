@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -48,23 +42,26 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
   private Double pago;
   @Column (name="registro")
   private Timestamp registro;
+	@Column (name="id_tipo_medio_pago")
+  private Long idTipoMedioPago;
 
   public TcManticClientesPagosDto() {
     this(new Long(-1L));
   }
 
   public TcManticClientesPagosDto(Long key) {
-    this(null, null, null, new Long(-1L), null);
+    this(null, null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcManticClientesPagosDto(Long idUsuario, Long idClienteDeuda, String observaciones, Long idClientePago, Double pago) {
+  public TcManticClientesPagosDto(Long idUsuario, Long idClienteDeuda, String observaciones, Long idClientePago, Double pago, Long idTipoMedioPago) {
     setIdUsuario(idUsuario);
     setIdClienteDeuda(idClienteDeuda);
     setObservaciones(observaciones);
     setIdClientePago(idClientePago);
     setPago(pago);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		setIdTipoMedioPago(idTipoMedioPago);
   }
 	
   public void setIdUsuario(Long idUsuario) {
@@ -115,6 +112,14 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
     return registro;
   }
 
+	public Long getIdTipoMedioPago() {
+		return idTipoMedioPago;
+	}
+
+	public void setIdTipoMedioPago(Long idTipoMedioPago) {
+		this.idTipoMedioPago = idTipoMedioPago;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -141,6 +146,8 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
 		regresar.append(getPago());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoMedioPago());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -154,13 +161,14 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
 		regresar.put("idClientePago", getIdClientePago());
 		regresar.put("pago", getPago());
 		regresar.put("registro", getRegistro());
+		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdUsuario(), getIdClienteDeuda(), getObservaciones(), getIdClientePago(), getPago(), getRegistro()
+    getIdUsuario(), getIdClienteDeuda(), getObservaciones(), getIdClientePago(), getPago(), getRegistro(), getIdTipoMedioPago()
     };
     return regresar;
   }
@@ -218,7 +226,4 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdClientePago() != null ? getIdClientePago().hashCode() : 0);
     return hash;
   }
-
 }
-
-
