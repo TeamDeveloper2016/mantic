@@ -24,7 +24,6 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas.Transaccion;
-import mx.org.kaana.mantic.db.dto.TcManticClientesPagosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
 
 @Named(value = "manticCatalogosEmpresasCuentasAbono")
