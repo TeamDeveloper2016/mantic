@@ -78,6 +78,7 @@ public class Importar extends IBaseAttribute implements Serializable {
 	
 	private TcManticEmpresasDeudasDto deuda;
 	private TcManticProveedoresDto proveedor;
+	private TcManticNotasEntradasDto notaEntrada;
 	private Long idEmpresaDeuda;
 	private Importado xml;
 	private Importado pdf;
@@ -93,18 +94,25 @@ public class Importar extends IBaseAttribute implements Serializable {
 	public TcManticEmpresasDeudasDto getDeuda() {
 		return deuda;
 	}
+
+	public TcManticNotasEntradasDto getNotaEntrada() {
+		return notaEntrada;
+	}	
+
+	public TcManticProveedoresDto getProveedor() {
+		return proveedor;
+	}
 	
 	@PostConstruct
   @Override
   protected void init() {		
-		TcManticNotasEntradasDto notaEntrada= null;
     try {
 			if(JsfBase.getFlashAttribute("idEmpresaDeuda")== null)
 				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
       this.idEmpresaDeuda= JsfBase.getFlashAttribute("idEmpresaDeuda")== null? -1L: (Long)JsfBase.getFlashAttribute("idEmpresaDeuda");
 			this.deuda= (TcManticEmpresasDeudasDto)DaoFactory.getInstance().findById(TcManticEmpresasDeudasDto.class, this.idEmpresaDeuda);
 			if(this.deuda!= null) {
-				notaEntrada= (TcManticNotasEntradasDto) DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, this.deuda.getIdNotaEntrada());
+				this.notaEntrada= (TcManticNotasEntradasDto) DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, this.deuda.getIdNotaEntrada());
 				this.proveedor= (TcManticProveedoresDto) DaoFactory.getInstance().findById(TcManticProveedoresDto.class, notaEntrada.getIdProveedor());
 				this.toLoadCatalog();
 			} // if
@@ -151,6 +159,8 @@ public class Importar extends IBaseAttribute implements Serializable {
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+      columns.add(new Columna("registroPago", EFormatoDinamicos.FECHA_HORA_CORTA));
+      columns.add(new Columna("pago", EFormatoDinamicos.MONEDA_CON_DECIMALES));
 		  this.attrs.put("importados", UIEntity.build("VistaEmpresasDto", "importados", this.deuda.toMap(), columns));
 		} // try
     catch (Exception e) {
@@ -286,14 +296,14 @@ public class Importar extends IBaseAttribute implements Serializable {
 				params=new HashMap<>();
 				params.put("idEmpresaDeuda", this.deuda.getIdEmpresaDeuda());
 				params.put("idTipoArchivo", 1L);
-				tmp= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().findFirst(TcManticEmpresasArchivosDto.class, "exists", params);
+				tmp= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "VistaEmpresasDto", "exists", params);
 				if(tmp!= null) {
 					this.xml= new Importado(tmp.getNombre(), "XML", EFormatos.XML, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
 					this.toReadFactura(new File(tmp.getAlias()));
   				this.attrs.put("xml", this.xml.getName()); 
 				} // if	
 				params.put("idTipoArchivo", 2L);
-				tmp= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().findFirst(TcManticEmpresasArchivosDto.class, "exists", params);
+				tmp= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "VistaEmpresasDto","exists", params);
 				if(tmp!= null) {
 					this.pdf= new Importado(tmp.getNombre(), "PDF", EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones());
   				this.attrs.put("pdf", this.pdf.getName()); 
