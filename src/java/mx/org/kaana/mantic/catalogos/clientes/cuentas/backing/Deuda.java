@@ -21,6 +21,8 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.cuentas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticClientesPagosDto;
@@ -43,7 +45,8 @@ public class Deuda extends IBaseFilter implements Serializable {
   protected void init() {
     try {			
       this.attrs.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");
-      this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));           
+      this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));         
+			loadTiposPagos();
 			loadClienteDeuda();
 			doLoad();
     } // try
@@ -113,6 +116,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 				pago.setIdUsuario(JsfBase.getIdUsuario());
 				pago.setObservaciones(this.attrs.get("observaciones").toString());
 				pago.setPago(Double.valueOf(this.attrs.get("pago").toString()));
+				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
 				transaccion= new Transaccion(pago);
 				if(transaccion.ejecutar(EAccion.AGREGAR)){
 					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta", ETipoMensaje.INFORMACION);
@@ -195,6 +199,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 				pago.setIdUsuario(JsfBase.getIdUsuario());
 				pago.setObservaciones(this.attrs.get("observacionesGeneral").toString());
 				pago.setPago(Double.valueOf(this.attrs.get("pagoGeneral").toString()));
+				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
 				transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("idCliente").toString()));
 				if(transaccion.ejecutar(EAccion.PROCESAR)){
 					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta");
@@ -230,4 +235,19 @@ public class Deuda extends IBaseFilter implements Serializable {
 		} // catch
 		return regresar;
 	} // validaPagoGeneral
+	
+	private void loadTiposPagos(){
+		List<UISelectEntity> tiposPagos= null;
+		Map<String, Object>params      = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			tiposPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
+			this.attrs.put("tiposPagos", tiposPagos);
+			this.attrs.put("tipoPago", UIBackingUtilities.toFirstKeySelectEntity(tiposPagos));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // loadTiposPagos
 }
