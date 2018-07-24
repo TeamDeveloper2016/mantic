@@ -110,7 +110,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		try {
 			params= new HashMap<>();
 			params.put("clave", VENTA);
-			params.put("sucursales", JsfBase.getAutentifica().getIdsSucursales());
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			regresar= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "clienteDefault", params);			
 		} // try
 		catch (Exception e) {			

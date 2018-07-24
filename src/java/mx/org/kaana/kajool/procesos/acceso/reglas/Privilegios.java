@@ -10,6 +10,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.db.dto.TcJanalMenusDto;
 import mx.org.kaana.kajool.enums.EPaginasPrivilegios;
 import mx.org.kaana.kajool.procesos.acceso.beans.Persona;
@@ -51,6 +52,13 @@ public class Privilegios implements Serializable {
       params = new HashMap<>();
       params.put("idPersona", this.persona.getIdPersona());
       regresar = (List<Sucursal>) DaoFactory.getInstance().toEntitySet(Sucursal.class, "VistaTcJanalUsuariosDto", "sucursales", params);
+			if(regresar!= null && !regresar.isEmpty()) 
+				for (Sucursal sucursal: regresar) {
+          params.put("idEmpresa", sucursal.getIdEmpresa());
+     			Value value= DaoFactory.getInstance().toField("TcManticAlmacenesDto", "almacen", params, "idAlmacen");
+		     	if(value.getData()!= null)
+						sucursal.setIdAlmacen(value.toLong());
+				} // for
     }// try
     catch (Exception e) {
       throw e;

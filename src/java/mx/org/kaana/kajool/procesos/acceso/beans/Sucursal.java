@@ -18,6 +18,7 @@ public class Sucursal extends Empresa implements Serializable, IBaseDto {
   private static final long serialVersionUID=8942894310320196756L;  
   
   private Long idEmpresaPersona;
+  private Long idAlmacen;
  
   public Sucursal() {
     this(-1L);
@@ -28,8 +29,13 @@ public class Sucursal extends Empresa implements Serializable, IBaseDto {
   }  
   
   public Sucursal(Long idEmpresaPersona, Long idEmpresa, Long idEmpresaDepende, Long idTipoEmpresa, String nombre, String nombreCorto, String titulo, String sucursales) {
+	  this(idEmpresaPersona, idEmpresa, idEmpresaDepende, idTipoEmpresa, nombre, nombreCorto, titulo, sucursales, -1L);	
+	}
+	
+  public Sucursal(Long idEmpresaPersona, Long idEmpresa, Long idEmpresaDepende, Long idTipoEmpresa, String nombre, String nombreCorto, String titulo, String sucursales, Long idAlmacen) {
     super(idEmpresa, idEmpresa, idTipoEmpresa, nombre, nombreCorto, titulo, sucursales);
-    this.idEmpresaPersona = idEmpresaPersona;    
+    this.idEmpresaPersona= idEmpresaPersona;    
+		this.idAlmacen       = idAlmacen; 
   }   
 
   public Long getIdEmpresaPersonal() {
@@ -39,6 +45,14 @@ public class Sucursal extends Empresa implements Serializable, IBaseDto {
   public void setIdEmpresaPersona(Long idEmpresaPersona) {
     this.idEmpresaPersona = idEmpresaPersona;
   }
+
+	public Long getIdAlmacen() {
+		return idAlmacen;
+	}
+
+	public void setIdAlmacen(Long idAlmacen) {
+		this.idAlmacen=idAlmacen;
+	}
   
   @Override
   public String toString() {
@@ -50,6 +64,8 @@ public class Sucursal extends Empresa implements Serializable, IBaseDto {
     regresar.append("nombre=");
     regresar.append(this.getNombre());
     regresar.append(Constantes.SEPARADOR);    
+    regresar.append("idAlmacen=");
+    regresar.append(this.getIdAlmacen());
     return regresar.toString();
   }
 

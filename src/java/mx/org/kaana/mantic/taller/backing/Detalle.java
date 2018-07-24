@@ -10,6 +10,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -19,6 +20,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.taller.beans.Servicio;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.taller.reglas.AdminServicios;
@@ -55,7 +57,49 @@ public class Detalle extends IBaseArticulos implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
   } // init
-
+	
+	@Override
+  protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
+		Articulo temporal= this.getAdminOrden().getArticulos().get(index);
+		Map<String, Object> params= new HashMap<>();
+		try {
+			if(articulo.size()> 1) {
+				params.put("idArticulo", articulo.toLong("idArticulo"));
+				params.put("idAlmacen", JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
+				temporal.setIdComodin(articulo.toLong("isArticulo"));
+				temporal.setKey(articulo.toLong("idArticulo"));
+				temporal.setIdArticulo(articulo.toLong("idArticulo"));
+				temporal.setIdProveedor(-1L);
+				temporal.setIdRedondear(articulo.toLong("idRedondear"));
+				Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "propio", params, "codigo");
+				temporal.setCodigo(codigo== null? "": codigo.toString());
+				temporal.setPropio(articulo.toString("propio"));
+				temporal.setNombre(articulo.toString("nombre"));
+				temporal.setValor(articulo.toDouble(this.getPrecio()));
+				temporal.setCosto(articulo.toDouble(this.getPrecio()));
+				temporal.setIva(articulo.toDouble("iva"));
+				temporal.setDescuento(this.getAdminOrden().getDescuento());
+				temporal.setExtras(this.getAdminOrden().getExtras());
+				temporal.setCantidad(1D);
+				temporal.setUltimo(this.attrs.get("ultimo")!= null);
+				temporal.setSolicitado(this.attrs.get("solicitado")!= null);
+				Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+				temporal.setStock(stock== null? 0D: stock.toDouble());
+				if(index== this.getAdminOrden().getArticulos().size()- 1) {
+					this.getAdminOrden().getArticulos().add(new Articulo(-1L));
+					RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.getAdminOrden().getArticulos().size()- 1)+ ");");
+				} // if	
+				RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
+				this.getAdminOrden().toCalculate();
+			} // if	
+			else
+				temporal.setNombre("<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
+		} // try
+		finally {
+			Methods.clean(params);
+		}
+	}
+	
 	@Override
   public void doUpdateArticulos() {
 		List<Columna> columns     = null;

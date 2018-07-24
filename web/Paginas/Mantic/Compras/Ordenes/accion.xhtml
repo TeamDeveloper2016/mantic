@@ -544,16 +544,6 @@
 				</div>
 			</div>
 		</div>		
-	</ui:define>    
-	<ui:define name="acciones">
-		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasOrdendesAccion.doAceptar}" styleClass="janal-text-white" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasOrdendesAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
-		</div>		
-		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasOrdendesAccion.doAceptar}" styleClass="janal-text-white" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasOrdendesAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
-		</div>		
 		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" onHide="janal.desbloquear();">
 			<h:outputText value="Nota: Si desea buscar un articulo se puede usar la coma como separador de palabras ej. cable,coaxial ó cable coaxial" escape="false"/>
 			<div class="ui-grid-row janal-grid-row">
@@ -593,5 +583,15 @@
 				<p:commandButton process="@none" styleClass="janal-text-white" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide();jsArticulos.move();"/>
 			</div>
 		</p:dialog>
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasOrdendesAccion.doAceptar}" styleClass="janal-text-white" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasOrdendesAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasOrdendesAccion.doAceptar}" styleClass="janal-text-white" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasOrdendesAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
 	</ui:define>
 </ui:composition>

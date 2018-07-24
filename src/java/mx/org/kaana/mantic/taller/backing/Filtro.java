@@ -41,8 +41,11 @@ public class Filtro extends Comun implements Serializable {
 			this.attrs.put("cliente", "");
 			this.attrs.put("consecutivo", "");
       this.attrs.put("sortOrder", "order by tc_mantic_servicios.herramienta");
+      this.attrs.put("idServicio", JsfBase.getFlashAttribute("idServicio"));
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			loadEstatusServicios();
+			this.loadEstatusServicios();
+      if(this.attrs.get("idServicio")!= null) 
+			  this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -62,6 +65,7 @@ public class Filtro extends Comun implements Serializable {
       campos.add(new Columna("fechaEstimada", EFormatoDinamicos.FECHA_CORTA));      
       this.lazyModel = new FormatCustomLazy("VistaTallerServiciosDto", "principal", this.attrs, campos);
       UIBackingUtilities.resetDataTable();
+			this.attrs.put("idServicio", null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -186,7 +190,7 @@ public class Filtro extends Comun implements Serializable {
 	}
 	
 	public String doRefacciones() {
-  	JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
+  	JsfBase.setFlashAttribute("accion", EAccion.MODIFICAR);		
 		JsfBase.setFlashAttribute(ETipoMovimiento.SERVICIOS.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
 		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Taller/filtro");
 		return "/Paginas/Mantic/Taller/detalle".concat(Constantes.REDIRECIONAR);

@@ -28,8 +28,7 @@ public final class AdminServicios extends IAdminArticulos  implements Serializab
 	private Servicio orden;
 
 	public AdminServicios(Servicio orden) throws Exception {
-		//this.orden  = orden;
-		this.orden  = new Servicio();
+		this.orden  = orden;
 		if(this.orden.isValid()) 
   	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticServiciosDetallesDto", "detalle", orden.toMap()));
 		else	{

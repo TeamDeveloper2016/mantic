@@ -2597,10 +2597,10 @@
 				  and 
 				  (
 				    upper(tc_mantic_trabajos.nombre) regexp '.*{codigo}.*'
-				  or
+				   or
 				    tc_mantic_trabajos.id_trabajo= {idTrabajo}				
-				) as 
-					tc_mantic_dual
+				  ) 
+			  ) as tc_mantic_dual
 				order by
 					nombre
 			</select>
@@ -2655,8 +2655,8 @@
 				    upper(tc_mantic_trabajos.codigo) regexp '.*{codigo}.*'
 				  or
 				    tc_mantic_trabajos.id_trabajo= {idTrabajo}				
-				) as 
-					tc_mantic_dual
+				  ) 
+				) as tc_mantic_dual
 				order by
 					propio
 			</select>			

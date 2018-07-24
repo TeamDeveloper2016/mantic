@@ -41,7 +41,7 @@ public class Portal extends IBaseFilter implements Serializable {
   protected void init() {
     try {			
       this.attrs.put("codigo", "");
-      this.attrs.put("sucursales", JsfBase.getAutentifica().getIdsSucursales());      
+      this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());      
     } // try
     catch (Exception e) {
       Error.mensaje(e);

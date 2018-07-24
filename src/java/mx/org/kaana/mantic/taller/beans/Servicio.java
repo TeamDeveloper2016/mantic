@@ -1,10 +1,6 @@
 package mx.org.kaana.mantic.taller.beans;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.util.Calendar;
-import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosDto;
 
 /**
