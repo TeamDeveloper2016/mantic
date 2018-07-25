@@ -46,17 +46,19 @@ public class TcManticAlmacenesDto implements IBaseDto, Serializable {
   private String nombre;
   @Column (name="registro")
   private Timestamp registro;
+	@Column (name="id_principal")
+  private Long idPrincipal;
 
   public TcManticAlmacenesDto() {
     this(new Long(-1L));
   }
 
   public TcManticAlmacenesDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, null);
+    this(null, null, null, new Long(-1L), null, null, null, null);
     setKey(key);
   }
 
-  public TcManticAlmacenesDto(String descripcion, String clave, Long idUsuario, Long idAlmacen, Long idEmpresa, Long idResponsable, String nombre) {
+  public TcManticAlmacenesDto(String descripcion, String clave, Long idUsuario, Long idAlmacen, Long idEmpresa, Long idResponsable, String nombre, Long idPrincipal) {
     setDescripcion(descripcion);
     setClave(clave);
     setIdUsuario(idUsuario);
@@ -65,6 +67,7 @@ public class TcManticAlmacenesDto implements IBaseDto, Serializable {
     setIdResponsable(idResponsable);
     setNombre(nombre);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		setIdPrincipal(idPrincipal);
   }
 	
   public void setDescripcion(String descripcion) {
@@ -131,6 +134,14 @@ public class TcManticAlmacenesDto implements IBaseDto, Serializable {
     return registro;
   }
 
+	public Long getIdPrincipal() {
+		return idPrincipal;
+	}
+
+	public void setIdPrincipal(Long idPrincipal) {
+		this.idPrincipal = idPrincipal;
+	}
+	
   @Transient
   @Override
   public Long getKey() {
@@ -161,6 +172,8 @@ public class TcManticAlmacenesDto implements IBaseDto, Serializable {
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdPrincipal());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -176,13 +189,14 @@ public class TcManticAlmacenesDto implements IBaseDto, Serializable {
 		regresar.put("idResponsable", getIdResponsable());
 		regresar.put("nombre", getNombre());
 		regresar.put("registro", getRegistro());
+		regresar.put("idPrincipal", getIdPrincipal());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getClave(), getIdUsuario(), getIdAlmacen(), getIdEmpresa(), getIdResponsable(), getNombre(), getRegistro()
+    getDescripcion(), getClave(), getIdUsuario(), getIdAlmacen(), getIdEmpresa(), getIdResponsable(), getNombre(), getRegistro(), getIdPrincipal()
     };
     return regresar;
   }
@@ -240,7 +254,4 @@ public class TcManticAlmacenesDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdAlmacen() != null ? getIdAlmacen().hashCode() : 0);
     return hash;
   }
-
 }
-
-
