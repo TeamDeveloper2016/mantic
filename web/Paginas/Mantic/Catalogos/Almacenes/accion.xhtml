@@ -12,6 +12,7 @@
 		<script type="text/javascript">
 			Janal.Control.fields = {
         'contenedorGrupos\\:clave': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:idPrincipal': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:nombre': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:descripcion': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:responsable': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},        				
@@ -51,6 +52,8 @@
                 <p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacen.nombre}" />                    
                 <p:outputLabel value="Descripción:"/>
 								<p:inputTextarea id="descripcion" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacen.descripcion}" />  
+								<p:outputLabel for="idPrincipal" value="Principal:"/>
+								<p:inputSwitch id="idPrincipal" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.idPrincipal}" offLabel="NO" onLabel="SI"/>                
                 <p:outputLabel for="responsable" value="Responsable:"/>
 								<p:selectOneMenu id="responsable" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacen.idResponsable}" styleClass="janal-wid-100-txt" >									
 									<f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.responsables}"/>

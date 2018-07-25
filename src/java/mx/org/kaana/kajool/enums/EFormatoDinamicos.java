@@ -20,6 +20,7 @@ public enum EFormatoDinamicos implements IFormatosKajool {
   MINUSCULAS("minusculas"),
   LETRA_CAPITAL("Letra capital"),
   NOMBRE_DE_PERSONA("Nombre Persona"),
+  MILES_SAT_DECIMALES("###,##0.0000"),
   MILES_CON_DECIMALES("###,##0.00"),
   MILES_SIN_DECIMALES("###,##0"),
   MONEDA_CON_DECIMALES("$ ###,##0.00"),
@@ -76,6 +77,9 @@ public enum EFormatoDinamicos implements IFormatosKajool {
           break;
         case MILES_SIN_DECIMALES:
           regresar = Numero.formatear(Numero.MILES_SIN_DECIMALES, Numero.getDouble(regresar));
+          break;
+        case MILES_SAT_DECIMALES:
+          regresar = Numero.formatear(Numero.MILES_SAT_DECIMALES, Numero.getDouble(regresar));
           break;
         case MILES_CON_DECIMALES:
           regresar = Numero.formatear(Numero.MILES_CON_DECIMALES, Numero.getDouble(regresar));

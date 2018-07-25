@@ -145,6 +145,7 @@ $.mask.masks = $.extend($.mask.masks, {
   'entero-blanco': {mask: '999,999,999', type: 'reverse', defaultValue: '', fixedChars: '[,]'},
   'entero-signo': {mask: '999,999,999', type: 'reverse', defaultValue: '+0', fixedChars: '[,]'},
   'entero-sin-signo': {mask: '999999999', type: 'reverse', defaultValue: '0'},
+  'sat': {mask: '9999.999,999,999', type: 'reverse', defaultValue: '00000', fixedChars: '[,.]'},
   'flotante': {mask: '99.999,999,999', type: 'reverse', defaultValue: '000', fixedChars: '[,.]'},
   'flotante-signo': {mask : '99.999,999,999', type: 'reverse', defaultValue: '+000', fixedChars: '[,.]'},
   'rfc': {mask: 'bbbb991939ddh', type: 'fixed'},

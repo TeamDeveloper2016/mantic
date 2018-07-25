@@ -28,6 +28,7 @@ public final class Numero {
   public static final int NUMERO_SIN_DECIMALES= 6;
   public static final int MONEDA_SAT_DECIMALES= 7;
   public static final int NUMERO_SAT_DECIMALES= 8;
+  public static final int MILES_SAT_DECIMALES = 9;
 
   private Numero() {
   }
@@ -67,6 +68,9 @@ public final class Numero {
         break;
       case MONEDA_SAT_DECIMALES: // formato moneda
         regresar= formatear("$ ###,##0.0000", valor);
+        break;
+      case MILES_SAT_DECIMALES: // separacion de miles
+        regresar= formatear("###,##0.0000", valor);
         break;
     } // switch
     return regresar;
@@ -181,6 +185,8 @@ public final class Numero {
   }
 
 	public static void main(String ... args) {
+    LOG.info(10*100.0);		
+    LOG.info(Numero.toRedondearSat(10*100.0));		
     LOG.info(10D/3D);		
     LOG.info(Numero.toRedondearSat(3.123455));		
     LOG.info(Numero.toRedondearSat(10D/3D));		

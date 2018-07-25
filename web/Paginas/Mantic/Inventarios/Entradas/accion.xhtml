@@ -27,7 +27,7 @@
 				'contenedorGrupos\\:fechaRecepcion' : {validaciones: 'fecha|#{manticInventariosEntradasAccion.validacion}', mascara: 'fecha', grupo: 'general'},
 				'contenedorGrupos\\:diasPlazo'      : {validaciones: 'requerido|entero|mayor-igual({"cuanto": 0})', mascara: 'entero', grupo: 'general'},			
 				'contenedorGrupos\\:fechaPago'      : {validaciones: 'fecha|#{manticInventariosEntradasAccion.validacion}', mascara: 'fecha', grupo: 'general'},
-				'contenedorGrupos\\:deuda'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'flotante', grupo: 'general'},			
+				'contenedorGrupos\\:deuda'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'sat', grupo: 'general'},			
 				'contenedorGrupos\\:idAlmacen'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idProveedor'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:articulos'      : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
@@ -152,7 +152,7 @@
 									<p:ajax event="blur" listener="#{manticInventariosEntradasAccion.doCalculateFechaPago}" process="@this" update="fechaPago"/>
 								</p:inputText>
 								<p:outputLabel for="deuda" value="Deuda:"/>
-								<p:inputText id="deuda" styleClass="recalculo janal-wid-100-txt janal-column-right" value="#{manticInventariosEntradasAccion.adminOrden.orden.deuda}"/>
+								<p:inputText id="deuda" styleClass="recalculo janal-wid-100-txt janal-column-right" value="#{manticInventariosEntradasAccion.doDecimalSat(manticInventariosEntradasAccion.adminOrden.orden.deuda)}"/>
 								<p:outputLabel for="fechaPago" value="Fecha de pago:"/>
 								<p:calendar id="fechaPago" inputStyleClass="janal-wid-94" styleClass="janal-wid-99" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario">
 									<p:ajax event="dateSelect" listener="#{manticInventariosEntradasAccion.doCalculatePagoFecha}" process="@this" update="diasPlazo"/>
@@ -210,13 +210,13 @@
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
   											<p:outputLabel for="descuento" value="% Descuentos:"/>
 												<p:inputText id="descuento" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticInventariosEntradasAccion.adminOrden.orden.descuento}">
-													<p:ajax event="blur" listener="#{manticInventariosEntradasAccion.doUpdatePorcentaje}" process="@this descuento extra" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#contenedorGrupos\\:descuento'), '0'); janal.maxDescuentos('contenedorGrupos\\:descuento', 'contenedorGrupos\\:extra'); return true;" oncomplete="janal.reset();"/>
+													<p:ajax event="blur" listener="#{manticInventariosEntradasAccion.doUpdatePorcentaje}" process="@this descuento extra" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#contenedorGrupos\\:descuento'), '0.00'); janal.maxDescuentos('contenedorGrupos\\:descuento', 'contenedorGrupos\\:extra'); return true;" oncomplete="janal.reset();"/>
 												</p:inputText>	
 											</p:panelGrid>
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-											  <p:outputLabel for="extra" value="% Extras:"/>
+											  <p:outputLabel for="extra" value="% Extra:"/>
 											  <p:inputText id="extra" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticInventariosEntradasAccion.adminOrden.orden.extras}">
-													<p:ajax event="blur" listener="#{manticInventariosEntradasAccion.doUpdatePorcentaje}" process="@this descuento extra" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#contenedorGrupos\\:extra'), '0'); janal.maxDescuentos('contenedorGrupos\\:extra', 'contenedorGrupos\\:descuento'); return true;" oncomplete="janal.reset();"/>
+													<p:ajax event="blur" listener="#{manticInventariosEntradasAccion.doUpdatePorcentaje}" process="@this descuento extra" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#contenedorGrupos\\:extra'), '0.00'); janal.maxDescuentos('contenedorGrupos\\:extra', 'contenedorGrupos\\:descuento'); return true;" oncomplete="janal.reset();"/>
 												</p:inputText>
 											</p:panelGrid>	 
 										</p:panelGrid>	
@@ -293,7 +293,7 @@
 												</f:facet>
 												<div class="ui-grid-row janal-grid-row">
 													<div class="ui-grid-col-12 janal-column-right" style="padding-right: 14px;">
-														<p:outputLabel value="#{row['cantidad']}"/>
+														<p:outputLabel value="#{manticInventariosEntradasAccion.doNumericoSat(row['cantidad'])}"/>
 														<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
 													</div>
 													<div style="width: 10px; margin-left: -4px; margin-top: 1px;">
@@ -301,14 +301,14 @@
 												   </div>
 												</div>
 											</p:column>		
-											<p:column class="precios janal-column-right MarAuto Responsive janal-wid-8">
+											<p:column class="precios janal-column-right MarAuto Responsive janal-wid-13">
 												<f:facet name="header">
 													<h:outputText value="Precio"/>
 												</f:facet>
 												<div class="ui-grid-row janal-grid-row">
 													<div class="ui-grid-col-12 janal-column-right" style="padding-right: 14px;">
 														<p:outputLabel value="#{row['diferencia']}" escape="false"/>
-    												<p:outputLabel value="#{row['costo']}"/>
+    												<p:outputLabel value="#{manticInventariosEntradasAccion.doDecimalSat(row['costo'])}"/>
     												<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
 												    <p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:precios'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:precios'));" style="display:none"/>
 													</div>	 
@@ -321,28 +321,28 @@
 												<f:facet name="header">
 													<h:outputText value="Descuento(%)"/>
 												</f:facet>
-												<p:outputLabel value="#{row['descuento']}"/>
+												<p:outputLabel value="#{manticInventariosEntradasAccion.doNumericoSat(row['descuento'])}"/>
 												<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'));" style="display: none"/>
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
-													<h:outputText value="Extras (%)"/>
+													<h:outputText value="Extra(%)"/>
 												</f:facet>
-												<p:outputLabel value="#{row['extras']}"/>
+												<p:outputLabel value="#{manticInventariosEntradasAccion.doNumericoSat(row['extras'])}"/>
 												<p:inputText id="extras" value="#{row['extras']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:extras'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:extras'));" style="display: none"/>
 											</p:column>		
-											<p:column class="janal-column-right MarAuto Responsive janal-wid-col-30">
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-col-50">
 												<f:facet name="header">
 													<h:outputText value="IVA"/>
 												</f:facet>
-												<p:outputLabel value="#{row['iva']}"/>
+												<p:outputLabel value="#{manticInventariosEntradasAccion.doNumericoSat(row['iva'])}"/>
 												<h:outputText id="ivas" value="#{row['iva']}" styleClass="janal-wid-100-txt janal-column-right" style="display: none"/>
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
 													<h:outputText value="$ Importe"/>
 												</f:facet>
-												<p:outputLabel value="#{row['importe$']}"/>
+												<p:outputLabel value="#{manticInventariosEntradasAccion.doDecimalSat(row['importe$'])}"/>
 											</p:column>		
 											<p:column class="janal-column-center MarAuto Responsive janal-wid-col-50" rendered="#{manticInventariosEntradasAccion.isAplicar}">
 												<f:facet name="header">
@@ -458,7 +458,7 @@
 												<h:outputText value="#{row.proveedor}"/>
 											</p:column>   
 											<p:column styleClass="janal-wid-10 janal-column-right" headerText="Precio">
-												<h:outputText value="#{row.precio}"/>
+												<h:outputText value="#{manticInventariosEntradasAccion.doDecimalSat(row.precio)}"/>
 											</p:column>   
 											<p:column styleClass="janal-wid-8 janal-column-right" headerText="Descuento">
 												<h:outputText value="#{row.descuento}%"/>

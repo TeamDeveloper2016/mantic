@@ -3140,21 +3140,50 @@
         from      
           tc_mantic_transferencias
         where      
-          id_almacen= {idAlmacen},
-          id_destino= {idDestino},
-          id_articulo= {idArticulo},
-          id_usuario= {idUsuario},
-          id_solicito= {idSolicito},
+          id_almacen= {idAlmacen} and
+          id_destino= {idDestino} and
+          id_articulo= {idArticulo} and
+          id_usuario= {idUsuario} and
+          id_solicito= {idSolicito} and
           id_transferencia_estatus= {idTransferenciaEstatus}
       </select>
       <select id="todos">
         select      
-          tc_mantic_transferencias.id_tipo_credito_nota as id_key,
+          tc_mantic_transferencias.id_transferencia as id_key,
           tc_mantic_transferencias.*
         from      
           tc_mantic_transferencias
         order by
           tc_mantic_transferencias.id_articulo
+      </select>
+    </unit>
+    <unit id="TcManticTransferenciasBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_transferencias_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_transferencias_bitacora
+        where      
+          id_usuario= {idUsuario} and
+          id_transferencia_estatus= {idTransferenciaEstatus} and
+          id_transferencia= {idTransferencia}
+      </select>
+      <select id="todos">
+        select      
+          tc_mantic_transferencias_bitacora.id_transferencia_bitacora as id_key,
+          tc_mantic_transferencias_bitacora.*
+        from      
+          tc_mantic_transferencias_bitacora
+        order by
+          tc_mantic_transferencias_bitacora.id_transferencia_bitacora,  tc_mantic_transferencias_bitacora.id_transferencia_estatus
       </select>
     </unit>
   </dml>    

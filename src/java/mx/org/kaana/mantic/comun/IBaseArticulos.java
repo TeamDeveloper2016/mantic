@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.comun;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +12,6 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -22,6 +22,7 @@ import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloPrecioSugeridoDto;
+import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.context.RequestContext;
@@ -34,7 +35,7 @@ import org.primefaces.context.RequestContext;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public abstract class IBaseArticulos extends IBaseAttribute implements Serializable {
+public abstract class IBaseArticulos extends IBaseImportar implements Serializable {
 
 	private static final long serialVersionUID=-7378726801437171894L;
 	private static final Log LOG=LogFactory.getLog(IBaseArticulos.class);
@@ -210,7 +211,8 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 			columns= new ArrayList<>();
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("moneda", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			Entity solicitado= (Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "solicitado", this.attrs);
       this.attrs.put("solicitado", solicitado!= null? UIBackingUtilities.toFormatEntity(solicitado, columns): null);
@@ -230,13 +232,16 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 			  this.attrs.put("idArticulo", idArticulo);
 			Entity ultimoPrecio= (Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "ultimo", this.attrs);
 			if(ultimoPrecio!= null && !ultimoPrecio.isEmpty())
-				ultimoPrecio.values().stream().map((value) -> {
-					if("|costo|".indexOf(value.getName())> 0)
-						value.setData(Numero.toRedondearSat(value.toDouble()));
-					return value;
-				}).filter((value) -> ("|registro|".indexOf(value.getName())> 0)).forEachOrdered((value) -> {
-					value.setData(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, value.toTimestamp()));
-				}); // for
+				for (Value value : ultimoPrecio.values()) {
+				  if("|costo|".indexOf(value.getName())> 0)
+						value.setData(Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(value.toDouble())));
+					else
+            if("|registro|".indexOf(value.getName())> 0) 
+					    value.setData(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, value.toTimestamp()));						
+  					else
+              if("|stock|".indexOf(value.getName())> 0) 
+		  			    value.setData(Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, value.toDouble()));						
+				} // for
  		  this.attrs.put("ultimo", ultimoPrecio);
     } // try
     catch (Exception e) {
@@ -479,8 +484,8 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-      columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       columns.add(new Columna("minimo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       columns.add(new Columna("maximo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       this.attrs.put("faltantes", UIEntity.build("VistaOrdenesComprasDto", "faltantes", params, columns));
@@ -537,5 +542,36 @@ public abstract class IBaseArticulos extends IBaseAttribute implements Serializa
 		} // for
 	}
 	
-
+  public String doDecimalSat(Double numero) {
+		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(numero));
+	}
+	
+  public String doDecimalSat(String numero) {
+		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(new Double(numero)));
+	}
+	
+  public String doDecimalSat(BigDecimal numero) {
+		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(numero.doubleValue()));
+	}
+	
+  public String doDecimalSat(Value numero) {
+		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(numero.toDouble()));
+	}
+	
+  public String doNumericoSat(Double numero) {
+		return Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, Numero.toRedondearSat(numero));
+	}
+	
+  public String doNumericoSat(String numero) {
+		return Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, Numero.toRedondearSat(new Double(numero)));
+	}
+	
+  public String doNumericoSat(BigDecimal numero) {
+		return Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, Numero.toRedondearSat(numero.doubleValue()));
+	}
+	
+  public String doNumericoSat(Value numero) {
+		return Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, Numero.toRedondearSat(numero.toDouble()));
+	}
+	
 }

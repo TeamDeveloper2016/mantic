@@ -46,7 +46,7 @@ public class TcManticAlmacenesDto implements IBaseDto, Serializable {
   private String nombre;
   @Column (name="registro")
   private Timestamp registro;
-  @Column (name="id_principal")
+	@Column (name="id_principal")
   private Long idPrincipal;
 
   public TcManticAlmacenesDto() {
@@ -54,7 +54,7 @@ public class TcManticAlmacenesDto implements IBaseDto, Serializable {
   }
 
   public TcManticAlmacenesDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, null, 2L);
+    this(null, null, null, new Long(-1L), null, null, null, null);
     setKey(key);
   }
 
@@ -139,9 +139,9 @@ public class TcManticAlmacenesDto implements IBaseDto, Serializable {
 	}
 
 	public void setIdPrincipal(Long idPrincipal) {
-		this.idPrincipal=idPrincipal;
+		this.idPrincipal = idPrincipal;
 	}
-
+	
   @Transient
   @Override
   public Long getKey() {
@@ -254,7 +254,4 @@ public class TcManticAlmacenesDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdAlmacen() != null ? getIdAlmacen().hashCode() : 0);
     return hash;
   }
-
 }
-
-

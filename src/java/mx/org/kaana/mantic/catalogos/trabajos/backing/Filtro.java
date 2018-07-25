@@ -51,7 +51,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));            
       campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));            
       campos.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));            
-      campos.add(new Columna("precio", EFormatoDinamicos.MONEDA_CON_DECIMALES));            
+      campos.add(new Columna("precio", EFormatoDinamicos.MONEDA_SAT_DECIMALES));            
       this.lazyModel = new FormatCustomLazy("VistaTrabajosDto", "row", this.attrs, campos);
       UIBackingUtilities.resetDataTable();
     } // try

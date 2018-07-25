@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -54,6 +48,8 @@ public class TcManticTrabajosDto implements IBaseDto, Serializable {
   private Long idVigente;
   @Column (name="nombre")
   private String nombre;
+  @Column (name="sat")
+  private String sat;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -62,11 +58,11 @@ public class TcManticTrabajosDto implements IBaseDto, Serializable {
   }
 
   public TcManticTrabajosDto(Long key) {
-    this(null, null, null, null, null, new Long(-1L), null, null, null);
+    this(null, null, null, null, null, new Long(-1L), null, null, null, null);
     setKey(key);
   }
 
-  public TcManticTrabajosDto(String descripcion, String codigo, Double precio, Double iva, Long idUsuario, Long idTrabajo, Long idEmpresa, Long idVigente, String nombre) {
+  public TcManticTrabajosDto(String descripcion, String codigo, Double precio, Double iva, Long idUsuario, Long idTrabajo, Long idEmpresa, Long idVigente, String nombre, String sat) {
     setDescripcion(descripcion);
     setCodigo(codigo);
     setPrecio(precio);
@@ -77,6 +73,7 @@ public class TcManticTrabajosDto implements IBaseDto, Serializable {
     setIdVigente(idVigente);
     setNombre(nombre);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		setSat(sat);
   }
 	
   public void setDescripcion(String descripcion) {
@@ -159,6 +156,14 @@ public class TcManticTrabajosDto implements IBaseDto, Serializable {
     return registro;
   }
 
+	public String getSat() {
+		return sat;
+	}
+
+	public void setSat(String sat) {
+		this.sat = sat;
+	}	
+	
   @Transient
   @Override
   public Long getKey() {
@@ -193,6 +198,8 @@ public class TcManticTrabajosDto implements IBaseDto, Serializable {
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getSat());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -210,13 +217,14 @@ public class TcManticTrabajosDto implements IBaseDto, Serializable {
 		regresar.put("idVigente", getIdVigente());
 		regresar.put("nombre", getNombre());
 		regresar.put("registro", getRegistro());
+		regresar.put("sat", getSat());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getCodigo(), getPrecio(), getIva(), getIdUsuario(), getIdTrabajo(), getIdEmpresa(), getIdVigente(), getNombre(), getRegistro()
+    getDescripcion(), getCodigo(), getPrecio(), getIva(), getIdUsuario(), getIdTrabajo(), getIdEmpresa(), getIdVigente(), getNombre(), getRegistro(), getSat()
     };
     return regresar;
   }
@@ -274,7 +282,4 @@ public class TcManticTrabajosDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdTrabajo() != null ? getIdTrabajo().hashCode() : 0);
     return hash;
   }
-
 }
-
-

@@ -302,11 +302,17 @@
 		},
 		asterisk: function() {
 			var value = this.get().trim();
-			if($(this.amount()) && value.length> 0 && janal.isDouble(value)) {
-				$(this.amount()).val(value);
-				this.set('');
-				this.refresh();
-			  return false;
+			var temp = $(this.amount()).val();
+			if($(this.amount()) && value.length> 0 && this.isOk(value)) {
+			  $(this.amount()).val(value);
+				var ok= janal.precio($(this.amount()), value);
+				if(ok.error)
+				  $(this.amount()).val(temp);
+				else {
+					this.set('');
+	 				this.refresh();
+				} // if
+			  return ok.error;
 			} // if	
 			return true;
 		},

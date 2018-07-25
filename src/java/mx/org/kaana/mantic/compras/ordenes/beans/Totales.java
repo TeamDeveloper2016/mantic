@@ -53,7 +53,7 @@ public final class Totales implements Serializable {
 	}
 
 	public String getImporte$() {
-		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(importe));
+		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(importe));
 	}
 
 	public void setImporte(double importe) {
@@ -65,7 +65,7 @@ public final class Totales implements Serializable {
 	}
 
 	public String getIva$() {
-		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(iva));
+		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(iva));
 	}
 
 	public void setIva(double iva) {
@@ -77,7 +77,7 @@ public final class Totales implements Serializable {
 	}
 
 	public String getDescuento$() {
-		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(descuento));
+		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(descuento));
 	}
 
 	public void setDescuento(double descuento) {
@@ -89,7 +89,7 @@ public final class Totales implements Serializable {
 	}
 
 	public String getExtra$() {
-		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(extra));
+		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(extra));
 	}
 
 	public void setExtra(double extra) {
@@ -101,7 +101,7 @@ public final class Totales implements Serializable {
 	}
 
 	public String getSubTotal$() {
-		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(subTotal));
+		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(subTotal));
 	}
 
 	public void setSubTotal(double subTotal) {
@@ -113,7 +113,7 @@ public final class Totales implements Serializable {
 	}
 
 	public String getTotal$() {
-		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(total));
+		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(total));
 	}
 
 	public void setTotal(double total) {
