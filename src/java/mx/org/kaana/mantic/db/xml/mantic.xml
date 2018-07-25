@@ -3145,6 +3145,7 @@
           id_articulo= {idArticulo} and
           id_usuario= {idUsuario} and
           id_solicito= {idSolicito} and
+          observaciones = '{observaciones}' and
           id_transferencia_estatus= {idTransferenciaEstatus}
       </select>
       <select id="todos">
