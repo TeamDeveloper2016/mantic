@@ -254,4 +254,5 @@ public class TcManticAlmacenesDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdAlmacen() != null ? getIdAlmacen().hashCode() : 0);
     return hash;
   }
+	
 }
