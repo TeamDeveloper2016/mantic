@@ -243,6 +243,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("articulo", seleccion);
       this.attrs.put("idArticulo",seleccion.get("idArticulo"));
       this.image= LoadImages.getImage(seleccion.toString("archivo"));
+      this.attrs.put("cantidad", 0);
+      this.attrs.put("nuevaExistenciaOrigen", Float.valueOf("0"));
+      this.attrs.put("nuevaExistenciaDestino", Float.valueOf("0"));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
