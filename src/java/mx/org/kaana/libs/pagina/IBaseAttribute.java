@@ -1,8 +1,13 @@
 package mx.org.kaana.libs.pagina;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
+import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.reflection.Methods;
 
 /**
@@ -57,4 +62,36 @@ public abstract class IBaseAttribute implements Serializable {
     } // finally
   }
 
+  public String doDecimalSat(Double numero) {
+		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(numero));
+	}
+	
+  public String doDecimalSat(String numero) {
+		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(new Double(numero)));
+	}
+	
+  public String doDecimalSat(BigDecimal numero) {
+		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(numero.doubleValue()));
+	}
+	
+  public String doDecimalSat(Value numero) {
+		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(numero.toDouble()));
+	}
+	
+  public String doNumericoSat(Double numero) {
+		return Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, Numero.toRedondearSat(numero));
+	}
+	
+  public String doNumericoSat(String numero) {
+		return Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, Numero.toRedondearSat(new Double(numero)));
+	}
+	
+  public String doNumericoSat(BigDecimal numero) {
+		return Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, Numero.toRedondearSat(numero.doubleValue()));
+	}
+	
+  public String doNumericoSat(Value numero) {
+		return Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, Numero.toRedondearSat(numero.toDouble()));
+	}
+	
 }

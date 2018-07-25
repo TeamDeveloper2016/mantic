@@ -256,7 +256,15 @@ $.mask.masks = $.extend($.mask.masks, {
     }, function(params, element) {
       return 'No se logro convertir a mayusculas el texto.';
     });
-    
+
+  $.validator.addMethod('sat', function(value, element, params) {
+      if (!janal.empty(value)) 
+        $(element).val(parseFloat($(element).val(), 10).toFixed(4)); 
+      return true;
+    }, function(params, element) {
+      return 'No se logro convertir a n\u00FAmero y por lo tanto no se ajustar\u00F3n los decimales.';
+    });
+		    
   $.validator.addMethod('cambiar-minusculas', function(value, element, params) {
       if (!janal.empty(value))
         $(element).val($(element).val().toLowerCase()); 

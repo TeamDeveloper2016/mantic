@@ -1,7 +1,6 @@
 package mx.org.kaana.mantic.comun;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -157,7 +156,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	public void doDeleteArticulo(Integer index) {
     try {
 			if(this.adminOrden.getArticulos().size()== 1 || index.equals(this.adminOrden.getArticulos().size()- 1)) {			
-				Articulo temporal= this.adminOrden.getArticulos().get(index.intValue());
+				Articulo temporal= this.adminOrden.getArticulos().get(index);
 				temporal.setKey(-1L);
 				temporal.setIdArticulo(-1L);
 				temporal.setIdProveedor(-1L);
@@ -540,38 +539,6 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			if(this.isInsideArticulo("|"+ articulo.getCodigo()+ "|"+ articulo.getPropio()+ "|", articulo.getNombre()))
 				this.getAdminOrden().getFiltrados().add(articulo);
 		} // for
-	}
-	
-  public String doDecimalSat(Double numero) {
-		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(numero));
-	}
-	
-  public String doDecimalSat(String numero) {
-		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(new Double(numero)));
-	}
-	
-  public String doDecimalSat(BigDecimal numero) {
-		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(numero.doubleValue()));
-	}
-	
-  public String doDecimalSat(Value numero) {
-		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(numero.toDouble()));
-	}
-	
-  public String doNumericoSat(Double numero) {
-		return Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, Numero.toRedondearSat(numero));
-	}
-	
-  public String doNumericoSat(String numero) {
-		return Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, Numero.toRedondearSat(new Double(numero)));
-	}
-	
-  public String doNumericoSat(BigDecimal numero) {
-		return Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, Numero.toRedondearSat(numero.doubleValue()));
-	}
-	
-  public String doNumericoSat(Value numero) {
-		return Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, Numero.toRedondearSat(numero.toDouble()));
 	}
 	
 }
