@@ -14,6 +14,7 @@
         'contenedorGrupos\\:codigo': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:nombre': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:descripcion': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:sat': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:iva': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:precio': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:vigente': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'}        
@@ -36,7 +37,9 @@
                 <p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticCatalogosTrabajosAccion.attrs.trabajo.nombre}" />                    
                 <p:outputLabel for="descripcion" value="Descripción:"/>
                 <p:inputTextarea id="descripcion" styleClass="janal-wid-100-txt" value="#{manticCatalogosTrabajosAccion.attrs.trabajo.descripcion}"/>                    
-                <p:outputLabel for="iva" value="Iva:"/>
+                <p:outputLabel for="sat" value="Código SAT:"/>
+								<p:inputText id="sat" styleClass="janal-wid-100-txt" value="#{manticCatalogosTrabajosAccion.attrs.trabajo.sat}"/>                    
+								<p:outputLabel for="iva" value="Iva:"/>
                 <p:inputNumber id="iva" styleClass="janal-wid-100-txt" value="#{manticCatalogosTrabajosAccion.attrs.trabajo.iva}" inputStyleClass="janal-column-right"/>
                 <p:outputLabel for="precio" value="Precio:"/>
                 <p:inputNumber id="precio" styleClass="janal-wid-100-txt" value="#{manticCatalogosTrabajosAccion.attrs.trabajo.precio}" inputStyleClass="janal-column-right"/>
