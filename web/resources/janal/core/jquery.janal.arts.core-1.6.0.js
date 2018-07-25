@@ -261,10 +261,12 @@
 			return '#'+ this.joker+ this.cursor.index+ this.values;
 		},
 		set: function(value) {
+			janal.console('jsArticulo.set: '+ this.name()+ ' ->'+ $(this.name()).val());
 		  if($(this.name()))
 				$(this.name()).val(value);	
 		},
 		get: function() {
+			janal.console('jsArticulo.get: '+ this.name()+ ' ->'+ $(this.name()).val());
 			return $(this.name())? $(this.name()).val(): '';
 		},
 		up: function(jump) {
@@ -288,35 +290,21 @@
 			return false;
 		},
 		valid: function() {
+			janal.console('jsArticulo.valid: ');
 			return $(this.key()) && parseInt($(this.key()).val(), 10)> 0;
 		}, 
 		remove: function() {
+			janal.console('jsArticulo.remove: ');
 			return this.valid() && $(this.lock()) && ($(this.lock()).val().length=== 0 || parseInt($(this.lock()).val(), 10)<= 0);
 		}, 
 		refresh: function() {
-			janal.console("jsArticulos.refresh: "+ this.cursor.index);
 			if(this.valid()) {
+  			janal.console("jsArticulos.refresh: "+ this.cursor.index);
 				refresh(this.cursor.index);
 			} // if
 			return false;
 		},
-		asterisk: function() {
-			var value = this.get().trim();
-			var temp = $(this.amount()).val();
-			if($(this.amount()) && value.length> 0 && this.isOk(value)) {
-			  $(this.amount()).val(value);
-				var ok= janal.precio($(this.amount()), value);
-				if(ok.error)
-				  $(this.amount()).val(temp);
-				else {
-					this.set('');
-	 				this.refresh();
-				} // if
-			  return ok.error;
-			} // if	
-			return true;
-		},
-		isOk: function(s) {
+		isPorcentaje: function(s) {
       if(janal.empty(s))
         if(arguments.length === 1)
           return false;
@@ -324,15 +312,29 @@
           return(arguments[1] === true);
       for(var i= 0; i< s.length; i++) {
         var c= s.charAt(i);
-        if(!janal.isDigit(c) && (c!==' ') && (c!==',') && (c!=='.'))
+        if(!janal.isDigit(parseInt(c, 10)) && (c!==' ') && (c!==',') && (c!=='.'))
+          return false;
+      } // for
+      return true;
+		},
+		isFlotante: function(s) {
+      if(janal.empty(s))
+        if(arguments.length === 1)
+          return false;
+        else
+          return(arguments[1] === true);
+      for(var i= 0; i< s.length; i++) {
+        var c= s.charAt(i);
+        if(!janal.isDigit(parseInt(c, 10)) && (c!=='.'))
           return false;
       } // for
       return true;
 		},
 		div: function() {
+			janal.console('jsArticulo.div: ');
 			var value= this.get().trim();
 			var temp = $(this.discount()).val();
-			if($(this.discount()) && value.length> 0 && this.isOk(value)) {
+			if($(this.discount()) && value.length> 0 && this.isPorcentaje(value)) {
 			  $(this.discount()).val(value);
 				var ok= janal.descuentos($(this.discount()));
 				if(ok.error)
@@ -345,10 +347,28 @@
 			} // if	
 			return true;
 		},
+		asterisk: function() {
+			janal.console('jsArticulo.asterisk: ');
+			var value = this.get().trim();
+			var temp = $(this.amount()).val();
+			if($(this.amount()) && value.length> 0 && this.isFlotante(value)) {
+			  $(this.amount()).val(value);
+				var ok= janal.precio($(this.amount()), value);
+				if(ok.error)
+				  $(this.amount()).val(temp);
+				else {
+					this.set('');
+	 				this.refresh();
+				} // if
+			  return ok.error;
+			} // if	
+			return true;
+		},
 		plus: function() {
+			janal.console('jsArticulo.plus: ');
 			var value = this.get().trim();
 			var temp = $(this.price()).val();
-			if($(this.price()) && value.length> 0 && this.isOk(value)) {
+			if($(this.price()) && value.length> 0 && this.isFlotante(value)) {
 			  $(this.price()).val(value);
 				var ok= janal.precio($(this.price()), value);
 				if(ok.error)
@@ -362,9 +382,10 @@
 			return true;
 		},
 		point: function() {
+			janal.console('jsArticulo.point: ');
 			var value = this.get().trim();
 			var temp = $(this.additional()).val();
-			if($(this.additional()) && value.length> 0 && this.isOk(value)) {
+			if($(this.additional()) && value.length> 0 && this.isPorcentaje(value)) {
 			  $(this.additional()).val(value);
 				var ok= janal.descuentos($(this.additional()));
 				if(ok.error)
@@ -385,6 +406,8 @@
 			else
 			  if(value.length> 0 && !this.valid())
 			    locate(value, this.cursor.index);
+			  else
+					this.down(true);
 			return false;
 		},
 		exists: function(index) {
@@ -417,6 +440,7 @@
 			return false;
 		},
 		update: function(top) {
+			janal.console('jsArticulos.update: '+ top);
 			this.cursor.top= top;
 		},
 		calculate: function(active) {

@@ -60,7 +60,7 @@
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="refresh" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticComprasOrdendesAccion.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.next();">  
+		<pe:remoteCommand name="refresh" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticComprasOrdendesAccion.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
@@ -240,8 +240,8 @@
 														</p:autoComplete>												
 													</div>	
 												  <div style="width: 10px; margin-left: -5px; margin-top: 1px;">
-												    <h:outputText value="#{row['estaSolicitado']}" escape="false"/>
-												    <h:outputText value="#{row['precioSugerido']}" escape="false"/>
+												    <h:outputText value="#{row['estaSolicitado']}" escape="false" styleClass="filas"/>
+												    <h:outputText value="#{row['precioSugerido']}" escape="false" styleClass="filas"/>
 												  </div>
 												</div>	
 											</p:column>		
@@ -255,8 +255,8 @@
 												<f:facet name="header">
 													<h:outputText value="Cantidad"/>
 												</f:facet>
-												<p:outputLabel value="#{manticComprasOrdendesAccion.doNumericoSat(row['cantidad'])}"/>
-												<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
+												<p:outputLabel value="#{manticComprasOrdendesAccion.doNumericoSat(row['cantidad'])}" styleClass="filas"/>
+												<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" style="display: none"/>
 											</p:column>		
 											<p:column class="precios janal-column-right MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
@@ -264,12 +264,12 @@
 												</f:facet>
 												<div class="ui-grid-row janal-grid-row">
 													<div class="ui-grid-col-12 janal-column-right" style="padding-right: 14px;">
-    												<p:outputLabel value="#{manticComprasOrdendesAccion.doDecimalSat(row['costo'])}"/>
+    												<p:outputLabel value="#{manticComprasOrdendesAccion.doDecimalSat(row['costo'])}" styleClass="filas"/>
     												<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
-												    <p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:precios'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:precios'));" style="display:none"/>
+												    <p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>
 													</div>	 
 												  <div style="width: 10px; margin-left: -4px; margin-top: 1px;">
-												    <h:outputText value="#{row['costoMayorMenor']}" escape="false"/>
+												    <h:outputText value="#{row['costoMayorMenor']}" escape="false" styleClass="filas"/>
 												   </div>
 												</div>	
 											</p:column>		
@@ -277,28 +277,28 @@
 												<f:facet name="header">
 													<h:outputText value="Descuento(%)"/>
 												</f:facet>
-												<p:outputLabel value="#{manticComprasOrdendesAccion.doNumericoSat(row['descuento'])}"/>
-												<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'));" style="display: none"/>
+												<p:outputLabel value="#{manticComprasOrdendesAccion.doNumericoSat(row['descuento'])}" styleClass="filas"/>
+												<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" style="display: none"/>
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
 													<h:outputText value="Extra(%)"/>
 												</f:facet>
-												<p:outputLabel value="#{manticComprasOrdendesAccion.doNumericoSat(row['extras'])}"/>
-												<p:inputText id="extras" value="#{row['extras']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:extras'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:extras'));" style="display: none"/>
+												<p:outputLabel value="#{manticComprasOrdendesAccion.doNumericoSat(row['extras'])}" styleClass="filas"/>
+												<p:inputText id="extras" value="#{row['extras']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" style="display: none"/>
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-col-50">
 												<f:facet name="header">
 													<h:outputText value="IVA"/>
 												</f:facet>
-												<p:outputLabel value="#{manticComprasOrdendesAccion.doNumericoSat(row['iva'])}"/>
+												<p:outputLabel value="#{manticComprasOrdendesAccion.doNumericoSat(row['iva'])}" styleClass="filas"/>
 												<h:outputText id="ivas" value="#{row['iva']}" styleClass="janal-wid-100-txt janal-column-right" style="display: none"/>
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 												<f:facet name="header">
 													<h:outputText value="$ Importe"/>
 												</f:facet>
-												<p:outputLabel value="#{manticComprasOrdendesAccion.doDecimalSat(row['importe$'])}"/>
+												<p:outputLabel value="#{row['importe$']}" styleClass="filas"/>
 											</p:column>		
 										</p:dataTable>
 										<p:spacer width="5"/>

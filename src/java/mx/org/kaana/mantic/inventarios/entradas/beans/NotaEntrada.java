@@ -31,7 +31,7 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
 	}
 
 	public NotaEntrada(Long key, Long idOrdenCompra) {
-		super(0D, null, "0", idOrdenCompra, 1L, new Date(Calendar.getInstance().getTimeInMillis()), "0", key, new Date(Calendar.getInstance().getTimeInMillis()), 1L, new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", 0D, "", 1L, -1L, 0D, 0D, 1D, 2L, "", -1L, 1L, 0D, 30L, new Date(Calendar.getInstance().getTimeInMillis()), 0D);
+		super(0D, null, "0.00", idOrdenCompra, 1L, new Date(Calendar.getInstance().getTimeInMillis()), "0.00", key, new Date(Calendar.getInstance().getTimeInMillis()), 1L, new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", 0D, "", 1L, -1L, 0D, 0D, 1D, 2L, "", -1L, 1L, 0D, 30L, new Date(Calendar.getInstance().getTimeInMillis()), 0D);
 	}
 
 	public NotaEntrada(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idDirecta, Date fechaRecepcion, String extras, Long idNotaEntrada, Date fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subTotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes) {
