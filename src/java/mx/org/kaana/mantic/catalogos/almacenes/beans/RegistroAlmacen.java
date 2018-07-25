@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EBooleanos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Cadena;
@@ -43,6 +44,7 @@ public class RegistroAlmacen implements Serializable{
 	private Domicilio domicilio;
 	private Domicilio domicilioPivote;
 	private UISelectEntity resultadoBusquedaArticulo;
+	private Boolean idPrincipal;
 
 	public RegistroAlmacen() {
 		this(-1L, new TcManticAlmacenesDto(), new ArrayList<AlmacenDomicilio>(), new ArrayList<AlmacenTipoContacto>(), new ArrayList<AlmacenUbicacion>(), new Domicilio(), new ArrayList<AlmacenArticulo>(), new AlmacenArticulo());
@@ -220,12 +222,23 @@ public class RegistroAlmacen implements Serializable{
 	public void setResultadoBusquedaArticulo(UISelectEntity resultadoBusquedaArticulo) {
 		this.resultadoBusquedaArticulo = resultadoBusquedaArticulo;
 	}
-		
+
+	public Boolean getIdPrincipal() {
+		return idPrincipal;
+	}
+
+	public void setIdPrincipal(Boolean idPrincipal) {
+		this.idPrincipal = idPrincipal;
+		if(this.almacen!= null)
+			this.almacen.setIdPrincipal(idPrincipal ? EBooleanos.SI.getIdBooleano() : EBooleanos.NO.getIdBooleano());
+	}	
+	
 	private void init(){
 		MotorBusqueda motorBusqueda= null;
 		try {
 			motorBusqueda= new MotorBusqueda(this.idAlmacen);
-			this.almacen= motorBusqueda.toAlmacen();									
+			this.almacen= motorBusqueda.toAlmacen();		
+			this.idPrincipal= this.almacen.getIdPrincipal().equals(EBooleanos.SI.getIdBooleano());
 			initCollections(motorBusqueda);
 		} // try
 		catch (Exception e) {			
