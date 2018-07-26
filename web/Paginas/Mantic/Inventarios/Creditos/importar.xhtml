@@ -21,8 +21,13 @@
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:xml': {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:pdf': {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:importe': {validaciones: 'libre', mascara: 'libre', formatos: 'sat', individual: true},
 				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
 			};	
+			
+    	$(document).ready(function() {
+				$('#contenedorGrupos\\:importe').val(parseFloat($('#contenedorGrupos\\:importe').val(), 10).toFixed(4));
+      });
 			
 			function start() {
         PF('statusDialog').show();
@@ -77,8 +82,8 @@
 								</p:selectOneMenu>
 								<p:outputLabel value="Folio:"/>
 								<p:inputText styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosImportar.orden.folio}" readonly="true"/>
-								<p:outputLabel value="Importe:"/>
-								<p:inputText styleClass="janal-wid-100-txt janal-column-right" value="#{manticInventariosCreditosImportar.orden.importe}" readonly="true"/>
+								<p:outputLabel for="importe" value="Importe:"/>
+								<p:inputText id="importe" styleClass="janal-wid-100-txt janal-column-right" value="#{manticInventariosCreditosImportar.orden.importe}" readonly="true"/>
               </p:panelGrid>
 						</p:tab>						            						            																																																
 						<p:tab title="Archivos">

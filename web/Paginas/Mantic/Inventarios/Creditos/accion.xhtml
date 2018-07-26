@@ -24,12 +24,13 @@
 				'contenedorGrupos\\:idNotaEntrada': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idProveedor'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:folio'        : {validaciones: 'requerido', mascara: 'texto', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
-				'contenedorGrupos\\:importe'      : {validaciones: 'requerido|mayor-igual({"cuanto": 0})|menor-igual({"cuanto": #{manticInventariosCreditosAccion.idTipoCreditoNota eq '3'? 9999999999: manticInventariosCreditosAccion.orden.importe}})', mascara: 'no-aplica', grupo: 'general'},
+				'contenedorGrupos\\:importe'      : {validaciones: 'requerido|mayor-igual({"cuanto": 0})|menor-igual({"cuanto": #{manticInventariosCreditosAccion.idTipoCreditoNota eq '3'? 9999999999: manticInventariosCreditosAccion.orden.importe}})', mascara: 'no-aplica', grupo: 'general', formatos: 'sat', individual: true},
 				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
 				'contenedorGrupos\\:comentarios'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
 			};	
 			
     	$(document).ready(function() {
+				$('#contenedorGrupos\\:importe').val(parseFloat($('#contenedorGrupos\\:importe').val(), 10).toFixed(4));
 				setTimeout("janal.readingMode('#{manticInventariosCreditosAccion.attrs.nombreAccion}')", 500);
       });
 			
