@@ -255,7 +255,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				notaEntrada.setIdNotaEstatus(6L); // SALDADA
 			else {
 				errors= DaoFactory.getInstance().toField(sesion, "TcManticNotasDetallesDto", "iguales", this.orden.toMap(), "total");
-  			if(errors.toLong()!= null && errors.toLong()== 0)
+  			if(errors.toLong()!= null && errors.toLong()> 0)
 				  notaEntrada.setIdNotaEstatus(5L); // PARCIALIZADA
 			  else
 				  notaEntrada.setIdNotaEstatus(3L); // TERMINADA

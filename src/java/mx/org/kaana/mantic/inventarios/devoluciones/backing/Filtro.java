@@ -106,7 +106,7 @@ public void doReporte(String nombre) throws Exception{
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("articulos", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
-      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaDevolucionesDto", params, columns);
       UIBackingUtilities.resetDataTable();
