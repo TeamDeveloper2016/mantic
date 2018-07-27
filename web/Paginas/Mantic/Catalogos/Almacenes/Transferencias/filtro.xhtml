@@ -14,8 +14,17 @@
         'clave': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
         'nombre': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
         'codigoArticulo': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
-				'nombreArticulo': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
+				'nombreArticulo': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
+        'justificacion': {validaciones: 'requerido', mascara: 'libre', grupo:'dialogo', formatos: 'cambiar-mayusculas', individual: true},       
+        'estatus'      : {validaciones: 'libre', mascara: 'libre', grupo:'general'}  
       };
+			
+			function validaJustificacion(){
+				var ok= janal.partial('dialogo');
+				if(ok)
+					PF('dlgEstatus').hide();
+				return ok;
+			} // validaJustificacion
     </script>		
   </ui:define>
   <ui:define name="contenido">
@@ -93,7 +102,7 @@
 							<f:facet name="header">
 								<h:outputText value="Estatus"/>
 							</f:facet>
-							<h:outputText value="#{filtro['estatus']}"/>
+							<h:outputText value="#{filtro['nombreEstatus']}"/>
 						</p:column>	
             <p:column class="anal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.observaciones}">
 							<f:facet name="header">
@@ -112,12 +121,41 @@
 						</f:facet>
 					</p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+						<p:menuitem id="modificar" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticInventariosCreditosFiltro.attrs.seleccionado.estatus eq '1'}"/>					
             <p:menuitem id="consultar" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-						<p:separator/>
-						<p:menuitem id="modificar" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
-          </p:contextMenu>
+            <p:separator rendered="#{!(manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus eq '5')}"/>					
+            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus eq '5')}"/>					            
+					</p:contextMenu>
         </div>
       </div>
-    </div>		           				
-  </ui:define>    
+    </div>	
+    <p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.refresh();">
+			<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+				<p:outputLabel for="estatusDlg" value="Estatus:"/>												
+				<p:selectOneMenu id="estatusDlg" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.estatusAsigna}" styleClass="janal-wid-100-txt">									
+					<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.allEstatusAsigna}"/>					
+				</p:selectOneMenu>
+				<p:outputLabel for="justificacion" value="Justificación:"/>
+				<p:inputTextarea id="justificacion" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
+			</h:panelGrid>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+        <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+			</div>
+		</p:dialog>		
+  </ui:define>
+  <ui:param name="componenteBloqueo" value="buscar tabla"/>
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la transferencia ?" />
+  <ui:param name="accionConfirmacion" value="#{manticCatalogosAlmacenesTransferenciasFiltro}"/>
+  <ui:param name="updateComponent" value="tabla"/>
+  <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
+  <ui:param name="renderedConfirmacion" value="true"/>	
+  <ui:define name="detalleConfirmacion">
+    <h:panelGrid columns="2">
+      <p:outputLabel value="Transferencia del artículo: "/>
+      <p:outputLabel value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.nombre}"/>
+    </h:panelGrid>			
+  </ui:define>
 </ui:composition>

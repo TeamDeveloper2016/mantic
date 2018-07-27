@@ -58,6 +58,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("observaciones", "");
       this.attrs.put("idUsuario", JsfBase.getFlashAttribute("idUsuario")!= null? (Long)JsfBase.getFlashAttribute("idUsuario"): -1L);
 			this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));										
+			this.attrs.put("tituloAccion", Cadena.letraCapital((String) JsfBase.getFlashAttribute("accion")));										
 			toLoadAlmacenes();
       loadPersonas(); 
       loadUsuario();
@@ -267,9 +268,11 @@ public class Accion extends IBaseAttribute implements Serializable {
 
 	public String doAceptar(){
 		TcManticTransferenciasDto dto= null;
-		Transaccion transaccion  = null;
+		Transaccion transaccion      = null;
+    UISelectEntity datosPersona  = null;
 		try {
       dto = new TcManticTransferenciasDto();
+      datosPersona = this.criteriosBusqueda.getListaPersonas().get(this.criteriosBusqueda.getListaPersonas().indexOf(this.criteriosBusqueda.getPersona()));
       dto.setIdAlmacen(Long.valueOf(this.attrs.get("idAlmacenOrigen").toString()));
       dto.setIdArticulo(Long.valueOf(this.attrs.get("idArticulo").toString()));
       dto.setCantidad(Long.valueOf(this.attrs.get("cantidad").toString()));
@@ -278,7 +281,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       dto.setObservaciones(this.attrs.get("observaciones").toString());
       dto.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdPersona());
       dto.setIdTransferenciaEstatus(1L);
-			transaccion= new Transaccion(dto, this.criteriosBusqueda.getListaPersonas().get(this.criteriosBusqueda.getListaPersonas().indexOf(this.criteriosBusqueda.getPersona())).get("paterno").toString());
+			transaccion= new Transaccion(dto, datosPersona.get("nombres").toString().concat(" ").concat(datosPersona.get("paterno").toString().concat(" ").concat(datosPersona.get("materno").toString())));
 			if(transaccion.ejecutar((EAccion) this.attrs.get("accion")))
 				JsfBase.addMessage("Se registró la transferencia de correcta", ETipoMensaje.INFORMACION);
 			else
