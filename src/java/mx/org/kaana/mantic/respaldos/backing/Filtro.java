@@ -26,7 +26,6 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
-import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.respaldos.reglas.Transaccion;
 import org.primefaces.model.DefaultStreamedContent;
@@ -103,7 +102,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 		finally{
-			this.attrs.put("justificacion", "");
+			this.attrs.put("observaciones", "");
 		} // finally
 	}	// doCrearResaldo
   
