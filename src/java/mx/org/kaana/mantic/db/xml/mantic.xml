@@ -7,7 +7,97 @@
   </model>
 
   <dml>	
-	  <unit id="TcManticTiposCreditosNotasDto">
+    <unit id="TcManticRequisicionesBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_requisiciones_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_requisiciones_bitacora
+        where      
+          id_requisicion_estatus = {idRequisicionEstatus} and id_requisicion = {idRequisicion} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>
+		<unit id="TcManticRequisicionesProveedoresDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_requisiciones_proveedores
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_requisiciones_proveedores
+        where      
+          id_proveedor = {idProveedor} and id_requisicion = {idRequisicion}
+      </select>
+    </unit>
+		<unit id="TcManticRequisicionesDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_requisiciones_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_requisiciones_detalles
+        where      
+          id_articulo = {idArticulo} and id_requisicion = {idRequisicion}
+      </select>
+    </unit>
+		<unit id="TcManticRequisicionesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_requisiciones
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_requisiciones
+        where      
+          id_empresa = {idEmpresa} and orden = {orden} and ejercicio = {ejercicio}
+      </select>
+    </unit>
+		<unit id="TcManticRespaldosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_respaldos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_respaldos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcManticTiposCreditosNotasDto">
       <select id="row">
         select      
           *

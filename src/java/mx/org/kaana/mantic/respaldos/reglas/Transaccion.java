@@ -1,8 +1,6 @@
 package mx.org.kaana.mantic.respaldos.reglas;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Calendar;
 import org.hibernate.Session;
@@ -13,9 +11,7 @@ import static mx.org.kaana.kajool.enums.EAccion.MODIFICAR;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.archivo.Zip;
-import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -33,6 +29,7 @@ import org.apache.log4j.Logger;
 public class Transaccion extends IBaseTnx implements Serializable {
 
   private static final Logger LOG = Logger.getLogger(Transaccion.class);
+	private static final long serialVersionUID=-8321704151351839833L;
 	
 	private String messageError;
 
@@ -75,6 +72,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	private void toBackup() throws Exception {
 		StringBuilder path= new StringBuilder();  
 		StringBuilder sb  = new StringBuilder();
+		StringBuilder name= new StringBuilder();
 		Calendar calendar = Calendar.getInstance();
 		sb.append(Configuracion.getInstance().getPropiedadSistemaServidor("respaldos"));
 		sb.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
@@ -87,21 +85,29 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		File result= new File(path.toString());		
 		if (!result.exists())
 			result.mkdirs();
-		path.append("mantic_dump");
-    path.append(Constantes.ARCHIVO_PATRON_SEPARADOR);
-    path.append(Fecha.formatear("yyyyMMddhhmmssS", Calendar.getInstance().getTime()));
-    path.append(".");
-    path.append(EFormatos.SQL.name().toLowerCase());
+		name.append("mantic_dump");
+    name.append(Constantes.ARCHIVO_PATRON_SEPARADOR);
+    name.append(Fecha.formatear("yyyyMMddhhmmssS", Calendar.getInstance().getTime()));
+    name.append(".");
+    path.append(name.toString().concat(EFormatos.SQL.name().toLowerCase()));
 		// C:\Software\Server\MariaDB-10_1\bin\mysqldump -h 127.0.0.1 -u mantic --password=mantic --compact --databases mantic --add-drop-table --complete-insert --extended-insert --skip-comments -r d:/temporal/hola.sql
-		Process runtimeProcess = Runtime.getRuntime().exec("C:/Software/Server/MariaDB-10_1/bin/mysqldump -h 127.0.0.1 -u mantic --password=mantic --compact --databases mantic --add-drop-table --complete-insert --extended-insert --skip-comments -r ".concat(path.toString()));
+		String server= "";
+		switch(Configuracion.getInstance().getEtapaServidor()) {
+			case DESARROLLO:
+  			server= "C:/Software/Server/MariaDB-10_1/bin/mysqldump -h 127.0.0.1 -u mantic --password=mantic";
+				break;
+			case PRUEBAS:
+        server= "mysqldump -h cpanel.bonanza.jvmhost.net -u bonanzaj_tester --password=tester2018";
+				break;
+			case PRODUCCION:
+        server= "mysqldump -h cpanel.bonanza.jvmhost.net -u bonanzaj_master --password=master2018";
+				break;
+		} // swtich
+		Process runtimeProcess = Runtime.getRuntime().exec(server.concat(" --compact --databases mantic --add-drop-table --complete-insert --extended-insert --skip-comments -r ").concat(path.toString()));
 		int processComplete = runtimeProcess.waitFor();
 		/*NOTE: processComplete=0 if correctly executed, will contain other values if not*/
 		if (processComplete== 0) {
-			sb.append("mantic_dump");
-			sb.append(Constantes.ARCHIVO_PATRON_SEPARADOR);
-			sb.append(Fecha.formatear("yyyyMMddhhmmssS", Calendar.getInstance().getTime()));
-			sb.append(".");
-			sb.append(EFormatos.ZIP.name().toLowerCase());
+			sb.append(name.toString().concat(EFormatos.ZIP.name().toLowerCase()));
 			String[] files= new String[1];
 			files[0]= path.toString();
 			Zip zip= new Zip();
@@ -111,6 +117,11 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		} // if
 		else
 		  new RuntimeException("Ocurrio un error al realizar el resplado de la base de datos");
+	}
+	
+	public static void  main(String ... args) throws Exception {
+		Transaccion transaccion= new Transaccion();
+		transaccion.ejecutar(EAccion.AGREGAR);
 	}
 	
 } 
