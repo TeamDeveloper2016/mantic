@@ -32,9 +32,15 @@ public class Transaccion extends IBaseTnx implements Serializable {
   private static final Logger LOG = Logger.getLogger(Transaccion.class);
 	private static final long serialVersionUID=-8321704151351839833L;
 	
+	private String observacion;
 	private String messageError;
 
 	public Transaccion() {
+	 this("GENERACION DEL RESPALDO AUTOMATICO");
+	}
+
+	public Transaccion(String observacion) {
+		this.observacion= observacion;
 	}
 	
 	protected void setMessageError(String messageError) {
@@ -118,7 +124,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			int token= Configuracion.getInstance().getPropiedadSistemaServidor("respaldos").length();
 			zip.compactar(sb.toString().concat(name.toString()).concat(EFormatos.ZIP.name().toLowerCase()), token, files);
 			File file= new File(zip.getNombre());
-			regresar= new TcManticRespaldosDto(sb.toString().substring(token), file.getTotalSpace(), JsfBase.getIdUsuario(), "", -1L, zip.getNombre(), name.toString().concat(EFormatos.ZIP.name().toLowerCase()));
+			regresar= new TcManticRespaldosDto(sb.toString().substring(token), file.getTotalSpace(), JsfBase.getIdUsuario(), this.observacion, -1L, zip.getNombre(), name.toString().concat(EFormatos.ZIP.name().toLowerCase()));
 			file= new File(files[0]);
 			file.delete();
 		} // if
