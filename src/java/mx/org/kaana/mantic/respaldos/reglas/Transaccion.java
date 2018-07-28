@@ -94,7 +94,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		File result= new File(path.toString());		
 		if (!result.exists())
 			result.mkdirs();
-		name.append("mantic_dump");
+		name.append("mantic");
     name.append(Constantes.ARCHIVO_PATRON_SEPARADOR);
     name.append(Fecha.formatear("yyyyMMddhhmmssS", Calendar.getInstance().getTime()));
     name.append(".");
