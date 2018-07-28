@@ -35,6 +35,7 @@ public enum EFormatos implements IFormatos {
 	XHTML("icono-html", "icon/acciones/html.png",   "text/xhtml",                                                                ETipoFormato.IREPORT,   "(World Wide Web Consortium) Lenguaje de Marcado de Hipertexto Extensible"),
 	JXL("icono-html",   "icon/acciones/html.png",   "application/vnd.ms-excel; charset=ISO-8859-1",                              ETipoFormato.IREPORT,   ""),
 	DBF("icono-dbf",    "icon/acciones/foxpro.png", "text/dbf",                                                                  ETipoFormato.LIBRE,     "(Microsoft) Base de datos del archivo"),
+	SQL("icono-txt",    "icon/acciones/foxpro.png", "text/sql",                                                                  ETipoFormato.LIBRE,     "(MYSQL) Script de la base de datos"),
 	TXT("icono-txt",    "icon/acciones/txt.png",    "text/csv",                                                                  ETipoFormato.LIBRE,     "Formato de texto plano"),
 	ZIP("icono-zip",    "icon/acciones/zip.png",    "application/zip",                                                           ETipoFormato.COMPRIMIDO,"(Phil Katz, PKWARE) Archivo comprimido"),
 	FREE("icono-zip",   "icon/acciones/zip.png",    "application/zip",                                                           ETipoFormato.LIBRE,     "(Phil Katz, PKWARE) Archivo comprimido");
