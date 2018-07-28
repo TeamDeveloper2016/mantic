@@ -1176,6 +1176,21 @@
           where 
             tc_janal_proyectos.id_grupo= {idGrupo} 
       </select>      
-    </unit>        		
+    </unit>   
+    <unit id="VistaRespaldosBdDto">
+      <select id="respaldos">
+        select 
+          tc_mantic_respaldos.id_respaldo as id_key,
+          tc_mantic_respaldos.*,
+          concat(tc_mantic_personas.nombres, ' ' , tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona
+        from 
+          tc_mantic_respaldos 
+        inner join 
+          tc_mantic_personas on tc_mantic_respaldos.id_usuario = tc_mantic_personas.id_persona 
+        where 
+          {condicion}
+        {sortOrder}
+      </select>
+    </unit>     		
   </dml>
 </process>
