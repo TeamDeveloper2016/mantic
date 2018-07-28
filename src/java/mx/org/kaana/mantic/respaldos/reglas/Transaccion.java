@@ -3,11 +3,11 @@ package mx.org.kaana.mantic.respaldos.reglas;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Calendar;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.enums.EAccion;
 import static mx.org.kaana.kajool.enums.EAccion.AGREGAR;
 import static mx.org.kaana.kajool.enums.EAccion.ELIMINAR;
-import static mx.org.kaana.kajool.enums.EAccion.MODIFICAR;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.Constantes;
@@ -16,6 +16,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.mantic.db.dto.TcManticRespaldosDto;
 import org.apache.log4j.Logger;
 
 /**
@@ -46,14 +47,15 @@ public class Transaccion extends IBaseTnx implements Serializable {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar                     = false;
+		boolean regresar= false;
 		try {
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la nota de entrada.");
 			switch(accion) {
 				case AGREGAR:
+					TcManticRespaldosDto dto= toBackup();
+					if(dto!= null)
+					  regresar= DaoFactory.getInstance().insert(sesion, dto)>= 1L;
 					break;
-				case MODIFICAR:
-					break;				
 				case ELIMINAR:
 					break;
 			} // switch
@@ -69,7 +71,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	}	// ejecutar
 
 
-	private void toBackup() throws Exception {
+	private TcManticRespaldosDto toBackup() throws Exception {
+		TcManticRespaldosDto regresar= null;
 		StringBuilder path= new StringBuilder();  
 		StringBuilder sb  = new StringBuilder();
 		StringBuilder name= new StringBuilder();
@@ -107,16 +110,21 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		int processComplete = runtimeProcess.waitFor();
 		/*NOTE: processComplete=0 if correctly executed, will contain other values if not*/
 		if (processComplete== 0) {
-			sb.append(name.toString().concat(EFormatos.ZIP.name().toLowerCase()));
 			String[] files= new String[1];
 			files[0]= path.toString();
 			Zip zip= new Zip();
 			zip.setDebug(true);
 			zip.setEliminar(false);
-			zip.compactar(sb.toString(), Configuracion.getInstance().getPropiedadSistemaServidor("respaldos").length(), files);
+			int token= Configuracion.getInstance().getPropiedadSistemaServidor("respaldos").length();
+			zip.compactar(sb.toString().concat(name.toString()).concat(EFormatos.ZIP.name().toLowerCase()), token, files);
+			File file= new File(zip.getNombre());
+			regresar= new TcManticRespaldosDto(sb.toString().substring(token), file.getTotalSpace(), JsfBase.getIdUsuario(), "", -1L, zip.getNombre(), name.toString().concat(EFormatos.ZIP.name().toLowerCase()));
+			file= new File(files[0]);
+			file.delete();
 		} // if
 		else
 		  new RuntimeException("Ocurrio un error al realizar el resplado de la base de datos");
+		return regresar;
 	}
 	
 	public static void  main(String ... args) throws Exception {
