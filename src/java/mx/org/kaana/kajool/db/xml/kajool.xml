@@ -731,7 +731,7 @@
         from
           tc_kajool_contador_ayudas
         where
-          date_format(registro, '%Y%c%d') = '{registro}'
+          date_format(registro, '%Y%m%d') = '{registro}'
       </select>
     </unit>		
     <unit id="TcJanalMenusEncabezadoDto">

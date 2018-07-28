@@ -74,13 +74,13 @@
                 <p:menuitem icon="fa fa-database" value="Respaldar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dlgObs').show();" update="dialogoObservacion" styleClass="janal-text-white"/>
 							</div>  
 						</f:facet>												
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-20" sortBy="#{filtro.nombre}">
+						<p:column class="MarAuto Responsive janal-wid-20" sortBy="#{filtro.nombre}">
 							<f:facet name="header">
 								<h:outputText value="Respaldo"/>
 							</f:facet>
 							<h:outputText value="#{filtro['nombre']}"/>
 						</p:column>														
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
+						<p:column class="MarAuto Responsive janal-wid-20" sortBy="#{filtro.persona}">
 							<f:facet name="header">
 								<h:outputText value="Realizó el respaldo"/>
 							</f:facet>
@@ -92,7 +92,7 @@
 							</f:facet>
 							<h:outputText value="#{filtro['observaciones']}"/>
 						</p:column>					
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.regitro}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.regitro}">
 							<f:facet name="header">
 								<h:outputText value="Fecha"/>
 							</f:facet>
@@ -114,7 +114,7 @@
 			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
 		</p:dialog>		
     <p:dialog id="dialogoObservacion" widgetVar="dlgObs" header="Crear respaldo de la base de datos" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.refresh();">
-			<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+			<h:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
 				<p:outputLabel for="observaciones" value="Observaciones:"/>
 				<p:inputTextarea id="observaciones" value="#{manticRespaldosFiltro.attrs.observaciones}" styleClass="janal-wid-100-txt"/>
 			</h:panelGrid>

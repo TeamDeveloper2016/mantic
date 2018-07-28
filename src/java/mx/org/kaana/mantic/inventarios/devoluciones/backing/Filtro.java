@@ -173,9 +173,9 @@ public void doReporte(String nombre) throws Exception{
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_mantic_devoluciones.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_mantic_devoluciones.registro, '%Y%c%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+		  sb.append("(date_format(tc_mantic_devoluciones.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_mantic_devoluciones.registro, '%Y%c%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+		  sb.append("(date_format(tc_mantic_devoluciones.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("idDevolucionEstatus")) && !this.attrs.get("idDevolucionEstatus").toString().equals("-1"))
   		sb.append("(tc_mantic_devoluciones.id_devolucion_estatus= ").append(this.attrs.get("idDevolucionEstatus")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))

@@ -44,7 +44,6 @@ public class Indice extends IBaseFilter implements Serializable {
   @PostConstruct
   protected void init() {
     setCliente(new Cliente("", "", "Bienvenido(a)", "", ""));
-
   }
 
   public Cliente getCliente() {

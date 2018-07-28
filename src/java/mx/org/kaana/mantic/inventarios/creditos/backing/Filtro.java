@@ -165,9 +165,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_mantic_creditos_notas.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_mantic_creditos_notas.registro, '%Y%c%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+		  sb.append("(date_format(tc_mantic_creditos_notas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_mantic_creditos_notas.registro, '%Y%c%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+		  sb.append("(date_format(tc_mantic_creditos_notas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("idCreditoEstatus")) && !this.attrs.get("idCreditoEstatus").toString().equals("-1"))
   		sb.append("(tc_mantic_creditos_notas.id_credito_estatus= ").append(this.attrs.get("idCreditoEstatus")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))

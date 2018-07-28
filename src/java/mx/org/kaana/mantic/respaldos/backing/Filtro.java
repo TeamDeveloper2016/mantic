@@ -59,7 +59,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));    
       columns.add(new Columna("observaciones", EFormatoDinamicos.LIBRE));    
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_EXTENDIDA)); 
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA)); 
       params.put("sortOrder", this.attrs.get("sortOrder"));
 			this.lazyModel = new FormatCustomLazy("VistaRespaldosBdDto", "respaldos", params , columns);
       UIBackingUtilities.resetDataTable();			
@@ -78,9 +78,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_mantic_respaldos.registro, '%Y%c%d')>= '").append(Fecha.formatear(Fecha.FECHA_NOMBRE_MES, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+		  sb.append("(date_format(tc_mantic_respaldos.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_mantic_respaldos.registro, '%Y%c%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+		  sb.append("(date_format(tc_mantic_respaldos.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
