@@ -9,6 +9,9 @@
 <tareas>  	     
    <tarea id="kajool" load="true">
      <clase expresion="0 1/10 * * * ?" id="test" description="Job demo" load="true" pruebas="*" produccion="/weblogic/Oracle/Middleware/Oracle_Home/user_projects/domains/WLS_PRO12/servers/" >mx.org.inegi.jobs.Demo</clase>     				
+   </tarea>      	     
+   <tarea id="kajool" load="true">
+     <clase expresion="0 0 0,2 ? * * *" id="respaldoBd" description="realiza respaldo de la BD" load="true" pruebas="*" produccion="/weblogic/Oracle/Middleware/Oracle_Home/user_projects/domains/WLS_PRO12/servers/" >org.quartz.JobExecutionException.Respaldos</clase>     				
    </tarea>    
     
 </tareas>
