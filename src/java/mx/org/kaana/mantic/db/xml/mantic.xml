@@ -1823,6 +1823,15 @@
         where 
           {condicion} 
       </select>
+      <select id="almacenArticulo">
+        select      
+					tc_mantic_almacenes_articulos.id_almacen_articulo as id_key,
+          tc_mantic_almacenes_articulos.*
+        from      
+          tc_mantic_almacenes_articulos
+        where 
+          id_articulo={idArticulo} and id_almacen = {idAlmacen}
+      </select>
       <select id="identically">
         select      
           *

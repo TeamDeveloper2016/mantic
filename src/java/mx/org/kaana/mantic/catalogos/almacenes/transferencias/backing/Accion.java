@@ -58,7 +58,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("observaciones", "");
       this.attrs.put("idUsuario", JsfBase.getFlashAttribute("idUsuario")!= null? (Long)JsfBase.getFlashAttribute("idUsuario"): -1L);
 			this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));										
-			this.attrs.put("tituloAccion", Cadena.letraCapital((String) JsfBase.getFlashAttribute("accion")));										
+			this.attrs.put("tituloAccion", ((EAccion)JsfBase.getFlashAttribute("accion")).getName());										
 			toLoadAlmacenes();
       loadPersonas(); 
       loadUsuario();

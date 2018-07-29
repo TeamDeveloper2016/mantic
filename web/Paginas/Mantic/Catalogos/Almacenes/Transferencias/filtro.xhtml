@@ -6,17 +6,18 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
+								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/filtro.xhtml">
   <ui:param name="titulo" value="Catálogo de transferencias almacenes" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'clave': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
-        'nombre': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
-        'codigoArticulo': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
-				'nombreArticulo': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
-        'justificacion': {validaciones: 'requerido', mascara: 'libre', grupo:'dialogo', formatos: 'cambiar-mayusculas', individual: true},       
-        'estatus'      : {validaciones: 'libre', mascara: 'libre', grupo:'general'}  
+        'clave': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, grupo: 'general'},
+        'nombre': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, grupo: 'general'},
+        'codigoArticulo': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, grupo: 'general'},
+				'nombreArticulo': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, grupo: 'general'},
+        'justificacion' : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true},
+        'estatus'       : {validaciones: 'libre', mascara: 'libre', grupo:'dialogo'}  
       };
 			
 			function validaJustificacion(){
@@ -49,10 +50,10 @@
             </h:panelGrid>
             <p:separator/>
             <div class="janal-align-right lg-pantalla">
-              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.execute();" process="@this clave nombre" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
+              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.partial('general', true);" process="@this clave nombre codigoArticulo nombreArticulo" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
             </div>
 						<div class="janal-align-right xs-pantalla">
- 						  <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.execute();" process="@this clave nombre" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"  styleClass="janal-text-white"/>
+ 						  <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general', true);" process="@this clave nombre codigoArticulo nombreArticulo" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"  styleClass="janal-text-white"/>
 					  </div>
           </p:panel>
         </div>
@@ -121,11 +122,10 @@
 						</f:facet>
 					</p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-						<p:menuitem id="modificar" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticInventariosCreditosFiltro.attrs.seleccionado.estatus eq '1'}"/>					
+						<p:menuitem id="modificar" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>					
             <p:menuitem id="consultar" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-            <p:separator rendered="#{!(manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus eq '5')}"/>					
-            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus eq '5')}"/>					            
+            <p:separator rendered="#{fn:contains('|1|3|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>					
+            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|3|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>					            
 					</p:contextMenu>
         </div>
       </div>
@@ -147,15 +147,17 @@
 		</p:dialog>		
   </ui:define>
   <ui:param name="componenteBloqueo" value="buscar tabla"/>
-  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la transferencia ?" />
+  <ui:param name="textoConfirmacion" value="¿Está seguro que ya se completó la transferencia?" />
   <ui:param name="accionConfirmacion" value="#{manticCatalogosAlmacenesTransferenciasFiltro}"/>
   <ui:param name="updateComponent" value="tabla"/>
-  <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
+  <ui:param name="eventoConfirmacion" value="doConfirmaEntrega"	/>	
   <ui:param name="renderedConfirmacion" value="true"/>	
   <ui:define name="detalleConfirmacion">
     <h:panelGrid columns="2">
       <p:outputLabel value="Transferencia del artículo: "/>
       <p:outputLabel value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.nombre}"/>
+      <p:outputLabel value="Cantidad: "/>
+      <p:outputLabel value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.cantidad}"/>
     </h:panelGrid>			
   </ui:define>
 </ui:composition>

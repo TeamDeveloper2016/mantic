@@ -3098,7 +3098,8 @@
           tc_mantic_transferencias.registro,
           tc_mantic_transferencias.observaciones,
           tc_mantic_transferencias.id_transferencia_estatus estatus,
-          tc_mantic_transferencias_estatus.nombre nombre_estatus
+          tc_mantic_transferencias_estatus.nombre nombre_estatus,
+          tc_mantic_transferencias_estatus.estatus_asociados
         from
           tc_mantic_transferencias
         inner join

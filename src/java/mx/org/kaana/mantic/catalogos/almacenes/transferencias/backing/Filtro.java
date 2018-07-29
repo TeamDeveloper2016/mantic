@@ -24,6 +24,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.Transaccion;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
 import mx.org.kaana.mantic.taller.beans.RegistroServicio;
@@ -98,7 +99,7 @@ public class Filtro extends Comun implements Serializable {
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_servicio_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
+			params.put(Constantes.SQL_CONDICION, "id_transferencias_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
 			allEstatus= UISelect.build("TcManticTransferenciasEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatusAsigna", allEstatus);
 			this.attrs.put("estatusAsigna", allEstatus.get(0));
@@ -116,7 +117,11 @@ public class Filtro extends Comun implements Serializable {
 		Transaccion transaccion                   = null;
 		TcManticTransferenciasBitacoraDto bitacora= null;
 		Entity seleccionado                       = null;
+    TcManticAlmacenesArticulosDto origen      = null;
+    Map<String, Object>params                 = null;
+    Double nuevoStock                         = 0D;
 		try {
+      params= new HashMap<>();
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			bitacora= new TcManticTransferenciasBitacoraDto();
 			bitacora.setIdTransferencia(seleccionado.getKey());
@@ -124,8 +129,19 @@ public class Filtro extends Comun implements Serializable {
 			bitacora.setJustificacion((String) this.attrs.get("justificacion"));
 			bitacora.setIdUsuario(JsfBase.getIdUsuario());
 			transaccion= new Transaccion(bitacora);
-			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
+      if(Long.valueOf(this.attrs.get("estatusAsigna").toString()).equals(5L)){//estatus entregado
+          params.put("idAlmacen", seleccionado.get("idAlmacen").toLong());
+          params.put("idArticulo", seleccionado.get("idArticulo").toLong());
+          origen = (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().findFirst(TcManticAlmacenesArticulosDto.class, "almacenArticulo", params);
+          nuevoStock = origen.getStock()- Double.valueOf(seleccionado.get("cantidad").toString());
+          origen.setStock(nuevoStock);
+          transaccion.setAlmanecArticuloOrigen(origen);
+          transaccion.setIdAlmacenDestino(seleccionado.get("idDestino").toLong());
+          transaccion.setCantidad(seleccionado.get("cantidad").toString());
+      }
+			if(transaccion.ejecutar(EAccion.REGISTRAR)){
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
+      }
 			else
 				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
 		} // try
@@ -156,5 +172,34 @@ public class Filtro extends Comun implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
   } // doEliminar
+  
+  public void doConfirmaEntrega() {
+		Transaccion transaccion              = null;
+		Entity seleccionado                  = null;
+		TcManticAlmacenesArticulosDto origen = null;
+    Map<String, Object>params            = null;
+    Double nuevoStock                    = 0D;
+    try {
+      params= new HashMap<>();
+			seleccionado= (Entity) this.attrs.get("seleccionado");
+      params.put("idAlmacen", seleccionado.get("idAlmacen").toLong());
+      params.put("idArticulo", seleccionado.get("idArticulo").toLong());
+      origen = (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().findViewCriteria(TcManticAlmacenesArticulosDto.class, params, "almacenArticulo");
+      nuevoStock = origen.getStock()- Double.valueOf(seleccionado.get("cantidad").toString());
+      origen.setStock(nuevoStock);
+      transaccion= new Transaccion(origen, seleccionado.get("cantidad").toString(), seleccionado.get("idDestino").toLong());
+			if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
+				JsfBase.addMessage("Complementar entrega transferencia", "La transferencia de artículos se ha concretado correctamente.", ETipoMensaje.INFORMACION);
+			else
+				JsfBase.addMessage("Complementar entrega transferencia", "Ocurrió un error al concretar la transferencia de artículos.", ETipoMensaje.ERROR);								
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+    	finally {
+			Methods.clean(params);
+		} // finally
+  } // doConfirmaEntrega
   
 }
