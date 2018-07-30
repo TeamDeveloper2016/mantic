@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.nombreAccion} transferencia" />
+	<ui:param name="titulo" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.nombreAccion} transferencia de articulos entre almacenes" />
 	<ui:define name="librerias">
     <script type="text/javascript">
 			Janal.Control.fields = {
@@ -112,7 +112,7 @@
 								</p:selectOneMenu> 
 							</p:panelGrid>
   						<p:outputLabel for="observaciones" value="Observaciones:"/>
-	  					<p:inputTextarea id="observaciones" rows="3" cols="50" styleClass="janal-wid-99 filas" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.observaciones}" />
+	  					<p:inputTextarea id="observaciones" rows="3" cols="50" styleClass="janal-wid-98 filas" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.observaciones}" />
 						</p:panelGrid>	
             <p:panel header="Imagen" styleClass="TexAlCenter janal-wid-100-txt" id="imagenArticulo" style="height:100%">
               <p:graphicImage value="#{manticCatalogosAlmacenesTransferenciasAccion.image}" styleClass="janal-logo-mini" width="135" stream="false"/><br/>
