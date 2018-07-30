@@ -54,11 +54,18 @@
 				$(jsArticulos.amount()).addClass('ignore');
 				$(jsArticulos.price()).addClass('ignore');
 				var ok= janal.execute(lock);
-				if(!ok) {
+				if(ok) {
+					var deuda= parseFloat($('#contenedorGrupos\\:deuda').val(), 10);
+					var total= parseFloat($('#contenedorGrupos\\:total').val(), 10);
+					var diferencia= (deuda* 100/ total)- 100;
+					if((diferencia&lt; 5.0) || (diferencia&gt; 5.0)) 
+						ok= confirm('La diferencia de la nota de entrada con respecto a la deuda es del '+ diferencia.toFixed(4)+ '% desea continuar con el registro ?');
+				} // if	
+				else {
 					jsArticulos.cursor.index= index;
   				$(jsArticulos.amount()).removeClass('ignore');
 	  			$(jsArticulos.price()).removeClass('ignore');
-				} // if	
+				} // else	
 				return ok;
 			}
 			
