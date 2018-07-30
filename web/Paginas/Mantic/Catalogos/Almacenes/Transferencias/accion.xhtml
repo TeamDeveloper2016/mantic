@@ -11,7 +11,12 @@
 	<ui:define name="librerias">
     <script type="text/javascript">
 			Janal.Control.fields = {
-				cantidad:{validaciones: 'requerido|entero|mayor-igual({"cuanto": 0})', mascara: 'entero'}
+				idAlmacenOrigen:  {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        idAlmacenDestino: {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        idArticulo:       {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        solicito:         {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        observaciones:    {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        cantidad:         {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'flotante', grupo: 'general'}
 			};
       
       $(document).ready(function(){janal.readingMode('#{manticCatalogosAlmacenesTransferenciasAccion.attrs.nombreAccion}');});		
@@ -31,8 +36,8 @@
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-99 filas" columnClasses="janal-wid-col-120, janal-wid-100">
 								<p:outputLabel for="idAlmacenOrigen" value="Almacen origen:"/>
 								<p:selectOneMenu id="idAlmacenOrigen" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.idAlmacenOrigen}" var="almacen" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
-									<p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doUpdateAlmacenOrigen}" process="@this" update="@(.filas)"/>
-									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
+									<p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doUpdateAlmacenOrigen}" process="@this" update="@(.filas)" oncomplete="janal.refresh();"/>
+									<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.almacenesOrigen}"  var="elementA" itemValue="#{elementA.key}" itemLabel="#{elementA.clave}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{almacen.clave}"/>
@@ -44,10 +49,10 @@
 								<p:outputLabel value="Artículo:" for="idArticulo" />
 								<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-col-20, janal-wid-100">
 									<p:selectBooleanCheckbox value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
-										<p:ajax event="change" process="@this" update="@this"/>
+										<p:ajax event="change" process="@this" update="@this"  oncomplete="janal.refresh();" />
 									</p:selectBooleanCheckbox>
 									<p:autoComplete id="idArticulo" placeholder="Nombre o codigo" widgetVar="listadoarticulos" var="customArticulos" itemLabel="#{customArticulos.nombre}" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{customArticulos}" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo}" completeMethod="#{manticCatalogosAlmacenesTransferenciasAccion.doCompleteArticulo}"  converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100" forceSelection="true">
-										<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doAsignaArticulo}" update="@(.filas) idArticulo imagenArticulo" oncomplete="janal.desbloquear();"/>
+										<p:ajax event="itemSelect" process="@this" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doAsignaArticulo}" update="@(.filas) idArticulo imagenArticulo" oncomplete="janal.refresh();"/>
 										<p:column>
 											<!--p:graphicImage value="#{customArticulos.image}" styleClass="janal-logo-mini filas" width="30" cache="false" stream="false"/-->
 											<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>
@@ -59,7 +64,7 @@
 								</p:panelGrid>
 								<p:outputLabel for="cantidad" value="Cantidad:"/>
 								<p:inputText id="cantidad" styleClass="janal-wid-100-txt filas" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.cantidad}">
-									<p:ajax event="blur" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doCalculate}" process="@this" update="@(.filas)"/>
+									<p:ajax event="blur" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doCalculate}" process="@this" update="@(.filas)"  oncomplete="janal.refresh();" />
 								</p:inputText>
 								<p:spacer height="1"/>
 								<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100 filas" columnClasses="janal-wid-50, janal-wid-50">
@@ -74,8 +79,8 @@
 								</p:panelGrid>
 								<p:outputLabel for="idAlmacenDestino" value="Almacen destino:"/>
 								<p:selectOneMenu id="idAlmacenDestino" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.idAlmacenDestino}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98 filas" effect="fade" filter="true" filterMatchMode="contains">
-									<p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doUpdateAlmacenDestino}" process="@this" update="@(.filas)"/>
-									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
+									<p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doUpdateAlmacenDestino}" process="@this" update="@(.filas)" oncomplete="janal.refresh();"/>
+									<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.almacenesDestino}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -97,7 +102,7 @@
 								</p:panelGrid>
 								<p:outputLabel for="solicito"  value="Solicitó:"/>
 								<p:selectOneMenu  id="solicito" value="#{manticCatalogosAlmacenesTransferenciasAccion.criteriosBusqueda.persona}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains">
-									<p:ajax event="change" process="@this" update="@(.filas)" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doBuscar}"/>
+									<p:ajax event="change" process="@this" update="@(.filas)"  listener="#{manticCatalogosAlmacenesTransferenciasAccion.doBuscar}" oncomplete="janal.refresh();"/>
 									<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAccion.criteriosBusqueda.listaPersonas}"  var="element" itemValue="#{element}" itemLabel="#{element.nombres} #{element.paterno} #{element.materno}"/>
 									<p:column>
@@ -125,11 +130,11 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this" action="#{manticCatalogosAlmacenesTransferenciasAccion.doAceptar}" ajax="false" styleClass="janal-text-white"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosAlmacenesTransferenciasAccion.doCancelar}" ajax="false" styleClass="janal-text-white"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosAlmacenesTransferenciasAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosAlmacenesTransferenciasAccion.doCancelar}" ajax="false" styleClass="janal-text-white"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@this" action="#{manticCatalogosAlmacenesTransferenciasAccion.doAceptar}" ajax="false" styleClass="janal-text-white"/>
+			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosAlmacenesTransferenciasAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosAlmacenesTransferenciasAccion.doCancelar}" ajax="false" styleClass="janal-text-white"/>
 		</div>		
 	</ui:define>
