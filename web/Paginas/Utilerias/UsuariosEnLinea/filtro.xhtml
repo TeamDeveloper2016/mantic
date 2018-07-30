@@ -16,7 +16,10 @@
   <ui:param name="titulo" value="Usuarios en linea"/>
   <ui:define name="librerias">		
     <script type="text/javascript">			
-      $(document).ready(function() { ocultar(); });			
+      $(document).ready(function() { 
+				ocultar(); 
+			});	
+			
 			function ocultar(){
 				$.each( $('[id*=total]'),
 					function(){            
