@@ -74,13 +74,13 @@
                 <p:menuitem icon="fa fa-database" value="Respaldar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dlgObs').show();" update="dialogoObservacion" styleClass="janal-text-white"/>
 							</div>  
 						</f:facet>												
-						<p:column class="MarAuto Responsive janal-wid-20" sortBy="#{filtro.nombre}">
+						<p:column class="MarAuto Responsive janal-wid-25" sortBy="#{filtro.nombre}">
 							<f:facet name="header">
 								<h:outputText value="Respaldo"/>
 							</f:facet>
 							<h:outputText value="#{filtro['nombre']}" title="#{filtro['nombre']}"/>
 						</p:column>														
-						<p:column class="MarAuto Responsive janal-wid-20" sortBy="#{filtro.persona}">
+						<p:column class="MarAuto Responsive janal-wid-25" sortBy="#{filtro.persona}">
 							<f:facet name="header">
 								<h:outputText value="Realizó el respaldo"/>
 							</f:facet>

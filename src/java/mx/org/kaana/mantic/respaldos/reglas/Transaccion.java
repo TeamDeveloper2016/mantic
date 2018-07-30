@@ -55,7 +55,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar= false;
 		try {
-			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la nota de entrada.");
+			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el respaldo de la base de datos.");
 			switch(accion) {
 				case AGREGAR:
 					TcManticRespaldosDto dto= toBackup();
@@ -72,7 +72,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
       Error.mensaje(e);			
 			throw new Exception(this.messageError.concat("\n\n")+ e.getMessage());
 		} // catch		
-		LOG.info("Se genero de forma correcta la nota de entrada: ");
+		LOG.info("Se genero de forma el respaldo de la base de datos ! ");
 		return regresar;
 	}	// ejecutar
 
@@ -94,6 +94,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		File result= new File(path.toString());		
 		if (!result.exists())
 			result.mkdirs();
+		LOG.info("Ruta generada: "+ path.toString());
 		name.append("mantic");
     name.append(Constantes.ARCHIVO_PATRON_SEPARADOR);
     name.append(Fecha.formatear("yyyyMMddhhmmssS", Calendar.getInstance().getTime()));
@@ -103,17 +104,20 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		String server= "";
 		switch(Configuracion.getInstance().getEtapaServidor()) {
 			case DESARROLLO:
-  			server= "C:/Software/Server/MariaDB-10_1/bin/mysqldump -h 127.0.0.1 -u mantic --password=mantic";
+  			server= "C:/Software/Server/MariaDB-10_1/bin/mysqldump -h 127.0.0.1 -u mantic --password=mantic --databases mantic ";
 				break;
 			case PRUEBAS:
-        server= "mysqldump -h cpanel.bonanza.jvmhost.net -u bonanzaj_tester --password=tester2018";
+        server= "mysqldump -h localhost -u bonanzaj_tester --password=tester2018 --databases bonanzaj_training ";
 				break;
 			case PRODUCCION:
-        server= "mysqldump -h cpanel.bonanza.jvmhost.net -u bonanzaj_master --password=master2018";
+        server= "mysqldump -h localhost -u bonanzaj_master --password=master2018 --databases bonanzaj_production ";
 				break;
 		} // swtich
-		Process runtimeProcess = Runtime.getRuntime().exec(server.concat(" --compact --databases mantic --add-drop-table --complete-insert --extended-insert --skip-comments -r ").concat(path.toString()));
+		LOG.info("Proceso a generar: "+ server.concat(" --compact --add-drop-table --complete-insert --extended-insert --skip-comments -r ").concat(path.toString()));
+		Process runtimeProcess = Runtime.getRuntime().exec(server.concat(" --compact --add-drop-table --complete-insert --extended-insert --skip-comments -r ").concat(path.toString()));
+		LOG.info("Proceso en ejecucion ...");
 		int processComplete = runtimeProcess.waitFor();
+		LOG.info("Resultado del proceso: "+ processComplete);
 		/*NOTE: processComplete=0 if correctly executed, will contain other values if not*/
 		if (processComplete== 0) {
 			String[] files= new String[1];
@@ -122,11 +126,13 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			zip.setDebug(true);
 			zip.setEliminar(false);
 			int token= Configuracion.getInstance().getPropiedadSistemaServidor("respaldos").length();
+   		LOG.info("Compactar archivo: "+ sb.toString().concat(name.toString()).concat(EFormatos.ZIP.name().toLowerCase()));
 			zip.compactar(sb.toString().concat(name.toString()).concat(EFormatos.ZIP.name().toLowerCase()), token, files);
 			File file= new File(zip.getNombre());
 			regresar= new TcManticRespaldosDto(sb.toString().substring(token), file.getTotalSpace(), JsfBase.getIdUsuario(), this.observacion, -1L, zip.getNombre(), name.toString().concat(EFormatos.ZIP.name().toLowerCase()));
 			file= new File(files[0]);
 			file.delete();
+   		LOG.info("Eliminar archivo: "+ files[0]);
 		} // if
 		else
 		  new RuntimeException("Ocurrio un error al realizar el resplado de la base de datos");
