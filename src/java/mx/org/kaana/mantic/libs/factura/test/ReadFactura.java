@@ -32,13 +32,11 @@ public class ReadFactura {
 						LOG.info("Receptor: " + factura.getReceptor());
 						int x= 0;
 						for (Concepto concepto : factura.getConceptos()) {
-							LOG.info((++x)+ ".- "+ concepto.getClaveProdServ()+ " -> "+ concepto.getClaveUnidad()+ " -> "+ concepto.getDescripcion()+ " => "+ concepto.getValorUnitario());
+							LOG.info((++x)+ ".- ("+ concepto.getClaveProdServ()+ ") ["+ concepto.getNoIdentificacion()+ "] "+ concepto.getClaveUnidad()+ " -> "+ concepto.getDescripcion()+ " => "+ concepto.getValorUnitario());
 						} // for
 						LOG.info("<========================================================================================>");
 					} // for
 				}	
-
-			
 //			reader= new Reader("D:\\Temporal\\mantic\\Programa\\ELEKTRON.xml");
 //			//reader= new Reader("D:\\Temporal\\mantic\\Programa\\Anbec.xml");
 //			//reader= new Reader(new File("").getAbsolutePath().concat("\\src\\java\\mx\\org\\kaana\\mantic\\libs\\factura\\test\\A24729.xml"));
