@@ -113,8 +113,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
         server= "mysqldump -h localhost -u bonanzaj_master --password=master2018 --databases bonanzaj_production ";
 				break;
 		} // swtich
-		LOG.info("Proceso a generar: "+ server.concat(" --compact --add-drop-table --complete-insert --extended-insert --skip-comments -r ").concat(path.toString()));
-		Process runtimeProcess = Runtime.getRuntime().exec(server.concat(" --compact --add-drop-table --complete-insert --extended-insert --skip-comments -r ").concat(path.toString()));
+		LOG.info("Proceso a generar: "+ server.concat(" --compact --add-drop-table --complete-insert --extended-insert -r ").concat(path.toString()));
+		Process runtimeProcess = Runtime.getRuntime().exec(server.concat(" --compact --add-drop-table --complete-insert --extended-insert -r ").concat(path.toString()));
 		LOG.info("Proceso en ejecucion ...");
 		int processComplete = runtimeProcess.waitFor();
 		LOG.info("Resultado del proceso: "+ processComplete);
