@@ -18,7 +18,7 @@
 		</script>        
 		<style>
 			.janal-image-frame {
-				margin: 10px;
+				margin: 11px;
 			}
 		</style>
 	</ui:define>
@@ -46,7 +46,7 @@
 									<p:selectBooleanCheckbox value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
 										<p:ajax event="change" process="@this" update="@this"/>
 									</p:selectBooleanCheckbox>
-									<p:autoComplete id="idArticulo" placeholder="Nombre o codigo" widgetVar="listadoarticulos" var="customArticulos" itemLabel="#{customArticulos.nombre}" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{customArticulos}" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo}" completeMethod="#{manticCatalogosAlmacenesTransferenciasAccion.doCompleteArticulo}"  converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-98" forceSelection="true">
+									<p:autoComplete id="idArticulo" placeholder="Nombre o codigo" widgetVar="listadoarticulos" var="customArticulos" itemLabel="#{customArticulos.nombre}" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{customArticulos}" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo}" completeMethod="#{manticCatalogosAlmacenesTransferenciasAccion.doCompleteArticulo}"  converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100" forceSelection="true">
 										<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doAsignaArticulo}" update="@(.filas) idArticulo imagenArticulo" oncomplete="janal.desbloquear();"/>
 										<p:column>
 											<!--p:graphicImage value="#{customArticulos.image}" styleClass="janal-logo-mini filas" width="30" cache="false" stream="false"/-->
