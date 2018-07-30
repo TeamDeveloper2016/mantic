@@ -50,7 +50,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
   		this.orden.setIdDirecta(tipoOrden.equals(EOrdenes.NORMAL)? 1L: 2L);
 			if(this.orden.getIdDirecta().equals(1L)) {
 		    this.setArticulos(new ArrayList<>());
-				this.orden.setDiasPlazo(0L);
+				this.orden.setDiasPlazo(1L);
 			} // if	
 			else
 			  this.setArticulos(this.toDefaultOrdenDetalle());
