@@ -13,8 +13,8 @@ public enum EReportes implements IReportAttribute{
 	ORDEN_DETALLES_COMP  ("VistaReportesOrdenesComprasDto", "detalleCompletoOrdenCompra", "Orden de compra", "/Paginas/Mantic/Compras/Ordenes/Reportes/detCompletoOrdenCompra", EFormatos.PDF, "orden_de_compra_detalles_completos", "/Paginas/Mantic/Compras/Ordenes/filtro"),
 	ORDEN_DETALLES_COMP2 ("VistaReportesOrdenesComprasDto", "detalleCompletoOrdenCompra", "Orden de compra", "/Paginas/Mantic/Compras/Ordenes/Reportes/detalleCompletoOrdenCompra", EFormatos.PDF, "orden_de_compra_detalles_completos", "/Paginas/Mantic/Compras/Ordenes/filtro"),
 	TICKET_VENTA         ("VistaTicketVentaDto", "ticket", "Ticket de venta", "/Paginas/Mantic/Ventas/Caja/Reportes/ticketVenta", EFormatos.XLS, "ticket_venta", "/Paginas/Mantic/Ventas/Caja/accion"),
-	NOTAS_ENTRADA        ("VistaNotasEntradasDto", "lazy", "Notas de Entrada", "/Paginas/Mantic/Inventarios/Entradas/Reportes/notasEntrada", EFormatos.PDF, "ordenes_de_entrada", "/Paginas/Mantic/Inventarios/Entradas/filtro"),
-	NOTA_ENTRADA_DETALLE ("VistaReporteNotaEntrada", "detalleNotaEntrada", "Nota de Entrada", "/Paginas/Mantic/Inventarios/Entradas/Reportes/notaEntradaDetalle", EFormatos.PDF, "orden_de_entrada_detalle", "/Paginas/Mantic/Inventarios/Entradas/filtro"),
+	NOTAS_ENTRADA        ("VistaNotasEntradasDto", "lazy", "Notas de Entrada", "/Paginas/Mantic/Inventarios/Entradas/Reportes/notasEntrada", EFormatos.PDF, "notas_de_entrada", "/Paginas/Mantic/Inventarios/Entradas/filtro"),
+	NOTA_ENTRADA_DETALLE ("VistaReporteNotaEntrada", "detalleNotaEntrada", "Nota de Entrada", "/Paginas/Mantic/Inventarios/Entradas/Reportes/notaEntradaDetalle", EFormatos.PDF, "nota_de_entrada_detalle", "/Paginas/Mantic/Inventarios/Entradas/filtro"),
 	NOTA_ENTRADA_DETALLE_D("VistaReporteNotaEntrada", "detalleNotaEntradaDif", "Nota de Entrada", "/Paginas/Mantic/Inventarios/Entradas/Reportes/notaEntradaDetalleDif", EFormatos.PDF, "orden_de_entrada_detalle_diferencias", "/Paginas/Mantic/Inventarios/Entradas/filtro"),
 	DEVOLUCIONES         ("VistaDevolucionesDto", "lazy", "Devoluciones", "/Paginas/Mantic/Inventarios/Devoluciones/Reportes/devoluciones", EFormatos.PDF, "devoluciones", "/Paginas/Mantic/Inventarios/Devoluciones/filtro"),
 	DEVOLUCIONES_DETALLE ("VistaReporteDevoluciones", "detalleDevolucion", "Devolución", "/Paginas/Mantic/Inventarios/Devoluciones/Reportes/devolucionDetalle", EFormatos.PDF, "devolucion_detalle", "/Paginas/Mantic/Inventarios/Devoluciones/filtro"),
@@ -23,7 +23,7 @@ public enum EReportes implements IReportAttribute{
 	CUENTAS_POR_PAGAR    ("VistaEmpresasDto", "cuentasBusqueda", "Cuentas por pagar", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/Reportes/cuentasPorPagar", EFormatos.PDF, "cuentas_por_pagar", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/saldos"),
 	CUENTA_PAGAR_DETALLE ("VistaReporteCuentaPorPagarDetalle", "pagosDeuda", "Cuenta por pagar", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/Reportes/cuentaPorPagarDetalle", EFormatos.PDF, "cuenta_por_pagar_detalle", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/saldos"),
 	CUENTAS_POR_COBRAR   ("VistaClientesDto", "cuentasBusqueda", "Cuentas por cobrar", "/Paginas/Mantic/Catalogos/Clientes/Cuentas/Reportes/cuentasPorCobrar", EFormatos.PDF, "cuentas_por_cobrar", "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos"),
-	CUENTA_COBRAR_DETALLE("VistaReporteCuentaPorCobrarDetalle", "cobroDeuda", "Cuenta por pagar", "/Paginas/Mantic/Catalogos/Clientes/Cuentas/Reportes/cuentaPorCobrarDetalle", EFormatos.PDF, "cuenta_por_cobrar_detalle", "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos");
+	CUENTA_COBRAR_DETALLE("VistaReporteCuentaPorCobrarDetalle", "cobroDeuda", "Cuenta por cobrar", "/Paginas/Mantic/Catalogos/Clientes/Cuentas/Reportes/cuentaPorCobrarDetalle", EFormatos.PDF, "cuenta_por_cobrar_detalle", "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos");
   
 	private final String proceso;
   private final String idXml;
