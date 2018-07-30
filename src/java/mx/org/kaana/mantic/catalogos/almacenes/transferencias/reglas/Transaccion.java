@@ -1,5 +1,7 @@
 package mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas;
 
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -88,6 +90,7 @@ public class Transaccion extends IBaseTnx {
           regresar= eliminarTransferencia(sesion);
           break;
         case MODIFICAR:
+          this.dto.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
           regresar= DaoFactory.getInstance().update(sesion, this.dto).intValue()> 0;
         break;
       } // switch

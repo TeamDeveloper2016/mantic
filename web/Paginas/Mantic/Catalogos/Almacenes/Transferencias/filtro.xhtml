@@ -3,9 +3,7 @@
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.org/ui"
-                xmlns:pe="http://primefaces.org/ui/extensions"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/filtro.xhtml">
   <ui:param name="titulo" value="Catálogo de transferencias almacenes" />
@@ -59,6 +57,8 @@
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
           <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosAlmacenesTransferenciasFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosAlmacenesTransferenciasFiltro.lazyModel.rowCount gt manticCatalogosAlmacenesTransferenciasFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton   value="Opciones">
@@ -99,7 +99,7 @@
 							</f:facet>
 							<h:outputText value="#{filtro['cantidad']}"/>
 						</p:column>							
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.estatus}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.nombreEstatus}">
 							<f:facet name="header">
 								<h:outputText value="Estatus"/>
 							</f:facet>
@@ -122,7 +122,7 @@
 						</f:facet>
 					</p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-						<p:menuitem id="modificar" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>					
+						<p:menuitem id="modificar" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus eq '1'}"/>					
             <p:menuitem id="consultar" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:separator rendered="#{fn:contains('|1|3|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>					
             <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|3|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>					            

@@ -27,7 +27,6 @@ import mx.org.kaana.mantic.catalogos.almacenes.transferencias.reglas.Transaccion
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
-import mx.org.kaana.mantic.taller.beans.RegistroServicio;
 
 @Named(value = "manticCatalogosAlmacenesTransferenciasFiltro")
 @ViewScoped

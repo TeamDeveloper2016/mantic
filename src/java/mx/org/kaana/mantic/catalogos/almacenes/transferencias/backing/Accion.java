@@ -23,6 +23,7 @@ import mx.org.kaana.libs.formato.BouncyEncryption;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.LoadImages;
@@ -39,6 +40,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   
   private StreamedContent image;
   private CriteriosBusqueda criteriosBusqueda;
+  private TcManticTransferenciasDto transferencia;
   
   public StreamedContent getImage() {
 		return image;
@@ -52,22 +54,59 @@ public class Accion extends IBaseAttribute implements Serializable {
 	@Override
 	protected void init() {
 		try {
+      this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.criteriosBusqueda = new CriteriosBusqueda();
+      this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia"));
       this.attrs.put("buscaPorCodigo", false);
       this.attrs.put("cantidad", 0);
       this.attrs.put("observaciones", "");
-      this.attrs.put("idUsuario", JsfBase.getFlashAttribute("idUsuario")!= null? (Long)JsfBase.getFlashAttribute("idUsuario"): -1L);
-			this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));										
-			this.attrs.put("tituloAccion", ((EAccion)JsfBase.getFlashAttribute("accion")).getName());										
-			toLoadAlmacenes();
-      loadPersonas(); 
-      loadUsuario();
+      this.attrs.put("idUsuario", JsfBase.getFlashAttribute("idUsuario")!= null? (Long)JsfBase.getFlashAttribute("idUsuario"): -1L);		
+      doLoad();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
 	} // init
+  
+  public void doLoad() {
+    EAccion eaccion= null;
+    Long idTransferencia = -1L;
+    try {
+      eaccion = (EAccion) this.attrs.get("accion");
+      this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
+      switch (eaccion) {
+        case AGREGAR:
+         loadAlmacenes();
+         loadPersonas(); 
+         loadUsuario();
+         break;
+        case MODIFICAR:
+        case CONSULTAR:
+          idTransferencia = Long.valueOf(this.attrs.get("idTransferencia").toString());
+          this.transferencia = (TcManticTransferenciasDto) DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, idTransferencia);
+					loadAlmacenes();
+          this.attrs.put("idAlmacenOrigen", (((List<UISelectEntity>)this.attrs.get("almacenesOrigen")).get(((List<UISelectEntity>)this.attrs.get("almacenesOrigen")).indexOf(new UISelectEntity(this.transferencia.getIdAlmacen().toString())))));
+          doUpdateAlmacenOrigen();
+          this.attrs.put("idArticulo",this.transferencia.getIdArticulo());
+          this.attrs.put("idAlmacenDestino", (((List<UISelectEntity>)this.attrs.get("almacenesDestino")).get(((List<UISelectEntity>)this.attrs.get("almacenesDestino")).indexOf(new UISelectEntity(this.transferencia.getIdDestino().toString())))));
+          this.attrs.put("articulo", (((List<UISelectEntity>)this.attrs.get("articulos")).get(((List<UISelectEntity>)this.attrs.get("articulos")).indexOf(new UISelectEntity(this.transferencia.getIdArticulo().toString())))));
+           this.image= LoadImages.getImage(((UISelectEntity)this.attrs.get("articulo")).toString("archivo"));
+          this.attrs.put("cantidad", this.transferencia.getCantidad());
+          doUpdateAlmacenDestino();
+          loadPersonas(); 
+          this.attrs.put("idUsuario", this.transferencia.getIdSolicito());
+          loadUsuario();
+          this.criteriosBusqueda.setPersona(this.criteriosBusqueda.getListaPersonas().get(this.criteriosBusqueda.getListaPersonas().indexOf(new UISelectEntity(this.transferencia.getIdSolicito().toString()))));
+          this.attrs.put("observaciones", this.transferencia.getObservaciones());
+          break;
+      } // switch      
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+  } // doLoad
   
   private void loadPersonas() {
     List<Columna> columns     = null;
@@ -149,7 +188,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch
   }
   
-  private void toLoadAlmacenes() {
+  private void loadAlmacenes() {
     List<UISelectEntity> almacenes= null;
 		Map<String, Object>params      = null;
 		List<Columna> columns          = null;
@@ -218,7 +257,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
 			} // if	
 			else
-				search= "WXYZ";
+				search= "";
   		params.put("codigo", search);
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
         articulos= (List<UISelectEntity>) UIEntity.build("VistaAlmacenesTransferenciasDto", "porCodigo", params, columns, 20L);
@@ -271,7 +310,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 		Transaccion transaccion      = null;
     UISelectEntity datosPersona  = null;
 		try {
-      dto = new TcManticTransferenciasDto();
+      if(this.transferencia != null)
+        dto = this.transferencia;
+      else
+        dto = new TcManticTransferenciasDto();
       datosPersona = this.criteriosBusqueda.getListaPersonas().get(this.criteriosBusqueda.getListaPersonas().indexOf(this.criteriosBusqueda.getPersona()));
       dto.setIdAlmacen(Long.valueOf(this.attrs.get("idAlmacenOrigen").toString()));
       dto.setIdArticulo(Long.valueOf(this.attrs.get("idArticulo").toString()));

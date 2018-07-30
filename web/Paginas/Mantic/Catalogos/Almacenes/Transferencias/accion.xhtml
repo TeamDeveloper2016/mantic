@@ -7,12 +7,14 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.tituloAccion} transferencia" />
+	<ui:param name="titulo" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.nombreAccion} transferencia" />
 	<ui:define name="librerias">
     <script type="text/javascript">
 			Janal.Control.fields = {
 				cantidad:{validaciones: 'requerido|entero|mayor-igual({"cuanto": 0})', mascara: 'entero'}
 			};
+      
+      $(document).ready(function(){janal.readingMode('#{manticCatalogosAlmacenesTransferenciasAccion.attrs.nombreAccion}');});		
 		</script>        
 	</ui:define>
 	<ui:define name="contenido">
