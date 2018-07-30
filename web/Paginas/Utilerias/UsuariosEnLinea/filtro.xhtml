@@ -32,10 +32,10 @@
       <p:column headerText="[Id]-Descripcion">
 				<h:outputText value="[#{grupo.id}]- #{grupo.descripcion}"/>
       </p:column>
-      <p:column styleClass="alinear-derecha" headerText="Total perfiles">
+      <p:column styleClass="janal-column-right" headerText="Total perfiles">
 				<h:outputText value="#{grupo.total}" id="totalPerfiles"/>
       </p:column>
-      <p:column styleClass="alinear-derecha" headerText="Total usuarios">
+      <p:column styleClass="janal-column-right" headerText="Total usuarios">
 				<h:outputText value="#{grupo.totalUsuarios}"/>
       </p:column>
     </p:treeTable>
@@ -56,9 +56,9 @@
        <p:column headerText="Nombre" styleClass="TexAlLeft">
          #{row.nombre}
        </p:column>
-       <p:column headerText="Entidad" styleClass="janal-wid-col-140 TexAlLeft">
+       <!--p:column headerText="Entidad" styleClass="janal-wid-col-140 TexAlLeft"-->
           #{row.entidad}
-       </p:column>
+       <!--/p:column-->
        <p:column headerText="Grupo" styleClass="janal-wid-col-80 TexAlLeft">
          #{row.grupo}
        </p:column>
