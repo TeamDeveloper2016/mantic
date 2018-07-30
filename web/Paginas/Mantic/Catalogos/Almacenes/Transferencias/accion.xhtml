@@ -16,12 +16,17 @@
       
       $(document).ready(function(){janal.readingMode('#{manticCatalogosAlmacenesTransferenciasAccion.attrs.nombreAccion}');});		
 		</script>        
+		<style>
+			.janal-image-frame {
+				margin: 10px;
+			}
+		</style>
 	</ui:define>
 	<ui:define name="contenido">
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">			
-          <p:panelGrid  columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-70, janal-wid-30">	
+          <p:panelGrid  columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-70, janal-wid-30 janal-image-frame">	
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100 filas">
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-99 filas" columnClasses="janal-wid-col-120, janal-wid-100">
 								<p:outputLabel for="idAlmacenOrigen" value="Almacen origen:"/>
@@ -41,7 +46,7 @@
 									<p:selectBooleanCheckbox value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
 										<p:ajax event="change" process="@this" update="@this"/>
 									</p:selectBooleanCheckbox>
-									<p:autoComplete id="idArticulo" placeholder="Nombre o codigo" widgetVar="listadoarticulos" var="customArticulos" itemLabel="#{customArticulos.nombre}" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{customArticulos}" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo}" completeMethod="#{manticCatalogosAlmacenesTransferenciasAccion.doCompleteArticulo}"  converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt" forceSelection="true">
+									<p:autoComplete id="idArticulo" placeholder="Nombre o codigo" widgetVar="listadoarticulos" var="customArticulos" itemLabel="#{customArticulos.nombre}" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{customArticulos}" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo}" completeMethod="#{manticCatalogosAlmacenesTransferenciasAccion.doCompleteArticulo}"  converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-98" forceSelection="true">
 										<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doAsignaArticulo}" update="@(.filas) idArticulo imagenArticulo" oncomplete="janal.desbloquear();"/>
 										<p:column>
 											<!--p:graphicImage value="#{customArticulos.image}" styleClass="janal-logo-mini filas" width="30" cache="false" stream="false"/-->
@@ -68,7 +73,7 @@
 									</p:panelGrid>
 								</p:panelGrid>
 								<p:outputLabel for="idAlmacenDestino" value="Almacen destino:"/>
-								<p:selectOneMenu id="idAlmacenDestino" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.idAlmacenDestino}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 filas" effect="fade" filter="true" filterMatchMode="contains">
+								<p:selectOneMenu id="idAlmacenDestino" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.idAlmacenDestino}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98 filas" effect="fade" filter="true" filterMatchMode="contains">
 									<p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doUpdateAlmacenDestino}" process="@this" update="@(.filas)"/>
 									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.almacenesDestino}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave}"/>
@@ -107,7 +112,7 @@
 								</p:selectOneMenu> 
 							</p:panelGrid>
   						<p:outputLabel for="observaciones" value="Observaciones:"/>
-	  					<p:inputTextarea id="observaciones" rows="3" cols="50" styleClass="janal-wid-100-txt filas" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.observaciones}" />
+	  					<p:inputTextarea id="observaciones" rows="3" cols="50" styleClass="janal-wid-99 filas" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.observaciones}" />
 						</p:panelGrid>	
             <p:panel header="Imagen" styleClass="TexAlCenter janal-wid-100-txt" id="imagenArticulo" style="height:100%">
               <p:graphicImage value="#{manticCatalogosAlmacenesTransferenciasAccion.image}" styleClass="janal-logo-mini" width="135" stream="false"/><br/>
