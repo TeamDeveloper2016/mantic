@@ -496,7 +496,7 @@
           tc_mantic_creditos_estatus.nombre as estatus,
           tc_mantic_creditos_estatus.id_credito_estatus,
           tc_mantic_tipos_creditos_notas.id_tipo_credito_nota,
-          tc_mantic_tipos_creditos_notas.nombre,
+          tc_mantic_tipos_creditos_notas.nombre tipo,
           tc_mantic_creditos_notas.registro      
         from
           tc_mantic_creditos_notas         
@@ -578,7 +578,7 @@
 				inner join
 					tc_mantic_clientes_deudas on tc_mantic_clientes_pagos.id_cliente_deuda= tc_mantic_clientes_deudas.id_cliente_deuda
 				inner join 
-					tc_mantic_tipos_medios_pagos on tc_tc_mantic_clientes_pagos.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+					tc_mantic_tipos_medios_pagos on tc_mantic_clientes_pagos.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
         inner join
 					tc_mantic_ventas on tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta
 				inner join
