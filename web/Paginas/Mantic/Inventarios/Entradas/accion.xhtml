@@ -58,8 +58,8 @@
 					var deuda= parseFloat($('#contenedorGrupos\\:deuda').val(), 10);
 					var total= parseFloat($('#contenedorGrupos\\:total').val(), 10);
 					var diferencia= (deuda* 100/ total)- 100;
-					if((diferencia&lt; 5.0) || (diferencia&gt; 5.0)) 
-						ok= confirm('La diferencia de la nota de entrada con respecto a la deuda es del '+ diferencia.toFixed(4)+ '% desea continuar con el registro ?');
+					if(!((diferencia&gt;= -5.0) && (diferencia&lt;= 5.0))) 
+						ok= confirm('La diferencia del total de la nota de entrada con respecto a la deuda capturada es del '+ diferencia.toFixed(4)+ '% desea continuar con el registro ?');
 				} // if	
 				else {
 					jsArticulos.cursor.index= index;
