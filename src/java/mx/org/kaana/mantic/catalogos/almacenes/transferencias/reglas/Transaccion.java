@@ -167,8 +167,12 @@ public class Transaccion extends IBaseTnx {
         destino.setStock(Double.valueOf(this.cantidad));
         destino.setMinimo(this.almanecArticuloOrigen.getMinimo());
         destino.setMaximo(this.almanecArticuloOrigen.getMaximo());
-        destino.setIdAlmacenUbicacion(7L);
-        //destino.setIdAlmacenUbicacion(general.getIdAlmacenUbicacion()); // ahorita esta comentada por que el almacen 1 y 3 no tiene general en mi bd
+        general= (TcManticAlmacenesUbicacionesDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesUbicacionesDto.class, params, "general");
+				if(general== null) {
+  				general= new TcManticAlmacenesUbicacionesDto("GENERAL", "", "GENERAL", "", "", JsfBase.getAutentifica().getPersona().getIdUsuario(), this.idAlmacenDestino, -1L);
+					DaoFactory.getInstance().insert(sesion, general);
+        }
+        destino.setIdAlmacenUbicacion(general.getIdAlmacenUbicacion());
         regresar = DaoFactory.getInstance().insert(sesion, destino) >= 0L;
       }  
     } // try 
