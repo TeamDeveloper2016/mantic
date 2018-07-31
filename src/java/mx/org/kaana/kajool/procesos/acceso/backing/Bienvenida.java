@@ -26,7 +26,6 @@ import mx.org.kaana.kajool.procesos.acceso.beans.Persona;
 import mx.org.kaana.kajool.procesos.acceso.reglas.CarService;
 import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.procesos.enums.EPerfiles;
-import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Chart;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Highcharts;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.HighchartsPie;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.JsonChart;
