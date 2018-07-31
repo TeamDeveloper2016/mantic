@@ -1249,6 +1249,7 @@
 					tc_mantic_notas_entradas.consecutivo as nota_entrada,
 					tc_mantic_devoluciones.consecutivo,
 					tc_mantic_empresas.clave as empresa,
+          tc_mantic_empresas.nombre as nombre_empresa,
 			 	  (select count(*) from tc_mantic_devoluciones_detalles where tc_mantic_devoluciones_detalles.id_devolucion= tc_mantic_devoluciones.id_devolucion) as articulos,
 					tc_mantic_devoluciones.total,
 		  		tc_mantic_devoluciones_estatus.nombre as estatus,
