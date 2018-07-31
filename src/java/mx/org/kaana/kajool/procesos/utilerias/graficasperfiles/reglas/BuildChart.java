@@ -199,7 +199,7 @@ public class BuildChart implements Serializable{
     return regresar;
   } // loadCharProperties
 
-  private List<Entity> loadRecords(String vista, String idXml) throws Exception{
+  private List<Entity> loadRecords(String vista, String idXml) throws Exception {
     List<Entity> regresar    = null;
     Map<String, Object>params= null;
     try {
@@ -209,7 +209,8 @@ public class BuildChart implements Serializable{
       regresar= DaoFactory.getInstance().toEntitySet(vista, idXml, params, Constantes.SQL_TODOS_REGISTROS);
     } // try
     catch (Exception e) {
-      throw e;
+      mx.org.kaana.libs.formato.Error.mensaje(e);
+			regresar= new ArrayList<>();
     } // catch
     finally{
       Methods.clean(params);
@@ -258,13 +259,13 @@ public class BuildChart implements Serializable{
       categoriesList= new ArrayList<>();
       records= loadRecords(vista, idVista);      
       categoriesList.add("Total");
-			if(!records.isEmpty()){
-				for(Entity record: records){
+			if(!records.isEmpty()) {
+				for(Entity record: records) {
 					dataList.add(new DetailData(x.concat(": ").concat(record.toString(Cadena.toBeanName("por_".concat(Cadena.toSqlName(campoX))))).concat("%"), record.toLong(campoX)));
 					dataList.add(new DetailData(y.concat(": ").concat(record.toString(Cadena.toBeanName("por_".concat(Cadena.toSqlName(campoY))))).concat("%"), record.toLong(campoY)));        
 				} // for
 			} // if
-			else{
+			else {
 				dataList.add(new DetailData("Completas".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("90")))).concat("%"), 90L));
         dataList.add(new DetailData("Pendientes".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("10")))).concat("%"), 10L));
 			} // else
