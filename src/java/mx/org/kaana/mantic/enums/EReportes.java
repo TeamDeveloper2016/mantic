@@ -23,7 +23,11 @@ public enum EReportes implements IReportAttribute{
 	CUENTAS_POR_PAGAR    ("VistaEmpresasDto", "cuentasBusqueda", "Cuentas por pagar", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/Reportes/cuentasPorPagar", EFormatos.PDF, "cuentas_por_pagar", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/saldos"),
 	CUENTA_PAGAR_DETALLE ("VistaReporteCuentaPorPagarDetalle", "pagosDeuda", "Cuenta por pagar", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/Reportes/cuentaPorPagarDetalle", EFormatos.PDF, "cuenta_por_pagar_detalle", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/saldos"),
 	CUENTAS_POR_COBRAR   ("VistaClientesDto", "cuentasBusqueda", "Cuentas por cobrar", "/Paginas/Mantic/Catalogos/Clientes/Cuentas/Reportes/cuentasPorCobrar", EFormatos.PDF, "cuentas_por_cobrar", "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos"),
-	CUENTA_COBRAR_DETALLE("VistaReporteCuentaPorCobrarDetalle", "cobroDeuda", "Cuenta por cobrar", "/Paginas/Mantic/Catalogos/Clientes/Cuentas/Reportes/cuentaPorCobrarDetalle", EFormatos.PDF, "cuenta_por_cobrar_detalle", "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos");
+	CUENTA_COBRAR_DETALLE("VistaReporteCuentaPorCobrarDetalle", "cobroDeuda", "Cuenta por cobrar", "/Paginas/Mantic/Catalogos/Clientes/Cuentas/Reportes/cuentaPorCobrarDetalle", EFormatos.PDF, "cuenta_por_cobrar_detalle", "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos"),
+	REQUISICIONES("VistaReporteRequisiciones", "requisiciones", "Requisiciones", "/Paginas/Mantic/Catalogos/Proveedores/Requisiciones/Reportes/requisiciones", EFormatos.PDF, "requisiciones", "/Paginas/Mantic/Catalogos/Proveedores/Requisiciones/filtro"),
+	REQUISICIONES_DETALLE("VistaReporteRequisiciones", "requisicionDetalle", "Requisición", "/Paginas/Mantic/Catalogos/Proveedores/Requisiciones/Reportes/requisicionDetalle", EFormatos.PDF, "requisicion_detalle", "/Paginas/Mantic/Catalogos/Proveedores/Requisiciones/filtro"),
+	TRANSFERENCIAS("VistaAlmacenesTransferenciasDto", "row", "Transferencias", "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/Reportes/transferencias", EFormatos.PDF, "transferencias", "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/filtro"),
+	TRANSFERENCIAS_DETALLE("VistaReporteTransferenciasDto", "row", "Transferencia", "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/Reportes/transferenciasDetalle", EFormatos.PDF, "transferencias_detalle", "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/filtro");
   
 	private final String proceso;
   private final String idXml;
