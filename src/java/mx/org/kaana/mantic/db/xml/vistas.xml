@@ -4,6 +4,132 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaCierresCajasDto">
+			<select id="movimientos">
+        select
+					tc_mantic_cierres_bitacora.id_cierre_bitacora as id_key,
+					tc_mantic_cajas.clave as consecutivo,
+					sum(tc_mantic_cierres_cajas.acumulado) as importe,
+					tc_mantic_cierres_bitacora.justificacion,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+				  tc_mantic_cierres_estatus.nombre as estatus,
+					tc_mantic_cierres_bitacora.registro
+				from 
+					tc_mantic_cierres_bitacora
+				inner join
+					tc_mantic_cierres_estatus on tc_mantic_cierres_bitacora.id_cierre_estatus= tc_mantic_cierres_estatus.id_cierre_estatus
+				inner join
+					tc_janal_usuarios on tc_mantic_cierres_bitacora.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				inner join
+					tc_mantic_cierres_cajas on tc_mantic_cierres_bitacora.id_cierre= tc_mantic_cierres_cajas.id_cierre
+				inner join
+					tc_mantic_cajas on tc_mantic_cierres_cajas.id_caja= tc_mantic_cajas.id_caja
+				where
+					tc_mantic_cierres_bitacora.id_cierre= {idCierres}				
+				order by
+					tc_mantic_cierres_bitacora.registro desc
+			</select>
+			<select id="lazy">
+				select
+					tc_mantic_cierres.id_cierre as id_key,
+					tc_mantic_empresas.id_empresa,
+					tc_mantic_empresas.clave as empresa,
+					tc_mantic_cajas.clave as caja,
+					if(tc_mantic_cierres.id_diferencias= 1, 'SI', 'NO') as diferencias,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usaurio,
+					tc_mantic_cierres_estatus.nombre as estatus,
+					sum(tc_mantic_cierres_cajas.disponible) as disponible,
+					sum(tc_mantic_cierres_cajas.acumulado) as acumulado,
+					sum(tc_mantic_cierres_cajas.saldo) as saldo,
+					sum(tc_mantic_cierres_cajas.importe) as capturado,
+					tc_mantic_cierres.observaciones,
+					tc_mantic_cierres.registro,
+					tc_mantic_cierres.id_cierre_estatus,
+					tc_mantic_cajas.id_caja
+				from
+					tc_mantic_cierres
+				inner join
+					tc_janal_usuarios on tc_mantic_cierres.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				inner join
+					tc_mantic_cierres_cajas on tc_mantic_cierres.id_cierre= tc_mantic_cierres_cajas.id_cierre
+				inner join
+					tc_mantic_cajas on tc_mantic_cierres_cajas.id_caja= tc_mantic_cajas.id_caja
+				inner join
+					tc_mantic_empresas on tc_mantic_cajas.id_empresa= tc_mantic_empresas.id_empresa
+				inner join
+					tc_mantic_cierres_estatus on tc_mantic_cierres.id_cierre_estatus= tc_mantic_cierres_estatus.id_cierre_estatus
+				where
+					tc_mantic_creditos_notas.id_empresa in ({idEmpresa})
+					and {condicion}
+				{sortOrder}
+				group by
+					tc_mantic_cierres.id_cierre,
+					tc_mantic_empresas.id_empresa,
+					tc_mantic_empresas.clave,
+					tc_mantic_cajas.clave,
+					if(tc_mantic_cierres.id_diferencias= 1, 'SI', 'NO'),
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno),
+					tc_mantic_cierres_estatus.nombre,
+					tc_mantic_cierres.observaciones,
+					tc_mantic_cierres.registro,
+					tc_mantic_cierres.id_cierre_estatus,
+					tc_mantic_cajas.id_caja
+			</select>
+			<select id="retiros">
+				select
+					tc_mantic_cierres.id_cierre as id_key,
+					tc_mantic_empresas.id_empresa,
+					tc_mantic_empresas.clave as empresa,
+					tc_mantic_cajas.clave,
+					tc_mantic_cierres_retiros.consecutivo,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
+					tc_mantic_tipos_medios_pagos.nombre as medio,
+					tc_mantic_cierres_retiros.importe,
+					tc_mantic_cierres_retiros.observaciones,
+					tc_mantic_cierres_retiros.registro,
+					tc_mantic_cajas.id_caja,
+					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
+					tc_mantic_cierres_cajas.id_cierre_caja
+				from
+					tc_mantic_cierres
+				inner join
+					tc_mantic_cierres_cajas on tc_mantic_cierres.id_cierre= tc_mantic_cierres_cajas.id_cierre
+				inner join
+					tc_mantic_tipos_medios_pagos on tc_mantic_cierres_cajas.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+				inner join
+					tc_mantic_cajas on tc_mantic_cierres_cajas.id_caja= tc_mantic_cajas.id_caja
+				inner join
+					tc_mantic_empresas on tc_mantic_cajas.id_empresa= tc_mantic_empresas.id_empresa
+				inner join
+					tc_mantic_cierres_retiros on tc_mantic_cierres_cajas.id_cierre_caja= tc_mantic_cierres_retiros.id_cierre_caja
+				inner join
+					tc_janal_usuarios on tc_mantic_cierres_retiros.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+				  tc_mantic_cierres= {idCierre}
+				group by
+					tc_mantic_cierres.id_cierre,
+					tc_mantic_empresas.id_empresa,
+					tc_mantic_empresas.clave,
+					tc_mantic_cajas.clave,
+					tc_mantic_cierres_retiros.consecutivo,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno),
+					tc_mantic_tipos_medios_pagos.nombre,
+					tc_mantic_cierres_retiros.importe,
+					tc_mantic_cierres_retiros.observaciones,
+					tc_mantic_cierres_retiros.registro,
+					tc_mantic_cajas.id_caja,
+					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
+					tc_mantic_cierres_cajas.id_cierre_caja
+				order by
+					tc_mantic_cierres_retiros.consecutivo				
+			</select>
+		</unit>
 		<unit id="VistaCreditosNotasDto">
 			<select id="meses">
         select
@@ -128,17 +254,17 @@
 					tc_mantic_creditos_bitacora.justificacion,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
 				  tc_mantic_creditos_estatus.nombre as estatus,
-					tc_mantic_creeditos_bitacora.registro
+					tc_mantic_creditos_bitacora.registro
 				from 
-					tc_mantic_creeditos_bitacora
+					tc_mantic_creditos_bitacora
 				inner join
-					tc_mantic_creeditos_estatus on tc_mantic_creditos_bitacora.id_credito_estatus= tc_mantic_creditos_estatus.id_credito_estatus
+					tc_mantic_creditos_estatus on tc_mantic_creditos_bitacora.id_credito_estatus= tc_mantic_creditos_estatus.id_credito_estatus
 				inner join
 					tc_janal_usuarios on tc_mantic_creditos_bitacora.id_usuario= tc_janal_usuarios.id_usuario
 				inner join
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				where
-					tc_mantic_creditos_bitacora.id_credito_nora= {idCreditoNota}
+					tc_mantic_creditos_bitacora.id_credito_nota= {idCreditoNota}
 				order by
 					tc_mantic_creditos_bitacora.registro desc				
 			</select>	
