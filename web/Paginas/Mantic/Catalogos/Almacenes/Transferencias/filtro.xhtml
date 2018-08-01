@@ -5,7 +5,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-                template="/WEB-INF/plantillas/filtro.xhtml">
+                template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Catálogo de transferencias almacenes" />
   <ui:define name="librerias">
     <script type="text/javascript">
@@ -66,6 +66,8 @@
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:separator/>
+                  <p:menuitem icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doReporte('TRANSFERENCIAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
@@ -73,6 +75,8 @@
                 <p:separator/>
                 <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+                <p:separator/>
+                <p:menuitem icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doReporte('TRANSFERENCIAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>												
 						<p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{filtro.nombreOrigen}">
@@ -126,6 +130,8 @@
             <p:menuitem id="consultar" action="#{manticCatalogosAlmacenesTransferenciasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:separator rendered="#{fn:contains('|1|3|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>					
             <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|3|', manticCatalogosAlmacenesTransferenciasFiltro.attrs.seleccionado.estatus)}"/>					            
+            <p:separator/>			
+            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doReporte('TRANSFERENCIAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
 					</p:contextMenu>
         </div>
       </div>
