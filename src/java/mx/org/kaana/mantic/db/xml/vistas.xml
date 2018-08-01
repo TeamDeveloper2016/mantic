@@ -3206,18 +3206,28 @@
       </select>
 		</unit>
     <unit id="VistaAlmacenesTransferenciasDto">
-      <select id="row">
+           <select id="row">
         select 
           tc_mantic_transferencias.id_transferencia as id_key,
           tc_mantic_transferencias.id_transferencia,
           tc_mantic_transferencias.id_almacen,
-          (select tc_mantic_almacenes.nombre from tc_mantic_almacenes where tc_mantic_almacenes.id_almacen = tc_mantic_transferencias.id_almacen and (tc_mantic_almacenes.clave like '%{clave}%' or tc_mantic_almacenes.clave is null) and tc_mantic_almacenes.nombre like '%{nombre}%') nombre_origen,
-          (select tc_mantic_almacenes.clave from tc_mantic_almacenes where tc_mantic_almacenes.id_almacen = tc_mantic_transferencias.id_almacen and (tc_mantic_almacenes.clave like '%{clave}%' or tc_mantic_almacenes.clave is null) and tc_mantic_almacenes.nombre like '%{nombre}%') clave_origen,
+          origen.nombre  nombre_origen,
+          origen.clave clave_origen,
           tc_mantic_transferencias.id_destino,
-          (select tc_mantic_almacenes.nombre from tc_mantic_almacenes where tc_mantic_almacenes.id_almacen = tc_mantic_transferencias.id_destino and (tc_mantic_almacenes.clave like '%{clave}%' or tc_mantic_almacenes.clave is null) and tc_mantic_almacenes.nombre like '%{nombre}%') nombre_destino,
-          (select tc_mantic_almacenes.clave from tc_mantic_almacenes where tc_mantic_almacenes.id_almacen = tc_mantic_transferencias.id_destino and (tc_mantic_almacenes.clave like '%{clave}%' or tc_mantic_almacenes.clave is null) and tc_mantic_almacenes.nombre like '%{nombre}%') clave_destino,
+          destino.nombre nombre_destino,
+          destino.clave clave_destino,
           tc_mantic_transferencias.id_articulo,
           tc_mantic_articulos.nombre,
+          concat('(',
+          ifnull((select
+              tc_mantic_articulos_codigos.codigo 
+          from
+              tc_mantic_articulos_codigos 
+          where
+              tc_mantic_articulos_codigos.id_proveedor= tc_mantic_articulos.id_articulo),
+          ''),
+          ' ) ',
+          tc_mantic_articulos.nombre) as nombre_articulo,
           tc_mantic_articulos_codigos.codigo,
           tc_mantic_transferencias.id_solicito,
           concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as solicito,
@@ -3240,11 +3250,17 @@
            tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
         inner join 
           tc_mantic_personas  on tc_mantic_transferencias.id_solicito = tc_mantic_personas.id_persona
+        inner join 
+        	tc_mantic_almacenes origen on tc_mantic_transferencias.id_almacen = origen.id_almacen
+        inner join 
+        	tc_mantic_almacenes destino on tc_mantic_transferencias.id_destino = destino.id_almacen
         where 
-          tc_mantic_empresas.id_empresa in ({idEmpresa}) and
+          tc_mantic_empresas.id_empresa in ({idEmpresa}) and ((
           (upper(tc_mantic_articulos_codigos.codigo) like upper('%{codigoArticulo}%') and tc_mantic_articulos_codigos.id_principal= 1)
-         and 
-           upper(tc_mantic_articulos.nombre) like upper('%{nombreArticulo}%')				
+           and 
+           upper(tc_mantic_articulos.nombre) like upper('%{nombreArticulo}%')	)
+            or(((origen.clave like '%{clave}%' or origen.clave is null) or origen.nombre like '%{nombre}%'))
+            or(((destino.clave like '%{clave}%' or destino.clave is null) or destino.nombre like '%{nombre}%')))		
         {sortOrder}
       </select>  
       <select id="porNombre">
