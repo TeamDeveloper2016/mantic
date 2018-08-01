@@ -7,7 +7,151 @@
   </model>
 
   <dml>	
-    <unit id="TcManticRequisicionesBitacoraDto">
+   <unit id="TcManticListasPreciosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_listas_precios
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_listas_precios
+        where      
+          id_lista_precio = {idListaPrecio}
+      </select>
+    </unit>
+    <unit id="TcManticListasPreciosArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_listas_precios_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_listas_precios_archivos
+        where      
+          id_lista_precio = {idListaPrecio} and ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcManticListasPreciosDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_listas_precios_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_listas_precios_detalles
+        where      
+          id_lista_precio_detalle = {idListaPrecioDetalle}
+      </select>
+    </unit>				
+    <unit id="TcManticCierresDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_cierres
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_cierres
+        where      
+          id_cierre = {idCierre} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>
+    <unit id="TcManticCierresAlertasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_cierres_alertas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_cierres_alertas
+        where      
+          id_cierre_alerta = {idCierreAlerta}
+      </select>
+    </unit>
+		<unit id="TcManticCierresBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_cierres_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_cierres_bitacora
+        where      
+          id_cierre = {idCierre} and id_cierre_estatus = {idCierreEstatus} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>
+    <unit id="TcManticCierresCajasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_cierres_cajas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_cierres_cajas
+        where      
+          id_cierre_caja = {idCierreCaja}
+      </select>
+    </unit>
+    <unit id="TcManticCierresRetirosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_cierres_retiros
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_cierres_retiros
+        where      
+          id_cierre_retiro = {idCierreRetiro}
+      </select>
+    </unit>				
+		<unit id="TcManticRequisicionesBitacoraDto">
       <select id="row">
         select      
           *
