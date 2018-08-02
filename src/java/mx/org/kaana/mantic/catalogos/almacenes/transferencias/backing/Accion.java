@@ -317,7 +317,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       datosPersona = this.criteriosBusqueda.getListaPersonas().get(this.criteriosBusqueda.getListaPersonas().indexOf(this.criteriosBusqueda.getPersona()));
       dto.setIdAlmacen(Long.valueOf(this.attrs.get("idAlmacenOrigen").toString()));
       dto.setIdArticulo(Long.valueOf(this.attrs.get("idArticulo").toString()));
-      dto.setCantidad(Long.valueOf(this.attrs.get("cantidad").toString()));
+      dto.setCantidad(Float.valueOf(this.attrs.get("cantidad").toString()));
       dto.setIdDestino(Long.valueOf(this.attrs.get("idAlmacenDestino").toString()));
       dto.setIdSolicito(this.criteriosBusqueda.getPersona().getKey());
       dto.setObservaciones(this.attrs.get("observaciones").toString());

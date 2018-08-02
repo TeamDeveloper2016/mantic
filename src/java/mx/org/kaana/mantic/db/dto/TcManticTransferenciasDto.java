@@ -45,7 +45,7 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
   @Column (name="id_transferencia_estatus")
   private Long idTransferenciaEstatus;
   @Column (name="cantidad")
-  private Long cantidad;
+  private Float cantidad;
   @Column (name="observaciones")
   private String observaciones;
   @Column (name="registro")
@@ -57,11 +57,11 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
   }
 
   public TcManticTransferenciasDto(Long key) {
-    this(new Long(-1L),new Long(-1L),new Long(-1L),new Long(-1L),new Long(-1L),new Long(-1L),new Long(-1L),new Long(-1L),null,null);
+    this(new Long(-1L),new Long(-1L),new Long(-1L),new Long(-1L),new Long(-1L),new Long(-1L),new Long(-1L),new Float(-1F),null,null);
     setKey(key);
   }
 
-  public TcManticTransferenciasDto(Long idTransferencia, Long idAlmacen, Long idDestino, Long idArticulo, Long idSolicito, Long idUsuario, Long idTransferenciaEstatus, Long cantidad, String observaciones, Timestamp registro) {
+  public TcManticTransferenciasDto(Long idTransferencia, Long idAlmacen, Long idDestino, Long idArticulo, Long idSolicito, Long idUsuario, Long idTransferenciaEstatus, Float cantidad, String observaciones, Timestamp registro) {
     setIdTransferencia(idTransferencia);
     setIdAlmacen(idAlmacen);
     setIdDestino(idDestino);
@@ -130,11 +130,11 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
     this.idTransferenciaEstatus = idTransferenciaEstatus;
   }
 
-  public Long getCantidad() {
+  public Float getCantidad() {
     return cantidad;
   }
 
-  public void setCantidad(Long cantidad) {
+  public void setCantidad(Float cantidad) {
     this.cantidad = cantidad;
   }
 
