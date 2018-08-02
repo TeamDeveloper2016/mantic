@@ -37,7 +37,6 @@
 					tc_mantic_empresas.id_empresa,
 					tc_mantic_empresas.clave as empresa,
 					tc_mantic_cajas.clave as caja,
-					tc_mantic_cierres.id_diferencias,
 					if(tc_mantic_cierres.id_diferencias= 1, 'SI', 'NO') as diferencias,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usaurio,
 					tc_mantic_cierres_estatus.nombre as estatus,
@@ -64,9 +63,8 @@
 				inner join
 					tc_mantic_cierres_estatus on tc_mantic_cierres.id_cierre_estatus= tc_mantic_cierres_estatus.id_cierre_estatus
 				where
-					tc_mantic_creditos_notas.id_empresa in ({idEmpresa})
+					tc_mantic_cajas.id_empresa in ({idEmpresa})
 					and {condicion}
-				{sortOrder}
 				group by
 					tc_mantic_cierres.id_cierre,
 					tc_mantic_empresas.id_empresa,
@@ -79,6 +77,7 @@
 					tc_mantic_cierres.registro,
 					tc_mantic_cierres.id_cierre_estatus,
 					tc_mantic_cajas.id_caja
+				{sortOrder}
 			</select>
 			<select id="retiros">
 				select

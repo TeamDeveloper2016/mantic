@@ -24,7 +24,7 @@
         where      
           clave = '{clave}' and id_empresa = {idEmpresa}
       </select>
-      <select id="caja">
+      <select id="cajas">
         select      
           tc_mantic_cajas.id_caja as id_key,
           tc_mantic_cajas.*
@@ -2153,7 +2153,7 @@
         delte from tc_mantic_almacenes_ubicaciones where id_almacen={idAlmacen} 
       </delete>
     </unit>	    
-	    <unit id="TcManticCargosComprasDto">
+	  <unit id="TcManticCargosComprasDto">
       <select id="row">
         select      
           *
