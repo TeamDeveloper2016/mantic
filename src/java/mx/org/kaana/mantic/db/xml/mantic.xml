@@ -7,7 +7,34 @@
   </model>
 
   <dml>	
-   <unit id="TcManticListasPreciosDto">
+    <unit id="TcManticCajasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_cajas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_cajas
+        where      
+          clave = '{clave}' and id_empresa = {idEmpresa}
+      </select>
+      <select id="caja">
+        select      
+          tc_mantic_cajas.id_caja as id_key,
+          tc_mantic_cajas.*
+        from      
+          tc_mantic_cajas
+        where      
+          id_empresa in ({idEmpresa})
+      </select>
+    </unit>		
+    <unit id="TcManticListasPreciosDto">
       <select id="row">
         select      
           *
@@ -151,6 +178,27 @@
           id_cierre_retiro = {idCierreRetiro}
       </select>
     </unit>				
+    <unit id="TcManticCierresEstatusDto">
+      <select id="row">
+        select      
+          tc_mantic_cierres_estatus.id_cierre_estatus as id_key,
+				  tc_mantic_cierres_estatus.*
+        from      
+          tc_mantic_cierres_estatus
+        where 
+          {condicion} 
+				order by
+				  id_cierre_estatus
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_cierres_estatus
+        where      
+          id_cierre_estatus = {idCierreEstatus} and nombre = '{nombre}'
+      </select>
+    </unit>		
 		<unit id="TcManticRequisicionesBitacoraDto">
       <select id="row">
         select      
