@@ -45,6 +45,7 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 			this.orden.setConsecutivo(1L);
 			this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
 			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			this.orden.setIdAlmacen(JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
 		} // else	
 		if(loadDefault)
 			this.getArticulos().add(new Articulo(-1L));
