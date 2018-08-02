@@ -3207,7 +3207,7 @@
       </select>
 		</unit>
     <unit id="VistaAlmacenesTransferenciasDto">
-           <select id="row">
+      <select id="row">
         select 
           tc_mantic_transferencias.id_transferencia as id_key,
           tc_mantic_transferencias.id_transferencia,
@@ -3248,7 +3248,7 @@
         inner join 
 					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
         inner join
-           tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
+           tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1   
         inner join 
           tc_mantic_personas  on tc_mantic_transferencias.id_solicito = tc_mantic_personas.id_persona
         inner join 
@@ -3257,13 +3257,13 @@
         	tc_mantic_almacenes destino on tc_mantic_transferencias.id_destino = destino.id_almacen
         where 
           tc_mantic_empresas.id_empresa in ({idEmpresa}) and ((
-          (upper(tc_mantic_articulos_codigos.codigo) like upper('%{codigoArticulo}%') and tc_mantic_articulos_codigos.id_principal= 1)
+          (upper(tc_mantic_articulos_codigos.codigo) like upper('%{codigoArticulo}%'))
            and 
            upper(tc_mantic_articulos.nombre) like upper('%{nombreArticulo}%')	)
             or(((origen.clave like '%{clave}%' or origen.clave is null) or origen.nombre like '%{nombre}%'))
             or(((destino.clave like '%{clave}%' or destino.clave is null) or destino.nombre like '%{nombre}%')))		
         {sortOrder}
-      </select>  
+      </select>   
       <select id="porNombre">
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,

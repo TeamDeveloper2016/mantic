@@ -14,12 +14,12 @@
         'nombre': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, grupo: 'general'},
         'codigoArticulo': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, grupo: 'general'},
 				'nombreArticulo': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, grupo: 'general'},
-        'justificacion' : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true},
-        'estatus'       : {validaciones: 'libre', mascara: 'libre', grupo:'dialogo'}  
+        'justificacion' : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoDos', formatos: 'cambiar-mayusculas'},
+        'estatus'       : {validaciones: 'libre', mascara: 'libre', grupo:'dialogoDos'}  
       };
 			
 			function validaJustificacion(){
-				var ok= janal.partial('dialogo');
+				var ok= janal.partial('dialogoDos');
 				if(ok)
 					PF('dlgEstatus').hide();
 				return ok;
@@ -67,7 +67,7 @@
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:separator/>
-                  <p:menuitem icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doReporte('TRANSFERENCIAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                  <p:menuitem icon="fa fa-file-word-o" title="Reporte" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doReporte('TRANSFERENCIAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
@@ -76,7 +76,7 @@
                 <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
                 <p:separator/>
-                <p:menuitem icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doReporte('TRANSFERENCIAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                <p:menuitem icon="fa fa-file-word-o" title="Reporte" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doReporte('TRANSFERENCIAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>												
 						<p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{filtro.nombreOrigen}">

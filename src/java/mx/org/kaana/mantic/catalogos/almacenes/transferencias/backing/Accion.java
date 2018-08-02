@@ -309,6 +309,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		TcManticTransferenciasDto dto= null;
 		Transaccion transaccion      = null;
     UISelectEntity datosPersona  = null;
+    String regresar              = null;
 		try {
       if(this.transferencia != null)
         dto = this.transferencia;
@@ -324,8 +325,10 @@ public class Accion extends IBaseAttribute implements Serializable {
       dto.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdPersona());
       dto.setIdTransferenciaEstatus(1L);
 			transaccion= new Transaccion(dto, datosPersona.get("nombres").toString().concat(" ").concat(datosPersona.get("paterno").toString().concat(" ").concat(datosPersona.get("materno").toString())));
-			if(transaccion.ejecutar((EAccion) this.attrs.get("accion")))
+			if(transaccion.ejecutar((EAccion) this.attrs.get("accion"))){
+        regresar = "filtro".concat(Constantes.REDIRECIONAR);
 				JsfBase.addMessage("Se registró la transferencia de correcta", ETipoMensaje.INFORMACION);
+      }
 			else
 				JsfBase.addMessage("Ocurrió un error al registrar la transferencia", ETipoMensaje.ERROR);
 		} // try
@@ -333,7 +336,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return "filtro";
+		return regresar;
 	} // doAccion
   
   public String doCancelar() {
