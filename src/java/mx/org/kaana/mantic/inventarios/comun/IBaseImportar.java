@@ -96,6 +96,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 		StringBuilder temp= new StringBuilder();  
     File result       = null;		
 		Long fileSize     = 0L;
+		boolean isXml     = false;
 		try {
 			Calendar calendar= Calendar.getInstance();
 			calendar.setTimeInMillis(fechaFactura);
@@ -116,9 +117,10 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			result = new File(path.toString());
 			if (result.exists())
 				result.delete();			      
-			this.toWriteFile(result, event.getFile().getInputstream());
-			fileSize= event.getFile().getSize();
-			if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
+			isXml= event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name());
+			this.toWriteFile(result, event.getFile().getInputstream(), isXml);
+			fileSize= event.getFile().getSize();			
+			if(isXml) {
 			  this.xml= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.XML, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
 				this.toReadFactura(result, sinIva, tipoDeCambio);
 				this.attrs.put("xml", this.xml.getName());
@@ -138,20 +140,35 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 	} // doFileUpload	
 	
 	private void toWriteFile(File result, InputStream upload) throws Exception {
+		toWriteFile(result, upload, false);
+	} // toWriteFile
+	
+	private void toWriteFile(File result, InputStream upload, boolean xml) throws Exception {
 		FileOutputStream fileOutputStream= new FileOutputStream(result);
 		InputStream inputStream          = upload;
 		byte[] buffer                    = new byte[BUFFER_SIZE];
 		int bulk;
 		while(true) {
-			bulk= inputStream.read(buffer);
+			if(xml)
+			  bulk= inputStream.read();
+			else
+			  bulk= inputStream.read(buffer);
 			if (bulk < 0) 
 				break;        
-			fileOutputStream.write(buffer, 0, bulk);
-			fileOutputStream.flush();
+			if(xml){
+				if(bulk!= 13 && bulk!= 10){
+					fileOutputStream.write(bulk);
+					fileOutputStream.flush();
+				} // if
+			} // if
+			else{
+			  fileOutputStream.write(buffer, 0, bulk);
+			  fileOutputStream.flush();
+			} // else
 		} // while
 		fileOutputStream.close();
 		inputStream.close();
-	} 
+	} // toWriteFile 
 
 	private void toReadFactura(File file, Boolean sinIva, Double tipoDeCambio) throws Exception {
     Reader reader            = null;
