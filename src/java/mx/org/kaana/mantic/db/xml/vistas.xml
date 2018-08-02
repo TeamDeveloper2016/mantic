@@ -38,7 +38,7 @@
 					tc_mantic_empresas.clave as empresa,
 					tc_mantic_cajas.clave as caja,
 					if(tc_mantic_cierres.id_diferencias= 1, 'SI', 'NO') as diferencias,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usaurio,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
 					tc_mantic_cierres_estatus.nombre as estatus,
 					sum(tc_mantic_cierres_cajas.disponible) as disponible,
 					sum(tc_mantic_cierres_cajas.acumulado) as acumulado,
@@ -84,7 +84,7 @@
 					tc_mantic_cierres.id_cierre as id_key,
 					tc_mantic_empresas.id_empresa,
 					tc_mantic_empresas.clave as empresa,
-					tc_mantic_cajas.clave,
+					tc_mantic_cajas.clave as caja,
 					tc_mantic_cierres_retiros.consecutivo,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
 					tc_mantic_tipos_medios_pagos.nombre as medio,
@@ -111,7 +111,8 @@
 				inner join
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				where
-				  tc_mantic_cierres= {idCierre}
+				  tc_mantic_cierres.id_cierre= {idCierre}
+					and {condicion}
 				group by
 					tc_mantic_cierres.id_cierre,
 					tc_mantic_empresas.id_empresa,
@@ -126,8 +127,7 @@
 					tc_mantic_cajas.id_caja,
 					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
 					tc_mantic_cierres_cajas.id_cierre_caja
-				order by
-					tc_mantic_cierres_retiros.consecutivo				
+				{sortOrder}
 			</select>
 		</unit>
 		<unit id="VistaCreditosNotasDto">

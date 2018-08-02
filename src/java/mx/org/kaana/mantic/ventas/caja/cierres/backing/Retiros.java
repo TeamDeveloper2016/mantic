@@ -9,7 +9,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -25,19 +24,13 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
-import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
-import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
-import mx.org.kaana.mantic.enums.ETipoMovimiento;
 import org.primefaces.context.RequestContext;
 
-@Named(value = "manticVentasCajaCierresFiltro")
+@Named(value = "manticVentasCajaCierresRetiros")
 @ViewScoped
-public class Filtro extends IBaseFilter implements Serializable {
+public class Retiros extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;
 	private Reporte reporte;
@@ -49,9 +42,8 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre"));
-			toLoadCatalog();
-      if(this.attrs.get("idCierre")!= null) 
-			  this.doLoad();
+			this.toLoadCatalog();
+		  this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -64,20 +56,16 @@ public class Filtro extends IBaseFilter implements Serializable {
     List<Columna> columns     = null;
 		Map<String, Object> params= toPrepare();
     try {
-      params.put("sortOrder", "order by tc_mantic_cajas.registro desc ");
+      params.put("idCierre", this.attrs.get("idCierre"));
+      params.put("sortOrder", "order by tc_mantic_cierres_retiros.consecutivo ");
       columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("caja", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("disponible", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("acumulado", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("capturado", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
-      this.lazyModel = new FormatCustomLazy("VistaCierresCajasDto", params, columns);
+      columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.DIA_FECHA_HORA_CORTA));
+      this.lazyModel = new FormatCustomLazy("VistaCierresCajasDto", "retiros", params, columns);
       UIBackingUtilities.resetDataTable();
-			this.attrs.put("idCierre", null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -101,7 +89,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return "/Paginas/Mantic/Ventas/Caja/Cierres/accion".concat(Constantes.REDIRECIONAR);
+		return "/Paginas/Mantic/Ventas/Caja/Cierres/efectivo".concat(Constantes.REDIRECIONAR);
   } // doAccion  
 	
 	private Map<String, Object> toPrepare() {
@@ -109,16 +97,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 		StringBuilder sb= new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("idCierre")) && !this.attrs.get("idCierre").toString().equals("-1"))
   		sb.append("(tc_mantic_cierres.id_cierre=").append(this.attrs.get("idCierre")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idDiferencia")) && !this.attrs.get("idDiferencia").toString().equals("-1"))
-  		sb.append("(tc_mantic_cierres.id_diferencias =").append(this.attrs.get("consecutivo")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
 		  sb.append("(date_format(tc_mantic_cierres.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
 		  sb.append("(date_format(tc_mantic_cierres.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("idCaja")) && !this.attrs.get("idCaja").toString().equals("-1"))
   		sb.append("(tc_mantic_cajas.id_caja= ").append(this.attrs.get("idCaja")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idCierreEstatus")) && !this.attrs.get("idCierreEstatus").toString().equals("-1"))
-  		sb.append("(tc_mantic_cierres.id_cierre_estatus= ").append(this.attrs.get("idCierreEstatus")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
@@ -148,8 +132,6 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("cajas", (List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "cajas", params, columns));
 			this.attrs.put("idCaja", new UISelectEntity("-1"));
 			columns.remove(0);
-      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticCierresEstatusDto", "row", params, columns));
-			this.attrs.put("idCierreEstatus", new UISelectEntity("-1"));
     } // try
     catch (Exception e) {
       throw e;
@@ -173,62 +155,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.addMessage("Generar reporte","No se encontraron registros para el reporte", ETipoMensaje.ALERTA);
 		} // else
 	} // doVerificarReporte		
-	
-	public void doLoadEstatus(){
-		Entity seleccionado          = null;
-		Map<String, Object>params    = null;
-		List<UISelectItem> allEstatus= null;
-		try {
-			seleccionado= (Entity)this.attrs.get("seleccionado");
-			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_cierre_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
-			allEstatus= UISelect.build("TcManticCierresEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
-			this.attrs.put("allEstatus", allEstatus);
-			this.attrs.put("estatus", allEstatus.get(0));
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch
-		finally {
-			Methods.clean(params);
-		} // finally
-	} // doLoadEstatus
-	
-	public void doActualizarEstatus() {
-		Transaccion transaccion            = null;
-		TcManticOrdenesBitacoraDto bitacora= null;
-		Entity seleccionado                = null;
-		try {
-			seleccionado= (Entity)this.attrs.get("seleccionado");
-			TcManticOrdenesComprasDto orden= (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, seleccionado.getKey());
-			bitacora    = new TcManticOrdenesBitacoraDto(Long.valueOf(this.attrs.get("estatus").toString()), (String) this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), -1L, orden.getConsecutivo(), orden.getTotal());
-			transaccion = new Transaccion(orden, bitacora);
-			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
-				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta.", ETipoMensaje.INFORMACION);
-			else
-				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus.", ETipoMensaje.ERROR);
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch		
-		finally{
-			this.attrs.put("justificacion", "");
-		} // finally
-	}	// doActualizaEstatus
-	
-	public String doMovimientos() {
-		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.CIERRES_CAJA);
-		JsfBase.setFlashAttribute(ETipoMovimiento.CIERRES_CAJA.getIdKey(), ((Entity)this.attrs.get("seleccionado")).getKey());
-		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Ventas/Caja/Cierres/filtro");
-		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
-	}
 
-  public String doRetiros() {
-		JsfBase.setFlashAttribute("idCierre", ((Entity)this.attrs.get("seleccionado")).getKey());
-		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Ventas/Caja/Cierres/filtro");
-		return "/Paginas/Mantic/Ventas/Caja/Cierres/retiros".concat(Constantes.REDIRECIONAR);
-	}	
-	
+  public String doCancelar() {   
+  	JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+  } // doCancelar
+
 }

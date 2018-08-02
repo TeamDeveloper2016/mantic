@@ -4,6 +4,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import static mx.org.kaana.libs.formato.Fecha.DIA_FECHA_HORA_CORTA;
 import mx.org.kaana.libs.formato.Numero;
 
 /**
@@ -133,7 +134,7 @@ public enum EFormatoDinamicos implements IFormatosKajool {
           regresar = Fecha.formatear(Fecha.FECHA_HORA_EXTENDIDA, Fecha.getFechaHora(regresar));
           break;
         case DIA_FECHA_HORA_CORTA:
-          regresar = Fecha.formatear(Fecha.FECHA_HORA_EXTENDIDA, Fecha.getFechaHora(regresar));
+          regresar = Fecha.formatear(Fecha.DIA_FECHA_HORA_CORTA, Fecha.getFechaHora(regresar));
           break;
         case FECHA_HORA_ANTERIOR:
           Calendar anterior = Fecha.getFechaHora(regresar);
