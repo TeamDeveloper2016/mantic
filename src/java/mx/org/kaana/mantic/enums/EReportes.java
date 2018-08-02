@@ -27,7 +27,10 @@ public enum EReportes implements IReportAttribute{
 	REQUISICIONES("VistaReporteRequisiciones", "requisiciones", "Requisiciones", "/Paginas/Mantic/Catalogos/Proveedores/Requisiciones/Reportes/requisiciones", EFormatos.PDF, "requisiciones", "/Paginas/Mantic/Catalogos/Proveedores/Requisiciones/filtro"),
 	REQUISICIONES_DETALLE("VistaReporteRequisiciones", "requisicionDetalle", "Requisición", "/Paginas/Mantic/Catalogos/Proveedores/Requisiciones/Reportes/requisicionDetalle", EFormatos.PDF, "requisicion_detalle", "/Paginas/Mantic/Catalogos/Proveedores/Requisiciones/filtro"),
 	TRANSFERENCIAS("VistaAlmacenesTransferenciasDto", "row", "Transferencias", "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/Reportes/transferencias", EFormatos.PDF, "transferencias", "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/filtro"),
-	TRANSFERENCIAS_DETALLE("VistaReporteTransferenciasDto", "row", "Transferencia", "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/Reportes/transferenciasDetalle", EFormatos.PDF, "transferencias_detalle", "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/filtro");
+	TRANSFERENCIAS_DETALLE("VistaReporteTransferenciasDto", "row", "Transferencia", "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/Reportes/transferenciasDetalle", EFormatos.PDF, "transferencias_detalle", "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/filtro"),
+  VENTAS_A_CREDITO   ("VistaVentasDto", "lazy", "Ventas a credito", "/Paginas/Mantic/Ventas/Autorizacion/Reportes/ventasCredito", EFormatos.PDF, "ventas_a_credito", "/Paginas/Mantic/Ventas/Autorizacion/filtro"),
+	VENTA_A_CREDITO_DETALLE("VistaReporteVentasDetalle", "detalleVenta", "Venta a crédito", "/Paginas/Mantic/Ventas/Autorizacion/Reportes/ventaCreditoDetalle", EFormatos.PDF, "venta_a_credito_detalle", "/Paginas/Mantic/Ventas/Autorizacion/filtro");
+	
   
 	private final String proceso;
   private final String idXml;
