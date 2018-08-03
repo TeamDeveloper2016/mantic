@@ -269,4 +269,18 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
 		return regresar;
 	} // doDetalleArticulos
+	
+	public void doLoadDetalle(){
+		List<UISelectEntity> ticketsAbiertos= null;
+		UISelectEntity ticketAbierto        = null;
+		try {
+			ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
+			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
+			this.attrs.put("ventaDetalle", ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto)));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doLoadDetalle
 }
