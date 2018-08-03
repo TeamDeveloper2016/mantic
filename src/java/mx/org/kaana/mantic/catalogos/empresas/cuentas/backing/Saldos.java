@@ -210,4 +210,19 @@ public class Saldos extends IBaseFilter implements Serializable {
 		} // catch		
 		return regresar;
 	} // doImportar
+	
+	public String doModificar(){
+		String regresar= null;
+		try {
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/saldos");		
+			JsfBase.setFlashAttribute("idEmpresaDeuda",((Entity)this.attrs.get("seleccionado")).getKey());
+			JsfBase.setFlashAttribute("idEmpresa", ((Entity)this.attrs.get("seleccionado")).toString("idEmpresa"));
+			regresar= "prorroga".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		return regresar;
+	} // doModificar
 }
