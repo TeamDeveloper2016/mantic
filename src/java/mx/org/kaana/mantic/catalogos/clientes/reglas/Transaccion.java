@@ -23,7 +23,9 @@ import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.clientes.beans.RegistroCliente;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesArchivosDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesPagosArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticCreditosArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
@@ -43,7 +45,9 @@ public class Transaccion extends IBaseTnx {
   private String messageError;
 	private Importado file;
 	private TcManticClientesDto cliente;
+	private TcManticClientesDeudasDto clienteDeuda;
 	private Long representante;
+	private Long idClientePago;
 
 	public Transaccion(IBaseDto dto) {
 		this.dto = dto;
@@ -57,6 +61,12 @@ public class Transaccion extends IBaseTnx {
 		this.file         = file;
 		this.cliente      = cliente;
 		this.representante= representante;
+	}
+	
+	public Transaccion(Importado file, TcManticClientesDeudasDto clienteDeuda, Long idClientePago) {
+		this.file         = file;
+		this.clienteDeuda = clienteDeuda;
+		this.idClientePago= idClientePago;
 	}
 
   @Override
@@ -81,6 +91,10 @@ public class Transaccion extends IBaseTnx {
 				case REGISTRAR:
 					regresar= true;
 					toUpdateDeleteFile(sesion);
+					break;
+				case SUBIR:
+					regresar= true;
+					toUpdateDeleteFilePago(sesion);
 					break;
       } // switch
       if (!regresar) {
@@ -467,6 +481,33 @@ public class Transaccion extends IBaseTnx {
 				} // if
 				sesion.flush();
 				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("clientes").concat(this.file.getRuta()), ".".concat(this.file.getFormat().name()), this.toListFile(sesion, this.file, 2L));
+			} // if	
+  	} // if	
+	} // toUpdateDeleteXml
+	
+	protected void toUpdateDeleteFilePago(Session sesion) throws Exception {
+		TcManticClientesPagosArchivosDto tmp= null;
+		if(this.clienteDeuda.getIdClienteDeuda()!= -1L) {			
+			if(this.file!= null) {
+				tmp= new TcManticClientesPagosArchivosDto(
+					this.file.getRuta(),
+					this.file.getFileSize(),
+					JsfBase.getIdUsuario(),
+					2L,
+					1L,
+					this.file.getObservaciones(),
+					this.idClientePago,	
+					Configuracion.getInstance().getPropiedadSistemaServidor("cobros").concat(this.file.getRuta()).concat(this.file.getName()),
+					-1L,																				
+					this.file.getName()					
+				);
+				TcManticClientesPagosArchivosDto exists= (TcManticClientesPagosArchivosDto)DaoFactory.getInstance().toEntity(TcManticClientesPagosArchivosDto.class, "TcManticClientesPagosArchivosDto", "identically", tmp.toMap());
+				if(exists== null) {
+					DaoFactory.getInstance().updateAll(sesion, TcManticClientesPagosArchivosDto.class, tmp.toMap());
+					DaoFactory.getInstance().insert(sesion, tmp);
+				} // if
+				sesion.flush();
+				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("cobros").concat(this.file.getRuta()), ".".concat(this.file.getFormat().name()), this.toListFile(sesion, this.file, 2L));
 			} // if	
   	} // if	
 	} // toUpdateDeleteXml
