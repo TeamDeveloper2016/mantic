@@ -30,12 +30,14 @@ import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
@@ -67,6 +69,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 	
 	private Importado xml;
 	private Importado pdf;
+	private Importado file;			
 	private Emisor emisor;
 	private Receptor receptor;
 
@@ -86,7 +89,14 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 		return receptor;
 	}
 
-	
+	public Importado getFile() {
+		return file;
+	}
+
+	public void setFile(Importado file) {
+		this.file = file;
+	}
+		
 	protected void doFileUpload(FileUploadEvent event, Long fechaFactura, String carpeta, String clave) {
 		this.doFileUpload(event, fechaFactura, carpeta, clave, true, 1D);
 	}
@@ -132,7 +142,39 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 				} // if
 		} // try
 		catch (Exception e) {
-			mx.org.kaana.libs.formato.Error.mensaje(e);
+			Error.mensaje(e);
+			JsfBase.addMessage("Importar:", "El archivo no pudo ser importado !", ETipoMensaje.ERROR);
+			if(result!= null)
+			  result.delete();
+		} // catch
+	} // doFileUpload	
+	
+	public void doFileUpload(FileUploadEvent event, String clave, String propiedadServidor) {
+		StringBuilder path= new StringBuilder();  
+		StringBuilder temp= new StringBuilder();  
+    File result       = null;		
+		Long fileSize     = 0L;
+		try {			
+      path.append(Configuracion.getInstance().getPropiedadSistemaServidor(propiedadServidor));
+      temp.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
+      temp.append("/");
+      temp.append(clave);
+      temp.append("/");      
+			path.append(temp.toString());
+			result= new File(path.toString());		
+			if (!result.exists())
+				result.mkdirs();
+      path.append(event.getFile().getFileName().toUpperCase());
+			result = new File(path.toString());
+			if (result.exists())
+				result.delete();			      
+			this.toWriteFile(result, event.getFile().getInputstream());
+			fileSize= event.getFile().getSize();						
+			this.file= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
+  		this.attrs.put("file", this.file.getName()); 			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
 			JsfBase.addMessage("Importar:", "El archivo no pudo ser importado !", ETipoMensaje.ERROR);
 			if(result!= null)
 			  result.delete();
@@ -244,7 +286,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 				} // if	
 			} // try
 			catch (Exception e) {
-				mx.org.kaana.libs.formato.Error.mensaje(e);
+				Error.mensaje(e);
 				JsfBase.addMessageError(e);
 			} // catch
 			finally {
@@ -260,7 +302,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 	    regresar= new DefaultStreamedContent(stream, "application/pdf", this.pdf.getName());
 		} // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
 		return regresar;
@@ -276,18 +318,26 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 		    regresar= new DefaultStreamedContent(stream, EFormatos.PDF.getContent(), file.toString("nombre"));
 		} // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
 		return regresar;
 	}
 
-	public void doViewPdfDocument(UISelectEntity item) {
+	public void doViewFileDocument(UISelectEntity item) {
+		this.doViewPdfDocument(item);
+	}
+	
+	public void doViewPdfDocument(UISelectEntity item) { 
 		this.toCopyDocument(item.toString("alias"), item.toString("nombre"));
 	}
 	
 	protected void doViewDocument(String carpeta) {
 		this.toCopyDocument(carpeta.concat(this.pdf.getRuta()).concat(this.pdf.getName()), this.pdf.getName());
+	}
+	
+	protected void doViewDocumentFile(String carpeta) {
+		this.toCopyDocument(carpeta.concat(this.file.getRuta()).concat(this.file.getName()), this.file.getName());
 	}
 
 	public void doViewXmlDocument(UISelectEntity item) {
@@ -296,9 +346,9 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 
 	protected void doViewFile(String carpeta) {
 		this.toViewFile(carpeta.concat(this.xml.getRuta()).concat(this.xml.getName()));
-	}
+	}	
 	
-	private void toViewFile(String nameXml) {
+	protected void toViewFile(String nameXml) {
 		String regresar   = "";
 		String name       = nameXml;
     StringBuilder sb  = new StringBuilder("");
@@ -314,7 +364,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			regresar= this.prettyFormat(sb.toString().startsWith("<")? sb.toString(): sb.substring(3), 2);
 		} // try
 		catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
 		} // catch
 		finally {
@@ -346,12 +396,12 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
   private void toCopyDocument(String alias, String name) {
 		try {
   	  this.attrs.put("temporal", JsfBase.getContext().concat("/").concat(Constantes.RUTA_TEMPORALES).concat(name).concat("?pfdrid_c=true"));
-  		File file= new File(JsfBase.getRealPath(Constantes.RUTA_TEMPORALES).concat(name));
+  		File file= new File(JsfBase.getRealPath().concat(Constantes.RUTA_TEMPORALES).concat(name));
 	  	FileInputStream input= new FileInputStream(new File(alias));
       this.toWriteFile(file, input);		
 		} // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
 	}	
@@ -363,12 +413,12 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 				name= JsfBase.getContext().concat(name);
 			else
 				name= name.substring(0, name.lastIndexOf("?"));
-			File file= new File(JsfBase.getRealPath(name));
+			File file= new File(JsfBase.getRealPath().concat(name));
 			file.delete();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
-			mx.org.kaana.libs.formato.Error.mensaje(e);
+			Error.mensaje(e);
 		} // catch
 	}
 	
@@ -380,7 +430,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
-			mx.org.kaana.libs.formato.Error.mensaje(e);
+			Error.mensaje(e);
 		} // catch		
 	}
 
@@ -396,7 +446,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 		  this.attrs.put("importados", UIEntity.build(proceso, idXml, params, columns));
 		} // try
     catch (Exception e) {
-      mx.org.kaana.libs.formato.Error.mensaje(e);
+      Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
     finally {
