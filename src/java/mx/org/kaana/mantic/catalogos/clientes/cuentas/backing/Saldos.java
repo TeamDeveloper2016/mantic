@@ -294,4 +294,10 @@ public class Saldos extends IBaseFilter implements Serializable {
 			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
 		} // else
 	} // doVerificarReporte	
+	
+	public String doImportar() {
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Clientes/Cuentas/saldos");		
+		JsfBase.setFlashAttribute("idClienteDeuda",((Entity)this.attrs.get("seleccionado")).getKey());
+		return "importar".concat(Constantes.REDIRECIONAR);
+	}
 }
