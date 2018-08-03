@@ -149,6 +149,8 @@
 					<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">            
             <p:menuitem id="pago" icon="fa fa-money" value="Pago" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doPago}" process="@this tabla" />
 						<p:separator/>
+						<p:menuitem id="modificar" icon="fa fa-check" value="Modificar" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doModificar}" process="@this tabla" />
+						<p:separator/>
 						<p:menuitem id="importar" icon="fa fa-external-link" value="Importar" title="Importar identificacion de representante" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosEmpresasCuentasSaldos.doImportar}"/>
             <p:separator/>					
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doReporte('CUENTA_PAGAR_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
