@@ -159,6 +159,15 @@
         where      
           id_cierre_caja = {idCierreCaja}
       </select>
+      <select id="caja">
+        select      
+          *
+        from      
+          tc_mantic_cierres_cajas
+        where      
+          id_cierre= {idCierre}
+				  and id_tipo_medio_pago= 1
+      </select>
     </unit>
     <unit id="TcManticCierresRetirosDto">
       <select id="row">
