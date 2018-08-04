@@ -4,11 +4,14 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -17,12 +20,22 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas.Transaccion;
 
 @Named(value = "manticCatalogosEmpresasCuentasProrroga")
 @ViewScoped
 public class Prorroga extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;	
+	private Date prorroga;
+
+	public Date getProrroga() {
+		return prorroga;
+	}
+
+	public void setProrroga(Date prorroga) {
+		this.prorroga = prorroga;
+	}		
 	
   @PostConstruct
   @Override
@@ -49,6 +62,7 @@ public class Prorroga extends IBaseFilter implements Serializable {
 			params.put("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));			
 			params.put("sortOrder", this.attrs.get("sortOrder"));
 			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaEmpresasDto", "cuentas", params);
+			this.prorroga= deuda.toDate("limite");
 			this.attrs.put("deuda", deuda);
 		} // try
 		catch (Exception e) {
@@ -78,4 +92,47 @@ public class Prorroga extends IBaseFilter implements Serializable {
 			throw e;
 		} // catch		
 	} // loadTiposPagos
+	
+	public String doAceptar(){
+		String regresar        = null;
+		Transaccion transaccion= null;
+		Entity deuda           = null;
+		try {
+			if(validaImporte()){
+				deuda= (Entity) this.attrs.get("deuda");
+				transaccion= new Transaccion(deuda, this.prorroga);
+				if(transaccion.ejecutar(EAccion.MODIFICAR)){
+					JsfBase.addMessage("Modificar cuenta por pagar", "Se realizó la modificación de forma correcta", ETipoMensaje.INFORMACION);
+					regresar= "saldos".concat(Constantes.REDIRECIONAR);
+				} // if
+				else
+					JsfBase.addMessage("Modificar cuenta por pagar", "Ocurrió un error al realizar la modificación", ETipoMensaje.ERROR);
+			} // if
+			else
+				JsfBase.addMessage("Modificar cuenta por pagar", "Error al modificar la cuenta", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		return regresar;
+	} // doAceptar
+	
+	private boolean validaImporte(){
+		boolean regresar= false;
+		Entity deuda    = null;
+		Double importe  = null;
+		Double saldo  = null;
+		try {
+			deuda= (Entity) this.attrs.get("deuda");
+			importe= Double.valueOf(String.valueOf(deuda.get("importe")));
+			saldo= Double.valueOf(deuda.toString("saldo"));
+			regresar= importe >= saldo;
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		return regresar;
+	} // validaImporte
 }
