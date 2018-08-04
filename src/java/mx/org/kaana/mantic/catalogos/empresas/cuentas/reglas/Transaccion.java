@@ -2,10 +2,12 @@ package mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas;
 
 import java.io.File;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -27,6 +29,8 @@ public class Transaccion extends IBaseTnx{
 	private Importado xml;
 	private Importado pdf;
 	private Long idPago;
+	private Entity detalle;
+	private Date fecha;
 	
 	public Transaccion(TcManticEmpresasPagosDto pago) {
 		this.pago= pago;
@@ -37,6 +41,11 @@ public class Transaccion extends IBaseTnx{
 		this.pdf   = pdf;
 		this.xml   = xml;
 		this.idPago= idPago;
+	} // Transaccion
+
+	public Transaccion(Entity detalle, Date fecha) {
+		this.detalle= detalle;
+		this.fecha  = fecha;
 	} // Transaccion
 	
 	@Override
@@ -50,6 +59,9 @@ public class Transaccion extends IBaseTnx{
 				case REGISTRAR:
 					regresar= true;
 					toUpdateDeleteXml(sesion);
+					break;
+				case MODIFICAR:
+					regresar= actualizarDeuda(sesion);
 					break;
       } // switch
       if (!regresar) 
@@ -176,4 +188,47 @@ public class Transaccion extends IBaseTnx{
       } // for
 		} // if
 	} // toDeleteAll
+	
+	private boolean actualizarDeuda(Session sesion) throws Exception{
+		boolean regresar               = false;
+		TcManticEmpresasDeudasDto deuda= null;
+		Double importe                 = 0.0D;
+		try {
+			deuda= (TcManticEmpresasDeudasDto) DaoFactory.getInstance().findById(sesion, TcManticEmpresasDeudasDto.class, this.detalle.getKey());
+			if(deuda.isValid()){				
+				importe= Double.valueOf(String.valueOf(this.detalle.get("importe")));
+				deuda.setLimite(new java.sql.Date(this.fecha.getTime()));
+				deuda.setImporte(importe);
+				deuda.setSaldo(calculateSaldo(sesion, importe, this.detalle.getKey()));
+				regresar= DaoFactory.getInstance().update(sesion, deuda)>= 1L;
+			} // if
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
+		return regresar;
+	} // actualizarDeuda
+	
+	private Double calculateSaldo(Session sesion, Double importe, Long idEmpresaDeuda) throws Exception{
+		Double regresar          = 0.0D;
+		Double totalPagos        = 0.0D;
+		List<Entity>pagos        = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idEmpresaDeuda", idEmpresaDeuda);
+			pagos= DaoFactory.getInstance().toEntitySet(sesion, "VistaEmpresasDto", "pagosDeuda", params);
+			if(!pagos.isEmpty()){
+				for(Entity record: pagos)
+					totalPagos= totalPagos + record.toDouble("pago");
+				regresar= importe - totalPagos;
+			} // if
+			else
+				regresar= importe;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // calculateSaldo
 }
