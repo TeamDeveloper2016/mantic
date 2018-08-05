@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -17,6 +18,7 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -60,7 +62,6 @@ public class Retiros extends IBaseFilter implements Serializable {
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("caja", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.DIA_FECHA_HORA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaCierresCajasDto", "retiros", params, columns);
       UIBackingUtilities.resetDataTable();
@@ -108,5 +109,14 @@ public class Retiros extends IBaseFilter implements Serializable {
   	JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
     return "filtro".concat(Constantes.REDIRECIONAR);
   } // doCancelar
+	
+  public String getSuma() {
+		Double sum= 0D;
+		for (IBaseDto item: (List<IBaseDto>)lazyModel.getWrappedData()) {
+			Entity row= (Entity)item;
+			sum+= new Double(row.toString("importe"));
+		} // for
+	  return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, sum);
+	}	
 
 }

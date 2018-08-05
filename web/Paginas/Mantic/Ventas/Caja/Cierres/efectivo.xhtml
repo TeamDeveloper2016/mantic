@@ -31,7 +31,16 @@
      								<p:outputLabel for="idEmpresa" value="Empresa:"/>
 									</div>	
 									<div class="ui-grid-col-11">
-	   							  <p:inputText id="idEmpresa" styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresEfectivo.attrs.caja.toString('empresa')}" readonly="true"/>
+										<p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaCierresEfectivo.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+											<p:ajax event="change" listener="#{manticVentasCajaCierresEfectivo.doLoadCajas}" process="@this" update="idCaja"/>
+											<f:selectItems value="#{manticVentasCajaCierresEfectivo.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+											<p:column headerText="Clave">
+												<h:outputText value="#{item.clave}"/>
+											</p:column>   
+											<p:column headerText="Nombre">
+												<h:outputText value="#{item.nombre}"/>
+											</p:column>   
+										</p:selectOneMenu>
   	  						</div>	
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
@@ -39,7 +48,18 @@
 								    <p:outputLabel for="idCaja" value="Caja:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:inputText id="idCaja" styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresEfectivo.attrs.caja.toString('caja')}" readonly="true"/>
+										<p:selectOneMenu id="idCaja" value="#{manticVentasCajaCierresEfectivo.attrs.idCaja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="contains">
+											<f:selectItems value="#{manticVentasCajaCierresEfectivo.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+											<p:column headerText="Clave">
+												<h:outputText value="#{item.clave}"/>
+											</p:column>   
+											<p:column headerText="Nombre">
+												<h:outputText value="#{item.nombre}"/>
+											</p:column>   
+											<p:column styleClass="janal-column-right" headerText="Limite">
+												<h:outputText value="#{item.limite}"/>
+											</p:column>   
+										</p:selectOneMenu>
 									</div>		
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
@@ -63,7 +83,7 @@
 								    <p:outputLabel for="retiros" value="Retiros:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:inputText id="retiros" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaCierresEfectivo.doDecimalSat(manticVentasCajaCierresEfectivo.attrs.caja.acumulado)}" readonly="true"/>
+										<p:inputText id="retiros" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" value="#{manticVentasCajaCierresEfectivo.doDecimalSat(manticVentasCajaCierresEfectivo.attrs.retiros)}" readonly="true"/>
 									</div>		
 								</div>	
 								<div class="ui-grid-row janal-grid-row">

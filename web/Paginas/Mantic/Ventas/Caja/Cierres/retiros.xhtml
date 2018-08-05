@@ -71,26 +71,26 @@
               </f:facet>
               <h:outputText value="#{filtro['usuario']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
-              <f:facet name="header">
-                <h:outputText value="Importe"/>
-              </f:facet>
-              <h:outputText value="#{filtro['importe']}"/>
-            </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-20" sortBy="#{filtro.registro}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>
               <h:outputText value="#{filtro['registro']}"/>
             </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
+              <f:facet name="header">
+                <h:outputText value="Importe"/>
+              </f:facet>
+              <h:outputText value="#{manticVentasCajaCierresRetiros.doDecimalSat(filtro['importe'])}"/>
+            </p:column>		
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{manticVentasCajaCierresRetiros.lazyModel==null?0:manticVentasCajaCierresRetiros.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Suma de los retiros: &lt;strong&gt;#{manticVentasCajaCierresRetiros.suma}&lt;/strong&gt;     Total [#{manticVentasCajaCierresRetiros.lazyModel==null?0:manticVentasCajaCierresRetiros.lazyModel.rowCount}] registros" escape="false"/>
             </f:facet>
           </p:dataTable>
 					<hr class="ui-widget-content"/>
 					<div class="janal-line-button">
 						<div class="lg-pantalla">
-							<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticVentasCajaCierresRetiros.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+							<p:commandButton value="Regresar" icon="fa fa-reply" process="@this" action="#{manticVentasCajaCierresRetiros.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 						</div>		
 						<div class="xs-pantalla">
 							<p:commandButton title="Regresar" icon="fa fa-reply" process="@this" action="#{manticVentasCajaCierresRetiros.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
