@@ -3526,5 +3526,23 @@
           ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and id_cliente_pago = {idClientePago} and id_cliente_pago_archivo = {idClientePagoArchivo} and nombre = '{nombre}'
       </select>
     </unit>
+		<unit id="TcManticRequisicionesEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_requisiciones_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_requisiciones_estatus
+        where      
+          id_requisicion_estatus = {idRequisicionEstatus} and nombre = '{nombre}'
+      </select>
+    </unit>
   </dml>    
 </process>
