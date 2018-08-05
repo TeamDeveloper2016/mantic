@@ -27,7 +27,7 @@
 				inner join
 					tc_mantic_cajas on tc_mantic_cierres_cajas.id_caja= tc_mantic_cajas.id_caja
 				where
-					tc_mantic_cierres_bitacora.id_cierre= {idCierres}				
+					tc_mantic_cierres_bitacora.id_cierre= {idCierre}				
 				order by
 					tc_mantic_cierres_bitacora.registro desc
 			</select>
