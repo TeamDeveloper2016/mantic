@@ -3549,8 +3549,9 @@
     </unit>
 		<unit id="TcManticRequisicionesEstatusDto">
       <select id="row">
-        select      
-          *
+        select     
+					tc_mantic_requisiciones_estatus.id_requisicion_estatus as id_key,
+          tc_mantic_requisiciones_estatus.*
         from      
           tc_mantic_requisiciones_estatus
         where 
