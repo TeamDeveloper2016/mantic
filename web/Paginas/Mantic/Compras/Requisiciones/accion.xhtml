@@ -81,9 +81,9 @@
 								<p:outputLabel value="Solicita:"/>												
 								<p:inputText value="#{manticComprasRequisicionesAccion.attrs.solicita}" styleClass="janal-wid-100-txt" readonly="true"/>																				
 								<p:outputLabel value="Fecha pedido:"/>																		
-								<p:calendar value="#{manticComprasRequisicionesAccion.requisicion.fechaPedido}" locale="es" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt janal-column-right"/>																	
+								<p:calendar value="#{manticComprasRequisicionesAccion.requisicion.pedido}" locale="es" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt janal-column-right"/>																	
 								<p:outputLabel value="Fecha entrega:"/>																		
-								<p:calendar value="#{manticComprasRequisicionesAccion.requisicion.fechaEntregada}" locale="es" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt janal-column-right"/>																	
+								<p:calendar value="#{manticComprasRequisicionesAccion.requisicion.entrega}" locale="es" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt janal-column-right"/>																	
 								<p:outputLabel for="observaciones" value="Observaciones:"/>						
 								<p:inputTextarea id="observaciones" value="#{manticComprasRequisicionesAccion.requisicion.observaciones}" styleClass="janal-wid-100-txt"/>														
 							</p:panelGrid>									
