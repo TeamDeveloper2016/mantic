@@ -14,6 +14,7 @@ import mx.org.kaana.mantic.comun.beans.ArticuloDetalle;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticRequisicionesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -311,6 +312,18 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getCantidad(), 
 			this.getIdArticulo(),
 			-1L /*idVenta, */
+		);
+	}
+	
+	public TcManticRequisicionesDetallesDto toRequisicionDetalle() {
+		return new TcManticRequisicionesDetallesDto(			
+			-1L, /*idVenta, */
+			"",
+			this.getUnidadMedida(),
+			this.getCantidad(),
+			this.getIdArticulo(),
+			-1L,
+			this.getNombre()
 		);
 	}
 
