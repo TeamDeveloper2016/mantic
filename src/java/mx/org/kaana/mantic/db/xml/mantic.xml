@@ -33,6 +33,18 @@
         where      
           id_empresa in ({idEmpresa})
       </select>
+      <select id="lazy">
+        select      
+          tc_mantic_cajas.id_caja as id_key,
+          tc_mantic_cajas.*
+        from      
+          tc_mantic_cajas
+        where      
+          id_empresa in ({idEmpresa}) and 
+          upper(clave) like upper('%{clave}%') and
+          upper(nombre) like upper('%{nombre}%')
+        {sortOrder}
+      </select>
     </unit>		
     <unit id="TcManticListasPreciosDto">
       <select id="row">
