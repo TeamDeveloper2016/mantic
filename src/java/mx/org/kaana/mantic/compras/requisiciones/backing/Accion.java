@@ -1,7 +1,7 @@
 package mx.org.kaana.mantic.compras.requisiciones.backing;
 
 import java.io.Serializable;
-import java.sql.Date;
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -25,6 +25,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.compras.requisiciones.benas.Requisicion;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.compras.requisiciones.reglas.Transaccion;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
@@ -38,17 +39,17 @@ import org.primefaces.context.RequestContext;
 public class Accion extends IBaseArticulos implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
-	private TcManticRequisicionesDto requisicion;
+	private Requisicion requisicion;
 
 	public Accion() {
 		super("menudeo");
 	}
 
-	public TcManticRequisicionesDto getRequisicion() {
+	public Requisicion getRequisicion() {
 		return requisicion;
 	}
 
-	public void setRequisicion(TcManticRequisicionesDto requisicion) {
+	public void setRequisicion(Requisicion requisicion) {
 		this.requisicion = requisicion;
 	}
 	
@@ -81,14 +82,14 @@ public class Accion extends IBaseArticulos implements Serializable {
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
       switch (eaccion) {
         case AGREGAR:		
-					this.requisicion= new TcManticRequisicionesDto();
-					this.requisicion.setFechaPedido(new Date(Calendar.getInstance().getTimeInMillis()));
-					this.requisicion.setFechaEntregada(new Date(Calendar.getInstance().getTimeInMillis()));
+					this.requisicion= new Requisicion();
+					this.requisicion.setPedido(new Date(Calendar.getInstance().getTimeInMillis()));
+					this.requisicion.setEntrega(new Date(Calendar.getInstance().getTimeInMillis()));
           this.setAdminOrden(new AdminTickets(new TicketVenta(-1L)));
           break;
         case MODIFICAR:			
         case CONSULTAR:	
-					this.requisicion= (TcManticRequisicionesDto) DaoFactory.getInstance().findById(TcManticRequisicionesDto.class, Long.valueOf(this.attrs.get("idRequisicion").toString()));
+					this.requisicion= (Requisicion) DaoFactory.getInstance().findById(TcManticRequisicionesDto.class, Long.valueOf(this.attrs.get("idRequisicion").toString()));
           this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", this.attrs)));				
           break;
       } // switch
