@@ -15,8 +15,8 @@
         'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'idRequisicionEstatus' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'justificacion'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true},
-        'justificacionEliminar': {validaciones: 'requerido', mascara: 'libre', grupo: 'eliminar', formatos: 'cambiar-mayusculas', individual: true}
+        'justificacion'  : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true},
+        'justificacionEliminar': {validaciones: 'libre', mascara: 'libre', grupo: 'eliminar', formatos: 'cambiar-mayusculas', individual: true}
       };
 			
 			function validaJustificacion() {
@@ -90,6 +90,8 @@
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+                  <p:separator/>
+                  <p:menuitem icon="fa fa-file-word-o" title="Reporte" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
@@ -97,6 +99,8 @@
                 <p:separator/>
                 <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+                <p:separator/>
+                <p:menuitem icon="fa fa-file-word-o" title="Reporte" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>	            
             <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{filtro.empresa}">
@@ -152,7 +156,7 @@
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{!(manticComprasRequisicionesFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					
             <p:separator rendered="#{!(manticComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '6')}"/>					
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticComprasRequisicionesFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					            
-            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{(manticComprasRequisicionesFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					
+            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar" />					
           </p:contextMenu>
         </div>
       </div>
