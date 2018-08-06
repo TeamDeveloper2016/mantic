@@ -190,6 +190,14 @@
           id_cierre= {idCierre}
 				  and id_tipo_medio_pago= 1
       </select>
+      <select id="cajasConCierre">
+        select      
+          count(*) as total
+        from      
+          tc_mantic_cierres_cajas
+        where      
+          id_caja = {idCaja}
+      </select>
     </unit>
     <unit id="TcManticCierresRetirosDto">
       <select id="row">
