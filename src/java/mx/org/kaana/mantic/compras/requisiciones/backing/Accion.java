@@ -12,6 +12,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -21,17 +22,18 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
-import mx.org.kaana.mantic.compras.requisiciones.benas.Requisicion;
-import mx.org.kaana.mantic.ventas.beans.TicketVenta;
+import mx.org.kaana.mantic.compras.requisiciones.beans.RegistroRequisicion;
+import mx.org.kaana.mantic.compras.requisiciones.beans.TicketRequisicion;
 import mx.org.kaana.mantic.compras.requisiciones.reglas.Transaccion;
-import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
+import mx.org.kaana.mantic.compras.requisiciones.reglas.AdminTickets;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
-import mx.org.kaana.mantic.db.dto.TcManticRequisicionesDto;
 import org.primefaces.context.RequestContext;
 
 @Named(value= "manticComprasRequisicionesAccion")
@@ -39,26 +41,26 @@ import org.primefaces.context.RequestContext;
 public class Accion extends IBaseArticulos implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
-	private Requisicion requisicion;
+	private RegistroRequisicion registroRequisicion;	
 
 	public Accion() {
 		super("menudeo");
 	}
 
-	public Requisicion getRequisicion() {
-		return requisicion;
+	public RegistroRequisicion getRegistroRequisicion() {
+		return registroRequisicion;
 	}
 
-	public void setRequisicion(Requisicion requisicion) {
-		this.requisicion = requisicion;
-	}
+	public void setRegistroRequisicion(RegistroRequisicion registroRequisicion) {
+		this.registroRequisicion = registroRequisicion;
+	}	
 	
 	@PostConstruct
   @Override
   protected void init() {		
     try {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
-      this.attrs.put("idRequisicion", JsfBase.getFlashAttribute("idVenta")== null? -1L: JsfBase.getFlashAttribute("idRequisicion"));
+      this.attrs.put("idRequisicion", JsfBase.getFlashAttribute("idRequisicion")== null? -1L: JsfBase.getFlashAttribute("idRequisicion"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? null: JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
@@ -67,6 +69,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());					
 			this.attrs.put("nombreEmpresa", JsfBase.getAutentifica().getEmpresa().getNombre());
 			this.attrs.put("solicita", JsfBase.getAutentifica().getPersona().getNombreCompleto());
+			loadProveedores();
 			doLoad();
     } // try
     catch (Exception e) {
@@ -82,15 +85,15 @@ public class Accion extends IBaseArticulos implements Serializable {
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
       switch (eaccion) {
         case AGREGAR:		
-					this.requisicion= new Requisicion();
-					this.requisicion.setPedido(new Date(Calendar.getInstance().getTimeInMillis()));
-					this.requisicion.setEntrega(new Date(Calendar.getInstance().getTimeInMillis()));
-          this.setAdminOrden(new AdminTickets(new TicketVenta(-1L)));
+					this.registroRequisicion= new RegistroRequisicion();
+					this.registroRequisicion.getRequisicion().setPedido(new Date(Calendar.getInstance().getTimeInMillis()));
+					this.registroRequisicion.getRequisicion().setEntrega(new Date(Calendar.getInstance().getTimeInMillis()));
+          this.setAdminOrden(new AdminTickets(new TicketRequisicion(-1L)));					
           break;
         case MODIFICAR:			
         case CONSULTAR:	
-					this.requisicion= (Requisicion) DaoFactory.getInstance().findById(TcManticRequisicionesDto.class, Long.valueOf(this.attrs.get("idRequisicion").toString()));
-          this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", this.attrs)));				
+					this.registroRequisicion= new RegistroRequisicion(Long.valueOf(this.attrs.get("idRequisicion").toString()));					
+          this.setAdminOrden(new AdminTickets((TicketRequisicion)DaoFactory.getInstance().toEntity(TicketRequisicion.class, "TcManticRequisicionesDto", "detalle", this.attrs)));				
           break;
       } // switch
 			this.attrs.put("consecutivo", "");
@@ -106,19 +109,16 @@ public class Accion extends IBaseArticulos implements Serializable {
     String regresar        = null;
 		EAccion eaccion        = null;		
     try {			
-			loadOrdenVenta();
 			eaccion= (EAccion) this.attrs.get("accion");						
-			transaccion = new Transaccion(this.requisicion, this.getAdminOrden().getArticulos());
-			this.getAdminOrden().toAdjustArticulos();
+			transaccion = new Transaccion(this.registroRequisicion, this.getAdminOrden().getArticulos());
+			toAdjustArticulos();
 			if (transaccion.ejecutar(eaccion)) {
-				if(eaccion.equals(EAccion.AGREGAR)) {
- 				  regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
-    			RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 requisición', '"+ this.requisicion.getConsecutivo()+ "');");
-					this.init();
+				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
+				if(eaccion.equals(EAccion.AGREGAR)) { 				  
+    			RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 requisición', '"+ this.registroRequisicion.getRequisicion().getConsecutivo()+ "');");
 				} // if	
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el ticket de venta."), ETipoMensaje.INFORMACION);
-  			JsfBase.setFlashAttribute("idRequisicion", this.requisicion.getIdRequisicion());
-				RequestContext.getCurrentInstance().execute("userUpdate();");
+  			JsfBase.setFlashAttribute("idRequisicion", this.registroRequisicion.getRequisicion().getIdRequisicion());				
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar la requisición de compra.", ETipoMensaje.ERROR);      			
@@ -130,8 +130,23 @@ public class Accion extends IBaseArticulos implements Serializable {
     return regresar;
   } // doAccion
 
+	public void toAdjustArticulos() {
+		int count= 0;
+		while(count< getAdminOrden().getArticulos().size()) {
+			if(!getAdminOrden().getArticulos().get(count).isValid())
+				getAdminOrden().getArticulos().remove(count);
+			else
+				if(count> 0 && getAdminOrden().getArticulos().get(count- 1).getKey().equals(getAdminOrden().getArticulos().get(count).getKey())) {
+					getAdminOrden().getArticulos().get(count- 1).setCantidad(getAdminOrden().getArticulos().get(count- 1).getCantidad()+ getAdminOrden().getArticulos().get(count).getCantidad());
+					getAdminOrden().getArticulos().remove(count);
+				} // if
+				else
+				  count++;
+		} // while
+	}
+	
   public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idRequisicion", this.requisicion.getIdRequisicion());
+  	JsfBase.setFlashAttribute("idRequisicion", this.registroRequisicion.getRequisicion().getIdRequisicion());
     return this.attrs.get("retorno") != null ? (String)this.attrs.get("retorno") : "filtro";
   } // doCancelar			
 	
@@ -170,35 +185,54 @@ public class Accion extends IBaseArticulos implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
-	} // doReCalculatePreciosArticulos
-
+	} // doReCalculatePreciosArticulos	
+	
 	@Override
 	protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
-		UISelectEntity clienteSeleccion= null;		
-		String descuentoPivote         = null;
-		String descuentoVigente        = null;		
+		Articulo temporal= getAdminOrden().getArticulos().get(index);
+		Map<String, Object> params= new HashMap<>();
 		try {
-			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");
-			if(clienteSeleccion!= null && !clienteSeleccion.getKey().equals(-1L)){
-				descuentoVigente= toDescuentoVigente(articulo.toLong("idArticulo"), clienteSeleccion.getKey());				
-				if(descuentoVigente!= null){
-					descuentoPivote= getAdminOrden().getDescuento();
-					getAdminOrden().setDescuento(descuentoVigente);
-					super.toMoveData(articulo, index);			
-					getAdminOrden().setDescuento(descuentoPivote);
-				} // if
-				else
-					super.toMoveData(articulo, index);				
-			} // if
+			if(articulo.size()> 1) {
+				this.doSearchArticulo(articulo.toLong("idArticulo"), index);
+				params.put("idArticulo", articulo.toLong("idArticulo"));
+				params.put("idProveedor", getAdminOrden().getIdProveedor());
+				params.put("idAlmacen", getAdminOrden().getIdAlmacen());
+				temporal.setKey(articulo.toLong("idArticulo"));
+				temporal.setIdArticulo(articulo.toLong("idArticulo"));
+				temporal.setIdProveedor(getAdminOrden().getIdProveedor());
+				temporal.setIdRedondear(articulo.toLong("idRedondear"));
+				Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
+				temporal.setCodigo(codigo== null? "": codigo.toString());
+				temporal.setPropio(articulo.toString("propio"));
+				temporal.setNombre(articulo.toString("nombre"));
+				temporal.setValor(articulo.toDouble(getPrecio()));
+				temporal.setCosto(articulo.toDouble(getPrecio()));
+				temporal.setIva(articulo.toDouble("iva"));
+				temporal.setDescuento(getAdminOrden().getDescuento());
+				temporal.setExtras(getAdminOrden().getExtras());
+				temporal.setCantidad(1D);
+				temporal.setUltimo(this.attrs.get("ultimo")!= null);
+				temporal.setSolicitado(this.attrs.get("solicitado")!= null);
+				Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+				temporal.setStock(stock== null? 0D: stock.toDouble());
+				if(index== getAdminOrden().getArticulos().size()- 1) {
+					getAdminOrden().getArticulos().add(new Articulo(-1L));
+					RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (getAdminOrden().getArticulos().size()- 1)+ ");");
+				} // if	
+				RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");				
+			} // if	
 			else
-				super.toMoveData(articulo, index);				
-			RequestContext.getCurrentInstance().update("deudor");
+				temporal.setNombre("<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
 		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch	
+		finally {
+			Methods.clean(params);
+		} // finally
 	} // toMoveData
+	
+	@Override
+	public void doCalculate(Integer index) {
+		//this.adminOrden.toCalculate();
+	} // doCalculate
 	
 	private String toDescuentoVigente(Long idArticulo, Long idCliente) throws Exception{
 		MotorBusqueda motorBusqueda= null;
@@ -214,23 +248,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			throw e;			
 		} // catch		
 		return regresar;
-	} // toDescuentoVigente
-	
-	private void loadOrdenVenta(){		
-		UISelectEntity cliente = null;
-		try {
-			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");			
-			((TicketVenta)this.getAdminOrden().getOrden()).setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
-			((TicketVenta)this.getAdminOrden().getOrden()).setIdCliente(cliente.getKey());
-			((TicketVenta)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
-			((TicketVenta)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
-			((TicketVenta)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
-			((TicketVenta)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
-		} // try
-		catch (Exception e) {		
-			throw e;
-		} // catch		
-	} // loadOrdenVenta
+	} // toDescuentoVigente	
 	
 	public void doDetailArticulo(Long idArticulo, Integer index) {
 		MotorBusqueda motor= null;
@@ -284,4 +302,21 @@ public class Accion extends IBaseArticulos implements Serializable {
       Methods.clean(params);
     } // finally
 	} // doUpdateArticulos
+	
+	private void loadProveedores() {
+    List<UISelectItem> proveedores= null;
+    Map<String, Object> params    = null;
+    try {
+      params = new HashMap<>();
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      proveedores = UISelect.build("TcManticProveedoresDto", "sucursales", params, "razonSocial", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+      this.attrs.put("proveedoresGeneral", proveedores);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+  } // loadProveedores
 }

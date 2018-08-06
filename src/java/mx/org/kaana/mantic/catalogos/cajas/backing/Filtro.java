@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -34,6 +35,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("clave", "");
       this.attrs.put("nombre", "");        
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());      
+      this.attrs.put("isDeleted", isDeleted());
       this.attrs.put("sortOrder", "order by tc_mantic_cajas.clave");
     } // try
     catch (Exception e) {
@@ -48,10 +50,12 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
       campos = new ArrayList<>();
       campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));                 
-      campos.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));            
-      campos.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));            
-      campos.add(new Columna("limite", EFormatoDinamicos.MONEDA_SAT_DECIMALES));            
+      campos.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));                    
+      campos.add(new Columna("limite", EFormatoDinamicos.MONEDA_SAT_DECIMALES));   
+      campos.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
+      campos.add(new Columna("activa", EFormatoDinamicos.MAYUSCULAS));
       this.lazyModel = new FormatCustomLazy("TcManticCajasDto", "lazy", this.attrs, campos);
+      this.attrs.put("isDeleted", isDeleted());
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -81,16 +85,33 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Transaccion transaccion = null;
 		Entity seleccionado     = null;
 		try {
-			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			transaccion= new Transaccion(new TcManticCajasDto(seleccionado.getKey()));
-			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar Caja", "La caja se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
-			else
-				JsfBase.addMessage("Eliminar Caja", "Ocurrió un error al eliminar la caja.", ETipoMensaje.ERROR);								
+			seleccionado= (Entity) this.attrs.get("seleccionado");	
+      if(DaoFactory.getInstance().toField("TcManticCajasDto", "cuantas", this.attrs , "total").toInteger()>1){
+        transaccion= new Transaccion(new TcManticCajasDto(seleccionado.getKey()));
+        if(transaccion.ejecutar(EAccion.ELIMINAR))
+          JsfBase.addMessage("Eliminar Caja", "La caja se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
+        else
+          JsfBase.addMessage("Eliminar Caja", "Ocurrió un error al eliminar la caja.", ETipoMensaje.ERROR);		
+      }
+      else
+        JsfBase.addMessage("Eliminar Caja", "No puede existir menos de 1 caja por sucursal.", ETipoMensaje.ERROR);	
+      this.attrs.put("isDeleted", isDeleted());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch			
   } // doEliminar
+  
+  public boolean isDeleted() throws Exception{
+    boolean regresar = false;
+    try{
+      regresar = (DaoFactory.getInstance().toField("TcManticCajasDto", "cuantas", this.attrs , "total").toInteger()>1);
+    }
+    catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+    return regresar;
+  } 
 }

@@ -4,22 +4,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.compras.requisiciones.beans.RegistroRequisicion;
+import mx.org.kaana.mantic.compras.requisiciones.beans.RequisicionProveedor;
 import mx.org.kaana.mantic.db.dto.TcManticRequisicionesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticRequisicionesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticRequisicionesDto;
-import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
-import mx.org.kaana.mantic.enums.EEstatusVentas;
-import mx.org.kaana.mantic.ventas.beans.ClienteVenta;
+import mx.org.kaana.mantic.db.dto.TcManticRequisicionesProveedoresDto;
+import mx.org.kaana.mantic.enums.EEstatusRequisiciones;
 import org.apache.log4j.Logger;
 
 /**
@@ -33,9 +36,8 @@ import org.apache.log4j.Logger;
 public class Transaccion extends IBaseTnx {
 
   private static final Logger LOG  = Logger.getLogger(Transaccion.class);
-	private static final String VENTA= "VENTA";
 	private TcManticRequisicionesBitacoraDto bitacora;
-	private TcManticRequisicionesDto requisicion;	
+	private RegistroRequisicion requisicion;	
 	private List<Articulo> articulos;
 	private String messageError;	
 	private String justificacion;
@@ -45,19 +47,19 @@ public class Transaccion extends IBaseTnx {
 		this.bitacora= bitacora;
 	} // Transaccion
 	
-	public Transaccion(TcManticRequisicionesDto requisicion) {
+	public Transaccion(RegistroRequisicion requisicion) {
 		this(requisicion, "");
 	}
 	
-	public Transaccion(TcManticRequisicionesDto requisicion, String justificacion) {
+	public Transaccion(RegistroRequisicion requisicion, String justificacion) {
 		this(requisicion, new ArrayList<Articulo>(), justificacion);
 	} // Transaccion
 
-	public Transaccion(TcManticRequisicionesDto requisicion, List<Articulo> articulos) {
+	public Transaccion(RegistroRequisicion requisicion, List<Articulo> articulos) {
 		this(requisicion, articulos, "");
 	}
 	
-	public Transaccion(TcManticRequisicionesDto requisicion, List<Articulo> articulos, String justificacion) {
+	public Transaccion(RegistroRequisicion requisicion, List<Articulo> articulos, String justificacion) {
 		this.requisicion= requisicion;		
 		this.articulos  = articulos;
 	} // Transaccion
@@ -74,46 +76,48 @@ public class Transaccion extends IBaseTnx {
 		return idClienteNuevo;
 	}
 
-	public TcManticRequisicionesDto getRequisicion() {
+	public RegistroRequisicion getRequisicion() {
 		return requisicion;
 	}
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar          = false;
-		Map<String, Object> params= null;
-		Long idRequisicionEstatus       = null;
+		boolean regresar                       = false;
+		Map<String, Object> params             = null;
+		Long idRequisicionEstatus              = null;
+		TcManticRequisicionesDto bitRequisicion= null;
 		try {
-			idRequisicionEstatus= EEstatusVentas.ELABORADA.getIdEstatusVenta();
+			idRequisicionEstatus= EEstatusRequisiciones.ELABORADA.getIdEstatusRequisicion();
 			params= new HashMap<>();
 			if(this.requisicion!= null)
-				params.put("idVenta", this.requisicion.getIdRequisicion());
+				params.put("idRequisicion", this.requisicion.getRequisicion().getIdRequisicion());
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el ticket de venta.");
 			switch(accion) {
 				case AGREGAR:
 				case REGISTRAR:			
-					idRequisicionEstatus= accion.equals(EAccion.AGREGAR) ? EEstatusVentas.ABIERTA.getIdEstatusVenta() : idRequisicionEstatus;
-					regresar= this.requisicion.getIdRequisicion()!= null && !this.requisicion.getIdRequisicion().equals(-1L) ? actualizarVenta(sesion, idRequisicionEstatus) : registrarVenta(sesion, idRequisicionEstatus);					
+					idRequisicionEstatus= accion.equals(EAccion.AGREGAR) ? EEstatusRequisiciones.SOLICITADA.getIdEstatusRequisicion() : idRequisicionEstatus;
+					regresar= this.requisicion.getRequisicion().getIdRequisicion()!= null && !this.requisicion.getRequisicion().getIdRequisicion().equals(-1L) ? actualizarRequisicion(sesion, idRequisicionEstatus) : registrarVenta(sesion, idRequisicionEstatus);					
 					break;
 				case MODIFICAR:
-					regresar= actualizarVenta(sesion, EEstatusVentas.ABIERTA.getIdEstatusVenta());					
+					regresar= actualizarRequisicion(sesion, EEstatusRequisiciones.ELABORADA.getIdEstatusRequisicion());					
 					break;				
 				case ELIMINAR:
-					idRequisicionEstatus= EEstatusVentas.CANCELADA.getIdEstatusVenta();
-					this.requisicion.setIdRequisicionEstatus(idRequisicionEstatus);
-					if(DaoFactory.getInstance().update(sesion, this.requisicion)>= 1L)
-						regresar= registraBitacora(sesion, this.requisicion.getIdRequisicion(), idRequisicionEstatus, this.justificacion);					
+					idRequisicionEstatus= EEstatusRequisiciones.ELIMINADA.getIdEstatusRequisicion();
+					bitRequisicion= (TcManticRequisicionesDto) DaoFactory.getInstance().findById(TcManticRequisicionesDto.class, this.requisicion.getRequisicion().getIdRequisicion());
+					bitRequisicion.setIdRequisicionEstatus(idRequisicionEstatus);
+					if(DaoFactory.getInstance().update(sesion, bitRequisicion)>= 1L)
+						regresar= registraBitacora(sesion, this.requisicion.getRequisicion().getIdRequisicion(), idRequisicionEstatus, this.justificacion);					
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L){
-						this.requisicion= (TcManticRequisicionesDto) DaoFactory.getInstance().findById(sesion, TcManticRequisicionesDto.class, this.bitacora.getIdRequisicion());
-						this.requisicion.setIdRequisicionEstatus(this.bitacora.getIdRequisicionEstatus());
-						regresar= DaoFactory.getInstance().update(sesion, this.requisicion)>= 1L;
+						bitRequisicion= (TcManticRequisicionesDto) DaoFactory.getInstance().findById(sesion, TcManticRequisicionesDto.class, this.bitacora.getIdRequisicion());
+						bitRequisicion.setIdRequisicionEstatus(this.bitacora.getIdRequisicionEstatus());
+						regresar= DaoFactory.getInstance().update(sesion, bitRequisicion)>= 1L;
 					} // if
 					break;												
 				case REPROCESAR:
 				case COPIAR:
-					regresar= actualizarVenta(sesion, accion.equals(EAccion.REPROCESAR) ? EEstatusVentas.PAGADA.getIdEstatusVenta() : EEstatusVentas.CREDITO.getIdEstatusVenta());				
+					regresar= actualizarRequisicion(sesion, EEstatusRequisiciones.COTIZADA.getIdEstatusRequisicion());				
 					break;				
 			} // switch
 			if(!regresar)
@@ -124,7 +128,7 @@ public class Transaccion extends IBaseTnx {
 			throw new Exception(this.messageError.concat("\n\n")+ e.getMessage());
 		} // catch		
 		if(this.requisicion!= null)
-			LOG.info("Se genero de forma correcta la orden: "+ this.requisicion.getConsecutivo());
+			LOG.info("Se genero de forma correcta la orden: "+ this.requisicion.getRequisicion().getConsecutivo());
 		return regresar;
 	}	// ejecutar
 
@@ -133,16 +137,19 @@ public class Transaccion extends IBaseTnx {
 		Long consecutivo= -1L;
 		try {
 			consecutivo= this.toSiguiente(sesion);
-			this.requisicion.setConsecutivo(consecutivo.toString());
-			this.requisicion.setOrden(consecutivo);
-			this.requisicion.setIdRequisicionEstatus(idRequisicionEstatus);
-			this.requisicion.setEjercicio(new Long(Fecha.getAnioActual()));
-			this.requisicion.setIdSolicita(JsfBase.getAutentifica().getPersona().getIdPersona());
-			this.requisicion.setIdUsuario(JsfBase.getIdUsuario());
-			this.requisicion.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			regresar= DaoFactory.getInstance().insert(sesion, this.requisicion)>= 1L;
-			regresar= registraBitacora(sesion, this.requisicion.getIdRequisicion(), idRequisicionEstatus, "");
-			toFillArticulos(sesion);
+			this.requisicion.getRequisicion().setConsecutivo(consecutivo.toString());
+			this.requisicion.getRequisicion().setOrden(consecutivo);
+			this.requisicion.getRequisicion().setIdRequisicionEstatus(idRequisicionEstatus);
+			this.requisicion.getRequisicion().setEjercicio(new Long(Fecha.getAnioActual()));
+			this.requisicion.getRequisicion().setIdSolicita(JsfBase.getAutentifica().getPersona().getIdPersona());
+			this.requisicion.getRequisicion().setIdUsuario(JsfBase.getIdUsuario());
+			this.requisicion.getRequisicion().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			regresar= DaoFactory.getInstance().insert(sesion, this.requisicion.getRequisicion())>= 1L;
+			if(regresar){
+				registraRequisicionProveedor(sesion, this.requisicion.getRequisicion().getIdRequisicion());
+				regresar= registraBitacora(sesion, this.requisicion.getRequisicion().getIdRequisicion(), idRequisicionEstatus, "");
+				toFillArticulos(sesion);
+			} // if
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -150,15 +157,16 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // registrarVenta
 	
-	private boolean actualizarVenta(Session sesion, Long idRequisicionEstatus) throws Exception{
+	private boolean actualizarRequisicion(Session sesion, Long idRequisicionEstatus) throws Exception{
 		boolean regresar         = false;
 		Map<String, Object>params= null;
 		try {						
-			this.requisicion.setIdRequisicionEstatus(idRequisicionEstatus);						
-			regresar= DaoFactory.getInstance().update(sesion, this.requisicion)>= 1L;
-			if(registraBitacora(sesion, this.requisicion.getIdRequisicion(), idRequisicionEstatus, "")){
+			this.requisicion.getRequisicion().setIdRequisicionEstatus(idRequisicionEstatus);						
+			regresar= DaoFactory.getInstance().update(sesion, this.requisicion.getRequisicion())>= 1L;
+			if(registraBitacora(sesion, this.requisicion.getRequisicion().getIdRequisicion(), idRequisicionEstatus, "")){
 				params= new HashMap<>();
-				params.put("idRequisicion", this.requisicion.getIdRequisicion());
+				params.put("idRequisicion", this.requisicion.getRequisicion().getIdRequisicion());
+				registraRequisicionProveedor(sesion, this.requisicion.getRequisicion().getIdRequisicion());
 				regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticRequisicionesDetallesDto.class, params)>= 1;
 				toFillArticulos(sesion);
 			} // if
@@ -186,13 +194,13 @@ public class Transaccion extends IBaseTnx {
 	} // registrarBitacora
 	
 	private void toFillArticulos(Session sesion) throws Exception {
-		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticRequisicionesDetallesDto", "detalle", this.requisicion.toMap());
+		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticRequisicionesDetallesDto", "detalle", this.requisicion.getRequisicion().toMap());
 		for (Articulo item: todos) 
 			if(this.articulos.indexOf(item)< 0)
 				DaoFactory.getInstance().delete(sesion, item);
 		for (Articulo articulo: this.articulos) {
 			TcManticRequisicionesDetallesDto item= articulo.toRequisicionDetalle();
-			item.setIdRequisicion(this.requisicion.getIdRequisicion());
+			item.setIdRequisicion(this.requisicion.getRequisicion().getIdRequisicion());
 			if(DaoFactory.getInstance().findIdentically(sesion, TcManticRequisicionesDetallesDto.class, item.toMap())== null) 
 				DaoFactory.getInstance().insert(sesion, item);
 		} // for
@@ -204,7 +212,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params=new HashMap<>();
 			params.put("ejercicio", Fecha.getAnioActual());
-			params.put("idEmpresa", this.requisicion.getIdEmpresa());
+			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticRequisicionesDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
 				regresar= next.toLong();
@@ -217,4 +225,48 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
 	} // toSiguiente
+	
+	private boolean registraRequisicionProveedor(Session sesion, Long idRequisicion) throws Exception{
+		TcManticRequisicionesProveedoresDto dto= null;
+		ESql sqlAccion  = null;		
+		int count       = 0;
+		boolean validate= false;
+		boolean regresar= false;
+		try {
+			if(!this.requisicion.getProveedores().isEmpty()){
+				for(RequisicionProveedor requisicionProveedor: this.requisicion.getProveedores()){
+					requisicionProveedor.setIdRequisicion(idRequisicion);				
+					dto= (TcManticRequisicionesProveedoresDto) requisicionProveedor;				
+					sqlAccion= requisicionProveedor.getSqlAccion();
+					switch(sqlAccion){
+						case INSERT:
+							dto.setIdRequisicionProveedor(-1L);
+							validate= registrar(sesion, dto);
+							break;
+						case UPDATE:
+							validate= actualizar(sesion, dto);
+							break;
+					} // switch
+					if(validate)
+						count++;
+				} // for		
+				regresar= count== this.requisicion.getProveedores().size();
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			this.messageError= "Error al registrar articulos de proveedor, verifique que no haya duplicados";
+		} // finally
+		return regresar;
+	} // registraRequisicionProveedor
+	
+	private boolean registrar(Session sesion, IBaseDto dto) throws Exception{
+		return DaoFactory.getInstance().insert(sesion, dto) >= 1L;
+	} // registrar
+	
+	private boolean actualizar(Session sesion, IBaseDto dto) throws Exception{
+		return DaoFactory.getInstance().update(sesion, dto) >= 1L;
+	} // actualizar
 } 

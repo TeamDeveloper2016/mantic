@@ -74,18 +74,18 @@
 						<p:tab title="General">							
 							<p:panelGrid id="panelGeneral" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-90">
 								<p:outputLabel value="Consecutivo:"/>						
-								<p:inputText value="#{manticComprasRequisicionesAccion.requisicion.consecutivo}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+								<p:inputText value="#{manticComprasRequisicionesAccion.registroRequisicion.requisicion.consecutivo}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
 								<p:spacer/><p:separator/>
 								<p:outputLabel value="Empresa:"/>						
 								<p:inputText value="#{manticComprasRequisicionesAccion.attrs.nombreEmpresa}" styleClass="janal-wid-100-txt" readonly="true"/>
 								<p:outputLabel value="Solicita:"/>												
 								<p:inputText value="#{manticComprasRequisicionesAccion.attrs.solicita}" styleClass="janal-wid-100-txt" readonly="true"/>																				
 								<p:outputLabel value="Fecha pedido:"/>																		
-								<p:calendar value="#{manticComprasRequisicionesAccion.requisicion.pedido}" locale="es" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt janal-column-right"/>																	
+								<p:calendar value="#{manticComprasRequisicionesAccion.registroRequisicion.requisicion.pedido}" locale="es" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt janal-column-right"/>																	
 								<p:outputLabel value="Fecha entrega:"/>																		
-								<p:calendar value="#{manticComprasRequisicionesAccion.requisicion.entrega}" locale="es" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt janal-column-right"/>																	
+								<p:calendar value="#{manticComprasRequisicionesAccion.registroRequisicion.requisicion.entrega}" locale="es" pattern="dd/MM/yyyy" styleClass="janal-wid-100-txt janal-column-right"/>																	
 								<p:outputLabel for="observaciones" value="Observaciones:"/>						
-								<p:inputTextarea id="observaciones" value="#{manticComprasRequisicionesAccion.requisicion.observaciones}" styleClass="janal-wid-100-txt"/>														
+								<p:inputTextarea id="observaciones" value="#{manticComprasRequisicionesAccion.registroRequisicion.requisicion.observaciones}" styleClass="janal-wid-100-txt"/>														
 							</p:panelGrid>									
 						</p:tab>
 						<p:tab title="Articulos">
@@ -140,47 +140,25 @@
 										</f:facet>
 										<h:outputText id="nombres" value="[#{row['codigo']}] #{row['nombre']}" title="Código propio: #{row['propio']}    Existencias almacen: #{row['stock']}" escape="false"/>
 									</p:column>		
-									<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+									<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 										<f:facet name="header">
 											<h:outputText value="Cantidad"/>
 										</f:facet>
 										<p:outputLabel value="#{row['cantidad']}"/>
 										<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
-									</p:column>		
-									<p:column class="MarAuto Responsive janal-wid-10">
-										<f:facet name="header">
-											<h:outputText value="Precio"/>
-										</f:facet>
-										<div class="ui-grid-row janal-grid-row">
-											<div class="ui-grid-col-12 janal-column-right" style="padding-right: 14px;">
-												<p:outputLabel value="#{row['costo']}"/>
-												<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
-												<p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>
-											</div>	 
-											<div style="width: 10px; margin-left: -4px; margin-top: 1px;">
-												<h:outputText value="#{row['costoMayorMenor']}" escape="false"/>
-											 </div>
-										</div>	
-									</p:column>		
+									</p:column>																				
 									<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
-										<f:facet name="header">
-											<h:outputText value="% Descuento"/>
-										</f:facet>
-										<p:outputLabel value="#{row['descuento']}"/>
-										<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'));" style="display: none"/>
-									</p:column>		
-									<p:column class="janal-column-right MarAuto Responsive janal-wid-5">
 										<f:facet name="header">
 											<h:outputText value="Unidad medida"/>
 										</f:facet>
 										<p:outputLabel value="#{row['unidadMedida']}"/>
-									</p:column>		
-									<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+									</p:column>											
+									<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 										<f:facet name="header">
-											<h:outputText value="$ Importe"/>
+											<h:outputText value="Propio"/>
 										</f:facet>
-										<p:outputLabel value="#{row['importe$']}"/>
-									</p:column>		
+										<p:outputLabel value="#{row['propio']}"/>
+									</p:column>											
 									<f:facet name="footer">
 										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="Total articulos: #{manticComprasRequisicionesAccion.adminOrden.totales.articulos}"/>
 									</f:facet>
@@ -188,7 +166,23 @@
 							</p:panelGrid>
 						</p:tab>
 						<p:tab title="Proveedores">
-							
+							<p:panelGrid id="panelTablaRequisicionesProveedores" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
+								<p:dataTable id="tablaRequisicionesProveedores" var="requisicionProveedor" value="#{manticComprasRequisicionesAccion.registroRequisicion.proveedores}" rows="6" paginator="false" reflow="true" rowKey="#{requisicionProveedor.key}" emptyMessage=" " styleClass="paginated">												
+									<p:column headerText="Proveedor">										
+										<p:selectOneMenu id="proveedorPrecioSugerido#{requisicionProveedor.key}" styleClass="janal-wid-100-txt" value="#{requisicionProveedor.idProveedor}" filter="true" filterMatchMode="contains">
+											<f:selectItems value="#{manticComprasRequisicionesAccion.attrs.proveedoresGeneral}"/>
+										</p:selectOneMenu> 				
+									</p:column>																						
+									 <p:column style="width:32px;text-align: center">
+										 <p:commandButton update="tablaRequisicionesProveedores" icon="fa fa-close" title="Eliminar" action="#{manticComprasRequisicionesAccion.registroRequisicion.doEliminarRequisicionProveedor}" styleClass="janal-text-white">
+											 <f:setPropertyActionListener value="#{requisicionProveedor}" target="#{manticComprasRequisicionesAccion.registroRequisicion.proveedorSeleccion}" />
+										</p:commandButton>
+									</p:column>
+									<f:facet name="footer">
+										<p:commandButton actionListener="#{manticComprasRequisicionesAccion.registroRequisicion.doAgregarRequisicionProveedor}" process="@this tablaRequisicionesProveedores" update="tablaRequisicionesProveedores" icon="fa fa-plus" styleClass="janal-text-white"/>						
+									</f:facet>
+								</p:dataTable>	
+							</p:panelGrid>
 						</p:tab>
 					</p:tabView>
 				</div>
