@@ -28,6 +28,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.Reportes.reglas.ParametrosComunes;
 import mx.org.kaana.mantic.compras.requisiciones.beans.RegistroRequisicion;
 import mx.org.kaana.mantic.compras.requisiciones.beans.Requisicion;
 import mx.org.kaana.mantic.compras.requisiciones.reglas.Transaccion;
@@ -174,38 +175,49 @@ public class Filtro extends IBaseFilter implements Serializable {
     }// finally
 	}
 	
-	public void doReporte() throws Exception {
-		Map<String, Object>params    = null;
+	public void doReporte(String nombre) throws Exception{
+    ParametrosComunes parametrosComunes = null;
 		Map<String, Object>parametros= null;
+    Map<String, Object>params    = null;
 		EReportes reporteSeleccion   = null;
-		try{				
-			reporteSeleccion= EReportes.ORDEN_COMPRA;
-			this.reporte= JsfBase.toReporte();
-			params= new HashMap<>();
-			params.put("idRequisicion", ((Entity)this.attrs.get("seleccionado")).getKey());			
-			parametros= new HashMap<>();
-			parametros.put("REPORTE_EMPRESA", JsfBase.getAutentifica().getEmpresa().getNombreCorto());
-		  parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
-			parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
-			parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
-			this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
-			doVerificarReporte();
-			this.reporte.doAceptar();			
-		} // try
-		catch(Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
+    Entity seleccionado          = null;
+		try{		
+      params= toPrepare();	
+      seleccionado = ((Entity)this.attrs.get("seleccionado"));
+      if(seleccionado != null)
+        params.put("idRequisicion", seleccionado.getKey());
+      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
+      params.put("sortOrder", "order by tc_mantic_requisiciones.id_empresa, tc_mantic_requisiciones.ejercicio, tc_mantic_requisiciones.orden");
+      reporteSeleccion= EReportes.valueOf(nombre);
+      parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.reporte= JsfBase.toReporte();	
+      parametros= parametrosComunes.getParametrosComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+      if(doVerificarReporte())
+        this.reporte.doAceptar();			
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
     } // catch	
-	} // doReporte
-	
-	public void doVerificarReporte() {
+  } // doReporte
+  
+  public boolean doVerificarReporte() {
+    boolean regresar = false;
 		RequestContext rc= RequestContext.getCurrentInstance();
-		if(this.reporte.getTotal()> 0L)
+		if(this.reporte.getTotal()> 0L){
 			rc.execute("start(" + this.reporte.getTotal() + ")");		
+      regresar = true;
+    }
 		else{
-			rc.execute("generalHide()");		
-			JsfBase.addMessage("Generar reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+			rc.execute("generalHide();");		
+			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+      regresar = false;
 		} // else
+    return regresar;
 	} // doVerificarReporte		
 	
 	public void doLoadEstatus(){
