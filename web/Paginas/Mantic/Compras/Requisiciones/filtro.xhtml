@@ -15,7 +15,8 @@
         'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'idRequisicionEstatus' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'justificacion'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
+        'justificacion'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true},
+        'justificacionEliminar': {validaciones: 'requerido', mascara: 'libre', grupo: 'eliminar', formatos: 'cambiar-mayusculas', individual: true}
       };
 			
 			function validaJustificacion() {
@@ -181,9 +182,9 @@
   <ui:define name="detalleConfirmacion">
     <p:panelGrid layout="grid" columns="2">
       <p:outputLabel value="No. requisición:"/>
-      <p:outputLabel value="#{manticComprasRequisicionesFiltro.attrs.seleccionado.consecutivo}"/>
-      <p:outputLabel value="Justificación:"/>
-      <p:inputTextarea value="#{manticComprasRequisicionesFiltro.attrs.justificacionEliminar}"/>
-    </p:panelGrid>			
+      <p:outputLabel value="#{manticComprasRequisicionesFiltro.attrs.seleccionado.consecutivo}"/>      
+    </p:panelGrid>
+		<p:outputLabel value="Justificación:"/>
+    <p:inputTextarea id="justificacionEliminar" value="#{manticComprasRequisicionesFiltro.attrs.justificacionEliminar}" styleClass="janal-wid-100-txt"/>
   </ui:define>
 </ui:composition>
