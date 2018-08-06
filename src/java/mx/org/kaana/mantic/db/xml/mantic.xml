@@ -10,7 +10,8 @@
     <unit id="TcManticCajasDto">
       <select id="row">
         select      
-          *
+          tc_mantic_cajas.id_caja as id_key,
+          tc_mantic_cajas.*
         from      
           tc_mantic_cajas
         where 
@@ -24,6 +25,14 @@
         where      
           clave = '{clave}' and id_empresa = {idEmpresa}
       </select>
+      <select id="cuantas">
+        select      
+          count(*) as total
+        from      
+          tc_mantic_cajas
+        where      
+          id_empresa in ({idEmpresa}) and id_activa = 1
+      </select>
       <select id="cajas">
         select      
           tc_mantic_cajas.id_caja as id_key,
@@ -36,7 +45,8 @@
       <select id="lazy">
         select      
           tc_mantic_cajas.id_caja as id_key,
-          tc_mantic_cajas.*
+          tc_mantic_cajas.*,
+          if(tc_mantic_cajas.id_activa= 1, 'SI', 'NO') as activa
         from      
           tc_mantic_cajas
         where      
