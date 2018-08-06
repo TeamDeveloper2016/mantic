@@ -102,9 +102,10 @@ public class Transaccion extends IBaseTnx {
 					regresar= actualizarRequisicion(sesion, EEstatusRequisiciones.ELABORADA.getIdEstatusRequisicion());					
 					break;				
 				case ELIMINAR:
-					idRequisicionEstatus= EEstatusRequisiciones.CANCELADA.getIdEstatusRequisicion();
-					this.requisicion.getRequisicion().setIdRequisicionEstatus(idRequisicionEstatus);
-					if(DaoFactory.getInstance().update(sesion, this.requisicion.getRequisicion())>= 1L)
+					idRequisicionEstatus= EEstatusRequisiciones.ELIMINADA.getIdEstatusRequisicion();
+					bitRequisicion= (TcManticRequisicionesDto) DaoFactory.getInstance().findById(TcManticRequisicionesDto.class, this.requisicion.getRequisicion().getIdRequisicion());
+					bitRequisicion.setIdRequisicionEstatus(idRequisicionEstatus);
+					if(DaoFactory.getInstance().update(sesion, bitRequisicion)>= 1L)
 						regresar= registraBitacora(sesion, this.requisicion.getRequisicion().getIdRequisicion(), idRequisicionEstatus, this.justificacion);					
 					break;
 				case JUSTIFICAR:
