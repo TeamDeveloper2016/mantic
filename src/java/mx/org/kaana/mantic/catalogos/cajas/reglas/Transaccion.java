@@ -14,7 +14,7 @@ public class Transaccion extends IBaseTnx{
 	public Transaccion(TcManticCajasDto caja) {
 		this.caja= caja;
 	}
-	
+  
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
 		 boolean regresar= false;
@@ -27,7 +27,7 @@ public class Transaccion extends IBaseTnx{
           regresar= DaoFactory.getInstance().update(sesion, this.caja)>= 1L;
           break;
         case ELIMINAR:
-          regresar= DaoFactory.getInstance().delete(sesion, this.caja)>= 1L;;
+          regresar= DaoFactory.getInstance().delete(sesion, this.caja)>= 1L;
           break;				
       } // switch
       if (!regresar) 
