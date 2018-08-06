@@ -28,10 +28,11 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.compras.requisiciones.beans.RegistroRequisicion;
+import mx.org.kaana.mantic.compras.requisiciones.beans.Requisicion;
 import mx.org.kaana.mantic.compras.requisiciones.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticRequisicionesBitacoraDto;
-import mx.org.kaana.mantic.db.dto.TcManticRequisicionesDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import org.primefaces.context.RequestContext;
 
@@ -52,7 +53,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
+      this.attrs.put("idRequisicion", JsfBase.getFlashAttribute("idRequisicion"));
       this.attrs.put("sortOrder", "order by tc_mantic_requisiciones.id_empresa, tc_mantic_requisiciones.ejercicio, tc_mantic_requisiciones.orden");
 			toLoadCatalog();      
     } // try
@@ -68,11 +69,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Map<String, Object> params= toPrepare();
     try {
       columns = new ArrayList<>();
-      columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
+      columns.add(new Columna("fechaEntregada", EFormatoDinamicos.FECHA_CORTA));      
+      columns.add(new Columna("fechaPedido", EFormatoDinamicos.FECHA_CORTA));      
       this.lazyModel = new FormatCustomLazy("VistaRequisicionesDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
@@ -92,7 +93,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Compras/Requisiciones/filtro");		
-			JsfBase.setFlashAttribute("idVenta", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+			JsfBase.setFlashAttribute("idRequisicion", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -102,11 +103,13 @@ public class Filtro extends IBaseFilter implements Serializable {
   } // doAccion  
 	
   public void doEliminar() {
-		Transaccion transaccion = null;
-		Entity seleccionado     = null;
+		Transaccion transaccion        = null;
+		Entity seleccionado            = null;
+		RegistroRequisicion requisicion= null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			transaccion= new Transaccion(new TcManticRequisicionesDto(seleccionado.getKey()), this.attrs.get("justificacionEliminar").toString());
+			requisicion= new RegistroRequisicion(new Requisicion(seleccionado.getKey()), new ArrayList<>());
+			transaccion= new Transaccion(requisicion, this.attrs.get("justificacionEliminar").toString());
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Eliminar", "La requisición de compra se ha eliminado correctamente.", ETipoMensaje.ERROR);
 			else
@@ -123,13 +126,13 @@ public class Filtro extends IBaseFilter implements Serializable {
 		StringBuilder sb= new StringBuilder();
 		UISelectEntity estatus= (UISelectEntity) this.attrs.get("idRequisicionEstatus");
 		if(!Cadena.isVacio(this.attrs.get("idRequisicion")) && !this.attrs.get("idRequisicion").toString().equals("-1"))
-  		sb.append("(tc_mantic_requisiciones.id_requisicion=").append(this.attrs.get("idVenta")).append(") and ");
+  		sb.append("(tc_mantic_requisiciones.id_requisicion=").append(this.attrs.get("idRequisicion")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_mantic_requisiciones.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_mantic_requisiciones.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+		  sb.append("(date_format(tc_mantic_requisiciones.fecha_pedido, '%Y%m%d') = '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_mantic_requisiciones.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+		  sb.append("(date_format(tc_mantic_requisiciones.fecha_entregada, '%Y%m%d') = '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
 		if(estatus!= null && !estatus.getKey().equals(-1L))
   		sb.append("(tc_mantic_requisiciones.id_requisicion_estatus= ").append(estatus.getKey()).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
@@ -179,7 +182,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			reporteSeleccion= EReportes.ORDEN_COMPRA;
 			this.reporte= JsfBase.toReporte();
 			params= new HashMap<>();
-			params.put("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());			
+			params.put("idRequisicion", ((Entity)this.attrs.get("seleccionado")).getKey());			
 			parametros= new HashMap<>();
 			parametros.put("REPORTE_EMPRESA", JsfBase.getAutentifica().getEmpresa().getNombreCorto());
 		  parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
@@ -213,7 +216,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_venta_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
-			allEstatus= UISelect.build("TcManticVentasEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
+			allEstatus= UISelect.build("TcManticRequisicionesEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
 			this.attrs.put("estatus", allEstatus.get(0));
 		} // try
