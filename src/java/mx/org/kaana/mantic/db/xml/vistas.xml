@@ -3479,5 +3479,36 @@
 				  tc_mantic_articulos_codigos.codigo
 			</select>
     </unit>
+		<unit id="VistaRequisicionesDto">
+			<select id="lazy">
+        select
+					tc_mantic_requisiciones.id_requisicion as id_key,
+					tc_mantic_requisiciones.id_empresa,  
+				  tc_mantic_empresas.clave as empresa,  
+				  tc_mantic_empresas.nombre as nombre_empresa,  
+					tc_mantic_requisiciones.consecutivo,  															
+				  tc_mantic_requisiciones_estatus.nombre as estatus,
+					tc_mantic_requisiciones.id_requisicion_estatus,
+					tc_mantic_requisiciones.registro,
+					tc_mantic_requisiciones.observaciones,
+					tc_mantic_requisiciones.fecha_pedido,
+					tc_mantic_requisiciones.fecha_entregada,
+					tc_mantic_requisiciones_estatus.estatus_asociados, 					
+					tc_mantic_personas.cuenta,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre					          
+				from 
+					tc_mantic_requisiciones				
+				inner join 
+					tc_mantic_empresas on tc_mantic_requisiciones.id_empresa= tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_requisiciones_estatus on tc_mantic_requisiciones.id_requisicion_estatus=tc_mantic_requisiciones_estatus.id_requisicion_estatus				
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_mantic_requisiciones.id_solicita
+				where
+					tc_mantic_requisiciones.id_empresa in ({idEmpresa})
+					and {condicion}
+				{sortOrder}
+			</select>
+		</unit>
 	</dml>    
 </process>
