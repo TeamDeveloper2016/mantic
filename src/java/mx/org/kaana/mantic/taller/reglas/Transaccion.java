@@ -14,6 +14,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosDetallesDto;
@@ -29,6 +30,9 @@ public class Transaccion extends IBaseTnx{
 	private IBaseDto dto;
   private RegistroServicio registroServicio;
   private String messageError;
+	private List<Articulo> articulos;
+	private Long idServicio;
+	private Long idTrabajo;
 
 	public Transaccion(IBaseDto dto) {
 		this.dto = dto;
@@ -37,6 +41,12 @@ public class Transaccion extends IBaseTnx{
   public Transaccion(RegistroServicio registroServicio) {
     this.registroServicio = registroServicio;
   }
+
+	public Transaccion(List<Articulo> articulos, Long idServicio, Long idTrabajo) {
+		this.articulos = articulos;
+		this.idServicio= idServicio;
+		this.idTrabajo = idTrabajo;
+	}
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
@@ -67,10 +77,13 @@ public class Transaccion extends IBaseTnx{
 						regresar= DaoFactory.getInstance().update(sesion, servicio)>= 1L;
 					} // if
 					break;
+				case COMPLEMENTAR:
+					regresar= registrarDetalle(sesion);
+					break;
       } // switch
       if (!regresar) {
         throw new Exception("");
-      }
+      } // if
     } // try
     catch (Exception e) {
       throw new Exception(this.messageError.concat("\n\n")+ e.getMessage());
@@ -263,5 +276,28 @@ public class Transaccion extends IBaseTnx{
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	}
+	} // toSiguiente
+	
+	private boolean registrarDetalle(Session sesion) throws Exception{
+		boolean regresar    = false;
+		List<Articulo> todos= null;
+		try {
+			todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticServiciosDetallesDto", "detalle", new TcManticServiciosDto(this.idServicio).toMap());
+			for (Articulo item: todos) 
+				if(this.articulos.indexOf(item)< 0)
+					DaoFactory.getInstance().delete(sesion, item);
+			for (Articulo articulo: this.articulos) {
+				TcManticServiciosDetallesDto item= articulo.toServicioDetalle();
+				item.setIdServicio(this.idServicio);
+				item.setIdTrabajo(this.idTrabajo);
+				item.setIdUsuario(JsfBase.getIdUsuario());
+				if(DaoFactory.getInstance().findIdentically(sesion, TcManticServiciosDetallesDto.class, item.toMap())== null) 
+					DaoFactory.getInstance().insert(sesion, item);
+			} // for
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // registrarDetalle
 }

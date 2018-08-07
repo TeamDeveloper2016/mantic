@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -36,6 +30,8 @@ public class TrManticVentaMedioPagoDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Column (name="id_tipo_medio_pago")
   private Long idTipoMedioPago;
+  @Column (name="id_caja")
+  private Long idCaja;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="observaciones")
@@ -60,12 +56,13 @@ public class TrManticVentaMedioPagoDto implements IBaseDto, Serializable {
   }
 
   public TrManticVentaMedioPagoDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, null, null);
+    this(null, null, null, null, new Long(-1L), null, null, null, null);
     setKey(key);
   }
 
-  public TrManticVentaMedioPagoDto(Long idTipoMedioPago, Long idUsuario, String observaciones, Long idVentaMedioPago, Long idVenta, Double importe, Long idBanco, String referencia) {
+  public TrManticVentaMedioPagoDto(Long idTipoMedioPago, Long idCaja, Long idUsuario, String observaciones, Long idVentaMedioPago, Long idVenta, Double importe, Long idBanco, String referencia) {
     setIdTipoMedioPago(idTipoMedioPago);
+    setIdCaja(idCaja);
     setIdUsuario(idUsuario);
     setObservaciones(observaciones);
     setIdVentaMedioPago(idVentaMedioPago);
@@ -82,6 +79,14 @@ public class TrManticVentaMedioPagoDto implements IBaseDto, Serializable {
 
   public Long getIdTipoMedioPago() {
     return idTipoMedioPago;
+  }
+
+  public void setIdCaja(Long idCaja) {
+    this.idCaja = idCaja;
+  }
+
+  public Long getIdCaja() {
+    return idCaja;
   }
 
   public void setIdUsuario(Long idUsuario) {
@@ -165,6 +170,8 @@ public class TrManticVentaMedioPagoDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getIdTipoMedioPago());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdCaja());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
@@ -188,6 +195,7 @@ public class TrManticVentaMedioPagoDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
+		regresar.put("idCaja", getIdCaja());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idVentaMedioPago", getIdVentaMedioPago());
@@ -202,7 +210,7 @@ public class TrManticVentaMedioPagoDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdTipoMedioPago(), getIdUsuario(), getObservaciones(), getIdVentaMedioPago(), getIdVenta(), getImporte(), getIdBanco(), getReferencia(), getRegistro()
+    getIdTipoMedioPago(), getIdCaja(), getIdUsuario(), getObservaciones(), getIdVentaMedioPago(), getIdVenta(), getImporte(), getIdBanco(), getReferencia(), getRegistro()
     };
     return regresar;
   }
