@@ -7,7 +7,151 @@
   </model>
 
   <dml>	
-    <unit id="TcManticCajasDto">
+    <unit id="TcManticApartadosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_apartados
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_apartados
+        where      
+          id_apartado = {idApartado}
+      </select>
+    </unit>		
+    <unit id="TcManticApartadosBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_apartados_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_apartados_bitacora
+        where      
+          id_apartado_bitacora = {idApartadoBitacora} and id_apartado_estatus = {idApartadoEstatus} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>
+    <unit id="TcManticApartadosEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_apartados_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_apartados_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+    <unit id="TcManticApartadosPagosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_apartados_pagos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_apartados_pagos
+        where      
+          id_apartado = {idApartado} and pago = {pago} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>
+    <unit id="TcManticGarantiasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_garantias
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_garantias
+        where      
+          consecutivo = {consecutivo} and id_venta = {idVenta}
+      </select>
+    </unit>
+    <unit id="TcManticGarantiasBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_garantias_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_garantias_bitacora
+        where      
+          id_garantia = {idGarantia} and id_garantia_estatus = {idGarantiaEstatus} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>
+    <unit id="TcManticGarantiasDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_garantias_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_garantias_detalles
+        where      
+          id_garantia = {idGarantia} and id_venta_detalle = {idVentaDetalle}
+      </select>
+    </unit>
+    <unit id="TcManticGarantiasEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_garantias_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_garantias_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>
+		<unit id="TcManticCajasDto">
       <select id="row">
         select      
           tc_mantic_cajas.id_caja as id_key,

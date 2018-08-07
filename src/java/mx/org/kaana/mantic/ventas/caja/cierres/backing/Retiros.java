@@ -9,6 +9,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -23,6 +24,8 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Transaccion;
+import mx.org.kaana.mantic.db.dto.TcManticCierresRetirosDto;
 import org.primefaces.context.RequestContext;
 
 @Named(value = "manticVentasCajaCierresRetiros")
@@ -90,6 +93,23 @@ public class Retiros extends IBaseFilter implements Serializable {
 		} // catch
 		return "efectivo".concat(Constantes.REDIRECIONAR);
   } // doAccion  
+	
+  public void doEliminar() {
+		Transaccion transaccion = null;
+		Entity seleccionado     = null;
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");			
+			transaccion= new Transaccion((Long)this.attrs.get("idCierre"), (TcManticCierresRetirosDto)DaoFactory.getInstance().findById(TcManticCierresRetirosDto.class, seleccionado.toLong("idCierreRetiro")));
+			if(transaccion.ejecutar(EAccion.ELIMINAR))
+				JsfBase.addMessage("Eliminar", "El retiro de efectivo se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
+			else
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el retiro de efectivo.", ETipoMensaje.ALERTA);								
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
+  } // doEliminar  
 	
 	public void doReporte(String nombre) throws Exception {
 

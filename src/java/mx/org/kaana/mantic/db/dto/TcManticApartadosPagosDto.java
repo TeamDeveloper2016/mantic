@@ -30,58 +30,60 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_mantic_cierres_retiros")
-public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
+@Table(name="tc_mantic_apartados_pagos")
+public class TcManticApartadosPagosDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Column (name="consecutivo")
-  private String consecutivo;
-  @Column (name="id_usuario")
-  private Long idUsuario;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_cierre_retiro")
-  private Long idCierreRetiro;
+	@Column (name="id_apartado_pago")
+  private Long idApartadoPago;
+  @Column (name="id_tipo_medio_pago")
+  private Long idTipoMedioPago;
+  @Column (name="id_usuario")
+  private Long idUsuario;
   @Column (name="observaciones")
   private String observaciones;
-  @Column (name="id_cierre_caja")
-  private Long idCierreCaja;
-  @Column (name="orden")
-  private Long orden;
-  @Column (name="importe")
-  private Double importe;
-  @Column (name="ejercicio")
-  private Long ejercicio;
+  @Column (name="id_apartado")
+  private Long idApartado;
+  @Column (name="pago")
+  private Double pago;
   @Column (name="registro")
   private Timestamp registro;
 
-  public TcManticCierresRetirosDto() {
+  public TcManticApartadosPagosDto() {
     this(new Long(-1L));
   }
 
-  public TcManticCierresRetirosDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null, null, null);
+  public TcManticApartadosPagosDto(Long key) {
+    this(new Long(-1L), null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticCierresRetirosDto(String consecutivo, Long idUsuario, Long idCierreRetiro, String observaciones, Long idCierreCaja, Long orden, Double importe, Long ejercicio) {
-    setConsecutivo(consecutivo);
+  public TcManticApartadosPagosDto(Long idApartadoPago, Long idTipoMedioPago, Long idUsuario, String observaciones, Long idApartado, Double pago) {
+    setIdApartadoPago(idApartadoPago);
+    setIdTipoMedioPago(idTipoMedioPago);
     setIdUsuario(idUsuario);
-    setIdCierreRetiro(idCierreRetiro);
     setObservaciones(observaciones);
-    setIdCierreCaja(idCierreCaja);
-    setOrden(orden);
-    setImporte(importe);
-    setEjercicio(ejercicio);
+    setIdApartado(idApartado);
+    setPago(pago);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
-  public void setConsecutivo(String consecutivo) {
-    this.consecutivo = consecutivo;
+  public void setIdApartadoPago(Long idApartadoPago) {
+    this.idApartadoPago = idApartadoPago;
   }
 
-  public String getConsecutivo() {
-    return consecutivo;
+  public Long getIdApartadoPago() {
+    return idApartadoPago;
+  }
+
+  public void setIdTipoMedioPago(Long idTipoMedioPago) {
+    this.idTipoMedioPago = idTipoMedioPago;
+  }
+
+  public Long getIdTipoMedioPago() {
+    return idTipoMedioPago;
   }
 
   public void setIdUsuario(Long idUsuario) {
@@ -92,14 +94,6 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
-  public void setIdCierreRetiro(Long idCierreRetiro) {
-    this.idCierreRetiro = idCierreRetiro;
-  }
-
-  public Long getIdCierreRetiro() {
-    return idCierreRetiro;
-  }
-
   public void setObservaciones(String observaciones) {
     this.observaciones = observaciones;
   }
@@ -108,36 +102,20 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
     return observaciones;
   }
 
-  public void setIdCierreCaja(Long idCierreCaja) {
-    this.idCierreCaja = idCierreCaja;
+  public void setIdApartado(Long idApartado) {
+    this.idApartado = idApartado;
   }
 
-  public Long getIdCierreCaja() {
-    return idCierreCaja;
+  public Long getIdApartado() {
+    return idApartado;
   }
 
-  public void setOrden(Long orden) {
-    this.orden = orden;
+  public void setPago(Double pago) {
+    this.pago = pago;
   }
 
-  public Long getOrden() {
-    return orden;
-  }
-
-  public void setImporte(Double importe) {
-    this.importe = importe;
-  }
-
-  public Double getImporte() {
-    return importe;
-  }
-
-  public void setEjercicio(Long ejercicio) {
-    this.ejercicio = ejercicio;
-  }
-
-  public Long getEjercicio() {
-    return ejercicio;
+  public Double getPago() {
+    return pago;
   }
 
   public void setRegistro(Timestamp registro) {
@@ -151,33 +129,29 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdCierreRetiro();
+  	return getIdApartadoPago();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idCierreRetiro = key;
+  	this.idApartadoPago = key;
   }
 
   @Override
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getConsecutivo());
+		regresar.append(getIdApartadoPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoMedioPago());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdCierreRetiro());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdCierreCaja());
+		regresar.append(getIdApartado());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getOrden());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getImporte());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getEjercicio());
+		regresar.append(getPago());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -187,14 +161,12 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("consecutivo", getConsecutivo());
+		regresar.put("idApartadoPago", getIdApartadoPago());
+		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
 		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("idCierreRetiro", getIdCierreRetiro());
 		regresar.put("observaciones", getObservaciones());
-		regresar.put("idCierreCaja", getIdCierreCaja());
-		regresar.put("orden", getOrden());
-		regresar.put("importe", getImporte());
-		regresar.put("ejercicio", getEjercicio());
+		regresar.put("idApartado", getIdApartado());
+		regresar.put("pago", getPago());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -202,7 +174,7 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getConsecutivo(), getIdUsuario(), getIdCierreRetiro(), getObservaciones(), getIdCierreCaja(), getOrden(), getImporte(), getEjercicio(), getRegistro()
+    getIdApartadoPago(), getIdTipoMedioPago(), getIdUsuario(), getObservaciones(), getIdApartado(), getPago(), getRegistro()
     };
     return regresar;
   }
@@ -216,8 +188,8 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idCierreRetiro~");
-    regresar.append(getIdCierreRetiro());
+    regresar.append("idApartadoPago~");
+    regresar.append(getIdApartadoPago());
     regresar.append("|");
     return regresar.toString();
   }
@@ -225,18 +197,18 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdCierreRetiro());
+    regresar.append(getIdApartadoPago());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcManticCierresRetirosDto.class;
+    return TcManticApartadosPagosDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdCierreRetiro()!= null && getIdCierreRetiro()!=-1L;
+  	return getIdApartadoPago()!= null && getIdApartadoPago()!=-1L;
   }
 
   @Override
@@ -247,8 +219,8 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcManticCierresRetirosDto other = (TcManticCierresRetirosDto) obj;
-    if (getIdCierreRetiro() != other.idCierreRetiro && (getIdCierreRetiro() == null || !getIdCierreRetiro().equals(other.idCierreRetiro))) {
+    final TcManticApartadosPagosDto other = (TcManticApartadosPagosDto) obj;
+    if (getIdApartadoPago() != other.idApartadoPago && (getIdApartadoPago() == null || !getIdApartadoPago().equals(other.idApartadoPago))) {
       return false;
     }
     return true;
@@ -257,7 +229,7 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdCierreRetiro() != null ? getIdCierreRetiro().hashCode() : 0);
+    hash = 67 * hash + (getIdApartadoPago() != null ? getIdApartadoPago().hashCode() : 0);
     return hash;
   }
 

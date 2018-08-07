@@ -24,7 +24,8 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.inventarios.creditos.reglas.Transaccion;
+import mx.org.kaana.mantic.db.dto.TcManticCierresRetirosDto;
+import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Transaccion;
 import org.primefaces.context.RequestContext;
 
 /**
@@ -53,6 +54,7 @@ public class Efectivo extends IBaseAttribute implements Serializable {
       this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre")== null? -1L: JsfBase.getFlashAttribute("idCierre"));
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
+      this.attrs.put("importe", 0.0);
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -62,20 +64,23 @@ public class Efectivo extends IBaseAttribute implements Serializable {
   } // init
 
   public void doLoad() {
+		Value cierre= null;
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
-			this.caja    = (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "caja", this.attrs);
-			Value retiros= (Value)DaoFactory.getInstance().toField("VistaCierresCajasDto", "saldo", this.attrs, "retiros");
+			if(JsfBase.getFlashAttribute("idCierre")== null) {
+				this.toLoadEmpresas();
+				cierre= (Value)DaoFactory.getInstance().toField("VistaCierresCajasDto", "cierre", this.attrs, "idKey");
+				if(cierre!= null)
+					this.attrs.put("idCierre", cierre.toLong());
+				this.caja= (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "caja", this.attrs);
+			} // if	
+			else {
+				this.caja= (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "caja", this.attrs);
+				this.toLoadEmpresas();
+			} // if
       this.attrs.put("caja", this.caja);
+			Value retiros= (Value)DaoFactory.getInstance().toField("VistaCierresCajasDto", "saldo", this.attrs, "retiros");
       this.attrs.put("retiros", retiros!= null? retiros.toDouble(): 0D);
-			this.toLoadEmpresas();
-      switch (this.accion) {
-        case AGREGAR:				
-          break;
-        case MODIFICAR:					
-        case CONSULTAR:					
-          break;
-      } // switch
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -87,7 +92,9 @@ public class Efectivo extends IBaseAttribute implements Serializable {
     Transaccion transaccion= null;
     String regresar        = null;
     try {			
-			transaccion = new Transaccion(null, null);
+			TcManticCierresRetirosDto retiro= new TcManticCierresRetirosDto(-1L);
+			retiro.setImporte((Double)this.attrs.get("importe"));
+			transaccion = new Transaccion((Long)this.attrs.get("idCierre"), retiro);
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);

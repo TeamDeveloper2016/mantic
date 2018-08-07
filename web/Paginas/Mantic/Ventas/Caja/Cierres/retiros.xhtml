@@ -20,7 +20,9 @@
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-content" class="ui-grid-col-12">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticVentasCajaCierresRetiros.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticVentasCajaCierresRetiros.lazyModel.rowCount gt manticVentasCajaCierresRetiros.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticVentasCajaCierresRetiros.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticVentasCajaCierresRetiros.lazyModel.rowCount gt manticVentasCajaCierresRetiros.lazyModel.pageSize}"  selection="#{manticVentasCajaCierresRetiros.attrs.seleccionado}" selectionMode="single" rowIndexVar="index" reflow="true">
+            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">
@@ -87,6 +89,9 @@
               <p:outputLabel value="Suma de los retiros: &lt;strong&gt;#{manticVentasCajaCierresRetiros.suma}&lt;/strong&gt;     Total [#{manticVentasCajaCierresRetiros.lazyModel==null?0:manticVentasCajaCierresRetiros.lazyModel.rowCount}] registros" escape="false"/>
             </f:facet>
           </p:dataTable>
+          <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+            <p:menuitem id="eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" disabled="#{manticVentasCajaCierresRetiros.attrs.seleccionado.importe gt 0}"/>
+          </p:contextMenu>					
 					<hr class="ui-widget-content"/>
 					<div class="janal-line-button">
 						<div class="lg-pantalla">
@@ -101,4 +106,18 @@
 		</div>		
   </ui:define>   
   <ui:param name="componenteBloqueo" value="tabla"/>
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el retiro de efectivo ?" />
+  <ui:param name="accionConfirmacion" value="#{manticVentasCajaCierresRetiros}"/>
+  <ui:param name="updateComponent" value="tabla"/>
+  <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
+  <ui:param name="renderedConfirmacion" value="true"/>	
+  <ui:define name="detalleConfirmacion">
+    <p:panelGrid layout="grid" columns="2">
+      <p:outputLabel value="Consucutivo:"/>
+      <p:outputLabel value="#{manticComprasOrdenesFiltro.attrs.seleccionado.consecutivo}"/>
+      <p:outputLabel value="Importe:"/>
+      <p:outputLabel value="$ #{manticComprasOrdenesFiltro.attrs.seleccionado.importe}"/>
+    </p:panelGrid>			
+  </ui:define>
+	
 </ui:composition>

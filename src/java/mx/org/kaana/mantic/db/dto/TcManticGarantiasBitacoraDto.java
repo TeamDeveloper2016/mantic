@@ -30,58 +30,71 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
  */
 
 @Entity
-@Table(name="tc_mantic_cierres_retiros")
-public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
+@Table(name="tc_mantic_garantias_bitacora")
+public class TcManticGarantiasBitacoraDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
+  @Column (name="id_garantia")
+  private Long idGarantia;
   @Column (name="consecutivo")
-  private String consecutivo;
+  private Long consecutivo;
+  @Column (name="justificacion")
+  private String justificacion;
   @Column (name="id_usuario")
   private Long idUsuario;
+  @Column (name="id_garantia_estatus")
+  private Long idGarantiaEstatus;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_cierre_retiro")
-  private Long idCierreRetiro;
-  @Column (name="observaciones")
-  private String observaciones;
-  @Column (name="id_cierre_caja")
-  private Long idCierreCaja;
-  @Column (name="orden")
-  private Long orden;
+	@Column (name="id_garantia_bitacora")
+  private Long idGarantiaBitacora;
   @Column (name="importe")
   private Double importe;
-  @Column (name="ejercicio")
-  private Long ejercicio;
   @Column (name="registro")
   private Timestamp registro;
 
-  public TcManticCierresRetirosDto() {
+  public TcManticGarantiasBitacoraDto() {
     this(new Long(-1L));
   }
 
-  public TcManticCierresRetirosDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null, null, null);
+  public TcManticGarantiasBitacoraDto(Long key) {
+    this(null, null, null, null, null, new Long(-1L), null);
     setKey(key);
   }
 
-  public TcManticCierresRetirosDto(String consecutivo, Long idUsuario, Long idCierreRetiro, String observaciones, Long idCierreCaja, Long orden, Double importe, Long ejercicio) {
+  public TcManticGarantiasBitacoraDto(Long idGarantia, Long consecutivo, String justificacion, Long idUsuario, Long idGarantiaEstatus, Long idGarantiaBitacora, Double importe) {
+    setIdGarantia(idGarantia);
     setConsecutivo(consecutivo);
+    setJustificacion(justificacion);
     setIdUsuario(idUsuario);
-    setIdCierreRetiro(idCierreRetiro);
-    setObservaciones(observaciones);
-    setIdCierreCaja(idCierreCaja);
-    setOrden(orden);
+    setIdGarantiaEstatus(idGarantiaEstatus);
+    setIdGarantiaBitacora(idGarantiaBitacora);
     setImporte(importe);
-    setEjercicio(ejercicio);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
-  public void setConsecutivo(String consecutivo) {
+  public void setIdGarantia(Long idGarantia) {
+    this.idGarantia = idGarantia;
+  }
+
+  public Long getIdGarantia() {
+    return idGarantia;
+  }
+
+  public void setConsecutivo(Long consecutivo) {
     this.consecutivo = consecutivo;
   }
 
-  public String getConsecutivo() {
+  public Long getConsecutivo() {
     return consecutivo;
+  }
+
+  public void setJustificacion(String justificacion) {
+    this.justificacion = justificacion;
+  }
+
+  public String getJustificacion() {
+    return justificacion;
   }
 
   public void setIdUsuario(Long idUsuario) {
@@ -92,36 +105,20 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
-  public void setIdCierreRetiro(Long idCierreRetiro) {
-    this.idCierreRetiro = idCierreRetiro;
+  public void setIdGarantiaEstatus(Long idGarantiaEstatus) {
+    this.idGarantiaEstatus = idGarantiaEstatus;
   }
 
-  public Long getIdCierreRetiro() {
-    return idCierreRetiro;
+  public Long getIdGarantiaEstatus() {
+    return idGarantiaEstatus;
   }
 
-  public void setObservaciones(String observaciones) {
-    this.observaciones = observaciones;
+  public void setIdGarantiaBitacora(Long idGarantiaBitacora) {
+    this.idGarantiaBitacora = idGarantiaBitacora;
   }
 
-  public String getObservaciones() {
-    return observaciones;
-  }
-
-  public void setIdCierreCaja(Long idCierreCaja) {
-    this.idCierreCaja = idCierreCaja;
-  }
-
-  public Long getIdCierreCaja() {
-    return idCierreCaja;
-  }
-
-  public void setOrden(Long orden) {
-    this.orden = orden;
-  }
-
-  public Long getOrden() {
-    return orden;
+  public Long getIdGarantiaBitacora() {
+    return idGarantiaBitacora;
   }
 
   public void setImporte(Double importe) {
@@ -130,14 +127,6 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
 
   public Double getImporte() {
     return importe;
-  }
-
-  public void setEjercicio(Long ejercicio) {
-    this.ejercicio = ejercicio;
-  }
-
-  public Long getEjercicio() {
-    return ejercicio;
   }
 
   public void setRegistro(Timestamp registro) {
@@ -151,33 +140,31 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdCierreRetiro();
+  	return getIdGarantiaBitacora();
   }
 
   @Override
   public void setKey(Long key) {
-  	this.idCierreRetiro = key;
+  	this.idGarantiaBitacora = key;
   }
 
   @Override
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
+		regresar.append(getIdGarantia());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getConsecutivo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getJustificacion());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdCierreRetiro());
+		regresar.append(getIdGarantiaEstatus());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getObservaciones());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdCierreCaja());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getOrden());
+		regresar.append(getIdGarantiaBitacora());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImporte());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -187,14 +174,13 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
+		regresar.put("idGarantia", getIdGarantia());
 		regresar.put("consecutivo", getConsecutivo());
+		regresar.put("justificacion", getJustificacion());
 		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("idCierreRetiro", getIdCierreRetiro());
-		regresar.put("observaciones", getObservaciones());
-		regresar.put("idCierreCaja", getIdCierreCaja());
-		regresar.put("orden", getOrden());
+		regresar.put("idGarantiaEstatus", getIdGarantiaEstatus());
+		regresar.put("idGarantiaBitacora", getIdGarantiaBitacora());
 		regresar.put("importe", getImporte());
-		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -202,7 +188,7 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getConsecutivo(), getIdUsuario(), getIdCierreRetiro(), getObservaciones(), getIdCierreCaja(), getOrden(), getImporte(), getEjercicio(), getRegistro()
+    getIdGarantia(), getConsecutivo(), getJustificacion(), getIdUsuario(), getIdGarantiaEstatus(), getIdGarantiaBitacora(), getImporte(), getRegistro()
     };
     return regresar;
   }
@@ -216,8 +202,8 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idCierreRetiro~");
-    regresar.append(getIdCierreRetiro());
+    regresar.append("idGarantiaBitacora~");
+    regresar.append(getIdGarantiaBitacora());
     regresar.append("|");
     return regresar.toString();
   }
@@ -225,18 +211,18 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdCierreRetiro());
+    regresar.append(getIdGarantiaBitacora());
     return regresar.toString();
   }
 
   @Override
   public Class toHbmClass() {
-    return TcManticCierresRetirosDto.class;
+    return TcManticGarantiasBitacoraDto.class;
   }
 
   @Override
   public boolean isValid() {
-  	return getIdCierreRetiro()!= null && getIdCierreRetiro()!=-1L;
+  	return getIdGarantiaBitacora()!= null && getIdGarantiaBitacora()!=-1L;
   }
 
   @Override
@@ -247,8 +233,8 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final TcManticCierresRetirosDto other = (TcManticCierresRetirosDto) obj;
-    if (getIdCierreRetiro() != other.idCierreRetiro && (getIdCierreRetiro() == null || !getIdCierreRetiro().equals(other.idCierreRetiro))) {
+    final TcManticGarantiasBitacoraDto other = (TcManticGarantiasBitacoraDto) obj;
+    if (getIdGarantiaBitacora() != other.idGarantiaBitacora && (getIdGarantiaBitacora() == null || !getIdGarantiaBitacora().equals(other.idGarantiaBitacora))) {
       return false;
     }
     return true;
@@ -257,7 +243,7 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdCierreRetiro() != null ? getIdCierreRetiro().hashCode() : 0);
+    hash = 67 * hash + (getIdGarantiaBitacora() != null ? getIdGarantiaBitacora().hashCode() : 0);
     return hash;
   }
 
