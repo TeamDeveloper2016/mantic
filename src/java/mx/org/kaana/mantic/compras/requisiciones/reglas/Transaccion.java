@@ -11,6 +11,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -137,7 +138,7 @@ public class Transaccion extends IBaseTnx {
 		Long consecutivo= -1L;
 		try {
 			consecutivo= this.toSiguiente(sesion);
-			this.requisicion.getRequisicion().setConsecutivo(consecutivo.toString());
+			this.requisicion.getRequisicion().setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
 			this.requisicion.getRequisicion().setOrden(consecutivo);
 			this.requisicion.getRequisicion().setIdRequisicionEstatus(idRequisicionEstatus);
 			this.requisicion.getRequisicion().setEjercicio(new Long(Fecha.getAnioActual()));
