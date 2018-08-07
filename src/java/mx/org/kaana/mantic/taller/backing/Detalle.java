@@ -14,7 +14,9 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -24,6 +26,7 @@ import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.taller.beans.Servicio;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.taller.reglas.AdminServicios;
+import mx.org.kaana.mantic.taller.reglas.Transaccion;
 import org.primefaces.context.RequestContext;
 
 
@@ -97,8 +100,8 @@ public class Detalle extends IBaseArticulos implements Serializable {
 		} // try
 		finally {
 			Methods.clean(params);
-		}
-	}
+		} // finally
+	} // toMoveData
 	
 	@Override
   public void doUpdateArticulos() {
@@ -133,8 +136,8 @@ public class Detalle extends IBaseArticulos implements Serializable {
     finally {
       Methods.clean(columns);
       Methods.clean(params);
-    }// finally
-	}
+    } // finally
+	} // doUpdateArticulos
 
   public void doLoad() {
     try {
@@ -153,20 +156,26 @@ public class Detalle extends IBaseArticulos implements Serializable {
   } // doLoad
 
   public String doAceptar() {  
+		String regresar        = null;
+		Transaccion transaccion= null;
     try {		
-			
+			transaccion= new Transaccion(getAdminOrden().getArticulos(), Long.valueOf(this.attrs.get("idServicio").toString()), -1L);
+			if(transaccion.ejecutar(EAccion.COMPLEMENTAR)){
+				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
+				JsfBase.addMessage("Se agregaron las refaccion de forma correcta.", ETipoMensaje.INFORMACION);
+			} // if
+			else
+				JsfBase.addMessage("Ocurrió un error al agregar las refacciones.", ETipoMensaje.ERROR);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-    return null;
+    return regresar;
   } // doAccion
 
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idServicio", this.attrs.get("idServicio"));
-    return (String)this.attrs.get("retorno");
+    return (String) this.attrs.get("retorno");
   } // doCancelar
-
-
 }
