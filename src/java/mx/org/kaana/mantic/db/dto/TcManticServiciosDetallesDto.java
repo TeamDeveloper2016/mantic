@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -34,14 +28,26 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
-  @Column (name="descuentos")
-  private Double descuentos;
+  @Column (name="codigo")
+  private String codigo;
   @Column (name="costo")
   private Double costo;
-  @Column (name="iva")
-  private Double iva;
   @Column (name="descuento")
   private String descuento;
+  @Column (name="id_trabajo")
+  private Long idTrabajo;
+  @Column (name="id_servicio")
+  private Long idServicio;
+  @Column (name="importe")
+  private Double importe;
+  @Column (name="registro")
+  private Timestamp registro;
+  @Column (name="propio")
+  private String propio;
+  @Column (name="iva")
+  private Double iva;
+  @Column (name="id_usuario")
+  private Long idUsuario;
   @Column (name="impuestos")
   private Double impuestos;
   @Id
@@ -54,43 +60,43 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
   private Double subTotal;
   @Column (name="cantidad")
   private Long cantidad;
-  @Column (name="id_servicio")
-  private Long idServicio;
-  @Column (name="importe")
-  private Double importe;
-  @Column (name="registro")
-  private Timestamp registro;
+  @Column (name="id_articulo")
+  private Long idArticulo;
 
   public TcManticServiciosDetallesDto() {
     this(new Long(-1L));
   }
 
   public TcManticServiciosDetallesDto(Long key) {
-    this(null, null, null, null, null, new Long(-1L), null, null, null, null, null);
+    this(null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null);
     setKey(key);
   }
 
-  public TcManticServiciosDetallesDto(Double descuentos, Double costo, Double iva, String descuento, Double impuestos, Long idServicioDetalle, String concepto, Double subTotal, Long cantidad, Long idServicio, Double importe) {
-    setDescuentos(descuentos);
+  public TcManticServiciosDetallesDto(String codigo, Double costo, String descuento, Long idTrabajo, Long idServicio, Double importe, String propio, Double iva, Long idUsuario, Double impuestos, Long idServicioDetalle, String concepto, Double subTotal, Long cantidad, Long idArticulo) {
+    setCodigo(codigo);
     setCosto(costo);
-    setIva(iva);
     setDescuento(descuento);
+    setIdTrabajo(idTrabajo);
+    setIdServicio(idServicio);
+    setImporte(importe);
+    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setPropio(propio);
+    setIva(iva);
+    setIdUsuario(idUsuario);
     setImpuestos(impuestos);
     setIdServicioDetalle(idServicioDetalle);
     setConcepto(concepto);
     setSubTotal(subTotal);
     setCantidad(cantidad);
-    setIdServicio(idServicio);
-    setImporte(importe);
-    setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setIdArticulo(idArticulo);
   }
 	
-  public void setDescuentos(Double descuentos) {
-    this.descuentos = descuentos;
+  public void setCodigo(String codigo) {
+    this.codigo = codigo;
   }
 
-  public Double getDescuentos() {
-    return descuentos;
+  public String getCodigo() {
+    return codigo;
   }
 
   public void setCosto(Double costo) {
@@ -101,6 +107,54 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
     return costo;
   }
 
+  public void setDescuento(String descuento) {
+    this.descuento = descuento;
+  }
+
+  public String getDescuento() {
+    return descuento;
+  }
+
+  public void setIdTrabajo(Long idTrabajo) {
+    this.idTrabajo = idTrabajo;
+  }
+
+  public Long getIdTrabajo() {
+    return idTrabajo;
+  }
+
+  public void setIdServicio(Long idServicio) {
+    this.idServicio = idServicio;
+  }
+
+  public Long getIdServicio() {
+    return idServicio;
+  }
+
+  public void setImporte(Double importe) {
+    this.importe = importe;
+  }
+
+  public Double getImporte() {
+    return importe;
+  }
+
+  public void setRegistro(Timestamp registro) {
+    this.registro = registro;
+  }
+
+  public Timestamp getRegistro() {
+    return registro;
+  }
+
+  public void setPropio(String propio) {
+    this.propio = propio;
+  }
+
+  public String getPropio() {
+    return propio;
+  }
+
   public void setIva(Double iva) {
     this.iva = iva;
   }
@@ -109,12 +163,12 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
     return iva;
   }
 
-  public void setDescuento(String descuento) {
-    this.descuento = descuento;
+  public void setIdUsuario(Long idUsuario) {
+    this.idUsuario = idUsuario;
   }
 
-  public String getDescuento() {
-    return descuento;
+  public Long getIdUsuario() {
+    return idUsuario;
   }
 
   public void setImpuestos(Double impuestos) {
@@ -157,28 +211,12 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
     return cantidad;
   }
 
-  public void setIdServicio(Long idServicio) {
-    this.idServicio = idServicio;
+  public void setIdArticulo(Long idArticulo) {
+    this.idArticulo = idArticulo;
   }
 
-  public Long getIdServicio() {
-    return idServicio;
-  }
-
-  public void setImporte(Double importe) {
-    this.importe = importe;
-  }
-
-  public Double getImporte() {
-    return importe;
-  }
-
-  public void setRegistro(Timestamp registro) {
-    this.registro = registro;
-  }
-
-  public Timestamp getRegistro() {
-    return registro;
+  public Long getIdArticulo() {
+    return idArticulo;
   }
 
   @Transient
@@ -196,13 +234,25 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
-		regresar.append(getDescuentos());
+		regresar.append(getCodigo());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCosto());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getDescuento());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTrabajo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdServicio());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getImporte());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPropio());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIva());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getDescuento());
+		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImpuestos());
 		regresar.append(Constantes.SEPARADOR);
@@ -214,11 +264,7 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCantidad());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdServicio());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getImporte());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getRegistro());
+		regresar.append(getIdArticulo());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -226,25 +272,29 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
-		regresar.put("descuentos", getDescuentos());
+		regresar.put("codigo", getCodigo());
 		regresar.put("costo", getCosto());
-		regresar.put("iva", getIva());
 		regresar.put("descuento", getDescuento());
+		regresar.put("idTrabajo", getIdTrabajo());
+		regresar.put("idServicio", getIdServicio());
+		regresar.put("importe", getImporte());
+		regresar.put("registro", getRegistro());
+		regresar.put("propio", getPropio());
+		regresar.put("iva", getIva());
+		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("impuestos", getImpuestos());
 		regresar.put("idServicioDetalle", getIdServicioDetalle());
 		regresar.put("concepto", getConcepto());
 		regresar.put("subTotal", getSubTotal());
 		regresar.put("cantidad", getCantidad());
-		regresar.put("idServicio", getIdServicio());
-		regresar.put("importe", getImporte());
-		regresar.put("registro", getRegistro());
+		regresar.put("idArticulo", getIdArticulo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescuentos(), getCosto(), getIva(), getDescuento(), getImpuestos(), getIdServicioDetalle(), getConcepto(), getSubTotal(), getCantidad(), getIdServicio(), getImporte(), getRegistro()
+    getCodigo(), getCosto(), getDescuento(), getIdTrabajo(), getIdServicio(), getImporte(), getRegistro(), getPropio(), getIva(), getIdUsuario(), getImpuestos(), getIdServicioDetalle(), getConcepto(), getSubTotal(), getCantidad(), getIdArticulo()
     };
     return regresar;
   }
@@ -302,7 +352,4 @@ public class TcManticServiciosDetallesDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdServicioDetalle() != null ? getIdServicioDetalle().hashCode() : 0);
     return hash;
   }
-
 }
-
-
