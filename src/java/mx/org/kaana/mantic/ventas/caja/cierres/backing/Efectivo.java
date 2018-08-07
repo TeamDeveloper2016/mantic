@@ -24,9 +24,6 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
-import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
-import mx.org.kaana.mantic.db.dto.TcManticCierresRetirosDto;
 import mx.org.kaana.mantic.inventarios.creditos.reglas.Transaccion;
 import org.primefaces.context.RequestContext;
 

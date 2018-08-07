@@ -12,6 +12,8 @@
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.articulosJs}"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
+        'contenedorGrupos\\:importe': {validaciones: 'flotante|igual({"cuanto": #{manticVentasCajaCierresEfectivo.doNumericoSat(manticVentasCajaCierresEfectivo.attrs.retiros)}})', mascara: 'libre', grupo: 'general'},
+        'observaciones'             : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
 			};			
 			
     	$(document).ready(function() {
