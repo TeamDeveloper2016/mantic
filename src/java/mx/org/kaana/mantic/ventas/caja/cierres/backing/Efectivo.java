@@ -97,7 +97,7 @@ public class Efectivo extends IBaseAttribute implements Serializable {
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-    			RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 el retiro de efectivo', '"+ retiro.getConsecutivo()+ "');");
+    			RequestContext.getCurrentInstance().execute("janal.alert('Se gener\\u00F3 el retiro de efectivo, con consecutivo: "+ retiro.getConsecutivo()+ "');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR)? "agregó": this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" el retiro de caja."), ETipoMensaje.INFORMACION);

@@ -21,7 +21,7 @@
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-content" class="ui-grid-col-12">
           <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticVentasCajaCierresRetiros.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticVentasCajaCierresRetiros.lazyModel.rowCount gt manticVentasCajaCierresRetiros.lazyModel.pageSize}"  selection="#{manticVentasCajaCierresRetiros.attrs.seleccionado}" selectionMode="single" rowIndexVar="index" reflow="true">
-            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="@this tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
               <div class="lg-pantalla">
@@ -43,7 +43,7 @@
                 <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Listado" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCajaCierresRetiros.doReporte('CIERRES_CAJA')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-col-50">
+            <p:column class="MarAuto Responsive janal-wid-col-40">
               <f:facet name="header">
                 <h:outputText value="No."/>
               </f:facet>
@@ -55,13 +55,13 @@
               </f:facet>
               <h:outputText value="#{filtro['empresa']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.caja}">
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{filtro.caja}">
               <f:facet name="header">
                 <h:outputText value="Caja"/>
               </f:facet>
               <h:outputText value="#{filtro['caja']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.consecutivo}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="Consecutivo"/>
               </f:facet>
@@ -73,7 +73,13 @@
               </f:facet>
               <h:outputText value="#{filtro['usuario']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-20" sortBy="#{filtro.registro}">
+            <p:column class="MarAuto Responsive" sortBy="#{filtro.observaciones}">
+              <f:facet name="header">
+                <h:outputText value="Observaciones"/>
+              </f:facet>
+              <h:outputText value="#{filtro['observaciones']}"/>
+            </p:column>		
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.registro}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>
