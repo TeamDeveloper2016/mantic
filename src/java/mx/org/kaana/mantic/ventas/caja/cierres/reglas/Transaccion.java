@@ -64,7 +64,7 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 					regresar= DaoFactory.getInstance().insert(sesion, this.retiro)>= 1L;
 					break;
 				case ELIMINAR:
-					this.retiro.setObservaciones("ESTE RETIRO FUE CANCELADO ["+ this.retiro.getImporte()+ "] CON FECHA DE "+ Fecha.getHoy());
+					this.retiro.setObservaciones("ESTE RETIRO FUE CANCELADO ["+ this.retiro.getImporte()+ "] CON FECHA DE "+ Fecha.getHoyExtendido()+ " HRS.");
 					this.retiro.setImporte(0D);
 					regresar= DaoFactory.getInstance().update(sesion, this.retiro)>= 1L;
 					bitacora= new TcManticCierresBitacoraDto("REINTEGRO DE EFECTIVO", -1L, idCierre, JsfBase.getIdUsuario(), 2L);

@@ -182,31 +182,12 @@
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
             <p:menuitem id="consultar" action="#{manticVentasCajaCierresFiltro.doAccion('CONSULTAR')}" icon="fa fa-edit" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora movimientos" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doMovimientos}"/>
-            <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
-            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCajaCierresFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
             <p:separator rendered="#{fn:contains('|2|3|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
             <p:menuitem id="retiros" icon="fa fa-exchange" value="Retiros parciales" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doRetiros}" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
           </p:contextMenu>
         </div>
       </div>
     </div>		    
-		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.refresh();">
-			<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
-				<p:outputLabel for="estatusDlg" value="Estatus:"/>												
-				<p:selectOneMenu id="estatusDlg" value="#{manticVentasCajaCierresFiltro.attrs.estatus}" styleClass="janal-wid-100-txt">									
-					<f:selectItems value="#{manticVentasCajaCierresFiltro.attrs.allEstatus}"/>					
-				</p:selectOneMenu>
-			</h:panelGrid>
-			<h:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
-				<p:outputLabel for="justificacion" value="Justificación:"/>
-				<p:inputTextarea id="justificacion" value="#{manticVentasCajaCierresFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
-			</h:panelGrid>
-			<hr class="ui-widget-content"/>
-			<div class="janal-line-button">
-				<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticVentasCajaCierresFiltro.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
-        <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
-			</div>
-		</p:dialog>
   </ui:define>   
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
 </ui:composition>
