@@ -12,7 +12,7 @@
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
         'contenedorGrupos\\:importe': {validaciones: 'flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{manticVentasCajaCierresEfectivo.doNumericoSat(manticVentasCajaCierresEfectivo.attrs.caja.saldo)}})', mascara: 'flotante', grupo: 'general'},
-        'observaciones'             : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
+        'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
 			};			
 			
     	$(document).ready(function() {
@@ -50,7 +50,7 @@
 									</div>
 									<div class="ui-grid-col-11">
 										<p:selectOneMenu id="idCaja" value="#{manticVentasCajaCierresEfectivo.attrs.idCaja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="contains">
-											<f:selectItems value="#{manticVentasCajaCierresEfectivo.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+											<f:selectItems value="#{manticVentasCajaCierresEfectivo.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 											<p:column headerText="Clave">
 												<h:outputText value="#{item.clave}"/>
 											</p:column>   

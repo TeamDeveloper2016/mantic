@@ -200,6 +200,29 @@
         where      
           tc_mantic_cierres.id_cierre = {idCierre}
       </select>
+			<select id="importes">
+				select
+				  tc_mantic_cierres_cajas.id_cierre_caja as id_key,
+					tc_mantic_cajas.clave as caja,
+					tc_mantic_empresas.clave as empresa,
+					tc_mantic_tipos_medios_pagos.nombre as medio_pago,
+					tc_mantic_cierres_cajas.*
+				from
+					tc_mantic_cierres
+				inner join
+					tc_mantic_cierres_cajas on tc_mantic_cierres.id_cierre= tc_mantic_cierres_cajas.id_cierre
+				inner join
+					tc_mantic_cajas on tc_mantic_cierres_cajas.id_caja= tc_mantic_cajas.id_caja
+				inner join
+					tc_mantic_empresas on tc_mantic_cajas.id_empresa= tc_mantic_empresas.id_empresa
+				inner join
+					tc_mantic_tipos_medios_pagos on tc_mantic_cierres_cajas.id_tipo_medio_pago= tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+				where
+				  tc_mantic_cajas.id_caja= {idCaja}
+				  and tc_mantic_cierres.id_cierre= {idCierre}
+				order by
+				  tc_mantic_cierres_cajas.id_tipo_medio_pago				
+			</select>
 		</unit>
 		<unit id="VistaCreditosNotasDto">
 			<select id="meses">

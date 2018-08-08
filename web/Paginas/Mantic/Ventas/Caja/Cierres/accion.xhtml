@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Cierre de caja"/>
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+				'importe'                         : {multiple: '$', validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'flotante', grupo: 'general'},		
+				'cantidad'                        : {multiple: '$', validaciones: 'entero|mayor-igual({"cuanto": 0})', mascara: 'entero', grupo: 'general'},		
+        'contenedorGrupos\\:disponible'   : {validaciones: 'flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{manticVentasCajaCierresAccion.doNumericoSat(manticVentasCajaCierresAccion.attrs.dinero)}})', mascara: 'flotante', grupo: 'general'},
+        'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
+			};			
+			
+    	$(document).ready(function() {
+				setTimeout("janal.readingMode('#{manticVentasCajaCierresAccion.attrs.nombreAccion}')", 500);
+        jsCierres= new Janal.Control.Cierres.Core(#{manticVentasCajaCierresAccion.importes.size()}, #{manticVentasCajaCierresAccion.denominaciones.size()});
+      });
+			
+(function(window) {
+	var jsCierres;
+	
+	Janal.Control.Cierres= {};
+	
+	Janal.Control.Cierres.Core= Class.extend({
+		selector    : '.key-down-event',
+		VK_ENTER    : 13, 
+		VK_UP       : 38,
+		VK_DOWN     : 40,
+		before      : '',
+		current     : '',
+		amounts     : {
+			name: 'importe',
+			top : 0
+		},		
+		counts      : {
+			name: 'cantidad',
+			top : 0
+		},	
+		init: function(amounts, counts) { // Constructor
+			$cierres= this;
+			this.amounts.top= amounts- 1;
+			this.counts.top = counts- 1;
+			this.events();
+ 		}, // init
+		events: function() {
+      $(document).on('focus', this.selector, function() {
+				janal.console('jsCierres.focus: '+ $(this).attr('id')+ ' value:['+ $(this).val().trim()+ ']');
+				$cierres.before= $(this).val().trim();
+				janal.lastNameFocus= this;
+			});  
+      $(document).on('keydown', this.selector, function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('Keydown: '+  key);
+				$cierres.current= $(this).val().trim();
+				switch(key) {
+					case $cierres.VK_ENTER:
+					case $cierres.VK_UP:
+					  return $cierres.up();
+						break;
+					case $cierres.VK_DOWN:
+						return $cierres.down();
+						break;
+				} // switch
+      });
+		},
+		name: function(tokens, move, top) {
+  		janal.console('jsCierres.name move: ['+ move+ '] top:['+ top+ ']');
+			var position= parseInt(tokens[2], 10);
+			if(position=== 0 &amp;&amp; move&lt; 0)
+				tokens[2]= top;
+			else
+  			if(position=== top &amp;&amp; move&gt; 0)
+  				tokens[2]= 0;
+			  else
+					tokens[2]= position+ move;  
+			var id= '';
+			for(var token in tokens)	
+			  id+= tokens[token]+ '\\:';	
+  		janal.console('jsCierres.name: #'+ id.substring(0, id.length- 2));
+			return '#'+ id.substring(0, id.length- 2);
+		},	
+		move: function(move) {
+			var id    = $(janal.lastNameFocus).attr('id');
+  		janal.console('jsCierres.move: #'+ id+ ' ['+ move+ ']');
+			var tokens= id.split(':');
+			if(tokens.length&gt; 2) {
+				if(tokens[3]=== this.amounts.name)
+			  	id= this.name(tokens, move, this.amounts.top);
+				else
+   				if(tokens[3]=== this.counts.name)
+	  		  	id= this.name(tokens, move, this.counts.top);
+			} // if	
+			if($(id))
+				$(id).focus();
+		},		
+		up: function() {
+  		janal.console('jsCierres.up: ');
+			this.move(-1);
+			return this.calculate();
+		},
+		down: function() {
+  		janal.console('jsCierres.down: ');
+			this.move(1);
+			return this.calculate();
+		},
+		calculate: function() {
+  		janal.console('jsCierres.calculate: '+ $cierres.current+ ' -- '+ $cierres.before);
+  		if($cierres.current!== $cierres.before)
+	  		calculate();
+			return false;
+		}
+	});
+	
+	console.info('Iktan.Control.Cierres initialized');
+})(window);			
+		</script>   
+	</ui:define>
+	<ui:define name="contenido">
+		<p:remoteCommand name="calculate" process="@this @(.filas)" update="@(.filas)" actionListener="#{manticVentasCajaCierresAccion.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.reset(); janal.desbloquear();"/>  
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+					<p:tabView id="contenedorGrupos">
+						<p:tab title="General">
+							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
+								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-1">
+     								<p:outputLabel for="idEmpresa" value="Empresa:"/>
+									</div>	
+									<div class="ui-grid-col-11">
+										<p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaCierresAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+											<p:ajax event="change" listener="#{manticVentasCajaCierresAccion.doLoadCajas}" process="@this" update="idCaja"/>
+											<f:selectItems value="#{manticVentasCajaCierresAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+											<p:column headerText="Clave">
+												<h:outputText value="#{item.clave}"/>
+											</p:column>   
+											<p:column headerText="Nombre">
+												<h:outputText value="#{item.nombre}"/>
+											</p:column>   
+										</p:selectOneMenu>
+  	  						</div>	
+								</div>	
+								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-1">
+								    <p:outputLabel for="idCaja" value="Caja:"/>
+									</div>
+									<div class="ui-grid-col-11">
+										<p:selectOneMenu id="idCaja" value="#{manticVentasCajaCierresAccion.attrs.idCaja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="contains">
+											<f:selectItems value="#{manticVentasCajaCierresAccion.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+											<p:column headerText="Clave">
+												<h:outputText value="#{item.clave}"/>
+											</p:column>   
+											<p:column headerText="Nombre">
+												<h:outputText value="#{item.nombre}"/>
+											</p:column>   
+											<p:column styleClass="janal-column-right" headerText="Limite">
+												<h:outputText value="#{item.limite}"/>
+											</p:column>   
+										</p:selectOneMenu>
+									</div>		
+								</div>	
+								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-1">
+								    <p:outputLabel for="disponible" value="Dejar:"/>
+									</div>
+									<div class="ui-grid-col-11">
+										<p:inputText id="disponible" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" value="#{manticVentasCajaCierresAccion.attrs.disponible}" converter="javax.faces.Double"/>
+									</div>		
+								</div>	
+								<p:spacer height="3px"/>
+								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-12">
+										<p:dataTable id="tabla" var="row" value="#{manticVentasCajaCierresAccion.importes}" styleClass="janal-wid-100" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" rowKey="#{row.key}">
+											<f:facet name="header" >
+												<div class="lg-pantalla">
+													<p:menuButton value="Opciones">
+														<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+														<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+													</p:menuButton>
+												</div>  
+												<div class="xs-pantalla">              
+													<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+													<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+												</div>  
+											</f:facet>	 
+											<p:column class="MarAuto Responsive janal-wid-col-40">
+												<f:facet name="header">
+													<h:outputText value="No."/>
+												</f:facet>
+												<h:outputText value="#{index+ 1}"/>
+											</p:column>		
+											<p:column class="MarAuto Responsive janal-wid-13">
+												<f:facet name="header">
+													<h:outputText value="Sucursal"/>
+												</f:facet>
+												<h:outputText value="#{row['empresa']}"/>
+											</p:column>		
+											<p:column class="MarAuto Responsive janal-wid-10">
+												<f:facet name="header">
+													<h:outputText value="Caja"/>
+												</f:facet>
+												<h:outputText value="#{row['caja']}"/>
+											</p:column>		
+											<p:column class="MarAuto Responsive">
+												<f:facet name="header">
+													<h:outputText value="Medio pago"/>
+												</f:facet>
+												<h:outputText value="#{row['medioPago']}"/>
+											</p:column>		
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-13">
+												<f:facet name="header">
+													<h:outputText value="Inicial"/>
+												</f:facet>
+												<h:outputText value="$ #{manticVentasCajaCierresAccion.doDecimalSat(row['disponible'])}"/>
+											</p:column>		
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-13">
+												<f:facet name="header">
+													<h:outputText value="Ventas"/>
+												</f:facet>
+												<h:outputText value="$ #{manticVentasCajaCierresAccion.doDecimalSat(row['acumulado'])}"/>
+											</p:column>		
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-13">
+												<f:facet name="header">
+													<h:outputText value="Saldo"/>
+												</f:facet>
+												<h:outputText value="$ #{manticVentasCajaCierresAccion.doDecimalSat(row['saldo'])}"/>
+											</p:column>		
+											<p:column class="importe janal-column-right MarAuto Responsive janal-wid-13">
+												<f:facet name="header">
+													<p:outputLabel for="importe" value="Importe"/>
+												</f:facet>
+												<p:inputText id="importe" value="#{row['importe']}" styleClass="filas janal-column-right janal-wid-100-txt janal-color-blue key-down-event"/>
+											</p:column>			
+											<f:facet name="footer">
+												<p:outputLabel styleClass="filas" value="Total: $ #{manticVentasCajaCierresAccion.doDecimalSat(manticVentasCajaCierresAccion.attrs.total)}"/>
+											</f:facet>
+										</p:dataTable>
+									</div>		
+								</div>	
+							</div>
+						</p:tab>
+						<p:tab title="Denominaciones">
+							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
+								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-12">
+										<p:dataTable id="moneda" var="row" value="#{manticVentasCajaCierresAccion.denominaciones}" styleClass="janal-wid-100" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" rowKey="#{row.key}">
+											<f:facet name="header" >
+												<div class="lg-pantalla">
+													<p:menuButton value="Opciones">
+														<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'moneda')" oncomplete="janal.desbloquear()"/>
+														<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'moneda')" oncomplete="janal.desbloquear()"/>
+													</p:menuButton>
+												</div>  
+												<div class="xs-pantalla">              
+													<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'moneda')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+													<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'moneda')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+												</div>  
+											</f:facet>	 
+											<p:column class="MarAuto Responsive janal-wid-col-40">
+												<f:facet name="header">
+													<h:outputText value="No."/>
+												</f:facet>
+												<h:outputText value="#{index+ 1}"/>
+											</p:column>		
+											<p:column class="MarAuto Responsive">
+												<f:facet name="header">
+													<h:outputText value="Denominación"/>
+												</f:facet>
+												<h:outputText value="#{row['nombre']}"/>
+											</p:column>		
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-15">
+												<f:facet name="header">
+													<h:outputText value="Valor"/>
+												</f:facet>
+												<h:outputText value="$ #{manticVentasCajaCierresAccion.doDecimalSat(row['denominacion'])}"/>
+											</p:column>		
+											<p:column class="cantidad janal-column-right MarAuto Responsive janal-wid-15">
+												<f:facet name="header">
+													<p:outputLabel for="cantidad" value="Cantidad"/>
+												</f:facet>
+												<p:inputText id="cantidad" value="#{row['cantidad']}" styleClass="filas janal-column-right janal-wid-100-txt janal-color-blue key-down-event"/>
+											</p:column>		
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-15">
+												<f:facet name="header">
+													<h:outputText value="Importe"/>
+												</f:facet>
+												<h:outputText styleClass="filas" value="#{manticVentasCajaCierresAccion.doDecimalSat(row['importe'])}"/>
+											</p:column>
+											<f:facet name="footer">
+												<p:outputLabel styleClass="filas" value="Total: $ #{manticVentasCajaCierresAccion.doDecimalSat(manticVentasCajaCierresAccion.attrs.efectivo)}"/>
+											</f:facet>
+										</p:dataTable>										
+									</div>
+								</div>	
+							</div>
+						</p:tab>
+						<p:tab title="Observaciones">
+							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresAccion.attrs.observaciones}"/>
+						</p:tab>
+					</p:tabView>
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" immediate="true"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" immediate="true"/>
+		</div>		
+	</ui:define>
+  <ui:param name="componenteBloqueo" value="aceptar cancelar aceptarIcon cancelarIcon"/>
+</ui:composition>
+
