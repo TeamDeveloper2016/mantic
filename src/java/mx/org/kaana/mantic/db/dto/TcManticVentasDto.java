@@ -37,14 +37,20 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
   private Long idCredito;
   @Column (name="extras")
   private String extras;
+  @Column (name="global")
+  private Double global;
+  @Column (name="utilidad")
+  private Double utilidad;
   @Column (name="total")
-  private Double total;  
+  private Double total;
   @Column (name="id_almacen")
   private Long idAlmacen;
   @Column (name="tipo_de_cambio")
   private Double tipoDeCambio;
   @Column (name="orden")
-  private Long orden;  
+  private Long orden;
+  @Column (name="id_autorizar")
+  private Long idAutorizar;
   @Column (name="id_cliente")
   private Long idCliente;
   @Column (name="descuento")
@@ -77,27 +83,32 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
   private Date dia;
   @Column (name="id_venta_estatus")
   private Long idVentaEstatus;
-  @Column (name="id_autorizar")
-  private Long idAutorizar;
 
   public TcManticVentasDto() {
     this(new Long(-1L));
   }
 
   public TcManticVentasDto(Long key) {
-    this(null, null, null, null, null, null, null,  null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null);
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null);
     setKey(key);
   }
-  
-  public TcManticVentasDto(Double descuentos, Long idFactura, Long idCredito, String extras, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, Date dia, Long idVentaEstatus, Long idAutorizar) {
+
+	public TcManticVentasDto(Double descuentos, Long idFactura, Long idCredito, String extras, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, Long idAutorizar, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, Date dia, Long idVentaEstatus) {
+		this(descuentos, idFactura, idCredito, extras, null, null, total, idAlmacen, tipoDeCambio, orden, idAutorizar, idCliente, descuento, ejercicio, consecutivo, idUsuario, impuestos, idUsoCfdi, idSinIva, subTotal, observaciones, idEmpresa, idVenta, dia, idVentaEstatus);
+	}
+	
+  public TcManticVentasDto(Double descuentos, Long idFactura, Long idCredito, String extras, Double global, Double utilidad, Double total, Long idAlmacen, Double tipoDeCambio, Long orden, Long idAutorizar, Long idCliente, String descuento, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long idVenta, Date dia, Long idVentaEstatus) {
     setDescuentos(descuentos);
     setIdFactura(idFactura);
     setIdCredito(idCredito);
     setExtras(extras);
-    setTotal(total);    
+    setGlobal(global);
+    setUtilidad(utilidad);
+    setTotal(total);
     setIdAlmacen(idAlmacen);
     setTipoDeCambio(tipoDeCambio);
     setOrden(orden);
+    setIdAutorizar(idAutorizar);
     setIdCliente(idCliente);
     setDescuento(descuento);
     setEjercicio(ejercicio);
@@ -113,16 +124,7 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
     setIdVenta(idVenta);
     setDia(dia);
     setIdVentaEstatus(idVentaEstatus);
-		setIdAutorizar(idAutorizar);
   }
-
-	public Long getIdAutorizar() {
-		return idAutorizar;
-	}
-
-	public void setIdAutorizar(Long idAutorizar) {
-		this.idAutorizar = idAutorizar;
-	}	
 	
   public void setDescuentos(Double descuentos) {
     this.descuentos = descuentos;
@@ -156,13 +158,29 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
     return extras;
   }
 
+  public void setGlobal(Double global) {
+    this.global = global;
+  }
+
+  public Double getGlobal() {
+    return global;
+  }
+
+  public void setUtilidad(Double utilidad) {
+    this.utilidad = utilidad;
+  }
+
+  public Double getUtilidad() {
+    return utilidad;
+  }
+
   public void setTotal(Double total) {
     this.total = total;
   }
 
   public Double getTotal() {
     return total;
-  }  
+  }
 
   public void setIdAlmacen(Long idAlmacen) {
     this.idAlmacen = idAlmacen;
@@ -186,6 +204,14 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 
   public Long getOrden() {
     return orden;
+  }
+
+  public void setIdAutorizar(Long idAutorizar) {
+    this.idAutorizar = idAutorizar;
+  }
+
+  public Long getIdAutorizar() {
+    return idAutorizar;
   }
 
   public void setIdCliente(Long idCliente) {
@@ -331,13 +357,19 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getExtras());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getGlobal());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getUtilidad());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getTotal());
-		regresar.append(Constantes.SEPARADOR);		
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdAlmacen());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getTipoDeCambio());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getOrden());		
+		regresar.append(getOrden());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdAutorizar());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCliente());
 		regresar.append(Constantes.SEPARADOR);
@@ -368,8 +400,6 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		regresar.append(getDia());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdVentaEstatus());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdAutorizar());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -381,10 +411,13 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		regresar.put("idFactura", getIdFactura());
 		regresar.put("idCredito", getIdCredito());
 		regresar.put("extras", getExtras());
+		regresar.put("global", getGlobal());
+		regresar.put("utilidad", getUtilidad());
 		regresar.put("total", getTotal());
 		regresar.put("idAlmacen", getIdAlmacen());
 		regresar.put("tipoDeCambio", getTipoDeCambio());
 		regresar.put("orden", getOrden());
+		regresar.put("idAutorizar", getIdAutorizar());
 		regresar.put("idCliente", getIdCliente());
 		regresar.put("descuento", getDescuento());
 		regresar.put("ejercicio", getEjercicio());
@@ -400,14 +433,13 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
 		regresar.put("idVenta", getIdVenta());
 		regresar.put("dia", getDia());
 		regresar.put("idVentaEstatus", getIdVentaEstatus());
-		regresar.put("idAutorizar", getIdAutorizar());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescuentos(), getIdFactura(), getIdCredito(), getExtras(), getTotal(), getIdAlmacen(), getTipoDeCambio(), getOrden(), getIdCliente(), getDescuento(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getIdVenta(), getDia(), getIdVentaEstatus(), getIdAutorizar()
+    getDescuentos(), getIdFactura(), getIdCredito(), getExtras(), getGlobal(), getUtilidad(), getTotal(), getIdAlmacen(), getTipoDeCambio(), getOrden(), getIdAutorizar(), getIdCliente(), getDescuento(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getIdVenta(), getDia(), getIdVentaEstatus()
     };
     return regresar;
   }
@@ -464,5 +496,5 @@ public class TcManticVentasDto implements IBaseDto, Serializable {
     int hash = 7;
     hash = 67 * hash + (getIdVenta() != null ? getIdVenta().hashCode() : 0);
     return hash;
-  }
+	}
 }

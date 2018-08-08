@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -48,12 +42,16 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
   private String sat;
   @Column (name="extras")
   private String extras;
+  @Column (name="utilidad")
+  private Double utilidad;
   @Column (name="nombre")
   private String nombre;
   @Column (name="importe")
   private Double importe;
   @Column (name="registro")
   private Timestamp registro;
+  @Column (name="precio")
+  private Double precio;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_venta_detalle")
@@ -76,11 +74,15 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
   }
 
   public TcManticVentasDetallesDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null);
+    this(null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticVentasDetallesDto(Double descuentos, String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, String nombre, Double importe, Long idVentaDetalle, Double iva, Double impuestos, Double subTotal, Double cantidad, Long idArticulo, Long idVenta) {
+	public TcManticVentasDetallesDto(Double descuentos, String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, String nombre, Double importe, Long idVentaDetalle, Double iva, Double impuestos, Double subTotal, Double cantidad, Long idArticulo, Long idVenta) {
+		this(descuentos, codigo, unidadMedida, costo, descuento, sat, extras, null, nombre, importe, null, idVentaDetalle, iva, impuestos, subTotal, cantidad, idArticulo, idVenta);
+	}
+	
+  public TcManticVentasDetallesDto(Double descuentos, String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, Double utilidad, String nombre, Double importe, Double precio, Long idVentaDetalle, Double iva, Double impuestos, Double subTotal, Double cantidad, Long idArticulo, Long idVenta) {
     setDescuentos(descuentos);
     setCodigo(codigo);
     setUnidadMedida(unidadMedida);
@@ -88,9 +90,11 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
     setDescuento(descuento);
     setSat(sat);
     setExtras(extras);
+    setUtilidad(utilidad);
     setNombre(nombre);
     setImporte(importe);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setPrecio(precio);
     setIdVentaDetalle(idVentaDetalle);
     setIva(iva);
     setImpuestos(impuestos);
@@ -156,6 +160,14 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
     return extras;
   }
 
+  public void setUtilidad(Double utilidad) {
+    this.utilidad = utilidad;
+  }
+
+  public Double getUtilidad() {
+    return utilidad;
+  }
+
   public void setNombre(String nombre) {
     this.nombre = nombre;
   }
@@ -178,6 +190,14 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
 
   public Timestamp getRegistro() {
     return registro;
+  }
+
+  public void setPrecio(Double precio) {
+    this.precio = precio;
+  }
+
+  public Double getPrecio() {
+    return precio;
   }
 
   public void setIdVentaDetalle(Long idVentaDetalle) {
@@ -265,11 +285,15 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getExtras());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getUtilidad());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImporte());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPrecio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdVentaDetalle());
 		regresar.append(Constantes.SEPARADOR);
@@ -298,9 +322,11 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
 		regresar.put("descuento", getDescuento());
 		regresar.put("sat", getSat());
 		regresar.put("extras", getExtras());
+		regresar.put("utilidad", getUtilidad());
 		regresar.put("nombre", getNombre());
 		regresar.put("importe", getImporte());
 		regresar.put("registro", getRegistro());
+		regresar.put("precio", getPrecio());
 		regresar.put("idVentaDetalle", getIdVentaDetalle());
 		regresar.put("iva", getIva());
 		regresar.put("impuestos", getImpuestos());
@@ -314,7 +340,7 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescuentos(), getCodigo(), getUnidadMedida(), getCosto(), getDescuento(), getSat(), getExtras(), getNombre(), getImporte(), getRegistro(), getIdVentaDetalle(), getIva(), getImpuestos(), getSubTotal(), getCantidad(), getIdArticulo(), getIdVenta()
+    getDescuentos(), getCodigo(), getUnidadMedida(), getCosto(), getDescuento(), getSat(), getExtras(), getUtilidad(), getNombre(), getImporte(), getRegistro(), getPrecio(), getIdVentaDetalle(), getIva(), getImpuestos(), getSubTotal(), getCantidad(), getIdArticulo(), getIdVenta()
     };
     return regresar;
   }
@@ -372,7 +398,4 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdVentaDetalle() != null ? getIdVentaDetalle().hashCode() : 0);
     return hash;
   }
-
 }
-
-
