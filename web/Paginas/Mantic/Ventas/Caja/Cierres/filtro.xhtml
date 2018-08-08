@@ -11,7 +11,6 @@
     <script type="text/javascript">
       Janal.Control.fields = {
         'idEmpresa'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'idDiferencia'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'idCaja'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
@@ -55,12 +54,6 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
-              <p:outputLabel for="idDiferencia" value="Diferencias:"/>
-              <p:selectOneMenu id="idDiferencia" value="#{manticVentasCajaCierresFiltro.attrs.idDiferencia}" var="item" converter="javax.faces.Long" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains">
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-								<f:selectItem itemLabel="SI" itemValue="1"/>
-								<f:selectItem itemLabel="NO" itemValue="2"/>
-							</p:selectOneMenu>	
               <p:outputLabel for="idCaja" value="Cajas:"/>
               <p:selectOneMenu id="idCaja" value="#{manticVentasCajaCierresFiltro.attrs.idCaja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>

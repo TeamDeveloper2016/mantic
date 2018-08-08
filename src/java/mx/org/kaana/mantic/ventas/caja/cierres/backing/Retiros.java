@@ -60,7 +60,7 @@ public class Retiros extends IBaseFilter implements Serializable {
 		Map<String, Object> params= new HashMap<>();
     try {
       params.put("idCierre", this.attrs.get("idCierre"));
-      params.put("sortOrder", "order by tc_mantic_cierres_retiros.consecutivo ");
+      params.put("sortOrder", "order by tc_mantic_cierres_retiros.consecutivo desc ");
       columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
