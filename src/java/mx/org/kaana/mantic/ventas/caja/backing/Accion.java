@@ -485,9 +485,9 @@ public class Accion extends IBaseCliente implements Serializable {
 			credito= (Boolean) this.attrs.get("creditoVenta");
 			rc= RequestContext.getCurrentInstance();
 			if(credito)
-				rc.execute("jsVentas.validateCredito();");
+				rc.execute("jsArticulos.validateCredito();");
 			else
-				rc.execute("jsVentas.refreshCobroValidate();");
+				rc.execute("jsArticulos.refreshCobroValidate();");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
