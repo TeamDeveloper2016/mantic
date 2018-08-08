@@ -7,12 +7,11 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Por favor, escriba el importe a retirar de la caja"/>
+	<ui:param name="titulo" value="Por favor, escriba el importe a retirar de caja"/>
 	<ui:define name="librerias">
-    <h:outputScript library="janal" name="#{kajoolUtilAplicacion.articulosJs}"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-        'contenedorGrupos\\:importe': {validaciones: 'flotante|igual({"cuanto": #{manticVentasCajaCierresEfectivo.doNumericoSat(manticVentasCajaCierresEfectivo.attrs.retiros)}})', mascara: 'flotante', grupo: 'general'},
+        'contenedorGrupos\\:importe': {validaciones: 'flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{manticVentasCajaCierresEfectivo.doNumericoSat(manticVentasCajaCierresEfectivo.attrs.caja.saldo)}})', mascara: 'flotante', grupo: 'general'},
         'observaciones'             : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
 			};			
 			
@@ -116,12 +115,12 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresEfectivo.doAceptar}" styleClass="janal-text-white" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresEfectivo.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresEfectivo.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresEfectivo.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresEfectivo.doAceptar}" styleClass="janal-text-white" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresEfectivo.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresEfectivo.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresEfectivo.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" immediate="true"/>
 		</div>		
 	</ui:define>
   <ui:param name="componenteBloqueo" value="aceptar cancelar aceptarIcon cancelarIcon"/>

@@ -6,7 +6,7 @@
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Retiros realizados en efectivo por caja" />
+  <ui:param name="titulo" value="Retiros realizados en efectivo en caja" />
   <ui:define name="librerias">
     <script type="text/javascript">
     </script>		
@@ -89,8 +89,8 @@
               <p:outputLabel value="Suma de los retiros: &lt;strong&gt;#{manticVentasCajaCierresRetiros.suma}&lt;/strong&gt;     Total [#{manticVentasCajaCierresRetiros.lazyModel==null?0:manticVentasCajaCierresRetiros.lazyModel.rowCount}] registros" escape="false"/>
             </f:facet>
           </p:dataTable>
-          <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" disabled="#{manticVentasCajaCierresRetiros.attrs.seleccionado.importe gt 0}"/>
+          <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+            <p:menuitem id="eliminar" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" disabled="#{manticVentasCajaCierresRetiros.attrs.seleccionado.importe.data lt 0.01}"/>
           </p:contextMenu>					
 					<hr class="ui-widget-content"/>
 					<div class="janal-line-button">
@@ -114,9 +114,9 @@
   <ui:define name="detalleConfirmacion">
     <p:panelGrid layout="grid" columns="2">
       <p:outputLabel value="Consucutivo:"/>
-      <p:outputLabel value="#{manticComprasOrdenesFiltro.attrs.seleccionado.consecutivo}"/>
+      <p:outputLabel value="#{manticVentasCajaCierresRetiros.attrs.seleccionado.consecutivo}"/>
       <p:outputLabel value="Importe:"/>
-      <p:outputLabel value="$ #{manticComprasOrdenesFiltro.attrs.seleccionado.importe}"/>
+      <p:outputLabel value="$ #{manticVentasCajaCierresRetiros.attrs.seleccionado.importe}"/>
     </p:panelGrid>			
   </ui:define>
 	

@@ -121,7 +121,7 @@
                 <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Listado" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCajaCierresFiltro.doReporte('CIERRES_CAJA')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-col-50">
+            <p:column class="MarAuto Responsive janal-wid-col-40">
               <f:facet name="header">
                 <h:outputText value="No."/>
               </f:facet>
@@ -133,25 +133,25 @@
               </f:facet>
               <h:outputText value="#{filtro['empresa']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.caja}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-8" sortBy="#{filtro.caja}">
               <f:facet name="header">
                 <h:outputText value="Caja"/>
               </f:facet>
               <h:outputText value="#{filtro['caja']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.disponible}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{filtro.disponible}">
               <f:facet name="header">
                 <h:outputText value="Inicial"/>
               </f:facet>
               <h:outputText value="#{filtro['disponible']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.acumulado}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{filtro.acumulado}">
               <f:facet name="header">
                 <h:outputText value="Ventas"/>
               </f:facet>
               <h:outputText value="#{filtro['acumulado']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.saldo}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{filtro.saldo}">
               <f:facet name="header">
                 <h:outputText value="Saldo"/>
               </f:facet>

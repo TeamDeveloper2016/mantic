@@ -49,8 +49,6 @@ public class Efectivo extends IBaseAttribute implements Serializable {
 	@PostConstruct
   protected void init() {		
     try {
-			if(JsfBase.getFlashAttribute("accion")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
       this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre")== null? -1L: JsfBase.getFlashAttribute("idCierre"));
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
@@ -67,7 +65,8 @@ public class Efectivo extends IBaseAttribute implements Serializable {
 		Value cierre= null;
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
-			if(JsfBase.getFlashAttribute("idCierre")== null) {
+    	if(JsfBase.getFlashAttribute("idCierre")== null) {
+		  	this.attrs.put("retorno", "retiros");
 				this.toLoadEmpresas();
 				cierre= (Value)DaoFactory.getInstance().toField("VistaCierresCajasDto", "cierre", this.attrs, "idKey");
 				if(cierre!= null)
@@ -98,6 +97,7 @@ public class Efectivo extends IBaseAttribute implements Serializable {
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+    			RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 el retiro de efectivo', '"+ retiro.getConsecutivo()+ "');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR)? "agregó": this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" el retiro de caja."), ETipoMensaje.INFORMACION);

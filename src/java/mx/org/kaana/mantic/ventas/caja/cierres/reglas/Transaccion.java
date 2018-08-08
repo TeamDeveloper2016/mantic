@@ -50,24 +50,26 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el retiro de caja.");
 			switch(accion) {
 				case AGREGAR:
+					bitacora= new TcManticCierresBitacoraDto("RETIRO DE EFECTIVO", -1L, idCierre, JsfBase.getIdUsuario(), 2L);
+					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
+					caja= (TcManticCierresCajasDto)DaoFactory.getInstance().findFirst(TcManticCierresCajasDto.class, "caja", bitacora.toMap());
+					caja.setSaldo(Numero.toRedondearSat(caja.getSaldo()- this.retiro.getImporte()));
+					regresar= DaoFactory.getInstance().update(sesion, caja)>= 1L;
 					Long consecutivo= this.toSiguiente(sesion);
 					this.retiro.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
 					this.retiro.setOrden(consecutivo);
 					this.retiro.setEjercicio(new Long(Fecha.getAnioActual()));
+					this.retiro.setIdUsuario(JsfBase.getIdUsuario());
+					this.retiro.setIdCierreCaja(caja.getIdCierreCaja());
 					regresar= DaoFactory.getInstance().insert(sesion, this.retiro)>= 1L;
-					bitacora= new TcManticCierresBitacoraDto("RETIRO DE EFECTIVO", -1L, idCierre, JsfBase.getIdUsuario(), 2L);
-					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
-					caja= (TcManticCierresCajasDto)DaoFactory.getInstance().findById(TcManticCierresCajasDto.class, this.idCierre);
-					caja.setSaldo(Numero.toRedondearSat(caja.getSaldo()- this.retiro.getImporte()));
-					regresar= DaoFactory.getInstance().update(sesion, caja)>= 1L;
 					break;
 				case ELIMINAR:
-					this.retiro.setObservaciones("ESTE RETIRO FUE CANCELADO :"+ this.retiro.getImporte()+ " con fecha de "+ Fecha.getHoy());
+					this.retiro.setObservaciones("ESTE RETIRO FUE CANCELADO ["+ this.retiro.getImporte()+ "] CON FECHA DE "+ Fecha.getHoy());
 					this.retiro.setImporte(0D);
 					regresar= DaoFactory.getInstance().update(sesion, this.retiro)>= 1L;
 					bitacora= new TcManticCierresBitacoraDto("REINTEGRO DE EFECTIVO", -1L, idCierre, JsfBase.getIdUsuario(), 2L);
 					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
-					caja= (TcManticCierresCajasDto)DaoFactory.getInstance().findById(TcManticCierresCajasDto.class, this.idCierre);
+					caja= (TcManticCierresCajasDto)DaoFactory.getInstance().findFirst(TcManticCierresCajasDto.class, "caja", bitacora.toMap());
 					caja.setSaldo(Numero.toRedondearSat(caja.getSaldo()+ this.retiro.getImporte()));
 					regresar= DaoFactory.getInstance().update(sesion, caja)>= 1L;
 					break;
@@ -90,7 +92,7 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 			params=new HashMap<>();
 			params.put("ejercicio", Fecha.getAnioActual());
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			Value next= DaoFactory.getInstance().toField(sesion, "TcManticCreditosNotasDto", "siguiente", params, "siguiente");
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticCierresRetirosDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
 			  regresar= next.toLong();
 		} // try

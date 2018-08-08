@@ -360,6 +360,14 @@
         where      
           id_cierre_retiro = {idCierreRetiro}
       </select>
+      <select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_cierres_retiros
+				where
+				  ejercicio= {ejercicio} 
+			</select>		
     </unit>				
     <unit id="TcManticCierresEstatusDto">
       <select id="row">
