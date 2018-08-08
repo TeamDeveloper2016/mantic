@@ -5,7 +5,7 @@
  *time 06:17:55 PM
  *author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-(function(window) {
+(function(window) { 
   var janal;
   var currentEvent= $.Event('onJanal');
   window.isMobile= {
