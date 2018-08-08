@@ -93,6 +93,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				temporal.setCantidad(1D);
 				temporal.setUltimo(this.attrs.get("ultimo")!= null);
 				temporal.setSolicitado(this.attrs.get("solicitado")!= null);
+				temporal.setUnidadMedida(articulo.toString("unidadMedida"));
 				Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
 				temporal.setStock(stock== null? 0D: stock.toDouble());
 				if(index== this.adminOrden.getArticulos().size()- 1) {

@@ -230,6 +230,12 @@ shortcut.add("Alt+C", function() {
 	  PF('dlgCalculadora').show();
 });
 
+shortcut.add("f10", function() {
+	janal.console('Asignación de descuento a articulo:');
+	if(PF('dlgDescuentos'))
+	  PF('dlgDescuentos').show();
+});
+
 shortcut.add("Shift+f10", function() {
 	janal.console('Shortcut verificador de precios:');
 	if(PF('dlgVerificador'))
