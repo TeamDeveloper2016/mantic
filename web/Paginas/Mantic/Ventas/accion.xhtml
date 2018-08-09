@@ -45,6 +45,7 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
+		<pe:remoteCommand name="updateDescuentos" process="@this" update="panelDescuentoEspecificacion usuarioDescuento passwordDescuento"/>  			
 		<pe:remoteCommand name="loginValidate" process="@this @(.janal-login-user)" update="headerCuenta panelEmpresa" actionListener="#{manticVentasAccion.doLogin}" oncomplete="janal.desbloquear();"/>  			
 		<pe:remoteCommand name="userUpdate" process="@this" onstart="janal.bloquear();" actionListener="#{manticVentasAccion.doCerrarTicket}" oncomplete="jsArticulos.activeLogin();" update="deudor contenido panelCliente panelEmpresa articulos total"/>  			
 		<pe:remoteCommand name="loadTicketAbiertos" process="@this" update="dialogoOpenTickets" actionListener="#{manticVentasAccion.doLoadTicketAbiertos}" onstart="janal.bloquear()"/>  			
@@ -254,6 +255,8 @@
 								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasAccion.adminOrden.totales.articulos}"/>
 								<p:outputLabel value="Descuento:"/>
 								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasAccion.adminOrden.totales.descuento$}"/>
+								<p:outputLabel value="Global:"/>
+								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasAccion.adminOrden.totales.global$}"/>
 								<p:outputLabel value="Subtotal:"/>
 								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasAccion.adminOrden.totales.subTotal$}"/>
 								<p:outputLabel value="IVA:"/>
@@ -320,31 +323,29 @@
 				<p:commandButton icon="fa fa-remove" styleClass="janal-text-white" process="@none" value="Cancelar" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>		
-		<p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" header="Aplicar descuento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="false" resizable="false" responsive="true" closable="false" onShow="janal.refresh();" onHide="janal.refresh();" width="50%">			
-			<h:form id="formularioDescuentos" prependId="false">
-				<h:panelGrid columns="4" styleClass="janal-wid-100">
-					<p:outputLabel for="usuarioDescuento" value="Usuario:"/>
-					<p:inputText id="usuarioDescuento" value="#{manticVentasAccion.attrs.usuarioDescuento}" styleClass="janal-wid-100-txt "/>
-					<p:outputLabel for="passwordDescuento" value="Contraseña:"/>
-					<p:password id="passwordDescuento" value="#{manticVentasAccion.attrs.passwordDescuento}" styleClass="janal-wid-100-txt "/>									
-				</h:panelGrid>
-				<p:separator/>
-				<h:panelGrid id="panelDescuentoEspecificacion" columns="4">
-					<p:outputLabel for="tipoDescuento" value="Tipo de descuento:"/>
-					<p:selectOneRadio id="tipoDescuento" value="#{manticVentasAccion.attrs.tipoDescuento}">
-						<p:ajax event="change" listener="#{manticVentasAccion.doActivarDescuento}" process="@this" update="panelDescuentoEspecificacion"/>
-						<f:selectItem itemLabel="Individual" itemValue="1"/>
-						<f:selectItem itemLabel="Global" itemValue="0"/>
-					</p:selectOneRadio>
-					<p:inputNumber id="descuentoIndividual" value="#{manticVentasAccion.attrs.descuentoIndividual}" rendered="#{manticVentasAccion.attrs.isIndividual}"/><p:outputLabel value="%" rendered="#{manticVentasAccion.attrs.isIndividual}"/>  
-					<p:outputLabel value="$" rendered="#{!manticVentasAccion.attrs.isIndividual}"/><p:inputNumber id="descuentoGlobal" value="#{manticVentasAccion.attrs.descuentoGlobal}" rendered="#{!manticVentasAccion.attrs.isIndividual}"/>		
-				</h:panelGrid>				
-				<hr class="ui-widget-content"/>
-				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this dialogoDescuentos" value="Aceptar" onstart="return validateCapturaDescuentos();" actionListener="#{manticVentasAccion.doAplicarDescuento}" update="contenido" oncomplete="janal.desbloquear();"/>
-					<p:commandButton icon="fa fa-remove" styleClass="janal-text-white" process="@none" value="Cancelar" onstart="PF('dlgDescuentos').hide();" oncomplete="janal.desbloquear();"/>
-				</div>
-			</h:form>
+		<p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" header="Aplicar descuento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="false" resizable="false" responsive="true" closable="false" onShow="updateDescuentos();janal.refresh();" onHide="janal.refresh();" width="50%">						
+			<h:panelGrid columns="4" styleClass="janal-wid-100">
+				<p:outputLabel for="usuarioDescuento" value="Usuario:"/>
+				<p:inputText id="usuarioDescuento" value="#{manticVentasAccion.attrs.usuarioDescuento}" styleClass="janal-wid-100-txt "/>
+				<p:outputLabel for="passwordDescuento" value="Contraseña:"/>
+				<p:password id="passwordDescuento" value="#{manticVentasAccion.attrs.passwordDescuento}" styleClass="janal-wid-100-txt "/>									
+			</h:panelGrid>
+			<p:separator/>
+			<h:panelGrid id="panelDescuentoEspecificacion" columns="4">
+				<p:outputLabel for="tipoDescuento" value="Tipo de descuento:"/>
+				<p:selectOneRadio id="tipoDescuento" value="#{manticVentasAccion.attrs.tipoDescuento}">
+					<p:ajax event="change" listener="#{manticVentasAccion.doActivarDescuento}" process="@this" update="panelDescuentoEspecificacion"/>
+					<f:selectItem itemLabel="Individual" itemValue="1"/>
+					<f:selectItem itemLabel="Global" itemValue="0"/>
+				</p:selectOneRadio>
+				<p:inputNumber id="descuentoIndividual" value="#{manticVentasAccion.attrs.descuentoIndividual}" rendered="#{manticVentasAccion.attrs.isIndividual}"/><p:outputLabel value="%" rendered="#{manticVentasAccion.attrs.isIndividual}"/>  
+				<p:outputLabel value="$" rendered="#{!manticVentasAccion.attrs.isIndividual}"/><p:inputNumber id="descuentoGlobal" value="#{manticVentasAccion.attrs.descuentoGlobal}" rendered="#{!manticVentasAccion.attrs.isIndividual}"/>		
+			</h:panelGrid>				
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this panelDescuentoEspecificacion usuarioDescuento passwordDescuento" value="Aceptar" onstart="return validateCapturaDescuentos();" actionListener="#{manticVentasAccion.doAplicarDescuento}" update="dialogoDescuentos contenido" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-remove" styleClass="janal-text-white" process="@none" value="Cancelar" onstart="PF('dlgDescuentos').hide();" oncomplete="janal.desbloquear();"/>
+			</div>		
 		</p:dialog>		
 		<p:dialog id="dialogoDetalleArticulo" widgetVar="dlgDetalleArt" header="Articulo [#{manticVentasAccion.attrs.detailArticulo.codigo}]" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();" width="60%">			
 			<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
