@@ -25,13 +25,14 @@ public final class Totales implements Serializable {
 	private double extra;
 	private double subTotal;
 	private double total;
+	private double utilidad;
 	private double global;
 
 	public Totales() {
-		this(0, 0D, 0D, 0D, 0D, 0D, 0D, 0D);
+		this(0, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D);
 	}
 
-	public Totales(int articulos, double importe, double iva, double descuento, double extra, double subTotal, double total, double global) {
+	public Totales(int articulos, double importe, double iva, double descuento, double extra, double subTotal, double total, double utilidad, double global) {
 		this.articulos=articulos;
 		this.importe= importe; 
 		this.iva=iva;
@@ -39,6 +40,7 @@ public final class Totales implements Serializable {
 		this.extra=extra;
 		this.subTotal=subTotal;
 		this.total=total;
+		this.utilidad= utilidad;
 		this.global= global;
 	}
 
@@ -130,6 +132,10 @@ public final class Totales implements Serializable {
 		this.importe+= importe;
 	}
 	
+	public void restarTotal(double importe) {
+		this.total-= importe;
+	}
+	
 	public void addDescuento(double descuento) {
 		this.descuento+= descuento;
 	}
@@ -165,6 +171,18 @@ public final class Totales implements Serializable {
 	public void setGlobal(double global) {
 		this.global = global;
 	}	
+
+	public double getUtilidad() {
+		return utilidad;
+	}
+
+	public void setUtilidad(double utilidad) {
+		this.utilidad = utilidad;
+	}
+	
+	public void addUtilidad(Double utilidad) {
+		this.utilidad+= utilidad;
+	}
 	
 	public void reset() {
 	  this.articulos= 0;
@@ -174,6 +192,7 @@ public final class Totales implements Serializable {
 		this.iva      = 0;
 		this.subTotal = 0;
 		this.total    = 0;
+		this.utilidad = 0;
 	}
 	
 	@Override
