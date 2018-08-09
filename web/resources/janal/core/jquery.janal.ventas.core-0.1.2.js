@@ -304,6 +304,11 @@
 			} // if
 			return false;
 		},
+		refreshAsterisk: function() {			
+  		janal.console("jsArticulos.refresh: "+ this.cursor.index);
+			refresh(this.cursor.index);
+			return false;
+		},
 		isPorcentaje: function(s) {
       if(janal.empty(s))
         if(arguments.length === 1)
@@ -349,9 +354,9 @@
 			*/
 			return true;
 		},
-		divDiscount: function() {
+		divDiscount: function(value) {
 			janal.console('jsArticulo.div: ');					
-			var value= this.get().trim();
+			//var value= this.get().trim();
 			var temp = $(this.discount()).val();
 			if($(this.discount()) && value.length> 0 && this.isPorcentaje(value)) {
 			  $(this.discount()).val(value);
@@ -377,7 +382,7 @@
 				  $(this.amount()).val(temp);
 				else {
 					this.set('');
-	 				this.refresh();
+	 				this.refreshAsterisk();
 				} // if
 			  return ok.error;
 			} // if	
