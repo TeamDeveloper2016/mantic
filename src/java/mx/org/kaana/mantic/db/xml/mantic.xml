@@ -419,6 +419,9 @@
         where      
           id_caja = {idCaja}
       </select>
+			<delete id="rows">
+				delete from tc_mantic_cierres_cajas where id_cierre= {idCierre} and id_caja= {idCaja}
+			</delete>
     </unit>
     <unit id="TcManticCierresRetirosDto">
       <select id="row">
@@ -2887,7 +2890,7 @@
         where      
           id_cobro_caja= 1
 				order by
-				  clave
+				  orden
       </select>
     </unit>
 	  <unit id="TcManticTiposMonedasDto">
@@ -3569,6 +3572,14 @@
         where      
           id_tipo_medio_pago = {idTipoMedioPago} and id_venta = {idVenta} and importe = {importe} and id_venta_medio_pago = {idVentaMedioPago} and id_banco = {idBanco}
       </select>
+			<select id="depurar">
+				select
+					count(id_caja) as total
+				from
+					tr_mantic_venta_medio_pago
+				where 
+				  id_caja= {idCaja}
+			</select>
     </unit>
 		<unit id="TcManticClientesDeudasDto">
       <select id="row">

@@ -36,9 +36,9 @@ import org.primefaces.context.RequestContext;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-@Named(value= "manticVentasCajaCierresEfectivo")
+@Named(value= "manticVentasCajaCierresAbonos")
 @ViewScoped
-public class Efectivo extends IBaseAttribute implements Serializable {
+public class Abonos extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 327393488565639361L;
   
@@ -51,7 +51,6 @@ public class Efectivo extends IBaseAttribute implements Serializable {
     try {
       this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre")== null? -1L: JsfBase.getFlashAttribute("idCierre"));
-      this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("importe", 0.0);
 			this.doLoad();
     } // try
@@ -66,7 +65,6 @@ public class Efectivo extends IBaseAttribute implements Serializable {
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
     	if(JsfBase.getFlashAttribute("idCierre")== null) {
-		  	this.attrs.put("retorno", "retiros");
 				this.toLoadEmpresas();
 				cierre= (Value)DaoFactory.getInstance().toField("VistaCierresCajasDto", "cierre", this.attrs, "idKey");
 				if(cierre!= null)
@@ -78,8 +76,9 @@ public class Efectivo extends IBaseAttribute implements Serializable {
 				this.toLoadEmpresas();
 			} // if
       this.attrs.put("caja", this.caja);
-			Value retiros= (Value)DaoFactory.getInstance().toField("VistaCierresCajasDto", "saldo", this.attrs, "retiros");
-      this.attrs.put("retiros", retiros!= null? retiros.toDouble(): 0D);
+			Entity retiros= (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "ambos", this.attrs);
+      this.attrs.put("retiros", retiros!= null? retiros.toDouble("retiros"): 0D);
+      this.attrs.put("abonos", retiros!= null? retiros.toDouble("abonos"): 0D);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -92,19 +91,20 @@ public class Efectivo extends IBaseAttribute implements Serializable {
     String regresar        = null;
     try {			
 			TcManticCierresRetirosDto retiro= new TcManticCierresRetirosDto(-1L);
+			retiro.setIdAbono(1L);
 			retiro.setImporte((Double)this.attrs.get("importe"));
 			transaccion = new Transaccion((Long)this.attrs.get("idCierre"), retiro);
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
- 				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-    			RequestContext.getCurrentInstance().execute("janal.alert('Se gener\\u00F3 el retiro de efectivo, con consecutivo: "+ retiro.getConsecutivo()+ "');");
+ 				  regresar = "ambos".concat(Constantes.REDIRECIONAR);
+    			RequestContext.getCurrentInstance().execute("janal.alert('Se gener\\u00F3 el abono de efectivo, con consecutivo: "+ retiro.getConsecutivo()+ "');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
-  				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR)? "agregó": this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" el retiro de caja."), ETipoMensaje.INFORMACION);
+  				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR)? "agregó": this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" el abono de caja."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar el retiro de caja.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar el abono de caja.", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -115,7 +115,7 @@ public class Efectivo extends IBaseAttribute implements Serializable {
 	
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
-    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+    return "ambos".concat(Constantes.REDIRECIONAR);
   } 
 	
 	private void toLoadEmpresas() {

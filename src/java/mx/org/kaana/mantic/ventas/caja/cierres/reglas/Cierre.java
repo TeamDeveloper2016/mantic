@@ -45,6 +45,14 @@ public class Cierre extends IBaseTnx implements Serializable  {
 	private List<Denominacion> denominaciones;
 	private String messageError;
 	
+	public Cierre(Long idCaja) {
+		this(idCaja, 0D);
+	}
+	
+	public Cierre(Long idCaja, Double inicial) {
+		this(idCaja, inicial, new TcManticCierresDto("", -1L, 2L, JsfBase.getIdUsuario(), 1L, "", 0L, new Long(Fecha.getAnioActual())), Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+	}
+	
 	public Cierre(Long idCaja, Double inicial, TcManticCierresDto cierre, List<Importe> importes, List<Denominacion> denominaciones) {
 		this.idCaja        = idCaja;
 		this.inicial       = inicial;
@@ -56,8 +64,12 @@ public class Cierre extends IBaseTnx implements Serializable  {
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
 		boolean regresar= false;
-		TcManticCierresBitacoraDto bitacora= null;
+		List<TcManticTiposMediosPagosDto> all= null;
+		TcManticCierresCajasDto registro     = null; 
+		TcManticCierresBitacoraDto bitacora  = null;
+		Map<String, Object> params           = new HashMap<>();
 		try {
+			Long consecutivo= 1L;
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" en el cierre de caja.");
 			switch(accion) {
 				case AGREGAR:
@@ -73,13 +85,12 @@ public class Cierre extends IBaseTnx implements Serializable  {
 					  DaoFactory.getInstance().update(sesion, denominacion);
 					
 					// inicio del nuevo corte de caja con los valores iniciales
-					Long consecutivo= this.toSiguiente(sesion);
+					consecutivo= this.toSiguiente(sesion);
 					TcManticCierresDto apertura= new TcManticCierresDto(
 						Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true), -1L, 2L, JsfBase.getIdUsuario(), 1L, "", consecutivo, new Long(Fecha.getAnioActual())
 					);
 					regresar= DaoFactory.getInstance().insert(sesion, apertura)>= 1L;
-					List<TcManticTiposMediosPagosDto> all= (List<TcManticTiposMediosPagosDto>)DaoFactory.getInstance().findViewCriteria(TcManticTiposMediosPagosDto.class, Collections.EMPTY_MAP, "caja");
-					TcManticCierresCajasDto registro= null;
+					all= (List<TcManticTiposMediosPagosDto>)DaoFactory.getInstance().findViewCriteria(TcManticTiposMediosPagosDto.class, Collections.EMPTY_MAP, "caja");
 					for (TcManticTiposMediosPagosDto medio : all) {
 						if(medio.getIdTipoMedioPago().equals(1L))
 						  registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), apertura.getIdCierre(), 0D, this.idCaja, -1L, 0D, new Date(Calendar.getInstance().getTimeInMillis()), 0D, 0D);
@@ -90,6 +101,46 @@ public class Cierre extends IBaseTnx implements Serializable  {
 					bitacora= new TcManticCierresBitacoraDto("", -1L, apertura.getIdCierre(), JsfBase.getIdUsuario(), 1L);
 					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 					break;
+				case REGISTRAR:
+          consecutivo= this.toSiguiente(sesion);
+					this.cierre.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
+					this.cierre.setOrden(consecutivo);
+					regresar= DaoFactory.getInstance().insert(sesion, this.cierre)>= 1L;
+					all= (List<TcManticTiposMediosPagosDto>)DaoFactory.getInstance().findViewCriteria(TcManticTiposMediosPagosDto.class, Collections.EMPTY_MAP, "caja");
+					for (TcManticTiposMediosPagosDto medio : all) {
+						if(medio.getIdTipoMedioPago().equals(1L))
+						  registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), this.cierre.getIdCierre(), 0D, this.idCaja, -1L, 0D, new Date(Calendar.getInstance().getTimeInMillis()), 0D, 0D);
+						else
+						  registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), this.cierre.getIdCierre(), 0D, this.idCaja, -1L, this.inicial, new Date(Calendar.getInstance().getTimeInMillis()), 0D, this.inicial);
+					  DaoFactory.getInstance().insert(sesion, registro);
+					} // for
+					bitacora= new TcManticCierresBitacoraDto("", -1L, this.cierre.getIdCierre(), JsfBase.getIdUsuario(), 1L);
+					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
+					break;
+				case ELIMINAR:
+					this.cierre= (TcManticCierresDto)DaoFactory.getInstance().toEntity(sesion, TcManticCierresDto.class, "VistaCierresCajasDto", "depurar", params);
+					if(this.cierre!= null) {
+  					// FALTA VALIDAR QUE NO TENGA NINGUNA VENTA ASOCIADA A LA CAJA (tr_ventas_medio_pago) Y FALTA VALIDAR QUE NO TENGA NINGUN RETIRO O ABONO DE CAJA (tc_mantic_cierres_retiros) 
+						Value value= DaoFactory.getInstance().toField(sesion, "TrManticVentaMedioPagoDto", "depurar", params, "total");
+						if(value.getData()== null && value.toLong()== 0) {
+						  value= DaoFactory.getInstance().toField(sesion, "VistaCierresCajasDto", "abonos", params, "total");
+						  if(value.getData()== null && value.toLong()== 0) {
+								this.cierre.setIdCierreEstatus(3L);
+								this.cierre.setObservaciones("CIERRE CANCELADO POR QUE SE ELIMINO LA CAJA ["+ this.idCaja+ "]");
+								regresar= DaoFactory.getInstance().update(sesion, this.cierre)>= 1L;
+								params.put("idCaja", this.idCaja);
+								params.put("idCierre", this.cierre.getIdCierre());
+								DaoFactory.getInstance().deleteAll(TcManticCierresCajasDto.class, params);
+								bitacora= new TcManticCierresBitacoraDto("CIERRE CANCELADO POR QUE SE ELIMINO LA CAJA", -1L, this.cierre.getIdCierre(), JsfBase.getIdUsuario(), 4L);
+								regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
+							} // if	
+							else
+								new RuntimeException("No se puede eliminar la caja porque tiene abonos/retiros asociados ["+ value.toLong()+ "]");
+						} // if	
+						else
+							new RuntimeException("No se puede eliminar la caja porque tiene ventas asociadas ["+ value.toLong()+ "]");
+					} // if	
+					break;
 			} // switch
 		  if(!regresar)
         throw new Exception("");
@@ -98,8 +149,11 @@ public class Cierre extends IBaseTnx implements Serializable  {
       Error.mensaje(e);			
 			throw new Exception(this.messageError.concat("\n\n")+ e.getMessage());
 		} // catch		
+		finally {
+			Methods.clean(params);
+		} // finally
 		sesion.getTransaction().rollback();
-		LOG.info("Se genero de forma correcta el cierre de caja de caja: "+ this.cierre.getConsecutivo());
+		LOG.info("Se genero de forma correcta el cierre de caja: "+ this.cierre.getConsecutivo());
 		return regresar;
 	}
 

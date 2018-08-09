@@ -7,16 +7,16 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Por favor, escriba el importe a retirar de caja"/>
+	<ui:param name="titulo" value="Por favor, escriba el importe a abonar a caja"/>
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-        'contenedorGrupos\\:importe': {validaciones: 'flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{manticVentasCajaCierresEfectivo.doNumericoSat(manticVentasCajaCierresEfectivo.attrs.caja.saldo)}})', mascara: 'flotante', grupo: 'general'},
+        'contenedorGrupos\\:importe': {validaciones: 'flotante|mayor({"cuanto":0})', mascara: 'flotante', grupo: 'general'},
         'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
 			};			
 			
     	$(document).ready(function() {
-				setTimeout("janal.readingMode('#{manticVentasCajaCierresEfectivo.attrs.nombreAccion}')", 500);
+				setTimeout("janal.readingMode('#{manticVentasCajaCierresAbonos.attrs.nombreAccion}')", 500);
       });
 		</script>   
 	</ui:define>
@@ -32,9 +32,9 @@
      								<p:outputLabel for="idEmpresa" value="Empresa:"/>
 									</div>	
 									<div class="ui-grid-col-11">
-										<p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaCierresEfectivo.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
-											<p:ajax event="change" listener="#{manticVentasCajaCierresEfectivo.doLoadCajas}" process="@this" update="idCaja"/>
-											<f:selectItems value="#{manticVentasCajaCierresEfectivo.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+										<p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaCierresAbonos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+											<p:ajax event="change" listener="#{manticVentasCajaCierresAbonos.doLoadCajas}" process="@this" update="idCaja"/>
+											<f:selectItems value="#{manticVentasCajaCierresAbonos.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 											<p:column headerText="Clave">
 												<h:outputText value="#{item.clave}"/>
 											</p:column>   
@@ -49,8 +49,8 @@
 								    <p:outputLabel for="idCaja" value="Caja:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:selectOneMenu id="idCaja" value="#{manticVentasCajaCierresEfectivo.attrs.idCaja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="contains">
-											<f:selectItems value="#{manticVentasCajaCierresEfectivo.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+										<p:selectOneMenu id="idCaja" value="#{manticVentasCajaCierresAbonos.attrs.idCaja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="contains">
+											<f:selectItems value="#{manticVentasCajaCierresAbonos.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 											<p:column headerText="Clave">
 												<h:outputText value="#{item.clave}"/>
 											</p:column>   
@@ -68,7 +68,7 @@
 								    <p:outputLabel for="inicial" value="Inicial:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:inputText id="inicial" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaCierresEfectivo.doDecimalSat(manticVentasCajaCierresEfectivo.attrs.caja.disponible)}" readonly="true"/>
+										<p:inputText id="inicial" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaCierresAbonos.doDecimalSat(manticVentasCajaCierresAbonos.attrs.caja.disponible)}" readonly="true"/>
 									</div>		
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
@@ -76,7 +76,7 @@
 								    <p:outputLabel for="ventas" value="Ventas:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:inputText id="ventas" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaCierresEfectivo.doDecimalSat(manticVentasCajaCierresEfectivo.attrs.caja.acumulado)}" readonly="true"/>
+										<p:inputText id="ventas" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaCierresAbonos.doDecimalSat(manticVentasCajaCierresAbonos.attrs.caja.acumulado)}" readonly="true"/>
 									</div>		
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
@@ -84,7 +84,15 @@
 								    <p:outputLabel for="retiros" value="Retiros:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:inputText id="retiros" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" value="#{manticVentasCajaCierresEfectivo.doDecimalSat(manticVentasCajaCierresEfectivo.attrs.retiros)}" readonly="true"/>
+										<p:inputText id="retiros" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" value="#{manticVentasCajaCierresAbonos.doDecimalSat(manticVentasCajaCierresAbonos.attrs.retiros)}" readonly="true"/>
+									</div>		
+								</div>	
+								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-1">
+								    <p:outputLabel for="abonos" value="Abonos:"/>
+									</div>
+									<div class="ui-grid-col-11">
+										<p:inputText id="abonos" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" value="#{manticVentasCajaCierresRetiros.doDecimalSat(manticVentasCajaCierresAbonos.attrs.abonos)}" readonly="true"/>
 									</div>		
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
@@ -92,7 +100,7 @@
 								    <p:outputLabel for="saldo" value="Saldo:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:inputText id="saldo" styleClass="janal-wid-100-txt janal-column-right janal-color-blue" value="#{manticVentasCajaCierresEfectivo.doDecimalSat(manticVentasCajaCierresEfectivo.attrs.caja.saldo)}" readonly="true"/>
+										<p:inputText id="saldo" styleClass="janal-wid-100-txt janal-column-right janal-color-blue" value="#{manticVentasCajaCierresAbonos.doDecimalSat(manticVentasCajaCierresAbonos.attrs.caja.saldo)}" readonly="true"/>
 									</div>		
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
@@ -100,13 +108,13 @@
 								    <p:outputLabel for="importe" value="Importe:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:inputText id="importe" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" value="#{manticVentasCajaCierresEfectivo.attrs.importe}" converter="javax.faces.Double"/>
+										<p:inputText id="importe" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" value="#{manticVentasCajaCierresAbonos.attrs.importe}" converter="javax.faces.Double"/>
 									</div>		
 								</div>	
 							</div>
 						</p:tab>
 						<p:tab title="Observaciones">
-							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresEfectivo.attrs.observaciones}"/>
+							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresAbonos.attrs.observaciones}"/>
 						</p:tab>
 					</p:tabView>
 				</div>
@@ -115,12 +123,12 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresEfectivo.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresEfectivo.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" immediate="true"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresAbonos.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresAbonos.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresEfectivo.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresEfectivo.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" immediate="true"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresAbonos.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresAbonos.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" immediate="true"/>
 		</div>		
 	</ui:define>
   <ui:param name="componenteBloqueo" value="aceptar cancelar aceptarIcon cancelarIcon"/>
