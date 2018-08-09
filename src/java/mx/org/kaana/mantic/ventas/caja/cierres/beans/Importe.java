@@ -1,8 +1,9 @@
 package mx.org.kaana.mantic.ventas.caja.cierres.beans;
 
 import java.io.Serializable;
-import java.sql.Date;
-import java.util.Calendar;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
 
 /**
@@ -20,6 +21,7 @@ public class Importe extends TcManticCierresCajasDto implements Serializable {
 	private String caja;
 	private String empresa;
 	private String medioPago;
+	private Double diferencia;
 
 	public String getCaja() {
 		return caja;
@@ -43,6 +45,16 @@ public class Importe extends TcManticCierresCajasDto implements Serializable {
 
 	public void setMedioPago(String medioPago) {
 		this.medioPago=medioPago;
+	}
+
+	public Double getDiferencia() {
+		this.diferencia= Numero.toRedondearSat(this.getImporte()- this.getSaldo());
+		return this.diferencia;
+	}
+
+	public String getDiferencia$() {
+		this.diferencia= Numero.toRedondearSat(this.getImporte()- this.getSaldo());
+		return "<span class='"+ (this.diferencia<0? "janal-color-orange": this.diferencia> 0? "janal-color-blue": "janal-color-green")+ "'><strong>$ "+ Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(this.diferencia))+ "</span></strong>";
 	}
 	
 	@Override

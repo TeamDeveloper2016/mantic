@@ -14,7 +14,7 @@
 			Janal.Control.fields = {				 				
         'contenedorGrupos\\:idEmpresa'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:idCaja'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-				'importe'                         : {multiple: '$', validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'},		
+				'importe'                         : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},		
 				'cantidad'                        : {multiple: '$', validaciones: 'entero|mayor-igual({"cuanto": 0})', mascara: 'entero', grupo: 'general'},		
         'contenedorGrupos\\:disponible'   : {validaciones: 'flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{manticVentasCajaCierresAccion.doNumericoSat(manticVentasCajaCierresAccion.attrs.dinero)}})', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
@@ -77,7 +77,7 @@
 										</p:selectOneMenu>
 									</div>		
 								</div>	
-								<div class="ui-grid-row janal-grid-row">
+								<div class="ui-grid-row janal-grid-row continuar" style="display: #{manticVentasCajaCierresAccion.attrs.continuar}">
 									<div class="ui-grid-col-1">
 								    <p:outputLabel for="disponible" value="Dejar:"/>
 									</div>
@@ -125,29 +125,35 @@
 												</f:facet>
 												<h:outputText value="#{row['medioPago']}"/>
 											</p:column>		
-											<p:column class="janal-column-right MarAuto Responsive janal-wid-13">
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-10" style="display: #{manticVentasCajaCierresAccion.attrs.continuar}">
 												<f:facet name="header">
 													<h:outputText value="Inicial"/>
 												</f:facet>
 												<h:outputText value="$ #{manticVentasCajaCierresAccion.doDecimalSat(row['disponible'])}"/>
 											</p:column>		
-											<p:column class="janal-column-right MarAuto Responsive janal-wid-13">
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-10" style="display: #{manticVentasCajaCierresAccion.attrs.continuar}">
 												<f:facet name="header">
 													<h:outputText value="Ventas"/>
 												</f:facet>
 												<h:outputText value="$ #{manticVentasCajaCierresAccion.doDecimalSat(row['acumulado'])}"/>
 											</p:column>		
-											<p:column class="janal-column-right MarAuto Responsive janal-wid-13">
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-10" style="display: #{manticVentasCajaCierresAccion.attrs.continuar}">
 												<f:facet name="header">
 													<h:outputText value="Saldo"/>
 												</f:facet>
 												<h:outputText value="$ #{manticVentasCajaCierresAccion.doDecimalSat(row['saldo'])}"/>
 											</p:column>		
-											<p:column class="importe janal-column-right MarAuto Responsive janal-wid-13">
+											<p:column class="importe janal-column-right MarAuto Responsive janal-wid-10">
 												<f:facet name="header">
 													<p:outputLabel for="importe" value="Importe"/>
 												</f:facet>
 												<p:inputText id="importe" value="#{row['importe']}" styleClass="recalculo total filas janal-column-right janal-wid-100-txt janal-color-blue key-down-event" onblur="jsCierres.precio('#contenedorGrupos\\:tabla\\:#{index}\\:importe');"/>
+											</p:column>			
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-10" style="display: #{manticVentasCajaCierresAccion.attrs.continuar}">
+												<f:facet name="header">
+													<p:outputLabel value="Diferencia"/>
+												</f:facet>
+												<h:outputText value="#{row['diferencia$']}" escape="false"/>
 											</p:column>			
 											<f:facet name="footer">
 												<p:outputLabel styleClass="filas totales janal-color-blue" value="Total: &lt;strong&gt; $ #{manticVentasCajaCierresAccion.doDecimalSat(manticVentasCajaCierresAccion.attrs.total)}&lt;/strong&gt;" escape="false"/>
@@ -222,11 +228,13 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresAccion.doAceptar}" styleClass="janal-text-white" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="continuar" value="Continuar" icon="fa fa-dollar" process="@form" actionListener="#{manticVentasCajaCierresAccion.doContinuar}" onstart="return confirm('Esta seguro que desea continuar ?');" styleClass="continuar janal-text-white" update="contenedorGrupos:tabla @(.continuar)" style="display: #{empty manticVentasCajaCierresAccion.attrs.continuar? 'none': ''}"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresAccion.doAceptar}" styleClass="continuar janal-text-white" onstart="return execute();" oncomplete="janal.desbloquear()" style="display: #{manticVentasCajaCierresAccion.attrs.continuar}"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresAccion.doAceptar}" styleClass="janal-text-white" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="continuarIcon" title="Continuar" icon="fa fa-dollar" process="@form" actionListener="#{manticVentasCajaCierresAccion.doContinuar}" onstart="return confirm('Esta seguro que desea continuar ?');" styleClass="continuar janal-text-white" update="contenedorGrupos:tabla @(.continuar)" style="display: #{empty manticVentasCajaCierresAccion.attrs.continuar? 'none': ''}"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresAccion.doAceptar}" styleClass="continuar janal-text-white" onstart="return execute();" oncomplete="janal.desbloquear()" style="display: #{manticVentasCajaCierresAccion.attrs.continuar}"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" immediate="true"/>
 		</div>		
 	</ui:define>

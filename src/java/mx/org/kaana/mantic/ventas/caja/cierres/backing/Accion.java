@@ -24,7 +24,6 @@ import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.Denominacion;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.Importe;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;
-import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Transaccion;
 import org.primefaces.context.RequestContext;
 
 /**
@@ -66,6 +65,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("sucursales", this.attrs.get("idEmpresa"));
 			this.attrs.put("efectivo", 0D);
 			this.attrs.put("total", 0D);
+			this.attrs.put("continuar", "none");
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -76,6 +76,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public void doLoad() {
     try {
+  		this.attrs.put("dinero", 0D);
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
 			this.importes= (List<Importe>)DaoFactory.getInstance().toEntitySet(Importe.class, "VistaCierresCajasDto", "importes", this.attrs);
 			switch(this.accion) {
@@ -88,7 +89,6 @@ public class Accion extends IBaseAttribute implements Serializable {
 			} // switch
 			this.toLoadEmpresas();
 			this.doCalculate();
-  		this.attrs.put("dinero", 0D);
   		for (Importe importe: this.importes) {
 	   		if(importe.getIdTipoMedioPago().equals(1L)) {
           this.attrs.put("dinero", Numero.toRedondearSat(importe.getImporte()));		
@@ -189,5 +189,9 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // for
     this.attrs.put("total", Numero.toRedondearSat(total));		
 	}
+
+  public void doContinuar() {
+		this.attrs.put("continuar", "");
+	}	
 	
 }
