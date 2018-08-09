@@ -48,6 +48,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
 	private static final String VENDEDOR_PERFIL= "VENDEDOR DE PISO";
+	private static final String INDIVIDUAL= "1";
+	private static final String GLOBAL= "0";
 	private EOrdenes tipoOrden;
 	private SaldoCliente saldoCliente;
 	private StreamedContent image;
@@ -88,6 +90,10 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("activeLogin", false);
+			this.attrs.put("isIndividual", true);
+			this.attrs.put("descuentoIndividual", 0);
+			this.attrs.put("descuentoGlobal", 0);
+			this.attrs.put("tipoDescuento", INDIVIDUAL);
 			this.image= LoadImages.getImage("-1");
 			loadClienteDefault();
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
@@ -720,4 +726,32 @@ public class Accion extends IBaseArticulos implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doUpdateForEmpresa
+	
+	public void doActivarDescuento(){
+		String tipoDescuento= null;		
+		try {
+			tipoDescuento= this.attrs.get("tipoDescuento").toString();
+			this.attrs.put("isIndividual", tipoDescuento.equals(INDIVIDUAL));
+			this.attrs.put(tipoDescuento.equals(INDIVIDUAL) ? "descuentoGlobal" : "descuentoIndividual", 0);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doActivarDescuento
+	
+	public void doAplicarDescuento(){
+		Boolean isIndividual= false;
+		try {
+			isIndividual= Boolean.valueOf(this.attrs.get("isIndividual").toString());
+			if(isIndividual)
+				RequestContext.getCurrentInstance().execute("jsArticulos.divDiscount('".concat(this.attrs.get("descuentoIndividual").toString()).concat("');"));
+			else
+				getAdminOrden().getTotales().setGlobal(Double.valueOf(this.attrs.get("descuentoGlobal").toString()));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAplicarDescuento
 }
