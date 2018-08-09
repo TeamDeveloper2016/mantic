@@ -98,6 +98,8 @@
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+            <p:separator/>			
+            <p:menuitem id="importar" icon="fa fa-external-link" value="Importar XLS/PDF" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosListaPreciosFiltro.doImportar}"/>
           </p:contextMenu>
         </div>
       </div>
