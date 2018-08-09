@@ -121,14 +121,24 @@ public class Cierre extends IBaseTnx implements Serializable  {
 					this.cierre= (TcManticCierresDto)DaoFactory.getInstance().toEntity(sesion, TcManticCierresDto.class, "VistaCierresCajasDto", "depurar", params);
 					if(this.cierre!= null) {
   					// FALTA VALIDAR QUE NO TENGA NINGUNA VENTA ASOCIADA A LA CAJA (tr_ventas_medio_pago) Y FALTA VALIDAR QUE NO TENGA NINGUN RETIRO O ABONO DE CAJA (tc_mantic_cierres_retiros) 
-						this.cierre.setIdCierreEstatus(3L);
-						this.cierre.setObservaciones("CIERRE CANCELADO POR QUE SE ELIMINO LA CAJA ["+ this.idCaja+ "]");
-					  regresar= DaoFactory.getInstance().update(sesion, this.cierre)>= 1L;
-  					params.put("idCaja", this.idCaja);
-  					params.put("idCierre", this.cierre.getIdCierre());
-  					DaoFactory.getInstance().deleteAll(TcManticCierresCajasDto.class, params);
-	  				bitacora= new TcManticCierresBitacoraDto("CIERRE CANCELADO POR QUE SE ELIMINO LA CAJA", -1L, this.cierre.getIdCierre(), JsfBase.getIdUsuario(), 4L);
-		  			regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
+						Value value= DaoFactory.getInstance().toField(sesion, "TrManticVentaMedioPagoDto", "depurar", params, "total");
+						if(value.getData()== null && value.toLong()== 0) {
+						  value= DaoFactory.getInstance().toField(sesion, "VistaCierresCajasDto", "abonos", params, "total");
+						  if(value.getData()== null && value.toLong()== 0) {
+								this.cierre.setIdCierreEstatus(3L);
+								this.cierre.setObservaciones("CIERRE CANCELADO POR QUE SE ELIMINO LA CAJA ["+ this.idCaja+ "]");
+								regresar= DaoFactory.getInstance().update(sesion, this.cierre)>= 1L;
+								params.put("idCaja", this.idCaja);
+								params.put("idCierre", this.cierre.getIdCierre());
+								DaoFactory.getInstance().deleteAll(TcManticCierresCajasDto.class, params);
+								bitacora= new TcManticCierresBitacoraDto("CIERRE CANCELADO POR QUE SE ELIMINO LA CAJA", -1L, this.cierre.getIdCierre(), JsfBase.getIdUsuario(), 4L);
+								regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
+							} // if	
+							else
+								new RuntimeException("No se puede eliminar la caja porque tiene abonos/retiros asociados ["+ value.toLong()+ "]");
+						} // if	
+						else
+							new RuntimeException("No se puede eliminar la caja porque tiene ventas asociadas ["+ value.toLong()+ "]");
 					} // if	
 					break;
 			} // switch

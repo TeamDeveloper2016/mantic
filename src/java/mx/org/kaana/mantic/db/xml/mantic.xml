@@ -3561,6 +3561,14 @@
         where      
           id_tipo_medio_pago = {idTipoMedioPago} and id_venta = {idVenta} and importe = {importe} and id_venta_medio_pago = {idVentaMedioPago} and id_banco = {idBanco}
       </select>
+			<select id="depurar">
+				select
+					count(id_caja) as total
+				from
+					tr_mantic_venta_medio_pago
+				where 
+				  id_caja= {idCaja}
+			</select>
     </unit>
 		<unit id="TcManticClientesDeudasDto">
       <select id="row">
