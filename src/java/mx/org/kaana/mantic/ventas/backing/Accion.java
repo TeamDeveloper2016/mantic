@@ -745,6 +745,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 		CambioUsuario cambioUsuario= null;
 		String cuenta              = null;
 		String contrasenia         = null;
+		Double global              = 0D;
 		try {
 			if(!getAdminOrden().getArticulos().isEmpty()){
 				cuenta= this.attrs.get("usuarioDescuento").toString();
@@ -754,8 +755,16 @@ public class Accion extends IBaseArticulos implements Serializable {
 					isIndividual= Boolean.valueOf(this.attrs.get("isIndividual").toString());
 					if(isIndividual)
 						RequestContext.getCurrentInstance().execute("jsArticulos.divDiscount('".concat(this.attrs.get("descuentoIndividual").toString()).concat("');"));
-					else				
-						getAdminOrden().getTotales().setGlobal(Double.valueOf(this.attrs.get("descuentoGlobal").toString()));
+					else{		
+						global= Double.valueOf(this.attrs.get("descuentoGlobal").toString());
+						getAdminOrden().toCalculate();
+						if(global < getAdminOrden().getTotales().getUtilidad()){
+							getAdminOrden().getTotales().setGlobal(global);							
+							getAdminOrden().toCalculate();
+						} // if
+						else
+							JsfBase.addMessage("No es posble aplicar el descuento, el descuento es superior a la utilidad", ETipoMensaje.ERROR);
+					} // else
 				} // if
 				else
 					JsfBase.addMessage("El usuario no tiene privilegios o el usuario y la contraseña son incorrectos", ETipoMensaje.ERROR);
