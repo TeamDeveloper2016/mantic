@@ -154,6 +154,10 @@ public final class Totales implements Serializable {
 		this.articulos+= idArticulo> 0? 1: 0;
 	}
 
+	public String getGlobal$() {
+		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(global));
+	}
+	
 	public double getGlobal() {
 		return global;
 	}
