@@ -1,15 +1,26 @@
 package mx.org.kaana.mantic.ventas.reglas;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.servlet.http.HttpSession;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EPaginasPrivilegios;
 import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
 import mx.org.kaana.kajool.procesos.acceso.beans.Cliente;
+import mx.org.kaana.kajool.procesos.acceso.beans.Persona;
 import mx.org.kaana.kajool.procesos.acceso.exceptions.AccesoDenegadoException;
 import mx.org.kaana.kajool.procesos.acceso.exceptions.BloqueoSitioException;
 import mx.org.kaana.kajool.procesos.acceso.perfil.reglas.RegistroPerfil;
 import mx.org.kaana.kajool.procesos.acceso.reglas.Acceso;
+import mx.org.kaana.libs.formato.BouncyEncryption;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.reflection.Methods;
 
 public class CambioUsuario extends Acceso implements Serializable{
 
@@ -72,4 +83,54 @@ public class CambioUsuario extends Acceso implements Serializable{
     } // else
   } 
 	
+	public boolean validaPrivilegiosDescuentos() throws Exception{
+    boolean regresar          = false;
+    Map<String, Object> params= null;
+		Persona persona           = null;
+    try {      
+      params = new HashMap<>();
+      params.put("cuenta", getCliente().getCuenta());
+      persona = (Persona) DaoFactory.getInstance().toEntity(Persona.class, "VistaTcJanalUsuariosDto", "acceso", params);
+      if (persona != null) 
+        regresar = verificaPerfil(persona) && verificaCredencial(getCliente().getContrasenia(), persona.getContrasenia());       
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally
+    return regresar;
+	} // validaPrivilegiosDescuentos
+	
+	private boolean verificaCredencial(String contrasenia, String contraseniaPersona) throws Exception {
+    String frase = BouncyEncryption.decrypt(contraseniaPersona);
+    return frase.equals(contrasenia);
+  }
+	
+	private boolean verificaPerfil(Persona persona) throws Exception{
+		boolean regresar         = false;
+		List<Entity> perfiles    = null;
+		Map<String, Object>params= null;
+		int count                = 0;
+		try {
+			params= new HashMap<>();
+			params.put("idPersona", persona.getIdPersona());
+			perfiles= DaoFactory.getInstance().toEntitySet("VistaGruposAccesoDto", "perfilesPersona", params);
+			if(!perfiles.isEmpty()){
+				for(Entity perfil: perfiles){
+					if(perfil.toString("descripcion").toUpperCase().equals("ADMINISTRADOR DE ENCUESTA") || perfil.toString("descripcion").toUpperCase().equals("GERENTE"))
+						count++;
+				} // for
+				regresar= count > 0;
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // verificaPerfil
 }
