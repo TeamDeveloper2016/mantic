@@ -741,17 +741,37 @@ public class Accion extends IBaseArticulos implements Serializable {
 	} // doActivarDescuento
 	
 	public void doAplicarDescuento(){
-		Boolean isIndividual= false;
+		Boolean isIndividual       = false;
+		CambioUsuario cambioUsuario= null;
+		String cuenta              = null;
+		String contrasenia         = null;
 		try {
-			isIndividual= Boolean.valueOf(this.attrs.get("isIndividual").toString());
-			if(isIndividual)
-				RequestContext.getCurrentInstance().execute("jsArticulos.divDiscount('".concat(this.attrs.get("descuentoIndividual").toString()).concat("');"));
-			else
-				getAdminOrden().getTotales().setGlobal(Double.valueOf(this.attrs.get("descuentoGlobal").toString()));
+			if(!getAdminOrden().getArticulos().isEmpty()){
+				cuenta= this.attrs.get("usuarioDescuento").toString();
+				contrasenia= this.attrs.get("passwordDescuento").toString();
+				cambioUsuario= new CambioUsuario(cuenta, contrasenia);
+				if(cambioUsuario.validaPrivilegiosDescuentos()){
+					isIndividual= Boolean.valueOf(this.attrs.get("isIndividual").toString());
+					if(isIndividual)
+						RequestContext.getCurrentInstance().execute("jsArticulos.divDiscount('".concat(this.attrs.get("descuentoIndividual").toString()).concat("');"));
+					else				
+						getAdminOrden().getTotales().setGlobal(Double.valueOf(this.attrs.get("descuentoGlobal").toString()));
+				} // if
+				else
+					JsfBase.addMessage("El usuario no tiene privilegios o el usuario y la contraseña son incorrectos", ETipoMensaje.ERROR);
+			} // if
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
+		finally{			
+			this.attrs.put("isIndividual", true);
+			this.attrs.put("descuentoIndividual", 0);
+			this.attrs.put("descuentoGlobal", 0);
+			this.attrs.put("tipoDescuento", INDIVIDUAL);
+			this.attrs.put("usuarioDescuento", "");
+			this.attrs.put("passwordDescuento", "");
+		} // finally
 	} // doAplicarDescuento
 }
