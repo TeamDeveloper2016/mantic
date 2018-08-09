@@ -10,7 +10,6 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -85,6 +84,13 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.denominaciones= (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "TcManticCierresMonedasDto", "denominacion", this.attrs);
 			this.toLoadEmpresas();
 			this.doCalculate();
+  		this.attrs.put("dinero", 0D);
+  		for (Importe importe: this.importes) {
+	   		if(importe.getIdTipoMedioPago().equals(1L)) {
+          this.attrs.put("dinero", Numero.toRedondearSat(importe.getImporte()));		
+					this.attrs.put("disponible", importe.getDisponible());
+				} // if
+			} // for
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -189,22 +195,24 @@ public class Accion extends IBaseAttribute implements Serializable {
 
 	public void doCalculate() {
 		Double sum  = 0D;
-		Double total= 0D;
 		for (Denominacion denominacion: this.denominaciones) {
 			denominacion.setImporte(Numero.toRedondearSat(denominacion.getDenominacion()* denominacion.getCantidad()));
 			sum+= denominacion.getImporte();
 		} // for
     this.attrs.put("efectivo", Numero.toRedondearSat(sum));		
 		for (Importe importe: this.importes) {
-			if(importe.getIdTipoMedioPago().equals(1L)) {
+			if(importe.getIdTipoMedioPago().equals(1L)) 
 				importe.setImporte(Numero.toRedondearSat(sum));
-        this.attrs.put("dinero", Numero.toRedondearSat(importe.getImporte()));		
-			} //	
+		} // for
+		this.doTotales();
+	}
+	
+	public void doTotales() {
+		Double total= 0D;
+		for (Importe importe: this.importes) {
 			total+= importe.getImporte();
 		} // for
     this.attrs.put("total", Numero.toRedondearSat(total));		
-		if(this.attrs.get("dinero")== null)
-			this.attrs.put("dinero", 0D);
 	}
 	
 }

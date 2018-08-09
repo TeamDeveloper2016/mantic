@@ -11,7 +11,7 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-				'importe'                         : {multiple: '$', validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'flotante', grupo: 'general'},		
+				'importe'                         : {multiple: '$', validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'},		
 				'cantidad'                        : {multiple: '$', validaciones: 'entero|mayor-igual({"cuanto": 0})', mascara: 'entero', grupo: 'general'},		
         'contenedorGrupos\\:disponible'   : {validaciones: 'flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{manticVentasCajaCierresAccion.doNumericoSat(manticVentasCajaCierresAccion.attrs.dinero)}})', mascara: 'flotante', grupo: 'general'},
         'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
@@ -34,6 +34,8 @@
 		VK_DOWN     : 40,
 		before      : '',
 		current     : '',
+		method      : 0,
+		enter       : 0,
 		amounts     : {
 			name: 'importe',
 			top : 0
@@ -57,9 +59,12 @@
       $(document).on('keydown', this.selector, function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('Keydown: '+  key);
-				$cierres.current= $(this).val().trim();
 				switch(key) {
 					case $cierres.VK_ENTER:
+						if($cierres.enter=== 0)
+					    $(this).blur();
+						$cierres.enter= 0;
+						break;
 					case $cierres.VK_UP:
 					  return $cierres.up();
 						break;
@@ -70,7 +75,7 @@
       });
 		},
 		name: function(tokens, move, top) {
-  		janal.console('jsCierres.name move: ['+ move+ '] top:['+ top+ ']');
+  		janal.console('jsCierres.name: index['+ move+ '] top:['+ top+ ']');
 			var position= parseInt(tokens[2], 10);
 			if(position=== 0 &amp;&amp; move&lt; 0)
 				tokens[2]= top;
@@ -90,31 +95,56 @@
   		janal.console('jsCierres.move: #'+ id+ ' ['+ move+ ']');
 			var tokens= id.split(':');
 			if(tokens.length&gt; 2) {
-				if(tokens[3]=== this.amounts.name)
+				if(tokens[3]=== this.amounts.name) {
 			  	id= this.name(tokens, move, this.amounts.top);
+					this.method= 0;
+				} // if
 				else
-   				if(tokens[3]=== this.counts.name)
+   				if(tokens[3]=== this.counts.name) {
 	  		  	id= this.name(tokens, move, this.counts.top);
+					  this.method= 1;
+					} // if
 			} // if	
-			if($(id))
+			if(move!== 0 &amp;&amp; $(id))
 				$(id).focus();
 		},		
 		up: function() {
   		janal.console('jsCierres.up: ');
 			this.move(-1);
-			return this.calculate();
+			return false;
 		},
 		down: function() {
   		janal.console('jsCierres.down: ');
 			this.move(1);
-			return this.calculate();
+			return false;
 		},
 		calculate: function() {
-  		janal.console('jsCierres.calculate: '+ $cierres.current+ ' -- '+ $cierres.before);
-  		if($cierres.current!== $cierres.before)
-	  		calculate();
+  		janal.console('jsCierres.calculate: '+ this.current+ ' -- '+ this.before+ ' ['+ this.method+ ']');
+  		if(parseFloat(this.current, 10)!== parseFloat(this.before, 10))
+				if(this.method=== 0)
+					summary();
+				else
+	  		  calculate();
 			return false;
-		}
+		},
+		precio: function(id) {
+      $cierres.enter= 1;
+  		janal.console('jsCierres.precio: '+ id);
+			janal.precio($(id), '0'); 
+		  this.comun($(id));
+		},	
+		cantidad: function(id) {
+      $cierres.enter= 1;
+  		janal.console('jsCierres.cantidad: '+ id);
+			janal.cantidad($(id), '0'); 
+		  this.comun($(id));
+		},
+		comun: function(id) {
+  		janal.console('jsCierres.comun: '+ $(id).attr('id'));
+			this.current= $(id).val().trim(); 
+			this.move(0);	
+			return this.calculate();
+		}	
 	});
 	
 	console.info('Iktan.Control.Cierres initialized');
@@ -122,7 +152,8 @@
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
-		<p:remoteCommand name="calculate" process="@this @(.filas)" update="@(.filas)" actionListener="#{manticVentasCajaCierresAccion.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.reset(); janal.desbloquear();"/>  
+		<p:remoteCommand name="calculate" process="@this @(.recalculo)" update="@(.filas)" actionListener="#{manticVentasCajaCierresAccion.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.reset(); janal.desbloquear();"/>  
+		<p:remoteCommand name="summary" process="@this @(.total)" update="@(.totales)" actionListener="#{manticVentasCajaCierresAccion.doTotales}" onstart="return janal.bloquear();" oncomplete="janal.reset(); janal.desbloquear();"/>  
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
@@ -170,7 +201,7 @@
 								    <p:outputLabel for="disponible" value="Dejar:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:inputText id="disponible" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" value="#{manticVentasCajaCierresAccion.attrs.disponible}" converter="javax.faces.Double"/>
+										<p:inputText id="disponible" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" value="#{manticVentasCajaCierresAccion.attrs.disponible}" converter="javax.faces.Double" onblur="janal.precio($('#contenedorGrupos\\:disponible'), '0');"/>
 									</div>		
 								</div>	
 								<p:spacer height="3px"/>
@@ -195,13 +226,13 @@
 												</f:facet>
 												<h:outputText value="#{index+ 1}"/>
 											</p:column>		
-											<p:column class="MarAuto Responsive janal-wid-13">
+											<p:column class="MarAuto Responsive janal-wid-10">
 												<f:facet name="header">
 													<h:outputText value="Sucursal"/>
 												</f:facet>
 												<h:outputText value="#{row['empresa']}"/>
 											</p:column>		
-											<p:column class="MarAuto Responsive janal-wid-10">
+											<p:column class="MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
 													<h:outputText value="Caja"/>
 												</f:facet>
@@ -235,10 +266,10 @@
 												<f:facet name="header">
 													<p:outputLabel for="importe" value="Importe"/>
 												</f:facet>
-												<p:inputText id="importe" value="#{row['importe']}" styleClass="filas janal-column-right janal-wid-100-txt janal-color-blue key-down-event"/>
+												<p:inputText id="importe" value="#{row['importe']}" styleClass="recalculo total filas janal-column-right janal-wid-100-txt janal-color-blue key-down-event" onblur="jsCierres.precio('#contenedorGrupos\\:tabla\\:#{index}\\:importe');"/>
 											</p:column>			
 											<f:facet name="footer">
-												<p:outputLabel styleClass="filas" value="Total: $ #{manticVentasCajaCierresAccion.doDecimalSat(manticVentasCajaCierresAccion.attrs.total)}"/>
+												<p:outputLabel styleClass="filas totales janal-color-blue" value="Total: &lt;strong&gt; $ #{manticVentasCajaCierresAccion.doDecimalSat(manticVentasCajaCierresAccion.attrs.total)}&lt;/strong&gt;" escape="false"/>
 											</f:facet>
 										</p:dataTable>
 									</div>		
@@ -284,16 +315,16 @@
 												<f:facet name="header">
 													<p:outputLabel for="cantidad" value="Cantidad"/>
 												</f:facet>
-												<p:inputText id="cantidad" value="#{row['cantidad']}" styleClass="filas janal-column-right janal-wid-100-txt janal-color-blue key-down-event"/>
+												<p:inputText id="cantidad" value="#{row['cantidad']}" styleClass="recalculo janal-column-right janal-wid-100-txt janal-color-blue key-down-event" onblur="jsCierres.cantidad('#contenedorGrupos\\:moneda\\:#{index}\\:cantidad');"/>
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-15">
 												<f:facet name="header">
 													<h:outputText value="Importe"/>
 												</f:facet>
-												<h:outputText styleClass="filas" value="#{manticVentasCajaCierresAccion.doDecimalSat(row['importe'])}"/>
+												<p:outputLabel styleClass="filas" value="#{manticVentasCajaCierresAccion.doDecimalSat(row['importe'])}"/>
 											</p:column>
 											<f:facet name="footer">
-												<p:outputLabel styleClass="filas" value="Total: $ #{manticVentasCajaCierresAccion.doDecimalSat(manticVentasCajaCierresAccion.attrs.efectivo)}"/>
+												<p:outputLabel styleClass="filas janal-color-blue" value="Total: &lt;strong&gt; $ #{manticVentasCajaCierresAccion.doDecimalSat(manticVentasCajaCierresAccion.attrs.efectivo)}&lt;/strong&gt;" escape="false"/>
 											</f:facet>
 										</p:dataTable>										
 									</div>
