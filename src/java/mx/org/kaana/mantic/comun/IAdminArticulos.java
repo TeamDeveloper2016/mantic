@@ -138,7 +138,9 @@ public abstract class IAdminArticulos implements Serializable {
 			this.totales.addSubTotal(articulo.getImportes().getSubTotal());
 			this.totales.addTotal(articulo.getImportes().getTotal());
 			this.totales.addArticulo(articulo.getIdArticulo());
+			this.totales.addUtilidad(articulo.getUtilidad());
 		} // for
+		this.totales.restarTotal(this.totales.getGlobal());
 		this.setAjusteDeuda(this.totales.getTotal());
 	}
 
