@@ -311,6 +311,9 @@
         where      
           id_lista_precio_detalle = {idListaPrecioDetalle}
       </select>
+      <delete id="rows">
+				delete from tc_mantic_listas_precios_detalles where id_lista_precio = {idListaPrecio}
+			</delete>
     </unit>				
     <unit id="TcManticCierresDto">
       <select id="row">
