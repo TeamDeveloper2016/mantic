@@ -74,15 +74,15 @@ public class TcManticVentasDetallesDto implements IBaseDto, Serializable {
   }
 
   public TcManticVentasDetallesDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null);
+    this(null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
 	public TcManticVentasDetallesDto(Double descuentos, String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, String nombre, Double importe, Long idVentaDetalle, Double iva, Double impuestos, Double subTotal, Double cantidad, Long idArticulo, Long idVenta) {
-		this(descuentos, codigo, unidadMedida, costo, descuento, sat, extras, null, nombre, importe, null, idVentaDetalle, iva, impuestos, subTotal, cantidad, idArticulo, idVenta);
+		this(descuentos, codigo, unidadMedida, costo, descuento, sat, extras, nombre, importe, idVentaDetalle, iva, impuestos, subTotal, cantidad, idArticulo, idVenta, null, null);
 	}
 	
-  public TcManticVentasDetallesDto(Double descuentos, String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, Double utilidad, String nombre, Double importe, Double precio, Long idVentaDetalle, Double iva, Double impuestos, Double subTotal, Double cantidad, Long idArticulo, Long idVenta) {
+  public TcManticVentasDetallesDto(Double descuentos, String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, String nombre, Double importe, Long idVentaDetalle, Double iva, Double impuestos, Double subTotal, Double cantidad, Long idArticulo, Long idVenta, Double precio, Double utilidad) {
     setDescuentos(descuentos);
     setCodigo(codigo);
     setUnidadMedida(unidadMedida);
