@@ -876,6 +876,27 @@
 					and tc_janal_usuarios.activo=1
 					and tc_janal_perfiles.acceso=1										
 			</select>
+			<select id="perfilesPersona">
+				 select
+					tc_janal_perfiles.id_perfil id_key,
+					tc_janal_perfiles.descripcion,
+					tc_janal_perfiles.id_menu,
+					tc_mantic_personas.cuenta,
+				  tc_janal_usuarios.id_usuario,
+	        concat(nombres,' ',materno,' ',paterno) usuario_perfil
+				 from
+					tc_janal_grupos
+				 inner join
+					tc_janal_perfiles on tc_janal_perfiles.id_grupo = tc_janal_grupos.id_grupo
+				 inner join
+					tc_janal_usuarios on tc_janal_usuarios.id_perfil = tc_janal_perfiles.id_perfil				
+				 inner join
+			    tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona			
+         where
+					tc_mantic_personas.id_persona= {idPersona}				 					
+					and tc_janal_usuarios.activo=1
+					and tc_janal_perfiles.acceso=1										
+			</select>
 		</unit>
     <unit id="VistaEntidadesMunicipiosDto">
       <select id="row">
