@@ -29,6 +29,7 @@ public final class Constantes {
   public static final String CAMPO_LLAVE = "id";
   public static final String NOMBRE_FINAL_CLASE_DTO = "Dto";
   public static final String PATRON_IMPORTAR_FACTURA= "/(\\.|\\/)(xml|pdf)$/";
+  public static final String PATRON_IMPORTAR_LISTA_ARCHIVOS= "/(\\.|\\/)(xls|pdf)$/";
   public static final String PATRON_IMPORTAR_IDENTIFICACION= "/(\\.|\\/)(pdf|png|jpe?g)$/";
 
   // Constantes de separadores y caracteres
