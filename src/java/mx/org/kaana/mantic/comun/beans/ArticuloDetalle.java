@@ -48,7 +48,8 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 	private Long idAplicar;
 	private boolean aplicar;
 	private boolean disponible;
-	
+	private Double precio;
+	private Double utilidad;	
 
   public ArticuloDetalle() {
     this(new Long(-1L));
@@ -63,6 +64,10 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 	}
 	
 	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Long solicitados, Long idRedondear, Long idComodin, Double excedentes, Long idAplicar) {
+		this(idArticulo, codigo, costo, descuento, extras, importe, registro, propio, iva, impuestos, subTotal, cantidad, descuentos, nombre, sat, unidadMedida, idOrdenDetalle, solicitados, idRedondear, idComodin, excedentes, idAplicar, 0D, 0D);
+	}
+	
+	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Long solicitados, Long idRedondear, Long idComodin, Double excedentes, Long idAplicar, Double precio, Double utilidad) {
 		this.idArticulo=idArticulo;
 		this.codigo=codigo;
 		this.costo=costo;
@@ -89,6 +94,8 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		this.idAplicar= idAplicar;
 		this.aplicar= idAplicar== null || idAplicar.equals(1L);
 		this.disponible= true;
+		this.precio= precio;
+		this.utilidad= utilidad;
 	}
 	
   public void setCodigo(String codigo) {
@@ -275,6 +282,22 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		this.excedentes=excedentes;
 	}
 
+	public Double getPrecio() {
+		return precio;
+	}
+
+	public void setPrecio(Double precio) {
+		this.precio = precio;
+	}
+
+	public Double getUtilidad() {
+		return utilidad;
+	}
+
+	public void setUtilidad(Double utilidad) {
+		this.utilidad = utilidad;
+	}
+	
 	@Override
   public Long getKey() {
   	return getIdArticulo();
@@ -326,6 +349,10 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		regresar.append(getTotal());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdComodin());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPrecio());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getUtilidad());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -352,6 +379,8 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		regresar.put("valor", getValor());
 		regresar.put("total", getTotal());
 		regresar.put("idComodin", getIdComodin());
+		regresar.put("precio", getPrecio());
+		regresar.put("utilidad", getUtilidad());
   	return regresar;
   }
 
@@ -442,7 +471,5 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 			return false;
 		}
 		return true;
-	}
-
-	
+	}	
 }
