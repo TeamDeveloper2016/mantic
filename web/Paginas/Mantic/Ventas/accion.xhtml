@@ -9,20 +9,32 @@
                 template="/WEB-INF/plantillas/venta.xhtml">
 	<ui:param name="titulo" value="Punto de venta"/>
 	<ui:define name="librerias">
-		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.1.1.js"/>
+		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.1.2.js"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
 				'articulos': {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'articulo'},			
 				'total'    : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'articulo'},			
 				'descuento': {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'articulo'},
 				'cuenta'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'login'},
-				'password' : {validaciones: 'requerido', mascara: 'libre', grupo: 'login'}			
+				'password' : {validaciones: 'requerido', mascara: 'libre', grupo: 'login'},			
+				'usuarioDescuento'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'},			
+				'passwordDescuento'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'},			
+				'tipoDescuento'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'},		
+				'descuentoIndividual': {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'},		
+				'descuentoGlobal'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'}
 			};	
 			
     	$(document).ready(function() {
         jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasAccion.adminOrden.articulos.size()}, 'tabla\\:');
 				janal.readingMode('#{manticVentasAccion.attrs.nombreAccion}');
-      });								
+      });							
+			
+			function validateCapturaDescuentos(){
+				var ok= janal.partial('descuento');
+				if(ok)
+					PF('dlgDescuentos').hide();					
+				return ok;
+			} // validateCapturaDescuentos
 		</script>   
 		<style type="text/css">
 			.janal-total-compra {
@@ -307,6 +319,32 @@
 				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this ticketsAbiertos" value="Aceptar" onstart="PF('dlgOpenTickets').hide();" actionListener="#{manticVentasAccion.doAsignaTicketAbierto}" update="contenido clientes cliente noTicket" oncomplete="janal.desbloquear();"/>
 				<p:commandButton icon="fa fa-remove" styleClass="janal-text-white" process="@none" value="Cancelar" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
+		</p:dialog>		
+		<p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" header="Aplicar descuento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="false" resizable="false" responsive="true" closable="false" onShow="janal.refresh();" onHide="janal.refresh();" width="50%">			
+			<h:form id="formularioDescuentos" prependId="false">
+				<h:panelGrid columns="4" styleClass="janal-wid-100">
+					<p:outputLabel for="usuarioDescuento" value="Usuario:"/>
+					<p:inputText id="usuarioDescuento" value="#{manticVentasAccion.attrs.usuarioDescuento}" styleClass="janal-wid-100-txt "/>
+					<p:outputLabel for="passwordDescuento" value="Contraseña:"/>
+					<p:password id="passwordDescuento" value="#{manticVentasAccion.attrs.passwordDescuento}" styleClass="janal-wid-100-txt "/>									
+				</h:panelGrid>
+				<p:separator/>
+				<h:panelGrid id="panelDescuentoEspecificacion" columns="4">
+					<p:outputLabel for="tipoDescuento" value="Tipo de descuento:"/>
+					<p:selectOneRadio id="tipoDescuento" value="#{manticVentasAccion.attrs.tipoDescuento}">
+						<p:ajax event="change" listener="#{manticVentasAccion.doActivarDescuento}" process="@this" update="panelDescuentoEspecificacion"/>
+						<f:selectItem itemLabel="Individual" itemValue="1"/>
+						<f:selectItem itemLabel="Global" itemValue="0"/>
+					</p:selectOneRadio>
+					<p:inputNumber id="descuentoIndividual" value="#{manticVentasAccion.attrs.descuentoIndividual}" rendered="#{manticVentasAccion.attrs.isIndividual}"/><p:outputLabel value="%" rendered="#{manticVentasAccion.attrs.isIndividual}"/>  
+					<p:outputLabel value="$" rendered="#{!manticVentasAccion.attrs.isIndividual}"/><p:inputNumber id="descuentoGlobal" value="#{manticVentasAccion.attrs.descuentoGlobal}" rendered="#{!manticVentasAccion.attrs.isIndividual}"/>		
+				</h:panelGrid>				
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this dialogoDescuentos" value="Aceptar" onstart="return validateCapturaDescuentos();" actionListener="#{manticVentasAccion.doAplicarDescuento}" update="contenido" oncomplete="janal.desbloquear();"/>
+					<p:commandButton icon="fa fa-remove" styleClass="janal-text-white" process="@none" value="Cancelar" onstart="PF('dlgDescuentos').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
 		</p:dialog>		
 		<p:dialog id="dialogoDetalleArticulo" widgetVar="dlgDetalleArt" header="Articulo [#{manticVentasAccion.attrs.detailArticulo.codigo}]" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();" width="60%">			
 			<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
