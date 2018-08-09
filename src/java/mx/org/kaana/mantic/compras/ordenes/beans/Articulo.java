@@ -299,7 +299,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		return new TcManticVentasDetallesDto(
 			this.getDescuentos(),
 			Cadena.isVacio(this.getCodigo())? this.getPropio(): this.getCodigo(), 
-			"PZA",
+			this.getUnidadMedida(),
 			this.getCosto(), 
 			this.getDescuento(), 
 			this.getSat(),
@@ -312,7 +312,9 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getSubTotal(), 
 			this.getCantidad(), 
 			this.getIdArticulo(),
-			-1L /*idVenta, */
+			-1L, /*idVenta, */
+			this.getPrecio(),
+			this.getUtilidad()
 		);
 	}
 	
@@ -371,6 +373,5 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		articulo.setIva(16D);
 		articulo.toCalculate();
 		LOG.info(articulo);
-	}	
-	
+	}		
 }
