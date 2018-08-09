@@ -107,6 +107,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     String regresar   = null;
     try {			
 			TcManticCierresDto cierre= (TcManticCierresDto)DaoFactory.getInstance().findById(TcManticCierresDto.class, (Long)this.attrs.get("idCierre"));
+			cierre.setObservaciones((String)this.attrs.get("observaciones"));
 			transaccion = new Cierre((Long)this.attrs.get("idCaja"), (Double)this.attrs.get("disponible"), cierre, this.importes, this.denominaciones);
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {

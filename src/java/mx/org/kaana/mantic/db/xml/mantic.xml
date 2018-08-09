@@ -408,6 +408,9 @@
         where      
           id_caja = {idCaja}
       </select>
+			<delete id="rows">
+				delete from tc_mantic_cierres_cajas where id_cierre= {idCierre} and id_caja= {idCaja}
+			</delete>
     </unit>
     <unit id="TcManticCierresRetirosDto">
       <select id="row">
@@ -2876,7 +2879,7 @@
         where      
           id_cobro_caja= 1
 				order by
-				  clave
+				  orden
       </select>
     </unit>
 	  <unit id="TcManticTiposMonedasDto">
