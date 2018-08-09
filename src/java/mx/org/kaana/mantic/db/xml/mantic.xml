@@ -24,19 +24,6 @@
         where      
           id_cierre = {idCierre} and id_moneda = {idMoneda}
       </select>
-			<select id="denominacion">
-				select
-					tc_mantic_monedas.id_moneda,
-					tc_mantic_monedas.nombre,
-					tc_mantic_monedas.denominacion,
-					0 as cantidad,
-					0 as importe,
-					{idCierre} as id_cierre 
-				from
-					tc_mantic_monedas
-				order by  
-					tc_mantic_monedas.orden				
-			</select>
     </unit>		
     <unit id="TcManticMonedasDto">
       <select id="row">
@@ -55,6 +42,19 @@
         where      
           denominacion = {denominacion}
       </select>
+			<select id="denominacion">
+				select
+					id_moneda,
+					nombre,
+					denominacion,
+					0 as cantidad,
+					0 as importe,
+					{idCierre} as id_cierre 
+				from
+					tc_mantic_monedas
+				order by  
+					orden				
+			</select>
     </unit>
 		<unit id="TcManticApartadosDto">
       <select id="row">
@@ -235,6 +235,15 @@
         where      
           id_empresa in ({idEmpresa})
       </select>
+      <select id="unica">
+        select      
+          tc_mantic_cajas.id_caja as id_key,
+          tc_mantic_cajas.*
+        from      
+          tc_mantic_cajas
+        where      
+				  id_caja= {idCaja}
+      </select>
       <select id="lazy">
         select      
           tc_mantic_cajas.id_caja as id_key,
@@ -318,10 +327,18 @@
         from      
           tc_mantic_cierres
         where      
-          id_cierre = {idCierre} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+          orden = {orden} and ejercicio = {ejercicio}
       </select>
+      <select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_cierres
+				where
+				  ejercicio= {ejercicio} 
+			</select>		
     </unit>
-    <unit id="TcManticCierresAlertasDto">
+		<unit id="TcManticCierresAlertasDto">
       <select id="row">
         select      
           *
@@ -2850,6 +2867,16 @@
           tc_mantic_tipos_medios_pagos
         where      
           id_tipo_medio_pago = {idTipoMedioPago} and nombre = '{nombre}'
+      </select>
+      <select id="caja">
+        select      
+          *
+        from      
+          tc_mantic_tipos_medios_pagos
+        where      
+          id_cobro_caja= 1
+				order by
+				  clave
       </select>
     </unit>
 	  <unit id="TcManticTiposMonedasDto">

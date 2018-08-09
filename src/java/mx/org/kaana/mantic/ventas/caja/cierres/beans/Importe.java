@@ -1,6 +1,8 @@
 package mx.org.kaana.mantic.ventas.caja.cierres.beans;
 
 import java.io.Serializable;
+import java.sql.Date;
+import java.util.Calendar;
 import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
 
 /**

@@ -1,0 +1,134 @@
+package mx.org.kaana.mantic.ventas.caja.cierres.reglas;
+
+import java.io.Serializable;
+import java.sql.Date;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticCierresBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
+import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
+import mx.org.kaana.mantic.db.dto.TcManticTiposMediosPagosDto;
+import mx.org.kaana.mantic.ventas.caja.cierres.beans.Denominacion;
+import mx.org.kaana.mantic.ventas.caja.cierres.beans.Importe;
+import org.apache.log4j.Logger;
+import org.hibernate.Session;
+
+/**
+ *@company KAANA
+ *@project KAJOOL (Control system polls)
+ *@date 7/08/2018
+ *@time 01:09:18 PM 
+ *@author Team Developer 2016 <team.developer@kaana.org.mx>
+ */
+
+public class Cierre extends IBaseTnx implements Serializable  {
+
+	private static final long serialVersionUID=-2843960976905038609L;
+  private static final Logger LOG = Logger.getLogger(Cierre.class);
+
+	private Long idCaja;
+	private Double inicial;
+	private TcManticCierresDto cierre;
+	private List<Importe> importes;
+	private List<Denominacion> denominaciones;
+	private String messageError;
+	
+	public Cierre(Long idCaja, Double inicial, TcManticCierresDto cierre, List<Importe> importes, List<Denominacion> denominaciones) {
+		this.idCaja        = idCaja;
+		this.inicial       = inicial;
+		this.cierre        = cierre;
+		this.importes      = importes;
+		this.denominaciones= denominaciones;
+	}
+	
+	@Override
+	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
+		boolean regresar= false;
+		TcManticCierresBitacoraDto bitacora= null;
+		try {
+			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" en el cierre de caja.");
+			switch(accion) {
+				case AGREGAR:
+					bitacora= new TcManticCierresBitacoraDto("CIERRE DEFINITIVO", -1L, this.cierre.getIdCierre(), JsfBase.getIdUsuario(), 3L);
+					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
+					this.cierre.setIdCierreEstatus(3L);
+					this.cierre.setIdDiferencias(this.toDiferencias()? 1L: 2L);
+					regresar= DaoFactory.getInstance().update(sesion, this.cierre)>= 1L;
+					sesion.flush();
+					for (Importe importe: this.importes)
+					  DaoFactory.getInstance().update(sesion, importe);
+					for (Denominacion denominacion: this.denominaciones) 
+					  DaoFactory.getInstance().update(sesion, denominacion);
+					
+					// inicio del nuevo corte de caja con los valores iniciales
+					Long consecutivo= this.toSiguiente(sesion);
+					TcManticCierresDto apertura= new TcManticCierresDto(
+						Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true), -1L, 2L, JsfBase.getIdUsuario(), 1L, "", consecutivo, new Long(Fecha.getAnioActual())
+					);
+					regresar= DaoFactory.getInstance().insert(sesion, apertura)>= 1L;
+					List<TcManticTiposMediosPagosDto> all= (List<TcManticTiposMediosPagosDto>)DaoFactory.getInstance().findViewCriteria(TcManticTiposMediosPagosDto.class, Collections.EMPTY_MAP, "caja");
+					TcManticCierresCajasDto registro= null;
+					for (TcManticTiposMediosPagosDto medio : all) {
+						if(medio.getIdTipoMedioPago().equals(1L))
+						  registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), apertura.getIdCierre(), 0D, this.idCaja, -1L, 0D, new Date(Calendar.getInstance().getTimeInMillis()), 0D, 0D);
+						else
+						  registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), apertura.getIdCierre(), 0D, this.idCaja, -1L, this.inicial, new Date(Calendar.getInstance().getTimeInMillis()), 0D, this.inicial);
+					  DaoFactory.getInstance().insert(sesion, registro);
+					} // for
+					bitacora= new TcManticCierresBitacoraDto("", -1L, apertura.getIdCierre(), JsfBase.getIdUsuario(), 1L);
+					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
+					break;
+			} // switch
+		  if(!regresar)
+        throw new Exception("");
+		} // try
+		catch (Exception e) {
+      Error.mensaje(e);			
+			throw new Exception(this.messageError.concat("\n\n")+ e.getMessage());
+		} // catch		
+		sesion.getTransaction().rollback();
+		LOG.info("Se genero de forma correcta el cierre de caja de caja: "+ this.cierre.getConsecutivo());
+		return regresar;
+	}
+
+	private Long toSiguiente(Session sesion) throws Exception {
+		Long regresar= 1L;
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("idCierre", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticCierresDto", "siguiente", params, "siguiente");
+			if(next.getData()!= null)
+			  regresar= next.toLong();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}	
+			
+	private boolean toDiferencias() {
+		boolean regresar= false;
+		for (Importe importe : this.importes) {
+			if(!regresar && !importe.getSaldo().equals(importe.getImporte()))
+				regresar= true;
+		} // for
+		return regresar;
+	}
+}

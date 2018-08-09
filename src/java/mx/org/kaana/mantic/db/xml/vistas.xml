@@ -223,6 +223,23 @@
 				order by
 				  tc_mantic_cierres_cajas.id_tipo_medio_pago				
 			</select>
+			<select id="denominacion">
+				select
+					tc_mantic_monedas.id_moneda,
+					tc_mantic_monedas.nombre,
+					tc_mantic_monedas.denominacion,
+					tc_mantic_cierres_monedas.cantidad,
+					tc_mantic_cierres_monedas.importe,
+					tc_mantic_cierres_monedas.id_cierre 
+				from
+				  tc_mantic_cierres_monedas
+				inner join
+					tc_mantic_monedas on tc_mantic_cierres_monedas.id_moneda= tc_mantic_monedas.id_moneda
+				where 
+				  tc_mantic_cierres_monedas.id_cierre= {idCierre}	
+				order by  
+					tc_mantic_monedas.orden			
+			</select>
 		</unit>
 		<unit id="VistaCreditosNotasDto">
 			<select id="meses">

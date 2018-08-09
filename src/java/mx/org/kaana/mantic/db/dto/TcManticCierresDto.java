@@ -34,6 +34,8 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcManticCierresDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
+  @Column (name="consecutivo")
+  private String consecutivo;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_cierre")
@@ -42,10 +44,14 @@ public class TcManticCierresDto implements IBaseDto, Serializable {
   private Long idDiferencias;
   @Column (name="id_usuario")
   private Long idUsuario;
-  @Column (name="observaciones")
-  private String observaciones;
   @Column (name="id_cierre_estatus")
   private Long idCierreEstatus;
+  @Column (name="observaciones")
+  private String observaciones;
+  @Column (name="orden")
+  private Long orden;
+  @Column (name="ejercicio")
+  private Long ejercicio;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -54,19 +60,30 @@ public class TcManticCierresDto implements IBaseDto, Serializable {
   }
 
   public TcManticCierresDto(Long key) {
-    this(new Long(-1L), null, null, null, null);
+    this(null, new Long(-1L), null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticCierresDto(Long idCierre, Long idDiferencias, Long idUsuario, String observaciones, Long idCierreEstatus) {
+  public TcManticCierresDto(String consecutivo, Long idCierre, Long idDiferencias, Long idUsuario, Long idCierreEstatus, String observaciones, Long orden, Long ejercicio) {
+    setConsecutivo(consecutivo);
     setIdCierre(idCierre);
     setIdDiferencias(idDiferencias);
     setIdUsuario(idUsuario);
-    setObservaciones(observaciones);
     setIdCierreEstatus(idCierreEstatus);
+    setObservaciones(observaciones);
+    setOrden(orden);
+    setEjercicio(ejercicio);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
+  public void setConsecutivo(String consecutivo) {
+    this.consecutivo = consecutivo;
+  }
+
+  public String getConsecutivo() {
+    return consecutivo;
+  }
+
   public void setIdCierre(Long idCierre) {
     this.idCierre = idCierre;
   }
@@ -91,6 +108,14 @@ public class TcManticCierresDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
+  public void setIdCierreEstatus(Long idCierreEstatus) {
+    this.idCierreEstatus = idCierreEstatus;
+  }
+
+  public Long getIdCierreEstatus() {
+    return idCierreEstatus;
+  }
+
   public void setObservaciones(String observaciones) {
     this.observaciones = observaciones;
   }
@@ -99,12 +124,20 @@ public class TcManticCierresDto implements IBaseDto, Serializable {
     return observaciones;
   }
 
-  public void setIdCierreEstatus(Long idCierreEstatus) {
-    this.idCierreEstatus = idCierreEstatus;
+  public void setOrden(Long orden) {
+    this.orden = orden;
   }
 
-  public Long getIdCierreEstatus() {
-    return idCierreEstatus;
+  public Long getOrden() {
+    return orden;
+  }
+
+  public void setEjercicio(Long ejercicio) {
+    this.ejercicio = ejercicio;
+  }
+
+  public Long getEjercicio() {
+    return ejercicio;
   }
 
   public void setRegistro(Timestamp registro) {
@@ -130,15 +163,21 @@ public class TcManticCierresDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
+		regresar.append(getConsecutivo());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCierre());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdDiferencias());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdCierreEstatus());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdCierreEstatus());
+		regresar.append(getOrden());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
@@ -148,11 +187,14 @@ public class TcManticCierresDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
+		regresar.put("consecutivo", getConsecutivo());
 		regresar.put("idCierre", getIdCierre());
 		regresar.put("idDiferencias", getIdDiferencias());
 		regresar.put("idUsuario", getIdUsuario());
-		regresar.put("observaciones", getObservaciones());
 		regresar.put("idCierreEstatus", getIdCierreEstatus());
+		regresar.put("observaciones", getObservaciones());
+		regresar.put("orden", getOrden());
+		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -160,7 +202,7 @@ public class TcManticCierresDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdCierre(), getIdDiferencias(), getIdUsuario(), getObservaciones(), getIdCierreEstatus(), getRegistro()
+    getConsecutivo(), getIdCierre(), getIdDiferencias(), getIdUsuario(), getIdCierreEstatus(), getObservaciones(), getOrden(), getEjercicio(), getRegistro()
     };
     return regresar;
   }

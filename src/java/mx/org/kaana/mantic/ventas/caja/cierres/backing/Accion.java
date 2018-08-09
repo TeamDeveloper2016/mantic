@@ -2,14 +2,11 @@ package mx.org.kaana.mantic.ventas.caja.cierres.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -20,13 +17,13 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.db.dto.TcManticCierresRetirosDto;
+import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.Denominacion;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.Importe;
+import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Transaccion;
 import org.primefaces.context.RequestContext;
 
@@ -46,7 +43,6 @@ public class Accion extends IBaseAttribute implements Serializable {
   
 	private List<Importe> importes;
 	private List<Denominacion> denominaciones;
-	private Entity caja;
 	private EAccion accion;
 
 	public List<Importe> getImportes() {
@@ -66,7 +62,8 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre")== null? -1L: JsfBase.getFlashAttribute("idCierre"));
       this.attrs.put("idCaja", JsfBase.getFlashAttribute("idCaja")== null? -1L: JsfBase.getFlashAttribute("idCaja"));
-      this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
+      this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa")== null? -1L: JsfBase.getFlashAttribute("idEmpresa"));
+      this.attrs.put("sucursales", this.attrs.get("idEmpresa"));
 			this.attrs.put("efectivo", 0D);
 			this.attrs.put("total", 0D);
 			this.doLoad();
@@ -80,8 +77,15 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doLoad() {
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
-			this.importes      = (List<Importe>)DaoFactory.getInstance().toEntitySet(Importe.class, "VistaCierresCajasDto", "importes", this.attrs);
-			this.denominaciones= (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "TcManticCierresMonedasDto", "denominacion", this.attrs);
+			this.importes= (List<Importe>)DaoFactory.getInstance().toEntitySet(Importe.class, "VistaCierresCajasDto", "importes", this.attrs);
+			switch(this.accion) {
+				case AGREGAR:
+					this.denominaciones= (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "TcManticMonedasDto", "denominacion", this.attrs);
+					break;	
+				case CONSULTAR:
+					this.denominaciones= (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "VistaCierresCajasDto", "denominacion", this.attrs);
+					break;	
+			} // switch
 			this.toLoadEmpresas();
 			this.doCalculate();
   		this.attrs.put("dinero", 0D);
@@ -99,16 +103,15 @@ public class Accion extends IBaseAttribute implements Serializable {
   } // doLoad
 
   public String doAceptar() {  
-    Transaccion transaccion= null;
-    String regresar        = null;
+    Cierre transaccion= null;
+    String regresar   = null;
     try {			
-			TcManticCierresRetirosDto retiro= new TcManticCierresRetirosDto(-1L);
-			retiro.setImporte((Double)this.attrs.get("importe"));
-			transaccion = new Transaccion((Long)this.attrs.get("idCierre"), retiro);
+			TcManticCierresDto cierre= (TcManticCierresDto)DaoFactory.getInstance().findById(TcManticCierresDto.class, (Long)this.attrs.get("idCierre"));
+			transaccion = new Cierre((Long)this.attrs.get("idCaja"), (Double)this.attrs.get("disponible"), cierre, this.importes, this.denominaciones);
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-    			RequestContext.getCurrentInstance().execute("janal.alert('Se gener\\u00F3 el cierre de caja, con exito');");
+    			RequestContext.getCurrentInstance().execute("janal.alert('Se gener\\u00F3 el cierre de caja, con consecutivo: "+ cierre.getConsecutivo()+ "');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR)? "agregó": this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" el cierre de caja."), ETipoMensaje.INFORMACION);
@@ -131,28 +134,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 	
 	private void toLoadEmpresas() {
 		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
     try {
 			columns= new ArrayList<>();
-			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
-			else
-				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			List<UISelectEntity> sucursales= (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
+			List<UISelectEntity> sucursales= (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", this.attrs, columns);
       this.attrs.put("sucursales", sucursales);
-			if(this.caja!= null) {
-				int index= sucursales.indexOf(new UISelectEntity(new Entity(this.caja.toLong("idEmpresa"))));
-				if(index>= 0)
-					this.attrs.put("idEmpresa", sucursales.get(index));
-				else
-			    this.attrs.put("idEmpresa", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("sucursales")));
-			} // if
-			else
-			  this.attrs.put("idEmpresa", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("sucursales")));
 			this.doLoadCajas();
     } // try
     catch (Exception e) {
@@ -160,36 +147,23 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch   
     finally {
       Methods.clean(columns);
-      Methods.clean(params);
     }// finally
 	}
 	
 	public void doLoadCajas() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
+		List<Columna> columns= null;
     try {
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			params.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
-			List<UISelectEntity> cajas= (List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "cajas", params, columns);
+			List<UISelectEntity> cajas= (List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "unica", this.attrs, columns);
       this.attrs.put("cajas", cajas);
-			if(this.caja!= null) {
-				int index= cajas.indexOf(new UISelectEntity(new Entity(this.caja.toLong("idCaja"))));
-				if(index>= 0)
-					this.attrs.put("idCaja", cajas.get(index));
-				else
-    			this.attrs.put("idCaja", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
-			} // if
-			else
-  			this.attrs.put("idCaja", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
     } // try
     catch (Exception e) {
       throw e;
     } // catch   
     finally {
       Methods.clean(columns);
-      Methods.clean(params);
     }// finally
 	}
 

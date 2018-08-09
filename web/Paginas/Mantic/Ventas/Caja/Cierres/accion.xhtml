@@ -12,9 +12,11 @@
     <h:outputScript library="janal" name="core/jquery.janal.close.core-0.0.1.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
+        'contenedorGrupos\\:idEmpresa'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        'contenedorGrupos\\:idCaja'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'importe'                         : {multiple: '$', validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'},		
 				'cantidad'                        : {multiple: '$', validaciones: 'entero|mayor-igual({"cuanto": 0})', mascara: 'entero', grupo: 'general'},		
-        'contenedorGrupos\\:disponible'   : {validaciones: 'flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{manticVentasCajaCierresAccion.doNumericoSat(manticVentasCajaCierresAccion.attrs.dinero)}})', mascara: 'flotante', grupo: 'general'},
+        'contenedorGrupos\\:disponible'   : {validaciones: 'flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{manticVentasCajaCierresAccion.doNumericoSat(manticVentasCajaCierresAccion.attrs.dinero)}})', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
 			};			
 			
@@ -22,6 +24,13 @@
 				setTimeout("janal.readingMode('#{manticVentasCajaCierresAccion.attrs.nombreAccion}')", 500);
         jsCierres= new Janal.Control.Cierres.Core(#{manticVentasCajaCierresAccion.importes.size()}, #{manticVentasCajaCierresAccion.denominaciones.size()});
       });
+			
+			function execute() {
+				var ok= janal.execute();
+				if(ok)
+					ok= confirm('Esta seguro que desea realizar el cierre de caja ?');
+				return ok;
+			}
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
@@ -39,7 +48,6 @@
 									</div>	
 									<div class="ui-grid-col-11">
 										<p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaCierresAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
-											<p:ajax event="change" listener="#{manticVentasCajaCierresAccion.doLoadCajas}" process="@this" update="idCaja"/>
 											<f:selectItems value="#{manticVentasCajaCierresAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 											<p:column headerText="Clave">
 												<h:outputText value="#{item.clave}"/>
@@ -214,11 +222,11 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresAccion.doAceptar}" styleClass="janal-text-white" onstart="return execute();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresAccion.doAceptar}" styleClass="janal-text-white" onstart="return execute();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" immediate="true"/>
 		</div>		
 	</ui:define>

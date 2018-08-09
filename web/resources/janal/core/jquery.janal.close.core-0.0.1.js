@@ -44,8 +44,10 @@
 				janal.console('Keydown: '+  key);
 				switch(key) {
 					case $cierres.VK_ENTER:
-						if($cierres.enter=== 0)
+						if($cierres.enter=== 0) {
 					    $(this).blur();
+							$cierres.move(1);
+						} // if	
 						$cierres.enter= 0;
 						break;
 					case $cierres.VK_UP:
