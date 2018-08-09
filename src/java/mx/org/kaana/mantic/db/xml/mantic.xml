@@ -301,6 +301,34 @@
         where      
           id_lista_precio = {idListaPrecio}
       </select>
+      <select id="exists">
+        select      
+          *
+        from      
+          tc_mantic_listas_precios_archivos
+        where      
+          id_tipo_archivo = {idTipoArchivo} and id_lista_precio = {idListaPrecio}
+				order by
+				  registro desc
+      </select>
+      <select id="listado">
+        select      
+          *
+        from      
+          tc_mantic_listas_precios_archivos
+        where      
+          ruta = '{ruta}'
+				  and id_tipo_archivo= {idTipoArchivo}
+				  and id_principal= 1
+				order by
+				  ruta
+      </select>
+			<update id="rows">
+				update tc_mantic_listas_precios_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_lista_precio = {idListaPrecio}
+			</update>
+			<delete id="rows">
+				delete from tc_mantic_listas_precios_archivos where id_lista_precio = {idListaPrecio}
+			</delete>
     </unit>		
     <unit id="TcManticListasPreciosDetallesDto">
       <select id="row">
@@ -419,9 +447,6 @@
         where      
           id_caja = {idCaja}
       </select>
-			<delete id="rows">
-				delete from tc_mantic_cierres_cajas where id_cierre= {idCierre} and id_caja= {idCaja}
-			</delete>
     </unit>
     <unit id="TcManticCierresRetirosDto">
       <select id="row">
@@ -2890,7 +2915,7 @@
         where      
           id_cobro_caja= 1
 				order by
-				  orden
+				  clave
       </select>
     </unit>
 	  <unit id="TcManticTiposMonedasDto">
@@ -3572,14 +3597,6 @@
         where      
           id_tipo_medio_pago = {idTipoMedioPago} and id_venta = {idVenta} and importe = {importe} and id_venta_medio_pago = {idVentaMedioPago} and id_banco = {idBanco}
       </select>
-			<select id="depurar">
-				select
-					count(id_caja) as total
-				from
-					tr_mantic_venta_medio_pago
-				where 
-				  id_caja= {idCaja}
-			</select>
     </unit>
 		<unit id="TcManticClientesDeudasDto">
       <select id="row">
