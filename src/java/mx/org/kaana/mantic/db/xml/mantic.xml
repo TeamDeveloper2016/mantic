@@ -293,6 +293,14 @@
         where      
           id_lista_precio = {idListaPrecio} and ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
       </select>
+      <select id="all">
+        select      
+          *
+        from      
+          tc_mantic_listas_precios_archivos
+        where      
+          id_lista_precio = {idListaPrecio}
+      </select>
     </unit>		
     <unit id="TcManticListasPreciosDetallesDto">
       <select id="row">
