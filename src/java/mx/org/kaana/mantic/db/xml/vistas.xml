@@ -246,23 +246,6 @@
 				order by
 				  tc_mantic_cierres_cajas.id_tipo_medio_pago				
 			</select>
-			<select id="denominacion">
-				select
-					tc_mantic_monedas.id_moneda,
-					tc_mantic_monedas.nombre,
-					tc_mantic_monedas.denominacion,
-					tc_mantic_cierres_monedas.cantidad,
-					tc_mantic_cierres_monedas.importe,
-					tc_mantic_cierres_monedas.id_cierre 
-				from
-				  tc_mantic_cierres_monedas
-				inner join
-					tc_mantic_monedas on tc_mantic_cierres_monedas.id_moneda= tc_mantic_monedas.id_moneda
-				where 
-				  tc_mantic_cierres_monedas.id_cierre= {idCierre}	
-				order by  
-					tc_mantic_monedas.orden			
-			</select>
 		</unit>
 		<unit id="VistaCreditosNotasDto">
 			<select id="meses">
@@ -3605,6 +3588,28 @@
 					tc_mantic_requisiciones.id_empresa in ({idEmpresa})
 					and {condicion}
 				{sortOrder}
+			</select>
+		</unit>
+		<unit id="VistaListasArchivosDto">
+			<select id="lazy">
+        select 
+          tc_mantic_listas_precios.id_lista_precio as id_key,
+          tc_mantic_listas_precios.id_lista_precio,
+          tc_mantic_listas_precios.id_proveedor,
+          tc_mantic_listas_precios.observaciones,
+          tc_mantic_listas_precios.registro,
+          tc_mantic_proveedores.razon_social,
+          tc_mantic_proveedores.clave,
+          tc_mantic_proveedores.rfc,
+          tc_mantic_proveedores.id_empresa
+        from 
+          tc_mantic_listas_precios 
+        inner join
+          tc_mantic_proveedores on tc_mantic_listas_precios.id_proveedor= tc_mantic_proveedores.id_proveedor
+        where
+          tc_mantic_proveedores.id_empresa in ({idEmpresa})
+          and (tc_mantic_proveedores.rfc like '%{clave}%' or tc_mantic_proveedores.razon_social like '%{razonSocial}%')
+        {sortOrder}
 			</select>
 		</unit>
 	</dml>    

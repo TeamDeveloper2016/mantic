@@ -609,14 +609,11 @@
           tc_mantic_requisiciones.fecha_entregada,
           tc_mantic_requisiciones_estatus.id_requisicion_estatus,
           tc_mantic_requisiciones_estatus.nombre estatus,
-          tc_mantic_requisiciones_proveedores.id_proveedor,
          '' total_final
         from
           tc_mantic_requisiciones         
         inner join
           tc_mantic_empresas on tc_mantic_requisiciones.id_empresa= tc_mantic_empresas.id_empresa     
-        left join
-          tc_mantic_requisiciones_proveedores on tc_mantic_requisiciones.id_requisicion = tc_mantic_requisiciones_proveedores.id_requisicion               
         inner join
           tc_mantic_requisiciones_estatus on tc_mantic_requisiciones.id_requisicion_estatus= tc_mantic_requisiciones_estatus.id_requisicion_estatus   
         inner join
@@ -652,8 +649,7 @@
           ' ) ',
           tc_mantic_articulos.nombre) as nombre,
           tc_mantic_requisiciones_detalles.cantidad,
-          tc_mantic_requisiciones_detalles.unidad_medida,
-          tc_mantic_requisiciones_proveedores.id_proveedor
+          tc_mantic_requisiciones_detalles.unidad_medida
         from
           tc_mantic_requisiciones         
         inner join
@@ -666,8 +662,6 @@
           tc_mantic_personas solicito on tc_mantic_requisiciones.id_solicita= solicito.id_persona
         inner join
           tc_mantic_personas elaboro on tc_mantic_requisiciones.id_usuario= elaboro.id_persona
-        left join
-          tc_mantic_requisiciones_proveedores on tc_mantic_requisiciones.id_requisicion = tc_mantic_requisiciones_proveedores.id_requisicion 
         where     
           tc_mantic_requisiciones.id_requisicion = {idRequisicion}
         order by
