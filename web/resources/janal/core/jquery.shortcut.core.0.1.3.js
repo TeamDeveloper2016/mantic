@@ -235,7 +235,7 @@ shortcut.add("f10", function() {
 	if(PF('dlgDescuentos')){
 		janal.bloquear();
 	  PF('dlgDescuentos').show();
-		$('#usuarioDescuento').focus();
+		$('#usuarioDescuento').focus();		
 	} // if
 });
 
