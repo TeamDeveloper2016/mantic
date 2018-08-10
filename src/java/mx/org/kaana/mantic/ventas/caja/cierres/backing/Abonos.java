@@ -80,8 +80,8 @@ public class Abonos extends IBaseAttribute implements Serializable {
 			} // if
       this.attrs.put("caja", this.caja);
 			Entity retiros= (Entity)DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "ambos", this.attrs);
-      this.attrs.put("retiros", retiros!= null? retiros.toDouble("retiros"): 0D);
-      this.attrs.put("abonos", retiros!= null? retiros.toDouble("abonos"): 0D);
+      this.attrs.put("retiros", retiros!= null && retiros.get("retiros").getData()!= null? retiros.toDouble("retiros"): 0D);
+      this.attrs.put("abonos", retiros!= null && retiros.get("abonos").getData()!= null? retiros.toDouble("abonos"): 0D);
     } // try
     catch (Exception e) {
       Error.mensaje(e);

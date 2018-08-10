@@ -102,7 +102,7 @@
               <h:outputText value="#{manticVentasCajaCierresAmbos.doDecimalSat(filtro['importe'])}"/>
             </p:column>		
             <f:facet name="footer">
-							<p:outputLabel value="#{manticVentasCajaCierresAmbos.calculate}&lt;span class='janal-color-green'&gt;Abonos: &lt;strong&gt;#{manticVentasCajaCierresAmbos.attrs.abonos}&lt;/strong&gt;&lt;/span&gt;   &lt;span class='janal-color-blue'&gt;Retiros: &lt;strong&gt;#{manticVentasCajaCierresAmbos.attrs.retiros}&lt;/strong&gt;&lt;/span&gt;" style="float:left;" escape="false"/>
+							<p:outputLabel value="#{manticVentasCajaCierresAmbos.calculate}&lt;span class='janal-color-green'&gt;Abonos: &lt;strong&gt;#{manticVentasCajaCierresAmbos.attrs.abonos}&lt;/strong&gt;&lt;/span&gt;   &lt;span class='janal-color-orange'&gt;Retiros: &lt;strong&gt;#{manticVentasCajaCierresAmbos.attrs.retiros}&lt;/strong&gt;&lt;/span&gt;" style="float:left;" escape="false"/>
               <p:outputLabel value="Total [#{manticVentasCajaCierresAmbos.lazyModel==null?0:manticVentasCajaCierresAmbos.lazyModel.rowCount}] registros" escape="false"/>
             </f:facet>
           </p:dataTable>
