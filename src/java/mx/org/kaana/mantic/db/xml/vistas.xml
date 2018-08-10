@@ -108,6 +108,7 @@
 					tc_mantic_empresas.clave as empresa,
 					tc_mantic_cajas.clave as caja,
 					tc_mantic_cierres_retiros.consecutivo,
+					tc_mantic_cierres_retiros.id_abono,
 				  if(tc_mantic_cierres_retiros.id_abono= 1, 'ABONO', 'RETIRO') as tipo,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
 					tc_mantic_tipos_medios_pagos.nombre as medio,
@@ -244,7 +245,7 @@
 				  tc_mantic_cajas.id_caja= {idCaja}
 				  and tc_mantic_cierres.id_cierre= {idCierre}
 				order by
-				  tc_mantic_cierres_cajas.id_tipo_medio_pago				
+				  tc_mantic_cierres_cajas.orden				
 			</select>
 		</unit>
 		<unit id="VistaCreditosNotasDto">

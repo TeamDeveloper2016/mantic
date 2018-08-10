@@ -59,7 +59,7 @@
               </f:facet>
               <h:outputText value="#{filtro['empresa']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{filtro.caja}">
+            <p:column class="MarAuto Responsive janal-wid-5" sortBy="#{filtro.caja}">
               <f:facet name="header">
                 <h:outputText value="Caja"/>
               </f:facet>
@@ -89,7 +89,7 @@
               </f:facet>
               <h:outputText value="#{filtro['registro']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.tipo}">
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{filtro.tipo}">
               <f:facet name="header">
                 <h:outputText value="Tipo"/>
               </f:facet>
@@ -102,7 +102,8 @@
               <h:outputText value="#{manticVentasCajaCierresAmbos.doDecimalSat(filtro['importe'])}"/>
             </p:column>		
             <f:facet name="footer">
-              <p:outputLabel value="Suma de los retiros: &lt;strong&gt;#{manticVentasCajaCierresAmbos.suma}&lt;/strong&gt;     Total [#{manticVentasCajaCierresAmbos.lazyModel==null?0:manticVentasCajaCierresAmbos.lazyModel.rowCount}] registros" escape="false"/>
+							<p:outputLabel value="#{manticVentasCajaCierresAmbos.calculate}&lt;span class='janal-color-green'&gt;Abonos: &lt;strong&gt;#{manticVentasCajaCierresAmbos.attrs.abonos}&lt;/strong&gt;&lt;/span&gt;   &lt;span class='janal-color-blue'&gt;Retiros: &lt;strong&gt;#{manticVentasCajaCierresAmbos.attrs.retiros}&lt;/strong&gt;&lt;/span&gt;" style="float:left;" escape="false"/>
+              <p:outputLabel value="Total [#{manticVentasCajaCierresAmbos.lazyModel==null?0:manticVentasCajaCierresAmbos.lazyModel.rowCount}] registros" escape="false"/>
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">

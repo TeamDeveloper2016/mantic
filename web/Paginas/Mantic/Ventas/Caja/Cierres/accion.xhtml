@@ -40,6 +40,7 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{manticVentasCajaCierresAccion.doTabChange}" process="@this" update="@(.ambos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>						
 						<p:tab title="General">
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
 								<div class="ui-grid-row janal-grid-row">
@@ -77,12 +78,12 @@
 										</p:selectOneMenu>
 									</div>		
 								</div>	
-								<div class="ui-grid-row janal-grid-row continuar" style="display: #{manticVentasCajaCierresAccion.attrs.continuar}">
+								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-1">
-								    <p:outputLabel for="disponible" value="Dejar:"/>
+								    <p:outputLabel for="disponible" value="Fondo caja:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:inputText id="disponible" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" value="#{manticVentasCajaCierresAccion.attrs.disponible}" converter="javax.faces.Double" onblur="janal.precio($('#contenedorGrupos\\:disponible'), '0');"/>
+										<p:inputText id="disponible" styleClass="continuar janal-wid-100-txt janal-column-right janal-color-orange" value="#{manticVentasCajaCierresAccion.attrs.disponible}" converter="javax.faces.Double" onblur="janal.precio($('#contenedorGrupos\\:disponible'), '0');"  style="display: #{manticVentasCajaCierresAccion.attrs.continuar}"/>
 									</div>		
 								</div>	
 								<p:spacer height="3px"/>
@@ -220,6 +221,74 @@
 						</p:tab>
 						<p:tab title="Observaciones">
 							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresAccion.attrs.observaciones}"/>
+						</p:tab>
+						<p:tab title="Retiros/Abonos">
+							<p:dataTable lazy="true" id="movimientos" styleClass="ambos" widgetVar="kajoolTable" var="row" value="#{manticVentasCajaCierresAccion.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticVentasCajaCierresAccion.lazyModel.rowCount gt manticVentasCajaCierresAccion.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+								<f:facet name="header" >
+									<div class="lg-pantalla">
+										<p:menuButton value="Opciones">
+											<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'movimientos')" oncomplete="janal.desbloquear()"/>
+											<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'movimientos')" oncomplete="janal.desbloquear()"/>
+										</p:menuButton>
+									</div>  
+									<div class="xs-pantalla">              
+										<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'movimientos')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+										<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'movimientos')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+									</div>  
+								</f:facet>	            
+								<p:column class="MarAuto Responsive janal-wid-col-40">
+									<f:facet name="header">
+										<h:outputText value="No."/>
+									</f:facet>
+									<h:outputText value="#{index+ 1}"/>
+								</p:column>		
+								<p:column class="MarAuto Responsive janal-wid-5" sortBy="#{row.caja}">
+									<f:facet name="header">
+										<h:outputText value="Caja"/>
+									</f:facet>
+									<h:outputText value="#{row['caja']}"/>
+								</p:column>		
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
+									<f:facet name="header">
+										<h:outputText value="Consecutivo"/>
+									</f:facet>
+									<h:outputText value="#{row['consecutivo']}"/>
+								</p:column>		
+								<p:column class="MarAuto Responsive" sortBy="#{row.usuario}">
+									<f:facet name="header">
+										<h:outputText value="Usuario"/>
+									</f:facet>
+									<h:outputText value="#{row['usuario']}"/>
+								</p:column>		
+								<p:column class="MarAuto Responsive" sortBy="#{row.observaciones}">
+									<f:facet name="header">
+										<h:outputText value="Observaciones"/>
+									</f:facet>
+									<h:outputText value="#{row['observaciones']}"/>
+								</p:column>		
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
+									<f:facet name="header">
+										<h:outputText value="Fecha"/>
+									</f:facet>
+									<h:outputText value="#{row['registro']}"/>
+								</p:column>		
+								<p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.tipo}">
+									<f:facet name="header">
+										<h:outputText value="Tipo"/>
+									</f:facet>
+									<h:outputText value="#{row['tipo']}"/>
+								</p:column>		
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
+									<f:facet name="header">
+										<h:outputText value="Importe"/>
+									</f:facet>
+									<h:outputText value="#{manticVentasCajaCierresAccion.doDecimalSat(row['importe'])}"/>
+								</p:column>		
+								<f:facet name="footer">
+									<p:outputLabel value="#{manticVentasCajaCierresAccion.calculate}&lt;span class='janal-color-green'&gt;Abonos: &lt;strong&gt;#{manticVentasCajaCierresAccion.attrs.abonos}&lt;/strong&gt;&lt;/span&gt;   &lt;span class='janal-color-blue'&gt;Retiros: &lt;strong&gt;#{manticVentasCajaCierresAccion.attrs.retiros}&lt;/strong&gt;&lt;/span&gt;" style="float:left;" escape="false"/>
+									<p:outputLabel value="Total [#{manticVentasCajaCierresAccion.lazyModel==null?0:manticVentasCajaCierresAccion.lazyModel.rowCount}] registros" escape="false"/>
+								</f:facet>
+							</p:dataTable>
 						</p:tab>
 					</p:tabView>
 				</div>

@@ -35,6 +35,11 @@ public class Ambos extends IBaseFilter implements Serializable {
   private static final long serialVersionUID = 8793667741599428332L;
 	private Reporte reporte;
 	
+  public String getCalculate() {
+		this.doLoadAmbos();
+		return "";
+	}
+
   @PostConstruct
   @Override
   protected void init() {
@@ -60,7 +65,7 @@ public class Ambos extends IBaseFilter implements Serializable {
 		Map<String, Object> params= new HashMap<>();
     try {
       params.put("idCierre", this.attrs.get("idCierre"));
-      params.put("sortOrder", "order by tc_mantic_cierres_retiros.consecutivo desc ");
+      params.put("sortOrder", "order tc_mantic_cierres_retiros.id_abono, tc_mantic_cierres_retiros.consecutivo ");
       columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
@@ -138,13 +143,18 @@ public class Ambos extends IBaseFilter implements Serializable {
     return "filtro".concat(Constantes.REDIRECIONAR);
   } // doCancelar
 	
-  public String getSuma() {
-		Double sum= 0D;
-		for (IBaseDto item: (List<IBaseDto>)lazyModel.getWrappedData()) {
+  private void doLoadAmbos() {
+		Double abonos = 0D;
+		Double retiros= 0D;
+		for (IBaseDto item: (List<IBaseDto>)this.lazyModel.getWrappedData()) {
 			Entity row= (Entity)item;
-			sum+= new Double(row.toString("importe"));
+			if(row.toLong("idAbono").equals(1L))
+			  abonos+= new Double(row.toString("importe"));
+			else
+			  retiros+= new Double(row.toString("importe"));
 		} // for
-	  return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, sum);
+	  this.attrs.put("abonos", Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, abonos));
+	  this.attrs.put("retiros", Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, retiros));
 	}	
 
 }

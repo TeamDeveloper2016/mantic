@@ -2,29 +2,38 @@ package mx.org.kaana.mantic.ventas.caja.cierres.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
+import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.Denominacion;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.Importe;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.TabChangeEvent;
 
 /**
  *@company KAANA
@@ -42,6 +51,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   
 	private List<Importe> importes;
 	private List<Denominacion> denominaciones;
+	private FormatCustomLazy lazyModel;
 	private EAccion accion;
 
 	public List<Importe> getImportes() {
@@ -52,6 +62,15 @@ public class Accion extends IBaseAttribute implements Serializable {
 		return denominaciones;
 	}
 
+	public FormatCustomLazy getLazyModel() {
+		return lazyModel;
+	}
+
+	public String getCalculate() {
+		this.doLoadAmbos();
+		return "";
+	}
+		
   @Override
 	@PostConstruct
   protected void init() {		
@@ -194,4 +213,48 @@ public class Accion extends IBaseAttribute implements Serializable {
 		this.attrs.put("continuar", "");
 	}	
 	
+	public void doTabChange(TabChangeEvent event) {
+		if(event.getTab().getTitle().equals("Retiros/Abonos"))
+			this.doLoadRetirosAbonos();
+	}
+
+	private void doLoadRetirosAbonos() {
+    List<Columna> columns     = null;
+		Map<String, Object> params= new HashMap<>();
+    try {
+      params.put("idCierre", this.attrs.get("idCierre"));
+      params.put("sortOrder", "order by tc_mantic_cierres_retiros.id_abono, tc_mantic_cierres_retiros.consecutivo ");
+      columns = new ArrayList<>();
+      columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("caja", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("registro", EFormatoDinamicos.DIA_FECHA_HORA_CORTA));
+      this.lazyModel = new FormatCustomLazy("VistaCierresCajasDto", "retiros", params, columns);
+      UIBackingUtilities.resetDataTable();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    } // finally		
+  } // doLoad
+
+  private void doLoadAmbos() {
+		Double abonos = 0D;
+		Double retiros= 0D;
+		if(this.lazyModel!= null)
+			for (IBaseDto item: (List<IBaseDto>)this.lazyModel.getWrappedData()) {
+				Entity row= (Entity)item;
+				if(row.toLong("idAbono").equals(1L))
+					abonos+= new Double(row.toString("importe"));
+				else
+					retiros+= new Double(row.toString("importe"));
+			} // for
+	  this.attrs.put("abonos", Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, abonos));
+	  this.attrs.put("retiros", Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, retiros));
+	}	
+
 }
