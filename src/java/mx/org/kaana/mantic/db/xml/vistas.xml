@@ -245,7 +245,7 @@
 				  tc_mantic_cajas.id_caja= {idCaja}
 				  and tc_mantic_cierres.id_cierre= {idCierre}
 				order by
-				  tc_mantic_cierres_cajas.orden				
+				  tc_mantic_tipos_medios_pagos.orden				
 			</select>
 		</unit>
 		<unit id="VistaCreditosNotasDto">
