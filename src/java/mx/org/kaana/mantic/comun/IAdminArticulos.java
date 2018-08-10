@@ -15,7 +15,6 @@ import mx.org.kaana.libs.pagina.KajoolBaseException;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.beans.Totales;
-import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
 
 /**
  *@company KAANA
@@ -140,7 +139,12 @@ public abstract class IAdminArticulos implements Serializable {
 			this.totales.addArticulo(articulo.getIdArticulo());
 			this.totales.addUtilidad(articulo.getUtilidad());
 		} // for
-		this.totales.restarTotal(this.totales.getGlobal());
+		if(this.totales.getGlobal()>0D){
+			if(this.totales.getUtilidad() > this.totales.getGlobal())
+				this.totales.restarTotal(this.totales.getGlobal());
+			else
+				this.totales.setGlobal(0D);
+		} // if		
 		this.setAjusteDeuda(this.totales.getTotal());
 	}
 
@@ -172,6 +176,5 @@ public abstract class IAdminArticulos implements Serializable {
 	protected void finalize() throws Throwable {
 		Methods.clean(this.articulos);
 		Methods.clean(this.filtrados);
-	}
-	
+	}	
 }
