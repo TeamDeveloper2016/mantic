@@ -84,7 +84,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("efectivo", 0D);
 			this.attrs.put("total", 0D);
 			this.attrs.put("disponible", 0D);
-			this.attrs.put("continuar", "none");
+			this.attrs.put("continuar", this.accion.equals(EAccion.CONSULTAR)? "": "none");
 			this.doLoad();
     } // try
     catch (Exception e) {

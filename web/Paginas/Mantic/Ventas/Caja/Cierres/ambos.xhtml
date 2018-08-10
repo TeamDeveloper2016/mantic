@@ -26,10 +26,10 @@
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">
-                  <p:menuitem value="Retiros parciales" action="#{manticVentasCajaCierresAmbos.doAccion('AGREGAR')}" icon="fa fa-sign-out" title="Retiro" onstart="return janal.bloquear()"/>						
-                  <p:separator/>
-                  <p:menuitem value="Abono parciales" action="#{manticVentasCajaCierresAmbos.doAccion('ASIGNAR')}" icon="fa fa-sign-in" title="Abono" onstart="return janal.bloquear()"/>						
-                  <p:separator/>
+                  <p:menuitem value="Retiros parciales" action="#{manticVentasCajaCierresAmbos.doAccion('AGREGAR')}" icon="fa fa-sign-out" title="Retiro" onstart="return janal.bloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.idCierreEstatus)}"/>
+                  <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.idCierreEstatus)}"/>
+                  <p:menuitem value="Abono parciales" action="#{manticVentasCajaCierresAmbos.doAccion('ASIGNAR')}" icon="fa fa-sign-in" title="Abono" onstart="return janal.bloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.idCierreEstatus)}"/>
+                  <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.idCierreEstatus)}"/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:separator/>
@@ -37,10 +37,10 @@
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:commandButton action="#{manticVentasCajaCierresAmbos.doAccion('AGREGAR')}" icon="fa fa-plus" title="Retiro" onstart="return janal.bloquear()" styleClass="janal-text-white"/>						
-                <p:separator/>
-                <p:commandButton action="#{manticVentasCajaCierresAmbos.doAccion('ASIGNAR')}" icon="fa fa-plus" title="Abono" onstart="return janal.bloquear()" styleClass="janal-text-white"/>						
-                <p:separator/>
+                <p:commandButton action="#{manticVentasCajaCierresAmbos.doAccion('AGREGAR')}" icon="fa fa-plus" title="Retiro" onstart="return janal.bloquear()" styleClass="janal-text-white" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.idCierreEstatus)}"/>
+                <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.idCierreEstatus)}"/>
+                <p:commandButton action="#{manticVentasCajaCierresAmbos.doAccion('ASIGNAR')}" icon="fa fa-plus" title="Abono" onstart="return janal.bloquear()" styleClass="janal-text-white" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.idCierreEstatus)}"/>						
+                <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.idCierreEstatus)}"/>
                 <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
                 <p:separator/>

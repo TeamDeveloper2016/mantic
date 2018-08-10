@@ -250,6 +250,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
   public String doVerAmbos() {
 		JsfBase.setFlashAttribute("idCierre", ((Entity)this.attrs.get("seleccionado")).toLong("idCierre"));
+		JsfBase.setFlashAttribute("idCierreEstatus", ((Entity)this.attrs.get("seleccionado")).toLong("idCierreEstatus"));
 		JsfBase.setFlashAttribute("idEmpresa", ((Entity)this.attrs.get("seleccionado")).toLong("idEmpresa"));
 		JsfBase.setFlashAttribute("idCaja", ((Entity)this.attrs.get("seleccionado")).toLong("idCaja"));
 		return "ambos".concat(Constantes.REDIRECIONAR);

@@ -49,6 +49,7 @@ public class Ambos extends IBaseFilter implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre"));
+      this.attrs.put("idCierreEstatus", JsfBase.getFlashAttribute("idCierreEstatus"));
       this.attrs.put("idCaja", JsfBase.getFlashAttribute("idCaja"));
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
 		  this.doLoad();
