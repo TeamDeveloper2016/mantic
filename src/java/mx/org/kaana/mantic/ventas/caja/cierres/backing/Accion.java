@@ -75,7 +75,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   protected void init() {		
     try {
 			if(JsfBase.getFlashAttribute("accion")== null)
-				RequestContext.getCurrentInstance().execute("alert('Hola');janal.isPostBack('cancelar')");
+				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
       this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre")== null? -1L: JsfBase.getFlashAttribute("idCierre"));
       this.attrs.put("idCaja", JsfBase.getFlashAttribute("idCaja")== null? -1L: JsfBase.getFlashAttribute("idCaja"));
@@ -83,6 +83,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("sucursales", this.attrs.get("idEmpresa"));
 			this.attrs.put("efectivo", 0D);
 			this.attrs.put("total", 0D);
+			this.attrs.put("disponible", 0D);
 			this.attrs.put("continuar", "none");
 			this.doLoad();
     } // try
@@ -94,7 +95,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 
   public void doLoad() {
     try {
-  		this.attrs.put("dinero", 0D);
+  		this.attrs.put("limite", 3000D);
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
 			this.importes= (List<Importe>)DaoFactory.getInstance().toEntitySet(Importe.class, "VistaCierresCajasDto", "importes", this.attrs);
 			switch(this.accion) {
@@ -109,8 +110,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.doCalculate();
   		for (Importe importe: this.importes) {
 	   		if(importe.getIdTipoMedioPago().equals(1L)) {
-          this.attrs.put("dinero", Numero.toRedondearSat(importe.getImporte()));		
-					this.attrs.put("disponible", importe.getDisponible());
+					this.attrs.put("disponible", importe.getDisponible()> importe.getSaldo()? importe.getSaldo(): importe.getDisponible());
 				} // if
 			} // for
     } // try
@@ -129,7 +129,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			transaccion = new Cierre((Long)this.attrs.get("idCaja"), (Double)this.attrs.get("disponible"), cierre, this.importes, this.denominaciones);
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
- 				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+ 				  regresar = "filtro".concat(Constantes.REDIRECIONAR);
     			RequestContext.getCurrentInstance().execute("janal.alert('Se gener\\u00F3 el cierre de caja, con consecutivo: "+ cierre.getConsecutivo()+ "');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
@@ -177,6 +177,9 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			List<UISelectEntity> cajas= (List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "unica", this.attrs, columns);
       this.attrs.put("cajas", cajas);
+ 			this.attrs.put("temporal", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
+			if(this.attrs.get("temporal")!= null)
+				this.attrs.put("limite", ((UISelectEntity)this.attrs.get("temporal")).toDouble("limite"));
     } // try
     catch (Exception e) {
       throw e;
@@ -194,6 +197,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // for
     this.attrs.put("efectivo", Numero.toRedondearSat(sum));		
 		for (Importe importe: this.importes) {
+			importe.toCalculate();
 			if(importe.getIdTipoMedioPago().equals(1L)) 
 				importe.setImporte(Numero.toRedondearSat(sum));
 		} // for
@@ -203,6 +207,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 	public void doTotales() {
 		Double total= 0D;
 		for (Importe importe: this.importes) {
+			importe.toCalculate();
 			total+= importe.getImporte();
 		} // for
     this.attrs.put("total", Numero.toRedondearSat(total));		

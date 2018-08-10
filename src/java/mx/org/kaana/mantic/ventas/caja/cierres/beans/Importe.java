@@ -48,12 +48,10 @@ public class Importe extends TcManticCierresCajasDto implements Serializable {
 	}
 
 	public Double getDiferencia() {
-		this.diferencia= Numero.toRedondearSat(this.getImporte()- this.getSaldo());
 		return this.diferencia;
 	}
 
 	public String getDiferencia$() {
-		this.diferencia= Numero.toRedondearSat(this.getImporte()- this.getSaldo());
 		return "<span class='"+ (this.diferencia<0? "janal-color-orange": this.diferencia> 0? "janal-color-blue": "janal-color-green")+ "'><strong>$ "+ Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(this.diferencia))+ "</span></strong>";
 	}
 	
@@ -62,4 +60,8 @@ public class Importe extends TcManticCierresCajasDto implements Serializable {
 		return TcManticCierresCajasDto.class;
 	}
 
+	public void toCalculate() {
+		this.diferencia= Numero.toRedondearSat(this.getImporte()- this.getSaldo());
+	}
+	
 }

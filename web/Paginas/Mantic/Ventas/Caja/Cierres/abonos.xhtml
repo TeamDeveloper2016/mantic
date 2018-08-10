@@ -11,7 +11,7 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-        'contenedorGrupos\\:importe': {validaciones: 'flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{manticVentasCajaCierresAbonos.doNumericoSat(manticVentasCajaCierresAbonos.attrs.limite)}})', mascara: 'flotante', grupo: 'general'},
+        'contenedorGrupos\\:importe': {validaciones: 'flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{manticVentasCajaCierresAbonos.doNumericoSat(manticVentasCajaCierresAbonos.attrs.limite)}})', mascara: 'libre'},
         'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
 			};			
 			
@@ -65,7 +65,7 @@
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-1">
-								    <p:outputLabel for="inicial" value="Inicial:"/>
+								    <p:outputLabel for="inicial" value="Fondo:"/>
 									</div>
 									<div class="ui-grid-col-11">
 										<p:inputText id="inicial" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaCierresAbonos.doDecimalSat(manticVentasCajaCierresAbonos.attrs.caja.disponible)}" readonly="true"/>
@@ -108,7 +108,7 @@
 								    <p:outputLabel for="importe" value="Importe:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:inputText id="importe" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaCierresAbonos.attrs.importe}" converter="javax.faces.Double"/>
+										<p:inputText id="importe" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaCierresAbonos.attrs.importe}" converter="javax.faces.Double" onblur="janal.precio($('#contenedorGrupos\\:importe'), '0');"/>
 									</div>		
 								</div>	
 							</div>

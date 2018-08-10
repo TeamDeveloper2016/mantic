@@ -12,12 +12,13 @@
     <h:outputScript library="janal" name="core/jquery.janal.close.core-0.0.1.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-        'contenedorGrupos\\:idEmpresa'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:idCaja'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-				'importe'                         : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},		
-				'cantidad'                        : {multiple: '$', validaciones: 'entero|mayor-igual({"cuanto": 0})', mascara: 'entero', grupo: 'general'},		
-        'contenedorGrupos\\:disponible'   : {validaciones: 'flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{manticVentasCajaCierresAccion.doNumericoSat(manticVentasCajaCierresAccion.attrs.dinero)}})', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
+        'contenedorGrupos\\:idEmpresa'    : {validaciones: 'requerido', mascara: 'libre'},
+        'contenedorGrupos\\:idCajas'      : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:tabla\\:total': {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'unico'},		
+				'importe'                         : {multiple: '$', validaciones: 'flotante|mayor-igual({"cuanto": 0})', mascara: 'libre'},		
+				'cantidad'                        : {multiple: '$', validaciones: 'entero|mayor-igual({"cuanto": 0})', mascara: 'entero'},		
+        'contenedorGrupos\\:disponible'   : {validaciones: 'requerido|flotante|mayor-igual({"cuanto":0})|menor-igual({"cuanto": #{manticVentasCajaCierresAccion.doNumericoSat(manticVentasCajaCierresAccion.attrs.limite)}})', mascara: 'libre'},
+        'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
 			};			
 			
     	$(document).ready(function() {
@@ -28,7 +29,7 @@
 			function execute() {
 				var ok= janal.execute();
 				if(ok)
-					ok= confirm('Esta seguro que desea realizar el cierre de caja ?');
+					ok= confirm('Esta seguro que desea realizar el cierre de caja ?\nUna vez aceptado ya no se puede deshacer el movimiento!');
 				return ok;
 			}
 		</script>   
@@ -61,10 +62,10 @@
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-1">
-								    <p:outputLabel for="idCaja" value="Caja:"/>
+								    <p:outputLabel for="idCajas" value="Caja:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:selectOneMenu id="idCaja" value="#{manticVentasCajaCierresAccion.attrs.idCaja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="contains">
+										<p:selectOneMenu id="idCajas" value="#{manticVentasCajaCierresAccion.attrs.idCajas}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="contains">
 											<f:selectItems value="#{manticVentasCajaCierresAccion.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 											<p:column headerText="Clave">
 												<h:outputText value="#{item.clave}"/>
@@ -80,10 +81,10 @@
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-1">
-								    <p:outputLabel for="disponible" value="Fondo caja:"/>
+								    <p:outputLabel for="disponible" value="Fondo caja:" styleClass="continuar" style="display: #{manticVentasCajaCierresAccion.attrs.continuar}"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:inputText id="disponible" styleClass="continuar janal-wid-100-txt janal-column-right janal-color-blue" value="#{manticVentasCajaCierresAccion.attrs.disponible}" converter="javax.faces.Double" onblur="janal.precio($('#contenedorGrupos\\:disponible'), '0');"  style="display: #{manticVentasCajaCierresAccion.attrs.continuar}"/>
+										<p:inputText id="disponible" styleClass="continuar janal-wid-100-txt janal-column-right janal-color-blue" value="#{manticVentasCajaCierresAccion.attrs.disponible}" converter="javax.faces.Double" onblur="janal.precio($('#contenedorGrupos\\:disponible'), '0');" style="display: #{manticVentasCajaCierresAccion.attrs.continuar}"/>
 									</div>		
 								</div>	
 								<p:spacer height="3px"/>
@@ -154,10 +155,11 @@
 												<f:facet name="header">
 													<p:outputLabel value="Diferencia"/>
 												</f:facet>
-												<h:outputText value="#{row['diferencia$']}" escape="false"/>
+												<p:outputLabel value="#{row['diferencia$']}" escape="false" styleClass="totales filas"/>
 											</p:column>			
 											<f:facet name="footer">
-												<p:outputLabel styleClass="filas totales janal-color-blue" value="Total: &lt;strong&gt; $ #{manticVentasCajaCierresAccion.doDecimalSat(manticVentasCajaCierresAccion.attrs.total)}&lt;/strong&gt;" escape="false"/>
+												<p:outputLabel for="total" styleClass="filas totales janal-color-blue" value="Total: &lt;strong&gt; $ #{manticVentasCajaCierresAccion.doDecimalSat(manticVentasCajaCierresAccion.attrs.total)}&lt;/strong&gt;" escape="false"/>
+												<p:inputText id="total" value="#{manticVentasCajaCierresAccion.attrs.total}" style="display:none" styleClass="filas totales"/>
 											</f:facet>
 										</p:dataTable>
 									</div>		
@@ -297,12 +299,12 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="continuar" value="Continuar" icon="fa fa-dollar" process="@form" actionListener="#{manticVentasCajaCierresAccion.doContinuar}" onstart="return confirm('Esta seguro que desea continuar con el cierre de caja ?');" styleClass="continuar janal-text-white" update="contenedorGrupos:tabla @(.continuar)" style="display: #{empty manticVentasCajaCierresAccion.attrs.continuar? 'none': ''}"/>
+			<p:commandButton id="continuar" value="Continuar" icon="fa fa-dollar" process="@form" actionListener="#{manticVentasCajaCierresAccion.doContinuar}" onstart="return janal.partial('unico') &amp;&amp; confirm('Esta seguro que desea continuar con el cierre de caja ?');" styleClass="continuar janal-text-white" update="contenedorGrupos:tabla @(.continuar)" style="display: #{empty manticVentasCajaCierresAccion.attrs.continuar? 'none': ''}" disabled="#{empty manticVentasCajaCierresAccion.attrs.continuar? true: false}"/>
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresAccion.doAceptar}" styleClass="continuar janal-text-white" onstart="return execute();" oncomplete="janal.desbloquear()" style="display: #{manticVentasCajaCierresAccion.attrs.continuar}"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="continuarIcon" title="Continuar" icon="fa fa-dollar" process="@form" actionListener="#{manticVentasCajaCierresAccion.doContinuar}" onstart="return confirm('Esta seguro que desea continuar con el cierre de caja ?');" styleClass="continuar janal-text-white" update="contenedorGrupos:tabla @(.continuar)" style="display: #{empty manticVentasCajaCierresAccion.attrs.continuar? 'none': ''}"/>
+			<p:commandButton id="continuarIcon" title="Continuar" icon="fa fa-dollar" process="@form" actionListener="#{manticVentasCajaCierresAccion.doContinuar}" onstart="return janal.partial('unico') &amp;&amp; confirm('Esta seguro que desea continuar con el cierre de caja ?');" styleClass="continuar janal-text-white" update="contenedorGrupos:tabla @(.continuar)" style="display: #{empty manticVentasCajaCierresAccion.attrs.continuar? 'none': ''}" disabled="#{empty manticVentasCajaCierresAccion.attrs.continuar? true: false}"/>
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresAccion.doAceptar}" styleClass="continuar janal-text-white" onstart="return execute();" oncomplete="janal.desbloquear()" style="display: #{manticVentasCajaCierresAccion.attrs.continuar}"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" immediate="true"/>
 		</div>		
