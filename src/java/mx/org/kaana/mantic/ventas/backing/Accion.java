@@ -90,6 +90,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("activeLogin", false);
+			this.attrs.put("autorized", false);
 			this.attrs.put("isIndividual", true);
 			this.attrs.put("descuentoIndividual", 0);
 			this.attrs.put("descuentoGlobal", 0);
@@ -741,6 +742,10 @@ public class Accion extends IBaseArticulos implements Serializable {
 	} // doActivarDescuento
 	
 	public void doAplicarDescuento(){
+		doAplicarDescuento(-1);
+	} // doAplicarDescuento
+	
+	public void doAplicarDescuento(Integer index){
 		Boolean isIndividual       = false;
 		CambioUsuario cambioUsuario= null;
 		String cuenta              = null;
@@ -753,8 +758,13 @@ public class Accion extends IBaseArticulos implements Serializable {
 				cambioUsuario= new CambioUsuario(cuenta, contrasenia);
 				if(cambioUsuario.validaPrivilegiosDescuentos()){
 					isIndividual= Boolean.valueOf(this.attrs.get("isIndividual").toString());
-					if(isIndividual)
-						RequestContext.getCurrentInstance().execute("jsArticulos.divDiscount('".concat(this.attrs.get("descuentoIndividual").toString()).concat("');"));
+					if(isIndividual){
+						getAdminOrden().getArticulos().get(index).setDescuento(this.attrs.get("descuentoIndividual").toString());
+						if(getAdminOrden().getArticulos().get(index).autorizedDiscount())
+							RequestContext.getCurrentInstance().execute("jsArticulos.divDiscount('".concat(this.attrs.get("descuentoIndividual").toString()).concat("');"));
+						else
+							JsfBase.addMessage("No es posble aplicar el descuento, el descuento es superior a la utilidad", ETipoMensaje.ERROR);
+					} // if
 					else{		
 						global= Double.valueOf(this.attrs.get("descuentoGlobal").toString());
 						getAdminOrden().toCalculate();
