@@ -354,6 +354,10 @@
 			*/
 			return true;
 		},
+		autorizedDiscount: function() {
+			janal.console('jsArticulo.autorizedDiscount: ');					
+			autorized(this.cursor.index);
+		}, // autorizedDiscount
 		divDiscount: function(value) {
 			janal.console('jsArticulo.div: ');					
 			//var value= this.get().trim();
