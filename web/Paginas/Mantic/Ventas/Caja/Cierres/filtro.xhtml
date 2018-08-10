@@ -185,6 +185,8 @@
             <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
             <p:menuitem id="retiros" icon="fa fa-sign-out" value="Retiros parciales" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doRetiros}" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
             <p:menuitem id="abonos" icon="fa fa-sign-in" value="Abonos parciales" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doAbonos}" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
+            <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
+            <p:menuitem id="ver" icon="fa fa-dollar" value="Ver abonos/retiros" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doVerAmbos}" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
           </p:contextMenu>
         </div>
       </div>

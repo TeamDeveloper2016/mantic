@@ -15,6 +15,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticCierresBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
+import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresRetirosDto;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
@@ -44,6 +45,7 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
 		boolean regresar= false;
+		TcManticCierresDto cierre          = null;
 		TcManticCierresCajasDto caja       = null;
 		TcManticCierresBitacoraDto bitacora= null;
 		try {
@@ -52,9 +54,9 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 				case AGREGAR:
 				case ASIGNAR:
 					if(this.retiro.getIdAbono().equals(1L))
-  					bitacora= new TcManticCierresBitacoraDto("ABONO DE EFECTIVO", -1L, idCierre, JsfBase.getIdUsuario(), 2L);
+  					bitacora= new TcManticCierresBitacoraDto("ABONO DE EFECTIVO", -1L, this.idCierre, JsfBase.getIdUsuario(), 2L);
 				  else	
-  					bitacora= new TcManticCierresBitacoraDto("RETIRO DE EFECTIVO", -1L, idCierre, JsfBase.getIdUsuario(), 2L);
+  					bitacora= new TcManticCierresBitacoraDto("RETIRO DE EFECTIVO", -1L, this.idCierre, JsfBase.getIdUsuario(), 2L);
 					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 					caja= (TcManticCierresCajasDto)DaoFactory.getInstance().findFirst(TcManticCierresCajasDto.class, "caja", bitacora.toMap());
 					if(this.retiro.getIdAbono().equals(1L))
@@ -69,6 +71,9 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 					this.retiro.setIdUsuario(JsfBase.getIdUsuario());
 					this.retiro.setIdCierreCaja(caja.getIdCierreCaja());
 					regresar= DaoFactory.getInstance().insert(sesion, this.retiro)>= 1L;
+					cierre= (TcManticCierresDto)DaoFactory.getInstance().findById(TcManticCierresDto.class, this.idCierre);
+					cierre.setIdCierreEstatus(2L);
+					regresar= DaoFactory.getInstance().insert(sesion, cierre)>= 1L;
 					break;
 				case ELIMINAR:
 					if(this.retiro.getIdAbono().equals(1L))
@@ -78,9 +83,9 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 					this.retiro.setImporte(0D);
 					regresar= DaoFactory.getInstance().update(sesion, this.retiro)>= 1L;
 					if(this.retiro.getIdAbono().equals(1L))
-					  bitacora= new TcManticCierresBitacoraDto("ABONO DE EFECTIVO CANCELADO POR "+ JsfBase.getAutentifica().getCredenciales().getCuenta(), -1L, idCierre, JsfBase.getIdUsuario(), 2L);
+					  bitacora= new TcManticCierresBitacoraDto("ABONO DE EFECTIVO CANCELADO POR "+ JsfBase.getAutentifica().getCredenciales().getCuenta(), -1L, this.idCierre, JsfBase.getIdUsuario(), 2L);
 					else
-					  bitacora= new TcManticCierresBitacoraDto("RETIRO DE EFECTIVO CANCELADO POR "+ JsfBase.getAutentifica().getCredenciales().getCuenta(), -1L, idCierre, JsfBase.getIdUsuario(), 2L);
+					  bitacora= new TcManticCierresBitacoraDto("RETIRO DE EFECTIVO CANCELADO POR "+ JsfBase.getAutentifica().getCredenciales().getCuenta(), -1L, this.idCierre, JsfBase.getIdUsuario(), 2L);
 					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 					caja= (TcManticCierresCajasDto)DaoFactory.getInstance().findFirst(TcManticCierresCajasDto.class, "caja", bitacora.toMap());
 					if(this.retiro.getIdAbono().equals(1L))
