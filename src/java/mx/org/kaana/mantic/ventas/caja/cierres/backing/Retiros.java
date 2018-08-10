@@ -51,7 +51,9 @@ public class Retiros extends IBaseAttribute implements Serializable {
     try {
       this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre")== null? -1L: JsfBase.getFlashAttribute("idCierre"));
-      this.attrs.put("importe", 0.0);
+      this.attrs.put("importe", 0D);
+      this.attrs.put("retiros", 0D);
+      this.attrs.put("abonos", 0D);
 			this.doLoad();
     } // try
     catch (Exception e) {

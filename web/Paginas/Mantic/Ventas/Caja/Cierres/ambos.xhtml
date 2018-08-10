@@ -6,7 +6,7 @@
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Abonos y retiros realizados en efectivo de caja" />
+  <ui:param name="titulo" value="Abonos y retiros de efectivo de caja" />
   <ui:define name="librerias">
     <script type="text/javascript">
     </script>		
@@ -26,9 +26,9 @@
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">
-                  <p:menuitem value="Retiro" action="#{manticVentasCajaCierresAmbos.doAccion('AGREGAR')}" icon="fa fa-plus" title="Retiro" onstart="return janal.bloquear()"/>						
+                  <p:menuitem value="Retiros parciales" action="#{manticVentasCajaCierresAmbos.doAccion('AGREGAR')}" icon="fa fa-sign-out" title="Retiro" onstart="return janal.bloquear()"/>						
                   <p:separator/>
-                  <p:menuitem value="Abono" action="#{manticVentasCajaCierresAmbos.doAccion('ASIGNAR')}" icon="fa fa-plus" title="Abono" onstart="return janal.bloquear()"/>						
+                  <p:menuitem value="Abono parciales" action="#{manticVentasCajaCierresAmbos.doAccion('ASIGNAR')}" icon="fa fa-sign-in" title="Abono" onstart="return janal.bloquear()"/>						
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>

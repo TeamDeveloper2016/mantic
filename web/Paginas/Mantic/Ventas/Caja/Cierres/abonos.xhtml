@@ -7,11 +7,11 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Por favor, escriba el importe a abonar a caja"/>
+	<ui:param name="titulo" value="Por favor, escriba el importe del abona a caja"/>
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-        'contenedorGrupos\\:importe': {validaciones: 'flotante|mayor({"cuanto":0})', mascara: 'flotante', grupo: 'general'},
+        'contenedorGrupos\\:importe': {validaciones: 'flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{manticVentasCajaCierresAbonos.doNumericoSat(manticVentasCajaCierresAbonos.attrs.limite)}})', mascara: 'flotante', grupo: 'general'},
         'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
 			};			
 			
@@ -58,7 +58,7 @@
 												<h:outputText value="#{item.nombre}"/>
 											</p:column>   
 											<p:column styleClass="janal-column-right" headerText="Limite">
-												<h:outputText value="#{item.limite}"/>
+												<h:outputText value="#{manticVentasCajaCierresAbonos.doDecimalSat(item.limite)}"/>
 											</p:column>   
 										</p:selectOneMenu>
 									</div>		
@@ -92,7 +92,7 @@
 								    <p:outputLabel for="abonos" value="Abonos:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:inputText id="abonos" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" value="#{manticVentasCajaCierresRetiros.doDecimalSat(manticVentasCajaCierresAbonos.attrs.abonos)}" readonly="true"/>
+										<p:inputText id="abonos" styleClass="janal-wid-100-txt janal-column-right janal-color-green" value="#{manticVentasCajaCierresRetiros.doDecimalSat(manticVentasCajaCierresAbonos.attrs.abonos)}" readonly="true"/>
 									</div>		
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
@@ -108,7 +108,7 @@
 								    <p:outputLabel for="importe" value="Importe:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:inputText id="importe" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" value="#{manticVentasCajaCierresAbonos.attrs.importe}" converter="javax.faces.Double"/>
+										<p:inputText id="importe" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaCierresAbonos.attrs.importe}" converter="javax.faces.Double"/>
 									</div>		
 								</div>	
 							</div>

@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Por favor, escriba el importe a retirar de caja"/>
+	<ui:param name="titulo" value="Por favor, escriba el importe del retiro de caja"/>
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
@@ -65,7 +65,7 @@
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-1">
-								    <p:outputLabel for="inicial" value="Inicial:"/>
+								    <p:outputLabel for="inicial" value="Fondo:"/>
 									</div>
 									<div class="ui-grid-col-11">
 										<p:inputText id="inicial" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaCierresRetiros.doDecimalSat(manticVentasCajaCierresRetiros.attrs.caja.disponible)}" readonly="true"/>
@@ -92,7 +92,7 @@
 								    <p:outputLabel for="abonos" value="Abonos:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:inputText id="abonos" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" value="#{manticVentasCajaCierresRetiros.doDecimalSat(manticVentasCajaCierresRetiros.attrs.abonos)}" readonly="true"/>
+										<p:inputText id="abonos" styleClass="janal-wid-100-txt janal-column-right janal-color-green" value="#{manticVentasCajaCierresRetiros.doDecimalSat(manticVentasCajaCierresRetiros.attrs.abonos)}" readonly="true"/>
 									</div>		
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
@@ -104,11 +104,16 @@
 									</div>		
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
+									<div class="ui-grid-col-12">
+										<p:spacer height="5px"/>
+									</div>		
+								</div>	
+								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-1">
 								    <p:outputLabel for="importe" value="Importe:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:inputText id="importe" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" value="#{manticVentasCajaCierresRetiros.attrs.importe}" converter="javax.faces.Double"/>
+										<p:inputText id="importe" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaCierresRetiros.attrs.importe}" converter="javax.faces.Double"/>
 									</div>		
 								</div>	
 							</div>

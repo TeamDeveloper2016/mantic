@@ -58,12 +58,14 @@
 					tc_mantic_empresas.id_empresa,
 					tc_mantic_empresas.clave as empresa,
 					tc_mantic_cajas.clave as caja,
+					tc_mantic_cajas.limite,
 					if(tc_mantic_cierres.id_diferencias= 1, 'SI', 'NO') as diferencias,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
 					tc_mantic_cierres_estatus.nombre as estatus,
 					sum(tc_mantic_cierres_cajas.disponible) as disponible,
 					sum(tc_mantic_cierres_cajas.acumulado) as acumulado,
 					sum(tc_mantic_cierres_cajas.saldo) as saldo,
+					sum(tc_mantic_cierres_cajas.saldo) as efectivo,
 					sum(tc_mantic_cierres_cajas.importe) as capturado,
 					tc_mantic_cierres.observaciones,
 					tc_mantic_cierres.registro,
@@ -222,7 +224,6 @@
 				  tc_mantic_cierres_retiros on tc_mantic_cierres_cajas.id_cierre_caja= tc_mantic_cierres_retiros.id_cierre_caja
         where      
           tc_mantic_cierres.id_cierre = {idCierre}
-				  and tc_mantic_cierres_retiros.id_abono= {idAbono}
       </select>
 			<select id="importes">
 				select

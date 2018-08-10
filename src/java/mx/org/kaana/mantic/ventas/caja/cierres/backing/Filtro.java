@@ -238,7 +238,20 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("idCierre", ((Entity)this.attrs.get("seleccionado")).toLong("idCierre"));
 		JsfBase.setFlashAttribute("idEmpresa", ((Entity)this.attrs.get("seleccionado")).toLong("idEmpresa"));
 		JsfBase.setFlashAttribute("idCaja", ((Entity)this.attrs.get("seleccionado")).toLong("idCaja"));
-		return "/Paginas/Mantic/Ventas/Caja/Cierres/retiros".concat(Constantes.REDIRECIONAR);
+		JsfBase.setFlashAttribute("retorno", "filtro");
+		return "retiros".concat(Constantes.REDIRECIONAR);
 	}	
 	
+  public String doAbonos() {
+		JsfBase.setFlashAttribute("idCierre", ((Entity)this.attrs.get("seleccionado")).toLong("idCierre"));
+		JsfBase.setFlashAttribute("idEmpresa", ((Entity)this.attrs.get("seleccionado")).toLong("idEmpresa"));
+		JsfBase.setFlashAttribute("idCaja", ((Entity)this.attrs.get("seleccionado")).toLong("idCaja"));
+		JsfBase.setFlashAttribute("retorno", "filtro");
+		return "abonos".concat(Constantes.REDIRECIONAR);
+	}	
+	
+	public String toColor(Entity row) {
+		return row.toDouble("efectivo")> row.toDouble("limite")? "janal-tr-orange": "";
+	} 
+
 }

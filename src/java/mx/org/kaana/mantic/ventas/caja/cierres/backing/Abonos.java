@@ -51,7 +51,10 @@ public class Abonos extends IBaseAttribute implements Serializable {
     try {
       this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre")== null? -1L: JsfBase.getFlashAttribute("idCierre"));
+      this.attrs.put("limite", 3000.0);
       this.attrs.put("importe", 0.0);
+      this.attrs.put("retiros", 0D);
+      this.attrs.put("abonos", 0D);
 			this.doLoad();
     } // try
     catch (Exception e) {
@@ -95,7 +98,7 @@ public class Abonos extends IBaseAttribute implements Serializable {
 			retiro.setImporte((Double)this.attrs.get("importe"));
 			transaccion = new Transaccion((Long)this.attrs.get("idCierre"), retiro);
 			if (transaccion.ejecutar(this.accion)) {
-				if(this.accion.equals(EAccion.AGREGAR)) {
+				if(this.accion.equals(EAccion.AGREGAR) || this.accion.equals(EAccion.ASIGNAR)) {
  				  regresar = "ambos".concat(Constantes.REDIRECIONAR);
     			RequestContext.getCurrentInstance().execute("janal.alert('Se gener\\u00F3 el abono de efectivo, con consecutivo: "+ retiro.getConsecutivo()+ "');");
 				} // if	
@@ -172,6 +175,8 @@ public class Abonos extends IBaseAttribute implements Serializable {
 			} // if
 			else
   			this.attrs.put("idCaja", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
+			if(this.attrs.get("idCaja")!= null)
+				this.attrs.put("limite", ((UISelectEntity)this.attrs.get("idCaja")).toDouble("limite"));
     } // try
     catch (Exception e) {
       throw e;
