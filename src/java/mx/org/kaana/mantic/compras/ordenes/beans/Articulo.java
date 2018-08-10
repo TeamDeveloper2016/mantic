@@ -193,6 +193,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		double porcentajeIva = this.getIva()/ 100;       
 		double costoMoneda   = this.getCosto()* this.tipoDeCambio;
 		double costoReal     = this.getCantidad()* costoMoneda;
+		double utilidad      = (this.getCosto()*this.getCantidad()) - (this.getPrecio()*this.getCantidad());
 		this.importes.setImporte(Numero.toRedondearSat(costoReal));
 		Descuentos descuentos= new Descuentos(this.importes.getImporte(), this.getDescuento().concat(",").concat(this.getExtras()));
 		double temporal= descuentos.toImporte();
@@ -217,7 +218,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.setDescuentos(this.importes.getDescuento());
 		this.setExcedentes(this.importes.getExtra());
 		this.setImporte(Numero.toRedondearSat(this.importes.getTotal()));
-		this.setUtilidad((this.getCosto() * this.getCantidad()) - (this.getPrecio() * this.getCantidad()));
+		this.setUtilidad(utilidad);
 	}
 
 	public void toCalculate(boolean sinIva, double tipoDeCambio) {
@@ -226,6 +227,16 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.toCalculate();
 	}
 
+	public boolean autorizedDiscount(){
+		boolean regresar= false;
+		Double utilidad = (this.getCosto()*this.getCantidad()) - (this.getPrecio()*this.getCantidad());
+		Descuentos descuentos= new Descuentos(this.importes.getImporte(), this.getDescuento().concat(",").concat(this.getExtras()));
+		regresar= (this.importes.getImporte() - descuentos.toImporte()) < utilidad;
+		if(!regresar)
+			setDescuento("");
+		return regresar;
+	} // autorizedDiscount
+	
 	@Override
 	public int compareTo(Articulo current) {
 		int x= this.getNombre().compareTo(current.getNombre());
@@ -268,8 +279,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getCantidad(),
 			this.getExcedentes(),
 			this.getIdAplicar()
-		);
-		
+		);	
 	}
 
 	public TcManticOrdenesDetallesDto toOrdenDetalle() {
