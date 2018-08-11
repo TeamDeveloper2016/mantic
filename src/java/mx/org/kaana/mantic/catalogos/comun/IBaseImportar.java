@@ -12,18 +12,17 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import jxl.Sheet;
-import jxl.Workbook;
-import jxl.read.biff.BiffException;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -33,31 +32,34 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.KajoolBaseException;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
-import mx.org.kaana.mantic.db.dto.TcManticListasPreciosDetallesDto;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.libs.factura.beans.ComprobanteFiscal;
+import mx.org.kaana.mantic.libs.factura.beans.Concepto;
+import mx.org.kaana.mantic.libs.factura.reglas.Reader;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
+
 public abstract class IBaseImportar extends IBaseAttribute implements Serializable {
 
 	private static final long serialVersionUID= 5868488964656514537L;
 	private static final Log LOG              = LogFactory.getLog(IBaseImportar.class);
-  private static final int BUFFER_SIZE      = 6124;
+  private static final int BUFFER_SIZE      = 100240;
 	
 	private Importado xls;
 	private Importado pdf;
-	private Importado file;	
-  private List<TcManticListasPreciosDetallesDto> articulos;
+	private Importado file;			
 
   public Importado getXls() {
     return xls;
@@ -74,14 +76,6 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 	public void setFile(Importado file) {
 		this.file = file;
 	}
-
-  public List<TcManticListasPreciosDetallesDto> getArticulos() {
-    return articulos;
-  }
-
-  public void setArticulos(List<TcManticListasPreciosDetallesDto> articulos) {
-    this.articulos = articulos;
-  }
 		
 	protected void doFileUpload(FileUploadEvent event, Long fechaFactura, String carpeta, String clave) {
 		this.doFileUpload(event, fechaFactura, carpeta, clave, true, 1D);
@@ -117,11 +111,9 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			this.toWriteFile(result, event.getFile().getInputstream(), isXls);
 			fileSize= event.getFile().getSize();			
 			if(isXls) {
-				if(!this.toVerificaXls(result)){
-          throw new KajoolBaseException("El archivo ["+this.xls.getName()+ "] no tiene el formato adecuado para la carga" );
-        }
-        this.xls= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.XLS, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
-        this.attrs.put("xls", this.xls.getName());
+			  this.xls= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.XLS, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
+				this.toReadFactura(result, sinIva, tipoDeCambio);
+				this.attrs.put("xls", this.xls.getName());
 			} //
 			else
 			  if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.PDF.name())) {
@@ -172,68 +164,79 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 	private void toWriteFile(File result, InputStream upload) throws Exception {
 		toWriteFile(result, upload, false);
 	} // toWriteFile
-  
-  private void toWriteFile(File result, InputStream upload, boolean xls) throws Exception{
+	
+	private void toWriteFile(File result, InputStream upload, boolean xls) throws Exception {
 		FileOutputStream fileOutputStream= new FileOutputStream(result);
 		InputStream inputStream          = upload;
 		byte[] buffer                    = new byte[BUFFER_SIZE];
 		int bulk;
-		try{
-      while(true) {
-        bulk= inputStream.read(buffer);
-        if (bulk < 0) 
-          break;  
-        fileOutputStream.write(buffer, 0, bulk);
-        fileOutputStream.flush();
-      } // while
-      fileOutputStream.close();
-      inputStream.close();
+		while(true) {
+			if(xls)
+			  bulk= inputStream.read();
+			else
+			  bulk= inputStream.read(buffer);
+			if (bulk < 0) 
+				break;        
+			if(xls){
+				if(bulk!= 13 && bulk!= 10){
+					fileOutputStream.write(bulk);
+					fileOutputStream.flush();
+				} // if
+			} // if
+			else{
+			  fileOutputStream.write(buffer, 0, bulk);
+			  fileOutputStream.flush();
+			} // else
+		} // while
+		fileOutputStream.close();
+		inputStream.close();
+	} // toWriteFile 
+
+	private void toReadFactura(File file, Boolean sinIva, Double tipoDeCambio) throws Exception {
+    Reader reader            = null;
+		ComprobanteFiscal factura= null;
+		List<Articulo> faltantes = null;
+		try {
+			faltantes= new ArrayList<>();
+			reader = new Reader(file.getAbsolutePath());
+			factura= reader.execute();
+			for (Concepto concepto: factura.getConceptos()) {
+		    //this(sinIva, tipoDeCambio, nombre, codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos, idProveedor, ultimo, solicitado, stock, excedentes, sat, unidadMedida);
+		    faltantes.add(new Articulo(
+				  sinIva,
+					tipoDeCambio,
+					concepto.getDescripcion(),
+					concepto.getNoIdentificacion(),
+					Numero.toRedondearSat(Double.parseDouble(concepto.getValorUnitario())),
+					"",
+					-1L,
+					"",
+					0D,
+					"",
+					Double.parseDouble(concepto.getTraslado().getTasaCuota())* 100,
+					0D,
+					Numero.toRedondearSat(Double.parseDouble(concepto.getImporte())),
+					Double.parseDouble(concepto.getCantidad()),
+					-1L,
+					new Random().nextLong(),
+					0D,
+					-1L,
+					false,
+					false,
+					0D,
+					0D,
+					concepto.getClaveProdServ(),
+					concepto.getUnidad(),
+					2L
+				));
+			} // for
+			Collections.sort(faltantes);
+			this.attrs.put("faltantes", faltantes);
 		} // try
 		catch (Exception e) {
 			throw e;
 		} // catch
-	} // toWriteFile
- 
-  private Boolean toVerificaXls(File archivo) throws Exception{
-		Boolean regresar	      = false;
-		Workbook workbook	      = null;
-		Sheet sheet             = null;
-		StringBuilder encabezado= new StringBuilder();
-		try {
-			workbook= Workbook.getWorkbook(archivo);
-			sheet		= workbook.getSheet(0);
-			if(sheet != null && sheet.getColumns()==4 && sheet.getRows()>= 2){
-				for (int columna = 0; columna < 4; columna++){
-					encabezado.append(sheet.getCell(columna,0).getContents());
-					encabezado.append("|");
-				} // for
-				encabezado.delete(encabezado.length()-1, encabezado.length());
-				if(encabezado.toString().equals("CLAVE|AUXILIAR|DESCRIPCION|PRECIO")){
-          for(int fila= 1; fila<sheet.getRows(); fila++){
-            //(idListaPrecio,descripcion, idListaPrecioDetalle, codigo, precio, auxiliar) 
-            getArticulos().add(new TcManticListasPreciosDetallesDto(
-            -1L,
-            sheet.getCell(2,fila).getContents(),
-            -1L,
-            sheet.getCell(0,fila).getContents(),
-            Double.valueOf(sheet.getCell(3,fila).getContents()),
-            sheet.getCell(1,fila).getContents()));
-          } // for
-          regresar = true;
-        }
-			} // if
-		} // try
-		catch (IOException | BiffException e) {
-			throw e;
-		} // catch
-    finally {
-      if(workbook!= null){
-        workbook.close();
-        workbook = null;
-      }
-    } // finally
-		return regresar;
-	} // toVerificaXls
+	}
 	
 	protected void doLoadFiles(String proceso, Long idSelected, String idNombre) {
 		this.doLoadFiles(proceso, idSelected, idNombre, true, 1D);
@@ -250,7 +253,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 				tmp= (Entity)DaoFactory.getInstance().toEntity(proceso, "exists", params);
 				if(tmp!= null) {
 					this.xls= new Importado(tmp.toString("nombre"), "XLS", EFormatos.XLS, 0L, tmp.toLong("tamanio"), "", tmp.toString("ruta"), tmp.toString("observaciones"));
-					this.toVerificaXls(new File(tmp.toString("alias")));
+					this.toReadFactura(new File(tmp.toString("alias")), sinIva, tipoDeCambio);
   				this.attrs.put("xls", this.xls.getName()); 
 				} // if	
 				params.put("idTipoArchivo", 2L);
