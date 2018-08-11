@@ -100,14 +100,17 @@
 							<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticCatalogosListaPreciosImportar.attrs.observaciones}"/>
 							<p:spacer height="5px"/>
 							<p:fileUpload fileUploadListener="#{manticCatalogosListaPreciosImportar.doFileUpload}" 
-							  mode="advanced" process="@this observaciones" update="@(.importado) @(.involucrados)" label="Selecciona XLS/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+							  mode="advanced" process="@this observaciones" update="@(.importado) @(.involucrados)" label="Selecciona XLS/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="104857600"
 								multiple="false" allowTypes="#{manticCatalogosListaPreciosImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
-								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosListaPreciosImportar.attrs.formatos}" oncomplete="janal.desbloquear()"/>
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 100 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosListaPreciosImportar.attrs.formatos}" oncomplete="janal.desbloquear()"/>
 							<p:inputText id="xls" value="#{manticCatalogosListaPreciosImportar.attrs.xls}" styleClass="importado" style="display:none"/>
 							<p:commandLink value="XLS importado: #{manticCatalogosListaPreciosImportar.xls.ruta}#{manticCatalogosListaPreciosImportar.xls.name}" onclick="viewFile();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento XLS" style="#{(empty manticCatalogosListaPreciosImportar.xls)? 'display: none': ''}"/>
 							<br/>
 							<p:inputText id="pdf" value="#{manticCatalogosListaPreciosImportar.attrs.pdf}" styleClass="importado" style="display:none"/>
 							<p:commandLink value="PDF importado: #{manticCatalogosListaPreciosImportar.pdf.ruta}#{manticCatalogosListaPreciosImportar.pdf.name}" onclick="viewDocument();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento PDF" style="#{(empty manticCatalogosListaPreciosImportar.pdf)? 'display: none': ''}"/>
+              <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+                <p:outputLabel value="Total de artículos a importar: #{manticCatalogosListaPreciosImportar.articulos.size()}" styleClass="importado janal-color-orange janal-steps-boton-siguiente janal-font-bold"/>
+							</p:panelGrid>
 						</p:tab>
 					</p:tabView>
 				</div>
