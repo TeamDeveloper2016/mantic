@@ -19,7 +19,7 @@
 	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-				'contenedorGrupos\\:xls': {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:xls': {validaciones: 'libre', mascara: 'libre'},
 				'contenedorGrupos\\:pdf': {validaciones: 'libre', mascara: 'libre'},
 				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
 			};	
@@ -81,15 +81,15 @@
 									<h:outputText value="#{row.observaciones}"/>
 								</p:column>   
 								<p:column style="text-align: center" styleClass="janal-wid-col-38">
-									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="janal-text-white" rendered="#{row.idPrincipal.toLong() eq 1}">
+									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="janal-text-white">
 										<p:fileDownload value="#{manticCatalogosListaPreciosImportar.doFileDownload(row)}" />
 									</p:commandButton>
 								</p:column>
 								<p:column style="text-align: center" styleClass="janal-wid-col-38">
-									<p:commandLink  actionListener="#{manticCatalogosListaPreciosImportar.doViewPdfDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 2}">
+									<p:commandLink  actionListener="#{manticCatalogosListaPreciosImportar.doViewPdfDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idTipoArchivo.toLong() eq 2}">
 									  <p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button" styleClass="janal-text-white"/>
 									</p:commandLink>	
-									<p:commandLink  actionListener="#{manticCatalogosListaPreciosImportar.doViewXlsDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgXLS').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 1}">
+									<p:commandLink  actionListener="#{manticCatalogosListaPreciosImportar.doViewXlsDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgXLS').show();" rendered="#{row.idTipoArchivo.toLong() eq 1}">
 									  <p:commandButton icon="fa fa-eye" title="Ver documento XLS" ajax="false" type="button" styleClass="janal-text-white"/>
 									</p:commandLink>	
 								</p:column>
@@ -122,11 +122,11 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosListaPreciosImportar.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosListaPreciosImportar.doAceptar}" styleClass="janal-text-white" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosListaPreciosImportar.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosListaPreciosImportar.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosListaPreciosImportar.doAceptar}" styleClass="janal-text-white" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosListaPreciosImportar.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
