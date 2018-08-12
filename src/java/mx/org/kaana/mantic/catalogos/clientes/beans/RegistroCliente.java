@@ -68,7 +68,7 @@ public class RegistroCliente implements Serializable{
 		this.personasTiposContacto = personasTiposContacto;
 		this.personaTipoContactoPivote= personaTipoContactoPivote;
 		this.personaTipoContacto   = personaTipoContactoPivote;
-		this.habilitarCredito      = cliente.getIdCredito().equals(1L);
+		this.habilitarCredito      = cliente.getIdCredito()!= null && cliente.getIdCredito().equals(1L);
 	}
 	
 	public Long getIdCliente() {
