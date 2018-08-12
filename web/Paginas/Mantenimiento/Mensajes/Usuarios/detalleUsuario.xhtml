@@ -16,7 +16,9 @@
   <ui:param name="titulo" value="Mensajes enviados al usuario: #{kajoolMensajesUsuariosDetalleUsuario.attrs.usuario}"/>
   <ui:define name="librerias">
     <script type="text/javascript">
-      Janal.Control.fields = {
+      Janal.Control.fields = {};
+			
+			fieldsDialog= {
         'vigenciaIni':    {validaciones: 'requerido|fecha-menor({"cual":"vigenciaFin"})', mascara: 'libre', mensaje: 'Vigencia inicial debe ser menor o igual a la final para agregar'},
         'vigenciaFin':    {validaciones: 'requerido|fecha-mayor({"cual":"vigenciaIni"})', mascara: 'libre', mensaje: 'Vigencia final debe de ser mayor o igual a la incial para agregar'}
       };
@@ -44,22 +46,26 @@
     </p:dataTable>
     <p:contextMenu for="tabla">
       <p:menuitem value="Modificar" icon="fa fa-edit" onstart="return janal.bloquear();" actionListener="#{kajoolMensajesUsuariosDetalleUsuario.doActualizaDialogo}" update="dialogoModificar" oncomplete="PF('dialogoModificar').show();"/>
-    </p:contextMenu>
-    <p:dialog id="dialogoModificar" widgetVar="dialogoModificar" header="Modificar vigencias" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" onHide="janal.desbloquear();" >
-      <p:panelGrid columns="2" layout="grid" styleClass="Container96" columnClasses="ColWid20, TexAlLeft">
-        <p:outputLabel for="vigenciaIni" value="Vigencia inicial:"/>
-        <p:calendar id="vigenciaIni" styleClass="Wid100" value="#{kajoolMensajesUsuariosDetalleUsuario.attrs.vigenciaIni}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
-        <p:outputLabel for="vigenciaFin" value="Vigencia final:"/>
-        <p:calendar id="vigenciaFin" styleClass="Wid100" value="#{kajoolMensajesUsuariosDetalleUsuario.attrs.vigenciaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
-      </p:panelGrid>
-      <div class="Fright">
-        <p:commandButton value="Guardar" actionListener="#{kajoolMensajesUsuariosDetalleUsuario.doMofificar}" onstart="return janal.execute(true);" oncomplete="PF('dialogoModificar').hide();" process="@this dialogoModificar" update=":datos:tabla"/>
-        <p:commandButton value="Cancelar" oncomplete="PF('dialogoModificar').hide();"/>
-      </div>
-    </p:dialog>
+    </p:contextMenu>    
   </ui:define>
   <ui:define name ="acciones" >
     <p:commandButton id="aceptar" styleClass="janal-display-none"/>
     <p:commandButton id="cancelar" icon="fa fa-remove" value="Regresar" action="filtro" ajax="false"/>
   </ui:define>
+	<ui:define name="dialogos">
+		<p:dialog id="dialogoModificar" widgetVar="dialogoModificar" header="Modificar vigencias" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" onShow="janal.change('formDialogoInsumo', fieldsDialog);janal.refresh();" onHide="janal.desbloquear();janal.restore();janal.refresh();">
+      <h:form id="formDialogoInsumo" prependId="false">
+				<p:panelGrid columns="2" layout="grid" styleClass="Container96" columnClasses="ColWid20, TexAlLeft">
+					<p:outputLabel for="vigenciaIni" value="Vigencia inicial:"/>
+					<p:calendar id="vigenciaIni" styleClass="Wid100" value="#{kajoolMensajesUsuariosDetalleUsuario.attrs.vigenciaIni}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+					<p:outputLabel for="vigenciaFin" value="Vigencia final:"/>
+					<p:calendar id="vigenciaFin" styleClass="Wid100" value="#{kajoolMensajesUsuariosDetalleUsuario.attrs.vigenciaFin}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+				</p:panelGrid>
+				<div class="Fright">
+					<p:commandButton value="Guardar" actionListener="#{kajoolMensajesUsuariosDetalleUsuario.doMofificar}" onstart="return janal.execute(true);" oncomplete="PF('dialogoModificar').hide();" process="@this dialogoModificar" update=":datos:tabla"/>
+					<p:commandButton value="Cancelar" oncomplete="PF('dialogoModificar').hide();"/>
+				</div>
+			</h:form>
+    </p:dialog>
+	</ui:define>
 </ui:composition>
