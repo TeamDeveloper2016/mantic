@@ -12,15 +12,21 @@
     <script type="text/javascript">
       Janal.Control.fields = {
         'razonSocial'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo:'general', individual: true},
-        'clave'        : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo:'general', individual: true},
-        'proveedorDlg' : {validaciones: 'requerido', mascara: 'libre', grupo:'dialogo', individual: true},
-        'observacion'  : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
+        'clave'        : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo:'general', individual: true}
       };
       
+			fieldsDialog= {
+				'proveedorDlg' : {validaciones: 'requerido', mascara: 'libre', grupo:'dialogo', individual: true},
+        'observacion'  : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
+			};
+			
       function validaJustificacion(){
 				var ok= janal.partial('dialogo');
-				if(ok)
+				if(ok){
 					PF('dlgProveedor').hide();
+					janal.restore();
+					janal.refresh();
+				} // if
 				return ok;
 			} // validaJustificacion
     </script>		
@@ -104,28 +110,6 @@
         </div>
       </div>
     </div>	
-    <p:dialog id="dialogoProveedor" widgetVar="dlgProveedor" header="Agregar lista de precios" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.refresh();">
-			<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
-				<p:outputLabel for="proveedorDlg" value="Proveedor:"/>												
-				<p:selectOneMenu id="proveedorDlg" value="#{manticCatalogosListaPreciosFiltro.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains">
-          <f:selectItem itemLabel="SELECCIONE" itemValue=""/>
-          <f:selectItems value="#{manticCatalogosListaPreciosFiltro.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
-          <p:column headerText="Clave">
-            <h:outputText value="#{item.clave}"/>
-          </p:column>   
-          <p:column headerText="Razón social">
-            <h:outputText value="#{item.razonSocial}"/>
-          </p:column>     
-        </p:selectOneMenu>
-				<p:outputLabel for="observacion" value="Observacion:"/>
-				<p:inputTextarea id="observacion" value="#{manticCatalogosListaPreciosFiltro.attrs.observacion}" styleClass="janal-wid-100-txt"/>
-			</h:panelGrid>
-			<hr class="ui-widget-content"/>
-			<div class="janal-line-button">
-				<p:commandButton icon="fa fa-check" process="@this dialogoProveedor" update="tabla" value="Aceptar" action="#{manticCatalogosListaPreciosFiltro.doAgregarListaProveedor}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
-        <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgProveedor').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
-			</div>
-		</p:dialog>	
   </ui:define>    
   <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la lista de precios ?" />
   <ui:param name="accionConfirmacion" value="#{manticCatalogosListaPreciosFiltro}"/>
@@ -138,4 +122,30 @@
       <p:outputLabel value="#{manticCatalogosListaPreciosFiltro.attrs.seleccionado.razonSocial}"/>
     </h:panelGrid>			
   </ui:define>
+	<ui:define name="dialogos">
+		<p:dialog id="dialogoProveedor" widgetVar="dlgProveedor" header="Agregar lista de precios" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoProveedor', fieldsDialog);janal.refresh();">
+			<h:form id="formDialogoProveedor" prependId="false">
+				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+					<p:outputLabel for="proveedorDlg" value="Proveedor:"/>												
+					<p:selectOneMenu id="proveedorDlg" value="#{manticCatalogosListaPreciosFiltro.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains">
+						<f:selectItem itemLabel="SELECCIONE" itemValue=""/>
+						<f:selectItems value="#{manticCatalogosListaPreciosFiltro.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
+						<p:column headerText="Clave">
+							<h:outputText value="#{item.clave}"/>
+						</p:column>   
+						<p:column headerText="Razón social">
+							<h:outputText value="#{item.razonSocial}"/>
+						</p:column>     
+					</p:selectOneMenu>
+					<p:outputLabel for="observacion" value="Observacion:"/>
+					<p:inputTextarea id="observacion" value="#{manticCatalogosListaPreciosFiltro.attrs.observacion}" styleClass="janal-wid-100-txt"/>
+				</h:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoProveedor" update="tabla" value="Aceptar" action="#{manticCatalogosListaPreciosFiltro.doAgregarListaProveedor}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgProveedor').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+				</div>
+			</h:form>
+		</p:dialog>	
+	</ui:define>
 </ui:composition>
