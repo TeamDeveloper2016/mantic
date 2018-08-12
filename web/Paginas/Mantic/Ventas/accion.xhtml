@@ -16,13 +16,16 @@
 				'total'    : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'articulo'},			
 				'descuento': {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'articulo'},
 				'cuenta'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'login'},
-				'password' : {validaciones: 'requerido', mascara: 'libre', grupo: 'login'},			
+				'password' : {validaciones: 'requerido', mascara: 'libre', grupo: 'login'}				
+			};	
+			
+			fieldsDialog ={
 				'usuarioDescuento'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'},			
 				'passwordDescuento'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'},			
 				'tipoDescuento'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'},		
 				'descuentoIndividual': {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'},		
 				'descuentoGlobal'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'}
-			};	
+			};
 			
     	$(document).ready(function() {
         jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasAccion.adminOrden.articulos.size()}, 'tabla\\:');
@@ -34,7 +37,7 @@
 				if(ok){
 					PF('dlgDescuentos').hide();					
 					jsArticulos.autorizedDiscount();
-					janal.prepare('datos', janal.fields, 3);
+					janal.restore();
 					janal.refresh();
 				} // if
 				return ok;
@@ -413,7 +416,7 @@
 		</div>	
 	</ui:define>	
 	<ui:define name="dialogos">		
-		<p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" header="Aplicar descuento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="false" resizable="false" responsive="true" closable="false" onShow="janal.prepare('dialogosVenta', janal.fields, 3);updateDescuentos();janal.refresh();" onHide="janal.refresh();" width="50%">						
+		<p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" header="Aplicar descuento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="false" resizable="false" responsive="true" closable="false" onShow="janal.change('dialogosVenta', fieldsDialog);updateDescuentos();janal.refresh();" onHide="janal.refresh();" width="50%">						
 			<h:form id="dialogosVenta" prependId="false">
 				<h:panelGrid columns="1" styleClass="janal-wid-100">
 					<p:outputLabel for="usuarioDescuento" value="Usuario:"/>
