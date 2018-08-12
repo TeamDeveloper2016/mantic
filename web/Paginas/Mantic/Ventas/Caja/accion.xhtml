@@ -8,8 +8,8 @@
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Listado de tickets abiertos para cobro"/>
-	<ui:define name="librerias">    
-		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.1.1.js"/>
+	<ui:define name="librerias">    		
+		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.1.3.js"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
 				'descuento': {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'general'},
@@ -30,8 +30,7 @@
         'ycalle'       : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},        
         'telefono'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},        
         'correo'       : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},        
-        'celular'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},        
-        'calleBusqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true},
+        'celular'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},                
 				
 				'efectivo'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'credito'          : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasCajaAccion.attrs.pago.limiteCredito}})', mascara: 'libre', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
@@ -49,7 +48,12 @@
 				'bancoTransferencia'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu tarjeta de credito'}
 			};	
 			
+			fieldsDialog ={
+				'calleBusqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
+			};
+			
     	$(document).ready(function() {
+				jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasAccion.adminOrden.articulos.size()}, 'tabla\\:');
 				janal.readingMode('#{manticVentasCajaAccion.attrs.nombreAccion}');
       });																		
 			
@@ -483,37 +487,7 @@
 					</div>
 				</div>		
 			</p:tab>
-		</p:tabView>
-		<p:dialog id="dialogoDomicilios" widgetVar="dlgDomicilios" header="Busqueda de domicilio:" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.refresh();">
-			<h:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-80, janal-wid-20">
-				<p:outputLabel for="calleBusqueda" value="Calle:"/>
-				<p:inputText id="calleBusqueda" value="#{manticVentasCajaAccion.attrs.calle}" styleClass="janal-wid-100-txt"/>
-				<p:commandButton icon="fa fa-search" actionListener="#{manticVentasCajaAccion.doBusquedaDomicilios}" process="@this calleBusqueda" update="domiciliosBusqueda totalResultados" styleClass="janal-text-white" onstart="return janal.partial('dialogo')"/>
-				<p:outputLabel for="domiciliosBusqueda" value="Domicilio:"/>
-				<p:selectOneMenu id="domiciliosBusqueda" value="#{manticVentasCajaAccion.domicilioBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
-					<f:selectItems value="#{manticVentasCajaAccion.attrs.domiciliosBusqueda}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
-					<p:column  styleClass="janal-column-left janal-wid-col-150">
-						<h:outputText value="#{item.entidad}"/>
-					</p:column>   										
-					<p:column  styleClass="janal-column-left">
-						<h:outputText value="#{item.calle}"/>
-					</p:column>   
-					<p:column styleClass="janal-column-right janal-wid-col-50">
-						<h:outputText value="#{item.numeroExterior}"/>
-					</p:column>  										
-					<p:column styleClass="janal-column-left janal-wid-col-250">
-						<h:outputText value="#{item.asentamiento}"/>
-					</p:column>  
-				</p:selectOneMenu>
-				<p:spacer/><p:spacer/><p:spacer/>
-				<p:outputLabel id="totalResultados" value="Total [#{manticVentasCajaAccion.attrs.resultados}]"/>
-			</h:panelGrid>
-			<hr class="ui-widget-content"/>
-			<div class="janal-line-button">
-				<p:commandButton id="aceptarBusqueda" icon="fa fa-check" process="@this dialogoDomicilios domiciliosBusqueda" update="contenedorGrupos:tabCliente"  value="Aceptar" action="#{manticVentasCajaAccion.doAsignaDomicilio}" onstart="PF('dlgDomicilios').hide();" oncomplete="janal.desbloquear();janal.refresh();" styleClass="janal-text-white"/>
-        <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgDomicilios').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
-			</div>
-		</p:dialog> 
+		</p:tabView>		
 		<p:dialog id="dialogoCerrarVenta" widgetVar="dlgCerrarVenta" header="Finalizar venta" resizable="false" closable="false" responsive="true" width="40%">
 			<h:panelGrid columns="4" columnClasses="janal-wid-70, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center, janal-wid-10 janal-column-center">
 				<p:outputLabel value="Resumen de venta" styleClass="font-resume-venta"/><p:spacer/><p:spacer/><p:spacer/>				
@@ -561,5 +535,39 @@
 			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@this" styleClass="janal-text-white" oncomplete="ventaFinished();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>
 			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 		</div>		
+	</ui:define>
+	<ui:define name="dialogos">
+		<p:dialog id="dialogoDomicilios" widgetVar="dlgDomicilios" header="Busqueda de domicilio:" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoDomicilios', fieldsDialog);janal.refresh();">
+			<h:form id="formDialogoDomicilios" prependId="false">
+				<h:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-80, janal-wid-20">
+					<p:outputLabel for="calleBusqueda" value="Calle:"/>
+					<p:inputText id="calleBusqueda" value="#{manticVentasCajaAccion.attrs.calle}" styleClass="janal-wid-100-txt"/>
+					<p:commandButton icon="fa fa-search" actionListener="#{manticVentasCajaAccion.doBusquedaDomicilios}" process="@this calleBusqueda" update="domiciliosBusqueda totalResultados" styleClass="janal-text-white" onstart="return janal.partial('dialogo')"/>
+					<p:outputLabel for="domiciliosBusqueda" value="Domicilio:"/>
+					<p:selectOneMenu id="domiciliosBusqueda" value="#{manticVentasCajaAccion.domicilioBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
+						<f:selectItems value="#{manticVentasCajaAccion.attrs.domiciliosBusqueda}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
+						<p:column  styleClass="janal-column-left janal-wid-col-150">
+							<h:outputText value="#{item.entidad}"/>
+						</p:column>   										
+						<p:column  styleClass="janal-column-left">
+							<h:outputText value="#{item.calle}"/>
+						</p:column>   
+						<p:column styleClass="janal-column-right janal-wid-col-50">
+							<h:outputText value="#{item.numeroExterior}"/>
+						</p:column>  										
+						<p:column styleClass="janal-column-left janal-wid-col-250">
+							<h:outputText value="#{item.asentamiento}"/>
+						</p:column>  
+					</p:selectOneMenu>
+					<p:spacer/><p:spacer/><p:spacer/>
+					<p:outputLabel id="totalResultados" value="Total [#{manticVentasCajaAccion.attrs.resultados}]"/>
+				</h:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton id="aceptarBusqueda" icon="fa fa-check" process="@this dialogoDomicilios domiciliosBusqueda" update="contenedorGrupos:tabCliente"  value="Aceptar" action="#{manticVentasCajaAccion.doAsignaDomicilio}" onstart="PF('dlgDomicilios').hide();" oncomplete="janal.desbloquear();janal.refresh();" styleClass="janal-text-white"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgDomicilios').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+				</div>
+			</h:form>
+		</p:dialog> 
 	</ui:define>
 </ui:composition>
