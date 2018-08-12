@@ -49,7 +49,7 @@ public class Pagos extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
-			this.idCliente= JsfBase.getFlashAttribute("idCliente")== null ? -1L: (Long)JsfBase.getFlashAttribute("idCliente");			
+			this.idCliente= JsfBase.getFlashAttribute("idCliente")== null ? -1L: Long.valueOf(JsfBase.getFlashAttribute("idCliente").toString());			
       this.attrs.put("sortOrder", "order by tc_mantic_ventas.consecutivo, tc_mantic_clientes_deudas.registro desc");
       this.attrs.put("idCliente", this.idCliente);     
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
