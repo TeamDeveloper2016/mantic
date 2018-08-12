@@ -3654,7 +3654,7 @@
 				where
 					tc_mantic_listas_precios_archivos.id_lista_precio= {idListaPrecio}
 				order by
-					tc_mantic_listas_precios_archivos.id_tipo_archivo, tc_mantic_listas_precios_archivos.registro desc				
+					tc_mantic_listas_precios_archivos.id_principal, tc_mantic_listas_precios_archivos.registro desc, tc_mantic_listas_precios_archivos.id_tipo_archivo asc				
 			</select>
 		</unit>
 	</dml>    
