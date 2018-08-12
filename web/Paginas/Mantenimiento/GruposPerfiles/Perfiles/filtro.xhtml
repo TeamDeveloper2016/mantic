@@ -9,10 +9,16 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'descripcion'				 : {validaciones: 'requerido', mascara: 'libre', grupo: 'busqueda'},
-        'modificaDescripcion': {validaciones: 'requerido', mascara: 'libre', grupo: 'modifica'},
-        'agregarDescripcion' : {validaciones: 'requerido', mascara: 'libre', grupo: 'agrega'}
+        'descripcion': {validaciones: 'requerido', mascara: 'libre', grupo: 'busqueda'}
       };
+			
+			fieldsDialogAgregar ={
+				'agregarDescripcion' : {validaciones: 'requerido', mascara: 'libre', grupo: 'agrega'}
+			};
+			
+			fieldsDialogModificar ={
+				'modificaDescripcion': {validaciones: 'requerido', mascara: 'libre', grupo: 'modifica'}
+			};
     </script>
   </ui:define>
   <ui:define name="contenido" >
@@ -23,26 +29,7 @@
         <p:commandButton value="Aceptar" icon="fa fa-check" process="@this,:datos:tabla" update=":datos:tabla,:datos:confirmaCambiar" actionListener="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doCambiarEstatus()}" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); PF('dialogoEstatus').hide()" />
         <p:commandButton value="Cancelar" icon="fa fa-remove" process="@this" oncomplete="janal.desbloquear(); PF('dialogoEstatus').hide()" />
       </div>
-    </p:dialog>
-    <p:dialog id="agregar" widgetVar="wAgregar" header="Agregar perfil:" showEffect="clip" closable="false" width="550">
-			<p:outputLabel for="agregarDescripcion" value="Perfil:  " />
-			<p:inputText  id="agregarDescripcion" value="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.attrs.dto.descripcion}" styleClass="Container70 Fnone"/>
-      <div class="janal-line-button">
-        <p:separator/>
-        <p:commandButton value="Aceptar" icon="fa fa-check" process="@this agregarDescripcion" update=":datos:tabla" actionListener="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doEvento('AGREGAR')}" onstart="return janal.partial('agrega');" oncomplete="janal.desbloquear(); PF('wAgregar').hide()" />
-        <p:commandButton value="Cancelar" icon="fa fa-remove" process="@this" oncomplete="janal.desbloquear(); PF('wAgregar').hide()" />
-      </div>
-    </p:dialog>
-    <p:dialog id="modificar" widgetVar="wModificar" header="Modificar perfil:" showEffect="clip" closable="false" width="550">
-      <p:outputLabel for="modificaDescripcion" value="Perfil:  " />
-      <p:inputText  id="modificaDescripcion" value="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.attrs.modificaDescripcion}" styleClass="Container70 Fnone"/>
-      <div class="janal-line-button">
-        <p:separator/>
-        <p:commandButton value="Aceptar" icon="fa fa-check" process="@this modificaDescripcion" update=":datos:tabla" actionListener="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doEvento('MODIFICAR')}" onstart="return janal.partial('modifica')" oncomplete="janal.desbloquear(); PF('wModificar').hide()" />
-        <p:commandButton value="Cancelar" icon="fa fa-remove" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); PF('wModificar').hide()" />
-      </div>
-    </p:dialog>
-    
+    </p:dialog>        
     <div class="janal-content-table ui-grid ui-grid-responsive">
       <p:fieldset legend="Buscar por" toggleable="true" collapsed="false" styleClass="Responsive100">
         <p:panelGrid columns="3" layout="grid" columnClasses="janal-wid-col-90,Wid40,janal-wid-col-40">
@@ -90,4 +77,28 @@
   <ui:define name ="acciones">
     <p:commandButton id="aceptar" icon="fa fa-mail-reply" styleClass="janal-text-white" action="/Paginas/Mantenimiento/GruposPerfiles/Grupos/filtro?faces-redirect=true" process="@this" value="Regresar" />
   </ui:define>
+	<ui:define name="dialogos">
+		<p:dialog id="agregar" widgetVar="wAgregar" header="Agregar perfil:" showEffect="clip" closable="false" width="550" onShow="janal.change('formAgregar', fieldsDialogAgregar);janal.refresh();" onHide="janal.restore();janal.refresh();">
+			<h:form id="formAgregar" prependId="false">							
+				<p:outputLabel for="agregarDescripcion" value="Perfil:  " />
+				<p:inputText  id="agregarDescripcion" value="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.attrs.dto.descripcion}" styleClass="Container70 Fnone"/>
+				<div class="janal-line-button">
+					<p:separator/>
+					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this agregarDescripcion" update=":datos:tabla" actionListener="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doEvento('AGREGAR')}" onstart="return janal.partial('agrega');" oncomplete="janal.desbloquear(); PF('wAgregar').hide()" />
+					<p:commandButton value="Cancelar" icon="fa fa-remove" process="@this" oncomplete="janal.desbloquear(); PF('wAgregar').hide()" />
+				</div>
+			</h:form>
+    </p:dialog>
+    <p:dialog id="modificar" widgetVar="wModificar" header="Modificar perfil:" showEffect="clip" closable="false" width="550" onShow="janal.change('formModificar', fieldsDialogModificar);janal.refresh();" onHide="janal.restore();janal.refresh();">
+      <h:form id="formModificar" prependId="false">
+				<p:outputLabel for="modificaDescripcion" value="Perfil:  " />
+				<p:inputText  id="modificaDescripcion" value="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.attrs.modificaDescripcion}" styleClass="Container70 Fnone"/>
+				<div class="janal-line-button">
+					<p:separator/>
+					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this modificaDescripcion" update=":datos:tabla" actionListener="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doEvento('MODIFICAR')}" onstart="return janal.partial('modifica')" oncomplete="janal.desbloquear(); PF('wModificar').hide()" />
+					<p:commandButton value="Cancelar" icon="fa fa-remove" process="@this" onstart="return janal.bloquear()" oncomplete="janal.desbloquear(); PF('wModificar').hide()" />
+				</div>
+			</h:form>
+    </p:dialog>
+	</ui:define>
 </ui:composition>
