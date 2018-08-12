@@ -9,12 +9,15 @@
   <ui:param name="titulo" value="Listado de respaldos de la base de datos realizados" />
   <ui:define name="librerias">
     <script type="text/javascript">
-      Janal.Control.fields = {
-        'observaciones' : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true},
+      Janal.Control.fields = {        
         'fechaInicio'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'fechaTermino'  : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
       };
       
+			fieldsDialog= {
+				'observaciones' : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
+			};
+			
       function start() {
         PF('statusDialog').show();
       };
@@ -25,8 +28,11 @@
 			
       function validaObservacion(){
 				var ok= janal.partial('dialogo');
-				if(ok)
+				if(ok){
 					PF('dlgObs').hide();
+					janal.restore();
+					janal.refresh();
+				} // if
 				return ok;
 			} // validaObservacion
     </script>		
@@ -112,18 +118,22 @@
     </div>
     <p:dialog modal="true" widgetVar="statusDialog" header="Estatus de la descarga del archivo" draggable="false" closable="false" resizable="false">
 			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
-		</p:dialog>		
-    <p:dialog id="dialogoObservacion" widgetVar="dlgObs" header="Crear respaldo de la base de datos" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.refresh();">
-			<h:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
-				<p:outputLabel for="observaciones" value="Observaciones:"/>
-				<p:inputTextarea id="observaciones" value="#{manticRespaldosFiltro.attrs.observaciones}" styleClass="janal-wid-100-txt"/>
-			</h:panelGrid>
-			<hr class="ui-widget-content"/>
-			<div class="janal-line-button">
-				<p:commandButton icon="fa fa-check" process="@this dialogoObservacion" update="tabla" value="Aceptar" action="#{manticRespaldosFiltro.doCrearResaldo}" onstart="return validaObservacion()" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
-        <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgObs').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
-			</div>
-		</p:dialog>
+		</p:dialog>		    
   </ui:define>    	
   <ui:param name="componenteBloqueo" value="tabla" />
+	<ui:define name="dialogos">
+		<p:dialog id="dialogoObservacion" widgetVar="dlgObs" header="Crear respaldo de la base de datos" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoObservacion', fieldsDialog);janal.refresh();">
+			<h:form id="formDialogoObservacion" prependId="false">
+				<h:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+					<p:outputLabel for="observaciones" value="Observaciones:"/>
+					<p:inputTextarea id="observaciones" value="#{manticRespaldosFiltro.attrs.observaciones}" styleClass="janal-wid-100-txt"/>
+				</h:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoObservacion" update="tabla" value="Aceptar" action="#{manticRespaldosFiltro.doCrearResaldo}" onstart="return validaObservacion();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgObs').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+				</div>
+			</h:form>
+		</p:dialog>
+	</ui:define>
 </ui:composition>
