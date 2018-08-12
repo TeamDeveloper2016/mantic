@@ -9,17 +9,20 @@
   <ui:param name="titulo" value="Listado de pagos realizados por el cliente" />
   <ui:define name="librerias">
     <script type="text/javascript">
-      Janal.Control.fields = {
-        'busqueda'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true},
+      Janal.Control.fields = {        
         'cliente'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'idEmpresa'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'consecutivo' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'dias'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'vencidos'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'fechaInicio' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'fechaTermino': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'encontrados' : {validaciones: 'requerido', mascara: 'libre', grupo: 'aceptado'}
+        'fechaTermino': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
       };		
+			
+			fieldsDialog ={
+				'busqueda'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true},
+				'encontrados' : {validaciones: 'requerido', mascara: 'libre', grupo: 'aceptado'}
+			};
     </script>		
   </ui:define>
   <ui:define name="contenido">
@@ -126,35 +129,6 @@
 				</div>
 			</div>
     </div>		           				
-		<p:dialog id="dialogoClientes" widgetVar="dlgClientes" header="Busqueda de cliente" resizable="false" closable="false" responsive="true" width="60%">
-			<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-col-60, janal-wid-100">
-				<p:outputLabel for="busqueda" value="Nombre:"/>
-  			<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-40">
-	  			<p:inputText id="busqueda" value="#{manticCatalogosClientesCuentasPagos.attrs.busqueda}" styleClass="janal-wid-100-txt" placeholder="Ej. razón social del cliente DANIEL DAVALOS"/>
-					<p:commandButton icon="fa fa-search" actionListener="#{manticCatalogosClientesCuentasPagos.doClientes}" process="@this busqueda" update="encontrados resultados" styleClass="janal-text-white" onstart="return janal.partial('dialogo');"/>
-				</h:panelGrid>
-				<p:outputLabel for="encontrados" value="Encontrados:"/>
-				<p:selectOneMenu id="encontrados" value="#{manticCatalogosClientesCuentasPagos.encontrado}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
-					<f:selectItems value="#{manticCatalogosClientesCuentasPagos.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.rfc} - #{element.razonSocial}"/>
-					<p:column styleClass="janal-column-left janal-wid-30" headerText="Clave">
-						<h:outputText value="#{item.clave}"/>
-					</p:column>   																			
-					<p:column styleClass="janal-column-left janal-wid-30" headerText="RFC">
-						<h:outputText value="#{item.rfc}"/>
-					</p:column>   																			
-					<p:column styleClass="janal-column-left janal-wid-100" headerText="Razón social">
-						<h:outputText value="#{item.razonSocial}"/>
-					</p:column>  
-				</p:selectOneMenu>
-				<p:spacer/>
-				<p:outputLabel id="resultados" value="Registros encontrados: [#{manticCatalogosClientesCuentasPagos.attrs.resultados}]" style="float: right !important"/>
-			</h:panelGrid>
-			<hr class="ui-widget-content"/>
-			<div class="janal-line-button">
-				<p:commandButton value="Aceptar" icon="fa fa-check" process="@this encontrados" update="tabla" actionListener="#{manticCatalogosClientesCuentasPagos.doSeleccionado}" onstart="return janal.partial('aceptado');" oncomplete="PF('dlgClientes').hide(); janal.desbloquear();" styleClass="janal-text-white"/>
-        <p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgClientes').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
-			</div>
-		</p:dialog> 
   </ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
@@ -165,4 +139,37 @@
 		</div>	
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="tabla" />
+	<ui:define name="dialogos">
+		<p:dialog id="dialogoClientes" widgetVar="dlgClientes" header="Busqueda de cliente" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoClientes', janal.fields);janal.refresh();">
+			<h:form id="formDialogoClientes" prependId="false">
+				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-col-60, janal-wid-100">
+					<p:outputLabel for="busqueda" value="Nombre:"/>
+					<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-40">
+						<p:inputText id="busqueda" value="#{manticCatalogosClientesCuentasPagos.attrs.busqueda}" styleClass="janal-wid-100-txt" placeholder="Ej. razón social del cliente DANIEL DAVALOS"/>
+						<p:commandButton icon="fa fa-search" actionListener="#{manticCatalogosClientesCuentasPagos.doClientes}" process="@this busqueda" update="encontrados resultados" styleClass="janal-text-white" onstart="return janal.partial('dialogo');"/>
+					</h:panelGrid>
+					<p:outputLabel for="encontrados" value="Encontrados:"/>
+					<p:selectOneMenu id="encontrados" value="#{manticCatalogosClientesCuentasPagos.encontrado}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
+						<f:selectItems value="#{manticCatalogosClientesCuentasPagos.attrs.clientes}" var="element" itemValue="#{element}" itemLabel="#{element.rfc} - #{element.razonSocial}"/>
+						<p:column styleClass="janal-column-left janal-wid-30" headerText="Clave">
+							<h:outputText value="#{item.clave}"/>
+						</p:column>   																			
+						<p:column styleClass="janal-column-left janal-wid-30" headerText="RFC">
+							<h:outputText value="#{item.rfc}"/>
+						</p:column>   																			
+						<p:column styleClass="janal-column-left janal-wid-100" headerText="Razón social">
+							<h:outputText value="#{item.razonSocial}"/>
+						</p:column>  
+					</p:selectOneMenu>
+					<p:spacer/>
+					<p:outputLabel id="resultados" value="Registros encontrados: [#{manticCatalogosClientesCuentasPagos.attrs.resultados}]" style="float: right !important"/>
+				</h:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this encontrados" update="tabla" actionListener="#{manticCatalogosClientesCuentasPagos.doSeleccionado}" onstart="return janal.partial('aceptado');" oncomplete="PF('dlgClientes').hide(); janal.desbloquear();" styleClass="janal-text-white"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgClientes').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+				</div>
+			</h:form>
+		</p:dialog> 
+	</ui:define>
 </ui:composition>
