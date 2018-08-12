@@ -16,7 +16,9 @@
   <ui:param name="titulo" value="Recursos disponibles para descargar"/>
   <ui:define name="librerias">		
     <script type="text/javascript">      
-      Janal.Control.fields = {
+      Janal.Control.fields = {};
+			
+			fieldsDialog= {
 				nombre     : {validaciones: 'requerido', mascara: 'libre'},								
 				descripcion: {validaciones: 'requerido', mascara: 'libre'},																				
 				descarga   : {validaciones: 'requerido', mascara: 'libre'}
@@ -96,28 +98,32 @@
             <p:menuitem id="modificar" icon="fa fa-fw fa-edit" onstart="return janal.bloquear();" actionListener="#{kajoolMantenimientoInsumosFiltro.doLoadDialogo('MODIFICAR')}" process="@this tabla" oncomplete="PF('dlgInsumo').show();" value="Modificar" update="dialogoInsumo" rendered="#{kajoolMantenimientoInsumosFiltro.attrs.admin}"/>
             <p:separator rendered="#{kajoolMantenimientoInsumosFiltro.attrs.admin}"/>
             <p:menuitem id="eliminar" icon="fa fa-fw fa-remove" onstart="return janal.bloquear();" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" value="Eliminar" rendered="#{kajoolMantenimientoInsumosFiltro.attrs.admin}"/>            
-          </p:contextMenu>
-          <p:dialog id="dialogoInsumo" widgetVar="dlgInsumo" header="#{kajoolMantenimientoInsumosFiltro.attrs.tipoAccion} insumo" resizable="false" closable="false" position="center" width="55%" dynamic="true">
-            <h:panelGrid columns="2">
-              <label for="nombre">Nombre:</label>
-              <p:inputText id="nombre" value="#{kajoolMantenimientoInsumosFiltro.attrs.insumoDto.nombre}" style="width: 200px"/>
-              <label for="descripcion">Descripción:</label>
-              <p:inputTextarea id="descripcion" value="#{kajoolMantenimientoInsumosFiltro.attrs.insumoDto.descripcion}" style="width: 600px"/>              
-              <label for="descarga">Archivo:</label>
-              <p:inputText id="descarga" value="#{kajoolMantenimientoInsumosFiltro.attrs.insumoDto.descarga}" placeholder="Ej. xoc-0.0.0.1.apk" style="width: 200px"/>              
-              <label for="activar">Activar:</label>
-              <p:selectBooleanCheckbox id="activar" value="#{kajoolMantenimientoInsumosFiltro.attrs.activar}"/>              
-            </h:panelGrid>
-            <hr class="ui-widget-content"/>
-            <div class="janal-line-button">
-              <p:commandButton id="aceptarInsumo" icon="ui-icon-check" value="Aceptar" onstart="return janal.execute();" process="@this dialogoInsumo" actionListener="#{kajoolMantenimientoInsumosFiltro.doAccion}" update="tabla" oncomplete="PF('dlgInsumo').hide(); janal.desbloquear();"/>
-              <p:commandButton id="cancelarInsumo" icon="ui-icon-close" value="Cancelar" onstart="PF('dlgInsumo').hide();" oncomplete="janal.desbloquear();"/>
-            </div>  
-          </p:dialog>
+          </p:contextMenu>          
         </div>
       </div>
     </div>    		
   </ui:define>
+	<ui:define name="dialogos">
+		<p:dialog id="dialogoInsumo" widgetVar="dlgInsumo" header="#{kajoolMantenimientoInsumosFiltro.attrs.tipoAccion} insumo" resizable="false" closable="false" position="center" width="55%" dynamic="true" onShow="janal.change('formDialogoInsumo', fieldsDialog);janal.refresh();" onHide="janal.restore();janal.refresh();">
+			<h:form id="formDialogoInsumo" prependId="false">
+				<h:panelGrid columns="2">
+					<label for="nombre">Nombre:</label>
+					<p:inputText id="nombre" value="#{kajoolMantenimientoInsumosFiltro.attrs.insumoDto.nombre}" style="width: 200px"/>
+					<label for="descripcion">Descripción:</label>
+					<p:inputTextarea id="descripcion" value="#{kajoolMantenimientoInsumosFiltro.attrs.insumoDto.descripcion}" style="width: 600px"/>              
+					<label for="descarga">Archivo:</label>
+					<p:inputText id="descarga" value="#{kajoolMantenimientoInsumosFiltro.attrs.insumoDto.descarga}" placeholder="Ej. xoc-0.0.0.1.apk" style="width: 200px"/>              
+					<label for="activar">Activar:</label>
+					<p:selectBooleanCheckbox id="activar" value="#{kajoolMantenimientoInsumosFiltro.attrs.activar}"/>              
+				</h:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton id="aceptarInsumo" icon="ui-icon-check" value="Aceptar" onstart="return janal.execute();" process="@this dialogoInsumo" actionListener="#{kajoolMantenimientoInsumosFiltro.doAccion}" update="tabla" oncomplete="PF('dlgInsumo').hide(); janal.desbloquear();"/>
+					<p:commandButton id="cancelarInsumo" icon="ui-icon-close" value="Cancelar" onstart="PF('dlgInsumo').hide();" oncomplete="janal.desbloquear();"/>
+				</div>  
+			</h:form>
+		</p:dialog>		
+	</ui:define>
   <ui:param name="componenteBloqueo" value="tabla"/>
   <ui:param name="tituloConfirmacion" value="Eliminar insumo" />
 	<ui:param name="textoConfirmacion" value="¿ Deseas continuar con la eliminación del insumo ?" />
