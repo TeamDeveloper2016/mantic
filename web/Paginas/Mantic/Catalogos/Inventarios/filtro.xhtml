@@ -9,10 +9,13 @@
   <ui:param name="titulo" value="Inventarios" />
   <ui:define name="librerias">
     <script type="text/javascript">
-			Janal.Control.fields = {
-				'busqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'busqueda', formatos: 'cambiar-mayusculas', individual: true},
-				'encontrados': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
+			Janal.Control.fields = {				
 				'articulo': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'}
+			};
+			
+			fieldsDialog= {
+				'busqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'busqueda', formatos: 'cambiar-mayusculas', individual: true},				
+				'encontrados': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'}
 			};
     </script>		
   </ui:define>
@@ -91,32 +94,6 @@
 				</div>
 			</div>	
     </div>		       		
-		<p:dialog id="dialogoArticulos" widgetVar="dlgArticulos" header="Busqueda de articulo" resizable="false" closable="false" responsive="true" width="60%" onShow="janal.refresh();">
-			<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-col-60, janal-wid-100">
-				<p:outputLabel for="busqueda" value="Nombre, código:"/>
-				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-40">
-					<p:inputText id="busqueda" value="#{manticCatalogosInventariosFiltro.attrs.busqueda}" styleClass="janal-wid-100-txt" placeholder="Ej. Chapa para puerta"/>
-					<p:commandButton icon="fa fa-search" actionListener="#{manticCatalogosInventariosFiltro.doArticulos}" onstart="return janal.partial('busqueda');" process="@this busqueda" update="encontrados resultados" styleClass="janal-text-white"/>
-				</h:panelGrid>
-				<p:outputLabel for="encontrados" value="Encontrados:"/>
-				<p:selectOneMenu id="encontrados" value="#{manticCatalogosInventariosFiltro.encontrado}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity" >									
-					<f:selectItems value="#{manticCatalogosInventariosFiltro.attrs.articulos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
-					<p:column styleClass="janal-column-left janal-wid-30" headerText="Código">
-						<h:outputText value="#{item.codigo}"/>
-					</p:column>   																			
-					<p:column styleClass="janal-column-left janal-wid-70" headerText="Nombre">
-						<h:outputText value="#{item.nombre}"/>
-					</p:column>   																								
-				</p:selectOneMenu>
-				<p:spacer/>
-				<p:outputLabel id="resultados" value="Registros encontrados: [#{manticCatalogosInventariosFiltro.attrs.resultados}]" style="float: right !important"/>
-			</h:panelGrid>
-			<hr class="ui-widget-content"/>
-			<div class="janal-line-button">
-				<p:commandButton icon="fa fa-check" process="@this encontrados" value="Aceptar" actionListener="#{manticCatalogosInventariosFiltro.doSeleccionado}" onstart="return janal.partial('dialogo');" oncomplete="PF('dlgArticulos').hide();janal.desbloquear();janal.refresh();" styleClass="janal-text-white" update="panelArticulo panelAlmacen	contenedorInventarios"/>
-				<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgArticulos').hide();" oncomplete="janal.desbloquear();janal.refresh();" styleClass="janal-text-white"/>
-			</div>
-		</p:dialog>
   </ui:define>    	
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
@@ -127,4 +104,34 @@
 		</div>	
 	</ui:define>
   <ui:param name="componenteBloqueo" value="contenedorInventarios" />
+	<ui:define name="dialogos">
+		<p:dialog id="dialogoArticulos" widgetVar="dlgArticulos" header="Busqueda de articulo" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoArticulos', fieldsDialog);janal.refresh();">
+			<h:form id="formDialogoArticulos" prependId="false">
+				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-col-60, janal-wid-100">
+					<p:outputLabel for="busqueda" value="Nombre, código:"/>
+					<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-40">
+						<p:inputText id="busqueda" value="#{manticCatalogosInventariosFiltro.attrs.busqueda}" styleClass="janal-wid-100-txt" placeholder="Ej. Chapa para puerta"/>
+						<p:commandButton icon="fa fa-search" actionListener="#{manticCatalogosInventariosFiltro.doArticulos}" onstart="return janal.partial('busqueda');" process="@this busqueda" update="encontrados resultados" styleClass="janal-text-white"/>
+					</h:panelGrid>
+					<p:outputLabel for="encontrados" value="Encontrados:"/>
+					<p:selectOneMenu id="encontrados" value="#{manticCatalogosInventariosFiltro.encontrado}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity" >									
+						<f:selectItems value="#{manticCatalogosInventariosFiltro.attrs.articulos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+						<p:column styleClass="janal-column-left janal-wid-30" headerText="Código">
+							<h:outputText value="#{item.codigo}"/>
+						</p:column>   																			
+						<p:column styleClass="janal-column-left janal-wid-70" headerText="Nombre">
+							<h:outputText value="#{item.nombre}"/>
+						</p:column>   																								
+					</p:selectOneMenu>
+					<p:spacer/>
+					<p:outputLabel id="resultados" value="Registros encontrados: [#{manticCatalogosInventariosFiltro.attrs.resultados}]" style="float: right !important"/>
+				</h:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this encontrados" value="Aceptar" actionListener="#{manticCatalogosInventariosFiltro.doSeleccionado}" onstart="return janal.partial('dialogo');" oncomplete="PF('dlgArticulos').hide();janal.desbloquear();janal.refresh();" styleClass="janal-text-white" update="panelArticulo panelAlmacen	contenedorInventarios"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgArticulos').hide();" oncomplete="janal.desbloquear();janal.refresh();" styleClass="janal-text-white"/>
+				</div>
+			</h:form>
+		</p:dialog>
+	</ui:define>
 </ui:composition>
