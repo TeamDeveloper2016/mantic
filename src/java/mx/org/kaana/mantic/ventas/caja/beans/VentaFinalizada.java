@@ -22,12 +22,13 @@ public class VentaFinalizada implements Serializable{
 	private Boolean facturar;
 	private Boolean credito;
 	private List<Articulo> articulos;
+	private Long idCaja;
 
 	public VentaFinalizada() {
-		this(new TicketVenta(), new ArrayList<ClienteTipoContacto>(), new ClienteTipoContacto(), new ClienteTipoContacto(), new Pago(), new Domicilio(), new TcManticClientesDto(), false, false, new ArrayList<Articulo>());
+		this(new TicketVenta(), new ArrayList<ClienteTipoContacto>(), new ClienteTipoContacto(), new ClienteTipoContacto(), new Pago(), new Domicilio(), new TcManticClientesDto(), false, false, new ArrayList<Articulo>(), -1L);
 	}
 	
-	public VentaFinalizada(TicketVenta ticketVenta, List<ClienteTipoContacto> correosContacto, ClienteTipoContacto telefono, ClienteTipoContacto celular, Pago totales, Domicilio domicilio, TcManticClientesDto cliente, Boolean facturar, Boolean credito, List<Articulo> articulos) {
+	public VentaFinalizada(TicketVenta ticketVenta, List<ClienteTipoContacto> correosContacto, ClienteTipoContacto telefono, ClienteTipoContacto celular, Pago totales, Domicilio domicilio, TcManticClientesDto cliente, Boolean facturar, Boolean credito, List<Articulo> articulos, Long idCaja) {
 		this.ticketVenta    = ticketVenta;
 		this.correosContacto= correosContacto;
 		this.telefono       = telefono;
@@ -38,6 +39,7 @@ public class VentaFinalizada implements Serializable{
 		this.facturar       = facturar;
 		this.credito        = credito;
 		this.articulos      = articulos;
+		this.idCaja         = idCaja;
 	}
 
 	public TicketVenta getTicketVenta() {
@@ -118,5 +120,13 @@ public class VentaFinalizada implements Serializable{
 
 	public void setArticulos(List<Articulo> articulos) {
 		this.articulos = articulos;
+	}	
+
+	public Long getIdCaja() {
+		return idCaja;
+	}
+
+	public void setIdCaja(Long idCaja) {
+		this.idCaja = idCaja;
 	}	
 }
