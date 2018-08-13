@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.ventas.caja.reglas;
 
 import java.sql.Date;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -37,6 +39,7 @@ import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.enums.ETiposDomicilios;
 import mx.org.kaana.mantic.ventas.beans.ClienteVenta;
+import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
@@ -55,7 +58,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	private Double cierreCaja;
 	
 	public Transaccion(IBaseDto dto) {
-		this(null, dto);
+		super(new TicketVenta());
+		this.dto= dto;
 	} // Transaccion
 	
 	public Transaccion(VentaFinalizada ventaFinalizada) {
@@ -64,8 +68,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 
 	public Transaccion(VentaFinalizada ventaFinalizada, IBaseDto dto) {
 		super(ventaFinalizada.getTicketVenta());
-		this.ventaFinalizada = ventaFinalizada;
-		this.dto             = dto;
+		this.ventaFinalizada = ventaFinalizada;		
 	}	// Transaccion	
 	
 	@Override
@@ -95,7 +98,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			Error.mensaje(e);
 			throw new Exception(getMessageError().concat("\n\n")+ e.getMessage());
 		} // catch		
-		if(this.ventaFinalizada.getTicketVenta()!= null)
+		if(this.ventaFinalizada!= null && this.ventaFinalizada.getTicketVenta()!= null)
 			LOG.info("Se genero de forma correcta la orden: "+ this.ventaFinalizada.getTicketVenta().getConsecutivo());
 		return regresar;
 	} // ejecutar
@@ -120,7 +123,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	} // procesarVenta
 	
 	private boolean alterarCierreCaja(Session sesion) throws Exception{
-		boolean regresar               = false;
+		boolean regresar               = true;
 		TcManticCajasDto caja          = null;
 		TcManticCierresDto cierreActivo= null;
 		Double limiteCaja              = 0D;		
@@ -150,14 +153,14 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_cierre"+idCierre);
+			params.put(Constantes.SQL_CONDICION, "id_cierre="+idCierre);
 			alerta= (TcManticCierresAlertasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresAlertasDto.class, "TcManticCierresAlertasDto", "row", params);
 			if(!(alerta!= null && alerta.isValid())){
 				alerta= new TcManticCierresAlertasDto();
 				alerta.setIdCierre(idCierre);
 				alerta.setIdNotifica(1L);
 				alerta.setIdUsuario(JsfBase.getIdUsuario());
-				alerta.setImporte(importe);
+				alerta.setImporte(importe<= 0D ? 0D : importe);
 				alerta.setMensaje("El total de caja a sobrepasado el limite permitido, favor de realizar un retiro.");
 				regresar= DaoFactory.getInstance().insert(sesion, alerta)>= 1L;
 			} // if
@@ -186,14 +189,25 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	
 	
 	private TcManticCierresDto toCierreActivo(Session sesion) throws Exception{
-		TcManticCierresDto regresar= null;
-		Map<String, Object>params  = null;
+		TcManticCierresDto regresar       = null;
+		Map<String, Object>params         = null;
+		TcManticCierresCajasDto cierreCaja= null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_cierre_estatus in (".concat(CIERRE_ACTIVO).concat(")"));
-			regresar= (TcManticCierresDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresDto.class, "TcManticCierresDto", "row", params);
+			params.put("estatusAbierto", CIERRE_ACTIVO);
+			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put("idCaja", this.ventaFinalizada.getIdCaja());
+			regresar= (TcManticCierresDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresDto.class, "VistaCierresCajasDto", "cierreVigente", params);
 			if(!(regresar!= null && regresar.isValid()))
-				regresar= toCierreNuevo(sesion);				
+				regresar= toCierreNuevo(sesion);	
+			else{
+				params.clear();
+				params.put("idCierre", regresar.getIdCierre());
+				cierreCaja= (TcManticCierresCajasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresCajasDto.class, "TcManticCierresCajasDto", "caja", params);
+				cierreCaja.setAcumulado(cierreCaja.getAcumulado() + this.ventaFinalizada.getTotales().getTotales().getTotal());
+				cierreCaja.setSaldo(cierreCaja.getDisponible() - cierreCaja.getAcumulado());
+				DaoFactory.getInstance().update(sesion, cierreCaja);
+			} // else
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -215,8 +229,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			regresar.setIdCierreEstatus(1L);
 			regresar.setIdDiferencias(2L);
 			regresar.setIdUsuario(JsfBase.getIdUsuario());
-			regresar.setObservaciones("Apertura de cierre");
-			regresar.setOrden(consecutivo);
+			regresar.setObservaciones("Apertura de cierre");			
 			if(DaoFactory.getInstance().insert(sesion, regresar)>= 1L){
 				total= this.ventaFinalizada.getTotales().getTotales().getTotal();
 				cierre= new TcManticCierresCajasDto(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago(), regresar.getIdCierre(), total, this.ventaFinalizada.getIdCaja(), -1L, total, new Date(Calendar.getInstance().getTimeInMillis()), total, total);
@@ -231,19 +244,19 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		return regresar;
 	} // toCierreNuevo
 	
-	private Long toSiguienteCierre(Session sesion) throws Exception {
-		Long regresar= 1L;
+	private Long toSiguienteCierre(Session sesion) {
+		Long regresar             = 1L;
 		Map<String, Object> params=null;
+		Entity siguiente          = null;
 		try {
 			params=new HashMap<>();
-			params.put("ejercicio", Fecha.getAnioActual());
-			params.put("idCierre", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			Value next= DaoFactory.getInstance().toField(sesion, "TcManticCierresDto", "siguiente", params, "siguiente");
-			if(next.getData()!= null)
-			  regresar= next.toLong();
+			params.put("ejercicio", Fecha.getAnioActual());			
+			siguiente= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticCierresDto", "siguiente", params);
+			if(siguiente!= null)
+			  regresar= siguiente.get("siguiente")!= null ? siguiente.toLong("siguiente") : 1L;
 		} // try
 		catch (Exception e) {
-			throw e;
+			Error.mensaje(e);
 		} // catch
 		finally {
 			Methods.clean(params);
