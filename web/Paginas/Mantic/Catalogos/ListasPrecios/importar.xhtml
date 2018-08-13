@@ -132,7 +132,7 @@
 	</ui:define>
 	<ui:define name="dialogos">
 		<h:form prependId="true">
-			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" header="Factura en formato digital" onHide="janal.sendLastFocus();janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+      <p:dialog id="dialogoPDF" widgetVar="dlgPDF" header="Listado de productos PDF" onHide="janal.sendLastFocus();janal.desbloquear();" closeOnEscape="true" closable="true" dynamic="true" maximizable="true" appendTo="@(body)">
 				<object type="application/pdf" data="#{manticCatalogosListaPreciosImportar.attrs.temporal}" height="390px" width="100%" internalinstanceid="5">
 					 Tu navegador no soporta el desplegado de archivos PDF's, por favor da click en el boton de descargar
 				</object>
@@ -141,7 +141,7 @@
 					<p:commandButton process="@this" styleClass="janal-text-white" icon="fa fa-remove" value="Cerrar" actionListener="#{manticCatalogosListaPreciosImportar.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
 			  </div>
 			</p:dialog>
-			<p:dialog id="dialogoXLS" widgetVar="dlgXLS" header="Factura en formato XLS" onShow="load();" onHide="janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+      <p:dialog id="dialogoXLS" widgetVar="dlgXLS" header="Listado de productos en formato XLS" onShow="load();" onHide="janal.desbloquear();" height="450px" width="950px" closeOnEscape="true" closable="true" dynamic="true">
 				<pre id="documentXls" class="brush: xls;" style="width: 925px; height: 370px;">
 					<h:outputText value="#{manticCatalogosListaPreciosImportar.attrs.temporal}" escape="true"/>
 				</pre>
