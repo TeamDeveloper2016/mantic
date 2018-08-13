@@ -14,6 +14,7 @@
 			Janal.Control.fields = {				 				
 				'descuento': {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'general'},
 				
+				'ticketsAbiertos': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', mensaje:'Selecciona al menos un ticket abierto.'},
 				'clave'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'rfc'          : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'razonSocial'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
@@ -94,16 +95,30 @@
 				<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-12">					
-							<p:panelGrid id="panelEmpresa" columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-5, janal-wid-100">
+							<p:panelGrid id="panelEmpresa" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-5, janal-wid-100">
 								<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasCajaAccion.attrs.isMatriz}"/>
 								<p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticVentasCajaAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">
-									<p:ajax event="change" process="@this" listener="#{manticVentasCajaAccion.doLoadTicketAbiertos}" update="encabezadoVenta contenido contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="change" process="@this" listener="#{manticVentasCajaAccion.doLoadTicketAbiertos}" update="encabezadoVenta contenido contenedorGrupos caja" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{manticVentasCajaAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
 									<p:column headerText="Nombre">
 										<h:outputText value="#{item.nombre}"/>
+									</p:column>   
+								</p:selectOneMenu>
+								
+								<p:outputLabel for="caja" value="Caja:" rendered="#{manticVentasCajaAccion.attrs.isMatriz}"/>
+								<p:selectOneMenu id="caja" value="#{manticVentasCajaAccion.attrs.caja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticVentasCajaAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">								
+									<f:selectItems value="#{manticVentasCajaAccion.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombre}"/>
+									</p:column>   
+									<p:column headerText="Limite" styleClass="janal-column-right">
+										<h:outputText value="$#{item.limite}"/>
 									</p:column>   
 								</p:selectOneMenu>
 							</p:panelGrid>
@@ -119,7 +134,7 @@
 								</p:calendar>								
 								<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasCajaAccion.attrs.ticketAbierto}" styleClass="janal-wid-100-txt" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="contains">
 									<p:ajax event="change" onstart="loadTicketAbiertos();" update="" oncomplete="janal.desbloquear();" />
-									<f:selectItem itemValue="-1" itemLabel="SELECCIONE"/> 
+									<f:selectItem itemValue="" itemLabel="SELECCIONE"/> 
 									<f:selectItems value="#{manticVentasCajaAccion.attrs.ticketsAbiertos}" var="element" itemValue="#{element}" itemLabel="No.: #{element.consecutivo} - Cliente: #{element.cliente} - Precio: #{element.precioTotal}"/>
 									<p:column headerText="No.">
 										<h:outputText value="#{item.consecutivo}"/>
@@ -525,14 +540,31 @@
 				<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
 			</div>
 		</p:dialog>
+		<p:dialog id="dialogoCotizacion" widgetVar="dlgCotizacion" header="Cotización" resizable="false" closable="false" responsive="true" width="40%">
+			<p:outputLabel value="¿ Deseas continuar con la finalización del ticket como una cotización ?"/>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton id="aceptarCotizacion" value="Aceptar" icon="fa fa-check" process="@this" action="#{manticVentasCajaAccion.doAceptarCotizacion}" styleClass="janal-text-white" onstart="PF('dlgCotizacion').hide();" oncomplete="janal.desbloquear()" update="contenedorGrupos:tabCliente"/>
+				<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCotizacion').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+			</div>
+		</p:dialog>
+		<p:dialog id="dialogoLimiteCaja" widgetVar="dlgLimiteCaja" header="Limite de efectivo en caja" resizable="false" closable="false" responsive="true" width="40%">
+			<p:outputLabel value="Es necesario realizar un retiro de caja, se a sobrepasado el limite permitido."/>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton value="Cerrar" icon="fa fa-close" onstart="PF('dlgLimiteCaja').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+			</div>
+		</p:dialog>
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this" styleClass="janal-text-white" oncomplete="ventaFinished();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>
+			<p:commandButton id="cotizacion" value="Cotización" icon="fa fa-list-ul" process="@form" styleClass="janal-text-white" actionListener="#{manticVentasCajaAccion.doVerificaArticulosCotizacion}" update="dialogoCotizacion"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this" styleClass="janal-text-white" oncomplete="ventaFinished();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>			
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@this" styleClass="janal-text-white" oncomplete="ventaFinished();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>
+			<p:commandButton id="cotizacionIcon" value="Cotización" icon="fa fa-check" process="@form" styleClass="janal-text-white" actionListener="#{manticVentasCajaAccion.doVerificaArticulosCotizacion}" update="dialogoCotizacion"/>
+			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@this" styleClass="janal-text-white" oncomplete="ventaFinished();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>			
 			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 		</div>		
 	</ui:define>
