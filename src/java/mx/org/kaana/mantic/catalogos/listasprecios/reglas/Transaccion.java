@@ -18,8 +18,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
-public class Transaccion extends IBaseTnx
-{
+public class Transaccion extends IBaseTnx {
+  
   private static final Log LOG = LogFactory.getLog(Transaccion.class);
   private IBaseDto dto;
   private TcManticListasPreciosDto lista;	
