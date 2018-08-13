@@ -4,15 +4,20 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticCajasDto;
+import mx.org.kaana.mantic.db.dto.TcManticCierresAlertasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
@@ -74,6 +79,7 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 					cierre= (TcManticCierresDto)DaoFactory.getInstance().findById(TcManticCierresDto.class, this.idCierre);
 					cierre.setIdCierreEstatus(2L);
 					regresar= DaoFactory.getInstance().insert(sesion, cierre)>= 1L;
+					this.toCheckCajaAlerta(sesion, caja);
 					break;
 				case ELIMINAR:
 					if(this.retiro.getIdAbono().equals(1L))
@@ -93,6 +99,7 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 					else
   					caja.setSaldo(Numero.toRedondearSat(caja.getSaldo()+ this.retiro.getImporte()));
 					regresar= DaoFactory.getInstance().update(sesion, caja)>= 1L;
+					this.toCheckCajaAlerta(sesion, caja);
 					break;
 			} // switch
 		  if(!regresar)
@@ -125,4 +132,34 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 		return regresar;
 	}	
 			
+	private void toCheckCajaAlerta(Session sesion, TcManticCierresCajasDto caja) throws Exception {
+		Map<String, Object> params= null;
+		TcManticCajasDto limite   = null;
+		Entity existe             = null; 
+		try {
+			params=new HashMap<>();
+			// esto es para quitar la alerta por el retiro de efectivo
+			limite= (TcManticCajasDto)DaoFactory.getInstance().findById(TcManticCajasDto.class, caja.getIdCaja());
+			if(limite!= null) {
+				if(caja.getSaldo()< limite.getLimite()) {
+					params.put("idCaja", caja.getIdCaja());
+					params.put("idCierre", caja.getIdCierre());
+					DaoFactory.getInstance().updateAll(sesion, TcManticCierresAlertasDto.class, params);
+				} // if
+				else {
+				 existe= (Entity)DaoFactory.getInstance().toEntity(sesion, "VistaCierresCajasDto", "alerta", params);
+				 if(existe== null || existe.isEmpty()) {
+					 TcManticCierresAlertasDto alerta= new TcManticCierresAlertasDto(caja.getIdCaja(), JsfBase.getIdUsuario(), 1L, "EL SALDO EN EFECTIVO ["+ 
+						 Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, caja.getSaldo())+ 
+						 "] DE ESTA CAJA SUPERA AL LIMITE ["+ Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, limite.getLimite())
+						 + "] ESTABLECIDO PARA LA MISMA, EN EL PROCESO "+ (this.retiro.getIdAbono().equals(2L)? "RETIRO": "ABONO")+ "[AUTOMATICO]", -1L, caja.getSaldo());
+					 DaoFactory.getInstance().insert(sesion, alerta);
+				 } // if
+				} // else
+			} // if					
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
 }

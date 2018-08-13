@@ -36,32 +36,35 @@ public class Alerta extends IBaseAttribute implements Serializable {
 	}
 
 	public String getCheckCaja() {
-		StringBuilder regresar= new StringBuilder("<br/><div class=\"\"><table class=\"janal-color-cyan janal-wid-100\"><thead><tr><th class=\"janal-column-center\">Empresa</th><th class=\"janal-column-center\">Caja</th><th class=\"janal-column-center\">Ventas</th><th class=\"janal-column-center\">Saldo</th><th class=\"janal-column-center\">Registro</th></tr></thead><tbody>");
-		Map<String, Object> params=null;
-		try {
-			params=new HashMap<>();
-			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
-			else
-				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-  		List<Entity> cajas= DaoFactory.getInstance().toEntitySet("VistaCierresCajasDto", "global", params);
-			for (Entity caja : cajas) {
-				regresar.append("<tr><td class=\"janal-column-left janal-color-yellow\">");
-				regresar.append(caja.toString("empresa"));
-				regresar.append("</td><td class=\"janal-column-left janal-color-yellow janal-wid-15\">");
-				regresar.append(caja.toString("caja"));
-				regresar.append("</td><td class=\"janal-column-right janal-color-yellow janal-wid-20\">");
-				regresar.append(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, Numero.toRedondearSat(caja.toDouble("disponible")+ caja.toDouble("acumulado"))));
-				regresar.append("<td class=\"janal-column-right janal-color-cyan janal-wid-20\">");
-				regresar.append(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, Numero.toRedondearSat(caja.toDouble("importe"))));
-				regresar.append("</td><td class=\"janal-column-center janal-color-white janal-wid-20\">");
-				regresar.append(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, caja.toTimestamp("registro")));
-				regresar.append("</td></tr>");
-			} // for
-			regresar.append("</tbody></table></div>");
-			if(cajas!= null && !cajas.isEmpty())
-				RequestContext.getCurrentInstance().execute("janal.notificacion();");
+			StringBuilder regresar= new StringBuilder("");
+			Map<String, Object> params=null;
+			try {
+				params=new HashMap<>();
+    		if(JsfBase.isAdminEncuestaOrAdmin()) {
+					regresar.append("<br/><div class=\"\"><table class=\"janal-color-cyan janal-wid-100\"><thead><tr><th class=\"janal-column-center\">Empresa</th><th class=\"janal-column-center\">Caja</th><th class=\"janal-column-center\">Ventas</th><th class=\"janal-column-center\">Saldo</th><th class=\"janal-column-center\">Registro</th></tr></thead><tbody>");
+					if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+						params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+					else
+						params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+					params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+					List<Entity> cajas= DaoFactory.getInstance().toEntitySet("VistaCierresCajasDto", "global", params);
+					for (Entity caja : cajas) {
+						regresar.append("<tr><td class=\"janal-column-left janal-color-yellow\">");
+						regresar.append(caja.toString("empresa"));
+						regresar.append("</td><td class=\"janal-column-left janal-color-yellow janal-wid-15\">");
+						regresar.append(caja.toString("caja"));
+						regresar.append("</td><td class=\"janal-column-right janal-color-yellow janal-wid-20\">");
+						regresar.append(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, Numero.toRedondearSat(caja.toDouble("disponible")+ caja.toDouble("acumulado"))));
+						regresar.append("<td class=\"janal-column-right janal-color-cyan janal-wid-20\">");
+						regresar.append(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, Numero.toRedondearSat(caja.toDouble("saldo"))));
+						regresar.append("</td><td class=\"janal-column-center janal-color-white janal-wid-20\">");
+						regresar.append(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, caja.toTimestamp("registro")));
+						regresar.append("</td></tr>");
+					} // for
+					regresar.append("</tbody></table></div>");
+					if(cajas!= null && !cajas.isEmpty())
+						RequestContext.getCurrentInstance().execute("janal.notificacion();");
+     		} // if	
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
