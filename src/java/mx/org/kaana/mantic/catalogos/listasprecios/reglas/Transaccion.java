@@ -125,7 +125,7 @@ public class Transaccion extends IBaseTnx {
 					2L,
           this.pdf.getObservaciones(),
           1L,
-					Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.xls.getRuta()).concat(this.xls.getName()),
+					Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.pdf.getRuta()).concat(this.pdf.getName()),
 					-1L,
 					this.pdf.getName()
 				);

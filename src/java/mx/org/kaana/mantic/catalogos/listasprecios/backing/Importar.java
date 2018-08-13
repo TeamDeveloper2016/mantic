@@ -31,6 +31,8 @@ public class Importar extends IBaseImportar implements Serializable {
 	private TcManticListasPreciosDto lista;
 	private TcManticProveedoresDto proveedor;
 	private Long idListaPrecio;
+  private boolean importXls;
+  private boolean importPdf;
 
 	public TcManticListasPreciosDto getOrden() {
 		return lista;
@@ -86,7 +88,8 @@ public class Importar extends IBaseImportar implements Serializable {
 	
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idListaPrecio", this.idListaPrecio);
-    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+    //return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+    return "filtro".concat(Constantes.REDIRECIONAR);
   } // doCancelar
 	
 	public String doAceptar(){

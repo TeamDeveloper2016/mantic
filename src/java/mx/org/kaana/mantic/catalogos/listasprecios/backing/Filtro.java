@@ -118,7 +118,7 @@ public class Filtro extends IBaseFilter implements java.io.Serializable
   }
   
   public String doImportar() {
-    JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogo/ListasPrecios/filtro");
+    JsfBase.setFlashAttribute("retorno", "filtro");
     JsfBase.setFlashAttribute("idListaPrecio", ((Entity)attrs.get("seleccionado")).getKey());
     return "importar".concat("?faces-redirect=true");
   }
