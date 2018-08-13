@@ -331,7 +331,7 @@
 			</h:panelGrid>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this ticketsAbiertos" value="Aceptar" onstart="PF('dlgOpenTickets').hide();" actionListener="#{manticVentasAccion.doAsignaTicketAbierto}" update="contenido clientes cliente noTicket" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this ticketsAbiertos" value="Aceptar" onstart="PF('dlgOpenTickets').hide();" actionListener="#{manticVentasAccion.doAsignaTicketAbierto}" update="contenido clientes cliente noTicket @(.filas) @(.recalculo)" oncomplete="janal.desbloquear();"/>
 				<p:commandButton icon="fa fa-remove" styleClass="janal-text-white" process="@none" value="Cancelar" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>							
