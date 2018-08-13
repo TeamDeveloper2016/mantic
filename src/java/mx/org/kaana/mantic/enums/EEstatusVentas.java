@@ -6,12 +6,13 @@ import java.util.Map;
 
 public enum EEstatusVentas {
 
-  ELABORADA (1L),
-  ABIERTA   (2L),
-  PAGADA    (3L),
-  CREDITO   (4L),
-  CANCELADA (5L),
-  TERMINADA (6L);
+  ELABORADA  (1L),
+  ABIERTA    (2L),
+  PAGADA     (3L),
+  CREDITO    (4L),
+  CANCELADA  (5L),
+  TERMINADA  (6L),
+  COTIZACION (7L);
 
   private Long idEstatusVenta;
 	private static final Map<Long, EEstatusVentas> lookup= new HashMap<>();
