@@ -3750,6 +3750,32 @@
 				order by
 					tc_mantic_listas_precios_archivos.id_principal, tc_mantic_listas_precios_archivos.registro desc, tc_mantic_listas_precios_archivos.id_tipo_archivo asc				
 			</select>
+      <select id="lazyProveedores">
+        select 
+          tc_mantic_listas_precios.id_lista_precio as id_key,
+          tc_mantic_listas_precios.id_lista_precio,
+          tc_mantic_listas_precios.id_proveedor,
+          tc_mantic_listas_precios.observaciones,
+          tc_mantic_listas_precios.registro,
+          tc_mantic_proveedores.razon_social,
+          tc_mantic_proveedores.clave,
+          tc_mantic_proveedores.rfc,
+          tc_mantic_proveedores.id_empresa,
+          tc_mantic_proveedores.logotipo,
+          tc_mantic_listas_precios_archivos.alias,
+          tc_mantic_listas_precios_archivos.nombre,
+          tc_mantic_listas_precios_archivos.ruta
+        from 
+          tc_mantic_listas_precios 
+        inner join
+          tc_mantic_proveedores on tc_mantic_listas_precios.id_proveedor= tc_mantic_proveedores.id_proveedor
+        inner join 
+      		tc_mantic_listas_precios_archivos on tc_mantic_listas_precios.id_lista_precio = tc_mantic_listas_precios_archivos.id_lista_precio and tc_mantic_listas_precios_archivos.id_tipo_archivo = 2 and tc_mantic_listas_precios_archivos.id_principal=1
+        where
+          tc_mantic_proveedores.id_empresa in ({idEmpresa})
+          and (tc_mantic_proveedores.rfc like '%{clave}%' or tc_mantic_proveedores.razon_social like '%{razonSocial}%')
+        {sortOrder}
+			</select>
 		</unit>
 	</dml>    
 </process>
