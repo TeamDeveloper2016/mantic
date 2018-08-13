@@ -78,7 +78,7 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 					regresar= DaoFactory.getInstance().insert(sesion, this.retiro)>= 1L;
 					cierre= (TcManticCierresDto)DaoFactory.getInstance().findById(TcManticCierresDto.class, this.idCierre);
 					cierre.setIdCierreEstatus(2L);
-					regresar= DaoFactory.getInstance().insert(sesion, cierre)>= 1L;
+					regresar= DaoFactory.getInstance().update(sesion, cierre)>= 1L;
 					this.toCheckCajaAlerta(sesion, caja);
 					break;
 				case ELIMINAR:
