@@ -93,6 +93,13 @@
       <h:outputText value="#{kajoolUtilAplicacion.notificacion}" escape="false" styleClass="Fs14"/>
     </p:panelGrid>
   </p:notificationBar>
+  <p:notificationBar id="cajaNotification" position="top" effect="slide" styleClass="jana-bar-top" widgetVar="retiroEfectivo" effectSpeed="slow">
+    <span title="Cerrar" style="position: absolute; top: 10px; right: 80px; cursor: pointer;" onclick="PF('retiroEfectivo').hide();"><i class="fa fa-lg fa-close"/></span>
+    <p:panelGrid layout="grid" columns="2" columnClasses="janal-wid-col-200, janal-wid-80">
+      <h:outputText value="Cajas que excenden el limite de efectivo permitido:" styleClass="Fs20"/>
+      <h:outputText value="#{kajoolAccesoAlerta.checkCaja}" escape="false" styleClass="Fs14"/>
+    </p:panelGrid>
+  </p:notificationBar>
 	<p:idleMonitor timeout="1620000" onidle="janal.bloquear(); PF('dialogoInactivo').show(); $('#dialogo_modal').removeClass('ui-widget-overlay');  console.log('Clase ui-widget-overlay eliminada');"/>		
 	<p:dialog id="dialogo" header="Inactividad" resizable="false" widgetVar="dialogoInactivo" onShow="janal.monitor(1);" closable="false">														
 		<div class="alinear-derecha">														

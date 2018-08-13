@@ -1257,6 +1257,12 @@
 		},				
   	isPostBack: function(name) {
 	  	setTimeout($('#'+ name).click(), 50);
+		},
+		notificacion: function() {
+			if(typeof(PF('retiroEfectivo'))!== 'undefined') {
+				PF('retiroEfectivo').show();
+			};
+			setTimeout("PF('retiroEfectivo').hide();", 15000);
 		}
   });
   window.Janal= Janal;

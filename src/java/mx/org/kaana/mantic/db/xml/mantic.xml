@@ -394,6 +394,17 @@
         where      
           id_cierre_alerta = {idCierreAlerta}
       </select>
+			<update id="rows">
+        update 
+				  tc_mantic_cierres_alertas 
+				inner join
+				  tc_mantic_cierres_cajas on tc_mantic_cierres_alertas.id_cierre= tc_mantic_cierres_cajas.id_cierre
+				set 
+				  tc_mantic_cierres_alertas.id_notifica= 2
+				where 
+				  tc_mantic_cierres_alertas.id_cierre= {idCierre}
+				  and tc_mantic_cierres_cajas.id_caja= {idCaja}
+			</update>
     </unit>
 		<unit id="TcManticCierresBitacoraDto">
       <select id="row">
@@ -3181,7 +3192,18 @@
 				  ejercicio= {ejercicio} 
 				  and date_format(dia, '%Y%m%d') = '{dia}'
 				  and id_empresa= {idEmpresa}				
-			</select>						
+			</select>			
+			<update id="rows">
+				update 
+				  tc_mantic_ventas 
+				inner join
+				  tr_mantic_venta_medio_pago on tc_mantic_ventas.id_venta= tr_mantic_venta_medio_pago.id_venta
+				set 
+				  tc_mantic_ventas.id_venta_estatus= 5 
+				where 
+				  tc_mantic_ventas.id_empresa= {idEmpresa} 
+				  and tr_mantic_venta_medio_pago.id_caja= {idCaja}
+			</update>
     </unit>
     <unit id="TcManticVentasDetallesDto">
       <select id="row">

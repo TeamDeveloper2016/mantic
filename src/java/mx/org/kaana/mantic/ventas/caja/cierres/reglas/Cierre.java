@@ -16,10 +16,12 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticCierresAlertasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
 import mx.org.kaana.mantic.db.dto.TcManticTiposMediosPagosDto;
+import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.Denominacion;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.Importe;
 import org.apache.log4j.Logger;
@@ -83,6 +85,16 @@ public class Cierre extends IBaseTnx implements Serializable  {
 					  DaoFactory.getInstance().update(sesion, importe);
 					for (Denominacion denominacion: this.denominaciones) 
 					  DaoFactory.getInstance().insert(sesion, denominacion);
+					
+					// cambiar el estatus a todas las ventas realizadas en dia que no fueron cobradas a canceladas
+					params.put("idCaja", this.idCaja);
+					params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+					DaoFactory.getInstance().updateAll(sesion, TcManticVentasDto.class, params);
+
+					// cambiar de estatus todas las alertas de esta caja para iniciar el nuevo corte
+					params.put("idCaja", this.idCaja);
+					params.put("idCierre", this.cierre.getIdCierre());
+					DaoFactory.getInstance().updateAll(sesion, TcManticCierresAlertasDto.class, params);
 					
 					// inicio del nuevo corte de caja con los valores iniciales
 					consecutivo= this.toSiguiente(sesion);
