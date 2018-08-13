@@ -536,7 +536,7 @@
 			</h:panelGrid>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton id="aceptarFinalizar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaAccion.doAceptar}" styleClass="janal-text-white" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear()" update="contenedorGrupos" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>
+				<p:commandButton id="aceptarFinalizar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaAccion.doAceptar}" styleClass="janal-text-white" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear()" update="contenedorGrupos @(.filas) @(.recalculo)" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>
 				<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
 			</div>
 		</p:dialog>
