@@ -91,7 +91,7 @@
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">					
-					<p:outputLabel value="F7 -> Detalle de articulo, F10 -> Aplicar descuento, Ctrl + P -> Tickets abiertos" styleClass="janal-align-right"/>
+					<p:outputLabel value="&lt;strong class='janal-color-blue'&gt;[F7]&lt;/strong&gt; Detalle de articulo &lt;strong class='janal-color-blue'&gt;[F10]&lt;/strong&gt; Aplicar descuento &lt;strong class='janal-color-blue'&gt;[Ctrl+P]&lt;/strong&gt; Tickets abiertos" styleClass="janal-align-right" escape="false"/>
 					<p:panelGrid id="panelEmpresa" columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-70, janal-wid-100">						
 						<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasAccion.attrs.isMatriz}"/>
 						<p:selectOneMenu id="idEmpresa" value="#{manticVentasAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticVentasAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">

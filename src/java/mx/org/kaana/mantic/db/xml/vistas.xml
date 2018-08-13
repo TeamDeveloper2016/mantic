@@ -12,6 +12,7 @@
 					tc_mantic_empresas.clave as empresa,
 					tc_mantic_cajas.clave as caja,
 					tc_mantic_cajas.id_caja,
+					tc_mantic_cajas.limite,
 				  tc_mantic_cierres_alertas.mensaje,
 					tc_mantic_cierres_cajas.id_tipo_medio_pago,
 					tc_mantic_cierres_cajas.id_cierre_caja,
