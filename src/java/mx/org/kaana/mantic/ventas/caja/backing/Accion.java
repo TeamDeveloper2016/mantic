@@ -85,7 +85,7 @@ public class Accion extends IBaseCliente implements Serializable {
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null ? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null ? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null ? -1L: JsfBase.getFlashAttribute("idVenta"));
-			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null ? null : JsfBase.getFlashAttribute("retorno"));
+			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null ? "filtro" : JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
@@ -99,11 +99,14 @@ public class Accion extends IBaseCliente implements Serializable {
 			this.attrs.put("fecha", new Date(Calendar.getInstance().getTimeInMillis()));
 			this.attrs.put("contador", 0L);
 			this.attrs.put("creditoVenta", false);
-			if(JsfBase.isAdminEncuestaOrAdmin())
+			if(JsfBase.isAdminEncuestaOrAdmin()){
 				loadSucursales();
+				loadCajas();
+			} // if
 			doLoadTicketAbiertos();			
 			loadBancos();
 			loadCfdis();
+			verificaLimiteCaja();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -158,6 +161,44 @@ public class Accion extends IBaseCliente implements Serializable {
 			} // if
 			else
 				JsfBase.addMessage(this.attrs.get("mensajeErrorCredito").toString(), ETipoMensaje.ERROR);      			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    return regresar;
+  } // doAccion
+	
+	public void doVerificaArticulosCotizacion(){
+		try {
+			if(!getAdminOrden().getArticulos().isEmpty() && getAdminOrden().getArticulos().size()> 0){
+				RequestContext.getCurrentInstance().execute("janal.bloquear();");
+				RequestContext.getCurrentInstance().execute("PF('dlgCotizacion').show();");
+			} // if
+			else{
+				JsfBase.addMessage("Cotización", "No es posible generar una cotización sin articulos", ETipoMensaje.ERROR);
+			} // else
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doVerificaArticulosCotizacion
+ 	
+  public String doAceptarCotizacion() {	  
+    Transaccion transaccion= null;
+    String regresar        = null;
+    try {				
+			transaccion = new Transaccion((TicketVenta)this.getAdminOrden().getOrden());
+			if (transaccion.ejecutar(EAccion.MODIFICAR)) {
+				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
+				JsfBase.addMessage("Se genero la cotización del ticket de venta.", ETipoMensaje.INFORMACION);
+				this.setAdminOrden(new AdminTickets(new TicketVenta()));
+				this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
+				init();
+			} // if
+			else 
+				JsfBase.addMessage("Ocurrió un error al generar la cotización.", ETipoMensaje.ERROR);			     			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -275,6 +316,7 @@ public class Accion extends IBaseCliente implements Serializable {
 		Map<String, Object>params           = null;
 		List<Columna> campos                = null;
 		try {
+			loadCajas();
 			params= new HashMap<>();
 			params.put("sortOrder", "");
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
@@ -403,6 +445,25 @@ public class Accion extends IBaseCliente implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch		
 	} // loadSucursales
+	
+	private void loadCajas(){
+		List<UISelectEntity> cajas= null;
+		Map<String, Object>params = null;
+		List<Columna> columns     = null;
+		try {
+			columns= new ArrayList<>();
+			params= new HashMap<>();
+			params.put("idEmpresa", this.attrs.get("idEmpresa"));
+			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			cajas=(List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "cajas", params, columns);
+			this.attrs.put("cajas", cajas);
+			this.attrs.put("caja", cajas.get(0));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch	
+	} // loadCajas
 	
 	public void doActivarCliente(){
 		boolean facturarVenta                 = true;
@@ -569,6 +630,7 @@ public class Accion extends IBaseCliente implements Serializable {
 			regresar.setFacturar(facturarVenta);
 			regresar.setCredito((Boolean) this.attrs.get("creditoVenta"));			
 			regresar.setArticulos(getAdminOrden().getArticulos());
+			regresar.setIdCaja(Long.valueOf(this.attrs.get("caja").toString()));
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -623,4 +685,25 @@ public class Accion extends IBaseCliente implements Serializable {
 		} // catch		
 		return regresar;
 	} // doValidaCreditoVenta
+	
+	private void verificaLimiteCaja() throws Exception{
+		Entity alerta            = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idEmpresa", this.attrs.get("idEmpresa"));
+			params.put("idCaja", this.attrs.get("caja"));
+			alerta= (Entity) DaoFactory.getInstance().toEntity("VistaCierresCajasDto", "alerta", params);
+			if(alerta!= null){
+				RequestContext.getCurrentInstance().execute("janal.bloquear();");
+				RequestContext.getCurrentInstance().execute("PF('dlgLimiteCaja').show();");
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally{
+			Methods.clean(params);
+		}	// finally	
+	} // verificaLimiteCaja
 }
