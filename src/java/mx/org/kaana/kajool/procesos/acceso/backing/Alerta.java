@@ -47,15 +47,15 @@ public class Alerta extends IBaseAttribute implements Serializable {
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		List<Entity> cajas= DaoFactory.getInstance().toEntitySet("VistaCierresCajasDto", "global", params);
 			for (Entity caja : cajas) {
-				regresar.append("<tr><td class=\"janal-column-left janal-color-yellow janal-col-13\">");
+				regresar.append("<tr><td class=\"janal-column-left janal-color-yellow\">");
 				regresar.append(caja.toString("empresa"));
-				regresar.append("</td><td class=\"janal-column-left janal-color-yellow janal-col-10\">");
+				regresar.append("</td><td class=\"janal-column-left janal-color-yellow janal-wid-15\">");
 				regresar.append(caja.toString("caja"));
-				regresar.append("</td><td class=\"janal-column-right janal-color-yellow\">");
+				regresar.append("</td><td class=\"janal-column-right janal-color-yellow janal-wid-20\">");
 				regresar.append(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, Numero.toRedondearSat(caja.toDouble("disponible")+ caja.toDouble("acumulado"))));
-				regresar.append("<td class=\"janal-column-right janal-color-cyan janal-wid-13 janal-col-13\">");
+				regresar.append("<td class=\"janal-column-right janal-color-cyan janal-wid-20\">");
 				regresar.append(Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, Numero.toRedondearSat(caja.toDouble("importe"))));
-				regresar.append("</td><td class=\"janal-column-center janal-color-white janal-wid-13 janal-col-13\">");
+				regresar.append("</td><td class=\"janal-column-center janal-color-white janal-wid-20\">");
 				regresar.append(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, caja.toTimestamp("registro")));
 				regresar.append("</td></tr>");
 			} // for

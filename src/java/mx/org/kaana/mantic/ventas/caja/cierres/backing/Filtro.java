@@ -228,31 +228,51 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // doLoadEstatus
 	
 	public String doMovimientos() {
-		JsfBase.setFlashAttribute("tipo", ETipoMovimiento.CIERRES_CAJA);
-		JsfBase.setFlashAttribute(ETipoMovimiento.CIERRES_CAJA.getIdKey(), ((Entity)this.attrs.get("seleccionado")).toLong("idCierre"));
-		JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Ventas/Caja/Cierres/filtro");
+		try {
+			JsfBase.setFlashAttribute("tipo", ETipoMovimiento.CIERRES_CAJA);
+			JsfBase.setFlashAttribute(ETipoMovimiento.CIERRES_CAJA.getIdKey(), ((Entity)this.attrs.get("seleccionado")).toLong("idCierre"));
+			JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Ventas/Caja/Cierres/filtro");
+	  } // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+		} // catch
 		return "/Paginas/Mantic/Compras/Ordenes/movimientos".concat(Constantes.REDIRECIONAR);
 	}
 
   public String doRetiros() {
-		JsfBase.setFlashAttribute("idCierre", ((Entity)this.attrs.get("seleccionado")).toLong("idCierre"));
-		JsfBase.setFlashAttribute("idEmpresa", ((Entity)this.attrs.get("seleccionado")).toLong("idEmpresa"));
-		JsfBase.setFlashAttribute("idCaja", ((Entity)this.attrs.get("seleccionado")).toLong("idCaja"));
+		try {
+			JsfBase.setFlashAttribute("idCierre", ((Entity)this.attrs.get("seleccionado")).toLong("idCierre"));
+			JsfBase.setFlashAttribute("idEmpresa", ((Entity)this.attrs.get("seleccionado")).toLong("idEmpresa"));
+			JsfBase.setFlashAttribute("idCaja", ((Entity)this.attrs.get("seleccionado")).toLong("idCaja"));
+	  } // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+		} // catch
 		return "retiros".concat(Constantes.REDIRECIONAR);
 	}	
 	
   public String doAbonos() {
-		JsfBase.setFlashAttribute("idCierre", ((Entity)this.attrs.get("seleccionado")).toLong("idCierre"));
-		JsfBase.setFlashAttribute("idEmpresa", ((Entity)this.attrs.get("seleccionado")).toLong("idEmpresa"));
-		JsfBase.setFlashAttribute("idCaja", ((Entity)this.attrs.get("seleccionado")).toLong("idCaja"));
+		try {
+			JsfBase.setFlashAttribute("idCierre", ((Entity)this.attrs.get("seleccionado")).toLong("idCierre"));
+			JsfBase.setFlashAttribute("idEmpresa", ((Entity)this.attrs.get("seleccionado")).toLong("idEmpresa"));
+			JsfBase.setFlashAttribute("idCaja", ((Entity)this.attrs.get("seleccionado")).toLong("idCaja"));
+	  } // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+		} // catch
 		return "abonos".concat(Constantes.REDIRECIONAR);
 	}	
 	
   public String doVerAmbos() {
-		JsfBase.setFlashAttribute("idCierre", ((Entity)this.attrs.get("seleccionado")).toLong("idCierre"));
-		JsfBase.setFlashAttribute("idCierreEstatus", ((Entity)this.attrs.get("seleccionado")).toLong("idCierreEstatus"));
-		JsfBase.setFlashAttribute("idEmpresa", ((Entity)this.attrs.get("seleccionado")).toLong("idEmpresa"));
-		JsfBase.setFlashAttribute("idCaja", ((Entity)this.attrs.get("seleccionado")).toLong("idCaja"));
+		try {
+			JsfBase.setFlashAttribute("idCierre", ((Entity)this.attrs.get("seleccionado")).toLong("idCierre"));
+			JsfBase.setFlashAttribute("idCierreEstatus", ((Entity)this.attrs.get("seleccionado")).toLong("idCierreEstatus"));
+			JsfBase.setFlashAttribute("idEmpresa", ((Entity)this.attrs.get("seleccionado")).toLong("idEmpresa"));
+			JsfBase.setFlashAttribute("idCaja", ((Entity)this.attrs.get("seleccionado")).toLong("idCaja"));
+	  } // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+		} // catch
 		return "ambos".concat(Constantes.REDIRECIONAR);
 	}	
 	
