@@ -15,6 +15,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
@@ -53,6 +54,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 	private EOrdenes tipoOrden;
 	private SaldoCliente saldoCliente;
 	private StreamedContent image;
+	private FormatLazyModel especificaciones;
+	private FormatLazyModel almacenes;
 
 	public Accion() {
 		super("menudeo");
@@ -77,6 +80,14 @@ public class Accion extends IBaseArticulos implements Serializable {
 	public StreamedContent getImage() {
 		return image;
 	}
+
+	public FormatLazyModel getEspecificaciones() {
+		return especificaciones;
+	}	
+
+	public FormatLazyModel getAlmacenes() {
+		return almacenes;
+	}	
 	
 	@PostConstruct
   @Override
@@ -558,13 +569,22 @@ public class Accion extends IBaseArticulos implements Serializable {
 	} // doClientes
 	
 	public void doDetailArticulo(Long idArticulo, Integer index) {
-		MotorBusqueda motor= null;
-		Entity detailArt   = null;
+		MotorBusqueda motor      = null;
+		Entity detailArt         = null;
+		Map<String, Object>params= null;
+		List<Columna>campos      = null;
 		try {
 			if(idArticulo!= null){
 				motor= new MotorBusqueda(idArticulo);
 				detailArt= motor.toDetalleArticulo();
 				this.attrs.put("detailArticulo", detailArt);
+				params= new HashMap<>();
+				params.put(Constantes.SQL_CONDICION, "id_articulo=" + idArticulo);
+				campos= new ArrayList<>();
+				campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+				campos.add(new Columna("valor", EFormatoDinamicos.MAYUSCULAS));
+				this.especificaciones= new FormatLazyModel("TcManticArticulosEspecificacionesDto", "row", params, campos);
+				UIBackingUtilities.resetDataTable("especificaciones");
 				RequestContext.getCurrentInstance().execute("PF('dlgDetalleArt').show();");
 			} // if
 		} // try
@@ -572,6 +592,37 @@ public class Accion extends IBaseArticulos implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // doDetailArticulo
+	
+	public void doAlmacenesArticulo(Long idArticulo, Integer index) {
+		Map<String, Object>params= null;
+		List<Columna>columns     = null;
+		try {
+			if(idArticulo!= null){
+				params= new HashMap<>();
+				params.put("idArticulo", idArticulo);
+				columns= new ArrayList<>();
+				columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+				columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+				columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+				columns.add(new Columna("minimo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+				columns.add(new Columna("maximo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+				columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+				this.almacenes= new FormatLazyModel("VistaKardexDto", "almacenes", params, columns);
+				UIBackingUtilities.resetDataTable("almacenes");
+				RequestContext.getCurrentInstance().execute("PF('dlgAlmacenes').show();");				
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
 	} // doDetailArticulo
 	
 	public void doLoadUsers(){

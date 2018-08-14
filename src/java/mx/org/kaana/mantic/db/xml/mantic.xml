@@ -2010,7 +2010,8 @@
 		<unit id="TcManticArticulosEspecificacionesDto">
       <select id="row">
         select      
-          *
+          tc_mantic_articulos_especificaciones.id_articulo_especificacion as id_key,
+					tc_mantic_articulos_especificaciones.*
         from      
           tc_mantic_articulos_especificaciones
         where 
