@@ -45,9 +45,9 @@
 				from
 				  tc_mantic_cierres
 				inner join
-					tc_mantic_cierres_cajas on tc_mantic_cierres_cajas.id_caja= tc_mantic_cierres_cajas.id_caja
+					tc_mantic_cierres_cajas on tc_mantic_cierres.id_cierre= tc_mantic_cierres_cajas.id_cierre
 				where 
-				  tc_mantic_cierres.id_cierre= {idCierre}				
+				  tc_mantic_cierres_cajas.id_caja={idCaja}				
 			</select>	
 			<select id="abonos">
 				select
