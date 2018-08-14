@@ -50,7 +50,7 @@
             </f:facet>				
             <p:panel header="#{filtro.clave}" style="text-align:center">
               <h:panelGrid columns="1" style="width:100%">
-                <p:graphicImage library="janal" name="img/sistema/#{filtro.logotipo}" styleClass="alinear-centro" width="65" height="65" stream="false"/>
+                <p:graphicImage library="janal" name="img/sistema/#{filtro.logotipo==null?'bonanza.svg':filtro.logotipo}" styleClass="alinear-centro" width="65" height="65" stream="false"/>
                   <h:outputText value="#{filtro.razonSocial}" />
                   <p:commandLink  actionListener="#{manticCatalogosListaPreciosProveedor.doViewPdfDocument(filtro)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();">
 									  <p:commandButton icon="fa fa-eye" title="Ver documento PDF" ajax="false" type="button" styleClass="janal-text-white"/>
