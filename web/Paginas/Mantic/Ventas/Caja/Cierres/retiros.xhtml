@@ -11,8 +11,9 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-        'contenedorGrupos\\:importe': {validaciones: 'flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{manticVentasCajaCierresRetiros.doNumericoSat(manticVentasCajaCierresRetiros.attrs.caja.saldo)}})', mascara: 'libre'},
-        'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
+        'contenedorGrupos\\:importe'      : {validaciones: 'requerido|flotante|mayor({"cuanto":0})|menor-igual({"cuanto": #{manticVentasCajaCierresRetiros.doNumericoSat(manticVentasCajaCierresRetiros.attrs.caja.saldo)}})', mascara: 'libre'},
+        'contenedorGrupos\\:concepto'     : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
+        'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
 			};			
 			
     	$(document).ready(function() {
@@ -65,42 +66,10 @@
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-1">
-								    <p:outputLabel for="inicial" value="Fondo:"/>
+								    <p:outputLabel for="importe" value="Importe:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:inputText id="inicial" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaCierresRetiros.doDecimalSat(manticVentasCajaCierresRetiros.attrs.caja.disponible)}" readonly="true"/>
-									</div>		
-								</div>	
-								<div class="ui-grid-row janal-grid-row">
-									<div class="ui-grid-col-1">
-								    <p:outputLabel for="ventas" value="Ventas:"/>
-									</div>
-									<div class="ui-grid-col-11">
-										<p:inputText id="ventas" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaCierresRetiros.doDecimalSat(manticVentasCajaCierresRetiros.attrs.caja.acumulado)}" readonly="true"/>
-									</div>		
-								</div>	
-								<div class="ui-grid-row janal-grid-row">
-									<div class="ui-grid-col-1">
-								    <p:outputLabel for="retiros" value="Retiros:"/>
-									</div>
-									<div class="ui-grid-col-11">
-										<p:inputText id="retiros" styleClass="janal-wid-100-txt janal-column-right janal-color-orange" value="#{manticVentasCajaCierresRetiros.doDecimalSat(manticVentasCajaCierresRetiros.attrs.retiros)}" readonly="true"/>
-									</div>		
-								</div>	
-								<div class="ui-grid-row janal-grid-row">
-									<div class="ui-grid-col-1">
-								    <p:outputLabel for="abonos" value="Abonos:"/>
-									</div>
-									<div class="ui-grid-col-11">
-										<p:inputText id="abonos" styleClass="janal-wid-100-txt janal-column-right janal-color-green" value="#{manticVentasCajaCierresRetiros.doDecimalSat(manticVentasCajaCierresRetiros.attrs.abonos)}" readonly="true"/>
-									</div>		
-								</div>	
-								<div class="ui-grid-row janal-grid-row">
-									<div class="ui-grid-col-1">
-								    <p:outputLabel for="saldo" value="Saldo:"/>
-									</div>
-									<div class="ui-grid-col-11">
-										<p:inputText id="saldo" styleClass="janal-wid-100-txt janal-column-right janal-color-blue" value="#{manticVentasCajaCierresRetiros.doDecimalSat(manticVentasCajaCierresRetiros.attrs.caja.saldo)}" readonly="true"/>
+										<p:inputText id="importe" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaCierresRetiros.attrs.importe}" converter="javax.faces.Double" onblur="janal.precio($('#contenedorGrupos\\:importe'), '0');"/>
 									</div>		
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
@@ -109,11 +78,9 @@
 									</div>		
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
-									<div class="ui-grid-col-1">
-								    <p:outputLabel for="importe" value="Importe:"/>
-									</div>
-									<div class="ui-grid-col-11">
-										<p:inputText id="importe" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaCierresRetiros.attrs.importe}" converter="javax.faces.Double" onblur="janal.precio($('#contenedorGrupos\\:importe'), '0');"/>
+									<div class="ui-grid-col-12">
+										<p:outputLabel for="concepto" value="Concepto:"/>
+        						<p:inputTextarea id="concepto" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresRetiros.attrs.concepto}"/>
 									</div>		
 								</div>	
 							</div>

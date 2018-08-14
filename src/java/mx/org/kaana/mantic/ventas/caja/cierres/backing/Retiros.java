@@ -94,6 +94,7 @@ public class Retiros extends IBaseAttribute implements Serializable {
     try {			
 			TcManticCierresRetirosDto retiro= new TcManticCierresRetirosDto(-1L);
 			retiro.setIdAbono(2L);
+			retiro.setConcepto((String)this.attrs.get("concepto"));
 			retiro.setImporte((Double)this.attrs.get("importe"));
 			transaccion = new Transaccion((Long)this.attrs.get("idCierre"), retiro);
 			if (transaccion.ejecutar(this.accion)) {

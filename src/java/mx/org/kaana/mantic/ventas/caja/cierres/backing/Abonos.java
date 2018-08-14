@@ -93,14 +93,15 @@ public class Abonos extends IBaseAttribute implements Serializable {
     Transaccion transaccion= null;
     String regresar        = null;
     try {			
-			TcManticCierresRetirosDto retiro= new TcManticCierresRetirosDto(-1L);
-			retiro.setIdAbono(1L);
-			retiro.setImporte((Double)this.attrs.get("importe"));
-			transaccion = new Transaccion((Long)this.attrs.get("idCierre"), retiro);
+			TcManticCierresRetirosDto abono= new TcManticCierresRetirosDto(-1L);
+			abono.setIdAbono(1L);
+			abono.setConcepto((String)this.attrs.get("concepto"));
+			abono.setImporte((Double)this.attrs.get("importe"));
+			transaccion = new Transaccion((Long)this.attrs.get("idCierre"), abono);
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR) || this.accion.equals(EAccion.ASIGNAR)) {
  				  regresar = "ambos".concat(Constantes.REDIRECIONAR);
-    			RequestContext.getCurrentInstance().execute("janal.alert('Se gener\\u00F3 el abono de efectivo, con consecutivo: "+ retiro.getConsecutivo()+ "');");
+    			RequestContext.getCurrentInstance().execute("janal.alert('Se gener\\u00F3 el abono de efectivo, con consecutivo: "+ abono.getConsecutivo()+ "');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR)? "agregó": this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" el abono de caja."), ETipoMensaje.INFORMACION);

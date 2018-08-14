@@ -44,6 +44,8 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
   private Long idCierreRetiro;
   @Column (name="observaciones")
   private String observaciones;
+  @Column (name="concepto")
+  private String concepto;
   @Column (name="id_cierre_caja")
   private Long idCierreCaja;
   @Column (name="orden")
@@ -62,11 +64,11 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
   }
 
   public TcManticCierresRetirosDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null, null, null, null);
+    this(null, null, new Long(-1L), null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticCierresRetirosDto(String consecutivo, Long idUsuario, Long idCierreRetiro, String observaciones, Long idCierreCaja, Long orden, Long idAbono, Double importe, Long ejercicio) {
+  public TcManticCierresRetirosDto(String consecutivo, Long idUsuario, Long idCierreRetiro, String observaciones, Long idCierreCaja, Long orden, Long idAbono, Double importe, Long ejercicio, String concepto) {
     setConsecutivo(consecutivo);
     setIdUsuario(idUsuario);
     setIdCierreRetiro(idCierreRetiro);
@@ -77,6 +79,7 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
     setImporte(importe);
     setEjercicio(ejercicio);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		setConcepto(concepto);
   }
 	
   public void setConsecutivo(String consecutivo) {
@@ -110,6 +113,14 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
   public String getObservaciones() {
     return observaciones;
   }
+
+	public String getConcepto() {
+		return concepto;
+	}
+
+	public void setConcepto(String concepto) {
+		this.concepto=concepto;
+	}
 
   public void setIdCierreCaja(Long idCierreCaja) {
     this.idCierreCaja = idCierreCaja;
@@ -182,6 +193,8 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getConcepto());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCierreCaja());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
@@ -203,6 +216,7 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
 		regresar.put("consecutivo", getConsecutivo());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idCierreRetiro", getIdCierreRetiro());
+		regresar.put("concepto", getConcepto());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idCierreCaja", getIdCierreCaja());
 		regresar.put("orden", getOrden());
@@ -216,7 +230,7 @@ public class TcManticCierresRetirosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getConsecutivo(), getIdUsuario(), getIdCierreRetiro(), getObservaciones(), getIdCierreCaja(), getOrden(), getIdAbono(), getImporte(), getEjercicio(), getRegistro()
+    getConsecutivo(), getIdUsuario(), getIdCierreRetiro(), getObservaciones(), getIdCierreCaja(), getOrden(), getIdAbono(), getImporte(), getEjercicio(), getRegistro(), getConcepto()
     };
     return regresar;
   }
