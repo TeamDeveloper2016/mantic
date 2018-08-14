@@ -3622,7 +3622,7 @@
       </select>
       <select id="depurar">
         select
-					tr_mantic_venta_medio_pago.*
+					count(*) as total
 				from
 				  tr_mantic_venta_medio_pago
 				inner join
