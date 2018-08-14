@@ -3762,7 +3762,7 @@
           tc_mantic_proveedores.clave,
           tc_mantic_proveedores.rfc,
           tc_mantic_proveedores.id_empresa,
-          tc_mantic_proveedores.logotipo,
+          ifnull( tc_mantic_proveedores.logotipo,'bonanza.svg') as logotipo,
           tc_mantic_listas_precios_archivos.alias,
           tc_mantic_listas_precios_archivos.nombre,
           tc_mantic_listas_precios_archivos.ruta
