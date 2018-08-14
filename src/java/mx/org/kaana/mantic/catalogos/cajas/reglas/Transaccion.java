@@ -4,20 +4,21 @@ import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticCajasDto;
+import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;
 import org.hibernate.Session;
 
-public class Transaccion extends IBaseTnx{
+public class Transaccion extends Cierre {
 	
   private TcManticCajasDto caja;
   private String messageError;
 
-	public Transaccion(TcManticCajasDto caja) {
-		this.caja= caja;
-	}
-  
+  public Transaccion(TcManticCajasDto caja, Long idCaja) {
+    super(idCaja);
+    this.caja = caja;
+  }
+
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
 		 boolean regresar          = false;
@@ -26,6 +27,9 @@ public class Transaccion extends IBaseTnx{
       switch (accion) {
         case AGREGAR:
           regresar= DaoFactory.getInstance().insert(sesion, this.caja)>= 1L;
+          sesion.flush();
+          setIdCaja(this.caja.getIdCaja());
+          regresar= super.ejecutar(sesion,EAccion.REGISTRAR);
           break;
         case MODIFICAR:
           regresar= DaoFactory.getInstance().update(sesion, this.caja)>= 1L;
@@ -33,6 +37,8 @@ public class Transaccion extends IBaseTnx{
         case ELIMINAR:
           params= new HashMap<>();
           params.put("idCaja", this.caja.getIdCaja());
+          regresar= super.ejecutar(sesion,EAccion.ELIMINAR);
+          sesion.flush();
           if(DaoFactory.getInstance().toField("TcManticCierresCajasDto", "cajasConCierre", params , "total").toInteger()== 0)
             regresar= DaoFactory.getInstance().delete(sesion, this.caja)>= 1L;
           else{
