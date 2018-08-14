@@ -70,7 +70,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			caja.setIdActiva(Boolean.valueOf(this.attrs.get("activa").toString()) ? EBooleanos.SI.getIdBooleano() : EBooleanos.NO.getIdBooleano());
 			caja.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			caja.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
-      transaccion = new Transaccion(caja);
+      transaccion = new Transaccion(caja, caja.getIdCaja());
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
         JsfBase.addMessage("Se registro la caja de forma correcta.", ETipoMensaje.INFORMACION);
