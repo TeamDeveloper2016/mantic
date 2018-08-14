@@ -394,7 +394,7 @@
 			</div>
 		</p:dialog>		
 		<p:dialog id="dialogoAlmacenes" widgetVar="dlgAlmacenes" header="Ubicación de articulo" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();" width="60%">						
-			<p:dataTable id="almacenes" var="row" value="#{manticVentasAccion.almacenes}" paginator="false" reflow="true" emptyMessage=" " styleClass="paginated filas" rowIndexVar="index" selectionMode="single">				
+			<p:dataTable lazy="true" id="almacenes" widgetVar="kajoolTable" var="row" value="#{manticVentasAccion.almacenes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticVentasAccion.almacenes.rowCount gt manticVentasAccion.almacenes.pageSize}" rowIndexVar="index" reflow="true">            	
 				<p:column headerText="No" styleClass="janal-wid-3">
 					<h:outputText value="#{index+ 1}"/>
 				</p:column>   
