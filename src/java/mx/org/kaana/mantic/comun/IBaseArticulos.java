@@ -20,7 +20,9 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloPrecioSugeridoDto;
+import mx.org.kaana.mantic.enums.EPrecioArticulo;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -87,7 +89,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				temporal.setNombre(articulo.toString("nombre"));
 				temporal.setValor(articulo.toDouble(this.precio));
 				temporal.setCosto(articulo.toDouble(this.precio));
-				temporal.setIva(articulo.toDouble("iva"));
+				temporal.setIva(articulo.toDouble("iva"));				
 				temporal.setDescuento(this.adminOrden.getDescuento());
 				temporal.setExtras(this.adminOrden.getExtras());				
 				if(temporal.getCantidad() <= 1D)					
@@ -112,6 +114,61 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			Methods.clean(params);
 		}
 	}
+	
+  protected void toMoveDataArt(Articulo articulo, Integer index) throws Exception {
+		Articulo temporal               = new Articulo(articulo.getKey());
+		TcManticArticulosDto artTemporal= null;
+		Map<String, Object> params      = new HashMap<>();
+		EPrecioArticulo eprecioArticulo = null;
+		try {			
+			this.doSearchArticulo(articulo.getIdArticulo(), index);
+			params.put("idArticulo", articulo.getIdArticulo());
+			params.put("idProveedor", this.adminOrden.getIdProveedor());
+			params.put("idAlmacen", this.adminOrden.getIdAlmacen());
+			temporal.setKey(articulo.getIdArticulo());
+			temporal.setIdArticulo(articulo.getIdArticulo());
+			temporal.setIdProveedor(this.adminOrden.getIdProveedor());
+			temporal.setIdRedondear(articulo.getIdRedondear());
+			Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
+			temporal.setCodigo(codigo== null? "": codigo.toString());
+			temporal.setPropio(articulo.getPropio());
+			temporal.setNombre(articulo.getNombre());
+			eprecioArticulo= EPrecioArticulo.fromNombre(this.precio);
+			artTemporal= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getKey());
+			switch(eprecioArticulo){
+				case MAYOREO:
+					temporal.setValor(artTemporal.getMayoreo());
+					temporal.setCosto(artTemporal.getMayoreo());
+					break;
+				case MEDIO_MAYOREO:
+					temporal.setValor(artTemporal.getMedioMayoreo());
+					temporal.setCosto(artTemporal.getMedioMayoreo());
+					break;
+				case MENUDEO:
+					temporal.setValor(artTemporal.getMenudeo());
+					temporal.setCosto(artTemporal.getMenudeo());
+					break;
+			}	// switch	 		
+			temporal.setIva(articulo.getIva());
+			temporal.setDescuento(this.adminOrden.getDescuento());
+			temporal.setExtras(this.adminOrden.getExtras());				
+			if(temporal.getCantidad() <= 1D)					
+				temporal.setCantidad(1D);
+			temporal.setUltimo(this.attrs.get("ultimo")!= null);
+			temporal.setSolicitado(this.attrs.get("solicitado")!= null);
+			temporal.setUnidadMedida(articulo.getUnidadMedida());
+			temporal.setPrecio(articulo.getPrecio());				
+			Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+			temporal.setStock(stock== null? 0D: stock.toDouble());				
+			this.adminOrden.getArticulos().add(temporal);
+			RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");				
+			RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
+			this.adminOrden.toCalculate();			
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // toMoveDataArt
 	
 	public void doUpdateArticulo(String codigo, Integer index) {
 		List<Columna> columns     = null;
