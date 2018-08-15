@@ -167,8 +167,10 @@ public class Cierre extends IBaseTnx implements Serializable  {
 					  DaoFactory.getInstance().insert(sesion, registro);
 					} // for
 					if(this.denominaciones!= null && !this.denominaciones.isEmpty())
-					  for (Denominacion denominacion: this.denominaciones) 
+					  for (Denominacion denominacion: this.denominaciones) {
+							denominacion.setIdCierre(this.cierre.getIdCierre());
 					    DaoFactory.getInstance().insert(sesion, denominacion);
+						} // for
 					bitacora= new TcManticCierresBitacoraDto("", -1L, this.cierre.getIdCierre(), JsfBase.getIdUsuario(), 1L);
 					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 					break;

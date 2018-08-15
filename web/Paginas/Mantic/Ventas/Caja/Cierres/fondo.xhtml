@@ -12,10 +12,10 @@
     <h:outputScript library="janal" name="core/jquery.janal.close.core-0.0.1.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-        'contenedorGrupos\\:idEmpresa'    : {validaciones: 'requerido', mascara: 'libre'},
-        'contenedorGrupos\\:idCajas'      : {validaciones: 'requerido', mascara: 'libre'},
-				'cantidad'                        : {multiple: '$', validaciones: 'entero|mayor-igual({"cuanto": 0})', mascara: 'entero'},		
-        'contenedorGrupos\\:disponible'   : {validaciones: 'requerido|flotante|mayor-igual({"cuanto":0})|menor-igual({"cuanto": #{manticVentasCajaCierresFondo.doNumericoSat(manticVentasCajaCierresFondo.attrs.limite)}})', mascara: 'libre'}
+        'contenedorGrupos\\:idEmpresa' : {validaciones: 'requerido', mascara: 'libre'},
+        'contenedorGrupos\\:idCajas'   : {validaciones: 'requerido', mascara: 'libre'},
+				'cantidad'                     : {multiple: '$', validaciones: 'entero|mayor-igual({"cuanto": 0})', mascara: 'entero'},		
+        'contenedorGrupos\\:disponible': {validaciones: 'requerido|flotante|mayor-igual({"cuanto":0})', mascara: 'libre'}
 			};			
 			
     	$(document).ready(function() {
@@ -47,7 +47,7 @@
 									</div>	
 									<div class="ui-grid-col-11">
 										<p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaCierresFondo.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
-											<f:selectItems value="#{manticVentasCajaCierresFondo.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+											<f:selectItems value="#{manticVentasCajaCierresFondo.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 											<p:column headerText="Clave">
 												<h:outputText value="#{item.clave}"/>
 											</p:column>   

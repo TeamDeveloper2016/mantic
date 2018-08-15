@@ -277,7 +277,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   public String doAperturarCaja() {
 		try {
-			JsfBase.setFlashAttribute("accion", EAccion.COMPLEMENTAR);
+			JsfBase.setFlashAttribute("accion", EAccion.REGISTRAR);
 	  } // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

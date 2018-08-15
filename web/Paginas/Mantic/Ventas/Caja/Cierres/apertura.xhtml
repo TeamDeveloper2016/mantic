@@ -12,10 +12,10 @@
     <h:outputScript library="janal" name="core/jquery.janal.close.core-0.0.1.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-        'contenedorGrupos\\:idEmpresa'    : {validaciones: 'requerido', mascara: 'libre'},
-        'contenedorGrupos\\:idCajas'      : {validaciones: 'requerido', mascara: 'libre'},
-				'cantidad'                        : {multiple: '$', validaciones: 'entero|mayor-igual({"cuanto": 0})', mascara: 'entero'},		
-        'contenedorGrupos\\:disponible'   : {validaciones: 'requerido|flotante|mayor-igual({"cuanto":0})|menor-igual({"cuanto": #{manticVentasCajaCierresApertura.doNumericoSat(manticVentasCajaCierresApertura.attrs.limite)}})', mascara: 'libre'}
+        'contenedorGrupos\\:idEmpresa' : {validaciones: 'requerido', mascara: 'libre'},
+        'contenedorGrupos\\:idCaja'    : {validaciones: 'requerido', mascara: 'libre'},
+				'cantidad'                     : {multiple: '$', validaciones: 'entero|mayor-igual({"cuanto": 0})', mascara: 'entero'},		
+        'contenedorGrupos\\:disponible': {validaciones: 'requerido|flotante|mayor-igual({"cuanto":0})', mascara: 'libre'}
 			};			
 			
     	$(document).ready(function() {
@@ -38,7 +38,6 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{manticVentasCajaCierresApertura.doTabChange}" process="@this" update="@(.ambos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>						
 						<p:tab title="Denominaciones">
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
 								<div class="ui-grid-row janal-grid-row">
@@ -47,7 +46,8 @@
 									</div>	
 									<div class="ui-grid-col-11">
 										<p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaCierresApertura.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
-											<f:selectItems value="#{manticVentasCajaCierresApertura.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+											<p:ajax event="change" listener="#{manticVentasCajaCierresApertura.doLoadCajas}" process="@this" update="idCaja" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<f:selectItems value="#{manticVentasCajaCierresApertura.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 											<p:column headerText="Clave">
 												<h:outputText value="#{item.clave}"/>
 											</p:column>   
@@ -59,10 +59,10 @@
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-1">
-								    <p:outputLabel for="idCajas" value="Caja:"/>
+								    <p:outputLabel for="idCaja" value="Caja:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:selectOneMenu id="idCajas" value="#{manticVentasCajaCierresApertura.attrs.idCajas}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="contains">
+										<p:selectOneMenu id="idCaja" value="#{manticVentasCajaCierresApertura.attrs.idCaja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="contains">
 											<f:selectItems value="#{manticVentasCajaCierresApertura.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 											<p:column headerText="Clave">
 												<h:outputText value="#{item.clave}"/>

@@ -75,11 +75,7 @@ public class Fondo extends IBaseAttribute implements Serializable {
   		this.attrs.put("idEfectivo", 2);
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
 			Importe importe= (Importe)DaoFactory.getInstance().toEntity(Importe.class, "VistaCierresCajasDto", "fondo", this.attrs);
-			switch(this.accion) {
-				case PROCESAR:
-					this.fondos= (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "VistaCierresCajasDto", "denominacion", this.attrs);
-					break;	
-			} // switch
+			this.fondos= (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "VistaCierresCajasDto", "denominacion", this.attrs);
 			this.toLoadEmpresas();
 			this.doCalculate();
 			if(importe.getDisponible()> (Double)this.attrs.get("disponible"))
@@ -124,7 +120,7 @@ public class Fondo extends IBaseAttribute implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			List<UISelectEntity> sucursales= (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", this.attrs, columns);
-      this.attrs.put("sucursales", sucursales);
+      this.attrs.put("empresas", sucursales);
 			this.doLoadCajas();
     } // try
     catch (Exception e) {
@@ -144,8 +140,9 @@ public class Fondo extends IBaseAttribute implements Serializable {
 			List<UISelectEntity> cajas= (List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "unica", this.attrs, columns);
       this.attrs.put("cajas", cajas);
  			this.attrs.put("temporal", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
-			if(this.attrs.get("temporal")!= null)
+			if(cajas!= null && !cajas.isEmpty() && this.attrs.get("temporal")!= null)
 				this.attrs.put("limite", ((UISelectEntity)this.attrs.get("temporal")).toDouble("limite"));
+		  // |menor-igual({"cuanto": #{manticVentasCajaCierresFondo.doNumericoSat(manticVentasCajaCierresFondo.attrs.limite)}})
     } // try
     catch (Exception e) {
       throw e;
