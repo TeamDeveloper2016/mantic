@@ -46,7 +46,15 @@ public class Cierre extends IBaseTnx implements Serializable  {
 	private List<Denominacion> denominaciones;
 	private Long idApertura;
 	private String messageError;
-	
+
+  public Long getIdCaja() {
+    return idCaja;
+  }
+
+  public void setIdCaja(Long idCaja) {
+    this.idCaja = idCaja;
+  }
+  
 	public Cierre(Long idCaja) {
 		this(idCaja, 0D);
 	}
@@ -152,13 +160,14 @@ public class Cierre extends IBaseTnx implements Serializable  {
 					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 					break;
 				case ELIMINAR:
+          params.put("idCaja", this.idCaja);
 					this.cierre= (TcManticCierresDto)DaoFactory.getInstance().toEntity(sesion, TcManticCierresDto.class, "VistaCierresCajasDto", "depurar", params);
 					if(this.cierre!= null) {
   					// FALTA VALIDAR QUE NO TENGA NINGUNA VENTA ASOCIADA A LA CAJA (tr_ventas_medio_pago) Y FALTA VALIDAR QUE NO TENGA NINGUN RETIRO O ABONO DE CAJA (tc_mantic_cierres_retiros) 
 						Value value= DaoFactory.getInstance().toField(sesion, "TrManticVentaMedioPagoDto", "depurar", params, "total");
-						if(value.getData()== null && value.toLong()== 0) {
+						if(value.toLong()== 0) {
 						  value= DaoFactory.getInstance().toField(sesion, "VistaCierresCajasDto", "abonos", params, "total");
-						  if(value.getData()== null && value.toLong()== 0) {
+						  if(value.toLong()== 0) {
 								this.cierre.setIdCierreEstatus(3L);
 								this.cierre.setObservaciones("CIERRE CANCELADO POR QUE SE ELIMINO LA CAJA ["+ this.idCaja+ "]");
 								regresar= DaoFactory.getInstance().update(sesion, this.cierre)>= 1L;

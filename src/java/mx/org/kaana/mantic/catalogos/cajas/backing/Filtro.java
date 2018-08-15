@@ -84,10 +84,13 @@ public class Filtro extends IBaseFilter implements Serializable {
   public void doEliminar() {
 		Transaccion transaccion = null;
 		Entity seleccionado     = null;
+    TcManticCajasDto dto    = null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");	
       if(DaoFactory.getInstance().toField("TcManticCajasDto", "cuantas", this.attrs , "total").toInteger()>1){
-        transaccion= new Transaccion(new TcManticCajasDto(seleccionado.getKey()));
+        this.attrs.put("idCaja", seleccionado.getKey());       
+        dto=(TcManticCajasDto) DaoFactory.getInstance().findFirst(TcManticCajasDto.class,"unica",this.attrs);
+        transaccion= new Transaccion(dto ,seleccionado.getKey());
         if(transaccion.ejecutar(EAccion.ELIMINAR))
           JsfBase.addMessage("Eliminar Caja", "La caja se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
         else

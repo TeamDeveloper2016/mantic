@@ -74,9 +74,9 @@
 				from
 				  tc_mantic_cierres
 				inner join
-					tc_mantic_cierres_cajas on tc_mantic_cierres_cajas.id_caja= tc_mantic_cierres_cajas.id_caja
+					tc_mantic_cierres_cajas on tc_mantic_cierres.id_cierre= tc_mantic_cierres_cajas.id_cierre
 				where 
-				  tc_mantic_cierres.id_cierre= {idCierre}				
+				  tc_mantic_cierres_cajas.id_caja={idCaja}				
 			</select>	
 			<select id="abonos">
 				select
@@ -3793,7 +3793,7 @@
           tc_mantic_proveedores.clave,
           tc_mantic_proveedores.rfc,
           tc_mantic_proveedores.id_empresa,
-          tc_mantic_proveedores.logotipo,
+          ifnull( tc_mantic_proveedores.logotipo,'bonanza.svg') as logotipo,
           tc_mantic_listas_precios_archivos.alias,
           tc_mantic_listas_precios_archivos.nombre,
           tc_mantic_listas_precios_archivos.ruta
@@ -3807,6 +3807,23 @@
           tc_mantic_proveedores.id_empresa in ({idEmpresa})
           and (tc_mantic_proveedores.rfc like '%{clave}%' or tc_mantic_proveedores.razon_social like '%{razonSocial}%')
         {sortOrder}
+			</select>
+      <select id="lazyArticulos">
+				select 
+				  tc_mantic_listas_precios_detalles.id_lista_precio_detalle as id_key,
+				  tc_mantic_listas_precios_detalles.* ,
+				  tc_mantic_proveedores.razon_social as proveedor         
+				from 
+					tc_mantic_listas_precios_detalles
+				inner join 
+      			tc_mantic_listas_precios on tc_mantic_listas_precios_detalles.id_lista_precio = tc_mantic_listas_precios.id_lista_precio 
+				inner join
+          		tc_mantic_proveedores on tc_mantic_listas_precios.id_proveedor= tc_mantic_proveedores.id_proveedor
+          	where
+					upper(tc_mantic_listas_precios_detalles.codigo) like upper('%{codigo}%')
+				and 
+					upper(tc_mantic_listas_precios_detalles.descripcion) like upper('%{nombre}%')				      
+				{sortOrder}
 			</select>
 		</unit>
 	</dml>    

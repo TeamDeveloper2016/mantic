@@ -12,7 +12,8 @@ public enum EEstatusVentas {
   CREDITO    (4L),
   CANCELADA  (5L),
   TERMINADA  (6L),
-  COTIZACION (7L);
+  COTIZACION (7L),
+  EXPIRADA   (8L);
 
   private Long idEstatusVenta;
 	private static final Map<Long, EEstatusVentas> lookup= new HashMap<>();
