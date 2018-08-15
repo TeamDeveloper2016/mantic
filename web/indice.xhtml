@@ -48,7 +48,7 @@
                     <p:outputLabel for="cuenta" value="Cuenta:" styleClass="Fs16"/>
                     <p:inputText placeholder="ej. juan.lopez" id="cuenta" tabindex="1" value="#{kajoolIndice.cliente.cuenta}" styleClass="Container80 Fnone MarAuto Fs18"/>
                     <p:outputLabel for="contrasenia" value="Contraseña:" styleClass="Fs16"/>
-                    <p:password placeholder="contraseña" id="contrasenia" tabindex="2" value="#{kajoolIndice.cliente.contrasenia}" styleClass="Container80 Fnone MarAuto Fs18"/>
+                    <p:password placeholder="contraseña" id="contrasenia" tabindex="2" value="#{kajoolIndice.cliente.contrasenia}" styleClass="Container80 Fnone MarAuto Fs18" autocomplete="new-password"/>
                     <p:commandButton id="aceptar" tabindex="3" value="Iniciar sesión" onstart="return janal.partial('ingresar');" action="#{kajoolIndice.doIngresar()}" update="@this cuenta contrasenia gridCuenta"/>					
                     <p:spacer height="1"/>
                 </p:panelGrid>
