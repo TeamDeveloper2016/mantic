@@ -132,7 +132,7 @@ public class Autentifica implements Serializable {
   }
 
   private boolean verificaCredencial(String contrasenia) throws Exception {
-    String frase = BouncyEncryption.decrypt(contrasenia);
+    String frase = BouncyEncryption.decrypt(contrasenia== null? "": contrasenia);
     return frase.equals(this.credenciales.getContrasenia());
   }
 
@@ -240,7 +240,7 @@ public class Autentifica implements Serializable {
       params.put("cuenta", cuenta);
       params.put("idGrupo", idGrupo);
 			personas= DaoFactory.getInstance().toEntitySet(Persona.class, "VistaTcJanalUsuariosDto", "cambioUsuarioAutentifica", params);
-			if(!personas.isEmpty()){
+			if(!personas.isEmpty()) {
 				if(personas.size()== 1)
 					this.persona= personas.get(0);
 				else

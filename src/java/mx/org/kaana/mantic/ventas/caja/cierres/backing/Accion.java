@@ -205,7 +205,6 @@ public class Accion extends IBaseAttribute implements Serializable {
 		List<Columna> columns= null;
     try {
 			columns= new ArrayList<>();
-      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       this.attrs.put("cuentas", UIEntity.build("VistaCierresCajasDto", "abiertas", this.attrs, columns));
@@ -262,7 +261,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("caja", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("registro", EFormatoDinamicos.DIA_FECHA_HORA_CORTA));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaCierresCajasDto", "retiros", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try

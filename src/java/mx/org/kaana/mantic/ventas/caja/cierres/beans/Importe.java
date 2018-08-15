@@ -52,7 +52,7 @@ public class Importe extends TcManticCierresCajasDto implements Serializable {
 	}
 
 	public String getDiferencia$() {
-		return "<span class='"+ (this.diferencia<0? "janal-color-orange": this.diferencia> 0? "janal-color-blue": "janal-color-green")+ "'><strong>$ "+ Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(this.diferencia))+ "</span></strong>";
+		return "<span class='"+ (this.diferencia<0? "janal-color-orange": this.diferencia> 0? "janal-color-blue": "janal-color-green")+ "'><strong>"+ Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Numero.toRedondearSat(this.diferencia))+ "</span></strong>";
 	}
 	
 	@Override
