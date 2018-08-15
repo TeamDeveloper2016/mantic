@@ -178,8 +178,8 @@
           </p:dataTable>
           <h:outputText value="Nota: Las filas que estan en color son cajas donde su efectivo sobrepasa a limite establecido !"/>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-           <p:menuitem id="agregar" action="#{manticVentasCajaCierresFiltro.doAccion('AGREGAR')}" icon="fa fa-briefcase" ajax="false" value="Realizar cierre" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"  rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
-            <p:menuitem id="fondo" action="#{manticVentasCajaCierresFiltro.doFondoCaja}" icon="fa fa-briefcase" ajax="false" value="Fondo de caja" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
+           <p:menuitem id="agregar" action="#{manticVentasCajaCierresFiltro.doAccion('AGREGAR')}" icon="fa fa-briefcase" ajax="false" value="Realizar cierre" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
+            <p:menuitem id="fondo" action="#{manticVentasCajaCierresFiltro.doFondoCaja}" icon="fa fa-briefcase" ajax="false" value="Fondo de caja" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus) and manticVentasCajaCierresFiltro.admin}"/>
  						<p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.seleccionado.idCierreEstatus)}"/>
             <p:menuitem id="consultar" action="#{manticVentasCajaCierresFiltro.doAccion('CONSULTAR')}" icon="fa fa-edit" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />
             <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora movimientos" onstart="return janal.bloquear()" process="@this tabla" action="#{manticVentasCajaCierresFiltro.doMovimientos}"/>

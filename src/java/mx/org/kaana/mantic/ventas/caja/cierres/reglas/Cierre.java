@@ -139,7 +139,15 @@ public class Cierre extends IBaseTnx implements Serializable  {
 					params.put("idCierre", this.cierre.getIdCierre());
 					TcManticCierresCajasDto efectivo= (TcManticCierresCajasDto)DaoFactory.getInstance().findFirst(sesion, TcManticCierresCajasDto.class, "caja", params);
 					if(efectivo!= null) {
-						efectivo.setDisponible(this.inicial);
+						if(efectivo.getAcumulado()== 0) {
+						  efectivo.setDisponible(this.inicial);
+						  efectivo.setSaldo(this.inicial);
+						} // if
+						else {
+							double diferencia= this.inicial- efectivo.getDisponible();
+						  efectivo.setDisponible(efectivo.getDisponible()+ diferencia);
+						  efectivo.setSaldo(efectivo.getSaldo()+ diferencia);
+						} // else
 						regresar= DaoFactory.getInstance().update(sesion, efectivo)> 0L;
 					} // if
 					for (Denominacion denominacion: this.denominaciones) 

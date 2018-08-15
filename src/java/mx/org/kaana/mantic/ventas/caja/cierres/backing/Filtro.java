@@ -38,6 +38,17 @@ public class Filtro extends IBaseFilter implements Serializable {
   private static final long serialVersionUID = 8793667741599428332L;
 	private Reporte reporte;
 	
+	public boolean getAdmin() {
+		boolean regresar= false;
+    try {
+  	  regresar= JsfBase.isAdminEncuestaOrAdmin();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // catch		
+		return regresar;
+	}
+	
   @PostConstruct
   @Override
   protected void init() {
