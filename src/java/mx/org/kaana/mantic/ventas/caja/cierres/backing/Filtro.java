@@ -274,6 +274,16 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch
 		return "fondo".concat(Constantes.REDIRECIONAR);
 	}	
+
+  public String doAperturarCaja() {
+		try {
+			JsfBase.setFlashAttribute("accion", EAccion.COMPLEMENTAR);
+	  } // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+		} // catch
+		return "apertura".concat(Constantes.REDIRECIONAR);
+	}	
 	
   public String doAbonos() {
 		try {

@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.ventas.caja.cierres.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
@@ -14,6 +15,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -35,9 +37,9 @@ import org.primefaces.context.RequestContext;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-@Named(value= "manticVentasCajaCierresFondo")
+@Named(value= "manticVentasCajaCierresApertura")
 @ViewScoped
-public class Fondo extends IBaseAttribute implements Serializable {
+public class Apertura extends IBaseAttribute implements Serializable {
 
   private static final long serialVersionUID = 323323488565639361L;
   
@@ -55,10 +57,12 @@ public class Fondo extends IBaseAttribute implements Serializable {
 			if(JsfBase.getFlashAttribute("accion")== null)
 				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
       this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
-      this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre")== null? -1L: JsfBase.getFlashAttribute("idCierre"));
-      this.attrs.put("idCaja", JsfBase.getFlashAttribute("idCaja")== null? -1L: JsfBase.getFlashAttribute("idCaja"));
-      this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa")== null? -1L: JsfBase.getFlashAttribute("idEmpresa"));
-      this.attrs.put("sucursales", this.attrs.get("idEmpresa"));
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+        this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+			else
+				this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			this.attrs.put("limite", 0D);
 			this.attrs.put("efectivo", 0D);
 			this.attrs.put("disponible", 0D);
 			this.doLoad();
@@ -74,16 +78,13 @@ public class Fondo extends IBaseAttribute implements Serializable {
   		this.attrs.put("limite", 3000D);
   		this.attrs.put("idEfectivo", 2);
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
-			Importe importe= (Importe)DaoFactory.getInstance().toEntity(Importe.class, "VistaCierresCajasDto", "fondo", this.attrs);
 			switch(this.accion) {
 				case PROCESAR:
-					this.fondos= (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "VistaCierresCajasDto", "denominacion", this.attrs);
+					this.fondos= (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "TcManticMonedasDto", "denominacion", this.attrs);
 					break;	
 			} // switch
 			this.toLoadEmpresas();
 			this.doCalculate();
-			if(importe.getDisponible()> (Double)this.attrs.get("disponible"))
-        this.attrs.put("disponible", importe.getDisponible());		
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -95,11 +96,11 @@ public class Fondo extends IBaseAttribute implements Serializable {
     Cierre transaccion= null;
     String regresar   = null;
     try {			
-			TcManticCierresDto cierre= (TcManticCierresDto)DaoFactory.getInstance().findById(TcManticCierresDto.class, (Long)this.attrs.get("idCierre"));
+			TcManticCierresDto cierre= new TcManticCierresDto("", -1L, 2L, JsfBase.getIdUsuario(), 1L, "ESTA CAJA SE APERTURO DESDE EL MODULO DE CIERRE DE CAJAS", 1L, new Long(Fecha.getAnioActual()));
 			transaccion = new Cierre((Long)this.attrs.get("idCaja"), (Double)this.attrs.get("disponible"), cierre, null, this.fondos);
 			if (transaccion.ejecutar(this.accion)) {
-				regresar = "filtro".concat(Constantes.REDIRECIONAR);
-				RequestContext.getCurrentInstance().execute("janal.alert('Se gener\\u00F3 correctamente la apertura de caja del consecutivo: "+ cierre.getConsecutivo()+ "');");
+			  regresar = "filtro".concat(Constantes.REDIRECIONAR);
+   			RequestContext.getCurrentInstance().execute("janal.alert('Se gener\\u00F3 correctamente la apertura de caja con consecutivo: "+ cierre.getConsecutivo()+ "');");
   			JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
 			} // if
 			else 
@@ -118,7 +119,7 @@ public class Fondo extends IBaseAttribute implements Serializable {
   } 
 	
 	private void toLoadEmpresas() {
-		List<Columna> columns     = null;
+		List<Columna> columns = null;
     try {
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
@@ -141,7 +142,7 @@ public class Fondo extends IBaseAttribute implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			List<UISelectEntity> cajas= (List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "unica", this.attrs, columns);
+			List<UISelectEntity> cajas= (List<UISelectEntity>) UIEntity.build("VistaCierresCajasDto", "unica", this.attrs, columns);
       this.attrs.put("cajas", cajas);
  			this.attrs.put("temporal", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
 			if(this.attrs.get("temporal")!= null)
