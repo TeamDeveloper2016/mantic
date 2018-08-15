@@ -65,13 +65,10 @@
 								<p:column styleClass="janal-wid-col-40 janal-column-center" headerText="Tipo">
 									<h:outputText value="#{row.tipo}"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-10" headerText="Nombre">
+								<p:column styleClass="janal-wid-20" headerText="Nombre">
 									<h:outputText value="#{row.nombre}"/>
 								</p:column>   
-								<p:column styleClass="janal-wid-20" headerText="Ruta">
-									<h:outputText value="#{row.ruta}"/>
-								</p:column>   
-								<p:column styleClass="janal-wid-15" headerText="Usuario">
+								<p:column styleClass="janal-wid-20" headerText="Usuario">
 									<h:outputText value="#{row.usuario}"/>
 								</p:column>   
 								<p:column styleClass="janal-wid-13 janal-column-center" headerText="Fecha">
@@ -132,8 +129,8 @@
 	</ui:define>
 	<ui:define name="dialogos">
 		<h:form prependId="true">
-      <p:dialog id="dialogoPDF" widgetVar="dlgPDF" header="Listado de productos PDF" onHide="janal.sendLastFocus();janal.desbloquear();" closeOnEscape="true" closable="true" dynamic="true" maximizable="true" appendTo="@(body)">
-				<object type="application/pdf" data="#{manticCatalogosListaPreciosImportar.attrs.temporal}" height="390px" width="100%" internalinstanceid="5">
+      <p:dialog id="dialogoPDF" widgetVar="dlgPDF" header="Listado de productos PDF" onHide="janal.sendLastFocus();janal.desbloquear();" height="450px" width="650px" resizable="false" closeOnEscape="true" closable="true" dynamic="true" maximizable="true" appendTo="@(body)">
+				<object type="application/pdf" data="#{manticCatalogosListaPreciosImportar.attrs.temporal}" height="90%" width="100%" internalinstanceid="5">
 					 Tu navegador no soporta el desplegado de archivos PDF's, por favor da click en el boton de descargar
 				</object>
   			<hr class="ui-widget-content"/>
