@@ -3795,7 +3795,7 @@
           tc_mantic_proveedores on tc_mantic_listas_precios.id_proveedor= tc_mantic_proveedores.id_proveedor
         where
           tc_mantic_proveedores.id_empresa in ({idEmpresa})
-          and (tc_mantic_proveedores.rfc like '%{clave}%' or tc_mantic_proveedores.razon_social like '%{razonSocial}%')
+          and {condicion}
         {sortOrder}
 			</select>
       <select id="importados">
@@ -3830,7 +3830,7 @@
           tc_mantic_listas_precios.id_lista_precio,
           tc_mantic_listas_precios.id_proveedor,
           tc_mantic_listas_precios.observaciones,
-          tc_mantic_listas_precios.registro,
+          DATE_FORMAT(tc_mantic_listas_precios.registro,'%d/%m/%Y') registro,
           tc_mantic_proveedores.razon_social,
           tc_mantic_proveedores.clave,
           tc_mantic_proveedores.rfc,
@@ -3847,7 +3847,7 @@
       		tc_mantic_listas_precios_archivos on tc_mantic_listas_precios.id_lista_precio = tc_mantic_listas_precios_archivos.id_lista_precio and tc_mantic_listas_precios_archivos.id_tipo_archivo = 2 and tc_mantic_listas_precios_archivos.id_principal=1
         where
           tc_mantic_proveedores.id_empresa in ({idEmpresa})
-          and (tc_mantic_proveedores.rfc like '%{clave}%' or tc_mantic_proveedores.razon_social like '%{razonSocial}%')
+          and {condicion}
         {sortOrder}
 			</select>
       <select id="lazyArticulos">
@@ -3861,10 +3861,8 @@
       			tc_mantic_listas_precios on tc_mantic_listas_precios_detalles.id_lista_precio = tc_mantic_listas_precios.id_lista_precio 
 				inner join
           		tc_mantic_proveedores on tc_mantic_listas_precios.id_proveedor= tc_mantic_proveedores.id_proveedor
-          	where
-					upper(tc_mantic_listas_precios_detalles.codigo) like upper('%{codigo}%')
-				and 
-					upper(tc_mantic_listas_precios_detalles.descripcion) like upper('%{nombre}%')				      
+        where
+					{condicion}			      
 				{sortOrder}
 			</select>
 		</unit>
