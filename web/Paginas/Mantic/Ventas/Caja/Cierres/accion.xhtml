@@ -49,7 +49,7 @@
      								<p:outputLabel for="idEmpresa" value="Empresa:"/>
 									</div>	
 									<div class="ui-grid-col-11">
-										<p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaCierresAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+										<p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaCierresAccion.attrs.idEmpresas}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
 											<f:selectItems value="#{manticVentasCajaCierresAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 											<p:column headerText="Clave">
 												<h:outputText value="#{item.clave}"/>
@@ -81,15 +81,69 @@
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-1">
-								    <p:outputLabel for="disponible" value="Fondo caja:" styleClass="continuar" style="display: #{manticVentasCajaCierresAccion.attrs.continuar}"/>
+								    <p:outputLabel for="idCuentas" value="Cuentas abiertas:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:inputText id="disponible" styleClass="continuar janal-wid-100-txt janal-column-right janal-color-blue" value="#{manticVentasCajaCierresAccion.attrs.disponible}" converter="javax.faces.Double" onblur="janal.precio($('#contenedorGrupos\\:disponible'), '0');" style="display: #{manticVentasCajaCierresAccion.attrs.continuar}"/>
+										<p:selectOneMenu id="idCuenta" value="#{manticVentasCajaCierresAccion.attrs.idCuenta}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="contains">
+											<f:selectItems value="#{manticVentasCajaCierresAccion.attrs.cuentas}"  var="element" itemValue="#{element}" itemLabel="#{element.consecutivo} #{element.nombre} #{element.importe}"/>
+											<p:column headerText="No. cuenta">
+												<h:outputText value="#{item.consecutivo}"/>
+											</p:column>   
+											<p:column headerText="Vendedor">
+												<h:outputText value="#{item.nombre}"/>
+											</p:column>   
+											<p:column styleClass="janal-column-right" headerText="Importe">
+												<h:outputText value="#{item.total}"/>
+											</p:column>   
+										</p:selectOneMenu>
 									</div>		
 								</div>	
 								<p:spacer height="3px"/>
 								<div class="ui-grid-row janal-grid-row">
-									<div class="ui-grid-col-12">
+									<div class="ui-grid-col-6">
+										<p:dataTable id="moneda" var="row" value="#{manticVentasCajaCierresAccion.denominaciones}" styleClass="janal-wid-100" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" rowKey="#{row.key}">
+											<f:facet name="header" >
+												<div class="lg-pantalla">
+													<p:menuButton value="Opciones">
+														<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'moneda')" oncomplete="janal.desbloquear()"/>
+														<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'moneda')" oncomplete="janal.desbloquear()"/>
+													</p:menuButton>
+												</div>  
+												<div class="xs-pantalla">              
+													<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'moneda')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+													<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'moneda')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+												</div>  
+											</f:facet>	 
+											<p:column class="MarAuto Responsive">
+												<f:facet name="header">
+													<h:outputText value="Denominación"/>
+												</f:facet>
+												<h:outputText value="#{row['nombre']}"/>
+											</p:column>		
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-13">
+												<f:facet name="header">
+													<h:outputText value="Valor"/>
+												</f:facet>
+												<h:outputText value="$ #{manticVentasCajaCierresAccion.doDecimalSat(row['denominacion'])}"/>
+											</p:column>		
+											<p:column class="cantidad janal-column-right MarAuto Responsive janal-wid-13">
+												<f:facet name="header">
+													<p:outputLabel for="cantidad" value="Cantidad"/>
+												</f:facet>
+												<p:inputText id="cantidad" value="#{row['cantidad']}" styleClass="recalculo janal-column-right janal-wid-100-txt janal-color-blue key-down-event" onblur="jsCierres.cantidad('#contenedorGrupos\\:moneda\\:#{index}\\:cantidad');"/>
+											</p:column>		
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+												<f:facet name="header">
+													<h:outputText value="Importe"/>
+												</f:facet>
+												<p:outputLabel styleClass="filas" value="#{manticVentasCajaCierresAccion.doDecimalSat(row['importe'])}"/>
+											</p:column>
+											<f:facet name="footer">
+												<p:outputLabel styleClass="filas janal-color-blue" value="Total: &lt;strong&gt; $ #{manticVentasCajaCierresAccion.doDecimalSat(manticVentasCajaCierresAccion.attrs.efectivo)}&lt;/strong&gt;" escape="false"/>
+											</f:facet>
+										</p:dataTable>		
+									</div>	
+									<div class="ui-grid-col-6">
 										<p:dataTable id="tabla" var="row" value="#{manticVentasCajaCierresAccion.importes}" styleClass="janal-wid-100" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" rowKey="#{row.key}">
 											<f:facet name="header" >
 												<div class="lg-pantalla">
@@ -103,24 +157,6 @@
 													<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
 												</div>  
 											</f:facet>	 
-											<p:column class="MarAuto Responsive janal-wid-col-40">
-												<f:facet name="header">
-													<h:outputText value="No."/>
-												</f:facet>
-												<h:outputText value="#{index+ 1}"/>
-											</p:column>		
-											<p:column class="MarAuto Responsive janal-wid-10">
-												<f:facet name="header">
-													<h:outputText value="Sucursal"/>
-												</f:facet>
-												<h:outputText value="#{row['empresa']}"/>
-											</p:column>		
-											<p:column class="MarAuto Responsive janal-wid-8">
-												<f:facet name="header">
-													<h:outputText value="Caja"/>
-												</f:facet>
-												<h:outputText value="#{row['caja']}"/>
-											</p:column>		
 											<p:column class="MarAuto Responsive">
 												<f:facet name="header">
 													<h:outputText value="Medio pago"/>
@@ -166,21 +202,21 @@
 								</div>	
 							</div>
 						</p:tab>
-						<p:tab title="Denominaciones">
+						<p:tab title="Fondo de caja" rendered="#{manticVentasCajaCierresAccion.attrs.nombreAccion eq 'Consultar'}">
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
-										<p:dataTable id="moneda" var="row" value="#{manticVentasCajaCierresAccion.denominaciones}" styleClass="janal-wid-100" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" rowKey="#{row.key}">
+										<p:dataTable id="fondos" var="row" value="#{manticVentasCajaCierresAccion.fondos}" styleClass="janal-wid-100" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" rowKey="#{row.key}">
 											<f:facet name="header" >
 												<div class="lg-pantalla">
 													<p:menuButton value="Opciones">
-														<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'moneda')" oncomplete="janal.desbloquear()"/>
-														<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'moneda')" oncomplete="janal.desbloquear()"/>
+														<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'fondos')" oncomplete="janal.desbloquear()"/>
+														<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'fondos')" oncomplete="janal.desbloquear()"/>
 													</p:menuButton>
 												</div>  
 												<div class="xs-pantalla">              
-													<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'moneda')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
-													<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'moneda')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+													<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'fondos')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+													<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'fondos')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
 												</div>  
 											</f:facet>	 
 											<p:column class="MarAuto Responsive janal-wid-col-40">
@@ -220,7 +256,7 @@
 									</div>
 								</div>	
 							</div>
-						</p:tab>
+						</p:tab>						
 						<p:tab title="Observaciones">
 							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresAccion.attrs.observaciones}"/>
 						</p:tab>

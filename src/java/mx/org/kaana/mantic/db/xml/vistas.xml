@@ -5,6 +5,35 @@
 <process>
 	<dml> 
 		<unit id="VistaCierresCajasDto">
+			<select id="abiertas">
+        select
+					tc_mantic_ventas.id_venta as id_key,
+					tc_mantic_ventas.id_empresa,  
+				  tc_mantic_empresas.clave as empresa,  
+				  tc_mantic_empresas.nombre as nombre_empresa,  
+					tc_mantic_ventas.consecutivo,  
+					tc_mantic_ventas.total,
+				  tc_mantic_ventas_estatus.nombre as estatus,
+					tc_mantic_ventas.id_venta_estatus,
+					tc_mantic_ventas.registro,
+					tc_mantic_personas.cuenta,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre
+				from 
+					tc_mantic_ventas
+				inner join 
+					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus=tc_mantic_ventas_estatus.id_venta_estatus
+				inner join 
+				  tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona
+				where
+				  tc_mantic_ventas.id_empresa= {idEmpresa}
+				  and tc_mantic_ventas.id_venta_estatus in (1, 2)
+        order by
+          tc_mantic_ventas.consecutivo
+			</select>
 			<select id="global">
 				select
 					tc_mantic_cierres.id_cierre as id_key,
@@ -348,6 +377,7 @@
 				  tc_mantic_monedas.id_moneda, 
 				  tc_mantic_monedas.nombre, 
 				  tc_mantic_monedas.denominacion, 
+				  tc_mantic_cierres_monedas.id_efectivo, 
 				  tc_mantic_cierres_monedas.cantidad, 
 				  tc_mantic_cierres_monedas.importe, 
 				  tc_mantic_cierres_monedas.id_cierre 
@@ -357,6 +387,7 @@
 				  tc_mantic_monedas on tc_mantic_cierres_monedas.id_moneda= tc_mantic_monedas.id_moneda 
 				where 
 				  tc_mantic_cierres_monedas.id_cierre= {idCierre}
+				  and tc_mantic_cierres_monedas.id_efectivo= {idEfectivo}
 				order by 
 				  tc_mantic_monedas.orden
 			</select>

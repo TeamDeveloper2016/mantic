@@ -50,6 +50,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   
 	private List<Importe> importes;
 	private List<Denominacion> denominaciones;
+	private List<Denominacion> fondos;
 	private FormatCustomLazy lazyModel;
 	private EAccion accion;
 
@@ -59,6 +60,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 
 	public List<Denominacion> getDenominaciones() {
 		return denominaciones;
+	}
+
+	public List<Denominacion> getFondos() {
+		return fondos;
 	}
 
 	public FormatCustomLazy getLazyModel() {
@@ -96,6 +101,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doLoad() {
     try {
   		this.attrs.put("limite", 3000D);
+  		this.attrs.put("idEfectivo", 1);
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
 			this.importes= (List<Importe>)DaoFactory.getInstance().toEntitySet(Importe.class, "VistaCierresCajasDto", "importes", this.attrs);
 			switch(this.accion) {
@@ -104,9 +110,12 @@ public class Accion extends IBaseAttribute implements Serializable {
 					break;	
 				case CONSULTAR:
 					this.denominaciones= (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "VistaCierresCajasDto", "denominacion", this.attrs);
+  		    this.attrs.put("idEfectivo", 2);
+					this.fondos        = (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "VistaCierresCajasDto", "denominacion", this.attrs);
 					break;	
 			} // switch
 			this.toLoadEmpresas();
+			this.toLoadCuentas();
 			this.doCalculate();
   		for (Importe importe: this.importes) {
 	   		if(importe.getIdTipoMedioPago().equals(1L)) {
@@ -126,10 +135,13 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {			
 			TcManticCierresDto cierre= (TcManticCierresDto)DaoFactory.getInstance().findById(TcManticCierresDto.class, (Long)this.attrs.get("idCierre"));
 			cierre.setObservaciones((String)this.attrs.get("observaciones"));
-			transaccion = new Cierre((Long)this.attrs.get("idCaja"), (Double)this.attrs.get("disponible"), cierre, this.importes, this.denominaciones);
+			transaccion = new Cierre((Long)this.attrs.get("idCaja"), (Double)this.attrs.get("efectivo"), cierre, this.importes, this.denominaciones);
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR)) {
- 				  regresar = "filtro".concat(Constantes.REDIRECIONAR);
+ 				  regresar = "fondo".concat(Constantes.REDIRECIONAR);
+					JsfBase.setFlashAttribute("accion", EAccion.PROCESAR);
+					JsfBase.setFlashAttribute("idCaja", transaccion.getIdApertura());
+					JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
     			RequestContext.getCurrentInstance().execute("janal.alert('Se gener\\u00F3 el cierre de caja, con consecutivo: "+ cierre.getConsecutivo()+ "');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
@@ -180,6 +192,24 @@ public class Accion extends IBaseAttribute implements Serializable {
  			this.attrs.put("temporal", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
 			if(this.attrs.get("temporal")!= null)
 				this.attrs.put("limite", ((UISelectEntity)this.attrs.get("temporal")).toDouble("limite"));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+    }// finally
+	}
+
+	private void toLoadCuentas() {
+		List<Columna> columns= null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      this.attrs.put("cuentas", UIEntity.build("VistaCierresCajasDto", "abiertas", this.attrs, columns));
+ 			this.attrs.put("idCuenta", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
     } // try
     catch (Exception e) {
       throw e;

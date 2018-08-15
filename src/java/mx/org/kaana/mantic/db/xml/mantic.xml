@@ -47,6 +47,7 @@
 					id_moneda,
 					nombre,
 					denominacion,
+					{idEfectivo} as id_efectivo,
 					0 as cantidad,
 					0 as importe,
 					{idCierre} as id_cierre 

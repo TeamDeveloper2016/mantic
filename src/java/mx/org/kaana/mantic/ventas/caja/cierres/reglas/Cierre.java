@@ -21,7 +21,6 @@ import mx.org.kaana.mantic.db.dto.TcManticCierresBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
 import mx.org.kaana.mantic.db.dto.TcManticTiposMediosPagosDto;
-import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.Denominacion;
 import mx.org.kaana.mantic.ventas.caja.cierres.beans.Importe;
 import org.apache.log4j.Logger;
@@ -45,6 +44,7 @@ public class Cierre extends IBaseTnx implements Serializable  {
 	private TcManticCierresDto cierre;
 	private List<Importe> importes;
 	private List<Denominacion> denominaciones;
+	private Long idApertura;
 	private String messageError;
 	
 	public Cierre(Long idCaja) {
@@ -61,6 +61,11 @@ public class Cierre extends IBaseTnx implements Serializable  {
 		this.cierre        = cierre;
 		this.importes      = importes;
 		this.denominaciones= denominaciones;
+		this.idApertura    = -1L;
+	}
+
+	public Long getIdApertura() {
+		return idApertura;
 	}
 	
 	@Override
@@ -85,11 +90,16 @@ public class Cierre extends IBaseTnx implements Serializable  {
 					  DaoFactory.getInstance().update(sesion, importe);
 					for (Denominacion denominacion: this.denominaciones) 
 					  DaoFactory.getInstance().insert(sesion, denominacion);
+					for (Denominacion denominacion: this.denominaciones) {
+						denominacion.setIdCierreMoneda(-1L);
+						denominacion.setIdEfectivo(2L);
+					  DaoFactory.getInstance().insert(sesion, denominacion);
+					} // for
 					
 					// cambiar el estatus a todas las ventas realizadas en dia que no fueron cobradas a canceladas
-					params.put("idCaja", this.idCaja);
-					params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-					DaoFactory.getInstance().updateAll(sesion, TcManticVentasDto.class, params);
+					//params.put("idCaja", this.idCaja);
+					//params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+					//DaoFactory.getInstance().updateAll(sesion, TcManticVentasDto.class, params);
 
 					// cambiar de estatus todas las alertas de esta caja para iniciar el nuevo corte
 					params.put("idCaja", this.idCaja);
@@ -102,6 +112,7 @@ public class Cierre extends IBaseTnx implements Serializable  {
 						Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true), -1L, 2L, JsfBase.getIdUsuario(), 1L, "", consecutivo, new Long(Fecha.getAnioActual())
 					);
 					regresar= DaoFactory.getInstance().insert(sesion, apertura)>= 1L;
+					this.idApertura= apertura.getIdCierre();
 					all= (List<TcManticTiposMediosPagosDto>)DaoFactory.getInstance().findViewCriteria(TcManticTiposMediosPagosDto.class, Collections.EMPTY_MAP, "caja");
 					for (TcManticTiposMediosPagosDto medio : all) {
 						if(medio.getIdTipoMedioPago().equals(1L))
@@ -112,6 +123,17 @@ public class Cierre extends IBaseTnx implements Serializable  {
 					} // for
 					bitacora= new TcManticCierresBitacoraDto("APERTURA DE CAJA", -1L, apertura.getIdCierre(), JsfBase.getIdUsuario(), 1L);
 					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
+					break;
+				case PROCESAR:
+					params.put("idCaja", this.idCaja);
+					params.put("idCierre", this.cierre.getIdCierre());
+					TcManticCierresCajasDto efectivo= (TcManticCierresCajasDto)DaoFactory.getInstance().findFirst(sesion, TcManticCierresCajasDto.class, "caja", Collections.EMPTY_MAP);
+					if(efectivo!= null) {
+						efectivo.setDisponible(this.inicial);
+						regresar= DaoFactory.getInstance().update(sesion, efectivo)> 0L;
+					} // if
+					for (Denominacion denominacion: this.denominaciones) 
+					  regresar= DaoFactory.getInstance().update(sesion, denominacion)> 0L;
 					break;
 				case REGISTRAR:
           consecutivo= this.toSiguiente(sesion);

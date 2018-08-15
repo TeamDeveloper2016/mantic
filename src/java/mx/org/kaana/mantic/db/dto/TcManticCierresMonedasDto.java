@@ -44,6 +44,8 @@ public class TcManticCierresMonedasDto implements IBaseDto, Serializable {
   private Long cantidad;
   @Column (name="id_moneda")
   private Long idMoneda;
+  @Column (name="id_efectivo")
+  private Long idEfectivo;
   @Column (name="importe")
   private Double importe;
   @Column (name="registro")
@@ -54,15 +56,16 @@ public class TcManticCierresMonedasDto implements IBaseDto, Serializable {
   }
 
   public TcManticCierresMonedasDto(Long key) {
-    this(null, new Long(-1L), null, null, null);
+    this(null, new Long(-1L), null, null, null, null);
     setKey(key);
   }
 
-  public TcManticCierresMonedasDto(Long idCierre, Long idCierreMoneda, Long cantidad, Long idMoneda, Double importe) {
+  public TcManticCierresMonedasDto(Long idCierre, Long idCierreMoneda, Long cantidad, Long idMoneda, Double importe, Long idEfectivo) {
     setIdCierre(idCierre);
     setIdCierreMoneda(idCierreMoneda);
     setCantidad(cantidad);
     setIdMoneda(idMoneda);
+    setIdEfectivo(idEfectivo);
     setImporte(importe);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
@@ -98,6 +101,14 @@ public class TcManticCierresMonedasDto implements IBaseDto, Serializable {
   public Long getIdMoneda() {
     return idMoneda;
   }
+
+	public Long getIdEfectivo() {
+		return idEfectivo;
+	}
+
+	public void setIdEfectivo(Long idEfectivo) {
+		this.idEfectivo=idEfectivo;
+	}
 
   public void setImporte(Double importe) {
     this.importe = importe;
@@ -138,6 +149,8 @@ public class TcManticCierresMonedasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdMoneda());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEfectivo());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImporte());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
@@ -152,6 +165,7 @@ public class TcManticCierresMonedasDto implements IBaseDto, Serializable {
 		regresar.put("idCierreMoneda", getIdCierreMoneda());
 		regresar.put("cantidad", getCantidad());
 		regresar.put("idMoneda", getIdMoneda());
+		regresar.put("idEfectivo", getIdEfectivo());
 		regresar.put("importe", getImporte());
 		regresar.put("registro", getRegistro());
   	return regresar;
@@ -159,8 +173,8 @@ public class TcManticCierresMonedasDto implements IBaseDto, Serializable {
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getIdCierre(), getIdCierreMoneda(), getCantidad(), getIdMoneda(), getImporte(), getRegistro()
+    Object[] regresar = new Object[] {
+      getIdCierre(), getIdCierreMoneda(), getCantidad(), getIdMoneda(), getImporte(), getRegistro(), getIdEfectivo()
     };
     return regresar;
   }
