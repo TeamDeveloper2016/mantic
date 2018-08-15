@@ -132,7 +132,7 @@ public class Autentifica implements Serializable {
   }
 
   private boolean verificaCredencial(String contrasenia) throws Exception {
-    String frase = BouncyEncryption.decrypt(contrasenia== null? "": contrasenia);
+    String frase = BouncyEncryption.decrypt(contrasenia);
     return frase.equals(this.credenciales.getContrasenia());
   }
 
@@ -232,6 +232,7 @@ public class Autentifica implements Serializable {
     boolean regresar          = false;
     Map<String, Object> params= null;
 		List<Persona> personas    = null;
+		this.persona              = null;
     try {
       this.credenciales.setCuenta(cuenta);
       this.credenciales.setContrasenia(contrasenia);
