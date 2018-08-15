@@ -5,7 +5,7 @@
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Tickets de ventas generados" />
+  <ui:param name="titulo" value="Cuentas de ventas generados" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
@@ -126,7 +126,7 @@
             </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
               <f:facet name="header">
-                <h:outputText value="No. ticket"/>
+                <h:outputText value="No. cuenta"/>
               </f:facet>
               <h:outputText value="#{filtro['consecutivo']}"/>
             </p:column>		
@@ -191,14 +191,14 @@
 		</p:dialog>
 	</ui:define>
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
-  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el ticket de venta ?" />
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la cuenta de venta ?" />
   <ui:param name="accionConfirmacion" value="#{manticVentasFiltro}"/>
   <ui:param name="updateComponent" value="tabla"/>
   <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
   <ui:param name="renderedConfirmacion" value="true"/>	
   <ui:define name="detalleConfirmacion">
     <p:panelGrid layout="grid" columns="2">
-      <p:outputLabel value="No. ticket:"/>
+      <p:outputLabel value="No. cuenta:"/>
       <p:outputLabel value="#{manticVentasFiltro.attrs.seleccionado.consecutivo}"/>
       <p:outputLabel value="Justificación:"/>
       <p:inputTextarea value="#{manticVentasFiltro.attrs.justificacionEliminar}"/>
