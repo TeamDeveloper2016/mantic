@@ -74,7 +74,7 @@
 												<h:outputText value="#{item.nombre}"/>
 											</p:column>   
 											<p:column styleClass="janal-column-right" headerText="Limite">
-												<h:outputText value="$ #{manticVentasCajaCierresAccion.doMonedaSat(item.limite)}"/>
+												<h:outputText value="#{manticVentasCajaCierresAccion.doMonedaSat(item.limite)}"/>
 											</p:column>   
 										</p:selectOneMenu>
 									</div>		
@@ -83,11 +83,11 @@
 									<div class="ui-grid-col-1">
 								    <p:outputLabel for="idCuenta" value="Cuentas abiertas:"/>
 									</div>
-									<div class="ui-grid-col-11">
+									<div class="ui-grid-col-10">
 										<p:selectOneMenu id="idCuenta" value="#{manticVentasCajaCierresAccion.attrs.idCuenta}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="contains">
-											<f:selectItems value="#{manticVentasCajaCierresAccion.attrs.cuentas}"  var="element" itemValue="#{element}" itemLabel="#{element.consecutivo} #{element.nombre} #{element.importe}"/>
+											<f:selectItems value="#{manticVentasCajaCierresAccion.attrs.cuentas}"  var="element" itemValue="#{element}" itemLabel="#{element.dia}-#{element.consecutivo} #{element.nombre} #{element.importe}"/>
 											<p:column headerText="No. cuenta">
-												<h:outputText value="#{item.consecutivo}"/>
+												<h:outputText value="#{item.dia}-#{item.consecutivo}"/>
 											</p:column>   
 											<p:column headerText="Vendedor">
 												<h:outputText value="#{item.nombre}"/>
@@ -97,6 +97,9 @@
 											</p:column>   
 										</p:selectOneMenu>
 									</div>		
+									<div class="ui-grid-col-1 janal-column-right">
+								    <p:outputLabel value="[Total: #{manticVentasCajaCierresAccion.attrs.cuentas.size()}]"/>
+									</div>
 								</div>	
 								<p:spacer height="3px"/>
 								<div class="ui-grid-row janal-grid-row">
@@ -143,6 +146,7 @@
 											</f:facet>
 										</p:dataTable>		
 									</div>	
+  								<p:spacer width="8px"/>
 									<div class="ui-grid-col-8">
 										<p:dataTable id="tabla" var="row" value="#{manticVentasCajaCierresAccion.importes}" styleClass="janal-wid-100" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" rowKey="#{row.key}">
 											<f:facet name="header" >
@@ -198,8 +202,9 @@
 												<p:inputText id="total" value="#{manticVentasCajaCierresAccion.attrs.total}" style="display:none" styleClass="filas totales"/>
 											</f:facet>
 										</p:dataTable>
-										<p:outputLabel value="Observaciones"/><br/>
-      							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresAccion.attrs.observaciones}"/>
+										<p:spacer height="5px"/>
+										<p:outputLabel value="Observaciones:"/><br/>
+      							<p:inputTextarea id="observaciones" rows="10" cols="33" styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresAccion.attrs.observaciones}"/>
 									</div>		
 								</div>	
 							</div>

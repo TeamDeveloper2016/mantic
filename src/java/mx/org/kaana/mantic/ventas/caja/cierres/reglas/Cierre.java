@@ -98,12 +98,6 @@ public class Cierre extends IBaseTnx implements Serializable  {
 					  DaoFactory.getInstance().update(sesion, importe);
 					for (Denominacion denominacion: this.denominaciones) 
 					  DaoFactory.getInstance().insert(sesion, denominacion);
-					for (Denominacion denominacion: this.denominaciones) {
-						denominacion.setIdCierreMoneda(-1L);
-						denominacion.setIdEfectivo(2L);
-					  DaoFactory.getInstance().insert(sesion, denominacion);
-					} // for
-					
 					// cambiar el estatus a todas las ventas realizadas en dia que no fueron cobradas a canceladas
 					//params.put("idCaja", this.idCaja);
 					//params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
@@ -129,19 +123,27 @@ public class Cierre extends IBaseTnx implements Serializable  {
 						  registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), apertura.getIdCierre(), 0D, this.idCaja, -1L, this.inicial, new Date(Calendar.getInstance().getTimeInMillis()), 0D, this.inicial);
 					  DaoFactory.getInstance().insert(sesion, registro);
 					} // for
+					for (Denominacion denominacion: this.denominaciones) {
+						Denominacion clon= denominacion.copy();
+						clon.setIdCierreMoneda(-1L);
+						clon.setIdCierre(apertura.getIdCierre());
+						clon.setIdEfectivo(2L);
+					  DaoFactory.getInstance().insert(sesion, clon);
+					} // for
+					
 					bitacora= new TcManticCierresBitacoraDto("APERTURA DE CAJA", -1L, apertura.getIdCierre(), JsfBase.getIdUsuario(), 1L);
 					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 					break;
 				case PROCESAR:
 					params.put("idCaja", this.idCaja);
 					params.put("idCierre", this.cierre.getIdCierre());
-					TcManticCierresCajasDto efectivo= (TcManticCierresCajasDto)DaoFactory.getInstance().findFirst(sesion, TcManticCierresCajasDto.class, "caja", Collections.EMPTY_MAP);
+					TcManticCierresCajasDto efectivo= (TcManticCierresCajasDto)DaoFactory.getInstance().findFirst(sesion, TcManticCierresCajasDto.class, "caja", params);
 					if(efectivo!= null) {
 						efectivo.setDisponible(this.inicial);
 						regresar= DaoFactory.getInstance().update(sesion, efectivo)> 0L;
 					} // if
 					for (Denominacion denominacion: this.denominaciones) 
-					  regresar= DaoFactory.getInstance().update(sesion, denominacion)> 0L;
+					  DaoFactory.getInstance().update(sesion, denominacion);
 					break;
 				case REGISTRAR:
           consecutivo= this.toSiguiente(sesion);

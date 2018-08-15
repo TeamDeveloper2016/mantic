@@ -74,7 +74,7 @@ public class Fondo extends IBaseAttribute implements Serializable {
   		this.attrs.put("limite", 3000D);
   		this.attrs.put("idEfectivo", 2);
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
-			List<Importe> importes= (List<Importe>)DaoFactory.getInstance().toEntitySet(Importe.class, "VistaCierresCajasDto", "importes", this.attrs);
+			Importe importe= (Importe)DaoFactory.getInstance().toEntity(Importe.class, "VistaCierresCajasDto", "fondo", this.attrs);
 			switch(this.accion) {
 				case PROCESAR:
 					this.fondos= (List<Denominacion>)DaoFactory.getInstance().toEntitySet(Denominacion.class, "VistaCierresCajasDto", "denominacion", this.attrs);
@@ -82,6 +82,8 @@ public class Fondo extends IBaseAttribute implements Serializable {
 			} // switch
 			this.toLoadEmpresas();
 			this.doCalculate();
+			if(importe.getDisponible()> (Double)this.attrs.get("disponible"))
+        this.attrs.put("disponible", importe.getDisponible());		
     } // try
     catch (Exception e) {
       Error.mensaje(e);

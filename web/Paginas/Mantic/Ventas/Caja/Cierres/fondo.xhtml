@@ -20,7 +20,7 @@
 			
     	$(document).ready(function() {
 				setTimeout("janal.readingMode('#{manticVentasCajaCierresFondo.attrs.nombreAccion}')", 500);
-        jsCierres= new Janal.Control.Cierres.Core(#{manticVentasCajaCierresFondo.importes.size()}, #{manticVentasCajaCierresFondo.denominaciones.size()});
+        jsCierres= new Janal.Control.Cierres.Core(1, #{manticVentasCajaCierresFondo.fondos.size()});
       });
 			
 			function execute() {
@@ -71,17 +71,17 @@
 												<h:outputText value="#{item.nombre}"/>
 											</p:column>   
 											<p:column styleClass="janal-column-right" headerText="Limite">
-												<h:outputText value="#{item.limite}"/>
+												<h:outputText value="#{manticVentasCajaCierresFondo.doMonedaSat(item.limite)}"/>
 											</p:column>   
 										</p:selectOneMenu>
 									</div>		
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-1">
-								    <p:outputLabel for="disponible" value="Fondo caja:" styleClass="continuar" style="display: #{manticVentasCajaCierresFondo.attrs.continuar}"/>
+								    <p:outputLabel for="disponible" value="Fondo caja:" style="display: #{manticVentasCajaCierresFondo.attrs.continuar}"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:inputText id="disponible" styleClass="continuar janal-wid-100-txt janal-column-right janal-color-blue" value="#{manticVentasCajaCierresFondo.attrs.disponible}" converter="javax.faces.Double" onblur="janal.precio($('#contenedorGrupos\\:disponible'), '0');" style="display: #{manticVentasCajaCierresFondo.attrs.continuar}"/>
+										<p:inputText id="disponible" styleClass="filas janal-wid-100-txt janal-column-right janal-color-blue" value="#{manticVentasCajaCierresFondo.attrs.disponible}" converter="javax.faces.Double" onblur="janal.precio($('#contenedorGrupos\\:disponible'), '0');" style="display: #{manticVentasCajaCierresFondo.attrs.continuar}"/>
 									</div>		
 								</div>	
 								<p:spacer height="3px"/>
@@ -117,7 +117,7 @@
 													<f:facet name="header">
 														<h:outputText value="Valor"/>
 													</f:facet>
-													<h:outputText value="$ #{manticVentasCajaCierresFondo.doDecimalSat(row['denominacion'])}"/>
+													<h:outputText value="$ #{manticVentasCajaCierresFondo.doMonedaSat(row['denominacion'])}"/>
 												</p:column>		
 												<p:column class="cantidad janal-column-right MarAuto Responsive janal-wid-15">
 													<f:facet name="header">
@@ -129,7 +129,7 @@
 													<f:facet name="header">
 														<h:outputText value="Importe"/>
 													</f:facet>
-													<p:outputLabel styleClass="filas" value="#{manticVentasCajaCierresFondo.doDecimalSat(row['importe'])}"/>
+													<p:outputLabel styleClass="filas" value="#{manticVentasCajaCierresFondo.doMonedaSat(row['importe'])}"/>
 												</p:column>
 												<f:facet name="footer">
 													<p:outputLabel styleClass="filas janal-color-blue" value="Total: &lt;strong&gt; $ #{manticVentasCajaCierresFondo.doDecimalSat(manticVentasCajaCierresFondo.attrs.efectivo)}&lt;/strong&gt;" escape="false"/>

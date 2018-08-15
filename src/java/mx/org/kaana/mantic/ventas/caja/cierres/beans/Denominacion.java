@@ -11,7 +11,7 @@ import mx.org.kaana.mantic.db.dto.TcManticCierresMonedasDto;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Denominacion extends TcManticCierresMonedasDto implements Serializable {
+public class Denominacion extends TcManticCierresMonedasDto implements Serializable, Cloneable {
 
 	private static final long serialVersionUID=-190192763738981546L;
   
@@ -38,5 +38,14 @@ public class Denominacion extends TcManticCierresMonedasDto implements Serializa
 	public Class toHbmClass() {
 		return TcManticCierresMonedasDto.class;
 	}
+
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return (Denominacion)super.clone();
+	}
+
+  public Denominacion copy() throws CloneNotSupportedException {
+		return (Denominacion)this.clone();
+	}	
 	
 }

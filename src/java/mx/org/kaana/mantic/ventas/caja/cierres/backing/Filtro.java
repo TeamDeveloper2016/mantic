@@ -251,6 +251,19 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return "retiros".concat(Constantes.REDIRECIONAR);
 	}	
 	
+  public String doFondoCaja() {
+		try {
+			JsfBase.setFlashAttribute("accion", EAccion.PROCESAR);
+			JsfBase.setFlashAttribute("idCierre", ((Entity)this.attrs.get("seleccionado")).toLong("idCierre"));
+			JsfBase.setFlashAttribute("idEmpresa", ((Entity)this.attrs.get("seleccionado")).toLong("idEmpresa"));
+			JsfBase.setFlashAttribute("idCaja", ((Entity)this.attrs.get("seleccionado")).toLong("idCaja"));
+	  } // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+		} // catch
+		return "fondo".concat(Constantes.REDIRECIONAR);
+	}	
+	
   public String doAbonos() {
 		try {
 			JsfBase.setFlashAttribute("idCierre", ((Entity)this.attrs.get("seleccionado")).toLong("idCierre"));

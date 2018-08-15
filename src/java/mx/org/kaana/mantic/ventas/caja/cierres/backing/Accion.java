@@ -205,6 +205,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		List<Columna> columns= null;
     try {
 			columns= new ArrayList<>();
+      columns.add(new Columna("dia", EFormatoDinamicos.FECHA_CORTA));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       this.attrs.put("cuentas", UIEntity.build("VistaCierresCajasDto", "abiertas", this.attrs, columns));
