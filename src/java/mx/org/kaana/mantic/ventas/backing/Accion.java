@@ -1,7 +1,9 @@
 package mx.org.kaana.mantic.ventas.backing;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +34,7 @@ import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
+import mx.org.kaana.mantic.comun.IAdminArticulos;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
@@ -50,7 +53,6 @@ public class Accion extends IBaseArticulos implements Serializable {
   private static final long serialVersionUID = 327393488565639367L;
 	private static final String VENDEDOR_PERFIL= "VENDEDOR DE PISO";
 	private static final String INDIVIDUAL= "1";
-	private static final String GLOBAL= "0";
 	private EOrdenes tipoOrden;
 	private SaldoCliente saldoCliente;
 	private StreamedContent image;
@@ -163,15 +165,15 @@ public class Accion extends IBaseArticulos implements Serializable {
 			if (transaccion.ejecutar(eaccion)) {
 				if(eaccion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
-    			RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 ticket de venta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+    			RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 cuenta de venta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 					this.init();
 				} // if	
-				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el ticket de venta."), ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la cuenta de venta."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
 				RequestContext.getCurrentInstance().execute("userUpdate();");
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar el ticket de venta.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -387,6 +389,36 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // catch	
 	} // toMoveData
 	
+	@Override
+	protected void toMoveDataArt(Articulo articulo, Integer index) throws Exception {
+		UISelectEntity clienteSeleccion= null;		
+		String descuentoPivote         = null;
+		String descuentoVigente        = null;		
+		try {
+			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");
+			if(clienteSeleccion!= null && !clienteSeleccion.getKey().equals(-1L)){
+				descuentoVigente= toDescuentoVigente(articulo.getIdArticulo(), clienteSeleccion.getKey());				
+				if(descuentoVigente!= null){
+					descuentoPivote= getAdminOrden().getDescuento();
+					getAdminOrden().setDescuento(descuentoVigente);
+					super.toMoveDataArt(articulo, index);			
+					getAdminOrden().setDescuento(descuentoPivote);
+				} // if
+				else
+					super.toMoveDataArt(articulo, index);				
+			} // if
+			else
+				super.toMoveDataArt(articulo, index);	
+			this.image= LoadImages.getImage(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), articulo.getIdArticulo().toString());
+			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
+			RequestContext.getCurrentInstance().update("deudor");
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch	
+	} // toMoveData
+	
 	private String toDescuentoVigente(Long idArticulo, Long idCliente) throws Exception{
 		MotorBusqueda motorBusqueda= null;
 		Entity descuentoVigente    = null;
@@ -427,12 +459,12 @@ public class Accion extends IBaseArticulos implements Serializable {
 				transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 				this.getAdminOrden().toAdjustArticulos();
 				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
-					RequestContext.getCurrentInstance().execute("jsArticulos.back('cerr\\u00F3 ticket de venta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-					JsfBase.addMessage("Se guardo el ticket de venta.", ETipoMensaje.INFORMACION);	
+					RequestContext.getCurrentInstance().execute("jsArticulos.back('cerr\\u00F3 cuenta de venta', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+					JsfBase.addMessage("Se guardo la cuenta de venta.", ETipoMensaje.INFORMACION);	
 					init();
 				} // if
 				else 
-					JsfBase.addMessage("Ocurrió un error al registrar el ticket de venta.", ETipoMensaje.ERROR);      			
+					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
 			} // if						
     } // try
     catch (Exception e) {
@@ -483,7 +515,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 				RequestContext.getCurrentInstance().execute("PF('dlgOpenTickets').show();");
 			} // if
 			else{
-				JsfBase.addMessage("Tickets", "Actualmente no hay tickets abiertos", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Cuentas", "Actualmente no hay cuentas abiertas", ETipoMensaje.INFORMACION);
 				RequestContext.getCurrentInstance().execute("janal.desbloquear();");
 			} // else
 		} // try
@@ -496,24 +528,67 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // finally
 	} // doLoadTicketAbiertos
 	
+	public void doLoadCotizaciones(){
+		List<UISelectItem> ticketsAbiertos= null;
+		Map<String, Object>params         = null;
+		List<String> fields               = null;
+		try {
+			fields= new ArrayList<>();
+			params= new HashMap<>();
+			params.put("sortOrder", "");
+			params.put("idEmpresa", this.attrs.get("idEmpresa"));
+			fields.add("consecutivo");
+			fields.add("cuenta");
+			fields.add("precioTotal");
+			params.put(Constantes.SQL_CONDICION, toCondicion(true));
+			ticketsAbiertos= UISelect.build("VistaVentasDto", "lazy", params, fields, " - ", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			if(!ticketsAbiertos.isEmpty()){
+				this.attrs.put("ticketsAbiertos", ticketsAbiertos);
+				if(!ticketsAbiertos.isEmpty())
+					this.attrs.put("ticketAbierto", UIBackingUtilities.toFirstKeySelectItem(ticketsAbiertos));
+				RequestContext.getCurrentInstance().execute("PF('dlgCotizaciones').show();");
+			} // if
+			else{
+				JsfBase.addMessage("Cuentas", "Actualmente no hay cotizaciones abiertas", ETipoMensaje.INFORMACION);
+				RequestContext.getCurrentInstance().execute("janal.desbloquear();");
+			} // else
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // doLoadCotizaciones
+	
 	private String toCondicion() {
+		return toCondicion(false);
+	} // toCondicion
+	
+	private String toCondicion(boolean cotizacion) {
 		StringBuilder regresar= null;
 		try {
 			regresar= new StringBuilder();
-			regresar.append(" date_format(tc_mantic_ventas.registro, '%Y%m%d')= date_format(SYSDATE(), '%Y%m%d')");
-			regresar.append(" and tc_mantic_ventas.id_venta_estatus in (");
-			regresar.append(EEstatusVentas.ELABORADA.getIdEstatusVenta());
-			regresar.append(" , ");			
-			regresar.append(EEstatusVentas.ABIERTA.getIdEstatusVenta());
-			regresar.append(") or tc_mantic_ventas.id_venta_estatus in (");
-			regresar.append(EEstatusVentas.COTIZACION.getIdEstatusVenta());
-			regresar.append(")");
+			if(cotizacion){
+				regresar.append("tc_mantic_ventas.id_venta_estatus in (");
+				regresar.append(EEstatusVentas.COTIZACION.getIdEstatusVenta());
+				regresar.append(") and vigencia is not null");
+			} // if
+			else{
+				regresar.append(" date_format(tc_mantic_ventas.registro, '%Y%m%d')= date_format(SYSDATE(), '%Y%m%d')");
+				regresar.append(" and tc_mantic_ventas.id_venta_estatus in (");
+				regresar.append(EEstatusVentas.ELABORADA.getIdEstatusVenta());
+				regresar.append(" , ");			
+				regresar.append(EEstatusVentas.ABIERTA.getIdEstatusVenta());
+				regresar.append(")");				
+			} // else
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
 		return regresar.toString();
-	} // toCondicion
+	} // toCondicion	
 	
 	public void doAsignaTicketAbierto(){
 		Map<String, Object>params = null;
@@ -534,6 +609,51 @@ public class Accion extends IBaseArticulos implements Serializable {
 			Methods.clean(params);
 		} // finally
 	} // doAsignaTicketAbierto
+	
+	public void doAsignaCotizacion(){
+		Map<String, Object>params = null;
+		Date actual               = null;
+		Date prorroga             = null;
+		Calendar calendar         = null;
+		try {
+			params= new HashMap<>();
+			params.put("idVenta", this.attrs.get("cotizacion"));
+			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
+			calendar= Calendar.getInstance();
+			actual= new Date(calendar.getTimeInMillis());
+			calendar.setTime(((TicketVenta)getAdminOrden().getOrden()).getVigencia());
+			calendar.add(Calendar.DAY_OF_YEAR, 8);
+			prorroga= new Date(calendar.getTimeInMillis());
+			if(actual.after(prorroga))
+				generateNewVenta();
+    	this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
+			this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());
+			toLoadCatalog();
+			doAsignaClienteTicketAbierto();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // doAsignaTicketAbierto
+
+	private void generateNewVenta() throws Exception{
+		IAdminArticulos adminTicketPivote= null;
+		try {
+			adminTicketPivote= getAdminOrden();
+			setAdminOrden(new AdminTickets(new TicketVenta(-1L)));
+			((TicketVenta)getAdminOrden().getOrden()).setIkProveedor(((TicketVenta)adminTicketPivote.getOrden()).getIkCliente());
+			((TicketVenta)getAdminOrden().getOrden()).setIkAlmacen(((TicketVenta)adminTicketPivote.getOrden()).getIkAlmacen());
+			for(Articulo addArticulo : getAdminOrden().getArticulos())
+				toMoveDataArt(addArticulo, -1);			
+		} // try
+		catch (Exception e) {			
+			throw e; 
+		} // catch		
+	} // generateNewVenta
 	
 	private void doAsignaClienteTicketAbierto() throws Exception{		
 		MotorBusqueda motorBusqueda           = null;
