@@ -54,8 +54,9 @@
 	<ui:define name="contenido">
 		<pe:remoteCommand name="updateDescuentos" process="@this" update="panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd"/>  			
 		<pe:remoteCommand name="loginValidate" process="@this @(.janal-login-user)" update="headerCuenta panelEmpresa" actionListener="#{manticVentasAccion.doLogin}" oncomplete="janal.desbloquear();"/>  			
-		<pe:remoteCommand name="userUpdate" process="@this" onstart="janal.bloquear();" actionListener="#{manticVentasAccion.doCerrarTicket}" oncomplete="jsArticulos.activeLogin();" update="deudor contenido panelCliente panelEmpresa articulos total"/>  			
+		<pe:remoteCommand name="userUpdate" process="@this" onstart="janal.bloquear();" actionListener="#{manticVentasAccion.doCerrarTicket}" oncomplete="jsArticulos.activeLogin();" update="deudor contenido tabla panelTotales panelCliente panelEmpresa articulos total @(.filas) @(.recalculo)"/>  			
 		<pe:remoteCommand name="loadTicketAbiertos" process="@this" update="dialogoOpenTickets" actionListener="#{manticVentasAccion.doLoadTicketAbiertos}" onstart="janal.bloquear()"/>  			
+		<pe:remoteCommand name="loadCotizaciones" process="@this" update="dialogoCotizaciones" actionListener="#{manticVentasAccion.doLoadCotizaciones}" onstart="janal.bloquear()"/>  			
 		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticVentasAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
 			<pe:methodParam name="codigo"/>  
@@ -96,7 +97,7 @@
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">					
-					<p:outputLabel value="&lt;strong class='janal-color-blue'&gt;[F7]&lt;/strong&gt; Detalle de articulo &lt;strong class='janal-color-blue'&gt;[F8]&lt;/strong&gt; Almacen de articulo &lt;strong class='janal-color-blue'&gt;[F10]&lt;/strong&gt; Aplicar descuento &lt;strong class='janal-color-blue'&gt;[Ctrl+P]&lt;/strong&gt; Tickets abiertos" styleClass="janal-align-right" escape="false"/>
+					<p:outputLabel value="&lt;strong class='janal-color-blue'&gt;[F7]&lt;/strong&gt; Detalle de articulo &lt;strong class='janal-color-blue'&gt;[F8]&lt;/strong&gt; Almacen de articulo &lt;strong class='janal-color-blue'&gt;[F10]&lt;/strong&gt; Aplicar descuento &lt;strong class='janal-color-blue'&gt;[Ctrl+P]&lt;/strong&gt; Cuentas abiertas &lt;strong class='janal-color-blue'&gt;[F4]&lt;/strong&gt; Cotizaciones abiertas" styleClass="janal-align-right" escape="false"/>
 					<p:panelGrid id="panelEmpresa" columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-70, janal-wid-100">						
 						<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasAccion.attrs.isMatriz}"/>
 						<p:selectOneMenu id="idEmpresa" value="#{manticVentasAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticVentasAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">
@@ -116,7 +117,7 @@
 				<div class="ui-grid-col-12">					
 					<p:panelGrid id="panelCliente" columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-40, janal-wid-5, janal-wid-100">						
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-							<p:outputLabel for="noTicket" value="No. Ticket:"/>
+							<p:outputLabel for="noTicket" value="No. Cuenta:"/>
 							<p:inputText id="noTicket" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasAccion.attrs.consecutivo}" disabled="true"/>								
 						</p:panelGrid>					
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
@@ -217,7 +218,7 @@
 									<f:facet name="header">
 										<h:outputText value="Articulo"/>
 									</f:facet>
-									<h:outputText id="nombres" value="[#{row['codigo']}] #{row['nombre']}" title="Código propio: #{row['propio']}    Existencias almacen: #{row['stock']}" escape="false"/>
+									<h:outputText id="nombres" value="[#{row['propio']}] #{row['nombre']}" title="Código: #{row['codigo']} , Existencias almacen: #{row['stock']}" escape="false"/>
 								</p:column>		
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
 									<f:facet name="header">
@@ -327,9 +328,9 @@
 				<p:commandButton process="@none" styleClass="janal-text-white" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide();jsArticulos.move();"/>
 			</div>
 		</p:dialog>		
-		<p:dialog id="dialogoOpenTickets" widgetVar="dlgOpenTickets" header="Tickets abiertos" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();">			
-			<h:panelGrid columns="2">
-				<p:outputLabel value="Ticket:"/>
+		<p:dialog id="dialogoOpenTickets" widgetVar="dlgOpenTickets" header="Cuentas abiertas" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();" width="50%">			
+			<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+				<p:outputLabel value="Cuenta:"/>
 				<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasAccion.attrs.ticketAbierto}" styleClass="janal-wid-100-txt">
 					<f:selectItems value="#{manticVentasAccion.attrs.ticketsAbiertos}"/>
 				</p:selectOneMenu>
@@ -338,6 +339,19 @@
 			<div class="janal-line-button">
 				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this ticketsAbiertos" value="Aceptar" onstart="PF('dlgOpenTickets').hide();" actionListener="#{manticVentasAccion.doAsignaTicketAbierto}" update="contenido clientes cliente noTicket @(.filas) @(.recalculo)" oncomplete="janal.desbloquear();"/>
 				<p:commandButton icon="fa fa-remove" styleClass="janal-text-white" process="@none" value="Cancelar" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();"/>
+			</div>
+		</p:dialog>							
+		<p:dialog id="dialogoCotizaciones" widgetVar="dlgCotizaciones" header="Cotizaciones" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();" width="50%">			
+			<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+				<p:outputLabel value="Cotización:"/>
+				<p:selectOneMenu id="cotizacion" value="#{manticVentasAccion.attrs.cotizacion}" styleClass="janal-wid-100-txt">
+					<f:selectItems value="#{manticVentasAccion.attrs.cotizaciones}"/>
+				</p:selectOneMenu>
+			</h:panelGrid>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this cotizacion" value="Aceptar" onstart="PF('dlgCotizaciones').hide();" actionListener="#{manticVentasAccion.doAsignaCotizacion}" update="contenido clientes cliente noTicket @(.filas) @(.recalculo)" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-remove" styleClass="janal-text-white" process="@none" value="Cancelar" onstart="PF('dlgCotizaciones').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>							
 		<p:dialog id="dialogoDetalleArticulo" widgetVar="dlgDetalleArt" header="Articulo [#{manticVentasAccion.attrs.detailArticulo.codigo}]" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();" width="60%">			
@@ -458,7 +472,7 @@
 				</div>	
 				<div class="ui-grid-col-2 janal-column-left janal-login-view" style="display: none;">
 					<p:outputLabel id="lblPassword" for="password" value="Contraseña:"/>					
-					<p:password id="password" value="#{manticVentasAccion.attrs.password}" onblur="jsArticulos.toPasswordEnter();" onkeydown="jsArticulos.toPasswordEnter();" styleClass="janal-wid-100-txt janal-login-user"/>
+					<p:password id="password" value="#{manticVentasAccion.attrs.password}" onblur="jsArticulos.toPasswordEnter();" onkeydown="jsArticulos.toPasswordEnter();" styleClass="janal-wid-100-txt janal-login-user" autocomplete="new-password"/>
 				</div>	
 				<div class="ui-grid-col-6">
 				</div>	
@@ -480,9 +494,9 @@
 			<h:form id="dialogosVenta" prependId="false">
 				<h:panelGrid columns="1" styleClass="janal-wid-100">
 					<p:outputLabel for="descuentousr" value="Usuario:"/>
-					<p:inputText id="descuentousr" value="#{manticVentasAccion.attrs.usuarioDescuento}" styleClass="janal-wid-100-txt "/>
+					<p:inputText id="descuentousr" value="#{manticVentasAccion.attrs.usuarioDescuento}" styleClass="janal-wid-100-txt"/>
 					<p:outputLabel for="descuentopswrd" value="Contraseña:"/>
-					<p:password id="descuentopswrd" value="#{manticVentasAccion.attrs.passwordDescuento}" styleClass="janal-wid-100-txt "/>									
+					<p:password id="descuentopswrd" value="#{manticVentasAccion.attrs.passwordDescuento}" styleClass="janal-wid-100-txt" autocomplete="new-password"/>									
 					<p:separator/>
 					<p:outputLabel for="tipoDescuento" value="Tipo de descuento:"/>
 					<p:selectOneRadio id="tipoDescuento" value="#{manticVentasAccion.attrs.tipoDescuento}">
