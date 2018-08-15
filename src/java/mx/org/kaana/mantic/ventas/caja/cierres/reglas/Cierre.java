@@ -151,7 +151,7 @@ public class Cierre extends IBaseTnx implements Serializable  {
 						regresar= DaoFactory.getInstance().update(sesion, efectivo)> 0L;
 					} // if
 					for (Denominacion denominacion: this.denominaciones) 
-					  DaoFactory.getInstance().update(sesion, denominacion);
+					  regresar= DaoFactory.getInstance().update(sesion, denominacion)> 0L;
 					break;
 				case REGISTRAR:
           consecutivo= this.toSiguiente(sesion);

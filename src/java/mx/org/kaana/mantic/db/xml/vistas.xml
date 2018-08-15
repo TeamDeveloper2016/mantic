@@ -399,13 +399,9 @@
 			</select>
 			<select id="denominacion">
 				select 
-				  tc_mantic_monedas.id_moneda, 
+				  tc_mantic_cierres_monedas.*,
 				  tc_mantic_monedas.nombre, 
-				  tc_mantic_monedas.denominacion, 
-				  tc_mantic_cierres_monedas.id_efectivo, 
-				  tc_mantic_cierres_monedas.cantidad, 
-				  tc_mantic_cierres_monedas.importe, 
-				  tc_mantic_cierres_monedas.id_cierre 
+				  tc_mantic_monedas.denominacion
   			from 
 				  tc_mantic_cierres_monedas 
 				inner join 
