@@ -36,7 +36,7 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 	public AdminTickets(TicketVenta orden, boolean loadDefault) throws Exception {
 		this.orden  = orden;
 		if(this.orden.isValid()) {
-  	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticVentasDetallesDto", "detalle", orden.toMap()));
+  	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaTcManticVentasDetallesDto", "detalle", orden.toMap()));
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
       this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdCliente())));
 		}	// if
