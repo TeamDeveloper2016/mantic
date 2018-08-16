@@ -205,7 +205,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			regresar= new StringBuilder();
 			regresar.append("tc_mantic_ventas_estatus.id_venta_estatus in (");
 			for(EEstatusVentas estatus : EEstatusVentas.values()){
-				if(EEstatusVentas.ELABORADA.equals(estatus) || EEstatusVentas.ABIERTA.equals(estatus) || EEstatusVentas.CANCELADA.equals(estatus))
+				if(EEstatusVentas.ELABORADA.equals(estatus) || EEstatusVentas.ABIERTA.equals(estatus))
 					estatusAppend= estatusAppend.concat(estatus.getIdEstatusVenta().toString()).concat(",");
 			} // for
 			regresar.append(estatusAppend.substring(0, estatusAppend.length()-1));
