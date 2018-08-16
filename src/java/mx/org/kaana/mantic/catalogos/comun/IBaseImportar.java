@@ -406,7 +406,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
 		  this.attrs.put("importados", UIEntity.build(proceso, idXml, params, columns));
 		} // try
     catch (Exception e) {
