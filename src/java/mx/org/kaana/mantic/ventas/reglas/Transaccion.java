@@ -66,8 +66,9 @@ public class Transaccion extends IBaseTnx {
 	}
 	
 	public Transaccion(TcManticVentasDto orden, List<Articulo> articulos, String justificacion) {
-		this.orden    = orden;		
-		this.articulos= articulos;
+		this.orden        = orden;		
+		this.articulos    = articulos;
+		this.justificacion= justificacion;
 	} // Transaccion
 
 	public Transaccion(ClienteVenta clienteVenta) {
@@ -99,7 +100,6 @@ public class Transaccion extends IBaseTnx {
 		boolean regresar          = false;
 		Map<String, Object> params= null;
 		Long idEstatusVenta       = null;
-		TcManticVentasDto pivote  = null;
 		try {
 			idEstatusVenta= EEstatusVentas.ELABORADA.getIdEstatusVenta();
 			params= new HashMap<>();
@@ -117,10 +117,8 @@ public class Transaccion extends IBaseTnx {
 					break;				
 				case ELIMINAR:
 					idEstatusVenta= EEstatusVentas.CANCELADA.getIdEstatusVenta();
-					pivote= (TcManticVentasDto) DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.orden.getIdVenta());
-					this.orden.setIdVentaEstatus(idEstatusVenta);
-					this.orden.setTotal(pivote.getTotal());
-					this.orden.setConsecutivo(pivote.getConsecutivo());
+					this.orden= (TcManticVentasDto) DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.orden.getIdVenta());
+					this.orden.setIdVentaEstatus(idEstatusVenta);					
 					if(DaoFactory.getInstance().update(sesion, this.orden)>= 1L)
 						regresar= registraBitacora(sesion, this.orden.getIdVenta(), idEstatusVenta, this.justificacion);					
 					break;
