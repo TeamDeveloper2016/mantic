@@ -112,6 +112,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			loadClienteDefault();
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());
+			this.attrs.put("vigencia", new Date(Calendar.getInstance().getTimeInMillis()));
 			if(JsfBase.isAdminEncuestaOrAdmin())
 				loadSucursales();
 			doLoad();
