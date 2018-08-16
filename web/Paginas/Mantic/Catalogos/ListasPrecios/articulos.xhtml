@@ -12,7 +12,8 @@
 		<script type="text/javascript">
 			Janal.Control.fields = {
 				codigo: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
-				nombre: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
+				nombre: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
+				auxiliar: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
 			};			
 		</script>		
 	</ui:define>
@@ -30,8 +31,25 @@
 							<p:outputLabel for="codigo" value="Código:"/>
 							<p:inputText id="codigo" value="#{manticCatalogosListaPreciosArticulos.attrs.codigo}" styleClass="janal-wid-100-txt"/>              							
 							<p:outputLabel for="nombre" value="Nombre:"/>
-							<p:inputText id="nombre" value="#{manticCatalogosListaPreciosArticulos.attrs.nombre}" styleClass="janal-wid-100-txt"/>              														
-						</h:panelGrid>
+							<p:inputText id="nombre" value="#{manticCatalogosListaPreciosArticulos.attrs.nombre}" styleClass="janal-wid-100-txt"/>    
+              <p:outputLabel for="auxiliar" value="Auxiliar:"/>
+							<p:inputText id="auxiliar" value="#{manticCatalogosListaPreciosArticulos.attrs.auxiliar}" styleClass="janal-wid-100-txt"/>              						
+              <p:outputLabel for="proveedor" value="Proveedor:" styleClass="janal-wid-100-txt"/>	
+            </h:panelGrid>
+            <p:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-90 janal-column-center, janal-wid-10 janal-column-right">											
+              <p:selectOneMenu id="proveedor" value="#{manticCatalogosListaPreciosArticulos.attrs.idProveedor}" var="item"  converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="contains">
+                <p:ajax event="change" process="@this" update="@this" />
+                <f:selectItem itemLabel="SELECCIONE" itemValue="" class="janal-wid-col-90"/>
+                <f:selectItems value="#{manticCatalogosListaPreciosArticulos.attrs.proveedores}" class="janal-wid-col-90" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Razón social">
+                  <h:outputText value="#{item.razonSocial}"/>
+                </p:column>     
+              </p:selectOneMenu>
+              <p:spacer/>
+            </p:panelGrid>
 						<p:separator/>
 						<div class="janal-align-right lg-pantalla">
 							<p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.execute(true);" process="@this codigo nombre" actionListener="#{manticCatalogosListaPreciosArticulos.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
@@ -49,19 +67,19 @@
 								<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							</p:menuButton>
 						</f:facet>												
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.codigo}">
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.codigo}">
 							<f:facet name="header">
 								<h:outputText value="Código"/>
 							</f:facet>
 							<h:outputText value="#{filtro['codigo']}"/>
 						</p:column>														
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.auxiliar}">
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.auxiliar}">
 							<f:facet name="header">
 								<h:outputText value="Auxiliar"/>
 							</f:facet>
 							<h:outputText value="#{filtro['auxiliar']}"/>
 						</p:column>														
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{filtro.descripcion}">
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.descripcion}">
 							<f:facet name="header">
 								<h:outputText value="Descripcion"/>
 							</f:facet>
@@ -73,7 +91,7 @@
 							</f:facet>
 							<h:outputText value="#{filtro['precio']}"/>
 						</p:column>					
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{filtro.proveedor}">
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.proveedor}">
 							<f:facet name="header">
 								<h:outputText value="Proveedor"/>
 							</f:facet>
