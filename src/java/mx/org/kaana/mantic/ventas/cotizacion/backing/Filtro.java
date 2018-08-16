@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.ventas.cuentas.backing;
+package mx.org.kaana.mantic.ventas.cotizacion.backing;
 
 import java.io.Serializable;
 import java.sql.Date;
@@ -37,7 +37,7 @@ import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.EReportes;
 import org.primefaces.context.RequestContext;
 
-@Named(value= "manticVentasCuentasFiltro")
+@Named(value= "manticVentasCotizacionFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
@@ -96,14 +96,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Ventas/Cuentas/filtro");		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Ventas/Cotizacion/filtro");		
 			JsfBase.setFlashAttribute("idVenta", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return "/Paginas/Mantic/Ventas/Cuentas/accion".concat(Constantes.REDIRECIONAR);
+		return "/Paginas/Mantic/Ventas/Cotizacion/accion".concat(Constantes.REDIRECIONAR);
   } // doAccion  
 	
   public void doEliminar() {
@@ -113,9 +113,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
 			transaccion= new Transaccion(new TcManticVentasDto(seleccionado.getKey()), this.attrs.get("justificacionEliminar").toString());
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "La cuenta se ha eliminado correctamente.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Eliminar", "La cotización se ha eliminado correctamente.", ETipoMensaje.ERROR);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la cuenta.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la cotización.", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -154,9 +154,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
 	protected void toLoadCatalog() {
 		List<Columna> columns     = null;
-    Map<String, Object> params= null;
+    Map<String, Object> params= new HashMap<>();
     try {
-			params = new HashMap<>();
 			columns= new ArrayList<>();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
         params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
@@ -205,12 +204,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 			regresar= new StringBuilder();
 			regresar.append("tc_mantic_ventas_estatus.id_venta_estatus in (");
 			for(EEstatusVentas estatus : EEstatusVentas.values()){
-				if(EEstatusVentas.ELABORADA.equals(estatus) || EEstatusVentas.ABIERTA.equals(estatus) || EEstatusVentas.CANCELADA.equals(estatus))
+				if(EEstatusVentas.COTIZACION.equals(estatus) || EEstatusVentas.EXPIRADA.equals(estatus))
 					estatusAppend= estatusAppend.concat(estatus.getIdEstatusVenta().toString()).concat(",");
 			} // for
 			regresar.append(estatusAppend.substring(0, estatusAppend.length()-1));
 			regresar.append(")");
-			condicionEstatus= regresar.toString().concat(" and tc_mantic_ventas.vigencia is null");
+			condicionEstatus= regresar.toString().concat(" and tc_mantic_ventas.vigencia is not null");
 			this.attrs.put("condicionEstatus", condicionEstatus);
 		} // try
 		catch (Exception e) {			
@@ -260,7 +259,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_venta_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(") and id_venta_estatus not in (").concat(EEstatusVentas.COTIZACION.getIdEstatusVenta().toString()).concat(")"));
+			params.put(Constantes.SQL_CONDICION, "id_venta_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(") and id_venta_estatus not in (").concat(EEstatusVentas.ABIERTA.getIdEstatusVenta().toString()).concat(")"));
 			allEstatus= UISelect.build("TcManticVentasEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
 			this.attrs.put("estatus", allEstatus.get(0));

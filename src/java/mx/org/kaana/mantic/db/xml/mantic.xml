@@ -3195,6 +3195,24 @@
 				  and date_format(dia, '%Y%m%d') = '{dia}'
 				  and id_empresa= {idEmpresa}				
 			</select>			
+      <select id="siguienteCotizacion">
+        select
+					max(ccotizacion)+ 1 as siguiente
+				from 
+					tc_mantic_ventas
+				where
+				  ejercicio= {ejercicio} 				  
+				  and id_empresa= {idEmpresa}				
+			</select>			
+      <select id="siguienteTicket">
+        select
+					max(cticket)+ 1 as siguiente
+				from 
+					tc_mantic_ventas
+				where
+				  ejercicio= {ejercicio} 				  
+				  and id_empresa= {idEmpresa}				
+			</select>			
 			<update id="rows">
 				update 
 				  tc_mantic_ventas 

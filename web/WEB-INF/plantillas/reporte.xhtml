@@ -218,13 +218,13 @@
 										</p:commandLink>
 									</h:panelGrid>
 								</p:panel>
-                <p:dialog id="confirmacion" widgetVar="dialogoConfirmacion" header="#{empty tituloConfirmacion? 'Confirmación': tituloConfirmacion}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false"  onHide="#{empty onHideDlg? 'janal.desbloquear();': onHideDlg}">
+                <p:dialog id="confirmacion" widgetVar="dialogoConfirmacion" header="#{empty tituloConfirmacion? 'Confirmación': tituloConfirmacion}" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false"  onHide="#{empty onHideDlg? 'janal.desbloquear();': onHideDlg}" width="60%">
                   <h:outputText value="#{textoConfirmacion}" escape="false"/>
                   <ui:insert name="detalleConfirmacion" />
                   <hr class="ui-widget-content"/>
                   <div class="janal-line-button">
-                    <p:commandButton id="confirmar" process="@form" update="#{empty updateComponent? 'temporal': updateComponent}"  value="Aceptar" action="#{accionConfirmacion[eventoConfirmacion]}" oncomplete="PF('dialogoConfirmacion').hide();janal.desbloquear();" rendered="#{empty renderedConfirmacion? false: renderedConfirmacion}"/>
-                    <p:commandButton process="@none"  value="#{renderedConfirmacion?'Cancelar':'Regresar'}" oncomplete="PF('dialogoConfirmacion').hide();"/>
+                    <p:commandButton id="confirmar" icon="fa fa-check" process="@form" update="#{empty updateComponent? 'temporal': updateComponent}"  value="Aceptar" action="#{accionConfirmacion[eventoConfirmacion]}" oncomplete="PF('dialogoConfirmacion').hide();janal.desbloquear();" rendered="#{empty renderedConfirmacion? false: renderedConfirmacion}" styleClass="janal-text-white"/>
+                    <p:commandButton process="@none" icon="fa fa-close" value="#{renderedConfirmacion?'Cancelar':'Regresar'}" oncomplete="PF('dialogoConfirmacion').hide();" styleClass="janal-text-white"/>
                   </div>
                 </p:dialog> 								
               </p:panel>						
