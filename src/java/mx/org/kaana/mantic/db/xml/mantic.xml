@@ -3267,25 +3267,7 @@
         where      
           id_venta_bitacora = {idVentaBitacora} and id_venta = {idVenta} and id_venta_estatus = {idVentaEstatus}
       </select>
-    </unit>				
-    <unit id="TcManticVentasDetallesDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tc_mantic_ventas_detalles
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tc_mantic_ventas_detalles
-        where      
-          id_venta_detalle = {idVentaDetalle} and id_articulo = {idArticulo} and id_venta = {idVenta}
-      </select>
-    </unit>		
+    </unit>				    
     <unit id="TcManticNotasEntradasDto">
       <select id="row">
         select      
