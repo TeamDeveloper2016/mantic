@@ -137,8 +137,10 @@
 							<h:outputText value="#{item.razonSocial}"/>
 						</p:column>     
 					</p:selectOneMenu>
-					<p:outputLabel for="observacion" value="Observacion:"/>
-					<p:inputTextarea id="observacion" value="#{manticCatalogosListaPreciosFiltro.attrs.observacion}" styleClass="janal-wid-100-txt"/>
+          <h:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+            <p:outputLabel for="observacion" value="Observación:"/>
+            <p:inputTextarea id="observacion" value="#{manticCatalogosListaPreciosFiltro.attrs.observacion}" styleClass="janal-wid-100-txt"/>
+          </h:panelGrid>
 				</h:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">

@@ -15,6 +15,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -38,8 +39,8 @@ public class Proveedores extends IBaseAttribute implements java.io.Serializable
   @PostConstruct
   protected void init(){
     try {
-      attrs.put("sortOrder", "order by tc_mantic_proveedores.razon_social");
-      attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.attrs.put("sortOrder", "order by tc_mantic_proveedores.razon_social");
+      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
     }
     catch (Exception e) {
       Error.mensaje(e);
@@ -67,19 +68,18 @@ public class Proveedores extends IBaseAttribute implements java.io.Serializable
   }
   
   public void doLoad(){
-    List<Columna> campos = null;
+    Map<String, Object> params = null;
     try {
-      campos = new ArrayList();
-      campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      lazyModel = DaoFactory.getInstance().toEntitySet("VistaListasArchivosDto", "lazyProveedores", this.attrs);
+      params = toPrepare();
+      params.put("sortOrder", "order by tc_mantic_proveedores.razon_social");
+      lazyModel = DaoFactory.getInstance().toEntitySet("VistaListasArchivosDto", "lazyProveedores", params);
     }
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     }
     finally {
-      Methods.clean(campos);
+      Methods.clean(params);
     }
   }
   
@@ -133,5 +133,23 @@ public class Proveedores extends IBaseAttribute implements java.io.Serializable
 			throw e;
 		} // catch
 	} // toWriteFile
+ 
+  private Map<String, Object> toPrepare() {
+	  Map<String, Object> regresar= new HashMap<>();	
+		StringBuilder sb= new StringBuilder();
+		if(!Cadena.isVacio(this.attrs.get("clave")))
+  		sb.append("tc_mantic_proveedores.rfc like '%").append(this.attrs.get("clave")).append("%'");
+		if(!Cadena.isVacio(this.attrs.get("razonSocial")))
+  		sb.append((!Cadena.isVacio(this.attrs.get("clave"))?" and ":" ").concat("tc_mantic_proveedores.razon_social like '%")).append(this.attrs.get("razonSocial")).append("%' ");
+		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
+		else
+		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+		if(sb.length()== 0)
+		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+		else	
+		  regresar.put(Constantes.SQL_CONDICION, sb);
+		return regresar;
+	}
   
 }

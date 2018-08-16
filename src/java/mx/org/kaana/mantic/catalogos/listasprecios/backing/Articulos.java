@@ -1,8 +1,10 @@
-package mx.org.kaana.mantic.catalogos.articulos.backing;
+package mx.org.kaana.mantic.catalogos.listasprecios.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -11,6 +13,8 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
@@ -37,12 +41,14 @@ public class Articulos extends Comun implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> campos = null;
+    List<Columna> campos      = null;
+    Map<String, Object>params = null;
     try {
       campos = new ArrayList<>();
+      params = toPrepare();
       campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));
-      this.lazyModel = new FormatCustomLazy("VistaListasArchivosDto", "lazyArticulos", this.attrs, campos);
+      this.lazyModel = new FormatCustomLazy("VistaListasArchivosDto", "lazyArticulos", params, campos);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -53,5 +59,19 @@ public class Articulos extends Comun implements Serializable {
       Methods.clean(campos);
     } // finally		
   } // doLoad
-
+  
+  private Map<String, Object> toPrepare() {
+	  Map<String, Object> regresar= new HashMap<>();	
+		StringBuilder sb= new StringBuilder();
+		if(!Cadena.isVacio(this.attrs.get("codigo")))
+  		sb.append("upper(tc_mantic_listas_precios_detalles.codigo) like upper('%").append(this.attrs.get("codigo")).append("%')");
+		if(!Cadena.isVacio(this.attrs.get("razonSocial")))
+  		sb.append((!Cadena.isVacio(this.attrs.get("codigo"))?" and ":" ").concat("upper(tc_mantic_listas_precios_detalles.descripcion) like upper('%")).append(this.attrs.get("nombre")).append("%') ");
+		if(sb.length()== 0)
+		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+		else	
+		  regresar.put(Constantes.SQL_CONDICION, sb);
+		return regresar;
+	}
+ 
 }
