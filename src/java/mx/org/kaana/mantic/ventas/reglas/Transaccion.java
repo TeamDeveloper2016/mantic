@@ -1,6 +1,8 @@
 package mx.org.kaana.mantic.ventas.reglas;
 
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +50,7 @@ public class Transaccion extends IBaseTnx {
 	private String messageError;	
 	private String justificacion;
 	private Long idClienteNuevo;
+	private Date vigencia;
 
 	public Transaccion(TcManticVentasBitacoraDto bitacora) {
 		this.bitacora= bitacora;
@@ -62,13 +65,22 @@ public class Transaccion extends IBaseTnx {
 	} // Transaccion
 
 	public Transaccion(TcManticVentasDto orden, List<Articulo> articulos) {
-		this(orden, articulos, "");
+		this(orden, articulos, new Date(Calendar.getInstance().getTimeInMillis()));
 	}
 	
-	public Transaccion(TcManticVentasDto orden, List<Articulo> articulos, String justificacion) {
+	public Transaccion(TcManticVentasDto orden, List<Articulo> articulos, Date vigencia) {
+		this(orden, articulos, "", vigencia);
+	}
+	
+	public Transaccion(TcManticVentasDto orden, List<Articulo> articulos, String justificacion) { 
+		this(orden, articulos, justificacion, new Date(Calendar.getInstance().getTimeInMillis()));
+	}
+	
+	public Transaccion(TcManticVentasDto orden, List<Articulo> articulos, String justificacion, Date vigencia) {
 		this.orden        = orden;		
 		this.articulos    = articulos;
 		this.justificacion= justificacion;
+		this.vigencia     = vigencia;
 	} // Transaccion
 
 	public Transaccion(ClienteVenta clienteVenta) {
@@ -107,6 +119,11 @@ public class Transaccion extends IBaseTnx {
 				params.put("idVenta", this.orden.getIdVenta());
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el ticket de venta.");
 			switch(accion) {
+				case GENERAR:
+					idEstatusVenta= EEstatusVentas.COTIZACION.getIdEstatusVenta();
+					this.orden.setVigencia(this.vigencia);
+					regresar= this.orden.getIdVenta()!= null && !this.orden.getIdVenta().equals(-1L) ? actualizarVenta(sesion, idEstatusVenta) : registrarVentaCotizacion(sesion, idEstatusVenta, true);					
+					break;
 				case AGREGAR:
 				case REGISTRAR:			
 					idEstatusVenta= accion.equals(EAccion.AGREGAR) ? EEstatusVentas.ABIERTA.getIdEstatusVenta() : idEstatusVenta;
@@ -150,11 +167,21 @@ public class Transaccion extends IBaseTnx {
 	}	// ejecutar
 
 	private boolean registrarVenta(Session sesion, Long idEstatusVenta) throws Exception{
-		boolean regresar= false;
-		Long consecutivo= -1L;
-		try {
-			consecutivo= this.toSiguiente(sesion);
-			this.orden.setConsecutivo(consecutivo);
+		return registrarVentaCotizacion(sesion, idEstatusVenta, false);
+	}
+	
+	private boolean registrarVentaCotizacion(Session sesion, Long idEstatusVenta, boolean cotizacion) throws Exception{
+		boolean regresar          = false;
+		Long consecutivo          = -1L;
+		Long consecutivoCotizacion= -1L;
+		try {			
+			if(cotizacion){
+				consecutivoCotizacion= this.toSiguienteCotizacion(sesion);
+				this.orden.setCcotizacion(consecutivoCotizacion);
+				this.orden.setCotizacion(Fecha.getAnioActual() + Cadena.rellenar(consecutivoCotizacion.toString(), 5, '0', true));
+			} // if
+			consecutivo= this.toSiguiente(sesion);			
+			this.orden.setConsecutivo(consecutivo);			
 			this.orden.setOrden(consecutivo);
 			this.orden.setIdVentaEstatus(idEstatusVenta);
 			this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
@@ -229,6 +256,26 @@ public class Transaccion extends IBaseTnx {
 			params.put("dia", Fecha.getHoyEstandar());
 			params.put("idEmpresa", this.orden.getIdEmpresa());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticVentasDto", "siguiente", params, "siguiente");
+			if(next.getData()!= null)
+				regresar= next.toLong();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toSiguiente
+	
+	private Long toSiguienteCotizacion(Session sesion) throws Exception {
+		Long regresar             = 1L;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("idEmpresa", this.orden.getIdEmpresa());
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticVentasDto", "siguienteCotizacion", params, "siguiente");
 			if(next.getData()!= null)
 				regresar= next.toLong();
 		} // try
