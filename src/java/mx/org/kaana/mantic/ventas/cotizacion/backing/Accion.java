@@ -165,7 +165,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			if (transaccion.ejecutar(EAccion.GENERAR)) {
 				if(eaccion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
-    			RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la cotización ', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getCotizacion()+ "');");
+    			RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la cotización ', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getCcotizacion()+ "');");
 					this.init();
 				} // if	
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la cotización."), ETipoMensaje.INFORMACION);
