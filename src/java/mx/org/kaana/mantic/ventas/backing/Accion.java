@@ -613,18 +613,12 @@ public class Accion extends IBaseArticulos implements Serializable {
 	public void doAsignaCotizacion(){
 		Map<String, Object>params = null;
 		Date actual               = null;
-		Date prorroga             = null;
-		Calendar calendar         = null;
 		try {
 			params= new HashMap<>();
 			params.put("idVenta", this.attrs.get("cotizacion"));
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
-			calendar= Calendar.getInstance();
-			actual= new Date(calendar.getTimeInMillis());
-			calendar.setTime(((TicketVenta)getAdminOrden().getOrden()).getVigencia());
-			calendar.add(Calendar.DAY_OF_YEAR, 8);
-			prorroga= new Date(calendar.getTimeInMillis());
-			if(actual.after(prorroga))
+			actual= new Date(Calendar.getInstance().getTimeInMillis());
+			if(actual.after(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
 				generateNewVenta();
     	this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 			this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());
