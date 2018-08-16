@@ -42,8 +42,8 @@
                   <ui:insert name="detalleConfirmacion" />
                   <hr class="ui-widget-content"/>
                   <div class="janal-line-button">
-                    <p:commandButton id="confirmar" process="@form" update="#{empty updateComponent? 'temporal': updateComponent}"  value="Aceptar" action="#{accionConfirmacion[eventoConfirmacion]}" oncomplete="PF('dialogoConfirmacion').hide();janal.desbloquear();" rendered="#{empty renderedConfirmacion? false: renderedConfirmacion}" icon="fa fa-check"/>
-                    <p:commandButton process="@none"  value="#{renderedConfirmacion?'Cancelar':'Regresar'}" oncomplete="PF('dialogoConfirmacion').hide();" icon="fa fa-close"/>
+                    <p:commandButton id="confirmar" process="@form" update="#{empty updateComponent? 'temporal': updateComponent}"  value="Aceptar" action="#{accionConfirmacion[eventoConfirmacion]}" oncomplete="PF('dialogoConfirmacion').hide();janal.desbloquear();" rendered="#{empty renderedConfirmacion? false: renderedConfirmacion}" icon="fa fa-check" styleClass="janal-text-white"/>
+                    <p:commandButton process="@none"  value="#{renderedConfirmacion?'Cancelar':'Regresar'}" oncomplete="PF('dialogoConfirmacion').hide();" icon="fa fa-close" styleClass="janal-text-white"/>
                   </div>
                 </p:dialog> 								
               </p:panel>						
