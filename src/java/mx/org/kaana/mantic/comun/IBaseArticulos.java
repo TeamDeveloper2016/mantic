@@ -92,7 +92,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				temporal.setIva(articulo.toDouble("iva"));				
 				temporal.setDescuento(this.adminOrden.getDescuento());
 				temporal.setExtras(this.adminOrden.getExtras());				
-				if(temporal.getCantidad() <= 1D)					
+				if(temporal.getCantidad()< 1D)					
 					temporal.setCantidad(1D);
 				temporal.setUltimo(this.attrs.get("ultimo")!= null);
 				temporal.setSolicitado(this.attrs.get("solicitado")!= null);
@@ -213,7 +213,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
     } // finally
 	}	
 
-	public void doDeleteArticulo(Integer index) {
+	public void doDeleteArticulo(Integer index, Boolean isCantidad) {
     try {
 			if(this.adminOrden.getArticulos().size()== 1 || index.equals(this.adminOrden.getArticulos().size()- 1)) {			
 				Articulo temporal= this.adminOrden.getArticulos().get(index);
@@ -229,7 +229,10 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			} // if
 			else 
   			this.adminOrden.getArticulos().remove(index.intValue());
-			this.adminOrden.toCalculate();
+			if(isCantidad)
+			  this.adminOrden.toCantidad();
+			else
+			  this.adminOrden.toCalculate();
 			RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
 		} // try
 	  catch (Exception e) {
@@ -237,6 +240,10 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			JsfBase.addMessageError(e);
     } // catch   
 	}	
+	
+	public void doDeleteArticulo(Integer index) {
+		this.doDeleteArticulo(index, Boolean.FALSE);
+	}
 
 	public void doCalculate(Integer index) {
 		this.adminOrden.toCalculate();

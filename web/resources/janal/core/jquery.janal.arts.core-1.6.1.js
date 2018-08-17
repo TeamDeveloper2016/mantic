@@ -357,8 +357,9 @@
 				if(ok.error)
 				  $(this.amount()).val(temp);
 				else {
+    			janal.console('jsArticulo.refresh: ');
 					this.set('');
-	 				this.refresh();
+	 				refresh(this.cursor.index);
 				} // if
 			  return ok.error;
 			} // if	

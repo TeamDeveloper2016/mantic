@@ -50,7 +50,7 @@ public class UtilAplicacion {
 
   private static final String LESS = "less.min-2.5.0.js";
   private static final String CORE = "jquery.janal.core-2.2.4.js";
-  private static final String CALC = "jquery.janal.arts.core-1.6.0.js";
+  private static final String CALC = "jquery.janal.arts.core-1.6.1.js";
   private static final String DLGS = "jquery.janal.precio.core-0.1.2.js";
   private static final String CSS  = "mantic-0.1.2.css";
   private static final String FUSION= "jquery.janal.fusion.charts-3.3.1.js";

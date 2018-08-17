@@ -319,4 +319,10 @@ public class Accion extends IBaseArticulos implements Serializable {
       Methods.clean(params);
     } // finally
   } // loadProveedores
+	
+	@Override
+	public void doDeleteArticulo(Integer index) {
+		this.doDeleteArticulo(index, Boolean.TRUE);
+	}	
+	
 }
