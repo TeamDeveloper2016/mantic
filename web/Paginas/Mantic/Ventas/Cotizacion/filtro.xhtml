@@ -10,6 +10,7 @@
     <script type="text/javascript">
       Janal.Control.fields = {
         'idEmpresa'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'articulo'       : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'consecutivo'    : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
         'idCliente'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
@@ -60,7 +61,7 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
-              <p:outputLabel for="consecutivo" value="No. orden:"/>
+              <p:outputLabel for="consecutivo" value="No. cotización:"/>
               <p:inputText id="consecutivo" value="#{manticVentasCotizacionFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="idCliente" value="Cliente:"/>
               <p:selectOneMenu id="idCliente" value="#{manticVentasCotizacionFiltro.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains">
@@ -76,6 +77,8 @@
                   <h:outputText value="#{item.limiteCredito}"/>
                 </p:column>   
               </p:selectOneMenu>
+							<p:outputLabel for="articulo" value="Articulo:"/>
+              <p:inputText id="articulo" value="#{manticVentasCotizacionFiltro.attrs.articulo}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticVentasCotizacionFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>

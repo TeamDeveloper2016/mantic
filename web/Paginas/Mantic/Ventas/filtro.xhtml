@@ -10,7 +10,7 @@
     <script type="text/javascript">
       Janal.Control.fields = {
         'idEmpresa'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'consecutivo'    : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
+        'consecutivo'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'idCliente'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
@@ -60,7 +60,7 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
-              <p:outputLabel for="consecutivo" value="No. orden:"/>
+              <p:outputLabel for="consecutivo" value="No. cuenta:"/>
               <p:inputText id="consecutivo" value="#{manticVentasFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="idCliente" value="Cliente:"/>
               <p:selectOneMenu id="idCliente" value="#{manticVentasFiltro.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains">
