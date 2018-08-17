@@ -117,7 +117,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 				if(eaccion.equals(EAccion.AGREGAR)) { 				  
     			RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 requisición', '"+ this.registroRequisicion.getRequisicion().getConsecutivo()+ "');");
 				} // if	
-				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" el ticket de venta."), ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la requsicion."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idRequisicion", this.registroRequisicion.getRequisicion().getIdRequisicion());				
 			} // if
 			else 

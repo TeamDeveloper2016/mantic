@@ -92,7 +92,7 @@ public class Transaccion extends IBaseTnx {
 			params= new HashMap<>();
 			if(this.requisicion!= null)
 				params.put("idRequisicion", this.requisicion.getRequisicion().getIdRequisicion());
-			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el ticket de venta.");
+			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la requisición.");
 			switch(accion) {
 				case AGREGAR:
 				case REGISTRAR:			
@@ -129,7 +129,7 @@ public class Transaccion extends IBaseTnx {
 			throw new Exception(this.messageError.concat("\n\n")+ e.getMessage());
 		} // catch		
 		if(this.requisicion!= null)
-			LOG.info("Se genero de forma correcta la orden: "+ this.requisicion.getRequisicion().getConsecutivo());
+			LOG.info("Se genero de forma correcta la requsición: "+ this.requisicion.getRequisicion().getConsecutivo());
 		return regresar;
 	}	// ejecutar
 
