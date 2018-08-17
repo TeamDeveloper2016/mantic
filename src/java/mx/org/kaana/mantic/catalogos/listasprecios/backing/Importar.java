@@ -7,6 +7,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -41,7 +42,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	public TcManticProveedoresDto getProveedor() {
 		return proveedor;
 	}
-	
+  
 	@PostConstruct
   @Override
   protected void init() {		
@@ -70,12 +71,13 @@ public class Importar extends IBaseImportar implements Serializable {
 		if(event.getTab().getTitle().equals("Archivos")) 
 			this.doLoadImportados("VistaListasArchivosDto", "importados", this.lista.toMap());
 		else
-		  if(event.getTab().getTitle().equals("Importar")) 
+		  if(event.getTab().getTitle().equals("Importar")) {
 				this.doLoadFiles("TcManticListasPreciosArchivosDto", this.lista.getIdListaPrecio(), "idListaPrecio");
+      }
 	}		
 
 	public void doFileUpload(FileUploadEvent event) {
-		this.doFileUpload(event, this.lista.getRegistro().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios"), this.proveedor.getClave());
+		this.doFileUpload(event, this.lista.getRegistro().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios"), this.proveedor.getClave(), this.lista.getKey().toString());
 	} // doFileUpload	
 	
 	public void doViewDocument() {
@@ -109,5 +111,9 @@ public class Importar extends IBaseImportar implements Serializable {
 		} // catch
     return regresar;
 	}	
+  
+  public void doCompleto() {
+		JsfBase.addMessage("Detalle del mensaje", "Se agregaron correctamente los artículos.", ETipoMensaje.INFORMACION);		
+	} // doCompleto
 
 }

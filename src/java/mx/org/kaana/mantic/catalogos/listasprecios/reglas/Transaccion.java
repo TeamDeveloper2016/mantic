@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -92,6 +93,8 @@ public class Transaccion extends IBaseTnx {
 	protected void toUpdateXls(Session sesion) throws Exception {
 		//(idListaPrecio,ruta,tamanio,idUsuario,idTipoArchivo,observaciones,idPrincipal,alias,idListaPrecioArchivo,nombre)
     TcManticListasPreciosArchivosDto tmp= null;
+    int i=0;
+    int reg = 0;
 		if(this.lista.getIdListaPrecio()!= -1L) {
 			if(this.xls!= null) {
 				tmp= new TcManticListasPreciosArchivosDto(
@@ -110,10 +113,24 @@ public class Transaccion extends IBaseTnx {
         DaoFactory.getInstance().deleteAll(sesion, TcManticListasPreciosDetallesDto.class, tmp.toMap());
         DaoFactory.getInstance().insert(sesion, tmp);
         sesion.flush();
+        Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
+        monitoreo.comenzar(0L);
+        monitoreo.setTotal(Long.valueOf(this.articulos.size()));
         for(TcManticListasPreciosDetallesDto articulo:this.articulos){
           articulo.setIdListaPrecio(this.lista.getIdListaPrecio());
           DaoFactory.getInstance().insert(sesion, articulo);
+          monitoreo.setProgreso((long)(reg* 100/ monitoreo.getTotal()));
+          monitoreo.incrementar();
+          i++;
+          reg++;
+          if(i==1000){
+            sesion.flush();
+            i=0;
+          }
         }
+        monitoreo.setProgreso(0L);
+        monitoreo.setTotal(0L);
+        monitoreo.terminarBP();
 				//this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.xls.getRuta()), ".".concat(this.xls.getFormat().name()), this.toListFile(sesion, this.xls, 1L));
 			} // if	
 			if(this.pdf!= null) {
