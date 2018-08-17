@@ -529,7 +529,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 	} // doLoadTicketAbiertos
 	
 	public void doLoadCotizaciones(){
-		List<UISelectItem> ticketsAbiertos= null;
+		List<UISelectItem> cotizaciones= null;
 		Map<String, Object>params         = null;
 		List<String> fields               = null;
 		try {
@@ -541,11 +541,11 @@ public class Accion extends IBaseArticulos implements Serializable {
 			fields.add("cuenta");
 			fields.add("precioTotal");
 			params.put(Constantes.SQL_CONDICION, toCondicion(true));
-			ticketsAbiertos= UISelect.build("VistaVentasDto", "lazy", params, fields, " - ", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
-			if(!ticketsAbiertos.isEmpty()){
-				this.attrs.put("ticketsAbiertos", ticketsAbiertos);
-				if(!ticketsAbiertos.isEmpty())
-					this.attrs.put("ticketAbierto", UIBackingUtilities.toFirstKeySelectItem(ticketsAbiertos));
+			cotizaciones= UISelect.build("VistaVentasDto", "lazy", params, fields, " - ", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			if(!cotizaciones.isEmpty()){
+				this.attrs.put("cotizaciones", cotizaciones);
+				if(!cotizaciones.isEmpty())
+					this.attrs.put("cotizacion", UIBackingUtilities.toFirstKeySelectItem(cotizaciones));
 				RequestContext.getCurrentInstance().execute("PF('dlgCotizaciones').show();");
 			} // if
 			else{
