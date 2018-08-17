@@ -119,7 +119,7 @@
               <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
                 <p:outputLabel value="Total de artículos a importar: #{manticCatalogosListaPreciosImportar.articulos.size()}" styleClass="importado janal-color-orange janal-steps-boton-siguiente janal-font-bold"/>
 							</p:panelGrid>
-              <p:panel styleClass="tabla-filtro" id="barra">
+              <p:panel styleClass="tabla-filtro" id="barra" >
                 Proceso:
                 <p:progressBar interval="500" styleClass="animate" labelTemplate="{value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.monitoreo.progreso}" global="false" >
                   <p:ajax event="complete" listener="#{manticCatalogosListaPreciosImportar.doCompleto}" />  
