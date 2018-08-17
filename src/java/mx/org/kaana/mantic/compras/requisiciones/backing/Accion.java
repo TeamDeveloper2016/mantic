@@ -210,7 +210,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 				temporal.setIva(articulo.toDouble("iva"));
 				temporal.setDescuento(getAdminOrden().getDescuento());
 				temporal.setExtras(getAdminOrden().getExtras());
-				temporal.setCantidad(1D);
+				if(temporal.getCantidad()< 1D)
+				  temporal.setCantidad(1D);
 				temporal.setUltimo(this.attrs.get("ultimo")!= null);
 				temporal.setSolicitado(this.attrs.get("solicitado")!= null);
 				Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
@@ -220,6 +221,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 					RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (getAdminOrden().getArticulos().size()- 1)+ ");");
 				} // if	
 				RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");				
+				this.getAdminOrden().toCantidad();
 			} // if	
 			else
 				temporal.setNombre("<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");

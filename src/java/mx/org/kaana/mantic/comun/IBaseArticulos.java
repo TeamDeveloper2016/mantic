@@ -152,7 +152,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			temporal.setIva(articulo.getIva());
 			temporal.setDescuento(this.adminOrden.getDescuento());
 			temporal.setExtras(this.adminOrden.getExtras());				
-			if(temporal.getCantidad() <= 1D)					
+			if(temporal.getCantidad() < 1D)					
 				temporal.setCantidad(1D);
 			temporal.setUltimo(this.attrs.get("ultimo")!= null);
 			temporal.setSolicitado(this.attrs.get("solicitado")!= null);

@@ -12,7 +12,9 @@
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.articulosJs}"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 								
-				'contenedorGrupos\\:observaciones': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true}
+				'cantidades'                          : {mutiple: '$', validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre'},
+				'contenedorGrupos\\:tabla\\:articulos': {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre'},
+				'contenedorGrupos\\:observaciones'    : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
 			};	
 			
     	$(document).ready(function() {
@@ -29,16 +31,16 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
-		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticComprasRequisicionesAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
+		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticComprasRequisicionesAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 500); janal.reset();">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
 			<pe:methodParam name="codigo"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="suppress" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticComprasRequisicionesAccion.doDeleteArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();">  
+		<pe:remoteCommand name="suppress" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticComprasRequisicionesAccion.doDeleteArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); janal.reset();">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="refresh" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticComprasRequisicionesAccion.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.next();">  
+		<pe:remoteCommand name="refresh" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticComprasRequisicionesAccion.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.next(); janal.reset();">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
@@ -52,11 +54,11 @@
 			<pe:methodParam name="idArticulo"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="replace" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion) " actionListener="#{manticComprasRequisicionesAccion.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
+		<pe:remoteCommand name="replace" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion) " actionListener="#{manticComprasRequisicionesAccion.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 500); janal.reset();">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
-		<p:remoteCommand name="lookup" actionListener="#{manticComprasRequisicionesAccion.doUpdateArticulos}" process="@this codigo" update="buscados"/>
+		<p:remoteCommand name="lookup" actionListener="#{manticComprasRequisicionesAccion.doUpdateArticulos}" process="@this codigo" update="buscados" oncomplete="janal.reset();"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">																											
@@ -132,7 +134,7 @@
 								</p:column>		
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 									<f:facet name="header">
-										<h:outputText value="Cantidad"/>
+										<p:outputLabel for="cantidades" value="Cantidad"/>
 									</f:facet>
 									<p:outputLabel value="#{row['cantidad']}"/>
 									<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.precio($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
@@ -150,7 +152,8 @@
 									<p:outputLabel value="#{row['propio']}"/>
 								</p:column>											
 								<f:facet name="footer">
-									<p:outputLabel styleClass="janal-wid-100-txt filas recalculo" value="Total de articulos: #{manticComprasRequisicionesAccion.adminOrden.totales.articulos}; cantidad: [ #{manticComprasRequisicionesAccion.doNumericoSat(manticComprasRequisicionesAccion.adminOrden.totales.cantidad)} ]"/>
+									<p:outputLabel for="articulos" styleClass="janal-wid-100-txt filas recalculo" value="Total de articulos: #{manticComprasRequisicionesAccion.adminOrden.totales.articulos}; cantidad: [ #{manticComprasRequisicionesAccion.doNumericoSat(manticComprasRequisicionesAccion.adminOrden.totales.cantidad)} ]"/>
+									<p:inputText id="articulos" value="#{manticComprasRequisicionesAccion.adminOrden.totales.articulos}" style="display:none"/>
 								</f:facet>
 							</p:dataTable>	
 						</p:tab>
@@ -249,11 +252,11 @@
 	</ui:define>    
 	<ui:define name="acciones">		
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasRequisicionesAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('articulo', true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasRequisicionesAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasRequisicionesAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasRequisicionesAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('articulo', true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasRequisicionesAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasRequisicionesAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 		</div>						
 	</ui:define>
