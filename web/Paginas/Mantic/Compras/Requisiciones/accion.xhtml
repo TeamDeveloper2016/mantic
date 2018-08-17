@@ -126,6 +126,12 @@
 										</div>	
 									</div>	
 								</p:column>
+								<p:column class="MarAuto Responsive janal-wid-10">
+									<f:facet name="header">
+										<h:outputText value="Código propio"/>
+									</f:facet>
+									<p:outputLabel value="#{row['propio']}"/>
+								</p:column>											
 								<p:column  class="MarAuto Responsive">
 									<f:facet name="header">
 										<h:outputText value="Articulo"/>
@@ -144,12 +150,6 @@
 										<h:outputText value="Unidad medida"/>
 									</f:facet>
 									<p:outputLabel value="#{row['unidadMedida']}"/>
-								</p:column>											
-								<p:column class="MarAuto Responsive janal-wid-10">
-									<f:facet name="header">
-										<h:outputText value="Propio"/>
-									</f:facet>
-									<p:outputLabel value="#{row['propio']}"/>
 								</p:column>											
 								<f:facet name="footer">
 									<p:outputLabel for="articulos" styleClass="janal-wid-100-txt filas recalculo" value="Total de articulos: #{manticComprasRequisicionesAccion.adminOrden.totales.articulos}; cantidad: [ #{manticComprasRequisicionesAccion.doNumericoSat(manticComprasRequisicionesAccion.adminOrden.totales.cantidad)} ]"/>
