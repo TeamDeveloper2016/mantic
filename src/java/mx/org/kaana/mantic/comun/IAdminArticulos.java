@@ -172,6 +172,15 @@ public abstract class IAdminArticulos implements Serializable {
 		this.toCalculate();
 	}
 
+	public void toCantidad() {
+		this.totales.reset();
+		for (Articulo articulo : this.articulos) {
+			this.totales.addArticulo(articulo.getIdArticulo());
+			if(articulo.getIdArticulo()> 0)
+			  this.totales.addCantidad(articulo.getCantidad());
+		} // for
+	}
+	
 	@Override
 	protected void finalize() throws Throwable {
 		Methods.clean(this.articulos);

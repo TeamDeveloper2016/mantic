@@ -231,7 +231,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 	
 	@Override
 	public void doCalculate(Integer index) {
-		//this.adminOrden.toCalculate();
+		this.getAdminOrden().toCantidad();
 	} // doCalculate
 	
 	private String toDescuentoVigente(Long idArticulo, Long idCliente) throws Exception{

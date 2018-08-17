@@ -27,12 +27,13 @@ public final class Totales implements Serializable {
 	private double total;
 	private double utilidad;
 	private double global;
+	private double cantidad;
 
 	public Totales() {
-		this(0, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D);
+		this(0, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D, 0D);
 	}
 
-	public Totales(int articulos, double importe, double iva, double descuento, double extra, double subTotal, double total, double utilidad, double global) {
+	public Totales(int articulos, double importe, double iva, double descuento, double extra, double subTotal, double total, double utilidad, double global, double cantidad) {
 		this.articulos=articulos;
 		this.importe= importe; 
 		this.iva=iva;
@@ -42,6 +43,7 @@ public final class Totales implements Serializable {
 		this.total=total;
 		this.utilidad= utilidad;
 		this.global= global;
+		this.cantidad= cantidad;
 	}
 
 	public int getArticulos() {
@@ -183,7 +185,19 @@ public final class Totales implements Serializable {
 	public void addUtilidad(Double utilidad) {
 		this.utilidad+= utilidad;
 	}
-	
+
+	public double getCantidad() {
+		return cantidad;
+	}
+
+	public void setCantidad(double cantidad) {
+		this.cantidad=cantidad;
+	}
+
+	public void addCantidad(double cantidad) {
+		this.cantidad+= cantidad;
+	}
+
 	public void reset() {
 	  this.articulos= 0;
 		this.descuento= 0;
@@ -193,11 +207,12 @@ public final class Totales implements Serializable {
 		this.subTotal = 0;
 		this.total    = 0;
 		this.utilidad = 0;
+		this.cantidad = 0;
 	}
 	
 	@Override
 	public String toString() {
-		return "Totales{"+"articulos="+articulos+", importe="+importe+", iva="+iva+", descuento="+descuento+", extra="+extra+", subTotal="+subTotal+", total="+total+'}';
+		return "Totales{articulos="+articulos+ ", cantidad"+ cantidad+ ", importe="+importe+", iva="+iva+", descuento="+descuento+", extra="+extra+", subTotal="+subTotal+", total="+total+'}';
 	}
 	
 }
