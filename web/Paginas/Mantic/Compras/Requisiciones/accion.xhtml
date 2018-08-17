@@ -12,9 +12,10 @@
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.articulosJs}"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 								
-				'cantidades'                          : {mutiple: '$', validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre'},
-				'contenedorGrupos\\:tabla\\:articulos': {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre'},
-				'contenedorGrupos\\:observaciones'    : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
+				'cantidades'                              : {mutiple: '$', validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre'},
+				'contenedorGrupos\\:tabla\\:articulos'    : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre'},
+				'contenedorGrupos\\:listado\\:proveedores': {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'libre'},
+				'contenedorGrupos\\:observaciones'        : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
 			};	
 			
     	$(document).ready(function() {
@@ -152,25 +153,28 @@
 									<p:outputLabel value="#{row['unidadMedida']}"/>
 								</p:column>											
 								<f:facet name="footer">
-									<p:outputLabel for="articulos" styleClass="janal-wid-100-txt filas recalculo" value="Total de articulos: #{manticComprasRequisicionesAccion.adminOrden.totales.articulos}; cantidad: [ #{manticComprasRequisicionesAccion.doNumericoSat(manticComprasRequisicionesAccion.adminOrden.totales.cantidad)} ]"/>
+									<p:outputLabel for="articulos" styleClass="janal-wid-100-txt filas recalculo" value="Total de articulos: #{manticComprasRequisicionesAccion.adminOrden.totales.articulos}" style="float: left;"/>
+									<p:outputLabel styleClass="janal-wid-100-txt filas recalculo" value="Cantidad de articulos: [ #{manticComprasRequisicionesAccion.doNumericoSat(manticComprasRequisicionesAccion.adminOrden.totales.cantidad)} ]"/>
 									<p:inputText id="articulos" value="#{manticComprasRequisicionesAccion.adminOrden.totales.articulos}" style="display:none"/>
 								</f:facet>
 							</p:dataTable>	
 						</p:tab>
 						<p:tab title="Proveedores">
-							<p:dataTable id="tablaRequisicionesProveedores" var="requisicionProveedor" value="#{manticComprasRequisicionesAccion.registroRequisicion.proveedores}" rows="6" paginator="false" reflow="true" rowKey="#{requisicionProveedor.key}" emptyMessage=" " styleClass="paginated">												
+							<p:dataTable id="listado" var="requisicionProveedor" value="#{manticComprasRequisicionesAccion.registroRequisicion.proveedores}" rows="6" paginator="false" reflow="true" rowKey="#{requisicionProveedor.key}" emptyMessage=" " styleClass="paginated">												
 								<p:column headerText="Proveedor">										
 									<p:selectOneMenu id="proveedorPrecioSugerido#{requisicionProveedor.key}" styleClass="janal-wid-100-txt" value="#{requisicionProveedor.idProveedor}" filter="true" filterMatchMode="contains">
 										<f:selectItems value="#{manticComprasRequisicionesAccion.attrs.proveedoresGeneral}"/>
 									</p:selectOneMenu> 				
 								</p:column>																						
-								 <p:column style="width:32px;text-align: center">
-									 <p:commandButton update="tablaRequisicionesProveedores" icon="fa fa-close" title="Eliminar" action="#{manticComprasRequisicionesAccion.registroRequisicion.doEliminarRequisicionProveedor}" styleClass="janal-text-white">
+								 <p:column style="width:38px;text-align: center">
+									 <p:commandButton update="listado" icon="fa fa-close" title="Eliminar" action="#{manticComprasRequisicionesAccion.registroRequisicion.doEliminarRequisicionProveedor}" styleClass="janal-text-white">
 										 <f:setPropertyActionListener value="#{requisicionProveedor}" target="#{manticComprasRequisicionesAccion.registroRequisicion.proveedorSeleccion}" />
 									</p:commandButton>
 								</p:column>
 								<f:facet name="footer">
-									<p:commandButton actionListener="#{manticComprasRequisicionesAccion.registroRequisicion.doAgregarRequisicionProveedor}" process="@this tablaRequisicionesProveedores" update="tablaRequisicionesProveedores" icon="fa fa-plus" styleClass="janal-text-white"/>						
+									<p:outputLabel for="proveedores" value="Total de proveedores: #{manticComprasRequisicionesAccion.registroRequisicion.proveedores.size()}" style="float: left;"/>
+									<h:inputHidden id="proveedores" value="#{manticComprasRequisicionesAccion.registroRequisicion.proveedores.size()}"/>
+									<p:commandButton actionListener="#{manticComprasRequisicionesAccion.registroRequisicion.doAgregarRequisicionProveedor}" process="@this listado" update="listado" icon="fa fa-plus" styleClass="janal-text-white"/>						
 								</f:facet>
 							</p:dataTable>	
 						</p:tab>
