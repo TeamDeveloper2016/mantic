@@ -10,7 +10,9 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.mantic.compras.requisiciones.reglas.MotorBusqueda;
 
-public class RegistroRequisicion implements Serializable{
+public class RegistroRequisicion implements Serializable {
+
+	private static final long serialVersionUID=-6413309480495985622L;
 	
 	private Requisicion requisicion;
 	private List<RequisicionProveedor> proveedores;
@@ -19,6 +21,7 @@ public class RegistroRequisicion implements Serializable{
 	private ContadoresListas contadores;
 	private Long countIndice;
 	private List<IBaseDto> deleteList;
+	private Integer totalProveedores;
 	
 	public RegistroRequisicion() {
 		this(new Requisicion(), new ArrayList<RequisicionProveedor>());
@@ -73,7 +76,15 @@ public class RegistroRequisicion implements Serializable{
 	public void setDeleteList(List<IBaseDto> deleteList) {
 		this.deleteList = deleteList;
 	}
-	
+
+	public void setTotalProveedores(Integer totalProveedores) {
+		this.totalProveedores=totalProveedores;
+	}
+
+	public Integer getTotalProveedores() {
+		return totalProveedores;
+	}
+
 	private void init(){
 		MotorBusqueda motorBusqueda= null;		
 		try {
@@ -92,6 +103,7 @@ public class RegistroRequisicion implements Serializable{
 		try {					
 			requisicionProveedor= new RequisicionProveedor(this.contadores.getTotalRequisicionProveedor() + this.countIndice, ESql.INSERT, true);				
 			this.proveedores.add(requisicionProveedor);			
+			this.totalProveedores= this.proveedores.size();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
