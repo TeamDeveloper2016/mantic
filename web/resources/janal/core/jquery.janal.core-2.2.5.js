@@ -477,6 +477,7 @@
       this._super(root, stage);
       this.console('janal.init');
       $parent        = this;
+  		$parent.backup = fields;
       $parent.kind   = kind;
       $parent.stage  = stage;
       $parent.message= growl;
@@ -499,7 +500,6 @@
         this.form= form;
       if (typeof(fields)!== 'undefined') {
         this.fields= fields;  
-				this.backup= fields;
 			};
       if ((typeof(showMaxError)!== 'undefined') && ($parent.isNonnegativeInteger(''+showMaxError)))
         this.errors.show= showMaxError;
