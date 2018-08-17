@@ -54,7 +54,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 	public void setRegistroRequisicion(RegistroRequisicion registroRequisicion) {
 		this.registroRequisicion = registroRequisicion;
 	}	
-	
+
 	@PostConstruct
   @Override
   protected void init() {		
@@ -69,8 +69,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());					
 			this.attrs.put("nombreEmpresa", JsfBase.getAutentifica().getEmpresa().getNombre());
 			this.attrs.put("solicita", JsfBase.getAutentifica().getPersona().getNombreCompleto());
-			loadProveedores();
-			doLoad();
+			this.doLoad();
+			this.loadProveedores();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -313,6 +313,8 @@ public class Accion extends IBaseArticulos implements Serializable {
       params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       proveedores = UISelect.build("TcManticProveedoresDto", "sucursales", params, "razonSocial", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
       this.attrs.put("proveedoresGeneral", proveedores);
+			if(proveedores!= null)
+			  this.registroRequisicion.setTotalProveedores(proveedores.size());
     } // try
     catch (Exception e) {
       throw e;
