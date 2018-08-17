@@ -83,11 +83,11 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
     this.articulos = articulos;
   }
 		
-	protected void doFileUpload(FileUploadEvent event, Long fechaFactura, String carpeta, String clave) {
-		this.doFileUpload(event, fechaFactura, carpeta, clave, true, 1D);
+	protected void doFileUpload(FileUploadEvent event, Long fechaFactura, String carpeta, String clave, String lista) {
+		this.doFileUpload(event, fechaFactura, carpeta, clave, lista, true, 1D);
 	}
 	
-	protected void doFileUpload(FileUploadEvent event, Long fechaFactura, String carpeta, String clave, Boolean sinIva, Double tipoDeCambio) {
+	protected void doFileUpload(FileUploadEvent event, Long fechaFactura, String carpeta, String clave, String lista, Boolean sinIva, Double tipoDeCambio) {
 		StringBuilder path= new StringBuilder();  
 		StringBuilder temp= new StringBuilder();  
     File result       = null;		
@@ -103,7 +103,9 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
       temp.append("/");
       temp.append(Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase());
       temp.append("/");
-      temp.append(clave);
+      temp.append(clave.trim());
+      temp.append("/");
+      temp.append(lista);
       temp.append("/");
 			path.append(temp.toString());
 			result= new File(path.toString());		
