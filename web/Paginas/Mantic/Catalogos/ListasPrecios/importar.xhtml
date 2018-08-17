@@ -35,6 +35,17 @@
 			function load() {
 			  SyntaxHighlighter.highlight();	
 			}
+      
+      function cancel() {
+        clearInterval(window['progress']);
+        PF('progressBar').setValue(0);
+      }
+      
+      function jsStartTask() {
+        PF('progressBar').cancel();
+        PF('progressBar').setValue(0);
+        PF('progressBar').start();
+      }
 		</script>
 		<style>
 			.janal-upload-frame {
@@ -108,6 +119,12 @@
               <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
                 <p:outputLabel value="Total de artículos a importar: #{manticCatalogosListaPreciosImportar.articulos.size()}" styleClass="importado janal-color-orange janal-steps-boton-siguiente janal-font-bold"/>
 							</p:panelGrid>
+              <p:panel styleClass="tabla-filtro" id="barra">
+                Proceso:
+                <p:progressBar interval="500" styleClass="animate" labelTemplate="{value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.monitoreo.progreso}" global="false" >
+                  <p:ajax event="complete" listener="#{manticCatalogosListaPreciosImportar.doCompleto}" />  
+                </p:progressBar>  			
+              </p:panel>
 						</p:tab>
 					</p:tabView>
 				</div>
@@ -119,11 +136,11 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosListaPreciosImportar.doAceptar}" styleClass="janal-text-white" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosListaPreciosImportar.doAceptar}"  styleClass="janal-text-white" onstart="jsStartTask(); return janal.bloquear();" oncomplete="janal.desbloquear(); cancel()"/>
 			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosListaPreciosImportar.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosListaPreciosImportar.doAceptar}" styleClass="janal-text-white" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosListaPreciosImportar.doAceptar}" styleClass="janal-text-white" onstart="jsStartTask(); return janal.bloquear();" oncomplete="janal.desbloquear(); cancel()"/>
 			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosListaPreciosImportar.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
