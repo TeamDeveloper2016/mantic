@@ -150,7 +150,7 @@
 									<p:outputLabel value="#{row['propio']}"/>
 								</p:column>											
 								<f:facet name="footer">
-									<p:outputLabel styleClass="janal-wid-100-txt filas recalculo" value="Total de articulos: #{manticComprasRequisicionesAccion.adminOrden.totales.articulos}, cantidad: [#{manticComprasRequisicionesAccion.adminOrden.totales.cantidad}]"/>
+									<p:outputLabel styleClass="janal-wid-100-txt filas recalculo" value="Total de articulos: #{manticComprasRequisicionesAccion.adminOrden.totales.articulos}; cantidad: [ #{manticComprasRequisicionesAccion.doNumericoSat(manticComprasRequisicionesAccion.adminOrden.totales.cantidad)} ]"/>
 								</f:facet>
 							</p:dataTable>	
 						</p:tab>

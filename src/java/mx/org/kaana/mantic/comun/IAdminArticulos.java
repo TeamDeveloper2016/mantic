@@ -138,6 +138,8 @@ public abstract class IAdminArticulos implements Serializable {
 			this.totales.addTotal(articulo.getImportes().getTotal());
 			this.totales.addArticulo(articulo.getIdArticulo());
 			this.totales.addUtilidad(articulo.getUtilidad());
+			if(articulo.getIdArticulo()> 0)
+			  this.totales.addCantidad(articulo.getCantidad());
 		} // for
 		if(this.totales.getGlobal()>0D){
 			if(this.totales.getUtilidad() > this.totales.getGlobal())
