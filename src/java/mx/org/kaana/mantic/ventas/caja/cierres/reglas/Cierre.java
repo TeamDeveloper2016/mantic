@@ -242,4 +242,92 @@ public class Cierre extends IBaseTnx implements Serializable  {
 		} // for
 		return regresar;
 	}
+  
+  protected boolean toRegistrar(Session sesion) throws Exception {
+		boolean regresar= true;
+    Long consecutivo= 1L;
+    List<TcManticTiposMediosPagosDto> all= null; 
+		TcManticCierresBitacoraDto bitacora  = null;
+    TcManticCierresCajasDto registro     = null; 
+		consecutivo= this.toSiguiente(sesion);
+    try {
+      this.cierre.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
+      this.cierre.setOrden(consecutivo);
+      regresar= DaoFactory.getInstance().insert(sesion, this.cierre)>= 1L;
+      all= (List<TcManticTiposMediosPagosDto>)DaoFactory.getInstance().findViewCriteria(TcManticTiposMediosPagosDto.class, Collections.EMPTY_MAP, "caja");
+      for (TcManticTiposMediosPagosDto medio : all) {
+        if(medio.getIdTipoMedioPago().equals(1L))
+          registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), this.cierre.getIdCierre(), 0D, this.idCaja, -1L, this.inicial, new Date(Calendar.getInstance().getTimeInMillis()), 0D, this.inicial);
+        else
+          registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), this.cierre.getIdCierre(), 0D, this.idCaja, -1L, 0D, new Date(Calendar.getInstance().getTimeInMillis()), 0D, 0D);
+        DaoFactory.getInstance().insert(sesion, registro);
+      } // for
+      if(this.denominaciones!= null && !this.denominaciones.isEmpty())
+        for (Denominacion denominacion: this.denominaciones) {
+          denominacion.setIdCierre(this.cierre.getIdCierre());
+          regresar= DaoFactory.getInstance().insert(sesion, denominacion)>= 1L;
+        } // for
+      bitacora= new TcManticCierresBitacoraDto("", -1L, this.cierre.getIdCierre(), JsfBase.getIdUsuario(), 1L);
+      regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
+    }
+    catch (Exception e) {
+      throw e;
+    } // catch
+		return regresar;
+	}
+  
+  protected boolean toModificaRegistro(Session sesion, TcManticCierresCajasDto cierreCaja) throws Exception {
+		boolean regresar= true; 
+    TcManticCierresBitacoraDto bitacora  = null;
+    try {
+      regresar= DaoFactory.getInstance().update(sesion, this.cierre)>= 1L;
+      DaoFactory.getInstance().update(sesion, cierreCaja);
+      if(this.denominaciones!= null && !this.denominaciones.isEmpty())
+        for (Denominacion denominacion: this.denominaciones) {
+          denominacion.setIdCierre(this.cierre.getIdCierre());
+          regresar= DaoFactory.getInstance().update(sesion, denominacion)>= 1L;
+        } // for
+      bitacora= new TcManticCierresBitacoraDto("MODIFICADO DESDE MODIFICAR CAJAS", -1L, this.cierre.getIdCierre(), JsfBase.getIdUsuario(), 1L);
+      regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
+    }
+    catch (Exception e) {
+      throw e;
+    } // catch
+		return regresar;
+	}
+  
+  protected boolean toEliminar(Session sesion) throws Exception {
+		boolean regresar                     = true;
+    Map<String, Object> params           = new HashMap<>();
+    TcManticCierresBitacoraDto bitacora  = null;
+    try {
+      params.put("idCaja", this.idCaja);
+      this.cierre= (TcManticCierresDto)DaoFactory.getInstance().toEntity(sesion, TcManticCierresDto.class, "VistaCierresCajasDto", "depurar", params);
+      if(this.cierre!= null) {
+        // FALTA VALIDAR QUE NO TENGA NINGUNA VENTA ASOCIADA A LA CAJA (tr_ventas_medio_pago) Y FALTA VALIDAR QUE NO TENGA NINGUN RETIRO O ABONO DE CAJA (tc_mantic_cierres_retiros) 
+        Value value= DaoFactory.getInstance().toField(sesion, "TrManticVentaMedioPagoDto", "depurar", params, "total");
+        if(value.toLong()== 0) {
+          value= DaoFactory.getInstance().toField(sesion, "VistaCierresCajasDto", "abonos", params, "total");
+          if(value.toLong()== 0) {
+            this.cierre.setIdCierreEstatus(3L);
+            this.cierre.setObservaciones("CIERRE CANCELADO POR QUE SE ELIMINO LA CAJA ["+ this.idCaja+ "]");
+            regresar= DaoFactory.getInstance().update(sesion, this.cierre)>= 1L;
+            params.put("idCaja", this.idCaja);
+            params.put("idCierre", this.cierre.getIdCierre());
+            DaoFactory.getInstance().deleteAll(TcManticCierresCajasDto.class, params);
+            bitacora= new TcManticCierresBitacoraDto("CIERRE CANCELADO POR QUE SE ELIMINO LA CAJA", -1L, this.cierre.getIdCierre(), JsfBase.getIdUsuario(), 4L);
+            regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
+          } // if	
+          else
+            new RuntimeException("No se puede eliminar la caja porque tiene abonos/retiros asociados ["+ value.toLong()+ "]");
+        } // if	
+        else
+          new RuntimeException("No se puede eliminar la caja porque tiene ventas asociadas ["+ value.toLong()+ "]");
+      } // if	
+    }
+    catch (Exception e) {
+      throw e;
+    } // catch
+		return regresar;
+	}
 }
