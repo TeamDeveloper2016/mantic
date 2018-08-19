@@ -247,7 +247,7 @@
 										<h:outputText value="% Descuento"/>
 									</f:facet>
 									<p:outputLabel value="#{row['descuentoDescripcion']}" title="#{row['descuentoDescripcion']}"/>
-									<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'));" style="display: none"/>
+									<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'));" style="display: none"/>
 								</p:column>		
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-5">
 									<f:facet name="header">
