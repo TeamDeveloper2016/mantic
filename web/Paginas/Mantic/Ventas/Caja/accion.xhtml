@@ -198,7 +198,7 @@
 											<f:facet name="header">
 												<h:outputText value="% Descuento"/>
 											</f:facet>
-											<p:outputLabel value="#{row['descuento']}"/>
+											<p:outputLabel value="#{row['descuentoDescripcion']}"/>
 											<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'));" style="display: none"/>
 										</p:column>		
 										<p:column class="janal-column-right MarAuto Responsive janal-wid-5">
@@ -544,7 +544,7 @@
 			<p:outputLabel value="¿ Deseas continuar con la finalización del ticket como una cotización ?"/>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton id="aceptarCotizacion" value="Aceptar" icon="fa fa-check" process="@this" action="#{manticVentasCajaAccion.doAceptarCotizacion}" styleClass="janal-text-white" onstart="PF('dlgCotizacion').hide();" oncomplete="janal.desbloquear()" update="contenedorGrupos:tabCliente"/>
+				<p:commandButton id="aceptarCotizacion" value="Aceptar" icon="fa fa-check" process="@this" action="#{manticVentasCajaAccion.doAceptarCotizacion}" styleClass="janal-text-white" onstart="PF('dlgCotizacion').hide();" oncomplete="janal.desbloquear()" update="contenedorGrupos @(.filas) @(.recalculo)"/>
 				<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCotizacion').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
 			</div>
 		</p:dialog>

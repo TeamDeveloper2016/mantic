@@ -28,8 +28,8 @@
 			};
 			
     	$(document).ready(function() {
-        jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasCotizacionAccion.adminOrden.articulos.size()}, 'tabla\\:');
-				janal.readingMode('#{manticVentasCotizacionAccion.attrs.nombreAccion}');
+        jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasCotizacionAccion.adminOrden.articulos.size()}, 'tabla\\:');				
+				setTimeout("janal.readingMode('#{manticVentasCotizacionAccion.attrs.nombreAccion}')", 500);			
       });							
 			
 			function validateCapturaDescuentos(){
@@ -242,7 +242,7 @@
 									<f:facet name="header">
 										<h:outputText value="% Descuento"/>
 									</f:facet>
-									<p:outputLabel value="#{row['descuento']}"/>
+									<p:outputLabel value="#{row['descuentoDescripcion']}"/>
 									<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'));" style="display: none"/>
 								</p:column>		
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-5">

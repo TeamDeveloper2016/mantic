@@ -119,10 +119,10 @@ public class RegistroRequisicion implements Serializable {
 			if(this.proveedores.remove(this.proveedorSeleccion)){
 				if(!this.proveedorSeleccion.getNuevo())
 					addDeleteList(this.proveedorSeleccion);
-				JsfBase.addMessage("Se eliminó correctamente el código", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("Se eliminó correctamente el proveedor", ETipoMensaje.INFORMACION);
 			} // if
 			else
-				JsfBase.addMessage("No fue porsible eliminar el código", ETipoMensaje.INFORMACION);
+				JsfBase.addMessage("No fue porsible eliminar el proveedor", ETipoMensaje.INFORMACION);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

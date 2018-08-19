@@ -224,35 +224,58 @@
 			</div>
 		</p:dialog>				
 		<p:dialog id="dialogoDetalleArticulo" widgetVar="dlgDetalleArt" header="Articulo [#{manticComprasRequisicionesAccion.attrs.detailArticulo.codigo}]" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();" width="60%">			
-			<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
-				<p:outputLabel value="Nombre:"/>
-				<p:inputText value="#{manticComprasRequisicionesAccion.attrs.detailArticulo.nombre}" styleClass="janal-wid-100-txt" disabled="true"/>					
-			</h:panelGrid>	
-			<p:separator/>
-			<h:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid, janal-wid-15, janal-wid">
-				<p:outputLabel value="Menudeo:"/>
-				<p:inputText value="$#{manticComprasRequisicionesAccion.attrs.detailArticulo.menudeo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>									
-				<p:outputLabel value="Mayoreo:"/>
-				<p:inputText value="$#{manticComprasRequisicionesAccion.attrs.detailArticulo.mayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
-				<p:outputLabel value="Medio mayoreo:"/>
-				<p:inputText value="$#{manticComprasRequisicionesAccion.attrs.detailArticulo.medioMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
-				<p:outputLabel value="IVA:"/>
-				<p:inputText value="$#{manticComprasRequisicionesAccion.attrs.detailArticulo.iva}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
-				<p:separator/><p:separator/><p:separator/><p:separator/>
-				<p:outputLabel value="Unidad de medida:"/>
-				<p:inputText value="#{manticComprasRequisicionesAccion.attrs.detailArticulo.unidadMedida}" styleClass="janal-wid-100-txt" disabled="true"/>					
-				<p:outputLabel value="Stock:"/>
-				<p:inputText value="#{manticComprasRequisicionesAccion.attrs.detailArticulo.stock}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>													
-				<p:outputLabel value="Empaque:"/>
-				<p:inputText value="#{manticComprasRequisicionesAccion.attrs.detailArticulo.empaque}" styleClass="janal-wid-100-txt" disabled="true"/>					
-				<p:outputLabel value="Peso estimado:"/>
-				<p:inputText value="#{manticComprasRequisicionesAccion.attrs.detailArticulo.pesoEstimado}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>									
-			</h:panelGrid>
+			<p:tabView>
+				<p:tab title="Generales">
+					<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+						<p:outputLabel value="Nombre:"/>
+						<p:inputText value="#{manticComprasRequisicionesAccion.attrs.detailArticulo.nombre}" styleClass="janal-wid-100-txt" disabled="true"/>					
+					</h:panelGrid>	
+					<p:separator/>
+					<h:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid, janal-wid-15, janal-wid">
+						<p:outputLabel value="Menudeo:"/>
+						<p:inputText value="$#{manticComprasRequisicionesAccion.attrs.detailArticulo.menudeo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>									
+						<p:outputLabel value="Mayoreo:"/>
+						<p:inputText value="$#{manticComprasRequisicionesAccion.attrs.detailArticulo.mayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
+						<p:outputLabel value="Medio mayoreo:"/>
+						<p:inputText value="$#{manticComprasRequisicionesAccion.attrs.detailArticulo.medioMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
+						<p:outputLabel value="IVA:"/>
+						<p:inputText value="$#{manticComprasRequisicionesAccion.attrs.detailArticulo.iva}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
+						<p:separator/><p:separator/><p:separator/><p:separator/>
+						<p:outputLabel value="Unidad de medida:"/>
+						<p:inputText value="#{manticComprasRequisicionesAccion.attrs.detailArticulo.unidadMedida}" styleClass="janal-wid-100-txt" disabled="true"/>					
+						<p:outputLabel value="Stock:"/>
+						<p:inputText value="#{manticComprasRequisicionesAccion.attrs.detailArticulo.stock}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>													
+						<p:outputLabel value="Empaque:"/>
+						<p:inputText value="#{manticComprasRequisicionesAccion.attrs.detailArticulo.empaque}" styleClass="janal-wid-100-txt" disabled="true"/>					
+						<p:outputLabel value="Peso estimado:"/>
+						<p:inputText value="#{manticComprasRequisicionesAccion.attrs.detailArticulo.pesoEstimado}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>									
+					</h:panelGrid>
+				</p:tab>
+				<p:tab title="Especificaciones">
+					<p:dataTable  lazy="true" id="especificaciones" widgetVar="kajoolTable" var="filtro" value="#{manticComprasRequisicionesAccion.especificaciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticComprasRequisicionesAccion.especificaciones.rowCount gt manticComprasRequisicionesAccion.especificaciones.pageSize}" rowIndexVar="index" reflow="true">            
+            <p:column class="MarAuto Responsive">
+              <f:facet name="header">
+                <h:outputText value="Nombre"/>
+              </f:facet>
+              <h:outputText value="#{filtro['nombre']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive">
+              <f:facet name="header">
+                <h:outputText value="Valor"/>
+              </f:facet>
+              <h:outputText value="#{filtro['valor']}"/>
+            </p:column>		          
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticComprasRequisicionesAccion.especificaciones==null?0:manticComprasRequisicionesAccion.especificaciones.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+				</p:tab>
+			</p:tabView>			
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">				
 				<p:commandButton icon="fa fa-close" styleClass="janal-text-white" process="@none" value="Cerrar" onstart="PF('dlgDetalleArt').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
-		</p:dialog>						
+		</p:dialog>							
 	</ui:define>    
 	<ui:define name="acciones">		
 		<div class="lg-pantalla">

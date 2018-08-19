@@ -277,7 +277,8 @@ public class Accion extends IBaseCliente implements Serializable {
 						beanArticulo.setCosto((Double) articulo.toValue(getPrecio()));
 						if(descuentoVigente){
 							descuento= toDescuentoVigente(beanArticulo.getIdArticulo(), idCliente);
-							beanArticulo.setDescuento(descuento!= null ? descuento : sinDescuento);							
+							if(descuento!= null)
+								beanArticulo.setDescuento(descuento);							
 						} // if
 						else
 							beanArticulo.setDescuento(sinDescuento);

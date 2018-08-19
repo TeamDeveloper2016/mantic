@@ -10,7 +10,7 @@
     <script type="text/javascript">
       Janal.Control.fields = {
         'idEmpresa'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'articulo'       : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'articulo'       : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, grupo: 'general'},
         'consecutivo'    : {validaciones: 'libre', mascara: 'libre', formatos: 'consecutivo', individual: true, grupo: 'general'},
         'idCliente'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
@@ -26,7 +26,7 @@
 				var ok= janal.partial('dialogo');
 				if(ok){
 					PF('dlgEstatus').hide();
-					janal.change('datos', Janal.Control.fields);
+					janal.restore();					
 					janal.refresh();
 				} // if
 				return ok;
@@ -129,7 +129,7 @@
             </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
               <f:facet name="header">
-                <h:outputText value="No. cuenta"/>
+                <h:outputText value="No. cotización"/>
               </f:facet>
               <h:outputText value="#{filtro['consecutivo']}"/>
             </p:column>		
