@@ -55,7 +55,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
-      this.attrs.put("sortOrder", "order by tc_mantic_ventas.id_empresa, tc_mantic_ventas.ejercicio, tc_mantic_ventas.orden");
+      this.attrs.put("sortOrder", "order by id_empresa, cliente, consecutivo");
 			toLoadCatalog();
 			loadEstatusVentas();
       if(this.attrs.get("idVenta")!= null) 
@@ -78,7 +78,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
-      this.lazyModel = new FormatCustomLazy("VistaVentasDto", params, columns);
+      this.lazyModel = new FormatCustomLazy("VistaVentasDto", "cotizacion", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -130,7 +130,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 		if(!Cadena.isVacio(this.attrs.get("idVenta")) && !this.attrs.get("idVenta").toString().equals("-1"))
   		sb.append("(tc_mantic_ventas.id_venta=").append(this.attrs.get("idVenta")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_mantic_ventas.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+  		sb.append("(tc_mantic_ventas.cotizacion like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+		if(!Cadena.isVacio(this.attrs.get("articulo")))
+  		sb.append("(tc_mantic_ventas_detalles.nombre like '%").append(this.attrs.get("articulo")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
 		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))

@@ -215,7 +215,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.importes.setTotal(Numero.toRedondearSat(this.importes.getSubTotal() + this.importes.getIva()));
 		this.setSubTotal(this.importes.getSubTotal());
 		this.setImpuestos(this.importes.getIva());
-		this.setDescuentos(this.importes.getDescuento());
+		this.setDescuentos(this.importes.getDescuento());		
+		this.setDescuentoDescripcion(!Cadena.isVacio(this.getDescuento()) && !this.getDescuento().equals("0") ? this.getDescuento().concat("% [ $").concat(String.valueOf(this.importes.getDescuento())).concat(" ] ") : "0");
 		this.setExcedentes(this.importes.getExtra());
 		this.setImporte(Numero.toRedondearSat(this.importes.getTotal()));
 		this.setUtilidad(utilidad);

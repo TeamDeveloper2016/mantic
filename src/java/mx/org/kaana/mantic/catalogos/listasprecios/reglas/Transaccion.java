@@ -31,6 +31,7 @@ public class Transaccion extends IBaseTnx {
   
   public Transaccion(IBaseDto dto) {
     this.dto = dto;
+    this.lista = (TcManticListasPreciosDto) dto;
   }
   
   public Transaccion(TcManticListasPreciosDto lista, List<TcManticListasPreciosDetallesDto> articulos, Importado xls, Importado pdf) {
@@ -62,11 +63,20 @@ public class Transaccion extends IBaseTnx {
         regresar = procesarListaProveedor(sesion);
         break;
       case COMPLEMENTAR: 
-        toUpdateXls(sesion);
-        regresar = true;
+        if(procesarListaProveedor(sesion)){
+          sesion.flush();
+          toUpdateXls(sesion);
+          regresar = true;
+        }
         break;
       case ELIMINAR: 
-        regresar = procesarListaProveedor(sesion);
+        toDeleteXmlPdf();
+        regresar = DaoFactory.getInstance().deleteAll(sesion, TcManticListasPreciosDetallesDto.class, params)>-1L;
+        sesion.flush();
+        regresar = DaoFactory.getInstance().deleteAll(sesion, TcManticListasPreciosArchivosDto.class, params)>-1L;
+        sesion.flush();
+        regresar = DaoFactory.getInstance().delete(sesion, this.lista)>-1L;
+        sesion.flush();
         break;
       }
       if (!regresar) {
@@ -82,7 +92,10 @@ public class Transaccion extends IBaseTnx {
   private boolean procesarListaProveedor(Session sesion) throws Exception {
     boolean regresar = false;
     try {
-      regresar = DaoFactory.getInstance().insert(sesion, (TcManticListasPreciosDto)dto) > 0L;
+     if(this.lista.getKey() != -1L)
+      regresar = DaoFactory.getInstance().update(sesion, lista) > 0L;
+    else
+      regresar = DaoFactory.getInstance().insert(sesion, lista) > 0L;
     }
     catch (Exception e) {
       throw e;

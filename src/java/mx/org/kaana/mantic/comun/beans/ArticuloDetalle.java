@@ -26,6 +26,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
   private String codigo;
   private Double costo;
   private String descuento;
+  private String descuentoDescripcion;
   private String extras;
   private Double importe;
   private Timestamp registro;
@@ -68,6 +69,10 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 	}
 	
 	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Long solicitados, Long idRedondear, Long idComodin, Double excedentes, Long idAplicar, Double precio, Double utilidad) {
+		this(idArticulo, codigo, costo, descuento, extras, importe, registro, propio, iva, impuestos, subTotal, cantidad, descuentos, nombre, sat, unidadMedida, idOrdenDetalle, solicitados, idRedondear, idComodin, excedentes, idAplicar, precio, utilidad, null);
+	}
+	
+	public ArticuloDetalle(Long idArticulo, String codigo, Double costo, String descuento, String extras, Double importe, Timestamp registro, String propio, Double iva, Double impuestos, Double subTotal, Double cantidad, Double descuentos, String nombre, String sat, String unidadMedida, Long idOrdenDetalle, Long solicitados, Long idRedondear, Long idComodin, Double excedentes, Long idAplicar, Double precio, Double utilidad, String descuentoDescripcion) {
 		this.idArticulo=idArticulo;
 		this.codigo=codigo;
 		this.costo=costo;
@@ -96,6 +101,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		this.disponible= true;
 		this.precio= precio;
 		this.utilidad= utilidad;
+		this.descuentoDescripcion= descuentoDescripcion;
 	}
 	
   public void setCodigo(String codigo) {
@@ -297,6 +303,14 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 	public void setUtilidad(Double utilidad) {
 		this.utilidad = utilidad;
 	}
+
+	public String getDescuentoDescripcion() {
+		return descuentoDescripcion;
+	}
+
+	public void setDescuentoDescripcion(String descuentoDescripcion) {
+		this.descuentoDescripcion = descuentoDescripcion;
+	}	
 	
 	@Override
   public Long getKey() {
@@ -353,6 +367,8 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		regresar.append(getPrecio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getUtilidad());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getDescuentoDescripcion());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -381,6 +397,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		regresar.put("idComodin", getIdComodin());
 		regresar.put("precio", getPrecio());
 		regresar.put("utilidad", getUtilidad());
+		regresar.put("descuentoDescripcion", getDescuentoDescripcion());
   	return regresar;
   }
 

@@ -85,29 +85,10 @@ public class Filtro extends IBaseFilter implements java.io.Serializable
     }
   }
   
-  public void doAgregarListaProveedor() {
-    Transaccion transaccion = null;
-    TcManticListasPreciosDto listaProveedor = null;
-    try {
-      listaProveedor = new TcManticListasPreciosDto();
-      listaProveedor.setIdProveedor(((UISelectEntity)attrs.get("idProveedor")).getKey());
-      listaProveedor.setObservaciones(attrs.get("observacion").toString());
-      listaProveedor.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
-      transaccion = new Transaccion(listaProveedor);
-      if (transaccion.ejecutar(EAccion.AGREGAR)) {
-        JsfBase.addMessage("Agregar lista de precios proveedor", "Se agregó con exito el proveedor para la lista", ETipoMensaje.INFORMACION);
-      }
-      else {
-        JsfBase.addMessage("Agregar lista de precios proveedor", "Ocurrio un agregar el proveedor para la lista", ETipoMensaje.ERROR);
-      }
-    } catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    }
-    finally {
-      attrs.put("observacion", "");
-      attrs.put("idProveedor", new UISelectEntity("-1"));
-    }
+  public String doAgregarListaProveedor() {
+    JsfBase.setFlashAttribute("retorno", "filtro");
+    JsfBase.setFlashAttribute("idListaPrecio", null);
+    return "importar".concat("?faces-redirect=true");
   }
   
   public void doEliminar() {

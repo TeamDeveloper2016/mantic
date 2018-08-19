@@ -9,6 +9,7 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
@@ -71,10 +72,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
-		boolean regresar         = false;
-		Map<String, Object>params= null;
-		this.isNuevoCierre       = false;
-		this.cierreCaja          = 0D;
+		boolean regresar  = false;
+		this.isNuevoCierre= false;
+		this.cierreCaja   = 0D;		
 		try {						
 			switch(accion) {					
 				case REPROCESAR:				
@@ -84,9 +84,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 					regresar= DaoFactory.getInstance().delete(sesion, this.dto)>= 1L;
 					break;
 				case MODIFICAR:
-					params= new HashMap<>();
-					params.put("idVentaEstatus", EEstatusVentas.COTIZACION.getIdEstatusVenta());
-					regresar= DaoFactory.getInstance().update(sesion, TcManticVentasDto.class, this.dto.getKey(), params)>= 1L;
+					regresar= procesaCotizacion(sesion);					
 					break;
 			} // switch
 			if(!regresar)
@@ -100,6 +98,50 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			LOG.info("Se genero de forma correcta la orden: "+ this.ventaFinalizada.getTicketVenta().getConsecutivo());
 		return regresar;
 	} // ejecutar
+	
+	private boolean procesaCotizacion(Session sesion) throws Exception{
+		boolean regresar            = false;
+		Calendar calendar           = null;
+		TcManticVentasDto cotizacion= null;
+		Long consecutivoCotizacion  = -1L;
+		try {
+			cotizacion= (TcManticVentasDto) DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.dto.getKey());
+			if(!Cadena.isVacio(cotizacion.getCotizacion())){
+				consecutivoCotizacion= this.toSiguienteCotizacion(sesion, cotizacion.getIdEmpresa());
+				cotizacion.setCcotizacion(consecutivoCotizacion);
+				cotizacion.setCotizacion(Fecha.getAnioActual() + Cadena.rellenar(consecutivoCotizacion.toString(), 5, '0', true));
+			} // if
+			calendar= Calendar.getInstance();
+			calendar.add(Calendar.DAY_OF_YEAR, 9);
+			cotizacion.setVigencia(new Date(calendar.getTimeInMillis()));
+			cotizacion.setIdVentaEstatus(EEstatusVentas.COTIZACION.getIdEstatusVenta());					
+			regresar= DaoFactory.getInstance().update(sesion, cotizacion)>= 1L;
+		} // try
+		catch (Exception e) {			
+			throw e; 
+		} // catch		
+		return regresar;
+	} // procesaCotizacion
+	
+	private Long toSiguienteCotizacion(Session sesion, Long idEmpresa) throws Exception {
+		Long regresar             = 1L;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("idEmpresa", idEmpresa);
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticVentasDto", "siguienteCotizacion", params, "siguiente");
+			if(next.getData()!= null)
+				regresar= next.toLong();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toSiguienteCotizacion
 	
 	private boolean procesarVenta(Session sesion) throws Exception{
 		boolean regresar= false;
@@ -183,8 +225,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			throw e;
 		} // catch		
 		return regresar;
-	} // toAcumuladoCierreActivo
-	
+	} // toAcumuladoCierreActivo	
 	
 	private TcManticCierresDto toCierreActivo(Session sesion) throws Exception{
 		TcManticCierresDto regresar       = null;
@@ -265,7 +306,11 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	private boolean pagarVenta(Session sesion, Long idEstatusVenta) throws Exception{
 		boolean regresar         = false;
 		Map<String, Object>params= null;
-		try {						
+		Long consecutivo          = -1L;
+		try {									
+			consecutivo= toSiguiente(sesion);			
+			getOrden().setCticket(consecutivo);			
+			getOrden().setTicket(Fecha.getAnioActual() + Cadena.rellenar(consecutivo.toString(), 5, '0', true));
 			getOrden().setIdVentaEstatus(idEstatusVenta);			
 			getOrden().setIdFactura(this.ventaFinalizada.isFacturar() ? SI : NO);
 			getOrden().setIdCredito(this.ventaFinalizada.isCredito() ? SI : NO);
@@ -295,6 +340,26 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		} // finally			
 		return regresar;
 	} // pagarVenta
+	
+	private Long toSiguiente(Session sesion) throws Exception {
+		Long regresar             = 1L;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("ejercicio", Fecha.getAnioActual());
+			params.put("idEmpresa", getOrden().getIdEmpresa());
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticVentasDto", "siguienteTicket", params, "siguiente");
+			if(next.getData()!= null)
+				regresar= next.toLong();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toSiguiente
 	
 	@Override
 	public boolean registraClientesTipoContacto(Session sesion, Long idCliente) throws Exception {

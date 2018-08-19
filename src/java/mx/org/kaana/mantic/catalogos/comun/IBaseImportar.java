@@ -31,6 +31,7 @@ import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
@@ -83,16 +84,17 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
     this.articulos = articulos;
   }
 		
-	protected void doFileUpload(FileUploadEvent event, Long fechaFactura, String carpeta, String clave, String lista) {
-		this.doFileUpload(event, fechaFactura, carpeta, clave, lista, true, 1D);
+	protected void doFileUpload(FileUploadEvent event, Long fechaFactura, String carpeta, String clave) {
+		this.doFileUpload(event, fechaFactura, carpeta, clave, true, 1D);
 	}
 	
-	protected void doFileUpload(FileUploadEvent event, Long fechaFactura, String carpeta, String clave, String lista, Boolean sinIva, Double tipoDeCambio) {
+	protected void doFileUpload(FileUploadEvent event, Long fechaFactura, String carpeta, String clave, Boolean sinIva, Double tipoDeCambio) {
 		StringBuilder path= new StringBuilder();  
 		StringBuilder temp= new StringBuilder();  
     File result       = null;		
 		Long fileSize     = 0L;
 		boolean isXls     = false;
+    String nombreArchivo = null;
 		try {
 			Calendar calendar= Calendar.getInstance();
 			calendar.setTimeInMillis(fechaFactura);
@@ -105,13 +107,12 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
       temp.append("/");
       temp.append(clave.trim());
       temp.append("/");
-      temp.append(lista);
-      temp.append("/");
 			path.append(temp.toString());
 			result= new File(path.toString());		
 			if (!result.exists())
 				result.mkdirs();
-      path.append(event.getFile().getFileName().toUpperCase());
+      nombreArchivo = Cadena.rellenar(Fecha.formatear(Fecha.FECHA_HORA_LARGA), 17, '0', false).trim().concat("_").concat(event.getFile().getFileName().toUpperCase());
+      path.append(nombreArchivo);
 			result = new File(path.toString());
 			if (result.exists())
 				result.delete();			      
@@ -122,12 +123,12 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 				if(!this.toVerificaXls(result)){
           throw new KajoolBaseException("El archivo ["+this.xls.getName()+ "] no tiene el formato adecuado para la carga" );
         }
-        this.xls= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.XLS, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
+        this.xls= new Importado(nombreArchivo, event.getFile().getContentType(), EFormatos.XLS, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
         this.attrs.put("xls", this.xls.getName());
 			} //
 			else
 			  if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.PDF.name())) {
-			    this.pdf= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
+			    this.pdf= new Importado(nombreArchivo, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
   				this.attrs.put("pdf", this.pdf.getName()); 
 				} // if
 		} // try

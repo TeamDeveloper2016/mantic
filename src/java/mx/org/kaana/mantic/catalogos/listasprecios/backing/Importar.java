@@ -2,6 +2,9 @@ package mx.org.kaana.mantic.catalogos.listasprecios.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -14,6 +17,9 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticListasPreciosDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.catalogos.comun.IBaseImportar;
@@ -35,7 +41,7 @@ public class Importar extends IBaseImportar implements Serializable {
   private boolean importXls;
   private boolean importPdf;
 
-	public TcManticListasPreciosDto getOrden() {
+	public TcManticListasPreciosDto getLista() {
 		return lista;
 	}
 
@@ -47,11 +53,24 @@ public class Importar extends IBaseImportar implements Serializable {
   @Override
   protected void init() {		
     try {
-			if(JsfBase.getFlashAttribute("idListaPrecio")== null)
-				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
-      idListaPrecio= JsfBase.getFlashAttribute("idListaPrecio")== null? -1L: (Long)JsfBase.getFlashAttribute("idListaPrecio");
-			this.lista= (TcManticListasPreciosDto)DaoFactory.getInstance().findById(TcManticListasPreciosDto.class, idListaPrecio);
-			if(this.lista!= null) {
+      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      doLoadProveedores();
+			if(JsfBase.getFlashAttribute("idListaPrecio")== null){
+				this.lista = new TcManticListasPreciosDto();
+        this.attrs.put("isDeshabilitado", false);
+        if(this.attrs.get("idProveedor")!= null) {
+          this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, ((UISelectEntity)this.attrs.get("idProveedor")).getKey());
+          this.lista.setIdProveedor(this.proveedor.getIdProveedor());
+          this.doLoadImportados("VistaListasArchivosDto", "importados", this.lista.toMap());
+        }
+      }
+      else{
+        idListaPrecio= JsfBase.getFlashAttribute("idListaPrecio")== null? -1L: (Long)JsfBase.getFlashAttribute("idListaPrecio");
+        this.lista= (TcManticListasPreciosDto)DaoFactory.getInstance().findById(TcManticListasPreciosDto.class, idListaPrecio);
+        this.attrs.put("idProveedor",(((List<UISelectEntity>)this.attrs.get("proveedores")).get(((List<UISelectEntity>)this.attrs.get("proveedores")).indexOf(new UISelectEntity(this.lista.getIdProveedor().toString())))));
+        this.attrs.put("isDeshabilitado", true);
+      }
+			if(this.lista.getIdProveedor()!= null) {
 			  this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.lista.getIdProveedor());
         this.doLoadImportados("VistaListasArchivosDto", "importados", this.lista.toMap());
 			} // if
@@ -66,6 +85,39 @@ public class Importar extends IBaseImportar implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
   } // init
+  
+  public void doLoadProveedores() {
+    Map<String, Object> params = null;
+    List<UISelectEntity> proveedores = null;
+    try {
+      params = new HashMap();
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      proveedores = UIEntity.build("TcManticProveedoresDto", "listasPrecios", params);
+      attrs.put("proveedores", proveedores);
+      attrs.put("idProveedor", (((List<UISelectEntity>)this.attrs.get("proveedores")).get(0)));
+    }
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    }
+    finally {
+      Methods.clean(params);
+    }
+  }
+  
+  public void doActualizarproveedor() {
+    try {
+      if(this.attrs.get("idProveedor")!= null) {
+			  this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, ((UISelectEntity)this.attrs.get("idProveedor")).getKey());
+        this.lista.setIdProveedor(this.proveedor.getIdProveedor());
+        this.doLoadImportados("VistaListasArchivosDto", "importados", this.lista.toMap());
+      }
+    }
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    }
+  }
 
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Archivos")) 
@@ -77,7 +129,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	}		
 
 	public void doFileUpload(FileUploadEvent event) {
-		this.doFileUpload(event, this.lista.getRegistro().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios"), this.proveedor.getClave(), this.lista.getKey().toString());
+		this.doFileUpload(event, this.lista.getRegistro().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios"), this.proveedor.getClave());
 	} // doFileUpload	
 	
 	public void doViewDocument() {
@@ -89,7 +141,6 @@ public class Importar extends IBaseImportar implements Serializable {
 	}
 	
   public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idListaPrecio", this.idListaPrecio);
     //return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
     return "filtro".concat(Constantes.REDIRECIONAR);
   } // doCancelar
@@ -97,13 +148,19 @@ public class Importar extends IBaseImportar implements Serializable {
 	public String doAceptar(){
 		String regresar= null;
 		try {
-      this.getXls().setObservaciones((String)this.attrs.get("observaciones"));
-      this.getPdf().setObservaciones((String)this.attrs.get("observaciones"));
-			Transaccion transaccion= new Transaccion(this.lista,getArticulos(), this.getXls(),this.getPdf());
-      if(transaccion.ejecutar(EAccion.COMPLEMENTAR)) {
-      	RequestContext.getCurrentInstance().execute("janal.alert('Se importaron los archivos de forma correcta !');");
-				regresar= this.doCancelar();
+      if(!getArticulos().isEmpty()){
+        this.getXls().setObservaciones((String)this.attrs.get("observaciones"));
+        this.getPdf().setObservaciones((String)this.attrs.get("observaciones"));
+        this.lista.setIdProveedor(((UISelectEntity)attrs.get("idProveedor")).getKey());
+        this.lista.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
+        Transaccion transaccion= new Transaccion(this.lista,getArticulos(), this.getXls(),this.getPdf());
+        if(transaccion.ejecutar(EAccion.COMPLEMENTAR)) {
+          RequestContext.getCurrentInstance().execute("janal.alert('Se importaron los archivos de forma correcta !');");
+          regresar= this.doCancelar();
+        }//if
 			} // if
+      else
+        RequestContext.getCurrentInstance().execute("janal.alert('Debe importar archivo xls');");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
