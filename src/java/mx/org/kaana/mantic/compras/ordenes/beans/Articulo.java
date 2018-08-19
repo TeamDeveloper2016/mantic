@@ -333,7 +333,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	public TcManticRequisicionesDetallesDto toRequisicionDetalle() {
 		return new TcManticRequisicionesDetallesDto(			
 			-1L, /*idVenta, */
-			"",
+			this.getPropio(),
 			this.getUnidadMedida(),
 			this.getCantidad(),
 			this.getIdArticulo(),
