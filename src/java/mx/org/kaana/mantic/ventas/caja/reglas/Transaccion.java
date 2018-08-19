@@ -106,13 +106,13 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		Long consecutivoCotizacion  = -1L;
 		try {
 			cotizacion= (TcManticVentasDto) DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.dto.getKey());
-			if(!Cadena.isVacio(cotizacion.getCotizacion())){
+			if(Cadena.isVacio(cotizacion.getCotizacion())){
 				consecutivoCotizacion= this.toSiguienteCotizacion(sesion, cotizacion.getIdEmpresa());
 				cotizacion.setCcotizacion(consecutivoCotizacion);
 				cotizacion.setCotizacion(Fecha.getAnioActual() + Cadena.rellenar(consecutivoCotizacion.toString(), 5, '0', true));
 			} // if
 			calendar= Calendar.getInstance();
-			calendar.add(Calendar.DAY_OF_YEAR, 9);
+			calendar.add(Calendar.DAY_OF_YEAR, 8);
 			cotizacion.setVigencia(new Date(calendar.getTimeInMillis()));
 			cotizacion.setIdVentaEstatus(EEstatusVentas.COTIZACION.getIdEstatusVenta());					
 			regresar= DaoFactory.getInstance().update(sesion, cotizacion)>= 1L;

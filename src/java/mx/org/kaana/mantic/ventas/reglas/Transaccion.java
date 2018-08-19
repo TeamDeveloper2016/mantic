@@ -244,6 +244,8 @@ public class Transaccion extends IBaseTnx {
 			item.setIdVenta(this.orden.getIdVenta());
 			if(DaoFactory.getInstance().findIdentically(sesion, TcManticVentasDetallesDto.class, item.toMap())== null) 
 				DaoFactory.getInstance().insert(sesion, item);
+			else
+				DaoFactory.getInstance().update(sesion, item);
 		} // for
 	} // toFillArticulos
 	

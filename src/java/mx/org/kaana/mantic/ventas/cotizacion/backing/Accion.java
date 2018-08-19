@@ -138,6 +138,7 @@ public class Accion extends IBaseArticulos implements Serializable {
         case CONSULTAR:			
           this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", this.attrs)));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
+					this.attrs.put("vigencia", ((TicketVenta)getAdminOrden().getOrden()).getVigencia());
 					idCliente= ((TicketVenta)getAdminOrden().getOrden()).getIdCliente();
 					if(idCliente!= null && !idCliente.equals(-1L)){
 						doAsignaClienteInicial(idCliente);
@@ -318,9 +319,10 @@ public class Accion extends IBaseArticulos implements Serializable {
 						articulo= motor.toArticulo();
 						beanArticulo.setValor((Double) articulo.toValue(getPrecio()));
 						beanArticulo.setCosto((Double) articulo.toValue(getPrecio()));
-						if(descuentoVigente){
+						if(descuentoVigente){							
 							descuento= toDescuentoVigente(beanArticulo.getIdArticulo(), idCliente);
-							beanArticulo.setDescuento(descuento!= null ? descuento : sinDescuento);							
+							if(descuento!= null)
+								beanArticulo.setDescuento(descuento);							
 						} // if
 						else
 							beanArticulo.setDescuento(sinDescuento);
