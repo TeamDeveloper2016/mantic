@@ -8,20 +8,35 @@
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
   <ui:param name="titulo" value="#{manticCatalogosCajasAccion.attrs.nombreAccion} catálogo de cajas" />
-  <ui:define name="librerias">
-    <script type="text/javascript">
+ <ui:define name="librerias">
+    <h:outputScript library="janal" name="core/jquery.janal.close.core-0.0.1.js"/>
+		<script type="text/javascript">
       Janal.Control.fields = {
         'contenedorGrupos\\:clave'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:nombre'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:limite'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:activa'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'}        
+        'contenedorGrupos\\:activa'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        'cantidad'                     : {multiple: '$', validaciones: 'entero|mayor-igual({"cuanto": 0})', mascara: 'entero'},		
+        'contenedorGrupos\\:disponible': {validaciones: 'requerido|flotante|mayor-igual({"cuanto":0})', mascara: 'libre'}
       };		
 			
-			$(document).ready(function(){janal.readingMode('#{manticCatalogosCajasAccion.attrs.nombreAccion}');});
+				$(document).ready(function() {
+				setTimeout("janal.readingMode('#{manticCatalogosCajasAccion.attrs.nombreAccion}')", 500);
+        jsCierres= new Janal.Control.Cierres.Core(1, #{manticCatalogosCajasAccion.fondos.size()});
+      });
+			
+			function execute() {
+				var ok= janal.execute();
+				if(ok)
+					ok= confirm('Esta seguro que desea dejar ese fondo de caja ?');
+				return ok;
+			}
     </script>   
   </ui:define>
   <ui:define name="contenido">
+    <p:remoteCommand name="calculate" process="@this @(.recalculo)" update="@(.filas)" actionListener="#{manticCatalogosCajasAccion.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.reset(); janal.desbloquear();"/>  
+		<p:remoteCommand name="summary" process="@this @(.total)" update="@(.totales)" actionListener="#{manticCatalogosCajasAccion.doTotales}" onstart="return janal.bloquear();" oncomplete="janal.reset(); janal.desbloquear();"/>  
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div class="ui-grid-col-12">
@@ -40,6 +55,68 @@
                 <p:outputLabel for="activa" value="Activa:"/>
                 <p:inputSwitch id="activa" styleClass="janal-wid-100-txt" value="#{manticCatalogosCajasAccion.attrs.activa}" offLabel="NO" onLabel="SI"/>                
               </p:panelGrid>
+              <div class="ui-grid-row janal-grid-row">
+                <div class="ui-grid-col-1">
+                  <p:outputLabel for="disponible" value="Fondo caja:" style="display: #{manticCatalogosCajasAccion.attrs.continuar}"/>
+                </div>
+                <div class="ui-grid-col-11">
+                  <p:inputText id="disponible" styleClass="filas janal-wid-100-txt janal-column-right janal-color-blue" value="#{manticCatalogosCajasAccion.attrs.disponible}" converter="javax.faces.Double" onblur="janal.precio($('#contenedorGrupos\\:disponible'), '0');" style="display: #{manticCatalogosCajasAccion.attrs.continuar}"/>
+                </div>		
+              </div>
+              <p:spacer height="3px"/>
+								<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
+									<div class="ui-grid-row janal-grid-row">
+										<div class="ui-grid-col-12">
+											<p:dataTable id="moneda" var="row" value="#{manticCatalogosCajasAccion.fondos}" styleClass="janal-wid-100" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" rowKey="#{row.key}">
+												<f:facet name="header" >
+													<div class="lg-pantalla">
+														<p:menuButton value="Opciones">
+															<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'moneda')" oncomplete="janal.desbloquear()"/>
+															<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'moneda')" oncomplete="janal.desbloquear()"/>
+														</p:menuButton>
+													</div>  
+													<div class="xs-pantalla">              
+														<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'moneda')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+														<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'moneda')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+													</div>  
+												</f:facet>	 
+												<p:column class="MarAuto Responsive janal-wid-col-40">
+													<f:facet name="header">
+														<h:outputText value="No."/>
+													</f:facet>
+													<h:outputText value="#{index+ 1}"/>
+												</p:column>		
+												<p:column class="MarAuto Responsive">
+													<f:facet name="header">
+														<h:outputText value="Denominación"/>
+													</f:facet>
+													<h:outputText value="#{row['nombre']}"/>
+												</p:column>		
+												<p:column class="janal-column-right MarAuto Responsive janal-wid-15">
+													<f:facet name="header">
+														<h:outputText value="Valor"/>
+													</f:facet>
+													<h:outputText value="#{manticCatalogosCajasAccion.doMonedaSat(row['denominacion'])}"/>
+												</p:column>		
+												<p:column class="cantidad janal-column-right MarAuto Responsive janal-wid-15">
+													<f:facet name="header">
+														<p:outputLabel for="cantidad" value="Cantidad"/>
+													</f:facet>
+													<p:inputText id="cantidad" value="#{row['cantidad']}" styleClass="recalculo janal-column-right janal-wid-100-txt janal-color-blue key-down-event" onblur="jsCierres.cantidad('#contenedorGrupos\\:moneda\\:#{index}\\:cantidad');"/>
+												</p:column>		
+												<p:column class="janal-column-right MarAuto Responsive janal-wid-15">
+													<f:facet name="header">
+														<h:outputText value="Importe"/>
+													</f:facet>
+													<p:outputLabel styleClass="filas" value="#{manticCatalogosCajasAccion.doMonedaSat(row['importe'])}"/>
+												</p:column>
+												<f:facet name="footer">
+													<p:outputLabel styleClass="filas janal-color-blue" value="Total: &lt;strong&gt; $ #{manticCatalogosCajasAccion.doDecimalSat(manticCatalogosCajasAccion.attrs.efectivo)}&lt;/strong&gt;" escape="false"/>
+												</f:facet>
+											</p:dataTable>										
+										</div>
+									</div>	
+								</div>
             </p:tab>                                         
           </p:tabView>
         </div>
