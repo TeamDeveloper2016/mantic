@@ -97,7 +97,7 @@ public class Transaccion extends IBaseTnx {
 				case AGREGAR:
 				case REGISTRAR:			
 					idRequisicionEstatus= accion.equals(EAccion.AGREGAR) ? EEstatusRequisiciones.SOLICITADA.getIdEstatusRequisicion() : idRequisicionEstatus;
-					regresar= this.requisicion.getRequisicion().getIdRequisicion()!= null && !this.requisicion.getRequisicion().getIdRequisicion().equals(-1L) ? actualizarRequisicion(sesion, idRequisicionEstatus) : registrarVenta(sesion, idRequisicionEstatus);					
+					regresar= this.requisicion.getRequisicion().getIdRequisicion()!= null && !this.requisicion.getRequisicion().getIdRequisicion().equals(-1L) ? actualizarRequisicion(sesion, idRequisicionEstatus) : registrarRequisicion(sesion, idRequisicionEstatus);					
 					break;
 				case MODIFICAR:
 					regresar= actualizarRequisicion(sesion, EEstatusRequisiciones.ELABORADA.getIdEstatusRequisicion());					
@@ -133,7 +133,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	}	// ejecutar
 
-	private boolean registrarVenta(Session sesion, Long idRequisicionEstatus) throws Exception{
+	private boolean registrarRequisicion(Session sesion, Long idRequisicionEstatus) throws Exception{
 		boolean regresar= false;
 		Long consecutivo= -1L;
 		try {
