@@ -28,8 +28,8 @@
 			};
 			
     	$(document).ready(function() {
-        jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasCotizacionAccion.adminOrden.articulos.size()}, 'tabla\\:');
-				janal.readingMode('#{manticVentasCotizacionAccion.attrs.nombreAccion}');
+        jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasCotizacionAccion.adminOrden.articulos.size()}, 'tabla\\:');				
+				setTimeout("janal.readingMode('#{manticVentasCotizacionAccion.attrs.nombreAccion}')", 500);			
       });							
 			
 			function validateCapturaDescuentos(){
