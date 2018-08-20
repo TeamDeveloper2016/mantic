@@ -29,11 +29,11 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
 						<h:panelGrid styleClass="janal-wid-100">
 							<p:outputLabel for="codigo" value="Código:"/>
-							<p:inputText id="codigo" value="#{manticCatalogosListaPreciosArticulos.attrs.codigo}" styleClass="janal-wid-100-txt"/>              							
-							<p:outputLabel for="nombre" value="Nombre:"/>
-							<p:inputText id="nombre" value="#{manticCatalogosListaPreciosArticulos.attrs.nombre}" styleClass="janal-wid-100-txt"/>    
+							<p:inputText id="codigo" value="#{manticCatalogosListaPreciosArticulos.attrs.codigo}" styleClass="janal-wid-100-txt"/>  
               <p:outputLabel for="auxiliar" value="Auxiliar:"/>
-							<p:inputText id="auxiliar" value="#{manticCatalogosListaPreciosArticulos.attrs.auxiliar}" styleClass="janal-wid-100-txt"/>              						
+							<p:inputText id="auxiliar" value="#{manticCatalogosListaPreciosArticulos.attrs.auxiliar}" styleClass="janal-wid-100-txt"/>  
+							<p:outputLabel for="nombre" value="Nombre:"/>
+							<p:inputText id="nombre" value="#{manticCatalogosListaPreciosArticulos.attrs.nombre}" styleClass="janal-wid-100-txt"/>                						
               <p:outputLabel for="idProveedor" value="Proveedor:"/>
               <p:selectOneMenu id="idProveedor" value="#{manticCatalogosListaPreciosArticulos.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains">
                 <p:ajax event="change" process="@this" update="@this" />
