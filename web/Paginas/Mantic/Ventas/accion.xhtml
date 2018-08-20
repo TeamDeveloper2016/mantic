@@ -360,29 +360,31 @@
 		<p:dialog id="dialogoDetalleArticulo" widgetVar="dlgDetalleArt" header="Articulo [#{manticVentasAccion.attrs.detailArticulo.codigo}]" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();" width="60%">			
 			<p:tabView>
 				<p:tab title="Generales">
-					<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+					<h:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
 						<p:outputLabel value="Nombre:"/>
 						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.nombre}" styleClass="janal-wid-100-txt" disabled="true"/>					
 					</h:panelGrid>	
 					<p:separator/>
-					<h:panelGrid columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid, janal-wid-15, janal-wid">
-						<p:outputLabel value="Menudeo:"/>
-						<p:inputText value="$#{manticVentasAccion.attrs.detailArticulo.menudeo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>									
-						<p:outputLabel value="Mayoreo:"/>
-						<p:inputText value="$#{manticVentasAccion.attrs.detailArticulo.mayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
-						<p:outputLabel value="Medio mayoreo:"/>
+					<h:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-40, janal-wid-30">
+						<p:outputLabel value="Menudeo:" />
+						<p:outputLabel value="Medio mayoreo:" />
+						<p:outputLabel value="Mayoreo:" />
+						<p:inputText value="$#{manticVentasAccion.attrs.detailArticulo.menudeo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>											
 						<p:inputText value="$#{manticVentasAccion.attrs.detailArticulo.medioMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
-						<p:outputLabel value="IVA:"/>
+						<p:inputText value="$#{manticVentasAccion.attrs.detailArticulo.mayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>																							
+						<p:outputLabel value="Limite medio mayoreo:" />
+						<p:outputLabel value="Limite mayoreo:" />						
+						<p:outputLabel value=""/>
+						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.limiteMedioMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>											
+						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.limiteMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
+						<p:outputLabel value=""/>
+						<p:separator/><p:separator/><p:separator/>
+						<p:outputLabel value="Unidad de medida:" />
+						<p:outputLabel value="Stock:" />
+						<p:outputLabel value="IVA:" />
+						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.unidadMedida}" styleClass="janal-wid-100-txt" disabled="true"/>											
+						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.stock}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>																									
 						<p:inputText value="$#{manticVentasAccion.attrs.detailArticulo.iva}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
-						<p:separator/><p:separator/><p:separator/><p:separator/>
-						<p:outputLabel value="Unidad de medida:"/>
-						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.unidadMedida}" styleClass="janal-wid-100-txt" disabled="true"/>					
-						<p:outputLabel value="Stock:"/>
-						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.stock}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>													
-						<p:outputLabel value="Empaque:"/>
-						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.empaque}" styleClass="janal-wid-100-txt" disabled="true"/>					
-						<p:outputLabel value="Peso estimado:"/>
-						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.pesoEstimado}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>									
 					</h:panelGrid>
 				</p:tab>
 				<p:tab title="Especificaciones">
