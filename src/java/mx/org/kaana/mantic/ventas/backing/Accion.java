@@ -104,6 +104,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("activeLogin", false);
 			this.attrs.put("autorized", false);
+			this.attrs.put("expirada", false);
 			this.attrs.put("isIndividual", true);
 			this.attrs.put("descuentoIndividual", 0);
 			this.attrs.put("descuentoGlobal", 0);
@@ -507,6 +508,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			fields.add("consecutivo");
 			fields.add("cuenta");
 			fields.add("precioTotal");
+			fields.add("cliente");
 			params.put(Constantes.SQL_CONDICION, toCondicion());
 			ticketsAbiertos= UISelect.build("VistaVentasDto", "lazy", params, fields, " - ", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 			if(!ticketsAbiertos.isEmpty()){
@@ -531,8 +533,9 @@ public class Accion extends IBaseArticulos implements Serializable {
 	
 	public void doLoadCotizaciones(){
 		List<UISelectItem> cotizaciones= null;
-		Map<String, Object>params         = null;
-		List<String> fields               = null;
+		Map<String, Object>params      = null;
+		List<String> fields            = null;
+		MotorBusqueda motorBusqueda    = null;
 		try {
 			fields= new ArrayList<>();
 			params= new HashMap<>();
@@ -541,12 +544,16 @@ public class Accion extends IBaseArticulos implements Serializable {
 			fields.add("consecutivo");
 			fields.add("cuenta");
 			fields.add("precioTotal");
+			fields.add("cliente");
 			params.put(Constantes.SQL_CONDICION, toCondicion(true));
 			cotizaciones= UISelect.build("VistaVentasDto", "lazy", params, fields, " - ", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
 			if(!cotizaciones.isEmpty()){
 				this.attrs.put("cotizaciones", cotizaciones);
-				if(!cotizaciones.isEmpty())
+				if(!cotizaciones.isEmpty()){
+					motorBusqueda= new MotorBusqueda(-1L);
 					this.attrs.put("cotizacion", UIBackingUtilities.toFirstKeySelectItem(cotizaciones));
+					this.attrs.put("expirada", motorBusqueda.doVerificaVigenciaCotizacion(Long.valueOf(this.attrs.get("cotizacion").toString())));
+				}
 				RequestContext.getCurrentInstance().execute("PF('dlgCotizaciones').show();");
 			} // if
 			else{
@@ -642,8 +649,10 @@ public class Accion extends IBaseArticulos implements Serializable {
 			setAdminOrden(new AdminTickets(new TicketVenta(-1L)));
 			((TicketVenta)getAdminOrden().getOrden()).setIkProveedor(((TicketVenta)adminTicketPivote.getOrden()).getIkCliente());
 			((TicketVenta)getAdminOrden().getOrden()).setIkAlmacen(((TicketVenta)adminTicketPivote.getOrden()).getIkAlmacen());
-			for(Articulo addArticulo : getAdminOrden().getArticulos())
-				toMoveDataArt(addArticulo, -1);			
+			for(Articulo addArticulo : adminTicketPivote.getArticulos()){
+				if(addArticulo.isValid())
+					toMoveDataArt(addArticulo, -1);			
+			}	// for
 		} // try
 		catch (Exception e) {			
 			throw e; 
@@ -961,4 +970,16 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("passwordDescuento", "");
 		} // finally
 	} // doAplicarDescuento
+	
+	public void doVerificaVigenciaCotizacion(){
+		MotorBusqueda motorBusqueda= null;		
+		try {
+			motorBusqueda= new MotorBusqueda(-1L);
+			this.attrs.put("expirada", motorBusqueda.doVerificaVigenciaCotizacion(Long.valueOf(this.attrs.get("cotizacion").toString())));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // doVerificaVigenciaCotizacion
 }
