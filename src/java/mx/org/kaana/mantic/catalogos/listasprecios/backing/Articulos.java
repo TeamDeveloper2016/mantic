@@ -70,11 +70,11 @@ public class Articulos extends Comun implements Serializable {
 		StringBuilder sb= new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("codigo")))
   		sb.append("upper(tc_mantic_listas_precios_detalles.codigo) like upper('%").append(this.attrs.get("codigo")).append("%')");
+    if(!Cadena.isVacio(this.attrs.get("auxiliar")))
+  		sb.append((!Cadena.isVacio(this.attrs.get("codigo"))?" and ":" ").concat("upper(tc_mantic_listas_precios_detalles.auxiliar) like upper('%")).append(this.attrs.get("auxiliar")).append("%') ");
 		if(!Cadena.isVacio(this.attrs.get("nombre")))
-  		sb.append((!Cadena.isVacio(this.attrs.get("codigo"))?" and ":" ").concat("upper(tc_mantic_listas_precios_detalles.descripcion) like upper('%")).append(this.attrs.get("nombre")).append("%') ");
-		if(!Cadena.isVacio(this.attrs.get("auxiliar")))
-  		sb.append(((!Cadena.isVacio(this.attrs.get("codigo"))||!Cadena.isVacio(this.attrs.get("nombre")))?" and ":" ").concat("upper(tc_mantic_listas_precios_detalles.auxiliar) like upper('%")).append(this.attrs.get("auxiliar")).append("%') ");
-		if(!Cadena.isVacio(this.attrs.get("idProveedor")))
+  		sb.append(((!Cadena.isVacio(this.attrs.get("codigo"))||!Cadena.isVacio(this.attrs.get("auxiliar")))?" and ":" ").concat("upper(tc_mantic_listas_precios_detalles.descripcion) like upper('%")).append(this.attrs.get("nombre")).append("%') ");
+		if(!Cadena.isVacio(this.attrs.get("idProveedor"))&&(!this.attrs.get("idProveedor").toString().equals("-1")))
   		sb.append(((!Cadena.isVacio(this.attrs.get("codigo"))||!Cadena.isVacio(this.attrs.get("nombre"))||!Cadena.isVacio(this.attrs.get("auxiliar")))?" and ":" ").concat("tc_mantic_listas_precios.id_proveedor = ")).append(((UISelectEntity)this.attrs.get("idProveedor")).getKey().toString());
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
