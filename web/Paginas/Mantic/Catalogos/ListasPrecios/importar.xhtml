@@ -9,21 +9,13 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
   <ui:param name="titulo" value="Importar los archivos XLS/PDF"/>
 	<ui:define name="librerias">
-		<h:outputStylesheet library="janal" name="css/sh.css"/>
-		<h:outputStylesheet library="janal" name="css/shCore.css"/>
-		<h:outputStylesheet library="janal" name="css/shThemeDefault.css"/>
-		<h:outputScript library="janal" name="js/sh.js"/>
-	  <h:outputScript library="janal" name="js/shCore.js"/>
-	  <h:outputScript library="janal" name="js/shAutoloader.js"/>
-	  <h:outputScript library="janal" name="js/shBrushXml.js"/>
-	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-				'contenedorGrupos\\:xls': {validaciones: 'libre', mascara: 'libre'},
-				'contenedorGrupos\\:pdf': {validaciones: 'libre', mascara: 'libre'},
-				'contenedorGrupos\\:observaciones':{validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\proveedorDlg' : {validaciones: 'requerido', mascara: 'libre', individual: true},
-        'contenedorGrupos\\observacion'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
+				'contenedorGrupos\\:xls'          : {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:pdf'          : {validaciones: 'libre', mascara: 'libre'},
+				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:idProveedor'  : {validaciones: 'requerido', mascara: 'libre'},
+        'contenedorGrupos\\:observacion'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
 			};	
 			
 			function start() {
@@ -34,10 +26,6 @@
         PF('statusDialog').hide();
       };
 			
-			function load() {
-			  SyntaxHighlighter.highlight();	
-			}
-      
       function cancel() {
         clearInterval(window['progress']);
         PF('progressBar').setValue(0);
@@ -55,11 +43,6 @@
         margin-bottom: 6px;
         border-radius: 5px;				
 			}
-			.syntaxhighlighter {
-					overflow-y: auto !important;
-					overflow-x: auto !important;
-					max-height: 370px;
-			}			
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
@@ -72,10 +55,10 @@
             <p:ajax event="tabChange" listener="#{manticCatalogosListaPreciosImportar.doTabChange}" process="@this" update="@(.importado) @(.involucrados)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>								            						            																																																
             <p:tab title="#{manticCatalogosListaPreciosImportar.proveedor.razonSocial}">
               <h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
-                <p:outputLabel for="proveedorDlg" value="Proveedor:"/>												
-                <p:selectOneMenu id="proveedorDlg" value="#{manticCatalogosListaPreciosImportar.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains" disabled="#{manticCatalogosListaPreciosImportar.attrs.isDeshabilitado}">
+                <p:outputLabel for="idProveedor" value="Proveedor:"/>												
+                <p:selectOneMenu id="idProveedor" value="#{manticCatalogosListaPreciosImportar.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains" disabled="#{manticCatalogosListaPreciosImportar.attrs.isDeshabilitado}">
                   <f:selectItems value="#{manticCatalogosListaPreciosImportar.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
-                  <p:ajax event="change" listener="#{manticCatalogosListaPreciosImportar.doActualizarproveedor}" process="@this" update="proveedorDlg @(.importado)"/>
+                  <p:ajax event="change" listener="#{manticCatalogosListaPreciosImportar.doActualizarproveedor}" process="@this" update="idProveedor @(.importado)"/>
                   <p:column headerText="Clave">
                     <h:outputText value="#{item.clave}"/>
                   </p:column>   
@@ -85,7 +68,7 @@
                 </p:selectOneMenu>
               </h:panelGrid>
               <h:panelGrid columns="1" styleClass="janal-wid-100" >
-                <p:outputLabel for="observacion" value="Observación:"/>
+                <p:outputLabel for="observacion" value="Observaciones:"/>
                 <p:inputTextarea id="observacion" value="#{manticCatalogosListaPreciosImportar.lista.observaciones}" styleClass="janal-wid-100-txt"/>
               </h:panelGrid>
             </p:tab>
@@ -176,7 +159,7 @@
 					<p:commandButton process="@this" styleClass="janal-text-white" icon="fa fa-remove" value="Cerrar" actionListener="#{manticCatalogosListaPreciosImportar.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
 			  </div>
 			</p:dialog>
-      <p:dialog id="dialogoXLS" widgetVar="dlgXLS" header="Listado de productos en formato XLS" onShow="load();" onHide="janal.desbloquear();" height="450px" width="950px" closeOnEscape="true" closable="true" dynamic="true">
+      <p:dialog id="dialogoXLS" widgetVar="dlgXLS" header="Listado de productos en formato XLS" onHide="janal.desbloquear();" height="450px" width="950px" closeOnEscape="true" closable="true" dynamic="true">
 				<pre id="documentXls" class="brush: xls;" style="width: 925px; height: 370px;">
 					<h:outputText value="#{manticCatalogosListaPreciosImportar.attrs.temporal}" escape="true"/>
 				</pre>

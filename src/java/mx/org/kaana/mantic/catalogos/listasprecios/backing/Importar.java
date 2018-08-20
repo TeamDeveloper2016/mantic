@@ -87,8 +87,8 @@ public class Importar extends IBaseImportar implements Serializable {
   } // init
   
   public void doLoadProveedores() {
-    Map<String, Object> params = null;
-    List<UISelectEntity> proveedores = null;
+    Map<String, Object> params      = null;
+    List<UISelectEntity> proveedores= null;
     try {
       params = new HashMap();
       params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
