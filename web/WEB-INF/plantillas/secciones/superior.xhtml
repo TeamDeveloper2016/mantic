@@ -33,6 +33,7 @@
 						<h1 class="janal-header-title">#{kajoolUtilAplicacion.tituloCorto}</h1>
 					</div>
 					<div class="ui-grid-col-4 lg-pantalla">
+					  <span class="version" style="font-size: 7pt;float: right;"><strong class='janal-color-blue'>[ALT+C]</strong> Calculadora <strong class='janal-color-blue'>[SHIFT+F9]</strong> Faltantes <strong class='janal-color-blue'>[SHIFT+F10]</strong> Precios</span>
 					</div>  
 					<div class="ui-grid-col-4 xs-pantalla">
 					</div>
@@ -112,7 +113,7 @@
 				<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 					<p:outputLabel for="verificadorValue" value="Código o articulo:"/>
 					<p:inputText id="verificadorValue" styleClass="janal-key-precios janal-wid-100-txt" value="#{kajoolEncabezado.attrs.buscarPor}">   
-						<p:ajax event="keyup" listener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor" update="verificadorPrecio verificadorTabla" onstart="return $('#verificadorValue').val().trim().length&gt; 1"/>
+						<p:ajax event="keyup" listener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor" update="verificadorPrecio verificadorTabla" onstart="return $('#verificadorValue').val().trim().length> 1"/>
 					</p:inputText>
 				</p:panelGrid>	
 				<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-right">
