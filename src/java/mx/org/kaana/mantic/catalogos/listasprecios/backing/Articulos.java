@@ -52,6 +52,7 @@ public class Articulos extends Comun implements Serializable {
       campos = new ArrayList<>();
       params = toPrepare();
       campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+      campos.add(new Columna("precio", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       campos.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaListasArchivosDto", "lazyArticulos", params, campos);
       UIBackingUtilities.resetDataTable();
