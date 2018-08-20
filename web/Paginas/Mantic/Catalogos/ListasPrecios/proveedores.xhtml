@@ -47,7 +47,7 @@
                         rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticCatalogosListaPreciosProveedor.lazyModel.size() gt Constantes.REGISTROS_POR_PAGINA}" rowIndexVar="index" columns="3" layout="grid">			
             <p:panel header="#{filtro.clave}    [#{filtro.registro}]" style="text-align:center">
               <h:panelGrid columns="1" style="width:100%">
-                <p:graphicImage library="janal" name="img/sistema/#{filtro.logotipo}" styleClass="alinear-centro" width="65" height="65"/>
+                <p:graphicImage library="janal" name="img/proveedores/#{filtro.logotipo}" styleClass="alinear-centro" width="65" height="65"/>
                   <h:outputText value="#{filtro.razonSocial}" />
                   <p:commandLink  actionListener="#{manticCatalogosListaPreciosProveedor.doViewPdfDocument(filtro)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();">
 									  <p:commandButton icon="fa fa-eye" title="Ver documento PDF" ajax="false" type="button" styleClass="janal-text-white"/>
