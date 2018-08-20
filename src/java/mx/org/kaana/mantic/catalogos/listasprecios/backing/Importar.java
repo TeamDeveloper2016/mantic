@@ -149,19 +149,17 @@ public class Importar extends IBaseImportar implements Serializable {
 	public String doAceptar(){
 		String regresar= null;
 		try {
-      if(!getArticulos().isEmpty()){
-        if(this.getXls()!= null)
-          this.getXls().setObservaciones((String)this.attrs.get("observaciones"));
-        if(this.getPdf()!= null)
-          this.getPdf().setObservaciones((String)this.attrs.get("observaciones"));
-        this.lista.setIdProveedor(((UISelectEntity)attrs.get("idProveedor")).getKey());
-        this.lista.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
-        Transaccion transaccion= new Transaccion(this.lista,getArticulos(), this.getXls(),this.getPdf());
-        if(transaccion.ejecutar(EAccion.COMPLEMENTAR)) {
-          RequestContext.getCurrentInstance().execute("janal.alert('Se importaron los archivos de forma correcta !');");
-          regresar= this.doCancelar();
-        }//if
-			} // if
+      if(this.getXls()!= null)
+        this.getXls().setObservaciones((String)this.attrs.get("observaciones"));
+      if(this.getPdf()!= null)
+        this.getPdf().setObservaciones((String)this.attrs.get("observaciones"));
+      this.lista.setIdProveedor(((UISelectEntity)attrs.get("idProveedor")).getKey());
+      this.lista.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
+      Transaccion transaccion= new Transaccion(this.lista,getArticulos(), this.getXls(),this.getPdf());
+      if(transaccion.ejecutar(EAccion.COMPLEMENTAR)) {
+        RequestContext.getCurrentInstance().execute("janal.alert('Se importaron los archivos de forma correcta !');");
+        regresar= this.doCancelar();
+      }//if
       else
         RequestContext.getCurrentInstance().execute("janal.alert('Debe importar archivo xls');");
 		} // try
