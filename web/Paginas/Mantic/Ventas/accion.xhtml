@@ -342,11 +342,14 @@
 			</div>
 		</p:dialog>							
 		<p:dialog id="dialogoCotizaciones" widgetVar="dlgCotizaciones" header="Cotizaciones" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();" width="50%">			
-			<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+			<h:panelGrid id="panelCotizacion" columns="2" styleClass="janal-wid-100 expirada" columnClasses="janal-wid-10, janal-wid-100">
 				<p:outputLabel value="Cotización:"/>
 				<p:selectOneMenu id="cotizacion" value="#{manticVentasAccion.attrs.cotizacion}" styleClass="janal-wid-100-txt">
+					<p:ajax event="change" process="@this" listener="#{manticVentasAccion.doVerificaVigenciaCotizacion}" update="panelCotizacion"/>
 					<f:selectItems value="#{manticVentasAccion.attrs.cotizaciones}"/>
 				</p:selectOneMenu>
+				<p:spacer rendered="#{manticVentasAccion.attrs.expirada}"/>
+				<p:outputLabel value="La cotización ha expirado" rendered="#{manticVentasAccion.attrs.expirada}" class="janal-etapa janal-data-table-opciones"/>
 			</h:panelGrid>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
