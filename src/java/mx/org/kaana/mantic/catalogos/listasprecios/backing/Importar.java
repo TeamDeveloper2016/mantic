@@ -106,7 +106,7 @@ public class Importar extends IBaseImportar implements Serializable {
     }
   }
   
-  public void doActualizarproveedor() {
+  public void doActualizarProveedor() {
     try {
       if(this.attrs.get("idProveedor")!= null) {
 			  this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, ((UISelectEntity)this.attrs.get("idProveedor")).getKey());
