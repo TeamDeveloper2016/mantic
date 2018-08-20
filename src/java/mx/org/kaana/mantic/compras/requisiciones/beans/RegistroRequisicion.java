@@ -130,6 +130,24 @@ public class RegistroRequisicion implements Serializable {
 		} // catch			
 	} // doEliminarEspecificacion	
 	
+	public boolean validateDuplicateProveedor(){
+		boolean regresar  = false;
+		int countDuplicate= 0;
+		try {
+			for(RequisicionProveedor prov: this.proveedores){
+				for(RequisicionProveedor provPivote: this.proveedores){
+					if(prov.getIdProveedor().equals(provPivote.getIdProveedor()))
+						countDuplicate++;
+				} // for				
+			} // for
+			regresar= !(countDuplicate > this.proveedores.size());
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch	
+		return regresar;
+	} // validateDuplicateProveedor
+	
 	private void addDeleteList(IBaseDto dto){
 		try {
 			this.deleteList.add(dto);
