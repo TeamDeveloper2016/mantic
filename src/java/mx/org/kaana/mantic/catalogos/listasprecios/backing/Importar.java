@@ -69,11 +69,9 @@ public class Importar extends IBaseImportar implements Serializable {
         this.lista= (TcManticListasPreciosDto)DaoFactory.getInstance().findById(TcManticListasPreciosDto.class, idListaPrecio);
         this.attrs.put("idProveedor",(((List<UISelectEntity>)this.attrs.get("proveedores")).get(((List<UISelectEntity>)this.attrs.get("proveedores")).indexOf(new UISelectEntity(this.lista.getIdProveedor().toString())))));
         this.attrs.put("isDeshabilitado", true);
-      }
-			if(this.lista.getIdProveedor()!= null) {
-			  this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.lista.getIdProveedor());
+        this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.lista.getIdProveedor());
         this.doLoadImportados("VistaListasArchivosDto", "importados", this.lista.toMap());
-			} // if
+      }
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_LISTA_ARCHIVOS);
 			this.attrs.put("xls", ""); 
@@ -92,7 +90,10 @@ public class Importar extends IBaseImportar implements Serializable {
     try {
       params = new HashMap();
       params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      if(JsfBase.getFlashAttribute("idListaPrecio") == null)
       proveedores = UIEntity.build("TcManticProveedoresDto", "listasPrecios", params);
+      else
+        proveedores = UIEntity.build("TcManticProveedoresDto", "sucursales", params);
       attrs.put("proveedores", proveedores);
       attrs.put("idProveedor", (((List<UISelectEntity>)this.attrs.get("proveedores")).get(0)));
     }
@@ -149,8 +150,10 @@ public class Importar extends IBaseImportar implements Serializable {
 		String regresar= null;
 		try {
       if(!getArticulos().isEmpty()){
-        this.getXls().setObservaciones((String)this.attrs.get("observaciones"));
-        this.getPdf().setObservaciones((String)this.attrs.get("observaciones"));
+        if(this.getXls()!= null)
+          this.getXls().setObservaciones((String)this.attrs.get("observaciones"));
+        if(this.getPdf()!= null)
+          this.getPdf().setObservaciones((String)this.attrs.get("observaciones"));
         this.lista.setIdProveedor(((UISelectEntity)attrs.get("idProveedor")).getKey());
         this.lista.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
         Transaccion transaccion= new Transaccion(this.lista,getArticulos(), this.getXls(),this.getPdf());
