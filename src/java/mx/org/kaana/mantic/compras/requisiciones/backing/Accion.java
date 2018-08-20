@@ -116,19 +116,23 @@ public class Accion extends IBaseArticulos implements Serializable {
     String regresar        = null;
 		EAccion eaccion        = null;		
     try {			
-			eaccion= (EAccion) this.attrs.get("accion");						
-			transaccion = new Transaccion(this.registroRequisicion, this.getAdminOrden().getArticulos());
-			toAdjustArticulos();
-			if (transaccion.ejecutar(eaccion)) {
-				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
-				if(eaccion.equals(EAccion.AGREGAR)) { 				  
-    			RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 requisición', '"+ this.registroRequisicion.getRequisicion().getConsecutivo()+ "');");
-				} // if	
-				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la requsicion."), ETipoMensaje.INFORMACION);
-  			JsfBase.setFlashAttribute("idRequisicion", this.registroRequisicion.getRequisicion().getIdRequisicion());				
+			if(this.registroRequisicion.validateDuplicateProveedor()){
+				eaccion= (EAccion) this.attrs.get("accion");						
+				transaccion = new Transaccion(this.registroRequisicion, this.getAdminOrden().getArticulos());
+				toAdjustArticulos();
+				if (transaccion.ejecutar(eaccion)) {
+					regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
+					if(eaccion.equals(EAccion.AGREGAR)) { 				  
+						RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 requisición', '"+ this.registroRequisicion.getRequisicion().getConsecutivo()+ "');");
+					} // if	
+					JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la requsicion."), ETipoMensaje.INFORMACION);
+					JsfBase.setFlashAttribute("idRequisicion", this.registroRequisicion.getRequisicion().getIdRequisicion());				
+				} // if
+				else 
+					JsfBase.addMessage("Ocurrió un error al registrar la requisición de compra.", ETipoMensaje.ERROR);      			
 			} // if
-			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la requisición de compra.", ETipoMensaje.ERROR);      			
+			else
+				JsfBase.addMessage("Se agregaron proveedores duplicados, favor de verificarlo.", ETipoMensaje.ERROR);      						
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -346,6 +350,5 @@ public class Accion extends IBaseArticulos implements Serializable {
 	@Override
 	public void doDeleteArticulo(Integer index) {
 		this.doDeleteArticulo(index, Boolean.TRUE);
-	}	
-	
-}
+	}		
+} 
