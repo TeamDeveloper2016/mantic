@@ -133,34 +133,35 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			temporal.setCodigo(codigo== null? "": codigo.toString());
 			temporal.setPropio(articulo.getPropio());
 			temporal.setNombre(articulo.getNombre());
-			eprecioArticulo= EPrecioArticulo.fromNombre(this.precio);
-			artTemporal= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getKey());
-			switch(eprecioArticulo){
-				case MAYOREO:
-					temporal.setValor(artTemporal.getMayoreo());
-					temporal.setCosto(artTemporal.getMayoreo());
-					break;
-				case MEDIO_MAYOREO:
-					temporal.setValor(artTemporal.getMedioMayoreo());
-					temporal.setCosto(artTemporal.getMedioMayoreo());
-					break;
-				case MENUDEO:
-					temporal.setValor(artTemporal.getMenudeo());
-					temporal.setCosto(artTemporal.getMenudeo());
-					break;
-			}	// switch	 		
+			eprecioArticulo= EPrecioArticulo.fromNombre(this.precio.toUpperCase());
+			artTemporal= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, articulo.getIdArticulo());
+			if(artTemporal!= null){
+				switch(eprecioArticulo){
+					case MAYOREO:
+						temporal.setValor(artTemporal.getMayoreo());
+						temporal.setCosto(artTemporal.getMayoreo());
+						break;
+					case MEDIO_MAYOREO:
+						temporal.setValor(artTemporal.getMedioMayoreo());
+						temporal.setCosto(artTemporal.getMedioMayoreo());
+						break;
+					case MENUDEO:
+						temporal.setValor(artTemporal.getMenudeo());
+						temporal.setCosto(artTemporal.getMenudeo());
+						break;
+				}	// switch	 	
+			} // if
 			temporal.setIva(articulo.getIva());
 			temporal.setDescuento(this.adminOrden.getDescuento());
-			temporal.setExtras(this.adminOrden.getExtras());				
-			if(temporal.getCantidad() < 1D)					
-				temporal.setCantidad(1D);
+			temporal.setExtras(this.adminOrden.getExtras());										
+			temporal.setCantidad(articulo.getCantidad());
 			temporal.setUltimo(this.attrs.get("ultimo")!= null);
 			temporal.setSolicitado(this.attrs.get("solicitado")!= null);
 			temporal.setUnidadMedida(articulo.getUnidadMedida());
 			temporal.setPrecio(articulo.getPrecio());				
 			Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
 			temporal.setStock(stock== null? 0D: stock.toDouble());				
-			this.adminOrden.getArticulos().add(temporal);
+			this.adminOrden.getArticulos().add(this.adminOrden.getArticulos().size()-1, temporal);
 			RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");				
 			RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
 			this.adminOrden.toCalculate();			
@@ -606,6 +607,5 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			if(this.isInsideArticulo("|"+ articulo.getCodigo()+ "|"+ articulo.getPropio()+ "|", articulo.getNombre()))
 				this.getAdminOrden().getFiltrados().add(articulo);
 		} // for
-	}
-	
+	}	
 }
