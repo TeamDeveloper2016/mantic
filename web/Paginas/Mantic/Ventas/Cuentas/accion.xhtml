@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Detalle de venta"/>
 	<ui:define name="librerias">
-		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.1.4.js"/>
+		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.1.5.js"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
 				'articulos': {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'articulo'},			
@@ -143,8 +143,7 @@
 											<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
                       <p:inputText id="locks" value="0" style="display:none"/>
 											<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticVentasCuentasAccion.attrs.articulo}" completeMethod="#{manticVentasCuentasAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10">
-												<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
-												<p:ajax event="focus" process="@this" listener="#{manticVentasCuentasAccion.doActualizaImage(row['idArticulo'])}" update="panelTotales" oncomplete="janal.refresh();"/>
+												<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>												
 												<f:facet name="itemtip">
 													<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
 														<f:facet name="header" class="TexAlCenter">

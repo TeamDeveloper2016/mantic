@@ -29,6 +29,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.ParametrosComunes;
 import mx.org.kaana.mantic.ventas.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
@@ -43,10 +44,6 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;
 	private Reporte reporte;
-	
-	public Reporte getReporte() {
-		return reporte;
-	}	// getReporte
 	
   @PostConstruct
   @Override
@@ -220,40 +217,6 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return regresar.toString();
 	} // toCondicionEstatus
 	
-	public void doReporte() throws Exception {
-		Map<String, Object>params    = null;
-		Map<String, Object>parametros= null;
-		EReportes reporteSeleccion   = null;
-		try{				
-			reporteSeleccion= EReportes.ORDEN_COMPRA;
-			this.reporte= JsfBase.toReporte();
-			params= new HashMap<>();
-			params.put("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());			
-			parametros= new HashMap<>();
-			parametros.put("REPORTE_EMPRESA", JsfBase.getAutentifica().getEmpresa().getNombreCorto());
-		  parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
-			parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
-			parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
-			this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
-			doVerificarReporte();
-			this.reporte.doAceptar();			
-		} // try
-		catch(Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-    } // catch	
-	} // doReporte
-	
-	public void doVerificarReporte() {
-		RequestContext rc= RequestContext.getCurrentInstance();
-		if(this.reporte.getTotal()> 0L)
-			rc.execute("start(" + this.reporte.getTotal() + ")");		
-		else{
-			rc.execute("generalHide()");		
-			JsfBase.addMessage("Generar reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
-		} // else
-	} // doVerificarReporte		
-	
 	public void doLoadEstatus(){
 		Entity seleccionado          = null;
 		Map<String, Object>params    = null;
@@ -297,4 +260,55 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("justificacion", "");
 		} // finally
 	}	// doActualizaEstatus
+  
+  public void doReporte(String nombre) throws Exception{
+    ParametrosComunes parametrosComunes = null;
+		Map<String, Object>params    = null;
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;
+    Entity seleccionado          = null;
+		try{		
+      params= toPrepare();
+      params.put("sortOrder", "order by id_empresa, cliente, consecutivo");
+      reporteSeleccion= EReportes.valueOf(nombre);
+      if(reporteSeleccion.equals(EReportes.COTIZACION_DETALLE)){
+        seleccionado = ((Entity)this.attrs.get("seleccionado"));
+        params.put("idCliente", seleccionado.get("id_cliente"));
+        params.put("cliente", seleccionado.get("cliente"));
+        params.put("idVenta", seleccionado.toLong("idKey"));
+        params.put("campoConsecutivo", "cotizacion");
+        parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), -1L, -1L , seleccionado.toLong("idCliente"));
+      }
+      else
+        parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.reporte= JsfBase.toReporte();	
+      parametros= parametrosComunes.getParametrosComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+      if(doVerificarReporte())
+        this.reporte.doAceptar();			
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+  } // doReporte
+  
+  public boolean doVerificarReporte() {
+    boolean regresar = false;
+		RequestContext rc= RequestContext.getCurrentInstance();
+		if(this.reporte.getTotal()> 0L){
+			rc.execute("start(" + this.reporte.getTotal() + ")");		
+      regresar = true;
+    }
+		else{
+			rc.execute("generalHide();");		
+			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+      regresar = false;
+		} // else
+    return regresar;
+	} // doVerificarReporte	
+  
 }

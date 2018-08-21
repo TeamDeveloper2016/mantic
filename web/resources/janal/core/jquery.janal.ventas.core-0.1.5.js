@@ -607,7 +607,7 @@
 			$('#cuenta').prop('disabled', '').removeClass('ui-state-disabled'); 				
 			$('#cuenta').val('');
 			$('#password').val('');
-			$('#cuenta').focus();
+			setTimeout("$('#cuenta').focus();", 500);						
 		},			
 		disabledLogin: function() {
 			$parent.readingMode('AGREGAR');
@@ -711,7 +711,12 @@
 				$parent.fields.referenciaTransferencia.validaciones= "libre";
 				$parent.fields.bancoTransferencia.validaciones= "libre";					
 			} // else
-		} // refreshCheque
+		}, // refreshCheque
+		restoreAutenticate: function(){
+			$('#cuenta').val('');
+			$('#password').val('');
+			setTimeout("$('#cuenta').focus();", 500);			
+		} // restoreAutenticate
 	});
 	
 	console.info('Iktan.Control.Articulos initialized');

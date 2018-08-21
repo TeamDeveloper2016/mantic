@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Generador de cotizaciones"/>
 	<ui:define name="librerias">
-		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.1.4.js"/>
+		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.1.5.js"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
 				'articulos': {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'articulo'},			
@@ -351,7 +351,7 @@
 						<p:outputLabel value="IVA:" />
 						<p:inputText value="#{manticVentasCotizacionAccion.attrs.detailArticulo.unidadMedida}" styleClass="janal-wid-100-txt" disabled="true"/>											
 						<p:inputText value="#{manticVentasCotizacionAccion.attrs.detailArticulo.stock}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>																									
-						<p:inputText value="$#{manticVentasCotizacionAccion.attrs.detailArticulo.iva}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
+						<p:inputText value="#{manticVentasCotizacionAccion.attrs.detailArticulo.iva}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
 					</h:panelGrid>
 				</p:tab>
 				<p:tab title="Especificaciones">
