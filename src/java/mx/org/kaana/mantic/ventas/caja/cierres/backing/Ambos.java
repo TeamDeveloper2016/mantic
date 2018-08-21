@@ -23,6 +23,8 @@ import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticCierresRetirosDto;
@@ -46,8 +48,8 @@ public class Ambos extends IBaseFilter implements Serializable {
     try {
 			if(JsfBase.getFlashAttribute("idCierre")== null)
 				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
-      this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
-			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa"));
+			this.attrs.put("sucursales", JsfBase.getFlashAttribute("idEmpresa"));
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre"));
       this.attrs.put("idCierreEstatus", JsfBase.getFlashAttribute("idCierreEstatus"));
       this.attrs.put("idCaja", JsfBase.getFlashAttribute("idCaja"));
@@ -65,6 +67,8 @@ public class Ambos extends IBaseFilter implements Serializable {
     List<Columna> columns     = null;
 		Map<String, Object> params= new HashMap<>();
     try {
+			if(JsfBase.getFlashAttribute("idCierre")== null)
+				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
       params.put("idCierre", this.attrs.get("idCierre"));
       params.put("sortOrder", "order by tc_mantic_cierres_retiros.id_abono, tc_mantic_cierres_retiros.consecutivo ");
       columns = new ArrayList<>();
@@ -74,6 +78,7 @@ public class Ambos extends IBaseFilter implements Serializable {
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaCierresCajasDto", "retiros", params, columns);
       UIBackingUtilities.resetDataTable();
+			this.toLoadEmpresas();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -85,6 +90,39 @@ public class Ambos extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad
 
+	private void toLoadEmpresas() {
+		List<Columna> columns= null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", this.attrs, columns));
+			this.doLoadCajas();
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+    }// finally
+	}
+	
+	private void doLoadCajas() {
+		List<Columna> columns= null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("cajas", (List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "unica", this.attrs, columns));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+    }// finally
+	}
+	
   public String doAccion(String accion) {
 		String regresar= "retiros";
     EAccion eaccion= null;
