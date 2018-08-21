@@ -22,7 +22,7 @@
         from      
           tc_mantic_cierres_monedas
         where      
-          id_cierre = {idCierre} and id_moneda = {idMoneda}
+          id_cierre = {idCierre} and id_moneda = {idMoneda} and id_efectivo = {idEfectivo}
       </select>
     </unit>		
     <unit id="TcManticMonedasDto">

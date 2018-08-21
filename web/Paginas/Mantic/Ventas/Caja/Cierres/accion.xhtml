@@ -202,9 +202,39 @@
 												<p:inputText id="total" value="#{manticVentasCajaCierresAccion.attrs.total}" style="display:none" styleClass="filas totales"/>
 											</f:facet>
 										</p:dataTable>
-										<p:spacer height="5px"/>
-										<p:outputLabel value="Observaciones:"/><br/>
-      							<p:inputTextarea id="observaciones" rows="10" cols="33" styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresAccion.attrs.observaciones}"/>
+										<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
+											<div class="ui-grid-row janal-grid-row">
+												<div class="ui-grid-col-12">
+													<p:outputLabel value="Venta(s) a crédito: [#{manticVentasCajaCierresAccion.attrs.creditos.size()}]"/>
+												</div>
+											</div>
+											<div class="ui-grid-row janal-grid-row">
+												<div class="ui-grid-col-12">
+													<p:selectOneMenu id="idCredito" value="#{manticVentasCajaCierresAccion.attrs.idCredito}"  var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98"  effect="fade" filter="true" filterMatchMode="contains">
+														<f:selectItems value="#{manticVentasCajaCierresAccion.attrs.creditos}" var="element" itemValue="#{element}" itemLabel="#{element.consecutivo} #{element.nombre} #{element.importe}"/>
+														<p:column headerText="No. ticket">
+															<h:outputText value="#{item.consecutivo}"/>
+														</p:column>   
+														<p:column headerText="Vendedor">
+															<h:outputText value="#{item.nombre}"/>
+														</p:column>   
+														<p:column styleClass="janal-column-right" headerText="Importe">
+															<h:outputText value="#{item.total}"/>
+														</p:column>   
+													</p:selectOneMenu>
+												</div>
+											</div>
+											<div class="ui-grid-row janal-grid-row">
+												<div class="ui-grid-col-12">
+													<p:outputLabel value="Observaciones:"/>
+												</div>
+											</div>
+											<div class="ui-grid-row janal-grid-row">
+												<div class="ui-grid-col-12">
+													<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresAccion.attrs.observaciones}"/>
+												</div>
+											</div>
+										</div>	
 									</div>		
 								</div>	
 							</div>
@@ -339,12 +369,12 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="continuar" value="Continuar" icon="fa fa-dollar" process="@form" actionListener="#{manticVentasCajaCierresAccion.doContinuar}" onstart="return janal.partial('unico') &amp;&amp; confirm('Esta seguro que desea continuar con el cierre de caja ?');" styleClass="continuar janal-text-white" update="contenedorGrupos:tabla @(.continuar)" style="display: #{empty manticVentasCajaCierresAccion.attrs.continuar? 'none': ''}" disabled="#{empty manticVentasCajaCierresAccion.attrs.continuar? true: false}"/>
+			<p:commandButton id="continuar" value="Continuar" icon="fa fa-arrow-circle-o-right" process="@form" actionListener="#{manticVentasCajaCierresAccion.doContinuar}" onstart="return janal.partial('unico') &amp;&amp; confirm('Esta seguro que desea continuar con el cierre de caja ?');" styleClass="continuar janal-text-white" update="contenedorGrupos:tabla @(.continuar)" style="display: #{empty manticVentasCajaCierresAccion.attrs.continuar? 'none': ''}" disabled="#{empty manticVentasCajaCierresAccion.attrs.continuar? true: false}"/>
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresAccion.doAceptar}" styleClass="continuar janal-text-white" onstart="return execute();" oncomplete="janal.desbloquear()" style="display: #{manticVentasCajaCierresAccion.attrs.continuar}"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="continuarIcon" title="Continuar" icon="fa fa-dollar" process="@form" actionListener="#{manticVentasCajaCierresAccion.doContinuar}" onstart="return janal.partial('unico') &amp;&amp; confirm('Esta seguro que desea continuar con el cierre de caja ?');" styleClass="continuar janal-text-white" update="contenedorGrupos:tabla @(.continuar)" style="display: #{empty manticVentasCajaCierresAccion.attrs.continuar? 'none': ''}" disabled="#{empty manticVentasCajaCierresAccion.attrs.continuar? true: false}"/>
+			<p:commandButton id="continuarIcon" title="Continuar" icon="fa fa-arrow-circle-o-right" process="@form" actionListener="#{manticVentasCajaCierresAccion.doContinuar}" onstart="return janal.partial('unico') &amp;&amp; confirm('Esta seguro que desea continuar con el cierre de caja ?');" styleClass="continuar janal-text-white" update="contenedorGrupos:tabla @(.continuar)" style="display: #{empty manticVentasCajaCierresAccion.attrs.continuar? 'none': ''}" disabled="#{empty manticVentasCajaCierresAccion.attrs.continuar? true: false}"/>
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresAccion.doAceptar}" styleClass="continuar janal-text-white" onstart="return execute();" oncomplete="janal.desbloquear()" style="display: #{manticVentasCajaCierresAccion.attrs.continuar}"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" immediate="true"/>
 		</div>		

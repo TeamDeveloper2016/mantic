@@ -140,13 +140,15 @@ public class Accion extends IBaseAttribute implements Serializable {
 				if(this.accion.equals(EAccion.AGREGAR)) {
  				  regresar = "fondo".concat(Constantes.REDIRECIONAR);
 					JsfBase.setFlashAttribute("accion", EAccion.PROCESAR);
-					JsfBase.setFlashAttribute("idCaja", transaccion.getIdApertura());
+					JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
+					JsfBase.setFlashAttribute("idCierre", transaccion.getIdApertura());
 					JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
     			RequestContext.getCurrentInstance().execute("janal.alert('Se gener\\u00F3 el cierre de caja, con consecutivo: "+ cierre.getConsecutivo()+ "');");
 				} // if	
+				else
+    			JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
   				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR)? "agregó": this.accion.equals(EAccion.COMPLETO) ? "aplicó": "modificó").concat(" el cierre de caja."), ETipoMensaje.INFORMACION);
-  			JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al realizar el cierre de caja.", ETipoMensaje.ERROR);      			
