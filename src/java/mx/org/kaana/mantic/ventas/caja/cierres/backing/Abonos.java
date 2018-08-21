@@ -49,7 +49,7 @@ public class Abonos extends IBaseAttribute implements Serializable {
 	@PostConstruct
   protected void init() {		
     try {
-      this.accion = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+      this.accion = EAccion.ASIGNAR;
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre")== null? -1L: JsfBase.getFlashAttribute("idCierre"));
       this.attrs.put("limite", 3000.0);
       this.attrs.put("importe", 0.0);
@@ -95,12 +95,14 @@ public class Abonos extends IBaseAttribute implements Serializable {
     try {			
 			TcManticCierresRetirosDto abono= new TcManticCierresRetirosDto(-1L);
 			abono.setIdAbono(1L);
+			abono.setIdTipoMedioPago(1L);
 			abono.setConcepto((String)this.attrs.get("concepto"));
 			abono.setImporte((Double)this.attrs.get("importe"));
 			transaccion = new Transaccion((Long)this.attrs.get("idCierre"), abono);
 			if (transaccion.ejecutar(this.accion)) {
-				if(this.accion.equals(EAccion.AGREGAR) || this.accion.equals(EAccion.ASIGNAR)) {
+				if(this.accion.equals(EAccion.ASIGNAR)) {
  				  regresar = "ambos".concat(Constantes.REDIRECIONAR);
+ 	        JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));
     			RequestContext.getCurrentInstance().execute("janal.alert('Se gener\\u00F3 el abono de efectivo, con consecutivo: "+ abono.getConsecutivo()+ "');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
@@ -119,6 +121,8 @@ public class Abonos extends IBaseAttribute implements Serializable {
 	
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
+		if(this.caja!= null)
+    	JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));
     return "ambos".concat(Constantes.REDIRECIONAR);
   } 
 	

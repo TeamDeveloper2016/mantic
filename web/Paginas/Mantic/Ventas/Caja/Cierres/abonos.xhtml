@@ -11,9 +11,8 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-        'contenedorGrupos\\:importe'      : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre'},
-        'contenedorGrupos\\:concepto'     : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
-        'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
+        'contenedorGrupos\\:importe' : {validaciones: 'requerido|flotante|mayor({"cuanto":0})', mascara: 'libre'},
+        'contenedorGrupos\\:concepto': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
 			};			
 			
     	$(document).ready(function() {
@@ -84,9 +83,6 @@
 									</div>		
 								</div>	
 							</div>
-						</p:tab>
-						<p:tab title="Observaciones">
-							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticVentasCajaCierresAbonos.attrs.observaciones}"/>
 						</p:tab>
 					</p:tabView>
 				</div>

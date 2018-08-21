@@ -20,16 +20,16 @@
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-content" class="ui-grid-col-12">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticVentasCajaCierresAmbos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticVentasCajaCierresAmbos.lazyModel.rowCount gt manticVentasCajaCierresAmbos.lazyModel.pageSize}"  selection="#{manticVentasCajaCierresAmbos.attrs.seleccionado}" selectionMode="single" rowIndexVar="index" reflow="true">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticVentasCajaCierresAmbos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticVentasCajaCierresAmbos.lazyModel.rowCount gt manticVentasCajaCierresAmbos.lazyModel.pageSize}"  selection="#{manticVentasCajaCierresAmbos.attrs.seleccionado}" selectionMode="single" rowIndexVar="index" reflow="true">
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="@this tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">
-                  <p:menuitem value="Retiros parciales" action="#{manticVentasCajaCierresAmbos.doAccion('AGREGAR')}" icon="fa fa-sign-out" title="Retiro" onstart="return janal.bloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.idCierreEstatus)}"/>
-                  <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.idCierreEstatus)}"/>
-                  <p:menuitem value="Abono parciales" action="#{manticVentasCajaCierresAmbos.doAccion('ASIGNAR')}" icon="fa fa-sign-in" title="Abono" onstart="return janal.bloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.idCierreEstatus)}"/>
-                  <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.idCierreEstatus)}"/>
+                  <p:menuitem value="Retiros parciales" action="#{manticVentasCajaCierresAmbos.doAccion('AGREGAR')}" icon="fa fa-sign-out" title="Retiro" onstart="return janal.bloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresAmbos.attrs.idCierreEstatus)}"/>
+                  <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresAmbos.attrs.idCierreEstatus)}"/>
+                  <p:menuitem value="Abono parciales" action="#{manticVentasCajaCierresAmbos.doAccion('ASIGNAR')}" icon="fa fa-sign-in" title="Abono" onstart="return janal.bloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresAmbos.attrs.idCierreEstatus)}"/>
+                  <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresAmbos.attrs.idCierreEstatus)}"/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:separator/>
@@ -37,10 +37,10 @@
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:commandButton action="#{manticVentasCajaCierresAmbos.doAccion('AGREGAR')}" icon="fa fa-plus" title="Retiro" onstart="return janal.bloquear()" styleClass="janal-text-white" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.idCierreEstatus)}"/>
-                <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.idCierreEstatus)}"/>
-                <p:commandButton action="#{manticVentasCajaCierresAmbos.doAccion('ASIGNAR')}" icon="fa fa-plus" title="Abono" onstart="return janal.bloquear()" styleClass="janal-text-white" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.idCierreEstatus)}"/>						
-                <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresFiltro.attrs.idCierreEstatus)}"/>
+                <p:commandButton action="#{manticVentasCajaCierresAmbos.doAccion('AGREGAR')}" icon="fa fa-plus" title="Retiro" onstart="return janal.bloquear()" styleClass="janal-text-white" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresAmbos.attrs.idCierreEstatus)}"/>
+                <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresAmbos.attrs.idCierreEstatus)}"/>
+                <p:commandButton action="#{manticVentasCajaCierresAmbos.doAccion('ASIGNAR')}" icon="fa fa-plus" title="Abono" onstart="return janal.bloquear()" styleClass="janal-text-white" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresAmbos.attrs.idCierreEstatus)}"/>						
+                <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresAmbos.attrs.idCierreEstatus)}"/>
                 <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
                 <p:separator/>
@@ -53,53 +53,59 @@
               </f:facet>
               <h:outputText value="#{index+ 1}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{filtro.empresa}">
+            <p:column class="MarAuto Responsive janal-wid-13" sortBy="#{row.empresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
-              <h:outputText value="#{filtro['empresa']}"/>
+              <h:outputText value="#{row['empresa']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-5" sortBy="#{filtro.caja}">
+            <p:column class="MarAuto Responsive janal-wid-5" sortBy="#{row.caja}">
               <f:facet name="header">
                 <h:outputText value="Caja"/>
               </f:facet>
-              <h:outputText value="#{filtro['caja']}"/>
+              <h:outputText value="#{row['caja']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="Consecutivo"/>
               </f:facet>
-              <h:outputText value="#{filtro['consecutivo']}"/>
+              <h:outputText value="#{row['consecutivo']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{filtro.usuario}">
+            <p:column class="MarAuto Responsive" sortBy="#{row.usuario}">
               <f:facet name="header">
                 <h:outputText value="Usuario"/>
               </f:facet>
-              <h:outputText value="#{filtro['usuario']}"/>
+              <h:outputText value="#{row['usuario']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive" sortBy="#{filtro.observaciones}">
+            <p:column class="MarAuto Responsive" sortBy="#{row.observaciones}">
               <f:facet name="header">
-                <h:outputText value="Observaciones"/>
+                <h:outputText value="Concepto"/>
               </f:facet>
-              <h:outputText value="#{filtro['observaciones']}"/>
+              <h:outputText value="#{row['concepto']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.registro}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>
-              <h:outputText value="#{filtro['registro']}"/>
+              <h:outputText value="#{row['registro']}"/>
             </p:column>		
-            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{filtro.tipo}">
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.tipo}">
               <f:facet name="header">
                 <h:outputText value="Tipo"/>
               </f:facet>
-              <h:outputText value="#{filtro['tipo']}"/>
+              <h:outputText value="#{row['tipo']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
+            <p:column class="MarAuto Responsive janal-wid-8" sortBy="#{row.moneda}">
+              <f:facet name="header">
+                <h:outputText value="Moneda"/>
+              </f:facet>
+              <h:outputText value="#{row['moneda']}"/>
+            </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
-              <h:outputText value="#{manticVentasCajaCierresAmbos.doDecimalSat(filtro['importe'])}"/>
+              <h:outputText value="#{manticVentasCajaCierresAmbos.doDecimalSat(row['importe'])}"/>
             </p:column>		
             <f:facet name="footer">
 							<p:outputLabel value="#{manticVentasCajaCierresAmbos.calculate}&lt;span class='janal-color-green'&gt;Abonos: &lt;strong&gt;#{manticVentasCajaCierresAmbos.attrs.abonos}&lt;/strong&gt;&lt;/span&gt;   &lt;span class='janal-color-orange'&gt;Retiros: &lt;strong&gt;#{manticVentasCajaCierresAmbos.attrs.retiros}&lt;/strong&gt;&lt;/span&gt;" style="float:left;" escape="false"/>

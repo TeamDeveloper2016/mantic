@@ -71,7 +71,7 @@ public class Ambos extends IBaseFilter implements Serializable {
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("caja", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("registro", EFormatoDinamicos.DIA_FECHA_HORA_CORTA));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaCierresCajasDto", "retiros", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
@@ -115,9 +115,15 @@ public class Ambos extends IBaseFilter implements Serializable {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
 			transaccion= new Transaccion((Long)this.attrs.get("idCierre"), (TcManticCierresRetirosDto)DaoFactory.getInstance().findById(TcManticCierresRetirosDto.class, seleccionado.toLong("idCierreRetiro")));
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "El retiro de efectivo se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
+				if(seleccionado.toLong("idAbono").equals(1L))
+  				JsfBase.addMessage("Eliminar", "El abono se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
+			  else
+  				JsfBase.addMessage("Eliminar", "El retiro se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el retiro de efectivo.", ETipoMensaje.ALERTA);								
+				if(seleccionado.toLong("idAbono").equals(1L))
+  				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el abono.", ETipoMensaje.ALERTA);								
+  			else	
+			    JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el retiro.", ETipoMensaje.ALERTA);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
