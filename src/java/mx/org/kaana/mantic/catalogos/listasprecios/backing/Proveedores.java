@@ -40,7 +40,7 @@ public class Proveedores extends IBaseAttribute implements java.io.Serializable
   protected void init(){
     try {
       this.attrs.put("sortOrder", "order by tc_mantic_proveedores.razon_social");
-      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
     }
     catch (Exception e) {
       Error.mensaje(e);
