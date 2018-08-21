@@ -467,7 +467,11 @@ public class Accion extends IBaseArticulos implements Serializable {
 				} // if
 				else 
 					JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
-			} // if						
+			} // if	
+			if(((TicketVenta)this.getAdminOrden().getOrden()).isValid()){
+				transaccion= new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()));
+				transaccion.ejecutar(EAccion.NO_APLICA);
+			} // if
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -989,4 +993,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch		
 	} // doVerificaVigenciaCotizacion
+	
+	public void doActivatePage(){
+		this.attrs.put("activated", true);
+	} // doActivatePage
 }
