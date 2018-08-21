@@ -52,8 +52,9 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
+		<p:poll listener="#{manticVentasAccion.doActivatePage}" process="@this" update="helpPuntoVenta" interval="60"/>
 		<pe:remoteCommand name="updateDescuentos" process="@this" update="panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd"/>  			
-		<pe:remoteCommand name="loginValidate" process="@this @(.janal-login-user)" update="headerCuenta panelEmpresa cuenta password" actionListener="#{manticVentasAccion.doLogin}" oncomplete="janal.desbloquear();"/>  			
+		<pe:remoteCommand name="loginValidate" process="@this @(.janal-login-user)" update="headerCuenta cuenta password" actionListener="#{manticVentasAccion.doLogin}" oncomplete="janal.desbloquear();"/>  			
 		<pe:remoteCommand name="userUpdate" process="@this" onstart="janal.bloquear();" actionListener="#{manticVentasAccion.doCerrarTicket}" oncomplete="jsArticulos.activeLogin();" update="deudor contenido tabla panelTotales panelCliente panelEmpresa articulos total @(.filas) @(.recalculo)"/>  			
 		<pe:remoteCommand name="loadTicketAbiertos" process="@this" update="dialogoOpenTickets" actionListener="#{manticVentasAccion.doLoadTicketAbiertos}" onstart="janal.bloquear()"/>  			
 		<pe:remoteCommand name="loadCotizaciones" process="@this" update="dialogoCotizaciones" actionListener="#{manticVentasAccion.doLoadCotizaciones}" onstart="janal.bloquear()"/>  			
@@ -97,7 +98,7 @@
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">					
-					<p:outputLabel value="&lt;strong class='janal-color-blue'&gt;[F7]&lt;/strong&gt; Detalle de articulo &lt;strong class='janal-color-blue'&gt;[F8]&lt;/strong&gt; Articulo en sucursales &lt;strong class='janal-color-blue'&gt;[F10]&lt;/strong&gt; Aplicar descuento &lt;strong class='janal-color-blue'&gt;[Ctrl+P]&lt;/strong&gt; Cuentas abiertas &lt;strong class='janal-color-blue'&gt;[F4]&lt;/strong&gt; Cotizaciones abiertas" styleClass="janal-align-right" escape="false"/>
+					<p:outputLabel id="helpPuntoVenta" value="&lt;strong class='janal-color-blue'&gt;[F7]&lt;/strong&gt; Detalle de articulo &lt;strong class='janal-color-blue'&gt;[F8]&lt;/strong&gt; Articulo en sucursales &lt;strong class='janal-color-blue'&gt;[F10]&lt;/strong&gt; Aplicar descuento &lt;strong class='janal-color-blue'&gt;[Ctrl+P]&lt;/strong&gt; Cuentas abiertas &lt;strong class='janal-color-blue'&gt;[F4]&lt;/strong&gt; Cotizaciones abiertas &lt;strong class='janal-color-blue'&gt;[Ctrl+U]&lt;/strong&gt; Cambio de usuario" styleClass="janal-align-right" escape="false"/>
 					<p:panelGrid id="panelEmpresa" columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-70, janal-wid-100">						
 						<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasAccion.attrs.isMatriz}"/>
 						<p:selectOneMenu id="idEmpresa" value="#{manticVentasAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticVentasAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">
