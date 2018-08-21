@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/venta.xhtml">
 	<ui:param name="titulo" value="Punto de venta"/>
 	<ui:define name="librerias">
-		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.1.4.js"/>
+		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.1.5.js"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
 				'articulos': {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'articulo'},			
@@ -41,7 +41,7 @@
 					janal.refresh();
 				} // if
 				return ok;
-			} // validateCapturaDescuentos
+			} // validateCapturaDescuentos				
 		</script>   
 		<style type="text/css">
 			.janal-total-compra {
@@ -53,7 +53,7 @@
 	</ui:define>
 	<ui:define name="contenido">
 		<pe:remoteCommand name="updateDescuentos" process="@this" update="panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd"/>  			
-		<pe:remoteCommand name="loginValidate" process="@this @(.janal-login-user)" update="headerCuenta panelEmpresa" actionListener="#{manticVentasAccion.doLogin}" oncomplete="janal.desbloquear();"/>  			
+		<pe:remoteCommand name="loginValidate" process="@this @(.janal-login-user)" update="headerCuenta panelEmpresa cuenta password" actionListener="#{manticVentasAccion.doLogin}" oncomplete="janal.desbloquear();"/>  			
 		<pe:remoteCommand name="userUpdate" process="@this" onstart="janal.bloquear();" actionListener="#{manticVentasAccion.doCerrarTicket}" oncomplete="jsArticulos.activeLogin();" update="deudor contenido tabla panelTotales panelCliente panelEmpresa articulos total @(.filas) @(.recalculo)"/>  			
 		<pe:remoteCommand name="loadTicketAbiertos" process="@this" update="dialogoOpenTickets" actionListener="#{manticVentasAccion.doLoadTicketAbiertos}" onstart="janal.bloquear()"/>  			
 		<pe:remoteCommand name="loadCotizaciones" process="@this" update="dialogoCotizaciones" actionListener="#{manticVentasAccion.doLoadCotizaciones}" onstart="janal.bloquear()"/>  			
@@ -384,7 +384,7 @@
 						<p:outputLabel value="IVA:" />
 						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.unidadMedida}" styleClass="janal-wid-100-txt" disabled="true"/>											
 						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.stock}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>																									
-						<p:inputText value="$#{manticVentasAccion.attrs.detailArticulo.iva}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
+						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.iva}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
 					</h:panelGrid>
 				</p:tab>
 				<p:tab title="Especificaciones">
@@ -473,7 +473,7 @@
 				</div>	
 				<div class="ui-grid-col-2 janal-column-left janal-login-view" style="display: none;">
 					<p:outputLabel id="lblCuenta" for="cuenta" value="Usuario:"/>
-					<p:inputText id="cuenta" value="#{manticVentasAccion.attrs.cuenta}" onblur="jsArticulos.toPassword();" onkeydown="jsArticulos.toLoginEnter();" styleClass="janal-wid-100-txt janal-login-user"/>
+					<p:inputText id="cuenta" value="#{manticVentasAccion.attrs.cuenta}" onblur="jsArticulos.toPassword();" onkeydown="jsArticulos.toLoginEnter();" styleClass="janal-wid-100-txt janal-login-user" autocomplete="off"/>
 				</div>	
 				<div class="ui-grid-col-2 janal-column-left janal-login-view" style="display: none;">
 					<p:outputLabel id="lblPassword" for="password" value="Contraseña:"/>					
