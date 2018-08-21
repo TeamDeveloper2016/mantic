@@ -152,7 +152,15 @@ public class Transaccion extends IBaseTnx {
 				case REPROCESAR:
 				case COPIAR:
 					regresar= actualizarVenta(sesion, accion.equals(EAccion.REPROCESAR) ? EEstatusVentas.PAGADA.getIdEstatusVenta() : EEstatusVentas.CREDITO.getIdEstatusVenta());				
-					break;				
+					break;		
+				case NO_APLICA:
+					params= new HashMap<>();
+					params.put("idVenta", this.orden.getIdVenta());
+					if(DaoFactory.getInstance().deleteAll(sesion, TcManticVentasBitacoraDto.class, params)>= 0){
+						if(DaoFactory.getInstance().deleteAll(sesion, TcManticVentasDetallesDto.class, params)>= 0)
+							regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
+					} // if					
+					break;
 			} // switch
 			if(!regresar)
         throw new Exception("");
