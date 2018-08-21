@@ -30,7 +30,12 @@ public enum EReportes implements IReportAttribute{
 	TRANSFERENCIAS("VistaAlmacenesTransferenciasDto", "row", "Transferencias", "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/Reportes/transferencias", EFormatos.PDF, "transferencias", "/Paginas/Mantic/Compras/Requisiciones/filtro"),
 	TRANSFERENCIAS_DETALLE("VistaReporteTransferenciasDto", "row", "Transferencia", "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/Reportes/transferenciasDetalle", EFormatos.PDF, "transferencias_detalle", "/Paginas/Mantic/Catalogos/Almacenes/Transferencias/filtro"),
   VENTAS_A_CREDITO   ("VistaVentasDto", "lazy", "Ventas a credito", "/Paginas/Mantic/Ventas/Autorizacion/Reportes/ventasCredito", EFormatos.PDF, "ventas_a_credito", "/Paginas/Mantic/Ventas/Autorizacion/filtro"),
-	VENTA_A_CREDITO_DETALLE("VistaReporteVentasDetalle", "detalleVenta", "Venta a crédito", "/Paginas/Mantic/Ventas/Autorizacion/Reportes/ventaCreditoDetalle", EFormatos.PDF, "venta_a_credito_detalle", "/Paginas/Mantic/Ventas/Autorizacion/filtro");
+	VENTA_A_CREDITO_DETALLE("VistaReporteVentasDetalle", "detalleVenta", "Venta a crédito", "/Paginas/Mantic/Ventas/Autorizacion/Reportes/ventaCreditoDetalle", EFormatos.PDF, "venta_a_credito_detalle", "/Paginas/Mantic/Ventas/Autorizacion/filtro"),
+  COTIZACIONES   ("VistaVentasDto", "cotizacion", "Cotizaciones", "/Paginas/Mantic/Ventas/Cotizacion/Reportes/cotizaciones", EFormatos.PDF, "cotizaciones", "/Paginas/Mantic/Ventas/Cotizacion/filtro"),
+	COTIZACION_DETALLE("VistaTicketVentaDto", "ventas", "Cotización", "/Paginas/Mantic/Ventas/Cotizacion/Reportes/cotizacionDetalle", EFormatos.PDF, "cotizacion_detalle", "/Paginas/Mantic/Ventas/Cotizacion/filtro"),
+  CUENTAS   ("VistaVentasDto", "lazy", "Cuentas", "/Paginas/Mantic/Ventas/Cuentas/Reportes/cuentas", EFormatos.PDF, "cuentas", "/Paginas/Mantic/Ventas/Cuentas/filtro"),
+	CUENTAS_DETALLE("VistaTicketVentaDto", "ventas", "Cuenta", "/Paginas/Mantic/Ventas/Cuentas/Reportes/cuentaDetalle", EFormatos.PDF, "cuenta_detalle", "/Paginas/Mantic/Ventas/Cuentas/filtro");
+	
 	
   
 	private final String proceso;
