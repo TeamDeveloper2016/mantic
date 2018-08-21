@@ -10,6 +10,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -217,7 +218,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
             //(idListaPrecio,descripcion, idListaPrecioDetalle, codigo, precio, auxiliar) 
             getArticulos().add(new TcManticListasPreciosDetallesDto(
             -1L,
-            sheet.getCell(2,fila).getContents(),
+            cleanString(sheet.getCell(2,fila).getContents()),
             -1L,
             sheet.getCell(0,fila).getContents(),
             Double.valueOf(sheet.getCell(3,fila).getContents()),
@@ -238,6 +239,12 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
     } // finally
 		return regresar;
 	} // toVerificaXls
+  
+  private static String cleanString(String texto) {
+    texto = Normalizer.normalize(texto, Normalizer.Form.NFD);
+    texto = texto.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+    return texto;
+  }
 	
 	protected void doLoadFiles(String proceso, Long idSelected, String idNombre) {
 		this.doLoadFiles(proceso, idSelected, idNombre, true, 1D);
