@@ -477,18 +477,25 @@ public class Accion extends IBaseArticulos implements Serializable {
 	
 	public void doLogin() {		
 		CambioUsuario cambioUsuario= null;		
-		String cuenta   = null;
-		String password = null;
+		String cuenta    = null;
+		String password  = null;
+		RequestContext rc= null;
     try {					
 			cuenta       = this.attrs.get("cuenta").toString();
 			password     = this.attrs.get("password").toString();						
 			cambioUsuario= new CambioUsuario(cuenta, password);
+			rc= RequestContext.getCurrentInstance();
 			if(cambioUsuario.validaUsuario()) {
 				this.init();
-			  RequestContext.getCurrentInstance().execute("jsArticulos.disabledLogin();");
+			  rc.execute("jsArticulos.disabledLogin();");
 			}	// if
-			else
-				JsfBase.addMessage("Cambio de usuario", "Ocurrió un error al autenticar el usuario seleccionado", ETipoMensaje.ERROR);      																	
+			else{
+				this.attrs.put("cuenta", "");
+				this.attrs.put("password", "");
+				rc.execute("jsArticulos.restoreAutenticate();");
+				rc.update("cuenta password");
+				JsfBase.addMessage("Cambio de usuario", "Error de autenticación <br><br> -Cuenta/contraseña son incorrectos<br> -Cuenta de directorio invalida", ETipoMensaje.ERROR);      																	
+			} // esle
     } // try
     catch (Exception e) {
       Error.mensaje(e);

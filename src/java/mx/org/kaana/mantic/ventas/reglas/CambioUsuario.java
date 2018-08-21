@@ -1,8 +1,6 @@
 package mx.org.kaana.mantic.ventas.reglas;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +16,7 @@ import mx.org.kaana.kajool.procesos.acceso.exceptions.BloqueoSitioException;
 import mx.org.kaana.kajool.procesos.acceso.perfil.reglas.RegistroPerfil;
 import mx.org.kaana.kajool.procesos.acceso.reglas.Acceso;
 import mx.org.kaana.libs.formato.BouncyEncryption;
-import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 
@@ -36,7 +34,7 @@ public class CambioUsuario extends Acceso implements Serializable{
 		this.acceso= false;
 	} // CambioUsuario
 	
-	public boolean validaUsuario() throws Exception{
+	public boolean validaUsuario(){
 		boolean regresar= false;
 		try {
 			valida();				
@@ -44,7 +42,7 @@ public class CambioUsuario extends Acceso implements Serializable{
 				regresar= JsfBase.getAutentifica().getRedirect().equals(EPaginasPrivilegios.DEFAULT) || JsfBase.getAutentifica().getRedirect().equals(EPaginasPrivilegios.PERFILES);				
 		} // try
 		catch (Exception e) {			
-			throw e;
+			Error.mensaje(e);
 		} // catch		
 		return regresar;
 	} // validaUsuario	
