@@ -97,7 +97,7 @@
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">					
-					<p:outputLabel value="&lt;strong class='janal-color-blue'&gt;[F7]&lt;/strong&gt; Detalle de articulo &lt;strong class='janal-color-blue'&gt;[F8]&lt;/strong&gt; Almacen de articulo &lt;strong class='janal-color-blue'&gt;[F10]&lt;/strong&gt; Aplicar descuento &lt;strong class='janal-color-blue'&gt;[Ctrl+P]&lt;/strong&gt; Cuentas abiertas &lt;strong class='janal-color-blue'&gt;[F4]&lt;/strong&gt; Cotizaciones abiertas" styleClass="janal-align-right" escape="false"/>
+					<p:outputLabel value="&lt;strong class='janal-color-blue'&gt;[F7]&lt;/strong&gt; Detalle de articulo &lt;strong class='janal-color-blue'&gt;[F8]&lt;/strong&gt; Articulo en sucursales &lt;strong class='janal-color-blue'&gt;[F10]&lt;/strong&gt; Aplicar descuento &lt;strong class='janal-color-blue'&gt;[Ctrl+P]&lt;/strong&gt; Cuentas abiertas &lt;strong class='janal-color-blue'&gt;[F4]&lt;/strong&gt; Cotizaciones abiertas" styleClass="janal-align-right" escape="false"/>
 					<p:panelGrid id="panelEmpresa" columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-70, janal-wid-100">						
 						<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasAccion.attrs.isMatriz}"/>
 						<p:selectOneMenu id="idEmpresa" value="#{manticVentasAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticVentasAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">
@@ -425,16 +425,7 @@
 				</p:column>   
 				<p:column headerText="Existencias" styleClass="janal-wid-8 janal-column-right">
 					<h:outputText value="#{row.stock}"/>
-				</p:column>   
-				<p:column headerText="Mínimo" styleClass="janal-wid-8 janal-column-right">
-					<h:outputText value="#{row.minimo}"/>
-				</p:column>   
-				<p:column headerText="Máximo" styleClass="janal-wid-8 janal-column-right">
-					<h:outputText value="#{row.maximo}"/>
-				</p:column>   
-				<p:column headerText="Ubicación" styleClass="janal-wid-30">
-					<h:outputText value="#{row.ubicacion}"/>
-				</p:column>   
+				</p:column>   				
 				<f:facet name="footer">
 					<p:outputLabel value="Total [#{manticVentasAccion.almacenes==null?0:manticVentasAccion.almacenes.rowCount}] registros"/>
 				</f:facet>
