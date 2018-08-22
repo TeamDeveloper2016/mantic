@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/venta.xhtml">
 	<ui:param name="titulo" value="Punto de venta"/>
 	<ui:define name="librerias">
-		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.1.5.js"/>
+		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.1.6.js"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
 				'articulos': {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'articulo'},			
@@ -338,7 +338,7 @@
 			</h:panelGrid>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this ticketsAbiertos" value="Aceptar" onstart="PF('dlgOpenTickets').hide();" actionListener="#{manticVentasAccion.doAsignaTicketAbierto}" update="contenido clientes cliente noTicket @(.filas) @(.recalculo)" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this ticketsAbiertos" value="Aceptar" onstart="PF('dlgOpenTickets').hide();" actionListener="#{manticVentasAccion.doAsignaTicketAbierto}" update="contenido clientes cliente noTicket @(.filas) @(.recalculo) @(.informacion) deudor" oncomplete="janal.desbloquear();"/>
 				<p:commandButton icon="fa fa-remove" styleClass="janal-text-white" process="@none" value="Cancelar" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>							
@@ -354,7 +354,7 @@
 			</h:panelGrid>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this cotizacion" value="Aceptar" onstart="PF('dlgCotizaciones').hide();" actionListener="#{manticVentasAccion.doAsignaCotizacion}" update="contenido clientes cliente noTicket @(.filas) @(.recalculo)" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this cotizacion" value="Aceptar" onstart="PF('dlgCotizaciones').hide();" actionListener="#{manticVentasAccion.doAsignaCotizacion}" update="contenido clientes cliente noTicket @(.filas) @(.recalculo) @(.informacion) deudor" oncomplete="janal.desbloquear();"/>
 				<p:commandButton icon="fa fa-remove" styleClass="janal-text-white" process="@none" value="Cancelar" onstart="PF('dlgCotizaciones').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>							
@@ -373,19 +373,19 @@
 						<p:inputText value="$#{manticVentasAccion.attrs.detailArticulo.menudeo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>											
 						<p:inputText value="$#{manticVentasAccion.attrs.detailArticulo.medioMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
 						<p:inputText value="$#{manticVentasAccion.attrs.detailArticulo.mayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>																							
+						<p:outputLabel value="Limite menudeo:" />
 						<p:outputLabel value="Limite medio mayoreo:" />
 						<p:outputLabel value="Limite mayoreo:" />						
-						<p:outputLabel value=""/>
-						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.limiteMedioMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>											
-						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.limiteMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
-						<p:outputLabel value=""/>
+						<p:inputText value="0 - #{manticVentasAccion.attrs.detailArticulo.limiteMedioMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>											
+						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.limiteMedioMayoreo} - #{manticVentasAccion.attrs.detailArticulo.limiteMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>											
+						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.limiteMayoreo} - #" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
 						<p:separator/><p:separator/><p:separator/>
 						<p:outputLabel value="Unidad de medida:" />
 						<p:outputLabel value="Stock:" />
 						<p:outputLabel value="IVA:" />
 						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.unidadMedida}" styleClass="janal-wid-100-txt" disabled="true"/>											
 						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.stock}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>																									
-						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.iva}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
+						<p:inputText value="#{manticVentasAccion.attrs.detailArticulo.iva}%" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
 					</h:panelGrid>
 				</p:tab>
 				<p:tab title="Especificaciones">
