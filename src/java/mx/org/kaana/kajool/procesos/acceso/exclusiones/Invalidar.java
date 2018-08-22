@@ -9,6 +9,9 @@ import javax.servlet.http.HttpSession;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
+import mx.org.kaana.libs.Constantes;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * @company KAANA
@@ -20,15 +23,19 @@ import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
 @Named(value = "kajoolAccesoInvalidar")
 @ViewScoped
 public class Invalidar implements Serializable {
+	
+	private static final Log LOG=LogFactory.getLog(Invalidar.class);
+	private static final long serialVersionUID=-5710731965721539429L;
 
   public void clean() {
-    Autentifica autentifica = null;
+    Autentifica autentifica= null;
     Enumeration attributes = null;
-    HttpSession session = null;
+    HttpSession session    = null;
     try {
       session = JsfBase.getSession();
       autentifica = JsfBase.getAutentifica();
       if (autentifica != null) {
+				LOG.warn("Se cerró la sesion: "+ autentifica.getPersona().getCuenta());
         JsfBase.getUsuariosSitio().deleteCuenta(session.getId(), autentifica.getPersona().getCuenta());
         //autentifica.cerrarSession();
         attributes = session.getAttributeNames();
@@ -47,6 +54,8 @@ public class Invalidar implements Serializable {
       } // if
       session.setMaxInactiveInterval(0);
       FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
+			LOG.warn("Eliminando el objeto del autentifica de la sesión: "+ session.getId());
+			session.removeAttribute(Constantes.ATRIBUTO_AUTENTIFICA);
     } // try
     catch (Exception e) {
       Error.mensaje(e);

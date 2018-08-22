@@ -124,8 +124,20 @@ public class Retiros extends IBaseAttribute implements Serializable {
 	
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
-    JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
-		JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
+		if(this.attrs.get("idEmpresa")== null) {
+			if(this.attrs.get("idEmpresas")!= null)
+        JsfBase.setFlashAttribute("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresas")).getKey());
+		} // if
+		else	
+      JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
+		if(this.attrs.get("idCaja")== null) {
+			if(this.attrs.get("idCajas")!= null)
+        JsfBase.setFlashAttribute("idCaja", ((UISelectEntity)this.attrs.get("idCajas")).getKey());
+		} // if
+		else	
+  		JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
+		if(this.caja!= null)
+    	JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));
 		if(this.caja!= null)
     	JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));
     return "ambos".concat(Constantes.REDIRECIONAR);
