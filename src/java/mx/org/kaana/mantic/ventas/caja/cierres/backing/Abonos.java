@@ -51,6 +51,8 @@ public class Abonos extends IBaseAttribute implements Serializable {
     try {
       this.accion = EAccion.ASIGNAR;
       this.attrs.put("idCierre", JsfBase.getFlashAttribute("idCierre")== null? -1L: JsfBase.getFlashAttribute("idCierre"));
+			this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa"));
+			this.attrs.put("idCaja", JsfBase.getFlashAttribute("idCaja"));
       this.attrs.put("limite", 3000.0);
       this.attrs.put("importe", 0.0);
       this.attrs.put("retiros", 0D);
@@ -102,6 +104,8 @@ public class Abonos extends IBaseAttribute implements Serializable {
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.ASIGNAR)) {
  				  regresar = "ambos".concat(Constantes.REDIRECIONAR);
+     			JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
+		    	JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
  	        JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));
     			RequestContext.getCurrentInstance().execute("janal.alert('Se gener\\u00F3 el abono de efectivo, con consecutivo: "+ abono.getConsecutivo()+ "');");
 				} // if	
@@ -121,6 +125,8 @@ public class Abonos extends IBaseAttribute implements Serializable {
 	
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
+    JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
+		JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
 		if(this.caja!= null)
     	JsfBase.setFlashAttribute("idCierreEstatus", this.caja.toLong("idCierreEstatus"));
     return "ambos".concat(Constantes.REDIRECIONAR);
@@ -131,10 +137,13 @@ public class Abonos extends IBaseAttribute implements Serializable {
     Map<String, Object> params= new HashMap<>();
     try {
 			columns= new ArrayList<>();
-			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+			if(this.attrs.get("idEmpresa")!= null)
+				if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+					params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+				else
+					params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			else
-				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+  		  params.put("idEmpresa", this.attrs.get("idEmpresa"));
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
@@ -144,12 +153,12 @@ public class Abonos extends IBaseAttribute implements Serializable {
 			if(this.caja!= null) {
 				int index= sucursales.indexOf(new UISelectEntity(new Entity(this.caja.toLong("idEmpresa"))));
 				if(index>= 0)
-					this.attrs.put("idEmpresa", sucursales.get(index));
+					this.attrs.put("idEmpresas", sucursales.get(index));
 				else
-			    this.attrs.put("idEmpresa", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("sucursales")));
+			    this.attrs.put("idEmpresas", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("sucursales")));
 			} // if
 			else
-			  this.attrs.put("idEmpresa", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("sucursales")));
+			  this.attrs.put("idEmpresas", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("sucursales")));
 			this.doLoadCajas();
     } // try
     catch (Exception e) {
@@ -168,20 +177,20 @@ public class Abonos extends IBaseAttribute implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			params.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresa")).getKey());
+			params.put("idEmpresa", ((UISelectEntity)this.attrs.get("idEmpresas")).getKey());
 			List<UISelectEntity> cajas= (List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "cajas", params, columns);
       this.attrs.put("cajas", cajas);
 			if(this.caja!= null) {
 				int index= cajas.indexOf(new UISelectEntity(new Entity(this.caja.toLong("idCaja"))));
 				if(index>= 0)
-					this.attrs.put("idCaja", cajas.get(index));
+					this.attrs.put("idCajas", cajas.get(index));
 				else
-    			this.attrs.put("idCaja", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
+    			this.attrs.put("idCajas", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
 			} // if
 			else
-  			this.attrs.put("idCaja", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
-			if(this.attrs.get("idCaja")!= null)
-				this.attrs.put("limite", ((UISelectEntity)this.attrs.get("idCaja")).toDouble("limite"));
+  			this.attrs.put("idCajas", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
+			if(this.attrs.get("idCajas")!= null)
+				this.attrs.put("limite", ((UISelectEntity)this.attrs.get("idCajas")).toDouble("limite"));
     } // try
     catch (Exception e) {
       throw e;

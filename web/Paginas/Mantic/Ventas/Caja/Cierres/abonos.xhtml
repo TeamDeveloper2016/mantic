@@ -29,11 +29,11 @@
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-1">
-     								<p:outputLabel for="idEmpresa" value="Empresa:"/>
+     								<p:outputLabel for="idEmpresas" value="Empresa:"/>
 									</div>	
 									<div class="ui-grid-col-11">
-										<p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaCierresAbonos.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
-											<p:ajax event="change" listener="#{manticVentasCajaCierresAbonos.doLoadCajas}" process="@this" update="idCaja"/>
+										<p:selectOneMenu id="idEmpresas" value="#{manticVentasCajaCierresAbonos.attrs.idEmpresas}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+											<p:ajax event="change" listener="#{manticVentasCajaCierresAbonos.doLoadCajas}" process="@this" update="idCajas"/>
 											<f:selectItems value="#{manticVentasCajaCierresAbonos.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 											<p:column headerText="Clave">
 												<h:outputText value="#{item.clave}"/>
@@ -46,10 +46,10 @@
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-1">
-								    <p:outputLabel for="idCaja" value="Caja:"/>
+								    <p:outputLabel for="idCajas" value="Caja:"/>
 									</div>
 									<div class="ui-grid-col-11">
-										<p:selectOneMenu id="idCaja" value="#{manticVentasCajaCierresAbonos.attrs.idCaja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="contains">
+										<p:selectOneMenu id="idCajas" value="#{manticVentasCajaCierresAbonos.attrs.idCajas}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="contains">
 											<f:selectItems value="#{manticVentasCajaCierresAbonos.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 											<p:column headerText="Clave">
 												<h:outputText value="#{item.clave}"/>

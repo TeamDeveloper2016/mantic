@@ -130,6 +130,8 @@ public class Ambos extends IBaseFilter implements Serializable {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
 			JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
+			JsfBase.setFlashAttribute("idEmpresa", this.attrs.get("idEmpresa"));
+			JsfBase.setFlashAttribute("idCaja", this.attrs.get("idCaja"));
 			switch(eaccion) {
 				case AGREGAR:
 					regresar= "retiros";
