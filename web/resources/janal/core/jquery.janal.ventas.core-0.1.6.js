@@ -180,15 +180,23 @@
 						return $articulos.search();
 						break;						
 					case $articulos.VK_MINUS:
-						var ok= janal.partial('articulo');
-						if(ok){
-							$articulos.leavePage= true;
-							var txt= $(this).val().trim().length<= 0;
-							if(txt && $('ul.ui-autocomplete-items:visible').length<= 0 && confirm('¿ Esta seguro que desea terminar con la captura ?')) {
-								$('#aceptar').click();
-								return false;
+						if(parseInt($('#articulos').val())===0){
+							if(PF('dlgCloseTicket')) {
+								janal.bloquear();
+								userUpdate();
 							} // if
 						} // if
+						else{
+							var ok= janal.partial('articulo');
+							if(ok){
+								$articulos.leavePage= true;
+								var txt= $(this).val().trim().length<= 0;
+								if(txt && $('ul.ui-autocomplete-items:visible').length<= 0 && confirm('¿ Esta seguro que desea terminar con la captura ?')) {
+									$('#aceptar').click();
+									return false;
+								} // if
+							} // if
+						} // else
 						break;
 					case $articulos.VK_MAYOR:
 						return $articulos.show($(this));
@@ -716,7 +724,10 @@
 			$('#cuenta').val('');
 			$('#password').val('');
 			setTimeout("$('#cuenta').focus();", 500);			
-		} // restoreAutenticate
+		}, // restoreAutenticate
+		initArrayArt: function(size){
+			this.cursor.top= size;
+		} // initArrayArt
 	});
 	
 	console.info('Iktan.Control.Articulos initialized');
