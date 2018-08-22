@@ -140,7 +140,7 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="eliminar" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" disabled="#{manticVentasCajaCierresAmbos.attrs.seleccionado.importe.data lt 0.01}"/>
+            <p:menuitem id="eliminar" value="Cancelar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" disabled="#{manticVentasCajaCierresAmbos.attrs.seleccionado.importe.data lt 0.01}"/>
           </p:contextMenu>					
 					<hr class="ui-widget-content"/>
 					<div class="janal-line-button">
