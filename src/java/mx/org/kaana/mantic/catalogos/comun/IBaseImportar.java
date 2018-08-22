@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -24,6 +25,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import jxl.Sheet;
 import jxl.Workbook;
+import jxl.WorkbookSettings;
 import jxl.read.biff.BiffException;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
@@ -44,6 +46,8 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.db.dto.TcManticListasPreciosDetallesDto;
+import static org.apache.commons.io.Charsets.ISO_8859_1;
+import static org.apache.commons.io.Charsets.UTF_8;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.event.FileUploadEvent;
@@ -204,21 +208,28 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 		Sheet sheet             = null;
 		StringBuilder encabezado= new StringBuilder();
 		try {
-			workbook= Workbook.getWorkbook(archivo);
+      WorkbookSettings workbookSettings = new WorkbookSettings();
+      workbookSettings.setEncoding("Cp1252");	
+			workbookSettings.setExcelDisplayLanguage("MX");
+      workbookSettings.setExcelRegionalSettings("MX");
+      workbookSettings.setLocale(new Locale("es", "MX"));
+			workbook= Workbook.getWorkbook(archivo, workbookSettings);
 			sheet		= workbook.getSheet(0);
-			if(sheet != null && sheet.getColumns()==4 && sheet.getRows()>= 2){
+			if(sheet != null && sheet.getColumns()==4 && sheet.getRows()>= 2) {
 				for (int columna = 0; columna < 4; columna++){
 					encabezado.append(sheet.getCell(columna,0).getContents());
 					encabezado.append("|");
 				} // for
 				encabezado.delete(encabezado.length()-1, encabezado.length());
-				if(encabezado.toString().equals("CLAVE|AUXILIAR|DESCRIPCION|PRECIO")){
+				if(encabezado.toString().equals("CLAVE|AUXILIAR|DESCRIPCION|PRECIO")) {
           this.articulos = new ArrayList<>();
-          for(int fila= 1; fila<sheet.getRows(); fila++){
+					LOG.info("<-------------------------------------------------------------------------------------------------------------->");
+          for(int fila= 1; fila<sheet.getRows(); fila++) {
             //(idListaPrecio,descripcion, idListaPrecioDetalle, codigo, precio, auxiliar) 
+						//LOG.debug("->"+ sheet.getCell(2,fila).getContents()+ " => "+ new String(sheet.getCell(2,fila).getContents().getBytes(UTF_8), ISO_8859_1));
             getArticulos().add(new TcManticListasPreciosDetallesDto(
             -1L,
-            cleanString(sheet.getCell(2,fila).getContents()),
+            new String(sheet.getCell(2,fila).getContents().getBytes(UTF_8), ISO_8859_1),
             -1L,
             sheet.getCell(0,fila).getContents(),
             Double.valueOf(sheet.getCell(3,fila).getContents()),

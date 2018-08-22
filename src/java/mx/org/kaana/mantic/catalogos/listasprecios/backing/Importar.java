@@ -142,11 +142,10 @@ public class Importar extends IBaseImportar implements Serializable {
 	}
 	
   public String doCancelar() {   
-    //return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
     return "filtro".concat(Constantes.REDIRECIONAR);
   } // doCancelar
 	
-	public String doAceptar(){
+	public String doAceptar() {
 		String regresar= null;
 		try {
       if(this.getXls()!= null)
