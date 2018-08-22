@@ -57,7 +57,7 @@
                 <p:inputNumber id="iva" styleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosEmpresasAccion.registroEmpresa.empresa.iva}"/>                    																	
                 <p:outputLabel for="carpetaTrabajo" value="Carpeta de trabajo:"/>
                 <p:inputText id="carpetaTrabajo" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasAccion.registroEmpresa.empresa.carpetaTrabajo}"/>                    
-								<p:outputLabel for="tipoEmpresa" value="Tipo empresa:"/>
+								<p:outputLabel for="tipoEmpresa" value="Tipo sucursal:"/>
 								<p:selectOneMenu id="tipoEmpresa" value="#{manticCatalogosEmpresasAccion.registroEmpresa.empresa.idTipoEmpresa}" styleClass="janal-wid-100-txt">
 									<p:ajax event="change" process="@this contenedorGrupos:panelGeneral" listener="#{manticCatalogosEmpresasAccion.doLoadMatrices}" update="contenedorGrupos:matriz contenedorGrupos:panelGeneral" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{manticCatalogosEmpresasAccion.attrs.tiposEmpresas}"/>

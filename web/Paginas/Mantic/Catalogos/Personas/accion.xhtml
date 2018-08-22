@@ -48,7 +48,7 @@
 					<p:tabView id="contenedorGrupos">
             <p:tab title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-15, janal-wid-100">		
-								<p:outputLabel for="empresa" value="Empresa:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}"/>
+								<p:outputLabel for="empresa" value="Sucursal:" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}"/>
 								<p:selectOneMenu id="empresa" value="#{manticCatalogosPersonasAccion.attrs.idEmpresa}" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosPersonasAccion.attrs.mostrarEmpresas}" filter="true" filterMatchMode="contains">									
 									<p:ajax event="change" listener="#{manticCatalogosPersonasAccion.doActualizaClientesProveedores}" process="@this" update="cliente proveedores" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{manticCatalogosPersonasAccion.attrs.empresas}"/>
