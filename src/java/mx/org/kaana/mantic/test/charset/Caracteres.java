@@ -1,8 +1,8 @@
 package mx.org.kaana.mantic.test.charset;
 
+import java.text.Normalizer;
 import org.apache.commons.io.Charsets;
 import static org.apache.commons.io.Charsets.ISO_8859_1;
-import static org.apache.commons.io.Charsets.UTF_8;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -28,6 +28,8 @@ public class Caracteres {
 		
 		LOG.info(text1);
 		LOG.info(text2);
+		String texto= "BOQUILLA ROJA 0° PARA PISTOLA Ñandú";
+		LOG.info(Normalizer.normalize(texto, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", ""));
 	}
 
 }

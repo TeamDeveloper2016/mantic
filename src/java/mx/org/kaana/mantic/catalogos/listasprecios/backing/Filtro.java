@@ -107,10 +107,15 @@ public class Filtro extends IBaseFilter implements java.io.Serializable
   public String doImportar() {
     JsfBase.setFlashAttribute("retorno", "filtro");
     JsfBase.setFlashAttribute("idListaPrecio", ((Entity)attrs.get("seleccionado")).getKey());
-    return "importar".concat("?faces-redirect=true");
+    return "importar".concat(Constantes.REDIRECIONAR);
+  }
+
+	public String doBuscarArticulo() {
+    JsfBase.setFlashAttribute("retorno", "filtro");
+    return "articulos".concat(Constantes.REDIRECIONAR);
   }
   
-    private Map<String, Object> toPrepare() {
+  private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("clave")))

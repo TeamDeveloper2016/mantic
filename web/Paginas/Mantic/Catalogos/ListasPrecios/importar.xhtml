@@ -13,7 +13,6 @@
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:xls'          : {validaciones: 'libre', mascara: 'libre'},
 				'contenedorGrupos\\:pdf'          : {validaciones: 'libre', mascara: 'libre'},
-				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:idProveedor'  : {validaciones: 'requerido', mascara: 'libre'},
         'contenedorGrupos\\:observacion'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
 			};	
@@ -74,7 +73,7 @@
             </p:tab>
 						<p:tab title="Importar">
 							<p:fileUpload fileUploadListener="#{manticCatalogosListaPreciosImportar.doFileUpload}" 
-							  mode="advanced" process="@this observaciones" update="@(.importado) @(.involucrados)" label="Selecciona XLS/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="104857600"
+							  mode="advanced" process="@this" update="@(.importado) @(.involucrados)" label="Selecciona XLS/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="104857600"
 								multiple="false" allowTypes="#{manticCatalogosListaPreciosImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 100 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosListaPreciosImportar.attrs.formatos}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()"/>
 							<p:inputText id="xls" value="#{manticCatalogosListaPreciosImportar.attrs.xls}" styleClass="importado" style="display:none"/>

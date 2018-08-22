@@ -223,13 +223,14 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 				encabezado.delete(encabezado.length()-1, encabezado.length());
 				if(encabezado.toString().equals("CLAVE|AUXILIAR|DESCRIPCION|PRECIO")) {
           this.articulos = new ArrayList<>();
-					LOG.info("<-------------------------------------------------------------------------------------------------------------->");
+					//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
           for(int fila= 1; fila<sheet.getRows(); fila++) {
             //(idListaPrecio,descripcion, idListaPrecioDetalle, codigo, precio, auxiliar) 
-						//LOG.debug("->"+ sheet.getCell(2,fila).getContents()+ " => "+ new String(sheet.getCell(2,fila).getContents().getBytes(UTF_8), ISO_8859_1));
+					  String contenido= new String(sheet.getCell(2,fila).getContents().getBytes(UTF_8), ISO_8859_1);
+						//LOG.info("-> "+ contenido+ " => "+ cleanString(contenido)+ " -> "+ new String(contenido.getBytes(ISO_8859_1), UTF_8));
             getArticulos().add(new TcManticListasPreciosDetallesDto(
             -1L,
-            new String(sheet.getCell(2,fila).getContents().getBytes(UTF_8), ISO_8859_1),
+            new String(contenido.getBytes(ISO_8859_1), UTF_8),
             -1L,
             sheet.getCell(0,fila).getContents(),
             Double.valueOf(sheet.getCell(3,fila).getContents()),
@@ -252,8 +253,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 	} // toVerificaXls
   
   private static String cleanString(String texto) {
-    texto = Normalizer.normalize(texto, Normalizer.Form.NFD);
-    texto = texto.replaceAll("[\\p{InCombiningDiacriticalMarks}]", "");
+    texto = Normalizer.normalize(texto, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
     return texto;
   }
 	
