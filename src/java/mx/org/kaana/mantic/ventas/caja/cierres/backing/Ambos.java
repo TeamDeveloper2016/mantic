@@ -26,8 +26,11 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.ParametrosComunes;
+import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticCierresRetirosDto;
+import mx.org.kaana.mantic.enums.EReportes;
 import org.primefaces.context.RequestContext;
 
 @Named(value = "manticVentasCajaCierresAmbos")
@@ -54,6 +57,7 @@ public class Ambos extends IBaseFilter implements Serializable {
       this.attrs.put("idCierreEstatus", JsfBase.getFlashAttribute("idCierreEstatus"));
       this.attrs.put("idCaja", JsfBase.getFlashAttribute("idCaja"));
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
+      this.attrs.put("sortOrder", "order by tc_mantic_cierres_retiros.id_abono, tc_mantic_cierres_retiros.consecutivo ");
 		  this.doLoad();
     } // try
     catch (Exception e) {
@@ -171,19 +175,43 @@ public class Ambos extends IBaseFilter implements Serializable {
 		} // catch			
   } // doEliminar  
 	
-	public void doReporte(String nombre) throws Exception {
-
+	public void doReporte(String nombre) throws Exception{
+    ParametrosComunes parametrosComunes = null;
+		Map<String, Object>parametros= null;
+		EReportes reporteSeleccion   = null;
+		try{		
+      reporteSeleccion= EReportes.valueOf(nombre);
+      if(reporteSeleccion.equals(EReportes.ABONOS_RETIROS))
+        parametrosComunes = new ParametrosComunes((Long)this.attrs.get("idEmpresa"));
+      this.reporte= JsfBase.toReporte();	
+      parametros= parametrosComunes.getParametrosComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, this.attrs, parametros));		
+      if(doVerificarReporte())
+        this.reporte.doAceptar();			
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
   } // doReporte
-	
-	public void doVerificarReporte() {
+  
+  public boolean doVerificarReporte() {
+    boolean regresar = false;
 		RequestContext rc= RequestContext.getCurrentInstance();
-		if(this.reporte.getTotal()> 0L)
+		if(this.reporte.getTotal()> 0L){
 			rc.execute("start(" + this.reporte.getTotal() + ")");		
+      regresar = true;
+    }
 		else{
-			rc.execute("generalHide()");		
-			JsfBase.addMessage("Generar reporte","No se encontraron registros para el reporte", ETipoMensaje.ALERTA);
+			rc.execute("generalHide();");		
+			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+      regresar = false;
 		} // else
-	} // doVerificarReporte		
+    return regresar;
+	} // doVerificarReporte	
 
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idCierre", this.attrs.get("idCierre"));
