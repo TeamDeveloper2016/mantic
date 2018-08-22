@@ -35,7 +35,8 @@ public enum EReportes implements IReportAttribute{
 	COTIZACION_DETALLE("VistaTicketVentaDto", "ventas", "Cotización", "/Paginas/Mantic/Ventas/Cotizacion/Reportes/cotizacionDetalle", EFormatos.PDF, "cotizacion_detalle", "/Paginas/Mantic/Ventas/Cotizacion/filtro"),
   CUENTAS   ("VistaVentasDto", "lazy", "Cuentas abiertas", "/Paginas/Mantic/Ventas/Cuentas/Reportes/cuentas", EFormatos.PDF, "cuentas", "/Paginas/Mantic/Ventas/Cuentas/filtro"),
 	CUENTAS_DETALLE("VistaTicketVentaDto", "ventas", "Cuenta abierta", "/Paginas/Mantic/Ventas/Cuentas/Reportes/cuentaDetalle", EFormatos.PDF, "cuenta_detalle", "/Paginas/Mantic/Ventas/Cuentas/filtro"),
-  CIERRES_CAJA  ("VistaCierresCajasDto", "lazy", "Cierres caja", "/Paginas/Mantic/Ventas/Caja/Cierres/Reportes/cierres", EFormatos.PDF, "cierres_caja", "/Paginas/Mantic/Ventas/Caja/Cierres/filtro");
+  CIERRES_CAJA  ("VistaCierresCajasDto", "lazy", "Cierres caja", "/Paginas/Mantic/Ventas/Caja/Cierres/Reportes/cierres", EFormatos.PDF, "cierres_caja", "/Paginas/Mantic/Ventas/Caja/Cierres/filtro"),
+  ABONOS_RETIROS("VistaCierresCajasDto", "retiros", "Abonos y retiros de efectivo", "/Paginas/Mantic/Ventas/Caja/Cierres/Reportes/abonosRetiros", EFormatos.PDF, "abonos_retiros", "/Paginas/Mantic/Ventas/Caja/Cierres/ambos");
 	
 	
 	private final String proceso;
