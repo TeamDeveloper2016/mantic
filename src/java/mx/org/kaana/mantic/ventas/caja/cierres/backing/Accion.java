@@ -86,6 +86,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("idCaja", JsfBase.getFlashAttribute("idCaja")== null? -1L: JsfBase.getFlashAttribute("idCaja"));
       this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa")== null? -1L: JsfBase.getFlashAttribute("idEmpresa"));
       this.attrs.put("sucursales", this.attrs.get("idEmpresa"));
+  		this.attrs.put("totalCreditos", 0L);
 			this.attrs.put("efectivo", 0D);
 			this.attrs.put("total", 0D);
 			this.attrs.put("disponible", 0D);
@@ -116,6 +117,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			} // switch
 			this.toLoadEmpresas();
 			this.toLoadCuentas();
+			this.toLoadCreditos();
 			this.doCalculate();
   		for (Importe importe: this.importes) {
 	   		if(importe.getIdTipoMedioPago().equals(1L)) {
@@ -211,7 +213,25 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       this.attrs.put("cuentas", UIEntity.build("VistaCierresCajasDto", "abiertas", this.attrs, columns));
- 			this.attrs.put("idCuenta", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cajas")));
+ 			this.attrs.put("idCuenta", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cuentas")));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+    }// finally
+	}
+
+	private void toLoadCreditos() {
+		List<Columna> columns= null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      this.attrs.put("creditos", UIEntity.build("VistaCierresCajasDto", "creditos", this.attrs, columns));
+ 			this.attrs.put("idCredito", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("creditos")));
+  		this.attrs.put("totalCreditos", ((List<UISelectEntity>)this.attrs.get("creditos")).size());
     } // try
     catch (Exception e) {
       throw e;

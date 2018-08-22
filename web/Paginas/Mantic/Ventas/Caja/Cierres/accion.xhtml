@@ -202,28 +202,33 @@
 												<p:inputText id="total" value="#{manticVentasCajaCierresAccion.attrs.total}" style="display:none" styleClass="filas totales"/>
 											</f:facet>
 										</p:dataTable>
+										<p:spacer height="3px"/>
 										<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
 											<div class="ui-grid-row janal-grid-row">
 												<div class="ui-grid-col-12">
-													<p:outputLabel value="Venta(s) a crédito: [#{manticVentasCajaCierresAccion.attrs.creditos.size()}]"/>
+													<p:outputLabel value="Venta(s) a crédito: [#{manticVentasCajaCierresAccion.attrs.totalCreditos}]"/>
 												</div>
 											</div>
 											<div class="ui-grid-row janal-grid-row">
 												<div class="ui-grid-col-12">
 													<p:selectOneMenu id="idCredito" value="#{manticVentasCajaCierresAccion.attrs.idCredito}"  var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98"  effect="fade" filter="true" filterMatchMode="contains">
-														<f:selectItems value="#{manticVentasCajaCierresAccion.attrs.creditos}" var="element" itemValue="#{element}" itemLabel="#{element.consecutivo} #{element.nombre} #{element.importe}"/>
-														<p:column headerText="No. ticket">
-															<h:outputText value="#{item.consecutivo}"/>
+														<f:selectItems value="#{manticVentasCajaCierresAccion.attrs.creditos}" var="element" itemValue="#{element}" itemLabel="#{element.ticket} #{element.nombre} #{element.total}"/>
+														<p:column headerText="No. ticket" styleClass="janal-col-wid-10">
+															<h:outputText value="#{item.ticket}"/>
 														</p:column>   
 														<p:column headerText="Vendedor">
-															<h:outputText value="#{item.nombre}"/>
+															<h:outputText value="#{item.vendedor}"/>
 														</p:column>   
-														<p:column styleClass="janal-column-right" headerText="Importe">
+														<p:column headerText="Cliente">
+															<h:outputText value="#{item.cliente}"/>
+														</p:column>   
+														<p:column styleClass="janal-col-wid-10 janal-column-right" headerText="Importe">
 															<h:outputText value="#{item.total}"/>
 														</p:column>   
 													</p:selectOneMenu>
 												</div>
 											</div>
+  										<p:spacer height="3px"/>
 											<div class="ui-grid-row janal-grid-row">
 												<div class="ui-grid-col-12">
 													<p:outputLabel value="Observaciones:"/>
