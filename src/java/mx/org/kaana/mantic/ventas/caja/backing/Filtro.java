@@ -65,7 +65,9 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 		if(!Cadena.isVacio(this.attrs.get("idVenta")) && !this.attrs.get("idVenta").toString().equals("-1"))
   		sb.append("(tc_mantic_ventas.id_venta=").append(this.attrs.get("idVenta")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
-  		sb.append("(tc_mantic_ventas.ticket like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+  		sb.append("(tc_mantic_ventas.ticket like '%").append(this.attrs.get("consecutivo")).append("%') and tc_mantic_ventas.cticket is not null and ");
+		else
+			sb.append(" tc_mantic_ventas.cticket is not null and ");			
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
 		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
@@ -131,7 +133,7 @@ public class Filtro extends mx.org.kaana.mantic.ventas.backing.Filtro implements
 			regresar= new StringBuilder("id_venta_estatus in (");
 			allEstatusCaja= "";
 			for(EEstatusVentas estatus: EEstatusVentas.values()){
-				if(!estatus.equals(EEstatusVentas.ELABORADA) && !estatus.equals(EEstatusVentas.TERMINADA))
+				if(estatus.equals(EEstatusVentas.PAGADA) || estatus.equals(EEstatusVentas.CREDITO) || estatus.equals(EEstatusVentas.APARTADO))
 					allEstatusCaja= allEstatusCaja.concat(estatus.getIdEstatusVenta().toString()).concat(",");
 			} // for
 			allEstatusCaja= allEstatusCaja.substring(0, allEstatusCaja.length()-1);
