@@ -23,7 +23,6 @@ import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticApartadosBitacoraDto;
-import mx.org.kaana.mantic.db.dto.TcManticApartadosDto;
 import mx.org.kaana.mantic.db.dto.TcManticApartadosPagosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticCajasDto;
@@ -43,6 +42,7 @@ import mx.org.kaana.mantic.enums.ETiposDomicilios;
 import mx.org.kaana.mantic.ventas.beans.ClienteVenta;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
+import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
@@ -58,6 +58,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	private boolean clienteDeault;
 	private boolean isNuevoCierre;
 	private Double cierreCaja;
+	private Long idCierreVigente;
 	
 	public Transaccion(IBaseDto dto) {
 		super(new TicketVenta());
@@ -153,9 +154,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			if(regresar){
 				if(this.ventaFinalizada.isFacturar() && !this.ventaFinalizada.getApartado())
 					regresar= registrarFactura(sesion);
-				if(registrarPagos(sesion)){
-					if(alterarStockArticulos(sesion))
-						regresar= alterarCierreCaja(sesion);
+				if(alterarCierreCaja(sesion)){
+					if(registrarPagos(sesion))					
+						regresar= alterarStockArticulos(sesion);
 				} // if
 				if(this.ventaFinalizada.getApartado()){
 					regresar= registrarApartado(sesion);
@@ -203,7 +204,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			setMessageError("Error al registrar el apartado.");
 		} // 
 		return regresar;
-	} // registrarApartado	
+	} // registrarApartado			
 	
 	private boolean alterarCierreCaja(Session sesion) throws Exception{
 		boolean regresar               = true;
@@ -214,14 +215,15 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			caja= (TcManticCajasDto) DaoFactory.getInstance().findById(sesion, TcManticCajasDto.class, this.ventaFinalizada.getIdCaja());
 			limiteCaja= caja.getLimite();
 			cierreActivo= toCierreActivo(sesion);
+			this.idCierreVigente= cierreActivo.getIdCierre();
 			if(this.isNuevoCierre){
 				if(limiteCaja< this.cierreCaja)
-					regresar= registraAlertaRetiro(sesion, cierreActivo.getIdCierre(), limiteCaja-this.cierreCaja);				
+					regresar= registraAlertaRetiro(sesion, this.idCierreVigente, limiteCaja-this.cierreCaja);				
 			}	// if		
 			else{
-				this.cierreCaja= toAcumuladoCierreActivo(sesion, cierreActivo.getIdCierre());
+				this.cierreCaja= toAcumuladoCierreActivo(sesion, this.idCierreVigente);
 				if(limiteCaja< this.cierreCaja)
-					regresar= registraAlertaRetiro(sesion, cierreActivo.getIdCierre(), limiteCaja-this.cierreCaja);
+					regresar= registraAlertaRetiro(sesion, this.idCierreVigente, limiteCaja-this.cierreCaja);
 			} // else
 		} // try
 		catch (Exception e) {			
@@ -299,26 +301,24 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	
 	private TcManticCierresDto toCierreNuevo(Session sesion) throws Exception{
 		TcManticCierresDto regresar   = null;
-		TcManticCierresCajasDto cierre= null;
-		Long consecutivo              = 1L;
+		TcManticCierresDto registro   = null;
 		Double total                  = 0D;
-		try {
-			regresar= new TcManticCierresDto();
-			consecutivo= toSiguienteCierre(sesion);
-			regresar.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
-			regresar.setOrden(consecutivo);
-			regresar.setEjercicio(Long.valueOf(Fecha.getAnioActual()));
-			regresar.setIdCierreEstatus(1L);
-			regresar.setIdDiferencias(2L);
-			regresar.setIdUsuario(JsfBase.getIdUsuario());
-			regresar.setObservaciones("Apertura de cierre");			
-			if(DaoFactory.getInstance().insert(sesion, regresar)>= 1L){
-				total= this.ventaFinalizada.getTotales().getTotales().getTotal();
-				cierre= new TcManticCierresCajasDto(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago(), regresar.getIdCierre(), total, this.ventaFinalizada.getIdCaja(), -1L, total, new Date(Calendar.getInstance().getTimeInMillis()), total, total);
-				DaoFactory.getInstance().insert(sesion, cierre);		
+		Cierre cierreNuevo            = null;
+		try {			
+			registro= new TcManticCierresDto();			
+			registro.setEjercicio(Long.valueOf(Fecha.getAnioActual()));
+			registro.setIdCierreEstatus(1L);
+			registro.setIdDiferencias(2L);
+			registro.setIdUsuario(JsfBase.getIdUsuario());
+			registro.setObservaciones("Apertura de cierre");					
+			total= this.ventaFinalizada.getTotales().getTotales().getTotal();
+			cierreNuevo= new Cierre(this.ventaFinalizada.getIdCaja(), total, registro, new ArrayList<>(), new ArrayList<>());				
+			if(cierreNuevo.toNewCierreCaja(sesion)){
 				this.isNuevoCierre= true;
-				this.cierreCaja= cierre.getAcumulado();
-			} // 
+				this.cierreCaja= total;
+				regresar= cierreNuevo.getCierre();
+			} // if
+			//} // 
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -546,7 +546,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				regresar.setIdUsuario(JsfBase.getIdUsuario());
 				regresar.setIdVenta(getOrden().getIdVenta());
 				regresar.setImporte(this.ventaFinalizada.getTotales().getEfectivo());	
-				regresar.setIdCaja(this.ventaFinalizada.getIdCaja());
+				regresar.setIdCierre(this.idCierreVigente);
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -566,7 +566,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				regresar.setImporte(this.ventaFinalizada.getTotales().getDebito());				
 				regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoDebito().getKey());
 				regresar.setReferencia(this.ventaFinalizada.getTotales().getReferenciaDebito());	
-				regresar.setIdCaja(this.ventaFinalizada.getIdCaja());
+				regresar.setIdCierre(this.idCierreVigente);
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -586,7 +586,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				regresar.setImporte(this.ventaFinalizada.getTotales().getCredito());				
 				regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoCredito().getKey());
 				regresar.setReferencia(this.ventaFinalizada.getTotales().getReferenciaCredito());	
-				regresar.setIdCaja(this.ventaFinalizada.getIdCaja());
+				regresar.setIdCierre(this.idCierreVigente);
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -606,7 +606,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				regresar.setImporte(this.ventaFinalizada.getTotales().getTransferencia());				
 				regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoTransferencia().getKey());
 				regresar.setReferencia(this.ventaFinalizada.getTotales().getReferenciaTransferencia());			
-				regresar.setIdCaja(this.ventaFinalizada.getIdCaja());
+				regresar.setIdCierre(this.idCierreVigente);
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -627,7 +627,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 					regresar.setIdUsuario(JsfBase.getIdUsuario());
 					regresar.setIdVenta(getOrden().getIdVenta());
 					regresar.setImporte(totalCredito);	
-					regresar.setIdCaja(this.ventaFinalizada.getIdCaja());
+					regresar.setIdCierre(this.idCierreVigente);
 					registrarDeuda(sesion, totalCredito);					
 				} // if
 			} // if
@@ -649,7 +649,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				regresar.setImporte(this.ventaFinalizada.getTotales().getCheque());				
 				regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoCheque().getKey());
 				regresar.setReferencia(this.ventaFinalizada.getTotales().getReferenciaCheque());		
-				regresar.setIdCaja(this.ventaFinalizada.getIdCaja());
+				regresar.setIdCierre(this.idCierreVigente);
 			} // if
 		} // try
 		catch (Exception e) {			
