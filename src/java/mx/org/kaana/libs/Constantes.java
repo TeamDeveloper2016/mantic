@@ -136,6 +136,7 @@ public final class Constantes {
 	public static double PORCENTAJE_MENUDEO= 1.5;
 	public static double PORCENTAJE_MEDIO_MAYOREO= 1.4;
 	public static double PORCENTAJE_MAYOREO= 1.3;
+	public static final Long ANTICIPO= 10L;
 
   public String getNO_EXISTEN_REGISTROS() {
     return Constantes.NO_EXISTEN_REGISTROS;
