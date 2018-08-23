@@ -47,6 +47,7 @@ import mx.org.kaana.mantic.ventas.caja.beans.Pago;
 import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.event.TabChangeEvent;
 
 @Named(value= "manticVentasCajaAccion")
 @ViewScoped
@@ -57,6 +58,7 @@ public class Accion extends IBaseCliente implements Serializable {
 	private List<ClienteTipoContacto> clientesTiposContacto;
 	private ClienteTipoContacto clienteTipoContactoSeleccion;
 	private EOrdenes tipoOrden;	
+	private boolean pagar;
 	
 	public Accion() {
 		super("menudeo");
@@ -76,6 +78,10 @@ public class Accion extends IBaseCliente implements Serializable {
 
 	public void setClientesTiposContacto(List<ClienteTipoContacto> clientesTiposContacto) {
 		this.clientesTiposContacto = clientesTiposContacto;
+	}
+
+	public boolean getPagar() {
+		return pagar;
 	}
 	
 	@PostConstruct
@@ -99,6 +105,7 @@ public class Accion extends IBaseCliente implements Serializable {
 			this.attrs.put("fecha", new Date(Calendar.getInstance().getTimeInMillis()));
 			this.attrs.put("contador", 0L);
 			this.attrs.put("creditoVenta", false);
+			this.pagar= false;
 			if(JsfBase.isAdminEncuestaOrAdmin()){
 				loadSucursales();
 				loadCajas();
@@ -707,4 +714,9 @@ public class Accion extends IBaseCliente implements Serializable {
 			Methods.clean(params);
 		}	// finally	
 	} // verificaLimiteCaja
+	
+	public void doTabChange(TabChangeEvent event) {
+		this.pagar= event.getTab().getTitle().equals("Pagar");
+	}
+	
 }

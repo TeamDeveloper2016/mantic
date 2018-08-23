@@ -87,10 +87,10 @@
 	<ui:define name="contenido">
 		<pe:remoteCommand name="applyValidacionesCredito" process="@this contenedorGrupos:creditoCliente" update="contenedorGrupos:panelSumatoria" actionListener="#{manticVentasCajaAccion.doValidaCreditoCliente}" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>  			
 		<pe:remoteCommand name="cobrarVenta" process="@this" update="contenedorGrupos" actionListener="#{manticVentasCajaAccion.doOpenCobro}" onstart="janal.bloquear()" oncomplete="janal.desbloquear();"/>  			
-		<pe:remoteCommand name="loadTicketAbiertos" process="@this" update="contenedorGrupos aceptar aceptarIcon" actionListener="#{manticVentasCajaAccion.doAsignaTicketAbierto}" onstart="janal.bloquear()" oncomplete="janal.desbloquear();"/>  					
+		<pe:remoteCommand name="loadTicketAbiertos" process="@this" update="contenedorGrupos aceptar aceptarIcon @(.cotizar)" actionListener="#{manticVentasCajaAccion.doAsignaTicketAbierto}" onstart="janal.bloquear()" oncomplete="janal.desbloquear();"/>  					
 		<p:remoteCommand name="lookup" actionListener="#{manticVentasCajaAccion.doUpdateArticulos}" process="@this"/>
 		<p:tabView id="contenedorGrupos" widgetVar="contenedorCaja" activeIndex="#{manticVentasCajaAccion.attrs.tabIndex}">		
-			<p:ajax event="tabChange" oncomplete="janal.refresh();"/>
+			<p:ajax event="tabChange" listener="#{manticVentasCajaAccion.doTabChange}" update="@(.cotizar)" oncomplete="janal.refresh();"/>
 			<p:tab title="Articulos">
 				<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 					<div class="ui-grid-row janal-grid-row">
@@ -128,12 +128,12 @@
 						<div class="ui-grid-col-12">					
 							<p:panelGrid id="encabezadoVenta" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-80">						
 								<p:outputLabel for="fecha" value="Fecha:"/>
-								<p:outputLabel value="Ticket:"/>
+								<p:outputLabel value="Cuenta abiertas:"/>
 								<p:calendar id="fecha" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticVentasCajaAccion.attrs.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario">
 									<p:ajax event="dateSelect" process="@this" listener="#{manticVentasCajaAccion.doLoadTicketAbiertos}" update="encabezadoVenta contenido contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 								</p:calendar>								
 								<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasCajaAccion.attrs.ticketAbierto}" styleClass="janal-wid-100-txt" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="contains">
-									<p:ajax event="change" onstart="loadTicketAbiertos();" update="" oncomplete="janal.desbloquear();" />
+									<p:ajax event="change" onstart="loadTicketAbiertos();" update="@(.cotizar)" oncomplete="janal.desbloquear();" />
 									<f:selectItem itemValue="" itemLabel="SELECCIONE"/> 
 									<f:selectItems value="#{manticVentasCajaAccion.attrs.ticketsAbiertos}" var="element" itemValue="#{element}" itemLabel="No.: #{element.consecutivo} - Cliente: #{element.cliente} - Precio: #{element.precioTotal}"/>
 									<p:column headerText="No.">
@@ -237,7 +237,7 @@
 				<p:inputText id="articulos" value="#{manticVentasCajaAccion.adminOrden.totales.articulos}" style="display:none"/>
 				<p:inputText id="total" value="#{manticVentasCajaAccion.adminOrden.totales.articulos}" style="display:none"/>					
 			</p:tab>
-			<p:tab id="tabPagar" title="Pagar" rendered="#{manticVentasCajaAccion.attrs.pagarVenta}" >
+			<p:tab id="tabPagar" title="Pagar" rendered="#{manticVentasCajaAccion.attrs.pagarVenta}">
 				<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-12">
@@ -558,14 +558,14 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="cotizacion" value="Cotización" icon="fa fa-list-ul" process="@form" styleClass="janal-text-white" actionListener="#{manticVentasCajaAccion.doVerificaArticulosCotizacion}" update="dialogoCotizacion"/>
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this" styleClass="janal-text-white" oncomplete="ventaFinished();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>			
+			<p:commandButton id="cotizacion" value="Cotización" icon="fa fa-list-ul" process="@form" styleClass="cotizar janal-text-white" actionListener="#{manticVentasCajaAccion.doVerificaArticulosCotizacion}" update="dialogoCotizacion" style="display: #{manticVentasCajaAccion.pagar? 'none': manticVentasCajaAccion.attrs.pagarVenta? '': 'none'}"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this" styleClass="cotizar janal-text-white" oncomplete="ventaFinished();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}" style="display: #{manticVentasCajaAccion.pagar? '': 'none'}"/>			
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="cotizacionIcon" value="Cotización" icon="fa fa-check" process="@form" styleClass="janal-text-white" actionListener="#{manticVentasCajaAccion.doVerificaArticulosCotizacion}" update="dialogoCotizacion"/>
-			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@this" styleClass="janal-text-white" oncomplete="ventaFinished();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>			
-			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+			<p:commandButton id="cotizacionIcon" title="Cotización" icon="fa fa-check" process="@form" styleClass="cotizar janal-text-white" actionListener="#{manticVentasCajaAccion.doVerificaArticulosCotizacion}" update="dialogoCotizacion" style="display: #{manticVentasCajaAccion.pagar? 'none': manticVentasCajaAccion.attrs.pagarVenta? '': 'none'}"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@this" styleClass="cotizar janal-text-white" oncomplete="ventaFinished();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}" style="display: #{manticVentasCajaAccion.pagar? '': 'none'}"/>			
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 		</div>		
 	</ui:define>
 	<ui:define name="dialogos">
