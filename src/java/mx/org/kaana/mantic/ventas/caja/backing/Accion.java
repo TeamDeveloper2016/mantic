@@ -38,6 +38,7 @@ import mx.org.kaana.mantic.ventas.caja.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.comun.IBaseCliente;
+import mx.org.kaana.mantic.db.dto.TcManticApartadosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
@@ -58,6 +59,7 @@ public class Accion extends IBaseCliente implements Serializable {
 	private List<ClienteTipoContacto> clientesTiposContacto;
 	private ClienteTipoContacto clienteTipoContactoSeleccion;
 	private EOrdenes tipoOrden;	
+	private TcManticApartadosDto apartado;
 	private boolean pagar;
 	
 	public Accion() {
@@ -80,9 +82,17 @@ public class Accion extends IBaseCliente implements Serializable {
 		this.clientesTiposContacto = clientesTiposContacto;
 	}
 
-	public boolean getPagar() {
-		return pagar;
+	public TcManticApartadosDto getApartado() {
+		return apartado;
 	}
+
+	public void setApartado(TcManticApartadosDto apartado) {
+		this.apartado = apartado;
+	}	
+
+  public boolean getPagar() {
+		return pagar;
+	}	
 	
 	@PostConstruct
   @Override
@@ -106,6 +116,10 @@ public class Accion extends IBaseCliente implements Serializable {
 			this.attrs.put("contador", 0L);
 			this.attrs.put("creditoVenta", false);
 			this.pagar= false;
+			this.attrs.put("activeApartado", false);
+			this.attrs.put("disabledFacturar", false);			
+			this.attrs.put("apartado", false);			
+			this.apartado= new TcManticApartadosDto();
 			if(JsfBase.isAdminEncuestaOrAdmin()){
 				loadSucursales();
 				loadCajas();
@@ -125,7 +139,7 @@ public class Accion extends IBaseCliente implements Serializable {
     EAccion eaccion= null;
     try {
       eaccion= (EAccion) this.attrs.get("accion");
-      this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
+      this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));			
       switch (eaccion) {
         case AGREGAR:											
           this.setAdminOrden(new AdminTickets(new TicketVenta(-1L)));
@@ -512,6 +526,20 @@ public class Accion extends IBaseCliente implements Serializable {
 		} // catch		
 	} // doActivarCliente
 	
+	public void doActiveApartado(){
+		boolean apartado= true;
+		try {
+			apartado= (boolean) this.attrs.get("apartado");			
+			this.attrs.put("facturarVenta", !apartado);
+			this.attrs.put("disabledFacturar", apartado);			
+			this.attrs.put("tabIndex", 1);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	} // doActiveApartado
+	
 	public void doOpenCobro(){
 		try {
 			if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L)))))
@@ -548,12 +576,19 @@ public class Accion extends IBaseCliente implements Serializable {
 	} // loadBancos
 	
 	public void doValidaCreditoCliente(){
-		Boolean credito  = false;
-		RequestContext rc= null;
+		Boolean credito   = false;
+		Boolean apartado  = false;
+		RequestContext rc = null;
+		Double minApartado= null;
 		try {
 			credito= (Boolean) this.attrs.get("creditoVenta");
+			apartado= (Boolean) this.attrs.get("apartado");
 			rc= RequestContext.getCurrentInstance();
-			if(credito)
+			if(apartado){
+				minApartado= (getAdminOrden().getTotales().getTotal() * Constantes.ANTICIPO)/100;
+				rc.execute("jsArticulos.validateApartado(" + minApartado + ");");
+			} // if
+			else if(credito)
 				rc.execute("jsArticulos.validateCredito();");
 			else
 				rc.execute("jsArticulos.refreshCobroValidate();");
@@ -639,6 +674,8 @@ public class Accion extends IBaseCliente implements Serializable {
 			regresar.setCredito((Boolean) this.attrs.get("creditoVenta"));			
 			regresar.setArticulos(getAdminOrden().getArticulos());
 			regresar.setIdCaja(Long.valueOf(this.attrs.get("caja").toString()));
+			regresar.setApartado((Boolean) this.attrs.get("apartado"));
+			regresar.setDetailApartado(this.apartado);
 		} // try
 		catch (Exception e) {			
 			throw e;
