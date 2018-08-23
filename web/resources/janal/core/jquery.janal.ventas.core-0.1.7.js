@@ -658,6 +658,18 @@
 			this.refreshTransferencia(transferencia);
 			$parent.refresh();
 		}, // refreshCobroValidate		
+		validateApartado: function(minPago){				
+			this.refreshCredito(0);
+			this.refreshCheque(0);
+			this.refreshTransferencia(0);
+			this.refreshDebito(0);
+			$parent.fields.debito.validaciones= 'libre';
+			$parent.fields.credito.validaciones= 'libre';
+			$parent.fields.cheque.validaciones= 'libre';
+			$parent.fields.pago.validaciones= 'requerido|min-valor({"cuanto":'+minPago+'})';
+			$parent.fields.transferencia.validaciones= 'libre';
+			$parent.refresh();
+		},			
 		validateCredito: function(){							
 			this.refreshCredito(0);
 			this.refreshCheque(0);
