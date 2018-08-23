@@ -70,8 +70,8 @@ public class TcManticApartadosDto implements IBaseDto, Serializable {
   private String telefono;
   @Column (name="id_venta")
   private Long idVenta;
-  @Column (name="abonoado")
-  private Double abonoado;
+  @Column (name="abonado")
+  private Double abonado;
 
   public TcManticApartadosDto() {
     this(new Long(-1L));
@@ -82,7 +82,7 @@ public class TcManticApartadosDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticApartadosDto(String paterno, Double saldo, Long idApartado, String nombre, Double importe, Long ejercicio, String consecutivo, String materno, String domicilio, Long idUsuario, Long idApartadoEstatus, String observaciones, String celular, Long orden, String telefono, Long idVenta, Double abonoado) {
+  public TcManticApartadosDto(String paterno, Double saldo, Long idApartado, String nombre, Double importe, Long ejercicio, String consecutivo, String materno, String domicilio, Long idUsuario, Long idApartadoEstatus, String observaciones, String celular, Long orden, String telefono, Long idVenta, Double abonado) {
     setPaterno(paterno);
     setSaldo(saldo);
     setIdApartado(idApartado);
@@ -100,7 +100,7 @@ public class TcManticApartadosDto implements IBaseDto, Serializable {
     setOrden(orden);
     setTelefono(telefono);
     setIdVenta(idVenta);
-    setAbonoado(abonoado);
+    setAbonado(abonado);
   }
 	
   public void setPaterno(String paterno) {
@@ -239,12 +239,12 @@ public class TcManticApartadosDto implements IBaseDto, Serializable {
     return idVenta;
   }
 
-  public void setAbonoado(Double abonoado) {
-    this.abonoado = abonoado;
+  public void setAbonado(Double abonado) {
+    this.abonado = abonado;
   }
 
-  public Double getAbonoado() {
-    return abonoado;
+  public Double getAbonado() {
+    return abonado;
   }
 
   @Transient
@@ -296,7 +296,7 @@ public class TcManticApartadosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdVenta());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getAbonoado());
+		regresar.append(getAbonado());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -321,14 +321,14 @@ public class TcManticApartadosDto implements IBaseDto, Serializable {
 		regresar.put("orden", getOrden());
 		regresar.put("telefono", getTelefono());
 		regresar.put("idVenta", getIdVenta());
-		regresar.put("abonoado", getAbonoado());
+		regresar.put("abonado", getAbonado());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getPaterno(), getSaldo(), getIdApartado(), getNombre(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getMaterno(), getDomicilio(), getIdUsuario(), getIdApartadoEstatus(), getObservaciones(), getCelular(), getOrden(), getTelefono(), getIdVenta(), getAbonoado()
+    getPaterno(), getSaldo(), getIdApartado(), getNombre(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getMaterno(), getDomicilio(), getIdUsuario(), getIdApartadoEstatus(), getObservaciones(), getCelular(), getOrden(), getTelefono(), getIdVenta(), getAbonado()
     };
     return regresar;
   }
