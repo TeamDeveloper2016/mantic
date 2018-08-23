@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.ventas.caja.cierres.reglas;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
@@ -60,7 +61,7 @@ public class Cierre extends IBaseTnx implements Serializable  {
 	}
 	
 	public Cierre(Long idCaja, Double inicial) {
-		this(idCaja, inicial, new TcManticCierresDto("", -1L, 2L, JsfBase.getIdUsuario(), 1L, "", 0L, new Long(Fecha.getAnioActual())), Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+		this(idCaja, inicial, new TcManticCierresDto("", -1L, 2L, JsfBase.getIdUsuario(), 1L, "", 0L, new Long(Fecha.getAnioActual()), new Timestamp(Calendar.getInstance().getTimeInMillis())), Collections.EMPTY_LIST, Collections.EMPTY_LIST);
 	}
 	
 	public Cierre(Long idCaja, Double inicial, TcManticCierresDto cierre, List<Importe> importes, List<Denominacion> denominaciones) {
@@ -78,7 +79,7 @@ public class Cierre extends IBaseTnx implements Serializable  {
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
-		boolean regresar= false;
+		boolean regresar                     = false;
 		List<TcManticTiposMediosPagosDto> all= null;
 		TcManticCierresCajasDto registro     = null; 
 		TcManticCierresBitacoraDto bitacora  = null;
@@ -92,6 +93,7 @@ public class Cierre extends IBaseTnx implements Serializable  {
 					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 					this.cierre.setIdCierreEstatus(3L);
 					this.cierre.setIdDiferencias(this.toDiferencias()? 1L: 2L);
+					this.cierre.setTermino(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 					regresar= DaoFactory.getInstance().update(sesion, this.cierre)>= 1L;
 					sesion.flush();
 					for (Importe importe: this.importes)
@@ -111,7 +113,7 @@ public class Cierre extends IBaseTnx implements Serializable  {
 					// inicio del nuevo corte de caja con los valores iniciales
 					consecutivo= this.toSiguiente(sesion);
 					TcManticCierresDto apertura= new TcManticCierresDto(
-						Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true), -1L, 2L, JsfBase.getIdUsuario(), 1L, "", consecutivo, new Long(Fecha.getAnioActual())
+						Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true), -1L, 2L, JsfBase.getIdUsuario(), 1L, "", consecutivo, new Long(Fecha.getAnioActual()), new Timestamp(Calendar.getInstance().getTimeInMillis())
 					);
 					regresar= DaoFactory.getInstance().insert(sesion, apertura)>= 1L;
 					this.idApertura= apertura.getIdCierre();
@@ -154,25 +156,7 @@ public class Cierre extends IBaseTnx implements Serializable  {
 					  regresar= DaoFactory.getInstance().update(sesion, denominacion)> 0L;
 					break;
 				case REGISTRAR:
-          consecutivo= this.toSiguiente(sesion);
-					this.cierre.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
-					this.cierre.setOrden(consecutivo);
-					regresar= DaoFactory.getInstance().insert(sesion, this.cierre)>= 1L;
-					all= (List<TcManticTiposMediosPagosDto>)DaoFactory.getInstance().findViewCriteria(TcManticTiposMediosPagosDto.class, Collections.EMPTY_MAP, "caja");
-					for (TcManticTiposMediosPagosDto medio : all) {
-						if(medio.getIdTipoMedioPago().equals(1L))
-						  registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), this.cierre.getIdCierre(), 0D, this.idCaja, -1L, this.inicial, new Date(Calendar.getInstance().getTimeInMillis()), 0D, this.inicial);
-						else
-						  registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), this.cierre.getIdCierre(), 0D, this.idCaja, -1L, 0D, new Date(Calendar.getInstance().getTimeInMillis()), 0D, 0D);
-					  DaoFactory.getInstance().insert(sesion, registro);
-					} // for
-					if(this.denominaciones!= null && !this.denominaciones.isEmpty())
-					  for (Denominacion denominacion: this.denominaciones) {
-							denominacion.setIdCierre(this.cierre.getIdCierre());
-					    regresar= DaoFactory.getInstance().insert(sesion, denominacion)>= 1L;
-						} // for
-					bitacora= new TcManticCierresBitacoraDto("", -1L, this.cierre.getIdCierre(), JsfBase.getIdUsuario(), 1L);
-					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
+					regresar= this.toNewCierreCaja(sesion);
 					break;
 				case ELIMINAR:
           params.put("idCaja", this.idCaja);
@@ -330,4 +314,28 @@ public class Cierre extends IBaseTnx implements Serializable  {
     } // catch
 		return regresar;
 	}
+	
+  public boolean toNewCierreCaja(Session sesion) throws Exception {
+		TcManticCierresCajasDto registro= null; 
+		Long consecutivo= this.toSiguiente(sesion);
+		this.cierre.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
+		this.cierre.setOrden(consecutivo);
+		DaoFactory.getInstance().insert(sesion, this.cierre);
+		List<TcManticTiposMediosPagosDto> all= (List<TcManticTiposMediosPagosDto>)DaoFactory.getInstance().findViewCriteria(TcManticTiposMediosPagosDto.class, Collections.EMPTY_MAP, "caja");
+		for (TcManticTiposMediosPagosDto medio : all) {
+			if(medio.getIdTipoMedioPago().equals(1L))
+				registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), this.cierre.getIdCierre(), 0D, this.idCaja, -1L, this.inicial, new Date(Calendar.getInstance().getTimeInMillis()), 0D, this.inicial);
+			else
+				registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), this.cierre.getIdCierre(), 0D, this.idCaja, -1L, 0D, new Date(Calendar.getInstance().getTimeInMillis()), 0D, 0D);
+			DaoFactory.getInstance().insert(sesion, registro);
+		} // for
+		if(this.denominaciones!= null && !this.denominaciones.isEmpty())
+			for (Denominacion denominacion: this.denominaciones) {
+				denominacion.setIdCierre(this.cierre.getIdCierre());
+				DaoFactory.getInstance().insert(sesion, denominacion);
+			} // for
+		TcManticCierresBitacoraDto bitacora= new TcManticCierresBitacoraDto("", -1L, this.cierre.getIdCierre(), JsfBase.getIdUsuario(), 1L);
+		return DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
+	}
+	
 }

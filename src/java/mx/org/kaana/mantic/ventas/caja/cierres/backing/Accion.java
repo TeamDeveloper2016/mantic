@@ -19,6 +19,8 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
+import static mx.org.kaana.libs.formato.Fecha.FECHA_HORA_LARGA;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
@@ -168,7 +170,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   } 
 	
 	private void toLoadEmpresas() {
-		List<Columna> columns     = null;
+		List<Columna> columns= null;
     try {
 			columns= new ArrayList<>();
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
@@ -177,9 +179,6 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("sucursales", sucursales);
 			this.doLoadCajas();
     } // try
-    catch (Exception e) {
-      throw e;
-    } // catch   
     finally {
       Methods.clean(columns);
     }// finally
@@ -197,9 +196,6 @@ public class Accion extends IBaseAttribute implements Serializable {
 			if(this.attrs.get("temporal")!= null)
 				this.attrs.put("limite", ((UISelectEntity)this.attrs.get("temporal")).toDouble("limite"));
     } // try
-    catch (Exception e) {
-      throw e;
-    } // catch   
     finally {
       Methods.clean(columns);
     }// finally
@@ -215,29 +211,38 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.attrs.put("cuentas", UIEntity.build("VistaCierresCajasDto", "abiertas", this.attrs, columns));
  			this.attrs.put("idCuenta", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("cuentas")));
     } // try
-    catch (Exception e) {
-      throw e;
-    } // catch   
     finally {
       Methods.clean(columns);
     }// finally
 	}
 
-	private void toLoadCreditos() {
-		List<Columna> columns= null;
+	private void toLoadCreditos() throws Exception {
+		List<Columna> columns     = null;
+		Map<String, Object> params= null;
     try {
+			params = new HashMap<>();
 			columns= new ArrayList<>();
+			params.put("idEmpresa", this.attrs.get("idEmpresa"));
+			params.put("idCaja", this.attrs.get("idCaja"));
+			TcManticCierresDto cierre= (TcManticCierresDto)DaoFactory.getInstance().findById(TcManticCierresDto.class, (Long)this.attrs.get("idCierre"));
+			params.put("vigenciaInicio", Fecha.formatear(Fecha.FECHA_HORA_LARGA, cierre.getRegistro()));
+			switch(this.accion) {
+				case AGREGAR:
+    			params.put("vigenciaFin", Fecha.getRegistro());
+					break;
+				case CONSULTAR:
+    			params.put("vigenciaFin", Fecha.formatear(Fecha.FECHA_HORA_LARGA, cierre.getTermino()));
+					break;
+			} // switch		
       columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      this.attrs.put("creditos", UIEntity.build("VistaCierresCajasDto", "creditos", this.attrs, columns));
+      this.attrs.put("creditos", UIEntity.build("VistaCierresCajasDto", "creditos", params, columns));
  			this.attrs.put("idCredito", UIBackingUtilities.toFirstKeySelectEntity((List<UISelectEntity>)this.attrs.get("creditos")));
   		this.attrs.put("totalCreditos", ((List<UISelectEntity>)this.attrs.get("creditos")).size());
     } // try
-    catch (Exception e) {
-      throw e;
-    } // catch   
     finally {
       Methods.clean(columns);
+			Methods.clean(params);
     }// finally
 	}
 

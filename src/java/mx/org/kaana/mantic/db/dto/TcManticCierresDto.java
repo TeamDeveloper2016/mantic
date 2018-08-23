@@ -54,17 +54,19 @@ public class TcManticCierresDto implements IBaseDto, Serializable {
   private Long ejercicio;
   @Column (name="registro")
   private Timestamp registro;
+  @Column (name="termino")
+  private Timestamp termino;
 
   public TcManticCierresDto() {
     this(new Long(-1L));
   }
 
   public TcManticCierresDto(Long key) {
-    this(null, new Long(-1L), null, null, null, null, null, null);
+    this(null, new Long(-1L), null, null, null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()));
     setKey(key);
   }
 
-  public TcManticCierresDto(String consecutivo, Long idCierre, Long idDiferencias, Long idUsuario, Long idCierreEstatus, String observaciones, Long orden, Long ejercicio) {
+  public TcManticCierresDto(String consecutivo, Long idCierre, Long idDiferencias, Long idUsuario, Long idCierreEstatus, String observaciones, Long orden, Long ejercicio, Timestamp termino) {
     setConsecutivo(consecutivo);
     setIdCierre(idCierre);
     setIdDiferencias(idDiferencias);
@@ -74,6 +76,7 @@ public class TcManticCierresDto implements IBaseDto, Serializable {
     setOrden(orden);
     setEjercicio(ejercicio);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setTermino(termino);
   }
 	
   public void setConsecutivo(String consecutivo) {
@@ -148,6 +151,14 @@ public class TcManticCierresDto implements IBaseDto, Serializable {
     return registro;
   }
 
+	public Timestamp getTermino() {
+		return termino;
+	}
+
+	public void setTermino(Timestamp termino) {
+		this.termino=termino;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -180,6 +191,8 @@ public class TcManticCierresDto implements IBaseDto, Serializable {
 		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getTermino());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -196,13 +209,14 @@ public class TcManticCierresDto implements IBaseDto, Serializable {
 		regresar.put("orden", getOrden());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
+		regresar.put("termino", getTermino());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getConsecutivo(), getIdCierre(), getIdDiferencias(), getIdUsuario(), getIdCierreEstatus(), getObservaciones(), getOrden(), getEjercicio(), getRegistro()
+    getConsecutivo(), getIdCierre(), getIdDiferencias(), getIdUsuario(), getIdCierreEstatus(), getObservaciones(), getOrden(), getEjercicio(), getRegistro(), getTermino()
     };
     return regresar;
   }

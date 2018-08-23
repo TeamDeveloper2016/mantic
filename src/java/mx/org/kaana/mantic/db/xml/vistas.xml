@@ -34,7 +34,8 @@
 						tc_mantic_ventas.id_empresa in ({idEmpresa})
 						and tr_mantic_venta_medio_pago.id_caja= {idCaja}
 						and tc_mantic_ventas.id_venta_estatus= 4
-						and date_format(tc_mantic_ventas.registro, '%Y%m%d%H%i%S')>= '{registro}'
+						and date_format(tc_mantic_ventas.registro, '%Y%m%d%H%i%S')>= '{vigenciaInicio}'
+				    and date_format(tc_mantic_ventas.registro, '%Y%m%d%H%i%S')<= '{vigenciaFin}'
 					group by
             tc_mantic_ventas.id_venta,
 						tc_mantic_clientes.id_cliente,  
