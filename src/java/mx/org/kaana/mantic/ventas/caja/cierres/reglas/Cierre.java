@@ -118,9 +118,9 @@ public class Cierre extends IBaseTnx implements Serializable  {
 					all= (List<TcManticTiposMediosPagosDto>)DaoFactory.getInstance().findViewCriteria(TcManticTiposMediosPagosDto.class, Collections.EMPTY_MAP, "caja");
 					for (TcManticTiposMediosPagosDto medio : all) {
 						if(medio.getIdTipoMedioPago().equals(1L))
-						  registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), apertura.getIdCierre(), 0D, this.idCaja, -1L, 0D, new Date(Calendar.getInstance().getTimeInMillis()), 0D, 0D);
-						else
 						  registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), apertura.getIdCierre(), 0D, this.idCaja, -1L, this.inicial, new Date(Calendar.getInstance().getTimeInMillis()), 0D, this.inicial);
+						else
+						  registro= new TcManticCierresCajasDto(medio.getIdTipoMedioPago(), apertura.getIdCierre(), 0D, this.idCaja, -1L, 0D, new Date(Calendar.getInstance().getTimeInMillis()), 0D, 0D);
 					  DaoFactory.getInstance().insert(sesion, registro);
 					} // for
 					for (Denominacion denominacion: this.denominaciones) {
