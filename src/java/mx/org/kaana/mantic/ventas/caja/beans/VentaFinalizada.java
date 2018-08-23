@@ -6,6 +6,7 @@ import java.util.List;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.db.dto.TcManticApartadosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 
@@ -23,12 +24,14 @@ public class VentaFinalizada implements Serializable{
 	private Boolean credito;
 	private List<Articulo> articulos;
 	private Long idCaja;
+	private Boolean apartado;
+	private TcManticApartadosDto detailApartado;
 
 	public VentaFinalizada() {
-		this(new TicketVenta(), new ArrayList<ClienteTipoContacto>(), new ClienteTipoContacto(), new ClienteTipoContacto(), new Pago(), new Domicilio(), new TcManticClientesDto(), false, false, new ArrayList<Articulo>(), -1L);
+		this(new TicketVenta(), new ArrayList<ClienteTipoContacto>(), new ClienteTipoContacto(), new ClienteTipoContacto(), new Pago(), new Domicilio(), new TcManticClientesDto(), false, false, new ArrayList<Articulo>(), -1L, false, new TcManticApartadosDto());
 	}
 	
-	public VentaFinalizada(TicketVenta ticketVenta, List<ClienteTipoContacto> correosContacto, ClienteTipoContacto telefono, ClienteTipoContacto celular, Pago totales, Domicilio domicilio, TcManticClientesDto cliente, Boolean facturar, Boolean credito, List<Articulo> articulos, Long idCaja) {
+	public VentaFinalizada(TicketVenta ticketVenta, List<ClienteTipoContacto> correosContacto, ClienteTipoContacto telefono, ClienteTipoContacto celular, Pago totales, Domicilio domicilio, TcManticClientesDto cliente, Boolean facturar, Boolean credito, List<Articulo> articulos, Long idCaja, Boolean apartado, TcManticApartadosDto detailApartado) {
 		this.ticketVenta    = ticketVenta;
 		this.correosContacto= correosContacto;
 		this.telefono       = telefono;
@@ -40,6 +43,8 @@ public class VentaFinalizada implements Serializable{
 		this.credito        = credito;
 		this.articulos      = articulos;
 		this.idCaja         = idCaja;
+		this.apartado       = apartado;
+		this.detailApartado = detailApartado;
 	}
 
 	public TicketVenta getTicketVenta() {
@@ -128,5 +133,21 @@ public class VentaFinalizada implements Serializable{
 
 	public void setIdCaja(Long idCaja) {
 		this.idCaja = idCaja;
+	}
+
+	public Boolean getApartado() {
+		return apartado;
+	}
+
+	public void setApartado(Boolean apartado) {
+		this.apartado = apartado;
+	}
+
+	public TcManticApartadosDto getDetailApartado() {
+		return detailApartado;
+	}
+
+	public void setDetailApartado(TcManticApartadosDto detailApartado) {
+		this.detailApartado = detailApartado;
 	}	
 }
