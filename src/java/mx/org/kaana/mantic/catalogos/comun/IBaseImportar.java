@@ -223,7 +223,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 				} // for
 				encabezado.delete(encabezado.length()-1, encabezado.length());
 				LOG.info("Encabezado: "+ encabezado);
-				if(encabezado.toString().equals("CLAVE|AUXILIAR|DESCRIPCION|COSTOS/IVA|PRECIONETO|")) {
+				if(encabezado.toString().equals("CLAVE|AUXILIAR|DESCRIPCION|COSTOS/IVA|PRECIONETO")) {
           this.articulos = new ArrayList<>();
 					//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
           for(int fila= 1; fila<sheet.getRows(); fila++) {
