@@ -23,7 +23,6 @@ import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticApartadosBitacoraDto;
-import mx.org.kaana.mantic.db.dto.TcManticApartadosDto;
 import mx.org.kaana.mantic.db.dto.TcManticApartadosPagosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticCajasDto;
@@ -43,6 +42,7 @@ import mx.org.kaana.mantic.enums.ETiposDomicilios;
 import mx.org.kaana.mantic.ventas.beans.ClienteVenta;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
+import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
@@ -58,6 +58,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	private boolean clienteDeault;
 	private boolean isNuevoCierre;
 	private Double cierreCaja;
+	private Long idCierreVigente;
 	
 	public Transaccion(IBaseDto dto) {
 		super(new TicketVenta());
@@ -153,9 +154,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			if(regresar){
 				if(this.ventaFinalizada.isFacturar() && !this.ventaFinalizada.getApartado())
 					regresar= registrarFactura(sesion);
-				if(registrarPagos(sesion)){
-					if(alterarStockArticulos(sesion))
-						regresar= alterarCierreCaja(sesion);
+				if(verificarCierreCaja(sesion)){
+					if(registrarPagos(sesion))					
+						regresar= alterarStockArticulos(sesion);
 				} // if
 				if(this.ventaFinalizada.getApartado()){
 					regresar= registrarApartado(sesion);
@@ -203,26 +204,56 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			setMessageError("Error al registrar el apartado.");
 		} // 
 		return regresar;
-	} // registrarApartado	
+	} // registrarApartado			
 	
-	private boolean alterarCierreCaja(Session sesion) throws Exception{
+	private boolean verificarCierreCaja(Session sesion) throws Exception{
+		boolean regresar         = true;
+		Map<String, Object>params= null;
+		TcManticCierresDto cierre= null;
+		TcManticCierresDto nuevo = null;
+		try {
+			params= new HashMap<>();
+			params.put("estatusAbierto", CIERRE_ACTIVO);
+			params.put("idEmpresa", this.ventaFinalizada.getTicketVenta().getIdEmpresa());
+			params.put("idCaja", this.ventaFinalizada.getIdCaja());			
+			cierre= (TcManticCierresDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresDto.class, "VistaCierresCajasDto", "cierreVigente", params);
+			if(!(cierre!= null && cierre.isValid())){
+				nuevo= toCierreNuevo(sesion);
+				this.idCierreVigente= nuevo.getIdCierre();				
+			} // if
+			else
+				this.idCierreVigente= cierre.getIdCierre();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // verificarCierreCaja
+	
+	private boolean alterarCierreCaja(Session sesion, Long idTipoMedioPago) throws Exception{
 		boolean regresar               = true;
 		TcManticCajasDto caja          = null;
-		TcManticCierresDto cierreActivo= null;
 		Double limiteCaja              = 0D;		
 		try {
 			caja= (TcManticCajasDto) DaoFactory.getInstance().findById(sesion, TcManticCajasDto.class, this.ventaFinalizada.getIdCaja());
 			limiteCaja= caja.getLimite();
-			cierreActivo= toCierreActivo(sesion);
-			if(this.isNuevoCierre){
-				if(limiteCaja< this.cierreCaja)
-					regresar= registraAlertaRetiro(sesion, cierreActivo.getIdCierre(), limiteCaja-this.cierreCaja);				
-			}	// if		
-			else{
-				this.cierreCaja= toAcumuladoCierreActivo(sesion, cierreActivo.getIdCierre());
-				if(limiteCaja< this.cierreCaja)
-					regresar= registraAlertaRetiro(sesion, cierreActivo.getIdCierre(), limiteCaja-this.cierreCaja);
-			} // else
+			toCierreActivo(sesion, idTipoMedioPago);
+			if(idTipoMedioPago.equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){				
+				if(this.isNuevoCierre){
+					if(limiteCaja< this.cierreCaja)
+						regresar= registraAlertaRetiro(sesion, this.idCierreVigente, limiteCaja-this.cierreCaja);				
+				}	// if		
+				else{
+					this.cierreCaja= toAcumuladoCierreActivo(sesion, this.idCierreVigente, idTipoMedioPago);
+					if(limiteCaja< this.cierreCaja)
+						regresar= registraAlertaRetiro(sesion, this.idCierreVigente, limiteCaja-this.cierreCaja);
+				} // else
+			}
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -254,13 +285,13 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		return regresar;
 	} // registraAlertaRetiro
 	
-	private Double toAcumuladoCierreActivo(Session sesion, Long idCierre) throws Exception{
+	private Double toAcumuladoCierreActivo(Session sesion, Long idCierre, Long idTipoMedioPago) throws Exception{
 		Double regresar                          = 0D;
 		TcManticCierresCajasDto acumulaCierreCaja= null;
 		Map<String, Object>params                = null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_cierre="+idCierre);
+			params.put(Constantes.SQL_CONDICION, "id_cierre="+idCierre+" and id_tipo_medio_pago=" + idTipoMedioPago);
 			acumulaCierreCaja= (TcManticCierresCajasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresCajasDto.class, "TcManticCierresCajasDto", "row", params);
 			regresar= acumulaCierreCaja.getAcumulado();
 		} // try
@@ -270,81 +301,46 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		return regresar;
 	} // toAcumuladoCierreActivo	
 	
-	private TcManticCierresDto toCierreActivo(Session sesion) throws Exception{
-		TcManticCierresDto regresar       = null;
+	private void toCierreActivo(Session sesion, Long idTipoMedioPago) throws Exception{
 		Map<String, Object>params         = null;
 		TcManticCierresCajasDto cierreCaja= null;
 		try {
 			params= new HashMap<>();
-			params.put("estatusAbierto", CIERRE_ACTIVO);
-			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			params.put("idCaja", this.ventaFinalizada.getIdCaja());
-			regresar= (TcManticCierresDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresDto.class, "VistaCierresCajasDto", "cierreVigente", params);
-			if(!(regresar!= null && regresar.isValid()))
-				regresar= toCierreNuevo(sesion);	
-			else{
-				params.clear();
-				params.put("idCierre", regresar.getIdCierre());
-				cierreCaja= (TcManticCierresCajasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresCajasDto.class, "TcManticCierresCajasDto", "caja", params);
-				cierreCaja.setAcumulado(cierreCaja.getAcumulado() + this.ventaFinalizada.getTotales().getPago());
-				cierreCaja.setSaldo(cierreCaja.getDisponible() - cierreCaja.getAcumulado());
-				DaoFactory.getInstance().update(sesion, cierreCaja);
-			} // else
+			params.put("idCierre", this.idCierreVigente);
+			params.put("medioPago", idTipoMedioPago);
+			cierreCaja= (TcManticCierresCajasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresCajasDto.class, "TcManticCierresCajasDto", "cajaMedioPago", params);
+			cierreCaja.setAcumulado(cierreCaja.getAcumulado() + this.ventaFinalizada.getTotales().getPago());
+			cierreCaja.setSaldo(cierreCaja.getDisponible() + cierreCaja.getAcumulado());
+			DaoFactory.getInstance().update(sesion, cierreCaja);
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-		return regresar;
 	} // toCierreActivo
 	
 	private TcManticCierresDto toCierreNuevo(Session sesion) throws Exception{
-		TcManticCierresDto regresar   = null;
-		TcManticCierresCajasDto cierre= null;
-		Long consecutivo              = 1L;
-		Double total                  = 0D;
-		try {
-			regresar= new TcManticCierresDto();
-			consecutivo= toSiguienteCierre(sesion);
-			regresar.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
-			regresar.setOrden(consecutivo);
-			regresar.setEjercicio(Long.valueOf(Fecha.getAnioActual()));
-			regresar.setIdCierreEstatus(1L);
-			regresar.setIdDiferencias(2L);
-			regresar.setIdUsuario(JsfBase.getIdUsuario());
-			regresar.setObservaciones("Apertura de cierre");			
-			if(DaoFactory.getInstance().insert(sesion, regresar)>= 1L){
-				total= this.ventaFinalizada.getTotales().getTotales().getTotal();
-				cierre= new TcManticCierresCajasDto(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago(), regresar.getIdCierre(), total, this.ventaFinalizada.getIdCaja(), -1L, total, new Date(Calendar.getInstance().getTimeInMillis()), total, total);
-				DaoFactory.getInstance().insert(sesion, cierre);		
-				this.isNuevoCierre= true;
-				this.cierreCaja= cierre.getAcumulado();
-			} // 
+		TcManticCierresDto regresar= null;
+		TcManticCierresDto registro= null;
+		Cierre cierreNuevo         = null;
+		try {			
+			registro= new TcManticCierresDto();			
+			registro.setEjercicio(Long.valueOf(Fecha.getAnioActual()));
+			registro.setIdCierreEstatus(1L);
+			registro.setIdDiferencias(2L);
+			registro.setIdUsuario(JsfBase.getIdUsuario());
+			registro.setObservaciones("Apertura de cierre");								
+			cierreNuevo= new Cierre(this.ventaFinalizada.getIdCaja(), 0D, registro, new ArrayList<>(), new ArrayList<>());				
+			if(cierreNuevo.toNewCierreCaja(sesion)){
+				this.isNuevoCierre= true;				
+				this.cierreCaja= 0D;
+				regresar= cierreNuevo.getCierre();
+			} // if
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
 		return regresar;
-	} // toCierreNuevo
-	
-	private Long toSiguienteCierre(Session sesion) {
-		Long regresar             = 1L;
-		Map<String, Object> params=null;
-		Entity siguiente          = null;
-		try {
-			params=new HashMap<>();
-			params.put("ejercicio", Fecha.getAnioActual());			
-			siguiente= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticCierresDto", "siguiente", params);
-			if(siguiente!= null)
-			  regresar= siguiente.get("siguiente")!= null ? siguiente.toLong("siguiente") : 1L;
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-		} // catch
-		finally {
-			Methods.clean(params);
-		} // finally
-		return regresar;
-	}	// toSiguienteCierre
+	} // toCierreNuevo	
 	
 	private Long toSiguienteApartado(Session sesion) {
 		Long regresar             = 1L;
@@ -494,6 +490,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			pagos= loadPagos(sesion);
 			for(TrManticVentaMedioPagoDto pago: pagos){
 				if(DaoFactory.getInstance().insert(sesion, pago)>= 1L)
+					alterarCierreCaja(sesion, pago.getIdTipoMedioPago());
 					count++;
 			} // for
 			regresar= count== pagos.size();
@@ -546,7 +543,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				regresar.setIdUsuario(JsfBase.getIdUsuario());
 				regresar.setIdVenta(getOrden().getIdVenta());
 				regresar.setImporte(this.ventaFinalizada.getTotales().getEfectivo());	
-				regresar.setIdCaja(this.ventaFinalizada.getIdCaja());
+				regresar.setIdCierre(this.idCierreVigente);
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -566,7 +563,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				regresar.setImporte(this.ventaFinalizada.getTotales().getDebito());				
 				regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoDebito().getKey());
 				regresar.setReferencia(this.ventaFinalizada.getTotales().getReferenciaDebito());	
-				regresar.setIdCaja(this.ventaFinalizada.getIdCaja());
+				regresar.setIdCierre(this.idCierreVigente);
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -586,7 +583,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				regresar.setImporte(this.ventaFinalizada.getTotales().getCredito());				
 				regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoCredito().getKey());
 				regresar.setReferencia(this.ventaFinalizada.getTotales().getReferenciaCredito());	
-				regresar.setIdCaja(this.ventaFinalizada.getIdCaja());
+				regresar.setIdCierre(this.idCierreVigente);
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -606,7 +603,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				regresar.setImporte(this.ventaFinalizada.getTotales().getTransferencia());				
 				regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoTransferencia().getKey());
 				regresar.setReferencia(this.ventaFinalizada.getTotales().getReferenciaTransferencia());			
-				regresar.setIdCaja(this.ventaFinalizada.getIdCaja());
+				regresar.setIdCierre(this.idCierreVigente);
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -627,7 +624,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 					regresar.setIdUsuario(JsfBase.getIdUsuario());
 					regresar.setIdVenta(getOrden().getIdVenta());
 					regresar.setImporte(totalCredito);	
-					regresar.setIdCaja(this.ventaFinalizada.getIdCaja());
+					regresar.setIdCierre(this.idCierreVigente);
 					registrarDeuda(sesion, totalCredito);					
 				} // if
 			} // if
@@ -649,7 +646,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				regresar.setImporte(this.ventaFinalizada.getTotales().getCheque());				
 				regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoCheque().getKey());
 				regresar.setReferencia(this.ventaFinalizada.getTotales().getReferenciaCheque());		
-				regresar.setIdCaja(this.ventaFinalizada.getIdCaja());
+				regresar.setIdCierre(this.idCierreVigente);
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -714,7 +711,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				regresar.setIdTipoMedioPago(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
 				regresar.setIdUsuario(JsfBase.getIdUsuario());
 				regresar.setIdApartado(idApartado);
-				regresar.setPago(this.ventaFinalizada.getTotales().getEfectivo());	
+				regresar.setPago(this.ventaFinalizada.getTotales().getEfectivo());
+				regresar.setIdCierre(this.idCierreVigente);
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -731,7 +729,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				regresar.setIdTipoMedioPago(ETipoMediosPago.TARJETA_DEBITO.getIdTipoMedioPago());
 				regresar.setIdUsuario(JsfBase.getIdUsuario());
 				regresar.setIdApartado(idApartado);
-				regresar.setPago(this.ventaFinalizada.getTotales().getDebito());								
+				regresar.setPago(this.ventaFinalizada.getTotales().getDebito());	
+				regresar.setIdCierre(this.idCierreVigente);
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -748,7 +747,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				regresar.setIdTipoMedioPago(ETipoMediosPago.TARJETA_CREDITO.getIdTipoMedioPago());
 				regresar.setIdUsuario(JsfBase.getIdUsuario());
 				regresar.setIdApartado(idApartado);
-				regresar.setPago(this.ventaFinalizada.getTotales().getCredito());								
+				regresar.setPago(this.ventaFinalizada.getTotales().getCredito());				
+				regresar.setIdCierre(this.idCierreVigente);
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -765,7 +765,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				regresar.setIdTipoMedioPago(ETipoMediosPago.TRANSFERENCIA.getIdTipoMedioPago());
 				regresar.setIdUsuario(JsfBase.getIdUsuario());
 				regresar.setIdApartado(idApartado);
-				regresar.setPago(this.ventaFinalizada.getTotales().getTransferencia());						
+				regresar.setPago(this.ventaFinalizada.getTotales().getTransferencia());			
+				regresar.setIdCierre(this.idCierreVigente);
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -782,7 +783,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				regresar.setIdTipoMedioPago(ETipoMediosPago.CHEQUE.getIdTipoMedioPago());
 				regresar.setIdUsuario(JsfBase.getIdUsuario());
 				regresar.setIdApartado(idApartado);
-				regresar.setPago(this.ventaFinalizada.getTotales().getCheque());								
+				regresar.setPago(this.ventaFinalizada.getTotales().getCheque());					
+				regresar.setIdCierre(this.idCierreVigente);
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -837,31 +839,27 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		Map<String, Object>params                    = null;
 		boolean regresar                             = false;
 		int count                                    = 0; 
-		try {
-			if(!this.ventaFinalizada.getApartado()){
-				params= new HashMap<>();
-				for(Articulo articulo: this.ventaFinalizada.getArticulos()){
-					params.put(Constantes.SQL_CONDICION, "id_articulo=".concat(articulo.getIdArticulo().toString()));
-					almacenArticulo= (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesArticulosDto.class, "TcManticAlmacenesArticulosDto", "row", params);
-					if(almacenArticulo!= null){
-						almacenArticulo.setStock(almacenArticulo.getStock() - articulo.getCantidad());
-						regresar= DaoFactory.getInstance().update(sesion, almacenArticulo)>= 1L;
-					} // if
-					else
-						regresar= generarAlmacenArticulo(sesion, articulo.getIdArticulo(), articulo.getCantidad());
-					if(regresar){
-						articuloVenta= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, articulo.getIdArticulo());
-						articuloVenta.setStock(articuloVenta.getStock() - articulo.getCantidad());
-						if(DaoFactory.getInstance().update(sesion, articuloVenta)>= 1L)
-							regresar= actualizaInventario(sesion, articulo.getIdArticulo(), articulo.getCantidad());
-					} // if
-					if(regresar)
-						count++;
-				} // for		
-				regresar= count== this.ventaFinalizada.getArticulos().size();
-			} // if
-			else
-				regresar= true;
+		try {			
+			params= new HashMap<>();
+			for(Articulo articulo: this.ventaFinalizada.getArticulos()){
+				params.put(Constantes.SQL_CONDICION, "id_articulo=".concat(articulo.getIdArticulo().toString()));
+				almacenArticulo= (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesArticulosDto.class, "TcManticAlmacenesArticulosDto", "row", params);
+				if(almacenArticulo!= null){
+					almacenArticulo.setStock(almacenArticulo.getStock() - articulo.getCantidad());
+					regresar= DaoFactory.getInstance().update(sesion, almacenArticulo)>= 1L;
+				} // if
+				else
+					regresar= generarAlmacenArticulo(sesion, articulo.getIdArticulo(), articulo.getCantidad());
+				if(regresar){
+					articuloVenta= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, articulo.getIdArticulo());
+					articuloVenta.setStock(articuloVenta.getStock() - articulo.getCantidad());
+					if(DaoFactory.getInstance().update(sesion, articuloVenta)>= 1L)
+						regresar= actualizaInventario(sesion, articulo.getIdArticulo(), articulo.getCantidad());
+				} // if
+				if(regresar)
+					count++;
+			} // for		
+			regresar= count== this.ventaFinalizada.getArticulos().size();			
 		} // try
 		catch (Exception e) {			
 			throw e;		

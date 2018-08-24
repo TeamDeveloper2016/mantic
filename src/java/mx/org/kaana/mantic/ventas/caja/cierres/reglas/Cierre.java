@@ -76,6 +76,11 @@ public class Cierre extends IBaseTnx implements Serializable  {
 	public Long getIdApertura() {
 		return idApertura;
 	}
+
+	public TcManticCierresDto getCierre() {
+		return cierre;
+	}
+		
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
@@ -313,7 +318,7 @@ public class Cierre extends IBaseTnx implements Serializable  {
       throw e;
     } // catch
 		return regresar;
-	}
+	}  
 	
   public boolean toNewCierreCaja(Session sesion) throws Exception {
 		TcManticCierresCajasDto registro= null; 
@@ -336,6 +341,5 @@ public class Cierre extends IBaseTnx implements Serializable  {
 			} // for
 		TcManticCierresBitacoraDto bitacora= new TcManticCierresBitacoraDto("", -1L, this.cierre.getIdCierre(), JsfBase.getIdUsuario(), 1L);
 		return DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
-	}
-	
+	}	
 }

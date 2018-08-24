@@ -30,8 +30,8 @@ public class TrManticVentaMedioPagoDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Column (name="id_tipo_medio_pago")
   private Long idTipoMedioPago;
-  @Column (name="id_caja")
-  private Long idCaja;
+  @Column (name="id_cierre")
+  private Long idCierre;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="observaciones")
@@ -60,9 +60,9 @@ public class TrManticVentaMedioPagoDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TrManticVentaMedioPagoDto(Long idTipoMedioPago, Long idCaja, Long idUsuario, String observaciones, Long idVentaMedioPago, Long idVenta, Double importe, Long idBanco, String referencia) {
+  public TrManticVentaMedioPagoDto(Long idTipoMedioPago, Long idCierre, Long idUsuario, String observaciones, Long idVentaMedioPago, Long idVenta, Double importe, Long idBanco, String referencia) {
     setIdTipoMedioPago(idTipoMedioPago);
-    setIdCaja(idCaja);
+    setIdCierre(idCierre);
     setIdUsuario(idUsuario);
     setObservaciones(observaciones);
     setIdVentaMedioPago(idVentaMedioPago);
@@ -81,13 +81,13 @@ public class TrManticVentaMedioPagoDto implements IBaseDto, Serializable {
     return idTipoMedioPago;
   }
 
-  public void setIdCaja(Long idCaja) {
-    this.idCaja = idCaja;
-  }
+	public Long getIdCierre() {
+		return idCierre;
+	}
 
-  public Long getIdCaja() {
-    return idCaja;
-  }
+	public void setIdCierre(Long idCierre) {
+		this.idCierre = idCierre;
+	}  
 
   public void setIdUsuario(Long idUsuario) {
     this.idUsuario = idUsuario;
@@ -170,7 +170,7 @@ public class TrManticVentaMedioPagoDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getIdTipoMedioPago());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdCaja());
+		regresar.append(getIdCierre());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
@@ -195,7 +195,7 @@ public class TrManticVentaMedioPagoDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
-		regresar.put("idCaja", getIdCaja());
+		regresar.put("idCierre", getIdCierre());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idVentaMedioPago", getIdVentaMedioPago());
@@ -210,7 +210,7 @@ public class TrManticVentaMedioPagoDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdTipoMedioPago(), getIdCaja(), getIdUsuario(), getObservaciones(), getIdVentaMedioPago(), getIdVenta(), getImporte(), getIdBanco(), getReferencia(), getRegistro()
+    getIdTipoMedioPago(), getIdCierre(), getIdUsuario(), getObservaciones(), getIdVentaMedioPago(), getIdVenta(), getImporte(), getIdBanco(), getReferencia(), getRegistro()
     };
     return regresar;
   }
@@ -268,7 +268,4 @@ public class TrManticVentaMedioPagoDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdVentaMedioPago() != null ? getIdVentaMedioPago().hashCode() : 0);
     return hash;
   }
-
 }
-
-

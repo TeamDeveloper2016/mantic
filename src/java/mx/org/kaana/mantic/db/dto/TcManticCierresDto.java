@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -62,10 +56,14 @@ public class TcManticCierresDto implements IBaseDto, Serializable {
   }
 
   public TcManticCierresDto(Long key) {
-    this(null, new Long(-1L), null, null, null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    this(null, new Long(-1L), null, null, null, null, null, null);
     setKey(key);
   }
 
+  public TcManticCierresDto(String consecutivo, Long idCierre, Long idDiferencias, Long idUsuario, Long idCierreEstatus, String observaciones, Long orden, Long ejercicio) {
+		this(consecutivo, idCierre, idDiferencias, idUsuario, idCierreEstatus, observaciones, orden, ejercicio, new Timestamp(Calendar.getInstance().getTimeInMillis()));
+	}
+	
   public TcManticCierresDto(String consecutivo, Long idCierre, Long idDiferencias, Long idUsuario, Long idCierreEstatus, String observaciones, Long orden, Long ejercicio, Timestamp termino) {
     setConsecutivo(consecutivo);
     setIdCierre(idCierre);

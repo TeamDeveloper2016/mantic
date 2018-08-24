@@ -44,17 +44,19 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
   private Timestamp registro;
 	@Column (name="id_tipo_medio_pago")
   private Long idTipoMedioPago;
+	@Column (name="id_cierre")
+  private Long idCierre;
 
   public TcManticClientesPagosDto() {
     this(new Long(-1L));
   }
 
   public TcManticClientesPagosDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null);
+    this(null, null, null, new Long(-1L), null, null, null);
     setKey(key);
   }
 
-  public TcManticClientesPagosDto(Long idUsuario, Long idClienteDeuda, String observaciones, Long idClientePago, Double pago, Long idTipoMedioPago) {
+  public TcManticClientesPagosDto(Long idUsuario, Long idClienteDeuda, String observaciones, Long idClientePago, Double pago, Long idTipoMedioPago, Long idCierre) {
     setIdUsuario(idUsuario);
     setIdClienteDeuda(idClienteDeuda);
     setObservaciones(observaciones);
@@ -62,7 +64,16 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
     setPago(pago);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 		setIdTipoMedioPago(idTipoMedioPago);
+		setIdCierre(idCierre); 
   }
+
+	public Long getIdCierre() {
+		return idCierre;
+	}
+
+	public void setIdCierre(Long idCierre) {
+		this.idCierre = idCierre;
+	}
 	
   public void setIdUsuario(Long idUsuario) {
     this.idUsuario = idUsuario;
@@ -148,6 +159,8 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
 		regresar.append(getRegistro());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoMedioPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdCierre());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -162,13 +175,14 @@ public class TcManticClientesPagosDto implements IBaseDto, Serializable {
 		regresar.put("pago", getPago());
 		regresar.put("registro", getRegistro());
 		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
+		regresar.put("idCierre", getIdCierre());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdUsuario(), getIdClienteDeuda(), getObservaciones(), getIdClientePago(), getPago(), getRegistro(), getIdTipoMedioPago()
+    getIdUsuario(), getIdClienteDeuda(), getObservaciones(), getIdClientePago(), getPago(), getRegistro(), getIdTipoMedioPago(), getIdCierre()
     };
     return regresar;
   }

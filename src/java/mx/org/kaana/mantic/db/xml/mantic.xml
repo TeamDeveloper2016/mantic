@@ -478,6 +478,15 @@
           id_cierre= {idCierre}
 				  and id_tipo_medio_pago= 1
       </select>
+      <select id="cajaMedioPago">
+        select      
+          *
+        from      
+          tc_mantic_cierres_cajas
+        where      
+          id_cierre= {idCierre}
+				  and id_tipo_medio_pago= {medioPago}
+      </select>
       <select id="cierreCajaEfectivo">
         select      
           *
@@ -2003,7 +2012,8 @@
 		<unit id="TcManticArticulosDescuentosDto">
       <select id="row">
         select      
-          *
+					tc_mantic_articulos_descuentos.id_articulo_descuento as id_key,
+          tc_mantic_articulos_descuentos.*
         from      
           tc_mantic_articulos_descuentos
         where 
