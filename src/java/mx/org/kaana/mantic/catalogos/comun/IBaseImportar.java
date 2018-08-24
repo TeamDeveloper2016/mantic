@@ -230,7 +230,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
           for(int fila= 1; fila< sheet.getRows(); fila++) {
             //(idListaPrecio,descripcion, idListaPrecioDetalle, codigo, precio, auxiliar) 
 					  String contenido= new String(sheet.getCell(2,fila).getContents().getBytes(UTF_8), ISO_8859_1);
-						LOG.info(fila+ " -> "+ contenido+ " => "+ cleanString(contenido)+ " -> "+ new String(contenido.getBytes(ISO_8859_1), UTF_8));
+						//LOG.info(fila+ " -> "+ contenido+ " => "+ cleanString(contenido)+ " -> "+ new String(contenido.getBytes(ISO_8859_1), UTF_8));
             getArticulos().add(new TcManticListasPreciosDetallesDto(
 							-1L,
 							new String(contenido.getBytes(ISO_8859_1), UTF_8),
