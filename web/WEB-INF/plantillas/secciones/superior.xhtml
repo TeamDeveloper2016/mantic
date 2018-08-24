@@ -33,7 +33,7 @@
 						<h1 class="janal-header-title">#{kajoolUtilAplicacion.tituloCorto}</h1>
 					</div>
 					<div class="ui-grid-col-4 lg-pantalla">
-					  <span class="version" style="font-size: 7pt;float: right;"><strong class='janal-color-blue'>[ALT+C]</strong> Calculadora <strong class='janal-color-blue'>[SHIFT+F9]</strong> Faltantes <strong class='janal-color-blue'>[SHIFT+F10]</strong> Precios</span>
+					  <span class="version" style="float:right;"><strong class='janal-color-blue'>[CTRL+H]</strong> Ayuda</span>
 					</div>  
 					<div class="ui-grid-col-4 xs-pantalla">
 					</div>
@@ -183,5 +183,56 @@
 			</p:dataTable>
 		</h:form>
 	</p:dialog>  	
+	<p:dialog id="dialogoTeclasAyuda" widgetVar="dlgTeclasAyuda" header="Teclas rapidas de la aplicación" onShow="janal.bloquear();" onHide="janal.sendLastFocus();janal.desbloquear();" height="400px" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
+		<h:form id="teclasAyuda" prependId="false">
+			<div class="ui-datatable ui-widget ui-datatable-reflow">
+				<div class="ui-datatable-tablewrapper">
+					<table>
+						<tbody class="ui-datatable-data ui-widget-content">
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-calculator"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[ALT+C]</strong></td><td>Calculadora</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-edit"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[SHIFT+F9]</strong></td><td>Listado de articulos faltantes</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-search-plus"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[SHIFT+F10]</strong></td><td>Buscar un articulo</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-power-off"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+T]</strong></td><td>Terminar la sesión</td>	
+							</tr>
+							<tr>
+								<td colspan="3">&nbsp;</td>
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-sort-alpha-asc"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[F2]</strong></td><td>Listas de precios</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-language"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[F4]</strong></td><td>Cotizaciones abiertas</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-desktop"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[F7]</strong></td><td>Detalle del articulo</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-truck"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[F8]</strong></td><td>Articulo en sucursales</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-list-alt"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[F9]</strong></td><td>Catálogo de articulos</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-thumbs-o-up"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[F10]</strong></td><td>Aplicar descuento</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-list-ol"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+P]</strong></td><td>Cuentas abiertas</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-users"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+U]</strong></td><td>Cambio de usuario</td>	
+							</tr>
+						</tbody>	
+					</table>
+  			</div>
+	  	</div>
+		</h:form>
+	</p:dialog>	
 	<p:commandButton id="salir" action="/Exclusiones/salir.jsf?faces-redirect=true" style="display: none"/>
 </html>

@@ -291,6 +291,20 @@ shortcut.add("Ctrl+U", function() {
 	} // if
 });
 
+shortcut.add("Ctrl+H", function() {
+	janal.console('Shortcut dialogo de ayuda:');
+	if(PF('dlgTeclasAyuda') && !PF('dlgTeclasAyuda').isVisible()) {
+		PF('dlgTeclasAyuda').show();
+	} // if
+});
+
+shortcut.add("Ctrl+T", function() {
+	janal.console('Shortcut para terminar con la sesión activa:');
+	if($('#salir')) {
+		$('#salir').click();
+	} // if
+});
+
 shortcut.add("Shift+P", function() {
 	janal.console('Shortcut cobrar venta:');
 	if(PF('contenedorCaja')) {
