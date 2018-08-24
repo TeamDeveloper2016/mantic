@@ -259,12 +259,6 @@ public class Reporte extends BaseReportes implements Serializable{
           zip.compactar(JsfBase.getRealPath(zipName), JsfBase.getRealPath(EFormatos.PDF.toPath()), getArchivo());
         else {
           zip.compactar(JsfBase.getRealPath("/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.PDF.name()))).concat(File.separator).concat(zipName) , JsfBase.getRealPath("/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.PDF.name()))), "*".concat(this.ijuntar.getNombre().concat(".pdf")));
-          if(listaPDFs!=null){
-            for(String path: listaPDFs){
-              Archivo.delete(path);
-            }
-            this.listaPDFs = null;
-          }
         }
 				this.nombre= zipName;
 				contentType= EFormatos.ZIP.getContent();
@@ -273,8 +267,13 @@ public class Reporte extends BaseReportes implements Serializable{
 		catch(Exception e) {
 			Error.mensaje(e);
 		} // catch
-    InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(this.nombre);  
-    return new DefaultStreamedContent(stream, contentType, getArchivo());		
+    if(!this.ijuntar.getSeparar()){
+      InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(this.nombre);  
+      return new DefaultStreamedContent(stream, contentType, getArchivo());		
+    }else{
+      InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream("/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.PDF.name())).concat(File.separator).concat(this.nombre));  
+      return new DefaultStreamedContent(stream, contentType, getArchivo());	
+    }
 	}
   
   public void clean() {
