@@ -265,7 +265,7 @@ shortcut.add("Shift+f9", function() {
 
 shortcut.add("Ctrl+P", function() {
 	janal.console('Shortcut tickets abiertos:');
-	if(PF('dlgOpenTickets')) {
+	if(PF('dlgOpenTickets') && !PF('dlgOpenTickets').isVisible()) {
 		if(!($('#aceptar').prop("disabled")=== true && $('#cuenta').prop("disabled")=== false)){
 			janal.bloquear();
 			loadTicketAbiertos();
