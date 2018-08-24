@@ -49,6 +49,7 @@ public class Reporte extends BaseReportes implements Serializable{
   
   private static final long serialVersionUID = -741532999302110919L;
   private IJuntar ijuntar;	
+  private List<String>listaPDFs;
 
 	@PostConstruct
 	@Override
@@ -191,7 +192,6 @@ public class Reporte extends BaseReportes implements Serializable{
     String fileName       = null;
     String sql            = null;
     String source         = null;
-    List<String>listaPDFs = null;
     JuntarPdfs juntar     = null;
     InputStream input     = null; 
     try {
@@ -212,7 +212,7 @@ public class Reporte extends BaseReportes implements Serializable{
         source= JsfBase.getRealPath(definicion.getJrxml().concat(".jasper"));
         input = SearchFileJar.getInstance().toInputStream(definicion.getJrxml().concat(".jasper"));
         definicion.getParametros().put(Constantes.REPORTE_SUBREPORTE, source.substring(0, source.lastIndexOf(File.separator)+ File.separator.length()));
-        reporteGenerar= new mx.org.kaana.libs.reportes.scriptlets.Reporte(source.substring(0, source.lastIndexOf('.')), JsfBase.getRealPath(EFormatos.PDF.toPath()).concat(File.separator), definicion.getParametros(), fileName);
+        reporteGenerar= new mx.org.kaana.libs.reportes.scriptlets.Reporte(source.substring(0, source.lastIndexOf('.')), JsfBase.getRealPath("/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.PDF.name()))).concat(File.separator), definicion.getParametros(), fileName);
         if(definicion.getJrxml().startsWith(Constantes.NOMBRE_DE_APLICACION)) {          
   			  reporteGenerar.procesar(this.idFormato, input);
         } // if 
@@ -221,18 +221,17 @@ public class Reporte extends BaseReportes implements Serializable{
         listaPDFs.add(JsfBase.getRealPath(this.nombre));
       } // for 
       fileName= Archivo.toFormatNameFile(ijuntar.getNombre());
-      this.nombre= JsfBase.getRealPath(EFormatos.PDF.toPath().concat(fileName.concat(".")).concat(EFormatos.PDF.name().toLowerCase()));
-      juntar= new JuntarPdfs(listaPDFs, this.nombre, this.ijuntar.getIntercalar());
-      if(!juntar.concatenar()) {
-        throw new RuntimeException("Ocurrio un error en la generación del reporte. "+ this.nombre);
-      } // if
+      this.nombre= JsfBase.getRealPath("/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.PDF.name())).concat(File.separator).concat(fileName.concat(".")).concat(EFormatos.PDF.name().toLowerCase()));
+      if(!this.ijuntar.getSeparar()){
+        juntar= new JuntarPdfs(listaPDFs, this.nombre, this.ijuntar.getIntercalar());
+        if(!juntar.concatenar()) {
+          throw new RuntimeException("Ocurrio un error en la generación del reporte. "+ this.nombre);
+        } // if
+      }
 		} // try
 		catch(Exception e) {
 			throw e;
 		} // catch
-    finally {
-      Methods.clean(listaPDFs);
-    } // finally
 	} // doAceptarVarios
 	
 	@Override
@@ -256,7 +255,17 @@ public class Reporte extends BaseReportes implements Serializable{
 				String zipName= getArchivo().substring(0, getArchivo().lastIndexOf(".")+ 1).concat(EFormatos.ZIP.name().toLowerCase());
 				zip.setDebug(true);
 				zip.setEliminar(true);
-        zip.compactar(JsfBase.getRealPath(zipName), JsfBase.getRealPath(EFormatos.PDF.toPath()), getArchivo());
+        if(!this.ijuntar.getSeparar())
+          zip.compactar(JsfBase.getRealPath(zipName), JsfBase.getRealPath(EFormatos.PDF.toPath()), getArchivo());
+        else {
+          zip.compactar(JsfBase.getRealPath("/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.PDF.name()))).concat(File.separator).concat(zipName) , JsfBase.getRealPath("/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.PDF.name()))), "*".concat(this.ijuntar.getNombre().concat(".pdf")));
+          if(listaPDFs!=null){
+            for(String path: listaPDFs){
+              Archivo.delete(path);
+            }
+            this.listaPDFs = null;
+          }
+        }
 				this.nombre= zipName;
 				contentType= EFormatos.ZIP.getContent();
 			} // if	
