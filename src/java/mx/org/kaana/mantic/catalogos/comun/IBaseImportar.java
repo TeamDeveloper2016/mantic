@@ -37,6 +37,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.KajoolBaseException;
@@ -171,7 +172,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
-			JsfBase.addMessage("Importar:", "El archivo no pudo ser importado !", ETipoMensaje.ERROR);
+			JsfBase.addMessage("Importar:", "El archivo no cumple con el formato solicitado [CLAVE | AUXILIAR | DESCRIPCION | COSTO S/IVA | PRECIO NETO].", ETipoMensaje.ERROR);
 			if(result!= null)
 			  result.delete();
 		} // catch
@@ -215,26 +216,29 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
       workbookSettings.setLocale(new Locale("es", "MX"));
 			workbook= Workbook.getWorkbook(archivo, workbookSettings);
 			sheet		= workbook.getSheet(0);
-			if(sheet != null && sheet.getColumns()==4 && sheet.getRows()>= 2) {
-				for (int columna = 0; columna < 4; columna++){
-					encabezado.append(sheet.getCell(columna,0).getContents());
+			if(sheet != null && sheet.getColumns()>=4 && sheet.getRows()>= 2) {
+				for (int columna= 0; columna< 4; columna++){
+					encabezado.append(Cadena.eliminaCaracter(sheet.getCell(columna,0).getContents(), ' '));
 					encabezado.append("|");
 				} // for
 				encabezado.delete(encabezado.length()-1, encabezado.length());
-				if(encabezado.toString().equals("CLAVE|AUXILIAR|DESCRIPCION|PRECIO")) {
+				LOG.info("Encabezado: "+ encabezado);
+				if(encabezado.toString().equals("CLAVE|AUXILIAR|DESCRIPCION|COSTOS/IVA|PRECIONETO|")) {
           this.articulos = new ArrayList<>();
 					//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
           for(int fila= 1; fila<sheet.getRows(); fila++) {
             //(idListaPrecio,descripcion, idListaPrecioDetalle, codigo, precio, auxiliar) 
 					  String contenido= new String(sheet.getCell(2,fila).getContents().getBytes(UTF_8), ISO_8859_1);
-						//LOG.info("-> "+ contenido+ " => "+ cleanString(contenido)+ " -> "+ new String(contenido.getBytes(ISO_8859_1), UTF_8));
+						LOG.info(fila+ " -> "+ contenido+ " => "+ cleanString(contenido)+ " -> "+ new String(contenido.getBytes(ISO_8859_1), UTF_8));
             getArticulos().add(new TcManticListasPreciosDetallesDto(
-            -1L,
-            new String(contenido.getBytes(ISO_8859_1), UTF_8),
-            -1L,
-            sheet.getCell(0,fila).getContents(),
-            Double.valueOf(sheet.getCell(3,fila).getContents()),
-            sheet.getCell(1,fila).getContents()));
+							-1L,
+							new String(contenido.getBytes(ISO_8859_1), UTF_8),
+							-1L,
+							sheet.getCell(0,fila).getContents(),
+							Numero.getDouble(sheet.getCell(4,fila).getContents(), 0D),
+							sheet.getCell(1,fila).getContents(),
+							Numero.getDouble(sheet.getCell(3,fila).getContents(), 0D))
+						);
           } // for
           regresar = true;
         }

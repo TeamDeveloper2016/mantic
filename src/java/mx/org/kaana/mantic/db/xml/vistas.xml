@@ -3957,12 +3957,26 @@
 				from 
 					tc_mantic_listas_precios_detalles
 				inner join 
-      			tc_mantic_listas_precios on tc_mantic_listas_precios_detalles.id_lista_precio = tc_mantic_listas_precios.id_lista_precio 
+      		tc_mantic_listas_precios on tc_mantic_listas_precios_detalles.id_lista_precio = tc_mantic_listas_precios.id_lista_precio 
 				inner join
-          		tc_mantic_proveedores on tc_mantic_listas_precios.id_proveedor= tc_mantic_proveedores.id_proveedor
+          tc_mantic_proveedores on tc_mantic_listas_precios.id_proveedor= tc_mantic_proveedores.id_proveedor
         where
 					{condicion}			      
 				{sortOrder}
+			</select>
+      <select id="proveedores">
+				select 
+				  distinct(tc_mantic_proveedores.id_proveedor) as id_key,
+				  tc_mantic_proveedores.clave,
+				  tc_mantic_proveedores.razon_social
+				from 
+					tc_mantic_listas_precios_detalles
+				inner join 
+      		tc_mantic_listas_precios on tc_mantic_listas_precios_detalles.id_lista_precio = tc_mantic_listas_precios.id_lista_precio 
+				inner join
+          tc_mantic_proveedores on tc_mantic_listas_precios.id_proveedor= tc_mantic_proveedores.id_proveedor
+        where
+					{condicion}			      
 			</select>
 		</unit>
 		<unit id="VistaTcManticVentasDetallesDto">

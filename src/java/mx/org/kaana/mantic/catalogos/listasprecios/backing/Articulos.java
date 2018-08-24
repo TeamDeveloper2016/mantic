@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.procesos.comun.Comun;
@@ -36,7 +37,6 @@ public class Articulos extends Comun implements Serializable {
       this.attrs.put("auxiliar", "");    
       this.attrs.put("idProveedor", "");    
       this.attrs.put("sortOrder"," order by tc_mantic_listas_precios_detalles.descripcion, tc_mantic_proveedores.razon_social");
-      doLoadProveedores();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -46,14 +46,25 @@ public class Articulos extends Comun implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> campos      = null;
-    Map<String, Object>params = null;
     try {
-      campos = new ArrayList<>();
-      params = toPrepare();
+			this.attrs.put("idProveedor", new UISelectEntity(new Entity(-1L)));
+			this.doLoadArticulos();
+			this.doLoadProveedores();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+  } // doLoad
+  
+  public void doLoadArticulos() {
+    List<Columna> campos     = null;
+    Map<String, Object>params= toPrepare();
+    try {
+      campos= new ArrayList<>();
       campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+      campos.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       campos.add(new Columna("precio", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      campos.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       this.lazyModel = new FormatCustomLazy("VistaListasArchivosDto", "lazyArticulos", params, campos);
       UIBackingUtilities.resetDataTable();
     } // try
@@ -63,9 +74,25 @@ public class Articulos extends Comun implements Serializable {
     } // catch
     finally {
       Methods.clean(campos);
+      Methods.clean(params);
     } // finally		
   } // doLoad
   
+  private void doLoadProveedores() {
+    Map<String, Object> params= toPrepare();
+	  try {
+      this.attrs.put("proveedores", UIEntity.build("VistaListasArchivosDto", "proveedores", params));
+      this.attrs.put("idProveedor", new UISelectEntity(new Entity(-1L)));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(params);
+    } // finally		
+  }
+ 
   private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
@@ -75,7 +102,7 @@ public class Articulos extends Comun implements Serializable {
   		sb.append((!Cadena.isVacio(this.attrs.get("codigo"))?" and ":" ").concat("upper(tc_mantic_listas_precios_detalles.auxiliar) like upper('%")).append(this.attrs.get("auxiliar")).append("%') ");
 		if(!Cadena.isVacio(this.attrs.get("nombre")))
   		sb.append(((!Cadena.isVacio(this.attrs.get("codigo"))||!Cadena.isVacio(this.attrs.get("auxiliar")))?" and ":" ").concat("upper(tc_mantic_listas_precios_detalles.descripcion) like upper('%")).append(this.attrs.get("nombre")).append("%') ");
-		if(!Cadena.isVacio(this.attrs.get("idProveedor"))&&(!this.attrs.get("idProveedor").toString().equals("-1")))
+		if(!Cadena.isVacio(this.attrs.get("idProveedor")) && (!this.attrs.get("idProveedor").toString().equals("-1")))
   		sb.append(((!Cadena.isVacio(this.attrs.get("codigo"))||!Cadena.isVacio(this.attrs.get("nombre"))||!Cadena.isVacio(this.attrs.get("auxiliar")))?" and ":" ").concat("tc_mantic_listas_precios.id_proveedor = ")).append(((UISelectEntity)this.attrs.get("idProveedor")).getKey().toString());
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
@@ -84,23 +111,4 @@ public class Articulos extends Comun implements Serializable {
 		return regresar;
 	}
   
-  public void doLoadProveedores() {
-    Map<String, Object> params = null;
-    List<UISelectEntity> proveedores = null;
-    try {
-      params = new HashMap();
-      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-      proveedores = UIEntity.build("TcManticProveedoresDto", "sucursales", params);
-      this.attrs.put("proveedores", proveedores);
-      this.attrs.put("idProveedor", new UISelectEntity(""));
-    }
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    }
-    finally {
-      Methods.clean(params);
-    }
-  }
- 
 }

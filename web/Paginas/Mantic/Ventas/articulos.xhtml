@@ -6,7 +6,7 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
-                template="/WEB-INF/plantillas/filtro.xhtml">
+                template="/WEB-INF/plantillas/venta.xhtml">
 	<ui:param name="titulo" value="Listas de precios de los proveedores" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
@@ -71,26 +71,26 @@
 							<f:facet name="header">
 								<h:outputText value="Proveedor"/>
 							</f:facet>
-							<h:outputText value="#{row['proveedor']}" title="Código auxiliar: #{row.auxiliar}"/>
+							<h:outputText value="#{row['proveedor']}"/>
 						</p:column>	
 						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
 							<f:facet name="header">
 								<h:outputText value="Código"/>
 							</f:facet>
-							<h:outputText value="#{row['codigo']}" title="Código auxiliar: #{row.auxiliar}"/>
+							<h:outputText value="#{row['codigo']}"/>
+						</p:column>														
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.auxiliar}">
+							<f:facet name="header">
+								<h:outputText value="Auxiliar"/>
+							</f:facet>
+							<h:outputText value="#{row['auxiliar']}"/>
 						</p:column>														
 						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.descripcion}">
 							<f:facet name="header">
 								<h:outputText value="Descripcion"/>
 							</f:facet>
-							<h:outputText value="#{row['descripcion']}" title="Código auxiliar: #{row.auxiliar}"/>
+							<h:outputText value="#{row['descripcion']}"/>
 						</p:column>														
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.costo}">
-							<f:facet name="header">
-								<h:outputText value="Costo s/iva"/>
-							</f:facet>
-							<h:outputText value="#{row['costo']}"/>
-						</p:column>					
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.precio}">
 							<f:facet name="header">
 								<h:outputText value="Precio neto"/>
@@ -104,5 +104,13 @@
 				</div>
 			</div>
 		</div>		           				
-	</ui:define>    
+	</ui:define>   
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-arrow-circle-left" process="@this" action="accion" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+		</div>	
+		<div class="xs-pantalla">
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-arrow-circle-left" process="@this" action="accion" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+		</div>		
+	</ui:define>	
 </ui:composition>

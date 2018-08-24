@@ -6,8 +6,8 @@
                 xmlns:c="http://java.sun.com/jsp/jstl/core"
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
-                template="/WEB-INF/plantillas/filtro.xhtml">
-  <ui:param name="titulo" value="Galería de catálogo de lista de precios que fueron importadas" />
+                template="/WEB-INF/plantillas/venta.xhtml">
+  <ui:param name="titulo" value="Galería de catálogo de las lista de precios"/>
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
@@ -29,27 +29,27 @@
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <h:panelGrid styleClass="janal-wid-100">
               <p:outputLabel for="clave" value="Clave:"/>
-              <p:inputText id="clave" value="#{manticCatalogosListaPreciosProveedor.attrs.clave}" styleClass="janal-wid-100-txt"/> 
+              <p:inputText id="clave" value="#{manticCatalogosListaPreciosCatalogos.attrs.clave}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="razonSocial" value="Razón social:"/>
-              <p:inputText id="razonSocial" value="#{manticCatalogosListaPreciosProveedor.attrs.razonSocial}" styleClass="janal-wid-100-txt"/>
+              <p:inputText id="razonSocial" value="#{manticCatalogosListaPreciosCatalogos.attrs.razonSocial}" styleClass="janal-wid-100-txt"/>
             </h:panelGrid>
             <p:separator/>
             <div class="janal-align-right lg-pantalla">
-              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.partial('general');" process="@this clave razonSocial" actionListener="#{manticCatalogosListaPreciosProveedor.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
+              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.partial('general');" process="@this clave razonSocial" actionListener="#{manticCatalogosListaPreciosCatalogos.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
             </div>
              <div class="janal-align-right xs-pantalla">
-                <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general');" process="@this clave razonSocial" actionListener="#{manticCatalogosListaPreciosProveedor.doLoad}" oncomplete="janal.desbloquear();" update="tabla"  styleClass="janal-text-white"/>
+                <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general');" process="@this clave razonSocial" actionListener="#{manticCatalogosListaPreciosCatalogos.doLoad}" oncomplete="janal.desbloquear();" update="tabla"  styleClass="janal-text-white"/>
               </div>
           </p:panel>
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataGrid id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosListaPreciosProveedor.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  
-                        rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticCatalogosListaPreciosProveedor.lazyModel.size() gt Constantes.REGISTROS_POR_PAGINA}" rowIndexVar="index" columns="3" layout="grid">			
+          <p:dataGrid id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosListaPreciosCatalogos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  
+                        rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticCatalogosListaPreciosCatalogos.lazyModel.size() gt Constantes.REGISTROS_POR_PAGINA}" rowIndexVar="index" columns="3" layout="grid">			
             <p:panel header="#{filtro.clave}    [#{filtro.registro}]" style="text-align:center">
               <h:panelGrid columns="1" style="width:100%">
                 <p:graphicImage library="janal" name="img/proveedores/#{filtro.logotipo}" styleClass="alinear-centro" width="65" height="65"/>
                   <h:outputText value="#{filtro.razonSocial}" />
-                  <p:commandLink  actionListener="#{manticCatalogosListaPreciosProveedor.doViewPdfDocument(filtro)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();">
+                  <p:commandLink  actionListener="#{manticCatalogosListaPreciosCatalogos.doViewPdfDocument(filtro)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();">
 									  <p:commandButton icon="fa fa-eye" title="Ver documento PDF" ajax="false" type="button" styleClass="janal-text-white"/>
 									</p:commandLink>	
               </h:panelGrid>
@@ -57,7 +57,7 @@
             <f:facet name="footer" >
               <p:panelGrid columns="2" styleClass="janal-wid-100 janal-line-button" columnClasses="janal-wid-50 janal-column-left, janal-wid-50 janal-column-right">
                 <p:spacer/>
-                <p:outputLabel value="Total [#{manticCatalogosListaPreciosProveedor.lazyModel==null?0:manticCatalogosListaPreciosProveedor.lazyModel.size()}] registros"/>
+                <p:outputLabel value="Total [#{manticCatalogosListaPreciosCatalogos.lazyModel==null?0:manticCatalogosListaPreciosCatalogos.lazyModel.size()}] registros"/>
               </p:panelGrid>
             </f:facet>
           </p:dataGrid>
@@ -65,15 +65,23 @@
       </div>
     </div>	
   </ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-arrow-circle-left" process="@this" action="accion" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+		</div>	
+		<div class="xs-pantalla">
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-arrow-circle-left" process="@this" action="accion" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+		</div>		
+	</ui:define>	
   <ui:define name="dialogos">
 		<h:form prependId="true">
       <p:dialog id="dialogoPDF" widgetVar="dlgPDF" header="Listado de productos PDF" onHide="janal.sendLastFocus();janal.desbloquear();" height="450px" dynamic="true" width="650px" resizable="false" closeOnEscape="true" closable="true"  maximizable="true"  appendTo="@(body)">
-				<object type="application/pdf" data="#{manticCatalogosListaPreciosProveedor.attrs.temporal}" height="100%" width="100%" internalinstanceid="5">
+				<object type="application/pdf" data="#{manticCatalogosListaPreciosCatalogos.attrs.temporal}" height="100%" width="100%" internalinstanceid="5">
 					 Tu navegador no soporta el desplegado de archivos PDF's, por favor da click en el boton de descargar
 				</object>
   			<hr class="ui-widget-content"/>
 	  		<div class="janal-line-button">
-					<p:commandButton process="@this" styleClass="janal-text-white" icon="fa fa-remove" value="Cerrar" actionListener="#{manticCatalogosListaPreciosProveedor.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
+					<p:commandButton process="@this" styleClass="janal-text-white" icon="fa fa-remove" value="Cerrar" actionListener="#{manticCatalogosListaPreciosCatalogos.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
 			  </div>
 			</p:dialog>
 		</h:form>

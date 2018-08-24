@@ -50,17 +50,19 @@ public class TcManticListasPreciosDetallesDto implements IBaseDto, Serializable 
   private String auxiliar;
   @Column (name="registro")
   private Timestamp registro;
+  @Column (name="costo")
+  private Double costo;
 
   public TcManticListasPreciosDetallesDto() {
     this(new Long(-1L));
   }
 
   public TcManticListasPreciosDetallesDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null);
+    this(null, null, new Long(-1L), null, null, null, null);
     setKey(key);
   }
 
-  public TcManticListasPreciosDetallesDto(Long idListaPrecio, String descripcion, Long idListaPrecioDetalle, String codigo, Double precio, String auxiliar) {
+  public TcManticListasPreciosDetallesDto(Long idListaPrecio, String descripcion, Long idListaPrecioDetalle, String codigo, Double precio, String auxiliar, Double costo) {
     setIdListaPrecio(idListaPrecio);
     setDescripcion(descripcion);
     setIdListaPrecioDetalle(idListaPrecioDetalle);
@@ -68,6 +70,7 @@ public class TcManticListasPreciosDetallesDto implements IBaseDto, Serializable 
     setPrecio(precio);
     setAuxiliar(auxiliar);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		setCosto(costo);
   }
 	
   public void setIdListaPrecio(Long idListaPrecio) {
@@ -126,6 +129,14 @@ public class TcManticListasPreciosDetallesDto implements IBaseDto, Serializable 
     return registro;
   }
 
+	public Double getCosto() {
+		return costo;
+	}
+
+	public void setCosto(Double costo) {
+		this.costo=costo;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -154,6 +165,8 @@ public class TcManticListasPreciosDetallesDto implements IBaseDto, Serializable 
 		regresar.append(getAuxiliar());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCosto());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -168,13 +181,14 @@ public class TcManticListasPreciosDetallesDto implements IBaseDto, Serializable 
 		regresar.put("precio", getPrecio());
 		regresar.put("auxiliar", getAuxiliar());
 		regresar.put("registro", getRegistro());
+		regresar.put("costo", getCosto());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getIdListaPrecio(), getDescripcion(), getIdListaPrecioDetalle(), getCodigo(), getPrecio(), getAuxiliar(), getRegistro()
+    Object[] regresar = new Object[] {
+      getIdListaPrecio(), getDescripcion(), getIdListaPrecioDetalle(), getCodigo(), getPrecio(), getAuxiliar(), getRegistro(), getCosto()
     };
     return regresar;
   }

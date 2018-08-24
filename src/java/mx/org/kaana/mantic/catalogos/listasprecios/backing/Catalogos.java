@@ -23,9 +23,9 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 
-@javax.inject.Named("manticCatalogosListaPreciosProveedor")
+@javax.inject.Named("manticCatalogosListaPreciosCatalogos")
 @ViewScoped
-public class Proveedores extends IBaseAttribute implements java.io.Serializable
+public class Catalogos extends IBaseAttribute implements java.io.Serializable
 {
   private static final long serialVersionUID = 862453896325723687L;
   private static final int BUFFER_SIZE      = 6124;
@@ -34,7 +34,7 @@ public class Proveedores extends IBaseAttribute implements java.io.Serializable
   public List<Entity> getLazyModel() {
     return lazyModel;
   }
-  public Proveedores() {}
+  public Catalogos() {}
   
   @PostConstruct
   protected void init(){
