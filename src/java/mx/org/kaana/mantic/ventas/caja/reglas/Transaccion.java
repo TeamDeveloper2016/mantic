@@ -310,7 +310,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			params.put("medioPago", idTipoMedioPago);
 			cierreCaja= (TcManticCierresCajasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresCajasDto.class, "TcManticCierresCajasDto", "cajaMedioPago", params);
 			cierreCaja.setAcumulado(cierreCaja.getAcumulado() + this.ventaFinalizada.getTotales().getPago());
-			cierreCaja.setSaldo(cierreCaja.getDisponible() - cierreCaja.getAcumulado());
+			cierreCaja.setSaldo(cierreCaja.getDisponible() + cierreCaja.getAcumulado());
 			DaoFactory.getInstance().update(sesion, cierreCaja);
 		} // try
 		catch (Exception e) {			
