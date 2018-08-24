@@ -234,8 +234,8 @@ shortcut.add("f10", function() {
 	janal.console('Asignación de descuento a articulo:');
 	if(PF('dlgDescuentos')){
 		janal.bloquear();
-	  PF('dlgDescuentos').show();
-		$('#usuarioDescuento').focus();		
+	  PF('dlgDescuentos').show();				
+		setTimeout("$('#descuentousr').focus();", 1000);						
 	} // if
 });
 
