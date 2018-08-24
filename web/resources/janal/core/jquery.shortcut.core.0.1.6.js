@@ -226,7 +226,7 @@ shortcut = {
 
 shortcut.add("Alt+C", function() {
 	janal.console('Shortcut calculadora:');
-	if(PF('dlgCalculadora'))
+	if(PF('dlgCalculadora') && !PF('dlgCalculadora').isVisible())
 	  PF('dlgCalculadora').show();
 });
 
@@ -244,7 +244,7 @@ shortcut.add("f2", function() {
 
 shortcut.add("f10", function() {
 	janal.console('Asignación de descuento a articulo:');
-	if(PF('dlgDescuentos')){
+	if(PF('dlgDescuentos') && !PF('dlgDescuentos').isVisible()){
 		janal.bloquear();
 	  PF('dlgDescuentos').show();				
 		setTimeout("$('#descuentousr').focus();", 1000);						
@@ -253,19 +253,19 @@ shortcut.add("f10", function() {
 
 shortcut.add("Shift+f10", function() {
 	janal.console('Shortcut verificador de precios:');
-	if(PF('dlgVerificador'))
+	if(PF('dlgVerificador') && !PF('dlgVerificador').isVisible())
 	  PF('dlgVerificador').show();
 });
 
 shortcut.add("Shift+f9", function() {
 	janal.console('Shortcut registro de faltantes:');
-	if(PF('dlgFaltantes'))
+	if(PF('dlgFaltantes') && !PF('dlgFaltantes').isVisible())
 	  PF('dlgFaltantes').show();
 });
 
 shortcut.add("Ctrl+P", function() {
 	janal.console('Shortcut tickets abiertos:');
-	if(PF('dlgOpenTickets')){
+	if(PF('dlgOpenTickets')) {
 		if(!($('#aceptar').prop("disabled")=== true && $('#cuenta').prop("disabled")=== false)){
 			janal.bloquear();
 			loadTicketAbiertos();
