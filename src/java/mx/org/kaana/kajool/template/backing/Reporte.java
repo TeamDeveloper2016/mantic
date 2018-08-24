@@ -225,7 +225,7 @@ public class Reporte extends BaseReportes implements Serializable{
       if(!this.ijuntar.getSeparar()){
         juntar= new JuntarPdfs(listaPDFs, this.nombre, this.ijuntar.getIntercalar());
         if(!juntar.concatenar()) {
-          throw new RuntimeException("Ocurrio un error en la generación del reporte. "+ this.nombre);
+          throw new RuntimeException(" Ocurrio un error en la generación del reporte. "+ this.nombre);
         } // if
       }
 		} // try
