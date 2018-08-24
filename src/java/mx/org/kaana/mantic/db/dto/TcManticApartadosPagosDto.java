@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -50,17 +44,19 @@ public class TcManticApartadosPagosDto implements IBaseDto, Serializable {
   private Double pago;
   @Column (name="registro")
   private Timestamp registro;
+	@Column (name="id_cierre")
+  private Long idCierre;
 
   public TcManticApartadosPagosDto() {
     this(new Long(-1L));
   }
 
   public TcManticApartadosPagosDto(Long key) {
-    this(new Long(-1L), null, null, null, null, null);
+    this(new Long(-1L), null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticApartadosPagosDto(Long idApartadoPago, Long idTipoMedioPago, Long idUsuario, String observaciones, Long idApartado, Double pago) {
+  public TcManticApartadosPagosDto(Long idApartadoPago, Long idTipoMedioPago, Long idUsuario, String observaciones, Long idApartado, Double pago, Long idCierre) {
     setIdApartadoPago(idApartadoPago);
     setIdTipoMedioPago(idTipoMedioPago);
     setIdUsuario(idUsuario);
@@ -68,7 +64,16 @@ public class TcManticApartadosPagosDto implements IBaseDto, Serializable {
     setIdApartado(idApartado);
     setPago(pago);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		setIdCierre(idCierre);
   }
+
+	public Long getIdCierre() {
+		return idCierre;
+	}
+
+	public void setIdCierre(Long idCierre) {
+		this.idCierre = idCierre;
+	}
 	
   public void setIdApartadoPago(Long idApartadoPago) {
     this.idApartadoPago = idApartadoPago;
@@ -154,6 +159,8 @@ public class TcManticApartadosPagosDto implements IBaseDto, Serializable {
 		regresar.append(getPago());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdCierre());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -168,13 +175,14 @@ public class TcManticApartadosPagosDto implements IBaseDto, Serializable {
 		regresar.put("idApartado", getIdApartado());
 		regresar.put("pago", getPago());
 		regresar.put("registro", getRegistro());
+		regresar.put("idCierre", getIdCierre());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdApartadoPago(), getIdTipoMedioPago(), getIdUsuario(), getObservaciones(), getIdApartado(), getPago(), getRegistro()
+			getIdApartadoPago(), getIdTipoMedioPago(), getIdUsuario(), getObservaciones(), getIdApartado(), getPago(), getRegistro(), getIdCierre()
     };
     return regresar;
   }
@@ -232,7 +240,4 @@ public class TcManticApartadosPagosDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdApartadoPago() != null ? getIdApartadoPago().hashCode() : 0);
     return hash;
   }
-
 }
-
-
