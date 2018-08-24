@@ -588,6 +588,14 @@
         where      
           id_proveedor = {idProveedor} and id_requisicion = {idRequisicion}
       </select>
+       <select id="proveedores">
+        select      
+          id_proveedor as id_key
+        from      
+          tc_mantic_requisiciones_proveedores
+        where      
+          id_requisicion = {idRequisicion}
+      </select>
 			<select id="maximo">
         select      
           max(id_requisicion_proveedor) maximo

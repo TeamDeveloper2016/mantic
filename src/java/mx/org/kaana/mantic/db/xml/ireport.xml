@@ -693,7 +693,8 @@
           ' ) ',
           tc_mantic_articulos.nombre) as nombre,
           tc_mantic_requisiciones_detalles.cantidad,
-          tc_mantic_requisiciones_detalles.unidad_medida
+          tc_mantic_requisiciones_detalles.unidad_medida,
+          0.0 total_final
         from
           tc_mantic_requisiciones         
         inner join

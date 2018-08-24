@@ -9,11 +9,13 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.procesos.reportes.beans.Definicion;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.template.backing.Reporte;
@@ -32,6 +34,7 @@ import mx.org.kaana.mantic.catalogos.reportes.reglas.ParametrosComunes;
 import mx.org.kaana.mantic.compras.requisiciones.beans.RegistroRequisicion;
 import mx.org.kaana.mantic.compras.requisiciones.beans.Requisicion;
 import mx.org.kaana.mantic.compras.requisiciones.reglas.Transaccion;
+import mx.org.kaana.mantic.comun.JuntarReporte;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticRequisicionesBitacoraDto;
 import mx.org.kaana.mantic.enums.EReportes;
@@ -190,6 +193,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       params.put("sortOrder", "order by tc_mantic_requisiciones.id_empresa, tc_mantic_requisiciones.ejercicio, tc_mantic_requisiciones.orden");
       reporteSeleccion= EReportes.valueOf(nombre);
       parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.reporte.clean();
       this.reporte= JsfBase.toReporte();	
       parametros= parametrosComunes.getParametrosComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
@@ -204,6 +208,48 @@ public class Filtro extends IBaseFilter implements Serializable {
       JsfBase.addMessageError(e);			
     } // catch	
   } // doReporte
+  
+  public void doImprimirTodos(String nombre) {
+    ParametrosComunes parametrosComunes = null;
+		Map<String, Object>parametros       = null;
+    Map<String, Object>params           = null;
+		EReportes reporteSeleccion          = null;
+    Entity seleccionado                 = null;   
+    List<Definicion> definiciones       = null;
+    List<Entity> proveedores            = null;
+		try {
+      params= toPrepare();	
+			parametros   = new HashMap<>();
+      definiciones = new ArrayList<Definicion>();
+      proveedores = new ArrayList<>();
+      seleccionado = ((Entity)this.attrs.get("seleccionado"));
+      if(seleccionado != null)
+        params.put("idRequisicion", seleccionado.getKey());
+      params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
+      params.put("sortOrder", "order by tc_mantic_requisiciones.id_empresa, tc_mantic_requisiciones.ejercicio, tc_mantic_requisiciones.orden");
+      reporteSeleccion= EReportes.valueOf(nombre);
+      this.reporte= JsfBase.toReporte();	
+      proveedores = DaoFactory.getInstance().toEntitySet("TcManticRequisicionesProveedoresDto", "proveedores", params);
+      for(Entity proveedor:proveedores){
+        parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), -1L, proveedor.getKey(), -1L);
+        parametros= parametrosComunes.getParametrosComunes();
+        parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+        parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+        parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));		
+        definiciones.add(new Definicion((Map<String, Object>) ((HashMap) params).clone(), (Map<String, Object>) ((HashMap) parametros).clone(), reporteSeleccion.getProceso(), reporteSeleccion.getIdXml(), reporteSeleccion.getJrxml()));
+      }
+      this.reporte.toAsignarReportes(new JuntarReporte(definiciones, reporteSeleccion, "/Paginas/Mantic/Compras/Requisiciones/filtro",false, true));
+      if(doVerificarReporte())
+        this.reporte.doAceptar();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+    finally{
+      Methods.clean(proveedores);
+    }
+	} // doImprimirTodos	
   
   public boolean doVerificarReporte() {
     boolean regresar = false;

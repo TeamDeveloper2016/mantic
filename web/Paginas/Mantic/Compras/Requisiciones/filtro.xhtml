@@ -163,6 +163,7 @@
             <p:separator rendered="#{!(manticComprasRequisicionesFiltro.attrs.seleccionado.idRequisicionEstatus eq '6')}"/>					
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticComprasRequisicionesFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					            
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doReporte('REQUISICIONES_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar" />					
+            <p:menuitem id="reporteProv" icon="fa fa-file-word-o" value="Reportes proveedores" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasRequisicionesFiltro.doImprimirTodos('REQUISICIONES_DETALLE_PROV')}" oncomplete="janal.desbloquear();" update="descargar" />					
           </p:contextMenu>
         </div>
       </div>

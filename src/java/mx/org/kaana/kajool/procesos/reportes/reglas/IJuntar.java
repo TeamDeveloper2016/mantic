@@ -18,5 +18,6 @@ public interface IJuntar {
 	public Boolean getComprimir();
   public List<Definicion> getDefiniciones();
   public Boolean getIntercalar();
+  public Boolean getSeparar();
 	public Boolean getAutomatico();
 }
