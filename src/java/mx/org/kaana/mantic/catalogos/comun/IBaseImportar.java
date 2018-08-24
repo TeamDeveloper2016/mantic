@@ -226,7 +226,8 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 				if(encabezado.toString().equals("CLAVE|AUXILIAR|DESCRIPCION|COSTOS/IVA|PRECIONETO")) {
           this.articulos = new ArrayList<>();
 					//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
-          for(int fila= 1; fila<sheet.getRows(); fila++) {
+					LOG.info("Filas del documento: "+ sheet.getRows());
+          for(int fila= 1; fila< sheet.getRows(); fila++) {
             //(idListaPrecio,descripcion, idListaPrecioDetalle, codigo, precio, auxiliar) 
 					  String contenido= new String(sheet.getCell(2,fila).getContents().getBytes(UTF_8), ISO_8859_1);
 						LOG.info(fila+ " -> "+ contenido+ " => "+ cleanString(contenido)+ " -> "+ new String(contenido.getBytes(ISO_8859_1), UTF_8));
