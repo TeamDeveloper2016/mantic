@@ -230,6 +230,18 @@ shortcut.add("Alt+C", function() {
 	  PF('dlgCalculadora').show();
 });
 
+shortcut.add("f9", function() {
+	janal.console('Shortcut lista de precios:');
+	if($('#listadoPrecios'))
+		$('#listadoPrecios').click();
+});
+
+shortcut.add("f2", function() {
+	janal.console('Shortcut catalogo de lista de precios:');
+	if($('#catalogoPrecios'))
+		$('#catalogoPrecios').click();
+});
+
 shortcut.add("f10", function() {
 	janal.console('Asignación de descuento a articulo:');
 	if(PF('dlgDescuentos')){
@@ -285,4 +297,3 @@ shortcut.add("Shift+P", function() {
 	  cobrarVenta();
 	} // if
 });
-
