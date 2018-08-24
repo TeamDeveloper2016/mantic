@@ -478,6 +478,15 @@
           id_cierre= {idCierre}
 				  and id_tipo_medio_pago= 1
       </select>
+      <select id="cajaMedioPago">
+        select      
+          *
+        from      
+          tc_mantic_cierres_cajas
+        where      
+          id_cierre= {idCierre}
+				  and id_tipo_medio_pago= {medioPago}
+      </select>
       <select id="cierreCajaEfectivo">
         select      
           *
