@@ -216,8 +216,8 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
       workbookSettings.setLocale(new Locale("es", "MX"));
 			workbook= Workbook.getWorkbook(archivo, workbookSettings);
 			sheet		= workbook.getSheet(0);
-			if(sheet != null && sheet.getColumns()>=4 && sheet.getRows()>= 2) {
-				for (int columna= 0; columna< 4; columna++){
+			if(sheet != null && sheet.getColumns()>= 5 && sheet.getRows()>= 2) {
+				for (int columna= 0; columna< 5; columna++){
 					encabezado.append(Cadena.eliminaCaracter(sheet.getCell(columna,0).getContents(), ' '));
 					encabezado.append("|");
 				} // for
