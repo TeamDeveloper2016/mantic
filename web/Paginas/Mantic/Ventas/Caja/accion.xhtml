@@ -63,7 +63,7 @@
 			};
 			
     	$(document).ready(function() {
-				jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasAccion.adminOrden.articulos.size()}, 'tabla\\:');
+				jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasCajaAccion.adminOrden.articulos.size()}, 'tabla\\:');
 				janal.readingMode('#{manticVentasCajaAccion.attrs.nombreAccion}');
       });																		
 			
@@ -117,8 +117,8 @@
 									</p:column>   
 								</p:selectOneMenu>
 								
-								<p:outputLabel for="caja" value="Caja:" rendered="#{manticVentasCajaAccion.attrs.isMatriz}"/>
-								<p:selectOneMenu id="caja" value="#{manticVentasCajaAccion.attrs.caja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticVentasCajaAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">								
+								<p:outputLabel for="caja" value="Caja:" />
+								<p:selectOneMenu id="caja" value="#{manticVentasCajaAccion.attrs.caja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains">								
 									<f:selectItems value="#{manticVentasCajaAccion.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
