@@ -73,6 +73,10 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		super(ventaFinalizada.getTicketVenta());
 		this.ventaFinalizada = ventaFinalizada;		
 	}	// Transaccion	
+
+	public Long getIdCierreVigente() {
+		return idCierreVigente;
+	}	
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
@@ -206,7 +210,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		return regresar;
 	} // registrarApartado			
 	
-	private boolean verificarCierreCaja(Session sesion) throws Exception{
+	public boolean verificarCierreCaja(Session sesion) throws Exception{
 		boolean regresar         = true;
 		Map<String, Object>params= null;
 		TcManticCierresDto cierre= null;
@@ -235,7 +239,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		return regresar;
 	} // verificarCierreCaja
 	
-	private boolean alterarCierreCaja(Session sesion, Long idTipoMedioPago) throws Exception{
+	public boolean alterarCierreCaja(Session sesion, Long idTipoMedioPago) throws Exception{
 		boolean regresar               = true;
 		TcManticCajasDto caja          = null;
 		Double limiteCaja              = 0D;		
@@ -308,8 +312,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			params= new HashMap<>();
 			params.put("idCierre", this.idCierreVigente);
 			params.put("medioPago", idTipoMedioPago);
-			cierreCaja= (TcManticCierresCajasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresCajasDto.class, "TcManticCierresCajasDto", "cajaMedioPago", params);
-			cierreCaja.setAcumulado(cierreCaja.getAcumulado() + this.ventaFinalizada.getTotales().getPago());
+			cierreCaja= (TcManticCierresCajasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresCajasDto.class, "TcManticCierresCajasDto", "cajaMedioPago", params);			
+			cierreCaja.setAcumulado(cierreCaja.getAcumulado() + this.ventaFinalizada.getTotales().getPago());			
 			cierreCaja.setSaldo(cierreCaja.getDisponible() + cierreCaja.getAcumulado());
 			DaoFactory.getInstance().update(sesion, cierreCaja);
 		} // try
@@ -524,9 +528,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			pago= toPagoCheque();
 			if(pago!= null)
 				regresar.add(pago);
-			pago= toPagoCredito(sesion);
-			if(pago!= null)
-				regresar.add(pago);
+			toPagoCredito(sesion);
+			//if(pago!= null)
+				//regresar.add(pago);
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -619,12 +623,12 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			if(this.ventaFinalizada.isCredito()){
 				totalCredito= this.ventaFinalizada.getTotales().getTotales().getTotal() - (this.ventaFinalizada.getTotales().getPago() - this.ventaFinalizada.getTotales().getCambio());
 				if(totalCredito > 0D){
-					regresar= new TrManticVentaMedioPagoDto();
+					/*regresar= new TrManticVentaMedioPagoDto();
 					regresar.setIdTipoMedioPago(ETipoMediosPago.POR_DEFINIR.getIdTipoMedioPago());
 					regresar.setIdUsuario(JsfBase.getIdUsuario());
 					regresar.setIdVenta(getOrden().getIdVenta());
 					regresar.setImporte(totalCredito);	
-					regresar.setIdCierre(this.idCierreVigente);
+					regresar.setIdCierre(this.idCierreVigente);*/
 					registrarDeuda(sesion, totalCredito);					
 				} // if
 			} // if

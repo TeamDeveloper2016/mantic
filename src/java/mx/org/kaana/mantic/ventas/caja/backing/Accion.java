@@ -106,7 +106,7 @@ public class Accion extends IBaseCliente implements Serializable {
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());
+			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("facturarVenta", false);
 			this.attrs.put("pagarVenta", false);
 			this.attrs.put("cobroVenta", false);
@@ -120,10 +120,9 @@ public class Accion extends IBaseCliente implements Serializable {
 			this.attrs.put("disabledFacturar", false);			
 			this.attrs.put("apartado", false);			
 			this.apartado= new TcManticApartadosDto();
-			if(JsfBase.isAdminEncuestaOrAdmin()){
-				loadSucursales();
-				loadCajas();
-			} // if
+			if(JsfBase.isAdminEncuestaOrAdmin())
+				loadSucursales();							
+			loadCajas();
 			doLoadTicketAbiertos();			
 			loadBancos();
 			loadCfdis();
@@ -720,7 +719,7 @@ public class Accion extends IBaseCliente implements Serializable {
 				clientes= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
 				cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");
 				clienteSeleccion= clientes.get(clientes.indexOf(cliente));
-				regresar= totalCredito <= clienteSeleccion.toDouble("saldo");
+				regresar= totalCredito <= (clienteSeleccion.toDouble("limiteCredito") - clienteSeleccion.toDouble("saldo"));
 				if(!regresar)
 					this.attrs.put("mensajeErrorCredito", "El saldo de tu credito es insuficiente para cubrir la venta.");
 			} // if
