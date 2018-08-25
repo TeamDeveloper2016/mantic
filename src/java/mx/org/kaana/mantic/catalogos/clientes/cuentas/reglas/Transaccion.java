@@ -13,6 +13,8 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesPagosDto;
 import mx.org.kaana.mantic.enums.EEstatusClientes;
+import mx.org.kaana.mantic.enums.ETipoMediosPago;
+import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
 import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx{
@@ -20,14 +22,23 @@ public class Transaccion extends IBaseTnx{
 	private String messageError;
 	private TcManticClientesPagosDto pago;
 	private Long idCliente;
+	private Long idCaja;
+	private Long idEmpresa;
+	private Long idCierreActivo;
+	private Long idBanco;
+	private String referencia;
 
-	public Transaccion(TcManticClientesPagosDto pago) {
-		this(pago, -1L);
+	public Transaccion(TcManticClientesPagosDto pago, Long idCaja, Long idEmpresa, Long idBanco, String referencia) {
+		this(pago, idCaja, -1L, idEmpresa, idBanco, referencia);
 	} // Transaccion
 	
-	public Transaccion(TcManticClientesPagosDto pago, Long idCliente) {
-		this.pago     = pago;
-		this.idCliente= idCliente;
+	public Transaccion(TcManticClientesPagosDto pago, Long idCaja, Long idCliente, Long idEmpresa, Long idBanco, String refencia) {
+		this.pago      = pago;
+		this.idCliente = idCliente;
+		this.idCaja    = idCaja;
+		this.idEmpresa = idEmpresa;
+		this.idBanco   = idBanco;
+		this.referencia= referencia;
 	} // Transaccion
 	
 	@Override
@@ -35,11 +46,11 @@ public class Transaccion extends IBaseTnx{
 		boolean regresar = false;
     try {			
       switch (accion) {
-        case AGREGAR:
-          regresar = procesarPago(sesion);
+        case AGREGAR:					
+						regresar = procesarPago(sesion);
           break;       
-        case PROCESAR:
-          regresar = procesarPagoGeneral(sesion);
+        case PROCESAR:					
+						regresar = procesarPagoGeneral(sesion);
           break;       
       } // switch
       if (!regresar) 
@@ -56,13 +67,20 @@ public class Transaccion extends IBaseTnx{
 		TcManticClientesDeudasDto deuda= null;
 		Double saldo                   = 0D;
 		try {
-			if(DaoFactory.getInstance().insert(sesion, this.pago)>= 1L){
-				deuda= (TcManticClientesDeudasDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDeudasDto.class, this.pago.getIdClienteDeuda());
-				saldo= deuda.getSaldo() - this.pago.getPago();
-				deuda.setSaldo(saldo);
-				deuda.setIdClienteEstatus(saldo.equals(0L) ? 3L : 2L);
-				regresar= DaoFactory.getInstance().update(sesion, deuda)>= 1L;
-			} // if
+			if(toCierreCaja(sesion, this.pago.getPago())){
+				this.pago.setIdCierre(this.idCierreActivo);				
+				if(!this.pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
+					this.pago.setReferencia(this.referencia);
+					this.pago.setIdBanco(this.idBanco);
+				} // if
+				if(DaoFactory.getInstance().insert(sesion, this.pago)>= 1L){
+					deuda= (TcManticClientesDeudasDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDeudasDto.class, this.pago.getIdClienteDeuda());
+					saldo= deuda.getSaldo() - this.pago.getPago();
+					deuda.setSaldo(saldo);
+					deuda.setIdClienteEstatus(saldo.equals(0L) ? 3L : 2L);
+					regresar= DaoFactory.getInstance().update(sesion, deuda)>= 1L;
+				} // if
+			}
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -123,13 +141,20 @@ public class Transaccion extends IBaseTnx{
 		TcManticClientesPagosDto registroPago= null;
 		boolean regresar                     = false;
 		try {
-			registroPago= new TcManticClientesPagosDto();
-			registroPago.setIdClienteDeuda(idClienteDeuda);
-			registroPago.setIdUsuario(JsfBase.getIdUsuario());
-			registroPago.setObservaciones("Pago aplicado a la deuda general del cliente. ".concat(this.pago.getObservaciones()));
-			registroPago.setPago(pagoParcial);
-			registroPago.setIdTipoMedioPago(this.pago.getIdTipoMedioPago());
-			regresar= DaoFactory.getInstance().insert(sesion, registroPago)>= 1L;
+			if(toCierreCaja(sesion, pagoParcial)){
+				registroPago= new TcManticClientesPagosDto();
+				registroPago.setIdClienteDeuda(idClienteDeuda);
+				registroPago.setIdUsuario(JsfBase.getIdUsuario());
+				registroPago.setObservaciones("Pago aplicado a la deuda general del cliente. ".concat(this.pago.getObservaciones()));
+				registroPago.setPago(pagoParcial);
+				registroPago.setIdTipoMedioPago(this.pago.getIdTipoMedioPago());
+				registroPago.setIdCierre(this.idCierreActivo);
+				if(!this.pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
+					registroPago.setIdBanco(this.idBanco);
+					registroPago.setReferencia(this.referencia);
+				} // if
+				regresar= DaoFactory.getInstance().insert(sesion, registroPago)>= 1L;
+			} // if
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -152,4 +177,27 @@ public class Transaccion extends IBaseTnx{
 		} // catch		
 		return regresar;
 	} // toDeudas	
+	
+	private boolean toCierreCaja(Session sesion, Double pago) throws Exception{
+		mx.org.kaana.mantic.ventas.caja.reglas.Transaccion cierre= null;
+		VentaFinalizada datosCierre= null;
+		boolean regresar= false;
+		try {
+			datosCierre= new VentaFinalizada();
+			datosCierre.getTicketVenta().setIdEmpresa(this.idEmpresa);
+			datosCierre.setIdCaja(this.idCaja);
+			datosCierre.getTotales().setEfectivo(pago);
+			cierre= new mx.org.kaana.mantic.ventas.caja.reglas.Transaccion(datosCierre);
+			if(cierre.verificarCierreCaja(sesion)){
+				this.idCierreActivo= cierre.getIdCierreVigente();
+				regresar= cierre.alterarCierreCaja(sesion, this.pago.getIdTipoMedioPago());
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e; 
+		} // catch		
+		return regresar;
+	} // toCierreCaja
+	//verificarCierreCaja
+	//alterarCierreCaja
 }
