@@ -32,7 +32,7 @@ public class Transaccion extends IBaseTnx{
 		this(pago, idCaja, -1L, idEmpresa, idBanco, referencia);
 	} // Transaccion
 	
-	public Transaccion(TcManticClientesPagosDto pago, Long idCaja, Long idCliente, Long idEmpresa, Long idBanco, String refencia) {
+	public Transaccion(TcManticClientesPagosDto pago, Long idCaja, Long idCliente, Long idEmpresa, Long idBanco, String referencia) {
 		this.pago      = pago;
 		this.idCliente = idCliente;
 		this.idCaja    = idCaja;
