@@ -13,12 +13,14 @@
 			
 			fieldsDialog ={
 				'pago'         : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
+				'referencia'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
         'tipoPago'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
         'observaciones': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
 			};
 			
 			fieldsDialogGeneral ={
 				'pagoGeneral'         : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoGeneral'},
+				'referenciaGeneral'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
         'tipoPagoGeneral'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoGeneral'},
         'observacionesGeneral': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoGeneral', formatos: 'cambiar-mayusculas', individual: true}
 			};
@@ -158,11 +160,36 @@
 	<ui:define name="dialogos">
 		<p:dialog id="dialogoPago" widgetVar="dlgPago" header="Registrar pago" resizable="false" closable="false" responsive="true" width="50%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPago', fieldsDialog);janal.refresh();">
 			<h:form id="formDialogoPago" prependId="false">
-				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-80">
+				<h:panelGrid  id="panelDialogo" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-80">
+					<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosClientesCuentasDeuda.attrs.isMatriz}"/>
+					<p:selectOneMenu id="idEmpresa" value="#{manticCatalogosClientesCuentasDeuda.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosClientesCuentasDeuda.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">
+						<p:ajax event="change" process="@this" listener="#{manticCatalogosClientesCuentasDeuda.doLoadCajas}" update="caja"/>
+						<f:selectItems value="#{manticCatalogosClientesCuentasDeuda.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+						<p:column headerText="Clave">
+							<h:outputText value="#{item.clave}"/>
+						</p:column>   
+						<p:column headerText="Nombre">
+							<h:outputText value="#{item.nombre}"/>
+						</p:column>   
+					</p:selectOneMenu>
+					<p:outputLabel for="caja" value="Caja:" />
+					<p:selectOneMenu id="caja" value="#{manticCatalogosClientesCuentasDeuda.attrs.caja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains">								
+						<f:selectItems value="#{manticCatalogosClientesCuentasDeuda.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+						<p:column headerText="Clave">
+							<h:outputText value="#{item.clave}"/>
+						</p:column>   
+						<p:column headerText="Nombre">
+							<h:outputText value="#{item.nombre}"/>
+						</p:column>   
+						<p:column headerText="Limite" styleClass="janal-column-right">
+							<h:outputText value="$#{item.limite}"/>
+						</p:column>   
+					</p:selectOneMenu>
 					<p:outputLabel for="pago" value="Pago: $"/>
 					<p:inputNumber id="pago" value="#{manticCatalogosClientesCuentasDeuda.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right"/>
 					<p:outputLabel for="tipoPago" value="Tipo de pago:"/>
 					<p:selectOneMenu id="tipoPago" value="#{manticCatalogosClientesCuentasDeuda.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="contains">					
+						<p:ajax event="change" process="@this pago" listener="#{manticCatalogosClientesCuentasDeuda.doValidaTipoPago}" update="panelDialogo lblBanco banco lblReferencia referencia" oncomplete="janal.refresh();"/>
 						<f:selectItems value="#{manticCatalogosClientesCuentasDeuda.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
 						<p:column headerText="Clave">
 							<h:outputText value="#{item.clave}"/>
@@ -171,23 +198,60 @@
 							<h:outputText value="#{item.nombre}"/>
 						</p:column>   
 					</p:selectOneMenu>
+					<p:outputLabel id="lblBanco" for="banco" value="Banco:" rendered="#{manticCatalogosClientesCuentasDeuda.attrs.mostrarBanco}"/>
+					<p:selectOneMenu id="banco" value="#{manticCatalogosClientesCuentasDeuda.attrs.banco}" filter="true" filterMatchMode="contains" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity" rendered="#{manticCatalogosClientesCuentasDeuda.attrs.mostrarBanco}">														
+						<f:selectItems value="#{manticCatalogosClientesCuentasDeuda.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
+						<p:column headerText="Nombre">
+							<h:outputText value="#{item.nombre}"/>
+						</p:column>   
+						<p:column headerText="Razón social">
+							<h:outputText value="#{item.razonSocial}"/>
+						</p:column>   
+					</p:selectOneMenu>
+					<p:outputLabel id="lblReferencia" for="referencia" value="Referencia:" rendered="#{manticCatalogosClientesCuentasDeuda.attrs.mostrarBanco}"/>
+					<p:inputText id="referencia" value="#{manticCatalogosClientesCuentasDeuda.attrs.referencia}" styleClass="janal-wid-100-txt" placeholder="Ej. Referencia 4564" rendered="#{manticCatalogosClientesCuentasDeuda.attrs.mostrarBanco}"/>										
 					<p:outputLabel for="observaciones" value="Observaciones:"/>
 					<p:inputTextarea id="observaciones" value="#{manticCatalogosClientesCuentasDeuda.attrs.observaciones}" styleClass="janal-wid-100-txt"/>
 				</h:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPago pago observaciones tipoPago" update="tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasDeuda.doRegistrarPago}" onstart="return janal.partial('dialogo');" oncomplete="PF('dlgPago').hide(); janal.desbloquear();" styleClass="janal-text-white"/>
+					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this referencia banco idEmpresa caja dialogoPago pago observaciones tipoPago" update="tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasDeuda.doRegistrarPago}" onstart="return janal.partial('dialogo');" oncomplete="PF('dlgPago').hide(); janal.desbloquear();" styleClass="janal-text-white"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPago').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
 				</div>
 			</h:form>
 		</p:dialog> 
 		<p:dialog id="dialogoPagoGeneral" widgetVar="dlgPagoGeneral" header="Registrar pago sobre la deuda" resizable="false" closable="false" responsive="true" width="50%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPagoGeneral', fieldsDialogGeneral);janal.refresh();">
 			<h:form id="formDialogoPagoGeneral" prependId="false">
-				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-80">
+				<h:panelGrid id="panelDialogoGeneral" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-80">
+					<p:outputLabel for="idEmpresaGeneral" value="Sucursal:" rendered="#{manticCatalogosClientesCuentasDeuda.attrs.isMatriz}"/>
+					<p:selectOneMenu id="idEmpresaGeneral" value="#{manticCatalogosClientesCuentasDeuda.attrs.idEmpresaGeneral}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticCatalogosClientesCuentasDeuda.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">
+						<p:ajax event="change" process="@this" listener="#{manticCatalogosClientesCuentasDeuda.doLoadCajasGeneral}" update="cajaGeneral"/>
+						<f:selectItems value="#{manticCatalogosClientesCuentasDeuda.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+						<p:column headerText="Clave">
+							<h:outputText value="#{item.clave}"/>
+						</p:column>   
+						<p:column headerText="Nombre">
+							<h:outputText value="#{item.nombre}"/>
+						</p:column>   
+					</p:selectOneMenu>
+					<p:outputLabel for="cajaGeneral" value="Caja:" />
+					<p:selectOneMenu id="cajaGeneral" value="#{manticCatalogosClientesCuentasDeuda.attrs.cajaGeneral}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains">								
+						<f:selectItems value="#{manticCatalogosClientesCuentasDeuda.attrs.cajasGenerales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+						<p:column headerText="Clave">
+							<h:outputText value="#{item.clave}"/>
+						</p:column>   
+						<p:column headerText="Nombre">
+							<h:outputText value="#{item.nombre}"/>
+						</p:column>   
+						<p:column headerText="Limite" styleClass="janal-column-right">
+							<h:outputText value="$#{item.limite}"/>
+						</p:column>   
+					</p:selectOneMenu>
 					<p:outputLabel for="pagoGeneral" value="Pago: $"/>
 					<p:inputNumber id="pagoGeneral" value="#{manticCatalogosClientesCuentasDeuda.attrs.pagoGeneral}" inputStyleClass="janal-wid-100-txt janal-column-right"/>
 					<p:outputLabel for="tipoPagoGeneral" value="Tipo de pago:"/>
-					<p:selectOneMenu id="tipoPagoGeneral" value="#{manticCatalogosClientesCuentasDeuda.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="contains">					
+					<p:selectOneMenu id="tipoPagoGeneral" value="#{manticCatalogosClientesCuentasDeuda.attrs.tipoPagoGeneral}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="contains">					
+						<p:ajax event="change" process="@this pagoGeneral" listener="#{manticCatalogosClientesCuentasDeuda.doValidaTipoPagoGeneral}" update="panelDialogoGeneral bancoGeneral referenciaGeneral lblBancoGeneral lblReferenciaGeneral" oncomplete="janal.refresh();"/>
 						<f:selectItems value="#{manticCatalogosClientesCuentasDeuda.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
 						<p:column headerText="Clave">
 							<h:outputText value="#{item.clave}"/>
@@ -196,12 +260,24 @@
 							<h:outputText value="#{item.nombre}"/>
 						</p:column>   
 					</p:selectOneMenu>
+					<p:outputLabel id="lblBancoGeneral" for="bancoGeneral" value="Banco:" rendered="#{manticCatalogosClientesCuentasDeuda.attrs.mostrarBancoGeneral}"/>
+					<p:selectOneMenu id="bancoGeneral" value="#{manticCatalogosClientesCuentasDeuda.attrs.bancoGeneral}" filter="true" filterMatchMode="contains" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity" rendered="#{manticCatalogosClientesCuentasDeuda.attrs.mostrarBancoGeneral}">														
+						<f:selectItems value="#{manticCatalogosClientesCuentasDeuda.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
+						<p:column headerText="Nombre">
+							<h:outputText value="#{item.nombre}"/>
+						</p:column>   
+						<p:column headerText="Razón social">
+							<h:outputText value="#{item.razonSocial}"/>
+						</p:column>   
+					</p:selectOneMenu>
+					<p:outputLabel id="lblReferenciaGeneral" for="referenciaGeneral" value="Referencia:" rendered="#{manticCatalogosClientesCuentasDeuda.attrs.mostrarBancoGeneral}"/>
+					<p:inputText id="referenciaGeneral" value="#{manticCatalogosClientesCuentasDeuda.attrs.referenciaGeneral}" styleClass="janal-wid-100-txt" placeholder="Ej. Referencia 4564" rendered="#{manticCatalogosClientesCuentasDeuda.attrs.mostrarBancoGeneral}"/>					
 					<p:outputLabel for="observacionesGeneral" value="Observaciones:"/>
 					<p:inputTextarea id="observacionesGeneral" value="#{manticCatalogosClientesCuentasDeuda.attrs.observacionesGeneral}" styleClass="janal-wid-100-txt"/>
 				</h:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPagoGeneral pagoGeneral observacionesGeneral tipoPagoGeneral" update="tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasDeuda.doRegistrarPagoGeneral}" onstart="return janal.partial('dialogoGeneral');" oncomplete="PF('dlgPagoGeneral').hide(); janal.desbloquear();" styleClass="janal-text-white"/>
+					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPagoGeneral pagoGeneral observacionesGeneral tipoPagoGeneral bancoGeneral referenciaGeneral idEmpresaGeneral cajaGeneral" update="tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasDeuda.doRegistrarPagoGeneral}" onstart="return janal.partial('dialogoGeneral');" oncomplete="PF('dlgPagoGeneral').hide(); janal.desbloquear();" styleClass="janal-text-white"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPagoGeneral').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
 				</div>
 			</h:form>
