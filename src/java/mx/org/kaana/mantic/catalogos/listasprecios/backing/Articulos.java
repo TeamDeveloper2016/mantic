@@ -35,7 +35,6 @@ public class Articulos extends Comun implements Serializable {
       this.attrs.put("codigo", "");
       this.attrs.put("nombre", "");    
       this.attrs.put("auxiliar", "");    
-      this.attrs.put("idProveedor", "");    
       this.attrs.put("sortOrder"," order by tc_mantic_listas_precios_detalles.descripcion, tc_mantic_proveedores.razon_social");
     } // try
     catch (Exception e) {
@@ -47,7 +46,7 @@ public class Articulos extends Comun implements Serializable {
   @Override
   public void doLoad() {
     try {
-			this.attrs.put("idProveedor", new UISelectEntity(new Entity(-1L)));
+      this.attrs.put("idProveedor", new Object[] {});
 			this.doLoadArticulos();
 			this.doLoadProveedores();
     } // try
@@ -82,7 +81,7 @@ public class Articulos extends Comun implements Serializable {
     Map<String, Object> params= toPrepare();
 	  try {
       this.attrs.put("proveedores", UIEntity.build("VistaListasArchivosDto", "proveedores", params));
-      this.attrs.put("idProveedor", new UISelectEntity(new Entity(-1L)));
+      this.attrs.put("idProveedor", new Object[] {});
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -104,8 +103,17 @@ public class Articulos extends Comun implements Serializable {
 		  String nombre= ((String)this.attrs.get("nombre")).toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
   		sb.append(" upper(tc_mantic_listas_precios_detalles.descripcion) regexp '.*").append(nombre).append(".*' and ");
 	  } // if
-		if(!Cadena.isVacio(this.attrs.get("idProveedor")) && (!this.attrs.get("idProveedor").toString().equals("-1")))
-  		sb.append("tc_mantic_listas_precios.id_proveedor = ").append(((UISelectEntity)this.attrs.get("idProveedor")).getKey().toString()).append(" and ");
+		if(!Cadena.isVacio(this.attrs.get("idProveedor"))) {
+			Object[] proveedores= (Object[])this.attrs.get("idProveedor");
+			StringBuilder items= new StringBuilder("");
+			if(proveedores.length> 0) {
+				for (Object proveedor: proveedores) {
+					items.append(((UISelectEntity)proveedor).getKey()).append(", ");
+				} // for
+				items.append("0");
+				sb.append("tc_mantic_listas_precios.id_proveedor in (").append(items).append(") and ");
+			} // if
+		} // if
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
