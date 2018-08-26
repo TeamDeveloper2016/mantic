@@ -97,17 +97,20 @@ public class Articulos extends Comun implements Serializable {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("codigo")))
-  		sb.append("upper(tc_mantic_listas_precios_detalles.codigo) like upper('%").append(this.attrs.get("codigo")).append("%')");
+  		sb.append("upper(tc_mantic_listas_precios_detalles.codigo) like upper('%").append(this.attrs.get("codigo")).append("%') and ");
     if(!Cadena.isVacio(this.attrs.get("auxiliar")))
-  		sb.append((!Cadena.isVacio(this.attrs.get("codigo"))?" and ":" ").concat("upper(tc_mantic_listas_precios_detalles.auxiliar) like upper('%")).append(this.attrs.get("auxiliar")).append("%') ");
-		if(!Cadena.isVacio(this.attrs.get("nombre")))
-  		sb.append(((!Cadena.isVacio(this.attrs.get("codigo"))||!Cadena.isVacio(this.attrs.get("auxiliar")))?" and ":" ").concat("upper(tc_mantic_listas_precios_detalles.descripcion) like upper('%")).append(this.attrs.get("nombre")).append("%') ");
+  		sb.append("upper(tc_mantic_listas_precios_detalles.auxiliar) like upper('%").append(this.attrs.get("auxiliar")).append("%') and ");
+		if(!Cadena.isVacio(this.attrs.get("nombre"))) {
+		  String nombre= ((String)this.attrs.get("nombre")).toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+  		sb.append("(upper(tc_mantic_listas_precios_detalles.descripcion) like upper('%").append(this.attrs.get("nombre")).append("%') or ");
+  		sb.append(" upper(tc_mantic_listas_precios_detalles.descripcion) regexp '.*").append(nombre).append(".*') and ");
+	  } // if
 		if(!Cadena.isVacio(this.attrs.get("idProveedor")) && (!this.attrs.get("idProveedor").toString().equals("-1")))
-  		sb.append(((!Cadena.isVacio(this.attrs.get("codigo"))||!Cadena.isVacio(this.attrs.get("nombre"))||!Cadena.isVacio(this.attrs.get("auxiliar")))?" and ":" ").concat("tc_mantic_listas_precios.id_proveedor = ")).append(((UISelectEntity)this.attrs.get("idProveedor")).getKey().toString());
+  		sb.append("tc_mantic_listas_precios.id_proveedor = ").append(((UISelectEntity)this.attrs.get("idProveedor")).getKey().toString()).append(" and ");
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
-		  regresar.put(Constantes.SQL_CONDICION, sb);
+		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
 		return regresar;
 	}
   

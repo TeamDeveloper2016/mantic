@@ -3598,21 +3598,21 @@
 		<unit id="VistaClientesRepresentantesDto">
 			<select id="representantesCliente">
 				select 
-					tr_mantic_clientes_representantes.id_cliente_representante as id_key,
-					tr_mantic_clientes_representantes.id_cliente,
-					tr_mantic_clientes_representantes.id_representante,
-					tr_mantic_clientes_representantes.id_principal,
-					tr_mantic_clientes_representantes.observaciones,
-					tr_mantic_clientes_representantes.registro,
+					tr_mantic_cliente_representante.id_cliente_representante as id_key,
+					tr_mantic_cliente_representante.id_cliente,
+					tr_mantic_cliente_representante.id_representante,
+					tr_mantic_cliente_representante.id_principal,
+					tr_mantic_cliente_representante.observaciones,
+					tr_mantic_cliente_representante.registro,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) nombre_completo,
 					tc_mantic_personas.rfc,
 					tc_mantic_personas.curp
 				from 	
-					tr_mantic_clientes_representantes
+					tr_mantic_cliente_representante
 				inner join
-					tc_mantic_personas ON tr_mantic_clientes_representantes.id_representante = tc_mantic_personas.id_persona
+					tc_mantic_personas on tr_mantic_cliente_representante.id_representante = tc_mantic_personas.id_persona
 				where 
-					tr_mantic_clientes_representantes.id_cliente={idCliente}
+					tr_mantic_cliente_representante.id_cliente={idCliente}
 			</select>
 			<select id="importados">
 				select
@@ -3632,11 +3632,11 @@
 				inner join
 					tc_mantic_tipos_archivos on tc_mantic_clientes_archivos.id_tipo_archivo= tc_mantic_tipos_archivos.id_tipo_archivo
 				inner join
-					tr_mantic_clientes_representantes on tc_mantic_clientes_archivos.id_cliente_representante = tr_mantic_clientes_representantes.id_cliente_representante
+					tr_mantic_cliente_representante on tc_mantic_clientes_archivos.id_cliente_representante = tr_mantic_cliente_representante.id_cliente_representante
 				inner join
-					tc_mantic_personas ON tr_mantic_clientes_representantes.id_representante = tc_mantic_personas.id_persona
+					tc_mantic_personas ON tr_mantic_cliente_representante.id_representante = tc_mantic_personas.id_persona
 				where
-					tr_mantic_clientes_representantes.id_cliente= {idCliente}
+					tr_mantic_cliente_representante.id_cliente= {idCliente}
 				order by
 					tc_mantic_clientes_archivos.id_tipo_archivo, 
 				  tc_mantic_clientes_archivos.registro desc				
@@ -3647,9 +3647,9 @@
         from      
           tc_mantic_clientes_archivos
 				inner join
-					tr_mantic_clientes_representantes on tc_mantic_clientes_archivos.id_cliente_representante = tr_mantic_clientes_representantes.id_cliente_representante
+					tr_mantic_cliente_representante on tc_mantic_clientes_archivos.id_cliente_representante = tr_mantic_cliente_representante.id_cliente_representante
         where      
-          tc_mantic_clientes_archivos.id_tipo_archivo = {idTipoArchivo} and tr_mantic_clientes_representantes.id_cliente = {idCliente}
+          tc_mantic_clientes_archivos.id_tipo_archivo = {idTipoArchivo} and tr_mantic_cliente_representante.id_cliente = {idCliente}
 				order by
 				  tc_mantic_clientes_archivos.registro desc
       </select>
