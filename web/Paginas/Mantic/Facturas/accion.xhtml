@@ -51,7 +51,6 @@
 	</ui:define>
 	<ui:define name="contenido">
 		<pe:remoteCommand name="updateDescuentos" process="@this" update="panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd"/>  					
-		<pe:remoteCommand name="userUpdate" process="@this" onstart="janal.bloquear();" actionListener="#{manticFacturasAccion.doCerrarTicket}" oncomplete="jsArticulos.activeLogin();" update="deudor contenido tabla panelTotales panelCliente panelEmpresa articulos total @(.filas) @(.recalculo)"/>  			
 		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticFacturasAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
 			<pe:methodParam name="codigo"/>  
@@ -93,10 +92,12 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">					
 					<p:outputLabel id="helpPuntoVenta" value="&lt;strong class='janal-color-blue'&gt;[F7]&lt;/strong&gt; Detalle de articulo &lt;strong class='janal-color-blue'&gt;[F8]&lt;/strong&gt; Articulo en sucursales &lt;strong class='janal-color-blue'&gt;[F10]&lt;/strong&gt; Aplicar descuento" styleClass="janal-align-right" escape="false"/>
-					<p:panelGrid id="panelEmpresa" columns="5" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-70, janal-wid-100">						
+					<p:panelGrid id="panelEmpresa" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-90">						
+						<p:outputLabel for="noTicket" value="No. cuenta:"/>
 						<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticFacturasAccion.attrs.isMatriz}"/>
+						<p:inputText id="noTicket" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticFacturasAccion.attrs.consecutivo}" disabled="true"/>								
 						<p:selectOneMenu id="idEmpresa" value="#{manticFacturasAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticFacturasAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">
-							<p:ajax event="change" process="@this" listener="#{manticFacturasAccion.doUpdateForEmpresa}" update="clientes cliente contenido tabla" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+							<p:ajax event="change" process="@this" update="contenido tabla" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 							<f:selectItems value="#{manticFacturasAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 							<p:column headerText="Clave">
 								<h:outputText value="#{item.clave}"/>
@@ -109,50 +110,7 @@
 				</div>
 			</div>
 			<div class="ui-grid-row janal-grid-row">
-				<div class="ui-grid-col-12">					
-					<p:panelGrid id="panelCliente" columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-40, janal-wid-5, janal-wid-100">						
-						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-							<p:outputLabel for="noTicket" value="No. cuenta:"/>
-							<p:inputText id="noTicket" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticFacturasAccion.attrs.consecutivo}" disabled="true"/>								
-						</p:panelGrid>					
-						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-							<p:outputLabel for="clientes" value="Buscar cliente:"/>							
-							<p:autoComplete id="clientes" placeholder="Nombre o rfc" widgetVar="listadoClientes" var="customCliente" itemLabel="#{customCliente.rfc}" inputStyleClass="janal-wid-100-txt key-down-event filas" itemValue="#{customCliente}" value="#{manticFacturasAccion.attrs.cliente}" completeMethod="#{manticFacturasAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
-								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticFacturasAccion.doAsignaCliente}" update="cliente contenido" oncomplete="janal.desbloquear();"/>
-								<f:facet name="itemtip">
-									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
-										<h:outputText value="Clave" />
-										<h:outputText value="#{customCliente.clave}"/>
-										<h:outputText value="RFC:" />
-										<h:outputText value="#{customCliente.rfc}"/>
-										<h:outputText value="Razón social:"/>
-										<h:outputText value="#{customCliente.razonSocial}"/>												
-									</h:panelGrid>
-								</f:facet>
-							</p:autoComplete>	
-						</p:panelGrid>	
-						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-column-center">
-							<p:spacer/>
-							<p:commandButton id="catalogoCliente" title="Catalogo de clientes" icon="fa fa-users" process="@this" action="#{manticFacturasAccion.doClientes}" ajax="false" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
-						</p:panelGrid>
-						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-wid-100-txt" columnClasses="janal-wid-100-txt">
-							<p:outputLabel for="cliente" value="Cliente:"/>							
-							<p:selectOneMenu id="cliente" value="#{manticFacturasAccion.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
-								<p:ajax event="change" process="@this idEmpresa" onstart="return janal.bloquear();" listener="#{manticFacturasAccion.doActualizaPrecioCliente}" oncomplete="janal.desbloquear();" update="tabla clientes"/>
-								<f:selectItems value="#{manticFacturasAccion.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
-								<p:column headerText="Clave">
-									<h:outputText value="#{item.clave}"/>
-								</p:column>   
-								<p:column headerText="RFC">
-									<h:outputText value="#{item.rfc}"/>
-								</p:column>   
-								<p:column headerText="Razón social">
-									<h:outputText value="#{item.razonSocial}"/>
-								</p:column>   
-							</p:selectOneMenu>
-						</p:panelGrid>						
-					</p:panelGrid>	
-					<p:separator/>			
+				<div class="ui-grid-col-12">																
 					<p:panelGrid id="deudor" columns="1" layout="grid" styleClass="janal-wid-100 janal-column-center" columnClasses="janal-wid-100" rendered="#{not empty manticFacturasAccion.saldoCliente.mensaje}">
 						<p:outputLabel value="#{manticFacturasAccion.saldoCliente.mensaje}" styleClass="janal-column-center janal-color-orange"/>
 					</p:panelGrid>						
@@ -234,9 +192,9 @@
 									</f:facet>
 									<div class="ui-grid-row janal-grid-row">
 										<div class="ui-grid-col-12 janal-column-right" style="padding-right: 14px;">
-											<p:outputLabel value="#{row['costo']}" />
+											<p:outputLabel value="#{row['costo']}" style="display:none"/>
 											<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
-											<p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>
+											<p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas janal-column-right" onblur="refresh();"/>
 										</div>	 
 										<div style="width: 10px; margin-left: -4px; margin-top: 1px;">
 											<h:outputText value="#{row['costoMayorMenor']}" escape="false"/>
@@ -431,11 +389,11 @@
 	</ui:define>    
 	<ui:define name="acciones">		
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticFacturasAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('articulo', true);" oncomplete="janal.desbloquear()" update="deudor contenido panelCliente panelEmpresa articulos total"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticFacturasAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('articulo', true);" oncomplete="janal.desbloquear()" update="deudor contenido panelEmpresa articulos total"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticFacturasAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticFacturasAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('articulo', true);" oncomplete="janal.desbloquear()" update="deudor contenido panelCliente panelEmpresa articulos total"/>
+			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticFacturasAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('articulo', true);" oncomplete="janal.desbloquear()" update="deudor contenido panelEmpresa articulos total"/>
 			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticFacturasAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 		</div>						
 	</ui:define>	
