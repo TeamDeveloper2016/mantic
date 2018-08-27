@@ -1,9 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -72,17 +67,19 @@ public class TcManticApartadosDto implements IBaseDto, Serializable {
   private Long idVenta;
   @Column (name="abonado")
   private Double abonado;
+  @Column (name="vencimiento")
+  private Date vencimiento;
 
   public TcManticApartadosDto() {
     this(new Long(-1L));
   }
 
   public TcManticApartadosDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+    this(null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()));
     setKey(key);
   }
 
-  public TcManticApartadosDto(String paterno, Double saldo, Long idApartado, String nombre, Double importe, Long ejercicio, String consecutivo, String materno, String domicilio, Long idUsuario, Long idApartadoEstatus, String observaciones, String celular, Long orden, String telefono, Long idVenta, Double abonado) {
+  public TcManticApartadosDto(String paterno, Double saldo, Long idApartado, String nombre, Double importe, Long ejercicio, String consecutivo, String materno, String domicilio, Long idUsuario, Long idApartadoEstatus, String observaciones, String celular, Long orden, String telefono, Long idVenta, Double abonado, Date vencimiento) {
     setPaterno(paterno);
     setSaldo(saldo);
     setIdApartado(idApartado);
@@ -101,7 +98,16 @@ public class TcManticApartadosDto implements IBaseDto, Serializable {
     setTelefono(telefono);
     setIdVenta(idVenta);
     setAbonado(abonado);
+		setVencimiento(vencimiento);
   }
+
+	public Date getVencimiento() {
+		return vencimiento;
+	}
+
+	public void setVencimiento(Date vencimiento) {
+		this.vencimiento = vencimiento;
+	}	
 	
   public void setPaterno(String paterno) {
     this.paterno = paterno;
@@ -297,6 +303,8 @@ public class TcManticApartadosDto implements IBaseDto, Serializable {
 		regresar.append(getIdVenta());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getAbonado());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getVencimiento());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -322,13 +330,14 @@ public class TcManticApartadosDto implements IBaseDto, Serializable {
 		regresar.put("telefono", getTelefono());
 		regresar.put("idVenta", getIdVenta());
 		regresar.put("abonado", getAbonado());
+		regresar.put("vencimiento", getVencimiento());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getPaterno(), getSaldo(), getIdApartado(), getNombre(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getMaterno(), getDomicilio(), getIdUsuario(), getIdApartadoEstatus(), getObservaciones(), getCelular(), getOrden(), getTelefono(), getIdVenta(), getAbonado()
+    getPaterno(), getSaldo(), getIdApartado(), getNombre(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getMaterno(), getDomicilio(), getIdUsuario(), getIdApartadoEstatus(), getObservaciones(), getCelular(), getOrden(), getTelefono(), getIdVenta(), getAbonado(), getVencimiento()
     };
     return regresar;
   }
@@ -386,7 +395,4 @@ public class TcManticApartadosDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdApartado() != null ? getIdApartado().hashCode() : 0);
     return hash;
   }
-
 }
-
-
