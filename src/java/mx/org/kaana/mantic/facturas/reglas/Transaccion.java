@@ -1,6 +1,8 @@
 package mx.org.kaana.mantic.facturas.reglas;
 
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDetallesDto;
@@ -75,9 +78,9 @@ public class Transaccion extends IBaseTnx {
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar          = false;
 		Map<String, Object> params= null;
-		Long idEstatusVenta       = null;
+		Long idEstatusFactura       = null;
 		try {
-			idEstatusVenta= EEstatusFicticias.ELABORADA.getIdEstatusFicticia();
+			idEstatusFactura= EEstatusFicticias.ELABORADA.getIdEstatusFicticia();
 			params= new HashMap<>();
 			if(this.orden!= null)
 				params.put("idFicticia", this.orden.getIdFicticia());
@@ -85,18 +88,18 @@ public class Transaccion extends IBaseTnx {
 			switch(accion) {				
 				case AGREGAR:
 				case REGISTRAR:			
-					idEstatusVenta= accion.equals(EAccion.AGREGAR) ? EEstatusFicticias.ABIERTA.getIdEstatusFicticia() : idEstatusVenta;
-					regresar= this.orden.getIdFicticia()!= null && !this.orden.getIdFicticia().equals(-1L) ? actualizarVenta(sesion, idEstatusVenta) : registrarVenta(sesion, idEstatusVenta);					
+					idEstatusFactura= accion.equals(EAccion.AGREGAR) ? EEstatusFicticias.ABIERTA.getIdEstatusFicticia() : idEstatusFactura;
+					regresar= this.orden.getIdFicticia()!= null && !this.orden.getIdFicticia().equals(-1L) ? actualizarFicticia(sesion, idEstatusFactura) : registrarFicticia(sesion, idEstatusFactura);					
 					break;
 				case MODIFICAR:
-					regresar= actualizarVenta(sesion, EEstatusFicticias.ABIERTA.getIdEstatusFicticia());					
+					regresar= actualizarFicticia(sesion, EEstatusFicticias.ABIERTA.getIdEstatusFicticia());					
 					break;				
 				case ELIMINAR:
-					idEstatusVenta= EEstatusFicticias.CANCELADA.getIdEstatusFicticia();
+					idEstatusFactura= EEstatusFicticias.CANCELADA.getIdEstatusFicticia();
 					this.orden= (TcManticFicticiasDto) DaoFactory.getInstance().findById(sesion, TcManticFicticiasDto.class, this.orden.getIdFicticia());
-					this.orden.setIdFicticiaEstatus(idEstatusVenta);					
+					this.orden.setIdFicticiaEstatus(idEstatusFactura);					
 					if(DaoFactory.getInstance().update(sesion, this.orden)>= 1L)
-						regresar= registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusVenta, this.justificacion);					
+						regresar= registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFactura, this.justificacion);					
 					break;
 				case JUSTIFICAR:
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L){
@@ -106,7 +109,7 @@ public class Transaccion extends IBaseTnx {
 					} // if
 					break;								
 				case REPROCESAR:
-					regresar= actualizarVenta(sesion, EEstatusFicticias.PAGADA.getIdEstatusFicticia());				
+					regresar= actualizarFicticia(sesion, EEstatusFicticias.PAGADA.getIdEstatusFicticia());				
 					break;		
 				case NO_APLICA:
 					params= new HashMap<>();
@@ -129,32 +132,43 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	}	// ejecutar
 	
-	private boolean registrarVenta(Session sesion, Long idEstatusVenta) throws Exception{
-		boolean regresar          = false;
-		Long consecutivo          = -1L;
+	private boolean registrarFicticia(Session sesion, Long idEstatusFicticia) throws Exception{
+		boolean regresar         = false;
+		Long consecutivo         = -1L;
+		Long idFactura           = -1L;
+		Map<String, Object>params= null;
 		try {						
-			consecutivo= this.toSiguiente(sesion);			
-			this.orden.setConsecutivo(consecutivo);			
-			this.orden.setOrden(consecutivo);
-			this.orden.setIdFicticiaEstatus(idEstatusVenta);
-			this.orden.setEjercicio(new Long(Fecha.getAnioActual()));			
-			regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
-			regresar= registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusVenta, "");
-			toFillArticulos(sesion);
+			idFactura= registrarFactura(sesion);
+			if(idFactura>= 1L){
+				consecutivo= this.toSiguiente(sesion);			
+				this.orden.setConsecutivo(consecutivo);			
+				this.orden.setOrden(consecutivo);
+				this.orden.setIdFicticiaEstatus(idEstatusFicticia);
+				this.orden.setEjercicio(new Long(Fecha.getAnioActual()));						
+				this.orden.setIdFactura(idFactura);
+				if(DaoFactory.getInstance().insert(sesion, this.orden)>= 1L){
+					params= new HashMap<>();
+					params.put("idFicticia", this.orden.getIdFicticia());
+					if(DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, idFactura, params)>= 1L){					
+						regresar= registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "");
+						toFillArticulos(sesion);
+					} // if
+				} // if
+			} // if
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch				
 		return regresar;
-	} // registrarVenta
+	} // registrarFicticia
 	
-	private boolean actualizarVenta(Session sesion, Long idEstatusVenta) throws Exception{
+	private boolean actualizarFicticia(Session sesion, Long idEstatusFicticia) throws Exception{
 		boolean regresar         = false;
 		Map<String, Object>params= null;
 		try {						
-			this.orden.setIdFicticiaEstatus(idEstatusVenta);						
+			this.orden.setIdFicticiaEstatus(idEstatusFicticia);						
 			regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-			if(registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusVenta, "")){
+			if(registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "")){
 				params= new HashMap<>();
 				params.put("idFicticia", this.orden.getIdFicticia());
 				regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticFicticiasDetallesDto.class, params)>= 1;
@@ -168,14 +182,14 @@ public class Transaccion extends IBaseTnx {
 			Methods.clean(params);
 		} // finally			
 		return regresar;
-	} // actualizarVenta
+	} // actualizarFicticia
 	
 	protected boolean registraBitacora(Session sesion, Long idFicticia, Long idFicticaEstatus, String justificacion) throws Exception{
-		boolean regresar                  = false;
-		TcManticFicticiasBitacoraDto bitVenta= null;
+		boolean regresar                        = false;
+		TcManticFicticiasBitacoraDto bitFicticia= null;
 		try {
-			bitVenta= new TcManticFicticiasBitacoraDto(-1L, justificacion, JsfBase.getIdUsuario(), idFicticia, idFicticaEstatus, this.orden.getConsecutivo(), this.orden.getTotal());
-			regresar= DaoFactory.getInstance().insert(sesion, bitVenta)>= 1L;
+			bitFicticia= new TcManticFicticiasBitacoraDto(this.orden.getConsecutivo(), justificacion, idFicticaEstatus, JsfBase.getIdUsuario(), idFicticia, -1L, this.orden.getTotal());
+			regresar= DaoFactory.getInstance().insert(sesion, bitFicticia)>= 1L;
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -217,4 +231,23 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
 	} // toSiguiente
+	
+	private Long registrarFactura(Session sesion) throws Exception{
+		Long regresar              = -1L;
+		TcManticFacturasDto factura= null;
+		try {			
+			factura= new TcManticFacturasDto();
+			factura.setFechaEmision(new Date(Calendar.getInstance().getTimeInMillis()));
+			factura.setIdUsuario(JsfBase.getIdUsuario());
+			factura.setIntentos(0L);
+			regresar= DaoFactory.getInstance().insert(sesion, factura);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			setMessageError("Error al registrar la factura.");
+		} // finally
+		return regresar;
+	} // registrarFactura
 } 
