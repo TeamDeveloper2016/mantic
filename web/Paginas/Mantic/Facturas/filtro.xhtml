@@ -173,11 +173,11 @@
   <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
   <ui:param name="renderedConfirmacion" value="true"/>	
   <ui:define name="detalleConfirmacion">
-    <p:panelGrid layout="grid" columns="2">
+    <h:panelGrid columns="2">
       <p:outputLabel value="No. factura:"/>
-      <p:outputLabel value="#{manticFacturasFiltro.attrs.seleccionado.consecutivo}"/>
-      <p:outputLabel value="Justificación:"/>
-      <p:inputTextarea value="#{manticFacturasFiltro.attrs.justificacionEliminar}"/>
-    </p:panelGrid>			
+      <p:outputLabel value="#{manticFacturasFiltro.attrs.seleccionado.consecutivo}"/>      
+    </h:panelGrid>			
+		<p:outputLabel value="Justificación:"/>
+    <p:inputTextarea value="#{manticFacturasFiltro.attrs.justificacionEliminar}" styleClass="janal-wid-100-txt"/>
   </ui:define>
 </ui:composition>
