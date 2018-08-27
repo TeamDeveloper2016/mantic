@@ -3998,6 +3998,36 @@
 			</select>
 		</unit>
 		<unit id="VistaTcManticFicticiasDetallesDto">
+			<select id="lazy">
+        select
+					tc_mantic_ficticias.id_ficticia as id_key,
+					tc_mantic_ficticias.id_empresa,  
+				  tc_mantic_empresas.clave as empresa,  
+				  tc_mantic_empresas.nombre as nombre_empresa,  
+					tc_mantic_ficticias.consecutivo,  													
+					tc_mantic_ficticias.total,
+					tc_mantic_ficticias.total as precio_total,
+				  tc_mantic_ficticias_estatus.nombre as estatus,
+					tc_mantic_ficticias.id_ficticia_estatus,
+					tc_mantic_ficticias.registro,
+					tc_mantic_ficticias_estatus.estatus_asociados, 					
+					tc_mantic_personas.cuenta,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre					         
+				from 
+					tc_mantic_ficticias								
+				inner join 
+					tc_mantic_empresas on tc_mantic_ficticias.id_empresa= tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_ficticias_estatus on tc_mantic_ficticias.id_ficticia_estatus=tc_mantic_ficticias_estatus.id_ficticia_estatus
+				inner join 
+				  tc_janal_usuarios on tc_mantic_ficticias.id_usuario = tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona				
+				where
+					tc_mantic_ficticias.id_empresa in ({idEmpresa})
+					and {condicion}
+				{sortOrder}
+			</select>
 			<select id="detalle">
 				select
 					tc_mantic_ficticias_detalles.id_ficticia_detalle as id_comodin,
@@ -4012,6 +4042,6 @@
 				order by
 					tc_mantic_ficticias_detalles.registro
 			</select>
-		</unit>
+		</unit>		
 	</dml>    
 </process>
