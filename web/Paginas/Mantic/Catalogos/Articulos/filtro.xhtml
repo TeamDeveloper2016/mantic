@@ -51,6 +51,12 @@
 								<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							</p:menuButton>
 						</f:facet>												
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.codigo}">
+							<f:facet name="header">
+								<h:outputText value="Código"/>
+							</f:facet>
+							<h:outputText value="#{filtro['codigo']}"/>
+						</p:column>														
 						<p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{filtro.nombre}">
 							<f:facet name="header">
 								<h:outputText value="Nombre"/>

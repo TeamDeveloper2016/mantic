@@ -1097,7 +1097,7 @@
 				and 
 					upper(tc_mantic_articulos_codigos.codigo) like upper('%{codigo}%')
 				and 
-					upper(tc_mantic_articulos.nombre) like upper('%{nombre}%')				
+					upper(tc_mantic_articulos.nombre) regexp '.*{expresion}.*'			
 				group by 
 				  tc_mantic_articulos.nombre,          
 				  tc_mantic_articulos.menudeo,          
