@@ -123,14 +123,15 @@ public class Accion extends IBaseArticulos implements Serializable {
         case AGREGAR:											
           this.setAdminOrden(new AdminFacturas(new FacturaFicticia(-1L)));
 					this.saldoCliente= new SaldoCliente();
+					this.attrs.put("consecutivo", "");			
           break;
         case MODIFICAR:			
         case CONSULTAR:			
           this.setAdminOrden(new AdminFacturas((FacturaFicticia)DaoFactory.getInstance().toEntity(FacturaFicticia.class, "TcManticFicticiasDto", "detalle", this.attrs)));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));					
+					this.attrs.put("consecutivo", ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo());			
           break;
-      } // switch
-			this.attrs.put("consecutivo", "");			
+      } // switch			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
