@@ -7,6 +7,77 @@
   </model>
 
   <dml>	
+		<unit id="TcManticFicticiasDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_ficticias_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ficticias_detalles
+        where      
+          id_ficticia = {idFicticia} and id_articulo = {idArticulo} and id_ficticia_detalle = {idFicticiaDetalle}
+      </select>
+    </unit>
+		<unit id="TcManticFicticiasBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_ficticias_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ficticias_bitacora
+        where      
+          id_ficticia_estatus = {idFicticiaEstatus} and id_ficticia = {idFicticia} and id_ficticia_bitacora = {idFicticiaBitacora} and registro = {registro}
+      </select>
+    </unit>
+		<unit id="TcManticFicticiasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_ficticias
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_ficticias
+        where      
+          consecutivo = {consecutivo} and id_ficticia = {idFicticia} and id_empresa = {idEmpresa} and dia = {dia}
+      </select>
+			<select id="detalle">
+        select      
+				  *
+        from      
+          tc_mantic_ficticias
+        where 
+          id_ficticia = {idFicticia} 
+      </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_ficticias
+				where
+				  ejercicio= {ejercicio} 
+				  and id_empresa= {idEmpresa}				
+			</select>			
+    </unit>
     <unit id="TcManticCierresMonedasDto">
       <select id="row">
         select      
