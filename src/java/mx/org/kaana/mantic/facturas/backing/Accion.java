@@ -50,6 +50,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 	private StreamedContent image;
 	private FormatLazyModel especificaciones;
 	private FormatLazyModel almacenes;
+	private FormatLazyModel descuentos;
 
 	public Accion() {
 		super("menudeo");
@@ -82,6 +83,10 @@ public class Accion extends IBaseArticulos implements Serializable {
 	public FormatLazyModel getAlmacenes() {
 		return almacenes;
 	}	
+	
+	public FormatLazyModel getDescuentos() {
+		return descuentos;
+	}
 	
 	@PostConstruct
   @Override
@@ -310,6 +315,13 @@ public class Accion extends IBaseArticulos implements Serializable {
 				campos.add(new Columna("valor", EFormatoDinamicos.MAYUSCULAS));
 				this.especificaciones= new FormatLazyModel("TcManticArticulosEspecificacionesDto", "row", params, campos);
 				UIBackingUtilities.resetDataTable("especificaciones");
+				campos.clear();
+				campos.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+				campos.add(new Columna("vigenciaIncial", EFormatoDinamicos.FECHA_HORA_CORTA));
+				campos.add(new Columna("vigenciaFinal", EFormatoDinamicos.FECHA_HORA_CORTA));
+				campos.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
+				this.descuentos= new FormatLazyModel("TcManticArticulosDescuentosDto", "row", params, campos);
+				UIBackingUtilities.resetDataTable("descuentosLazy");
 				RequestContext.getCurrentInstance().execute("PF('dlgDetalleArt').show();");
 			} // if
 		} // try
