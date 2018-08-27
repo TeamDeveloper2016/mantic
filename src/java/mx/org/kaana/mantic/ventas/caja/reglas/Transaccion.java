@@ -174,10 +174,11 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	} // procesarVenta
 	
 	private boolean registrarApartado(Session sesion) throws Exception{
-		boolean regresar= false;		
-		Long consecutivo= 1L;
-		Long idApartado = -1L;
+		boolean regresar                     = false;		
+		Long consecutivo                     = 1L;
+		Long idApartado                      = -1L;
 		TcManticApartadosBitacoraDto bitacora= null;
+		Calendar calendar                    = null;
 		try {
 			this.ventaFinalizada.getDetailApartado().setIdVenta(this.ventaFinalizada.getTicketVenta().getIdVenta());
 			consecutivo= toSiguienteApartado(sesion);
@@ -189,6 +190,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			this.ventaFinalizada.getDetailApartado().setSaldo(this.ventaFinalizada.getTotales().getTotales().getTotal() - this.ventaFinalizada.getTotales().getPago());
 			this.ventaFinalizada.getDetailApartado().setIdApartadoEstatus(1L);
 			this.ventaFinalizada.getDetailApartado().setIdUsuario(JsfBase.getIdUsuario());
+			calendar= Calendar.getInstance();
+			calendar.add(Calendar.DAY_OF_YEAR, 30);
+			this.ventaFinalizada.getDetailApartado().setVencimiento(new Date(calendar.getTimeInMillis()));
 			idApartado= DaoFactory.getInstance().insert(sesion, this.ventaFinalizada.getDetailApartado());
 			if(idApartado >= 1){
 				bitacora= new TcManticApartadosBitacoraDto();
@@ -515,11 +519,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			regresar= new ArrayList<>();
 			pago= toPagoEfectivo();
 			if(pago!= null)
-				regresar.add(pago);
-			pago= toPagoTDebito();
-			if(pago!= null)
-				regresar.add(pago);
-			pago= toPagoTCredito();
+				regresar.add(pago);			
+			pago= toPagoTarjeta();
 			if(pago!= null)
 				regresar.add(pago);
 			pago= toPagoTransferencia();
@@ -528,9 +529,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			pago= toPagoCheque();
 			if(pago!= null)
 				regresar.add(pago);
-			toPagoCredito(sesion);
-			//if(pago!= null)
-				//regresar.add(pago);
+			toPagoCredito(sesion);			
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -556,32 +555,12 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		return regresar;
 	} // toPagoEfectivo
 	
-	private TrManticVentaMedioPagoDto toPagoTDebito(){
-		TrManticVentaMedioPagoDto regresar= null;
-		try {
-			if(this.ventaFinalizada.getTotales().getDebito()> 0D){
-				regresar= new TrManticVentaMedioPagoDto();
-				regresar.setIdTipoMedioPago(ETipoMediosPago.TARJETA_DEBITO.getIdTipoMedioPago());
-				regresar.setIdUsuario(JsfBase.getIdUsuario());
-				regresar.setIdVenta(getOrden().getIdVenta());
-				regresar.setImporte(this.ventaFinalizada.getTotales().getDebito());				
-				regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoDebito().getKey());
-				regresar.setReferencia(this.ventaFinalizada.getTotales().getReferenciaDebito());	
-				regresar.setIdCierre(this.idCierreVigente);
-			} // if
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar;
-	} // toPagoTDebito
-	
-	private TrManticVentaMedioPagoDto toPagoTCredito(){
+	private TrManticVentaMedioPagoDto toPagoTarjeta(){
 		TrManticVentaMedioPagoDto regresar= null;
 		try {
 			if(this.ventaFinalizada.getTotales().getCredito()> 0D){
 				regresar= new TrManticVentaMedioPagoDto();
-				regresar.setIdTipoMedioPago(ETipoMediosPago.TARJETA_CREDITO.getIdTipoMedioPago());
+				regresar.setIdTipoMedioPago(ETipoMediosPago.TARJETA.getIdTipoMedioPago());
 				regresar.setIdUsuario(JsfBase.getIdUsuario());
 				regresar.setIdVenta(getOrden().getIdVenta());
 				regresar.setImporte(this.ventaFinalizada.getTotales().getCredito());				
@@ -622,13 +601,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		try {
 			if(this.ventaFinalizada.isCredito()){
 				totalCredito= this.ventaFinalizada.getTotales().getTotales().getTotal() - (this.ventaFinalizada.getTotales().getPago() - this.ventaFinalizada.getTotales().getCambio());
-				if(totalCredito > 0D){
-					/*regresar= new TrManticVentaMedioPagoDto();
-					regresar.setIdTipoMedioPago(ETipoMediosPago.POR_DEFINIR.getIdTipoMedioPago());
-					regresar.setIdUsuario(JsfBase.getIdUsuario());
-					regresar.setIdVenta(getOrden().getIdVenta());
-					regresar.setImporte(totalCredito);	
-					regresar.setIdCierre(this.idCierreVigente);*/
+				if(totalCredito > 0D){					
 					registrarDeuda(sesion, totalCredito);					
 				} // if
 			} // if
@@ -687,11 +660,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			regresar= new ArrayList<>();
 			pago= toPagoEfectivoApartado(idApartado);
 			if(pago!= null)
-				regresar.add(pago);
-			pago= toPagoTDebitoApartado(idApartado);
-			if(pago!= null)
-				regresar.add(pago);
-			pago= toPagoTCreditoApartado(idApartado);
+				regresar.add(pago);			
+			pago= toPagoTarjetaApartado(idApartado);
 			if(pago!= null)
 				regresar.add(pago);
 			pago= toPagoTransferenciaApartado(idApartado);
@@ -725,30 +695,12 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		return regresar;
 	} // toPagoEfectivo
 	
-	private TcManticApartadosPagosDto toPagoTDebitoApartado(Long idApartado){
-		TcManticApartadosPagosDto regresar= null;
-		try {
-			if(this.ventaFinalizada.getTotales().getDebito()> 0D){
-				regresar= new TcManticApartadosPagosDto();
-				regresar.setIdTipoMedioPago(ETipoMediosPago.TARJETA_DEBITO.getIdTipoMedioPago());
-				regresar.setIdUsuario(JsfBase.getIdUsuario());
-				regresar.setIdApartado(idApartado);
-				regresar.setPago(this.ventaFinalizada.getTotales().getDebito());	
-				regresar.setIdCierre(this.idCierreVigente);
-			} // if
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar;
-	} // toPagoTDebito
-	
-	private TcManticApartadosPagosDto toPagoTCreditoApartado(Long idApartado){
+	private TcManticApartadosPagosDto toPagoTarjetaApartado(Long idApartado){
 		TcManticApartadosPagosDto regresar= null;
 		try {
 			if(this.ventaFinalizada.getTotales().getCredito()> 0D){
 				regresar= new TcManticApartadosPagosDto();
-				regresar.setIdTipoMedioPago(ETipoMediosPago.TARJETA_CREDITO.getIdTipoMedioPago());
+				regresar.setIdTipoMedioPago(ETipoMediosPago.TARJETA.getIdTipoMedioPago());
 				regresar.setIdUsuario(JsfBase.getIdUsuario());
 				regresar.setIdApartado(idApartado);
 				regresar.setPago(this.ventaFinalizada.getTotales().getCredito());				
