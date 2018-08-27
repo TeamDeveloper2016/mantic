@@ -10,7 +10,7 @@
 	<ui:param name="titulo" value="Listado de tickets abiertos para cobro"/>
 	<ui:param name="notIsCaja" value="false" class="javax.faces.Boolean"/>
 	<ui:define name="librerias">    		
-		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.1.7.js"/>
+		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.1.8.js"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
 				'descuento': {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'general'},
@@ -37,10 +37,7 @@
 				'efectivo'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'credito'          : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasCajaAccion.attrs.pago.limiteCredito}})', mascara: 'libre', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
 				'referenciaCredito': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Capturar la referencia del credito'},
-				'bancoCredito'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu tarjeta de credito'},				
-				'debito'           : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasCajaAccion.attrs.pago.limiteDebito}})', mascara: 'libre', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
-				'referenciaDebito' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Capturar la referencia de debito'},
-				'bancoDebito'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu tarjeta de debito'},
+				'bancoCredito'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu tarjeta de credito'},								
 				'cheque'           : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasCajaAccion.attrs.pago.limiteCheque}})', mascara: 'libre', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
 				'referenciaCheque' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Capturar la referencia del cheque'},
 				'bancoCheque'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu cheque'},
@@ -288,24 +285,9 @@
 									<p:inputNumber id="efectivo" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.pago.efectivo}" inputStyleClass="janal-column-right">
 										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria"/>
 									</p:inputNumber>
-									<p:spacer/><p:spacer/>									
-									<p:outputLabel for="debito" value="Tarjeta de debito:"/>
-									<p:inputNumber id="debito" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.pago.debito}" inputStyleClass="janal-column-right">
-										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria" oncomplete="applyValidacionesCredito();"/>
-									</p:inputNumber>									
-									<p:selectOneMenu id="bancoDebito" value="#{manticVentasCajaAccion.attrs.pago.bancoDebito}" filter="true" filterMatchMode="contains" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
-										<f:selectItem itemValue="" itemLabel="SELECCIONE BANCO"/>
-										<f:selectItems value="#{manticVentasCajaAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
-										<p:column headerText="Nombre">
-											<h:outputText value="#{item.nombre}"/>
-										</p:column>   
-										<p:column headerText="Razón social">
-											<h:outputText value="#{item.razonSocial}"/>
-										</p:column>   
-									</p:selectOneMenu>
-									<p:inputText id="referenciaDebito" value="#{manticVentasCajaAccion.attrs.pago.referenciaDebito}" styleClass="janal-wid-100-txt" placeholder="Ej. Referencia 4564"/>
+									<p:spacer/><p:spacer/>																										
 									
-									<p:outputLabel for="credito" value="Tarjeta de credito:"/>
+									<p:outputLabel for="credito" value="Tarjeta de credito/debito:"/>
 									<p:inputNumber id="credito" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.pago.credito}" inputStyleClass="janal-column-right">
 										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria" oncomplete="applyValidacionesCredito();"/>
 									</p:inputNumber>
