@@ -287,7 +287,7 @@
 									</p:inputNumber>
 									<p:spacer/><p:spacer/>																										
 									
-									<p:outputLabel for="credito" value="Tarjeta de credito/debito:"/>
+									<p:outputLabel for="credito" value="T. de credito/debito:"/>
 									<p:inputNumber id="credito" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.pago.credito}" inputStyleClass="janal-column-right">
 										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria" oncomplete="applyValidacionesCredito();"/>
 									</p:inputNumber>
@@ -543,10 +543,8 @@
 				<p:outputLabel value="Pago:" styleClass="font-resume-venta-detail janal-color-green"/><p:outputLabel value="$" styleClass="janal-color-green"/>
 				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.pago$}" styleClass="janal-color-green"/>
 				<p:outputLabel value="Efectivo:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
-				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.efectivo}"/>
-				<p:outputLabel value="Tarjeta de debito:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
-				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.debito}"/>
-				<p:outputLabel value="Tarjeta de credito:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
+				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.efectivo}"/>				
+				<p:outputLabel value="T. de credito/debito:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
 				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.credito}"/>
 				<p:outputLabel value="Transferencia:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
 				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.transferencia}"/>
