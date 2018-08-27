@@ -22,9 +22,7 @@ import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
@@ -33,14 +31,11 @@ import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
-import mx.org.kaana.mantic.enums.EEstatusFicticias;
 import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
 import mx.org.kaana.mantic.facturas.reglas.AdminFacturas;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.SelectEvent;
-import org.primefaces.event.TabChangeEvent;
 import org.primefaces.model.StreamedContent;
 
 @Named(value= "manticFacturasAccion")
@@ -107,7 +102,6 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("descuentoGlobal", 0);
 			this.attrs.put("tipoDescuento", INDIVIDUAL);
 			this.image= LoadImages.getImage("-1");
-			loadClienteDefault();
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());
 			if(JsfBase.isAdminEncuestaOrAdmin())
@@ -156,15 +150,14 @@ public class Accion extends IBaseArticulos implements Serializable {
 			if (transaccion.ejecutar(eaccion)) {
 				if(eaccion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
-    			RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la cuenta ', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+    			RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 					this.init();
 				} // if	
-				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la cuenta."), ETipoMensaje.INFORMACION);
-  			JsfBase.setFlashAttribute("idFicticia", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia());
-				RequestContext.getCurrentInstance().execute("userUpdate();");
+				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la factura."), ETipoMensaje.INFORMACION);
+  			JsfBase.setFlashAttribute("idFicticia", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia());				
 			} // if
 			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
+				JsfBase.addMessage("Ocurrió un error al registrar la factura.", ETipoMensaje.ERROR);      			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -177,93 +170,6 @@ public class Accion extends IBaseArticulos implements Serializable {
   	JsfBase.setFlashAttribute("idFicticia", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia());
     return this.attrs.get("retorno") != null ? (String)this.attrs.get("retorno") : "filtro";
   } // doCancelar
-
-	public void doTabChange(TabChangeEvent event) {
-		if(event.getTab().getTitle().equals("Articulos")) {
-			switch(this.tipoOrden) {
-				case NORMAL:
-					break;
-				case ALMACEN: 
-					break;
-				case PROVEEDOR:
-					break;
-			} // switch
-		} // if	
-	}
-  
-	public List<UISelectEntity> doCompleteCliente(String query) {
-		this.attrs.put("codigoCliente", query);
-    this.doUpdateClientes();		
-		return (List<UISelectEntity>)this.attrs.get("clientes");
-	}	// doCompleteCliente
-
-	public void doUpdateClientes() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
-    try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
-      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-  		params.put("idEmpresa", this.attrs.get("idEmpresa"));
-			String search= (String) this.attrs.get("codigoCliente"); 
-			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*") : "WXYZ";
-  		params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_clientes.razon_social) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*'")));			
-      this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("VistaClientesDto", "findRazonSocial", params, columns, 20L));
-		} // try
-	  catch (Exception e) {
-      Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
-    finally {
-      Methods.clean(columns);
-      Methods.clean(params);
-    } // finally
-	}	// doUpdateClientes
-	
-	public void doAsignaCliente(SelectEvent event){
-		UISelectEntity seleccion              = null;
-		List<UISelectEntity> clientes         = null;
-		List<UISelectEntity> clientesSeleccion= null;
-		MotorBusqueda motorBusqueda           = null;
-		try {
-			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
-			seleccion= clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
-			clientesSeleccion= new ArrayList<>();
-			clientesSeleccion.add(seleccion);
-			motorBusqueda= new MotorBusqueda(-1L);
-			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
-			this.attrs.put("clientesSeleccion", clientesSeleccion);
-			this.attrs.put("clienteSeleccion", seleccion);
-			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
-			doReCalculatePreciosArticulos(seleccion.getKey());		
-			doLoadSaldos(seleccion.getKey());
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch		
-	} // doAsignaCliente
-	
-	public void doAsignaClienteInicial(Long idCliente){
-		UISelectEntity seleccion              = null;
-		List<UISelectEntity> clientesSeleccion= null;
-		MotorBusqueda motorBusqueda           = null; 
-		try {
-			motorBusqueda= new MotorBusqueda(null, idCliente);
-			seleccion= new UISelectEntity(motorBusqueda.toCliente());
-			clientesSeleccion= new ArrayList<>();
-			clientesSeleccion.add(seleccion);
-			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
-			this.attrs.put("clientesSeleccion", clientesSeleccion);
-			this.attrs.put("clienteSeleccion", seleccion);
-			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch		
-	} // doAsignaCliente
 	
 	public void doReCalculatePreciosArticulos(Long idCliente){
 		doReCalculatePreciosArticulos(true, idCliente);
@@ -302,49 +208,11 @@ public class Accion extends IBaseArticulos implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch		
 	} // doReCalculatePreciosArticulos
-	
-	public void doActualizaPrecioCliente(){
-		List<UISelectEntity> clientesSeleccion= null;
-		UISelectEntity clienteSeleccion       = null;
-		boolean precioVigente                 = false;
-		try {
-			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");
-			precioVigente= clienteSeleccion!= null && !clienteSeleccion.getKey().equals(-1L);
-			if(precioVigente){
-				clientesSeleccion= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
-				clienteSeleccion= clientesSeleccion.get(clientesSeleccion.indexOf(clienteSeleccion));
-				setPrecio(Cadena.toBeanNameEspecial(clienteSeleccion.toString("tipoVenta")));				
-			} // if
-			else
-				setPrecio("menudeo");
-			doReCalculatePreciosArticulos(precioVigente, clienteSeleccion.getKey());
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch		
-	} // doActualizaPrecioCliente
 
 	@Override
 	protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
-		UISelectEntity clienteSeleccion= null;		
-		String descuentoPivote         = null;
-		String descuentoVigente        = null;		
-		try {
-			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");
-			if(clienteSeleccion!= null && !clienteSeleccion.getKey().equals(-1L)){
-				descuentoVigente= toDescuentoVigente(articulo.toLong("idArticulo"), clienteSeleccion.getKey());				
-				if(descuentoVigente!= null){
-					descuentoPivote= getAdminOrden().getDescuento();
-					getAdminOrden().setDescuento(descuentoVigente);
-					super.toMoveData(articulo, index);			
-					getAdminOrden().setDescuento(descuentoPivote);
-				} // if
-				else
-					super.toMoveData(articulo, index);				
-			} // if
-			else
-				super.toMoveData(articulo, index);	
+		try {			
+			super.toMoveData(articulo, index);	
 			this.image= LoadImages.getImage(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), articulo.toLong("idArticulo").toString());
 			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
 			RequestContext.getCurrentInstance().update("deudor");
@@ -356,25 +224,9 @@ public class Accion extends IBaseArticulos implements Serializable {
 	} // toMoveData
 	
 	@Override
-	protected void toMoveDataArt(Articulo articulo, Integer index) throws Exception {
-		UISelectEntity clienteSeleccion= null;		
-		String descuentoPivote         = null;
-		String descuentoVigente        = null;		
-		try {
-			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");
-			if(clienteSeleccion!= null && !clienteSeleccion.getKey().equals(-1L)){
-				descuentoVigente= toDescuentoVigente(articulo.getIdArticulo(), clienteSeleccion.getKey());				
-				if(descuentoVigente!= null){
-					descuentoPivote= getAdminOrden().getDescuento();
-					getAdminOrden().setDescuento(descuentoVigente);
-					super.toMoveDataArt(articulo, index);			
-					getAdminOrden().setDescuento(descuentoPivote);
-				} // if
-				else
-					super.toMoveDataArt(articulo, index);				
-			} // if
-			else
-				super.toMoveDataArt(articulo, index);	
+	protected void toMoveDataArt(Articulo articulo, Integer index) throws Exception {		
+		try {	
+			super.toMoveDataArt(articulo, index);	
 			this.image= LoadImages.getImage(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), articulo.getIdArticulo().toString());
 			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
 			RequestContext.getCurrentInstance().update("deudor");
@@ -402,9 +254,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 	} // toDescuentoVigente
 	
 	private void loadOrdenVenta(){		
-		UISelectEntity cliente = null;
 		try {
-			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");			
 			((FacturaFicticia)this.getAdminOrden().getOrden()).setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
 			((FacturaFicticia)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
 			((FacturaFicticia)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
@@ -440,36 +290,7 @@ public class Accion extends IBaseArticulos implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-	} // doCerrarTicket
-	
-	private String toCondicion() {		
-		StringBuilder regresar= null;
-		try {
-			regresar= new StringBuilder();			
-			regresar.append(" date_format(tc_mantic_ficticias.registro, '%Y%m%d')= date_format(SYSDATE(), '%Y%m%d')");
-			regresar.append(" and tc_mantic_ficticias.id_ficticia_estatus in (");
-			regresar.append(EEstatusFicticias.ELABORADA.getIdEstatusFicticia());
-			regresar.append(" , ");			
-			regresar.append(EEstatusFicticias.ABIERTA.getIdEstatusFicticia());
-			regresar.append(")");				
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar.toString();
-	} // toCondicion	
-	
-	public String doClientes(){
-		String regresar= null;
-		try {
-			regresar= "cliente.jsf".concat(Constantes.REDIRECIONAR);
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch
-		return regresar;
-	} // doClientes
+	} // doCerrarTicket	
 	
 	public void doDetailArticulo(Long idArticulo, Integer index) {
 		MotorBusqueda motor      = null;
@@ -562,24 +383,6 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // finally
 	} // doLoadUsers
 	
-	private void doLoadSaldos(Long idCliente) throws Exception{
-		Entity cliente     = null;
-		MotorBusqueda motor= null;
-		this.saldoCliente  = null;
-		try {
-			motor= new MotorBusqueda(null, idCliente);
-			cliente= motor.toCliente();
-			this.saldoCliente= new SaldoCliente();
-			this.saldoCliente.setIdCliente(idCliente);
-			this.saldoCliente.setTotalCredito(cliente.toDouble("limiteCredito"));
-			this.saldoCliente.setTotalDeuda(motor.toDeudaCliente());
-			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-	} // doLoadSaldos
-	
 	public void doActualizaImage(String idImage) {
 		String idEmpresa= null;
 		try {
@@ -633,25 +436,7 @@ public class Accion extends IBaseArticulos implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
-	} // doUpdateArticulos
-	
-	private void loadClienteDefault(){
-		UISelectEntity seleccion              = null;
-		List<UISelectEntity> clientesSeleccion= null;
-		MotorBusqueda motorBusqueda           = null;
-		try {
-			motorBusqueda= new MotorBusqueda(-1L);
-			seleccion= new UISelectEntity(motorBusqueda.toClienteDefault());
-			clientesSeleccion= new ArrayList<>();
-			clientesSeleccion.add(seleccion);			
-			this.attrs.put("clientesSeleccion", clientesSeleccion);
-			this.attrs.put("clienteSeleccion", seleccion);			
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch		
-	} // loadClienteDefault
+	} // doUpdateArticulos	
 	
 	private void loadSucursales(){
 		List<UISelectEntity> sucursales= null;
@@ -672,17 +457,6 @@ public class Accion extends IBaseArticulos implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch		
 	} // loadSucursales
-	
-	public void doUpdateForEmpresa(){
-		try {
-			loadClienteDefault();
-			doActualizaPrecioCliente();
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch		
-	} // doUpdateForEmpresa
 	
 	public void doActivarDescuento(){
 		String tipoDescuento= null;		
