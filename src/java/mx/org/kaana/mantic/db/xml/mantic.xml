@@ -24,6 +24,17 @@
         where      
           id_ficticia = {idFicticia} and id_articulo = {idArticulo} and id_ficticia_detalle = {idFicticiaDetalle}
       </select>
+			<select id="detalle">
+        select      
+				  tc_mantic_ficticias_detalles.id_ficticia_detalle as id_comodin,
+          tc_mantic_ficticias_detalles.*
+        from      
+          tc_mantic_ficticias_detalles
+        where      
+          id_ficticia = {idFicticia}
+				order by
+				  tc_mantic_ficticias_detalles.registro
+      </select>
     </unit>
 		<unit id="TcManticFicticiasBitacoraDto">
       <select id="row">
@@ -40,7 +51,7 @@
         from      
           tc_mantic_ficticias_bitacora
         where      
-          id_ficticia_estatus = {idFicticiaEstatus} and id_ficticia = {idFicticia} and id_ficticia_bitacora = {idFicticiaBitacora} and registro = {registro}
+          id_ficticia_estatus = {idFicticiaEstatus} and id_ficticia = {idFicticia} and id_ficticia_bitacora = {idFicticiaBitacora}
       </select>
     </unit>
 		<unit id="TcManticFicticiasDto">
