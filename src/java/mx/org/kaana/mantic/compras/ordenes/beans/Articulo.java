@@ -12,6 +12,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.comun.beans.ArticuloDetalle;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticFicticiasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticRequisicionesDetallesDto;
@@ -327,6 +328,29 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			-1L, /*idVenta, */
 			this.getPrecio(),
 			this.getUtilidad()
+		);
+	}
+	
+	public TcManticFicticiasDetallesDto toFicticiaDetalle() {
+		return new TcManticFicticiasDetallesDto(
+			this.getDescuentos(),
+			Cadena.isVacio(this.getCodigo())? this.getPropio(): this.getCodigo(), 
+			this.getUnidadMedida(),
+			this.getCosto(), 
+			-1L, // idFicticia
+			this.getDescuento(), 
+			this.getSat(),
+			this.getExtras(), 
+			this.getUtilidad(),
+			this.getNombre(), 
+			this.getImporte(), 
+      this.getIdComodin(), /*idFicticiaDetalle, */
+			this.getPrecio(),
+			this.getIva(), 
+			this.getImpuestos(), 
+			this.getSubTotal(), 
+			this.getCantidad(), 
+			this.getIdArticulo()			
 		);
 	}
 	
