@@ -90,6 +90,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				temporal.setValor(articulo.toDouble(this.precio));
 				temporal.setCosto(articulo.toDouble(this.precio));
 				temporal.setIva(articulo.toDouble("iva"));				
+				temporal.setSat(articulo.get("sat").getData()!= null ? articulo.toString("sat") : "");				
 				temporal.setDescuento(this.adminOrden.getDescuento());
 				temporal.setExtras(this.adminOrden.getExtras());				
 				if(temporal.getCantidad()< 1D)					
@@ -152,6 +153,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				}	// switch	 	
 			} // if
 			temporal.setIva(articulo.getIva());
+			temporal.setSat(articulo.getSat());
 			temporal.setDescuento(this.adminOrden.getDescuento());
 			temporal.setExtras(this.adminOrden.getExtras());										
 			temporal.setCantidad(articulo.getCantidad());
