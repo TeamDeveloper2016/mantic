@@ -34,7 +34,6 @@ public class Articulos extends Comun implements Serializable {
     try {
       this.attrs.put("codigo", "");
       this.attrs.put("nombre", "");    
-      this.attrs.put("auxiliar", "");    
       this.attrs.put("sortOrder"," order by tc_mantic_listas_precios_detalles.descripcion, tc_mantic_proveedores.razon_social");
     } // try
     catch (Exception e) {
@@ -96,9 +95,7 @@ public class Articulos extends Comun implements Serializable {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("codigo")))
-  		sb.append("upper(tc_mantic_listas_precios_detalles.codigo) like upper('%").append(this.attrs.get("codigo")).append("%') and ");
-    if(!Cadena.isVacio(this.attrs.get("auxiliar")))
-  		sb.append("upper(tc_mantic_listas_precios_detalles.auxiliar) like upper('%").append(this.attrs.get("auxiliar")).append("%') and ");
+  		sb.append("(upper(tc_mantic_listas_precios_detalles.codigo) like upper('%").append(this.attrs.get("codigo")).append("%') or upper(tc_mantic_listas_precios_detalles.auxiliar) like upper('%").append(this.attrs.get("codigo")).append("%')) and ");
 		if(!Cadena.isVacio(this.attrs.get("nombre"))) {
 		  String nombre= ((String)this.attrs.get("nombre")).toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
   		sb.append(" upper(tc_mantic_listas_precios_detalles.descripcion) regexp '.*").append(nombre).append(".*' and ");

@@ -12,8 +12,7 @@
 		<script type="text/javascript">
 			Janal.Control.fields = {
 				codigo  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
-				nombre  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
-				auxiliar: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
+				nombre  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
 			};			
 		</script>		
 	</ui:define>
@@ -28,25 +27,23 @@
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
 						<h:panelGrid styleClass="janal-wid-100">
-							<p:outputLabel for="codigo" value="Código:"/>
-							<p:inputText id="codigo" value="#{manticCatalogosListaPreciosArticulos.attrs.codigo}" styleClass="janal-wid-100-txt"/>  
-              <p:outputLabel for="auxiliar" value="Auxiliar:"/>
-							<p:inputText id="auxiliar" value="#{manticCatalogosListaPreciosArticulos.attrs.auxiliar}" styleClass="janal-wid-100-txt"/>  
 							<p:outputLabel for="nombre" value="Nombre:"/>
 							<p:inputText id="nombre" value="#{manticCatalogosListaPreciosArticulos.attrs.nombre}" styleClass="janal-wid-100-txt"/>                						
+							<p:outputLabel for="codigo" value="Código:"/>
+							<p:inputText id="codigo" value="#{manticCatalogosListaPreciosArticulos.attrs.codigo}" styleClass="janal-wid-100-txt"/>  
             </h:panelGrid>
 						<p:separator/>
 						<div class="janal-align-right lg-pantalla">
-							<p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.execute(true);" process="@this codigo auxiliar nombre" actionListener="#{manticCatalogosListaPreciosArticulos.doLoad}" oncomplete="janal.desbloquear();" update="tabla idProveedor" styleClass="janal-text-white"/>
+							<p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.execute(true);" process="@this codigo nombre" actionListener="#{manticCatalogosListaPreciosArticulos.doLoad}" oncomplete="janal.desbloquear();" update="tabla idProveedor" styleClass="janal-text-white"/>
 						</div>
 						<div class="janal-align-right xs-pantalla">
- 						  <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.execute(true);" process="@this codigo auxiliar nombre" actionListener="#{manticCatalogosListaPreciosArticulos.doLoad}" oncomplete="janal.desbloquear();" update="tabla idProveedor" styleClass="janal-text-white"/>
+ 						  <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.execute(true);" process="@this codigo nombre" actionListener="#{manticCatalogosListaPreciosArticulos.doLoad}" oncomplete="janal.desbloquear();" update="tabla idProveedor" styleClass="janal-text-white"/>
 					  </div>
 						<p:spacer height="50px"/>
 						<h:panelGrid styleClass="janal-wid-100">
               <p:outputLabel for="idProveedor" value="El articulo lo tienen los siguientes proveedores:"/>
               <p:selectManyCheckbox id="idProveedor" layout="responsive" columns="1" value="#{manticCatalogosListaPreciosArticulos.attrs.idProveedor}" converter="janal.convertidor.Entity" styleClass="janal-wid-96">
-                <p:ajax event="change" process="@this codigo auxiliar nombre" update="tabla" listener="#{manticCatalogosListaPreciosArticulos.doLoadArticulos}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                <p:ajax event="change" process="@this codigo nombre" update="tabla" listener="#{manticCatalogosListaPreciosArticulos.doLoadArticulos}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
                 <f:selectItems value="#{manticCatalogosListaPreciosArticulos.attrs.proveedores}" var="element" itemValue="#{element.key}" itemLabel="#{element.clave}"/>
 							</p:selectManyCheckbox>
 						</h:panelGrid>	
