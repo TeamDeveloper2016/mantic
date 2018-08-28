@@ -86,6 +86,7 @@ public class Transaccion extends IBaseTnx{
 		boolean regresar               = false;
 		TcManticApartadosDto apartado  = null;
 		Double saldo                   = 0D;
+		Double abonado                 = 0D;
     Map<String, Object>params      = null;
 		try {
 			if(toCierreCaja(sesion, this.pago.getPago())){
@@ -97,7 +98,9 @@ public class Transaccion extends IBaseTnx{
 				if(DaoFactory.getInstance().insert(sesion, this.pago)>= 1L){
 					apartado= (TcManticApartadosDto) DaoFactory.getInstance().findById(sesion, TcManticApartadosDto.class, this.pago.getIdApartado());
 					saldo= apartado.getSaldo() - this.pago.getPago();
+					abonado= apartado.getAbonado() + this.pago.getPago();
 					apartado.setSaldo(saldo);
+					apartado.setAbonado(abonado);
 					apartado.setIdApartadoEstatus(saldo.equals(0L) ? 3L : 2L);
 					regresar= DaoFactory.getInstance().update(sesion, apartado)>= 1L;
           params= new HashMap<>();
