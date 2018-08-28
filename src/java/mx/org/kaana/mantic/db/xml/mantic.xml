@@ -213,6 +213,7 @@
           tc_mantic_apartados_bitacora
         where 
           {condicion} 
+        order by registro desc
       </select>
       <select id="identically">
         select      
