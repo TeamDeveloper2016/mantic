@@ -227,20 +227,31 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
           this.articulos = new ArrayList<>();
 					//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
 					LOG.info("Filas del documento: "+ sheet.getRows());
+					int errores= 0;
           for(int fila= 1; fila< sheet.getRows(); fila++) {
             //(idListaPrecio,descripcion, idListaPrecioDetalle, codigo, precio, auxiliar) 
 					  String contenido= new String(sheet.getCell(2,fila).getContents().getBytes(UTF_8), ISO_8859_1);
 						//LOG.info(fila+ " -> "+ contenido+ " => "+ cleanString(contenido)+ " -> "+ new String(contenido.getBytes(ISO_8859_1), UTF_8));
-            getArticulos().add(new TcManticListasPreciosDetallesDto(
-							-1L,
-							new String(contenido.getBytes(ISO_8859_1), UTF_8),
-							-1L,
-							sheet.getCell(0,fila).getContents(),
-							Numero.getDouble(sheet.getCell(4,fila).getContents(), 0D),
-							sheet.getCell(1,fila).getContents(),
-							Numero.getDouble(sheet.getCell(3,fila).getContents(), 0D))
-						);
+						double precio= Numero.getDouble(sheet.getCell(3,fila).getContents(), 0D);
+						double costo = Numero.getDouble(sheet.getCell(4,fila).getContents(), 0D);
+						String nombre= new String(contenido.getBytes(ISO_8859_1), UTF_8);
+						if((precio> 0 || costo> 0) && !Cadena.isVacio(nombre)) {
+							getArticulos().add(new TcManticListasPreciosDetallesDto(
+								-1L,
+								nombre,
+								-1L,
+								sheet.getCell(0,fila).getContents(),
+								costo,
+								sheet.getCell(1,fila).getContents(),
+								precio)
+							);
+						} // if
+						else {
+							errores++;
+							LOG.info(fila+ ": ["+ nombre+ "] costo: ["+ costo+ "] precio: ["+ precio+ "]");
+						} // else	
           } // for
+					LOG.info("Cantidad de filas con error son: "+ errores);
           regresar = true;
         }
 			} // if
