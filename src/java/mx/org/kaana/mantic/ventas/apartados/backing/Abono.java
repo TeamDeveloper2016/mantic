@@ -37,7 +37,7 @@ public class Abono extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {			
-      this.attrs.put("sortOrder", "order by	registro desc");
+      this.attrs.put("sortOrder", " order by	registro desc");
       //this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));     
       this.attrs.put("idApartado", JsfBase.getFlashAttribute("idApartado"));     
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
