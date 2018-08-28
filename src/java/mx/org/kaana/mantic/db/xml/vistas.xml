@@ -4058,7 +4058,7 @@
             concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
             tc_mantic_apartados.abonado,
             tc_mantic_apartados.registro,
-            datediff(tc_mantic_apartados.registro, now()) as dias,
+            datediff(now(),tc_mantic_apartados.registro) as dias,
             tc_mantic_apartados.id_apartado_estatus,
             tc_mantic_ventas.id_venta
           from
@@ -4087,7 +4087,7 @@
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
 					tc_mantic_apartados.abonado,
 					tc_mantic_apartados.registro,
-					datediff(tc_mantic_apartados.registro, now()) as dias,
+					datediff(now(),tc_mantic_apartados.registro) as dias,
 					tc_mantic_apartados.id_apartado_estatus,
 					tc_mantic_ventas.id_venta
 				from
@@ -4098,9 +4098,8 @@
 					tc_janal_usuarios on tc_mantic_apartados.id_usuario= tc_janal_usuarios.id_usuario
 				inner join
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
-				where tc_mantic_apartados.id_apartado = {idApartado) apartados
-				where
-					{condicion}
+				where 
+          tc_mantic_apartados.id_apartado = {idApartado} ) apartados 
 				{sortOrder}
       </select>   
       <select id="pagosApartado">
