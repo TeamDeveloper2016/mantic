@@ -48,25 +48,34 @@ public class TcManticApartadosBitacoraDto implements IBaseDto, Serializable {
   private Long idApartado;
   @Column (name="registro")
   private Timestamp registro;
+  @Column (name="porcentaje_retenido")
+  private Double porcentajeRetenido;
+  @Column (name="cantidad_retenida")
+  private Double cantidadRetenida;
+  @Column (name="importe_devuelto")
+  private Double importeDevuelto;
 
   public TcManticApartadosBitacoraDto() {
     this(new Long(-1L));
   }
 
   public TcManticApartadosBitacoraDto(Long key) {
-    this(new Long(-1L), null, null, null, null);
+    this(new Long(-1L), null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticApartadosBitacoraDto(Long idApartadoBitacora, String justificacion, Long idUsuario, Long idApartadoEstatus, Long idApartado) {
+  public TcManticApartadosBitacoraDto(Long idApartadoBitacora, String justificacion, Long idUsuario, Long idApartadoEstatus, Long idApartado, Double porcentajeRetenido, Double cantidadRetenida, Double importeDevuelto) {
     setIdApartadoBitacora(idApartadoBitacora);
     setJustificacion(justificacion);
     setIdUsuario(idUsuario);
     setIdApartadoEstatus(idApartadoEstatus);
     setIdApartado(idApartado);
+    setPorcentajeRetenido(porcentajeRetenido);
+    setCantidadRetenida(cantidadRetenida);
+    setImporteDevuelto(importeDevuelto);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
-	
+
   public void setIdApartadoBitacora(Long idApartadoBitacora) {
     this.idApartadoBitacora = idApartadoBitacora;
   }
@@ -115,6 +124,30 @@ public class TcManticApartadosBitacoraDto implements IBaseDto, Serializable {
     return registro;
   }
 
+  public Double getPorcentajeRetenido() {
+    return porcentajeRetenido;
+  }
+
+  public void setPorcentajeRetenido(Double porcentajeRetenido) {
+    this.porcentajeRetenido = porcentajeRetenido;
+  }
+
+  public Double getCantidadRetenida() {
+    return cantidadRetenida;
+  }
+
+  public void setCantidadRetenida(Double cantidadRetenida) {
+    this.cantidadRetenida = cantidadRetenida;
+  }
+
+  public Double getImporteDevuelto() {
+    return importeDevuelto;
+  }
+
+  public void setImporteDevuelto(Double importeDevuelto) {
+    this.importeDevuelto = importeDevuelto;
+  }
+
   @Transient
   @Override
   public Long getKey() {
@@ -141,6 +174,12 @@ public class TcManticApartadosBitacoraDto implements IBaseDto, Serializable {
 		regresar.append(getIdApartado());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+    regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPorcentajeRetenido());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getImporteDevuelto());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCantidadRetenida());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -153,6 +192,9 @@ public class TcManticApartadosBitacoraDto implements IBaseDto, Serializable {
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("idApartadoEstatus", getIdApartadoEstatus());
 		regresar.put("idApartado", getIdApartado());
+		regresar.put("porcentajeRetenido", getPorcentajeRetenido());
+		regresar.put("importeDevuelto", getImporteDevuelto());
+		regresar.put("cantidadRetenida", getCantidadRetenida());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -160,7 +202,9 @@ public class TcManticApartadosBitacoraDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdApartadoBitacora(), getJustificacion(), getIdUsuario(), getIdApartadoEstatus(), getIdApartado(), getRegistro()
+    getIdApartadoBitacora(), getJustificacion(), getIdUsuario(), 
+    getIdApartadoEstatus(), getIdApartado(), getRegistro(),getPorcentajeRetenido(),
+    getCantidadRetenida(), getImporteDevuelto()
     };
     return regresar;
   }
