@@ -94,6 +94,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		  sb.append(((!Cadena.isVacio(this.attrs.get("cliente"))||!Cadena.isVacio(this.attrs.get("dias")) ||!Cadena.isVacio(this.attrs.get("fechaInicio")))?" and ":" ").concat("(date_format(registro, '%Y%m%d')>= '")).append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("')");	
 		if(!Cadena.isVacio(this.attrs.get("vencidos")) && this.attrs.get("vencidos").toString().equals("1"))
   		sb.append(((!Cadena.isVacio(this.attrs.get("cliente"))||!Cadena.isVacio(this.attrs.get("dias"))||!Cadena.isVacio(this.attrs.get("fechaInicio"))||!Cadena.isVacio(this.attrs.get("fechaTermino")))?" and ":" ").concat("(now()> vencimiento)"));
+    if(!Cadena.isVacio(this.attrs.get("vencidos")) && this.attrs.get("vencidos").toString().equals("2"))
+  		sb.append(((!Cadena.isVacio(this.attrs.get("cliente"))||!Cadena.isVacio(this.attrs.get("dias"))||!Cadena.isVacio(this.attrs.get("fechaInicio"))||!Cadena.isVacio(this.attrs.get("fechaTermino")))?" and ":" ").concat("(now()< vencimiento)"));
     if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
@@ -101,7 +103,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
-		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+		  regresar.put(Constantes.SQL_CONDICION, sb);
 		return regresar;		
 	}
 	
