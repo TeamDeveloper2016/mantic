@@ -61,11 +61,12 @@ public class Filtro extends IBaseFilter implements Serializable {
     try {
   	  params = toPrepare();	
       columns= new ArrayList<>();
-      columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
-      columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));   
+      columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));      
+      columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));   
+      columns.add(new Columna("abonado", EFormatoDinamicos.MONEDA_CON_DECIMALES));   
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    
       columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));    
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_EXTENDIDA));    
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));    
 			this.lazyModel = new FormatCustomLazy("VistaTcManticApartadosDto", "apartados", params, columns);
 			UIBackingUtilities.resetDataTable();		
     } // try
@@ -150,13 +151,11 @@ public class Filtro extends IBaseFilter implements Serializable {
       seleccionado= (Entity)this.attrs.get("seleccionado");
       columns= new ArrayList<>();
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_apartado_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
+			params.put(Constantes.SQL_CONDICION, "nombre = '".concat(estatus).concat("'"));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			allEstatus=(List<UISelectEntity>) UIEntity.build("TcManticApartadosEstatusDto", params, columns);
 			this.attrs.put("allEstatus", allEstatus);
-      for(UISelectEntity entity: allEstatus)
-        if(entity.toString("nombre").equals(estatus))
-          this.attrs.put("estatus", entity);
+      this.attrs.put("estatus", allEstatus.get(0));
       this.attrs.put("mostrarCantidades", (((UISelectEntity)this.attrs.get("estatus")).getKey().equals(4L)));
       if((boolean)this.attrs.get("mostrarCantidades")){
         this.apartado= (TcManticApartadosDto) DaoFactory.getInstance().findById(TcManticApartadosDto.class, seleccionado.getKey());
@@ -181,7 +180,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		Entity seleccionado               = null;
 		try {	
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			bitacora= new TcManticApartadosBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), Long.valueOf(this.attrs.get("estatus").toString()), seleccionado.getKey(),(Double)this.attrs.get("porcentajeRetenido"), (Double)this.attrs.get("cantidadRetenida"), (Double)this.attrs.get("importeDevuelto"));
+			bitacora= new TcManticApartadosBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), Long.valueOf(this.attrs.get("estatus").toString()), seleccionado.getKey(),Double.valueOf(this.attrs.get("porcentajeRetenido").toString()), Double.valueOf(this.attrs.get("cantidadRetenida").toString()), Double.valueOf(this.attrs.get("importeDevuelto").toString()));
 			transaccion= new Transaccion(bitacora, seleccionado.toLong("idVenta"));
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
@@ -211,8 +210,8 @@ public class Filtro extends IBaseFilter implements Serializable {
   
   public void doUpdatePorcentaje(){
 		try {
-      this.attrs.put("cantidadRetenida",((this.apartado.getAbonado()*(Double)this.attrs.get("porcentajeRetenido"))/100D));
-      this.attrs.put("importeDevuelto",(this.apartado.getAbonado()-(Double)this.attrs.get("cantidadRetenida")));
+      this.attrs.put("cantidadRetenida",((this.apartado.getAbonado()*Double.valueOf(this.attrs.get("porcentajeRetenido").toString()))/100D));
+      this.attrs.put("importeDevuelto",(this.apartado.getAbonado()-Double.valueOf(this.attrs.get("cantidadRetenida").toString())));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -220,10 +219,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
 	} // doUpdatePorcentaje
   
-  public void doUpdateCanticad(){
+  public void doUpdateCantidad(){
 		try {
-      this.attrs.put("porcentajeRetenido", (((Double)this.attrs.get("cantidadRetenida")*100D)/this.apartado.getAbonado()));
-      this.attrs.put("importeDevuelto",(this.apartado.getAbonado()-(Double)this.attrs.get("cantidadRetenida")));
+      this.attrs.put("porcentajeRetenido", (((Double.valueOf(this.attrs.get("cantidadRetenida").toString())*100D)/this.apartado.getAbonado())));
+      this.attrs.put("importeDevuelto",(this.apartado.getAbonado()-Double.valueOf(this.attrs.get("cantidadRetenida").toString())));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
