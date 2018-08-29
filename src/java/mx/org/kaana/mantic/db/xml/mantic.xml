@@ -227,7 +227,8 @@
     <unit id="TcManticApartadosEstatusDto">
       <select id="row">
         select      
-          *
+          tc_mantic_apartados_estatus.id_apartado_estatus as id_key,
+          tc_mantic_apartados_estatus.*
         from      
           tc_mantic_apartados_estatus
         where 
