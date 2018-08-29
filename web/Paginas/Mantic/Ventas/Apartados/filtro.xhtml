@@ -85,7 +85,9 @@
 				<p:spacer/>
 				<div id="collapse-content" class="ui-grid-col-9">
 					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticVentasApartados.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasApartados.attrs.seleccionado}" selectionMode="single" paginator="#{manticVentasApartados.lazyModel.rowCount gt manticVentasApartados.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
-						<f:facet name="header" >
+						<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+            <f:facet name="header" >
 							<div class="lg-pantalla">
 								<p:menuButton   value="Opciones">
 									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -101,7 +103,7 @@
                 <p:menuitem id="reporteIconXs" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doReporte('CUENTAS_POR_COBRAR')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</div>  
 						</f:facet>												
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.consecutivo}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-5" sortBy="#{filtro.consecutivo}">
 							<f:facet name="header">
 								<h:outputText value="Ticket"/>
 							</f:facet>
@@ -119,11 +121,23 @@
 							</f:facet>
 							<h:outputText value="#{filtro['persona']}"/>
 						</p:column>								
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.estatus}">
+							<f:facet name="header">
+								<h:outputText value="Estatus"/>
+							</f:facet>
+							<h:outputText value="#{filtro['estatus']}"/>
+						</p:column>								
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
 							<f:facet name="header">
 								<h:outputText value="Importe"/>
 							</f:facet>
 							<h:outputText value="#{filtro['importe']}"/>
+						</p:column>
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.abonado}">
+							<f:facet name="header">
+								<h:outputText value="Abonado"/>
+							</f:facet>
+							<h:outputText value="#{filtro['abonado']}"/>
 						</p:column>
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.saldo}">
 							<f:facet name="header">
@@ -131,13 +145,13 @@
 							</f:facet>
 							<h:outputText value="#{filtro['saldo']}"/>
 						</p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.regitro}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.regitro}">
 							<f:facet name="header">
 								<h:outputText value="Fecha"/>
 							</f:facet>
 							<h:outputText value="#{filtro['registro']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.dias}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-5" sortBy="#{filtro.dias}">
 							<f:facet name="header">
 								<h:outputText value="Días" title="Días trascurridos desde la compra"/>
 							</f:facet>
@@ -148,10 +162,10 @@
 						</f:facet>
 					</p:dataTable>
 					<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">            
-            <p:menuitem id="pago" icon="fa fa-money" value="Pago" onstart="return janal.bloquear()" action="#{manticVentasApartados.doPago}" process="@this tabla" />						
+            <p:menuitem id="pago" icon="fa fa-money" value="Pago" onstart="return janal.bloquear()" action="#{manticVentasApartados.doPago}" process="@this tabla" rendered="#{fn:contains('|1|2|5|6|', manticVentasApartados.attrs.seleccionado.idApartadoEstatus)}"/>						
             <p:menuitem id="cancelar" icon="fa fa-calendar-times-o" value="Cancelar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doLoadEstatus('CANCELADO')}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|5|6|', manticVentasApartados.attrs.seleccionado.idApartadoEstatus)}"/>					            
-            <p:menuitem id="olvidado" icon="fa fa-frown-o" value="Marcar como olvidado" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doLoadEstatus('OLVIDADO')}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|6|', manticVentasApartados.attrs.seleccionado.idApartadoEstatus) and manticVentasApartados.attrs.seleccionado.dias ge 30}"/>					            
-            <p:menuitem id="aplazar" icon="fa fa-calendar-plus-o" value="Aplazar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doLoadEstatus('APLAZADA')}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', manticVentasApartados.attrs.seleccionado.idApartadoEstatus) and manticVentasApartados.attrs.seleccionado.dias ge 30}"/>					            
+            <p:menuitem id="olvidado" icon="fa fa-frown-o" value="Marcar como olvidado" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doLoadEstatus('OLVIDADO')}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{(fn:contains('|1|2|6|', manticVentasApartados.attrs.seleccionado.idApartadoEstatus)) and (manticVentasApartados.attrs.seleccionado.dias.toInteger() gt 29)}"/>					            
+            <p:menuitem id="aplazar" icon="fa fa-calendar-plus-o" value="Aplazar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doLoadEstatus('APLAZADA')}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|5|6', manticVentasApartados.attrs.seleccionado.idApartadoEstatus) and (manticVentasApartados.attrs.seleccionado.dias.toInteger() gt 29)}"/>					            
           </p:contextMenu>
 				</div>
 			</div>	
@@ -162,15 +176,18 @@
 			<h:form id="formDialogoEstatus" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
-          <p:selectOneMenu id="estatusDlg" value="#{manticVentasApartados.attrs.estatus}" styleClass="janal-wid-100-txt" disabled="true">									
-						<f:selectItems value="#{manticVentasApartados.attrs.allEstatus}"/>					
+          <p:selectOneMenu id="estatusDlg" value="#{manticVentasApartados.attrs.estatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" disabled="true">									
+						<f:selectItems value="#{manticVentasApartados.attrs.allEstatus}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+            <p:column headerText="Nombre">
+              <h:outputText value="#{item.nombre}"/>
+            </p:column>   
 					</p:selectOneMenu>
           <p:outputLabel for="porcentaje" value="Porcentaje retenido:" rendered="#{manticVentasApartados.attrs.mostrarCantidades}"/>
-          <p:inputNumber id="porcentaje" symbol="%" symbolPosition="s" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasApartados.attrs.porcentajeRetenido}" rendered="#{manticVentasApartados.attrs.mostrarCantidades}" disabled="#{manticVentasApartados.attrs.disabledFacturar}">
+          <p:inputNumber id="porcentaje" symbol="%" symbolPosition="s" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasApartados.attrs.porcentajeRetenido}" rendered="#{manticVentasApartados.attrs.mostrarCantidades}" disabled="#{manticVentasApartados.attrs.disabledCantidades}">
             <p:ajax event="blur" listener="#{manticVentasApartados.doUpdatePorcentaje}" process="@this" update="formDialogoEstatus" onstart="janal.bloquear();" oncomplete="janal.desbloquear()"/>
           </p:inputNumber>
           <p:outputLabel for="cantidad" value="Cantidad retenida:" rendered="#{manticVentasApartados.attrs.mostrarCantidades}" />
-          <p:inputNumber id="cantidad" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasApartados.attrs.cantidadRetenida}" rendered="#{manticVentasApartados.attrs.mostrarCantidades}" disabled="#{manticVentasApartados.attrs.disabledFacturar}">
+          <p:inputNumber id="cantidad" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasApartados.attrs.cantidadRetenida}" rendered="#{manticVentasApartados.attrs.mostrarCantidades}" disabled="#{manticVentasApartados.attrs.disabledCantidades}">
             <p:ajax event="blur" listener="#{manticVentasApartados.doUpdateCantidad}" process="@this" update="formDialogoEstatus" onstart="janal.bloquear();" oncomplete="janal.desbloquear()"/>
           </p:inputNumber>	 
           <p:outputLabel for="importe" value="Importe devuelto" rendered="#{manticVentasApartados.attrs.mostrarCantidades}"/>
@@ -184,8 +201,8 @@
 				</h:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticVentasApartados.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
-					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticVentasApartados.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear(); janal.reset();" styleClass="janal-text-white"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgEstatus').hide();" oncomplete="janal.desbloquear(); janal.reset();" styleClass="janal-text-white"/>
 				</div>
 			</h:form>
 		</p:dialog>
