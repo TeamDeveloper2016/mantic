@@ -246,7 +246,7 @@ public class Transaccion extends IBaseTnx{
           Calendar calendar = Calendar.getInstance();
           calendar.setTime(apartado.getVencimiento());
           calendar.add(Calendar.DAY_OF_YEAR, 30);
-          apartado.setVencimiento((Date)calendar.getTime());
+          apartado.setVencimiento(new java.sql.Date(calendar.getTime().getTime()));
         }
         regresar= DaoFactory.getInstance().update(sesion, apartado)>= 1L;
         if(apartado.getIdApartadoEstatus().equals(4L))
@@ -268,7 +268,7 @@ public class Transaccion extends IBaseTnx{
 		try {			
       params= new HashMap<>();
 			params.put("idVenta", this.idVenta);
-      IAdminArticulos adminOrden = new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params));
+      IAdminArticulos adminOrden = new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), false);
 			for(Articulo articulo: adminOrden.getArticulos()){
 				params.put(Constantes.SQL_CONDICION, "id_articulo=".concat(articulo.getIdArticulo().toString()));
 				almacenArticulo= (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesArticulosDto.class, "TcManticAlmacenesArticulosDto", "row", params);
