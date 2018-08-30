@@ -28,6 +28,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticApartadosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticApartadosDto;
+import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.ventas.apartados.reglas.Transaccion;
 
 @Named(value = "manticVentasApartados")
@@ -163,6 +164,9 @@ public class Filtro extends IBaseFilter implements Serializable {
         this.attrs.put("cantidadRetenida",((this.apartado.getAbonado()*10D)/100D));
         this.attrs.put("importeDevuelto",(this.apartado.getAbonado()-(Double)this.attrs.get("cantidadRetenida")));
         this.attrs.put("disabledCantidades", true);	
+        loadBancos();
+        loadTiposPagos();
+        doLoadCajas();
       }
 		} // try
 		catch (Exception e) {
@@ -181,7 +185,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {	
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			bitacora= new TcManticApartadosBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), Long.valueOf(this.attrs.get("estatus").toString()), seleccionado.getKey(),Double.valueOf(this.attrs.get("porcentajeRetenido").toString()), Double.valueOf(this.attrs.get("cantidadRetenida").toString()), Double.valueOf(this.attrs.get("importeDevuelto").toString()));
-			transaccion= new Transaccion(bitacora, seleccionado.toLong("idVenta"));
+			if(!(boolean)this.attrs.get("disabledCantidades"))
+        transaccion= new Transaccion(bitacora, seleccionado.toLong("idVenta"));
+      else{
+        transaccion= new Transaccion(Double.valueOf(this.attrs.get("importeDevuelto").toString()), ((UISelectEntity)this.attrs.get("caja")).getKey(),this.attrs.get("banco")!=null?((UISelectEntity)this.attrs.get("banco")).getKey():-1L, ((UISelectEntity)this.attrs.get("tipoPago")).getKey(), seleccionado.toLong("idVenta"), (this.attrs.get("referencia")!=null?this.attrs.get("referencia").toString():null), bitacora, JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      }
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
 			else
@@ -229,5 +237,73 @@ public class Filtro extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch		
 	} // doUpdateCanticad
+  
+  private void loadTiposPagos(){
+		List<UISelectEntity> tiposPagos= null;
+		Map<String, Object>params      = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_cobro_caja=1");
+			tiposPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
+			this.attrs.put("tiposPagos", tiposPagos);
+			this.attrs.put("tipoPago", UIBackingUtilities.toFirstKeySelectEntity(tiposPagos));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // loadTiposPagos
+  
+  public void doValidaTipoPago(){
+		Long tipoPago= -1L;
+		try {
+			tipoPago= Long.valueOf(this.attrs.get("tipoPago").toString());
+			this.attrs.put("mostrarBanco", !ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(tipoPago));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doValidaTipoPago
+  
+  private void loadBancos(){
+		List<UISelectEntity> bancos= null;
+		Map<String, Object> params = null;
+		List<Columna> campos       = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			campos= new ArrayList<>();
+			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			bancos= UIEntity.build("TcManticBancosDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("bancos", bancos);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadBancos
+  
+  	public void doLoadCajas(){
+		List<UISelectEntity> cajas= null;
+		Map<String, Object>params = null;
+		List<Columna> columns     = null;
+		try {
+			columns= new ArrayList<>();
+			params= new HashMap<>();
+			params.put("idEmpresa",JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			cajas=(List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "cajas", params, columns);
+			this.attrs.put("cajas", cajas);
+			this.attrs.put("caja", cajas.get(0));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch	
+	} // loadCajas
 
 }
