@@ -4092,7 +4092,8 @@
 					tc_mantic_apartados.registro,
 					datediff(now(),tc_mantic_apartados.registro) as dias,
 					tc_mantic_apartados.id_apartado_estatus,
-					tc_mantic_ventas.id_ventatc_mantic_apartados_estatus.nombre estatus
+					tc_mantic_ventas.id_venta,
+        tc_mantic_apartados_estatus.nombre estatus
         from
           tc_mantic_apartados
         inner join
