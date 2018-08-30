@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.ventas.apartados.reglas;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,8 @@ public class Transaccion extends IBaseTnx{
 	private Long idCierreActivo;
 	private Long idBanco;
 	private Long idVenta;
+	private Long idTipoMedioPago;
+	private Double devuelto;
 	private String referencia;
   private TcManticApartadosBitacoraDto bitacora;
 
@@ -44,6 +47,17 @@ public class Transaccion extends IBaseTnx{
 		this.bitacora= bitacora;
     this.idVenta = idVenta;
 	} // Transaccion
+
+  public Transaccion(Double devuelto,Long idCaja,  Long idBanco, Long idTipoMedioPago, Long idVenta, String referencia, TcManticApartadosBitacoraDto bitacora, Long idEmpresa) {
+    this.devuelto = devuelto;
+    this.idCaja    = idCaja;
+    this.idBanco = idBanco;
+    this.idTipoMedioPago = idTipoMedioPago;
+    this.idVenta = idVenta;
+    this.referencia = referencia;
+    this.bitacora = bitacora;
+    this.idEmpresa = idEmpresa;
+  }
   
   public Transaccion(TcManticApartadosPagosDto pago, Long idCaja, Long idEmpresa, Long idBanco, String referencia) {
 		this(pago, idCaja, -1L, idEmpresa, idBanco, referencia);
@@ -65,12 +79,11 @@ public class Transaccion extends IBaseTnx{
       switch (accion) {
         case AGREGAR:					
 						regresar = procesarPago(sesion);
-          break;       
-        case PROCESAR:					
-						regresar = procesarPagoGeneral(sesion);
-          break; 
+          break;        
         case JUSTIFICAR:
             regresar = insertarBitacora(sesion);
+            if(this.devuelto!=null)
+              regresar = registrarPago(sesion, this.bitacora.getIdApartado(), (0D-this.devuelto));
 					break;		
       } // switch
       if (!regresar) 
@@ -125,65 +138,19 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // procesarPago
 	
-	private boolean procesarPagoGeneral(Session sesion) throws Exception{		
-		boolean regresar         = true;
-		List<Entity> apartados   = null;		
-		Map<String, Object>params= null;
-		Double saldo             = 1D;
-		Double saldoApartado     = 0D;				
-		Double pagoParcial       = 0D;				
-		Double abono             = 0D;		
-		Long idEstatus           = -1L;
-		try {
-			apartados= toApartados(sesion);
-			for(Entity apartado: apartados){
-				if(saldo > 0){					
-					saldoApartado= Double.valueOf(apartado.toString("saldo"));
-					if(saldoApartado < this.pago.getPago()){
-						pagoParcial= saldoApartado;
-						saldo= this.pago.getPago() - saldoApartado;						
-						this.pago.setPago(saldo);
-						abono= 0D;
-						idEstatus= EEstatusClientes.FINALIZADA.getIdEstatus();
-					} // if
-					else{						
-						pagoParcial= this.pago.getPago();
-						saldo= 0D;
-						abono= saldoApartado - this.pago.getPago();
-						idEstatus= saldoApartado.equals(this.pago.getPago()) ? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus();
-					} /// else
-					if(registrarPago(sesion, apartado.getKey(), pagoParcial)){
-						params= new HashMap<>();
-						params.put("saldo", abono);
-						params.put("idApartadpoEstatus", idEstatus);
-						DaoFactory.getInstance().update(sesion, TcManticApartadosDto.class, apartado.getKey(), params);
-					}	// if				
-				} // if
-			} // for
-		} // try
-		catch (Exception e) {			
-			throw e; 
-		} // catch		
-		finally{
-			this.messageError= "Error al registrar el pago";
-			Methods.clean(params);			
-		} // finally
-		return regresar;
-	} // procesarPagoGeneral
-	
 	private boolean registrarPago(Session sesion, Long idApartado, Double pagoParcial) throws Exception{
 		TcManticApartadosPagosDto registroPago= null;
 		boolean regresar                     = false;
 		try {
-			if(toCierreCaja(sesion, pagoParcial)){
+			if(toCierreCaja(sesion, (pagoParcial))){
 				registroPago= new TcManticApartadosPagosDto();
 				registroPago.setIdApartado(idApartado);
 				registroPago.setIdUsuario(JsfBase.getIdUsuario());
-				registroPago.setObservaciones("Pago aplicado los apartados generales del cliente. ".concat(this.pago.getObservaciones()));
+				registroPago.setObservaciones(this.pago!= null?"Pago aplicado los apartados generales del cliente. ".concat(this.pago.getObservaciones()):"Monto devuelto al cliente");
 				registroPago.setPago(pagoParcial);
-				registroPago.setIdTipoMedioPago(this.pago.getIdTipoMedioPago());
+				registroPago.setIdTipoMedioPago(this.pago!= null? this.pago.getIdTipoMedioPago():this.idTipoMedioPago);
 				registroPago.setIdCierre(this.idCierreActivo);
-				if(!this.pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
+				if(!(this.pago!= null?this.pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago()):this.idTipoMedioPago.equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago()))){
 					registroPago.setIdBanco(this.idBanco);
 					registroPago.setReferencia(this.referencia);
 				} // if
@@ -224,7 +191,7 @@ public class Transaccion extends IBaseTnx{
 			cierre= new mx.org.kaana.mantic.ventas.caja.reglas.Transaccion(datosCierre);
 			if(cierre.verificarCierreCaja(sesion)){
 				this.idCierreActivo= cierre.getIdCierreVigente();
-				regresar= cierre.alterarCierreCaja(sesion, this.pago.getIdTipoMedioPago());
+				regresar= cierre.alterarCierreCaja(sesion,this.pago!=null? this.pago.getIdTipoMedioPago(): this.idTipoMedioPago);
 			} // if
 		} // try
 		catch (Exception e) {			
