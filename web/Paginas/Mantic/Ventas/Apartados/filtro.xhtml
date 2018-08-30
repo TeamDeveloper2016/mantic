@@ -21,9 +21,10 @@
       
       fieldsDialog= {
 				'justificacion'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true},
-        'porcentaje'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', individual: true},
-        'cantidad'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', individual: true},
-        'importe'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', individual: true}
+        'porcentaje'     : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo'},
+        'cantidad'       : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo'},
+        'importe'        : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo'},
+				'referencia'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'}
         
 			};
 			
@@ -165,7 +166,7 @@
             <p:menuitem id="pago" icon="fa fa-money" value="Pago" onstart="return janal.bloquear()" action="#{manticVentasApartados.doPago}" process="@this tabla" rendered="#{fn:contains('|1|2|5|6|', manticVentasApartados.attrs.seleccionado.idApartadoEstatus)}"/>						
             <p:menuitem id="cancelar" icon="fa fa-calendar-times-o" value="Cancelar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doLoadEstatus('CANCELADO')}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|5|6|', manticVentasApartados.attrs.seleccionado.idApartadoEstatus)}"/>					            
             <p:menuitem id="olvidado" icon="fa fa-frown-o" value="Marcar como olvidado" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doLoadEstatus('OLVIDADO')}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{(fn:contains('|1|2|6|', manticVentasApartados.attrs.seleccionado.idApartadoEstatus)) and (manticVentasApartados.attrs.seleccionado.dias.toInteger() gt 29)}"/>					            
-            <p:menuitem id="aplazar" icon="fa fa-calendar-plus-o" value="Aplazar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doLoadEstatus('APLAZADA')}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|5|6', manticVentasApartados.attrs.seleccionado.idApartadoEstatus) and (manticVentasApartados.attrs.seleccionado.dias.toInteger() gt 29)}"/>					            
+            <p:menuitem id="aplazar" icon="fa fa-calendar-plus-o" value="Aplazar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doLoadEstatus('APLAZADA')}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|5|', manticVentasApartados.attrs.seleccionado.idApartadoEstatus) and (manticVentasApartados.attrs.seleccionado.dias.toInteger() gt 29)}"/>					            
           </p:contextMenu>
 				</div>
 			</div>	
@@ -174,7 +175,7 @@
   <ui:define name="dialogos">
 		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoEstatus', fieldsDialog);janal.refresh();">
 			<h:form id="formDialogoEstatus" prependId="false">
-				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+				<h:panelGrid  id="panelDialog" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
           <p:selectOneMenu id="estatusDlg" value="#{manticVentasApartados.attrs.estatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" disabled="true">									
 						<f:selectItems value="#{manticVentasApartados.attrs.allEstatus}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
@@ -184,18 +185,54 @@
 					</p:selectOneMenu>
           <p:outputLabel for="porcentaje" value="Porcentaje retenido:" rendered="#{manticVentasApartados.attrs.mostrarCantidades}"/>
           <p:inputNumber id="porcentaje" symbol="%" symbolPosition="s" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasApartados.attrs.porcentajeRetenido}" rendered="#{manticVentasApartados.attrs.mostrarCantidades}" disabled="#{manticVentasApartados.attrs.disabledCantidades}">
-            <p:ajax event="blur" listener="#{manticVentasApartados.doUpdatePorcentaje}" process="@this" update="formDialogoEstatus" onstart="janal.bloquear();" oncomplete="janal.desbloquear()"/>
+            <p:ajax event="blur" listener="#{manticVentasApartados.doUpdatePorcentaje}" process="@this" update="formDialogoEstatus" onstart="janal.bloquear();" oncomplete="janal.desbloquear(); janal.reset();"/>
           </p:inputNumber>
           <p:outputLabel for="cantidad" value="Cantidad retenida:" rendered="#{manticVentasApartados.attrs.mostrarCantidades}" />
           <p:inputNumber id="cantidad" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasApartados.attrs.cantidadRetenida}" rendered="#{manticVentasApartados.attrs.mostrarCantidades}" disabled="#{manticVentasApartados.attrs.disabledCantidades}">
-            <p:ajax event="blur" listener="#{manticVentasApartados.doUpdateCantidad}" process="@this" update="formDialogoEstatus" onstart="janal.bloquear();" oncomplete="janal.desbloquear()"/>
+            <p:ajax event="blur" listener="#{manticVentasApartados.doUpdateCantidad}" process="@this" update="formDialogoEstatus" onstart="janal.bloquear();" oncomplete="janal.desbloquear(); janal.reset();"/>
           </p:inputNumber>	 
           <p:outputLabel for="importe" value="Importe devuelto" rendered="#{manticVentasApartados.attrs.mostrarCantidades}"/>
           <p:inputNumber id="importe" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasApartados.attrs.importeDevuelto}" rendered="#{manticVentasApartados.attrs.mostrarCantidades}" disabled="true"/>
           <p:outputLabel for="cambiar" value="Cambiar porcentaje:" rendered="#{manticVentasApartados.attrs.mostrarCantidades}"/>	
           <p:inputSwitch id = "cambiar" value="#{manticVentasApartados.attrs.devolucion}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt" rendered="#{manticVentasApartados.attrs.mostrarCantidades}">
-            <p:ajax listener="#{manticVentasApartados.doActiveTexts}" process="@this formDialogoEstatus" update="formDialogoEstatus" onstart="janal.bloquear();" oncomplete="janal.desbloquear()"/>
+            <p:ajax listener="#{manticVentasApartados.doActiveTexts}" process="@this formDialogoEstatus" update="formDialogoEstatus" onstart="janal.bloquear();" oncomplete="janal.desbloquear(); janal.reset();"/>
           </p:inputSwitch>
+          <p:outputLabel for="caja" value="Caja:" rendered="#{manticVentasApartados.attrs.mostrarCantidades}"/>
+					<p:selectOneMenu id="caja" value="#{manticVentasApartados.attrs.caja}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains" rendered="#{manticVentasApartados.attrs.mostrarCantidades}">								
+						<f:selectItems value="#{manticVentasApartados.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+						<p:column headerText="Clave">
+							<h:outputText value="#{item.clave}"/>
+						</p:column>   
+						<p:column headerText="Nombre">
+							<h:outputText value="#{item.nombre}"/>
+						</p:column>   
+						<p:column headerText="Limite" styleClass="janal-column-right">
+							<h:outputText value="$#{item.limite}"/>
+						</p:column>   
+					</p:selectOneMenu>
+          <p:outputLabel for="tipoPago" value="Tipo de pago:" rendered="#{manticVentasApartados.attrs.mostrarCantidades}"/>
+					<p:selectOneMenu id="tipoPago" value="#{manticVentasApartados.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="contains" rendered="#{manticVentasApartados.attrs.mostrarCantidades}">					
+						<p:ajax event="change" process="@this pago" listener="#{manticVentasApartados.doValidaTipoPago}" update="panelDialog lblBanco banco lblReferencia referencia" oncomplete="janal.refresh(); janal.reset();"/>
+						<f:selectItems value="#{manticVentasApartados.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+						<p:column headerText="Clave">
+							<h:outputText value="#{item.clave}"/>
+						</p:column>   
+						<p:column headerText="Nombre">
+							<h:outputText value="#{item.nombre}"/>
+						</p:column>   
+					</p:selectOneMenu>		
+					<p:outputLabel id="lblBanco" for="banco" value="Banco:" rendered="#{manticVentasApartados.attrs.mostrarCantidades and manticVentasApartados.attrs.mostrarBanco}"/>
+					<p:selectOneMenu id="banco" value="#{manticVentasApartados.attrs.banco}" filter="true" filterMatchMode="contains" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity" rendered="#{manticVentasApartados.attrs.mostrarCantidades and manticVentasApartados.attrs.mostrarBanco}">														
+						<f:selectItems value="#{manticVentasApartados.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
+						<p:column headerText="Nombre">
+							<h:outputText value="#{item.nombre}"/>
+						</p:column>   
+						<p:column headerText="Razón social">
+							<h:outputText value="#{item.razonSocial}"/>
+						</p:column>   
+					</p:selectOneMenu>
+					<p:outputLabel id="lblReferencia" for="referencia" value="Referencia:" rendered="#{manticVentasApartados.attrs.mostrarCantidades and manticVentasApartados.attrs.mostrarBanco}"/>
+					<p:inputText id="referencia" value="#{manticVentasApartados.attrs.referencia}" styleClass="janal-wid-100-txt" placeholder="Ej. Referencia 4564" rendered="#{manticVentasApartados.attrs.mostrarCantidades and manticVentasApartados.attrs.mostrarBanco}"/>										
 					<p:outputLabel for="justificacion" value="Justificación:"/>
 					<p:inputTextarea id="justificacion" value="#{manticVentasApartados.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
 				</h:panelGrid>
