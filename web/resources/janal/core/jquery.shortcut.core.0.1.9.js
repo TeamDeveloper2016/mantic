@@ -251,6 +251,15 @@ shortcut.add("f10", function() {
 	} // if
 });
 
+shortcut.add("Shift+C", function() {
+	janal.console('Cambio de precio a articulo:');
+	if(PF('dlgCambioPrecio') && !PF('dlgCambioPrecio').isVisible()){
+		janal.bloquear();
+	  PF('dlgCambioPrecio').show();				
+		setTimeout("$('#cambiopreciousr').focus();", 1000);						
+	} // if
+});
+
 shortcut.add("Shift+f10", function() {
 	janal.console('Shortcut verificador de precios:');
 	if(PF('dlgVerificador') && !PF('dlgVerificador').isVisible())
