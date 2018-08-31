@@ -10,7 +10,7 @@
 	<ui:param name="titulo" value="Listado de tickets abiertos para cobro"/>
 	<ui:param name="notIsCaja" value="false" class="javax.faces.Boolean"/>
 	<ui:define name="librerias">    		
-		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.1.8.js"/>
+		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.1.9.js"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
 				'descuento': {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'general'},
@@ -58,9 +58,15 @@
 			fieldsDialog ={
 				'calleBusqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
 			};
+						
+			fieldsDialogPrecio ={
+				'cambiopreciousr'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'},			
+				'passwordcambioprecio': {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'},							
+				'cambioPrecio'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'}
+			};
 			
     	$(document).ready(function() {
-				jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasCajaAccion.adminOrden.articulos.size()}, 'tabla\\:');
+				jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasCajaAccion.adminOrden.articulos.size()}, 'contenedorGrupos\\:tabla\\:');
 				janal.readingMode('#{manticVentasCajaAccion.attrs.nombreAccion}');
       });																		
 			
@@ -72,6 +78,36 @@
 				} // if
 				return ok;
 			} // ventaFinished
+			
+			function validateCapturaDescuentos(){
+				var ok= janal.partial('descuento');
+				if(ok){
+					PF('dlgDescuentos').hide();					
+					jsArticulos.autorizedDiscount();
+					janal.restore();
+					janal.refresh();
+				} // if
+				return ok;
+			} // validateCapturaDescuentos
+			
+			function validateCapturaCambioPrecio(){
+				var ok= janal.partial('descuento');
+				if(ok){
+					PF('dlgCambioPrecio').hide();					
+					jsArticulos.autorizedPrecio();
+					janal.restore();
+					janal.refresh();
+				} // if
+				return ok;
+			} // validateCapturaCambioPrecio
+			
+			function restoreCursoArt(){
+				setTimeout("jsArticulos.goto();", 1000);						
+			}
+			
+			function descuentoUserFocus(){
+				setTimeout("$('#descuentousr').focus();", 1000);						
+			}
 		</script>   
 		<style type="text/css">
 			.janal-total-compra {
@@ -91,9 +127,52 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
+		<pe:remoteCommand name="updateCambioPrecio" process="@this" update="panelCambioPrecio cambiopreciousr passwordcambioprecio"/>  			
+		<pe:remoteCommand name="updateDescuentos" process="@this" update="panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd"/>  			
 		<pe:remoteCommand name="applyValidacionesCredito" process="@this contenedorGrupos:creditoCliente" update="contenedorGrupos:panelSumatoria" actionListener="#{manticVentasCajaAccion.doValidaCreditoCliente}" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>  			
 		<pe:remoteCommand name="cobrarVenta" process="@this" update="contenedorGrupos" actionListener="#{manticVentasCajaAccion.doOpenCobro}" onstart="janal.bloquear()" oncomplete="janal.desbloquear();"/>  			
 		<pe:remoteCommand name="loadTicketAbiertos" process="@this" update="contenedorGrupos aceptar aceptarIcon @(.cotizar)" actionListener="#{manticVentasCajaAccion.doAsignaTicketAbierto}" onstart="janal.bloquear()" oncomplete="janal.desbloquear();"/>  					
+		<pe:remoteCommand name="loadCotizaciones" process="@this" update="dialogoCotizaciones" actionListener="#{manticVentasCajaAccion.doLoadCotizaciones}" onstart="janal.bloquear()"/>  			
+		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticVentasCajaAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
+			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
+			<pe:methodParam name="codigo"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="suppress" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticVentasCajaAccion.doDeleteArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>
+		<pe:remoteCommand name="autorizedModificacionPrecio" process="@this @(.filas) cambioPrecio" update="@(.filas) @(.recalculo) contenedorGrupos:contenido" actionListener="#{manticVentasCajaAccion.doAplicarCambioPrecio}" oncomplete="janal.desbloquear();refresh();">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="refresh" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticVentasCajaAccion.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.next();">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="autorized" process="@this @(.filas) descuentoIndividual descuentoGlobal tipoDescuento" update="@(.filas) @(.recalculo)" actionListener="#{manticVentasCajaAccion.doAplicarDescuento}" oncomplete="janal.desbloquear();">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="search" process="@this" update="@(.informacion)" actionListener="#{manticVentasCajaAccion.doSearchArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
+			<pe:methodSignature parameters="java.lang.Long, java.lang.Integer"/>  
+			<pe:methodParam name="idArticulo"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>
+		<pe:remoteCommand name="detail" process="@this" update="dialogoDetalleArticulo" actionListener="#{manticVentasCajaAccion.doDetailArticulo}" onstart="return janal.bloquear();">  
+			<pe:methodSignature parameters="java.lang.Long, java.lang.Integer"/>  
+			<pe:methodParam name="idArticulo"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="locationArt" process="@this" update="dialogoAlmacenes" actionListener="#{manticVentasCajaAccion.doAlmacenesArticulo}" onstart="return janal.bloquear();">  
+			<pe:methodSignature parameters="java.lang.Long, java.lang.Integer"/>  
+			<pe:methodParam name="idArticulo"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>		
+		<pe:remoteCommand name="replace" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticVentasCajaAccion.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
+			<pe:methodSignature parameters="java.lang.Integer"/>  
+			<pe:methodParam name="index"/>  
+		</pe:remoteCommand>
 		<p:remoteCommand name="lookup" actionListener="#{manticVentasCajaAccion.doUpdateArticulos}" process="@this"/>
 		<p:tabView id="contenedorGrupos" widgetVar="contenedorCaja" activeIndex="#{manticVentasCajaAccion.attrs.tabIndex}">		
 			<p:ajax event="tabChange" listener="#{manticVentasCajaAccion.doTabChange}" update="@(.cotizar)" oncomplete="janal.refresh();"/>
@@ -104,7 +183,7 @@
 							<p:panelGrid id="panelEmpresa" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-5, janal-wid-100">
 								<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasCajaAccion.attrs.isMatriz}"/>
 								<p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticVentasCajaAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">
-									<p:ajax event="change" process="@this" listener="#{manticVentasCajaAccion.doLoadTicketAbiertos}" update="encabezadoVenta contenido contenedorGrupos caja" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="change" process="@this" listener="#{manticVentasCajaAccion.doLoadTicketAbiertos}" update="encabezadoVenta contenedorGrupos:contenido caja" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{manticVentasCajaAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -136,7 +215,7 @@
 								<p:outputLabel for="fecha" value="Fecha:"/>
 								<p:outputLabel value="Cuenta abiertas:"/>
 								<p:calendar id="fecha" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticVentasCajaAccion.attrs.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario">
-									<p:ajax event="dateSelect" process="@this" listener="#{manticVentasCajaAccion.doLoadTicketAbiertos}" update="encabezadoVenta contenido contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="dateSelect" process="@this" listener="#{manticVentasCajaAccion.doLoadTicketAbiertos}" update="encabezadoVenta contenedorGrupos:contenido" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 								</p:calendar>								
 								<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasCajaAccion.attrs.ticketAbierto}" styleClass="janal-wid-100-txt" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="contains">
 									<p:ajax event="change" onstart="loadTicketAbiertos();" update="@(.cotizar)" oncomplete="janal.desbloquear();" />
@@ -166,17 +245,47 @@
 											</f:facet>
 											<h:outputText value="#{index+ 1}"/>
 										</p:column>										
-										<p:column class="MarAuto Responsive janal-wid-15">
+										<p:column  class="MarAuto Responsive janal-wid-13">
 											<f:facet name="header">
+												<p:selectBooleanCheckbox value="#{manticVentasCajaAccion.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
+													<p:ajax event="change" process="@this" update="@this"/>
+												</p:selectBooleanCheckbox>
 												<h:outputText value="Código"/>
+												<span class="janal-help-icon janal-help-9 fa fa-fw fa-question-circle Fright" onclick="countHelp(9);"/>	
+												<pe:tooltip for="@(.janal-help-9)" showEvent="click">
+													<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(9)}" styleClass="Fs15" escape="false"/>
+												</pe:tooltip>
 											</f:facet>
-											<h:outputText id="codigo" value="#{row['codigo']}" title="Código propio: #{row['propio']} Existencias almacen: #{row['stock']}" escape="false"/>
-										</p:column>		
+											<div class="ui-grid-row janal-grid-row">
+												<div class="ui-grid-col-12">
+													<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
+													<p:inputText id="locks" value="0" style="display:none"/>
+													<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticVentasCajaAccion.attrs.articulo}" completeMethod="#{manticVentasCajaAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="4" maxResults="10">
+														<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
+														<f:facet name="itemtip">
+															<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
+																<f:facet name="header" class="TexAlCenter">
+																	<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>
+																</f:facet>
+																<h:outputText value="Código:" />
+																<h:outputText value="#{custom.propio}" />
+																<h:outputText value="Código:" />
+																<h:outputText value="#{custom.codigo}" />
+																<h:outputText value="Nombre:" />
+																<h:outputText value="#{custom.nombre}" />
+																<h:outputText value="Costo:" />
+																<h:outputText value="$ #{custom.precio}" />
+															</h:panelGrid>
+														</f:facet>
+													</p:autoComplete>												
+												</div>	
+											</div>	
+										</p:column>
 										<p:column  class="MarAuto Responsive">
 											<f:facet name="header">
 												<h:outputText value="Articulo"/>
 											</f:facet>
-											<h:outputText id="nombres" value="#{row['nombre']}" title="Código propio: #{row['propio']}    Existencias almacen: #{row['stock']}" escape="false"/>
+											<h:outputText id="nombres" value="[#{row['propio']}] #{row['nombre']}" title="Código propio: #{row['propio']}    Existencias almacen: #{row['stock']}" escape="false"/>
 										</p:column>		
 										<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
 											<f:facet name="header">
@@ -574,10 +683,187 @@
 				<p:commandButton value="Cerrar" icon="fa fa-close" onstart="PF('dlgLimiteCaja').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
 			</div>
 		</p:dialog>
+		<p:dialog id="dialogoAlmacenes" widgetVar="dlgAlmacenes" header="Articulo en sucursales" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();restoreCursoArt();" width="60%">						
+			<p:dataTable lazy="true" id="almacenes" widgetVar="kajoolTable" var="row" value="#{manticVentasCajaAccion.almacenes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticVentasCajaAccion.almacenes.rowCount gt manticVentasCajaAccion.almacenes.pageSize}" rowIndexVar="index" reflow="true">            	
+				<p:column headerText="No" styleClass="janal-wid-10">
+					<h:outputText value="#{index+ 1}"/>
+				</p:column>   
+				<p:column headerText="Clave" styleClass="janal-wid-30">
+					<h:outputText value="#{row.clave}"/>
+				</p:column>   
+				<p:column headerText="Nombre">
+					<h:outputText value="#{row.nombre}"/>
+				</p:column>   
+				<p:column headerText="Existencias" styleClass="janal-wid-10 janal-column-right">
+					<h:outputText value="#{row.stock}"/>
+				</p:column>   				
+				<f:facet name="footer">
+					<p:outputLabel value="Total [#{manticVentasCajaAccion.almacenes==null?0:manticVentasCajaAccion.almacenes.rowCount}] registros"/>
+				</f:facet>
+			</p:dataTable>								
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">				
+				<p:commandButton icon="fa fa-close" styleClass="janal-text-white" process="@none" value="Cerrar" onstart="PF('dlgAlmacenes').hide();" oncomplete="janal.desbloquear();"/>
+			</div>
+		</p:dialog>
+		<p:dialog id="dialogoDetalleArticulo" widgetVar="dlgDetalleArt" header="Articulo [#{manticVentasCajaAccion.attrs.detailArticulo.codigo}]" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();restoreCursoArt();" width="60%">			
+			<p:tabView>
+				<p:tab title="Generales">
+					<h:panelGrid columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">
+						<p:outputLabel value="Nombre:"/>
+						<p:inputText value="#{manticVentasCajaAccion.attrs.detailArticulo.nombre}" styleClass="janal-wid-100-txt" disabled="true"/>					
+					</h:panelGrid>	
+					<p:separator/>
+					<h:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-40, janal-wid-30">
+						<p:outputLabel value="Menudeo:" />
+						<p:outputLabel value="Medio mayoreo:" />
+						<p:outputLabel value="Mayoreo:" />
+						<p:inputText value="$#{manticVentasCajaAccion.attrs.detailArticulo.menudeo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>											
+						<p:inputText value="$#{manticVentasCajaAccion.attrs.detailArticulo.medioMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
+						<p:inputText value="$#{manticVentasCajaAccion.attrs.detailArticulo.mayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>																							
+						<p:outputLabel value="Limite menudeo:" />
+						<p:outputLabel value="Limite medio mayoreo:" />
+						<p:outputLabel value="Limite mayoreo:" />						
+						<p:inputText value="0 - #{manticVentasCajaAccion.attrs.detailArticulo.limiteMedioMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>											
+						<p:inputText value="#{manticVentasCajaAccion.attrs.detailArticulo.limiteMedioMayoreo} - #{manticVentasCajaAccion.attrs.detailArticulo.limiteMayoreo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>											
+						<p:inputText value="#{manticVentasCajaAccion.attrs.detailArticulo.limiteMayoreo} - #" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
+						<p:separator/><p:separator/><p:separator/>
+						<p:outputLabel value="Unidad de medida:" />
+						<p:outputLabel value="Stock:" />
+						<p:outputLabel value="IVA:" />
+						<p:inputText value="#{manticVentasCajaAccion.attrs.detailArticulo.unidadMedida}" styleClass="janal-wid-100-txt" disabled="true"/>											
+						<p:inputText value="#{manticVentasCajaAccion.attrs.detailArticulo.stock}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>																									
+						<p:inputText value="#{manticVentasCajaAccion.attrs.detailArticulo.iva}%" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>					
+					</h:panelGrid>
+				</p:tab>
+				<p:tab title="Especificaciones">
+					<p:dataTable  lazy="true" id="especificaciones" widgetVar="kajoolTable" var="filtro" value="#{manticVentasCajaAccion.especificaciones}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticVentasCajaAccion.especificaciones.rowCount gt manticVentasCajaAccion.especificaciones.pageSize}" rowIndexVar="index" reflow="true">            
+            <p:column class="MarAuto Responsive">
+              <f:facet name="header">
+                <h:outputText value="Nombre"/>
+              </f:facet>
+              <h:outputText value="#{filtro['nombre']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive">
+              <f:facet name="header">
+                <h:outputText value="Valor"/>
+              </f:facet>
+              <h:outputText value="#{filtro['valor']}"/>
+            </p:column>		          
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticVentasCajaAccion.especificaciones==null?0:manticVentasCajaAccion.especificaciones.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+				</p:tab>
+				<p:tab title="Descuentos">
+					<p:dataTable  lazy="true" id="descuentosLazy" widgetVar="kajoolTable" var="filtro" value="#{manticVentasCajaAccion.descuentos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticVentasCajaAccion.descuentos.rowCount gt manticVentasCajaAccion.descuentos.pageSize}" rowIndexVar="index" reflow="true">            
+            <p:column class="MarAuto Responsive janal-column-right janal-wid-20">
+              <f:facet name="header">
+                <h:outputText value="Porcentaje"/>
+              </f:facet>
+              <h:outputText value="#{filtro['porcentaje']}"/>
+            </p:column>		
+            <p:column class="MarAuto Responsive janal-column-center janal-wid-20">
+              <f:facet name="header">
+                <h:outputText value="Vigencia inicial"/>
+              </f:facet>
+              <h:outputText value="#{filtro['vigenciaInicial']}"/>
+            </p:column>		          
+            <p:column class="MarAuto Responsive janal-column-center janal-wid-20">
+              <f:facet name="header">
+                <h:outputText value="Vigencia final"/>
+              </f:facet>
+              <h:outputText value="#{filtro['vigenciaFinal']}"/>
+            </p:column>		          
+            <p:column class="MarAuto Responsive">
+              <f:facet name="header">
+                <h:outputText value="Observaciones"/>
+              </f:facet>
+              <h:outputText value="#{filtro['observaciones']}"/>
+            </p:column>		          
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticVentasCajaAccion.descuentos==null?0:manticVentasCajaAccion.descuentos.rowCount}] registros"/>
+            </f:facet>
+          </p:dataTable>
+				</p:tab>
+			</p:tabView>			
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">				
+				<p:commandButton icon="fa fa-close" styleClass="janal-text-white" process="@none" value="Cerrar" onstart="PF('dlgDetalleArt').hide();" oncomplete="janal.desbloquear();"/>
+			</div>
+		</p:dialog>
+		<p:dialog id="dialogoCotizaciones" widgetVar="dlgCotizaciones" header="Cotizaciones" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();restoreCursoArt();" width="50%">			
+			<h:panelGrid id="panelCotizacion" columns="2" styleClass="janal-wid-100 expirada" columnClasses="janal-wid-10, janal-wid-100">
+				<p:outputLabel value="Cotización:"/>
+				<p:selectOneMenu id="cotizacion" value="#{manticVentasCajaAccion.attrs.cotizacion}" styleClass="janal-wid-100-txt">
+					<p:ajax event="change" process="@this" listener="#{manticVentasCajaAccion.doVerificaVigenciaCotizacion}" update="panelCotizacion"/>
+					<f:selectItems value="#{manticVentasCajaAccion.attrs.cotizaciones}"/>
+				</p:selectOneMenu>
+				<p:spacer rendered="#{manticVentasCajaAccion.attrs.expirada}"/>
+				<p:outputLabel value="La cotización ha expirado" rendered="#{manticVentasCajaAccion.attrs.expirada}" class="janal-etapa janal-data-table-opciones"/>
+			</h:panelGrid>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this cotizacion" value="Aceptar" onstart="PF('dlgCotizaciones').hide();" actionListener="#{manticVentasCajaAccion.doAsignaCotizacion}" update="contenedorGrupos:contenido contenedorGrupos:cliente @(.filas) @(.recalculo) @(.informacion)" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-remove" styleClass="janal-text-white" process="@none" value="Cancelar" onstart="PF('dlgCotizaciones').hide();" oncomplete="janal.desbloquear();"/>
+			</div>
+		</p:dialog>
+		<p:dialog id="dialogoOpenTickets" widgetVar="dlgOpenTickets" header="Cuentas abiertas" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();restoreCursoArt();" width="50%">			
+			<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
+				<p:outputLabel value="Cuenta:"/>
+				<p:selectOneMenu id="ticketsAbiertosDlg" value="#{manticVentasCajaAccion.attrs.ticketAbierto}" styleClass="janal-wid-100-txt">
+					<f:selectItems value="#{manticVentasCajaAccion.attrs.ticketsAbiertos}"/>
+				</p:selectOneMenu>
+			</h:panelGrid>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this ticketsAbiertosDlg" value="Aceptar" onstart="PF('dlgOpenTickets').hide();" actionListener="#{manticVentasCajaAccion.doAsignaTicketAbierto}" update="contenedorGrupos:contenido contenedorGrupos:cliente @(.filas) @(.recalculo) @(.informacion)" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-remove" styleClass="janal-text-white" process="@none" value="Cancelar" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();"/>
+			</div>
+		</p:dialog>
+		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" onHide="janal.desbloquear();restoreCursoArt();">
+			<h:outputText value="Nota: Si desea buscar un articulo se puede usar la coma como separador de palabras ej. cable,coaxial ó cable coaxial" escape="false"/>
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:outputLabel for="codigo" value="Código o nombre:"/>
+					<span class="janal-help-icon janal-help-8 fa fa-fw fa-question-circle Fright" onclick="countHelp(8);"/>	
+					<pe:tooltip for="@(.janal-help-8)" showEvent="click">
+						<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(8)}" styleClass="Fs15" escape="false"/>
+					</pe:tooltip>
+				</div>			
+			</div>	
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:inputText id="codigo" value="#{manticVentasCajaAccion.attrs.codigo}" styleClass="janal-wid-100-txt key-up-event"/>
+				</div>			
+			</div>
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:outputLabel for="buscados" value="Articulos:"/><br/>
+					<p:selectOneMenu id="buscados" value="#{manticVentasCajaAccion.attrs.articulo}" var="item" styleClass="janal-wid-98" converter="janal.convertidor.Entity">
+						<f:selectItems value="#{manticVentasCajaAccion.attrs.articulos}" var="element" itemValue="#{element}" itemLabel="Código: [#{element.propio}] Precio: [$ #{element.precio}] #{element.nombre}"/>
+						<p:column headerText="Propio">
+							<h:outputText value="#{item.propio}"/>
+						</p:column>   
+						<p:column headerText="Nombre">
+							<h:outputText value="#{item.nombre}"/>
+						</p:column>   
+						<p:column headerText="Proveedor">
+							<h:outputText value="#{item.codigo}"/>
+						</p:column>   
+					</p:selectOneMenu>
+				</div>
+			</div>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this buscados" update="@(.filas) @(.recalculo)" value="Aceptar" oncomplete="PF('dialogo').hide(); jsArticulos.close();"/>
+				<p:commandButton process="@none" styleClass="janal-text-white" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide();jsArticulos.move();"/>
+			</div>
+		</p:dialog>
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="cotizacion" value="Cotización" icon="fa fa-list-ul" process="@form" styleClass="cotizar janal-text-white" actionListener="#{manticVentasCajaAccion.doVerificaArticulosCotizacion}" update="dialogoCotizacion" style="display: #{manticVentasCajaAccion.pagar? 'none': manticVentasCajaAccion.attrs.pagarVenta? '': 'none'}"/>
+			<p:commandButton id="aceptCotizacion" value="Cotización" icon="fa fa-list-ul" process="@form" styleClass="cotizar janal-text-white" actionListener="#{manticVentasCajaAccion.doVerificaArticulosCotizacion}" update="dialogoCotizacion" style="display: #{manticVentasCajaAccion.pagar? 'none': manticVentasCajaAccion.attrs.pagarVenta? '': 'none'}"/>
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this" styleClass="cotizar janal-text-white" oncomplete="ventaFinished();" update="dialogoCerrarVenta" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}" style="display: #{manticVentasCajaAccion.pagar? '': 'none'}"/>			
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 		</div>		
@@ -588,6 +874,54 @@
 		</div>		
 	</ui:define>
 	<ui:define name="dialogos">
+		<p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" header="Aplicar descuento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateDescuentos();janal.change('dialogosVenta', fieldsDialog);janal.refresh();descuentoUserFocus();" width="50%" onHide="janal.desbloquear();janal.restore();janal.refresh();restoreCursoArt();">						
+			<h:form id="dialogosVenta" prependId="false">
+				<h:panelGrid columns="1" styleClass="janal-wid-100">
+					<p:outputLabel for="descuentousr" value="Usuario:"/>
+					<p:inputText id="descuentousr" value="#{manticVentasCajaAccion.attrs.usuarioDescuento}" styleClass="janal-wid-100-txt"/>
+					<p:outputLabel for="descuentopswrd" value="Contraseña:"/>
+					<p:password id="descuentopswrd" value="#{manticVentasCajaAccion.attrs.passwordDescuento}" styleClass="janal-wid-100-txt" autocomplete="new-password"/>									
+					<p:separator/>
+					<p:outputLabel for="tipoDescuento" value="Tipo de descuento:"/>
+					<p:selectOneRadio id="tipoDescuento" value="#{manticVentasCajaAccion.attrs.tipoDescuento}">
+						<p:ajax event="change" listener="#{manticVentasCajaAccion.doActivarDescuento}" process="@this" update="panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal"/>
+						<f:selectItem itemLabel="Individual" itemValue="1"/>
+						<f:selectItem itemLabel="Global" itemValue="0"/>
+					</p:selectOneRadio>
+				</h:panelGrid>				
+				<h:panelGrid id="panelDescuentoEspecificacionIndividual" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-95 janal-column-right, janal-wid-5">			
+					<p:inputNumber id="descuentoIndividual" inputStyleClass="janal-column-right" value="#{manticVentasCajaAccion.attrs.descuentoIndividual}" rendered="#{manticVentasCajaAccion.attrs.isIndividual}"/><p:outputLabel value="%" rendered="#{manticVentasCajaAccion.attrs.isIndividual}"/>  
+				</h:panelGrid>				
+				<h:panelGrid id="panelDescuentoEspecificacionGlobal" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-5, janal-wid-95 janal-column-right">
+					<p:outputLabel value="$" rendered="#{!manticVentasCajaAccion.attrs.isIndividual}"/><p:inputNumber id="descuentoGlobal" inputStyleClass="janal-column-right" value="#{manticVentasCajaAccion.attrs.descuentoGlobal}" rendered="#{!manticVentasCajaAccion.attrs.isIndividual}"/>		
+				</h:panelGrid>				
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd" value="Aceptar" onstart="return validateCapturaDescuentos();" update="contenedorGrupos:contenido"/>
+					<p:commandButton icon="fa fa-remove" styleClass="janal-text-white" process="@none" value="Cancelar" onstart="PF('dlgDescuentos').hide();"/>
+				</div>	
+			</h:form>
+		</p:dialog>		
+		<p:dialog id="dialogoCambioPrecio" widgetVar="dlgCambioPrecio" header="Aplicar cambio de precio" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateCambioPrecio();janal.change('formCambioPrecio', fieldsDialogPrecio);janal.refresh();descuentoUserFocus();" width="50%" onHide="janal.desbloquear();janal.restore();janal.refresh();restoreCursoArt();">						
+			<h:form id="formCambioPrecio" prependId="false">
+				<h:panelGrid columns="1" styleClass="janal-wid-100">
+					<p:outputLabel for="cambiopreciousr" value="Usuario:"/>
+					<p:inputText id="cambiopreciousr" value="#{manticVentasCajaAccion.attrs.cambioPrecioUsr}" styleClass="janal-wid-100-txt"/>
+					<p:outputLabel for="passwordcambioprecio" value="Contraseña:"/>
+					<p:password id="passwordcambioprecio" value="#{manticVentasCajaAccion.attrs.passwordCambioPrecio}" styleClass="janal-wid-100-txt" autocomplete="new-password"/>									
+					<p:separator/>					
+				</h:panelGrid>			
+				<p:outputLabel for="cambioPrecio" value="Precio:"/>
+				<h:panelGrid id="panelCambioPrecio" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-5, janal-wid-95 janal-column-right">
+					<p:outputLabel value="$"/><p:inputNumber id="cambioPrecio" inputStyleClass="janal-column-right" value="#{manticVentasCajaAccion.attrs.cambioPrecio}"/>		
+				</h:panelGrid>				
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this panelCambioPrecio cambiopreciousr passwordcambioprecio" value="Aceptar" onstart="return validateCapturaCambioPrecio();" update="contenedorGrupos:contenido"/>
+					<p:commandButton icon="fa fa-remove" styleClass="janal-text-white" process="@none" value="Cancelar" onstart="PF('dlgCambioPrecio').hide();"/>
+				</div>	
+			</h:form>
+		</p:dialog>		
 		<p:dialog id="dialogoDomicilios" widgetVar="dlgDomicilios" header="Busqueda de domicilio:" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoDomicilios', fieldsDialog);janal.refresh();">
 			<h:form id="formDialogoDomicilios" prependId="false">
 				<h:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-80, janal-wid-20">
