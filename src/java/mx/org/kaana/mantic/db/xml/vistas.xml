@@ -4115,6 +4115,8 @@
 					tc_mantic_ventas.id_cliente,
 					tc_mantic_apartados.importe,
 					tc_mantic_apartados.saldo,
+          tc_mantic_apartados.abonado total_final,
+          tc_mantic_apartados.registro registro_apartado,
 					tc_mantic_apartados.abonado,
           tc_mantic_apartados.vencimiento,
 					tc_mantic_apartados_pagos.pago,
@@ -4122,7 +4124,8 @@
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
 					tc_mantic_apartados_pagos.registro,
 					tc_mantic_apartados_pagos.observaciones,
-					tc_mantic_tipos_medios_pagos.nombre as tipo_pago
+					tc_mantic_tipos_medios_pagos.nombre as tipo_pago,
+          tc_mantic_apartados.observaciones as apartado_obs
 				from
 					tc_mantic_apartados_pagos
 				inner join
