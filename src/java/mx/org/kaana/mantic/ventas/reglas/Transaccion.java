@@ -242,12 +242,16 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // registrarBitacora
 	
-	private void toFillArticulos(Session sesion) throws Exception {
+	protected void toFillArticulos(Session sesion) throws Exception {
+		toFillArticulos(sesion, this.articulos);
+	} // toFillArticulos
+	
+	protected void toFillArticulos(Session sesion, List<Articulo> detalleArt) throws Exception {
 		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticVentasDetallesDto", "detalle", this.orden.toMap());
 		for (Articulo item: todos) 
-			if(this.articulos.indexOf(item)< 0)
+			if(detalleArt.indexOf(item)< 0)
 				DaoFactory.getInstance().delete(sesion, item);
-		for (Articulo articulo: this.articulos) {
+		for (Articulo articulo: detalleArt) {
 			TcManticVentasDetallesDto item= articulo.toVentaDetalle();
 			item.setIdVenta(this.orden.getIdVenta());
 			if(DaoFactory.getInstance().findIdentically(sesion, TcManticVentasDetallesDto.class, item.toMap())== null) 
