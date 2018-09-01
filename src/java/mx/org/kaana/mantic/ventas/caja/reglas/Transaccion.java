@@ -312,12 +312,29 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	private void toCierreActivo(Session sesion, Long idTipoMedioPago) throws Exception{
 		Map<String, Object>params         = null;
 		TcManticCierresCajasDto cierreCaja= null;
+		ETipoMediosPago medioPago         = null;
+		Double abono                      = 0D;
 		try {
 			params= new HashMap<>();
 			params.put("idCierre", this.idCierreVigente);
 			params.put("medioPago", idTipoMedioPago);
 			cierreCaja= (TcManticCierresCajasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresCajasDto.class, "TcManticCierresCajasDto", "cajaMedioPago", params);			
-			cierreCaja.setAcumulado(cierreCaja.getAcumulado() + this.ventaFinalizada.getTotales().getPago());			
+			medioPago= ETipoMediosPago.fromIdTipoPago(idTipoMedioPago);
+			switch(medioPago){
+				case CHEQUE:
+					abono= this.ventaFinalizada.getTotales().getCheque();
+					break;
+				case EFECTIVO:
+					abono= this.ventaFinalizada.getTotales().getEfectivo();
+					break;
+				case TARJETA:
+					abono= this.ventaFinalizada.getTotales().getCredito();
+					break;
+				case TRANSFERENCIA:
+					abono= this.ventaFinalizada.getTotales().getTransferencia();
+					break;
+			} // switch			
+			cierreCaja.setAcumulado(cierreCaja.getAcumulado() + abono);			
 			cierreCaja.setSaldo(cierreCaja.getDisponible() + cierreCaja.getAcumulado());
 			DaoFactory.getInstance().update(sesion, cierreCaja);
 		} // try
@@ -397,8 +414,10 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				else
 					registraClientesTipoContacto(sesion, getOrden().getIdCliente());				
 			} // if						
-			if(DaoFactory.getInstance().update(sesion, getOrden())>= 1L)
+			if(DaoFactory.getInstance().update(sesion, getOrden())>= 1L){
 				regresar= registraBitacora(sesion, getOrden().getIdVenta(), idEstatusVenta, "La venta ha sido finalizada.");				
+				toFillArticulos(sesion, this.ventaFinalizada.getArticulos());
+			} // if
 		} // try
 		catch (Exception e) {			
 			throw e;
