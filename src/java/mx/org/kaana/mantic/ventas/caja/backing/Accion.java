@@ -579,6 +579,11 @@ public class Accion extends IBaseVenta implements Serializable {
 		try {
 			this.getAdminOrden().toCalculate();
 			ticketVenta= (TicketVenta)this.getAdminOrden().getOrden();
+			ticketVenta.setTotal(this.getAdminOrden().getTotales().getTotal());
+			ticketVenta.setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
+			ticketVenta.setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
+			ticketVenta.setImpuestos(this.getAdminOrden().getTotales().getIva());
+			ticketVenta.setUtilidad(this.getAdminOrden().getTotales().getUtilidad());
 			facturarVenta= (Boolean) this.attrs.get("facturarVenta");
 			if(facturarVenta){
 				cfdis= (List<UISelectEntity>) this.attrs.get("cfdis");
