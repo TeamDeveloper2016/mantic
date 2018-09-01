@@ -10,7 +10,7 @@
 	<ui:param name="titulo" value="Listado de tickets abiertos para cobro"/>
 	<ui:param name="notIsCaja" value="false" class="javax.faces.Boolean"/>
 	<ui:define name="librerias">    		
-		<h:outputScript library="janal" name="core/jquery.janal.ventas.core-0.1.9.js"/>
+		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryVentasJs}"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
 				'descuento': {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'general'},
@@ -236,7 +236,7 @@
 										<h:outputText value="#{item.cliente}"/>
 									</p:column>
 									<p:column headerText="Total">
-										<h:outputText value="#{item.precioTotal}"/>
+										<h:outputText value="$#{item.precioTotal}"/>
 									</p:column>
 									<p:column headerText="Usuario">
 										<h:outputText value="#{item.nombre}"/>
