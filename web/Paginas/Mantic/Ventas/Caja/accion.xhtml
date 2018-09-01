@@ -65,6 +65,14 @@
 				'cambioPrecio'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'}
 			};
 			
+			fieldsDialogDescuento ={
+				'descuentousr'       : {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'},			
+				'descuentopswrd'     : {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'},			
+				'tipoDescuento'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'},		
+				'descuentoIndividual': {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'},		
+				'descuentoGlobal'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'descuento'}
+			};
+			
     	$(document).ready(function() {
 				jsArticulos= new Janal.Control.Articulos.Core(#{manticVentasCajaAccion.adminOrden.articulos.size()}, 'contenedorGrupos\\:tabla\\:');
 				janal.readingMode('#{manticVentasCajaAccion.attrs.nombreAccion}');
@@ -874,7 +882,7 @@
 		</div>		
 	</ui:define>
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" header="Aplicar descuento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateDescuentos();janal.change('dialogosVenta', fieldsDialog);janal.refresh();descuentoUserFocus();" width="50%" onHide="janal.desbloquear();janal.restore();janal.refresh();restoreCursoArt();">						
+		<p:dialog id="dialogoDescuentos" widgetVar="dlgDescuentos" header="Aplicar descuento" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="updateDescuentos();janal.change('dialogosVenta', fieldsDialogDescuento);janal.refresh();descuentoUserFocus();" width="50%" onHide="janal.desbloquear();janal.restore();janal.refresh();restoreCursoArt();">						
 			<h:form id="dialogosVenta" prependId="false">
 				<h:panelGrid columns="1" styleClass="janal-wid-100">
 					<p:outputLabel for="descuentousr" value="Usuario:"/>
