@@ -149,7 +149,7 @@
 								<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasGarantiasAccion.attrs.ticketAbierto}" styleClass="janal-wid-100-txt" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="contains">
 									<p:ajax event="change" onstart="loadTicketAbiertos();" update="@(.cotizar)" oncomplete="janal.desbloquear();" />
 									<f:selectItem itemValue="" itemLabel="SELECCIONE"/> 
-									<f:selectItems value="#{manticVentasGarantiasAccion.attrs.ticketsAbiertos}" var="element" itemValue="#{element}" itemLabel="No.: #{element.consecutivo} - Cliente: #{element.cliente} - Precio: #{element.precioTotal}"/>
+									<f:selectItems value="#{manticVentasGarantiasAccion.attrs.ticketsAbiertos}" var="element" itemValue="#{element}" itemLabel="No.: #{element.consecutivo} - Cliente: #{element.cliente} - Precio: $#{element.precioTotal}"/>
 									<p:column headerText="No.">
 										<h:outputText value="#{item.consecutivo}"/>
 									</p:column>   
@@ -221,6 +221,7 @@
 												<h:outputText value="Cantidad"/>
 											</f:facet>
 											<p:outputLabel value="#{row['cantidad']}"/>
+											<p:inputText id="cantidadGarantia" value="#{row['cantidadGarantia']}" style="display:none"/>
 											<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.cantidad($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
 										</p:column>		
 										<p:column class="MarAuto Responsive janal-wid-10">
@@ -229,7 +230,7 @@
 											</f:facet>
 											<div class="ui-grid-row janal-grid-row">
 												<div class="ui-grid-col-12 janal-column-right" style="padding-right: 14px;">
-													<p:outputLabel value="#{row['costo']}"/>
+													<p:outputLabel value="#{row['costo']}"/>													
 													<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
 													<p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>
 												</div>	 
