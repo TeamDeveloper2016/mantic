@@ -13,6 +13,7 @@ import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.comun.beans.ArticuloDetalle;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticGarantiasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticRequisicionesDetallesDto;
@@ -328,6 +329,25 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			-1L, /*idVenta, */
 			this.getPrecio(),
 			this.getUtilidad()
+		);
+	}
+	
+	public TcManticGarantiasDetallesDto toGarantiaDetalle() {		
+		return new TcManticGarantiasDetallesDto(
+			-1L, // idGarantia, 
+			this.getDescuentos(), // descuentos, 
+			this.getIdProveedor(), // idProveedor, 
+			this.getDescuento(), // descuento, 
+			this.getExtras(), // extras, 
+			this.getUtilidad(), // utilidad, 
+			this.getImporte(), // importe, 
+			-1L, // idGarantiaDetalle, 
+			this.getIdComodin(), // idVentaDetalle, 
+			this.getIva(), // iva, 
+			this.getImpuestos(), // impuestos, 
+			this.getSubTotal(), // subTotal, 
+			this.getCantidad(), // cantidad, 
+			2L// idReparacion
 		);
 	}
 	
