@@ -278,6 +278,14 @@
         where      
           consecutivo = {consecutivo} and id_venta = {idVenta}
       </select>
+			<select id="siguiente">
+        select
+					max(orden)+ 1 as siguiente
+				from 
+					tc_mantic_garantias
+				where
+				  ejercicio= {ejercicio} 				  				  
+			</select>		
     </unit>
     <unit id="TcManticGarantiasBitacoraDto">
       <select id="row">

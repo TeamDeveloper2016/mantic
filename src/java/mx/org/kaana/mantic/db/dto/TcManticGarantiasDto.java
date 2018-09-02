@@ -1,9 +1,6 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -39,9 +33,7 @@ public class TcManticGarantiasDto implements IBaseDto, Serializable {
 	@Column (name="id_garantia")
   private Long idGarantia;
   @Column (name="descuentos")
-  private Double descuentos;
-  @Column (name="id_tipo_medio_pago")
-  private Long idTipoMedioPago;
+  private Double descuentos;  
   @Column (name="utilidad")
   private Double utilidad;
   @Column (name="ejercicio")
@@ -59,9 +51,7 @@ public class TcManticGarantiasDto implements IBaseDto, Serializable {
   @Column (name="sub_total")
   private Double subTotal;
   @Column (name="observaciones")
-  private String observaciones;
-  @Column (name="folio")
-  private String folio;
+  private String observaciones;  
   @Column (name="id_garantia_estatus")
   private Long idGarantiaEstatus;
   @Column (name="orden")
@@ -74,14 +64,13 @@ public class TcManticGarantiasDto implements IBaseDto, Serializable {
   }
 
   public TcManticGarantiasDto(Long key) {
-    this(new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+    this(new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticGarantiasDto(Long idGarantia, Double descuentos, Long idTipoMedioPago, Double utilidad, Long ejercicio, Long consecutivo, Double total, Long idUsuario, Double impuestos, Double subTotal, String observaciones, String folio, Long idGarantiaEstatus, Long orden, Long idVenta) {
+  public TcManticGarantiasDto(Long idGarantia, Double descuentos, Double utilidad, Long ejercicio, Long consecutivo, Double total, Long idUsuario, Double impuestos, Double subTotal, String observaciones, Long idGarantiaEstatus, Long orden, Long idVenta) {
     setIdGarantia(idGarantia);
     setDescuentos(descuentos);
-    setIdTipoMedioPago(idTipoMedioPago);
     setUtilidad(utilidad);
     setEjercicio(ejercicio);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
@@ -91,7 +80,6 @@ public class TcManticGarantiasDto implements IBaseDto, Serializable {
     setImpuestos(impuestos);
     setSubTotal(subTotal);
     setObservaciones(observaciones);
-    setFolio(folio);
     setIdGarantiaEstatus(idGarantiaEstatus);
     setOrden(orden);
     setIdVenta(idVenta);
@@ -111,15 +99,7 @@ public class TcManticGarantiasDto implements IBaseDto, Serializable {
 
   public Double getDescuentos() {
     return descuentos;
-  }
-
-  public void setIdTipoMedioPago(Long idTipoMedioPago) {
-    this.idTipoMedioPago = idTipoMedioPago;
-  }
-
-  public Long getIdTipoMedioPago() {
-    return idTipoMedioPago;
-  }
+	}
 
   public void setUtilidad(Double utilidad) {
     this.utilidad = utilidad;
@@ -193,14 +173,6 @@ public class TcManticGarantiasDto implements IBaseDto, Serializable {
     return observaciones;
   }
 
-  public void setFolio(String folio) {
-    this.folio = folio;
-  }
-
-  public String getFolio() {
-    return folio;
-  }
-
   public void setIdGarantiaEstatus(Long idGarantiaEstatus) {
     this.idGarantiaEstatus = idGarantiaEstatus;
   }
@@ -242,9 +214,7 @@ public class TcManticGarantiasDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getIdGarantia());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getDescuentos());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdTipoMedioPago());
+		regresar.append(getDescuentos());		
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getUtilidad());
 		regresar.append(Constantes.SEPARADOR);
@@ -264,8 +234,6 @@ public class TcManticGarantiasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getFolio());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdGarantiaEstatus());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getOrden());
@@ -280,7 +248,6 @@ public class TcManticGarantiasDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("idGarantia", getIdGarantia());
 		regresar.put("descuentos", getDescuentos());
-		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
 		regresar.put("utilidad", getUtilidad());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
@@ -290,7 +257,6 @@ public class TcManticGarantiasDto implements IBaseDto, Serializable {
 		regresar.put("impuestos", getImpuestos());
 		regresar.put("subTotal", getSubTotal());
 		regresar.put("observaciones", getObservaciones());
-		regresar.put("folio", getFolio());
 		regresar.put("idGarantiaEstatus", getIdGarantiaEstatus());
 		regresar.put("orden", getOrden());
 		regresar.put("idVenta", getIdVenta());
@@ -300,7 +266,7 @@ public class TcManticGarantiasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdGarantia(), getDescuentos(), getIdTipoMedioPago(), getUtilidad(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getIdUsuario(), getImpuestos(), getSubTotal(), getObservaciones(), getFolio(), getIdGarantiaEstatus(), getOrden(), getIdVenta()
+    getIdGarantia(), getDescuentos(), getUtilidad(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getIdUsuario(), getImpuestos(), getSubTotal(), getObservaciones(), getIdGarantiaEstatus(), getOrden(), getIdVenta()
     };
     return regresar;
   }
