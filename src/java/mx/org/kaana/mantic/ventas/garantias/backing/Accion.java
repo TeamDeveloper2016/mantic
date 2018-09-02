@@ -24,18 +24,17 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.garantias.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
-import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.ventas.caja.beans.Pago;
-import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
+import mx.org.kaana.mantic.ventas.garantias.beans.Garantia;
+import mx.org.kaana.mantic.ventas.garantias.reglas.AdminGarantia;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
@@ -45,6 +44,7 @@ public class Accion extends IBaseVenta implements Serializable {
 
   private static final long serialVersionUID  = 327393488565639367L;
 	private static final String CLAVE_VENTA_GRAL= "VENTA";	
+	private TicketVenta ticketOriginal;
 	private EOrdenes tipoOrden;		
 	
 	public Accion() {
@@ -101,11 +101,11 @@ public class Accion extends IBaseVenta implements Serializable {
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));			
       switch (eaccion) {
         case AGREGAR:											
-          this.setAdminOrden(new AdminTickets(new TicketVenta(-1L)));
+          this.setAdminOrden(new AdminGarantia(new TicketVenta(-1L)));
           break;
         case MODIFICAR:			
         case CONSULTAR:			
-          this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", this.attrs)));
+          this.setAdminOrden(new AdminGarantia((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", this.attrs)));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
           break;
       } // switch
@@ -122,11 +122,11 @@ public class Accion extends IBaseVenta implements Serializable {
     Transaccion transaccion= null;
     String regresar        = null;
     try {	
-			transaccion = new Transaccion(loadVentaFinalizada());
+			transaccion = new Transaccion(loadDetalleGarantia());
 			if (transaccion.ejecutar(EAccion.REPROCESAR)) {
 				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
 				JsfBase.addMessage("Se finalizo la garantia.", ETipoMensaje.INFORMACION);
-				this.setAdminOrden(new AdminTickets(new TicketVenta()));
+				this.setAdminOrden(new AdminGarantia(new TicketVenta()));
 				this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
 				init();
 			} // if
@@ -140,9 +140,9 @@ public class Accion extends IBaseVenta implements Serializable {
     return regresar;
   } // doAccion  
 
-	private VentaFinalizada loadVentaFinalizada(){
-		VentaFinalizada regresar  = null;
-		TicketVenta ticketVenta   = null;		
+	private Garantia loadDetalleGarantia(){
+		Garantia regresar      = null;
+		TicketVenta ticketVenta= null;		
 		try {
 			this.getAdminOrden().toCalculate();
 			ticketVenta= (TicketVenta)this.getAdminOrden().getOrden();
@@ -151,11 +151,12 @@ public class Accion extends IBaseVenta implements Serializable {
 			ticketVenta.setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
 			ticketVenta.setImpuestos(this.getAdminOrden().getTotales().getIva());
 			ticketVenta.setUtilidad(this.getAdminOrden().getTotales().getUtilidad());			
-			regresar= new VentaFinalizada();
+			regresar= new Garantia();
 			regresar.setTicketVenta(ticketVenta);			
 			regresar.setTotales((Pago) this.attrs.get("pago"));
 			regresar.setArticulos(getAdminOrden().getArticulos());
 			regresar.setIdCaja(Long.valueOf(this.attrs.get("caja").toString()));
+			regresar.setGarantia(this.ticketOriginal);
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -226,7 +227,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			ticketsAbiertos= UIEntity.build("VistaVentasDto", "lazy", params, campos, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("ticketsAbiertos", ticketsAbiertos);			
 			this.attrs.put("ticketAbierto", new UISelectEntity("-1"));
-			this.setAdminOrden(new AdminTickets(new TicketVenta()));
+			this.setAdminOrden(new AdminGarantia(new TicketVenta()));
 			this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
 			this.attrs.put("pagarVenta", false);
 			this.attrs.put("facturarVenta", false);
@@ -253,6 +254,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			regresar.append(" DATE_FORMAT(tc_mantic_ventas.registro, '%Y%m%d')=".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, fecha)));
 			regresar.append(" and tc_mantic_ventas.id_venta_estatus=");
 			regresar.append(EEstatusVentas.PAGADA.getIdEstatusVenta());									
+			regresar.append(" and tc_mantic_ventas.id_venta not in (select id_venta from tc_mantic_garantias)");
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -275,7 +277,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			if(!ticketAbierto.getKey().equals(-1L)){
 				ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
 				ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));
-				this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), false));
+				this.setAdminOrden(new AdminGarantia((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), false));
+				this.ticketOriginal= (TicketVenta) getAdminOrden().getOrden();
 				this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 				loadCatalog();
 				doAsignaClienteTicketAbierto();
@@ -285,7 +288,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.attrs.put("creditoCliente", ticketAbiertoPivote.toLong("idCredito").equals(1L));
 			} // if
 			else{				
-				this.setAdminOrden(new AdminTickets(new TicketVenta()));
+				this.setAdminOrden(new AdminGarantia(new TicketVenta()));
 				this.attrs.put("pagarVenta", false);
 				this.attrs.put("facturarVenta", false);
 				this.attrs.put("cobroVenta", false);
