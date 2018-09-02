@@ -35,6 +35,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
   private Double impuestos;
   private Double subTotal;
   private Double cantidad;
+  private Double cantidadGarantia;
   private Double descuentos;
   private Double excedentes;
   private String nombre;
@@ -102,6 +103,7 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		this.precio= precio;
 		this.utilidad= utilidad;
 		this.descuentoDescripcion= descuentoDescripcion;
+		this.cantidadGarantia= cantidad;
 	}
 	
   public void setCodigo(String codigo) {
@@ -310,6 +312,14 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 
 	public void setDescuentoDescripcion(String descuentoDescripcion) {
 		this.descuentoDescripcion = descuentoDescripcion;
+	}	
+
+	public Double getCantidadGarantia() {
+		return cantidadGarantia;
+	}
+
+	public void setCantidadGarantia(Double cantidadGarantia) {
+		this.cantidadGarantia = cantidadGarantia;
 	}	
 	
 	@Override
