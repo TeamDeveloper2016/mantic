@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.ventas.garantias.reglas;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -23,13 +24,15 @@ import mx.org.kaana.mantic.db.dto.TcManticCierresAlertasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
 import mx.org.kaana.mantic.db.dto.TcManticGarantiasBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticGarantiasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticGarantiasDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
+import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
 import mx.org.kaana.mantic.enums.EEstatusGarantias;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
-import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;
+import mx.org.kaana.mantic.ventas.garantias.beans.Garantia;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 
@@ -38,10 +41,8 @@ public class Transaccion extends IBaseTnx{
 	private static final Logger LOG          = Logger.getLogger(Transaccion.class);
 	private static final String GENERAL      = "GENERAL";
 	private static final String CIERRE_ACTIVO= "1,2";
-	private static final Long SI             = 1L;
-	private static final Long NO             = 2L;
-	private VentaFinalizada ventaFinalizada;
-	private TcManticGarantiasDto garantia;
+	private Garantia garantia;
+	private TcManticGarantiasDto garantiaDto;
 	private String justificacion;
 	private String messageError;
 	private IBaseDto dto;	
@@ -53,17 +54,17 @@ public class Transaccion extends IBaseTnx{
 		this(null, dto);
 	} // Transaccion	
 	
-	public Transaccion(VentaFinalizada ventaFinalizada) {
-		this(ventaFinalizada, null);
+	public Transaccion(Garantia garantia) {
+		this(garantia, null);
 	} // Transaccion
 
-	public Transaccion(VentaFinalizada ventaFinalizada, IBaseDto dto) {
-		this.ventaFinalizada = ventaFinalizada;		
+	public Transaccion(Garantia garantia, IBaseDto dto) {
+		this.garantia= garantia;		
 		this.dto= dto;
 	}	// Transaccion	
 
-	public Transaccion(TcManticGarantiasDto garantia, String justificacion) {
-		this.garantia     = garantia;
+	public Transaccion(TcManticGarantiasDto garantiaDto, String justificacion) {
+		this.garantiaDto  = garantiaDto;
 		this.justificacion= justificacion;
 	} // Transaccion
 	
@@ -84,17 +85,17 @@ public class Transaccion extends IBaseTnx{
 		try {						
 			switch(accion) {					
 				case REPROCESAR:				
-					regresar= procesarVenta(sesion);
+					regresar= procesarGarantia(sesion);
 					break;
 				case DEPURAR:
 					regresar= DaoFactory.getInstance().delete(sesion, this.dto)>= 1L;
 					break;		
 				case ELIMINAR:
 					idEstatusGarantia= EEstatusGarantias.ELIMINADA.getIdEstatusGarantia();
-					this.garantia= (TcManticGarantiasDto) DaoFactory.getInstance().findById(sesion, TcManticGarantiasDto.class, this.garantia.getIdGarantia());
-					this.garantia.setIdGarantiaEstatus(idEstatusGarantia);					
-					if(DaoFactory.getInstance().update(sesion, this.garantia)>= 1L)
-						regresar= registraBitacora(sesion, this.garantia.getIdGarantia(), idEstatusGarantia, this.justificacion);					
+					this.garantiaDto= (TcManticGarantiasDto) DaoFactory.getInstance().findById(sesion, TcManticGarantiasDto.class, this.garantiaDto.getIdGarantia());
+					this.garantiaDto.setIdGarantiaEstatus(idEstatusGarantia);					
+					if(DaoFactory.getInstance().update(sesion, this.garantiaDto)>= 1L)
+						regresar= registraBitacora(sesion, this.garantiaDto.getIdGarantia(), idEstatusGarantia, this.justificacion);					
 					break;
 			} // switch
 			if(!regresar)
@@ -104,15 +105,15 @@ public class Transaccion extends IBaseTnx{
 			Error.mensaje(e);
 			throw new Exception(getMessageError().concat("\n\n")+ e.getMessage());
 		} // catch		
-		if(this.ventaFinalizada!= null && this.ventaFinalizada.getTicketVenta()!= null)
-			LOG.info("Se genero de forma correcta la orden: "+ this.ventaFinalizada.getTicketVenta().getConsecutivo());
+		if(this.garantia!= null && this.garantia.getTicketVenta()!= null)
+			LOG.info("Se genero de forma correcta la orden: "+ this.garantia.getTicketVenta().getConsecutivo());
 		return regresar;
 	} // ejecutar		
 	
-	private boolean procesarVenta(Session sesion) throws Exception{
+	private boolean procesarGarantia(Session sesion) throws Exception{
 		boolean regresar= false;
 		try {
-			regresar= pagarVenta(sesion, this.ventaFinalizada.getApartado() ? EEstatusVentas.APARTADO.getIdEstatusVenta() : (this.ventaFinalizada.isCredito() ? EEstatusVentas.CREDITO.getIdEstatusVenta() : EEstatusVentas.PAGADA.getIdEstatusVenta()));
+			regresar= generarGarantia(sesion, EEstatusGarantias.ELABORADA.getIdEstatusGarantia());
 			if(regresar){				
 				if(verificarCierreCaja(sesion)){
 					if(registrarPagos(sesion))					
@@ -134,8 +135,8 @@ public class Transaccion extends IBaseTnx{
 		try {
 			params= new HashMap<>();
 			params.put("estatusAbierto", CIERRE_ACTIVO);
-			params.put("idEmpresa", this.ventaFinalizada.getTicketVenta().getIdEmpresa());
-			params.put("idCaja", this.ventaFinalizada.getIdCaja());			
+			params.put("idEmpresa", this.garantia.getTicketVenta().getIdEmpresa());
+			params.put("idCaja", this.garantia.getIdCaja());			
 			cierre= (TcManticCierresDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresDto.class, "VistaCierresCajasDto", "cierreVigente", params);
 			if(!(cierre!= null && cierre.isValid())){
 				nuevo= toCierreNuevo(sesion);
@@ -160,66 +161,15 @@ public class Transaccion extends IBaseTnx{
 		TcManticCajasDto caja          = null;
 		Double limiteCaja              = 0D;		
 		try {
-			caja= (TcManticCajasDto) DaoFactory.getInstance().findById(sesion, TcManticCajasDto.class, this.ventaFinalizada.getIdCaja());
+			caja= (TcManticCajasDto) DaoFactory.getInstance().findById(sesion, TcManticCajasDto.class, this.garantia.getIdCaja());
 			limiteCaja= caja.getLimite();
-			toCierreActivo(sesion, idTipoMedioPago);
-			if(idTipoMedioPago.equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){				
-				if(this.isNuevoCierre){
-					if(limiteCaja< this.cierreCaja)
-						regresar= registraAlertaRetiro(sesion, this.idCierreVigente, limiteCaja-this.cierreCaja);				
-				}	// if		
-				else{
-					this.cierreCaja= toAcumuladoCierreActivo(sesion, this.idCierreVigente, idTipoMedioPago);
-					if(limiteCaja< this.cierreCaja)
-						regresar= registraAlertaRetiro(sesion, this.idCierreVigente, limiteCaja-this.cierreCaja);
-				} // else
-			}
+			toCierreActivo(sesion, idTipoMedioPago);			
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
 		return regresar;
-	} // alterarCierreCaja
-	
-	private boolean registraAlertaRetiro(Session sesion, Long idCierre, Double importe) throws Exception{
-		boolean regresar= true;
-		TcManticCierresAlertasDto alerta= null;
-		Map<String, Object>params= null;
-		try {
-			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_cierre="+idCierre);
-			alerta= (TcManticCierresAlertasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresAlertasDto.class, "TcManticCierresAlertasDto", "row", params);
-			if(!(alerta!= null && alerta.isValid())){
-				alerta= new TcManticCierresAlertasDto();
-				alerta.setIdCierre(idCierre);
-				alerta.setIdNotifica(1L);
-				alerta.setIdUsuario(JsfBase.getIdUsuario());
-				alerta.setImporte(importe<= 0D ? 0D : importe);
-				alerta.setMensaje("El total de caja a sobrepasado el limite permitido, favor de realizar un retiro.");
-				regresar= DaoFactory.getInstance().insert(sesion, alerta)>= 1L;
-			} // if
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar;
-	} // registraAlertaRetiro
-	
-	private Double toAcumuladoCierreActivo(Session sesion, Long idCierre, Long idTipoMedioPago) throws Exception{
-		Double regresar                          = 0D;
-		TcManticCierresCajasDto acumulaCierreCaja= null;
-		Map<String, Object>params                = null;
-		try {
-			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_cierre="+idCierre+" and id_tipo_medio_pago=" + idTipoMedioPago);
-			acumulaCierreCaja= (TcManticCierresCajasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresCajasDto.class, "TcManticCierresCajasDto", "row", params);
-			regresar= acumulaCierreCaja.getAcumulado();
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar;
-	} // toAcumuladoCierreActivo	
+	} // alterarCierreCaja	
 	
 	private void toCierreActivo(Session sesion, Long idTipoMedioPago) throws Exception{
 		Map<String, Object>params         = null;
@@ -229,7 +179,7 @@ public class Transaccion extends IBaseTnx{
 			params.put("idCierre", this.idCierreVigente);
 			params.put("medioPago", idTipoMedioPago);
 			cierreCaja= (TcManticCierresCajasDto) DaoFactory.getInstance().toEntity(sesion, TcManticCierresCajasDto.class, "TcManticCierresCajasDto", "cajaMedioPago", params);			
-			cierreCaja.setAcumulado(cierreCaja.getAcumulado() + this.ventaFinalizada.getTotales().getPago());			
+			cierreCaja.setAcumulado(cierreCaja.getAcumulado() - this.garantia.getTotales().getPago());			
 			cierreCaja.setSaldo(cierreCaja.getDisponible() + cierreCaja.getAcumulado());
 			DaoFactory.getInstance().update(sesion, cierreCaja);
 		} // try
@@ -249,7 +199,7 @@ public class Transaccion extends IBaseTnx{
 			registro.setIdDiferencias(2L);
 			registro.setIdUsuario(JsfBase.getIdUsuario());
 			registro.setObservaciones("Apertura de cierre");								
-			cierreNuevo= new Cierre(this.ventaFinalizada.getIdCaja(), 0D, registro, new ArrayList<>(), new ArrayList<>());				
+			cierreNuevo= new Cierre(this.garantia.getIdCaja(), 0D, registro, new ArrayList<>(), new ArrayList<>());				
 			if(cierreNuevo.toNewCierreCaja(sesion)){
 				this.isNuevoCierre= true;				
 				this.cierreCaja= 0D;
@@ -262,19 +212,14 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // toCierreNuevo		
 	
-	private boolean pagarVenta(Session sesion, Long idEstatusGarantia) throws Exception{
+	private boolean generarGarantia(Session sesion, Long idEstatusGarantia) throws Exception{
 		boolean regresar         = false;
-		Map<String, Object>params= null;
-		Long consecutivo          = -1L;
-		try {									
-			consecutivo= toSiguiente(sesion);			
-			this.garantia.setConsecutivo(consecutivo);			
-			this.garantia.setOrden(consecutivo);			
-			this.garantia.setFolio(Fecha.getAnioActual() + Cadena.rellenar(consecutivo.toString(), 5, '0', true));
-			this.garantia.setIdGarantiaEstatus(idEstatusGarantia);
-			if(DaoFactory.getInstance().update(sesion, this.garantia)>= 1L){
-				regresar= registraBitacora(sesion, this.garantia.getIdGarantia(), idEstatusGarantia, "La venta ha sido finalizada.");				
-				//toFillArticulos(sesion, this.ventaFinalizada.getArticulos());
+		Map<String, Object>params= null;		
+		try {							
+			loadGarantia(sesion, idEstatusGarantia);			
+			if(DaoFactory.getInstance().insert(sesion, this.garantiaDto)>= 1L){
+				regresar= registraBitacora(sesion, this.garantiaDto.getIdGarantia(), idEstatusGarantia, "Se generó la garantía de forma correcta.");				
+				toFillArticulos(sesion, this.garantia.getArticulos());
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -287,14 +232,35 @@ public class Transaccion extends IBaseTnx{
 		return regresar;
 	} // pagarVenta
 	
+	private void loadGarantia(Session sesion, Long idEstatusGarantia) throws Exception{
+		Long consecutivo= -1L;
+		try {
+			this.garantiaDto= new TcManticGarantiasDto();
+			consecutivo= toSiguiente(sesion);			
+			this.garantiaDto.setConsecutivo(consecutivo);			
+			this.garantiaDto.setOrden(consecutivo);			
+			this.garantiaDto.setIdGarantiaEstatus(idEstatusGarantia);
+			this.garantiaDto.setIdVenta(this.garantia.getTicketVenta().getIdVenta());
+			this.garantiaDto.setEjercicio(Long.valueOf(Fecha.getAnioActual()));
+			this.garantiaDto.setDescuentos(this.garantia.getTicketVenta().getDescuentos());
+			this.garantiaDto.setIdUsuario(JsfBase.getIdUsuario());
+			this.garantiaDto.setImpuestos(this.garantia.getTicketVenta().getImpuestos());
+			this.garantiaDto.setSubTotal(this.garantia.getTicketVenta().getSubTotal());
+			this.garantiaDto.setTotal(this.garantia.getTicketVenta().getTotal());
+			this.garantiaDto.setUtilidad(this.garantia.getTicketVenta().getUtilidad());			
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
+	} // loadGarantia
+		
 	private Long toSiguiente(Session sesion) throws Exception {
 		Long regresar             = 1L;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
 			params.put("ejercicio", Fecha.getAnioActual());
-			params.put("idEmpresa", this.ventaFinalizada.getTicketVenta().getIdEmpresa());
-			Value next= DaoFactory.getInstance().toField(sesion, "TcManticVentasDto", "siguienteTicket", params, "siguiente");
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticGarantiasDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
 				regresar= next.toLong();
 		} // try
@@ -306,6 +272,19 @@ public class Transaccion extends IBaseTnx{
 		} // finally
 		return regresar;
 	} // toSiguiente
+	
+	protected void toFillArticulos(Session sesion, List<Articulo> detalleArt) throws Exception {		
+		for (Articulo articulo: detalleArt) {
+			TcManticGarantiasDetallesDto item= articulo.toGarantiaDetalle();
+			item.setIdGarantia(this.garantiaDto.getIdGarantia());			
+			if(item.getIdProveedor().equals(0L))
+				item.setIdProveedor(null);
+			if(DaoFactory.getInstance().findIdentically(sesion, TcManticGarantiasDetallesDto.class, item.toMap())== null) 
+				DaoFactory.getInstance().insert(sesion, item);
+			else
+				DaoFactory.getInstance().update(sesion, item);
+		} // for
+	} // toFillArticulos
 	
 	private boolean registrarPagos(Session sesion) throws Exception{
 		boolean regresar= true;		
@@ -329,25 +308,25 @@ public class Transaccion extends IBaseTnx{
 		int count                                    = 0; 
 		try {			
 			params= new HashMap<>();
-			for(Articulo articulo: this.ventaFinalizada.getArticulos()){
+			for(Articulo articulo: this.garantia.getArticulos()){
 				params.put(Constantes.SQL_CONDICION, "id_articulo=".concat(articulo.getIdArticulo().toString()));
 				almacenArticulo= (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesArticulosDto.class, "TcManticAlmacenesArticulosDto", "row", params);
 				if(almacenArticulo!= null){
-					almacenArticulo.setStock(almacenArticulo.getStock() - articulo.getCantidad());
+					almacenArticulo.setStock(almacenArticulo.getStock() + articulo.getCantidad());
 					regresar= DaoFactory.getInstance().update(sesion, almacenArticulo)>= 1L;
 				} // if
 				else
 					regresar= generarAlmacenArticulo(sesion, articulo.getIdArticulo(), articulo.getCantidad());
 				if(regresar){
 					articuloVenta= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, articulo.getIdArticulo());
-					articuloVenta.setStock(articuloVenta.getStock() - articulo.getCantidad());
+					articuloVenta.setStock(articuloVenta.getStock() + articulo.getCantidad());
 					if(DaoFactory.getInstance().update(sesion, articuloVenta)>= 1L)
 						regresar= actualizaInventario(sesion, articulo.getIdArticulo(), articulo.getCantidad());
 				} // if
 				if(regresar)
 					count++;
 			} // for		
-			regresar= count== this.ventaFinalizada.getArticulos().size();			
+			regresar= count== this.garantia.getArticulos().size();			
 		} // try
 		catch (Exception e) {			
 			throw e;		
@@ -363,12 +342,12 @@ public class Transaccion extends IBaseTnx{
 		TcManticAlmacenesArticulosDto almacenArticulo= null;
 		try {
 			almacenArticulo= new TcManticAlmacenesArticulosDto();
-			almacenArticulo.setIdAlmacen(this.ventaFinalizada.getTicketVenta().getIdAlmacen());
+			almacenArticulo.setIdAlmacen(this.garantia.getTicketVenta().getIdAlmacen());
 			almacenArticulo.setIdArticulo(idArticulo);
 			almacenArticulo.setIdUsuario(JsfBase.getIdUsuario());
 			almacenArticulo.setMaximo(0L);
 			almacenArticulo.setMinimo(0L);
-			almacenArticulo.setStock(0 - cantidad);
+			almacenArticulo.setStock(0 + cantidad);
 			almacenArticulo.setIdAlmacenUbicacion(toIdAlmacenUbicacion(sesion));
 			regresar= DaoFactory.getInstance().insert(sesion, almacenArticulo)>= 1L;
 		} // try
@@ -384,7 +363,7 @@ public class Transaccion extends IBaseTnx{
 		Map<String, Object>params                = null;		
 		try {
 			params= new HashMap<>();
-			params.put("idAlmacen", this.ventaFinalizada.getTicketVenta().getIdAlmacen());
+			params.put("idAlmacen", this.garantia.getTicketVenta().getIdAlmacen());
 			ubicacion= (TcManticAlmacenesUbicacionesDto) DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesUbicacionesDto.class, "TcManticAlmacenesUbicacionesDto", "general", params);
 			if(ubicacion!= null)
 				regresar= ubicacion.getKey();
@@ -393,7 +372,7 @@ public class Transaccion extends IBaseTnx{
 				ubicacion.setPiso(GENERAL);
 				ubicacion.setDescripcion(GENERAL);
 				ubicacion.setIdUsuario(JsfBase.getIdUsuario());				
-				ubicacion.setIdAlmacen(this.ventaFinalizada.getTicketVenta().getIdAlmacen());
+				ubicacion.setIdAlmacen(this.garantia.getTicketVenta().getIdAlmacen());
 				regresar= DaoFactory.getInstance().insert(sesion, ubicacion);
 			} // 
 		} // try
@@ -409,24 +388,24 @@ public class Transaccion extends IBaseTnx{
 		Map<String, Object>params        = null;
 		try {
 			params= new HashMap<>();
-			params.put("idAlmacen", this.ventaFinalizada.getTicketVenta().getIdAlmacen());
+			params.put("idAlmacen", this.garantia.getTicketVenta().getIdAlmacen());
 			params.put("idArticulo", idArticulo);
 			inventario= (TcManticInventariosDto) DaoFactory.getInstance().toEntity(sesion, TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", params);
 			if(inventario!= null){
-				inventario.setSalidas(inventario.getSalidas() + cantidad);
-				inventario.setStock(inventario.getStock() - cantidad);
+				inventario.setEntradas(inventario.getEntradas() + cantidad);
+				inventario.setStock(inventario.getStock() + cantidad);
 				regresar= DaoFactory.getInstance().update(sesion, inventario)>= 1L;
 			} // if
 			else{
 				inventario= new TcManticInventariosDto();
 				inventario.setEjercicio(Long.valueOf(Fecha.getAnioActual()));
-				inventario.setEntradas(0D);
-				inventario.setIdAlmacen(this.ventaFinalizada.getTicketVenta().getIdAlmacen());
+				inventario.setSalidas(0D);
+				inventario.setIdAlmacen(this.garantia.getTicketVenta().getIdAlmacen());
 				inventario.setIdArticulo(idArticulo);
 				inventario.setIdUsuario(JsfBase.getIdUsuario());
 				inventario.setInicial(0D);
-				inventario.setSalidas(0 - cantidad);
-				inventario.setStock(0 - cantidad);
+				inventario.setEntradas(0 + cantidad);
+				inventario.setStock(0 + cantidad);
 				regresar= DaoFactory.getInstance().insert(sesion, inventario)>= 1L;
 			} // else				
 		} // try
@@ -440,7 +419,7 @@ public class Transaccion extends IBaseTnx{
 		boolean regresar                     = false;
 		TcManticGarantiasBitacoraDto bitacora= null;
 		try {
-			bitacora= new TcManticGarantiasBitacoraDto(idGarantia, this.garantia.getConsecutivo(),justificacion, JsfBase.getIdUsuario(), idGarantiaEstatus, -1L, this.garantia.getTotal());
+			bitacora= new TcManticGarantiasBitacoraDto(idGarantia, this.garantiaDto.getConsecutivo(),justificacion, JsfBase.getIdUsuario(), idGarantiaEstatus, -1L, this.garantiaDto.getTotal());
 			regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 		} // try
 		catch (Exception e) {			
