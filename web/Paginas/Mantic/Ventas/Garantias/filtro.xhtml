@@ -49,10 +49,10 @@
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100" >
-              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasCajaFiltro.attrs.isMatriz}"/>
-              <p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasGarantiasFiltro.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{manticVentasGarantiasFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-                <f:selectItems value="#{manticVentasCajaFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+                <f:selectItems value="#{manticVentasGarantiasFiltro.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
@@ -61,58 +61,42 @@
                 </p:column>   
               </p:selectOneMenu>
               <p:outputLabel for="consecutivo" value="No. ticket:"/>
-              <p:inputText id="consecutivo" value="#{manticVentasCajaFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
-              <p:outputLabel for="idCliente" value="Cliente:"/>
-              <p:selectOneMenu id="idCliente" value="#{manticVentasCajaFiltro.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains">
-								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-                <f:selectItems value="#{manticVentasCajaFiltro.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
-                <p:column headerText="Clave">
-                  <h:outputText value="#{item.clave}"/>
-                </p:column>   
-                <p:column headerText="Nombre">
-                  <h:outputText value="#{item.nombre}"/>
-                </p:column>   
-                <p:column styleClass="janal-column-right" headerText="Limite credito">
-                  <h:outputText value="#{item.limiteCredito}"/>
-                </p:column>   
-              </p:selectOneMenu>
-              <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
-							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticVentasCajaFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
-              <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
-							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticVentasCajaFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+              <p:inputText id="consecutivo" value="#{manticVentasGarantiasFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>               
+              <p:outputLabel for="fechaInicio" value="Fecha:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticVentasGarantiasFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>              
               <p:outputLabel for="idVentaEstatus" value="Estatus:"/>
-              <p:selectOneMenu id="idVentaEstatus" value="#{manticVentasCajaFiltro.attrs.idVentaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains">
+              <p:selectOneMenu id="idVentaEstatus" value="#{manticVentasGarantiasFiltro.attrs.idVentaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-                <f:selectItems value="#{manticVentasCajaFiltro.attrs.estatusFiltro}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <f:selectItems value="#{manticVentasGarantiasFiltro.attrs.estatusFiltro}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>
             </p:panelGrid>
             <div class="janal-align-right lg-pantalla">
-              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticVentasCajaFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
+              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticVentasGarantiasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
             </div>
             <div class="janal-align-right xs-pantalla">
-              <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticVentasCajaFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"  styleClass="janal-text-white"/>
+              <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticVentasGarantiasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"  styleClass="janal-text-white"/>
             </div>
           </p:panel>
         </div>
 				<p:spacer/>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticVentasCajaFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasCajaFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticVentasCajaFiltro.lazyModel.rowCount gt manticVentasCajaFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticVentasGarantiasFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticVentasGarantiasFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticVentasGarantiasFiltro.lazyModel.rowCount gt manticVentasGarantiasFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">
-                  <p:menuitem value="Cobrar" action="#{manticVentasCajaFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Cobrar" onstart="return janal.bloquear()"/>						
+                  <p:menuitem value="Cobrar" action="#{manticVentasGarantiasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Cobrar" onstart="return janal.bloquear()"/>						
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:commandButton  value="Agregar" action="#{manticVentasCajaFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" styleClass="janal-text-white"/>						
+                <p:commandButton  value="Agregar" action="#{manticVentasGarantiasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" styleClass="janal-text-white"/>						
                 <p:separator/>
                 <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
@@ -155,14 +139,14 @@
               <h:outputText value="#{filtro['registro']}"/>
             </p:column>		
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{manticVentasCajaFiltro.lazyModel==null?0:manticVentasCajaFiltro.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{manticVentasGarantiasFiltro.lazyModel==null?0:manticVentasGarantiasFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{!(manticVentasCajaFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					
-            <p:separator rendered="#{!(manticVentasCajaFiltro.attrs.seleccionado.idVentaEstatus eq '6')}"/>					
-            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCajaFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticVentasCajaFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					            
-            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCajaFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{(manticVentasCajaFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					
+            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{!(manticVentasGarantiasFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					
+            <p:separator rendered="#{!(manticVentasGarantiasFiltro.attrs.seleccionado.idVentaEstatus eq '6')}"/>					
+            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasGarantiasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticVentasGarantiasFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					            
+            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasGarantiasFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{(manticVentasGarantiasFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					
           </p:contextMenu>
         </div>
       </div>
@@ -173,15 +157,15 @@
 			<h:form id="formDialogoEstatus" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
-					<p:selectOneMenu id="estatusDlg" value="#{manticVentasCajaFiltro.attrs.estatus}" styleClass="janal-wid-100-txt">									
-						<f:selectItems value="#{manticVentasCajaFiltro.attrs.allEstatus}"/>					
+					<p:selectOneMenu id="estatusDlg" value="#{manticVentasGarantiasFiltro.attrs.estatus}" styleClass="janal-wid-100-txt">									
+						<f:selectItems value="#{manticVentasGarantiasFiltro.attrs.allEstatus}"/>					
 					</p:selectOneMenu>
 					<p:outputLabel for="justificacion" value="Justificación:"/>
-					<p:inputTextarea id="justificacion" value="#{manticVentasCajaFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
+					<p:inputTextarea id="justificacion" value="#{manticVentasGarantiasFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
 				</h:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticVentasCajaFiltro.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticVentasGarantiasFiltro.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
 				</div>
 			</h:form>
@@ -189,16 +173,16 @@
 	</ui:define>		
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
   <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el ticket de venta ?" />
-  <ui:param name="accionConfirmacion" value="#{manticVentasCajaFiltro}"/>
+  <ui:param name="accionConfirmacion" value="#{manticVentasGarantiasFiltro}"/>
   <ui:param name="updateComponent" value="tabla"/>
   <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
   <ui:param name="renderedConfirmacion" value="true"/>	
   <ui:define name="detalleConfirmacion">
     <p:panelGrid layout="grid" columns="2">
       <p:outputLabel value="No. ticket:"/>
-      <p:outputLabel value="#{manticVentasCajaFiltro.attrs.seleccionado.consecutivo}"/>
+      <p:outputLabel value="#{manticVentasGarantiasFiltro.attrs.seleccionado.consecutivo}"/>
       <p:outputLabel value="Justificación:"/>
-      <p:inputTextarea value="#{manticVentasCajaFiltro.attrs.justificacionEliminar}"/>
+      <p:inputTextarea value="#{manticVentasGarantiasFiltro.attrs.justificacionEliminar}"/>
     </p:panelGrid>			
   </ui:define>
 </ui:composition>
