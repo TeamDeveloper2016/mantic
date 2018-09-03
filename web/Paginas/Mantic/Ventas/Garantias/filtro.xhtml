@@ -172,7 +172,7 @@
 		</p:dialog>
 	</ui:define>		
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
-  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar el ticket de venta ?" />
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la garantia ?" />
   <ui:param name="accionConfirmacion" value="#{manticVentasGarantiasFiltro}"/>
   <ui:param name="updateComponent" value="tabla"/>
   <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
@@ -181,8 +181,10 @@
     <p:panelGrid layout="grid" columns="2">
       <p:outputLabel value="No. ticket:"/>
       <p:outputLabel value="#{manticVentasGarantiasFiltro.attrs.seleccionado.consecutivo}"/>
+		</p:panelGrid>
+		<p:panelGrid layout="grid" columns="1">
       <p:outputLabel value="Justificación:"/>
-      <p:inputTextarea value="#{manticVentasGarantiasFiltro.attrs.justificacionEliminar}"/>
+      <p:inputTextarea value="#{manticVentasGarantiasFiltro.attrs.justificacionEliminar}" styleClass="janal-wid-100-txt"/>
     </p:panelGrid>			
   </ui:define>
 </ui:composition>
