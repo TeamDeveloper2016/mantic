@@ -14,7 +14,7 @@
         'idCliente'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'fechaInicio'    : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'fechaTermino'   : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        'idVentaEstatus' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
+        'idGarantiaEstatus' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
       };
 			
 			fieldsDialog= {
@@ -64,8 +64,8 @@
               <p:inputText id="consecutivo" value="#{manticVentasGarantiasFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>               
               <p:outputLabel for="fechaInicio" value="Fecha:"/>
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticVentasGarantiasFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>              
-              <p:outputLabel for="idVentaEstatus" value="Estatus:"/>
-              <p:selectOneMenu id="idVentaEstatus" value="#{manticVentasGarantiasFiltro.attrs.idVentaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains">
+              <p:outputLabel for="idGarantiaEstatus" value="Estatus:"/>
+              <p:selectOneMenu id="idGarantiaEstatus" value="#{manticVentasGarantiasFiltro.attrs.idGarantiaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticVentasGarantiasFiltro.attrs.estatusFiltro}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">
