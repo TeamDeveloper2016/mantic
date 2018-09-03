@@ -89,7 +89,7 @@
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton value="Opciones">
-                  <p:menuitem value="Cobrar" action="#{manticVentasGarantiasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Cobrar" onstart="return janal.bloquear()"/>						
+                  <p:menuitem value="Generar" action="#{manticVentasGarantiasFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Cobrar" onstart="return janal.bloquear()"/>						
                   <p:separator/>
                   <p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
