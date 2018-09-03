@@ -80,7 +80,7 @@
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>	
-		<pe:remoteCommand name="refresh" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticVentasGarantiasAccion.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.next();">  
+		<pe:remoteCommand name="refresh" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticVentasGarantiasAccion.doVerificaCantidadArticulos}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.next();">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>				
@@ -173,56 +173,25 @@
 												<h:outputText value="No."/>
 											</f:facet>
 											<h:outputText value="#{index+ 1}"/>
-										</p:column>										
-										<p:column  class="MarAuto Responsive janal-wid-13">
+										</p:column>																				
+										<p:column  class="MarAuto Responsive janal-wid-15">
 											<f:facet name="header">
-												<p:selectBooleanCheckbox value="#{manticVentasGarantiasAccion.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
-													<p:ajax event="change" process="@this" update="@this"/>
-												</p:selectBooleanCheckbox>
-												<h:outputText value="Código"/>
-												<span class="janal-help-icon janal-help-9 fa fa-fw fa-question-circle Fright" onclick="countHelp(9);"/>	
-												<pe:tooltip for="@(.janal-help-9)" showEvent="click">
-													<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(9)}" styleClass="Fs15" escape="false"/>
-												</pe:tooltip>
+												<h:outputText value="Propio"/>
 											</f:facet>
-											<div class="ui-grid-row janal-grid-row">
-												<div class="ui-grid-col-12">
-													<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
-													<p:inputText id="locks" value="0" style="display:none"/>
-													<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticVentasGarantiasAccion.attrs.articulo}" completeMethod="#{manticVentasGarantiasAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="4" maxResults="10">
-														<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
-														<f:facet name="itemtip">
-															<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
-																<f:facet name="header" class="TexAlCenter">
-																	<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>
-																</f:facet>
-																<h:outputText value="Código:" />
-																<h:outputText value="#{custom.propio}" />
-																<h:outputText value="Código:" />
-																<h:outputText value="#{custom.codigo}" />
-																<h:outputText value="Nombre:" />
-																<h:outputText value="#{custom.nombre}" />
-																<h:outputText value="Costo:" />
-																<h:outputText value="$ #{custom.precio}" />
-															</h:panelGrid>
-														</f:facet>
-													</p:autoComplete>												
-												</div>	
-											</div>	
-										</p:column>
+											<h:outputText id="propio" value="#{row['propio']}"/>
+										</p:column>		
 										<p:column  class="MarAuto Responsive">
 											<f:facet name="header">
 												<h:outputText value="Articulo"/>
 											</f:facet>
-											<h:outputText id="nombres" value="[#{row['propio']}] #{row['nombre']}" title="Código propio: #{row['propio']}    Existencias almacen: #{row['stock']}" escape="false"/>
+											<h:outputText id="nombres" value="#{row['nombre']}" title="Código propio: #{row['propio']}    Existencias almacen: #{row['stock']}" escape="false"/>
 										</p:column>		
 										<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
 											<f:facet name="header">
 												<h:outputText value="Cantidad"/>
-											</f:facet>
-											<p:outputLabel value="#{row['cantidad']}"/>
+											</f:facet>											
 											<p:inputText id="cantidadGarantia" value="#{row['cantidadGarantia']}" style="display:none"/>
-											<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.cantidad($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'));" style="display: none"/>
+											<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.cantidad($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), '1'); jsArticulos.calculateGarantia($('#contenedorGrupos\\:tabla\\:#{index}\\:cantidades'), #{index});"/>
 										</p:column>		
 										<p:column class="MarAuto Responsive janal-wid-10">
 											<f:facet name="header">
