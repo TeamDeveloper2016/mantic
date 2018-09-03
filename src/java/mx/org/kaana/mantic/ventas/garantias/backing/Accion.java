@@ -25,6 +25,7 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
+import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.garantias.reglas.Transaccion;
@@ -360,4 +361,25 @@ public class Accion extends IBaseVenta implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doOpenCobro	
+	
+	public void doVerificaCantidadArticulos(Integer index){
+		Double cantidad         = 0D;
+		Double cantidadGarantia = 0D;
+		Articulo articuloAltered= null;
+		try {
+			articuloAltered= this.getAdminOrden().getArticulos().get(index);
+			cantidad= articuloAltered.getCantidad();
+			cantidadGarantia= articuloAltered.getCantidadGarantia();			
+			if(!(cantidad<= cantidadGarantia)){
+				this.getAdminOrden().getArticulos().get(index).setCantidad(cantidadGarantia);
+				JsfBase.addMessage("Cantidad de articulos", "La cantidad de articulos capturada no es valida, el maximo es de ".concat(String.valueOf(cantidadGarantia)), ETipoMensaje.ERROR);
+			} // if
+			super.doCalculate(index);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+			throw e;
+		} // catch				
+	} // doVerificaCantidadArticulos
 }
