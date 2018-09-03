@@ -7,6 +7,19 @@
   </model>
 
   <dml>	
+		<unit id="TcManticGrantiasEstatusDto">
+			<select id="row">
+				select 
+					tc_mantic_garantias_estatus.id_garantia_estatus as id_key,
+					tc_mantic_garantias_estatus.*
+				from 
+					tc_mantic_garantias_estatus
+				where 
+					{condicion}
+				order by 
+					id_garantia_estatus
+			</select>
+		</unit>
 		<unit id="TcManticFicticiasEstatusDto">
       <select id="row">
         select      
