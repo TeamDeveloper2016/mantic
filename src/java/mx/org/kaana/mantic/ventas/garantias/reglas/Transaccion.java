@@ -97,6 +97,13 @@ public class Transaccion extends IBaseTnx{
 					if(DaoFactory.getInstance().update(sesion, this.garantiaDto)>= 1L)
 						regresar= registraBitacora(sesion, this.garantiaDto.getIdGarantia(), idEstatusGarantia, this.justificacion);					
 					break;
+				case JUSTIFICAR:
+					if(DaoFactory.getInstance().insert(sesion, this.dto)>= 1L){
+						this.garantiaDto= (TcManticGarantiasDto) DaoFactory.getInstance().findById(sesion, TcManticGarantiasDto.class, ((TcManticGarantiasBitacoraDto)this.dto).getIdGarantia());
+						this.garantiaDto.setIdGarantiaEstatus(((TcManticGarantiasBitacoraDto)this.dto).getIdGarantiaEstatus());
+						regresar= DaoFactory.getInstance().update(sesion, this.garantiaDto)>= 1L;
+					} // if
+					break;				
 			} // switch
 			if(!regresar)
         throw new Exception(getMessageError());
