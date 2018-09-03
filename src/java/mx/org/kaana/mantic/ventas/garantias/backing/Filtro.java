@@ -31,6 +31,7 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.ventas.garantias.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.db.dto.TcManticGarantiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticGarantiasDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
@@ -232,13 +233,13 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // doLoadEstatus
 	
 	public void doActualizarEstatus() {
-		Transaccion transaccion           = null;
-		TcManticVentasBitacoraDto bitacora= null;
-		Entity seleccionado               = null;
+		Transaccion transaccion              = null;
+		TcManticGarantiasBitacoraDto bitacora= null;
+		Entity seleccionado                  = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			TcManticVentasDto orden= (TcManticVentasDto)DaoFactory.getInstance().findById(TcManticVentasDto.class, seleccionado.getKey());
-			bitacora= new TcManticVentasBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), Long.valueOf(this.attrs.get("estatus").toString()), orden.getConsecutivo(), orden.getTotal());
+			TcManticGarantiasDto orden= (TcManticGarantiasDto)DaoFactory.getInstance().findById(TcManticGarantiasDto.class, seleccionado.getKey());
+			bitacora= new TcManticGarantiasBitacoraDto(seleccionado.getKey(), orden.getConsecutivo(), (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), Long.valueOf(this.attrs.get("estatus").toString()), -1L, orden.getTotal());
 			transaccion= new Transaccion(bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
