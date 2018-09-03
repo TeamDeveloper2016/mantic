@@ -316,6 +316,11 @@
 			} // if
 			return false;
 		},
+		refreshGarantia: function(index) {			
+  		janal.console("jsArticulos.refreshGarantia: " + index);
+			refresh(index);			
+			return false;
+		},
 		refreshAsterisk: function() {			
   		janal.console("jsArticulos.refresh: "+ this.cursor.index);
 			refresh(this.cursor.index);
@@ -497,6 +502,16 @@
 			  else
   				if($(active).val().indexOf(',')>= 0 || this.current.indexOf(',')>= 0)
     				this.refresh();
+			return false;	
+		},
+		calculateGarantia: function(active, index) {
+			janal.console('jsArticulo.calculate: '+ this.current+ ' => '+ $(active).val());
+			if($(active).val()!== this.current)
+				if(parseFloat($(active).val(), 10)!== parseFloat(this.current, 10))
+  				this.refreshGarantia(index);
+			  else
+  				if($(active).val().indexOf(',')>= 0 || this.current.indexOf(',')>= 0)
+    				this.refreshGarantia(index);
 			return false;	
 		},
 		next: function() {
