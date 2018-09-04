@@ -19,7 +19,7 @@ public class TicketVenta extends TcManticVentasDto implements Serializable {
 	private static final long serialVersionUID=3088884892456452488L;
 	
 	private UISelectEntity ikAlmacen;
-	private UISelectEntity ikCliente;
+	private UISelectEntity ikCliente;	
 
 	public TicketVenta() {
 		this(-1L);
