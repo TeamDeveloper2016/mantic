@@ -11,11 +11,13 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
@@ -271,4 +273,15 @@ public class Accion extends IBaseArticulos implements Serializable {
     } // finally
 	}
 
+	public void doChangeBuscado() {
+		if(this.attrs.get("buscado")== null) {
+			FormatCustomLazy list= (FormatCustomLazy)this.attrs.get("lazyModel");
+			List<Entity> items   = (List<Entity>)list.getWrappedData();
+			if(items.size()> 0)
+			  this.attrs.put("encontrado", new UISelectEntity(items.get(0)));
+		} // else
+	  else
+      this.attrs.put("encontrado", new UISelectEntity((Entity)this.attrs.get("buscado")));
+	}
+	
 }

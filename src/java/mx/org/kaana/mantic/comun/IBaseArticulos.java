@@ -10,6 +10,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -347,7 +348,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
     }// finally
 	}
 
-	private void doUpdateLikeArticulos(String idXml, boolean isRegexp) {
+	private void doUpdateArticulos() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
@@ -357,24 +358,20 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
-			if(isRegexp) {
-				String search= (String)this.attrs.get("codigo"); 
-				if(!Cadena.isVacio(search)) {
-					buscaPorCodigo= search.startsWith(".");
-					if(buscaPorCodigo)
-						search= search.trim().substring(1);
-					search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
-				} // if	
-				else
-					search= "WXYZ";
-				params.put("codigo", search);
-			} // else
+			String search= (String)this.attrs.get("codigo"); 
+			if(!Cadena.isVacio(search)) {
+				buscaPorCodigo= search.startsWith(".");
+				if(buscaPorCodigo)
+					search= search.trim().substring(1);
+				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			} // if	
 			else
-				params.put("codigo", this.attrs.get("codigo"));
+				search= "WXYZ";
+			params.put("codigo", search);
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
-        this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, isRegexp? 20L: 100L));
+        this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
 			else
-        this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", idXml, params, columns, isRegexp? 20L: 100L));
+        this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 20L));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -386,25 +383,49 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
     }// finally
 	}	
 	
-	public void doUpdateArticulos() {
-		this.doUpdateLikeArticulos("porNombre", true);
-	}
-	
 	public void doUpdateDialogArticulos() {
-		this.doUpdateLikeArticulos("porLikeNombre", false);
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		boolean buscaPorCodigo    = false;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
+			params.put("codigo", this.attrs.get("codigo"));
+			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
+        this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porCodigo", params, columns));
+			else
+        this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porLikeNombre", params, columns));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
 	}
  
   public void doFindArticulo(Integer index) {
 		try {
     	List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");
-	    UISelectEntity articulo= (UISelectEntity)this.attrs.get("articulo");
-			if(articulo== null)
-			  articulo= new UISelectEntity(new Entity(-1L));
-			else
-				if(articulos.indexOf(articulo)>= 0) 
-					articulo= articulos.get(articulos.indexOf(articulo));
-			  else
-			    articulo= articulos.get(0);
+	    UISelectEntity articulo  = (UISelectEntity)this.attrs.get("articulo");
+	    UISelectEntity encontrado= (UISelectEntity)this.attrs.get("encontrado");
+			if(encontrado!= null) {
+				articulo= encontrado;
+				this.attrs.remove("encontrado");
+			} // else
+			else 
+				if(articulo== null)
+					articulo= new UISelectEntity(new Entity(-1L));
+				else
+					if(articulos.indexOf(articulo)>= 0) 
+						articulo= articulos.get(articulos.indexOf(articulo));
+					else
+						articulo= articulos.get(0);
 			if(articulo.size()> 1) {
 				int position= this.getAdminOrden().getArticulos().indexOf(new Articulo(articulo.toLong("idArticulo")));
 				if(articulo.size()> 1 && position>= 0) {

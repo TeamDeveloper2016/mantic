@@ -103,12 +103,6 @@ public final class Constantes {
 
   //Atributo que indica que estilo se estable como inicial en el sistema
   public static final String TEMA_INICIAL = "sentinel";
-  public static final String _VISTA_DINAMICO = "kajool0DvistaDinamico";
-
-  // Constantes de inicio y salida del sistema
-  public static final String CLAVE_ACCESO_SISTEMA = "0001";
-  public static final String CLAVE_SALIDA_SISTEMA = "0002";
-  public static final String CLAVE_MODULO_ = "0000";
 
   public static final String PAQUETE_DEFAULT_DB = "mx.org.kaana.kajool.db.";
   public static final String PAQUETE_TRANSFORMACION = "mx.org.kaana.kajool.procesos.";
