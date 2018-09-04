@@ -11,7 +11,6 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
@@ -20,16 +19,15 @@ import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticCajasDto;
-import mx.org.kaana.mantic.db.dto.TcManticCierresAlertasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
 import mx.org.kaana.mantic.db.dto.TcManticGarantiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticGarantiasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticGarantiasDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
-import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
+import mx.org.kaana.mantic.db.dto.TrManticGarantiaMedioPagoDto;
+import mx.org.kaana.mantic.db.dto.TrManticVentaMedioPagoDto;
 import mx.org.kaana.mantic.enums.EEstatusGarantias;
-import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;
 import mx.org.kaana.mantic.ventas.garantias.beans.Garantia;
@@ -294,9 +292,22 @@ public class Transaccion extends IBaseTnx{
 	} // toFillArticulos
 	
 	private boolean registrarPagos(Session sesion) throws Exception{
-		boolean regresar= true;		
-		try {			
-			alterarCierreCaja(sesion, ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());				
+		boolean regresar                 = true;		
+		TrManticGarantiaMedioPagoDto pago= null;
+		try {						
+			pago= new TrManticGarantiaMedioPagoDto();
+			if(this.garantia.getPagoGarantia().getIdTipoPago().equals(ETipoMediosPago.TRANSFERENCIA.getIdTipoMedioPago())){
+				pago.setIdBanco(this.garantia.getPagoGarantia().getIdBanco());
+				pago.setReferencia(this.garantia.getPagoGarantia().getTransferencia());
+			} // if
+			pago.setIdCierre(this.idCierreVigente);
+			pago.setIdGarantia(this.garantiaDto.getIdGarantia());
+			pago.setIdTipoMedioPago(this.garantia.getPagoGarantia().getIdTipoPago());
+			pago.setIdUsuario(JsfBase.getIdUsuario());
+			pago.setIdVentaMedioPago(toVentaMedioPago(sesion));
+			pago.setImporte(this.garantia.getTotales().getPago());		
+			DaoFactory.getInstance().insert(sesion, pago);
+			alterarCierreCaja(sesion, this.garantia.getPagoGarantia().getIdTipoPago());				
 		} // try 
 		catch (Exception e) {			 
 			throw e; 
@@ -306,6 +317,24 @@ public class Transaccion extends IBaseTnx{
 		} // finally
 		return regresar; 
 	} // registrarPagos
+	
+	private Long toVentaMedioPago(Session sesion) throws Exception{
+		Long regresar                      = -1L;
+		Map<String, Object>params          = null;
+		TrManticVentaMedioPagoDto ventaPago= null;
+		try {
+			params= new HashMap<>();
+			params.put("idVenta",this.garantiaDto.getIdVenta());
+			params.put("idCierre",this.idCierreVigente);
+			params.put("idTipoMedioPago",this.garantia.getPagoGarantia().getIdTipoPago());
+			ventaPago= (TrManticVentaMedioPagoDto) DaoFactory.getInstance().toEntity(sesion, TrManticVentaMedioPagoDto.class, "TrManticVentaMedioPagoDto", "garantia", params);
+			regresar= ventaPago.getIdVentaMedioPago();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toVentaMedioPago
 	
 	private boolean alterarStockArticulos(Session sesion) throws Exception{
 		TcManticAlmacenesArticulosDto almacenArticulo= null;
