@@ -568,20 +568,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} // doUpdateForEmpresa
-	
-	public void doActivarDescuento(){
-		String tipoDescuento= null;		
-		try {
-			tipoDescuento= this.attrs.get("tipoDescuento").toString();
-			this.attrs.put("isIndividual", tipoDescuento.equals(INDIVIDUAL));
-			this.attrs.put(tipoDescuento.equals(INDIVIDUAL) ? "descuentoGlobal" : "descuentoIndividual", 0);
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch		
-	} // doActivarDescuento
+	} // doUpdateForEmpresa	
 	
 	public void doActivatePage(){
 		this.attrs.put("activated", true);
