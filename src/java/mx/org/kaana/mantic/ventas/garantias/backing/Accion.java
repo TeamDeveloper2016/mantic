@@ -32,11 +32,12 @@ import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.garantias.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
-import mx.org.kaana.mantic.enums.EEstatusGarantias;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
+import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.ventas.caja.beans.Pago;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
 import mx.org.kaana.mantic.ventas.garantias.beans.Garantia;
+import mx.org.kaana.mantic.ventas.garantias.beans.PagoGarantia;
 import mx.org.kaana.mantic.ventas.garantias.reglas.AdminGarantia;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
@@ -74,6 +75,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null ? null : JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
+			this.attrs.put("tipoPago", 1L);
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
@@ -88,6 +90,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("activeApartado", false);
 			this.attrs.put("disabledFacturar", false);			
 			this.attrs.put("apartado", false);			
+			this.attrs.put("isEfectivo", true);			
 			if(JsfBase.isAdminEncuestaOrAdmin())
 				loadSucursales();						
 			accion= (EAccion) this.attrs.get("accion");
@@ -97,6 +100,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			doLoadTicketAbiertos();						
 			if(accion.equals(EAccion.CONSULTAR)||accion.equals(EAccion.MODIFICAR))
 				doAsignaTicketAbierto();
+			loadBancos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -152,8 +156,9 @@ public class Accion extends IBaseVenta implements Serializable {
   } // doAccion  
 
 	private Garantia loadDetalleGarantia(){
-		Garantia regresar      = null;
-		TicketVenta ticketVenta= null;		
+		Garantia regresar        = null;
+		TicketVenta ticketVenta  = null;		
+		PagoGarantia pagoGarantia= null;
 		try {
 			this.getAdminOrden().toCalculate();
 			ticketVenta= (TicketVenta)this.getAdminOrden().getOrden();
@@ -168,6 +173,15 @@ public class Accion extends IBaseVenta implements Serializable {
 			regresar.setArticulos(getAdminOrden().getArticulos());
 			regresar.setIdCaja(Long.valueOf(this.attrs.get("caja").toString()));
 			regresar.setGarantia(this.ticketOriginal);
+			pagoGarantia= new PagoGarantia();
+			if(Long.valueOf(this.attrs.get("tipoPago").toString()).equals(1L))
+				pagoGarantia.setIdTipoPago(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());		
+			else{
+				pagoGarantia.setIdTipoPago(ETipoMediosPago.TRANSFERENCIA.getIdTipoMedioPago());
+				pagoGarantia.setTransferencia(this.attrs.get("referencia").toString());
+				pagoGarantia.setIdBanco(Long.valueOf(this.attrs.get("banco").toString()));
+			} // else
+			regresar.setPagoGarantia(pagoGarantia);
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -280,9 +294,9 @@ public class Accion extends IBaseVenta implements Serializable {
 				regresar.append(" DATE_FORMAT(tc_mantic_ventas.registro, '%Y%m%d')=".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, fecha)));
 				regresar.append(" and tc_mantic_ventas.id_venta_estatus=");
 				regresar.append(EEstatusVentas.PAGADA.getIdEstatusVenta());		
-				regresar.append(" and tc_mantic_ventas.id_venta not in (select id_venta from tc_mantic_garantias where id_garantia_estatus <> ");
-				regresar.append(EEstatusGarantias.ELIMINADA.getIdEstatusGarantia());
-				regresar.append(")");
+				//regresar.append(" and tc_mantic_ventas.id_venta not in (select id_venta from tc_mantic_garantias where id_garantia_estatus <> ");
+				//regresar.append(EEstatusGarantias.ELIMINADA.getIdEstatusGarantia());
+				//regresar.append(")");
 			} // else
 		} // try
 		catch (Exception e) {			
@@ -425,4 +439,38 @@ public class Accion extends IBaseVenta implements Serializable {
 			throw e;
 		} // catch				
 	} // doVerificaCantidadArticulos
+	
+	public void doActivarPago(){
+		String tipoPago= null;				
+		try {					
+			tipoPago= this.attrs.get("tipoPago").toString();
+			this.attrs.put("isEfectivo", tipoPago.equals(INDIVIDUAL));			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doActivarPago
+	
+	private void loadBancos(){
+		List<UISelectEntity> bancos= null;
+		Map<String, Object> params = null;
+		List<Columna> campos       = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			campos= new ArrayList<>();
+			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			bancos= UIEntity.build("TcManticBancosDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("bancos", bancos);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadBancos
 }
