@@ -7,6 +7,24 @@
   </model>
 
   <dml>	
+		<unit id="TrManticGarantiaMedioPagoDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tr_mantic_garantia_medio_pago
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tr_mantic_garantia_medio_pago
+        where      
+          id_garantia = {idGarantia} and id_tipo_medio_pago = {idTipoMedioPago} and importe = {importe} and id_venta_medio_pago = {idVentaMedioPago} and id_banco = {idBanco}
+      </select>
+    </unit>
 		<unit id="TcManticGrantiasEstatusDto">
 			<select id="row">
 				select 
@@ -3805,6 +3823,14 @@
           tr_mantic_venta_medio_pago
         where 
           {condicion} 
+      </select>
+      <select id="garantia">
+        select      
+          *
+        from      
+          tr_mantic_venta_medio_pago
+        where 
+          id_venta= {idVenta} and id_cierre= {idCierre} and id_tipo_medio_pago={idTipoMedioPago}
       </select>
       <select id="identically">
         select      
