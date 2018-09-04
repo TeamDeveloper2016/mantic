@@ -299,6 +299,14 @@
 				where
 				  ejercicio= {ejercicio} 				  				  
 			</select>		
+			<select id="detalle">
+        select      
+				  *
+        from      
+          tc_mantic_garantias
+        where 
+          id_garantia = {idGarantia} 
+      </select>
     </unit>
     <unit id="TcManticGarantiasBitacoraDto">
       <select id="row">
