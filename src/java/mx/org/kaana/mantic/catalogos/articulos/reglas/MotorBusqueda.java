@@ -38,6 +38,8 @@ public class MotorBusqueda implements Serializable{
 		TcManticArticulosDto regresar= null;
 		try {
 			regresar= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
+			if(regresar.getIva().equals(0D))
+				regresar.setIva(16D);
 		} // try
 		catch (Exception e) {			
 			throw e;
