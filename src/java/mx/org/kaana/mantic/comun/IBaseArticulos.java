@@ -372,9 +372,9 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			else
 				params.put("codigo", this.attrs.get("codigo"));
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
-        this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
+        this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, isRegexp? 20L: 100L));
 			else
-        this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", idXml, params, columns, 20L));
+        this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", idXml, params, columns, isRegexp? 20L: 100L));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
