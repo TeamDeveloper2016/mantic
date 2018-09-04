@@ -9,6 +9,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
@@ -59,6 +60,7 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 					break;
 				default:
 					this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaTcManticGarantiasArticulosDto", "detalle", orden.toMap()));
+					validaArticulos();
 					break;
 			} // switch
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
@@ -129,4 +131,20 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 	public void setDescuento(String descuento){
 		this.orden.setDescuento(descuento);
 	}
+	
+	public void validaArticulos(){
+		List<Articulo>arts= null;
+		int count         = 0;
+		try {
+			arts= this.getArticulos();
+			for(Articulo art: arts){
+				if(art.getCantidadGarantia().equals(0D))
+					this.getArticulos().remove(count);
+				count++;
+			} // for			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);			
+		} // catch		
+	} // validaArticulos
 }
