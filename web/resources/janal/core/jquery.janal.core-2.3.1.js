@@ -452,6 +452,7 @@
     stage         : 'desarrollo',
     locked        : 'bloqueo',
     INPUT_RESERVE : '_input',
+    TABLE_RESERVE : '_selection',
     SELECT_FOCUS  : '_focus',
     JANAL_RESERVE : '\u0049\u004B\u0054\u0041\u004E',
     initialized   : false,
@@ -1137,15 +1138,15 @@
     }, // info
     info: function(id, msg) {
 			if(arguments.length=== 1)
-			  $parent.notify('Informaci\u00E1n:', 'info', id);
+			  $parent.notify('Informaci\u00F3n:', 'info', id);
 			else
-			  $parent.notify('Informaci\u00E1n:', 'info', id, msg);
+			  $parent.notify('Informaci\u00F3n:', 'info', id, msg);
     }, // info
     warn: function(id, msg) {
 			if(arguments.length=== 1)
-  			$parent.notify('Precauci\u00E1n:', 'warn', id);
+  			$parent.notify('Precauci\u00F3n:', 'warn', id);
 			else
-  			$parent.notify('Precauci\u00E1n:', 'warn', id, msg);
+  			$parent.notify('Precauci\u00F3n:', 'warn', id, msg);
     }, // warn
     error: function(id, msg) {
 			if(arguments.length=== 1)
@@ -1263,6 +1264,9 @@
 				PF('retiroEfectivo').show();
 			};
 			setTimeout("PF('retiroEfectivo').hide();", 15000);
+		},
+		tablaId: function(name) {
+			return $('#'+ name+ $parent.TABLE_RESERVE);
 		}
   });
   window.Janal= Janal;
@@ -1274,7 +1278,7 @@ $(document).mousedown(function(e) {
 
 $(document).ready(function() {
   janal= new Janal.Control.Validations(Janal.Control.name, Janal.Control.form, Janal.Control.fields, Janal.Control.display, Janal.Control.stage, Janal.Control.growl, Janal.Control.lock, Janal.Control.errors);
-  $('#tabla_selection').val('');
+  janal.tableId('tabla').val('');
   console.info('Janal.Control.Validations.initialized: '+ janal.initialized);
 });
 

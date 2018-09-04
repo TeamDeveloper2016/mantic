@@ -480,8 +480,10 @@
 			return false;
 		},
 		show: function(name) {
-			janal.bloquear();
-			PF(this.dialog).show();
+			if(!this.valid()) {
+			  janal.bloquear();
+			  PF(this.dialog).show();
+			} // if	
 			return false;
 		},
 	  callback: function(code) {

@@ -24,7 +24,6 @@ td.ui-panelgrid-cell,
 div.ui-panelgrid,
 div.ui-panelgrid-cell,
 div.ui-panelgrid-content {
-  background: transparent !important;
   border: transparent !important;
   padding: 2px 0px !important;
 }
