@@ -1265,7 +1265,7 @@
 			};
 			setTimeout("PF('retiroEfectivo').hide();", 15000);
 		},
-		tablaId: function(name) {
+		tableId: function(name) {
 			return $('#'+ name+ $parent.TABLE_RESERVE);
 		}
   });
