@@ -2087,7 +2087,7 @@
 				set
 				  iva= {iva}
 				where
-				  iva> 0
+				  id_empresa in ({sucursales}) and id_iva= 1
 			</update>
     </unit>
 		<unit id="TcManticArticulosCodigosDto">
@@ -2487,18 +2487,8 @@
 				from      
 					tc_mantic_historial_iva
 				where      
-					id_empresa = {idEmpresa} and importe = {importe}
+					id_empresa = {idEmpresa} and importe = {importe} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
 			</select>
-			<select id="importe">
-				select 
-					tc_mantic_historial_iva.id_historial_iva as id_key,
-					tc_mantic_historial_iva.*
-				from 
-					tc_mantic_historial_iva
-				where 
-					importe like '%{importe}%'
-				{sortOrder}
-			</select>			
 		</unit> 				
 		<unit id="TcManticAlmacenesDto">
       <select id="row">

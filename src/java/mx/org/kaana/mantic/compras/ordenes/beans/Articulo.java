@@ -256,7 +256,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private double toDiferencia() {
 		Descuentos descuentos= new Descuentos(this.getCosto(), this.getDescuento().concat(",").concat(this.getExtras()));
 		double value= descuentos.toImporte();
-		value= Numero.toRedondearSat(this.getValor()- (value== 0? this.getCosto(): value)); 
+		value= Numero.toRedondearSat((value== 0? this.getCosto(): value)- this.getValor()); 
   	return this.getValor()== 0? 0: Numero.toRedondearSat(value* 100/ this.getValor());
 	}	
 

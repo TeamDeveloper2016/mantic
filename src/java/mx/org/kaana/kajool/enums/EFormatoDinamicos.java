@@ -4,7 +4,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
-import static mx.org.kaana.libs.formato.Fecha.DIA_FECHA_HORA_CORTA;
 import mx.org.kaana.libs.formato.Numero;
 
 /**
@@ -141,7 +140,6 @@ public enum EFormatoDinamicos implements IFormatosKajool {
           anterior.add(GregorianCalendar.DATE, -1);
           regresar = Fecha.formatear(Fecha.FECHA_HORA, anterior);
           break;
-
         case MEGAS:
           regresar = Numero.formatear(Numero.NUMERO_CON_DECIMALES, Numero.getDouble(regresar) / 1024 / 1024);
           break;

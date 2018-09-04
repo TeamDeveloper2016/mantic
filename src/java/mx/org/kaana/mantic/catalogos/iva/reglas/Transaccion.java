@@ -5,6 +5,7 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticHistorialIvaDto;
 import org.hibernate.Session;
@@ -34,6 +35,7 @@ public class Transaccion extends IBaseTnx {
 		Map<String, Object> params= new HashMap<>();
 		try {
 			params.put("iva", this.iva.getImporte());
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			this.messageError= "Ocurrio un error al ".concat(accion.name().toLowerCase()).concat(" el registro del IVA");
 			switch(accion){
 				case AGREGAR:
