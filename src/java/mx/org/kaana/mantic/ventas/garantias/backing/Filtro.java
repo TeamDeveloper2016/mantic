@@ -33,8 +33,6 @@ import mx.org.kaana.mantic.ventas.garantias.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticGarantiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticGarantiasDto;
-import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
-import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import org.primefaces.context.RequestContext;
 
