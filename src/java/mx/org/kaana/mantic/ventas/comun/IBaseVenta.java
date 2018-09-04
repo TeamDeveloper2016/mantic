@@ -506,4 +506,17 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable{
 			JsfBase.addMessageError(e);			
 		} // catch		
 	} // doVerificaVigenciaCotizacion
+	
+	public void doActivarDescuento(){
+		String tipoDescuento= null;		
+		try {
+			tipoDescuento= this.attrs.get("tipoDescuento").toString();
+			this.attrs.put("isIndividual", tipoDescuento.equals(INDIVIDUAL));
+			this.attrs.put(tipoDescuento.equals(INDIVIDUAL) ? "descuentoGlobal" : "descuentoIndividual", 0);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doActivarDescuento
 }
