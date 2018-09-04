@@ -364,6 +364,19 @@
 				} // else
 				return {"value": $(element).val(), "error": false};	
 		 },
+		 cantidadGarantia: function(element, value) {
+				var val= $(element)? $(element).val().trim(): value;
+				if(val=== 'undefined') {
+					$(element).val(value);
+				} // if	
+				else {
+					if(Number.isNaN(parseInt(val, 10)) || parseInt(val, 10)< parseInt(value, 10))
+						$(element).val(value);
+					else
+						$(element).val(parseInt(val, 10));
+				} // else
+				return {"value": $(element).val(), "error": false};	
+		 },
 		 precio: function(element, value) {
 				var val= $(element)? $(element).val().trim(): value;
 				if(val=== 'undefined' || val.length=== 0) {
