@@ -103,7 +103,7 @@
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
-		<p:remoteCommand name="lookup" actionListener="#{manticVentasGarantiasAccion.doUpdateArticulos}" process="@this"/>
+		<p:remoteCommand name="lookup" actionListener="#{manticVentasGarantiasAccion.doUpdateDialogArticulos}" process="@this" update="buscados localizado"/>
 		<p:tabView id="contenedorGrupos" widgetVar="contenedorCaja" activeIndex="#{manticVentasGarantiasAccion.attrs.tabIndex}">		
 			<p:tab title="Articulos">
 				<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">

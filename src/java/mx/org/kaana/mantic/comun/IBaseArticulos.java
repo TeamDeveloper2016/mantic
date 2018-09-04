@@ -348,7 +348,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
     }// finally
 	}
 
-	private void doUpdateArticulos() {
+	public void doUpdateArticulos() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
@@ -643,4 +643,16 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				this.getAdminOrden().getFiltrados().add(articulo);
 		} // for
 	}	
+	
+	public void doChangeBuscado() {
+		if(this.attrs.get("buscado")== null) {
+			FormatCustomLazy list= (FormatCustomLazy)this.attrs.get("lazyModel");
+			List<Entity> items   = (List<Entity>)list.getWrappedData();
+			if(items.size()> 0)
+			  this.attrs.put("encontrado", new UISelectEntity(items.get(0)));
+		} // else
+	  else
+      this.attrs.put("encontrado", new UISelectEntity((Entity)this.attrs.get("buscado")));
+	}
+	
 }

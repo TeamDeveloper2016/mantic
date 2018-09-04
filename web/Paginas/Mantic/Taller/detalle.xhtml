@@ -63,7 +63,7 @@
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
-		<p:remoteCommand name="lookup" actionListener="#{manticTallerDetalle.doUpdateArticulos}" process="@this codigo" update="buscados"/>
+		<p:remoteCommand name="lookup" actionListener="#{manticTallerDetalle.doUpdateDialogArticulos}" process="@this codigo" update="buscados localizado"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
@@ -210,8 +210,7 @@
 				</div>
 			</div>
 		</div>		
-		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" onHide="janal.desbloquear();">
-			<h:outputText value="Nota: Si desea buscar un articulo se puede usar la coma como separador de palabras ej. cable,coaxial ó cable coaxial" escape="false"/>
+		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" onHide="janal.desbloquear();"  onShow="$('#codigo').val('')" width="850px" height="670px" resizable="false">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
 					<p:outputLabel for="codigo" value="Código o nombre:"/>
@@ -223,30 +222,35 @@
 			</div>	
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
-					<p:inputText id="codigo" value="#{manticTallerDetalle.attrs.codigo}" styleClass="janal-wid-100-txt key-up-event"/>
+					<p:inputText id="codigo" value="#{manticTallerDetalle.attrs.codigo}" styleClass="janal-wid-100-txt key-up-event" style="text-transform: uppercase"/>
 				</div>			
 			</div>
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
-					<p:outputLabel for="buscados" value="Articulos:"/><br/>
-					<p:selectOneMenu id="buscados" value="#{manticTallerDetalle.attrs.articulo}" var="item" styleClass="janal-wid-98" converter="janal.convertidor.Entity">
-						<f:selectItems value="#{manticTallerDetalle.attrs.buscados}" var="element" itemValue="#{element}" itemLabel="Código: [#{element.propio}] Precio: [$ #{element.precio}] #{element.nombre}"/>
-						<p:column headerText="Propio">
-							<h:outputText value="#{item.propio}"/>
-						</p:column>   
+					<p:outputLabel value="Click sobre la tabla para seleccionar el articulo, por defecto es el primero de la lista"/><br/>
+					<p:dataTable id="buscados" lazy="true" styleClass="janal-wid-100" value="#{manticTallerDetalle.attrs.lazyModel}" selection="#{manticTallerDetalle.attrs.buscado}" var="item" selectionMode="single" rows="#{Constantes.REGISTROS_POR_PAGINA- 2}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" paginator="#{manticTallerDetalle.attrs.lazyModel.rowCount gt manticTallerDetalle.attrs.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
 						<p:column headerText="Nombre">
 							<h:outputText value="#{item.nombre}"/>
 						</p:column>   
-						<p:column headerText="Proveedor">
+						<p:column headerText="Código propio" styleClass="janal-wid-15">
+							<h:outputText value="#{item.propio}"/>
+						</p:column>   
+						<p:column headerText="Código proveedor" styleClass="janal-wid-15">
 							<h:outputText value="#{item.codigo}"/>
 						</p:column>   
-					</p:selectOneMenu>
+						<p:column headerText="Precio" styleClass="janal-column-right janal-wid-10">
+							<h:outputText value="#{item.precio}"/>
+						</p:column>   
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticTallerDetalle.attrs.lazyModel==null? 0: manticTallerDetalle.attrs.lazyModel.rowCount}] registros"/>
+            </f:facet>
+					</p:dataTable>
 				</div>
 			</div>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this buscados" update="@(.filas) @(.recalculo)" value="Aceptar" oncomplete="PF('dialogo').hide(); jsArticulos.close();"/>
-				<p:commandButton process="@none" styleClass="janal-text-white" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide();jsArticulos.move();"/>
+				<p:commandButton id="localizado" icon="fa fa-check" styleClass="janal-text-white" process="@this buscados" update="@(.filas) @(.recalculo)" value="Aceptar" actionListener="#{manticTallerDetalle.doChangeBuscado}" oncomplete="PF('dialogo').hide(); jsArticulos.close();" disabled="#{manticTallerDetalle.attrs.lazyModel.rowCount lt 1}"/>
+				<p:commandButton process="@none" styleClass="janal-text-white" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide(); jsArticulos.move();"/>
 			</div>
 		</p:dialog>
 	</ui:define>    

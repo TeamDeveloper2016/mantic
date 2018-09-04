@@ -16,6 +16,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -139,6 +140,33 @@ public class Detalle extends IBaseArticulos implements Serializable {
     } // finally
 	} // doUpdateArticulos
 
+	@Override
+	public void doUpdateDialogArticulos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		boolean buscaPorCodigo    = false;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
+			params.put("codigo", this.attrs.get("codigo"));
+			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
+        this.attrs.put("lazyModel", new FormatCustomLazy("VistaTallerServiciosDto", "porCodigo", params, columns));
+			else
+        this.attrs.put("lazyModel", new FormatCustomLazy("VistaTallerServiciosDto", "porLikeNombre", params, columns));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}
+	
   public void doLoad() {
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
@@ -160,7 +188,7 @@ public class Detalle extends IBaseArticulos implements Serializable {
 		Transaccion transaccion= null;
     try {		
 			transaccion= new Transaccion(getAdminOrden().getArticulos(), Long.valueOf(this.attrs.get("idServicio").toString()), -1L);
-			if(transaccion.ejecutar(EAccion.COMPLEMENTAR)){
+			if(transaccion.ejecutar(EAccion.COMPLEMENTAR)) {
 				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
 				JsfBase.addMessage("Se agregaron las refaccion de forma correcta.", ETipoMensaje.INFORMACION);
 			} // if
@@ -178,4 +206,5 @@ public class Detalle extends IBaseArticulos implements Serializable {
   	JsfBase.setFlashAttribute("idServicio", this.attrs.get("idServicio"));
     return (String) this.attrs.get("retorno");
   } // doCancelar
+	
 }
