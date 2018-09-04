@@ -2,10 +2,13 @@ package mx.org.kaana.mantic.ventas.garantias.reglas;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
@@ -30,13 +33,34 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 	private TicketVenta orden;
 
 	public AdminGarantia(TicketVenta orden) throws Exception {
-		this(orden, true);
+		this(orden, EAccion.AGREGAR);
+	}
+	
+	public AdminGarantia(TicketVenta orden, EAccion accion) throws Exception {
+		this(orden, EAccion.AGREGAR, -1L);
+	}
+	
+	public AdminGarantia(TicketVenta orden, EAccion accion, Long idGarantia) throws Exception {
+		this(orden, true, accion, idGarantia);
 	}
 	
 	public AdminGarantia(TicketVenta orden, boolean loadDefault) throws Exception {
+		this(orden, loadDefault, EAccion.AGREGAR, -1L);
+	}
+	
+	public AdminGarantia(TicketVenta orden, boolean loadDefault, EAccion accion, Long idGarantia) throws Exception {		
 		this.orden  = orden;
 		if(this.orden.isValid()) {
-  	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaTcManticGarantiasArticulosDto", "detalle", orden.toMap()));
+			switch(accion){
+				case CONSULTAR:
+					Map<String, Object>params= new HashMap<>();
+					params.put("idGarantia", idGarantia);
+					this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaTcManticGarantiasArticulosDto", "detalleGarantia", params));
+					break;
+				default:
+					this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaTcManticGarantiasArticulosDto", "detalle", orden.toMap()));
+					break;
+			} // switch
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
       this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdCliente())));
 		}	// if
@@ -47,7 +71,7 @@ public final class AdminGarantia extends IAdminArticulos implements Serializable
 			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.orden.setIdAlmacen(JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
 		} // else	
-		if(loadDefault)
+		if(loadDefault && !accion.equals(EAccion.CONSULTAR))
 			this.getArticulos().add(new Articulo(-1L));
 		this.toCalculate();
 	}
