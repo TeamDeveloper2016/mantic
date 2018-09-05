@@ -66,7 +66,7 @@ public class TrManticGarantiaMedioPagoDto implements IBaseDto, Serializable {
     setIdCierre(idCierre);
     setIdUsuario(idUsuario);
     setObservaciones(observaciones);
-    setIdVentaMedioPago(idVentaMedioPago);
+    setIdGarantiaMedioPago(idVentaMedioPago);
     setImporte(importe);
     setIdBanco(idBanco);
     setReferencia(referencia);
