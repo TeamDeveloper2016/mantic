@@ -22,7 +22,7 @@
         from      
           tr_mantic_garantia_medio_pago
         where      
-          id_garantia = {idGarantia} and id_tipo_medio_pago = {idTipoMedioPago} and importe = {importe} and id_venta_medio_pago = {idVentaMedioPago} and id_banco = {idBanco}
+          id_garantia = {idGarantia} and id_tipo_medio_pago = {idTipoMedioPago} and importe = {importe} and id_garantia_medio_pago = {idGarantiaMedioPago} and id_banco = {idBanco}
       </select>
     </unit>
 		<unit id="TcManticGrantiasEstatusDto">
