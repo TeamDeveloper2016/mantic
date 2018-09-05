@@ -304,8 +304,7 @@ public class Transaccion extends IBaseTnx{
 			pago.setIdGarantia(this.garantiaDto.getIdGarantia());
 			pago.setIdTipoMedioPago(this.garantia.getPagoGarantia().getIdTipoPago());
 			pago.setIdUsuario(JsfBase.getIdUsuario());
-			pago.setIdVentaMedioPago(toVentaMedioPago(sesion));
-			pago.setImporte(this.garantia.getTotales().getPago());		
+			pago.setImporte(this.garantia.getGarantia().getTotal());		
 			DaoFactory.getInstance().insert(sesion, pago);
 			alterarCierreCaja(sesion, this.garantia.getPagoGarantia().getIdTipoPago());				
 		} // try 
@@ -316,25 +315,7 @@ public class Transaccion extends IBaseTnx{
 			this.messageError= "Error al registrar los pagos.";
 		} // finally
 		return regresar; 
-	} // registrarPagos
-	
-	private Long toVentaMedioPago(Session sesion) throws Exception{
-		Long regresar                      = -1L;
-		Map<String, Object>params          = null;
-		TrManticVentaMedioPagoDto ventaPago= null;
-		try {
-			params= new HashMap<>();
-			params.put("idVenta",this.garantiaDto.getIdVenta());
-			params.put("idCierre",this.idCierreVigente);
-			params.put("idTipoMedioPago",this.garantia.getPagoGarantia().getIdTipoPago());
-			ventaPago= (TrManticVentaMedioPagoDto) DaoFactory.getInstance().toEntity(sesion, TrManticVentaMedioPagoDto.class, "TrManticVentaMedioPagoDto", "garantia", params);
-			regresar= ventaPago.getIdVentaMedioPago();
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar;
-	} // toVentaMedioPago
+	} // registrarPagos	
 	
 	private boolean alterarStockArticulos(Session sesion) throws Exception{
 		TcManticAlmacenesArticulosDto almacenArticulo= null;
