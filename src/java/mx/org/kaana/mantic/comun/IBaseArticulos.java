@@ -411,6 +411,41 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
     }// finally
 	}
  
+	public void doFindOutArticulos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		boolean buscaPorCodigo    = false;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
+			String search= (String)this.attrs.get("codigo"); 
+			if(!Cadena.isVacio(search)) {
+				buscaPorCodigo= search.startsWith(".");
+				if(buscaPorCodigo)
+					search= search.trim().substring(1);
+				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			} // if	
+			else
+				search= "WXYZ";
+			params.put("codigo", search);
+			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
+        this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porCodigo", params, columns));
+			else
+        this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porNombre", params, columns));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}
+ 
   public void doFindArticulo(Integer index) {
 		try {
     	List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");

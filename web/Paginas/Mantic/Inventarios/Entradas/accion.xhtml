@@ -131,7 +131,7 @@
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
 		<p:remoteCommand name="lookup" actionListener="#{manticInventariosEntradasAccion.doUpdateDialogArticulos}" process="@this codigo" update="buscados localizado"/>
-		<p:remoteCommand name="findout" actionListener="#{manticInventariosEntradasAccion.doUpdateDialogArticulos}" process="@this auxiliar" update="encontrados encontrado"/>
+		<p:remoteCommand name="findout" actionListener="#{manticInventariosEntradasAccion.doFindOutArticulos}" process="@this auxiliar" update="encontrados encontrado"/>
 		<p:remoteCommand name="filterRows" actionListener="#{manticInventariosEntradasAccion.doFilterRows}" update="contenedorGrupos:tabla" process="@this @(.key-filter-event)" onstart="return janal.bloquear();" oncomplete="jsArticulos.invalidate(#{manticInventariosEntradasAccion.adminOrden.filtrados.size()- 1});"/>
 		<p:remoteCommand name="factura" actionListener="#{manticInventariosEntradasAccion.doCheckFolio}" process="@this contenedorGrupos:factura contenedorGrupos:idProveedor" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 		<p:remoteCommand name="viewDocument" actionListener="#{manticInventariosEntradasAccion.doViewDocument}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
