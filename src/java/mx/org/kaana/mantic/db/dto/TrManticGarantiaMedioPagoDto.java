@@ -40,8 +40,8 @@ public class TrManticGarantiaMedioPagoDto implements IBaseDto, Serializable {
   private String observaciones;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
-	@Column (name="id_venta_medio_pago")
-  private Long idVentaMedioPago;
+	@Column (name="id_garantia_medio_pago")
+  private Long idGarantiaMedioPago;
   @Column (name="importe")
   private Double importe;
   @Column (name="id_banco")
@@ -113,12 +113,12 @@ public class TrManticGarantiaMedioPagoDto implements IBaseDto, Serializable {
     return observaciones;
   }
 
-  public void setIdVentaMedioPago(Long idVentaMedioPago) {
-    this.idVentaMedioPago = idVentaMedioPago;
+  public void setIdGarantiaMedioPago(Long idGarantiaMedioPago) {
+    this.idGarantiaMedioPago = idGarantiaMedioPago;
   }
 
-  public Long getIdVentaMedioPago() {
-    return idVentaMedioPago;
+  public Long getIdGarantiaMedioPago() {
+    return idGarantiaMedioPago;
   }
 
   public void setImporte(Double importe) {
@@ -156,12 +156,12 @@ public class TrManticGarantiaMedioPagoDto implements IBaseDto, Serializable {
   @Transient
   @Override
   public Long getKey() {
-  	return getIdVentaMedioPago();
-  }
+  	return getIdGarantiaMedioPago();
+  } 
 
   @Override
   public void setKey(Long key) {
-  	this.idVentaMedioPago = key;
+  	this.idGarantiaMedioPago = key;
   }
 
   @Override
@@ -178,7 +178,7 @@ public class TrManticGarantiaMedioPagoDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdVentaMedioPago());
+		regresar.append(getIdGarantiaMedioPago());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImporte());
 		regresar.append(Constantes.SEPARADOR);
@@ -199,7 +199,7 @@ public class TrManticGarantiaMedioPagoDto implements IBaseDto, Serializable {
 		regresar.put("idCierre", getIdCierre());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("observaciones", getObservaciones());
-		regresar.put("idVentaMedioPago", getIdVentaMedioPago());
+		regresar.put("idVentaMedioPago", getIdGarantiaMedioPago());
 		regresar.put("importe", getImporte());
 		regresar.put("idBanco", getIdBanco());
 		regresar.put("referencia", getReferencia());
@@ -210,7 +210,7 @@ public class TrManticGarantiaMedioPagoDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdGarantia(), getIdTipoMedioPago(), getIdCierre(), getIdUsuario(), getObservaciones(), getIdVentaMedioPago(), getImporte(), getIdBanco(), getReferencia(), getRegistro()
+    getIdGarantia(), getIdTipoMedioPago(), getIdCierre(), getIdUsuario(), getObservaciones(), getIdGarantiaMedioPago(), getImporte(), getIdBanco(), getReferencia(), getRegistro()
     };
     return regresar;
   }
@@ -224,8 +224,8 @@ public class TrManticGarantiaMedioPagoDto implements IBaseDto, Serializable {
   public String toAllKeys() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("|");
-    regresar.append("idVentaMedioPago~");
-    regresar.append(getIdVentaMedioPago());
+    regresar.append("idGarantiaMedioPago~");
+    regresar.append(getIdGarantiaMedioPago());
     regresar.append("|");
     return regresar.toString();
   }
@@ -233,7 +233,7 @@ public class TrManticGarantiaMedioPagoDto implements IBaseDto, Serializable {
   @Override
   public String toKeys() {
     StringBuilder regresar= new StringBuilder();
-    regresar.append(getIdVentaMedioPago());
+    regresar.append(getIdGarantiaMedioPago());
     return regresar.toString();
   }
 
@@ -244,7 +244,7 @@ public class TrManticGarantiaMedioPagoDto implements IBaseDto, Serializable {
 
   @Override
   public boolean isValid() {
-  	return getIdVentaMedioPago()!= null && getIdVentaMedioPago()!=-1L;
+  	return getIdGarantiaMedioPago()!= null && getIdGarantiaMedioPago()!=-1L;
   }
 
   @Override
@@ -256,7 +256,7 @@ public class TrManticGarantiaMedioPagoDto implements IBaseDto, Serializable {
       return false;
     }
     final TrManticGarantiaMedioPagoDto other = (TrManticGarantiaMedioPagoDto) obj;
-    if (getIdVentaMedioPago() != other.idVentaMedioPago && (getIdVentaMedioPago() == null || !getIdVentaMedioPago().equals(other.idVentaMedioPago))) {
+    if (getIdGarantiaMedioPago() != other.idGarantiaMedioPago && (getIdGarantiaMedioPago() == null || !getIdGarantiaMedioPago().equals(other.idGarantiaMedioPago))) {
       return false;
     }
     return true;
@@ -265,10 +265,9 @@ public class TrManticGarantiaMedioPagoDto implements IBaseDto, Serializable {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 67 * hash + (getIdVentaMedioPago() != null ? getIdVentaMedioPago().hashCode() : 0);
+    hash = 67 * hash + (getIdGarantiaMedioPago() != null ? getIdGarantiaMedioPago().hashCode() : 0);
     return hash;
   }
-
 }
 
 
