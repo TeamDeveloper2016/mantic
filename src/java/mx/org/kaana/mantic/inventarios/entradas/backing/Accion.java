@@ -324,20 +324,13 @@ public class Accion extends IBaseArticulos implements Serializable {
 	
 	@Override
 	public void doFaltanteArticulo() {
-		Articulo faltante= null, disponible= null;
+		Articulo faltante  = (Articulo)this.attrs.get("faltante");
+		Articulo disponible= (Articulo)this.attrs.get("disponible");
 		try {
-			Long idFaltante  = new Long((String)this.attrs.get("faltante"));
 		  List<Articulo> faltantes= (List<Articulo>)this.attrs.get("faltantes");
-			if(faltantes.size()> 0) {
-  			faltante= faltantes.get(faltantes.indexOf(new Articulo(idFaltante)));
-			  faltantes.remove(faltante);
-		  } // if
-			Long idDisponible = new Long((String)this.attrs.get("disponible"));
+   	  faltantes.remove(faltante);
 		  List<Articulo> disponibles= (List<Articulo>)this.attrs.get("disponibles");
-			if(disponibles.size()> 0) {
-			  disponible= disponibles.get(disponibles.indexOf(new Articulo(idDisponible)));
-			  disponibles.remove(disponible);
-			} // if
+		  disponibles.remove(disponible);
 			if(faltante!= null && disponible!= null)
 			  this.toMoveArticulo(disponible, faltante);
 		} // try
