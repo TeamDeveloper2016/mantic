@@ -207,9 +207,9 @@ public class Reader implements Serializable{
 			regresar= new ArrayList<>();
 			conceptos= document.getDocumentElement().getElementsByTagName("cfdi:Conceptos").item(0).getChildNodes();				
 			for (int i = 0; i < conceptos.getLength(); i++){				
-				node= conceptos.item(i).getNextSibling();
-				if(node!= null){
-					nodeName= conceptos.item(i).getNextSibling().getNodeName();
+				node= conceptos.item(i).getNextSibling()== null? conceptos.item(i): conceptos.item(i).getNextSibling();
+				if(node!= null) {
+					nodeName= node.getNodeName();
 					if(nodeName.equals("cfdi:Concepto")){
 						concepto= new Concepto();
 						mapAttrs= node.getAttributes();
