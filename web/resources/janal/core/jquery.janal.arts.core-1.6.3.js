@@ -27,6 +27,7 @@
 		selector    : '.key-down-event',
 		focus       : '.key-focus-event',
 		lookup      : '.key-up-event',
+		findout     : '.key-find-event',
 		averages    : '.key-press-enter',
 		filter      : '.key-filter-event',
 		current     : '',
@@ -88,6 +89,12 @@
 				clearTimeout($articulos.typingTimer);
         if ($(this).val() && $(this).val().trim().length> 0) 
           $articulos.typingTimer= setTimeout($articulos.look($(this)), $articulos.doneInterval);
+				return false;
+			});  
+      $(document).on('keyup', this.findout, function(e) {
+				clearTimeout($articulos.typingTimer);
+        if ($(this).val() && $(this).val().trim().length> 0) 
+          $articulos.typingTimer= setTimeout($articulos.find($(this)), $articulos.doneInterval);
 				return false;
 			});  
       $(document).on('focus', this.focus+ ',.key-move-event', function() {
@@ -499,6 +506,10 @@
 		look: function(name) {
 			console.log('jsArticulo.look: '+ $(name).val());
 			lookup();
+		},
+		find: function(name) {
+			console.log('jsArticulo.find: '+ $(name).val());
+			findout();
 		},
 		back: function(title, count) {
 			janal.console('jsArticulo.back: ');

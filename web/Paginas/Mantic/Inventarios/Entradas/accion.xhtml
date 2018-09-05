@@ -126,11 +126,12 @@
 			<pe:methodParam name="idArticulo"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="replace" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticInventariosEntradasAccion.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="janal.reset(); janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
+		<pe:remoteCommand name="replace" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion) @(.importado)" actionListener="#{manticInventariosEntradasAccion.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="janal.reset(); janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
 		<p:remoteCommand name="lookup" actionListener="#{manticInventariosEntradasAccion.doUpdateDialogArticulos}" process="@this codigo" update="buscados localizado"/>
+		<p:remoteCommand name="findout" actionListener="#{manticInventariosEntradasAccion.doUpdateDialogArticulos}" process="@this auxiliar" update="encontrados encontrado"/>
 		<p:remoteCommand name="filterRows" actionListener="#{manticInventariosEntradasAccion.doFilterRows}" update="contenedorGrupos:tabla" process="@this @(.key-filter-event)" onstart="return janal.bloquear();" oncomplete="jsArticulos.invalidate(#{manticInventariosEntradasAccion.adminOrden.filtrados.size()- 1});"/>
 		<p:remoteCommand name="factura" actionListener="#{manticInventariosEntradasAccion.doCheckFolio}" process="@this contenedorGrupos:factura contenedorGrupos:idProveedor" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 		<p:remoteCommand name="viewDocument" actionListener="#{manticInventariosEntradasAccion.doViewDocument}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
@@ -564,12 +565,18 @@
 											</f:facet>
 											<h:outputText value="#{row['iva']}"/>
 										</p:column>		
-										<p:column  class="MarAuto Responsive janal-wid-10">
+										<p:column class="MarAuto Responsive janal-wid-10">
 											<f:facet name="header">
 												<h:outputText value="Unidad medida"/>
 											</f:facet>
 											<h:outputText value="#{row['unidadMedida']}"/>
 										</p:column>		
+										<p:column style="width:38px; text-align: center">
+											<p:outputLabel id="descripcion" value="#{row.nombre}" style="display:none"/>
+											<p:commandButton process="@this" icon="fa fa-plus" title="#{row['nombre']}" styleClass="janal-text-white" oncomplete="$('#auxiliar').val($('#contenedorGrupos\\:faltante\\:#{index}\\:descripcion').html());janal.bloquear();PF('buscador').show();">
+    										<f:setPropertyActionListener value="#{row}" target="#{manticInventariosEntradasAccion.attrs.faltante}" />
+		    							</p:commandButton>
+										</p:column>
 										<f:facet name="footer">
 											<p:outputLabel value="Total: #{manticInventariosEntradasAccion.attrs.faltantes.size()}" styleClass="importado janal-color-orange janal-steps-boton-siguiente janal-font-bold"/>
 										</f:facet>
@@ -705,7 +712,51 @@
 				<p:commandButton process="@none" styleClass="janal-text-white" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide(); jsArticulos.move();"/>
 			</div>
 		</p:dialog>
-	</ui:define>    
+		<p:dialog id="catalogo" widgetVar="buscador" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" onHide="janal.desbloquear();" width="850px" height="670px" resizable="false">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:outputLabel for="codigo" value="Código o nombre:"/>
+					<span class="janal-help-icon janal-help-8 fa fa-fw fa-question-circle Fright" onclick="countHelp(8);"/>	
+					<pe:tooltip for="@(.janal-help-8)" showEvent="click">
+						<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(8)}" styleClass="Fs15" escape="false"/>
+					</pe:tooltip>
+				</div>			
+			</div>	
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:inputText id="auxiliar" value="#{manticInventariosEntradasAccion.attrs.codigo}" styleClass="janal-wid-100-txt key-find-event" style="text-transform: uppercase"/>
+				</div>			
+			</div>
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12 janal-column-left">
+					<p:outputLabel value="Click sobre la tabla para seleccionar el articulo, por defecto es el primero de la lista"/><br/>
+					<p:dataTable id="encontrados" lazy="true" styleClass="janal-wid-100" value="#{manticInventariosEntradasAccion.attrs.lazyModel}" selection="#{manticInventariosEntradasAccion.attrs.buscado}" var="item" selectionMode="single" rows="#{Constantes.REGISTROS_POR_PAGINA- 2}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" paginator="#{manticInventariosEntradasAccion.attrs.lazyModel.rowCount gt manticInventariosEntradasAccion.attrs.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+						<p:ajax event="rowDblselect" oncomplete="$('#encontrado').click();"/>
+						<p:column headerText="Nombre">
+							<h:outputText value="#{item.nombre}"/>
+						</p:column>   
+						<p:column headerText="Código propio" styleClass="janal-wid-15">
+							<h:outputText value="#{item.propio}"/>
+						</p:column>   
+						<p:column headerText="Código proveedor" styleClass="janal-wid-15">
+							<h:outputText value="#{item.codigo}"/>
+						</p:column>   
+						<p:column headerText="Precio" styleClass="janal-column-right janal-wid-10">
+							<h:outputText value="#{item.precio}"/>
+						</p:column>   
+            <f:facet name="footer">
+              <p:outputLabel value="Total [#{manticInventariosEntradasAccion.attrs.lazyModel==null? 0: manticInventariosEntradasAccion.attrs.lazyModel.rowCount}] registros"/>
+            </f:facet>
+					</p:dataTable>
+				</div>
+			</div>
+			<hr class="ui-widget-content"/>
+			<div class="janal-line-button">
+				<p:commandButton id="encontrado" icon="fa fa-check" styleClass="janal-text-white" process="@this encontrados" update="@(.filas) @(.recalculo)" value="Aceptar" actionListener="#{manticInventariosEntradasAccion.doFindOutArticulo}" oncomplete="PF('buscador').hide(); jsArticulos.cursor.index= jsArticulos.cursor.top; jsArticulos.close();" disabled="#{manticInventariosEntradasAccion.attrs.lazyModel.rowCount lt 1}"/>
+				<p:commandButton process="@none" styleClass="janal-text-white" icon="fa fa-remove" value="Cancelar" oncomplete="PF('buscador').hide();"/>
+			</div>
+		</p:dialog>
+	</ui:define>   
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticInventariosEntradasAccion.doAceptar}" styleClass="janal-text-white" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>

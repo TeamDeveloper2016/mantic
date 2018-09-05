@@ -37,6 +37,8 @@ import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.util.Collections;
+import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
@@ -350,7 +352,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 		disponible.setDisponible(false);
 		this.getAdminOrden().toCalculate();
 	}
-	
+
 	public void doCheckFolio() {
 		Map<String, Object> params=null;
 		try {
@@ -426,6 +428,37 @@ public class Accion extends IBaseArticulos implements Serializable {
 
 	public void doUpdateRfc() {
 		this.doUpdateRfc(this.proveedor);
+	}
+
+	public void doFindOutArticulo() {
+		Articulo faltante= (Articulo)this.attrs.get("faltante");
+		Entity buscado   = (Entity)this.attrs.get("buscado");
+		if(faltante!= null) { 
+			if(buscado== null) {
+				FormatCustomLazy list= (FormatCustomLazy)this.attrs.get("lazyModel");
+				List<Entity> items   = (List<Entity>)list.getWrappedData();
+				if(items.size()> 0) {
+					buscado= items.get(0);
+					faltante.setIdArticulo(buscado.getKey());
+				} // if	
+			} // else
+			else
+				faltante.setIdArticulo(buscado.getKey());
+      int position= this.getAdminOrden().getArticulos().indexOf(faltante);
+			if(position< 0) {
+  		  List<Articulo> faltantes= (List<Articulo>)this.attrs.get("faltantes");
+     	  faltantes.remove(faltante);
+			} // if
+			if(buscado!= null) {
+				buscado.put("sat", new Value("sat", faltante.getSat()));
+				buscado.put("codigo", new Value("codigo", faltante.getCodigo()));
+				buscado.put("costo", new Value("costo", faltante.getCosto()));
+				buscado.put("cantidad", new Value("cantidad", faltante.getCantidad()));
+				buscado.put("iva", new Value("iva", faltante.getIva()));
+				buscado.put("unidadMedida", new Value("unidadMedida", faltante.getUnidadMedida()));
+			} // if	
+			this.attrs.put("encontrado", new UISelectEntity(buscado));
+		} // if
 	}
 
 }

@@ -16,7 +16,7 @@ public class ReadFactura {
 		ComprobanteFiscal factura= null;
 		try {
 		    FileSearch fileSearch = new FileSearch();
-				fileSearch.searchDirectory(new File("D:/Temporal/Mantic/Archivos"), ".xml");
+				fileSearch.searchDirectory(new File("D:/Temporal/Mantic/xml"), ".xml");
 				int count = fileSearch.getResult().size();
 				if (count == 0)
 					System.out.println("\nNo result found!");
