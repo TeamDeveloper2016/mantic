@@ -4140,8 +4140,8 @@
           tc_mantic_ventas_detalles.unidad_medida,
           tc_mantic_ventas_detalles.utilidad,
           tc_mantic_ventas_detalles.registro,
-          (tc_mantic_ventas_detalles.cantidad - garantia_cantidad.cantidad) as cantidad,
-          (tc_mantic_ventas_detalles.cantidad - garantia_cantidad.cantidad) as cantidad_garantia,
+          (tc_mantic_ventas_detalles.cantidad - IF(garantia_cantidad.cantidad IS NULL, 0, garantia_cantidad.cantidad)) AS cantidad,
+          (tc_mantic_ventas_detalles.cantidad - IF(garantia_cantidad.cantidad IS NULL, 0, garantia_cantidad.cantidad)) AS cantidad_garantia,
 					tr_mantic_articulo_proveedor.id_proveedor,
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio
 				from 
@@ -4179,7 +4179,7 @@
 					tc_mantic_ventas_detalles.codigo,
 					tc_mantic_ventas_detalles.precio,
 					tc_mantic_ventas_detalles.costo,
-          (tc_mantic_ventas_detalles.cantidad - tc_mantic_garantias_detalles.cantidad) as cantidad_garantia,					
+          (tc_mantic_ventas_detalles.cantidad - IF(tc_mantic_garantias_detalles IS NULL, 0, tc_mantic_garantias_detalles)) AS cantidad_garantia,					
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio
 				from 
 					tc_mantic_garantias_detalles
