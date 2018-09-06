@@ -592,4 +592,17 @@ public class RegistroArticulo implements Serializable{
 			throw e;
 		} // catch		
 	} // doCancelar
+	
+	public void doSeleccionarPrincipal(ArticuloCodigo principal){
+		try {
+			for(ArticuloCodigo articuloCodigo: this.articulosCodigos){
+				if(!articuloCodigo.equals(principal))
+					articuloCodigo.setIdPrincipal(2L);
+			} // for
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+	}
 }
