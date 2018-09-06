@@ -7,6 +7,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.reglas.comun.Condicion;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -382,7 +383,9 @@ public class RegistroProveedor implements Serializable{
 		ProveedorCondicionPago proveedorCondicionPago= null;
 		try {					
 			proveedorCondicionPago= new ProveedorCondicionPago(this.contadores.getTotalProveedoresPago() + this.countIndice, ESql.INSERT, true);				
-			this.proveedoresCondicionPago.add(proveedorCondicionPago);			
+			proveedorCondicionPago.setIdTipoPago(1L);
+			this.proveedoresCondicionPago.add(proveedorCondicionPago);		
+			doValidaTipoPago(proveedorCondicionPago);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -616,4 +619,23 @@ public class RegistroProveedor implements Serializable{
 			JsfBase.addMessageError(e);			
 		} // catch	
 	} // doActualizaAgente
+	
+	public void doValidaTipoPago(ProveedorCondicionPago condicionPago){
+		int countEfectivo=0;
+		try {
+			if(this.proveedoresCondicionPago.size()>1){
+				for(ProveedorCondicionPago record: this.proveedoresCondicionPago){
+					if(record.getIdTipoPago().equals(1L))
+						countEfectivo++;
+				} // 
+				if(countEfectivo>1 && condicionPago.getIdTipoPago().equals(1L)){
+					this.proveedoresCondicionPago.get(this.proveedoresCondicionPago.indexOf(condicionPago)).setIdTipoPago(2L);
+				} // if
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch				
+	} // doValidaTipoPago
 }
