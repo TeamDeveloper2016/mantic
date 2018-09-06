@@ -1562,7 +1562,7 @@
 				{sortOrder}				
 			</select>
 		</unit>	
-    <unit id="TrManticArticuloPrecioSugeridoDto">
+    <unit id="TrManticArticuloPrecioSugeridoDto">					     
       <select id="row">
         select      
           *
@@ -3757,25 +3757,7 @@
 			<delete id="rows">
         delte from tr_mantic_articulo_grupo_descuento where id_articulo={idArticulo} 
       </delete>
-    </unit>
-    <unit id="TrManticArticuloPrecioSugeridoDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tr_mantic_articulo_precio_sugerido
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tr_mantic_articulo_precio_sugerido
-        where      
-          id_proveedor = {idProveedor} and precio = {precio} and descuento = {descuento} and id_articulo = {idArticulo}
-      </select>
-    </unit>		
+    </unit>    		
     <unit id="TcManticOrdenesBitacoraDto">
       <select id="row">
         select      
