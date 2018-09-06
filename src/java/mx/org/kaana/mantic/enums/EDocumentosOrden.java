@@ -4,10 +4,10 @@ import mx.org.kaana.libs.Constantes;
 
 public enum EDocumentosOrden {
 
-	ORDEN_COMPRA ("orden", "idOrdenCompra", "/Paginas/Mantic/Compras/Ordenes/accion.jsf", "idOrdenCompra"),
-	NOTA_ENTRADA ("entrada", "idOrdenCompra", "/Paginas/Mantic/Inventarios/Entradas/accion.jsf", "idNotaEntrada"),
-	DEVOLUCION   ("devolucion", "idDevolucion", "/Paginas/Mantic/Inventarios/Devoluciones/accion.jsf", "idDevolucion"),
-	NOTA_CREDITO ("credito", "idNotaCredito", "/Paginas/Mantic/Inventarios/Creditos/accion.jsf", "idNotaCredito");
+	ORDEN_COMPRA ("entrada", "idOrdenCompra", "/Paginas/Mantic/Compras/Ordenes/accion.jsf", "idOrdenCompra"),
+	NOTA_ENTRADA ("devolucion", "idNotaEntrada", "/Paginas/Mantic/Inventarios/Entradas/accion.jsf", "idNotaEntrada"),
+	DEVOLUCION   ("credito", "idDevolucion", "/Paginas/Mantic/Inventarios/Devoluciones/accion.jsf", "idDevolucion"),
+	NOTA_CREDITO ("", "idNotaCredito", "/Paginas/Mantic/Inventarios/Creditos/accion.jsf", "idNotaCredito");
 	
 	private String idXml;
 	private String idKey;
