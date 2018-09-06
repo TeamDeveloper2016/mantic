@@ -4388,5 +4388,79 @@
 				{sortOrder}
 			</select>			
 		</unit>
+		<unit id="VistaEstructuraOrdenesCompraDto">
+			<select id="orden">
+        select
+          tc_mantic_ordenes_compras.id_orden_compra as id,
+          tc_mantic_empresas.clave as clave_empresa,
+          tc_mantic_empresas.nombre as nombre_empresa,
+          tc_mantic_empresas.titulo as titulo_empresa,
+          tc_mantic_ordenes_compras.consecutivo consecutivo,  
+          tc_mantic_proveedores.razon_social as proveedor,
+          tc_mantic_ordenes_compras.total importe,
+          tc_mantic_ordenes_estatus.nombre estatus,
+          tc_mantic_ordenes_compras.registro           
+        from 
+          tc_mantic_ordenes_compras
+        inner join 
+          tr_mantic_proveedor_pago on tc_mantic_ordenes_compras.id_proveedor_pago= tr_mantic_proveedor_pago.id_proveedor_pago
+        inner join 
+          tc_mantic_proveedores on tr_mantic_proveedor_pago.id_proveedor= tc_mantic_proveedores.id_proveedor
+        inner join 
+          tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
+        inner join 
+          tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus=tc_mantic_ordenes_estatus.id_orden_estatus        
+        where 
+          tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}	        
+      </select>
+			<select id="entrada">
+        select          
+          tc_mantic_notas_entradas.id_nota_entrada as id,
+          tc_mantic_notas_entradas.consecutivo consecutivo,
+          tc_mantic_notas_entradas.registro registro,
+          tc_mantic_notas_entradas.total importe,
+          tc_mantic_notas_estatus.nombre estatus
+        from 
+          tc_mantic_ordenes_compras                
+        left join 
+          tc_mantic_notas_entradas on tc_mantic_ordenes_compras.id_orden_compra= tc_mantic_notas_entradas.id_orden_compra
+        left join 
+          tc_mantic_notas_estatus on tc_mantic_notas_entradas.id_nota_estatus=tc_mantic_notas_estatus.id_nota_estatus        
+        where 
+          tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}	        
+      </select>
+			<select id="devolucion">
+        select          
+          tc_mantic_devoluciones.id_devolucion as id,
+          tc_mantic_devoluciones.consecutivo consecutivo,
+          tc_mantic_devoluciones.registro registro,
+          tc_mantic_devoluciones.total importe,
+          tc_mantic_devoluciones_estatus.nombre estatus          
+        from           
+          tc_mantic_notas_entradas        
+        left join
+          tc_mantic_devoluciones on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_devoluciones.id_nota_entrada
+        left join 
+          tc_mantic_devoluciones_estatus on tc_mantic_devoluciones.id_devolucion_estatus=tc_mantic_devoluciones_estatus.id_devolucion_estatus        
+        where 
+          tc_mantic_notas_entradas.id_nota_entrada= {idNotaEntrada}	        
+      </select>
+			<select id="credito">
+        select          
+          tc_mantic_creditos_notas.id_credito_nota as id,
+          tc_mantic_creditos_notas.consecutivo consecutivo,
+          tc_mantic_creditos_notas.registro registro,
+          tc_mantic_creditos_notas.importe importe,
+          tc_mantic_creditos_estatus.nombre estatus
+        from           
+          tc_mantic_devoluciones        
+        left join
+          tc_mantic_creditos_notas on tc_mantic_devoluciones.id_devolucion = tc_mantic_creditos_notas.id_devolucion 
+        left join 
+          tc_mantic_creditos_estatus on tc_mantic_creditos_notas.id_credito_estatus=tc_mantic_creditos_estatus.id_credito_estatus
+        where 
+          tc_mantic_devoluciones.id_devolucion= {idDevolucion}	        
+      </select>
+		</unit>		
 	</dml>    
 </process>
