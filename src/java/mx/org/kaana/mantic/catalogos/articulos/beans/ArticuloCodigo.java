@@ -43,4 +43,16 @@ public class ArticuloCodigo extends TcManticArticulosCodigosDto implements Seria
 	public void setNuevo(Boolean nuevo) {
 		this.nuevo = nuevo;
 	}
+
+	public Boolean getPrincipal() {
+		return getIdPrincipal()!= null && getIdPrincipal().equals(1L);
+	}
+
+	public void setPrincipal(Boolean principal) {
+		setIdPrincipal(principal ? 1L : 2L);
+	}	
+	
+	public Boolean getCandidatoPrincipal() {
+		return !(getIdProveedor()!= null && !getIdProveedor().equals(0L));
+	}
 }
