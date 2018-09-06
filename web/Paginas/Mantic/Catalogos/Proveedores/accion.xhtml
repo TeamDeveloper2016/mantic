@@ -211,11 +211,15 @@
                   </p:column>
 									<p:column headerText="Tipo de pago">										
                     <p:selectOneMenu id="tipoPago#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.idTipoPago}" filter="true" filterMatchMode="contains" disabled="#{!tipoPago.nuevo}">
-                      <f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.tiposPago}"/>
+                      <p:ajax listener="#{manticCatalogosProveedoresAccion.registroProveedor.doValidaTipoPago(tipoPago)}" process="@this tablaTipoPago" update="tablaTipoPago" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.tiposPago}"/>
                     </p:selectOneMenu> 				
                   </p:column>	
                   <p:column headerText="Descuento adicional" styleClass="janal-wid-30">		
                     <p:inputText id="valor#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.descuento}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaTipoPago', #{index}, 'valor')" disabled="#{!tipoPago.nuevo}"/>                    																																			
+                  </p:column>
+                  <p:column headerText="Plazo" styleClass="janal-wid-5">		
+                    <p:inputNumber decimalPlaces="0" id="plazo#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.plazo}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaTipoPago', #{index}, 'valor')" disabled="#{!tipoPago.nuevo}"/>
                   </p:column>
                   <p:column style="width:32px;text-align: center">
                     <p:commandButton update="tablaTipoPago" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.registroProveedor.doEliminarProveedorCondicionPago}" styleClass="janal-text-white">
