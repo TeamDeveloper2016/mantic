@@ -42,6 +42,8 @@ public class TrManticProveedorPagoDto implements IBaseDto, Serializable {
   private Long idUsuario;
   @Column (name="descuento")
   private Double descuento;
+  @Column (name="plazo")
+  private Long plazo;
   @Column (name="observaciones")
   private String observaciones;
   @Column (name="registro")
@@ -52,11 +54,11 @@ public class TrManticProveedorPagoDto implements IBaseDto, Serializable {
   }
 
   public TrManticProveedorPagoDto(Long key) {
-    this(new Long(-1L), null, null, null, null, null, null);
+    this(new Long(-1L), null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TrManticProveedorPagoDto(Long idProveedorPago, Long idProveedor, String clave, Long idTipoPago, Long idUsuario, Double descuento, String observaciones) {
+  public TrManticProveedorPagoDto(Long idProveedorPago, Long idProveedor, String clave, Long idTipoPago, Long idUsuario, Double descuento, String observaciones, Long plazo) {
     setIdProveedorPago(idProveedorPago);
     setIdProveedor(idProveedor);
     setClave(clave);
@@ -65,7 +67,16 @@ public class TrManticProveedorPagoDto implements IBaseDto, Serializable {
     setDescuento(descuento);
     setObservaciones(observaciones);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		setPlazo(plazo);
   }
+
+	public Long getPlazo() {
+		return plazo;
+	}
+
+	public void setPlazo(Long plazo) {
+		this.plazo = plazo;
+	}
 	
   public void setIdProveedorPago(Long idProveedorPago) {
     this.idProveedorPago = idProveedorPago;
@@ -161,6 +172,8 @@ public class TrManticProveedorPagoDto implements IBaseDto, Serializable {
 		regresar.append(getObservaciones());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getPlazo());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -176,13 +189,14 @@ public class TrManticProveedorPagoDto implements IBaseDto, Serializable {
 		regresar.put("descuento", getDescuento());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("registro", getRegistro());
+		regresar.put("plazo", getPlazo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdProveedorPago(), getIdProveedor(), getClave(), getIdTipoPago(), getIdUsuario(), getDescuento(), getObservaciones(), getRegistro()
+    getIdProveedorPago(), getIdProveedor(), getClave(), getIdTipoPago(), getIdUsuario(), getDescuento(), getObservaciones(), getRegistro(), getPlazo()
     };
     return regresar;
   }
@@ -240,7 +254,4 @@ public class TrManticProveedorPagoDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdProveedorPago() != null ? getIdProveedorPago().hashCode() : 0);
     return hash;
   }
-
 }
-
-
