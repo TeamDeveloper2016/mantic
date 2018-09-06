@@ -455,7 +455,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 				buscado.put("costo", new Value("costo", faltante.getCosto()));
 				buscado.put("cantidad", new Value("cantidad", faltante.getCantidad()));
 				buscado.put("iva", new Value("iva", faltante.getIva()));
-				buscado.put("unidadMedida", new Value("unidadMedida", faltante.getUnidadMedida()));
+				buscado.put("unidadMedida", new Value("unidadMedida", faltante.getUnidadMedida()!= null? faltante.getUnidadMedida().toUpperCase(): ""));
 			} // if	
 			this.attrs.put("encontrado", new UISelectEntity(buscado));
 		} // if

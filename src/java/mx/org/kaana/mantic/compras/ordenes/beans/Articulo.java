@@ -281,7 +281,9 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getIdOrdenDetalle(),
 			this.getCantidad(),
 			this.getExcedentes(),
-			this.getIdAplicar()
+			this.getIdAplicar(),
+			this.getIdOrdenDetalle()== null? this.getSolicitados(): 0D,
+			this.getIdOrdenDetalle()== null? this.getSolicitados()- this.getCantidad(): 0D
 		);	
 	}
 
