@@ -14,7 +14,6 @@ import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.archivo.Archivo;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
-import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloCodigo;
 import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloProveedor;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Descuento;
@@ -224,14 +223,24 @@ public class Transaccion extends IBaseTnx {
 		TcManticArticulosCodigosDto dto= null;
 		ESql sqlAccion                 = null;		
 		int count                      = 0;
+		int countPrincipal             = 0;
 		boolean validate               = false;
 		boolean regresar               = false;
+		boolean asignaPrincipal        = false;
 		try {
+			for(ArticuloCodigo codigo: this.articulo.getArticulosCodigos()){
+				if(codigo.getIdPrincipal().equals(1L))
+					countPrincipal++;
+			} // if
+			asignaPrincipal= countPrincipal==0;
 			for(ArticuloCodigo codigo: this.articulo.getArticulosCodigos()){
 				codigo.setIdArticulo(idArticulo);				
 				codigo.setIdUsuario(JsfBase.getIdUsuario());
 				codigo.setObservaciones(this.articulo.getObservaciones());
-				codigo.setIdPrincipal(count==0 ? 1L : 2L);
+				if(asignaPrincipal){
+					codigo.setIdProveedor(count==0 ? null : codigo.getIdProveedor());
+					codigo.setIdPrincipal(count==0 ? 1L : 2L);
+				} // if
 				codigo.setOrden(count + 1L);
 				dto= (TcManticArticulosCodigosDto) codigo;				
 				sqlAccion= codigo.getSqlAccion();
