@@ -59,10 +59,16 @@
 									</p:column>
 									<p:column headerText="Proveedor">										
 										<p:selectOneMenu id="proveedor#{codigo.key}" styleClass="janal-wid-100-txt" value="#{codigo.idProveedor}" filter="true" filterMatchMode="contains">
+											<p:ajax update="tablaCodigos" process="@this tablaCodigos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 											<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 											<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.proveedoresGeneral}"/>
 										</p:selectOneMenu> 				
 									</p:column>				
+									<p:column headerText="Principal" styleClass="janal-wid-5" style="text-align: center">
+										<p:selectBooleanCheckbox styleClass="janal-text-white" value="#{codigo.principal}" rendered="#{codigo.candidatoPrincipal}">
+											<p:ajax listener="#{manticCatalogosArticulosAccion.registroArticulo.doSeleccionarPrincipal(codigo)}" update="tablaCodigos" process="@this" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										</p:selectBooleanCheckbox>
+									</p:column>
 									 <p:column style="width:32px;text-align: center">
 										 <p:commandButton update="tablaCodigos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarArticuloCodigo}" styleClass="janal-text-white">
 											<f:setPropertyActionListener value="#{codigo}" target="#{manticCatalogosArticulosAccion.registroArticulo.articulosCodigosSeleccion}" />
