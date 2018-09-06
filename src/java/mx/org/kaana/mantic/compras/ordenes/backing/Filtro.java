@@ -297,4 +297,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		return "/Paginas/Mantic/Inventarios/Entradas/filtro".concat(Constantes.REDIRECIONAR);
 	}
 
+	public String doEstructura(){
+		JsfBase.setFlashAttribute("idOrdenCompra",((Entity)this.attrs.get("seleccionado")).getKey());		
+		return "estructura".concat(Constantes.REDIRECIONAR);
+	} // doEstructura
 }
