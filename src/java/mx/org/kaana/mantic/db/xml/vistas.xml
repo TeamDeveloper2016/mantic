@@ -4423,9 +4423,9 @@
           tc_mantic_notas_estatus.nombre estatus
         from 
           tc_mantic_ordenes_compras                
-        left join 
+        inner join 
           tc_mantic_notas_entradas on tc_mantic_ordenes_compras.id_orden_compra= tc_mantic_notas_entradas.id_orden_compra
-        left join 
+        inner join 
           tc_mantic_notas_estatus on tc_mantic_notas_entradas.id_nota_estatus=tc_mantic_notas_estatus.id_nota_estatus        
         where 
           tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}	        
@@ -4439,9 +4439,9 @@
           tc_mantic_devoluciones_estatus.nombre estatus          
         from           
           tc_mantic_notas_entradas        
-        left join
+        inner join
           tc_mantic_devoluciones on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_devoluciones.id_nota_entrada
-        left join 
+        inner join 
           tc_mantic_devoluciones_estatus on tc_mantic_devoluciones.id_devolucion_estatus=tc_mantic_devoluciones_estatus.id_devolucion_estatus        
         where 
           tc_mantic_notas_entradas.id_nota_entrada= {idNotaEntrada}	        
@@ -4455,9 +4455,9 @@
           tc_mantic_creditos_estatus.nombre estatus
         from           
           tc_mantic_devoluciones        
-        left join
+        inner join
           tc_mantic_creditos_notas on tc_mantic_devoluciones.id_devolucion = tc_mantic_creditos_notas.id_devolucion 
-        left join 
+        inner join 
           tc_mantic_creditos_estatus on tc_mantic_creditos_notas.id_credito_estatus=tc_mantic_creditos_estatus.id_credito_estatus
         where 
           tc_mantic_devoluciones.id_devolucion= {idDevolucion}	        

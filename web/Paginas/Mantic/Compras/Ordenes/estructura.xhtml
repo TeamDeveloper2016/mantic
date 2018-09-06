@@ -201,10 +201,10 @@
     </div>
 		<p:dialog id="dialogoDetalle" widgetVar="dlgDetalle" header="Detalle" closable="false" resizable="false" dynamic="true" onHide="janal.desbloquear();" position="center">
       <h:panelGrid columns="2">
-        <p:outputLabel value="Empresa: " style="font-weight: bold"/>
-        <p:outputLabel value="#{manticComprasOrdenesEstructura.attrs.detalle.nombreEmpresa}"/>
-        <p:outputLabel value="Proveedor: " style="font-weight: bold"/>
-        <p:outputLabel value="#{manticComprasOrdenesEstructura.attrs.detalle.proveedor}"/>
+        <p:outputLabel value="Empresa: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}"/>
+        <p:outputLabel value="#{manticComprasOrdenesEstructura.attrs.detalle.nombreEmpresa}" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}"/>
+        <p:outputLabel value="Proveedor: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}"/>
+        <p:outputLabel value="#{manticComprasOrdenesEstructura.attrs.detalle.proveedor}" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}"/>
         <p:outputLabel value="Consecutivo: " style="font-weight: bold"/>
         <p:outputLabel value="#{manticComprasOrdenesEstructura.attrs.detalle.consecutivo}"/>        
         <p:outputLabel value="Importe: " style="font-weight: bold"/>
