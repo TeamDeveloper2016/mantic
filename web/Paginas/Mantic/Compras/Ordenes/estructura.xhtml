@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Desglose de ordenes generadas" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {        
+      };						
+			
+			$(document).ready(function(){
+        //updateStyle();
+      });
+      
+			function methodExecute(item, method){
+        $(item).parent().parent().click();
+        switch(method){
+          case 'consultar':
+            consultar();
+            break;
+          case 'detalle':
+            detalle();
+            break;          
+        } // switch       
+      } // methodExecute
+			
+      function updateStyle(){
+        var type= "";
+        var classAdd= "";
+        $('td.ui-treenode').each(function(){
+          type= $(this).attr('data-nodetype');          
+          switch(type){
+            case 'orden':
+              classAdd= 'clave-orden';              
+              break;
+            case 'entrada':
+              classAdd= 'clave-entrada';                            
+              break;
+            case 'devolucion':
+              classAdd= 'clave-devolucion';                                          
+              break;
+            case 'credito':
+              classAdd= 'clave-credio';                                          
+              break;
+            default:
+              classAdd= 'clave-default';                                          
+              break;
+          } // switch      
+          $(this).children('div').addClass(classAdd);
+        });
+      };
+    </script>		
+		<style type="text/css">
+			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield{
+				width:225% !important;
+			}
+			
+			.clave-orden{
+        /*green*/
+        background: #88c048 !important;
+        background: -moz-linear-gradient(top,#88c048 0,#69a038 100%) !important;
+        background: -webkit-linear-gradient(top,#88c048 0,#69a038 100%) !important;
+        background: linear-gradient(to bottom,#88c048 0,#69a038 100%) !important;
+      }      
+      .clave-entrada{        
+        /*orange*/
+        background: #ffc86b !important;
+        background: -moz-linear-gradient(top,#ffc86b 0,#ffac1e 100%) !important;
+        background: -webkit-linear-gradient(top,#ffc86b 0,#ffac1e 100%) !important;
+        background: linear-gradient(to bottom,#ffc86b 0,#ffac1e 100%) !important;        
+      }
+      .clave-devolucion{        
+        /*blue*/
+        background: #02a7f2 !important;
+        background: -moz-linear-gradient(top,#02a7f2 0,#0289d2 100%) !important;
+        background: -webkit-linear-gradient(top,#02a7f2 0,#0289d2 100%) !important;
+        background: linear-gradient(to bottom,#02a7f2 0,#0289d2 100%) !important;
+      }
+      .clave-credito{        
+        /*red*/
+        background: #f77a31 !important;
+        background: -moz-linear-gradient(top,#f77a31 0,#d82d1e 100%) !important;
+        background: -webkit-linear-gradient(top,#f77a31 0,#d82d1e 100%) !important;
+        background: linear-gradient(to bottom,#f77a31 0,#d82d1e 100%) !important;        
+      }
+      .clave-default{        
+        /*purple*/
+        background: #9c53e0 !important;
+        background: -moz-linear-gradient(top,#9c53e0 0,#8a2be2 100%) !important;
+        background: -webkit-linear-gradient(top,#9c53e0 0,#8a2be2 100%) !important;
+        background: linear-gradient(to bottom,#9c53e0 0,#8a2be2 100%) !important;                
+      }
+      .ui-organigram-node {
+        font-size: 13px !important;
+        border-radius: 10px !important;
+      }
+      .descripcion-nodo{
+        font-size: smaller !important; 
+      }
+      .descripcion-titulo{
+        font-size: smaller !important; 
+        font-weight: bold !important;
+      }      
+			.janal-align-right-icon {
+				position: relative !important;
+				float: right !important;
+				margin-right: -10px !important;
+			}
+			.ui-outputlabel, table tbody tr td {
+					color: black !important;
+			}
+	  </style>		
+  </ui:define>
+  <ui:define name="contenido">  
+		<p:remoteCommand name="consultar" onstart="return janal.bloquear();" process="@this tabla" action="#{manticComprasOrdenesEstructura.doAccion}"/>
+    <p:remoteCommand name="detalle" onstart="return janal.bloquear();" process="@this tabla" actionListener="#{manticComprasOrdenesEstructura.doConsultarDetalle}" update="dialogoDetalle"/>
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">                 
+        <div id="collapse-content" class="ui-grid-col-12">
+          <p:tree id="tabla" value="#{manticComprasOrdenesEstructura.tree}" var="node" selectionMode="single" selection="#{manticComprasOrdenesEstructura.node}" orientation="horizontal" styleClass="tabla-filtro" dynamic="true">      
+						<p:ajax event="expand" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" listener="#{manticComprasOrdenesEstructura.onNodeExpand}" process="@this tabla" update=":datos:tabla"/>            
+						<p:treeNode type="orden">		
+							<p:outputLabel value="Orden de compra" class="descripcion-titulo"/>
+							<h:panelGrid columns="2">
+								<p:spacer/><p:spacer/>
+								<p:outputLabel value="Consecutivo:" styleClass="descripcion-titulo"/>
+								<p:outputLabel value="#{node.consecutivo}" styleClass="descripcion-nodo"/>																
+								<p:outputLabel value="Importe:" styleClass="descripcion-titulo"/>
+								<p:outputLabel value="$#{node.importe}" styleClass="descripcion-nodo"/>								
+								<p:outputLabel value="Estatus:" styleClass="descripcion-titulo"/>
+								<p:outputLabel value="#{node.estatus}" styleClass="descripcion-nodo"/>								
+								<p:spacer/><p:spacer/>
+							</h:panelGrid>							
+							<div id="icons" class="janal-align-right-icon">
+								<i class="fa fa-list-alt" onclick="methodExecute(this,'detalle');" title="Detalle"></i>								
+								<i class="fa fa-search" onclick="methodExecute(this,'consultar');" title="Consultar"></i>
+							</div>  
+							<p:spacer/>							
+						</p:treeNode>                  
+						<p:treeNode type="entrada">
+							<p:outputLabel value="Nota de entrada" class="descripcion-titulo"/>
+							<h:panelGrid columns="2">
+								<p:spacer/><p:spacer/>
+								<p:outputLabel value="Consecutivo:" styleClass="descripcion-titulo"/>
+								<p:outputLabel value="#{node.consecutivo}" styleClass="descripcion-nodo"/>	
+								<p:outputLabel value="Importe:" styleClass="descripcion-titulo"/>
+								<p:outputLabel value="$#{node.importe}" styleClass="descripcion-nodo"/>								
+								<p:outputLabel value="Estatus:" styleClass="descripcion-titulo"/>
+								<p:outputLabel value="#{node.estatus}" styleClass="descripcion-nodo"/>								
+								<p:spacer/><p:spacer/>
+							</h:panelGrid>							
+							<div id="icons" class="janal-align-right-icon">
+								<i class="fa fa-list-alt" onclick="methodExecute(this,'detalle');" title="Detalle"></i>								
+								<i class="fa fa-search" onclick="methodExecute(this,'consultar');" title="Consultar"></i>
+							</div>  
+							<p:spacer/>							
+						</p:treeNode>            
+						<p:treeNode type="devolucion" ariaLabel="#{node.id}">
+							<p:outputLabel value="Devolución" class="descripcion-titulo"/>
+							<h:panelGrid columns="2">
+								<p:spacer/><p:spacer/>
+								<p:outputLabel value="Consecutivo:" styleClass="descripcion-titulo"/>
+								<p:outputLabel value="#{node.consecutivo}" styleClass="descripcion-nodo"/>
+								<p:outputLabel value="Importe:" styleClass="descripcion-titulo"/>
+								<p:outputLabel value="$#{node.importe}" styleClass="descripcion-nodo"/>								
+								<p:outputLabel value="Estatus:" styleClass="descripcion-titulo"/>
+								<p:outputLabel value="#{node.estatus}" styleClass="descripcion-nodo"/>								
+								<p:spacer/><p:spacer/>
+							</h:panelGrid>							
+							<div id="icons" class="janal-align-right-icon">
+								<i class="fa fa-list-alt" onclick="methodExecute(this,'detalle');" title="Detalle"></i>								
+								<i class="fa fa-search" onclick="methodExecute(this,'consultar');" title="Consultar"></i>
+							</div>  
+							<p:spacer/>
+						</p:treeNode>            
+						<p:treeNode type="credito" ariaLabel="#{node.id}">
+							<p:outputLabel value="Nota de credito" class="descripcion-titulo"/>
+							<h:panelGrid columns="2">
+								<p:spacer/><p:spacer/>
+								<p:outputLabel value="Consecutivo:" styleClass="descripcion-titulo"/>
+								<p:outputLabel value="#{node.consecutivo}" styleClass="descripcion-nodo"/>	
+								<p:outputLabel value="Importe:" styleClass="descripcion-titulo"/>
+								<p:outputLabel value="$#{node.importe}" styleClass="descripcion-nodo"/>								
+								<p:outputLabel value="Estatus:" styleClass="descripcion-titulo"/>
+								<p:outputLabel value="#{node.estatus}" styleClass="descripcion-nodo"/>								
+								<p:spacer/><p:spacer/>
+							</h:panelGrid>							
+							<div id="icons" class="janal-align-right-icon">
+								<i class="fa fa-list-alt" onclick="methodExecute(this,'detalle');" title="Detalle"></i>								
+								<i class="fa fa-search" onclick="methodExecute(this,'consultar');" title="Consultar"></i>
+							</div>  
+							<p:spacer/>
+						</p:treeNode>            						
+					</p:tree>		         
+        </div>
+      </div>
+    </div>
+		<p:dialog id="dialogoDetalle" widgetVar="dlgDetalle" header="Detalle" closable="false" resizable="false" dynamic="true" onHide="janal.desbloquear();" position="center">
+      <h:panelGrid columns="2">
+        <p:outputLabel value="Empresa: " style="font-weight: bold"/>
+        <p:outputLabel value="#{manticComprasOrdenesEstructura.attrs.detalle.nombreEmpresa}"/>
+        <p:outputLabel value="Proveedor: " style="font-weight: bold"/>
+        <p:outputLabel value="#{manticComprasOrdenesEstructura.attrs.detalle.proveedor}"/>
+        <p:outputLabel value="Consecutivo: " style="font-weight: bold"/>
+        <p:outputLabel value="#{manticComprasOrdenesEstructura.attrs.detalle.consecutivo}"/>        
+        <p:outputLabel value="Importe: " style="font-weight: bold"/>
+        <p:outputLabel value="$#{manticComprasOrdenesEstructura.attrs.detalle.importe}"/>        
+        <p:outputLabel value="Estatus: " style="font-weight: bold"/>
+        <p:outputLabel value="#{manticComprasOrdenesEstructura.attrs.detalle.estatus}"/>        
+      </h:panelGrid>
+      <hr class="ui-widget-content"/>
+      <div class="janal-column-right">
+        <p:commandButton id="cerrarDetalle" icon="fa fa-close" value="Cerrar" onstart="PF('dlgDetalle').hide();" update="tabla" styleClass="janal-text-white"/>
+      </div>
+    </p:dialog>
+  </ui:define>   
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" styleClass="janal-text-white" onstart="return execute(true);" oncomplete="janal.desbloquear()" rendered="true"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasOrdenesEstructura.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" styleClass="janal-text-white" onstart="return execute(true);" oncomplete="janal.desbloquear()" rendered="true"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasOrdenesEstructura.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+  <ui:param name="componenteBloqueo" value="tabla"/>  	
+</ui:composition>
