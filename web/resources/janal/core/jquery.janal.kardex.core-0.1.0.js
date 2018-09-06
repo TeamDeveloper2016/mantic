@@ -55,7 +55,7 @@
 					$kardex.leavePage= false;
 				switch(key) {
 					case $kardex.VK_ENTER:
-						if($kardex.id.endsWith('costos'))
+						if($kardex.id.endsWith('precios'))
 							return $kardex.costo(this);
 						else
 							if($kardex.id.endsWith('utilidades'))
@@ -64,13 +64,13 @@
 								return $kardex.calculate(this);
 						break;
 					case $kardex.VK_UP:
-						if($kardex.id.endsWith('costos'))
+						if($kardex.id.endsWith('precios'))
 							return true;
 						else
   						return $kardex.up();
 						break;
 					case $kardex.VK_DOWN:
-						if($kardex.id.endsWith('costos'))
+						if($kardex.id.endsWith('precios'))
 							return true;
 						else
 	    				return $kardex.down();
@@ -85,7 +85,7 @@
 			});	
       $(document).on('blur', this.focus, function(e) {
 				$kardex.leavePage= false;
-				if($kardex.id.endsWith('costos'))
+				if($kardex.id.endsWith('precios'))
 					return $kardex.costo(this);
 				else
 					if($kardex.id.endsWith('utilidades'))
@@ -114,29 +114,29 @@
 			var $id= this.id.replace(/:/gi, '\\:');
 			var start= $id.indexOf(this.joker)>= 0? this.joker.length: -1;
 			if(start> 0)
-				this.cursor.index= parseInt($id.substring(start, $id.lastIndexOf(':')), 10);
-			janal.console('Index: '+ this.id+ " => "+ this.cursor.index);
+				$kardex.cursor.index= parseInt($id.substring(start, $id.lastIndexOf(':')), 10);
+			janal.console('Index: '+ $kardex.id+ " => "+ $kardex.cursor.index);
 		},
 		move: function() {
-			var name= '#'+ this.joker+ this.cursor.index+ '\\'+ this.id.substring(this.id.lastIndexOf(':'));
-			janal.console('Move: '+ this.id+ " => "+ name);
+			var name= '#'+ $kardex.joker+ $kardex.cursor.index+ '\\'+ $kardex.id.substring($kardex.id.lastIndexOf(':'));
+			janal.console('Move: '+ $kardex.id+ " => "+ name);
 			if($(name))
 				$(name).focus();
 			return false;
 		},
 		up: function() {
-			if(this.cursor.index> 0)
-				this.cursor.index--;
+			if($kardex.cursor.index> 0)
+				$kardex.cursor.index--;
 			else
-				this.cursor.index= this.cursor.top;
-			return this.move();
+				$kardex.cursor.index= this.cursor.top;
+			return $kardex.move();
 		},
 		down: function() {
 			if(this.cursor.index< this.cursor.top)
-				this.cursor.index++;
+				$kardex.cursor.index++;
 			else
-				this.cursor.index= 0;
-			return this.move();
+				$kardex.cursor.index= 0;
+			return $kardex.move();
 		},
 		find: function() {
 			var value = $('#codigos_input').val().trim();
@@ -153,43 +153,43 @@
 		  return false;
 		},
 		different: function(value) {
-			if(this.current==='')
-				this.current= '0';
+			if($kardex.current==='')
+				$kardex.current= '0';
 			if(typeof(value)=== 'undefined' || value==='')
 				value= '0';
- 			janal.console('Different: '+ parseFloat(this.current, 10).toFixed(2)+ " => "+ parseFloat(value, 10).toFixed(2));
-			return this.current!== value && parseFloat(this.current, 10).toFixed(2)!= parseFloat(value, 10).toFixed(2);
+ 			janal.console('Different: '+ parseFloat($kardex.current, 10).toFixed(2)+ " => "+ parseFloat(value, 10).toFixed(2));
+			return $kardex.current!== value && parseFloat($kardex.current, 10).toFixed(2)!= parseFloat(value, 10).toFixed(2);
 		},
 		calculate: function(name) {
 			var value= $(name).val().trim();
  			janal.console('Calculate: '+ this.id+ " => "+ value);
-			if(this.different(value)) {
-				this.current= value;
+			if($kardex.different(value)) {
+				$kardex.current= value;
 			  calculate(this.cursor.index);
 			} // if
 			return false;
 		},
 		costo: function(name) {
 			var value= $(name).val().trim();
- 			janal.console('costo: '+ this.id+ " => "+ value);
-			if(this.different(value)) {
-				this.current= value;
+ 			janal.console('costo: '+ $kardex.id+ " => "+ value);
+			if($kardex.different(value)) {
+				$kardex.current= value;
   			costo(value);
 			} // if	
 			return false;
 		},
 		utilidad: function(name) {
 			var value= $(name).val().trim();
- 			janal.console('Utilidad: '+ this.id+ " => "+ value);
-			if(this.different(value)) {
-				this.current= value;
-  			utilidad(this.cursor.index, value);
+ 			janal.console('Utilidad: '+ $kardex.id+ " => "+ value);
+			if($kardex.different(value)) {
+				$kardex.current= value;
+  			utilidad($kardex.cursor.index, value);
 			} // if	
 			return false;
 		},
 		focus: function() {
-      $(this.reference).val(''); 
-			$(this.reference).focus();			
+      $($kardex.reference).val(''); 
+			$($kardex.reference).focus();			
 		}
 	});
 	

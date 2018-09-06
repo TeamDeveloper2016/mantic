@@ -9,19 +9,224 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Kardex de un articulo"/>
 	<ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.janal.kardex.core-0.0.9.js"/>
+    <!--h:outputScript library="janal" name="core/jquery.janal.kardex.core-0.1.0.js"/-->
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:codigos': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:costos': {validaciones: 'flotante', mascara: 'libre', formatos: 'precio', individual: true, grupo: 'calculos'},
-				'limites'   : {multiple: '$', validaciones: 'flotante', mascara: 'flotante', formatos: 'cantidad', individual: true, grupo: 'calculos'},
+				'limites'   : {multiple: '$', validaciones: 'flotante', mascara: 'libre', formatos: 'cantidad', individual: true, grupo: 'calculos'},
 				'utilidades': {multiple: '$', validaciones: 'flotante', mascara: 'libre', formatos: 'precio', individual: true, grupo: 'calculos'},
 				'precios'   : {multiple: '$', validaciones: 'flotante', mascara: 'libre', formatos: 'precio', individual: true, grupo: 'calculos'}
-			};			
+			};	
+			
+			
+(function(window) {
+	var jsKardex;
+	
+	Janal.Control.Kardex= {};
+	Janal.Control.Kardex.Core= Class.extend({
+		joker       : 'contenedorGrupos\\:tabla\\:',
+		selector    : '.key-down-event',
+		focus       : '.key-focus-event',
+		reference   : '#codigos_input', 
+		panels      : 'codigos_panel', 
+		itemtips    : 'codigos_itemtip', 
+		leavePage   : true,
+		VK_ENTER    : 13, 
+		VK_ESC      : 27,
+		VK_ASTERISK : 106,
+		VK_MINUS    : 109,
+		VK_PLUS     : 107,
+		VK_DIV      : 111,
+		VK_POINT    : 110,
+		VK_UP       : 38,
+		VK_DOWN     : 40,
+		VK_REST     : 189,
+		VK_PIPE     : 220,
+		VK_CTRL     : 17,
+		VK_MAYOR    : 226,
+	  change      : [13, 106, 111, 107, 110, 27, 226, 189, 220],
+		current     : 0,
+		id          : '',
+    cursor      : {
+			top  : 2,
+			index: 0
+		},    
+		init: function() { // Constructor
+			$kardex= this;
+			this.events();
+		}, // init
+		events: function() {
+ 			janal.console('jsKardex.events');
+      $(document).on('focus', this.focus, function() {
+				janal.lastNameFocus= this;
+				$kardex.id= $(this).attr('id');
+				$kardex.current= $(this).val().trim();
+				$kardex.index();
+  			janal.console('jsKardex.focus: '+ $kardex.id+ ' value: '+ $kardex.current);
+			});  
+      $(document).on('keydown', this.focus, function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
+  			janal.console('jsKardex.keydown: '+ key);
+				if($kardex.change.indexOf(key)&gt;= 0)
+					$kardex.leavePage= false;
+				switch(key) {
+					case $kardex.VK_ENTER:
+						if($kardex.id.endsWith('costos'))
+							return $kardex.costo(this);
+						else
+							if($kardex.id.endsWith('utilidades'))
+								$kardex.utilidad(this);
+						  else
+								return $kardex.calculate(this);
+						break;
+					case $kardex.VK_UP:
+						if($kardex.id.endsWith('precios') || $kardex.id.endsWith('utilidades') || $kardex.id.endsWith('limites'))
+  						return $kardex.up();
+						else
+							return true;
+						break;
+					case $kardex.VK_DOWN:
+						if($kardex.id.endsWith('precios') || $kardex.id.endsWith('utilidades') || $kardex.id.endsWith('limites'))
+	    				return $kardex.down();
+						else
+							return true;
+						break;
+					case $kardex.VK_ESC:
+						if($kardex.id.endsWith('precios') || $kardex.id.endsWith('utilidades') || $kardex.id.endsWith('limites'))
+  						return $kardex.back();
+						else
+							return true;
+						break;
+				} // switch
+			});	
+      $(document).on('blur', this.focus, function(e) {
+				$kardex.leavePage= false;
+				if($kardex.id.endsWith('costos'))
+					return $kardex.costo(this);
+				else
+					if($kardex.id.endsWith('utilidades'))
+						$kardex.utilidad(this);
+					else
+						return $kardex.calculate(this);
+			});	
+      $(document).on('keydown', this.selector, function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
+				if(($kardex.change.indexOf(key)&gt;= 0)) {
+					$kardex.leavePage= false;
+				  setTimeout("$('div[id$='+ jsKardex.panels+ ']').hide();$('div[id$='+ jsKardex.itemtips+ ']').hide();", 500);
+				} // if	 
+				switch(key) {
+					case $kardex.VK_ENTER:
+						return $kardex.find();
+						break;
+				} // switch
+			}); // keydownd	
+		},
+		back: function() {
+			janal.console('jsKardex.back: '+ this.id+ ' value: '+ this.current);
+			var $id= this.id.replace(/:/gi, '\\:');
+			$('#'+ $id).val(this.current);
+		},
+		index: function() {
+			var $id= this.id.replace(/:/gi, '\\:');
+			var start= $id.indexOf(this.joker)&gt;= 0? this.joker.length: -1;
+			if(start&gt; 0)
+				$kardex.cursor.index= parseInt($id.substring(start, $id.lastIndexOf(':')), 10);
+			janal.console('jsKardex.index: '+ $kardex.cursor.index);
+		},
+		move: function() {
+			var name= '#'+ $kardex.joker+ $kardex.cursor.index+ '\\'+ $kardex.id.substring($kardex.id.lastIndexOf(':'));
+			janal.console('jsKardex.move: '+ name);
+			if($(name))
+				$(name).focus();
+			return false;
+		},
+		up: function() {
+ 			janal.console('jsKardex.down '+ this.cursor.index);
+			if(this.cursor.index&gt; 0)
+				this.cursor.index--;
+			else
+				this.cursor.index= this.cursor.top;
+			return this.move();
+		},
+		down: function() {
+ 			janal.console('jsKardex.up '+ this.cursor.index);
+			if(this.cursor.index&lt; this.cursor.top)
+				this.cursor.index++;
+			else
+				this.cursor.index= 0;
+			return this.move();
+		},
+		find: function() {
+ 			janal.console('jsKardex.find');
+			var value = $('#codigos_input').val().trim();
+			if(value.length&gt; 0)
+			  locate(value);
+			return false;
+		},
+		close: function() {
+ 			janal.console('jsKardex.close');
+		  replace();
+			return false;
+		},
+	  callback: function(code) {
+			janal.console('jsKardex.callback: '+ code);
+		  return false;
+		},
+		different: function(value) {
+			if($kardex.current==='')
+				$kardex.current= '0';
+			if(typeof(value)=== 'undefined' || value==='')
+				value= '0';
+ 			janal.console('jsKardex.different ['+ $kardex.id+ '] value: '+ parseFloat($kardex.current, 10).toFixed(2)+ " =&gt; "+ parseFloat(value, 10).toFixed(2));
+			return $kardex.current!== value &amp;&amp; parseFloat($kardex.current, 10).toFixed(2)!= parseFloat(value, 10).toFixed(2);
+		},
+		calculate: function(name) {
+			var value= $(name).val().trim();
+ 			janal.console('jsKardex.calculate: '+ name+ " =&gt; "+ value);
+			if($kardex.different(value)) {
+				$kardex.current= value;
+			  calculate(this.cursor.index);
+			} // if
+			return false;
+		},
+		costo: function(name) {
+			var value= $(name).val().trim();
+ 			janal.console('jsKardex.costo: '+ name+ ' value: '+ value);
+			if($kardex.different(value)) {
+				$kardex.current= value;
+  			costo(value);
+			} // if	
+			return false;
+		},
+		utilidad: function(name) {
+			var value= $(name).val().trim();
+ 			janal.console('jsKardex.utilidad: '+ name+ ' value '+ value);
+			if($kardex.different(value)) {
+				$kardex.current= value;
+  			utilidad($kardex.cursor.index, value);
+			} // if	
+			return false;
+		},
+		locate: function() {
+ 			janal.console('jsKardex.locate: '+ $kardex.reference);
+      $($kardex.reference).val(''); 
+			$($kardex.reference).focus();			
+		}
+	});
+	
+	console.info('Iktan.Control.Kardex initialized');
+})(window);
+
+$(document).ready(function() {
+  jsKardex= new Janal.Control.Kardex.Core();
+});			
+			
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
-		<pe:remoteCommand name="locate" process="@this" update="@(.filas) @(.recalculo) @(.inventario)" actionListener="#{manticInventariosAlmacenesKardex.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();setTimeout(jsKardex.focus(), 500);">  
+		<pe:remoteCommand name="locate" process="@this" update="@(.filas) @(.recalculo) @(.inventario)" actionListener="#{manticInventariosAlmacenesKardex.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();setTimeout(jsKardex.locate(), 500);">  
 			<pe:methodSignature parameters="java.lang.String"/>  
 			<pe:methodParam name="codigo"/>  
 		</pe:remoteCommand>		
@@ -38,11 +243,11 @@
 			<pe:methodSignature parameters="java.lang.Double"/>  
 			<pe:methodParam name="value"/>  
 		</pe:remoteCommand>		
-		<p:remoteCommand name="replace" actionListener="#{manticInventariosAlmacenesKardex.doFindArticulo}" process="@this" update="@(.filas) @(.recalculo)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();setTimeout(jsKardex.focus(), 500);"/>
+		<p:remoteCommand name="replace" actionListener="#{manticInventariosAlmacenesKardex.doFindArticulo}" process="@this" update="@(.filas) @(.recalculo)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();setTimeout(jsKardex.locate(), 500);"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-2">
-					<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-90, janal-wid-3">
+					<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-80, janal-wid-3">
   					<p:outputLabel for="codigos" value="Código, nombre del articulo:"/>
 	  				<p:selectBooleanCheckbox value="#{manticInventariosAlmacenesKardex.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
 		  				<p:ajax event="change" process="@this" update="@this"/>
@@ -145,22 +350,20 @@
 								<p:column headerText="Nombre" styleClass="janal-wid-10">
 									<h:outputText value="#{item.nombre}"/>
 								</p:column>   
-								<p:column headerText="# Unidades minimas" styleClass="janal-wid-10">
-									<p:inputText id="limites" value="#{item.limite}" styleClass="janal-wid-100-txt janal-column-right key-focus-event recalculo" rendered="#{item.limite gt 0}"/>
+								<p:column headerText="Unidades mínimas" styleClass="janal-wid-10">#{index eq 0? 0.0: manticInventariosAlmacenesKardex.adminKardex.tiposVentas[index- 1].limite}  -  <p:inputText id="limites" value="#{item.limite}" styleClass="janal-wid-60 janal-column-right key-focus-event recalculo" rendered="#{item.limite gt 0}"/>#{index eq 2? 'MAS': ''}</p:column>   
+								<p:column headerText="Utilidad" styleClass="janal-wid-10">
+									<p:inputText id="utilidades" value="#{item.utilidad}" styleClass="janal-wid-80 janal-column-right key-focus-event"/>%
 								</p:column>   
-								<p:column headerText="% Utilidad" styleClass="janal-wid-10">
-									<p:inputText id="utilidades" value="#{item.utilidad}" styleClass="janal-wid-100-txt janal-column-right key-focus-event"/>
+								<p:column headerText="Precio venta" styleClass="janal-wid-10">
+									$<p:inputText id="precios" value="#{item.precio}" styleClass="janal-wid-80 janal-column-right key-focus-event"/>
 								</p:column>   
-								<p:column headerText="$ Precio venta" styleClass="janal-wid-10">
-									<p:inputText id="precios" value="#{item.precio}" styleClass="janal-wid-100-txt janal-column-right key-focus-event"/>
-								</p:column>   
-								<p:column headerText="% IVA" styleClass="janal-wid-10 janal janal-column-right">
+								<p:column headerText="IVA" styleClass="janal-wid-10 janal janal-column-right">
 									<h:outputText value="#{manticInventariosAlmacenesKardex.doPercentageValueFormat(item.iva)}"/>
 								</p:column>   
-								<p:column headerText="$ Impuesto" styleClass="janal-wid-10 janal-column-right">
+								<p:column headerText="Impuesto" styleClass="janal-wid-10 janal-column-right">
 									<h:outputText value="#{manticInventariosAlmacenesKardex.doMoneyValueFormat(item.impuesto)}"/>
 								</p:column>   
-								<p:column headerText="$ Precio con IVA" styleClass="janal-wid-10 janal-column-right">
+								<p:column headerText="Precio con IVA" styleClass="janal-wid-10 janal-column-right">
 									<h:outputText value="#{manticInventariosAlmacenesKardex.doMoneyValueFormat(item.importe)}"/>
 								</p:column>   
 							</p:dataTable>	

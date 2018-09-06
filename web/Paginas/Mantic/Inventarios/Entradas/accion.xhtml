@@ -522,7 +522,7 @@
 									<p:dataTable id="faltante" var="row" styleClass="importado janal-wid-99" value="#{manticInventariosEntradasAccion.attrs.faltantes}" selection="#{manticInventariosEntradasAccion.attrs.faltante}" rowKey="#{row.key}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" reflow="true">
 										<f:facet name="header">
 											<div style="display: flow-root;">
- 											  <p:outputLabel value="Articulos disponibles en la orden de compra" styleClass="janal-text-white" style="font-weight: normal;"/>
+ 											  <p:outputLabel value="Articulos cargados del archivo XML" styleClass="janal-text-white" style="font-weight: normal;"/>
 												<div style="float:right;">
     											<p:commandButton update="@(.importado) @(.filas) @(.recalculo)" process="@this @(.importado)" icon="fa fa-sort-alpha-desc" title="Asociar articulo" actionListener="#{manticInventariosEntradasAccion.doFaltanteArticulo}" styleClass="janal-text-white" disabled="#{manticInventariosEntradasAccion.attrs.disponibles.size() eq 0 or manticInventariosEntradasAccion.attrs.faltantes.size() eq 0}" onstart="return checkValueList();"/>
 												</div>
