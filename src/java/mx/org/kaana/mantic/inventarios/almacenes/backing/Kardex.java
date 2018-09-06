@@ -176,9 +176,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				search= "WXYZ";
   		params.put("codigo", search);
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
-        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L);
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 40L);
 			else
-        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 20L);
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 40L);
       this.attrs.put("articulos", articulos);
 		} // try
 	  catch (Exception e) {

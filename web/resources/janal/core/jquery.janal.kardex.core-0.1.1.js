@@ -42,20 +42,22 @@
 			this.events();
 		}, // init
 		events: function() {
+ 			janal.console('jsKardex.events');
       $(document).on('focus', this.focus, function() {
 				janal.lastNameFocus= this;
 				$kardex.id= $(this).attr('id');
-  			janal.console('Focus: '+ $kardex.id);
 				$kardex.current= $(this).val().trim();
 				$kardex.index();
+  			janal.console('jsKardex.focus: '+ $kardex.id+ ' value: '+ $kardex.current);
 			});  
       $(document).on('keydown', this.focus, function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
+  			janal.console('jsKardex.keydown: '+ key);
 				if($kardex.change.indexOf(key)>= 0)
 					$kardex.leavePage= false;
 				switch(key) {
 					case $kardex.VK_ENTER:
-						if($kardex.id.endsWith('precios'))
+						if($kardex.id.endsWith('costos'))
 							return $kardex.costo(this);
 						else
 							if($kardex.id.endsWith('utilidades'))
@@ -64,28 +66,28 @@
 								return $kardex.calculate(this);
 						break;
 					case $kardex.VK_UP:
-						if($kardex.id.endsWith('precios'))
-							return true;
-						else
+						if($kardex.id.endsWith('precios') || $kardex.id.endsWith('utilidades') || $kardex.id.endsWith('limites'))
   						return $kardex.up();
+						else
+							return true;
 						break;
 					case $kardex.VK_DOWN:
-						if($kardex.id.endsWith('precios'))
-							return true;
-						else
+						if($kardex.id.endsWith('precios') || $kardex.id.endsWith('utilidades') || $kardex.id.endsWith('limites'))
 	    				return $kardex.down();
+						else
+							return true;
 						break;
 					case $kardex.VK_ESC:
-						if($kardex.id.endsWith('costos'))
-							return true;
-						else
+						if($kardex.id.endsWith('precios') || $kardex.id.endsWith('utilidades') || $kardex.id.endsWith('limites'))
   						return $kardex.back();
+						else
+							return true;
 						break;
 				} // switch
 			});	
       $(document).on('blur', this.focus, function(e) {
 				$kardex.leavePage= false;
-				if($kardex.id.endsWith('precios'))
+				if($kardex.id.endsWith('costos'))
 					return $kardex.costo(this);
 				else
 					if($kardex.id.endsWith('utilidades'))
@@ -107,6 +109,7 @@
 			}); // keydownd	
 		},
 		back: function() {
+			janal.console('jsKardex.back: '+ this.id+ ' value: '+ this.current);
 			var $id= this.id.replace(/:/gi, '\\:');
 			$('#'+ $id).val(this.current);
 		},
@@ -115,41 +118,45 @@
 			var start= $id.indexOf(this.joker)>= 0? this.joker.length: -1;
 			if(start> 0)
 				$kardex.cursor.index= parseInt($id.substring(start, $id.lastIndexOf(':')), 10);
-			janal.console('Index: '+ $kardex.id+ " => "+ $kardex.cursor.index);
+			janal.console('jsKardex.index: '+ $kardex.cursor.index);
 		},
 		move: function() {
 			var name= '#'+ $kardex.joker+ $kardex.cursor.index+ '\\'+ $kardex.id.substring($kardex.id.lastIndexOf(':'));
-			janal.console('Move: '+ $kardex.id+ " => "+ name);
+			janal.console('jsKardex.move: '+ name);
 			if($(name))
 				$(name).focus();
 			return false;
 		},
 		up: function() {
-			if($kardex.cursor.index> 0)
-				$kardex.cursor.index--;
+ 			janal.console('jsKardex.down '+ this.cursor.index);
+			if(this.cursor.index> 0)
+				this.cursor.index--;
 			else
-				$kardex.cursor.index= this.cursor.top;
-			return $kardex.move();
+				this.cursor.index= this.cursor.top;
+			return this.move();
 		},
 		down: function() {
+ 			janal.console('jsKardex.up '+ this.cursor.index);
 			if(this.cursor.index< this.cursor.top)
-				$kardex.cursor.index++;
+				this.cursor.index++;
 			else
-				$kardex.cursor.index= 0;
-			return $kardex.move();
+				this.cursor.index= 0;
+			return this.move();
 		},
 		find: function() {
+ 			janal.console('jsKardex.find');
 			var value = $('#codigos_input').val().trim();
 			if(value.length> 0)
 			  locate(value);
 			return false;
 		},
 		close: function() {
+ 			janal.console('jsKardex.close');
 		  replace();
 			return false;
 		},
 	  callback: function(code) {
-			janal.console('Callback: '+ code);
+			janal.console('jsKardex.callback: '+ code);
 		  return false;
 		},
 		different: function(value) {
@@ -157,12 +164,12 @@
 				$kardex.current= '0';
 			if(typeof(value)=== 'undefined' || value==='')
 				value= '0';
- 			janal.console('Different: '+ parseFloat($kardex.current, 10).toFixed(2)+ " => "+ parseFloat(value, 10).toFixed(2));
+ 			janal.console('jsKardex.different ['+ $kardex.id+ '] value: '+ parseFloat($kardex.current, 10).toFixed(2)+ " => "+ parseFloat(value, 10).toFixed(2));
 			return $kardex.current!== value && parseFloat($kardex.current, 10).toFixed(2)!= parseFloat(value, 10).toFixed(2);
 		},
 		calculate: function(name) {
 			var value= $(name).val().trim();
- 			janal.console('Calculate: '+ this.id+ " => "+ value);
+ 			janal.console('jsKardex.calculate: '+ name+ " => "+ value);
 			if($kardex.different(value)) {
 				$kardex.current= value;
 			  calculate(this.cursor.index);
@@ -171,7 +178,7 @@
 		},
 		costo: function(name) {
 			var value= $(name).val().trim();
- 			janal.console('costo: '+ $kardex.id+ " => "+ value);
+ 			janal.console('jsKardex.costo: '+ name+ ' value: '+ value);
 			if($kardex.different(value)) {
 				$kardex.current= value;
   			costo(value);
@@ -180,14 +187,15 @@
 		},
 		utilidad: function(name) {
 			var value= $(name).val().trim();
- 			janal.console('Utilidad: '+ $kardex.id+ " => "+ value);
+ 			janal.console('jsKardex.utilidad: '+ name+ ' value '+ value);
 			if($kardex.different(value)) {
 				$kardex.current= value;
   			utilidad($kardex.cursor.index, value);
 			} // if	
 			return false;
 		},
-		focus: function() {
+		locate: function() {
+ 			janal.console('jsKardex.locate: '+ $kardex.reference);
       $($kardex.reference).val(''); 
 			$($kardex.reference).focus();			
 		}
@@ -199,5 +207,4 @@
 $(document).ready(function() {
   jsKardex= new Janal.Control.Kardex.Core();
 });			
-
-
+			

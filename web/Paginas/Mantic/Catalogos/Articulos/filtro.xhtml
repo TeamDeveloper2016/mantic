@@ -17,6 +17,7 @@
 		</script>		
 	</ui:define>
 	<ui:define name="contenido">
+		<p:commandButton id="replace" actionListener="#{manticCatalogosArticulosFiltro.doFindArticulo}" action="#{manticCatalogosArticulosFiltro.doAccion('MODIFICAR')}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:none"/>
 		<div class="janal-align-right xs-pantalla">
 			<p:commandButton icon="fa fa-search" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white"/>
 			<p:spacer height="5px"/>		
@@ -42,6 +43,33 @@
 					</p:panel>
 				</div>
 				<div id="collapse-content" class="ui-grid-col-9">
+					<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+						<div class="ui-grid-row janal-grid-row">
+							<div class="ui-grid-col-2">
+								<p:outputLabel for="codigos" value="Código ó articulo:"/>
+							</div>
+							<div class="ui-grid-col-10">
+								<p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosArticulosFiltro.attrs.custom}" completeMethod="#{manticCatalogosArticulosFiltro.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+									<p:ajax event="itemSelect" oncomplete="$('#replace').click();"/>
+									<f:facet name="itemtip">
+										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+											<f:facet name="header" class="TexAlCenter">
+												<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>
+											</f:facet>
+											<h:outputText value="Propio:" />
+											<h:outputText value="#{custom.propio}" />
+											<h:outputText value="Nombre:" />
+											<h:outputText value="#{custom.nombre}" />
+											<h:outputText value="IVA:" />
+											<h:outputText value="#{custom.iva}" />
+											<h:outputText value="Costo:" />
+											<h:outputText value="$ #{custom.precio}" />
+										</h:panelGrid>
+									</f:facet>
+								</p:autoComplete>			
+							</div>
+						</div>	
+					</div>
 					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosArticulosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosArticulosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosArticulosFiltro.lazyModel.rowCount gt manticCatalogosArticulosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
 						<f:facet name="header" >
 							<p:menuButton   value="Opciones">
