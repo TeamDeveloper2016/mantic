@@ -173,7 +173,6 @@ public class GaleryMenu implements Serializable {
       if (baseMenu!= null) {
         regresar = baseMenu.toBuild();
         if (JsfBase.getAutentifica().getCredenciales().isMenuEncabezado()) {
-        if (JsfBase.getAutentifica().getCredenciales().isMenuEncabezado()) 
           LOG.info("Se esta cargando el menu  ".concat(menu.name()));
           session.setAttribute(menu.getVariableSesion(), regresar);        
         } // if  
