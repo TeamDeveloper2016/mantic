@@ -14,8 +14,14 @@
 			};			
 		</script>   
 		<style>
-			.janal-tr-orange {
+			.janal-tr-diferencias {
 				background-color: #ABEBC6 !important;
+			}
+			.janal-tr-nuevo {
+				background-color: #FDF5E6 !important;
+			}
+			.janal-tr-error {
+				background-color: #FF7F50 !important;
 			}
 		</style>
 	</ui:define>
@@ -23,10 +29,20 @@
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-content" class="ui-grid-col-12">
-          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticComprasOrdenesDiferencias.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticComprasOrdenesDiferencias.lazyModel.rowCount gt manticComprasOrdenesDiferencias.lazyModel.pageSize}" selection="#{manticComprasOrdenesDiferencias.attrs.seleccionado}" selectionMode="single" rowIndexVar="index" reflow="true" rowStyleClass="#{manticComprasOrdenesDiferencias.toColor(row)}">
+					<p:panel header="Tipos de diferencias que se pueden encontrar">
+						<p:selectOneRadio value="#{manticComprasOrdenesDiferencias.attrs.tipoDiferencia}" columns="3" converter="javax.faces.Integer">
+							<p:ajax event="change" listener="#{manticComprasOrdenesDiferencias.doChangeArticulos}" process="@this" update="tabla notas"/>
+							<f:selectItem itemLabel="TODAS" itemValue="0"/>
+							<f:selectItem itemLabel="DIFERENCIA POR PRECIO" itemValue="1"/>
+							<f:selectItem itemLabel="DIFERENCIA POR CANTIDAD" itemValue="2"/>
+							<f:selectItem itemLabel="PARTIDAS NO SOLICITADAS" itemValue="3"/>
+            </p:selectOneRadio>
+					</p:panel>		
+					<p:spacer height="3px"/>
+          <p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticComprasOrdenesDiferencias.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticComprasOrdenesDiferencias.lazyModel.rowCount gt manticComprasOrdenesDiferencias.lazyModel.pageSize}" selection="#{manticComprasOrdenesDiferencias.attrs.seleccionado}" selectionMode="single" rowIndexVar="index" reflow="true" rowStyleClass="#{manticComprasOrdenesDiferencias.doOrdenColor(row)}">
 						<p:ajax event="rowSelect" listener="#{manticComprasOrdenesDiferencias.doRowSelectEvent}" update="notas tabla" process="@this tabla"  skipChildren="false"/>
             <f:facet name="header" >
-							<div style="float: left; font-weight: normal !important;">
+							<div style="float: left;">
 							  <h:outputText value="Detalle de los articulos de la orden de compra"/>
 							</div>
               <div class="lg-pantalla">
@@ -106,6 +122,7 @@
               <h:outputText value="#{row['importes']}" title="Diferencia: #{row['porcentaje']} %"/>
             </p:column>		
             <f:facet name="footer">
+							<p:outputLabel value="Las filas en color son articulos que tiene diferencia en cantidad o costo" style="float: left;"/>
               <p:outputLabel value="Total [#{manticComprasOrdenesDiferencias.lazyModel==null?0:manticComprasOrdenesDiferencias.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
@@ -116,11 +133,11 @@
 			<p:spacer height="3px"/>
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-content" class="ui-grid-col-12">
-          <p:dataTable lazy="true" id="notas" widgetVar="kajoolNotas" var="row" value="#{manticComprasOrdenesDiferencias.lazyNotas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticComprasOrdenesDiferencias.lazyNotas.rowCount gt manticComprasOrdenesDiferencias.lazyNotas.pageSize}" rowIndexVar="index" reflow="true" selection="#{manticComprasOrdenesDiferencias.attrs.filtrado}" selectionMode="single">
+          <p:dataTable lazy="true" id="notas" widgetVar="kajoolNotas" var="row" value="#{manticComprasOrdenesDiferencias.lazyNotas}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticComprasOrdenesDiferencias.lazyNotas.rowCount gt manticComprasOrdenesDiferencias.lazyNotas.pageSize}" rowIndexVar="index" reflow="true" selection="#{manticComprasOrdenesDiferencias.attrs.filtrado}" selectionMode="single" rowStyleClass="#{manticComprasOrdenesDiferencias.doNotaColor(row)}">
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolNotas').writeSelections()" process="notas" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolNotas').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this notas" skipChildren="false"/>
             <f:facet name="header" >
-							<div style="float: left; font-weight: normal !important;">
+							<div style="float: left;">
   							<h:outputText value="Detalle de los articulos de la(s) nota(s) entradas asociadas"/>
 							</div>	
               <div class="lg-pantalla">
@@ -179,17 +196,17 @@
               </f:facet>
               <h:outputText value="#{row['importe']}"/>
             </p:column>		
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.diferencia}">
+              <f:facet name="header">
+                <h:outputText value="Cantidad [+/-]"/>
+              </f:facet>
+              <h:outputText value="#{row['diferencia']}"/>
+            </p:column>		
             <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{row['estatus']}"/>
-            </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-col-50">
-              <f:facet name="header">
-                <h:outputText value="No solicitado"/>
-              </f:facet>
-              <h:outputText value="#{row['nuevo']}"/>
             </p:column>		
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-50">
 							<f:facet name="header">
@@ -200,6 +217,7 @@
 							</p:selectBooleanCheckbox>
 						</p:column>		
             <f:facet name="footer">
+							<p:outputLabel value="Las filas en color son articulos no solicitados, las que estan en color marron presentan diferencia en cantidad" style="float: left;"/>
               <p:outputLabel value="Total [#{manticComprasOrdenesDiferencias.lazyNotas==null?0:manticComprasOrdenesDiferencias.lazyNotas.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>

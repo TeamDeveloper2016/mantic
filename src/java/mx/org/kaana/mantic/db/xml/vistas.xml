@@ -2783,6 +2783,8 @@
 					tc_mantic_notas_detalles.descuento,
 					tc_mantic_notas_detalles.importe,
 				  if(tc_mantic_notas_detalles.id_orden_detalle is null, '*', '') as nuevo,
+  				tc_mantic_notas_detalles.declarados,
+  				tc_mantic_notas_detalles.diferencia,
 				  tc_mantic_notas_estatus.nombre as estatus,
 				  tc_mantic_notas_estatus.id_nota_estatus,
 				  tc_mantic_notas_entradas.id_nota_entrada,
@@ -2829,6 +2831,7 @@
 					tc_mantic_ordenes_detalles on tc_mantic_ordenes_compras.id_orden_compra= tc_mantic_ordenes_detalles.id_orden_compra
 				where  
 					tc_mantic_ordenes_detalles.id_orden_compra= {idOrdenCompra}
+				  and {condicion}
 				{sortOrder}
 			</select>
 			<select id="registrados">

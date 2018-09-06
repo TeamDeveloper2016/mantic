@@ -67,6 +67,7 @@ public class Diferencias extends IBaseFilter implements Serializable {
       this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra"));
       this.attrs.put("idProveedor", JsfBase.getFlashAttribute("idProveedor"));
       this.attrs.put("idAlmacen", JsfBase.getFlashAttribute("idAlmacen"));
+      this.attrs.put("tipoDiferencia", 0);
       this.orden= (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(TcManticOrdenesComprasDto.class, (Long)JsfBase.getFlashAttribute("idOrdenCompra"));
 		  this.doLoad();
     } // try
@@ -91,6 +92,21 @@ public class Diferencias extends IBaseFilter implements Serializable {
       columns.add(new Columna("importes", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
       this.attrs.put("sortOrder", "order by nombre");
+			switch((Integer)this.attrs.get("tipoDiferencia")) {
+				case 0: // TODOS
+					this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+					break;
+				case 1: // DIFERENCIA POR PRECIO
+					this.attrs.put(Constantes.SQL_CONDICION, " tc_mantic_ordenes_detalles.cantidades != 0 ");
+					break;
+				case 2: // DIFERENCIA POR CANTIDAD
+					this.attrs.put(Constantes.SQL_CONDICION, " tc_mantic_ordenes_detalles.importes != 0 ");
+					break;
+				case 3: // PARTIDAS NO 
+					this.attrs.put("seleccionado", null);
+					this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_FALSO);
+					break;
+			} // switch
       this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", "confronta", this.attrs, columns);
       UIBackingUtilities.resetDataTable();
 			this.attrs.put("seleccionado", null);
@@ -170,7 +186,7 @@ public class Diferencias extends IBaseFilter implements Serializable {
 	}	
 	
 	public void doRowSelectEvent() {
-		Entity entity= (Entity)this.attrs.get("seleccionado");
+		Entity seleccionado= (Entity)this.attrs.get("seleccionado");
     List<Columna> columns     = null;
 	  Map<String, Object> params= null;
 		try {
@@ -183,12 +199,14 @@ public class Diferencias extends IBaseFilter implements Serializable {
       columns.add(new Columna("costo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));      
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
 		  params.put(Constantes.SQL_CONDICION, " ");
-			if(entity!= null) {
-			  params.put("idOrdenCompra", entity.toLong("idOrdenCompra"));
-			  params.put(Constantes.SQL_CONDICION, " and tc_mantic_notas_detalles.id_articulo= "+ entity.toLong("idArticulo"));
+			if(seleccionado!= null) {
+				params.put("idOrdenCompra", seleccionado.toLong("idOrdenCompra"));
+				params.put(Constantes.SQL_CONDICION, " and tc_mantic_notas_detalles.id_articulo= "+ seleccionado.toLong("idArticulo"));
 			} // if
 			else 
-			  params.put("idOrdenCompra", this.attrs.get("idOrdenCompra"));
+				params.put("idOrdenCompra", this.attrs.get("idOrdenCompra"));
+			if((Integer)this.attrs.get("tipoDiferencia")== 3)
+  		  params.put(Constantes.SQL_CONDICION, " and tc_mantic_notas_detalles.id_orden_detalle is null ");
 			params.put("sortOrder", "order by tc_mantic_notas_entradas.consecutivo, tc_mantic_notas_detalles.nombre");
       this.lazyNotas = new ArticulosLazyLoad("VistaOrdenesComprasDto", "consulta", params, columns);
 		} // try
@@ -237,8 +255,16 @@ public class Diferencias extends IBaseFilter implements Serializable {
 		} // else
 	} // doVerificarReporte		
 	
-	public String toColor(Entity row) {
-		return !row.toDouble("unidades").equals(0D) || !row.toDouble("valores").equals(0D)? "janal-tr-orange": "";
+	public String doOrdenColor(Entity row) {
+		return !row.toDouble("unidades").equals(0D) || !row.toDouble("valores").equals(0D)? "janal-tr-diferencias": "";
 	} 
+	
+	public String doNotaColor(Entity row) {
+		return row.toString("nuevo").equals("*")? row.toDouble("diferencia")> 0? "janal-tr-error": "janal-tr-nuevo": "";
+	} 
+
+  public void doChangeArticulos() {
+		this.doLoad();
+	}	
 	
 }

@@ -44,6 +44,7 @@ public final class Constantes {
   public static final String SQL_RESERVADO     = "params";
   public static final String SQL_CONDICION     = "condicion";
   public static final String SQL_VERDADERO     = "1=1";
+  public static final String SQL_FALSO         = "1!=1";
   public static final long SQL_MAXIMO_REGISTROS= 100L;
   public static final long SQL_TOPE_REGISTROS  = 2000L;
   public static final long SQL_TODOS_REGISTROS = -1L;

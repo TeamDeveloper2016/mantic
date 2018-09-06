@@ -17,6 +17,10 @@
 .ui-menu {
     width: 16.5em;
 }    
+.ui-panel .ui-panel-titlebar,
+.ui-datatable .ui-datatable-header {
+	font-weight: normal !important;
+}
 .ui-panelgrid,
 .ui-panelgrid tbody tr td,
 table.ui-panelgrid,
