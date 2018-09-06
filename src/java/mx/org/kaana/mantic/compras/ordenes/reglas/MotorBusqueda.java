@@ -52,29 +52,31 @@ public class MotorBusqueda implements Serializable{
 		String type              = null;
 		try {
 			regresar= new ArrayList<>();
-			params= new HashMap<>();
-			params.put(this.tree.getTipo().getIdParametro(), this.tree.getId());
-			nodes= DaoFactory.getInstance().toEntitySet(TreeOrden.class, "VistaEstructuraOrdenesCompraDto", this.tree.getTipo().getIdXml(), params, Constantes.SQL_TODOS_REGISTROS);
-			if(nodes.isEmpty()){				
-				for(TreeOrden treeNode: nodes){
-					switch(this.tree.getTipo()){
-						case DEVOLUCION:
-							treeNode.setTipo(EDocumentosOrden.NOTA_CREDITO);
-							treeNode.setUltimoNivel(true);
-							type="credito";
-							break;
-						case NOTA_ENTRADA:
-							treeNode.setTipo(EDocumentosOrden.DEVOLUCION);
-							type="devolucion";							
-							break;
-						case ORDEN_COMPRA:
-							treeNode.setTipo(EDocumentosOrden.NOTA_ENTRADA);
-							type="entrada";
-							break;							
-					} // switch
-					regresar.add(new DefaultTreeNode(type, treeNode, null));
-				} // for
-			} // if
+			if(!this.tree.getTipo().equals(EDocumentosOrden.NOTA_CREDITO)){
+				params= new HashMap<>();
+				params.put(this.tree.getTipo().getIdParametro(), this.tree.getId());
+				nodes= DaoFactory.getInstance().toEntitySet(TreeOrden.class, "VistaEstructuraOrdenesCompraDto", this.tree.getTipo().getIdXml(), params, Constantes.SQL_TODOS_REGISTROS);
+				if(!nodes.isEmpty()){				
+					for(TreeOrden treeNode: nodes){
+						switch(this.tree.getTipo()){
+							case DEVOLUCION:
+								treeNode.setTipo(EDocumentosOrden.NOTA_CREDITO);
+								treeNode.setUltimoNivel(true);
+								type="credito";
+								break;
+							case NOTA_ENTRADA:
+								treeNode.setTipo(EDocumentosOrden.DEVOLUCION);
+								type="devolucion";							
+								break;
+							case ORDEN_COMPRA:
+								treeNode.setTipo(EDocumentosOrden.NOTA_ENTRADA);
+								type="entrada";
+								break;							
+						} // switch
+						regresar.add(new DefaultTreeNode(type, treeNode, null));
+					} // for
+				} // if
+			}
 		} // try
 		catch (Exception e) {			
 			throw e;
