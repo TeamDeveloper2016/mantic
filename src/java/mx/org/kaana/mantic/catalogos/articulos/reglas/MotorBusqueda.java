@@ -125,7 +125,7 @@ public class MotorBusqueda implements Serializable{
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_articulo=" + this.idArticulo);
-			pivote= DaoFactory.getInstance().toEntitySet(DescuentoEspecial.class, "TrManticArticuloClienteDescuentoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+			pivote= DaoFactory.getInstance().toEntitySet(DescuentoEspecial.class, "TrManticArticuloGrupoDescuentoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
 			regresar= new ArrayList<>();
 			if(!pivote.isEmpty()){
 				for(DescuentoEspecial record: pivote){
