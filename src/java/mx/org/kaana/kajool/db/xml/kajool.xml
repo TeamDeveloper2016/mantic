@@ -169,12 +169,12 @@
         {sortOrder}
       </select>
     </unit>
-    <unit id="TrJanalSesionesDto">
+    <unit id="TcJanalSesionesDto">
       <select id="row">
         select
         *
         from
-        tr_janal_sesiones
+        tc_janal_sesiones
         where
         {condicion}
       </select>
@@ -182,13 +182,13 @@
         select
         *
         from
-        tr_janal_sesiones
+        tc_janal_sesiones
         where
         id_sesion = {idSesion}
       </select>
       <update id="updateRegistroFin">
         update
-        tr_janal_sesiones
+        tc_janal_sesiones
         set
         registro_fin=now()
         where
@@ -198,7 +198,7 @@
         select
           registro_inicio
         from
-          tr_janal_sesiones
+          tc_janal_sesiones
         where
           id_usuario = {idUsuario}
         order by 
