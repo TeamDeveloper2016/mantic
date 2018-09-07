@@ -260,7 +260,7 @@ public class Diferencias extends IBaseFilter implements Serializable {
 	} 
 	
 	public String doNotaColor(Entity row) {
-		return row.toString("nuevo").equals("*")? row.toDouble("diferencia")> 0? "janal-tr-error": "janal-tr-nuevo": "";
+		return row.toString("nuevo").equals("*")? row.toDouble("diferencia")!= 0? "janal-tr-error": "janal-tr-nuevo": "";
 	} 
 
   public void doChangeArticulos() {
