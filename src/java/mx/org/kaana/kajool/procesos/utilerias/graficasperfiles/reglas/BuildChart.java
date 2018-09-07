@@ -10,7 +10,6 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.dto.TrJanalIndicadoresPerfilDto;
-import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ESucursales;
 import mx.org.kaana.kajool.procesos.enums.EPerfiles;
 import mx.org.kaana.kajool.procesos.enums.ETipoGrafica;
@@ -164,7 +163,8 @@ public class BuildChart implements Serializable{
     try {
       dataList= new ArrayList<>();
       categoriesList= new ArrayList<>();
-      records= loadRecords(vista, idVista);
+      //records= loadRecords(vista, idVista);
+      records= new ArrayList<>();
 			if(!records.isEmpty()){
 				for(Entity record: records)
 					categoriesList.add(record.toString(aliasLadoy));
@@ -257,7 +257,8 @@ public class BuildChart implements Serializable{
     try {
       dataList= new ArrayList<>();
       categoriesList= new ArrayList<>();
-      records= loadRecords(vista, idVista);      
+      //records= loadRecords(vista, idVista);      
+      records= new ArrayList<>();
       categoriesList.add("Total");
 			if(!records.isEmpty()) {
 				for(Entity record: records) {
