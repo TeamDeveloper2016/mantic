@@ -297,6 +297,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // for
 		Collections.sort(disponibles);
 		this.attrs.put("disponibles", disponibles);
+		this.toCheckArticulos();
 	}
 
 	private void toCheckArticulos() {
@@ -307,10 +308,12 @@ public class Accion extends IBaseArticulos implements Serializable {
 			while(x< faltantes.size()) {
 				faltante= faltantes.get(x);
   		  List<Articulo> disponibles= (List<Articulo>)this.attrs.get("disponibles");
-				int y= 0;
+				int y        = 0;
+  			boolean found= false;
 				while (y< disponibles.size()) {
 					disponible= disponibles.get(y);
 					if(faltante.getCodigo()!= null && faltante.getCodigo().equals(disponible.getCodigo())) {
+						found= true;
       			faltantes.remove(faltante);
     			  disponibles.remove(disponible);
     			  this.toMoveArticulo(disponible, faltante);
@@ -318,8 +321,12 @@ public class Accion extends IBaseArticulos implements Serializable {
 					} // if	
 					y++;
 				} // for
-				if(y>= disponibles.size())
+				// EL ARTICULO FUE BUSCADO POR CODIGO EN EL PROVEDOR
+				if(!found)
 					x++;
+				// YA NO HAY MAS ARTICULOS QUE BUSCAR TODOS FUERON ASIGNADOS
+				if(disponibles.isEmpty())
+					break;
 			} // for
 		} // try
 	  catch (Exception e) {
