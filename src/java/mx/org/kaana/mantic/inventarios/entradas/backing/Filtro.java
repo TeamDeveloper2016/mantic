@@ -64,7 +64,8 @@ public class Filtro extends IBaseFilter implements Serializable {
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
-    } // catch		
+    } // catch	
+		JsfBase.cleanFlashParams();
   } // init
  
   @Override

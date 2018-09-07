@@ -281,12 +281,14 @@ public class Accion extends IBaseArticulos implements Serializable {
 	}
 	
 	public void doFileUpload(FileUploadEvent event) {
+		this.attrs.put("relacionados", 0);
 		this.doFileUpload(event, ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"), this.proveedor.getClave(), (boolean)this.attrs.get("sinIva"), this.getAdminOrden().getTipoDeCambio());
 		if(this.getFactura()!= null) {
 		  ((NotaEntrada)this.getAdminOrden().getOrden()).setFactura(this.getFactura().getFolio());
 		  ((NotaEntrada)this.getAdminOrden().getOrden()).setFechaFactura(Fecha.toDateDefault(this.getFactura().getFecha()));
 		} // if	
 		this.toPrepareDisponibles();
+		this.doCheckFolio();
 	} // doFileUpload	
 	
 	private void toPrepareDisponibles() {
@@ -302,6 +304,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 
 	private void toCheckArticulos() {
 		Articulo faltante, disponible= null;
+		int relacionados             = 0;
 		try {
 		  List<Articulo> faltantes= (List<Articulo>)this.attrs.get("faltantes");
 			int x= 0;
@@ -313,6 +316,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 				while (y< disponibles.size()) {
 					disponible= disponibles.get(y);
 					if(faltante.getCodigo()!= null && faltante.getCodigo().equals(disponible.getCodigo())) {
+						relacionados++;
 						found= true;
       			faltantes.remove(faltante);
     			  disponibles.remove(disponible);
@@ -333,6 +337,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
+		this.attrs.put("relacionados", relacionados);
 	}
 	
 	@Override
@@ -382,7 +387,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			} // else
 			Entity entity= (Entity)DaoFactory.getInstance().toEntity("TcManticNotasEntradasDto", "folio", params);
 			if(entity!= null && entity.size()> 0) 
-				RequestContext.getCurrentInstance().execute("$('#contenedorGrupos\\\\:factura').val('');janal.show([{summary: 'Error:', detail: 'El folio ["+ ((NotaEntrada)this.getAdminOrden().getOrden()).getFactura()+ "] se registró en la nota de entrada "+ entity.toString("consecutivo")+ ", el dia "+ Global.format(EFormatoDinamicos.FECHA_HORA, entity.toTimestamp("registro"))+ ".'}]);");
+				RequestContext.getCurrentInstance().execute("$('#contenedorGrupos\\\\:factura').val('');janal.show([{summary: 'Error:', detail: 'El folio ["+ ((NotaEntrada)this.getAdminOrden().getOrden()).getFactura()+ "] se registró en la nota de entrada "+ entity.toString("consecutivo")+ ", el dia "+ Global.format(EFormatoDinamicos.FECHA_HORA, entity.toTimestamp("registro"))+ " hrs.'}]);");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

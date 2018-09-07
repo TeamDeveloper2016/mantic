@@ -23,8 +23,8 @@ import org.quartz.JobExecutionException;
 
 public class Respaldos implements Job, Serializable {
 
-	private static final Log LOG              =LogFactory.getLog(Respaldos.class);
-	private static final long serialVersionUID=7960794038594054567L;
+	private static final Log LOG              = LogFactory.getLog(Respaldos.class);
+	private static final long serialVersionUID= 7960794038594054567L;
 
 	@Override
 	public void execute(JobExecutionContext jec) throws JobExecutionException {

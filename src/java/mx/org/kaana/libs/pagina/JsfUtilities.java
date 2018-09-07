@@ -255,7 +255,7 @@ public  class  JsfUtilities {
 		  value = getParametro(key);
 		} // if		
 		else
-			if ( getFlashAttribute(key) != null)
+			if (getFlashAttribute(key) != null)
 		    value = getFlashAttribute(key);			
 
 		return value;
