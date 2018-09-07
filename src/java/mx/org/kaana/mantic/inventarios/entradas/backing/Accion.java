@@ -282,6 +282,10 @@ public class Accion extends IBaseArticulos implements Serializable {
 	
 	public void doFileUpload(FileUploadEvent event) {
 		this.doFileUpload(event, ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"), this.proveedor.getClave(), (boolean)this.attrs.get("sinIva"), this.getAdminOrden().getTipoDeCambio());
+		if(this.getFactura()!= null) {
+		  ((NotaEntrada)this.getAdminOrden().getOrden()).setFactura(this.getFactura().getFolio());
+		  ((NotaEntrada)this.getAdminOrden().getOrden()).setFechaFactura(Fecha.toDateDefault(this.getFactura().getFecha()));
+		} // if	
 		this.toPrepareDisponibles();
 	} // doFileUpload	
 	

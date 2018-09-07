@@ -67,11 +67,16 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 	private static final Log LOG              = LogFactory.getLog(IBaseImportar.class);
   private static final int BUFFER_SIZE      = 6124;
 	
+	private ComprobanteFiscal factura;
 	private Importado xml;
 	private Importado pdf;
 	private Importado file;			
 	private Emisor emisor;
 	private Receptor receptor;
+
+	public ComprobanteFiscal getFactura() {
+		return factura;
+	}
 
 	public Importado getXml() {
 		return xml;
@@ -213,16 +218,15 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 	} // toWriteFile 
 
 	private void toReadFactura(File file, Boolean sinIva, Double tipoDeCambio) throws Exception {
-    Reader reader            = null;
-		ComprobanteFiscal factura= null;
-		List<Articulo> faltantes = null;
+    Reader reader           = null;
+		List<Articulo> faltantes= null;
 		try {
-			faltantes= new ArrayList<>();
-			reader = new Reader(file.getAbsolutePath());
-			factura= reader.execute();
-			this.emisor  = factura.getEmisor();
-			this.receptor= factura.getReceptor();
-			for (Concepto concepto: factura.getConceptos()) {
+			faltantes    = new ArrayList<>();
+			reader       = new Reader(file.getAbsolutePath());
+			this.factura = reader.execute();
+			this.emisor  = this.factura.getEmisor();
+			this.receptor= this.factura.getReceptor();
+			for (Concepto concepto: this.factura.getConceptos()) {
 		    //this(sinIva, tipoDeCambio, nombre, codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos, idProveedor, ultimo, solicitado, stock, excedentes, sat, unidadMedida);
 		    faltantes.add(new Articulo(
 				  sinIva,
@@ -256,6 +260,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			this.attrs.put("faltantes", faltantes);
 		} // try
 		catch (Exception e) {
+			this.factura= null;
 			throw e;
 		} // catch
 	}

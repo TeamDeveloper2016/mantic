@@ -320,6 +320,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	public String doDevoluciones() {
 		JsfBase.setFlashAttribute("notaEntrada", this.attrs.get("notaEntrada"));
+		JsfBase.setFlashAttribute("idDevolucion", null);
 		return "/Paginas/Mantic/Inventarios/Devoluciones/filtro".concat(Constantes.REDIRECIONAR);
 	}		
 

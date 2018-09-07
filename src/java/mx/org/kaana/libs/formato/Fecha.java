@@ -1,21 +1,19 @@
 /*
  * Clase: Cadena.java
- *
  * Creado: 21 de mayo de 2007, 12:16 AM
- *
- * Write by: alejandro.jimenez
+ * Write by: team.developer@gmail.com
  */
 package mx.org.kaana.libs.formato;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import mx.org.kaana.libs.recurso.Configuracion;
-import org.mozilla.javascript.edu.emory.mathcs.backport.java.util.Arrays;
 
 public  class Fecha {
 	
@@ -554,4 +552,16 @@ public  class Fecha {
     return Cadena.rellenar(String.valueOf(hours), 2, '0', Boolean.TRUE).concat(":").concat(Cadena.rellenar(String.valueOf(minutes), 2, '0', Boolean.TRUE)).concat(":").concat(Cadena.rellenar(String.valueOf(seconds), 2, '0', Boolean.TRUE));
   }
 
+  public static java.sql.Date toDateDefault(String fecha) {
+    // DD/MM/YYYY DD-MM-YYYY
+		java.sql.Date regresar= null;
+		try {
+      regresar= new java.sql.Date(Fecha.getFechaHora(fecha.concat(" 00:00:00")).getTimeInMillis());
+		} // try
+		catch(Exception e) {
+			regresar= new java.sql.Date(Fecha.getRegistroTypeDate().getTime());
+		} // catch
+	  return regresar;
+  }
+	
 } // Fecha
