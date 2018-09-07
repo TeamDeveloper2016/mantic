@@ -297,13 +297,13 @@
 			</div>	
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
-					<p:inputText id="codigo" value="#{manticVentasCotizacionAccion.attrs.codigo}" styleClass="janal-wid-100-txt key-up-event" style="text-transform: uppercase"/>
+					<p:inputText id="codigo" value="#{manticVentasCotizacionAccion.attrs.codigo}" styleClass="janal-wid-100-txt key-up-event janal-key-articulo" style="text-transform: uppercase"/>
 				</div>			
 			</div>
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
 					<p:outputLabel value="Click sobre la tabla para seleccionar el articulo, por defecto es el primero de la lista"/><br/>
-					<p:dataTable id="buscados" lazy="true" styleClass="janal-wid-100" value="#{manticVentasCotizacionAccion.attrs.lazyModel}" selection="#{manticVentasCotizacionAccion.attrs.buscado}" var="item" selectionMode="single" rows="#{Constantes.REGISTROS_POR_PAGINA- 2}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" paginator="#{manticVentasCotizacionAccion.attrs.lazyModel.rowCount gt manticVentasCotizacionAccion.attrs.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+					<p:dataTable id="buscados" widgetVar="widgetBuscados" lazy="true" styleClass="janal-row-articulos janal-wid-100" value="#{manticVentasCotizacionAccion.attrs.lazyModel}" selection="#{manticVentasCotizacionAccion.attrs.buscado}" var="item" selectionMode="single" rows="#{Constantes.REGISTROS_POR_PAGINA- 2}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" paginator="#{manticVentasCotizacionAccion.attrs.lazyModel.rowCount gt manticVentasCotizacionAccion.attrs.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
 						<p:ajax event="rowDblselect" oncomplete="$('#localizado').click();"/>
 						<p:column headerText="Nombre">
 							<h:outputText value="#{item.nombre}"/>

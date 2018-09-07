@@ -80,6 +80,27 @@
 						break;
 				} // swtich
 			});	
+	    $(document).on('keydown', '.janal-key-articulo', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('Keydown: '+ key);
+				switch(key) {
+					case $precios.VK_ENTER:
+					case $precios.VK_TAB:
+						return $precios.goto(true);
+					  break;
+					case $precios.VK_ESC:
+            PF('dialogo').hide();
+						break;
+					case $precios.VK_PAGE_NEXT:
+						$('#buscados_paginator_top > a.ui-paginator-next').click();
+						return setTimeout($precios.goto(false), 1000);
+						break;
+					case $precios.VK_PAGE_PREV:
+						$('#buscados_paginator_top > a.ui-paginator-prev').click();
+						return setTimeout($precios.goto(false), 1000);
+						break;
+				} // swtich
+			});	
 	    $(document).on('keydown', '.janal-key-registros', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('Keydown: '+ key);
@@ -109,6 +130,35 @@
 						break;
 				} // swtich
 			});	
+	    $(document).on('keydown', '.janal-row-articulos', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('Keydown: '+ key);
+				switch(key) {
+					case $precios.VK_TAB:
+					  $('#codigo').focus();
+						return false;
+					  break;
+					case $precios.VK_ESC:
+            PF('dialogo').hide();
+						break;
+					case $precios.VK_F7:
+					case $precios.VK_ENTER:
+				    return $precios.enter();
+						break;
+					case $precios.VK_UP:
+					case $precios.VK_DOWN:
+						// return $precios.hide();
+						break;
+					case $precios.VK_PAGE_NEXT:
+						$('#buscados_paginator_top > a.ui-paginator-next').click();
+						return setTimeout($precios.next(false), 1000);
+						break;
+					case $precios.VK_PAGE_PREV:
+						$('#buscados_paginator_top > a.ui-paginator-prev').click();
+						return setTimeout($precios.next(false), 1000);
+						break;
+				} // swtich
+			});	
 		},
 		lookup: function() {
 			janal.console('jsPrecios.lookup');
@@ -116,8 +166,13 @@
 			return false;
 		},
 		show: function()  {
- 			janal.console('jsPrecios.enter');
+ 			janal.console('jsPrecios.show');
       setTimeout("$('#verificadorPrecio').attr('style', 'display:');", 500);			
+			return false;
+		},
+		enter: function()  {
+ 			janal.console('jsPrecios.enter');
+      $('#localizado').click();		
 			return false;
 		},
 		hide: function() {
@@ -132,6 +187,15 @@
 			PF('widgetVerificador').selectRow(0, true);	
 			if(focus)
 			  $('#verificadorTabla .ui-datatable-data').focus();
+			return false;
+		},
+		goto: function(focus) {
+			janal.console('jsPrecios.goto');
+			PF('widgetBuscados').clearSelection();
+			PF('widgetBuscados').writeSelections();
+			PF('widgetBuscados').selectRow(0, true);	
+			if(focus)
+			  $('#buscados .ui-datatable-data').focus();
 			return false;
 		},
 		ask: function(text) {
