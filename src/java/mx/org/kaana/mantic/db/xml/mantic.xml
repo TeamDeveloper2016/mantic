@@ -25,6 +25,24 @@
           id_garantia = {idGarantia} and id_tipo_medio_pago = {idTipoMedioPago} and importe = {importe} and id_garantia_medio_pago = {idGarantiaMedioPago} and id_banco = {idBanco}
       </select>
     </unit>
+    <unit id="TcManticAlertasDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_alertas
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_alertas
+        where      
+          id_alerta = {idAlerta}
+      </select>
+    </unit>		
 		<unit id="TcManticGrantiasEstatusDto">
 			<select id="row">
 				select 

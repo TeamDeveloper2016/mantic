@@ -16,7 +16,11 @@
 }
 .ui-menu {
     width: 16.5em;
-}    
+}
+.ui-button .ui-button-icon-left, 
+.ui-button .ui-button-text {
+ color: white;
+}
 .ui-panel .ui-panel-titlebar,
 .ui-datatable .ui-datatable-header {
 	font-weight: normal !important;

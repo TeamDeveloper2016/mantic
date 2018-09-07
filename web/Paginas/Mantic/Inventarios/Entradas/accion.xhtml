@@ -105,6 +105,10 @@
 			.zui-datatable .ui-datatable-tablewrapper table tbody .ui-state-highlight td {
 				color: #0059b3 !important;
 			}
+.ui-button .ui-button-icon-left, 
+.ui-button .ui-button-text {
+ color: white;
+}
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
@@ -488,7 +492,7 @@
 												<h:outputText value="#{row.observacion}"/>
 											</p:column>   
 											<p:column style="text-align: center" styleClass="janal-wid-col-38">
-												<p:commandButton update="sugeridos" icon="fa fa-check" title="Marcar como leido" actionListener="#{manticInventariosEntradasAccion.doUpdateSugeridos}" styleClass="janal-text-white">
+												<p:commandButton update="sugeridos" icon="fa fa-check" title="Marcar como leido" actionListener="#{manticInventariosEntradasAccion.doUpdateSugeridos}">
 													<f:setPropertyActionListener value="#{row}" target="#{manticInventariosEntradasAccion.attrs.sugerido}" />
 												</p:commandButton>
 											</p:column>
@@ -522,9 +526,9 @@
 									<p:dataTable id="faltante" var="row" styleClass="importado janal-wid-99" value="#{manticInventariosEntradasAccion.attrs.faltantes}" selection="#{manticInventariosEntradasAccion.attrs.faltante}" rowKey="#{row.key}" rowIndexVar="index" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" reflow="true">
 										<f:facet name="header">
 											<div style="display: flow-root;">
- 											  <p:outputLabel value="Articulos cargados del archivo XML" styleClass="janal-text-white" style="font-weight: normal;"/>
+ 											  <p:outputLabel value="Articulos cargados del archivo XML" style="font-weight: normal;"/>
 												<div style="float:right;">
-    											<p:commandButton update="@(.importado) @(.filas) @(.recalculo)" process="@this @(.importado)" icon="fa fa-sort-alpha-desc" title="Asociar articulo" actionListener="#{manticInventariosEntradasAccion.doFaltanteArticulo}" styleClass="janal-text-white" disabled="#{manticInventariosEntradasAccion.attrs.disponibles.size() eq 0 or manticInventariosEntradasAccion.attrs.faltantes.size() eq 0}" onstart="return checkValueList();"/>
+    											<p:commandButton update="@(.importado) @(.filas) @(.recalculo)" process="@this @(.importado)" icon="fa fa-sort-alpha-desc" title="Asociar articulo" actionListener="#{manticInventariosEntradasAccion.doFaltanteArticulo}" disabled="#{manticInventariosEntradasAccion.attrs.disponibles.size() eq 0 or manticInventariosEntradasAccion.attrs.faltantes.size() eq 0}" onstart="return checkValueList();"/>
 												</div>
 											</div>	
   									</f:facet>
@@ -573,7 +577,7 @@
 										</p:column>		
 										<p:column style="width:38px; text-align: center">
 											<p:outputLabel id="descripcion" value="#{row.nombre}" style="display:none"/>
-											<p:commandButton process="@this" icon="fa fa-plus" title="#{row['nombre']}" styleClass="janal-text-white" oncomplete="$('#auxiliar').val($('#contenedorGrupos\\:faltante\\:#{index}\\:descripcion').html());janal.bloquear();PF('buscador').show();">
+											<p:commandButton process="@this" icon="fa fa-plus" title="#{row['nombre']}" oncomplete="$('#auxiliar').val($('#contenedorGrupos\\:faltante\\:#{index}\\:descripcion').html());janal.bloquear();PF('buscador').show();">
     										<f:setPropertyActionListener value="#{row}" target="#{manticInventariosEntradasAccion.attrs.faltante}" />
 		    							</p:commandButton>
 										</p:column>
@@ -594,7 +598,7 @@
 												<div style="display: flow-root;">
   											  <p:outputLabel value="Articulos disponibles en la orden de compra" styleClass="janal-text-white" style="font-weight: normal;"/>
 													<div style="float:right;">
-														<p:commandButton update="@(.importado) @(.filas) @(.recalculo)" process="@this @(.importado)" icon="fa fa-sort-alpha-desc" title="Asociar articulo" actionListener="#{manticInventariosEntradasAccion.doFaltanteArticulo}" styleClass="janal-text-white" disabled="#{manticInventariosEntradasAccion.attrs.disponibles.size() eq 0 or manticInventariosEntradasAccion.attrs.faltantes.size() eq 0}" onstart="return checkValueList();"/>
+														<p:commandButton update="@(.importado) @(.filas) @(.recalculo)" process="@this @(.importado)" icon="fa fa-sort-alpha-desc" title="Asociar articulo" actionListener="#{manticInventariosEntradasAccion.doFaltanteArticulo}" disabled="#{manticInventariosEntradasAccion.attrs.disponibles.size() eq 0 or manticInventariosEntradasAccion.attrs.faltantes.size() eq 0}" onstart="return checkValueList();"/>
 													</div>
 												</div>
   										</f:facet>
@@ -718,8 +722,8 @@
 			</div>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton id="localizado" icon="fa fa-check" styleClass="janal-text-white" process="@this buscados" update="@(.filas) @(.recalculo)" value="Aceptar" actionListener="#{manticInventariosEntradasAccion.doChangeBuscado}" oncomplete="PF('dialogo').hide(); jsArticulos.close();" disabled="#{manticInventariosEntradasAccion.attrs.lazyModel.rowCount lt 1}"/>
-				<p:commandButton process="@none" styleClass="janal-text-white" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide(); jsArticulos.move();"/>
+				<p:commandButton id="localizado" icon="fa fa-check" process="@this buscados" update="@(.filas) @(.recalculo)" value="Aceptar" actionListener="#{manticInventariosEntradasAccion.doChangeBuscado}" oncomplete="PF('dialogo').hide(); jsArticulos.close();" disabled="#{manticInventariosEntradasAccion.attrs.lazyModel.rowCount lt 1}"/>
+				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide(); jsArticulos.move();"/>
 			</div>
 		</p:dialog>
 		<p:dialog id="catalogo" widgetVar="buscador" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" onHide="janal.desbloquear();" width="850px" height="670px" resizable="false">
@@ -762,21 +766,21 @@
 			</div>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton id="encontrado" icon="fa fa-check" styleClass="janal-text-white" process="@this encontrados" update="@(.filas) @(.recalculo)" value="Aceptar" actionListener="#{manticInventariosEntradasAccion.doFindOutArticulo}" oncomplete="PF('buscador').hide(); jsArticulos.cursor.index= jsArticulos.cursor.top; jsArticulos.close();" disabled="#{manticInventariosEntradasAccion.attrs.lazyModel.rowCount lt 1}"/>
-				<p:commandButton process="@none" styleClass="janal-text-white" icon="fa fa-remove" value="Cancelar" oncomplete="PF('buscador').hide();"/>
+				<p:commandButton id="encontrado" icon="fa fa-check" process="@this encontrados" update="@(.filas) @(.recalculo)" value="Aceptar" actionListener="#{manticInventariosEntradasAccion.doFindOutArticulo}" oncomplete="PF('buscador').hide(); jsArticulos.cursor.index= jsArticulos.cursor.top; jsArticulos.close();" disabled="#{manticInventariosEntradasAccion.attrs.lazyModel.rowCount lt 1}"/>
+				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('buscador').hide();"/>
 			</div>
 		</p:dialog>
 	</ui:define>   
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticInventariosEntradasAccion.doAceptar}" styleClass="janal-text-white" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="aplicar" value="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticInventariosEntradasAccion.doAplicar}" styleClass="janal-text-white" onstart="return execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticInventariosEntradasAccion.isAplicar}"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticInventariosEntradasAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticInventariosEntradasAccion.doAceptar}" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aplicar" value="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticInventariosEntradasAccion.doAplicar}" onstart="return execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticInventariosEntradasAccion.isAplicar}"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticInventariosEntradasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticInventariosEntradasAccion.doAceptar}" styleClass="janal-text-white" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="aplicarIcon" title="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticInventariosEntradasAccion.doAplicar}" styleClass="janal-text-white" onstart="return execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticInventariosEntradasAccion.isAplicar}"/>
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticInventariosEntradasAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticInventariosEntradasAccion.doAceptar}" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aplicarIcon" title="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticInventariosEntradasAccion.doAplicar}" onstart="return execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticInventariosEntradasAccion.isAplicar}"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticInventariosEntradasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>
 	<ui:define name="dialogos">
@@ -791,7 +795,7 @@
 				</object>							
   			<hr class="ui-widget-content"/>
 	  		<div class="janal-line-button">
-					<p:commandButton process="@this" styleClass="janal-text-white" icon="fa fa-remove" value="Cerrar" actionListener="#{manticInventariosEntradasAccion.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" actionListener="#{manticInventariosEntradasAccion.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
 			  </div>
 			</p:dialog>
 			<p:dialog id="dialogoXML" widgetVar="dlgXML" header="Factura en formato XML" onShow="load();" onHide="janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
@@ -800,7 +804,7 @@
 				</pre>
   			<hr class="ui-widget-content"/>
 	  		<div class="janal-line-button">
-					<p:commandButton process="@this" styleClass="janal-text-white" icon="fa fa-remove" value="Cerrar" oncomplete="PF('dlgXML').hide();"/>
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" oncomplete="PF('dlgXML').hide();"/>
 			  </div>
 			</p:dialog>
 		</h:form>
