@@ -32,9 +32,7 @@ import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.JsonChart;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Title;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.reglas.BuildChart;
 import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.formato.Fecha;
-import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -179,8 +177,8 @@ public class Bienvenida extends Comun implements Serializable {
       this.attrs.put("idGrupo", empleado.getIdGrupo());
       this.attrs.put("idPerfilCapturista", EPerfiles.CAPTURISTA.getKey());
       this.attrs.put("idUsuario", JsfBase.getIdUsuario());
-      this.lazyModel = new FormatLazyModel(perfil.getVista(), perfil.getIdVista(), this.attrs, campos);
-      UIBackingUtilities.resetDataTable();
+      //this.lazyModel = new FormatLazyModel(perfil.getVista(), perfil.getIdVista(), this.attrs, campos);
+      //UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
