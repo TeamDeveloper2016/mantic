@@ -20,7 +20,7 @@ public class Chart implements Serializable{
   private String height;
 
   public Chart(String type) {
-    this(type, "350");
+    this(type, "270");
   }
   
   public Chart(String type, String height) {

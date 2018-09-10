@@ -10,6 +10,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.dto.TrJanalIndicadoresPerfilDto;
+import mx.org.kaana.kajool.enums.ECajas;
 import mx.org.kaana.kajool.enums.ESucursales;
 import mx.org.kaana.kajool.procesos.enums.EPerfiles;
 import mx.org.kaana.kajool.procesos.enums.ETipoGrafica;
@@ -57,9 +58,17 @@ public class BuildChart implements Serializable{
     return build(ETipoGrafica.values()[(int)(Math.random()*3)]);
   } // build
   
-  public Highcharts buildNacional() throws Exception{    
-    return loadCharPropertiesNacional(" ", "Clientes", "total", "Sucursales", "sucursal", "VistaIndicadoresPerfilesDto", "avanceEstatal", "", ETipoGrafica.values()[(int)(Math.random()*2)]);
+	public Highcharts buildNacional() throws Exception{    
+    return buildNacional(ETipoGrafica.values()[(int)(Math.random()*3)]);
   } // build
+	
+  public Highcharts buildNacional(ETipoGrafica tipoGrafica) throws Exception{ 
+		return loadCharPropertiesNacional(" ", "Utilidad", "total", "Sucursales", "sucursal", "VistaIndicadoresPerfilesDto", "avanceEstatal", "", tipoGrafica);
+	}   
+  
+	public Highcharts buildNacionalCaja(ETipoGrafica tipoGrafica) throws Exception{ 
+		return loadCharPropertiesNacionalCaja(" ", "Utilidad", "total", "FERRETERIA BONANZA", "sucursal", "VistaIndicadoresPerfilesDto", "avanceEstatal", "", tipoGrafica);
+	}   
   
   public List<Highcharts> build(ETipoGrafica tipoChart) throws Exception{
     List<Highcharts> regresar                    = null;
@@ -75,7 +84,7 @@ public class BuildChart implements Serializable{
 			} // if
 			else{				
 				for(ESucursales sucursal: ESucursales.values()){
-					if(sucursal.equals(ESucursales.SUCURSAL_E))
+					if(sucursal.equals(ESucursales.SUCURSAL_A))
 						regresar.add(loadCharProperties(null, tipoChart, sucursal));								
 				} // for
 			} // else
@@ -126,23 +135,24 @@ public class BuildChart implements Serializable{
 					dataList.add(record.toLong(indicador.getAliasLadox()));
 			} // if
 			else{
-				indicador= new TrJanalIndicadoresPerfilDto(Cadena.letraCapital(Cadena.reemplazarCaracter(sucursal.getSucursal(), '_', ' ')), "Clientes", "total", "Sucursal", "total", "Numero de clientes");
-				categoriesList.add(sucursal.getSucursal());
-				dataList.add(sucursal.getClientes());
+				for(ESucursales esucursal: ESucursales.values()){
+					categoriesList.add(esucursal.getNombreSucursal());
+					dataList.add(esucursal.getVentas());
+				} // for
 			} // else
       categories= new String[categoriesList.size()];
       categories= categoriesList.toArray(categories);
       data= new Long[dataList.size()];
       data= dataList.toArray(data);
-      totales= new Totales[]{new Totales(indicador.getTituloLadox(), data)};
+      totales= new Totales[]{new Totales("Ventas", data)};
       regresar= new Highcharts(
-              new Chart(tipoChart.getName()),
-              new Title(indicador.getTituloGeneral()),
-              new Xaxis(categories, new Title(indicador.getTituloLadoy())),
-              new Yaxis(0, new Title(indicador.getTituloLadox()), new Labels("justify")),
-              new Tooltip("  ".concat(indicador.getDescripcionConteo()), indicador.getAliasLadox().equals("porcentaje") ? "{point.name}</br><b>{point.y:.2f}%</b>" : ""),
-              new PlotOptions(new Bar(new DataLabels(false)), new Series(new DataLabels(true, indicador.getAliasLadox().equals("porcentaje") ? "{point.y:.1f}%" : ""))),
-              new Legend("vertical", "right", "top", 0, 40, true, 1, "#FFFFFF", true),
+              new Chart(tipoChart.getName(), "180"),
+              new Title("Total de ventas por sucursal"),
+              new Xaxis(categories, new Title("Sucursales")),
+              new Yaxis(0, new Title("Ventas"), new Labels("justify")),
+              new Tooltip(" ", " "),
+              new PlotOptions(new Bar(new DataLabels(false)), new Series(new DataLabels(true, " "))),
+              new Legend("vertical", "left", "middle", -10, 80, true, 1, "#FFFFFF", true),
               new Credits(false),
               totales);
     } // try
@@ -173,8 +183,8 @@ public class BuildChart implements Serializable{
 			} // 
 			else{
 				for(ESucursales sucursal: ESucursales.values()){
-					categoriesList.add(sucursal.getSucursal());
-					dataList.add(sucursal.getClientes());
+					categoriesList.add(sucursal.getNombreSucursal());
+					dataList.add(sucursal.getUtilidad());
 				} // for
 			}
       categories= new String[categoriesList.size()];
@@ -189,7 +199,54 @@ public class BuildChart implements Serializable{
               new Yaxis(0, new Title(tituloLadox), new Labels("justify")),
               new Tooltip("  ".concat(descripcion), aliasLadox.equals("porcentaje") ? "{point.name}</br><b>{point.y:.2f}%</b>" : ""),
               new PlotOptions(new Bar(new DataLabels(false)), new Series(new DataLabels(true, aliasLadox.equals("porcentaje") ? "{point.y:.1f}%" : ""))),
-              new Legend("vertical", "right", "top", 0, 40, true, 1, "#FFFFFF", true),
+              new Legend("vertical", "left", "middle", -10, 110, true, 1, "#FFFFFF", true),
+              new Credits(false),
+              totales);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+    return regresar;
+  } // loadCharProperties
+	
+  private Highcharts loadCharPropertiesNacionalCaja(String tituloGeneral, String tituloLadox, String aliasLadox, String tituloLadoy, String aliasLadoy, String vista, String idVista, String descripcion, ETipoGrafica tipoChart) throws Exception{
+    Highcharts regresar        = null;
+    List<Entity> records       = null;
+    List<String> categoriesList= null;
+    String[] categories        = null;
+    List<Long> dataList        = null;
+    Long[] data                = null;
+    Totales[] totales          = null;
+    try {
+      dataList= new ArrayList<>();
+      categoriesList= new ArrayList<>();
+      //records= loadRecords(vista, idVista);
+      records= new ArrayList<>();
+			if(!records.isEmpty()){
+				for(Entity record: records)
+					categoriesList.add(record.toString(aliasLadoy));
+				for(Entity record: records)
+					dataList.add(record.toLong(aliasLadox));
+			} // 
+			else{
+				for(ECajas caja: ECajas.values()){
+					categoriesList.add(caja.getCaja());
+					dataList.add(caja.getUtilidad());
+				} // for
+			}
+      categories= new String[categoriesList.size()];
+      categories= categoriesList.toArray(categories);
+      data= new Long[dataList.size()];
+      data= dataList.toArray(data);
+      totales= new Totales[]{new Totales(tituloLadox, data)};
+      regresar= new Highcharts(
+              new Chart(tipoChart.getName(), "180"),
+              new Title(tituloGeneral),
+              new Xaxis(categories, new Title(tituloLadoy)),
+              new Yaxis(0, new Title(tituloLadox), new Labels("justify")),
+              new Tooltip("  ".concat(descripcion), aliasLadox.equals("porcentaje") ? "{point.name}</br><b>{point.y:.2f}%</b>" : ""),
+              new PlotOptions(new Bar(new DataLabels(false)), new Series(new DataLabels(true, aliasLadox.equals("porcentaje") ? "{point.y:.1f}%" : ""))),
+              new Legend("vertical", "left", "middle", -10, 80, true, 1, "#FFFFFF", true),
               new Credits(false),
               totales);
     } // try
@@ -247,7 +304,11 @@ public class BuildChart implements Serializable{
     return loadCharPropertiesPie("VistaIndicadoresPerfilesDto", idVista, titulo, x, y, campoX, campoY, tipoConteo);
   } // loadCharPropertiesPie
   
-  private HighchartsPie loadCharPropertiesPie(String vista, String idVista, String titulo, String x, String y, String campoX, String campoY, String tipoConteo) throws Exception{
+  public HighchartsPie loadCharPropertiesPie(String vista, String idVista, String titulo, String x, String y, String campoX, String campoY, String tipoConteo) throws Exception{
+		return loadCharPropertiesPie(vista, idVista, titulo, x, y, campoX, campoY, tipoConteo, false);
+	}
+  
+	public HighchartsPie loadCharPropertiesPie(String vista, String idVista, String titulo, String x, String y, String campoX, String campoY, String tipoConteo, boolean defaultLoad) throws Exception{
     HighchartsPie regresar     = null;
     List<Entity> records       = null;
     List<String> categoriesList= null;    
@@ -267,14 +328,37 @@ public class BuildChart implements Serializable{
 				} // for
 			} // if
 			else {
-				dataList.add(new DetailData("Completas".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("90")))).concat("%"), 90L));
-        dataList.add(new DetailData("Pendientes".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("10")))).concat("%"), 10L));
+				/*vendidos.addTag(new DefaultTagCloudItem("ACEITE LUBRI. 100 ML. SELANUSA", 10));
+			vendidos.addTag(new DefaultTagCloudItem("ACEITE P/COMPRESOR 250 ML GONI", "#", 30));
+			vendidos.addTag(new DefaultTagCloudItem("AEROGRAFO ADIR #684", 70));
+			vendidos.addTag(new DefaultTagCloudItem("AGUJA ARREA #6", 25));
+			vendidos.addTag(new DefaultTagCloudItem("ARCO P/SEGUETA FOY 17E", 45));
+			utilidad = new DefaultTagCloudModel();
+			utilidad.addTag(new DefaultTagCloudItem("ATOMIZADOR 1 LT ECONOMICO", 30));
+			utilidad.addTag(new DefaultTagCloudItem("AZADON C/MANGO TRUPER AL-1M #1", 55));
+			utilidad.addTag(new DefaultTagCloudItem("BANDOLA C/SEGURO TRUE POWER PZA.", 21));
+			utilidad.addTag(new DefaultTagCloudItem("BANQUETERO GALV.", 23));
+			utilidad.addTag(new DefaultTagCloudItem("BARRETA ECONOMICA 1\" X 1.8 MTS", 54));*/
+				if(defaultLoad){
+					dataList.add(new DetailData("ACEITE P/COMPRESOR 250 ML GONI".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("15")))).concat("%"), 30L));
+					dataList.add(new DetailData("ACEITE LUBRI. 100 ML. SELANUSA".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("5")))).concat("%"), 10L));
+					dataList.add(new DetailData("AEROGRAFO ADIR #684".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("50")))).concat("%"), 70L));
+					dataList.add(new DetailData("AGUJA ARREA #6".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("10")))).concat("%"), 25L));
+					dataList.add(new DetailData("ARCO P/SEGUETA FOY 17E".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("20")))).concat("%"), 45L));
+				} // if
+				else{
+					dataList.add(new DetailData("ATOMIZADOR 1 LT ECONOMICO".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("15")))).concat("%"), 30L));
+					dataList.add(new DetailData("AZADON C/MANGO TRUPER AL-1M #1".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("30")))).concat("%"), 55L));
+					dataList.add(new DetailData("BANDOLA C/SEGURO TRUE POWER PZA.".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("15")))).concat("%"), 21L));
+					dataList.add(new DetailData("BANQUETERO GALV.".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("10")))).concat("%"), 23L));
+					dataList.add(new DetailData("BARRETA ECONOMICA 1 X 1.8 MTS".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("30")))).concat("%"), 54L));
+				} // else
 			} // else
 			data= new DetailData[dataList.size()];
 			data= dataList.toArray(data);
 			totales= new TotalesPie[]{new TotalesPie("Total", data)};
 			regresar= new HighchartsPie(              
-							new Chart(ETipoGrafica.PIE.getName(), "250"),
+							new Chart(ETipoGrafica.PIE.getName(), "313"),
 							//new Title(titulo),              
 							new Title(" "),              
 							new Tooltip("  ".concat(tipoConteo)),
