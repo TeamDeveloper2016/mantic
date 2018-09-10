@@ -11,32 +11,25 @@ import mx.org.kaana.libs.formato.Cadena;
  *
  * @author JORGE.VAZQUEZSER
  */
-public enum ESucursales {
+public enum ECajas {
 
-	SUCURSAL_A(30000L, "FERRETERIA BONANZA", 1560L),
-	SUCURSAL_B(21500L, "FERRETERIA BONANZA, SUC. JESÚS MARÍA", 1200L);
+	CAJA_1(12000L),
+	CAJA_2(7500L),
+	CAJA_3(10500L);
 	
 	private Long utilidad;
-	private Long ventas;
-	private String nombre;
-	private static final Long total= 51500L; 
+	private static final Long total= 30000L; 
 
-	private ESucursales(Long utilidad, String nombre, Long ventas) {
+	private ECajas(Long utilidad) {
 		this.utilidad= utilidad;
-		this.nombre  = nombre;
-		this.ventas  = ventas;
 	}
 
 	public Long getIdKey(){
 		return this.ordinal() + 1L;
 	}
 	
-	public String getSucursal() {
+	public String getCaja() {
 		return Cadena.letraCapital(Cadena.reemplazarCaracter(this.name(), '_', ' '));
-	}
-	
-	public String getNombreSucursal() {
-		return this.nombre;
 	}
 
 	public Long getUtilidad() {
@@ -49,9 +42,5 @@ public enum ESucursales {
 	
 	public Double getPorcentaje(){
 		return new Double(String.valueOf((this.utilidad * 100L) / total));
-	}
-
-	public Long getVentas() {
-		return ventas;
 	}
 }
