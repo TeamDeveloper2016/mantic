@@ -162,7 +162,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		boolean display  = diferencia!= 0D;
 		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(display? "": "none").concat("' title='Costo anterior: ").concat(
 			Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, this.getValor())
-		).concat("\n\nCosto digitado:").concat(Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, this.getCosto())
+		).concat("\n\nCosto digitado:").concat(Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, this.getCosto()- this.getDescuentos())
 		).concat("\n\nDiferencia: ").concat(String.valueOf(diferencia)).concat("%'></i>");
 	}
 
@@ -197,6 +197,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		double costoReal     = this.getCantidad()* costoMoneda;
 		double utilidad      = (this.getCosto()*this.getCantidad()) - (this.getPrecio()*this.getCantidad());
 		this.importes.setImporte(Numero.toRedondearSat(costoReal));
+		
 		Descuentos descuentos= new Descuentos(this.importes.getImporte(), this.getDescuento().concat(",").concat(this.getExtras()));
 		double temporal= descuentos.toImporte();
 		this.importes.setSubTotal(Numero.toRedondearSat(temporal<= 0? this.importes.getImporte(): temporal));
