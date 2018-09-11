@@ -136,7 +136,7 @@ public class BuildChart implements Serializable{
 			} // if
 			else{
 				for(ESucursales esucursal: ESucursales.values()){
-					categoriesList.add(esucursal.getNombreSucursal());
+					categoriesList.add(esucursal.getTitulo());
 					dataList.add(esucursal.getVentas());
 				} // for
 			} // else
@@ -183,7 +183,7 @@ public class BuildChart implements Serializable{
 			} // 
 			else{
 				for(ESucursales sucursal: ESucursales.values()){
-					categoriesList.add(sucursal.getNombreSucursal());
+					categoriesList.add(sucursal.getTitulo());
 					dataList.add(sucursal.getUtilidad());
 				} // for
 			}
