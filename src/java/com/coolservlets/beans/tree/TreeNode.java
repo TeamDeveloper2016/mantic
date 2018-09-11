@@ -20,8 +20,12 @@ public class TreeNode extends TreeObject implements TreeInterface,  Serializable
     this(id, name, null, rama, imageIn, name, null,null);
   }
 
-	public TreeNode(int id, String name, String link, String rama, String imageIn, String hint, String publicar,String icono) {
-    super(id, name, link, rama, imageIn, hint, Tree.NODE, publicar,icono);
+	public TreeNode(int id, String name, String link, String rama, String imageIn, String hint, String publicar, String icono) {
+		this(id, name, link, rama, imageIn, hint, publicar, icono, "");
+	}
+	
+	public TreeNode(int id, String name, String link, String rama, String imageIn, String hint, String publicar, String icono, String codigo) {
+    super(id, name, link, rama, imageIn, hint, Tree.NODE, publicar, icono, codigo);
     setVisible(false);
     children = new Tree();
   }

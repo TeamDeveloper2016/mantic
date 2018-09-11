@@ -96,7 +96,7 @@ public class Agregar implements Serializable {
 					case AGREGAR:
 						this.titulo="Agregar opción a menu";
 						this.tamanio= TAMANIO_DEFAULT;
-						this.current=new TcJanalMenusDto(consulta.toNextKey(this.source.getClave(), this.source.getClave().equals("0000000000") ? this.source.getNivel().intValue() : this.source.getNivel().intValue()+1, 1), this.source.getClave().equals("0000000000") ? 1 : this.source.getNivel()+1, "", "0", 1L, "", -1L, "", 0L, "", 1L);						
+						this.current= new TcJanalMenusDto(consulta.toNextKey(this.source.getClave(), this.source.getClave().equals("0000000000") ? this.source.getNivel().intValue() : this.source.getNivel().intValue()+1, 1), this.source.getClave().equals("0000000000") ? 1 : this.source.getNivel()+1, "", "0", 1L, "", -1L, "", 0L, "", 1L, "");						
 						this.current.setIcono("fa ".concat(ICON_DEFAULT));
 						break;
 					case MODIFICAR:
@@ -112,7 +112,7 @@ public class Agregar implements Serializable {
 						break;
 					case REGISTRAR:
 						this.titulo="Agregar descendencia a la opción";
-						this.current=new TcJanalMenusDto(consulta.toNextKey(this.source.getClave(), this.source.getNivel().intValue()+1, 1), this.source.getNivel()+1, "", "0", 1L, "", -1L, "", 0L, "", 1L);
+						this.current=new TcJanalMenusDto(consulta.toNextKey(this.source.getClave(), this.source.getNivel().intValue()+1, 1), this.source.getNivel()+1, "", "0", 1L, "", -1L, "", 0L, "", 1L, "");
 
 						this.current.setIcono("fa ".concat(ICON_DEFAULT));
 						break;

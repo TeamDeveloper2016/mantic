@@ -48,17 +48,19 @@ public class TcJanalMenusDto implements IBaseDto, Serializable {
   private String icono;
   @Column (name="ULTIMO")
   private Long ultimo;
+  @Column (name="CODIGO")
+  private String codigo;
 
   public TcJanalMenusDto() {
     this(new Long(-1L));
   }
 
   public TcJanalMenusDto(Long key) {
-    this(null, null, null, null, null, null, null, null,  null, null, null);
+    this(null, null, null, null, null, null, null, null,  null, null, null, null);
     setKey(key);
   }
 
-  public TcJanalMenusDto( String clave, Long nivel, String descripcion, String publicar, Long idCfgClave, String ruta,  Long idMenu, String ayuda, Long ultimo,   String icono, Long idUsuario) {
+  public TcJanalMenusDto( String clave, Long nivel, String descripcion, String publicar, Long idCfgClave, String ruta,  Long idMenu, String ayuda, Long ultimo, String icono, Long idUsuario, String codigo) {
     setClave(clave);
     setNivel(nivel);
     setDescripcion(descripcion);
@@ -71,6 +73,7 @@ public class TcJanalMenusDto implements IBaseDto, Serializable {
 		setIcono(icono);
 		setIdUsuario(idUsuario);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		setCodigo(codigo);
   }
 
   public void setClave(String clave) {
@@ -169,6 +172,14 @@ public class TcJanalMenusDto implements IBaseDto, Serializable {
     return ultimo;
   }
 
+	public String getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo=codigo;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -207,6 +218,8 @@ public class TcJanalMenusDto implements IBaseDto, Serializable {
 		regresar.append(getIcono());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getUltimo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCodigo());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -226,13 +239,14 @@ public class TcJanalMenusDto implements IBaseDto, Serializable {
 		regresar.put("ayuda", getAyuda());
 		regresar.put("icono", getIcono());
 		regresar.put("ultimo", getUltimo());
+		regresar.put("codigo", getCodigo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getClave(), getNivel(), getPublicar(), getIdUsuario(), getRuta(), getDescripcion(), getIdCfgClave(), getIdMenu(), getRegistro(), getAyuda(), getIcono(), getUltimo()
+      getClave(), getNivel(), getPublicar(), getIdUsuario(), getRuta(), getDescripcion(), getIdCfgClave(), getIdMenu(), getRegistro(), getAyuda(), getIcono(), getUltimo(), getCodigo()
     };
     return regresar;
   }

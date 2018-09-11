@@ -29,7 +29,6 @@ public class Autentifica implements Serializable {
   private static final long serialVersionUID = 8226041225011231930L;
   private static final Log LOG = LogFactory.getLog(Autentifica.class);
 	private static final String ADMIN= "ADMINISTRADOR";
-  private static final String ADMIN_ENCUESTA= "ADMINISTRADORDEENCUESTA";
   private static final String GERENTE= "GERENTE";
   private static final String VENDEDOR_DE_PISO= "VENDEDORDEPISO";
   private Persona persona;
@@ -272,7 +271,7 @@ public class Autentifica implements Serializable {
 
 	private Persona toEvaluaJerarquiaPersona(List<Persona> personas){
 		Persona regresar= null;
-		regresar= toSeleccionPersona(personas, ADMIN_ENCUESTA);		
+		regresar= toSeleccionPersona(personas, ADMIN);		
 		if(regresar== null)
 			regresar= toSeleccionPersona(personas, ADMIN);		
 		else{ 

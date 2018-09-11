@@ -111,25 +111,26 @@ public class TreeBean implements Serializable {
     int nodeID    = 1;
     Tree root     = new Tree("root");
     try {
+      int[] idMenu           = new int [100];
       String[] descripciones = new String[100]; // hardwired maximum depth of 30 levels (!!)
       String[] rutas         = new String[100];
       String[] ramaArbol     = new String[100];
-      String[] imagen       = new String[100];
-      String[] icono          = new String[100];
-      int[] idMenu           = new int [100];
+      String[] imagen        = new String[100];
+      String[] icono         = new String[100];
       String[] hints         = new String[100];
       String[] publicar      = new String[100];
-      String clave = "";
-      String token = "";
+      String[] codigos       = new String[100];
+      String clave           = "";
+      String token           = "";
       int ini;
       int fin;
-      int numNiveles = 1;
+      int numNiveles         = 1;
       int x;
-      int j = 0;
-      String ceros = "";
+      int j                  = 0;
+      String ceros           = "";
       for (int z = 1; z <= maxHijos; z++)
         ceros += "0";
-      for(ListIterator<UsuarioMenu> listaIterador=menu.listIterator(); listaIterador.hasNext();){
+      for(ListIterator<UsuarioMenu> listaIterador= menu.listIterator(); listaIterador.hasNext();) {
         x = 0;
         ini = 0;
         fin = maxHijos;
@@ -162,8 +163,9 @@ public class TreeBean implements Serializable {
         hints[x]         = vistaUsuarioMenuDto.getAyuda();
         publicar[x]      = vistaUsuarioMenuDto.getPublicar();
         icono[x]         = null;
+        codigos[x]       = vistaUsuarioMenuDto.getCodigo();
         if (withIcon)
-          icono[x]          =vistaUsuarioMenuDto.getIcono();
+          icono[x]= vistaUsuarioMenuDto.getIcono();
         int y = x + 1;
         while (y < numNiveles) {
           descripciones[y] = null;
@@ -187,7 +189,7 @@ public class TreeBean implements Serializable {
           try {
             for (j = 0; j < x; j++) {
               if (tn[j] == null || !ramaArbol[j].equals(tn[j].getRama())) { // then this is the first or a new item
-                tn[j] = new TreeNode(nodeID++, descripciones[j], rutas[j], ramaArbol[j], imagen[j], hints[j], publicar[x],withIcon?icono[j]: null);
+                tn[j] = new TreeNode(nodeID++, descripciones[j], rutas[j], ramaArbol[j], imagen[j], hints[j], publicar[j], withIcon? icono[j]: null, codigos[j]);
                 if (j > 0)
                   tn[j - 1].addChild(tn[j]);
                 else
@@ -196,9 +198,9 @@ public class TreeBean implements Serializable {
               } // if
             } // for
             if (j > 0)
-              tn[j-1].addChild(new TreeLeaf(idMenu[j], descripciones[j], rutas[j], ramaArbol[j], imagen[j], hints[j], publicar[x],withIcon?icono[j]: null));
+              tn[j-1].addChild(new TreeLeaf(idMenu[j], descripciones[j], rutas[j], ramaArbol[j], imagen[j], hints[j], publicar[j], withIcon? icono[j]: null, codigos[j]));
             else
-              root.addChild(new TreeLeaf(descripciones[j], rutas[j], ramaArbol[j], imagen[j], hints[j], publicar[x],withIcon?icono[j]: null));
+              root.addChild(new TreeLeaf(descripciones[j], rutas[j], ramaArbol[j], imagen[j], hints[j], publicar[j], withIcon? icono[j]: null, codigos[j]));
           }
           catch (Exception e) {
             Error.mensaje(e);

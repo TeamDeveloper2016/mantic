@@ -21,8 +21,13 @@ public class TreeObject implements Serializable {
   private TreeObject parent;
   private String publicar;
   private String icono;
+  private String codigo;
 
   public TreeObject(int id, String name, String link, String rama, String imagen, String hint, int type, String publicar, String icono) {
+	 this(id, name, link, rama, imagen, hint, type, publicar, icono, "");
+	}
+	
+  public TreeObject(int id, String name, String link, String rama, String imagen, String hint, int type, String publicar, String icono, String codigo) {
     setId(id);
     setName(name);
     setLink(link);
@@ -33,6 +38,7 @@ public class TreeObject implements Serializable {
     setParent(null);
     setPublicar(publicar);
     setIcono(icono);
+		setCodigo(codigo);
   }
 
   public String getIcono() {
@@ -122,6 +128,14 @@ public class TreeObject implements Serializable {
   public void setPublicar(String publicar) {
     this.publicar=publicar;
   }
+
+	public String getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo=codigo;
+	}
 
   public String getUrl() {
     StringBuilder sb = new StringBuilder();

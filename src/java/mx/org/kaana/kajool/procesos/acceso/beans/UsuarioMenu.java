@@ -29,16 +29,17 @@ public class UsuarioMenu implements IBaseDto, Serializable {
 	private Long ultimo;	
   private String ayuda;	
 	private String icono;	
+	private String codigo;	
 
 	public UsuarioMenu() {
 		this(-1L);
 	}
 	
 	public UsuarioMenu(Long idMenu) {
-		this(idMenu, -1L, "", "", "", "", "", -1L, -1L, "", "");
+		this(idMenu, -1L, "", "", "", "", "", -1L, -1L, "", "", "");
 	}	
 	
-	public UsuarioMenu(Long idMenu, Long idCfgClave, String clave, String descripcion, String ruta, String publicar, String imagen, Long nivel, Long ultimo, String ayuda, String icono) {
+	public UsuarioMenu(Long idMenu, Long idCfgClave, String clave, String descripcion, String ruta, String publicar, String imagen, Long nivel, Long ultimo, String ayuda, String icono, String codigo) {
 		this.idMenu     = idMenu;
 		this.idCfgClave = idCfgClave;
 		this.clave      = clave;
@@ -50,6 +51,7 @@ public class UsuarioMenu implements IBaseDto, Serializable {
 		this.ultimo     = ultimo;
 		this.ayuda      = ayuda;
 		this.icono      = icono;
+		this.codigo     = codigo;
 	}
 
 	public Long getIdMenu() {
@@ -139,6 +141,14 @@ public class UsuarioMenu implements IBaseDto, Serializable {
 	public void setIcono(String icono) {
 		this.icono= icono;
 	}
+
+	public String getCodigo() {
+		return codigo;
+	}
+
+	public void setCodigo(String codigo) {
+		this.codigo=codigo;
+	}
 	
   @Transient
   public Long getKey() {
@@ -157,10 +167,12 @@ public class UsuarioMenu implements IBaseDto, Serializable {
   }
 
   @Transient
+	@Override
   public boolean isValid() {
     return getIdMenu() != null && getIdMenu() != -1L;
   }
 
+	@Override
   public String toString() {
     StringBuilder regresar = new StringBuilder();
     regresar.append("[");
@@ -216,15 +228,18 @@ public class UsuarioMenu implements IBaseDto, Serializable {
     return regresar;
   }
 
+	@Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{getClave(), getDescripcion(), getPublicar(), getRuta(), getIdMenu(), getAyuda()};
     return regresar;
   }
 
+	@Override
   public Object toValue(String name) {
     return Methods.getValue(this, name);
   }
 
+	@Override
   public String toAllKeys() {
     StringBuilder regresar = new StringBuilder();
     regresar.append("|");
@@ -234,6 +249,7 @@ public class UsuarioMenu implements IBaseDto, Serializable {
     return regresar.toString();
   }
 
+	@Override
   public String toKeys() {
     StringBuilder regresar = new StringBuilder();
     regresar.append(getIdMenu());
@@ -267,4 +283,5 @@ public class UsuarioMenu implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdMenu() != null ? getIdMenu().hashCode() : 0);
     return hash;
   }
+	
 }

@@ -13,9 +13,11 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.acceso.beans.Faltante;
+import mx.org.kaana.kajool.procesos.acceso.beans.UsuarioMenu;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -264,4 +266,22 @@ public class Encabezado extends IBaseFilter implements Serializable {
 	public String doCleanChars(String text) {
 		return Cadena.reemplazarCaracter(text, (char)39, ' ');
 	}
+	
+	public String doEjecutar() {
+		String regresar= null;
+		String opcion  = (String)this.attrs.get("opcion");
+		LOG.info("Ejecutar: "+ opcion);
+		if(!Cadena.isVacio(opcion))
+			for (UsuarioMenu item: JsfBase.getAutentifica().getMenu()) {
+				if(opcion.equals(item.getCodigo())) {
+					regresar= item.getRuta();
+					break;
+				} // if	
+			} // for
+		if(regresar== null) {
+			RequestContext.getCurrentInstance().execute("janal.alert('La opci\\u00F3n ["+ opcion+ "] no existe, verifiquelo de favor !')");
+		} // if
+		return regresar== null? regresar: regresar.concat(Constantes.REDIRECIONAR);
+	}
+	
 }

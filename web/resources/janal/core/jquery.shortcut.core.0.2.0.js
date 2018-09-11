@@ -314,6 +314,13 @@ shortcut.add("Ctrl+L", function() {
 	} // if
 });
 
+shortcut.add("Ctrl+R", function() {
+	janal.console('Shortcut para ejecutar una opción en especifico:');
+	if(PF('dlgEjecutar') && !PF('dlgEjecutar').isVisible()) {
+		PF('dlgEjecutar').show();
+	} // if
+});
+
 shortcut.add("Shift+P", function() {
 	janal.console('Shortcut cobrar venta:');
 	if(PF('contenedorCaja')) {

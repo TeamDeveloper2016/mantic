@@ -283,7 +283,27 @@
 			</p:dataTable>
 		</h:form>
 	</p:dialog>  	
-	<p:dialog id="dialogoTeclasAyuda" widgetVar="dlgTeclasAyuda" header="Teclas rapidas de la aplicación" onShow="janal.bloquear();" onHide="janal.sendLastFocus();janal.desbloquear();" height="#{empty notIsCaja or notIsCaja? '150px': '400px'}" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
+	<p:dialog id="dialogoEjecutar" widgetVar="dlgEjecutar" header="Ingrese el código del módulo ..." onShow="$('#kajoolOpcion').val('');janal.bloquear();" onHide="janal.sendLastFocus();janal.desbloquear();" height="90px" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
+		<h:form id="teclasEjecutar" prependId="false">
+			<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+				<div class="ui-grid-row janal-grid-row">
+					<div class="ui-grid-col-2">
+						<p:outputLabel value="Código módulo:"/>
+					</div>
+					<div class="ui-grid-col-10">
+						<p:inputText id="kajoolOpcion" value="#{kajoolEncabezado.attrs.opcion}" styleClass="janal-wid-100-txt janal-key-run"/>
+					</div>
+				</div>	
+				<div class="ui-grid-row janal-grid-row">
+					<div class="ui-grid-col-12 janal-column-right">
+						<br/>
+						<p:commandButton id="kajoolEjecutar" icon="fa fa-qq" value="Ejecutar" action="#{kajoolEncabezado.doEjecutar}" process="@this kajoolOpcion" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); PF('dlgEjecutar').hide();"/>
+					</div>
+				</div>
+			</div>	
+		</h:form>
+	</p:dialog>	
+	<p:dialog id="dialogoTeclasAyuda" widgetVar="dlgTeclasAyuda" header="Teclas rapidas de la aplicación" onShow="janal.bloquear();" onHide="janal.sendLastFocus();janal.desbloquear();" height="#{empty notIsCaja or notIsCaja? '155px': '400px'}" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form id="teclasAyuda" prependId="false">
 			<div class="ui-datatable ui-widget ui-datatable-reflow">
 				<div class="ui-datatable-tablewrapper">
@@ -297,6 +317,9 @@
 							</tr>
 							<tr>
 								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-search-plus"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[SHIFT+F10]</strong></td><td>Buscar un articulo</td>	
+							</tr>
+							<tr>
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-qq"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+R]</strong></td><td>Ir a un módulo</td>	
 							</tr>
 							<tr>
 								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-power-off"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+L]</strong></td><td>Terminar la sesión</td>	

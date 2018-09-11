@@ -19,9 +19,9 @@ import org.apache.commons.logging.LogFactory;
  */
 public class JsfBase extends JsfUtilities {
 
-  private static final Log LOG = LogFactory.getLog(JsfBase.class);
-  private static final String ADMIN = "ADMINISTRADOR";
-  private static final String ADMIN_ENCUESTA = "ADMINISTRADORDEENCUESTA";
+  private static final Log LOG       = LogFactory.getLog(JsfBase.class);
+  private static final String ADMIN  = "ADMINISTRADOR";
+  private static final String GERENTE= "GERENTE";
 
   public static Autentifica getAutentifica() {
     return (Autentifica) getSession().getAttribute(Constantes.ATRIBUTO_AUTENTIFICA);
@@ -35,7 +35,7 @@ public class JsfBase extends JsfUtilities {
     boolean regresar = false;
     try {
 			String cadena= Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase();
-      regresar = cadena.equals(ADMIN) || cadena.equals("GERENTE");
+      regresar = cadena.equals(ADMIN) || cadena.equals(GERENTE);
     } // try
     catch (Exception e) {
       throw e;
@@ -43,10 +43,10 @@ public class JsfBase extends JsfUtilities {
     return regresar;
   } // isAdmin
 
-  public static boolean isAdminEncuesta() throws Exception {
+  public static boolean isGerente() throws Exception {
     boolean regresar = false;
     try {
-      regresar = Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase().equals(ADMIN_ENCUESTA);
+      regresar = Cadena.eliminaCaracter(getAutentifica().getPersona().getDescripcionPerfil(), ' ').toUpperCase().equals(GERENTE);
     } // try
     catch (Exception e) {
       throw e;
@@ -57,7 +57,7 @@ public class JsfBase extends JsfUtilities {
   public static boolean isAdminEncuestaOrAdmin() throws Exception {
     boolean regresar = false;
     try {
-      regresar = isAdmin() || isAdminEncuesta();
+      regresar = isAdmin() || isGerente();
     } // try
     catch (Exception e) {
       throw e;
@@ -78,7 +78,7 @@ public class JsfBase extends JsfUtilities {
   }
 
   public static boolean isLockUsers(LockUser lockUser, Autentifica autentifica) {
-    return lockUser.isLock() && !Cadena.eliminaCaracter(autentifica.getPersona().getDescripcionPerfil(), ' ').toUpperCase().equals(JsfBase.ADMIN_ENCUESTA);
+    return lockUser.isLock() && !Cadena.eliminaCaracter(autentifica.getPersona().getDescripcionPerfil(), ' ').toUpperCase().equals(JsfBase.GERENTE);
   }
 
   public static boolean isLockUsers() {

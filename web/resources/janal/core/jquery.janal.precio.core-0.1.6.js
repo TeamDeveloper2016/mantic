@@ -159,6 +159,18 @@
 						break;
 				} // swtich
 			});	
+	    $(document).on('keydown', '.janal-key-run', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('Keydown: '+ key);
+				switch(key) {
+					case $precios.VK_ENTER:
+					case $precios.VK_TAB:
+						if($('#kajoolEjecutar'))
+							$('#kajoolEjecutar').click();
+						return false;
+						break;
+				} // swtich
+			});	
 		},
 		lookup: function() {
 			janal.console('jsPrecios.lookup');
