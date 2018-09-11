@@ -33,14 +33,14 @@
 						<p:panelGrid columnClasses="janal-column-center">
 							<i class="icon-user-2 Fs100 Wid100 hardblue TexAlCenter janal-content-center" style="float: right"></i>							
 							<div class="Fs24 MarTop10 Wid100 janal-column-center">Bienvenido, <span class="hardblue">#{sessionScope.autentifica.persona.cuenta}</span></div>
-							<div class="Fs12 Wid100 janal-column-center">Tu tienes <span class="red">#{kajoolBienvenida.attrs.mensajesNoLeidos} mensajes sin leer</span> y <span class="red"> #{kajoolBienvenida.attrs.contadoresMes.totalPendientes} capturas pendientes</span> !</div>
+							<div class="Fs12 Wid100 janal-column-center">Tu tienes <span class="red">#{kajoolBienvenida.attrs.mensajesNoLeidos} mensajes sin leer</span></div>
 							<div class="EmptyBox10"></div>
 							<p:separator styleClass="Wid100"/>
 							<div class="EmptyBox10"></div>
 							<div class="Fs16 janal-column-center">
-								<a href="#{kajoolBienvenida.attrs.pathCaptura}" class="DispInlBlock Fs16 MarRight20 janal-colum-right"><i class="icon-pencil-squared hardblue"> Captura (#{kajoolBienvenida.attrs.contadoresMes.totalPendientes})</i></a>
-								<a href="#{kajoolBienvenida.attrs.pathMensajes}" class="DispInlBlock Fs16 MarRight20 janal-column-center"><i class="icon-bell-alt hardblue"> Mensajes (#{kajoolBienvenida.attrs.mensajesNoLeidos})</i></a>
 								<a href="#{kajoolBienvenida.attrs.pathConfiguracion}" class="DispInlBlock Fs16 MarRight20 janal-colum-left"><i class="icon-cog-alt hardblue"> Configuración</i></a>
+								<a href="#{kajoolBienvenida.attrs.pathCaptura}" class="DispInlBlock Fs16 MarRight20 janal-colum-right"><i class="icon-mail hardblue"> Buzón (0)</i></a>
+								<a href="#{kajoolBienvenida.attrs.pathMensajes}" class="DispInlBlock Fs16 MarRight20 janal-column-center"><i class="icon-bell-alt hardblue"> Mensajes (#{kajoolBienvenida.attrs.mensajesNoLeidos})</i></a>								
 							</div>
 							<div class="EmptyBox10"></div>
 							<p:separator styleClass="Wid100"/>

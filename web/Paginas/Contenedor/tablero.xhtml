@@ -133,12 +133,12 @@
 						<p:panel style="min-height: 290px;">
 							<i class="icon-user-2 Fs50 Fleft Wid25 hardblue TexAlCenter"></i>
 							<div class="Fs24 Fright MarTop10 leaden Wid70">Bienvenido, <span class="hardblue">#{sessionScope.autentifica.persona.cuenta}</span></div>
-							<div class="Fs12 Fright leaden Wid70">Tu tienes <span class="red">#{kajoolTablero.attrs.mensajesNoLeidos} mensajes sin leer</span> y <span class="red"> #{kajoolTablero.attrs.contadoresMes.totalPendientes} capturas pendientes</span> !</div>
+							<div class="Fs12 Fright leaden Wid70">Tu tienes <span class="red">#{kajoolTablero.attrs.mensajesNoLeidos} mensajes sin leer</span></div>
 							<div class="EmptyBox10"></div>
 							<p:separator styleClass="Wid100"/>
 							<div class="EmptyBox10"></div>
 							<div class="Fs16 Fright">
-								<a href="#{kajoolTablero.attrs.pathCaptura}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-pencil-squared hardblue"> Captura (#{kajoolTablero.attrs.contadoresMes.totalPendientes})</i></a>
+								<a href="#{kajoolTablero.attrs.pathCaptura}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-mail hardblue"> Buzón (0)</i></a>
 								<a href="#{kajoolTablero.attrs.pathMensajes}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-bell-alt hardblue"> Mensajes (#{kajoolTablero.attrs.mensajesNoLeidos})</i></a>
 								<a href="#{kajoolTablero.attrs.pathConfiguracion}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-cog-alt hardblue"> Configuración</i></a>
 							</div>
@@ -162,7 +162,7 @@
 							<div class="Fs24 Fright MarTop10 leaden Wid70">Equipo de trabajo</div>
 							<div class="Fs18 Fright leaden Wid70">Plantilla de <span class="red">#{kajoolTablero.attrs.contadoresGenerales.total}</span> personas</div>
 							<div class="EmptyBox5"></div>   
-							<div class="Fs12 Fright leaden Wid70">Perfiles que llevaran a cabo actividades en el desarrollo del operativo</div>
+							<div class="Fs12 Fright leaden Wid70">Perfiles que llevaran a cabo actividades en el sistema</div>
 							<div class="EmptyBox10"></div>
 							<p:separator styleClass="Wid100"></p:separator>
 							<div class="EmptyBox10"></div>
@@ -198,7 +198,7 @@
 						<p:panel id="panelMest" style="min-height: 420px;">
 							<i class="icon-users Fs50 Fleft Wid25 orange TexAlCenter"></i>
 							<div class="Fs24 Fright MarTop10 leaden Wid70">Ventas por trabajador</div>
-							<div class="Fs12 Fright leaden Wid70">Cantidad de ventas realizadas por entrevistador: <span class="orange">320</span></div>
+							<div class="Fs12 Fright leaden Wid70">Cantidad de ventas realizadas por trabajador: <span class="orange">320</span></div>
 							<div class="EmptyBox10"></div>
 							<p:separator styleClass="Wid100"/>
 							<div>
