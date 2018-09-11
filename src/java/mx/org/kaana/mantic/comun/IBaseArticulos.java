@@ -95,6 +95,8 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				temporal.setDescuento(this.adminOrden.getDescuento());
 				temporal.setExtras(this.adminOrden.getExtras());				
 				// SON ARTICULOS QUE ESTAN EN LA FACTURA MAS NO EN LA ORDEN DE COMPRA
+				if(articulo.containsKey("descuento")) 
+				  temporal.setDescuento(articulo.toString("descuento"));
 				if(articulo.containsKey("cantidad")) {
 				  temporal.setCantidad(articulo.toDouble("cantidad"));
 				  temporal.setSolicitados(articulo.toDouble("cantidad"));

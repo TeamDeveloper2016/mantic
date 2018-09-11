@@ -210,7 +210,7 @@ public class Reader implements Serializable{
 				node= conceptos.item(i).getNextSibling()== null? conceptos.item(i): conceptos.item(i).getNextSibling();
 				if(node!= null) {
 					nodeName= node.getNodeName();
-					if(nodeName.equals("cfdi:Concepto")){
+					if(nodeName.equals("cfdi:Concepto")) {
 						concepto= new Concepto();
 						mapAttrs= node.getAttributes();
 						for (int count = 0; count < mapAttrs.getLength(); count++){						
@@ -241,12 +241,16 @@ public class Reader implements Serializable{
 								case "ValorUnitario":
 									concepto.setValorUnitario(valAttr);
 									break;
+								case "Descuento":
+									concepto.setDescuento(valAttr);
+									break;
 							} // switc						
 						} // for		
         		LOG.info("Reader.readConceptos: "+ concepto.getDescripcion());
  						concepto.setTraslado(readTraslado(node.getFirstChild().getNodeName().equals("cfdi:Impuestos")? node.getFirstChild(): node.getFirstChild().getNextSibling()));
 						concepto.setInformacionAduanera(readInformacionAduanera(node));
-						regresar.add(concepto);
+						if(regresar.indexOf(concepto)< 0)
+						  regresar.add(concepto);
 					} // if
 				} // if
 			} // for

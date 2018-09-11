@@ -32,7 +32,7 @@ public class ReadFactura {
 						LOG.info("Receptor: " + factura.getReceptor());
 						int x= 0;
 						for (Concepto concepto : factura.getConceptos()) {
-							LOG.info((++x)+ ".- ("+ concepto.getClaveProdServ()+ ") ["+ concepto.getNoIdentificacion()+ "] "+ concepto.getClaveUnidad()+ " -> "+ concepto.getDescripcion()+ " => "+ concepto.getValorUnitario());
+							LOG.info((++x)+ ".- ("+ concepto.getClaveProdServ()+ ") ["+ concepto.getNoIdentificacion()+ "] "+ concepto.getClaveUnidad()+ " -> "+ concepto.getDescripcion()+ " => "+ concepto.getValorUnitario()+ " => "+ concepto.getDescuento()+ "%");
 						} // for
 						LOG.info("<========================================================================================>");
 					} // for

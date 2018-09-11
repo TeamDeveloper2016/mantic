@@ -363,6 +363,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 		disponible.setCodigo(faltante.getCodigo());
 		disponible.setCosto(faltante.getCosto());
 		disponible.setCantidad(faltante.getCantidad());
+		disponible.setDescuento(faltante.getDescuento());
 		disponible.setIva(faltante.getIva());
 		disponible.setUnidadMedida(faltante.getUnidadMedida());
 		disponible.setDisponible(false);
@@ -470,6 +471,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 				buscado.put("codigo", new Value("codigo", faltante.getCodigo()));
 				buscado.put("costo", new Value("costo", faltante.getCosto()));
 				buscado.put("cantidad", new Value("cantidad", faltante.getCantidad()));
+				buscado.put("descuento", new Value("descuento", faltante.getDescuento()));
 				buscado.put("iva", new Value("iva", faltante.getIva()));
 				buscado.put("unidadMedida", new Value("unidadMedida", faltante.getUnidadMedida()!= null? faltante.getUnidadMedida().toUpperCase(): ""));
 			} // if	

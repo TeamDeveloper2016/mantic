@@ -234,7 +234,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 					concepto.getDescripcion(),
 					concepto.getNoIdentificacion(),
 					Numero.toRedondearSat(Double.parseDouble(concepto.getValorUnitario())),
-					"",
+					concepto.getDescuento(),
 					-1L,
 					"",
 					0D,

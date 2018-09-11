@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.libs.factura.beans;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Concepto extends Articulo implements Serializable{
 
@@ -11,15 +12,16 @@ public class Concepto extends Articulo implements Serializable{
 	private String claveUnidad;
 	private String unidad;
 	private String descripcion;
+	private String descuento;
 	private String valorUnitario;	
 	private Traslado traslado;
 	private InformacionAduanera informacionAduanera;
 
 	public Concepto() {
-		this(new Traslado(), new InformacionAduanera(), null, null, null, null, null, null, null);
+		this(new Traslado(), new InformacionAduanera(), null, null, null, null, null, null, null, "0");
 	}
 
-	public Concepto(Traslado traslado, InformacionAduanera informacionAduanera, String claveProdServ, String noIdentificacion, String cantidad, String claveUnidad, String unidad, String descripcion, String valorUnitario) {
+	public Concepto(Traslado traslado, InformacionAduanera informacionAduanera, String claveProdServ, String noIdentificacion, String cantidad, String claveUnidad, String unidad, String descripcion, String valorUnitario, String descuento) {
 		super();
 		this.traslado        = traslado;
 		this.informacionAduanera= informacionAduanera;
@@ -30,6 +32,7 @@ public class Concepto extends Articulo implements Serializable{
 		this.unidad          = unidad;
 		this.descripcion     = descripcion;
 		this.valorUnitario   = valorUnitario;
+		this.descuento       = descuento;
 	}
 
 	public String getClaveProdServ() {
@@ -104,9 +107,52 @@ public class Concepto extends Articulo implements Serializable{
 		this.informacionAduanera = informacionAduanera;
 	}	
 
+	public String getDescuento() {
+		return descuento;
+	}
+
+	public void setDescuento(String descuento) {
+		this.descuento=descuento;
+	}
+
 	@Override
 	public String toString() {
 		return "Concepto{"+"claveProdServ="+claveProdServ+", noIdentificacion="+noIdentificacion+", cantidad="+cantidad+", claveUnidad="+claveUnidad+", unidad="+unidad+", descripcion="+descripcion+", valorUnitario="+valorUnitario+", importe="+ this.getImporte()+", traslado="+traslado+", informacionAduanera="+informacionAduanera+'}';
 	}
+
+	@Override
+	public int hashCode() {
+		int hash=5;
+		hash=23*hash+Objects.hashCode(this.cantidad);
+		hash=23*hash+Objects.hashCode(this.descripcion);
+		hash=23*hash+Objects.hashCode(this.valorUnitario);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this==obj) {
+			return true;
+		}
+		if (obj==null) {
+			return false;
+		}
+		if (getClass()!=obj.getClass()) {
+			return false;
+		}
+		final Concepto other=(Concepto) obj;
+		if (!Objects.equals(this.cantidad, other.cantidad)) {
+			return false;
+		}
+		if (!Objects.equals(this.descripcion, other.descripcion)) {
+			return false;
+		}
+		if (!Objects.equals(this.valorUnitario, other.valorUnitario)) {
+			return false;
+		}
+		return true;
+	}
+	
+	
 	
 }
