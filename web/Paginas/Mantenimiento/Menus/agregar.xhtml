@@ -16,7 +16,7 @@
 				'codigo'     : {validaciones: 'libre', mascara: 'libre'}
 			};
 			
-			$(document).ready(function(){
+			$(document).ready(function() {
 				$("[id*=icon-]").on("click", function(){
 					var icono= $(this).find("i").attr("class");
 					asignarIcono([{name: "iconoSeleccionado", value: icono}]);
