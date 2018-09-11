@@ -44,6 +44,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private double stock;
 	private UISelectEntity idEntity;
 	private String observacion;
+	private double diferencia;
+	private double individual;
 
 	public Articulo() {
 		this(-1L);
@@ -68,6 +70,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.solicitado  = solicitado;
     this.stock       = stock;
 		this.observacion = "";
+		this.diferencia  = 0D;
+		this.individual  = 0D;
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -151,28 +155,26 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 
 	public String getDiferencia() {
-		double diferencia= Numero.toRedondear(this.toDiferencia());
-		String color     = diferencia< -5? "janal-color-orange": diferencia> 5? "janal-color-blue": "janal-color-green";
-		return "<span class='".concat(color).concat("' style='float:left;'>[").concat(String.valueOf(diferencia)).concat("%]</span>");
+		String color     = this.diferencia< -5? "janal-color-orange": Numero.toRedondear(this.diferencia)> 5? "janal-color-blue": "janal-color-green";
+		return "<span class='".concat(color).concat("' style='float:left;'>[").concat(String.valueOf(Numero.toRedondear(this.diferencia))).concat("%]</span>");
 	}
 
 	public String getCostoMayorMenor() {
-		double diferencia= this.toDiferencia();
-		String color     = diferencia< -5? "janal-color-orange": diferencia> 5? "janal-color-blue": "janal-color-green";
-		boolean display  = diferencia!= 0D;
+		String color     = this.diferencia< -5? "janal-color-orange": this.diferencia> 5? "janal-color-blue": "janal-color-green";
+		boolean display  = this.diferencia!= 0D;
 		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(display? "": "none").concat("' title='Costo anterior: ").concat(
 			Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, this.getValor())
-		).concat("\n\nCosto digitado:").concat(Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, this.getCosto()- this.getDescuentos())
-		).concat("\n\nDiferencia: ").concat(String.valueOf(diferencia)).concat("%'></i>");
+		).concat("\n\nCosto digitado:").concat(Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, this.getCosto()- Math.abs(this.individual))
+		).concat("\n\nDiferencia: ").concat(String.valueOf(this.diferencia)).concat("%'></i>");
 	}
 
 	public String getCantidadMayorMenor() {
-		double diferencia= this.getCantidad()- this.getSolicitados();
-		String color     = diferencia< -5? "janal-color-orange": diferencia> 5? "janal-color-blue": "janal-color-green";
-		boolean display  = diferencia!= 0D;
+		double difieren  = this.getCantidad()- this.getSolicitados();
+		String color     = difieren< -5? "janal-color-orange": difieren> 5? "janal-color-blue": "janal-color-green";
+		boolean display  = difieren!= 0D;
 		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(display? "": "none").concat("' title='Cantidad solicitada: ").concat(
 			Global.format(EFormatoDinamicos.NUMERO_SIN_DECIMALES, this.getSolicitados())
-		).concat("\n\nDiferencia: ").concat(Global.format(EFormatoDinamicos.NUMERO_SIN_DECIMALES, diferencia)).concat("'></i>");
+		).concat("\n\nDiferencia: ").concat(Global.format(EFormatoDinamicos.NUMERO_SIN_DECIMALES, difieren)).concat("'></i>");
 	}
 	
 	public String getEstaSolicitado() {
@@ -223,6 +225,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.setExcedentes(this.importes.getExtra());
 		this.setImporte(Numero.toRedondearSat(this.importes.getTotal()));
 		this.setUtilidad(utilidad);
+		this.toDiferencia();
 	}
 
 	public void toCalculate(boolean sinIva, double tipoDeCambio) {
@@ -251,14 +254,15 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 	
 	public double getDiferenciaCosto() {
-		return Numero.toRedondearSat(this.toDiferencia());
+		return Numero.toRedondearSat(this.diferencia);
 	}
 		
-	private double toDiferencia() {
+	private void toDiferencia() {
 		Descuentos descuentos= new Descuentos(this.getCosto(), this.getDescuento().concat(",").concat(this.getExtras()));
 		double value= descuentos.toImporte();
 		value= Numero.toRedondearSat((value== 0? this.getCosto(): value)- this.getValor()); 
-  	return this.getValor()== 0? 0: Numero.toRedondearSat(value* 100/ this.getValor());
+		this.individual= value;
+  	this.diferencia= this.getValor()== 0? 0: Numero.toRedondearSat(value* 100/ this.getValor());
 	}	
 
 	public TcManticNotasDetallesDto toNotaDetalle() {
