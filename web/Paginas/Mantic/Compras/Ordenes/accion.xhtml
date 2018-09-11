@@ -416,7 +416,7 @@
 												<h:outputText value="#{row.observacion}"/>
 											</p:column>   
 											<p:column style="text-align: center" styleClass="janal-wid-col-38">
-												<p:commandButton update="sugeridos" icon="fa fa-check" title="Marcar como leido" action="#{manticComprasOrdendesAccion.doUpdateSugeridos}" styleClass="janal-text-white">
+												<p:commandButton update="sugeridos" icon="fa fa-check" title="Marcar como leido" action="#{manticComprasOrdendesAccion.doUpdateSugeridos}">
 													<f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.sugerido}" />
 												</p:commandButton>
 											</p:column>
@@ -485,7 +485,7 @@
 									<h:outputText value="#{row['estatus']}"/>
 								</p:column>		
 								<p:column style="width:38px; text-align: center">
-									<p:commandButton update="faltantes @(.filas) @(.recalculo)" icon="fa fa-plus" title="Agregar" action="#{manticComprasOrdendesAccion.doFaltanteArticulo}" styleClass="janal-text-white" rendered="#{row['idOrdenEstatus'].toInteger eq 0}">
+									<p:commandButton update="faltantes @(.filas) @(.recalculo)" icon="fa fa-plus" title="Agregar" action="#{manticComprasOrdendesAccion.doFaltanteArticulo}" rendered="#{row['idOrdenEstatus'].toInteger eq 0}">
 										<f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.faltante}" />
 										<f:setPropertyActionListener value="#{manticComprasOrdendesAccion.adminOrden.orden.ikAlmacen}" target="#{manticComprasOrdendesAccion.attrs.idAlmacen}" />
 										<f:setPropertyActionListener value="#{manticComprasOrdendesAccion.adminOrden.orden.ikProveedor}" target="#{manticComprasOrdendesAccion.attrs.idProveedor}" />
@@ -532,7 +532,7 @@
 									<h:outputText value="#{row['registro']}"/>
 								</p:column>		
 								<p:column style="width:38px; text-align: center">
-									<p:commandButton process="@this" update="perdidos @(.filas) @(.recalculo)" icon="fa fa-plus" title="Agregar el articulo a la orden de compra" action="#{manticComprasOrdendesAccion.doAgregarPerdido}" styleClass="janal-text-white">
+									<p:commandButton process="@this" update="perdidos @(.filas) @(.recalculo)" icon="fa fa-plus" title="Agregar el articulo a la orden de compra" action="#{manticComprasOrdendesAccion.doAgregarPerdido}">
 										<f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.perdido}" />
 									</p:commandButton>
 								</p:column>
@@ -585,19 +585,19 @@
 			</div>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton id="localizado" icon="fa fa-check" styleClass="janal-text-white" process="@this buscados" update="@(.filas) @(.recalculo)" value="Aceptar" actionListener="#{manticComprasOrdendesAccion.doChangeBuscado}" oncomplete="PF('dialogo').hide(); jsArticulos.close();" disabled="#{manticComprasOrdendesAccion.attrs.lazyModel.rowCount lt 1}"/>
-				<p:commandButton process="@none" styleClass="janal-text-white" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide(); jsArticulos.move();"/>
+				<p:commandButton id="localizado" icon="fa fa-check" process="@this buscados" update="@(.filas) @(.recalculo)" value="Aceptar" actionListener="#{manticComprasOrdendesAccion.doChangeBuscado}" oncomplete="PF('dialogo').hide(); jsArticulos.close();" disabled="#{manticComprasOrdendesAccion.attrs.lazyModel.rowCount lt 1}"/>
+				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide(); jsArticulos.move();"/>
 			</div>
 		</p:dialog>
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasOrdendesAccion.doAceptar}" styleClass="janal-text-white" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasOrdendesAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasOrdendesAccion.doAceptar}" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasOrdendesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasOrdendesAccion.doAceptar}" styleClass="janal-text-white" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasOrdendesAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasOrdendesAccion.doAceptar}" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasOrdendesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
 </ui:composition>

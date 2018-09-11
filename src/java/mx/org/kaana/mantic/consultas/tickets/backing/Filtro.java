@@ -96,7 +96,6 @@ public class Filtro extends IBaseFilter implements Serializable {
 	}
 	
 	public String doTickets() {
-		JsfBase.setFlashAttribute("idTipoCreditoNota", 2L);
 		JsfBase.setFlashAttribute("idNotaEntrada", ((Entity)this.attrs.get("seleccionado")).getKey());
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Creditos/filtro");
 		JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);

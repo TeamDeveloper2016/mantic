@@ -4,6 +4,15 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaConsultasDto">
+			<select id="lazy">
+				select
+				  *
+				from
+				where
+				order by
+			</select>
+		</unit>
 		<unit id="VistaHistorialIvaDto">
 			<select id="importe">
 				select 

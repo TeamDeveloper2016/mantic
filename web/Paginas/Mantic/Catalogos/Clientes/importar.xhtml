@@ -92,13 +92,13 @@
 									<h:outputText value="#{row.observaciones}"/>
 								</p:column>   
 								<p:column style="text-align: center" styleClass="janal-wid-col-38">
-									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" styleClass="janal-text-white" rendered="#{row.idPrincipal.toLong() eq 1}">
+									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{row.idPrincipal.toLong() eq 1}">
 										<p:fileDownload value="#{manticCatalogosClientesImportar.doFileDownload(row)}" />
 									</p:commandButton>
 								</p:column>
 								<p:column style="text-align: center" styleClass="janal-wid-col-38">
 									<p:commandLink  actionListener="#{manticCatalogosClientesImportar.doViewFileDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();">
-									  <p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button" styleClass="janal-text-white"/>
+									  <p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
 									</p:commandLink>										
 								</p:column>
 							</p:dataTable>
@@ -134,12 +134,12 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosClientesImportar.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosClientesImportar.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosClientesImportar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosClientesImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosClientesImportar.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosClientesImportar.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosClientesImportar.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosClientesImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
 	<ui:define name="dialogos">
@@ -150,7 +150,7 @@
 				</object>
   			<hr class="ui-widget-content"/>
 	  		<div class="janal-line-button">
-					<p:commandButton process="@this" styleClass="janal-text-white" icon="fa fa-remove" value="Cerrar" actionListener="#{manticCatalogosClientesImportar.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" actionListener="#{manticCatalogosClientesImportar.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
 			  </div>
 			</p:dialog>			
 		</h:form>

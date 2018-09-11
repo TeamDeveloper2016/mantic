@@ -16,7 +16,7 @@
   </ui:define>
   <ui:define name="contenido">
     <div class="janal-align-right xs-pantalla">
-      <p:commandButton icon="fa fa-search" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white"/>
+      <p:commandButton icon="fa fa-search" onstart="janal.togglePanel('panelBusqueda');"/>
       <p:spacer height="5px"/>		
     </div>			
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
@@ -43,10 +43,10 @@
 							</p:selectOneMenu> 				
             </h:panelGrid>
             <div class="janal-align-right lg-pantalla">
-              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.execute();" process="@this nombre" actionListener="#{manticCatalogosGruposFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
+              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.execute();" process="@this nombre" actionListener="#{manticCatalogosGruposFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
             </div>
             <div class="janal-align-right xs-pantalla">
-              <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.execute();" process="@this nombre" actionListener="#{manticCatalogosGruposFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"  styleClass="janal-text-white"/>
+              <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.execute();" process="@this nombre" actionListener="#{manticCatalogosGruposFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
             </div>
           </p:panel>
         </div>
@@ -62,10 +62,10 @@
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:commandButton  value="Agregar" action="#{manticCatalogosGruposFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()" styleClass="janal-text-white"/>						
+                <p:commandButton  value="Agregar" action="#{manticCatalogosGruposFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
                 <p:separator/>
-                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
-                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
             <p:column class="MarAuto Responsive" sortBy="#{filtro.nombre}">

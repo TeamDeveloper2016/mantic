@@ -41,7 +41,7 @@
   </ui:define>
   <ui:define name="contenido">
     <div class="janal-align-right xs-pantalla">
-      <p:commandButton icon="fa fa-search" onstart="janal.togglePanel('panelBusqueda');" styleClass="janal-text-white"/>
+      <p:commandButton icon="fa fa-search" onstart="janal.togglePanel('panelBusqueda');"/>
       <p:spacer height="5px"/>		
     </div>			
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
@@ -93,10 +93,10 @@
               </p:selectOneMenu>
             </p:panelGrid>
             <div class="janal-align-right lg-pantalla">
-              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticInventariosEntradasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" styleClass="janal-text-white"/>
+              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticInventariosEntradasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
             </div>
             <div class="janal-align-right xs-pantalla">
-              <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticInventariosEntradasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"  styleClass="janal-text-white"/>
+              <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticInventariosEntradasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
             </div>
           </p:panel>
         </div>
@@ -119,10 +119,10 @@
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:commandButton  value="Agregar" action="#{manticInventariosEntradasFiltro.doAccion('COMPLETO')}" icon="fa fa-plus" title="Nota de entrada directa" onstart="return janal.bloquear()" styleClass="janal-text-white"/>						
+                <p:commandButton  value="Agregar" action="#{manticInventariosEntradasFiltro.doAccion('COMPLETO')}" icon="fa fa-plus" title="Nota de entrada directa" onstart="return janal.bloquear()"/>						
                 <p:separator/>
-                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
-                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:separator/>
                 <p:menuitem icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosEntradasFiltro.doReporte('NOTAS_ENTRADA')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 <p:separator/>
@@ -130,7 +130,7 @@
               </div>  
             </f:facet>	            
 						<p:column style="width:38px; text-align: center">
-							<p:commandButton icon="fa fa-chevron-circle-right" title="Devolucion(es)" action="#{manticInventariosEntradasFiltro.doDevoluciones}" styleClass="janal-text-white" rendered="#{fn:contains('|3|4|5|6|', filtro['idNotaEstatus'].toInteger)}">
+							<p:commandButton icon="fa fa-chevron-circle-right" title="Devolucion(es)" action="#{manticInventariosEntradasFiltro.doDevoluciones}" rendered="#{fn:contains('|3|4|5|6|', filtro['idNotaEstatus'].toInteger)}">
 								<f:setPropertyActionListener value="#{filtro['consecutivo']}" target="#{manticInventariosEntradasFiltro.attrs.notaEntrada}" />
 							</p:commandButton>
 						</p:column>
@@ -241,8 +241,8 @@
 				</h:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticInventariosEntradasFiltro.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
-					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticInventariosEntradasFiltro.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
 		</p:dialog>

@@ -35,8 +35,8 @@
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
-                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                  <p:separator/>
                 <p:menuitem icon="fa fa-file-pdf-o" value="Reporte diferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticNotasEntradasDiferencias.doReporte('NOTA_ENTRADA_DETALLE_D')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 <p:separator/>
@@ -111,8 +111,8 @@
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'notas')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
-                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'notas')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'notas')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'notas')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.consecutivo}">
@@ -170,10 +170,10 @@
     <hr class="ui-widget-content" style="#{empty lineaSeparacion? '': 'display:none'}"/>
     <div class="janal-line-button">
       <div class="lg-pantalla">
-        <p:commandButton id="regresar" process="@this" styleClass="janal-text-white" icon="fa fa-reply" value="Regresar" action="#{manticNotasEntradasDiferencias.doRegresar}" immediate="true"/>
+        <p:commandButton id="regresar" process="@this" icon="fa fa-reply" value="Regresar" action="#{manticNotasEntradasDiferencias.doRegresar}" immediate="true"/>
       </div>	
       <div class="xs-pantalla">
-        <p:commandButton id="regresarIcon" process="@this" styleClass="janal-text-white" icon="fa fa-reply" title="Regresar" action="#{manticNotasEntradasDiferencias.doRegresar}" immediate="true"/>
+        <p:commandButton id="regresarIcon" process="@this" icon="fa fa-reply" title="Regresar" action="#{manticNotasEntradasDiferencias.doRegresar}" immediate="true"/>
       </div>		
     </div>
   </ui:define>  

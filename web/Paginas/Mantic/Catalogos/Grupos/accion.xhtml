@@ -47,12 +47,12 @@
                     </p:selectOneMenu> 				
                   </p:column>	
                   <p:column style="width:32px; text-align: center">
-                    <p:commandButton update="tablaClientes" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosGruposAccion.doRemoveCliente}" styleClass="janal-text-white">
+                    <p:commandButton update="tablaClientes" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosGruposAccion.doRemoveCliente}">
                       <f:setPropertyActionListener value="#{cliente}" target="#{manticCatalogosGruposAccion.attrs.seleccionado}" />
                     </p:commandButton>
                   </p:column>
                   <f:facet name="footer">
-                    <p:commandButton actionListener="#{manticCatalogosGruposAccion.doAddCliente}" process="@this tablaClientes" update="tablaClientes" icon="fa fa-plus" styleClass="janal-text-white"/>						
+                    <p:commandButton actionListener="#{manticCatalogosGruposAccion.doAddCliente}" process="@this tablaClientes" update="tablaClientes" icon="fa fa-plus"/>						
                   </f:facet>
                 </p:dataTable>	
               </p:panelGrid>								
@@ -67,12 +67,12 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosGruposAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosGruposAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosGruposAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosGruposAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosGruposAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosGruposAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosGruposAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosGruposAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
 </ui:composition>

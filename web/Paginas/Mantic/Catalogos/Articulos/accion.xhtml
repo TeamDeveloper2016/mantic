@@ -65,17 +65,17 @@
 										</p:selectOneMenu> 				
 									</p:column>				
 									<p:column headerText="Principal" styleClass="janal-wid-5" style="text-align: center">
-										<p:selectBooleanCheckbox styleClass="janal-text-white" value="#{codigo.principal}" rendered="#{codigo.candidatoPrincipal}">
+										<p:selectBooleanCheckbox value="#{codigo.principal}" rendered="#{codigo.candidatoPrincipal}">
 											<p:ajax listener="#{manticCatalogosArticulosAccion.registroArticulo.doSeleccionarPrincipal(codigo)}" update="tablaCodigos" process="@this" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 										</p:selectBooleanCheckbox>
 									</p:column>
 									 <p:column style="width:32px;text-align: center">
-										 <p:commandButton update="tablaCodigos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarArticuloCodigo}" styleClass="janal-text-white">
+										 <p:commandButton update="tablaCodigos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarArticuloCodigo}">
 											<f:setPropertyActionListener value="#{codigo}" target="#{manticCatalogosArticulosAccion.registroArticulo.articulosCodigosSeleccion}" />
 										</p:commandButton>
 									</p:column>
 									<f:facet name="footer">
-										<p:commandButton actionListener="#{manticCatalogosArticulosAccion.registroArticulo.doAgregarArticuloCodigo}" process="@this tablaCodigos" update="tablaCodigos" icon="fa fa-plus" styleClass="janal-text-white"/>						
+										<p:commandButton actionListener="#{manticCatalogosArticulosAccion.registroArticulo.doAgregarArticuloCodigo}" process="@this tablaCodigos" update="tablaCodigos" icon="fa fa-plus"/>						
 									</f:facet>
 								</p:dataTable>	
 							</p:panelGrid>															
@@ -90,12 +90,12 @@
 										<p:inputText id="valor#{especificacion.key}" styleClass="janal-wid-100-txt" value="#{especificacion.valor}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaEspecificaciones', #{index}, 'valor')"/>                    																																							
 									</p:column>				
 									 <p:column style="width:32px;text-align: center">
-										 <p:commandButton update="tablaEspecificaciones" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarEspecificacion}" styleClass="janal-text-white">
+										 <p:commandButton update="tablaEspecificaciones" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarEspecificacion}">
 											 <f:setPropertyActionListener value="#{especificacion}" target="#{manticCatalogosArticulosAccion.registroArticulo.especificacionSeleccion}" />
 										</p:commandButton>
 									</p:column>
 									<f:facet name="footer">
-										<p:commandButton actionListener="#{manticCatalogosArticulosAccion.registroArticulo.doAgregarEspecificacion}" process="@this tablaEspecificaciones" update="tablaEspecificaciones" icon="fa fa-plus" styleClass="janal-text-white"/>						
+										<p:commandButton actionListener="#{manticCatalogosArticulosAccion.registroArticulo.doAgregarEspecificacion}" process="@this tablaEspecificaciones" update="tablaEspecificaciones" icon="fa fa-plus"/>						
 									</f:facet>
 								</p:dataTable>	
 							</p:panelGrid>	
@@ -125,12 +125,12 @@
 										<p:calendar id="vigenciaFinal#{descuento.key}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" styleClass="janal-wid-100-txt" value="#{descuento.vigenciaFin}" mode="popup"/>                    																																							
 									</p:column>				
 									 <p:column style="width:32px;text-align: center">
-										 <p:commandButton update="tablaDescuentos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarDescuento}" styleClass="janal-text-white">
+										 <p:commandButton update="tablaDescuentos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarDescuento}">
 											 <f:setPropertyActionListener value="#{descuento}" target="#{manticCatalogosArticulosAccion.registroArticulo.articuloDescuentoSeleccion}" />
 										</p:commandButton>
 									</p:column>
 									<f:facet name="footer">
-										<p:commandButton actionListener="#{manticCatalogosArticulosAccion.registroArticulo.doAgregarDescuento}" process="@this tablaDescuentos" update="tablaDescuentos" icon="fa fa-plus" styleClass="janal-text-white"/>						
+										<p:commandButton actionListener="#{manticCatalogosArticulosAccion.registroArticulo.doAgregarDescuento}" process="@this tablaDescuentos" update="tablaDescuentos" icon="fa fa-plus"/>						
 									</f:facet>
 								</p:dataTable>	
 							</p:panelGrid>							
@@ -153,12 +153,12 @@
 										<p:calendar id="vigenciaFinal#{descuentoEspecial.key}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" styleClass="janal-wid-100-txt" value="#{descuentoEspecial.vigenciaFin}" mode="popup"/>                    																																							
 									</p:column>				
 									 <p:column style="width:32px;text-align: center">
-										 <p:commandButton update="tablaDescuentosEspeciales" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarDescuentoEspecial}" styleClass="janal-text-white">
+										 <p:commandButton update="tablaDescuentosEspeciales" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarDescuentoEspecial}">
 											 <f:setPropertyActionListener value="#{descuentoEspecial}" target="#{manticCatalogosArticulosAccion.registroArticulo.clienteDescuentoSeleccion}" />
 										</p:commandButton>
 									</p:column>
 									<f:facet name="footer">
-										<p:commandButton actionListener="#{manticCatalogosArticulosAccion.registroArticulo.doAgregarDescuentoEspecial}" process="@this tablaDescuentosEspeciales" update="tablaDescuentosEspeciales" icon="fa fa-plus" styleClass="janal-text-white"/>						
+										<p:commandButton actionListener="#{manticCatalogosArticulosAccion.registroArticulo.doAgregarDescuentoEspecial}" process="@this tablaDescuentosEspeciales" update="tablaDescuentosEspeciales" icon="fa fa-plus"/>						
 									</f:facet>
 								</p:dataTable>	
 							</p:panelGrid>								
@@ -189,12 +189,12 @@
 										<p:inputText id="observaciones#{precioSugerido.key}" styleClass="janal-wid-100-txt" value="#{precioSugerido.observaciones}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaPreciosSugeridos', #{index}, 'observaciones')"/>                    																																			
 									</p:column>												
 									 <p:column style="width:32px;text-align: center">
-										 <p:commandButton update="tablaPreciosSugeridos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarPrecioSugerido}" styleClass="janal-text-white">
+										 <p:commandButton update="tablaPreciosSugeridos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarPrecioSugerido}">
 											 <f:setPropertyActionListener value="#{precioSugerido}" target="#{manticCatalogosArticulosAccion.registroArticulo.precioSugeridoSeleccion}" />
 										</p:commandButton>
 									</p:column>
 									<f:facet name="footer">
-										<p:commandButton actionListener="#{manticCatalogosArticulosAccion.registroArticulo.doAgregarPrecioSugerido}" process="@this tablaPreciosSugeridos" update="tablaPreciosSugeridos" icon="fa fa-plus" styleClass="janal-text-white"/>						
+										<p:commandButton actionListener="#{manticCatalogosArticulosAccion.registroArticulo.doAgregarPrecioSugerido}" process="@this tablaPreciosSugeridos" update="tablaPreciosSugeridos" icon="fa fa-plus"/>						
 									</f:facet>
 								</p:dataTable>	
 							</p:panelGrid>		
@@ -220,12 +220,12 @@
 										<p:calendar id="fechaCompra#{articuloProveedor.key}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-96" value="#{articuloProveedor.compra}" mode="popup" showOn="button"/>                    																																							
 									</p:column>												
 									 <p:column style="width:32px;text-align: center">
-										 <p:commandButton update="tablaArticulosProveedores" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarArticuloProveedor}" styleClass="janal-text-white">
+										 <p:commandButton update="tablaArticulosProveedores" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarArticuloProveedor}">
 											 <f:setPropertyActionListener value="#{articuloProveedor}" target="#{manticCatalogosArticulosAccion.registroArticulo.articuloProveedorSeleccion}" />
 										</p:commandButton>
 									</p:column>
 									<f:facet name="footer">
-										<p:commandButton actionListener="#{manticCatalogosArticulosAccion.registroArticulo.doAgregarArticuloProveedor}" process="@this tablaArticulosProveedores" update="tablaArticulosProveedores" icon="fa fa-plus" styleClass="janal-text-white"/>						
+										<p:commandButton actionListener="#{manticCatalogosArticulosAccion.registroArticulo.doAgregarArticuloProveedor}" process="@this tablaArticulosProveedores" update="tablaArticulosProveedores" icon="fa fa-plus"/>						
 									</f:facet>
 								</p:dataTable>	
 							</p:panelGrid>
@@ -242,12 +242,12 @@
 										<p:inputNumber id="porcentaje#{tipoVenta.key}" styleClass="janal-wid-100-txt" value="#{tipoVenta.porcentaje}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaTiposVenta', #{index}, 'porcentaje')" symbol="%" emptyValue="zero" symbolPosition="s"/>																													
 									</p:column>									
 									 <p:column style="width:32px;text-align: center">
-										 <p:commandButton update="tablaTiposVenta" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarTipoVenta}" styleClass="janal-text-white">
+										 <p:commandButton update="tablaTiposVenta" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarTipoVenta}">
 											 <f:setPropertyActionListener value="#{tipoVenta}" target="#{manticCatalogosArticulosAccion.registroArticulo.articuloTiposVentaSeleccion}" />
 										</p:commandButton>
 									</p:column>
 									<f:facet name="footer">
-										<p:commandButton actionListener="#{manticCatalogosArticulosAccion.registroArticulo.doAgregarTipoVenta}" process="@this tablaTiposVenta" update="tablaTiposVenta" icon="fa fa-plus" styleClass="janal-text-white"/>						
+										<p:commandButton actionListener="#{manticCatalogosArticulosAccion.registroArticulo.doAgregarTipoVenta}" process="@this tablaTiposVenta" update="tablaTiposVenta" icon="fa fa-plus"/>						
 									</f:facet>
 								</p:dataTable>	
 							</p:panelGrid>
@@ -302,12 +302,12 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar}" ajax="false" styleClass="janal-text-white" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosArticulosAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar}" ajax="false" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosArticulosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar}" ajax="false" styleClass="janal-text-white" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosArticulosAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosArticulosAccion.doAceptar}" ajax="false" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosArticulosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
 </ui:composition>

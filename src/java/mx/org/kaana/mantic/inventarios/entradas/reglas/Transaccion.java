@@ -27,6 +27,7 @@ import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Inventarios;
+import mx.org.kaana.mantic.db.dto.TcManticAlertasDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasArchivosDto;
@@ -36,6 +37,7 @@ import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import org.apache.log4j.Logger;
 
@@ -173,6 +175,7 @@ public class Transaccion extends Inventarios implements Serializable {
 	}	// ejecutar
 
 	private void toFillArticulos(Session sesion) throws Exception {
+	  StringBuilder error= new StringBuilder();
 		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticNotasDetallesDto", "detalle", this.orden.toMap());
 		for (Articulo item: todos) 
 			if(this.articulos.indexOf(item)< 0) {
@@ -182,6 +185,8 @@ public class Transaccion extends Inventarios implements Serializable {
 		for (Articulo articulo: this.articulos) {
 			TcManticNotasDetallesDto item= articulo.toNotaDetalle();
 			item.setIdNotaEntrada(this.orden.getIdNotaEntrada());
+			if(item.getDiferencia()!= 0)
+				error.append("[").append(item.getNombre()).append(" - ").append(item.getDiferencia()).append("]</br> ");
 			if(DaoFactory.getInstance().findIdentically(sesion, TcManticNotasDetallesDto.class, item.toMap())== null && articulo.getCantidad()> 0D && articulo.getCosto()> 0D) {
 				this.toAffectOrdenDetalle(sesion, articulo);
 				if(item.isValid())
@@ -194,6 +199,13 @@ public class Transaccion extends Inventarios implements Serializable {
    			DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, articulo.toMap());
 			} // if
 		} // for
+		//* APLICAR UNA ALERTA EN CASO DE QUE FALTEN ARTICULOS FISICO CON RESPECTO A LA FACTURA ENTREGADA *//
+		if(error.length()> 0) 
+			DaoFactory.getInstance().insert(sesion, new TcManticAlertasDto(JsfBase.getIdUsuario(), -1L, 1L, "EN LA NOTA DE ENTRADA ["+ this.orden.getConsecutivo()+ 
+				"] EXISTEN ARTICULOS QUE NO FUERON SOLICITADOS, QUE DIFIEREN LA CANTIDAD FISICA DE ARTICULOS CONTRA LA DECLARA EN LA FACTURA ["+ 
+				this.orden.getFactura()+ "] DE ESTE PROVEEDOR "+ 
+				((TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.orden.getIdProveedor())).getRazonSocial()+ " ARTICULOS: </br>"+ error.toString()
+			));
 	}
 
 	private void toRemoveOrdenDetalle(Session sesion) throws Exception {

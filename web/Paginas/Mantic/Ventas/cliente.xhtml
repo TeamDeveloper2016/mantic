@@ -60,7 +60,7 @@
 					<p:fieldset id="fieldDomicilios" legend="Domicilio">
 					<p:panelGrid id="panelDomicilios" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 						<p:spacer/>
-						<p:commandButton process="@this" update="dialogoDomicilios" icon="fa fa-search" styleClass="janal-text-white" onstart="return janal.bloquear();" oncomplete="PF('dlgDomicilios').show();" title="Buscar domicilio" style="float: right !important"/>						
+						<p:commandButton process="@this" update="dialogoDomicilios" icon="fa fa-search" onstart="return janal.bloquear();" oncomplete="PF('dlgDomicilios').show();" title="Buscar domicilio" style="float: right !important"/>						
 						<p:outputLabel for="tipoDomicilio" value="Tipo domicilio:"/>
 						<p:selectOneMenu id="tipoDomicilio" value="#{manticVentasCliente.domicilio.idTipoDomicilio}" styleClass="janal-wid-100-txt">									
 							<f:selectItems value="#{manticVentasCliente.attrs.tiposDomicilios}"/>
@@ -163,12 +163,12 @@
   </ui:define>    
   <ui:define name="acciones">
     <div class="lg-pantalla">
-      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCliente.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
-      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCliente.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCliente.doAceptar}" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCliente.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
     </div>		
     <div class="xs-pantalla">
-      <p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCliente.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
-      <p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCliente.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCliente.doAceptar}" onstart="return janal.partial('general')" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCliente.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
     </div>		
   </ui:define>
 	<ui:define name="dialogos">
@@ -177,7 +177,7 @@
 				<h:panelGrid columns="3" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-80, janal-wid-20">
 					<p:outputLabel for="calleBusqueda" value="Calle:"/>
 					<p:inputText id="calleBusqueda" value="#{manticVentasCliente.attrs.calle}" styleClass="janal-wid-100-txt"/>
-					<p:commandButton icon="fa fa-search" actionListener="#{manticVentasCliente.doBusquedaDomicilios}" process="@this calleBusqueda" update="domiciliosBusqueda totalResultados" styleClass="janal-text-white" onstart="return janal.partial('dialogo')"/>
+					<p:commandButton icon="fa fa-search" actionListener="#{manticVentasCliente.doBusquedaDomicilios}" process="@this calleBusqueda" update="domiciliosBusqueda totalResultados" onstart="return janal.partial('dialogo')"/>
 					<p:outputLabel for="domiciliosBusqueda" value="Domicilio:"/>
 					<p:selectOneMenu id="domiciliosBusqueda" value="#{manticVentasCliente.domicilioBusqueda}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
 						<f:selectItems value="#{manticVentasCliente.attrs.domiciliosBusqueda}" var="element" itemValue="#{element}" itemLabel="#{element.domicilio}"/>
@@ -199,8 +199,8 @@
 				</h:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton id="aceptarBusqueda" icon="fa fa-check" process="@this dialogoDomicilios domiciliosBusqueda" update="fieldDomicilios"  value="Aceptar" action="#{manticVentasCliente.doAsignaDomicilio}" onstart="PF('dlgDomicilios').hide();" oncomplete="janal.desbloquear();janal.refresh();" styleClass="janal-text-white"/>
-					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgDomicilios').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+					<p:commandButton id="aceptarBusqueda" icon="fa fa-check" process="@this dialogoDomicilios domiciliosBusqueda" update="fieldDomicilios"  value="Aceptar" action="#{manticVentasCliente.doAsignaDomicilio}" onstart="PF('dlgDomicilios').hide();" oncomplete="janal.desbloquear();janal.refresh();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgDomicilios').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
 		</p:dialog> 

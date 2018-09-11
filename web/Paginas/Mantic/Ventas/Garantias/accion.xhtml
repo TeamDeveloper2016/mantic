@@ -268,7 +268,7 @@
 			<p:outputLabel value="Es necesario realizar un retiro de caja, se a sobrepasado el limite permitido."/>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton value="Cerrar" icon="fa fa-close" onstart="PF('dlgLimiteCaja').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+				<p:commandButton value="Cerrar" icon="fa fa-close" onstart="PF('dlgLimiteCaja').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>
 		<p:dialog id="dialogoAlmacenes" widgetVar="dlgAlmacenes" header="Articulo en sucursales" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();restoreCursoArt();" width="60%">						
@@ -291,7 +291,7 @@
 			</p:dataTable>								
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">				
-				<p:commandButton icon="fa fa-close" styleClass="janal-text-white" process="@none" value="Cerrar" onstart="PF('dlgAlmacenes').hide();" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-close" process="@none" value="Cerrar" onstart="PF('dlgAlmacenes').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>
 		<p:dialog id="dialogoDetalleArticulo" widgetVar="dlgDetalleArt" header="Articulo [#{manticVentasGarantiasAccion.attrs.detailArticulo.codigo}]" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();restoreCursoArt();" width="60%">			
@@ -377,18 +377,18 @@
 			</p:tabView>			
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">				
-				<p:commandButton icon="fa fa-close" styleClass="janal-text-white" process="@none" value="Cerrar" onstart="PF('dlgDetalleArt').hide();" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-close" process="@none" value="Cerrar" onstart="PF('dlgDetalleArt').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>						
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this" styleClass="cotizar janal-text-white" oncomplete="ventaFinished();" update="dialogoCerrarVenta" disabled="#{!manticVentasGarantiasAccion.attrs.cobroVenta}"/>			
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasGarantiasAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasGarantiasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 		</div>		
 		<div class="xs-pantalla">
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@this" styleClass="cotizar janal-text-white" oncomplete="ventaFinished();" update="dialogoCerrarVenta" disabled="#{!manticVentasGarantiasAccion.attrs.cobroVenta}"/>			
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasGarantiasAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasGarantiasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 		</div>		
 	</ui:define>	
 	<ui:define name="dialogos">
@@ -431,8 +431,8 @@
 				</h:panelGrid>							
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton id="aceptarFinalizar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasGarantiasAccion.doAceptar}" styleClass="janal-text-white" onstart="return validateGarantia();" oncomplete="janal.desbloquear()" update="contenedorGrupos @(.filas) @(.recalculo)" disabled="#{!manticVentasGarantiasAccion.attrs.cobroVenta}"/>
-					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+					<p:commandButton id="aceptarFinalizar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasGarantiasAccion.doAceptar}" onstart="return validateGarantia();" oncomplete="janal.desbloquear()" update="contenedorGrupos @(.filas) @(.recalculo)" disabled="#{!manticVentasGarantiasAccion.attrs.cobroVenta}"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
 		</p:dialog>	

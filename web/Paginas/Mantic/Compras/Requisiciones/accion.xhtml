@@ -167,14 +167,14 @@
 									</p:selectOneMenu> 				
 								</p:column>																						
 								 <p:column style="width:38px;text-align: center">
-									 <p:commandButton update="listado" icon="fa fa-close" title="Eliminar" action="#{manticComprasRequisicionesAccion.registroRequisicion.doEliminarRequisicionProveedor}" styleClass="janal-text-white">
+									 <p:commandButton update="listado" icon="fa fa-close" title="Eliminar" action="#{manticComprasRequisicionesAccion.registroRequisicion.doEliminarRequisicionProveedor}">
 										 <f:setPropertyActionListener value="#{requisicionProveedor}" target="#{manticComprasRequisicionesAccion.registroRequisicion.proveedorSeleccion}" />
 									</p:commandButton>
 								</p:column>
 								<f:facet name="footer">
 									<p:outputLabel for="proveedores" value="Total de proveedores: #{manticComprasRequisicionesAccion.registroRequisicion.proveedores.size()}" style="float: left;"/>
 									<h:inputHidden id="proveedores" value="#{manticComprasRequisicionesAccion.registroRequisicion.totalProveedores}"/>
-									<p:commandButton actionListener="#{manticComprasRequisicionesAccion.registroRequisicion.doAgregarRequisicionProveedor}" process="@this listado" update="listado" icon="fa fa-plus" styleClass="janal-text-white"/>						
+									<p:commandButton actionListener="#{manticComprasRequisicionesAccion.registroRequisicion.doAgregarRequisicionProveedor}" process="@this listado" update="listado" icon="fa fa-plus"/>						
 								</f:facet>
 							</p:dataTable>	
 						</p:tab>
@@ -224,8 +224,8 @@
 			</div>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton id="localizado" icon="fa fa-check" styleClass="janal-text-white" process="@this buscados" update="@(.filas) @(.recalculo)" value="Aceptar" actionListener="#{manticComprasRequisicionesAccion.doChangeBuscado}" oncomplete="PF('dialogo').hide(); jsArticulos.close();" disabled="#{manticComprasRequisicionesAccion.attrs.lazyModel.rowCount lt 1}"/>
-				<p:commandButton process="@none" styleClass="janal-text-white" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide(); jsArticulos.move();"/>
+				<p:commandButton id="localizado" icon="fa fa-check" process="@this buscados" update="@(.filas) @(.recalculo)" value="Aceptar" actionListener="#{manticComprasRequisicionesAccion.doChangeBuscado}" oncomplete="PF('dialogo').hide(); jsArticulos.close();" disabled="#{manticComprasRequisicionesAccion.attrs.lazyModel.rowCount lt 1}"/>
+				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide(); jsArticulos.move();"/>
 			</div>
 		</p:dialog>
 		<p:dialog id="dialogoDetalleArticulo" widgetVar="dlgDetalleArt" header="Articulo [#{manticComprasRequisicionesAccion.attrs.detailArticulo.codigo}]" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();" width="60%">			
@@ -280,18 +280,18 @@
 			</p:tabView>			
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">				
-				<p:commandButton icon="fa fa-close" styleClass="janal-text-white" process="@none" value="Cerrar" onstart="PF('dlgDetalleArt').hide();" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-close" process="@none" value="Cerrar" onstart="PF('dlgDetalleArt').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>							
 	</ui:define>    
 	<ui:define name="acciones">		
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasRequisicionesAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasRequisicionesAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasRequisicionesAccion.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasRequisicionesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasRequisicionesAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasRequisicionesAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasRequisicionesAccion.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasRequisicionesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>						
 	</ui:define>
 </ui:composition>

@@ -273,7 +273,7 @@
 					<h:outputText value="#{filtro['registro']}"/>
 				</p:column>		
 				<p:column style="width:38px; text-align: center">
-					<p:commandButton process="@this" update="@(.faltantes)" icon="fa fa-minus" title="Eliminar un articulo de la lista de faltantes" action="#{kajoolEncabezado.doEliminarFaltante}" styleClass="janal-text-white" onstart="return jsPrecios.ask('#{kajoolEncabezado.doCleanChars(filtro.nombre)}')">
+					<p:commandButton process="@this" update="@(.faltantes)" icon="fa fa-minus" title="Eliminar un articulo de la lista de faltantes" action="#{kajoolEncabezado.doEliminarFaltante}" onstart="return jsPrecios.ask('#{kajoolEncabezado.doCleanChars(filtro.nombre)}')">
 						<f:setPropertyActionListener value="#{filtro}" target="#{kajoolEncabezado.attrs.eliminado}" />
 					</p:commandButton>
 				</p:column>

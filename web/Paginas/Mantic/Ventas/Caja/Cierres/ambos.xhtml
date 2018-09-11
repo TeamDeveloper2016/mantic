@@ -70,12 +70,12 @@
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:commandButton action="#{manticVentasCajaCierresAmbos.doAccion('AGREGAR')}" icon="fa fa-plus" title="Retiro" onstart="return janal.bloquear()" styleClass="janal-text-white" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresAmbos.attrs.idCierreEstatus)}"/>
+                <p:commandButton action="#{manticVentasCajaCierresAmbos.doAccion('AGREGAR')}" icon="fa fa-plus" title="Retiro" onstart="return janal.bloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresAmbos.attrs.idCierreEstatus)}"/>
                 <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresAmbos.attrs.idCierreEstatus)}"/>
-                <p:commandButton action="#{manticVentasCajaCierresAmbos.doAccion('ASIGNAR')}" icon="fa fa-plus" title="Abono" onstart="return janal.bloquear()" styleClass="janal-text-white" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresAmbos.attrs.idCierreEstatus)}"/>						
+                <p:commandButton action="#{manticVentasCajaCierresAmbos.doAccion('ASIGNAR')}" icon="fa fa-plus" title="Abono" onstart="return janal.bloquear()" rendered="#{fn:contains('|1|2|', manticVentasCajaCierresAmbos.attrs.idCierreEstatus)}"/>						
                 <p:separator rendered="#{fn:contains('|1|2|', manticVentasCajaCierresAmbos.attrs.idCierreEstatus)}"/>
-                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
-                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:separator/>
                 <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Listado" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasCajaCierresAmbos.doReporte('ABONOS_RETIROS')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
@@ -145,10 +145,10 @@
 					<hr class="ui-widget-content"/>
 					<div class="janal-line-button">
 						<div class="lg-pantalla">
-							<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticVentasCajaCierresAmbos.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+							<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticVentasCajaCierresAmbos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 						</div>		
 						<div class="xs-pantalla">
-							<p:commandButton title="Regresar" icon="fa fa-reply" process="@this" action="#{manticVentasCajaCierresAmbos.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+							<p:commandButton title="Regresar" icon="fa fa-reply" process="@this" action="#{manticVentasCajaCierresAmbos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 						</div>		
 					</div>	
         </div>

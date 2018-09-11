@@ -20,8 +20,8 @@
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
-                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
@@ -69,7 +69,7 @@
     </div>		    
 		<hr class="ui-widget-content"/>
 		<div class="janal-line-button">
-			<p:commandButton process="@this" styleClass="janal-text-white" icon="fa fa-reply" value="Regresar" action="#{manticComprasOrdenesMovimientos.doRegresar}" immediate="true"/>
+			<p:commandButton process="@this" icon="fa fa-reply" value="Regresar" action="#{manticComprasOrdenesMovimientos.doRegresar}" immediate="true"/>
 		</div>
   </ui:define>   
   <ui:param name="componenteBloqueo" value="tabla"/>

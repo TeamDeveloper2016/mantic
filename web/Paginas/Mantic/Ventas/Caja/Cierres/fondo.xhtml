@@ -97,8 +97,8 @@
 														</p:menuButton>
 													</div>  
 													<div class="xs-pantalla">              
-														<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'moneda')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
-														<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'moneda')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+														<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'moneda')" oncomplete="janal.desbloquear()"/>
+														<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'moneda')" oncomplete="janal.desbloquear()"/>
 													</div>  
 												</f:facet>	 
 												<p:column class="MarAuto Responsive janal-wid-col-40">
@@ -148,11 +148,11 @@
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresFondo.doAceptar}" styleClass="continuar janal-text-white" onstart="return execute();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresFondo.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" immediate="true"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresFondo.doCancelar}" ajax="false" onstart="janal.bloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresFondo.doAceptar}" styleClass="continuar janal-text-white" onstart="return execute();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresFondo.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" immediate="true"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresFondo.doCancelar}" ajax="false" onstart="janal.bloquear()" immediate="true"/>
 		</div>		
 	</ui:define>
   <ui:param name="componenteBloqueo" value="aceptar cancelar aceptarIcon cancelarIcon"/>

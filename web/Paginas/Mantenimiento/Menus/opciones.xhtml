@@ -32,7 +32,7 @@
   </ui:define>
   <ui:param name="componenteBloqueo" value="aceptar,cancelar"/>
   <ui:define name="acciones">
-    <p:commandButton id="aceptar" icon="fa fa-check" value="Aceptar"  styleClass="janal-text-white" onclick="selecciona()" action="#{kajoolMantenimientoMenusOpciones.doGuardar}" process="@this" ajax="false" />
-    <p:commandButton  id="cancelar" icon="fa fa-remove" value="Cancelar"  styleClass="janal-text-white" ajax="false" action="#{kajoolMantenimientoMenusOpciones.doRegresar}" process="@none"/>
+    <p:commandButton id="aceptar" icon="fa fa-check" value="Aceptar"  onclick="selecciona()" action="#{kajoolMantenimientoMenusOpciones.doGuardar}" process="@this" ajax="false" />
+    <p:commandButton  id="cancelar" icon="fa fa-remove" value="Cancelar"  ajax="false" action="#{kajoolMantenimientoMenusOpciones.doRegresar}" process="@none"/>
   </ui:define>
 </ui:composition>

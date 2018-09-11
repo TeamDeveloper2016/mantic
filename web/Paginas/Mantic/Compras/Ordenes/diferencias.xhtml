@@ -56,8 +56,8 @@
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
-                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:separator/>
                 <p:menuitem icon="fa fa-file-pdf-o" value="Reporte diferencias" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticComprasOrdenesDiferencias.doReporte('ORDEN_DETALLE_DIF_DIF')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 <p:separator/>
@@ -147,8 +147,8 @@
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'notas')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
-                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'notas')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+                <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'notas')" oncomplete="janal.desbloquear()"/>
+                <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'notas')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
 						<p:column class="MarAuto Responsive janal-wid-3">
@@ -243,12 +243,12 @@
   <hr class="ui-widget-content" style="#{empty lineaSeparacion? '': 'display:none'}"/>
   <div class="janal-line-button">
     <div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this justificacion" action="#{manticComprasOrdenesDiferencias.doAceptar}" styleClass="janal-text-white" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" rendered="#{manticComprasOrdenesDiferencias.orden.idOrdenEstatus eq 5}"/>
-			<p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" styleClass="janal-text-white" action="#{manticComprasOrdenesDiferencias.doRegresar}" immediate="true"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this justificacion" action="#{manticComprasOrdenesDiferencias.doAceptar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" rendered="#{manticComprasOrdenesDiferencias.orden.idOrdenEstatus eq 5}"/>
+			<p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticComprasOrdenesDiferencias.doRegresar}" immediate="true"/>
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@this justificacion" action="#{manticComprasOrdenesDiferencias.doAceptar}" styleClass="janal-text-white" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" rendered="#{manticComprasOrdenesDiferencias.orden.idOrdenEstatus eq 5}"/>
-			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" styleClass="janal-text-white" action="#{manticComprasOrdenesDiferencias.doRegresar}" immediate="true"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@this justificacion" action="#{manticComprasOrdenesDiferencias.doAceptar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear()" rendered="#{manticComprasOrdenesDiferencias.orden.idOrdenEstatus eq 5}"/>
+			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticComprasOrdenesDiferencias.doRegresar}" immediate="true"/>
 		</div>	
   </div>
   </ui:define> 

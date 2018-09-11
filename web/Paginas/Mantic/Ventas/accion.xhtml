@@ -339,8 +339,8 @@
 			</div>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton id="localizado" icon="fa fa-check" styleClass="janal-text-white" process="@this buscados" update="@(.filas) @(.recalculo)" value="Aceptar" actionListener="#{manticVentasAccion.doChangeBuscado}" oncomplete="PF('dialogo').hide(); jsArticulos.close();" disabled="#{manticVentasAccion.attrs.lazyModel.rowCount lt 1}"/>
-				<p:commandButton process="@none" styleClass="janal-text-white" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide(); jsArticulos.move();"/>
+				<p:commandButton id="localizado" icon="fa fa-check" process="@this buscados" update="@(.filas) @(.recalculo)" value="Aceptar" actionListener="#{manticVentasAccion.doChangeBuscado}" oncomplete="PF('dialogo').hide(); jsArticulos.close();" disabled="#{manticVentasAccion.attrs.lazyModel.rowCount lt 1}"/>
+				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide(); jsArticulos.move();"/>
 			</div>
 		</p:dialog>
 		<p:dialog id="dialogoOpenTickets" widgetVar="dlgOpenTickets" header="Cuentas abiertas" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();restoreCursoArt();" width="50%">			
@@ -352,8 +352,8 @@
 			</h:panelGrid>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this ticketsAbiertos" value="Aceptar" onstart="PF('dlgOpenTickets').hide();" actionListener="#{manticVentasAccion.doAsignaTicketAbierto}" update="contenido clientes cliente noTicket @(.filas) @(.recalculo) @(.informacion) deudor" oncomplete="janal.desbloquear();"/>
-				<p:commandButton icon="fa fa-remove" styleClass="janal-text-white" process="@none" value="Cancelar" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-check" process="@this ticketsAbiertos" value="Aceptar" onstart="PF('dlgOpenTickets').hide();" actionListener="#{manticVentasAccion.doAsignaTicketAbierto}" update="contenido clientes cliente noTicket @(.filas) @(.recalculo) @(.informacion) deudor" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>							
 		<p:dialog id="dialogoCotizaciones" widgetVar="dlgCotizaciones" header="Cotizaciones" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();restoreCursoArt();" width="50%">			
@@ -368,8 +368,8 @@
 			</h:panelGrid>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this cotizacion" value="Aceptar" onstart="PF('dlgCotizaciones').hide();" actionListener="#{manticVentasAccion.doAsignaCotizacion}" update="contenido clientes cliente noTicket @(.filas) @(.recalculo) @(.informacion) deudor" oncomplete="janal.desbloquear();"/>
-				<p:commandButton icon="fa fa-remove" styleClass="janal-text-white" process="@none" value="Cancelar" onstart="PF('dlgCotizaciones').hide();" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-check" process="@this cotizacion" value="Aceptar" onstart="PF('dlgCotizaciones').hide();" actionListener="#{manticVentasAccion.doAsignaCotizacion}" update="contenido clientes cliente noTicket @(.filas) @(.recalculo) @(.informacion) deudor" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgCotizaciones').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>							
 		<p:dialog id="dialogoDetalleArticulo" widgetVar="dlgDetalleArt" header="Articulo [#{manticVentasAccion.attrs.detailArticulo.codigo}]" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();restoreCursoArt();" width="60%">			
@@ -455,7 +455,7 @@
 			</p:tabView>			
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">				
-				<p:commandButton icon="fa fa-close" styleClass="janal-text-white" process="@none" value="Cerrar" onstart="PF('dlgDetalleArt').hide();" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-close" process="@none" value="Cerrar" onstart="PF('dlgDetalleArt').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>		
 		<p:dialog id="dialogoAlmacenes" widgetVar="dlgAlmacenes" header="Articulo en sucursales" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();restoreCursoArt();" width="60%">						
@@ -478,7 +478,7 @@
 			</p:dataTable>								
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">				
-				<p:commandButton icon="fa fa-close" styleClass="janal-text-white" process="@none" value="Cerrar" onstart="PF('dlgAlmacenes').hide();" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-close" process="@none" value="Cerrar" onstart="PF('dlgAlmacenes').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>		
 		<p:dialog id="dialogoCloseTicket" widgetVar="dlgCloseTicket" header="Cambio de usuario" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="restoreCursoArt();">			
@@ -498,8 +498,8 @@
 			</h:panelGrid>			
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@form" value="Aceptar" onstart="PF('dlgCloseTicket').hide();" action="#{manticVentasAccion.doCerrarTicket}" oncomplete="janal.desbloquear();"/>
-				<p:commandButton icon="fa fa-remove" styleClass="janal-text-white" process="@none" value="Cancelar" onstart="PF('dlgCloseTicket').hide();" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-check" process="@form" value="Aceptar" onstart="PF('dlgCloseTicket').hide();" action="#{manticVentasAccion.doCerrarTicket}" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgCloseTicket').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>			
 	</ui:define>    
@@ -520,12 +520,12 @@
 				</div>	
 				<div class="ui-grid-col-3 janal-column-right">
 					<div class="lg-pantalla">
-						<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('articulo', true);" oncomplete="janal.desbloquear()" update="deudor contenido panelCliente panelEmpresa articulos total"/>
-						<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+						<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasAccion.doAceptar}" onstart="return janal.partial('articulo', true);" oncomplete="janal.desbloquear()" update="deudor contenido panelCliente panelEmpresa articulos total"/>
+						<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 					</div>	
 					<div class="xs-pantalla">
-						<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasAccion.doAceptar}" styleClass="janal-text-white" onstart="return janal.partial('articulo', true);" oncomplete="janal.desbloquear()" update="deudor contenido panelCliente panelEmpresa articulos total"/>
-						<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+						<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasAccion.doAceptar}" onstart="return janal.partial('articulo', true);" oncomplete="janal.desbloquear()" update="deudor contenido panelCliente panelEmpresa articulos total"/>
+						<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 					</div>		
 				</div>	
 			</div>		
@@ -555,8 +555,8 @@
 				</h:panelGrid>				
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" styleClass="janal-text-white" process="@this panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd" value="Aceptar" onstart="return validateCapturaDescuentos();" update="contenido"/>
-					<p:commandButton icon="fa fa-remove" styleClass="janal-text-white" process="@none" value="Cancelar" onstart="PF('dlgDescuentos').hide();"/>
+					<p:commandButton icon="fa fa-check" process="@this panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd" value="Aceptar" onstart="return validateCapturaDescuentos();" update="contenido"/>
+					<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgDescuentos').hide();"/>
 				</div>	
 			</h:form>
 		</p:dialog>		

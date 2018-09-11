@@ -54,8 +54,8 @@
 							<div class="xs-pantalla">              
 								<p:menuitem id="pagos" icon="fa fa-money" value="Registrar pago" onstart="return janal.bloquear();" oncomplete="PF('dlgPago').show();"/>
 								<p:separator/>
-								<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
-								<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+								<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 							</div>  
 						</f:facet>												
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.pago}">
@@ -98,10 +98,10 @@
   </ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" styleClass="janal-text-white" action="#{manticCatalogosClientesCuentasAbono.doRegresar}" immediate="true"/>
+			<p:commandButton id="regresar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosClientesCuentasAbono.doRegresar}" immediate="true"/>
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" styleClass="janal-text-white" action="#{manticCatalogosClientesCuentasAbono.doRegresar}" immediate="true"/>
+			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosClientesCuentasAbono.doRegresar}" immediate="true"/>
 		</div>	
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="tabla" />
@@ -163,8 +163,8 @@
 				</h:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPago pago observaciones banco referencia idEmpresa caja" update="tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasAbono.doRegistrarPago}" onstart="return janal.partial('dialogo');" oncomplete="PF('dlgPago').hide(); janal.desbloquear();" styleClass="janal-text-white"/>
-					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPago').hide();" oncomplete="janal.desbloquear();" styleClass="janal-text-white"/>
+					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPago pago observaciones banco referencia idEmpresa caja" update="tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasAbono.doRegistrarPago}" onstart="return janal.partial('dialogo');" oncomplete="PF('dlgPago').hide(); janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPago').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
 		</p:dialog>		

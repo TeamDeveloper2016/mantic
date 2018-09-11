@@ -16,10 +16,10 @@
 	</ui:define>
 	<ui:define name="contenido">
 		<div class="janal-column-right">
-			<p:commandButton icon="fa fa-save" styleClass="janal-text-white"/>                        
-			<p:commandButton icon="fa fa-check" styleClass="janal-text-white"/>                        
-			<p:commandButton icon="fa fa-close" styleClass="janal-text-white"/>                        
-			<p:commandButton icon="fa fa-gear" styleClass="janal-text-white"/>                        
+			<p:commandButton icon="fa fa-save"/>                        
+			<p:commandButton icon="fa fa-check"/>                        
+			<p:commandButton icon="fa fa-close"/>                        
+			<p:commandButton icon="fa fa-gear"/>                        
 		</div>        
 		<p:spacer height="15px"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
@@ -103,7 +103,7 @@
 		</div>								
 	</ui:define>    
 	<ui:define name="acciones">
-		<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this" action="filtro" ajax="false" styleClass="janal-text-white"/>
-		<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="filtro" ajax="false" immediate="true" styleClass="janal-text-white"/>
+		<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this" action="filtro" ajax="false"/>
+		<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="filtro" ajax="false" immediate="true"/>
 	</ui:define>
 </ui:composition>

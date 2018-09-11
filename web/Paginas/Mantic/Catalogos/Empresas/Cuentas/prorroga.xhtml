@@ -44,12 +44,12 @@
   </ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this tabla" styleClass="janal-text-white" action="#{manticCatalogosEmpresasCuentasProrroga.doAceptar}"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" styleClass="janal-text-white" action="#{manticCatalogosEmpresasCuentasProrroga.doRegresar}" immediate="true"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this tabla" action="#{manticCatalogosEmpresasCuentasProrroga.doAceptar}"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosEmpresasCuentasProrroga.doRegresar}" immediate="true"/>
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@this tabla" styleClass="janal-text-white" action="#{manticCatalogosEmpresasCuentasProrroga.doAceptar}"/>
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" styleClass="janal-text-white" action="#{manticCatalogosEmpresasCuentasProrroga.doRegresar}" immediate="true"/>
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@this tabla" action="#{manticCatalogosEmpresasCuentasProrroga.doAceptar}"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosEmpresasCuentasProrroga.doRegresar}" immediate="true"/>
 		</div>	
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="tabla" />

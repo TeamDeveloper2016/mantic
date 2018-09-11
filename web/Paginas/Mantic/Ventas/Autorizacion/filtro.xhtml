@@ -41,7 +41,7 @@
 								<h:outputText value="#{item.razonSocial}"/>
 							</p:column>   
 						</p:selectOneMenu>
-						<p:commandButton process="@this" update="dialogoClientes" icon="fa fa-search" styleClass="janal-text-white" onstart="return janal.bloquear();" oncomplete="PF('dlgClientes').show();" title="Buscar cliente" style="float: right !important"/>						
+						<p:commandButton process="@this" update="dialogoClientes" icon="fa fa-search" onstart="return janal.bloquear();" oncomplete="PF('dlgClientes').show();" title="Buscar cliente" style="float: right !important"/>						
 					</p:panelGrid>
 					<p:panelGrid id="panelTicket" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-70, janal-wid-100">
 						<p:outputLabel for="ticketsAbiertos" value="Ticket:" title="Ticket pendiente de autorizacion"/>
@@ -97,8 +97,8 @@
 									</p:menuButton>
 								</div>  
 								<div class="xs-pantalla">              								
-									<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
-									<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+									<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 								</div>  
 							</f:facet>	
 							<p:column style="width: 16px" exportable="false">  
@@ -185,10 +185,10 @@
   </ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Autorizar" icon="fa fa-check" process="@this" styleClass="janal-text-white" onstart="return janal.partial('general');" actionListener="#{manticVentasAutorizacionFiltro.doAutorizar}" update="tabla"/>
+			<p:commandButton id="aceptar" value="Autorizar" icon="fa fa-check" process="@this" onstart="return janal.partial('general');" actionListener="#{manticVentasAutorizacionFiltro.doAutorizar}" update="tabla"/>
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" title="Autorizar" icon="fa fa-check" process="@this" styleClass="janal-text-white" onstart="return janal.partial('general');" actionListener="#{manticVentasAutorizacionFiltro.doAutorizar}" update="tabla"/>
+			<p:commandButton id="aceptarIcon" title="Autorizar" icon="fa fa-check" process="@this" onstart="return janal.partial('general');" actionListener="#{manticVentasAutorizacionFiltro.doAutorizar}" update="tabla"/>
 		</div>	
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="tabla" />
@@ -199,7 +199,7 @@
 					<p:outputLabel for="busqueda" value="Nombre:"/>
 					<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-100, janal-wid-col-40">
 						<p:inputText id="busqueda" value="#{manticVentasAutorizacionFiltro.attrs.busqueda}" styleClass="janal-wid-100-txt" placeholder="Ej. razón social del cliente ALEJANDRO JIMENEZ"/>
-						<p:commandButton icon="fa fa-search" actionListener="#{manticVentasAutorizacionFiltro.doClientes}" onstart="return janal.partial('busqueda');" process="@this busqueda" update="encontrados resultados" styleClass="janal-text-white"/>
+						<p:commandButton icon="fa fa-search" actionListener="#{manticVentasAutorizacionFiltro.doClientes}" onstart="return janal.partial('busqueda');" process="@this busqueda" update="encontrados resultados"/>
 					</h:panelGrid>
 					<p:outputLabel for="encontrados" value="Encontrados:"/>
 					<p:selectOneMenu id="encontrados" value="#{manticVentasAutorizacionFiltro.encontrado}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="startsWith" var="item" converter="janal.convertidor.Entity">									
@@ -219,8 +219,8 @@
 				</h:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this encontrados" value="Aceptar" actionListener="#{manticVentasAutorizacionFiltro.doSeleccionado}" onstart="return janal.partial('dialogo');" oncomplete="PF('dlgClientes').hide();janal.desbloquear();janal.refresh();" styleClass="janal-text-white" update="panelCliente panelTicket tabla panelVenta"/>
-					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgClientes').hide();" oncomplete="janal.desbloquear();janal.refresh();" styleClass="janal-text-white"/>
+					<p:commandButton icon="fa fa-check" process="@this encontrados" value="Aceptar" actionListener="#{manticVentasAutorizacionFiltro.doSeleccionado}" onstart="return janal.partial('dialogo');" oncomplete="PF('dlgClientes').hide();janal.desbloquear();janal.refresh();" update="panelCliente panelTicket tabla panelVenta"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgClientes').hide();" oncomplete="janal.desbloquear();janal.refresh();"/>
 				</div>
 			</h:form>
 		</p:dialog>

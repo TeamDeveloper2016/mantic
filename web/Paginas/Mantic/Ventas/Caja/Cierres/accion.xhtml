@@ -113,8 +113,8 @@
 													</p:menuButton>
 												</div>  
 												<div class="xs-pantalla">              
-													<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'moneda')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
-													<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'moneda')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+													<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'moneda')" oncomplete="janal.desbloquear()"/>
+													<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'moneda')" oncomplete="janal.desbloquear()"/>
 												</div>  
 											</f:facet>	 
 											<p:column class="MarAuto Responsive">
@@ -157,8 +157,8 @@
 													</p:menuButton>
 												</div>  
 												<div class="xs-pantalla">              
-													<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
-													<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+													<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+													<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 												</div>  
 											</f:facet>	 
 											<p:column class="MarAuto Responsive">
@@ -257,8 +257,8 @@
 													</p:menuButton>
 												</div>  
 												<div class="xs-pantalla">              
-													<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'fondos')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
-													<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'fondos')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+													<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'fondos')" oncomplete="janal.desbloquear()"/>
+													<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'fondos')" oncomplete="janal.desbloquear()"/>
 												</div>  
 											</f:facet>	 
 											<p:column class="MarAuto Responsive janal-wid-col-40">
@@ -309,8 +309,8 @@
 										</p:menuButton>
 									</div>  
 									<div class="xs-pantalla">              
-										<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'movimientos')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
-										<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'movimientos')" oncomplete="janal.desbloquear()" styleClass="janal-text-white"/>
+										<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'movimientos')" oncomplete="janal.desbloquear()"/>
+										<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'movimientos')" oncomplete="janal.desbloquear()"/>
 									</div>  
 								</f:facet>	            
 								<p:column class="MarAuto Responsive janal-wid-col-40">
@@ -376,12 +376,12 @@
 		<div class="lg-pantalla">
 			<p:commandButton id="continuar" value="Continuar" icon="fa fa-arrow-circle-o-right" process="@form" actionListener="#{manticVentasCajaCierresAccion.doContinuar}" onstart="return janal.partial('unico') &amp;&amp; confirm('Esta seguro que desea continuar con el cierre de caja ?');" styleClass="continuar janal-text-white" update="contenedorGrupos:tabla @(.continuar)" style="display: #{empty manticVentasCajaCierresAccion.attrs.continuar? 'none': ''}" disabled="#{empty manticVentasCajaCierresAccion.attrs.continuar? true: false}"/>
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresAccion.doAceptar}" styleClass="continuar janal-text-white" onstart="return execute();" oncomplete="janal.desbloquear()" style="display: #{manticVentasCajaCierresAccion.attrs.continuar}"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" immediate="true"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
 			<p:commandButton id="continuarIcon" title="Continuar" icon="fa fa-arrow-circle-o-right" process="@form" actionListener="#{manticVentasCajaCierresAccion.doContinuar}" onstart="return janal.partial('unico') &amp;&amp; confirm('Esta seguro que desea continuar con el cierre de caja ?');" styleClass="continuar janal-text-white" update="contenedorGrupos:tabla @(.continuar)" style="display: #{empty manticVentasCajaCierresAccion.attrs.continuar? 'none': ''}" disabled="#{empty manticVentasCajaCierresAccion.attrs.continuar? true: false}"/>
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresAccion.doAceptar}" styleClass="continuar janal-text-white" onstart="return execute();" oncomplete="janal.desbloquear()" style="display: #{manticVentasCajaCierresAccion.attrs.continuar}"/>
-			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresAccion.doCancelar}" ajax="false" styleClass="janal-text-white" onstart="janal.bloquear()" immediate="true"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasCajaCierresAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" immediate="true"/>
 		</div>		
 	</ui:define>
   <ui:param name="componenteBloqueo" value="aceptar cancelar aceptarIcon cancelarIcon"/>
