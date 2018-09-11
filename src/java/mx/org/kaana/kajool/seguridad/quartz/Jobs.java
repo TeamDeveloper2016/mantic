@@ -34,7 +34,7 @@ import mx.org.kaana.kajool.excepciones.KajoolException;
 public class Jobs {
 
 	private static final Log LOG       = LogFactory.getLog(Jobs.class);
-	public static final String XML_JOBS= "/mx/org/kaana/kajool/cfg/jobs/job-sigem.xml";
+	public static final String XML_JOBS= "/mx/org/kaana/kajool/cfg/jobs/job-kajool.xml";
 	public static final String JOB		 = "tarea";
 	public static final String CLASS	 = "clase";		
 	public static final String GENERICO= "*";	
