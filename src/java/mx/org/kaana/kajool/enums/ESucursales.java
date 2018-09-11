@@ -13,18 +13,20 @@ import mx.org.kaana.libs.formato.Cadena;
  */
 public enum ESucursales {
 
-	SUCURSAL_A(30000L, "FERRETERIA BONANZA", 1560L),
-	SUCURSAL_B(21500L, "FERRETERIA BONANZA, SUC. JESÚS MARÍA", 1200L);
+	SUCURSAL_A(30000L, "FERRETERIA BONANZA", 1560L, "PILAR BLANCO"),
+	SUCURSAL_B(21500L, "FERRETERIA BONANZA, SUC. JESÚS MARÍA", 1200L, "JESÚS MARÍA");
 	
 	private Long utilidad;
 	private Long ventas;
 	private String nombre;
+	private String titulo;
 	private static final Long total= 51500L; 
 
-	private ESucursales(Long utilidad, String nombre, Long ventas) {
+	private ESucursales(Long utilidad, String nombre, Long ventas, String titulo) {
 		this.utilidad= utilidad;
 		this.nombre  = nombre;
 		this.ventas  = ventas;
+		this.titulo  = titulo;
 	}
 
 	public Long getIdKey(){
@@ -53,5 +55,9 @@ public enum ESucursales {
 
 	public Long getVentas() {
 		return ventas;
+	}
+
+	public String getTitulo() {
+		return titulo;
 	}
 }
