@@ -122,7 +122,7 @@ public final class Especial implements Serializable {
 	
 	public void refreshPath(ServletContextEvent servletContextEvent) {				
 	  this.registro = new Timestamp(Calendar.getInstance().getTimeInMillis());
-		this.path= servletContextEvent.getServletContext().getRealPath(File.separator);		
+		this.path= servletContextEvent.getServletContext().getRealPath("").concat(File.separator);		
 		this.path=Cadena.reemplazarCaracter(this.path,'/',File.separatorChar);		
 		this.path= Cadena.reemplazarCaracter(this.path,'\\',File.separatorChar);	
 	}
@@ -135,7 +135,7 @@ public final class Especial implements Serializable {
 		try {
 			this.tareaServidor= new ArrayList<>();
 			LOG.info("Iniciando validación de Quartz");
-			realPath=servletContextEvent.getServletContext().getRealPath(File.separator);						
+			realPath=servletContextEvent.getServletContext().getRealPath("").concat(File.separator);						
 			LOG.info("Path recuperado [".concat(realPath).concat("]"));
 			pos = realPath.lastIndexOf(Constantes.NOMBRE_DE_APLICACION.toUpperCase());			
 			this.registro = new Timestamp(Calendar.getInstance().getTimeInMillis());
@@ -165,7 +165,7 @@ public final class Especial implements Serializable {
   }
 
   private void addParameters (ServletContextEvent cfg) throws SchedulerException {
-    this.scheduler.getContext().put("pathContext", cfg.getServletContext().getRealPath("/"));
+    this.scheduler.getContext().put("pathContext", cfg.getServletContext().getRealPath("").concat("/"));
     this.scheduler.getContext().put("application", cfg.getServletContext());
     this.scheduler.getContext().put("servidor", toParameter(cfg,"servidor"));
   }	
