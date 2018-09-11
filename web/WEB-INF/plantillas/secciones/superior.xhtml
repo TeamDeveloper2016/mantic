@@ -48,7 +48,7 @@
 						<p:outputLabel styleClass="janal-etapa xs-pantalla Fs14" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
 					</div>
 					<div class="ui-grid-col-4 margin-version" style="text-align: right;">
-						<span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}</span>
+						<span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}<strong class='janal-color-blue'>#{kajoolUtilAplicacion.modulo}</strong></span>
 						<span id="version" class="version xs-pantalla Fs14">#{kajoolUtilAplicacion.version}</span>
 					</div>
 				</div>
@@ -191,7 +191,7 @@
 						<p:outputLabel value="Código módulo:"/>
 					</div>
 					<div class="ui-grid-col-10">
-						<p:inputText id="kajoolOpcion" value="#{kajoolEncabezado.attrs.opcion}" styleClass="janal-wid-100-txt janal-key-run"/>
+						<p:inputText id="kajoolOpcion" value="#{kajoolEncabezado.attrs.opcion}" styleClass="janal-wid-100-txt janal-key-run" onblur="janal.mayusculas('kajoolOpcion');"/>
 					</div>
 				</div>	
 				<div class="ui-grid-row janal-grid-row">

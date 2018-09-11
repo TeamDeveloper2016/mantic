@@ -273,7 +273,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 		LOG.info("Ejecutar: "+ opcion);
 		if(!Cadena.isVacio(opcion))
 			for (UsuarioMenu item: JsfBase.getAutentifica().getMenu()) {
-				if(opcion.equals(item.getCodigo())) {
+				if(opcion.equals(item.getCodigo()) && !Cadena.isVacio(item.getRuta())) {
 					regresar= item.getRuta();
 					break;
 				} // if	

@@ -52,7 +52,7 @@ public class UtilAplicacion {
   private static final String CORE  = "jquery.janal.core-2.3.5.js";
   private static final String VENTAS= "jquery.janal.ventas.core-0.2.0.js";
   private static final String CALC  = "jquery.janal.arts.core-1.6.3.js";
-  private static final String DLGS  = "jquery.janal.precio.core-0.1.6.js";
+  private static final String DLGS  = "jquery.janal.precio.core-0.1.7.js";
   private static final String CSS   = "mantic-0.1.6.css";
   private static final String FUSION= "jquery.janal.fusion.charts-3.3.1.js";
 
@@ -303,4 +303,8 @@ public class UtilAplicacion {
     return JsfBase.toLockUsers().isActived();
   }
 
+	public String getModulo() {
+		return JsfBase.getCodigoModulo();
+	}
+	
 }

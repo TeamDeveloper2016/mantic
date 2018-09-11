@@ -165,6 +165,7 @@
 				switch(key) {
 					case $precios.VK_ENTER:
 					case $precios.VK_TAB:
+						janal.mayusculas('kajoolOpcion');
 						if($('#kajoolEjecutar'))
 							$('#kajoolEjecutar').click();
 						return false;

@@ -3,10 +3,12 @@ package mx.org.kaana.libs.pagina;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.kajool.procesos.acceso.beans.Autentifica;
+import mx.org.kaana.kajool.procesos.acceso.beans.UsuarioMenu;
 import static mx.org.kaana.libs.pagina.JsfUtilities.getSession;
 import mx.org.kaana.kajool.procesos.beans.UsuariosEnLinea;
 import mx.org.kaana.kajool.seguridad.filters.control.LockUser;
 import mx.org.kaana.kajool.template.backing.Reporte;
+import mx.org.kaana.libs.formato.Numero;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -88,5 +90,29 @@ public class JsfBase extends JsfUtilities {
 	public static Reporte toReporte () {
     return (Reporte) getFacesContext().getViewRoot().getViewMap().get("kajoolTemplateReporte");
   }
+	
+	public static String getCodigoModulo() {
+	  String regresar= "";
+		try {
+			String rama= getParametro("opcionRama");
+			if(!Cadena.isVacio(rama)) {
+				for (UsuarioMenu modulo: getAutentifica().getModulos()) {
+					if(modulo.getClave().equals(rama) && !Cadena.isVacio(modulo.getCodigo()))
+						regresar= " ["+ modulo.getCodigo()+ "]";
+					// LOG.info("módulo: "+ modulo.getClave()+ " "+ modulo.getDescripcion());
+				} // if
+			  if(Cadena.isVacio(regresar))
+				  for (UsuarioMenu modulo: getAutentifica().getTopModulos()) {
+					  if(modulo.getClave().equals(rama) && !Cadena.isVacio(modulo.getCodigo()))
+						  regresar= " ["+ modulo.getCodigo()+ "]";
+					  // LOG.info("módulo: "+ modulo.getClave()+ " "+ modulo.getDescripcion());
+				  } // for	
+			} // if	
+		} // try
+		catch(Exception e) {
+			regresar= "";
+		} // catch
+		return regresar;
+	}
 	
 }
