@@ -11,6 +11,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.dto.TrJanalIndicadoresPerfilDto;
 import mx.org.kaana.kajool.enums.ECajas;
+import mx.org.kaana.kajool.enums.EPagos;
 import mx.org.kaana.kajool.enums.ESucursales;
 import mx.org.kaana.kajool.procesos.enums.EPerfiles;
 import mx.org.kaana.kajool.procesos.enums.ETipoGrafica;
@@ -68,6 +69,14 @@ public class BuildChart implements Serializable{
   
 	public Highcharts buildNacionalCaja(ETipoGrafica tipoGrafica) throws Exception{ 
 		return loadCharPropertiesNacionalCaja(" ", "Utilidad", "total", "FERRETERIA BONANZA", "sucursal", "VistaIndicadoresPerfilesDto", "avanceEstatal", "", tipoGrafica);
+	}   
+	
+  public Highcharts buildNacionalCobro(ETipoGrafica tipoGrafica) throws Exception{ 
+		return loadCharPropertiesCobro(" ", "Utilidad", "total", "FERRETERIA BONANZA", "sucursal", "VistaIndicadoresPerfilesDto", "avanceEstatal", "", tipoGrafica);
+	}   
+  
+  public Highcharts buildNacionalPago(ETipoGrafica tipoGrafica) throws Exception{ 
+		return loadCharPropertiesPago(" ", "Utilidad", "total", "FERRETERIA BONANZA", "sucursal", "VistaIndicadoresPerfilesDto", "avanceEstatal", "", tipoGrafica);
 	}   
   
   public List<Highcharts> build(ETipoGrafica tipoChart) throws Exception{
@@ -255,6 +264,90 @@ public class BuildChart implements Serializable{
     } // catch
     return regresar;
   } // loadCharProperties
+  
+  private Highcharts loadCharPropertiesCobro(String tituloGeneral, String tituloLadox, String aliasLadox, String tituloLadoy, String aliasLadoy, String vista, String idVista, String descripcion, ETipoGrafica tipoChart) throws Exception{
+    Highcharts regresar        = null;
+    List<String> categoriesList= null;
+    String[] categories        = null;
+    List<Long> pago            = null;
+    List<Long> abono           = null;
+    Long[] pagos                = null;
+    Long[] abonos                = null;
+    Totales[] totales          = null;
+    try {
+      pago= new ArrayList<>();
+      abono= new ArrayList<>();
+      categoriesList= new ArrayList<>();
+      for(EPagos epago: EPagos.values()){
+        categoriesList.add(epago.getCliente());
+        pago.add(epago.getImporte());
+        abono.add(epago.getSaldo());
+      } // for
+      categories= new String[categoriesList.size()];
+      categories= categoriesList.toArray(categories);
+      abonos= new Long[pago.size()];
+      abonos= abono.toArray(abonos);
+      pagos= new Long[pago.size()];
+      pagos= pago.toArray(pagos);
+      totales= new Totales[]{new Totales("Importe", pagos), new Totales("Saldo", abonos)};
+      regresar= new Highcharts(
+              new Chart(tipoChart.getName(), "270"),
+              new Title(tituloGeneral),
+              new Xaxis(categories, new Title("Clientes")),
+              new Yaxis(0, new Title("Importe/Saldo"), new Labels("justify")),
+              new Tooltip("  ".concat(descripcion), aliasLadox.equals("porcentaje") ? "{point.name}</br><b>{point.y:.2f}%</b>" : ""),
+              new PlotOptions(new Bar(new DataLabels(false)), new Series(new DataLabels(true, aliasLadox.equals("porcentaje") ? "{point.y:.1f}%" : ""))),
+              new Legend("vertical", "left", "middle", -10, 80, true, 1, "#FFFFFF", true),
+              new Credits(false),
+              totales);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+    return regresar;
+  } // loadCharProperties
+  
+  private Highcharts loadCharPropertiesPago(String tituloGeneral, String tituloLadox, String aliasLadox, String tituloLadoy, String aliasLadoy, String vista, String idVista, String descripcion, ETipoGrafica tipoChart) throws Exception{
+    Highcharts regresar        = null;
+    List<String> categoriesList= null;
+    String[] categories        = null;
+    List<Long> pago            = null;
+    List<Long> abono           = null;
+    Long[] pagos                = null;
+    Long[] abonos                = null;
+    Totales[] totales          = null;
+    try {
+      pago= new ArrayList<>();
+      abono= new ArrayList<>();
+      categoriesList= new ArrayList<>();
+      for(EPagos epago: EPagos.values()){
+        categoriesList.add(epago.getProveedor());
+        pago.add(epago.getDeuda());
+        abono.add(epago.getAbono());
+      } // for
+      categories= new String[categoriesList.size()];
+      categories= categoriesList.toArray(categories);
+      abonos= new Long[pago.size()];
+      abonos= abono.toArray(abonos);
+      pagos= new Long[pago.size()];
+      pagos= pago.toArray(pagos);
+      totales= new Totales[]{new Totales("Importe", pagos), new Totales("Saldo", abonos)};
+      regresar= new Highcharts(
+              new Chart(tipoChart.getName(), "270"),
+              new Title(tituloGeneral),
+              new Xaxis(categories, new Title("Proveedores")),
+              new Yaxis(0, new Title("Importe/Saldo"), new Labels("justify")),
+              new Tooltip("  ".concat(descripcion), aliasLadox.equals("porcentaje") ? "{point.name}</br><b>{point.y:.2f}%</b>" : ""),
+              new PlotOptions(new Bar(new DataLabels(false)), new Series(new DataLabels(true, aliasLadox.equals("porcentaje") ? "{point.y:.1f}%" : ""))),
+              new Legend("vertical", "left", "middle", -10, 80, true, 1, "#FFFFFF", true),
+              new Credits(false),
+              totales);
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+    return regresar;
+  } // loadCharProperties
 
   private List<Entity> loadRecords(String vista, String idXml) throws Exception {
     List<Entity> regresar    = null;
@@ -327,18 +420,7 @@ public class BuildChart implements Serializable{
 					dataList.add(new DetailData(y.concat(": ").concat(record.toString(Cadena.toBeanName("por_".concat(Cadena.toSqlName(campoY))))).concat("%"), record.toLong(campoY)));        
 				} // for
 			} // if
-			else {
-				/*vendidos.addTag(new DefaultTagCloudItem("ACEITE LUBRI. 100 ML. SELANUSA", 10));
-			vendidos.addTag(new DefaultTagCloudItem("ACEITE P/COMPRESOR 250 ML GONI", "#", 30));
-			vendidos.addTag(new DefaultTagCloudItem("AEROGRAFO ADIR #684", 70));
-			vendidos.addTag(new DefaultTagCloudItem("AGUJA ARREA #6", 25));
-			vendidos.addTag(new DefaultTagCloudItem("ARCO P/SEGUETA FOY 17E", 45));
-			utilidad = new DefaultTagCloudModel();
-			utilidad.addTag(new DefaultTagCloudItem("ATOMIZADOR 1 LT ECONOMICO", 30));
-			utilidad.addTag(new DefaultTagCloudItem("AZADON C/MANGO TRUPER AL-1M #1", 55));
-			utilidad.addTag(new DefaultTagCloudItem("BANDOLA C/SEGURO TRUE POWER PZA.", 21));
-			utilidad.addTag(new DefaultTagCloudItem("BANQUETERO GALV.", 23));
-			utilidad.addTag(new DefaultTagCloudItem("BARRETA ECONOMICA 1\" X 1.8 MTS", 54));*/
+			else {				
 				if(defaultLoad){
 					dataList.add(new DetailData("ACEITE P/COMPRESOR 250 ML GONI".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("15")))).concat("%"), 30L));
 					dataList.add(new DetailData("ACEITE LUBRI. 100 ML. SELANUSA".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("5")))).concat("%"), 10L));
