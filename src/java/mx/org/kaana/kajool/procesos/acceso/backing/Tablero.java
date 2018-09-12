@@ -66,9 +66,8 @@ public class Tablero extends Comun implements Serializable {
       this.attrs.put("pathMensajes", JsfBase.getApplication().getContextPath() + "/Paginas/Mantenimiento/Mensajes/Notificacion/filtro.jsf");
       this.attrs.put("vigenciaInicial", new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
       this.attrs.put("vigenciaFin", new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
-      loadPieModel();
-      if (JsfBase.isAdminEncuestaOrAdmin()) 
-        loadLineModelNacional();      
+      loadPieModel();      
+      loadLineModelNacional();      
       loadLineModel();
       doLoadSucursales();
       doLoad();
