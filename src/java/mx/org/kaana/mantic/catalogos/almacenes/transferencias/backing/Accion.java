@@ -249,6 +249,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idAlmacenOrigen", this.attrs.get("idAlmacenOrigen"));
+  		params.put("idProveedor", -1L);
 			String search= (String)this.attrs.get("codigo"); 
 			if(!Cadena.isVacio(search)) {
 				buscaPorCodigo= search.startsWith(".");

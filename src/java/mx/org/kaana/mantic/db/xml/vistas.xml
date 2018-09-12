@@ -2670,8 +2670,10 @@
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and (
-				      upper(tc_mantic_articulos_codigos.codigo) like '%{codigo}%'
+				      (upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%' and tc_mantic_articulos_codigos.id_proveedor is null)
 				    or
+				      (upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%' and tc_mantic_articulos_codigos.id_proveedor = {idProveedor})
+			      or	
 				      tc_mantic_articulos.id_articulo= {idArticulo}
 				   ) 			
 				order by 
@@ -3329,7 +3331,9 @@
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and 
 				  (
-				    upper(tc_mantic_articulos.codigo) regexp '.*{codigo}.*'
+			      (upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigo}.*' and tc_mantic_articulos_codigos.id_proveedor is null)
+			    or
+			      (upper(tc_mantic_articulos_codigos.codigo) regexp '.*{codigo}.*' and tc_mantic_articulos_codigos.id_proveedor = {idProveedor})
 				  or
 				    tc_mantic_articulos.id_articulo= {idArticulo}
 				  ) 			
@@ -3917,10 +3921,11 @@
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and (
-				      upper(tc_mantic_articulos_codigos.codigo) like '%{codigo}%'
-				   ) 
-           and 
-            tc_mantic_almacenes.id_almacen = {idAlmacenOrigen} 
+				     (upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%' and tc_mantic_articulos_codigos.id_proveedor is null)
+				   or
+				     (upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%' and tc_mantic_articulos_codigos.id_proveedor = {idProveedor})
+			    ) 
+          and tc_mantic_almacenes.id_almacen = {idAlmacenOrigen} 
         order by 
 				  tc_mantic_articulos_codigos.codigo
 			</select>
