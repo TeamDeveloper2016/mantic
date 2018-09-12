@@ -14,262 +14,266 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
-								template="/WEB-INF/plantillas/filtro.xhtml">
+                template="/WEB-INF/plantillas/filtro.xhtml">
   <ui:param name="titulo" value="Bienvenido" />
   <ui:define name="librerias">
     <h:outputScript library="janal" name="core/jquery.underscore.min-1.3.3.js"/>
     <h:outputScript library="janal" name="highcharts/js/highcharts.js"/>    
     <script type="text/javascript">
-      $(document).ready(function () {
-        updateFechas();
-      });
+			$(document).ready(function () {
+				updateFechas();
+			});
 
-      function updateFechas() {
-        $('#vigenciaInicial_input').width('23%');
-        $('#vigenciaFin_input').width('23%');
-      };
+			function updateFechas() {
+				$('#vigenciaInicial_input').width('23%');
+				$('#vigenciaFin_input').width('23%');
+			}
+			;
 
-      function loadChart(id, json) {
-        if (json !== ''){
-          $('#' + id).highcharts(JSON.parse(json));
-									//.setOptions({
-						//colors: ['#058DC7', '#50B432', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4']
+			function loadChart(id, json) {
+				if (json !== '') {
+					$('#' + id).highcharts(JSON.parse(json));
+					//.setOptions({
+					//colors: ['#058DC7', '#50B432', '#ED561B', '#DDDF00', '#24CBE5', '#64E572', '#FF9655', '#FFF263', '#6AF9C4']
 					//});
 				}
-      };
+			}
+			;
 
-      function skinChart() {
-        this.cfg.shadow = false;
-        this.cfg.seriesColors = ['#dae8ef', '#27aae1'];
-        this.cfg.grid = {
-          background: '#f3f5f7',
-          borderColor: '#e5ebf0',
-          gridLineColor: '#e5ebf0',
-          shadow: false
-        };
-        this.cfg.axesDefaults = {
-          rendererOptions: {
-            textColor: '#9fadb5'
-          }
-        };
-        this.cfg.seriesDefaults = {
-          shadow: false,
-          markerOptions: {
-            shadow: false
-          }
-        };
-      };
+			function skinChart() {
+				this.cfg.shadow = false;
+				this.cfg.seriesColors = ['#dae8ef', '#27aae1'];
+				this.cfg.grid = {
+					background: '#f3f5f7',
+					borderColor: '#e5ebf0',
+					gridLineColor: '#e5ebf0',
+					shadow: false
+				};
+				this.cfg.axesDefaults = {
+					rendererOptions: {
+						textColor: '#9fadb5'
+					}
+				};
+				this.cfg.seriesDefaults = {
+					shadow: false,
+					markerOptions: {
+						shadow: false
+					}
+				};
+			}
+			;
 
-      function skinPie() {
-        this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
-        this.cfg.grid = {
-          background: '#ffffff',
-          borderColor: '#eaeaea',
-          gridLineColor: '#e5ebf0',
-          shadow: false,
-          borderWidth: 0
-        };
-        this.cfg.seriesDefaults.shadow = false;
-      };
+			function skinPie() {
+				this.cfg.seriesColors = ['#dae8ef', '#27aae1', '#33ccff', '#9fadb5'];
+				this.cfg.grid = {
+					background: '#ffffff',
+					borderColor: '#eaeaea',
+					gridLineColor: '#e5ebf0',
+					shadow: false,
+					borderWidth: 0
+				};
+				this.cfg.seriesDefaults.shadow = false;
+			}
+			;
     </script>
     <style type="text/css">
       .jqplot-target, .jqplot-axis {
-        color: #9fadb5;
+				color: #9fadb5;
       }
       .jqplot-title {
-        display: none;
+				display: none;
       }
       rect.highcharts-background{
-        fill: transparent !important;
+				fill: transparent !important;
       }
-			.janal-progressbar-1 .ui-progressbar-value{
+      .janal-progressbar-1 .ui-progressbar-value{
 				background-color: orange !important;			
 				background-image: none !important;
-			}
-			.janal-progressbar-2 .ui-progressbar-value{
+      }
+      .janal-progressbar-2 .ui-progressbar-value{
 				background-color: green !important;
 				background-image: none !important;				
-			}
-			.janal-progressbar-3 .ui-progressbar-value{
+      }
+      .janal-progressbar-3 .ui-progressbar-value{
 				background-color: yellow !important;				
 				background-image: none !important;
-			}
-			.janal-progressbar-4 .ui-progressbar-value{
+      }
+      .janal-progressbar-4 .ui-progressbar-value{
 				background-color: red !important;				
 				background-image: none !important;
-			}
-			.janal-progressbar-5 .ui-progressbar-value{
+      }
+      .janal-progressbar-5 .ui-progressbar-value{
 				background-color: blue !important;
 				background-image: none !important;
-			}
-			.janal-progressbar-6 .ui-progressbar-value{
+      }
+      .janal-progressbar-6 .ui-progressbar-value{
 				background-color: brown !important;
 				background-image: none !important;
-			}
-			.janal-progressbar-7 .ui-progressbar-value{
+      }
+      .janal-progressbar-7 .ui-progressbar-value{
 				background-color: gold !important;
 				background-image: none !important;
-			}
-			.janal-progressbar-8 .ui-progressbar-value{
+      }
+      .janal-progressbar-8 .ui-progressbar-value{
 				background-color: pink !important;
 				background-image: none !important;
-			}
-			.janal-progressbar-9 .ui-progressbar-value{
+      }
+      .janal-progressbar-9 .ui-progressbar-value{
 				background-color: purple !important;
 				background-image: none !important;				
-			}
-			.janal-progressbar-10 .ui-progressbar-value{
+      }
+      .janal-progressbar-10 .ui-progressbar-value{
 				background-color: cyan !important;				
 				background-image: none !important;
-			}
+      }
     </style>
   </ui:define>
   <ui:define name="contenido">
     <!-- SECTION 1 -->
     <div class="Container100">
       <div class="ContainerIndent">
-				<div class="Container25 Responsive">					
-					<div class="ContainerIndent">
-						<p:panel style="min-height: 290px;">
-							<i class="icon-user-2 Fs50 Fleft Wid25 hardblue TexAlCenter"></i>
-							<div class="Fs24 Fright MarTop10 leaden Wid70">Bienvenido, <span class="hardblue">#{sessionScope.autentifica.persona.cuenta}</span></div>
-							<div class="Fs12 Fright leaden Wid70">Tu tienes <span class="red">#{kajoolTablero.attrs.mensajesNoLeidos} mensajes sin leer</span></div>
-							<div class="EmptyBox10"></div>
-							<p:separator styleClass="Wid100"/>
-							<div class="EmptyBox10"></div>
-							<div class="Fs16 Fright">
-								<a href="#{kajoolTablero.attrs.pathCaptura}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-mail hardblue"> Buzón (0)</i></a>
-								<a href="#{kajoolTablero.attrs.pathMensajes}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-bell-alt hardblue"> Mensajes (#{kajoolTablero.attrs.mensajesNoLeidos})</i></a>
-								<a href="#{kajoolTablero.attrs.pathConfiguracion}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-cog-alt hardblue"> Configuración</i></a>
-							</div>
-							<div class="EmptyBox10"></div>
-							<p:separator styleClass="Wid100"/>
-							<div class="EmptyBox10"></div>
-							<span class="janal-help-icon janal-help-1 fa fa-lg fa-fw fa-question-circle Fright" onclick="countHelp(1);"/>
-							<pe:tooltip for="@(.janal-help-1)" showEvent="click">
-								<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(1)}" styleClass="Fs15" escape="false"/>
-							</pe:tooltip>
-							<i class="icon-key softgray MarRight10 Fs14 Fright">Último acceso</i>
-							<i class="softgray MarRight10 Fs14 Fright">#{sessionScope.autentifica.ultimoAcceso}</i>
-							<div class="EmptyBox10"></div>              
-						</p:panel>
-					</div>										
-				</div>
-				<div class="Container25 Responsive">          
-					<div class="ContainerIndent">
-						<p:panel style="min-height: 290px;">
-							<i class="icon-sitemap Fs50 Fleft Wid25 red TexAlCenter"></i>
-							<div class="Fs24 Fright MarTop10 leaden Wid70">Equipo de trabajo</div>
-							<div class="Fs18 Fright leaden Wid70">Plantilla de <span class="red">#{kajoolTablero.attrs.contadoresGenerales.total}</span> personas</div>
-							<div class="EmptyBox5"></div>   
-							<div class="Fs12 Fright leaden Wid70">Perfiles que llevaran a cabo actividades en el sistema</div>
-							<div class="EmptyBox10"></div>
-							<p:separator styleClass="Wid100"></p:separator>
-							<div class="EmptyBox10"></div>
-							<div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Administrador<br/><span class="Fs20 orange">#{kajoolTablero.attrs.contadoresGenerales.admin}</span></div>
-							<div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Gerente<br/><span class="Fs20 orange">1</span></div>
-							<div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Vendedor<br/><span class="Fs20 red">#{kajoolTablero.attrs.contadoresGenerales.respEstatal}</span></div>
-							<div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Caja<br/><span class="Fs20 hardblue">#{kajoolTablero.attrs.contadoresGenerales.capturista}</span></div>
-							<div class="EmptyBox10"></div>              
-						</p:panel>
-					</div>															
-				</div>   						
-				<div class="Container50 Responsive">
+        <div class="Container25 Responsive">					
+          <div class="ContainerIndent">
+            <p:panel style="min-height: 290px;">
+              <i class="icon-user-2 Fs50 Fleft Wid25 hardblue TexAlCenter"></i>
+              <div class="Fs24 Fright MarTop10 leaden Wid70">Bienvenido, <span class="hardblue">#{sessionScope.autentifica.persona.cuenta}</span></div>
+              <div class="Fs12 Fright leaden Wid70">Tu tienes <span class="red">#{kajoolTablero.attrs.mensajesNoLeidos} mensajes sin leer</span></div>
+              <div class="EmptyBox10"></div>
+              <p:separator styleClass="Wid100"/>
+              <div class="EmptyBox10"></div>
+              <div class="Fs16 Fright">
+                <a href="#{kajoolTablero.attrs.pathCaptura}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-mail hardblue"> Buzón (0)</i></a>
+                <a href="#{kajoolTablero.attrs.pathMensajes}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-bell-alt hardblue"> Mensajes (#{kajoolTablero.attrs.mensajesNoLeidos})</i></a>
+                <a href="#{kajoolTablero.attrs.pathConfiguracion}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-cog-alt hardblue"> Configuración</i></a>
+              </div>
+              <div class="EmptyBox10"></div>
+              <p:separator styleClass="Wid100"/>
+              <div class="EmptyBox10"></div>
+              <span class="janal-help-icon janal-help-1 fa fa-lg fa-fw fa-question-circle Fright" onclick="countHelp(1);"/>
+              <pe:tooltip for="@(.janal-help-1)" showEvent="click">
+                <h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(1)}" styleClass="Fs15" escape="false"/>
+              </pe:tooltip>
+              <i class="icon-key softgray MarRight10 Fs14 Fright">Último acceso</i>
+              <i class="softgray MarRight10 Fs14 Fright">#{sessionScope.autentifica.ultimoAcceso}</i>
+              <div class="EmptyBox10"></div>              
+            </p:panel>
+          </div>										
+        </div>
+        <div class="Container25 Responsive">          
+          <div class="ContainerIndent">
+            <p:panel style="min-height: 290px;">
+              <i class="icon-sitemap Fs50 Fleft Wid25 red TexAlCenter"></i>
+              <div class="Fs24 Fright MarTop10 leaden Wid70">Equipo de trabajo</div>
+              <div class="Fs18 Fright leaden Wid70">Plantilla de <span class="red">#{kajoolTablero.attrs.contadoresGenerales.total}</span> personas</div>
+              <div class="EmptyBox5"></div>   
+              <div class="Fs12 Fright leaden Wid70">Perfiles que llevaran a cabo actividades en el sistema</div>
+              <div class="EmptyBox10"></div>
+              <p:separator styleClass="Wid100"></p:separator>
+              <div class="EmptyBox10"></div>
+              <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Administrador<br/><span class="Fs20 orange">#{kajoolTablero.attrs.contadoresGenerales.admin}</span></div>
+              <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Gerente<br/><span class="Fs20 orange">1</span></div>
+              <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Vendedor<br/><span class="Fs20 red">#{kajoolTablero.attrs.contadoresGenerales.respEstatal}</span></div>
+              <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Caja<br/><span class="Fs20 hardblue">#{kajoolTablero.attrs.contadoresGenerales.capturista}</span></div>
+              <div class="EmptyBox10"></div>              
+            </p:panel>
+          </div>															
+        </div>   						
+        <div class="Container50 Responsive">
           <div class="ContainerIndent">            
-						<p:panel style="height:290px;">
-							<div class="Container100 Responsive Fs20">
-								<i class="icon-chart-outline"></i> Utilidad por sucursal
-							</div>
-							<div class="Container100">
-								<div id="kajool-chart-avance-general-nacional"></div>
-								<script type="text/javascript">
+            <p:panel style="height:290px;">
+              <div class="Container100 Responsive Fs20">
+                <i class="icon-chart-outline"></i> Utilidad por sucursal
+              </div>
+              <div class="Container100">
+                <div id="kajool-chart-avance-general-nacional"></div>
+                <script type="text/javascript">
 									$(document).ready(function () {
 										loadChart('kajool-chart-avance-general-nacional', '#{kajoolTablero.attrs.jsonGeneralNacional}');
 									});
-								</script>
-							</div>
-						</p:panel>
-					</div>
-				</div>
-				
-				<div class="Container50 Responsive">
-					<div class="ContainerIndent">
-						<div class="EmptyBox10"></div>                
-						<p:panel id="panelMest" style="min-height: 420px;">
-							<i class="icon-users Fs50 Fleft Wid25 orange TexAlCenter"></i>
-							<div class="Fs24 Fright MarTop10 leaden Wid70">Ventas por trabajador</div>
-							<div class="Fs12 Fright leaden Wid70">Cantidad de ventas realizadas por trabajador: <span class="orange">320</span></div>
-							<div class="EmptyBox10"></div>
-							<p:separator styleClass="Wid100"/>
-							<div>
-								<p:scrollPanel styleClass="Wid95" style="height: 315px;">
-								<h:panelGroup id="panelVentas" styleClass="Wid90">									
-										<div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="Alejandro Jimenez Garcia"/></div>
-										<h:panelGrid columns="2" title="Total de ventas: 30" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
-											<p:progressBar value="30" displayOnly="true" style="height: 8px;" styleClass="janal-progressbar-1"/>
-											<p:outputLabel value="3%" style="width: 50px; text-align: right; display: grid;"/>
-										</h:panelGrid>
-										<p:separator styleClass="Wid100"/>
-										<div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="Aracely Martinez"/></div>
-										<h:panelGrid columns="2" title="Total de ventas: 50" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
-											<p:progressBar value="50" displayOnly="true" style="height: 8px;" styleClass="janal-progressbar-2"/>
-											<p:outputLabel value="6%" style="width: 50px; text-align: right; display: grid;"/>
-										</h:panelGrid>
-										<p:separator styleClass="Wid100"/>
-										<div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="Nancy Aceves"/></div>
-										<h:panelGrid columns="2" title="Total de ventas: 70" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
-											<p:progressBar value="70" displayOnly="true" style="height: 8px;" styleClass="janal-progressbar-3"/>
-											<p:outputLabel value="20%" style="width: 50px; text-align: right; display: grid;"/>
-										</h:panelGrid>
-										<p:separator styleClass="Wid100"/>
-										<div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="Juan Martinez"/></div>
-										<h:panelGrid columns="2" title="Total de ventas: 10" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
-											<p:progressBar value="10" displayOnly="true" style="height: 8px;" styleClass="janal-progressbar-4"/>
-											<p:outputLabel value="2%" style="width: 50px; text-align: right; display: grid;"/>
-										</h:panelGrid>										
-										<p:separator styleClass="Wid100"/>
-										<div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="Milton Ramirez"/></div>
-										<h:panelGrid columns="2" title="Total de ventas: 85" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
-											<p:progressBar value="85" displayOnly="true" style="height: 8px;" styleClass="janal-progressbar-5"/>
-											<p:outputLabel value="40%" style="width: 50px; text-align: right; display: grid;"/>
-										</h:panelGrid>
-										<p:separator styleClass="Wid100"/>
-										<div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="Jorge Sandoval"/></div>
-										<h:panelGrid columns="2" title="Total de ventas: 53" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
-											<p:progressBar value="53" displayOnly="true" style="height: 8px;" styleClass="janal-progressbar-10"/>
-											<p:outputLabel value="9%" style="width: 50px; text-align: right; display: grid;"/>
-										</h:panelGrid>
-										<p:separator styleClass="Wid100"/>
-										<div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="Jorge Vázquez"/></div>
-										<h:panelGrid columns="2" title="Total de ventas: 29" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
-											<p:progressBar value="29" displayOnly="true" style="height: 8px;" styleClass="janal-progressbar-8"/>
-											<p:outputLabel value="11%" style="width: 50px; text-align: right; display: grid;"/>
-										</h:panelGrid>
-										<p:separator styleClass="Wid100"/>
-										<div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="Esteban Ramirez"/></div>
-										<h:panelGrid columns="2" title="Total de ventas: 17" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
-											<p:progressBar value="17" displayOnly="true" style="height: 8px;" styleClass="janal-progressbar-9"/>
-											<p:outputLabel value="8%" style="width: 50px; text-align: right; display: grid;"/>
-										</h:panelGrid>
-										<p:separator styleClass="Wid100"/>
-										<div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="Carlos Ortiz"/></div>
-										<h:panelGrid columns="2" title="Total de ventas: 3" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
-											<p:progressBar value="3" displayOnly="true" style="height: 8px;" styleClass="janal-progressbar-6"/>
-											<p:outputLabel value="1%" style="width: 50px; text-align: right; display: grid;"/>
-										</h:panelGrid>
-										<p:separator styleClass="Wid100"/>
-										<div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="Leo Gonzalez"/></div>
-										<h:panelGrid columns="2" title="Total de ventas: 0" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
-											<p:progressBar value="0" displayOnly="true" style="height: 8px;" styleClass="janal-progressbar-7"/>
-											<p:outputLabel value="0%" style="width: 50px; text-align: right; display: grid;"/>
-										</h:panelGrid>
-								</h:panelGroup>
-									</p:scrollPanel>
-							</div>
-						</p:panel>
-					</div>
-					<div class="EmptyBox10"></div>
-					<div class="ContainerIndent">
+                </script>
+              </div>
+            </p:panel>
+          </div>
+        </div>
+
+        <div class="Container50 Responsive">
+          <div class="ContainerIndent">
+            <div class="EmptyBox10"></div>                
+            <p:panel id="panelMest" style="min-height: 420px;">
+              <i class="icon-users Fs50 Fleft Wid25 orange TexAlCenter"></i>
+              <div class="Fs24 Fright MarTop10 leaden Wid70">Ventas por trabajador</div>
+              <div class="Fs12 Fright leaden Wid70">Cantidad de ventas realizadas por trabajador: <span class="orange">320</span></div>
+              <div class="EmptyBox10"></div>
+              <p:separator styleClass="Wid100"/>
+              <div>
+                <p:scrollPanel styleClass="Wid95" style="height: 315px;">
+                  <h:panelGroup id="panelVentas" styleClass="Wid90">									
+                    <div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="Alejandro Jimenez Garcia"/></div>
+                    <h:panelGrid columns="2" title="Total de ventas: 30" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
+                      <p:progressBar value="30" displayOnly="true" style="height: 8px;" styleClass="janal-progressbar-1"/>
+                      <p:outputLabel value="3%" style="width: 50px; text-align: right; display: grid;"/>
+                    </h:panelGrid>
+                    <p:separator styleClass="Wid100"/>
+                    <div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="Aracely Martinez"/></div>
+                    <h:panelGrid columns="2" title="Total de ventas: 50" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
+                      <p:progressBar value="50" displayOnly="true" style="height: 8px;" styleClass="janal-progressbar-2"/>
+                      <p:outputLabel value="6%" style="width: 50px; text-align: right; display: grid;"/>
+                    </h:panelGrid>
+                    <p:separator styleClass="Wid100"/>
+                    <div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="Nancy Aceves"/></div>
+                    <h:panelGrid columns="2" title="Total de ventas: 70" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
+                      <p:progressBar value="70" displayOnly="true" style="height: 8px;" styleClass="janal-progressbar-3"/>
+                      <p:outputLabel value="20%" style="width: 50px; text-align: right; display: grid;"/>
+                    </h:panelGrid>
+                    <p:separator styleClass="Wid100"/>
+                    <div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="Juan Martinez"/></div>
+                    <h:panelGrid columns="2" title="Total de ventas: 10" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
+                      <p:progressBar value="10" displayOnly="true" style="height: 8px;" styleClass="janal-progressbar-4"/>
+                      <p:outputLabel value="2%" style="width: 50px; text-align: right; display: grid;"/>
+                    </h:panelGrid>										
+                    <p:separator styleClass="Wid100"/>
+                    <div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="Milton Ramirez"/></div>
+                    <h:panelGrid columns="2" title="Total de ventas: 85" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
+                      <p:progressBar value="85" displayOnly="true" style="height: 8px;" styleClass="janal-progressbar-5"/>
+                      <p:outputLabel value="40%" style="width: 50px; text-align: right; display: grid;"/>
+                    </h:panelGrid>
+                    <p:separator styleClass="Wid100"/>
+                    <div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="Jorge Sandoval"/></div>
+                    <h:panelGrid columns="2" title="Total de ventas: 53" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
+                      <p:progressBar value="53" displayOnly="true" style="height: 8px;" styleClass="janal-progressbar-10"/>
+                      <p:outputLabel value="9%" style="width: 50px; text-align: right; display: grid;"/>
+                    </h:panelGrid>
+                    <p:separator styleClass="Wid100"/>
+                    <div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="Jorge Vázquez"/></div>
+                    <h:panelGrid columns="2" title="Total de ventas: 29" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
+                      <p:progressBar value="29" displayOnly="true" style="height: 8px;" styleClass="janal-progressbar-8"/>
+                      <p:outputLabel value="11%" style="width: 50px; text-align: right; display: grid;"/>
+                    </h:panelGrid>
+                    <p:separator styleClass="Wid100"/>
+                    <div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="Esteban Ramirez"/></div>
+                    <h:panelGrid columns="2" title="Total de ventas: 17" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
+                      <p:progressBar value="17" displayOnly="true" style="height: 8px;" styleClass="janal-progressbar-9"/>
+                      <p:outputLabel value="8%" style="width: 50px; text-align: right; display: grid;"/>
+                    </h:panelGrid>
+                    <p:separator styleClass="Wid100"/>
+                    <div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="Carlos Ortiz"/></div>
+                    <h:panelGrid columns="2" title="Total de ventas: 3" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
+                      <p:progressBar value="3" displayOnly="true" style="height: 8px;" styleClass="janal-progressbar-6"/>
+                      <p:outputLabel value="1%" style="width: 50px; text-align: right; display: grid;"/>
+                    </h:panelGrid>
+                    <p:separator styleClass="Wid100"/>
+                    <div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="Leo Gonzalez"/></div>
+                    <h:panelGrid columns="2" title="Total de ventas: 0" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
+                      <p:progressBar value="0" displayOnly="true" style="height: 8px;" styleClass="janal-progressbar-7"/>
+                      <p:outputLabel value="0%" style="width: 50px; text-align: right; display: grid;"/>
+                    </h:panelGrid>
+                  </h:panelGroup>
+                </p:scrollPanel>
+              </div>
+            </p:panel>
+          </div>
+          <div class="EmptyBox10"></div>
+          <div class="ContainerIndent">
             <p:panel style="min-height:290px;">
               <div class="Container40 Responsive Fs20">
                 <i class="icon-down-big"></i> Articulos por terminarse
@@ -309,73 +313,77 @@
                     <pe:exporter type="pdf"  skipComponents="com.sun.faces.facelets.component.UIRepeat,org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler,org.primefaces.component.menubutton.MenuButton"  target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" encoding="ISO-8859-1" facetFontSize="10"  cellFontSize="10" fontName="Helvetica" pageOnly="false" preProcessor="#{kajoolUtilAplicacion.doPreProcessPdf}"/> 
                   </h:commandLink>
                   <h:commandLink id="dataXlsCapturista">
-                     <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
+                    <pe:exporter type="xlsx" skipComponents="org.primefaces.component.menuitem.UIMenuItem,org.primefaces.component.separator.UISeparator,org.primefaces.component.rowtoggler.RowToggler, org.primefaces.component.menubutton.MenuButton" encoding="ISO-8859-1" target="tabla" fileName="#{kajoolUtilAplicacion.nameFile}" pageOnly="false"/>                
                   </h:commandLink>	                  
                 </h:form>
               </div>
             </p:panel>
           </div>
-				</div>		  
-				
-				<div class="Container50 Responsive">
+        </div>		  
+
+        <div class="Container50 Responsive">
           <div class="ContainerIndent">            
-						<div class="EmptyBox10"></div>
-						<p:panel style="height:220px;">
-							<div class="Container100 Responsive Fs20">
-								<i class="icon-chart-outline"></i> Utilidad por caja
-							</div>
-							<div class="Container100">
-								<div id="kajool-chart-avance-general-nacional-caja"></div>
-								<script type="text/javascript">
+            <div class="EmptyBox10"></div>
+            <p:panel style="height:220px;">
+              <div class="Container100 Responsive Fs20">
+                <i class="icon-chart-outline"></i> Utilidad por caja
+              </div>
+              <div class="Container100">
+                <div id="kajool-chart-avance-general-nacional-caja"></div>
+                <script type="text/javascript">
 									$(document).ready(function () {
 										loadChart('kajool-chart-avance-general-nacional-caja', '#{kajoolTablero.attrs.jsonGeneralNacionalCaja}');
 									});
-								</script>
-							</div>
-						</p:panel>
+                </script>
+              </div>
+            </p:panel>
           </div>
-					
-					<div class="Container50 Responsive">
-						<div class="ContainerIndent">
-							<div class="EmptyBox10"></div>
-							<p:panel style="min-height:371px;">
-								<div class="Container100 Responsive Fs20">
-									<i class="icon-cube"></i>Articulos mas vendidos 
-									<p:separator styleClass="Wid100"/>
-								</div>
-								<div class="Container100">
-									<div id="kajool-chart-avance-nacional"></div>
-									<script type="text/javascript">
+
+          <div class="Container50 Responsive">
+            <div class="ContainerIndent">
+              <div class="EmptyBox10"></div>
+              <p:panel style="min-height:371px;">
+                <div class="Container100 Responsive Fs20">
+                  <i class="icon-cube"></i>Articulos mas vendidos 
+                  <p:separator styleClass="Wid100"/>
+                </div>
+                <div class="Container100">
+                  <div id="kajool-chart-avance-nacional"></div>
+                  <script type="text/javascript">
 										$(document).ready(function () {
 											loadChart('kajool-chart-avance-nacional', '#{kajoolTablero.attrs.jsonVentas.json}');
 										});
-									</script>
-								</div>
-							</p:panel>
-						</div>	
-					</div>
-					<div class="Container50 Responsive">
-						<div class="ContainerIndent">
-							<div class="EmptyBox10"></div>
-							<p:panel style="min-height:371px;">
-								<div class="Container100 Responsive Fs20">
-									<i class="icon-dollar"></i>Articulos con mayor utilidad 
-									<p:separator styleClass="Wid100"/>
-								</div>								
-								<div class="Container100">
-									<div id="kajool-chart-avance-nacional-dos"></div>
-									<script type="text/javascript">
+                  </script>
+                </div>
+              </p:panel>
+            </div>	
+          </div>
+          <div class="Container50 Responsive">
+            <div class="ContainerIndent">
+              <div class="EmptyBox10"></div>
+              <p:panel style="min-height:371px;">
+                <div class="Container100 Responsive Fs20">
+                  <i class="icon-dollar"></i>Articulos con mayor utilidad 
+                  <p:separator styleClass="Wid100"/>
+                </div>								
+                <div class="Container100">
+                  <div id="kajool-chart-avance-nacional-dos"></div>
+                  <script type="text/javascript">
 										$(document).ready(function () {
 											loadChart('kajool-chart-avance-nacional-dos', '#{kajoolTablero.attrs.jsonNacional.json}');
-											$("text").each(function(index){if($(this).text()=== 'Highcharts.com'){$(this).text(' ');}});
+											$("text").each(function (index) {
+												if ($(this).text() === 'Highcharts.com') {
+													$(this).text(' ');
+												}
+											});
 										});
-									</script>
-								</div>
-							</p:panel>
-						</div>				     
-					</div>						
+                  </script>
+                </div>
+              </p:panel>
+            </div>				     
+          </div>						
         </div>    
-				<c:forEach items="#{kajoolTablero.attrs.jsons}" var="prop" varStatus="index">													
+        <c:forEach items="#{kajoolTablero.attrs.jsons}" var="prop" varStatus="index">													
           <div class="Container50 Responsive">
             <div class="ContainerIndent">
               <p:panel style="min-height:250px;">
@@ -385,16 +393,50 @@
                 <div class="Container100">
                   <div id="kajool-chart-avance-#{prop.id}"></div>
                   <script type="text/javascript">
-                    $(document).ready(function () {
-                      loadChart('kajool-chart-avance-#{prop.id}', '#{prop.json}');
-                    });
+										$(document).ready(function () {
+											loadChart('kajool-chart-avance-#{prop.id}', '#{prop.json}');
+										});
                   </script>
                 </div>
               </p:panel>
             </div>
           </div>
         </c:forEach>
+				<div class="Container50 Responsive">
+          <div class="ContainerIndent">            
+            <p:panel style="height:290px;">
+              <div class="Container100 Responsive Fs20">
+                <i class="icon-money"></i> Cuentas por cobrar
+              </div>
+              <div class="Container100">
+                <div id="kajool-chart-avance-cobro"></div>
+                <script type="text/javascript">
+									$(document).ready(function () {
+										loadChart('kajool-chart-avance-cobro', '#{kajoolTablero.attrs.jsonCobro}');
+									});
+                </script>
+              </div>
+            </p:panel>
+          </div>
+        </div>
+				<div class="Container50 Responsive">
+          <div class="ContainerIndent">            
+            <p:panel style="height:290px;">
+              <div class="Container100 Responsive Fs20">
+                <i class="icon-bank"></i> Cuentas por pagar
+              </div>
+              <div class="Container100">
+                <div id="kajool-chart-avance-pago"></div>
+                <script type="text/javascript">
+									$(document).ready(function () {
+										loadChart('kajool-chart-avance-pago', '#{kajoolTablero.attrs.jsonPago}');
+									});
+                </script>
+              </div>
+            </p:panel>
+          </div>
+        </div>
       </div>
-    </div>		           
+    </div>		
   </ui:define>
 </ui:composition>
