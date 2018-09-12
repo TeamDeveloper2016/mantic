@@ -101,8 +101,10 @@ public class Tablero extends Comun implements Serializable {
   } // doLoad
 
   private void loadLineModelNacional() throws Exception {
-    Highcharts charts = null;
+    Highcharts charts     = null;
     Highcharts chartsCaja = null;
+    Highcharts chartsCobro= null;
+    Highcharts chartsPago= null;
     BuildChart buildChart = null;
     try {
       buildChart = new BuildChart(JsfBase.getAutentifica().getPersona().getIdPerfil(), Long.valueOf(this.attrs.get("idGrupo").toString()));
@@ -110,8 +112,14 @@ public class Tablero extends Comun implements Serializable {
       chartsCaja = buildChart.buildNacionalCaja(ETipoGrafica.LINEAL);
       this.attrs.put("tituloGeneralNacional", charts.getTitle().getText());
       this.attrs.put("jsonGeneralNacional", Decoder.toJson(charts));
-			this.attrs.put("tituloGeneralNacionalCaja", chartsCaja.getTitle().getText());
+      this.attrs.put("tituloGeneralNacionalCaja", chartsCaja.getTitle().getText());
       this.attrs.put("jsonGeneralNacionalCaja", Decoder.toJson(chartsCaja));
+      chartsCobro = buildChart.buildNacionalCobro(ETipoGrafica.COLUMNA);
+      chartsPago = buildChart.buildNacionalPago(ETipoGrafica.COLUMNA);
+      this.attrs.put("tituloCobro", chartsCobro.getTitle().getText());
+      this.attrs.put("jsonCobro", Decoder.toJson(chartsCobro));
+      this.attrs.put("tituloPago", chartsPago.getTitle().getText());
+      this.attrs.put("jsonPago", Decoder.toJson(chartsPago));
     } // try
     catch (Exception e) {
       throw e;
