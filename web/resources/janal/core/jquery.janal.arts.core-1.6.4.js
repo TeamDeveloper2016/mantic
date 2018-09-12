@@ -94,7 +94,7 @@
       $(document).on('keyup', this.findout, function(e) {
 				clearTimeout($articulos.typingTimer);
         if ($(this).val() && $(this).val().trim().length> 0) 
-          $articulos.typingTimer= setTimeout($articulos.find($(this)), $articulos.doneInterval);
+          $articulos.typingTimer= setTimeout($articulos.relocate($(this)), $articulos.doneInterval);
 				return false;
 			});  
       $(document).on('focus', this.focus+ ',.key-move-event', function() {
@@ -407,7 +407,7 @@
 			return true;
 		},
 		find: function() {
-			janal.console('jsArticulo.find: ');
+			janal.console('jsArticulo.find: '+ this.get().trim());
 			var value = this.get().trim();
 			if(value.startsWith('='))
 				this.set(eval(value.substring(1)));
@@ -507,8 +507,8 @@
 			console.log('jsArticulo.look: '+ $(name).val());
 			lookup();
 		},
-		find: function(name) {
-			console.log('jsArticulo.find: '+ $(name).val());
+		relocate: function(name) {
+			console.log('jsArticulo.relocate: '+ $(name).val());
 			findout();
 		},
 		back: function(title, count) {

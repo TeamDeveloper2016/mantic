@@ -135,7 +135,7 @@
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
 		<p:remoteCommand name="lookup" actionListener="#{manticInventariosEntradasAccion.doUpdateDialogArticulos}" process="@this codigo" update="buscados localizado"/>
-		<p:remoteCommand name="findout" actionListener="#{manticInventariosEntradasAccion.doFindOutArticulos}" process="@this auxiliar" update="encontrados encontrado"/>
+		<p:remoteCommand name="findout" actionListener="#{manticInventariosEntradasAccion.doFindOutArticulos}" onstart="return PF('catalogo').isVisible();" process="@this auxiliar" update="encontrados encontrado"/>
 		<p:remoteCommand name="filterRows" actionListener="#{manticInventariosEntradasAccion.doFilterRows}" update="contenedorGrupos:tabla" process="@this @(.key-filter-event)" onstart="return janal.bloquear();" oncomplete="jsArticulos.invalidate(#{manticInventariosEntradasAccion.adminOrden.filtrados.size()- 1});"/>
 		<p:remoteCommand name="factura" actionListener="#{manticInventariosEntradasAccion.doCheckFolio}" process="@this contenedorGrupos:factura contenedorGrupos:idProveedor" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 		<p:remoteCommand name="viewDocument" actionListener="#{manticInventariosEntradasAccion.doViewDocument}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
@@ -732,7 +732,7 @@
 				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide(); jsArticulos.move();"/>
 			</div>
 		</p:dialog>
-		<p:dialog id="catalogo" widgetVar="buscador" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" onHide="janal.desbloquear();" width="850px" height="670px" resizable="false">
+		<p:dialog id="catalogo" widgetVar="buscador" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" onHide="janal.desbloquear();" width="850px" height="400px" resizable="false" position="center bottom">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
 					<p:outputLabel for="codigo" value="Código o nombre:"/>
@@ -750,7 +750,7 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
 					<p:outputLabel value="Click sobre la tabla para seleccionar el articulo, por defecto es el primero de la lista"/><br/>
-					<p:dataTable id="encontrados" lazy="true" styleClass="janal-wid-100" value="#{manticInventariosEntradasAccion.attrs.lazyModel}" selection="#{manticInventariosEntradasAccion.attrs.buscado}" var="item" selectionMode="single" rows="#{Constantes.REGISTROS_POR_PAGINA- 2}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" paginator="#{manticInventariosEntradasAccion.attrs.lazyModel.rowCount gt manticInventariosEntradasAccion.attrs.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+					<p:dataTable id="encontrados" lazy="true" styleClass="janal-wid-100" value="#{manticInventariosEntradasAccion.attrs.lazyModel}" selection="#{manticInventariosEntradasAccion.attrs.buscado}" var="item" selectionMode="single" rows="5" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" paginator="#{manticInventariosEntradasAccion.attrs.lazyModel.rowCount gt manticInventariosEntradasAccion.attrs.lazyModel.pageSize}" rowIndexVar="index" reflow="true" paginatorPosition="top">
 						<p:ajax event="rowDblselect" oncomplete="$('#encontrado').click();"/>
 						<p:column headerText="Nombre">
 							<h:outputText value="#{item.nombre}"/>

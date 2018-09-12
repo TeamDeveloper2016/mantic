@@ -689,9 +689,11 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	public void doChangeBuscado() {
 		if(this.attrs.get("buscado")== null) {
 			FormatCustomLazy list= (FormatCustomLazy)this.attrs.get("lazyModel");
-			List<Entity> items   = (List<Entity>)list.getWrappedData();
-			if(items.size()> 0)
-			  this.attrs.put("encontrado", new UISelectEntity(items.get(0)));
+			if(list!= null) {
+				List<Entity> items   = (List<Entity>)list.getWrappedData();
+				if(items.size()> 0)
+					this.attrs.put("encontrado", new UISelectEntity(items.get(0)));
+			} // if
 		} // else
 	  else
       this.attrs.put("encontrado", new UISelectEntity((Entity)this.attrs.get("buscado")));
