@@ -422,18 +422,18 @@ public class BuildChart implements Serializable{
 			} // if
 			else {				
 				if(defaultLoad){
-					dataList.add(new DetailData("ACEITE P/COMPRESOR 250 ML GONI".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("15")))).concat("%"), 30L));
-					dataList.add(new DetailData("ACEITE LUBRI. 100 ML. SELANUSA".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("5")))).concat("%"), 10L));
-					dataList.add(new DetailData("AEROGRAFO ADIR #684".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("50")))).concat("%"), 70L));
+					dataList.add(new DetailData("ACEITE P/COMPRESOR<br> 250 ML GONI".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("15")))).concat("%"), 30L));
+					dataList.add(new DetailData("ACEITE LUBRI. <br>100 ML. SELANUSA".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("5")))).concat("%"), 10L));
+					dataList.add(new DetailData("AEROGRAFO <br>ADIR #684".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("50")))).concat("%"), 70L));
 					dataList.add(new DetailData("AGUJA ARREA #6".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("10")))).concat("%"), 25L));
-					dataList.add(new DetailData("ARCO P/SEGUETA FOY 17E".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("20")))).concat("%"), 45L));
+					dataList.add(new DetailData("ARCO P/SEGUETA<br> FOY 17E".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("20")))).concat("%"), 45L));
 				} // if
 				else{
-					dataList.add(new DetailData("ATOMIZADOR 1 LT ECONOMICO".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("15")))).concat("%"), 30L));
-					dataList.add(new DetailData("AZADON C/MANGO TRUPER AL-1M #1".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("30")))).concat("%"), 55L));
-					dataList.add(new DetailData("BANDOLA C/SEGURO TRUE POWER PZA.".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("15")))).concat("%"), 21L));
+					dataList.add(new DetailData("ATOMIZADOR <br>1 LT ECONOMICO".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("15")))).concat("%"), 30L));
+					dataList.add(new DetailData("AZADON C/MANGO<br> TRUPER AL-1M #1".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("30")))).concat("%"), 55L));
+					dataList.add(new DetailData("BANDOLA C/SEGURO<br> TRUE POWER PZA.".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("15")))).concat("%"), 21L));
 					dataList.add(new DetailData("BANQUETERO GALV.".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("10")))).concat("%"), 23L));
-					dataList.add(new DetailData("BARRETA ECONOMICA 1 X 1.8 MTS".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("30")))).concat("%"), 54L));
+					dataList.add(new DetailData("BARRETA ECONOMICA<br> 1 X 1.8 MTS".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("30")))).concat("%"), 54L));
 				} // else
 			} // else
 			data= new DetailData[dataList.size()];
@@ -444,7 +444,7 @@ public class BuildChart implements Serializable{
 							//new Title(titulo),              
 							new Title(" "),              
 							new Tooltip("  ".concat(tipoConteo)),
-							new PlotOptions(new Pie(true, "pointer", new DataLabels(false), true)),              
+							new PlotOptions(new Pie(true, "pointer", new DataLabels(true), false)),              
 								totales);													
     } // try
     catch (Exception e) {

@@ -319,12 +319,49 @@
               </div>
             </p:panel>
           </div>
+					<div class="EmptyBox10"></div>
+					<c:forEach items="#{kajoolTablero.attrs.jsons}" var="prop" varStatus="index">													
+						<!--div class="Container50 Responsive"-->
+							<div class="ContainerIndent">
+								<p:panel style="min-height:250px;">
+									<div class="Container100 Responsive Fs20">
+										<i class="icon-chart-bar"></i> #{prop.titulo}
+									</div>
+									<div class="Container100">
+										<div id="kajool-chart-avance-#{prop.id}"></div>
+										<script type="text/javascript">
+											$(document).ready(function () {
+												loadChart('kajool-chart-avance-#{prop.id}', '#{prop.json}');
+											});
+										</script>
+									</div>
+								</p:panel>
+							</div>
+						<!--/div-->
+					</c:forEach>
+					<!--div class="Container50 Responsive"-->
+						<div class="ContainerIndent">            
+							<p:panel style="height:290px;">
+								<div class="Container100 Responsive Fs20">
+									<i class="icon-money"></i> Cuentas por cobrar
+								</div>
+								<div class="Container100">
+									<div id="kajool-chart-avance-cobro"></div>
+									<script type="text/javascript">
+										$(document).ready(function () {
+											loadChart('kajool-chart-avance-cobro', '#{kajoolTablero.attrs.jsonCobro}');
+										});
+									</script>
+								</div>
+							</p:panel>
+						</div>
+					<!--/div-->
         </div>		  
 
         <div class="Container50 Responsive">
           <div class="ContainerIndent">            
             <div class="EmptyBox10"></div>
-            <p:panel style="height:220px;">
+            <p:panel style="height:240px;">
               <div class="Container100 Responsive Fs20">
                 <i class="icon-chart-outline"></i> Utilidad por caja
               </div>
@@ -339,10 +376,10 @@
             </p:panel>
           </div>
 
-          <div class="Container50 Responsive">
+          <div class="Container100 Responsive">
             <div class="ContainerIndent">
               <div class="EmptyBox10"></div>
-              <p:panel style="min-height:371px;">
+              <p:panel style="min-height:430px;">
                 <div class="Container100 Responsive Fs20">
                   <i class="icon-cube"></i>Articulos mas vendidos 
                   <p:separator styleClass="Wid100"/>
@@ -358,10 +395,10 @@
               </p:panel>
             </div>	
           </div>
-          <div class="Container50 Responsive">
+          <div class="Container100 Responsive">
             <div class="ContainerIndent">
               <div class="EmptyBox10"></div>
-              <p:panel style="min-height:371px;">
+              <p:panel style="min-height:430px;">
                 <div class="Container100 Responsive Fs20">
                   <i class="icon-dollar"></i>Articulos con mayor utilidad 
                   <p:separator styleClass="Wid100"/>
@@ -382,43 +419,7 @@
               </p:panel>
             </div>				     
           </div>						
-        </div>    
-        <c:forEach items="#{kajoolTablero.attrs.jsons}" var="prop" varStatus="index">													
-          <div class="Container50 Responsive">
-            <div class="ContainerIndent">
-              <p:panel style="min-height:250px;">
-                <div class="Container100 Responsive Fs20">
-                  <i class="icon-chart-bar"></i> #{prop.titulo}
-                </div>
-                <div class="Container100">
-                  <div id="kajool-chart-avance-#{prop.id}"></div>
-                  <script type="text/javascript">
-										$(document).ready(function () {
-											loadChart('kajool-chart-avance-#{prop.id}', '#{prop.json}');
-										});
-                  </script>
-                </div>
-              </p:panel>
-            </div>
-          </div>
-        </c:forEach>
-				<div class="Container50 Responsive">
-          <div class="ContainerIndent">            
-            <p:panel style="height:290px;">
-              <div class="Container100 Responsive Fs20">
-                <i class="icon-money"></i> Cuentas por cobrar
-              </div>
-              <div class="Container100">
-                <div id="kajool-chart-avance-cobro"></div>
-                <script type="text/javascript">
-									$(document).ready(function () {
-										loadChart('kajool-chart-avance-cobro', '#{kajoolTablero.attrs.jsonCobro}');
-									});
-                </script>
-              </div>
-            </p:panel>
-          </div>
-        </div>
+        </div>            				
 				<div class="Container50 Responsive">
           <div class="ContainerIndent">            
             <p:panel style="height:290px;">

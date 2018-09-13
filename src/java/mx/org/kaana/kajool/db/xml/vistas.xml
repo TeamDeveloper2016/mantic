@@ -331,6 +331,8 @@
               tc_janal_perfiles on tc_janal_perfiles.id_menu = menus.id_menu
           where
               menus.ispagina=1
+					group by 
+						menus.id_menu, menus.clave, menus.descripcion,menus.ruta, menus.nivel, menus.ispagina, tc_janal_perfiles.id_menu
           order by
               menus.clave
         </select>
