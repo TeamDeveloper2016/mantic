@@ -207,7 +207,7 @@ public class Reader implements Serializable{
 			regresar= new ArrayList<>();
 			conceptos= document.getDocumentElement().getElementsByTagName("cfdi:Conceptos").item(0).getChildNodes();				
 			for (int i = 0; i < conceptos.getLength(); i++){				
-				node= conceptos.item(i).getNextSibling()== null? conceptos.item(i): conceptos.item(i).getNextSibling();
+				node= conceptos.item(i)== null? conceptos.item(i).getNextSibling(): conceptos.item(i);
 				if(node!= null) {
 					nodeName= node.getNodeName();
 					if(nodeName.equals("cfdi:Concepto")) {
@@ -221,7 +221,7 @@ public class Reader implements Serializable{
 									concepto.setCantidad(valAttr);
 									break;
 								case "ClaveProdServ":
-									concepto.setClaveProdServ(valAttr);
+									concepto.setClaveProdServ(valAttr!= null? valAttr.trim(): "");
 									break;
 								case "ClaveUnidad":
 									concepto.setClaveUnidad(valAttr);

@@ -27,6 +27,7 @@ public class ReadFactura {
       			reader= new Reader(matched);
 						factura= reader.execute();
 						LOG.info("<========================================================================================>");
+						LOG.info("Archivo: "+ matched);
 						LOG.info("Factura con folio: " + factura.getFolio());
 						LOG.info("Emisor  : " + factura.getEmisor());
 						LOG.info("Receptor: " + factura.getReceptor());
