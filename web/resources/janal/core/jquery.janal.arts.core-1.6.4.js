@@ -86,9 +86,11 @@
 				  return 'Es probable que los cambios no se hayan guardado\n¿Aun asi deseas salir de esta opción?.';
 			});			
       $(document).on('keyup', this.lookup, function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('Keydown: '+ key);
 				clearTimeout($articulos.typingTimer);
-        if ($(this).val() && $(this).val().trim().length> 0) 
-          $articulos.typingTimer= setTimeout($articulos.look($(this)), $articulos.doneInterval);
+				if ($(this).val() && $(this).val().trim().length> 0) 
+					$articulos.typingTimer= setTimeout($articulos.look($(this)), $articulos.doneInterval);
 				return false;
 			});  
       $(document).on('keyup', this.findout, function(e) {

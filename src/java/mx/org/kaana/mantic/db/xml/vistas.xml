@@ -2330,6 +2330,7 @@
 					tc_mantic_ordenes_compras.id_orden_compra as id_key,
 					tc_mantic_ordenes_compras.id_empresa,  
           tc_mantic_ordenes_compras.id_almacen,
+          tc_mantic_almacenes.nombre as almacen,
 				  tc_mantic_empresas.clave as empresa,  
 					tc_mantic_ordenes_compras.consecutivo,  
 					tc_mantic_proveedores.id_proveedor,  
@@ -2349,6 +2350,8 @@
 					tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
 				inner join 
 					tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus=tc_mantic_ordenes_estatus.id_orden_estatus
+				inner join 
+					tc_mantic_almacenes on tc_mantic_ordenes_compras.id_almacen=tc_mantic_almacenes.id_almacen
 				where
 					tc_mantic_ordenes_compras.id_empresa in ({idEmpresa})
 					and {condicion}

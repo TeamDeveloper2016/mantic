@@ -416,6 +416,26 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
     }// finally
 	}
  
+	public void doCleanArticulos() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		try {
+			columns= new ArrayList<>();
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
+			params.put("codigo", "WXYZ");
+      this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porLikeNombre", params, columns));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}
+ 
 	public void doFindOutArticulos() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();

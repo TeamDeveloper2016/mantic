@@ -64,6 +64,7 @@
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
 		<p:remoteCommand name="lookup" actionListener="#{manticTallerDetalle.doUpdateDialogArticulos}" process="@this codigo" update="buscados localizado"/>
+		<p:remoteCommand name="clean" actionListener="#{manticTallerDetalle.doCleanArticulos}" process="@this codigo" update="buscados localizado"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
@@ -210,7 +211,7 @@
 				</div>
 			</div>
 		</div>		
-		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" onHide="janal.desbloquear();"  onShow="$('#codigo').val('')" width="850px" height="670px" resizable="false">
+		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="false" onHide="janal.desbloquear();"  onShow="$('#codigo').val('');clean();" width="900px" height="670px" resizable="false">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
 					<p:outputLabel for="codigo" value="Código o nombre:"/>
@@ -228,8 +229,11 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
 					<p:outputLabel value="Click sobre la tabla para seleccionar el articulo, por defecto es el primero de la lista"/><br/>
-					<p:dataTable id="buscados" widgetVar="widgetBuscados" lazy="true" styleClass="janal-row-articulos janal-wid-100" value="#{manticTallerDetalle.attrs.lazyModel}" selection="#{manticTallerDetalle.attrs.buscado}" var="item" selectionMode="single" rows="#{Constantes.REGISTROS_POR_PAGINA- 2}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" paginator="#{manticTallerDetalle.attrs.lazyModel.rowCount gt manticTallerDetalle.attrs.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+					<p:dataTable id="buscados" widgetVar="widgetBuscados" lazy="true" styleClass="janal-row-articulos janal-wid-100" value="#{manticTallerDetalle.attrs.lazyModel}" selection="#{manticTallerDetalle.attrs.buscado}" var="item" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="50" liveScroll="true" liveScrollBuffer="50" scrollable="true" scrollHeight="280" style="margin-bottom:0">
 						<p:ajax event="rowDblselect" oncomplete="$('#localizado').click();"/>
+						<p:column headerText="No" styleClass="janal-wid-col-30">
+							<h:outputText value="#{index+ 1}"/>
+						</p:column>   
 						<p:column headerText="Nombre">
 							<h:outputText value="#{item.nombre}"/>
 						</p:column>   

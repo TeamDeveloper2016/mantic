@@ -72,6 +72,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns = new ArrayList<>();
       columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("almacen", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      

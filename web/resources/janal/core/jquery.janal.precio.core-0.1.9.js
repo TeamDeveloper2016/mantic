@@ -33,6 +33,8 @@
 				var key= e.keyCode? e.keyCode: e.which;
 				janal.console('Keydown: '+ key);
 				switch(key) {
+					case $precios.VK_UP:	
+					case $precios.VK_DOWN:	
 					case $precios.VK_TAB:
 					case $precios.VK_ENTER:
 						janal.console('jsPrecios.keydown: '+ $(this).attr('alt'));
@@ -61,6 +63,8 @@
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('Keydown: '+ key);
 				switch(key) {
+					case $precios.VK_UP:	
+					case $precios.VK_DOWN:	
 					case $precios.VK_TAB:
 						return $precios.next(true);
 					  break;
@@ -84,21 +88,30 @@
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('Keydown: '+ key);
 				switch(key) {
+					case $precios.VK_UP:	
+					case $precios.VK_DOWN:	
 					case $precios.VK_ENTER:
 					case $precios.VK_TAB:
-					case $precios.VK_DOWN:	
 						return $precios.goto(true);
 					  break;
 					case $precios.VK_ESC:
             PF('dialogo').hide();
 						break;
 					case $precios.VK_PAGE_NEXT:
-						$('#buscados_paginator_top > a.ui-paginator-next').click();
-						return setTimeout($precios.goto(false), 1000);
+						if($('#buscados_paginator_top > a.ui-paginator-next')) {
+						  $('#buscados_paginator_top > a.ui-paginator-next').click();
+						  return setTimeout($precios.goto(false), 1000);
+						} // if
+						else
+							return false;
 						break;
 					case $precios.VK_PAGE_PREV:
-						$('#buscados_paginator_top > a.ui-paginator-prev').click();
-						return setTimeout($precios.goto(false), 1000);
+						if($('#buscados_paginator_top > a.ui-paginator-prev')) {
+	  					$('#buscados_paginator_top > a.ui-paginator-prev').click();
+  						return setTimeout($precios.goto(false), 1000);
+						} // if
+						else
+							return false;
 						break;
 				} // swtich
 			});	
@@ -122,12 +135,20 @@
 						return $precios.hide();
 						break;
 					case $precios.VK_PAGE_NEXT:
-						$('#verificadorTabla_paginator_top > a.ui-paginator-next').click();
-						return setTimeout($precios.next(false), 1000);
+						if($('#verificadorTabla_paginator_top > a.ui-paginator-next')) {
+						  $('#verificadorTabla_paginator_top > a.ui-paginator-next').click();
+						  return setTimeout($precios.next(false), 1000);
+						} // if
+						else
+							return false;
 						break;
 					case $precios.VK_PAGE_PREV:
-						$('#verificadorTabla_paginator_top > a.ui-paginator-prev').click();
-						return setTimeout($precios.next(false), 1000);
+						if($('#verificadorTabla_paginator_top > a.ui-paginator-prev')) {
+  						$('#verificadorTabla_paginator_top > a.ui-paginator-prev').click();
+	  					return setTimeout($precios.next(false), 1000);
+						} // if
+						else
+							return false;
 						break;
 				} // swtich
 			});	
@@ -151,12 +172,20 @@
 						// return $precios.hide();
 						break;
 					case $precios.VK_PAGE_NEXT:
-						$('#buscados_paginator_top > a.ui-paginator-next').click();
-						return setTimeout($precios.next(false), 1000);
+						if($('#buscados_paginator_top > a.ui-paginator-next')) {
+						  $('#buscados_paginator_top > a.ui-paginator-next').click();
+						  return setTimeout($precios.next(false), 1000);
+					  } // if
+						else
+							return false;
 						break;
 					case $precios.VK_PAGE_PREV:
-						$('#buscados_paginator_top > a.ui-paginator-prev').click();
-						return setTimeout($precios.next(false), 1000);
+						if($('#buscados_paginator_top > a.ui-paginator-prev')) {
+  						$('#buscados_paginator_top > a.ui-paginator-prev').click();
+	  					return setTimeout($precios.next(false), 1000);
+					  } // if
+						else
+							return false;
 						break;
 				} // swtich
 			});	
@@ -203,6 +232,11 @@
 			  $('#verificadorTabla .ui-datatable-data').focus();
 			return false;
 		},
+		clear: function() {
+			janal.console('jsPrecios.clear');
+			if(PF('widgetBuscados')) 
+			  PF('widgetBuscados').clearSelection();
+		},
 		goto: function(focus) {
 			janal.console('jsPrecios.goto');
 			PF('widgetBuscados').clearSelection();
@@ -236,3 +270,6 @@
 	console.info('Iktan.Control.Precios initialized');
 })(window);	
 
+$(document).ready(function() {
+	jsPrecios= new Janal.Control.Precios.Core();
+});			

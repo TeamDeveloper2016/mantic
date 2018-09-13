@@ -133,6 +133,12 @@
               </f:facet>
               <h:outputText value="#{filtro['empresa']}"/>
             </p:column>		
+            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{filtro.almacen}">
+              <f:facet name="header">
+                <h:outputText value="Almacen"/>
+              </f:facet>
+              <h:outputText value="#{filtro['almacen']}"/>
+            </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="No. orden compra"/>
@@ -171,7 +177,7 @@
             <p:menuitem id="modificar" action="#{manticComprasOrdenesFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus eq '1'}"/>					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus eq '1'}"/>
             <p:menuitem id="consultar" action="#{manticComprasOrdenesFiltro.doAccion('CONSULTAR')}" icon="fa fa-edit" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-            <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora movimientos" onstart="return janal.bloquear()" process="@this tabla" action="#{manticComprasOrdenesFiltro.doMovimientos}"/>
+            <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticComprasOrdenesFiltro.doMovimientos}"/>
 						<p:separator/>
 						<p:menuitem id="estructura" action="#{manticComprasOrdenesFiltro.doEstructura}" icon="fa fa-edit" ajax="false" value="Estructura" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
             <p:separator rendered="#{fn:contains('|1|2|3|4|5|6|7|', manticComprasOrdenesFiltro.attrs.seleccionado.idOrdenEstatus)}"/>
