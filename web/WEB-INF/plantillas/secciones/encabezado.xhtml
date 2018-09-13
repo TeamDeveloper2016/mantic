@@ -6,7 +6,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core"
 			xmlns:ui="http://java.sun.com/jsf/facelets">	
-    <h:outputScript library="janal" name="#{kajoolUtilAplicacion.preciosJs}"/>
+    <!--h:outputScript library="janal" name="#{kajoolUtilAplicacion.preciosJs}"/-->
 		<script type="text/javascript">
 			$(function() {
 				janal.fecha();
@@ -18,10 +18,252 @@
 			$(document).ready(function() {
 				jsPrecios= new Janal.Control.Precios.Core();
 			});			
+			
+(function(window) {
+	var jsPrecios;	
+
+	Janal.Control.Precios= {};
+	
+	Janal.Control.Precios.Core= Class.extend({
+		VK_TAB      : 9, 
+		VK_ESC      : 27, 
+		VK_ENTER    : 13, 
+		VK_UP       : 38,
+		VK_DOWN     : 40,
+		VK_PAGE_NEXT: 34,
+		VK_PAGE_PREV: 33,
+		VK_F7       : 118,
+		VK_MINUS    : 109,
+		VK_REST     : 189,
+		fields      : {
+			'faltantesCantidad'  : {validaciones: 'requerido|mayor-igual({"cuanto": 0})', mascara: 'entero', formatos: 'precio', grupo: 'faltantes'},
+			'faltantesIdArticulo': {validaciones: 'requerido', mascara: 'libre', grupo: 'faltantes'}
+		},
+		init: function() { // constructor
+			$precios= this;
+			this.hide();
+	    $(document).on('keydown', '.janal-key-event', function(e) {
+				var key= e.keyCode? e.keyCode: e.which;
+				janal.console('Keydown: '+ key);
+				switch(key) {
+					case $precios.VK_TAB:
+					case $precios.VK_ENTER:
+						janal.console('jsPrecios.keydown: '+ $(this).attr('alt'));
+						if($('#'+ $(this).attr('alt'))) {
+						  $('#'+ $(this).attr('alt')).focus();
+							if('agregarFaltantes'=== $(this).attr('id'))
+                $(this).click();								
+						} // if	
+            return false;  					
+					case $precios.VK_ESC:
+            PF('dlgFaltantes').hide();
+					  break;
+   		    case $precios.VK_MINUS:
+		      case $precios.VK_REST:
+						if('codigosFaltantes_input'=== $(this).attr('id')) {
+							$('.janal-clean-input').val('');
+							return false;
+						} // if	
+					default: 
+						if('faltantesCantidad'=== $(this).attr('id'))
+						  return (key&gt;=48 &amp;&amp; key&lt;=57) || (key&gt;=96 &amp;&amp; key&lt;=105) || key===8 || key===37 || key===39 || key===110 || key===190;
+						break;
+				} // swtich
+			});	
+	    $(document).on('keydown', '.janal-key-precios', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('Keydown: '+ key);
+				switch(key) {
+					case $precios.VK_UP:	
+					case $precios.VK_DOWN:	
+					case $precios.VK_TAB:
+						return $precios.next(true);
+					  break;
+					case $precios.VK_ESC:
+            PF('dlgVerificador').hide();
+					  break;
+					case $precios.VK_ENTER:
+						return $precios.lookup();
+						break;
+					case $precios.VK_PAGE_NEXT:
+						$('#verificadorTabla_paginator_top &gt; a.ui-paginator-next').click();
+						return setTimeout($precios.next(false), 1000);
+						break;
+					case $precios.VK_PAGE_PREV:
+						$('#verificadorTabla_paginator_top &gt; a.ui-paginator-prev').click();
+						return setTimeout($precios.next(false), 1000);
+						break;
+				} // swtich
+			});	
+	    $(document).on('keydown', '.janal-key-articulo', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('Keydown: '+ key);
+				switch(key) {
+					case $precios.VK_ENTER:
+					case $precios.VK_TAB:
+					case $precios.VK_DOWN:	
+						return $precios.goto(true);
+					  break;
+					case $precios.VK_ESC:
+            PF('dialogo').hide();
+						break;
+					case $precios.VK_PAGE_NEXT:
+						$('#buscados_paginator_top &gt; a.ui-paginator-next').click();
+						return setTimeout($precios.goto(false), 1000);
+						break;
+					case $precios.VK_PAGE_PREV:
+						$('#buscados_paginator_top &gt; a.ui-paginator-prev').click();
+						return setTimeout($precios.goto(false), 1000);
+						break;
+				} // swtich
+			});	
+	    $(document).on('keydown', '.janal-key-registros', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('Keydown: '+ key);
+				switch(key) {
+					case $precios.VK_TAB:
+					  $('#verificadorValue').focus();
+						return false;
+					  break;
+					case $precios.VK_ESC:
+            PF('dlgVerificador').hide();
+						break;
+					case $precios.VK_F7:
+					case $precios.VK_ENTER:
+						return $precios.show();
+						break;
+					case $precios.VK_UP:
+					case $precios.VK_DOWN:
+						return $precios.hide();
+						break;
+					case $precios.VK_PAGE_NEXT:
+						$('#verificadorTabla_paginator_top &gt; a.ui-paginator-next').click();
+						return setTimeout($precios.next(false), 1000);
+						break;
+					case $precios.VK_PAGE_PREV:
+						$('#verificadorTabla_paginator_top &gt; a.ui-paginator-prev').click();
+						return setTimeout($precios.next(false), 1000);
+						break;
+				} // swtich
+			});	
+	    $(document).on('keydown', '.janal-row-articulos', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('Keydown: '+ key);
+				switch(key) {
+					case $precios.VK_TAB:
+					  $('#codigo').focus();
+						return false;
+					  break;
+					case $precios.VK_ESC:
+            PF('dialogo').hide();
+						break;
+					case $precios.VK_F7:
+					case $precios.VK_ENTER:
+				    return $precios.enter();
+						break;
+					case $precios.VK_UP:
+					case $precios.VK_DOWN:
+						// return $precios.hide();
+						break;
+					case $precios.VK_PAGE_NEXT:
+						$('#buscados_paginator_top &gt; a.ui-paginator-next').click();
+						return setTimeout($precios.next(false), 1000);
+						break;
+					case $precios.VK_PAGE_PREV:
+						$('#buscados_paginator_top &gt; a.ui-paginator-prev').click();
+						return setTimeout($precios.next(false), 1000);
+						break;
+				} // swtich
+			});	
+	    $(document).on('keydown', '.janal-key-run', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('Keydown: '+ key);
+				switch(key) {
+					case $precios.VK_ENTER:
+					case $precios.VK_TAB:
+						janal.mayusculas('kajoolOpcion');
+						if($('#kajoolEjecutar'))
+							$('#kajoolEjecutar').click();
+						return false;
+						break;
+				} // swtich
+			});	
+		},
+		lookup: function() {
+			janal.console('jsPrecios.lookup');
+			verificadorLookup();
+			return false;
+		},
+		show: function()  {
+ 			janal.console('jsPrecios.show');
+      setTimeout("$('#verificadorPrecio').attr('style', 'display:');", 500);			
+			return false;
+		},
+		enter: function()  {
+ 			janal.console('jsPrecios.enter');
+      $('#localizado').click();		
+			return false;
+		},
+		hide: function() {
+			janal.console('jsPrecios.hide');
+			$('#verificadorPrecio').attr('style', 'display:none');
+			return false;
+		},
+		next: function(focus) {
+			janal.console('jsPrecios.next');
+			PF('widgetVerificador').clearSelection();
+			PF('widgetVerificador').writeSelections();
+			PF('widgetVerificador').selectRow(0, true);	
+			if(focus)
+			  $('#verificadorTabla .ui-datatable-data').focus();
+			return false;
+		},
+		clear: function() {
+			janal.console('jsPrecios.clear');
+			if(PF('widgetBuscados')) 
+			  PF('widgetBuscados').clearSelection();
+		},
+		goto: function(focus) {
+			janal.console('jsPrecios.goto');
+			PF('widgetBuscados').clearSelection();
+			PF('widgetBuscados').writeSelections();
+			PF('widgetBuscados').selectRow(0, true);	
+			if(focus)
+			  $('#buscados .ui-datatable-data').focus();
+			return false;
+		},
+		ask: function(text) {
+			janal.console('jsPrecios.ask');
+      return confirm('¿ Esta seguro que desea eliminar el articulo ?\n ['+ text+ ']');			
+		},
+		refresh: function() {
+			janal.console('jsPrecios.refresh');
+  		$('.janal-clean-input').val('');
+			janal.change('faltantes', $precios.fields);
+		},
+		execute: function() {
+			var ok= janal.partial('faltantes');
+			janal.console('jsPrecios.execute: '+ ok);
+			if(ok)
+				faltantesVerificar();
+		},
+		update: function() {
+			janal.console('jsPrecios.update');
+			janal.restore();
+		}
+	});
+	
+	console.info('Iktan.Control.Precios initialized');
+})(window);	
+
 		</script>
 		<style>
 			.janal-faltantes-top {
 				margin-top: -6px;
+			}
+			.ui-datatable tr.ui-state-highlight,
+			.ui-datatable tr.ui-state-hover {
+			  background-color: #9EB3BB;
 			}
 		</style>	
   <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
@@ -116,7 +358,7 @@
 			<p:commandButton value="Aceptar" onstart="janal.monitor(0);" oncomplete="PF('dialogoInactivo').hide(); janal.desbloquear();"/>							
 		</div>				
 	</p:dialog>
-	<p:dialog id="dialogoVerificador" widgetVar="dlgVerificador" header="Verificador de precios" onShow="$('#verificadorValue').val('.*.');verificadorLookup();$('#verificadorValue').focus();janal.bloquear();" onHide="janal.sendLastFocus();janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
+	<p:dialog id="dialogoVerificador" widgetVar="dlgVerificador" header="Verificador de precios" onShow="$('#verificadorValue').val(''); $('#verificadorValue').focus();janal.bloquear();" onHide="jsPrecios.hide(); janal.sendLastFocus(); janal.desbloquear();" height="620px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form prependId="false">
 			<p:remoteCommand name="verificadorLookup" actionListener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor verificadorValue" update="verificadorPrecio verificadorTabla" oncomplete="if($('#verificadorValue').val()==='.*.') $('#verificadorValue').val('');"/>
 			<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-90, janal-wid-15">
@@ -133,22 +375,22 @@
 					</p:inputSwitch>	
 				</p:panelGrid>	
 			</p:panelGrid>
-			<p:panel id="verificadorPrecio" header="Precios [ #{kajoolEncabezado.attrs.selected.nombre} ]" styleClass="janal-wid-100" style="display: none">
-				<p:panelGrid layout="grid" columns="6" styleClass="janal-wid-100" columnClasses="janal-column-center,janal-column-center,janal-column-center,janal-column-center,janal-column-center,janal-column-center">
+			<p:panel id="verificadorPrecio" header="Precios [ #{kajoolEncabezado.attrs.selected.nombre} ]" styleClass="janal-wid-99" style="display: none">
+				<p:panelGrid layout="grid" columns="6" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center, janal-column-center, janal-column-center">
 					<p:outputLabel value="Menudeo"/>
 					<p:outputLabel value="Medio mayoreo"/>
 					<p:outputLabel value="Mayoreo"/>
 					<p:outputLabel value="Limite menudeo"/>
 					<p:outputLabel value="Limite medio mayoreo"/>
 					<p:outputLabel value="Limite mayoreo"/>
-					<p:inputText styleClass="janal-column-right" value="#{kajoolEncabezado.attrs.selected.menudeo}" readonly="true"/>
-					<p:inputText styleClass="janal-column-right" value="#{kajoolEncabezado.attrs.selected.medioMayoreo}" readonly="true"/>
-					<p:inputText styleClass="janal-column-right" value="#{kajoolEncabezado.attrs.selected.mayoreo}" readonly="true"/>
-					<p:inputText styleClass="janal-column-center" value="0 - #{kajoolEncabezado.attrs.selected.limiteMedioMayoreo}" readonly="true"/>
-					<p:inputText styleClass="janal-column-center" value="#{kajoolEncabezado.attrs.selected.limiteMedioMayoreo} - #{kajoolEncabezado.attrs.selected.limiteMayoreo}" readonly="true"/>
-					<p:inputText styleClass="janal-column-center" value="#{kajoolEncabezado.attrs.selected.limiteMayoreo} - #######" readonly="true"/>
+					<p:inputText styleClass="janal-column-right janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.menudeo}" readonly="true"/>
+					<p:inputText styleClass="janal-column-right janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.medioMayoreo}" readonly="true"/>
+					<p:inputText styleClass="janal-column-right janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.mayoreo}" readonly="true"/>
+					<p:inputText styleClass="janal-column-center janal-wid-100-txt" value="0 - #{kajoolEncabezado.attrs.selected.limiteMedioMayoreo}" readonly="true"/>
+					<p:inputText styleClass="janal-column-center janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.limiteMedioMayoreo} - #{kajoolEncabezado.attrs.selected.limiteMayoreo}" readonly="true"/>
+					<p:inputText styleClass="janal-column-center janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.limiteMayoreo} - #######" readonly="true"/>
   			</p:panelGrid>
-				<p:outputLabel value="Existencias por almacen:" styleClass="janal-wid-100"/>
+				<p:outputLabel value="Existencias por almacen:" styleClass="janal-wid-99"/>
 				<p:selectOneMenu value="#{kajoolEncabezado.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="contains">
 					<f:selectItems value="#{kajoolEncabezado.attrs.almacenes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre} - #{element.stock}"/>
 					<p:column headerText="Clave">
@@ -166,10 +408,10 @@
 				</p:selectOneMenu>
 			</p:panel>
 			<p:spacer height="3px"/>
-			<p:dataTable lazy="true" id="verificadorTabla" widgetVar="widgetVerificador" var="filtro" styleClass="janal-key-registros janal-wid-100" value="#{kajoolEncabezado.lazyModel}" selection="#{kajoolEncabezado.attrs.selected}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="6" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="6, 4, 2" paginator="#{kajoolEncabezado.lazyModel.rowCount gt kajoolEncabezado.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+			<p:dataTable lazy="true" id="verificadorTabla" widgetVar="widgetVerificador" var="filtro" styleClass="janal-key-registros janal-wid-100" value="#{kajoolEncabezado.lazyModel}" selection="#{kajoolEncabezado.attrs.selected}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="500" rowIndexVar="index" reflow="true" scrollRows="500" scrollable="true" virtualScroll="true" scrollHeight="360" style="margin-bottom:0">
 				<p:ajax event="rowSelect" process="@this" update="verificadorPrecio" listener="#{kajoolEncabezado.doRowDblSelectEvent}" />
 				<p:ajax event="rowDblselect" process="@this" update="verificadorPrecio" listener="#{kajoolEncabezado.doRowDblSelectEvent}" oncomplete="jsPrecios.show();"/>
-				<p:column class="MarAuto Responsive janal-wid-col-20">
+				<p:column class="MarAuto Responsive janal-wid-col-30">
 					<f:facet name="header">
 						<h:outputText value="No."/>
 					</f:facet>
@@ -235,7 +477,7 @@
 				</p:panelGrid>	
 			</p:panelGrid>	
 			<p:spacer height="3px"/>
-			<p:dataTable lazy="true" id="faltantesTabla" widgetVar="widgetFaltantes" var="filtro" styleClass="faltantes janal-wid-100" value="#{kajoolEncabezado.lazyFaltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="10" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="10, 8, 6" paginator="#{kajoolEncabezado.lazyFaltantes.rowCount gt kajoolEncabezado.lazyFaltantes.pageSize}" rowIndexVar="index" reflow="true">
+			<p:dataTable lazy="true" id="faltantesTabla" widgetVar="widgetFaltantes" var="filtro" styleClass="faltantes janal-wid-100" value="#{kajoolEncabezado.lazyFaltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="500" rowIndexVar="index" reflow="true" scrollRows="500" scrollable="true" virtualScroll="true" scrollHeight="350" style="margin-bottom:0">
 				<p:column class="MarAuto Responsive janal-wid-col-15">
 					<f:facet name="header">
 						<h:outputText value="No."/>
@@ -313,10 +555,10 @@
 								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-calculator"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[ALT+C]</strong></td><td>Calculadora</td>	
 							</tr>
 							<tr>
-								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-edit"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[SHIFT+F9]</strong></td><td>Listado de articulos faltantes</td>	
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-edit"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[SHIFT+F9]</strong></td><td>Articulos faltantes</td>	
 							</tr>
 							<tr>
-								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-search-plus"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[SHIFT+F10]</strong></td><td>Buscar un articulo</td>	
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-search-plus"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[SHIFT+F10]</strong></td><td>Buscar articulo</td>	
 							</tr>
 							<tr>
 								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-qq"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+R]</strong></td><td>Ir a un módulo</td>	

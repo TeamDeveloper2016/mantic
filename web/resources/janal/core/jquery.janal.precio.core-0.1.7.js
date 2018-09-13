@@ -86,6 +86,7 @@
 				switch(key) {
 					case $precios.VK_ENTER:
 					case $precios.VK_TAB:
+					case $precios.VK_DOWN:	
 						return $precios.goto(true);
 					  break;
 					case $precios.VK_ESC:
