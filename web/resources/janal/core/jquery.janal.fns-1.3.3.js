@@ -548,7 +548,7 @@ $.mask.masks = $.extend($.mask.masks, {
           return false;
 				} // if	
         else
-  			  return janal.double(janal.cleanToken(value), 0)<= janal.double(janal.cleanToken(params.cual), 0);
+  			  return janal.double(janal.cleanToken(value), 0)<= janal.double(janal.cleanToken(janal.value(params.cual)), 0);
 		}, function(params, element) {
       return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser menor o igual '+ janal.value(params.cual)+ '.';
     });
@@ -562,7 +562,7 @@ $.mask.masks = $.extend($.mask.masks, {
           return false;
 				}	// if
         else 
-  			  return janal.double(janal.cleanToken(value), 0)>= janal.double(janal.cleanToken(params.cual), 0);
+  			  return janal.double(janal.cleanToken(value), 0)>= janal.double(janal.cleanToken(janal.value(params.cual)), 0);
 		}, function(params, element) {
       return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser mayor o igual '+ janal.value(params.cual)+ '.';
     });

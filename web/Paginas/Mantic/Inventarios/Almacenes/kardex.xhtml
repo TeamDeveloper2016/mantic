@@ -16,8 +16,8 @@
 				'contenedorGrupos\\:costos': {validaciones: 'flotante', mascara: 'libre', formatos: 'precio', individual: true, grupo: 'calculos'},
 				'utilidades': {multiple: '$', validaciones: 'flotante', mascara: 'libre', formatos: 'precio', individual: true, grupo: 'calculos'},
 				'precios'   : {multiple: '$', validaciones: 'flotante', mascara: 'libre', formatos: 'precio', individual: true, grupo: 'calculos'},
-				'contenedorGrupos\\:tabla\\:0\\:limites': {validaciones: 'requerido|flotante|menor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:1\\\\:limites"})', mascara: 'libre', formatos: 'cantidad', individual: true, grupo: 'calculos'},
-				'contenedorGrupos\\:tabla\\:1\\:limites': {validaciones: 'requerido|flotante|mayor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:0\\\\:limites"})', mascara: 'libre', formatos: 'cantidad', individual: true, grupo: 'calculos'}
+				'contenedorGrupos\\:tabla\\:0\\:limites': {validaciones: 'requerido|flotante|menor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:1\\\\:limites"})', mascara: 'libre', formatos: 'cantidad', grupo: 'calculos'},
+				'contenedorGrupos\\:tabla\\:1\\:limites': {validaciones: 'requerido|flotante|mayor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:0\\\\:limites"})', mascara: 'libre', formatos: 'cantidad', grupo: 'calculos'}
 			};	
 			
 		</script>   
