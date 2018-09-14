@@ -151,7 +151,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 	
 	public String getImporte$() {
-		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.getImporte());
+		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, this.getImporte());
 	}
 
 	public String getDiferencia() {
