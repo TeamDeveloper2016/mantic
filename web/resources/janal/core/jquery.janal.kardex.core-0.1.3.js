@@ -198,6 +198,13 @@
  			janal.console('jsKardex.locate: '+ $kardex.reference);
       $($kardex.reference).val(''); 
 			$($kardex.reference).focus();			
+		},
+		process: function()  {
+ 			janal.console('jsKardex.process: '+ $kardex.reference);
+			janal.desbloquear();
+			janal.reset();
+			setTimeout($kardex.locate(), 500);
+			$('#source-image').attr('href', $('#contenedorGrupos\\:icon-image').attr('src'));
 		}
 	});
 	

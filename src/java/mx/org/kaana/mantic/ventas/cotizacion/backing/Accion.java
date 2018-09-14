@@ -108,6 +108,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("descuentoIndividual", 0);
 			this.attrs.put("descuentoGlobal", 0);
 			this.attrs.put("tipoDescuento", INDIVIDUAL);
+			this.attrs.put("descripcion", "Imagen no disponible");
 			this.image= LoadImages.getImage("-1");
 			loadClienteDefault();
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
@@ -382,6 +383,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			} // if
 			else
 				super.toMoveData(articulo, index);	
+			this.attrs.put("descripcion", articulo.toString("nombre"));
 			this.image= LoadImages.getImage(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), articulo.toLong("idArticulo").toString());
 			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
 			RequestContext.getCurrentInstance().update("deudor");
@@ -412,6 +414,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			} // if
 			else
 				super.toMoveDataArt(articulo, index);	
+			this.attrs.put("descripcion", articulo.getNombre());
 			this.image= LoadImages.getImage(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), articulo.getIdArticulo().toString());
 			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
 			RequestContext.getCurrentInstance().update("deudor");
@@ -794,9 +797,11 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // catch		
 	} // doLoadSaldos
 	
-	public void doActualizaImage(String idImage) {
+	public void doActualizaImage(String idImage, String descripcion) {
 		String idEmpresa= null;
 		try {
+			if(!Cadena.isVacio(descripcion))
+			  this.attrs.put("descripcion", descripcion);
 			idEmpresa= JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString();
 			if(!idImage.equals("-1")){
 				this.image= LoadImages.getImage(idEmpresa, idImage);

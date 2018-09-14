@@ -143,11 +143,10 @@
 											<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
                       <p:inputText id="locks" value="0" style="display:none"/>
 											<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticVentasCuentasAccion.attrs.articulo}" completeMethod="#{manticVentasCuentasAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10">
-												<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>												
+												<p:ajax event="itemSelect" update="panelTotales" oncomplete="jsArticulos.close();$('#source-image').attr('href', $('#icon-image').attr('src'));"/>												
 												<f:facet name="itemtip">
 													<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
 														<f:facet name="header" class="TexAlCenter">
-															<!--p:graphicImage value="#{custom.image}" styleClass="janal-logo-mini filas" width="30" cache="false" stream="false"/-->
 															<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>
 														</f:facet>
 														<h:outputText value="Código:" />
@@ -215,7 +214,10 @@
 						</p:panelGrid>
 						<p:panelGrid id="panelTotales" columns="1" layout="grid" styleClass="janal-wid-99" columnClasses="janal-wid-100">
 							<p:panel header="Imagen" styleClass="TexAlCenter janal-wid-100-txt" style="height:100%">
-								<p:graphicImage id="imagePrincipal" cache="false" value="#{manticVentasCuentasAccion.image}" styleClass="janal-logo-mini filas" width="65" stream="false"/><br/>
+							  <a id="source-image" data-magnify="gallery" data-caption="#{manticVentasCuentasAccion.attrs.descripcion}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen"> 
+  								<p:graphicImage id="icon-image" cache="false" value="#{manticVentasCuentasAccion.image}" styleClass="janal-logo-mini filas" width="65" stream="false"/>
+								</a>	
+								<br/>
 								<p:outputLabel value="img-#{manticVentasCuentasAccion.attrs.idArticulo}" styleClass="filas"/>
 							</p:panel>
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-100 janal-column-right">

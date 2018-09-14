@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Kardex de un articulo"/>
 	<ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.janal.kardex.core-0.1.1.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.kardex.core-0.1.3.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:codigos': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -18,6 +18,7 @@
 				'utilidades': {multiple: '$', validaciones: 'flotante', mascara: 'libre', formatos: 'precio', individual: true, grupo: 'calculos'},
 				'precios'   : {multiple: '$', validaciones: 'flotante', mascara: 'libre', formatos: 'precio', individual: true, grupo: 'calculos'}
 			};	
+			
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
@@ -38,7 +39,7 @@
 			<pe:methodSignature parameters="java.lang.Double"/>  
 			<pe:methodParam name="value"/>  
 		</pe:remoteCommand>		
-		<p:remoteCommand name="replace" actionListener="#{manticInventariosAlmacenesKardex.doFindArticulo}" process="@this" update="@(.filas) @(.recalculo)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();setTimeout(jsKardex.locate(), 500);"/>
+		<p:remoteCommand name="replace" actionListener="#{manticInventariosAlmacenesKardex.doFindArticulo}" process="@this" update="@(.filas) @(.recalculo) contenedorGrupos:panelImage" onstart="return janal.bloquear();" oncomplete="jsKardex.process();"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-1 janal-wid-col-150">
@@ -100,8 +101,11 @@
 									<p:outputLabel for="ulitmoCambio" value="Último cambio:"/>
 									<p:inputText id="ulitmoCambio" value="#{manticInventariosAlmacenesKardex.attrs.ultimo}" styleClass="janal-wid-90 filas" readonly="true"/>
 								</p:panelGrid>
-								<p:panel header="Imagen" styleClass="TexAlCenter janal-wid-100-txt" style="height:100%">
-									<p:graphicImage value="#{manticInventariosAlmacenesKardex.image}" styleClass="janal-logo-mini filas" width="135" stream="false"/><br/>
+								<p:panel id="panelImage" header="Imagen" styleClass="TexAlCenter janal-wid-100-txt" style="height:100%">
+									<a id="source-image" data-magnify="gallery" data-caption="#{manticInventariosAlmacenesKardex.attrs.articulo.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">
+									  <p:graphicImage id="icon-image" value="#{manticInventariosAlmacenesKardex.image}" styleClass="janal-logo-mini filas" width="135" stream="false"/>
+									</a>	
+									<br/>
 									<p:outputLabel value="#{manticInventariosAlmacenesKardex.attrs.idArticulo}.jpg" styleClass="filas"/>
 								</p:panel>
 							</p:panelGrid>	

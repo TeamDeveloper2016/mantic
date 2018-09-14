@@ -100,7 +100,7 @@
 			<pe:methodParam name="idArticulo"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="replace" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion) deudor" actionListener="#{manticVentasAccion.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
+		<pe:remoteCommand name="replace" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion) deudor panelTotales" actionListener="#{manticVentasAccion.doFindArticulo}" onstart="return janal.bloquear();" oncomplete="jsArticulos.process();">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
@@ -204,11 +204,10 @@
                       <p:inputText id="locks" value="0" style="display:none"/>
 											<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticVentasAccion.attrs.articulo}" completeMethod="#{manticVentasAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10">
 												<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
-												<p:ajax event="focus" process="@this" listener="#{manticVentasAccion.doActualizaImage(row['idArticulo'])}" update="panelTotales" oncomplete="janal.refresh();"/>
+												<p:ajax event="focus" process="@this" listener="#{manticVentasAccion.doActualizaImage(row['idArticulo'], row['nombre'])}" update="panelTotales" oncomplete="janal.refresh();$('#source-image').attr('href', $('#icon-image').attr('src'));"/>
 												<f:facet name="itemtip">
 													<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
 														<f:facet name="header" class="TexAlCenter">
-															<!--p:graphicImage value="#{custom.image}" styleClass="janal-logo-mini filas" width="30" cache="false" stream="false"/-->
 															<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>
 														</f:facet>
 														<h:outputText value="Código:" />
@@ -274,9 +273,13 @@
 						</p:panelGrid>
 						<p:panelGrid id="panelTotales" columns="1" layout="grid" styleClass="janal-wid-99" columnClasses="janal-wid-100">
 							<p:panel header="Imagen" styleClass="TexAlCenter janal-wid-100-txt" style="height:100%">
-								<p:graphicImage id="imagePrincipal" cache="false" value="#{manticVentasAccion.image}" styleClass="janal-logo-mini filas" width="65" stream="false"/><br/>
-								<p:outputLabel value="img-#{manticVentasAccion.attrs.idArticulo}" styleClass="filas"/>
+                <a id="source-image" data-magnify="gallery" data-caption="#{manticVentasAccion.attrs.descripcion}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">
+								  <p:graphicImage id="icon-image" cache="false" value="#{manticVentasAccion.image}" styleClass="janal-logo-mini filas" width="45" stream="false"/>
+								</a>	
+								<br/>
+								<p:outputLabel value="#{manticVentasAccion.attrs.idArticulo}.jpg" styleClass="filas"/>
 							</p:panel>
+							<p:spacer height="1px"/>
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-100 janal-column-right">
 								<p:outputLabel for="articulos" value="Articulos:"/>
 								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasAccion.adminOrden.totales.articulos}"/>

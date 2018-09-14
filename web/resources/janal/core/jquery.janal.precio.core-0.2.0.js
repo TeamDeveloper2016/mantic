@@ -210,6 +210,7 @@
 		},
 		show: function()  {
  			janal.console('jsPrecios.show');
+      $('#source-gallery').attr('href', $('#icon-gallery').attr('src'));
       setTimeout("$('#verificadorPrecio').attr('style', 'display:');", 500);			
 			return false;
 		},

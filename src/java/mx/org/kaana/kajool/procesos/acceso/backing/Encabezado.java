@@ -25,12 +25,14 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
+import org.primefaces.model.StreamedContent;
 
 /**
  * @company KAANA
@@ -48,6 +50,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 	
   private FormatLazyModel lazyFaltantes;
 	private Faltante faltante;
+	private StreamedContent image;
 
 	public FormatLazyModel getLazyFaltantes() {
 		return lazyFaltantes;
@@ -59,6 +62,10 @@ public class Encabezado extends IBaseFilter implements Serializable {
 
 	public void setFaltante(Faltante faltante) {
 		this.faltante=faltante;
+	}
+	
+	public StreamedContent getImage() {
+		return image;
 	}
 	
 	@Override
@@ -129,6 +136,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
 			if(!almacenes.isEmpty())
 				this.attrs.put("idAlmacen", almacenes.get(0));
+			this.image= LoadImages.getImage(entity.toString("idArticulo"));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

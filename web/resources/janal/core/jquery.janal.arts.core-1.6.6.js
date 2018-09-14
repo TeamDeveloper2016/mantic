@@ -27,6 +27,7 @@
 		selector    : '.key-down-event',
 		focus       : '.key-focus-event',
 		lookup      : '.key-up-event',
+		findout     : '.key-find-event',
 		averages    : '.key-press-enter',
 		filter      : '.key-filter-event',
 		current     : '',
@@ -52,7 +53,6 @@
 		VK_CTRL     : 17,
 		VK_MAYOR    : 226,
 		VK_F7       : 118,
-		VK_F8       : 119,
 	  change      : [13, 27, 106, 107, 110, 111, 188, 189, 191, 220, 222, 226],
 		cursor: {
 			top: 1, // el top debera ser elementos que van de 0 a n-1
@@ -86,9 +86,17 @@
 				  return 'Es probable que los cambios no se hayan guardado\n¿Aun asi deseas salir de esta opción?.';
 			});			
       $(document).on('keyup', this.lookup, function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('Keydown: '+ key);
+				clearTimeout($articulos.typingTimer);
+				if ($(this).val() && $(this).val().trim().length> 0) 
+					$articulos.typingTimer= setTimeout($articulos.look($(this)), $articulos.doneInterval);
+				return false;
+			});  
+      $(document).on('keyup', this.findout, function(e) {
 				clearTimeout($articulos.typingTimer);
         if ($(this).val() && $(this).val().trim().length> 0) 
-          $articulos.typingTimer= setTimeout($articulos.look($(this)), $articulos.doneInterval);
+          $articulos.typingTimer= setTimeout($articulos.relocate($(this)), $articulos.doneInterval);
 				return false;
 			});  
       $(document).on('focus', this.focus+ ',.key-move-event', function() {
@@ -180,32 +188,21 @@
 						return $articulos.search();
 						break;						
 					case $articulos.VK_MINUS:
-						if(parseInt($('#articulos').val())===0){
-							if(PF('dlgCloseTicket')) {
-								janal.bloquear();
-								userUpdate();
+						var ok= janal.partial('articulo');
+						if(ok){
+							$articulos.leavePage= true;
+							var txt= $(this).val().trim().length<= 0;
+							if(txt && $('ul.ui-autocomplete-items:visible').length<= 0 && confirm('¿ Esta seguro que desea terminar con la captura ?')) {
+								$('#aceptar').click();
+								return false;
 							} // if
 						} // if
-						else{
-							var ok= janal.partial('articulo');
-							if(ok){
-								$articulos.leavePage= true;
-								var txt= $(this).val().trim().length<= 0;
-								if(txt && $('ul.ui-autocomplete-items:visible').length<= 0 && confirm('¿ Esta seguro que desea terminar con la captura ?')) {
-									$('#aceptar').click();
-									return false;
-								} // if
-							} // if
-						} // else
 						break;
 					case $articulos.VK_MAYOR:
 						return $articulos.show($(this));
 						break;
 					case $articulos.VK_F7:
 						return $articulos.detail();
-						break;
-					case $articulos.VK_F8:
-						return $articulos.locationArt();
 						break;
 					default:
 						break;
@@ -316,16 +313,6 @@
 			} // if
 			return false;
 		},
-		refreshGarantia: function(index) {			
-  		janal.console("jsArticulos.refreshGarantia: " + index);
-			refresh(index);			
-			return false;
-		},
-		refreshAsterisk: function() {			
-  		janal.console("jsArticulos.refresh: "+ this.cursor.index);
-			refresh(this.cursor.index);
-			return false;
-		},
 		isPorcentaje: function(s) {
       if(janal.empty(s))
         if(arguments.length === 1)
@@ -353,8 +340,7 @@
       return true;
 		},
 		div: function() {
-			janal.console('jsArticulo.div: ');		
-			/*
+			janal.console('jsArticulo.div: ');
 			var value= this.get().trim();
 			var temp = $(this.discount()).val();
 			if($(this.discount()) && value.length> 0 && this.isPorcentaje(value)) {
@@ -367,33 +353,7 @@
   				this.refresh();
 				} // if
 			  return ok.error;
-			} // if	 
-			*/
-			return true;
-		},
-		autorizedDiscount: function() {
-			janal.console('jsArticulo.autorizedDiscount: ');					
-			autorized(this.cursor.index);
-		}, // autorizedDiscount
-		autorizedPrecio: function() {
-			janal.console('jsArticulo.autorizedDiscount: ');					
-			autorizedModificacionPrecio(this.cursor.index);
-		}, // autorizedDiscount
-		divDiscount: function(value) {
-			janal.console('jsArticulo.div: ');					
-			//var value= this.get().trim();
-			var temp = $(this.discount()).val();
-			if($(this.discount()) && value.length> 0 && this.isPorcentaje(value)) {
-			  $(this.discount()).val(value);
-				var ok= janal.descuentos($(this.discount()));
-				if(ok.error)
-				  $(this.discount()).val(temp);
-				else {
-					this.set('');
-  				this.refresh();
-				} // if
-			  return ok.error;
-			} // if	 			 
+			} // if	
 			return true;
 		},
 		asterisk: function() {
@@ -406,16 +366,16 @@
 				if(ok.error)
 				  $(this.amount()).val(temp);
 				else {
+    			janal.console('jsArticulo.refresh: ');
 					this.set('');
-	 				this.refreshAsterisk();
+	 				refresh(this.cursor.index);
 				} // if
 			  return ok.error;
 			} // if	
 			return true;
 		},
 		plus: function() {
-			janal.console('jsArticulo.plus: ');			
-			/*
+			janal.console('jsArticulo.plus: ');
 			var value = this.get().trim();
 			var temp = $(this.price()).val();
 			if($(this.price()) && value.length> 0 && this.isFlotante(value)) {
@@ -428,8 +388,7 @@
 	 				this.refresh();
 				} // if
 			  return ok.error;
-			} // if	 
-			*/
+			} // if	
 			return true;
 		},
 		point: function() {
@@ -450,7 +409,7 @@
 			return true;
 		},
 		find: function() {
-			janal.console('jsArticulo.find: ');
+			janal.console('jsArticulo.find: '+ this.get().trim());
 			var value = this.get().trim();
 			if(value.startsWith('='))
 				this.set(eval(value.substring(1)));
@@ -504,16 +463,6 @@
     				this.refresh();
 			return false;	
 		},
-		calculateGarantia: function(active, index) {
-			janal.console('jsArticulo.calculate: '+ this.current+ ' => '+ $(active).val());
-			if($(active).val()!== this.current)
-				if(parseFloat($(active).val(), 10)!== parseFloat(this.current, 10))
-  				this.refreshGarantia(index);
-			  else
-  				if($(active).val().indexOf(',')>= 0 || this.current.indexOf(',')>= 0)
-    				this.refreshGarantia(index);
-			return false;	
-		},
 		next: function() {
 			janal.console('jsArticulo.next: '+ this.cursor.index+ ' => '+ this.continue);
 			if(($(this.key()) && parseInt($(this.key()).val(), 10)> 0) || this.continue) {
@@ -540,8 +489,10 @@
 			return false;
 		},
 		show: function(name) {
-			janal.bloquear();
-			PF(this.dialog).show();
+			if(!this.valid()) {
+			  janal.bloquear();
+			  PF(this.dialog).show();
+			} // if	
 			return false;
 		},
 	  callback: function(code) {
@@ -558,6 +509,10 @@
 			console.log('jsArticulo.look: '+ $(name).val());
 			lookup();
 		},
+		relocate: function(name) {
+			console.log('jsArticulo.relocate: '+ $(name).val());
+			findout();
+		},
 		back: function(title, count) {
 			janal.console('jsArticulo.back: ');
 			alert('Se '+ title+ ' con consecutivo: '+ count);
@@ -565,11 +520,6 @@
 		detail: function() {
 			if(this.valid())
 				detail($(this.key()).val(), this.cursor.index);
-			return false;
-		},
-		locationArt: function() {
-			if(this.valid())
-				locationArt($(this.key()).val(), this.cursor.index);
 			return false;
 		},
 		compare: function(index) {
@@ -624,123 +574,12 @@
 			  PF('listado').activate();
 			janal.desbloquear();
 		},
-		activeLogin: function(){				
-			$parent.readingMode('CONSULTAR');
-			$('#cancelar').prop('disabled', 'disabled').addClass('ui-state-disabled'); 
-			$('#cancelarIcon').prop('disabled', 'disabled').addClass('ui-state-disabled');
-			$parent.desbloquear();
-			$('.janal-login-view').attr('style', 'display: ');				
-			$('.janal-login-block').attr('style', 'display: none;');				
-			$('#cuenta').prop('disabled', '').removeClass('ui-state-disabled'); 				
-			$('#cuenta').val('');
-			$('#password').val('');
-			setTimeout("$('#cuenta').focus();", 500);						
-		},			
-		disabledLogin: function() {
-			$parent.readingMode('AGREGAR');
-			$('.janal-login-view').attr('style', 'display: none');				
-			$('.janal-login-block').attr('style', 'display: ');				
-			$('#cancelar').prop('disabled', '').removeClass('ui-state-disabled'); 
-			$('#cancelarIcon').prop('disabled', '').removeClass('ui-state-disabled');
-		},
-		toPassword: function() {
-			$('#password').focus();
-		},			
-		toLoginEnter: function() {
-			if (window.event.keyCode === 13)
-				$parent.toPassword();
-		}, // toLoginEnter			
-		toPasswordEnter: function() {
-			if (window.event.keyCode === 13) {
-				$parent.bloquear();
-				var ok= $parent.partial('login');
-				if(ok) 
-					loginValidate();
-				else
-					$parent.desbloquear();
-			} // if
-		}, // toPasswordEnter		
-		refreshCobroValidate: function(){
-			var limiteCredito= parseFloat($('#contenedorGrupos\\:limiteCredito').text());
-			var limiteCheque = parseFloat($('#contenedorGrupos\\:limiteCheque').text());
-			var limiteTransferencia = parseFloat($('#contenedorGrupos\\:limiteTransferencia').text());
-			var credito= parseFloat($('#contenedorGrupos\\:credito_input').val());
-			var cheque = parseFloat($('#contenedorGrupos\\:cheque_input').val());
-			var transferencia = parseFloat($('#contenedorGrupos\\:transferencia_input').val());
-			var totalVenta = parseFloat($('#contenedorGrupos\\:totalVenta').text());
-			this.refreshValidationsPagos(limiteCredito, limiteCheque, totalVenta, limiteTransferencia);
-			this.refreshCredito(credito);
-			this.refreshCheque(cheque);
-			this.refreshTransferencia(transferencia);
-			$parent.refresh();
-		}, // refreshCobroValidate		
-		validateApartado: function(minPago){				
-			this.refreshCredito(0);
-			this.refreshCheque(0);
-			this.refreshTransferencia(0);
-			$parent.fields.credito.validaciones= 'libre';
-			$parent.fields.cheque.validaciones= 'libre';
-			$parent.fields.pago.validaciones= 'requerido|min-valor({"cuanto":'+minPago+'})';
-			$parent.fields.transferencia.validaciones= 'libre';
-			$parent.refresh();
-		},			
-		validateCredito: function(){							
-			this.refreshCredito(0);
-			this.refreshCheque(0);
-			this.refreshTransferencia(0);
-			this.refreshFreeValidationsPagos();
-			$parent.refresh();
-		}, // validateCredito
-		refreshValidationsPagos: function(limiteCredito, limiteCheque, totalVenta, limiteTransferencia){
-			$parent.fields.credito.validaciones= 'libre|max-valor({"cuanto":'+limiteCredito+'})';
-			$parent.fields.cheque.validaciones= 'libre|max-valor({"cuanto":'+limiteCheque+'})';
-			$parent.fields.pago.validaciones= 'requerido|min-valor({"cuanto":'+totalVenta+'})';
-			$parent.fields.transferencia.validaciones= 'libre|max-valor({"cuanto":'+limiteTransferencia+'})';
-		}, // refreshValidationsPagos
-		refreshFreeValidationsPagos: function(){
-			$parent.fields.credito.validaciones= 'libre';
-			$parent.fields.cheque.validaciones= 'libre';
-			$parent.fields.pago.validaciones= 'libre';
-			$parent.fields.transferencia.validaciones= 'libre';
-		}, // refreshValidationsPagos		
-		refreshCredito: function(total){
-			if(total > 0){
-				$parent.fields.referenciaCredito.validaciones= "requerido";
-				$parent.fields.bancoCredito.validaciones= "requerido";										
-			} // if
-			else{
-				$parent.fields.referenciaCredito.validaciones= "libre";
-				$parent.fields.bancoCredito.validaciones= "libre";										
-			} // else
-		}, // refreshCredito
-		refreshCheque: function(total){
-			if(total > 0){
-				$parent.fields.referenciaCheque.validaciones= "requerido";
-				$parent.fields.bancoCheque.validaciones= "requerido";					
-			} // if
-			else{
-				$parent.fields.referenciaCheque.validaciones= "libre";
-				$parent.fields.bancoCheque.validaciones= "libre";					
-			} // else
-		}, // refreshCheque
-		refreshTransferencia: function(total){
-			if(total > 0){
-				$parent.fields.referenciaTransferencia.validaciones= "requerido";
-				$parent.fields.bancoTransferencia.validaciones= "requerido";					
-			} // if
-			else{
-				$parent.fields.referenciaTransferencia.validaciones= "libre";
-				$parent.fields.bancoTransferencia.validaciones= "libre";					
-			} // else
-		}, // refreshCheque
-		restoreAutenticate: function(){
-			$('#cuenta').val('');
-			$('#password').val('');
-			setTimeout("$('#cuenta').focus();", 500);			
-		}, // restoreAutenticate
-		initArrayArt: function(size){
-			this.cursor.top= size;
-		} // initArrayArt
+		process: function() {
+			janal.console('jsArticulos.process: ');
+			janal.desbloquear(); 
+			setTimeout('jsArticulos.next()', 500);
+			$('#source-image').attr('href', $('#icon-image').attr('src'));
+		}
 	});
 	
 	console.info('Iktan.Control.Articulos initialized');

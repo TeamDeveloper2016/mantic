@@ -7,6 +7,10 @@
       xmlns:f="http://java.sun.com/jsf/core"
 			xmlns:ui="http://java.sun.com/jsf/facelets">	
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.preciosJs}"/>
+    <h:outputScript library="janal" name="js/jquery.magnify.min-1.2.0.js"/>
+    <h:outputScript library="janal" name="js/jquery.janal.magnify-0.0.1.js"/>
+		<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css" />
+		<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css.map" />
 		<script type="text/javascript">
 			$(function() {
 				janal.fecha();
@@ -53,7 +57,7 @@
 						<p:outputLabel styleClass="janal-etapa xs-pantalla Fs14" value="#{kajoolUtilAplicacion.servidorEspecial}"/>
 					</div>
 					<div class="ui-grid-col-4 margin-version" style="text-align: right;">
-						<span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}<strong class='janal-color-blue' title='Código de acceso' style='cursor:pointer;'>#{kajoolUtilAplicacion.modulo}</strong></span>
+						<span id="version" class="version lg-pantalla">#{kajoolUtilAplicacion.versionAplicacion}<strong class='janal-color-blue' title='C&oacute;digo de acceso' style='cursor:pointer;'>#{kajoolUtilAplicacion.modulo}</strong></span>
 						<span id="version" class="version xs-pantalla Fs14">#{kajoolUtilAplicacion.version}</span>
 					</div>
 				</div>
@@ -90,7 +94,7 @@
   <p:notificationBar id="lockNotification" position="top" effect="slide" styleClass="jana-bar-top" widgetVar="notification" effectSpeed="slow">
     <span title="Cerrar" style="position: absolute; top: 10px; right: 80px; cursor: pointer;" onclick="PF('notification').hide();"><i class="fa fa-lg fa-close"/></span>
     <p:panelGrid layout="grid" columns="2" columnClasses="janal-wid-col-200">
-      <h:outputText value="Aplicación MANTIC" styleClass="Fs20"/>
+      <h:outputText value="Aplicaci&oacute;n MANTIC" styleClass="Fs20"/>
       <h:outputText value="#{kajoolUtilAplicacion.notificacion}" escape="false" styleClass="Fs14"/>
     </p:panelGrid>
   </p:notificationBar>
@@ -101,14 +105,14 @@
       <h:outputText value="#{kajoolAccesoAlerta.checkCaja}" escape="false" styleClass="Fs14"/>
     </p:panelGrid>
   </p:notificationBar>
-	<p:idleMonitor timeout="1620000" onidle="janal.bloquear(); PF('dialogoInactivo').show(); $('#dialogo_modal').removeClass('ui-widget-overlay');  console.log('Clase ui-widget-overlay eliminada');"/>		
-	<p:dialog id="dialogo" header="Inactividad" resizable="false" widgetVar="dialogoInactivo" onShow="janal.monitor(1);" closable="false">														
+	<p:idleMonitor timeout="1620000" onidle="janal.bloquear(); PF('dialogoInactivo').show(); $('#dialogoInactividad_modal').removeClass('ui-widget-overlay');  console.log('Clase ui-widget-overlay eliminada');"/>		
+	<p:dialog id="dialogoInactividad" header="Inactividad" resizable="false" widgetVar="dialogoInactivo" onShow="janal.monitor(1);" closable="false">														
 		<div class="alinear-derecha">														
 			<h:outputText id="segundos"/>
 		</div>						
 		<h:panelGrid columns="1">					
 			<p:spacer width="5px"/>
-			<h:outputText value="La sesión terminará pronto debido a la inactividad. Para continuar esta sesión, haga clic en Aceptar."/>
+			<h:outputText value="La sesi&oacute;n terminar&aacute; pronto debido a la inactividad. Para continuar esta sesi&oacute;n, haga clic en Aceptar."/>
 			<p:spacer width="5px"/>
 			<p:separator/>
 		</h:panelGrid>
@@ -121,49 +125,63 @@
 			<p:remoteCommand name="verificadorLookup" actionListener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor verificadorValue" update="verificadorPrecio verificadorTabla" oncomplete="if($('#verificadorValue').val()==='.*.') $('#verificadorValue').val('');"/>
 			<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-90, janal-wid-15">
 				<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-					<p:outputLabel for="verificadorValue" value="Código o articulo:"/>
+					<p:outputLabel for="verificadorValue" value="C&oacute;digo o articulo:"/>
 					<p:inputText id="verificadorValue" styleClass="janal-key-precios janal-wid-100-txt" value="#{kajoolEncabezado.attrs.buscarPor}">   
 						<p:ajax event="keyup" listener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor" update="verificadorPrecio verificadorTabla" onstart="return $('#verificadorValue').val().trim().length> 1"/>
 					</p:inputText>
 				</p:panelGrid>	
 				<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-right">
-					<p:outputLabel value="Buscar por código:"/>
+					<p:outputLabel value="Buscar por c&oacute;digo:"/>
 					<p:inputSwitch id="verificadorBuscarPor" onLabel="SI" offLabel="NO" value="#{kajoolEncabezado.attrs.buscaPorCodigo}">
 						<p:ajax event="change" process="@this" update="verificadorValue"/>
 					</p:inputSwitch>	
 				</p:panelGrid>	
 			</p:panelGrid>
 			<p:panel id="verificadorPrecio" header="Precios [ #{kajoolEncabezado.attrs.selected.nombre} ]" styleClass="janal-wid-99" style="display: none">
-				<p:panelGrid layout="grid" columns="6" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center, janal-column-center, janal-column-center">
-					<p:outputLabel value="Menudeo"/>
-					<p:outputLabel value="Medio mayoreo"/>
-					<p:outputLabel value="Mayoreo"/>
-					<p:outputLabel value="Limite menudeo"/>
-					<p:outputLabel value="Limite medio mayoreo"/>
-					<p:outputLabel value="Limite mayoreo"/>
-					<p:inputText styleClass="janal-column-right janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.menudeo}" readonly="true"/>
-					<p:inputText styleClass="janal-column-right janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.medioMayoreo}" readonly="true"/>
-					<p:inputText styleClass="janal-column-right janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.mayoreo}" readonly="true"/>
-					<p:inputText styleClass="janal-column-center janal-wid-100-txt" value="0 - #{kajoolEncabezado.attrs.selected.limiteMedioMayoreo}" readonly="true"/>
-					<p:inputText styleClass="janal-column-center janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.limiteMedioMayoreo} - #{kajoolEncabezado.attrs.selected.limiteMayoreo}" readonly="true"/>
-					<p:inputText styleClass="janal-column-center janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.limiteMayoreo} - #######" readonly="true"/>
-  			</p:panelGrid>
-				<p:outputLabel value="Existencias por almacen:" styleClass="janal-wid-99"/>
-				<p:selectOneMenu value="#{kajoolEncabezado.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="contains">
-					<f:selectItems value="#{kajoolEncabezado.attrs.almacenes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre} - #{element.stock}"/>
-					<p:column headerText="Clave">
-						<h:outputText value="#{item.clave}"/>
-					</p:column>   
-					<p:column headerText="Nombre">
-						<h:outputText value="#{item.nombre}"/>
-					</p:column>   
-					<p:column styleClass="janal-column-right" headerText="Existencias">
-						<h:outputText value="#{item.stock}"/>
-					</p:column>   
-					<p:column headerText="Ubicación">
-						<h:outputText value="#{item.ubicacion}"/>
-					</p:column>   
-				</p:selectOneMenu>
+				<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+					<div class="ui-grid-row janal-grid-row">
+						<div class="ui-grid-col-10">
+							<p:panelGrid layout="grid" columns="6" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center, janal-column-center, janal-column-center">
+								<p:outputLabel value="Menudeo"/>
+								<p:outputLabel value="Medio mayoreo"/>
+								<p:outputLabel value="Mayoreo"/>
+								<p:outputLabel value="Limite menudeo"/>
+								<p:outputLabel value="Limite medio mayoreo"/>
+								<p:outputLabel value="Limite mayoreo"/>
+								<p:inputText styleClass="janal-column-right janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.menudeo}" readonly="true"/>
+								<p:inputText styleClass="janal-column-right janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.medioMayoreo}" readonly="true"/>
+								<p:inputText styleClass="janal-column-right janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.mayoreo}" readonly="true"/>
+								<p:inputText styleClass="janal-column-center janal-wid-100-txt" value="0 - #{kajoolEncabezado.attrs.selected.limiteMedioMayoreo}" readonly="true"/>
+								<p:inputText styleClass="janal-column-center janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.limiteMedioMayoreo} - #{kajoolEncabezado.attrs.selected.limiteMayoreo}" readonly="true"/>
+								<p:inputText styleClass="janal-column-center janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.limiteMayoreo} - #######" readonly="true"/>
+							</p:panelGrid>
+							<p:outputLabel value="Existencias por almacen:" styleClass="janal-wid-99"/>
+							<p:selectOneMenu value="#{kajoolEncabezado.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="contains">
+								<f:selectItems value="#{kajoolEncabezado.attrs.almacenes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre} - #{element.stock}"/>
+								<p:column headerText="Clave">
+									<h:outputText value="#{item.clave}"/>
+								</p:column>   
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column>   
+								<p:column styleClass="janal-column-right" headerText="Existencias">
+									<h:outputText value="#{item.stock}"/>
+								</p:column>   
+								<p:column headerText="Ubicaci&oacute;n">
+									<h:outputText value="#{item.ubicacion}"/>
+								</p:column>   
+							</p:selectOneMenu>
+						</div>
+						<p:spacer width="5px"/>
+						<div class="ui-grid-col-2 TexAlCenter">
+							<a id="source-gallery" data-magnify="gallery" data-caption="#{kajoolEncabezado.attrs.selected.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">
+  							<p:graphicImage id="icon-gallery" value="#{kajoolEncabezado.image}" styleClass="janal-logo-mini filas" width="85" stream="false"/>
+							</a>	
+							<br/>
+							<p:outputLabel value="#{kajoolEncabezado.attrs.selected.idArticulo}.jpg" styleClass="filas"/>
+						</div>	
+					</div>
+				</div>
 			</p:panel>
 			<p:spacer height="3px"/>
 			<p:dataTable lazy="true" id="verificadorTabla" widgetVar="widgetVerificador" var="filtro" styleClass="janal-key-registros janal-wid-100" value="#{kajoolEncabezado.lazyModel}" selection="#{kajoolEncabezado.attrs.selected}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="360" style="margin-bottom:0">
@@ -177,7 +195,7 @@
 				</p:column>		
 				<p:column class="MarAuto Responsive janal-wid-20">
 					<f:facet name="header">
-						<h:outputText value="Código"/>
+						<h:outputText value="C&oacute;digo"/>
 					</f:facet>
 					<h:outputText value="#{filtro['propio']}"/>
 				</p:column>		
@@ -205,8 +223,8 @@
 			<p:remoteCommand name="faltantesReplace" actionListener="#{kajoolEncabezado.doReplaceFaltante}" process="@this" update="@(.faltantes)"/>
 			<p:remoteCommand name="faltantesVerificar" actionListener="#{kajoolEncabezado.doFaltanteArticulo}" process="@this @(.faltantes)" update="@(.faltantes)"/>
 			<p:panelGrid layout="grid" columns="4" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center janal-faltantes-top">
-				<p:outputLabel value="Código ó articulo:"/>
-				<p:outputLabel for="faltantesIdArticulo" value="Código:"/>
+				<p:outputLabel value="C&oacute;digo &oacute; articulo:"/>
+				<p:outputLabel for="faltantesIdArticulo" value="C&oacute;digo:"/>
 				<p:outputLabel for="faltantesIdArticulo" value="Nombre:"/>
 				<p:outputLabel for="faltantesCantidad" value="Cantidad:"/>
 				<p:autoComplete id="codigosFaltantes" widgetVar="submenu" var="custom" itemLabel="#{custom.nombre}" styleClass="janal-wid-100 janal-clean-input" inputStyleClass="faltantes janal-wid-90 janal-key-event" itemValue="#{custom}" value="#{kajoolEncabezado.attrs.articulo}" completeMethod="#{kajoolEncabezado.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2"  maxResults="10" alt="faltantesCantidad">
@@ -216,7 +234,7 @@
 							<f:facet name="header" class="TexAlCenter">
 								<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-log-mini" width="30"/>
 							</f:facet>
-							<h:outputText value="Código:" />
+							<h:outputText value="C&oacute;digo:" />
 							<h:outputText value="#{custom.propio}" />
 							<h:outputText value="Nombre:" />
 							<h:outputText value="#{custom.nombre}" />
@@ -244,7 +262,7 @@
 				</p:column>		
 				<p:column class="MarAuto Responsive janal-wid-13">
 					<f:facet name="header">
-						<h:outputText value="Código"/>
+						<h:outputText value="C&oacute;digo"/>
 					</f:facet>
 					<h:outputText value="#{filtro['codigo']}"/>
 				</p:column>		
@@ -283,12 +301,12 @@
 			</p:dataTable>
 		</h:form>
 	</p:dialog>  	
-	<p:dialog id="dialogoEjecutar" widgetVar="dlgEjecutar" header="Ingrese el código del módulo ..." onShow="$('#kajoolOpcion').val('');janal.bloquear();" onHide="janal.sendLastFocus();janal.desbloquear();" height="90px" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
+	<p:dialog id="dialogoEjecutar" widgetVar="dlgEjecutar" header="Ingrese el c&oacute;digo del m&oacute;dulo ..." onShow="$('#kajoolOpcion').val('');janal.bloquear();" onHide="janal.sendLastFocus();janal.desbloquear();" height="90px" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form id="teclasEjecutar" prependId="false">
 			<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 				<div class="ui-grid-row janal-grid-row">
 					<div class="ui-grid-col-2">
-						<p:outputLabel value="Código módulo:"/>
+						<p:outputLabel value="C&oacute;digo m&oacute;dulo:"/>
 					</div>
 					<div class="ui-grid-col-10">
 						<p:inputText id="kajoolOpcion" value="#{kajoolEncabezado.attrs.opcion}" styleClass="janal-wid-100-txt janal-key-run" onblur="janal.mayusculas('kajoolOpcion');"/>
@@ -303,7 +321,7 @@
 			</div>	
 		</h:form>
 	</p:dialog>	
-	<p:dialog id="dialogoTeclasAyuda" widgetVar="dlgTeclasAyuda" header="Teclas rapidas de la aplicación" onShow="janal.bloquear();" onHide="janal.sendLastFocus();janal.desbloquear();" height="#{empty notIsCaja or notIsCaja? '155px': '400px'}" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
+	<p:dialog id="dialogoTeclasAyuda" widgetVar="dlgTeclasAyuda" header="Teclas rapidas de la aplicaci&oacute;n" onShow="janal.bloquear();" onHide="janal.sendLastFocus();janal.desbloquear();" height="#{empty notIsCaja or notIsCaja? '155px': '400px'}" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form id="teclasAyuda" prependId="false">
 			<div class="ui-datatable ui-widget ui-datatable-reflow">
 				<div class="ui-datatable-tablewrapper">
@@ -319,10 +337,10 @@
 								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-search-plus"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[SHIFT+F10]</strong></td><td>Buscar articulo</td>	
 							</tr>
 							<tr>
-								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-qq"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+R]</strong></td><td>Ir a un módulo</td>	
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-qq"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+R]</strong></td><td>Ir a un m&oacute;dulo</td>	
 							</tr>
 							<tr>
-								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-power-off"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+L]</strong></td><td>Terminar la sesión</td>	
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-power-off"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[CTRL+L]</strong></td><td>Terminar la sesi&oacute;n</td>	
 							</tr>
 							<tr style="display: #{empty notIsCaja or notIsCaja? 'none': ''}">
 								<td colspan="3">&nbsp;</td>
