@@ -77,6 +77,7 @@ public class Accion extends IBaseAttribute implements Serializable {
           break;
         case MODIFICAR:
         case CONSULTAR:
+        case COPIAR:
           idArticulo = Long.valueOf(this.attrs.get("idArticulo").toString());
           this.registroArticulo = new RegistroArticulo(idArticulo);
 					this.image= LoadImages.getImage(this.registroArticulo.getArticulo().getIdEmpresa().toString(), Cadena.isVacio(this.registroArticulo.getImportado().getName()) ? "" : this.registroArticulo.getImportado().getName().substring(0, this.registroArticulo.getImportado().getName().lastIndexOf(".")));
@@ -95,7 +96,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       transaccion = new Transaccion(this.registroArticulo);
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
-        regresar = "filtro";
+        regresar = "filtro".concat(Constantes.REDIRECIONAR);
         JsfBase.addMessage("Se registro el artículo de forma correcta.", ETipoMensaje.INFORMACION);
       } // if
       else 

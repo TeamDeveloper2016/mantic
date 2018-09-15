@@ -12,6 +12,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloCodigo;
@@ -37,8 +38,9 @@ import org.hibernate.Session;
 public class Transaccion extends IBaseTnx {
 
 	private static final Long ACTIVO  = 1L;
-	private static final Long INACTIVO= 0L;
-	private RegistroArticulo articulo;	
+	private static final Long INACTIVO= 2L;
+	private RegistroArticulo articulo;
+	private EAccion eaccionGeneral; 	
 	private String messageError;
 
 	public Transaccion(RegistroArticulo articulo) {
@@ -49,15 +51,20 @@ public class Transaccion extends IBaseTnx {
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
 		boolean regresar= false;
 		try {
+			this.eaccionGeneral= accion;
 			switch(accion){
-				case AGREGAR:
+				case AGREGAR:			
 					regresar= procesarArticulo(sesion);
 					break;
 				case MODIFICAR:
 					regresar= actualizarArticulo(sesion);
 					break;				
 				case ELIMINAR:
-					regresar= eliminarArticulo(sesion);
+					regresar= eliminarArticulo(sesion);				
+					break;
+				case COPIAR:
+					this.articulo.getArticulo().setIdArticulo(-1L);
+					regresar= procesarArticulo(sesion);
 					break;
 			} // switch
 			if(!regresar)
@@ -94,7 +101,8 @@ public class Transaccion extends IBaseTnx {
 	} // eliminarArticulo
 	
 	private boolean procesarArticulo(Session sesion) throws Exception{
-		boolean regresar= false;
+		boolean regresar         = false;
+		TcManticImagenesDto image= null;
 		Long idArticulo = -1L;
 		Long idImagen   = -1L;
 		try {
@@ -113,11 +121,17 @@ public class Transaccion extends IBaseTnx {
 								if(registraPreciosSugeridos(sesion, idArticulo)) {
 									if(registraArticulosProveedor(sesion, idArticulo)) {
 										if(registraArticulosTipoVenta(sesion, idArticulo)) {
-											this.articulo.getArticuloDimencion().setIdArticulo(idArticulo);											
-											if(DaoFactory.getInstance().insert(sesion, this.articulo.getArticuloDimencion()) >= 1L) {										
-												idImagen= DaoFactory.getInstance().insert(sesion, loadImage(sesion, null, idArticulo));
-												this.articulo.getArticulo().setIdImagen(idImagen);
-												regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
+											this.articulo.getArticuloDimencion().setIdArticulo(idArticulo);	
+											if(this.eaccionGeneral.equals(EAccion.COPIAR))
+												this.articulo.getArticuloDimencion().setIdArticuloDimension(-1L);
+											regresar= DaoFactory.getInstance().insert(sesion, this.articulo.getArticuloDimencion()) >= 1L;
+											if(regresar){										
+												image= loadImage(sesion, null, idArticulo);
+												if(image.isValid()){
+													idImagen= DaoFactory.getInstance().insert(sesion, image);
+													this.articulo.getArticulo().setIdImagen(idImagen);
+													regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
+												} // if												
 			                } 
 										} 
 									}
@@ -177,18 +191,20 @@ public class Transaccion extends IBaseTnx {
 			else
 				regresar= new TcManticImagenesDto();
 			name= this.articulo.getImportado().getName();
-			tipoImagen= ETipoImagen.valueOf(name.substring(name.lastIndexOf(".")+1, name.length()).toUpperCase()).getIdTipoImagen();
-			regresar.setNombre(idArticulo.toString().concat(".").concat(name.substring(name.lastIndexOf(".")+1, name.length())));
-			regresar.setIdTipoImagen(tipoImagen);
-			regresar.setIdUsuario(JsfBase.getIdUsuario());
-			regresar.setArchivo(name);
-			regresar.setTamanio(this.articulo.getImportado().getFileSize());
-			regresar.setRuta(this.articulo.getImportado().getRuta());			
-			genericPath= Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat(File.separator);
-			result= new File(genericPath.concat(this.articulo.getImportado().getName()));			
-			if(result.exists()){
-				Archivo.copy(genericPath.concat(this.articulo.getImportado().getName()), genericPath.concat(regresar.getNombre()), true);							
-				Archivo.delete(genericPath.concat(this.articulo.getImportado().getName()));
+			if(!Cadena.isVacio(name)){
+				tipoImagen= ETipoImagen.valueOf(name.substring(name.lastIndexOf(".")+1, name.length()).toUpperCase()).getIdTipoImagen();
+				regresar.setNombre(idArticulo.toString().concat(".").concat(name.substring(name.lastIndexOf(".")+1, name.length())));
+				regresar.setIdTipoImagen(tipoImagen);
+				regresar.setIdUsuario(JsfBase.getIdUsuario());
+				regresar.setArchivo(name);
+				regresar.setTamanio(this.articulo.getImportado().getFileSize());
+				regresar.setRuta(this.articulo.getImportado().getRuta());			
+				genericPath= Configuracion.getInstance().getPropiedadSistemaServidor("path.image").concat(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString()).concat(File.separator);
+				result= new File(genericPath.concat(this.articulo.getImportado().getName()));			
+				if(result.exists()){
+					Archivo.copy(genericPath.concat(this.articulo.getImportado().getName()), genericPath.concat(regresar.getNombre()), true);							
+					Archivo.delete(genericPath.concat(this.articulo.getImportado().getName()));
+				} // if
 			} // if
 		} // try
 		catch (Exception e) {						
@@ -243,7 +259,7 @@ public class Transaccion extends IBaseTnx {
 				} // if
 				codigo.setOrden(count + 1L);
 				dto= (TcManticArticulosCodigosDto) codigo;				
-				sqlAccion= codigo.getSqlAccion();
+				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : codigo.getSqlAccion();
 				switch(sqlAccion){
 					case INSERT:
 						dto.setIdArticuloCodigo(-1L);
@@ -278,7 +294,7 @@ public class Transaccion extends IBaseTnx {
 				especificacion.setIdArticulo(idArticulo);				
 				especificacion.setIdUsuario(JsfBase.getIdUsuario());
 				dto= (TcManticArticulosEspecificacionesDto) especificacion;				
-				sqlAccion= especificacion.getSqlAccion();
+				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : especificacion.getSqlAccion();
 				switch(sqlAccion){
 					case INSERT:
 						dto.setIdArticuloEspecificacion(-1L);
@@ -315,7 +331,7 @@ public class Transaccion extends IBaseTnx {
 				descuento.setVigenciaInicial(new Timestamp(descuento.getVigenciaIni().getTime()));
 				descuento.setVigenciaFinal(new Timestamp(descuento.getVigenciaFin().getTime()));
 				dto= (TcManticArticulosDescuentosDto) descuento;				
-				sqlAccion= descuento.getSqlAccion();
+				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : descuento.getSqlAccion();
 				switch(sqlAccion){
 					case INSERT:
 						dto.setIdArticuloDescuento(-1L);
@@ -352,7 +368,7 @@ public class Transaccion extends IBaseTnx {
 				descuentoEspecial.setVigenciaInicial(new Timestamp(descuentoEspecial.getVigenciaIni().getTime()));
 				descuentoEspecial.setVigenciaFinal(new Timestamp(descuentoEspecial.getVigenciaFin().getTime()));
 				dto= (TrManticArticuloGrupoDescuentoDto) descuentoEspecial;				
-				sqlAccion= descuentoEspecial.getSqlAccion();
+				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : descuentoEspecial.getSqlAccion();
 				switch(sqlAccion){
 					case INSERT:
 						dto.setIdArticuloGrupoDescuento(-1L);
@@ -387,7 +403,7 @@ public class Transaccion extends IBaseTnx {
 				precioSugerido.setIdArticulo(idArticulo);				
 				precioSugerido.setIdUsuario(JsfBase.getIdUsuario());				
 				dto= (TrManticArticuloPrecioSugeridoDto) precioSugerido;				
-				sqlAccion= precioSugerido.getSqlAccion();
+				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : precioSugerido.getSqlAccion();
 				switch(sqlAccion){
 					case INSERT:
 						dto.setIdLeido(2L);
@@ -423,7 +439,7 @@ public class Transaccion extends IBaseTnx {
 				articuloProveedor.setIdArticulo(idArticulo);				
 				articuloProveedor.setIdUsuario(JsfBase.getIdUsuario());				
 				dto= (TrManticArticuloProveedorDto) articuloProveedor;				
-				sqlAccion= articuloProveedor.getSqlAccion();
+				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : articuloProveedor.getSqlAccion();
 				switch(sqlAccion){
 					case INSERT:
 						dto.setIdArticuloProveedor(-1L);
@@ -457,7 +473,7 @@ public class Transaccion extends IBaseTnx {
 			for(TipoVenta tipoVenta: this.articulo.getArticulosTiposVenta()){
 				tipoVenta.setIdArticulo(idArticulo);				
 				dto= (TrManticArticuloTipoVentaDto) tipoVenta;				
-				sqlAccion= tipoVenta.getSqlAccion();
+				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : tipoVenta.getSqlAccion();
 				switch(sqlAccion){
 					case INSERT:
 						dto.setIdArticuloTipoVenta(-1L);
