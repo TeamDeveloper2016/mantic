@@ -45,8 +45,10 @@
  			janal.console('jsKardex.events');
       $(document).on('focus', this.focus, function() {
 				janal.lastNameFocus= this;
-				$kardex.id= $(this).attr('id');
-				$kardex.current= $(this).val().trim();
+				$kardex.current= $kardex.number($(this));
+				$kardex.id     = $(this).attr('id');
+				if($kardex.id.indexOf(':')>= 0)
+					$kardex.id= $kardex.id.replace(/:/gi, '\\:');
 				$kardex.index();
   			janal.console('jsKardex.focus: '+ $kardex.id+ ' value: '+ $kardex.current);
 			});  
@@ -159,17 +161,26 @@
 			janal.console('jsKardex.callback: '+ code);
 		  return false;
 		},
+		number: function(name) {
+			janal.console('jsKardex.number: '+ $(name).attr('id')+ ' -> '+ $(name).val().trim());
+			var value= $(name).val().trim();
+			if(typeof(value)=== 'undefined' || value==='' || Number.isNaN(parseFloat(value, 10)) || parseFloat(value, 10)=== 0) 
+			  value= '1';
+			var id   = $(name).attr('id');
+			if(id.indexOf(':')>= 0)
+				id= id.replace(/:/gi, '\\:');
+			$('#'+ id).attr('value', value);
+			$(name).val(value);
+			janal.console('jsKardex.number ['+ id+ ']  value: ['+ value+ '] name ['+ $(name).val().trim()+ ']');
+			return value;
+		},
 		different: function(value) {
-			if($kardex.current==='')
-				$kardex.current= '0';
-			if(typeof(value)=== 'undefined' || value==='')
-				value= '0';
  			janal.console('jsKardex.different ['+ $kardex.id+ '] value: '+ parseFloat($kardex.current, 10).toFixed(2)+ " => "+ parseFloat(value, 10).toFixed(2));
 			return $kardex.current!== value && parseFloat($kardex.current, 10).toFixed(2)!= parseFloat(value, 10).toFixed(2);
 		},
 		calculate: function(name) {
-			var value= $(name).val().trim();
- 			janal.console('jsKardex.calculate: '+ name+ " => "+ value);
+			var value= $kardex.number(name);
+ 			janal.console('jsKardex.calculate: '+ $(name).attr('id')+ ' => '+ value);
 			if($kardex.different(value)) {
 				$kardex.current= value;
 			  calculate(this.cursor.index);
@@ -177,7 +188,7 @@
 			return false;
 		},
 		costo: function(name) {
-			var value= $(name).val().trim();
+			var value= $kardex.number(name);
  			janal.console('jsKardex.costo: '+ name+ ' value: '+ value);
 			if($kardex.different(value)) {
 				$kardex.current= value;
@@ -186,7 +197,7 @@
 			return false;
 		},
 		utilidad: function(name) {
-			var value= $(name).val().trim();
+			var value= $kardex.number(name);
  			janal.console('jsKardex.utilidad: '+ name+ ' value '+ value);
 			if($kardex.different(value)) {
 				$kardex.current= value;

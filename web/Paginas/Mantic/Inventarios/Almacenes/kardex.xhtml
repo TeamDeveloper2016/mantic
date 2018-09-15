@@ -9,17 +9,16 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Kardex de un articulo"/>
 	<ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.janal.kardex.core-0.1.3.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.kardex.core-0.2.8.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:codigos': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:costos': {validaciones: 'flotante', mascara: 'libre', formatos: 'precio', individual: true, grupo: 'calculos'},
 				'utilidades': {multiple: '$', validaciones: 'flotante', mascara: 'libre', formatos: 'precio', individual: true, grupo: 'calculos'},
 				'precios'   : {multiple: '$', validaciones: 'flotante', mascara: 'libre', formatos: 'precio', individual: true, grupo: 'calculos'},
-				'contenedorGrupos\\:tabla\\:0\\:limites': {validaciones: 'requerido|flotante|menor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:1\\\\:limites"})', mascara: 'libre', formatos: 'cantidad', grupo: 'calculos'},
-				'contenedorGrupos\\:tabla\\:1\\:limites': {validaciones: 'requerido|flotante|mayor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:0\\\\:limites"})', mascara: 'libre', formatos: 'cantidad', grupo: 'calculos'}
+				'contenedorGrupos\\:tabla\\:0\\:limites': {validaciones: 'requerido|flotante|menor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:1\\\\:limites"})', mascara: 'libre', formatos: 'precio', grupo: 'calculos'},
+				'contenedorGrupos\\:tabla\\:1\\:limites': {validaciones: 'requerido|flotante|mayor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:0\\\\:limites"})', mascara: 'libre', formatos: 'precio', grupo: 'calculos'}
 			};	
-			
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
@@ -150,7 +149,7 @@
 								<p:column headerText="Nombre" styleClass="janal-wid-10">
 									<h:outputText value="#{item.nombre}"/>
 								</p:column>   
-								<p:column headerText="Unidades mínimas" styleClass="janal-wid-10 limites">#{index eq 0? 0.0: manticInventariosAlmacenesKardex.adminKardex.tiposVentas[index- 1].limite}  -  <p:inputText id="limites" value="#{item.limite}" styleClass="janal-wid-60 janal-column-right key-focus-event recalculo" rendered="#{item.limite gt 0}"/>#{index eq 2? 'MAS': ''}</p:column>   
+								<p:column headerText="Unidades mínimas" styleClass="janal-wid-10 limites">#{index eq 0? 0.0: manticInventariosAlmacenesKardex.adminKardex.tiposVentas[index- 1].limite}  -  <p:inputText id="limites" value="#{item.limite}" styleClass="janal-wid-60 janal-column-right key-focus-event recalculo" rendered="#{item.limite gt 0}" onblur="janal.individual('contenedorGrupos\\:tabla\\:#{index}\\:limites');"/>#{index eq 2? 'MAS': ''}</p:column>   
 								<p:column headerText="Utilidad" styleClass="janal-wid-10">
 									<p:inputText id="utilidades" value="#{item.utilidad}" styleClass="janal-wid-80 janal-column-right key-focus-event"/>%
 								</p:column>   
