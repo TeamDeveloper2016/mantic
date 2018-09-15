@@ -29,6 +29,7 @@ import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
+import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
@@ -138,9 +139,9 @@ public class Accion extends IBaseVenta implements Serializable {
 			if (transaccion.ejecutar(eaccion)) {
 				if(eaccion.equals(EAccion.AGREGAR)) {
  				  regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
-    			RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la cuenta ', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
-					this.init();
+    			RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la cuenta ', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");					
 				} // if	
+				this.init();
 				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la cuenta."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
 				RequestContext.getCurrentInstance().execute("userUpdate();");
@@ -578,4 +579,30 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doActivatePage(){
 		this.attrs.put("activated", true);
 	} // doActivatePage
+	
+	public String doIrPage(){
+		String regresar        = null;
+		Transaccion transaccion= null;
+		try {
+			if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
+				((TicketVenta)this.getAdminOrden().getOrden()).setIdVentaEstatus(EEstatusVentas.EN_CAPTURA.getIdEstatusVenta());
+				loadOrdenVenta();
+				transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+				this.getAdminOrden().toAdjustArticulos();
+				transaccion.ejecutar(EAccion.REGISTRAR);
+				JsfBase.setFlashAttribute("idVenta", transaccion.getOrden().getIdVenta());
+				JsfBase.setFlashAttribute("accion", EAccion.MODIFICAR);
+			} // if
+			else{
+				JsfBase.setFlashAttribute("idVenta", -1L);
+				JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
+			} // else
+			regresar= "catalogos".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch		
+		return regresar;
+	} // doCatalogos
 }
