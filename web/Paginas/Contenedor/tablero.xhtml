@@ -132,51 +132,53 @@
     <!-- SECTION 1 -->
     <div class="Container100">
       <div class="ContainerIndent">
-        <div class="Container25 Responsive">					
-          <div class="ContainerIndent">
-            <p:panel style="min-height: 290px;">
-              <i class="icon-user-2 Fs50 Fleft Wid25 hardblue TexAlCenter"></i>
-              <div class="Fs24 Fright MarTop10 leaden Wid70">Bienvenido, <span class="hardblue">#{sessionScope.autentifica.persona.cuenta}</span></div>
-              <div class="Fs12 Fright leaden Wid70">Tu tienes <span class="red">#{kajoolTablero.attrs.mensajesNoLeidos} mensajes sin leer</span></div>
-              <div class="EmptyBox10"></div>
-              <p:separator styleClass="Wid100"/>
-              <div class="EmptyBox10"></div>
-              <div class="Fs16 Fright">
-                <a href="#{kajoolTablero.attrs.pathCaptura}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-mail hardblue"> Buzón (0)</i></a>
-                <a href="#{kajoolTablero.attrs.pathMensajes}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-bell-alt hardblue"> Mensajes (#{kajoolTablero.attrs.mensajesNoLeidos})</i></a>
-                <a href="#{kajoolTablero.attrs.pathConfiguracion}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-cog-alt hardblue"> Configuración</i></a>
-              </div>
-              <div class="EmptyBox10"></div>
-              <p:separator styleClass="Wid100"/>
-              <div class="EmptyBox10"></div>
-              <span class="janal-help-icon janal-help-1 fa fa-lg fa-fw fa-question-circle Fright" onclick="countHelp(1);"/>
-              <pe:tooltip for="@(.janal-help-1)" showEvent="click">
-                <h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(1)}" styleClass="Fs15" escape="false"/>
-              </pe:tooltip>
-              <i class="icon-key softgray MarRight10 Fs14 Fright">Último acceso</i>
-              <i class="softgray MarRight10 Fs14 Fright">#{sessionScope.autentifica.ultimoAcceso}</i>
-              <div class="EmptyBox10"></div>              
-            </p:panel>
-          </div>										
-        </div>
-        <div class="Container25 Responsive">          
-          <div class="ContainerIndent">
-            <p:panel style="min-height: 290px;">
-              <i class="icon-sitemap Fs50 Fleft Wid25 red TexAlCenter"></i>
-              <div class="Fs24 Fright MarTop10 leaden Wid70">Equipo de trabajo</div>
-              <div class="Fs18 Fright leaden Wid70">Plantilla de <span class="red">#{kajoolTablero.attrs.contadoresGenerales.total}</span> personas</div>
-              <div class="EmptyBox5"></div>   
-              <div class="Fs12 Fright leaden Wid70">Perfiles que llevaran a cabo actividades en el sistema</div>
-              <div class="EmptyBox10"></div>
-              <p:separator styleClass="Wid100"></p:separator>
-              <div class="EmptyBox10"></div>
-              <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Administrador<br/><span class="Fs20 orange">#{kajoolTablero.attrs.contadoresGenerales.admin}</span></div>
-              <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Gerente<br/><span class="Fs20 orange">1</span></div>
-              <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Vendedor<br/><span class="Fs20 red">#{kajoolTablero.attrs.contadoresGenerales.respEstatal}</span></div>
-              <div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Caja<br/><span class="Fs20 hardblue">#{kajoolTablero.attrs.contadoresGenerales.capturista}</span></div>
-              <div class="EmptyBox10"></div>              
-            </p:panel>
-          </div>															
+        <div class="Container50 Responsive">					
+					<div class="Container50 Responsive">					
+						<div class="ContainerIndent">
+							<p:panel style="min-height: 290px;">
+								<i class="icon-user-2 Fs50 Fleft Wid25 hardblue TexAlCenter"></i>
+								<div class="Fs24 Fright MarTop10 leaden Wid70">Bienvenido, <span class="hardblue">#{sessionScope.autentifica.persona.cuenta}</span></div>
+								<div class="Fs12 Fright leaden Wid70">Tu tienes <span class="red">#{kajoolTablero.attrs.mensajesNoLeidos} mensajes sin leer</span></div>
+								<div class="EmptyBox10"></div>
+								<p:separator styleClass="Wid100"/>
+								<div class="EmptyBox10"></div>
+								<div class="Fs16 Fright">
+									<a href="#{kajoolTablero.attrs.pathCaptura}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-mail hardblue"> Buzón (0)</i></a>
+									<a href="#{kajoolTablero.attrs.pathMensajes}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-bell-alt hardblue"> Mensajes (#{kajoolTablero.attrs.mensajesNoLeidos})</i></a>
+									<a href="#{kajoolTablero.attrs.pathConfiguracion}" class="DispInlBlock Fleft Fs16 MarRight20"><i class="icon-cog-alt hardblue"> Configuración</i></a>
+								</div>
+								<div class="EmptyBox10"></div>
+								<p:separator styleClass="Wid100"/>
+								<div class="EmptyBox10"></div>
+								<span class="janal-help-icon janal-help-1 fa fa-lg fa-fw fa-question-circle Fright" onclick="countHelp(1);"/>
+								<pe:tooltip for="@(.janal-help-1)" showEvent="click">
+									<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(1)}" styleClass="Fs15" escape="false"/>
+								</pe:tooltip>
+								<i class="icon-key softgray MarRight10 Fs14 Fright">Último acceso</i>
+								<i class="softgray MarRight10 Fs14 Fright">#{sessionScope.autentifica.ultimoAcceso}</i>
+								<div class="EmptyBox10"></div>              
+							</p:panel>
+						</div>										
+					</div>
+					<div class="Container50 Responsive">          
+						<div class="ContainerIndent">
+							<p:panel style="min-height: 290px;">
+								<i class="icon-sitemap Fs50 Fleft Wid25 red TexAlCenter"></i>
+								<div class="Fs24 Fright MarTop10 leaden Wid70">Equipo de trabajo</div>
+								<div class="Fs18 Fright leaden Wid70">Plantilla de <span class="red">#{kajoolTablero.attrs.contadoresGenerales.total}</span> personas</div>
+								<div class="EmptyBox5"></div>   
+								<div class="Fs12 Fright leaden Wid70">Perfiles que llevaran a cabo actividades en el sistema</div>
+								<div class="EmptyBox10"></div>
+								<p:separator styleClass="Wid100"></p:separator>
+								<div class="EmptyBox10"></div>
+								<div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Administrador<br/><span class="Fs20 orange">#{kajoolTablero.attrs.contadoresGenerales.admin}</span></div>
+								<div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Gerente<br/><span class="Fs20 orange">1</span></div>
+								<div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Vendedor<br/><span class="Fs20 red">#{kajoolTablero.attrs.contadoresGenerales.respEstatal}</span></div>
+								<div class="Fs12 Fright leaden Wid50 TexAlCenter Responsive">Caja<br/><span class="Fs20 hardblue">#{kajoolTablero.attrs.contadoresGenerales.capturista}</span></div>
+								<div class="EmptyBox10"></div>              
+							</p:panel>
+						</div>															
+					</div>   						
         </div>   						
         <div class="Container50 Responsive">
           <div class="ContainerIndent">            
@@ -379,7 +381,7 @@
           <div class="Container100 Responsive">
             <div class="ContainerIndent">
               <div class="EmptyBox10"></div>
-              <p:panel style="min-height:430px;">
+              <p:panel style="min-height:402px;">
                 <div class="Container100 Responsive Fs20">
                   <i class="icon-cube"></i>Articulos mas vendidos 
                   <p:separator styleClass="Wid100"/>
@@ -398,7 +400,7 @@
           <div class="Container100 Responsive">
             <div class="ContainerIndent">
               <div class="EmptyBox10"></div>
-              <p:panel style="min-height:430px;">
+              <p:panel style="min-height:402px;">
                 <div class="Container100 Responsive Fs20">
                   <i class="icon-dollar"></i>Articulos con mayor utilidad 
                   <p:separator styleClass="Wid100"/>
