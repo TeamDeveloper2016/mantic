@@ -60,8 +60,8 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
-		<p:commandLink id="listadoPrecios" value="Articulos" action="articulos?faces-redirect=true" immediate="true" style="display: none;"/>
-		<p:commandLink id="catalogoPrecios" value="Catalogos" action="catalogos?faces-redirect=true" immediate="true" style="display: none;"/>
+		<p:commandLink id="listadoPrecios" value="Articulos" action="#{manticVentasAccion.doIrPage}" process="@form" style="display: none;"/>
+		<p:commandLink id="catalogoPrecios" value="Catalogos" action="#{manticVentasAccion.doIrPage}" process="@form" style="display: none;"/>
 		<p:poll listener="#{manticVentasAccion.doActivatePage}" process="@this" interval="60"/>
 		<pe:remoteCommand name="updateDescuentos" process="@this" update="panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd"/>  			
 		<pe:remoteCommand name="loginValidate" process="@this @(.janal-login-user)" update="headerCuenta cuenta password" actionListener="#{manticVentasAccion.doLogin}" oncomplete="janal.desbloquear();"/>  			

@@ -67,10 +67,10 @@
   </ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-arrow-circle-left" process="@this" action="accion" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-arrow-circle-left" process="@this" action="#{manticCatalogosListaPreciosCatalogos.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-arrow-circle-left" process="@this" action="accion" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-arrow-circle-left" process="@this" action="#{manticCatalogosListaPreciosCatalogos.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 		</div>		
 	</ui:define>	
   <ui:define name="dialogos">
