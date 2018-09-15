@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +12,6 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
@@ -25,8 +23,8 @@ import mx.org.kaana.libs.reflection.Methods;
 
 @javax.inject.Named("manticCatalogosListaPreciosCatalogos")
 @ViewScoped
-public class Catalogos extends IBaseAttribute implements java.io.Serializable
-{
+public class Catalogos extends IBaseAttribute implements Serializable{
+	
   private static final long serialVersionUID = 862453896325723687L;
   private static final int BUFFER_SIZE      = 6124;
   private List<Entity> lazyModel;
@@ -37,16 +35,19 @@ public class Catalogos extends IBaseAttribute implements java.io.Serializable
   public Catalogos() {}
   
   @PostConstruct
+	@Override
   protected void init(){
     try {
+			this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
+			this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("sortOrder", "order by tc_mantic_proveedores.razon_social");
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
-    }
+    } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
-    }
-  }
+    } // catch
+  } // intit
   
   public void doLoadProveedores() {
     Map<String, Object> params = null;
@@ -57,15 +58,15 @@ public class Catalogos extends IBaseAttribute implements java.io.Serializable
       proveedores = UIEntity.build("TcManticProveedoresDto", "sucursales", params);
       attrs.put("proveedores", proveedores);
       attrs.put("idProveedor", new UISelectEntity("-1"));
-    }
+    } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
-    }
+    } // catch
     finally {
       Methods.clean(params);
-    }
-  }
+    } // finally
+  } // doLoadProveedores
   
   public void doLoad(){
     Map<String, Object> params = null;
@@ -73,15 +74,15 @@ public class Catalogos extends IBaseAttribute implements java.io.Serializable
       params = toPrepare();
       params.put("sortOrder", "order by tc_mantic_proveedores.razon_social");
       lazyModel = DaoFactory.getInstance().toEntitySet("VistaListasArchivosDto", "lazyProveedores", params);
-    }
+    } // try
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
-    }
+    } // catch
     finally {
       Methods.clean(params);
-    }
-  }
+    } // finally
+  } // doLoad
   
   public void doCerrar() {
 		try {
@@ -94,7 +95,7 @@ public class Catalogos extends IBaseAttribute implements java.io.Serializable
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);
 		} // catch
-  }
+  } // doCerrar
 
   public void doViewPdfDocument(Entity item) { 
 		this.toCopyDocument(item.toString("alias"), item.toString("nombre"));
@@ -111,7 +112,7 @@ public class Catalogos extends IBaseAttribute implements java.io.Serializable
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-	}	
+	}	// toCopyDocument
 
  private void toWriteFile(File result, InputStream upload) throws Exception{
 		FileOutputStream fileOutputStream= new FileOutputStream(result);
@@ -150,6 +151,19 @@ public class Catalogos extends IBaseAttribute implements java.io.Serializable
 		else	
 		  regresar.put(Constantes.SQL_CONDICION, sb);
 		return regresar;
-	}
+	} // toPrepare
   
+	public String doCancelar(){
+		String regresar= null;
+		try {
+			JsfBase.setFlashAttribute("idVenta", this.attrs.get("idVenta"));
+			JsfBase.setFlashAttribute("accion", this.attrs.get("accion"));
+			regresar= "accion".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);		
+		} // catch
+		return regresar;
+	} // doCancelar	
 }

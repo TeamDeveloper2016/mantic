@@ -31,6 +31,8 @@ public class Articulos extends Comun implements Serializable {
   @Override
   protected void init() {
     try {
+			this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
+			this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("codigo", "");
       this.attrs.put("nombre", "");    
       this.attrs.put("sortOrder"," order by tc_mantic_listas_precios_detalles.descripcion, tc_mantic_proveedores.razon_social");
@@ -117,4 +119,17 @@ public class Articulos extends Comun implements Serializable {
 		return regresar;
 	}
   
+	public String doCancelar(){
+		String regresar= null;
+		try {
+			JsfBase.setFlashAttribute("idVenta", this.attrs.get("idVenta"));
+			JsfBase.setFlashAttribute("accion", this.attrs.get("accion"));
+			regresar= "accion".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);		
+		} // catch
+		return regresar;
+	} // doCancelar	
 }
