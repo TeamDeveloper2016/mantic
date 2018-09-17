@@ -19,6 +19,7 @@ import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx{
 
+	private List<Entity> cuentas;
 	private String messageError;
 	private TcManticClientesPagosDto pago;
 	private Long idCliente;
@@ -27,24 +28,33 @@ public class Transaccion extends IBaseTnx{
 	private Long idCierreActivo;
 	private Long idBanco;
 	private String referencia;
+	private Double pagoGeneral;
+	private boolean saldar;
 
-	public Transaccion(TcManticClientesPagosDto pago, Long idCaja, Long idEmpresa, Long idBanco, String referencia) {
-		this(pago, idCaja, -1L, idEmpresa, idBanco, referencia);
+	public Transaccion(TcManticClientesPagosDto pago, Long idCaja, Long idEmpresa, Long idBanco, String referencia, boolean saldar) {
+		this(pago, idCaja, -1L, idEmpresa, idBanco, referencia, saldar);
 	} // Transaccion
 	
-	public Transaccion(TcManticClientesPagosDto pago, Long idCaja, Long idCliente, Long idEmpresa, Long idBanco, String referencia) {
+	public Transaccion(TcManticClientesPagosDto pago, Long idCaja, Long idCliente, Long idEmpresa, Long idBanco, String referencia, boolean saldar) {
+		this(pago, idCaja, idCliente, idEmpresa, idBanco, referencia, null, saldar);
+	}
+	
+	public Transaccion(TcManticClientesPagosDto pago, Long idCaja, Long idCliente, Long idEmpresa, Long idBanco, String referencia, List<Entity> cuentas, boolean saldar) {
 		this.pago      = pago;
 		this.idCliente = idCliente;
 		this.idCaja    = idCaja;
 		this.idEmpresa = idEmpresa;
 		this.idBanco   = idBanco;
 		this.referencia= referencia;
+		this.cuentas   = cuentas;
+		this.saldar    = saldar;
 	} // Transaccion
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
 		boolean regresar = false;
     try {			
+			this.pagoGeneral= this.pago.getPago();
       switch (accion) {
         case AGREGAR:					
 						regresar = procesarPago(sesion);
@@ -52,6 +62,9 @@ public class Transaccion extends IBaseTnx{
         case PROCESAR:					
 						regresar = procesarPagoGeneral(sesion);
           break;       
+				case COMPLEMENTAR: 
+					regresar = procesarPagoSegmento(sesion);
+					break;
       } // switch
       if (!regresar) 
         throw new Exception("");      
@@ -116,7 +129,7 @@ public class Transaccion extends IBaseTnx{
 						pagoParcial= this.pago.getPago();
 						saldo= 0D;
 						abono= saldoDeuda - this.pago.getPago();
-						idEstatus= saldoDeuda.equals(this.pago.getPago()) ? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus();
+						idEstatus= this.saldar ? EEstatusClientes.FINALIZADA.getIdEstatus() : (saldoDeuda.equals(this.pago.getPago()) ? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus());
 					} /// else
 					if(registrarPago(sesion, deuda.getKey(), pagoParcial)){
 						params= new HashMap<>();
@@ -145,7 +158,7 @@ public class Transaccion extends IBaseTnx{
 				registroPago= new TcManticClientesPagosDto();
 				registroPago.setIdClienteDeuda(idClienteDeuda);
 				registroPago.setIdUsuario(JsfBase.getIdUsuario());
-				registroPago.setObservaciones("Pago aplicado a la deuda general del cliente. ".concat(this.pago.getObservaciones()));
+				registroPago.setObservaciones("Pago aplicado a la deuda general del cliente. ".concat(this.pago.getObservaciones()).concat(". Pago general por $").concat(this.pagoGeneral.toString()));
 				registroPago.setPago(pagoParcial);
 				registroPago.setIdTipoMedioPago(this.pago.getIdTipoMedioPago());
 				registroPago.setIdCierre(this.idCierreActivo);
@@ -168,7 +181,7 @@ public class Transaccion extends IBaseTnx{
 		try {
 			params= new HashMap<>();
 			params.put("idCliente", this.idCliente);
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.saldo > 0 and tc_mantic_clientes_deudas.id_cliente_estatus not in(".concat(EEstatusClientes.FINALIZADA.getIdEstatus().toString()).concat(")"));			
 			params.put("sortOrder", "order by tc_mantic_clientes_deudas.registro");
 			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaClientesDto", "cuentas", params);			
 		} // try
@@ -198,6 +211,62 @@ public class Transaccion extends IBaseTnx{
 		} // catch		
 		return regresar;
 	} // toCierreCaja
-	//verificarCierreCaja
-	//alterarCierreCaja
+	
+	private boolean procesarPagoSegmento(Session sesion) throws Exception{		
+		boolean regresar         = true;
+		List<Entity> deudas      = null;		
+		Map<String, Object>params= null;
+		Double saldo             = 1D;
+		Double saldoDeuda        = 0D;				
+		Double pagoParcial       = 0D;				
+		Double abono             = 0D;		
+		Long idEstatus           = -1L;
+		try {
+			deudas= toDeudas(sesion);
+			for(Entity deuda: deudas){
+				for(Entity cuenta: this.cuentas){
+					if(deuda.getKey().equals(cuenta.getKey())){
+						if(saldo > 0){					
+							saldoDeuda= Double.valueOf(deuda.toString("saldo"));
+							if(saldoDeuda < this.pago.getPago()){
+								pagoParcial= saldoDeuda;
+								saldo= this.pago.getPago() - saldoDeuda;						
+								this.pago.setPago(saldo);
+								abono= 0D;
+								idEstatus= EEstatusClientes.FINALIZADA.getIdEstatus();
+							} // if
+							else{						
+								pagoParcial= this.pago.getPago();
+								saldo= 0D;
+								abono= saldoDeuda - this.pago.getPago();
+								idEstatus= this.saldar ? EEstatusClientes.FINALIZADA.getIdEstatus() : (saldoDeuda.equals(this.pago.getPago()) ? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus());
+							} /// else
+							if(registrarPago(sesion, deuda.getKey(), pagoParcial)){
+								params= new HashMap<>();
+								params.put("saldo", abono);
+								params.put("idClienteEstatus", idEstatus);
+								DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, deuda.getKey(), params);
+							}	// if				
+						} // if
+						else if (this.saldar){
+							if(registrarPago(sesion, deuda.getKey(), 0D)){
+								params= new HashMap<>();
+								params.put("saldo", 0);
+								params.put("idClienteEstatus", EEstatusClientes.FINALIZADA.getIdEstatus());
+								DaoFactory.getInstance().update(sesion, TcManticClientesDeudasDto.class, deuda.getKey(), params);
+							}	// if				
+						}
+					} // if
+				} // for
+			} // for
+		} // try
+		catch (Exception e) {			
+			throw e; 
+		} // catch		
+		finally{
+			this.messageError= "Error al registrar el pago";
+			Methods.clean(params);			
+		} // finally
+		return regresar;
+	} // procesarPagoGeneral
 }
