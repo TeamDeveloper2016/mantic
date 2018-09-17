@@ -25,6 +25,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.cuentas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticClientesPagosDto;
+import mx.org.kaana.mantic.enums.EEstatusClientes;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 
 @Named(value = "manticCatalogosClientesCuentasAbono")
@@ -43,6 +44,7 @@ public class Abono extends IBaseFilter implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
 			this.attrs.put("mostrarBanco", false);
+			this.attrs.put("saldar", "2");
 			if(JsfBase.isAdminEncuestaOrAdmin())
 				loadSucursales();							
 			doLoadCajas();
@@ -127,6 +129,7 @@ public class Abono extends IBaseFilter implements Serializable {
 			params.put("sortOrder", this.attrs.get("sortOrder"));
 			params.put(Constantes.SQL_CONDICION, " tc_mantic_clientes_deudas.id_cliente_deuda=" + this.attrs.get("idClienteDeuda"));
 			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "cuentas", params);
+			this.attrs.put("permitirPago", deuda.toLong("idClienteEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus()));
 			this.attrs.put("deuda", deuda);
 		} // try
 		catch (Exception e) {
@@ -171,8 +174,10 @@ public class Abono extends IBaseFilter implements Serializable {
 		Transaccion transaccion      = null;
 		TcManticClientesPagosDto pago= null;
 		boolean tipoPago             = false;
+		boolean saldar               = false;
 		try {
 			if(validaPago()){
+				saldar= Long.valueOf(this.attrs.get("saldar").toString()).equals(1L);
 				pago= new TcManticClientesPagosDto();
 				pago.setIdClienteDeuda(Long.valueOf(this.attrs.get("idClienteDeuda").toString()));
 				pago.setIdUsuario(JsfBase.getIdUsuario());
@@ -180,7 +185,7 @@ public class Abono extends IBaseFilter implements Serializable {
 				pago.setPago(Double.valueOf(this.attrs.get("pago").toString()));
 				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
 				tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
-				transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("caja").toString()), Long.valueOf(this.attrs.get("idEmpresa").toString()), tipoPago ? -1 : Long.valueOf(this.attrs.get("banco").toString()), tipoPago ? "" : this.attrs.get("referencia").toString());
+				transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("caja").toString()), Long.valueOf(this.attrs.get("idEmpresa").toString()), tipoPago ? -1 : Long.valueOf(this.attrs.get("banco").toString()), tipoPago ? "" : this.attrs.get("referencia").toString(), saldar);
 				if(transaccion.ejecutar(EAccion.AGREGAR)){
 					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta", ETipoMensaje.INFORMACION);
 					loadClienteDeuda();
