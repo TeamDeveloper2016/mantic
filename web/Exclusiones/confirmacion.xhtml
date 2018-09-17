@@ -38,8 +38,8 @@
 					<p:outputLabel for="confirma" value="Confirmar contraseña:" styleClass="Fs16"/>
           <p:password placeholder="confirmar contraseña" id="confirma" tabindex="2" value="#{kajoolAccesoConfirmacionFiltro.cliente.confirma}" styleClass="Container80 Fnone MarAuto Fs18"/>								
 					<p:panelGrid columns="2" layout="grid" styleClass="Container90 Fnone MarAuto Fs18">						
-            <p:commandButton id="regresar" icon="fa fa-lg fa-reply" value="Regresar" action="#{kajoolAccesoConfirmacionFiltro.doRegresar()}"/>					
-						<p:commandButton id="aceptar" icon="fa fa-lg fa-lock" value="Confirmar" onstart="return janal.partial('ingresar');" action="#{kajoolAccesoConfirmacionFiltro.doConfirmar()}" update="@this nueva confirma gridCuenta"/>					
+            <p:commandButton id="regresar" icon="fa fa-reply" value="Regresar" action="#{kajoolAccesoConfirmacionFiltro.doRegresar()}"/>					
+						<p:commandButton id="aceptar" icon="fa fa-lock" value="Confirmar" onstart="return janal.partial('ingresar');" action="#{kajoolAccesoConfirmacionFiltro.doConfirmar()}" update="@this nueva confirma gridCuenta"/>					
 					</p:panelGrid>
           <p:spacer height="1"/>
         </p:panelGrid>		
