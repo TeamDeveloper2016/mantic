@@ -1,9 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -92,6 +87,8 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   private Date fechaPago;
   @Column (name="deuda")
   private Double deuda;
+	@Column (name="id_manual")
+  private Long idManual;
 
   public TcManticNotasEntradasDto() {
     this(new Long(-1L));
@@ -103,6 +100,10 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   }
 
   public TcManticNotasEntradasDto(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idDirecta, Date fechaRecepcion, String extras, Long idNotaEntrada, Date fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subTotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes, Long diasPlazo, Date fechaPago, Double deuda) {
+		this(descuentos, idProveedor, descuento, idOrdenCompra, idDirecta, fechaRecepcion, extras, idNotaEntrada, fechaFactura, idNotaEstatus, ejercicio, consecutivo, total, factura, idUsuario, idAlmacen, subTotal, impuestos, tipoDeCambio, idSinIva, observaciones, idEmpresa, orden, excedentes, diasPlazo, fechaPago, deuda, 2L);
+	}
+	
+  public TcManticNotasEntradasDto(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idDirecta, Date fechaRecepcion, String extras, Long idNotaEntrada, Date fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subTotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes, Long diasPlazo, Date fechaPago, Double deuda, Long idManual) {
     setDescuentos(descuentos);
     setExcedentes(excedentes);
     setIdProveedor(idProveedor);
@@ -131,7 +132,16 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
     setDiasPlazo(diasPlazo);
     setFechaPago(fechaPago);
     setDeuda(deuda);
+		setIdManual(idManual);
   }
+
+	public Long getIdManual() {
+		return idManual;
+	}
+
+	public void setIdManual(Long idManual) {
+		this.idManual = idManual;
+	}	
 	
   public void setDescuentos(Double descuentos) {
     this.descuentos = descuentos;
@@ -427,6 +437,8 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
 		regresar.append(getFechaPago());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDeuda());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdManual());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -462,13 +474,14 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
 		regresar.put("diasPlazo", getDiasPlazo());
 		regresar.put("fechaPago", getFechaPago());
 		regresar.put("deuda", getDeuda());
+		regresar.put("idManual", getIdManual());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescuentos(), getIdProveedor(), getDescuento(), getIdOrdenCompra(), getIdDirecta(), getFechaRecepcion(), getExtras(), getIdNotaEntrada(), getFechaFactura(), getIdNotaEstatus(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getFactura(), getIdUsuario(), getIdAlmacen(), getSubTotal(), getImpuestos(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden(), getExcedentes(), getDiasPlazo(), getFechaPago(), getDeuda()
+    getDescuentos(), getIdProveedor(), getDescuento(), getIdOrdenCompra(), getIdDirecta(), getFechaRecepcion(), getExtras(), getIdNotaEntrada(), getFechaFactura(), getIdNotaEstatus(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getFactura(), getIdUsuario(), getIdAlmacen(), getSubTotal(), getImpuestos(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden(), getExcedentes(), getDiasPlazo(), getFechaPago(), getDeuda(), getIdManual()
     };
     return regresar;
   }
@@ -526,7 +539,4 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdNotaEntrada() != null ? getIdNotaEntrada().hashCode() : 0);
     return hash;
   }
-
 }
-
-
