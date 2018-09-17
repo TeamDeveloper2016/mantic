@@ -66,6 +66,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	@PostConstruct
   @Override
   protected void init() {		
+		boolean isMatriz= false;
     try {
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
@@ -85,8 +86,9 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.image= LoadImages.getImage("-1");
 			loadClienteDefault();
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());
-			if(JsfBase.isAdminEncuestaOrAdmin())
+			isMatriz= JsfBase.getAutentifica().getEmpresa().isMatriz();
+			this.attrs.put("isMatriz", isMatriz);
+			if(isMatriz)
 				loadSucursales();
 			doLoad();
     } // try
