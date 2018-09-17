@@ -143,7 +143,7 @@ public class Transaccion extends Inventarios implements Serializable {
 						regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
 						this.toCheckOrden(sesion);
        	    this.toDeleteXmlPdf();	
-					}
+					} // if
 					else
        			this.messageError= "No se puede eliminar la nota de entrada porque ya fue aplicada en los precios de los articulos.";
 					break;
@@ -176,7 +176,7 @@ public class Transaccion extends Inventarios implements Serializable {
 
 	private void toFillArticulos(Session sesion) throws Exception {
 	  StringBuilder error= new StringBuilder();
-		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticNotasDetallesDto", "detalle", this.orden.toMap());
+		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaNotasEntradasDto", "detalle", this.orden.toMap());
 		for (Articulo item: todos) 
 			if(this.articulos.indexOf(item)< 0) {
 				this.toAffectOrdenDetalle(sesion, item);
@@ -187,7 +187,7 @@ public class Transaccion extends Inventarios implements Serializable {
 			item.setIdNotaEntrada(this.orden.getIdNotaEntrada());
 			if(item.getDiferencia()!= 0)
 				error.append("[").append(item.getNombre()).append(" - ").append(item.getDiferencia()).append("]</br> ");
-			if(DaoFactory.getInstance().findIdentically(sesion, TcManticNotasDetallesDto.class, item.toMap())== null && articulo.getCantidad()> 0D && articulo.getCosto()> 0D) {
+			if(DaoFactory.getInstance().findIdentically(sesion, TcManticNotasDetallesDto.class, item.toMap())== null && (articulo.getCantidad()> 0D || articulo.getCosto()> 0D)) {
 				this.toAffectOrdenDetalle(sesion, articulo);
 				if(item.isValid())
 			    DaoFactory.getInstance().update(sesion, item);
@@ -209,7 +209,7 @@ public class Transaccion extends Inventarios implements Serializable {
 	}
 
 	private void toRemoveOrdenDetalle(Session sesion) throws Exception {
-		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticNotasDetallesDto", "detalle", this.orden.toMap());
+		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaNotasEntradasDto", "detalle", this.orden.toMap());
 		for (Articulo articulo: todos) {
 			if(articulo.getIdOrdenDetalle()!= null && articulo.getIdOrdenDetalle()> 0L) {
 				TcManticOrdenesDetallesDto detalle= (TcManticOrdenesDetallesDto)DaoFactory.getInstance().findById(sesion, TcManticOrdenesDetallesDto.class, articulo.getIdOrdenDetalle());

@@ -87,29 +87,100 @@
 			});			
       $(document).on('keyup', this.lookup, function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('Keydown: '+ key);
+				janal.console('jsArticulos.keyup: '+ $(this).attr('id')+ ' key: '+ key);
 				clearTimeout($articulos.typingTimer);
 				if ($(this).val() && $(this).val().trim().length> 0) 
 					$articulos.typingTimer= setTimeout($articulos.look($(this)), $articulos.doneInterval);
 				return false;
 			});  
       $(document).on('keyup', this.findout, function(e) {
-				clearTimeout($articulos.typingTimer);
-        if ($(this).val() && $(this).val().trim().length> 0) 
-          $articulos.typingTimer= setTimeout($articulos.relocate($(this)), $articulos.doneInterval);
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.keyup: '+ $(this).attr('id')+ ' key: '+ key);
+				switch(key) {
+					case $articulos.VK_UP:	
+					case $articulos.VK_DOWN:	
+					case $articulos.VK_ENTER:
+					case $articulos.VK_TAB:
+						return $articulos.move(true);
+					  break;
+					case $articulos.VK_ESC:
+            PF('buscador').hide();
+						break;
+					case $articulos.VK_PAGE_NEXT:
+						if($('#encontrados_paginator_top > a.ui-paginator-next')) {
+						  $('#encontrados_paginator_top > a.ui-paginator-next').click();
+						  return setTimeout($articulos.go(false), 1000);
+						} // if
+						else
+							return false;
+						break;
+					case $articulos.VK_PAGE_PREV:
+						if($('#encontrados_paginator_top > a.ui-paginator-prev')) {
+	  					$('#encontrados_paginator_top > a.ui-paginator-prev').click();
+  						return setTimeout($articulos.go(false), 1000);
+						} // if
+						else
+							return false;
+						break;
+					default:
+						clearTimeout($articulos.typingTimer);
+						if ($(this).val() && $(this).val().trim().length> 0) 
+							$articulos.typingTimer= setTimeout($articulos.relocate($(this)), $articulos.doneInterval);
+						break;
+				} // swtich
 				return false;
 			});  
-      $(document).on('focus', this.focus+ ',.key-move-event', function() {
+	    $(document).on('keydown', '.janal-find-articulos', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				switch(key) {
+					case $articulos.VK_TAB:
+					  $('#auxiliar').focus();
+						return false;
+					  break;
+					case $articulos.VK_ESC:
+            PF('buscador').hide();
+						break;
+					case $articulos.VK_F7:
+					case $articulos.VK_ENTER:
+				    return $articulos.enter();
+						break;
+					case $articulos.VK_UP:
+					case $articulos.VK_DOWN:
+						// return $precios.hide();
+						break;
+					case $articulos.VK_PAGE_NEXT:
+						if($('#encontrados_paginator_top > a.ui-paginator-next')) {
+						  $('#encontrados_paginator_top > a.ui-paginator-next').click();
+						  return setTimeout($articulos.go(false), 1000);
+					  } // if
+						else
+							return false;
+						break;
+					case $articulos.VK_PAGE_PREV:
+						if($('#encontrados_paginator_top > a.ui-paginator-prev')) {
+  						$('#encontrados_paginator_top > a.ui-paginator-prev').click();
+	  					return setTimeout($articulos.go(false), 1000);
+					  } // if
+						else
+							return false;
+						break;
+				} // swtich
+			});			
+      $(document).on('focus', this.focus+ '.key-move-event', function() {
+				janal.console('jsArticulos.focus: '+ $(this).attr('id'));
 				$articulos.current= $(this).val();
 				$articulos.index($(this).attr('id'));
 				janal.lastNameFocus= this;
 			});  
       $(document).on('focus', this.selector, function() {
+				janal.console('jsArticulos.focus: '+ $(this).attr('id'));
 				$articulos.index($(this).attr('id'));
 				janal.lastNameFocus= this;
 			});  
       $(document).on('keydown', this.averages, function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.keydown: '+ $(this).attr('id')+ ' key: '+ key);
 				if(($articulos.change.indexOf(key)>= 0)) 
 					$articulos.leavePage= false;
 				switch(key) {
@@ -121,6 +192,7 @@
 			});	
 			$(document).on('keydown', '.key-event-sat', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.keydown: '+ $(this).attr('id')+ ' key: '+ key);
 				switch(key) {
 					case $articulos.VK_UP:
 						return $articulos.moveup('\\'+ $(this).attr('id').substring($(this).attr('id').lastIndexOf(':')));
@@ -133,6 +205,7 @@
 			});	
       $(document).on('keydown', this.focus, function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.keydown: '+ $(this).attr('id')+ ' key: '+ key);
 				if(($articulos.change.indexOf(key)>= 0))
 					$articulos.leavePage= false;
 				switch(key) {
@@ -149,7 +222,7 @@
 			});	
       $(document).on('keydown', this.selector, function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('Keydown: '+  key);
+				janal.console('jsArticulos.keydown: '+ $(this).attr('id')+ ' key: '+ key);
 				if(($articulos.change.indexOf(key)>= 0)) {
 					$articulos.leavePage= false;
 				  setTimeout("$('div[id$='+ jsArticulos.panels+ ']').hide();$('div[id$='+ jsArticulos.itemtips+ ']').hide();", 500);
@@ -236,6 +309,7 @@
 			} // if	
 		},
 		move: function() {
+			janal.console('jsArticulos.move: '+ this.name());
 			var id= this.name();
 			if($(id))
 				$(id).focus();
@@ -289,7 +363,7 @@
 			return false;
 		},
 		down: function(jump) {
-			janal.console("jsArticulos.down: "+ this.cursor.index);
+			janal.console("jsArticulos.down: "+ this.cursor.index+ ' '+ jump);
 			if(this.cursor.index< this.cursor.top)
 				this.cursor.index++;
 			else
@@ -579,6 +653,20 @@
 			janal.desbloquear(); 
 			setTimeout('jsArticulos.next()', 500);
 			$('#source-image').attr('href', $('#icon-image').attr('src'));
+		},
+		go: function(focus) {
+			janal.console('jsArticulos.go: ');
+			PF('widgetEncontrados').clearSelection();
+			PF('widgetEncontrados').writeSelections();
+			PF('widgetEncontrados').selectRow(0, true);	
+			if(focus)
+			  $('#encontrados .ui-datatable-data').focus();
+			return false;
+		},
+		enter: function()  {
+ 			janal.console('jsArticulos.enter');
+      $('#encontrado').click();		
+			return false;
 		}
 	});
 	

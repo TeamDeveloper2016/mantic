@@ -137,7 +137,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 				DaoFactory.getInstance().insert(sesion, deuda);
 				
     		// Recuperar el detalle de las notas de entrada para afectas inventarios 
-    		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticNotasDetallesDto", "detalle", nota.toMap());
+    		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaNotasEntradasDto", "detalle", nota.toMap());
 				for (Articulo articulo: todos) {
 					TcManticNotasDetallesDto item= articulo.toNotaDetalle();
     		  this.toAffectAlmacenes(sesion, nota.getIdNotaEntrada(), item, articulo);

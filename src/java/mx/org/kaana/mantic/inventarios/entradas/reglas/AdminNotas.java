@@ -40,7 +40,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 		this.orden= orden;
 		if(this.orden.isValid()) {
 			if(this.orden.getIdDirecta().equals(1L))
-  	    this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticNotasDetallesDto", "detalle", this.orden.toMap()));
+  	    this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "detalle", this.orden.toMap()));
 			else	
   	    this.setArticulos(this.toLoadOrdenDetalle());
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
@@ -117,7 +117,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 	}
 
 	private ArrayList<Articulo> toLoadOrdenDetalle() throws Exception {
-		ArrayList<Articulo> regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "TcManticNotasDetallesDto", "detalle", this.orden.toMap()));
+		ArrayList<Articulo> regresar= new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "detalle", this.orden.toMap()));
 		ArrayList<Articulo> loaded  = new ArrayList<>((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaNotasEntradasDto", "diferencia", this.orden.toMap()));
 		Map<String, Object> params=null;
 		try {
@@ -132,7 +132,7 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 				if(index< 0) 
 					regresar.add(item);
 				else {
-					((Articulo)regresar.get(index)).setValor(item.getCosto());
+					// ((Articulo)regresar.get(index)).setValor(item.getValor());
 					((Articulo)regresar.get(index)).setStock(stock== null? 0D: stock.toDouble());
 				} // else	
 			} // for

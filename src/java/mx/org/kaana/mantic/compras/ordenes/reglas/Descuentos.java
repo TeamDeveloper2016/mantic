@@ -77,7 +77,7 @@ public class Descuentos implements Serializable {
 	
 	
   public static void main(String ... args) {
-		Descuentos descuentos= new Descuentos(1131.63* 10, "a,0.00,0.00");
+		Descuentos descuentos= new Descuentos(100, "10,0.00,0.00");
 		LOG.info(descuentos.getFactor());
 		LOG.info(descuentos.toImporte());
 	}	
