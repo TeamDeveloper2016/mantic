@@ -6,8 +6,6 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
-import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -18,8 +16,6 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.TreeOrden;
 import mx.org.kaana.mantic.compras.ordenes.reglas.MotorBusqueda;
-import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
-import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.organigram.OrganigramNodeCollapseEvent;
@@ -73,9 +69,10 @@ public class Estructura extends IBaseFilter implements Serializable {
 		Map<String, Object> params= null;
 		MotorBusqueda busqueda    = null;
     try {      
-			busqueda= new MotorBusqueda(Long.valueOf(this.attrs.get("idOrdenCompra").toString()));
+			busqueda = new MotorBusqueda(Long.valueOf(this.attrs.get("idOrdenCompra").toString()));
 			this.tree= new DefaultTreeNode("orden", busqueda.toParent() , null);
 			this.tree.getChildren().add(new DefaultTreeNode());      
+			RequestContext.getCurrentInstance().execute("setTimeout(expand(), 1000);");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -100,7 +97,7 @@ public class Estructura extends IBaseFilter implements Serializable {
         for(TreeNode childNode: childrens){
           if(!((TreeOrden)childNode.getData()).isUltimoNivel()) 
             childNode.getChildren().add(new DefaultTreeNode(new TreeOrden(), childNode));
-          childNode.setParent(seleccionado);          
+          childNode.setParent(seleccionado);      
           seleccionado.getChildren().add(childNode);
         } // for
       } // if                  
@@ -182,4 +179,16 @@ public class Estructura extends IBaseFilter implements Serializable {
     } // finally      
 		return regresar;
   } // doConsultarDetalle
+	
+  public void doExpandAllNodes() {
+    setExpandedRecursively(this.tree, true);
+  }
+
+  private void setExpandedRecursively(final TreeNode node, final boolean expanded) {
+    for (final TreeNode child : node.getChildren()) {
+      setExpandedRecursively(child, expanded);
+    } // for
+    node.setExpanded(expanded);
+  }	
+	
 }

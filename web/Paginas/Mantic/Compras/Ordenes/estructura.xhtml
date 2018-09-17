@@ -118,10 +118,11 @@
   <ui:define name="contenido">  
 		<p:remoteCommand name="consultar" onstart="return janal.bloquear();" process="@this tabla" action="#{manticComprasOrdenesEstructura.doAccion}"/>
     <p:remoteCommand name="detalle" onstart="return janal.bloquear();" process="@this tabla" actionListener="#{manticComprasOrdenesEstructura.doConsultarDetalle}" update="dialogoDetalle"/>
+    <p:remoteCommand name="expand" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" process="@this tabla" actionListener="#{manticComprasOrdenesEstructura.doExpandAllNodes}"/>
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">                 
         <div id="collapse-content" class="ui-grid-col-12">
-          <p:tree id="tabla" value="#{manticComprasOrdenesEstructura.tree}" var="node" selectionMode="single" selection="#{manticComprasOrdenesEstructura.node}" orientation="horizontal" styleClass="tabla-filtro" dynamic="true">      
+          <p:tree id="tabla" value="#{manticComprasOrdenesEstructura.tree}" var="node" selectionMode="single" selection="#{manticComprasOrdenesEstructura.node}" orientation="horizontal" styleClass="tabla-filtro" dynamic="true">
 						<p:ajax event="expand" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" listener="#{manticComprasOrdenesEstructura.onNodeExpand}" process="@this tabla" update=":datos:tabla"/>            
 						<p:treeNode type="orden">		
 							<p:outputLabel value="ORDEN DE COMPRA" class="descripcion-titulo"/>
