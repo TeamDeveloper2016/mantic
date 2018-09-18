@@ -1401,7 +1401,8 @@
 					datediff(tc_mantic_clientes_deudas.limite, now()) as dias,
 					tc_mantic_clientes.razon_social,
 					tc_mantic_clientes_deudas.id_cliente_estatus,
-					tc_mantic_ventas.id_venta
+					tc_mantic_ventas.id_venta,
+					tc_mantic_clientes_estatus.nombre as estatus
 				from
 					tc_mantic_clientes_deudas
 				inner join
@@ -1412,11 +1413,13 @@
 					tc_janal_usuarios on tc_mantic_clientes_deudas.id_usuario= tc_janal_usuarios.id_usuario
 				inner join
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				inner join 
+					tc_mantic_clientes_estatus on tc_mantic_clientes_deudas.id_cliente_estatus = tc_mantic_clientes_estatus.id_cliente_estatus
 				where
 					tc_mantic_clientes_deudas.id_cliente= {idCliente}
 				  and {condicion}
 				{sortOrder}								
-			</select>		
+			</select>	
 			<select id="cuentasBusqueda">
 				select
 					tc_mantic_clientes_deudas.id_cliente_deuda as id_key,
