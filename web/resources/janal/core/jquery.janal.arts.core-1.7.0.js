@@ -101,7 +101,7 @@
 					case $articulos.VK_DOWN:	
 					case $articulos.VK_ENTER:
 					case $articulos.VK_TAB:
-						return $articulos.move(true);
+						return $articulos.go(true);
 					  break;
 					case $articulos.VK_ESC:
             PF('buscador').hide();

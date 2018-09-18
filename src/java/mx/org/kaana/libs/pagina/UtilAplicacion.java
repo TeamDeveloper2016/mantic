@@ -49,11 +49,11 @@ public class UtilAplicacion {
   private static final String STYLE_SHEET = "<link type=\"text/css\" rel=\"stylesheet\" href=\"{0}/javax.faces.resource/css/{1}.jsf?ln={2}\">";
 
   private static final String LESS  = "less.min-2.5.0.js";
-  private static final String CORE  = "jquery.janal.core-2.3.6.js";
+  private static final String CSS   = "janal-mantic-0.1.6.css";
+  private static final String CORE  = "jquery.janal.core-2.3.8.js";
   private static final String VENTAS= "jquery.janal.ventas.core-0.2.1.js";
-  private static final String CALC  = "jquery.janal.arts.core-1.6.9.js";
+  private static final String CALC  = "jquery.janal.arts.core-1.7.0.js";
   private static final String DLGS  = "jquery.janal.precio.core-0.2.1.js";
-  private static final String CSS   = "mantic-0.1.6.css";
   private static final String FUSION= "jquery.janal.fusion.charts-3.3.1.js";
 
   public String getTituloSistema() {

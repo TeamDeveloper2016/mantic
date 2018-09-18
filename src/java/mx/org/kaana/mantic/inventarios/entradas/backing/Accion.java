@@ -38,6 +38,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.util.Collections;
 import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import org.primefaces.context.RequestContext;
@@ -283,12 +284,12 @@ public class Accion extends IBaseArticulos implements Serializable {
 	public void doFileUpload(FileUploadEvent event) {
 		this.attrs.put("relacionados", 0);
 		this.doFileUpload(event, ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"), this.proveedor.getClave(), (boolean)this.attrs.get("sinIva"), this.getAdminOrden().getTipoDeCambio());
-		if(this.getFactura()!= null) {
+		if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
 		  ((NotaEntrada)this.getAdminOrden().getOrden()).setFactura(this.getFactura().getFolio());
 		  ((NotaEntrada)this.getAdminOrden().getOrden()).setFechaFactura(Fecha.toDateDefault(this.getFactura().getFecha()));
-		} // if	
-		this.toPrepareDisponibles();
-		this.doCheckFolio();
+  		this.toPrepareDisponibles();
+	  	this.doCheckFolio();
+		} // if
 	} // doFileUpload	
 	
 	private void toPrepareDisponibles() {

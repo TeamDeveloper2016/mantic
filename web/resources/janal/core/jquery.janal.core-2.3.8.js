@@ -377,16 +377,18 @@
 				} // else
 				return {"value": $(element).val(), "error": false};	
 		 },
-		 precio: function(element, value) {
+		 precio: function(element, value, decimal) {
 				var val= $(element)? $(element).val().trim(): value;
+				if(typeof(decimal)=== 'undefined')
+					decimal= this.decimals;
 				if(val=== 'undefined' || val.length=== 0) {
-					$(element).val(parseFloat(value).toFixed(this.decimals));
+					$(element).val(parseFloat(value).toFixed(decimal));
 				} // if	
 				else {
 					if(Number.isNaN(parseFloat(val, 10)) || parseFloat(val, 10)< parseFloat(value, 10))
-						$(element).val(parseFloat(value).toFixed(this.decimals));
+						$(element).val(parseFloat(value).toFixed(decimal));
 					else
-						$(element).val(parseFloat(val, 10).toFixed(this.decimals));
+						$(element).val(parseFloat(val, 10).toFixed(decimal));
 				} // else
 			  return {"value": $(element).val(), "error": false};	
 		 },
