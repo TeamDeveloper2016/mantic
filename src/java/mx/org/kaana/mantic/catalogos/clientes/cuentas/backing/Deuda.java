@@ -81,8 +81,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 			doLoadCajasSegmento();
 			loadBancos();
 			loadTiposPagos();
-			loadClienteDeuda();
-			doLoad();
+			loadClienteDeuda();			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -197,6 +196,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 			params.put("idCliente", this.attrs.get("idCliente"));						
 			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "deuda", params);
 			this.attrs.put("deuda", deuda);
+			doLoad();
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -209,7 +209,8 @@ public class Deuda extends IBaseFilter implements Serializable {
   @Override
   public void doLoad() {
     List<Columna> columns     = null;
-	  Map<String, Object> params= null;	
+	  Map<String, Object> params= null;
+		List<Entity> cuentas      = null;
     try {  	  
 			params= new HashMap<>();
 			params.put("idCliente", this.attrs.get("idCliente"));						
@@ -223,6 +224,8 @@ public class Deuda extends IBaseFilter implements Serializable {
 			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
 			this.lazyModel = new FormatCustomLazy("VistaClientesDto", "cuentas", params, columns);			
+			cuentas= DaoFactory.getInstance().toEntitySet("VistaClientesDto", "cuentas", params);
+			validaPagoGeneral(cuentas);
       UIBackingUtilities.resetDataTable();		      
     } // try
     catch (Exception e) {
@@ -235,10 +238,30 @@ public class Deuda extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad
 	
+	private void validaPagoGeneral(List<Entity> cuentas){
+		int count= 0;
+		try {
+			for(Entity cuenta: cuentas){
+				if(!(cuenta.toLong("idClienteEstatus").equals(EEstatusClientes.FINALIZADA.getIdEstatus())))
+					count++;
+			} // for
+			this.attrs.put("activePagoGeneral", count>0);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+			throw e;
+		} // catch
+		finally {
+			
+		} // finally
+	} // validaPagogeneral
+	
 	public void doLoadCuentas(){
 		List<Columna> columns     = null;
 	  Map<String, Object> params= null;	
 		try {
+			this.seleccionadosSegmento= new ArrayList<>();
 			params= new HashMap<>();
 			params.put("idCliente", this.attrs.get("idCliente"));						
 			params.put("sortOrder", this.attrs.get("sortOrder"));			
