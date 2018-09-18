@@ -29,7 +29,6 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.inventarios.entradas.beans.NotaEntrada;
 import mx.org.kaana.mantic.inventarios.entradas.reglas.AdminNotas;
 import mx.org.kaana.mantic.inventarios.entradas.reglas.Transaccion;
-import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,9 +55,20 @@ public class Accion extends IBaseArticulos implements Serializable {
   private static final long serialVersionUID= 327393488565639364L;
 	
 	private EAccion accion;	
-	private EOrdenes tipoOrden;
 	private boolean aplicar;
 	private TcManticProveedoresDto proveedor;
+
+	public String getAgregar() {
+		return this.accion.equals(EAccion.COMPLETO)? "none": "";
+	}
+
+	public String getConsultar() {
+		return this.accion.equals(EAccion.CONSULTAR)? "none": "";
+	}
+
+	public TcManticProveedoresDto getProveedor() {
+		return proveedor;
+	}
 
 	public Boolean getIsAplicar() {
 		Boolean regresar= true;
@@ -72,18 +82,6 @@ public class Accion extends IBaseArticulos implements Serializable {
 		return regresar;
 	}
 	
-	public String getAgregar() {
-		return this.accion.equals(EAccion.COMPLETO)? "none": "";
-	}
-
-	public String getConsultar() {
-		return this.accion.equals(EAccion.CONSULTAR)? "none": "";
-	}
-
-	public TcManticProveedoresDto getProveedor() {
-		return proveedor;
-	}
-
 	public Boolean getDiferente() {
 	  return this.getEmisor()!= null && this.proveedor!= null &&	!this.getEmisor().getRfc().equals(this.proveedor.getRfc());
 	}
@@ -95,7 +93,6 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.aplicar  =  false;
 			if(JsfBase.getFlashAttribute("accion")== null)
 				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
-			this.tipoOrden= EOrdenes.MANUAL;
       this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.COMPLETO: (EAccion)JsfBase.getFlashAttribute("accion");
 			this.attrs.put("idOrdenCompra", -1L);
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
@@ -111,10 +108,11 @@ public class Accion extends IBaseArticulos implements Serializable {
 
   public void doLoad() {
     try {
-      this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
+      this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.equals(EAccion.COMPLETO)? EAccion.AGREGAR.name(): this.accion.equals(EAccion.COMPLEMENTAR)? EAccion.MODIFICAR.name(): this.accion.name()));
       switch (this.accion) {
         case COMPLETO:											
           this.setAdminOrden(new AdminNotas(new NotaEntrada()));
+					((NotaEntrada)this.getAdminOrden().getOrden()).setIdDirecta(1L);
 					((NotaEntrada)this.getAdminOrden().getOrden()).setIdManual(1L);
 					((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(new Entity(-1L)));
 					((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(-1L)));
@@ -227,6 +225,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 		if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
 		  ((NotaEntrada)this.getAdminOrden().getOrden()).setFactura(this.getFactura().getFolio());
 		  ((NotaEntrada)this.getAdminOrden().getOrden()).setFechaFactura(Fecha.toDateDefault(this.getFactura().getFecha()));
+	  	this.doCheckFolio();
+			this.doCalculatePagoFecha();
 		} // if
 	} // doFileUpload	
 	

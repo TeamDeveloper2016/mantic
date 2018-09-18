@@ -109,7 +109,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 				regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
 			JsfBase.setFlashAttribute("idNotaEntrada", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
-			JsfBase.setFlashAttribute("idOrdenCompra", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).toLong("idOrdenCompra") : -1L);
+			JsfBase.setFlashAttribute("idOrdenCompra", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).toLong("idOrdenCompra"): -1L);
+			if(eaccion.equals(EAccion.MODIFICAR) && ((Entity)this.attrs.get("seleccionado")).toLong("idManual").equals(1L)) {
+				regresar= "/Paginas/Mantic/Catalogos/Empresas/Cuentas/accion";
+				JsfBase.setFlashAttribute("accion", EAccion.COMPLEMENTAR);
+			} // if	
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -236,7 +240,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // else
 	} // doVerificarReporte		
 
-	public void doLoadEstatus(){
+	public void doLoadEstatus() {
 		Entity seleccionado          = null;
 		Map<String, Object>params    = null;
 		List<UISelectItem> allEstatus= null;

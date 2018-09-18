@@ -164,19 +164,19 @@
 									</p:column>   
 								</p:selectOneMenu>
 								<p:outputLabel for="factura" value="No factura:"/>
-								<p:inputText id="factura" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.adminOrden.orden.factura}" onblur="janal.individual('contenedorGrupos\\:factura'); if($('#contenedorGrupos\\:factura').val().trim().length> 0) factura();"/>
+								<p:inputText id="factura" styleClass="janal-wid-100-txt involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.factura}" onblur="janal.individual('contenedorGrupos\\:factura'); if($('#contenedorGrupos\\:factura').val().trim().length> 0) factura();"/>
 								<p:outputLabel for="fechaFactura" value="Fecha factura:"/>
-								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-94" styleClass="janal-wid-100 involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaFactura}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 								<p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>
 								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-94" styleClass="janal-wid-99" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 								<p:outputLabel for="diasPlazo" value="Dias plazo:"/>
-								<p:inputText id="diasPlazo" styleClass="janal-wid-100-txt janal-column-right" value="#{manticInventariosEntradasAccion.adminOrden.orden.diasPlazo}">
+								<p:inputText id="diasPlazo" styleClass="janal-wid-100-txt janal-column-right involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.diasPlazo}">
 									<p:ajax event="blur" listener="#{manticInventariosEntradasAccion.doCalculateFechaPago}" process="@this" update="fechaPago"/>
 								</p:inputText>
 								<p:outputLabel for="deuda" value="Deuda:"/>
 								<p:inputText id="deuda" styleClass="recalculo janal-wid-100-txt janal-column-right" value="#{manticInventariosEntradasAccion.adminOrden.orden.deuda}"/>
 								<p:outputLabel for="fechaPago" value="Fecha de pago:"/>
-								<p:calendar id="fechaPago" inputStyleClass="janal-wid-94" styleClass="janal-wid-99" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario">
+								<p:calendar id="fechaPago" inputStyleClass="janal-wid-94" styleClass="janal-wid-99 involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaPago}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario">
 									<p:ajax event="dateSelect" listener="#{manticInventariosEntradasAccion.doCalculatePagoFecha}" process="@this" update="diasPlazo"/>
 								</p:calendar>
 								<p:spacer width="1px"/><p:separator/>
@@ -512,7 +512,7 @@
 							<p:inputTextarea id="comentarios" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.attrs.observaciones}" style="display:#{manticInventariosEntradasAccion.consultar};"/>
 							<p:spacer height="5px"/>
 							<p:fileUpload fileUploadListener="#{manticInventariosEntradasAccion.doFileUpload}" 
-								mode="advanced" process="@this comentarios" update="@(.importado) @(.involucrados) @(.filas) contenedorGrupos:factura contenedorGrupos:fechaFactura" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+								mode="advanced" process="@this comentarios" update="@(.importado) @(.involucrados) @(.filas)" label="Selecciona XML/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 								multiple="false" allowTypes="#{manticInventariosEntradasAccion.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticInventariosEntradasAccion.attrs.formatos}" oncomplete="PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>
 							<p:commandLink value="XML importado: #{manticInventariosEntradasAccion.xml.ruta}#{manticInventariosEntradasAccion.xml.name}" onclick="viewFile();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento XML" style="#{(empty manticInventariosEntradasAccion.xml)? 'display: none': ''}"/>

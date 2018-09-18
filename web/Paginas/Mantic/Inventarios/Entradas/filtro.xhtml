@@ -19,11 +19,11 @@
         'idNotaEstatus': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
       };
 			
-			fieldsDialog= {
+			fields= {
 				'justificacion': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
 			};
 			
-			function validaJustificacion(){
+			function justifica() {
 				var ok= janal.partial('dialogo');
 				if(ok) {
 					PF('dlgEstatus').hide();
@@ -31,7 +31,7 @@
 					janal.refresh();
 				} // if
 				return ok;
-			} // validaJustificacion
+			} // justifica
     </script>		
 		<style>
 			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield {
@@ -227,7 +227,7 @@
     </p:panelGrid>			
   </ui:define>
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoEstatus', fieldsDialog);janal.refresh();">
+		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoEstatus', fields);janal.refresh();">
 			<h:form id="formDialogoEstatus" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
@@ -241,7 +241,7 @@
 				</h:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticInventariosEntradasFiltro.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();"/>
+					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticInventariosEntradasFiltro.doActualizarEstatus}" onstart="return justifica()" oncomplete="janal.desbloquear();"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgEstatus').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>

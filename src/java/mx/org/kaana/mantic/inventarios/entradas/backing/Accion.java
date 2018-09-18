@@ -289,6 +289,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 		  ((NotaEntrada)this.getAdminOrden().getOrden()).setFechaFactura(Fecha.toDateDefault(this.getFactura().getFecha()));
   		this.toPrepareDisponibles();
 	  	this.doCheckFolio();
+			this.doCalculatePagoFecha();
 		} // if
 	} // doFileUpload	
 	

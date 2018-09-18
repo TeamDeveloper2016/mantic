@@ -25,7 +25,9 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.ParametrosComunes;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
@@ -236,8 +238,8 @@ public class Saldos extends IBaseFilter implements Serializable {
     EAccion eaccion= EAccion.valueOf(accion.toUpperCase());
 		try {
 		  JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/saldos");		
-			JsfBase.setFlashAttribute("idNotaEntrada", eaccion.equals(EAccion.COMPLEMENTAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
+			JsfBase.setFlashAttribute("idNotaEntrada", -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -246,21 +248,4 @@ public class Saldos extends IBaseFilter implements Serializable {
 		return regresar.concat(Constantes.REDIRECIONAR);
   } // doAccion  
 	
-  public void doEliminar() {
-		Transaccion transaccion = null;
-		Entity seleccionado     = null;
-		try {
-			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			transaccion= new Transaccion((TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, seleccionado.getKey()));
-			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "La nota de entrada manual se ha eliminado correctamente.", ETipoMensaje.ERROR);
-			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la nota de entrada manual.", ETipoMensaje.ERROR);								
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch			
-  } // doEliminar
-
 }

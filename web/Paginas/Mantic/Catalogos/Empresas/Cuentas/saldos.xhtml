@@ -13,7 +13,7 @@
         'idEmpresa'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'proveedor'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'almacen'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'consecutivo' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'consecutivo' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'consecutivo', individual: true},
         'dias'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'vencidos'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'fechaInicio' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -47,7 +47,7 @@
 							<p:inputText id="almacen" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.almacen}" styleClass="janal-wid-100-txt"/> 
 							<p:outputLabel for="proveedor" value="Proveedor:"/>
 							<p:inputText id="proveedor" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.proveedor}" styleClass="janal-wid-100-txt"/> 							
-							<p:outputLabel for="consecutivo" value="No. ticket:"/>
+							<p:outputLabel for="consecutivo" value="Nota entrada:"/>
 							<p:inputText id="consecutivo" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.consecutivo}" styleClass="janal-wid-100-txt janal-column-right"/> 
 							<p:outputLabel for="dias" value="Días vencidos:"/>
 							<p:inputText id="dias" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.dias}" styleClass="janal-wid-100-txt janal-column-right"/> 
@@ -65,7 +65,7 @@
 							<p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.partial('general', true);" process="panelBusqueda" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
 						</div>
 						<div class="janal-align-right xs-pantalla">
-							<p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general', true);" process="panelBusqueda" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+							<p:commandButton id="buscarIcon" title="Buscar" icon="fa fa-filter" onstart="return janal.partial('general', true);" process="panelBusqueda" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
 						</div>
 					</p:panel>
 				</div>
@@ -157,10 +157,6 @@
 						</f:facet>
 					</p:dataTable>
 					<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla"> 
-            <p:menuitem icon="fa fa-edit" value="Modificar" action="#{manticCatalogosEmpresasCuentasSaldos.doAccion('COMPLEMENTAR')}" title="Modificar nota de entrada manual" onstart="return janal.bloquear()" rendered="#{manticCatalogosEmpresasCuentasSaldos.attrs.seleccionado.idManual eq '1'}"/>
-            <p:menuitem icon="fa fa-close" value="Eliminar" title="Eliminar nota de entrada manual" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticCatalogosEmpresasCuentasSaldos.attrs.seleccionado.idManual eq '1' and manticCatalogosEmpresasCuentasSaldos.attrs.seleccionado.idNotaEstatus eq '1'}"/>					
-            <p:menuitem icon="fa fa-search" value="Consultar" action="#{manticCatalogosEmpresasCuentasSaldos.doAccion('CONSULTAR')}" title="Consultar nota de entrada manual" onstart="return janal.bloquear()" rendered="#{manticCatalogosEmpresasCuentasSaldos.attrs.seleccionado.idManual eq '1'}"/>						
-						<p:separator rendered="#{manticCatalogosEmpresasCuentasSaldos.attrs.seleccionado.idManual eq '1'}"/>
             <p:menuitem icon="fa fa-money" value="Pago" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doPago}" process="@this tabla" />
 						<p:separator/>
 						<p:menuitem icon="fa fa-check" value="Actualizar" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doModificar}" process="@this tabla" />
@@ -182,15 +178,4 @@
 		</div>	
 	</ui:define>	
   <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
-  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la nota de entrada manual ?" />
-  <ui:param name="accionConfirmacion" value="#{manticCatalogosEmpresasCuentasSaldos}"/>
-  <ui:param name="updateComponent" value="tabla"/>
-  <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
-  <ui:param name="renderedConfirmacion" value="true"/>	
-  <ui:define name="detalleConfirmacion">
-    <p:panelGrid layout="grid" columns="2">
-      <p:outputLabel value="No. de nota:"/>
-      <p:outputLabel value="#{manticCatalogosEmpresasCuentasSaldos.attrs.seleccionado.consecutivo}"/>
-    </p:panelGrid>			
-  </ui:define>
 </ui:composition>
