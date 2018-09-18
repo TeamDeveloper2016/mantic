@@ -235,9 +235,9 @@ public class Saldos extends IBaseFilter implements Serializable {
 		String regresar= "accion";
     EAccion eaccion= EAccion.valueOf(accion.toUpperCase());
 		try {
-		  JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
+		  JsfBase.setFlashAttribute("accion", eaccion);		
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/saldos");		
-			JsfBase.setFlashAttribute("idNotaEntrada", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+			JsfBase.setFlashAttribute("idNotaEntrada", eaccion.equals(EAccion.COMPLEMENTAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

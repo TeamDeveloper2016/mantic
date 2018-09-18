@@ -226,7 +226,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 			int index= 0;
 			if(!proveedores.isEmpty()) {
-				if(this.tipoOrden.equals(EOrdenes.NORMAL))
+				if(this.accion.equals(EAccion.AGREGAR))
 			   ((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(proveedores.get(0));
 				else {
 				  index= proveedores.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor());

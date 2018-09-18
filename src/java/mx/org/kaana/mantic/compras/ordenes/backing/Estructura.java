@@ -52,6 +52,8 @@ public class Estructura extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
+			if(JsfBase.getFlashAttribute("idOrdenCompra")== null)
+				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra"));			
@@ -176,7 +178,7 @@ public class Estructura extends IBaseFilter implements Serializable {
     } // finally      
   } // doConsultarDetalle
 	
-	public String doAccion(){
+	public String doAccion() {
 		String regresar       = null;
 		TreeOrden seleccionado= null;
     RequestContext rc     = null;

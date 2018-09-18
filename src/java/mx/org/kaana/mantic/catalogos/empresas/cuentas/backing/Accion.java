@@ -19,7 +19,6 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -32,7 +31,6 @@ import mx.org.kaana.mantic.inventarios.entradas.reglas.AdminNotas;
 import mx.org.kaana.mantic.inventarios.entradas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
-import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.kajool.enums.EFormatos;
@@ -62,10 +60,6 @@ public class Accion extends IBaseArticulos implements Serializable {
 	private boolean aplicar;
 	private TcManticProveedoresDto proveedor;
 
-	public Boolean getIsDirecta() {
-		return false;
-	}
-
 	public Boolean getIsAplicar() {
 		Boolean regresar= true;
 		try {
@@ -79,7 +73,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 	}
 	
 	public String getAgregar() {
-		return this.accion.equals(EAccion.AGREGAR)? "none": "";
+		return this.accion.equals(EAccion.COMPLETO)? "none": "";
 	}
 
 	public String getConsultar() {
@@ -102,7 +96,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			if(JsfBase.getFlashAttribute("accion")== null)
 				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
 			this.tipoOrden= EOrdenes.MANUAL;
-      this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
+      this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.COMPLETO: (EAccion)JsfBase.getFlashAttribute("accion");
 			this.attrs.put("idOrdenCompra", -1L);
       this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "saldos": JsfBase.getFlashAttribute("retorno"));
@@ -119,14 +113,14 @@ public class Accion extends IBaseArticulos implements Serializable {
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));
       switch (this.accion) {
-        case AGREGAR:											
+        case COMPLETO:											
           this.setAdminOrden(new AdminNotas(new NotaEntrada()));
 					((NotaEntrada)this.getAdminOrden().getOrden()).setIdManual(1L);
 					((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(new Entity(-1L)));
 					((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(-1L)));
 					this.doCalculateFechaPago();
           break;
-        case MODIFICAR:					
+        case COMPLEMENTAR:					
         case CONSULTAR:					
 					NotaEntrada notaEntrada= (NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradasDto", "detalle", this.attrs);
 					((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(new Entity(notaEntrada.getIdAlmacen())));
@@ -158,15 +152,15 @@ public class Accion extends IBaseArticulos implements Serializable {
 			((NotaEntrada)this.getAdminOrden().getOrden()).setTotal(((NotaEntrada)this.getAdminOrden().getOrden()).getDeuda());
 			transaccion = new Transaccion(((NotaEntrada)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.aplicar, this.getXml(), this.getPdf());
 			if (transaccion.ejecutar(this.accion)) {
-				if(this.accion.equals(EAccion.AGREGAR) || this.aplicar) {
+				if(this.accion.equals(EAccion.COMPLETO) || this.aplicar) {
  				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
-					if(this.accion.equals(EAccion.AGREGAR))
+					if(this.accion.equals(EAccion.COMPLETO))
     			  RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la nota de entrada manual', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 					else
    			    RequestContext.getCurrentInstance().execute("jsArticulos.back('aplic\\u00F3 la nota de entrada manual', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				} // if	
  				if(!this.accion.equals(EAccion.CONSULTAR)) 
-  				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la nota de entrada manual."), ETipoMensaje.INFORMACION);
+  				JsfBase.addMessage("Se ".concat(this.accion.equals(EAccion.COMPLETO) ? "agregó" : "modificó").concat(" la nota de entrada manual."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idNotaEntrada", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada());
 			} // if
 			else 
@@ -195,7 +189,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			params.put("idOrdenCompra", this.attrs.get("idOrdenCompra"));
       this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
-			if(!almacenes.isEmpty() && this.accion.equals(EAccion.AGREGAR)) 
+			if(!almacenes.isEmpty() && this.accion.equals(EAccion.COMPLETO)) 
 				((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
       columns.remove(0);
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
@@ -203,7 +197,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 			int index= 0;
 			if(!proveedores.isEmpty()) {
-				if(this.tipoOrden.equals(EOrdenes.NORMAL))
+				if(this.accion.equals(EAccion.COMPLETO))
 			   ((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(proveedores.get(0));
 				else {
 				  index= proveedores.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor());
@@ -211,13 +205,6 @@ public class Accion extends IBaseArticulos implements Serializable {
 				} // else
 		    this.attrs.put("proveedor", proveedores.get(index));
 			  this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, ((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor().getKey());
-			} // if	
-			if(this.attrs.get("idOrdenCompra")!= null) {
-        columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-        this.attrs.put("ordenes", UIEntity.build("VistaNotasEntradasDto", "ordenes", params, columns));
-			  List<UISelectEntity> ordenes= (List<UISelectEntity>)this.attrs.get("ordenes");
-			  if(!ordenes.isEmpty()) 
-				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkOrdenCompra(ordenes.get(0));
 			} // if	
     } // try
     catch (Exception e) {
@@ -230,37 +217,13 @@ public class Accion extends IBaseArticulos implements Serializable {
     } // finally
 	}
 
-	public void doUpdateProveedor() {
-		try {
-			if(this.tipoOrden.equals(EOrdenes.PROVEEDOR)) {
-				this.getAdminOrden().getArticulos().clear();
-				this.getAdminOrden().toCalculate();
-			} // if	
-			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
-			UISelectEntity proveedor= ((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor();
-			this.attrs.put("proveedor", proveedores.get(proveedores.indexOf(proveedor)));
-		}	
-	  catch (Exception e) {
-      Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
-	} 
-
-	public void doUpdateAlmacen() {
-		if(this.tipoOrden.equals(EOrdenes.ALMACEN)) {
-  		this.getAdminOrden().getArticulos().clear();
-			this.getAdminOrden().toCalculate();
-		} // if	
-	}
-	
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Importar"))
-			this.doLoadFiles("TcManticNotasArchivosDto", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada(), "idNotaEntrada", (boolean)this.attrs.get("sinIva"), this.getAdminOrden().getTipoDeCambio());
+			this.doLoadFiles("TcManticNotasArchivosDto", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada(), "idNotaEntrada", false, this.getAdminOrden().getTipoDeCambio());
 	}
 	
 	public void doFileUpload(FileUploadEvent event) {
-		this.attrs.put("relacionados", 0);
-		this.doFileUpload(event, ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"), this.proveedor.getClave(), (boolean)this.attrs.get("sinIva"), this.getAdminOrden().getTipoDeCambio());
+		this.doFileUpload(event, ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas"), this.proveedor.getClave(), true, this.getAdminOrden().getTipoDeCambio());
 		if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
 		  ((NotaEntrada)this.getAdminOrden().getOrden()).setFactura(this.getFactura().getFolio());
 		  ((NotaEntrada)this.getAdminOrden().getOrden()).setFechaFactura(Fecha.toDateDefault(this.getFactura().getFecha()));

@@ -75,7 +75,7 @@
 						<f:facet name="header" >
 							<div class="lg-pantalla">
 								<p:menuButton   value="Opciones">
-                  <p:menuitem value="Agregar directa" action="#{manticCatalogosEmpresasCuentasSaldos.doAccion('COMPLETO')}" icon="fa fa-plus" title="Agregar nota de entrada manual" onstart="return janal.bloquear()"/>						
+                  <p:menuitem value="Nota de entrada manual" action="#{manticCatalogosEmpresasCuentasSaldos.doAccion('COMPLETO')}" icon="fa fa-plus" title="Agregar nota de entrada manual" onstart="return janal.bloquear()"/>						
                   <p:separator/>
 									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -84,15 +84,15 @@
 								</p:menuButton>
 							</div>  
 							<div class="xs-pantalla">              
-                <p:commandButton title="Agregar directa" action="#{manticCatalogosEmpresasCuentasSaldos.doAccion('COMPLETO')}" icon="fa fa-plus" title="Agregar nota de entrada manual" onstart="return janal.bloquear()"/>						
+                <p:commandButton title="Nota de entrada manual" action="#{manticCatalogosEmpresasCuentasSaldos.doAccion('COMPLETO')}" icon="fa fa-plus" onstart="return janal.bloquear()"/>						
                 <p:separator/>
-								<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-								<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+								<p:menuitem id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:separator/>
-                <p:menuitem id="reporteIconXs" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doReporte('CUENTAS_POR_PAGAR')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                <p:menuitem id="reporteIconXs" icon="fa fa-file-word-o" title="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doReporte('CUENTAS_POR_PAGAR')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</div>  
 						</f:facet>												
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-5" sortBy="#{filtro.manual}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.manual}">
 							<f:facet name="header">
 								<h:outputText value="Manual"/>
 							</f:facet>
