@@ -57,16 +57,16 @@
 						<f:facet name="header" >
 							<div class="lg-pantalla">
 								<p:menuButton   value="Opciones">
-									<p:menuitem id="pagoIcon" icon="fa fa-money" value="Registrar pago" onstart="return janal.bloquear();" oncomplete="PF('dlgPagoGeneral').show();"/>
-									<p:menuitem id="pagoIconSegmento" icon="fa fa-money" value="Registrar pago x deuda" onstart="return janal.bloquear();" actionListener="#{manticCatalogosClientesCuentasDeuda.doLoadCuentas}" update="dialogoPagoSegmento" oncomplete="PF('dlgPagoSegmento').show();"/>
+									<p:menuitem id="pagoIcon" icon="fa fa-money" value="Registrar pago" onstart="return janal.bloquear();" oncomplete="PF('dlgPagoGeneral').show();" disabled="#{!manticCatalogosClientesCuentasDeuda.attrs.activePagoGeneral}"/>
+									<p:menuitem id="pagoIconSegmento" icon="fa fa-money" value="Registrar pago x deuda" onstart="return janal.bloquear();" actionListener="#{manticCatalogosClientesCuentasDeuda.doLoadCuentas}" update="dialogoPagoSegmento" oncomplete="PF('dlgPagoSegmento').show();" disabled="#{!manticCatalogosClientesCuentasDeuda.attrs.activePagoGeneral}"/>
 									<p:separator rendered="true"/>
 									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 								</p:menuButton>
 							</div>  
 							<div class="xs-pantalla">              
-								<p:menuitem id="pagos" icon="fa fa-money" title="Registrar pago" onstart="return janal.bloquear();" oncomplete="PF('dlgPagoGeneral').show();"/>
-								<p:menuitem id="pagosSegmento" icon="fa fa-money" title="Registrar pago x deuda" onstart="return janal.bloquear();" oncomplete="PF('dlgPagoSegmento').show();"/>
+								<p:menuitem id="pagos" icon="fa fa-money" title="Registrar pago" onstart="return janal.bloquear();" oncomplete="PF('dlgPagoGeneral').show();" disabled="#{!manticCatalogosClientesCuentasDeuda.attrs.activePagoGeneral}"/>
+								<p:menuitem id="pagosSegmento" icon="fa fa-money" title="Registrar pago x deuda" onstart="return janal.bloquear();" oncomplete="PF('dlgPagoSegmento').show();" disabled="#{!manticCatalogosClientesCuentasDeuda.attrs.activePagoGeneral}"/>
 								<p:separator rendered="true"/>
 								<p:menuitem id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -87,6 +87,12 @@
 							</f:facet>
 							<h:outputText value="#{filtro['persona']}"/>
 						</p:column>											
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.estatus}">
+							<f:facet name="header">
+								<h:outputText value="Estatus"/>
+							</f:facet>
+							<h:outputText value="#{filtro['estatus']}"/>
+						</p:column>						
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
 							<f:facet name="header">
 								<h:outputText value="Importe"/>
@@ -401,7 +407,7 @@
 				</p:tabView>				
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPagoSegmento tabPagosSegmentos" update="tabla panelDetalle dialogoPagoSegmento" actionListener="#{manticCatalogosClientesCuentasDeuda.doRegistrarPagoSegmento}" onstart="return janal.partial('dialogoSegmento');" oncomplete="PF('dlgPagoSegmento').hide(); janal.desbloquear();"/>
+					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPagoSegmento tabPagosSegmentos" update="tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasDeuda.doRegistrarPagoSegmento}" onstart="return janal.partial('dialogoSegmento');" oncomplete="PF('dlgPagoSegmento').hide(); janal.desbloquear();"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPagoSegmento').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>

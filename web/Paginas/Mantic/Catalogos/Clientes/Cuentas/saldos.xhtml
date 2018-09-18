@@ -108,6 +108,12 @@
 							</f:facet>
 							<h:outputText value="#{filtro['razonSocial']}"/>
 						</p:column>					
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.estatus}">
+							<f:facet name="header">
+								<h:outputText value="Estatus"/>
+							</f:facet>
+							<h:outputText value="#{filtro['estatus']}"/>
+						</p:column>
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
 							<f:facet name="header">
 								<h:outputText value="Importe"/>
