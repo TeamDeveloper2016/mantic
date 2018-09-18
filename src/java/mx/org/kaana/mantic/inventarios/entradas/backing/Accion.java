@@ -262,6 +262,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 			UISelectEntity proveedor= ((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor();
 			this.attrs.put("proveedor", proveedores.get(proveedores.indexOf(proveedor)));
+			this.doCalculateFechaPago();
 		}	
 	  catch (Exception e) {
       Error.mensaje(e);

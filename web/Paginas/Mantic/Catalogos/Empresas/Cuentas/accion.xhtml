@@ -116,6 +116,7 @@
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
 								<p:selectOneMenu id="idProveedor" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="contains">
+									<p:ajax event="change" listener="#{manticCatalogosEmpresasCuentasAccion.doCalculateFechaPago}" update="@(.involucrados)" process="@this fechaPago" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{manticCatalogosEmpresasCuentasAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
