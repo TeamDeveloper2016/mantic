@@ -63,9 +63,11 @@
 			return false;
 		},
 		calculate: function(element, operator) {
-			var number= {value: '0'};
+			var number = {value: '0'};
+			var concat = false;
+			var comodin= $(element).val().trim().endsWith('%');
 			if($(element).val().trim().length> 0)
-			  number= janal.precio(element, $(element).val().trim());
+			  number= janal.precio(element, $(element).val().trim(), 4);
 			if(this.result.length=== 0)
 				this.result+= number.value;
 			else {
@@ -88,17 +90,29 @@
 					else
 						if($(element).val().trim().length<= 0)
 					    number.value= this.result;
-				if(operator=== '=' && !(this.result.endsWith('+') || this.result.endsWith('-') || this.result.endsWith('*') || this.result.endsWith('/')))
+				janal.console('jsCalculator.calculate: '+ this.result+ ' number: '+ number.value);
+				if(operator=== '=' && !(this.result.endsWith('+') || this.result.endsWith('-') || this.result.endsWith('*') || this.result.endsWith('/') || this.result.endsWith('%')))
 					this.result= parseFloat(number.value, 10);
-				else
-			    this.result= eval(this.result+ number.value);
+				else {
+					janal.console('jsCalculator.calculate: '+ this.result+ number.value);
+					if(comodin) {
+						var value= this.result.substring(0, this.result.length- 1);
+						var op   = this.result.substring(this.result.length- 1, this.result.length);
+  					janal.console('jsCalculator.calculate: [('+ value+ '/100)* (100'+ op+ number.value+ ')]');
+					  this.result= eval('('+ value+ '/100)* (100'+ op+ number.value+ ')');	
+						number.value= number.value+ '%';
+					} // if
+					else
+			      this.result= eval(this.result+ number.value);
+					concat= true;
+				} // else
 				this.result= this.result.toFixed(4);
 			} // else
 			this.last= this.result;
 			if(operator!== '=')
 				this.result+= operator;
 			$(element).val('');
-			$('#results').val($('#results').val()+ this.result+ (operator=== '='? operator: '')+ '\n');
+			$('#results').val($('#results').val()+ (concat? number.value+  (operator=== '='? operator: '')+ '\n'+ this.result+ '': this.result+ (operator=== '='? operator: ''))+ '\n');
 			$('#results').scrollTop($('#results').scrollTop()+ 22);
 			$(element).focus();
 			return false;
@@ -110,7 +124,4 @@
 
 $(document).ready(function() {
   jsCalculator= new Janal.Control.Calculadora.Core();
-});			
-
-
-
+});				

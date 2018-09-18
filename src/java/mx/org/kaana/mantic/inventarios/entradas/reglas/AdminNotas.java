@@ -35,6 +35,17 @@ public final class AdminNotas extends IAdminArticulos implements Serializable {
 	private static final Log LOG=LogFactory.getLog(AdminNotas.class);
 
 	private NotaEntrada orden;
+	
+	public AdminNotas(NotaEntrada orden) throws Exception {
+		this.orden= orden;
+		this.setArticulos(new ArrayList<>());
+		if(!this.orden.isValid()) {
+		  this.orden.setDiasPlazo(1L);	
+  	  this.orden.setConsecutivo(this.toConsecutivo("0"));
+		  this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
+		  this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+		} // if
+	}
 
 	public AdminNotas(NotaEntrada orden, EOrdenes tipoOrden) throws Exception {
 		this.orden= orden;

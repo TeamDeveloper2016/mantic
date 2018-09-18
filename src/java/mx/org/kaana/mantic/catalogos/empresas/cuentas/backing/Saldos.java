@@ -9,7 +9,9 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -27,7 +29,9 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.ParametrosComunes;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.mantic.inventarios.entradas.reglas.Transaccion;
 import org.primefaces.context.RequestContext;
 
 @Named(value = "manticCatalogosEmpresasCuentasSaldos")
@@ -71,6 +75,7 @@ public class Saldos extends IBaseFilter implements Serializable {
       columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));    
       columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));    
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    
+      columns.add(new Columna("manual", EFormatoDinamicos.MAYUSCULAS));    
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_EXTENDIDA));    			
 			this.lazyModel = new FormatCustomLazy("VistaEmpresasDto", "cuentasBusqueda", params, columns);
       UIBackingUtilities.resetDataTable();		
@@ -225,4 +230,37 @@ public class Saldos extends IBaseFilter implements Serializable {
 		} // catch		
 		return regresar;
 	} // doModificar
+	
+  public String doAccion(String accion) {
+		String regresar= "accion";
+    EAccion eaccion= EAccion.valueOf(accion.toUpperCase());
+		try {
+		  JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/saldos");		
+			JsfBase.setFlashAttribute("idNotaEntrada", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return regresar.concat(Constantes.REDIRECIONAR);
+  } // doAccion  
+	
+  public void doEliminar() {
+		Transaccion transaccion = null;
+		Entity seleccionado     = null;
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");			
+			transaccion= new Transaccion((TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, seleccionado.getKey()));
+			if(transaccion.ejecutar(EAccion.ELIMINAR))
+				JsfBase.addMessage("Eliminar", "La nota de entrada manual se ha eliminado correctamente.", ETipoMensaje.ERROR);
+			else
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la nota de entrada manual.", ETipoMensaje.ERROR);								
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch			
+  } // doEliminar
+
 }

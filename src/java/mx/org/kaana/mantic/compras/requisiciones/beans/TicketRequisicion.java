@@ -1,12 +1,9 @@
 package mx.org.kaana.mantic.compras.requisiciones.beans;
 
-import mx.org.kaana.mantic.ventas.beans.*;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.Calendar;
-import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.mantic.db.dto.TcManticRequisicionesDto;
-import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 
 /**
  *@company KAANA

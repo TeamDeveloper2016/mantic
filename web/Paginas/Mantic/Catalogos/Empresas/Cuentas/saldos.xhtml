@@ -75,6 +75,8 @@
 						<f:facet name="header" >
 							<div class="lg-pantalla">
 								<p:menuButton   value="Opciones">
+                  <p:menuitem value="Agregar directa" action="#{manticCatalogosEmpresasCuentasSaldos.doAccion('COMPLETO')}" icon="fa fa-plus" title="Agregar nota de entrada manual" onstart="return janal.bloquear()"/>						
+                  <p:separator/>
 									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                   <p:separator/>
@@ -82,12 +84,20 @@
 								</p:menuButton>
 							</div>  
 							<div class="xs-pantalla">              
+                <p:commandButton title="Agregar directa" action="#{manticCatalogosEmpresasCuentasSaldos.doAccion('COMPLETO')}" icon="fa fa-plus" title="Agregar nota de entrada manual" onstart="return janal.bloquear()"/>						
+                <p:separator/>
 								<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:separator/>
                 <p:menuitem id="reporteIconXs" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doReporte('CUENTAS_POR_PAGAR')}" oncomplete="janal.desbloquear();" update="descargar"/>
 							</div>  
 						</f:facet>												
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-5" sortBy="#{filtro.manual}">
+							<f:facet name="header">
+								<h:outputText value="Manual"/>
+							</f:facet>
+							<h:outputText value="#{filtro['manual']}"/>
+						</p:column>														
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.consecutivo}">
 							<f:facet name="header">
 								<h:outputText value="Ticket"/>
@@ -146,14 +156,18 @@
 							<p:outputLabel value="Total [#{manticCatalogosEmpresasCuentasSaldos.lazyModel==null?0:manticCatalogosEmpresasCuentasSaldos.lazyModel.rowCount}] registros"/>
 						</f:facet>
 					</p:dataTable>
-					<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">            
-            <p:menuitem id="pago" icon="fa fa-money" value="Pago" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doPago}" process="@this tabla" />
+					<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla"> 
+            <p:menuitem icon="fa fa-edit" value="Modificar" action="#{manticCatalogosEmpresasCuentasSaldos.doAccion('COMPLEMENTAR')}" title="Modificar nota de entrada manual" onstart="return janal.bloquear()" rendered="#{manticCatalogosEmpresasCuentasSaldos.attrs.seleccionado.idManual eq '1'}"/>
+            <p:menuitem icon="fa fa-close" value="Eliminar" title="Eliminar nota de entrada manual" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticCatalogosEmpresasCuentasSaldos.attrs.seleccionado.idManual eq '1' and manticCatalogosEmpresasCuentasSaldos.attrs.seleccionado.idNotaEstatus eq '1'}"/>					
+            <p:menuitem icon="fa fa-search" value="Consultar" action="#{manticCatalogosEmpresasCuentasSaldos.doAccion('CONSULTAR')}" title="Consultar nota de entrada manual" onstart="return janal.bloquear()" rendered="#{manticCatalogosEmpresasCuentasSaldos.attrs.seleccionado.idManual eq '1'}"/>						
+						<p:separator rendered="#{manticCatalogosEmpresasCuentasSaldos.attrs.seleccionado.idManual eq '1'}"/>
+            <p:menuitem icon="fa fa-money" value="Pago" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doPago}" process="@this tabla" />
 						<p:separator/>
-						<p:menuitem id="modificar" icon="fa fa-check" value="Modificar" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doModificar}" process="@this tabla" />
+						<p:menuitem icon="fa fa-check" value="Actualizar" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doModificar}" process="@this tabla" />
 						<p:separator/>
-						<p:menuitem id="importar" icon="fa fa-external-link" value="Importar" title="Importar identificacion de representante" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosEmpresasCuentasSaldos.doImportar}"/>
+						<p:menuitem icon="fa fa-external-link" value="Importar" title="Importar identificacion de representante" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosEmpresasCuentasSaldos.doImportar}"/>
             <p:separator/>					
-            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doReporte('CUENTA_PAGAR_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
+            <p:menuitem icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doReporte('CUENTA_PAGAR_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
           </p:contextMenu>
 				</div>
 			</div>	
@@ -167,5 +181,16 @@
 			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosEmpresasCuentasSaldos.doRegresar}" immediate="true"/>
 		</div>	
 	</ui:define>	
-  <ui:param name="componenteBloqueo" value="tabla" />
+  <ui:param name="componenteBloqueo" value="buscar buscarIcon tabla"/>
+  <ui:param name="textoConfirmacion" value="¿ Está seguro de eliminar la nota de entrada manual ?" />
+  <ui:param name="accionConfirmacion" value="#{manticCatalogosEmpresasCuentasSaldos}"/>
+  <ui:param name="updateComponent" value="tabla"/>
+  <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
+  <ui:param name="renderedConfirmacion" value="true"/>	
+  <ui:define name="detalleConfirmacion">
+    <p:panelGrid layout="grid" columns="2">
+      <p:outputLabel value="No. de nota:"/>
+      <p:outputLabel value="#{manticCatalogosEmpresasCuentasSaldos.attrs.seleccionado.consecutivo}"/>
+    </p:panelGrid>			
+  </ui:define>
 </ui:composition>
