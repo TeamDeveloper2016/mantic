@@ -122,7 +122,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					this.orden.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
 					this.orden.setOrden(consecutivo);
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
-					if(this.orden.getIdDirecta().equals(1L))
+					if(this.orden.getIdNotaTipo().equals(1L))
 						this.orden.setIdOrdenCompra(null);
   				if(this.aplicar)
 						this.orden.setIdNotaEstatus(3L);
@@ -274,7 +274,7 @@ public class Transaccion extends Inventarios implements Serializable {
 	private void toCheckOrden(Session sesion) throws Exception {
 		try {
 			sesion.flush();
-			if(this.orden.getIdDirecta().equals(2L)) {
+			if(this.orden.getIdNotaTipo().equals(2L)) {
         TcManticOrdenesComprasDto ordenCompra= (TcManticOrdenesComprasDto)DaoFactory.getInstance().findById(sesion, TcManticOrdenesComprasDto.class, this.orden.getIdOrdenCompra());
   		  Value errors= DaoFactory.getInstance().toField(sesion, "VistaNotasEntradasDto", "errores", this.orden.toMap(), "total");
 			  if(errors.toLong()!= null && errors.toLong()== 0) {

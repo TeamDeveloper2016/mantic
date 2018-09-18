@@ -112,8 +112,7 @@ public class Accion extends IBaseArticulos implements Serializable {
       switch (this.accion) {
         case COMPLETO:											
           this.setAdminOrden(new AdminNotas(new NotaEntrada()));
-					((NotaEntrada)this.getAdminOrden().getOrden()).setIdDirecta(1L);
-					((NotaEntrada)this.getAdminOrden().getOrden()).setIdManual(1L);
+					((NotaEntrada)this.getAdminOrden().getOrden()).setIdNotaTipo(3L);
 					((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(new Entity(-1L)));
 					((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(-1L)));
 					this.doCalculateFechaPago();
@@ -121,6 +120,7 @@ public class Accion extends IBaseArticulos implements Serializable {
         case COMPLEMENTAR:					
         case CONSULTAR:					
 					NotaEntrada notaEntrada= (NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradasDto", "detalle", this.attrs);
+          this.setAdminOrden(new AdminNotas(notaEntrada));
 					((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(new Entity(notaEntrada.getIdAlmacen())));
 					((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(notaEntrada.getIdProveedor())));
           this.setAdminOrden(new AdminNotas(notaEntrada));

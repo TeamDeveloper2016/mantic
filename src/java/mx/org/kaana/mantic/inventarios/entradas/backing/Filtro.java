@@ -99,21 +99,23 @@ public class Filtro extends IBaseFilter implements Serializable {
     EAccion eaccion= null;
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
-			if(eaccion.equals(EAccion.COMPLETO)) 
-			  JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
-			else 
-			  JsfBase.setFlashAttribute("accion", eaccion);		
-			if(!eaccion.equals(EAccion.COMPLETO) || ((eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) && ((Entity)this.attrs.get("seleccionado")).toLong("idDirecta").equals(2L))) 
-				regresar= regresar.concat("?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs");
-			else
-				regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
+			if(((Entity)this.attrs.get("seleccionado")).toLong("idNotaTipo").equals(3L)) {
+				regresar= "/Paginas/Mantic/Catalogos/Empresas/Cuentas/accion".concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
+				JsfBase.setFlashAttribute("accion", eaccion.equals(EAccion.MODIFICAR)? EAccion.COMPLEMENTAR: EAccion.CONSULTAR);
+			} // if	
+			else {
+				if(eaccion.equals(EAccion.COMPLETO)) 
+					JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
+				else 
+					JsfBase.setFlashAttribute("accion", eaccion);		
+				if(!eaccion.equals(EAccion.COMPLETO) || ((eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) && ((Entity)this.attrs.get("seleccionado")).toLong("idDirecta").equals(2L))) 
+					regresar= regresar.concat("?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs");
+				else
+					regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
+  			JsfBase.setFlashAttribute("idOrdenCompra", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).toLong("idOrdenCompra"): -1L);
+			} // else	
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
 			JsfBase.setFlashAttribute("idNotaEntrada", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
-			JsfBase.setFlashAttribute("idOrdenCompra", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).toLong("idOrdenCompra"): -1L);
-			if(eaccion.equals(EAccion.MODIFICAR) && ((Entity)this.attrs.get("seleccionado")).toLong("idManual").equals(1L)) {
-				regresar= "/Paginas/Mantic/Catalogos/Empresas/Cuentas/accion";
-				JsfBase.setFlashAttribute("accion", EAccion.COMPLEMENTAR);
-			} // if	
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

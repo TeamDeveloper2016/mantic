@@ -150,7 +150,7 @@ public class Accion extends IBaseArticulos implements Serializable {
         case MODIFICAR:					
         case CONSULTAR:					
 					NotaEntrada notaEntrada= (NotaEntrada)DaoFactory.getInstance().toEntity(NotaEntrada.class, "TcManticNotasEntradasDto", "detalle", this.attrs);
-					this.tipoOrden         = notaEntrada.getIdDirecta().equals(1L)? EOrdenes.NORMAL: EOrdenes.PROVEEDOR;
+					this.tipoOrden         = notaEntrada.getIdNotaTipo().equals(1L)? EOrdenes.NORMAL: EOrdenes.PROVEEDOR;
           this.setAdminOrden(new AdminNotas(notaEntrada, this.tipoOrden));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
           break;
