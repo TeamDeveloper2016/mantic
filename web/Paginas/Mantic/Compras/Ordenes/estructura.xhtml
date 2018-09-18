@@ -117,8 +117,7 @@
   </ui:define>
   <ui:define name="contenido">  
 		<p:remoteCommand name="consultar" onstart="return janal.bloquear();" process="@this tabla" action="#{manticComprasOrdenesEstructura.doAccion}"/>
-    <p:remoteCommand name="detalle" onstart="return janal.bloquear();" process="@this tabla" actionListener="#{manticComprasOrdenesEstructura.doConsultarDetalle}" update="dialogoDetalle"/>
-    <p:remoteCommand name="expand" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" process="@this tabla" actionListener="#{manticComprasOrdenesEstructura.doExpandAllNodes}"/>
+    <p:remoteCommand name="detalle" onstart="return janal.bloquear();" process="@this tabla" actionListener="#{manticComprasOrdenesEstructura.doConsultarDetalle}" update="dialogoDetalle"/>    
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">                 
         <div id="collapse-content" class="ui-grid-col-12">
