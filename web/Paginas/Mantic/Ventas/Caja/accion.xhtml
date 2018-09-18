@@ -820,13 +820,13 @@
 		<p:dialog id="dialogoOpenTickets" widgetVar="dlgOpenTickets" header="Cuentas abiertas" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();restoreCursoArt();" width="50%">			
 			<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 				<p:outputLabel value="Cuenta:"/>
-				<p:selectOneMenu id="ticketsAbiertosDlg" value="#{manticVentasCajaAccion.attrs.ticketAbierto}" styleClass="janal-wid-100-txt">
+				<p:selectOneMenu id="ticketsAbiertosDlg" value="#{manticVentasCajaAccion.attrs.ticketAbiertoDlg}" styleClass="janal-wid-100-txt">
 					<f:selectItems value="#{manticVentasCajaAccion.attrs.ticketsAbiertos}"/>
 				</p:selectOneMenu>
 			</h:panelGrid>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton icon="fa fa-check" process="@this ticketsAbiertosDlg" value="Aceptar" onstart="PF('dlgOpenTickets').hide();" actionListener="#{manticVentasCajaAccion.doAsignaTicketAbierto}" update="contenedorGrupos:contenido contenedorGrupos:cliente @(.filas) @(.recalculo) @(.informacion)" oncomplete="janal.desbloquear();"/>
+				<p:commandButton icon="fa fa-check" process="@this ticketsAbiertosDlg" value="Aceptar" onstart="PF('dlgOpenTickets').hide();" actionListener="#{manticVentasCajaAccion.doAsignaTicketAbiertoDlg}" update="contenedorGrupos:contenido contenedorGrupos:cliente @(.filas) @(.recalculo) @(.informacion)" oncomplete="janal.desbloquear();"/>
 				<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>
