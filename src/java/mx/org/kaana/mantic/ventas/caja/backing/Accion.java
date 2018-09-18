@@ -326,12 +326,22 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	@Override
 	public void doAsignaTicketAbierto(){
-		Map<String, Object>params           = null;
-		UISelectEntity ticketAbierto        = null;
+		UISelectEntity ticketAbierto= null;
+		ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
+		doAsignaTicketAbiertoGeneral(ticketAbierto);
+	} // doAsignaTicketAbierto
+	
+	public void doAsignaTicketAbiertoDlg(){
+		UISelectEntity ticketAbierto= null;
+		ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbiertoDlg");
+		doAsignaTicketAbiertoGeneral(ticketAbierto);
+	} // doAsignaTicketAbiertoDlg
+	
+	public void doAsignaTicketAbiertoGeneral(UISelectEntity ticketAbierto){
+		Map<String, Object>params           = null;		
 		UISelectEntity ticketAbiertoPivote  = null;
 		List<UISelectEntity> ticketsAbiertos= null;
-		try {
-			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
+		try {			
 			params= new HashMap<>();
 			params.put("idVenta", ticketAbierto.getKey());
 			setDomicilio(new Domicilio());
@@ -367,7 +377,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		finally{
 			Methods.clean(params);
 		} // finally
-	} // doAsignaTicketAbierto
+	} // doAsignaTicketAbiertoGeneral
 	
 	private void doAsignaClienteTicketAbierto() throws Exception{		
 		MotorBusqueda motorBusqueda           = null;
