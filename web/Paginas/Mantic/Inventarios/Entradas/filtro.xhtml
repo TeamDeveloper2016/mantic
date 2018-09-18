@@ -119,7 +119,7 @@
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
-                <p:commandButton title="Agregar directa" action="#{manticInventariosEntradasFiltro.doAccion('COMPLETO')}" icon="fa fa-plus" title="Nota de entrada directa" onstart="return janal.bloquear()"/>						
+                <p:commandButton value="Agregar directa" action="#{manticInventariosEntradasFiltro.doAccion('COMPLETO')}" icon="fa fa-plus" title="Nota de entrada directa" onstart="return janal.bloquear()"/>						
                 <p:separator/>
                 <p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
