@@ -72,7 +72,7 @@ public class Estructura extends IBaseFilter implements Serializable {
 			busqueda = new MotorBusqueda(Long.valueOf(this.attrs.get("idOrdenCompra").toString()));
 			this.tree= new DefaultTreeNode("orden", busqueda.toParent() , null);
 			this.tree.getChildren().add(new DefaultTreeNode());      
-			RequestContext.getCurrentInstance().execute("setTimeout(expand(), 1000);");
+			createTree(this.tree);			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -84,6 +84,30 @@ public class Estructura extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad
 
+	private void createTree(TreeNode seleccionado){
+		MotorBusqueda gestor    = null;
+    List<TreeNode> childrens= null;        
+		try {
+      gestor= new MotorBusqueda((TreeOrden) seleccionado.getData());
+      childrens= gestor.toChildrens();
+      seleccionado.getChildren().clear();
+      if(!childrens.isEmpty()){        
+        for(TreeNode childNode: childrens){
+          if(!((TreeOrden)childNode.getData()).isUltimoNivel()) 
+            childNode.getChildren().add(new DefaultTreeNode(new TreeOrden(), childNode));
+          childNode.setParent(seleccionado);     
+					seleccionado.setExpanded(true);
+          seleccionado.getChildren().add(childNode);
+					createTree(childNode);
+        } // for
+      } // if                  
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);		
+		} // catch		
+	} // createTree
+	
 	public void onNodeExpand(NodeExpandEvent event){     
     MotorBusqueda gestor    = null;
     List<TreeNode> childrens= null;        
@@ -178,17 +202,5 @@ public class Estructura extends IBaseFilter implements Serializable {
       this.node= null;
     } // finally      
 		return regresar;
-  } // doConsultarDetalle
-	
-  public void doExpandAllNodes() {
-    setExpandedRecursively(this.tree, true);
-  }
-
-  private void setExpandedRecursively(final TreeNode node, final boolean expanded) {
-    for (final TreeNode child : node.getChildren()) {
-      setExpandedRecursively(child, expanded);
-    } // for
-    node.setExpanded(expanded);
-  }	
-	
+  } // doConsultarDetalle  		
 }
