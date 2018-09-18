@@ -9,6 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="#{manticCatalogosEmpresasCuentasAccion.attrs.nombreAccion} una nota de entrada (MANUAL)"/>
 	<ui:define name="librerias">
+    <h:outputScript library="janal" name="#{kajoolUtilAplicacion.articulosJs}"/>
 		<h:outputStylesheet library="janal" name="css/sh.css"/>
 		<h:outputStylesheet library="janal" name="css/shCore.css"/>
 		<h:outputStylesheet library="janal" name="css/shThemeDefault.css"/>
@@ -33,6 +34,7 @@
 			};			
     	$(document).ready(function() {
 				setTimeout("janal.readingMode('#{manticCatalogosEmpresasCuentasAccion.attrs.nombreAccion}')", 500);
+        jsArticulos= new Janal.Control.Articulos.Core(#{manticCatalogosEmpresasCuentasAccion.adminOrden.articulos.size()});
       });
 			
 			function execute(lock) {
