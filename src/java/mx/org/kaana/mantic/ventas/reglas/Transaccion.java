@@ -161,6 +161,10 @@ public class Transaccion extends IBaseTnx {
 							regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
 					} // if					
 					break;
+				case PROCESAR:
+					this.orden.setIdUsuario(JsfBase.getIdUsuario());
+					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
+					break;
 			} // switch
 			if(!regresar)
         throw new Exception("");

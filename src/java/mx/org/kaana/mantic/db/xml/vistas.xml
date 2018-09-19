@@ -827,6 +827,7 @@
 				  tc_mantic_empresas.nombre as nombre_empresa,  
 					tc_mantic_ventas.consecutivo,  
 					tc_mantic_clientes.id_cliente,  
+					tc_mantic_ventas.id_manual,
 					tc_mantic_clientes.razon_social as cliente,
 					tc_mantic_clientes.limite_credito,
 					tc_mantic_almacenes.clave,
