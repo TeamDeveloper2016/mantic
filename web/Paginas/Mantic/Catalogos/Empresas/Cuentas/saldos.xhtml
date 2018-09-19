@@ -20,6 +20,11 @@
         'fechaTermino': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}
       };		
     </script>		
+		<style>
+			.janal-tr-orange {
+				background-color: #ABEBC6 !important;
+			}
+		</style>
   </ui:define>
   <ui:define name="contenido">
     <div class="janal-align-right xs-pantalla">
@@ -98,13 +103,13 @@
 							</f:facet>
 							<h:outputText value="#{row['consecutivo']}"/>
 						</p:column>														
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.persona}">
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{row.nombre}">
 							<f:facet name="header">
 								<h:outputText value="Empresa"/>
 							</f:facet>
 							<h:outputText value="#{row['nombre']}"/>
 						</p:column>											
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.persona}">
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.proveedor}">
 							<f:facet name="header">
 								<h:outputText value="Proveedor"/>
 							</f:facet>

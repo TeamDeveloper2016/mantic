@@ -244,7 +244,7 @@ public class Saldos extends IBaseFilter implements Serializable {
   } // doAccion  
 
   public String toColor(Entity row) {
-		return row.toLong("idNotaTipo").equals(3D)? "janal-tr-orange": "";
+		return row.toLong("idNotaTipo").equals(3L)? "janal-tr-orange": "";
 	} 
 
 }
