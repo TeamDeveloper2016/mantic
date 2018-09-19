@@ -73,7 +73,7 @@ public class Saldos extends IBaseFilter implements Serializable {
       columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));    
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    
       columns.add(new Columna("directa", EFormatoDinamicos.MAYUSCULAS));    
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_EXTENDIDA));    			
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));    			
 			this.lazyModel = new FormatCustomLazy("VistaEmpresasDto", "cuentasBusqueda", params, columns);
       UIBackingUtilities.resetDataTable();		
     } // try
@@ -242,5 +242,9 @@ public class Saldos extends IBaseFilter implements Serializable {
 		} // catch
 		return regresar.concat(Constantes.REDIRECIONAR);
   } // doAccion  
-	
+
+  public String toColor(Entity row) {
+		return row.toLong("idNotaTipo").equals(3D)? "janal-tr-orange": "";
+	} 
+
 }

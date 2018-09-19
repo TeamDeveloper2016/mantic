@@ -320,7 +320,8 @@ public class Transaccion extends Inventarios implements Serializable {
 		
 		TcManticNotasBitacoraDto registro= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 		DaoFactory.getInstance().insert(sesion, registro);
-		this.toCommonNotaEntrada(sesion, this.orden.getIdNotaEntrada(), this.orden.toMap());
+		if(!this.orden.getIdNotaTipo().equals(3L))
+		  this.toCommonNotaEntrada(sesion, this.orden.getIdNotaEntrada(), this.orden.toMap());
 	}
 	
 	private void toDeleteAll(String path, String type, List<Nombres> listado) {
