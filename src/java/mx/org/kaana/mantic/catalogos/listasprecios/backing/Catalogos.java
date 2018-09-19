@@ -25,7 +25,7 @@ import mx.org.kaana.libs.reflection.Methods;
 @ViewScoped
 public class Catalogos extends IBaseAttribute implements Serializable{
 	
-  private static final long serialVersionUID = 862453896325723687L;
+  private static final long serialVersionUID= 862453896325723687L;
   private static final int BUFFER_SIZE      = 6124;
   private List<Entity> lazyModel;
 

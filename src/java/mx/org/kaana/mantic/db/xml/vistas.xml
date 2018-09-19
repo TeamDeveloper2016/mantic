@@ -4058,16 +4058,16 @@
           tc_mantic_listas_precios.id_proveedor,
           tc_mantic_listas_precios.observaciones,
           tc_mantic_listas_precios.registro,
-          tc_mantic_proveedores.razon_social,
-          tc_mantic_proveedores.clave,
+          if(tc_mantic_listas_precios.id_proveedor is null, tc_mantic_listas_precios.nombre, tc_mantic_proveedores.razon_social) as razon_social,
+				  if(tc_mantic_listas_precios.id_proveedor is null, tc_mantic_listas_precios.nombre, tc_mantic_proveedores.clave) as clave,
           tc_mantic_proveedores.rfc,
           tc_mantic_proveedores.id_empresa
         from 
           tc_mantic_listas_precios 
-        inner join
+        left join
           tc_mantic_proveedores on tc_mantic_listas_precios.id_proveedor= tc_mantic_proveedores.id_proveedor
         where
-          tc_mantic_proveedores.id_empresa in ({idEmpresa})
+          tc_mantic_listas_precios.id_empresa in ({idEmpresa})
           and {condicion}
         {sortOrder}
 			</select>
@@ -4104,22 +4104,22 @@
           tc_mantic_listas_precios.id_proveedor,
           tc_mantic_listas_precios.observaciones,
           DATE_FORMAT(tc_mantic_listas_precios.registro,'%d/%m/%Y') registro,
-          tc_mantic_proveedores.razon_social,
+          if(tc_mantic_listas_precios is null, if(tc_mantic_listas_precios.nombre, tc_mantic_proveedores.razon_social) as razon_social,
           tc_mantic_proveedores.clave,
           tc_mantic_proveedores.rfc,
           tc_mantic_proveedores.id_empresa,
-          ifnull( tc_mantic_proveedores.logotipo,'bonanza.svg') as logotipo,
+          ifnull(tc_mantic_proveedores.logotipo, 'bonanza.svg') as logotipo,
           tc_mantic_listas_precios_archivos.alias,
           tc_mantic_listas_precios_archivos.nombre,
           tc_mantic_listas_precios_archivos.ruta
         from 
           tc_mantic_listas_precios 
-        inner join
-          tc_mantic_proveedores on tc_mantic_listas_precios.id_proveedor= tc_mantic_proveedores.id_proveedor
         inner join 
-      		tc_mantic_listas_precios_archivos on tc_mantic_listas_precios.id_lista_precio = tc_mantic_listas_precios_archivos.id_lista_precio and tc_mantic_listas_precios_archivos.id_tipo_archivo = 2 and tc_mantic_listas_precios_archivos.id_principal=1
+      		tc_mantic_listas_precios_archivos on tc_mantic_listas_precios.id_lista_precio = tc_mantic_listas_precios_archivos.id_lista_precio and tc_mantic_listas_precios_archivos.id_tipo_archivo= 2 and tc_mantic_listas_precios_archivos.id_principal= 1
+        left join
+          tc_mantic_proveedores on tc_mantic_listas_precios.id_proveedor= tc_mantic_proveedores.id_proveedor
         where
-          tc_mantic_proveedores.id_empresa in ({idEmpresa})
+          tc_mantic_listas_precios.id_empresa in ({idEmpresa})
           and {condicion}
         {sortOrder}
 			</select>

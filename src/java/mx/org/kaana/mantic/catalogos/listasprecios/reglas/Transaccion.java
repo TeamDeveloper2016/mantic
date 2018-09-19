@@ -50,8 +50,8 @@ public class Transaccion extends IBaseTnx {
 	}
   
   protected boolean ejecutar(Session sesion, EAccion accion) throws Exception{
-    boolean regresar = false;
-    Map<String, Object> params           = null;
+    boolean regresar          = false;
+    Map<String, Object> params= null;
     try {
       if(this.lista!= null) {
 				params= new HashMap<>();
@@ -65,12 +65,12 @@ public class Transaccion extends IBaseTnx {
       case COMPLEMENTAR: 
         if(procesarListaProveedor(sesion)){
           sesion.flush();
-          toUpdateXls(sesion);
+          this.toUpdateXls(sesion);
           regresar = true;
         }
         break;
       case ELIMINAR: 
-        toDeleteXmlPdf();
+        this.toDeleteXmlPdf();
         regresar = DaoFactory.getInstance().deleteAll(sesion, TcManticListasPreciosDetallesDto.class, params)>-1L;
         sesion.flush();
         regresar = DaoFactory.getInstance().deleteAll(sesion, TcManticListasPreciosArchivosDto.class, params)>-1L;

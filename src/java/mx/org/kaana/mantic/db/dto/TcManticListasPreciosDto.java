@@ -38,8 +38,12 @@ public class TcManticListasPreciosDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_lista_precio")
   private Long idListaPrecio;
+  @Column (name="id_empresa")
+  private Long idEmpresa;
   @Column (name="id_proveedor")
   private Long idProveedor;
+  @Column (name="nombre")
+  private String nombre;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="observaciones")
@@ -52,13 +56,15 @@ public class TcManticListasPreciosDto implements IBaseDto, Serializable {
   }
 
   public TcManticListasPreciosDto(Long key) {
-    this(new Long(-1L), null, null, null);
+    this(new Long(-1L), null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticListasPreciosDto(Long idListaPrecio, Long idProveedor, Long idUsuario, String observaciones) {
+  public TcManticListasPreciosDto(Long idListaPrecio, Long idEmpresa, Long idProveedor, String nombre, Long idUsuario, String observaciones) {
     setIdListaPrecio(idListaPrecio);
+    setIdEmpresa(idEmpresa);
     setIdProveedor(idProveedor);
+    setNombre(nombre);
     setIdUsuario(idUsuario);
     setObservaciones(observaciones);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
@@ -72,6 +78,14 @@ public class TcManticListasPreciosDto implements IBaseDto, Serializable {
     return idListaPrecio;
   }
 
+	public Long getIdEmpresa() {
+		return idEmpresa;
+	}
+
+	public void setIdEmpresa(Long idEmpresa) {
+		this.idEmpresa=idEmpresa;
+	}
+
   public void setIdProveedor(Long idProveedor) {
     this.idProveedor = idProveedor;
   }
@@ -79,6 +93,14 @@ public class TcManticListasPreciosDto implements IBaseDto, Serializable {
   public Long getIdProveedor() {
     return idProveedor;
   }
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre=nombre;
+	}
 
   public void setIdUsuario(Long idUsuario) {
     this.idUsuario = idUsuario;
@@ -121,7 +143,11 @@ public class TcManticListasPreciosDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getIdListaPrecio());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEmpresa());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdProveedor());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
@@ -136,7 +162,9 @@ public class TcManticListasPreciosDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("idListaPrecio", getIdListaPrecio());
+		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("idProveedor", getIdProveedor());
+		regresar.put("nombre", getNombre());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("registro", getRegistro());
@@ -145,8 +173,8 @@ public class TcManticListasPreciosDto implements IBaseDto, Serializable {
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getIdListaPrecio(), getIdProveedor(), getIdUsuario(), getObservaciones(), getRegistro()
+    Object[] regresar = new Object[] {
+      getIdListaPrecio(), getIdEmpresa(), getIdProveedor(), getNombre(), getIdUsuario(), getObservaciones(), getRegistro()
     };
     return regresar;
   }

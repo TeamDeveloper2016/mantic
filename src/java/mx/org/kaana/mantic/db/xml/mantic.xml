@@ -2323,7 +2323,13 @@
         from      
           tc_mantic_proveedores
         where 
-          tc_mantic_proveedores.id_empresa in ({sucursales}) and  id_proveedor not in (select id_proveedor from tc_mantic_listas_precios)
+          tc_mantic_proveedores.id_empresa in ({sucursales}) 
+				  and tc_mantic_proveedores.id_proveedor not in (
+				    select 
+				     if(tc_mantic_listas_precios.id_proveedor is null, -1, tc_mantic_listas_precios.id_proveedor) as id_proveedor
+    				from 
+				     tc_mantic_listas_precios
+				  )
 				order by
 				  tc_mantic_proveedores.clave
       </select>      
