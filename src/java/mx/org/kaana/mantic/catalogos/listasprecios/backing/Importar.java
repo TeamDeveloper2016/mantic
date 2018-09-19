@@ -56,7 +56,7 @@ public class Importar extends IBaseImportar implements Serializable {
   protected void init() {		
     try {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      this.attrs.put("tipo", 0);
+      this.attrs.put("tipo", "0");
       doLoadProveedores();
 			if(JsfBase.getFlashAttribute("idListaPrecio")== null) {
 				this.lista = new TcManticListasPreciosDto();
@@ -76,7 +76,7 @@ public class Importar extends IBaseImportar implements Serializable {
           this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.lista.getIdProveedor());
 			  } // if	
 				else
-          this.attrs.put("tipo", 1);
+          this.attrs.put("tipo", "1");
         this.doLoadImportados("VistaListasArchivosDto", "importados", this.lista.toMap());
       } // else
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
@@ -137,7 +137,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	}		
 
 	public void doFileUpload(FileUploadEvent event) {
-		if((Integer)this.attrs.get("tipo")== 0) {
+		if("0".equals((String)this.attrs.get("tipo"))) {
 			if(Cadena.isVacio(this.proveedor.getClave()))
 				RequestContext.getCurrentInstance().execute("janal.show([{summary: 'Error:', detail: 'No tiene definido una CLAVE el proveedor, por favor defina una clave.'}]);"); 
 			else
@@ -167,7 +167,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	public String doAceptar() {
 		String regresar= null;
 		try {
-			if((Integer)this.attrs.get("tipo")== 0) {
+			if("0".equals((String)this.attrs.get("tipo"))) {
         this.lista.setIdProveedor(((UISelectEntity)attrs.get("idProveedor")).getKey());
 				this.lista.setNombre("");
 			} // if	
@@ -195,10 +195,10 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // doCompleto
 
 	public void doChangeTipo() {
-		if((Integer)this.attrs.get("tipo")== 0)
+		if("0".equals((String)this.attrs.get("tipo")))
 		  this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_LISTA_ARCHIVOS);
 	  else	
 		  this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_CATALOGOS);
 	}
-	
+
 }

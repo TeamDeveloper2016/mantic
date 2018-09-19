@@ -13,7 +13,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.Prioridad;
-import mx.org.kaana.libs.pagina.JsfBase;
 
 
 public final class Cadena {
@@ -1172,4 +1171,9 @@ public static String sinAcentos(String cadena){
     
     System.out.println(Cadena.ajustarDecimales("12987.127", 2));
   }
+	
+	public static String toNormalizer(String text) {
+		return java.text.Normalizer.normalize(text, java.text.Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+","");
+	}
+	
 }

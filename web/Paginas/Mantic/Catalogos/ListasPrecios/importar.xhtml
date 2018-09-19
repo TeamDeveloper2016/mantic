@@ -81,23 +81,23 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<p:inputText id="opcion" value="#{manticCatalogosListaPreciosImportar.attrs.tipo}" styleClass="involucrados" style="display:none"/>
-          <p:tabView id="contenedorGrupos" styleClass="listaProveedor">
+          <p:tabView id="contenedorGrupos">
             <p:ajax event="tabChange" listener="#{manticCatalogosListaPreciosImportar.doTabChange}" process="@this" update="@(.importado)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>								            						            																																																
             <p:tab title="Generales">
 							<p:panel header="Selecciona el tipo de catálogo a importar">
-								<p:selectOneRadio id="tipo" value="#{manticCatalogosListaPreciosImportar.attrs.tipo}" columns="2" converter="javax.faces.Integer" disabled="#{manticCatalogosListaPreciosImportar.attrs.isDeshabilitado}" >
+								<p:selectOneRadio id="tipo" value="#{manticCatalogosListaPreciosImportar.attrs.tipo}" columns="2" disabled="#{manticCatalogosListaPreciosImportar.attrs.isDeshabilitado}" >
 									<p:ajax event="change" process="@this" listener="#{manticCatalogosListaPreciosImportar.doChangeTipo}" update="@(.involucrados) @(.janal-upload-frame)" oncomplete="refresh();"/>
 									<f:selectItem itemLabel="CATALOGO Y LISTA DE PRECIOS" itemValue="0"/>
 									<f:selectItem itemLabel="SOLO CATALOGO PROVEEDOR" itemValue="1"/>
 								</p:selectOneRadio>
 							</p:panel>
               <h:panelGrid columns="1" styleClass="janal-wid-100">
-                <p:outputLabel for="nombre" value="Nombre:" styleClass="involucrados" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq 1? '': 'none'}"/>
-								<p:inputText id="nombre" value="#{manticCatalogosListaPreciosImportar.lista.nombre}" styleClass="janal-wid-100-txt involucrados" placeholder="Ej. COFLEX.PDF" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq 1? '': 'none'}" disabled="#{manticCatalogosListaPreciosImportar.attrs.isDeshabilitado}"/>
-                <p:outputLabel for="idProveedor" value="Proveedor:" styleClass="involucrados" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq 0? '': 'none'}"/>
-                <p:selectOneMenu id="idProveedor" value="#{manticCatalogosListaPreciosImportar.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 involucrados"  effect="fade" filter="true" filterMatchMode="contains" disabled="#{manticCatalogosListaPreciosImportar.attrs.isDeshabilitado}" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq 0? '': 'none'}">
+                <p:outputLabel for="nombre" value="Nombre:" styleClass="involucrados" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '1'? '': 'none'}"/>
+								<p:inputText id="nombre" value="#{manticCatalogosListaPreciosImportar.lista.nombre}" styleClass="janal-wid-100-txt involucrados" placeholder="Ej. COFLEX.PDF" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '1'? '': 'none'}" disabled="#{manticCatalogosListaPreciosImportar.attrs.isDeshabilitado}"/>
+                <p:outputLabel for="idProveedor" value="Proveedor:" styleClass="involucrados" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '0'? '': 'none'}"/>
+                <p:selectOneMenu id="idProveedor" value="#{manticCatalogosListaPreciosImportar.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 involucrados"  effect="fade" filter="true" filterMatchMode="contains" disabled="#{manticCatalogosListaPreciosImportar.attrs.isDeshabilitado}" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '0'? '': 'none'}">
                   <f:selectItems value="#{manticCatalogosListaPreciosImportar.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
-                  <p:ajax event="change" listener="#{manticCatalogosListaPreciosImportar.doActualizarProveedor}" process="@this" update="idProveedor @(.importado) @(.listaProveedor)" oncomplete="janal.reset();"/>
+                  <p:ajax event="change" listener="#{manticCatalogosListaPreciosImportar.doActualizarProveedor}" process="@this" update="idProveedor @(.importado)" oncomplete="janal.reset();"/>
                   <p:column headerText="Clave">
                     <h:outputText value="#{item.clave}"/>
                   </p:column>   
@@ -113,7 +113,7 @@
 							<p:outputLabel for="comentarios" value="Comentarios al archivo:"/><br/>
 							<p:inputTextarea id="comentarios" value="#{manticCatalogosListaPreciosImportar.attrs.observaciones}" rows="2" styleClass="janal-wid-100-txt"/>
 							<p:fileUpload fileUploadListener="#{manticCatalogosListaPreciosImportar.doFileUpload}" 
-							  mode="advanced" process="@this" update="@(.importado)" label="Selecciona XLS/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="104857600"
+							  mode="advanced" process="@form" update="@(.importado)" label="Selecciona XLS/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="104857600"
 								multiple="false" allowTypes="#{manticCatalogosListaPreciosImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 								invalidSizeMessage="El tamaño máximo permitido del archivo es de 100 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosListaPreciosImportar.attrs.formatos}" onstart="return execute();" oncomplete="janal.desbloquear()"/>
 							<p:inputText id="xls" value="#{manticCatalogosListaPreciosImportar.attrs.xls}" styleClass="importado" style="display:none"/>

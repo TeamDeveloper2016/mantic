@@ -117,7 +117,8 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			result= new File(path.toString());		
 			if (!result.exists())
 				result.mkdirs();
-      nombreArchivo = Cadena.rellenar(Fecha.formatear(Fecha.FECHA_HORA_LARGA), 17, '0', false).trim().concat("_").concat(event.getFile().getFileName().toUpperCase());
+			nombreArchivo= new String(event.getFile().getFileName().toUpperCase().getBytes(), "UTF-8");
+      nombreArchivo= Cadena.rellenar(Fecha.formatear(Fecha.FECHA_HORA_LARGA), 17, '0', false).trim().concat("_").concat(Cadena.toNormalizer(nombreArchivo));
       path.append(nombreArchivo);
 			result = new File(path.toString());
 			if (result.exists())
