@@ -63,10 +63,10 @@ public class Transaccion extends IBaseTnx {
         regresar = procesarListaProveedor(sesion);
         break;
       case COMPLEMENTAR: 
-        if(procesarListaProveedor(sesion)){
+        if(this.procesarListaProveedor(sesion)) {
           sesion.flush();
           this.toUpdateXls(sesion);
-          regresar = true;
+          regresar= true;
         }
         break;
       case ELIMINAR: 
@@ -78,28 +78,28 @@ public class Transaccion extends IBaseTnx {
         regresar = DaoFactory.getInstance().delete(sesion, this.lista)>-1L;
         sesion.flush();
         break;
-      }
+      } // swtich 
       if (!regresar) {
         throw new Exception(messageError);
-      }
-    }
-    catch (Exception e) {
+      } // if
+    } // tyr
+		catch (Exception e) {
       throw new Exception(messageError.concat("\n\n") + e.getMessage());
-    }
+    } // catch
     return regresar;
   }
   
   private boolean procesarListaProveedor(Session sesion) throws Exception {
     boolean regresar = false;
     try {
-     if(this.lista.getKey() != -1L)
-      regresar = DaoFactory.getInstance().update(sesion, lista) > 0L;
-    else
-      regresar = DaoFactory.getInstance().insert(sesion, lista) > 0L;
-    }
+     if(this.lista.getKey()!= -1L)
+       regresar = DaoFactory.getInstance().update(sesion, this.lista) > 0L;
+      else
+        regresar = DaoFactory.getInstance().insert(sesion, this.lista) > 0L;
+    } // try
     catch (Exception e) {
       throw e;
-    }
+    } // catch
     return regresar;
   }
   

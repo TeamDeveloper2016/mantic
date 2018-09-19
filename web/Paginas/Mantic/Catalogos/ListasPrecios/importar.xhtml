@@ -113,28 +113,6 @@
 								<p:inputTextarea id="observacion" value="#{manticCatalogosListaPreciosImportar.lista.observaciones}" rows="2" styleClass="janal-wid-100-txt"/>
               </h:panelGrid>
             </p:tab>
-						<p:tab title="Importar">
-							<p:outputLabel for="comentarios" value="Comentarios al archivo:"/><br/>
-							<p:inputTextarea id="comentarios" value="#{manticCatalogosListaPreciosImportar.attrs.observaciones}" rows="2" styleClass="janal-wid-100-txt"/>
-							<p:fileUpload fileUploadListener="#{manticCatalogosListaPreciosImportar.doFileUpload}" 
-							  mode="advanced" process="@form" update="@(.importado)" label="Selecciona XLS/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="104857600"
-								multiple="false" allowTypes="#{manticCatalogosListaPreciosImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
-								invalidSizeMessage="El tamaño máximo permitido del archivo es de 100 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosListaPreciosImportar.attrs.formatos}" onstart="return execute();" oncomplete="janal.desbloquear()"/>
-							<p:inputText id="xls" value="#{manticCatalogosListaPreciosImportar.attrs.xls}" styleClass="importado" style="display:none"/>
-							<p:commandLink value="XLS importado: #{manticCatalogosListaPreciosImportar.xls.ruta}#{manticCatalogosListaPreciosImportar.xls.name}" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" style="#{(empty manticCatalogosListaPreciosImportar.xls)? 'display: none': ''}"/>
-							<br/>
-							<p:inputText id="pdf" value="#{manticCatalogosListaPreciosImportar.attrs.pdf}" styleClass="importado" style="display:none"/>
-							<p:commandLink value="PDF importado: #{manticCatalogosListaPreciosImportar.pdf.ruta}#{manticCatalogosListaPreciosImportar.pdf.name}" onclick="viewDocument();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento PDF" style="#{(empty manticCatalogosListaPreciosImportar.pdf)? 'display: none': ''}"/>
-              <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-                <p:outputLabel value="Total de artículos a importar: #{manticCatalogosListaPreciosImportar.articulos.size()}" styleClass="importado janal-color-orange janal-steps-boton-siguiente janal-font-bold"/>
-							</p:panelGrid>
-              <p:panel styleClass="tabla-filtro" id="barra" >
-                Proceso:
-                <p:progressBar interval="500" styleClass="animate" labelTemplate="{value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.monitoreo.progreso}" global="false" >
-                  <p:ajax event="complete" listener="#{manticCatalogosListaPreciosImportar.doCompleto}" />  
-                </p:progressBar>  			
-              </p:panel>
-						</p:tab>
             <p:tab title="Archivos">
 							<p:dataTable id="importados" var="row" value="#{manticCatalogosListaPreciosImportar.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
 								<p:column styleClass="janal-wid-col-30" headerText="No.">
@@ -169,7 +147,29 @@
 									</p:commandLink>	
 								</p:column>
 							</p:dataTable>
-						</p:tab>						            						            																																																
+						</p:tab>								
+						<p:tab title="Importar">
+							<p:outputLabel for="comentarios" value="Comentarios al archivo:"/><br/>
+							<p:inputTextarea id="comentarios" value="#{manticCatalogosListaPreciosImportar.attrs.observaciones}" rows="2" styleClass="janal-wid-100-txt"/>
+							<p:fileUpload fileUploadListener="#{manticCatalogosListaPreciosImportar.doFileUpload}" 
+							  mode="advanced" process="@form" update="@(.importado)" label="Selecciona XLS/PDF" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="104857600"
+								multiple="false" allowTypes="#{manticCatalogosListaPreciosImportar.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
+								invalidSizeMessage="El tamaño máximo permitido del archivo es de 100 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosListaPreciosImportar.attrs.formatos}" onstart="return execute();" oncomplete="janal.desbloquear()"/>
+							<p:inputText id="xls" value="#{manticCatalogosListaPreciosImportar.attrs.xls}" styleClass="importado" style="display:none"/>
+							<p:commandLink value="XLS importado: #{manticCatalogosListaPreciosImportar.xls.ruta}#{manticCatalogosListaPreciosImportar.xls.name}" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" style="#{(empty manticCatalogosListaPreciosImportar.xls)? 'display: none': ''}"/>
+							<br/>
+							<p:inputText id="pdf" value="#{manticCatalogosListaPreciosImportar.attrs.pdf}" styleClass="importado" style="display:none"/>
+							<p:commandLink value="PDF importado: #{manticCatalogosListaPreciosImportar.pdf.ruta}#{manticCatalogosListaPreciosImportar.pdf.name}" onclick="viewDocument();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento PDF" style="#{(empty manticCatalogosListaPreciosImportar.pdf)? 'display: none': ''}"/>
+              <p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+                <p:outputLabel value="Total de artículos a importar: #{manticCatalogosListaPreciosImportar.articulos.size()}" styleClass="importado janal-color-orange janal-steps-boton-siguiente janal-font-bold"/>
+							</p:panelGrid>
+              <p:panel styleClass="tabla-filtro" id="barra" >
+                Proceso:
+                <p:progressBar interval="500" styleClass="animate" labelTemplate="{value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.monitoreo.progreso}" global="false" >
+                  <p:ajax event="complete" listener="#{manticCatalogosListaPreciosImportar.doCompleto}" />  
+                </p:progressBar>  			
+              </p:panel>
+						</p:tab>
 					</p:tabView>
 				</div>
 			</div>

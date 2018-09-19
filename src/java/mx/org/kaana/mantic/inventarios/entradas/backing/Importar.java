@@ -107,9 +107,10 @@ public class Importar extends IBaseImportar implements Serializable {
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Archivos")) 
 			this.doLoadImportados("VistaNotasEntradasDto", "importados", this.orden.toMap());
-		else
+/*		else
 		  if(event.getTab().getTitle().equals("Importar")) 
 				this.doLoadFiles("TcManticNotasArchivosDto", this.orden.getIdNotaEntrada(), "idNotaEntrada");
+*/
 	}		
 
 	public void doFileUpload(FileUploadEvent event) {
@@ -138,7 +139,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		try {
 			Importados importados= new Importados(this.orden, this.getXml(), this.getPdf());
       if(importados.ejecutar(EAccion.AGREGAR)) {
-      	RequestContext.getCurrentInstance().execute("janal.alert('Se importaron los archivos de forma correcta !');");
+      	RequestContext.getCurrentInstance().execute("janal.alert('Se actualizo y se importaron los catalogos de forma correcta !');");
 				regresar= this.doCancelar();
 			} // if
 		} // try

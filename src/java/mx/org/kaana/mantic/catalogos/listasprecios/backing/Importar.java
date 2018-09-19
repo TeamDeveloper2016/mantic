@@ -129,10 +129,11 @@ public class Importar extends IBaseImportar implements Serializable {
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Archivos")) 
 			this.doLoadImportados("VistaListasArchivosDto", "importados", this.lista.toMap());
-		else
+/*		else
 		  if(event.getTab().getTitle().equals("Importar") && this.getXls()== null && this.getPdf()== null) {
 				this.doLoadFiles("TcManticListasPreciosArchivosDto", this.lista.getIdListaPrecio(), "idListaPrecio");
       } // if
+*/
 	}		
 
 	public void doFileUpload(FileUploadEvent event) {
@@ -176,11 +177,11 @@ public class Importar extends IBaseImportar implements Serializable {
       this.lista.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
       Transaccion transaccion= new Transaccion(this.lista, getArticulos(), this.getXls(), this.getPdf());
       if(transaccion.ejecutar(EAccion.COMPLEMENTAR)) {
-        RequestContext.getCurrentInstance().execute("janal.alert('Se importaron los archivos de forma correcta !');");
+        RequestContext.getCurrentInstance().execute("janal.alert('Se actualizo y se importaron los catalogos de forma correcta !');");
         regresar= this.doCancelar();
       }//if
       else
-        RequestContext.getCurrentInstance().execute("janal.alert('Debe importar archivo xls');");
+        RequestContext.getCurrentInstance().execute("janal.alert('Se deben de seleccionar archivo en formato XLS/PDF');");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
