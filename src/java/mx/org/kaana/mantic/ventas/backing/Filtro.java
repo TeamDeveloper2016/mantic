@@ -91,17 +91,22 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   public String doAccion(String accion) {
     EAccion eaccion= null;
+		String regresar= "/Paginas/Mantic/Ventas/accion".concat(Constantes.REDIRECIONAR); 
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Ventas/filtro");		
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Ventas/filtro");					
 			JsfBase.setFlashAttribute("idVenta", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
+			if(eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)){
+				if(((Entity)this.attrs.get("seleccionado")).toString("idManual").equals("1"))
+					regresar= "/Paginas/Mantic/Ventas/express".concat(Constantes.REDIRECIONAR); 
+			} // if
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return "/Paginas/Mantic/Ventas/accion".concat(Constantes.REDIRECIONAR);
+		return regresar;
   } // doAccion  
 	
   public void doEliminar() {
@@ -257,4 +262,16 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("justificacion", "");
 		} // finally
 	}	// doActualizaEstatus
+	
+	public String doTicketExpress(){
+		String regresar= null;
+		try {
+			regresar= "/Paginas/Mantic/Ventas/express".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		return regresar;
+	} // doTicketExpress
 }
