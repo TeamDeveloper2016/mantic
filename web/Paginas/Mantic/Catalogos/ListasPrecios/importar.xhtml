@@ -21,7 +21,7 @@
 			fields = {				 				
 				'contenedorGrupos\\:xls'        : {validaciones: 'libre', mascara: 'libre'},
 				'contenedorGrupos\\:pdf'        : {validaciones: 'libre', mascara: 'libre'},
-        'contenedorGrupos\\:nombre'     : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:nombre'     : {validaciones: 'requerido', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:observacion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:comentarios': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
 			};	
@@ -36,13 +36,16 @@
 			}
 			
 			function execute() {
-				janal.console('execute: '+ $('#contenedorGrupos\\:nombre').val().trim());
+				var name= $('#contenedorGrupos\\:nombre').val().trim().replace(/[^a-zA-Z0-9]/g,'_');
+				$('#contenedorGrupos\\:nombre').val(name);
+				janal.console('execute: '+ name);
+				notificar();
 				var ok= true;
-			  if($('#opcion').val()=== '1' &amp;&amp; $('#contenedorGrupos\\:nombre').val().trim().length&lt;= 0) {
+			  if($('#opcion').val()=== '1' &amp;&amp; name.length&lt;= 0) {
 					janal.show([{summary: 'Error:', detail: 'Se tiene que espeficar un nombre de catálogo, antes de seleccionar el archivo.'}]);
 					ok= false;
 				} // if
-				else
+				else 
 					janal.bloquear();
 			  return ok;
 			}
@@ -77,6 +80,7 @@
 	<ui:define name="contenido">
 		<p:remoteCommand name="viewDocument" actionListener="#{manticCatalogosListaPreciosImportar.doViewDocument}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();"/>
 		<p:remoteCommand name="viewFile" actionListener="#{manticCatalogosListaPreciosImportar.doViewFile}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgXLS').show();"/>
+		<p:remoteCommand name="notificar" process="@this contenedorGrupos:nombre contenedorGrupos:comentarios"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">

@@ -40,8 +40,6 @@ public class Importar extends IBaseImportar implements Serializable {
 	private TcManticListasPreciosDto lista;
 	private TcManticProveedoresDto proveedor;
 	private Long idListaPrecio;
-  private boolean importXls;
-  private boolean importPdf;
 
 	public TcManticListasPreciosDto getLista() {
 		return lista;
@@ -81,6 +79,7 @@ public class Importar extends IBaseImportar implements Serializable {
       } // else
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_LISTA_ARCHIVOS);
+			this.attrs.put("observaciones", ""); 
 			this.attrs.put("xls", ""); 
 			this.attrs.put("pdf", "");
       setArticulos(new ArrayList<>());
@@ -131,7 +130,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		if(event.getTab().getTitle().equals("Archivos")) 
 			this.doLoadImportados("VistaListasArchivosDto", "importados", this.lista.toMap());
 		else
-		  if(event.getTab().getTitle().equals("Importar")) {
+		  if(event.getTab().getTitle().equals("Importar") && this.getXls()== null && this.getPdf()== null) {
 				this.doLoadFiles("TcManticListasPreciosArchivosDto", this.lista.getIdListaPrecio(), "idListaPrecio");
       } // if
 	}		
