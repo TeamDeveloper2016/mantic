@@ -25,6 +25,8 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 
 @Named(value = "manticCatalogosArticulosFiltro")
 @ViewScoped
@@ -82,7 +84,66 @@ public class Filtro extends Comun implements Serializable {
     } // catch
     return "accion".concat(Constantes.REDIRECIONAR);
   } // doAccion
+  
+	public void doExpress() {
+		try {
+			JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
+			JsfBase.setFlashAttribute("idArticulo", -1L);			
+			RequestContext.getCurrentInstance().execute("prepareDialogExpressAdd();");
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+	} // doExpress
 
+	public void doOpenDialog(EAccion accion, Long idArticulo){
+		Map<String, List<String>> params= null;
+		List<String> options            = null;		
+		try {						
+			params = new HashMap<>();		
+			options= new ArrayList<>();		
+			options.add(accion.name());
+			options.add(idArticulo.toString());
+			params.put("data", options);
+			RequestContext.getCurrentInstance().openDialog("express");//, getConfigDialogo(), params);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+	} // doOpenDialog
+	
+	public void onReturnValues(SelectEvent event) {
+		Object object     = event.getObject();
+		String[] respuesta= null;
+		try {
+			respuesta= ((String) object).split(Constantes.TILDE);			
+			JsfBase.addMessage("Articulos", respuesta[0], ETipoMensaje.valueOf(respuesta[1]));			
+		} // try
+		catch (Exception e) {			
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // onReturnValues
+	
+	private Map<String, Object> getConfigDialogo() throws Exception{
+		Map<String, Object> regresar= null;
+		try {
+			regresar= new HashMap<>();
+			regresar.put("modal", true);
+			regresar.put("draggable", false);
+			regresar.put("closable", false);
+			regresar.put("resizable", false);
+			regresar.put("contentHeight", 380);			
+			regresar.put("contentWidth", 900);						
+		} // try
+		catch (Exception e) {						
+			throw e;
+		} // catch		
+		return regresar;
+	} // getConfigDialogo
+	
   public void doEliminar() {
     Transaccion transaccion = null;
     Entity seleccionado = null;
@@ -166,5 +227,4 @@ public class Filtro extends Comun implements Serializable {
 			JsfBase.addMessageError(e);
     } // catch   
 	} 
-
 }
