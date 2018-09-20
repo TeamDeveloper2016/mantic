@@ -383,9 +383,11 @@ public class Encabezado extends IBaseFilter implements Serializable {
   private void toCopyDocument(String alias, String name) {
 		try {
   	  this.attrs.put("temporal", JsfBase.getContext().concat("/").concat(Constantes.RUTA_TEMPORALES).concat(name).concat("?pfdrid_c=true"));
-  		File file= new File(JsfBase.getRealPath().concat(Constantes.RUTA_TEMPORALES).concat(name));
-	  	FileInputStream input= new FileInputStream(new File(alias));
-      this.toWriteFile(file, input);		
+  		File source= new File(JsfBase.getRealPath().concat(Constantes.RUTA_TEMPORALES).concat(name));
+			if(!source.exists()) {
+	  	  FileInputStream input= new FileInputStream(new File(alias));
+        this.toWriteFile(source, input);		
+			} // if	
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -393,7 +395,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
     } // catch		
 	}	// toCopyDocument
 
- private void toWriteFile(File result, InputStream inputStream) throws Exception{
+ private void toWriteFile(File result, InputStream inputStream) throws Exception {
 		FileOutputStream fileOutputStream= new FileOutputStream(result);
 		byte[] buffer                    = new byte[Constantes.BUFFER_SIZE];
 		int bulk;
@@ -415,10 +417,10 @@ public class Encabezado extends IBaseFilter implements Serializable {
 
   public void doCerrar() {
 		try {
-			String name= (String)this.attrs.get("temporal");
-			name= name.substring(0, name.lastIndexOf("?"));
-			File file= new File(JsfBase.getRealPath().concat(name));
-			file.delete();
+//			String name= (String)this.attrs.get("temporal");
+//			name= name.substring(0, name.lastIndexOf("?"));
+//			File file= new File(JsfBase.getRealPath().concat(name));
+//			file.delete();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

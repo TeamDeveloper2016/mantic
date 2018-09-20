@@ -74,7 +74,6 @@ public class Importar extends IBaseAttribute implements Serializable {
 
 	private static final Log LOG=LogFactory.getLog(Importar.class);
   private static final long serialVersionUID= 327353488565639367L;
-	private static final int BUFFER_SIZE      = 6124;
 	
 	private TcManticEmpresasDeudasDto deuda;
 	private TcManticProveedoresDto proveedor;
@@ -218,10 +217,9 @@ public class Importar extends IBaseAttribute implements Serializable {
 		} // catch
 	} // doFileUpload	
 	
-	private void toWriteFile(File result, InputStream upload) throws Exception {
+	private void toWriteFile(File result, InputStream inputStream) throws Exception {
 		FileOutputStream fileOutputStream= new FileOutputStream(result);
-		InputStream inputStream          = upload;
-		byte[] buffer                    = new byte[BUFFER_SIZE];
+		byte[] buffer                    = new byte[Constantes.BUFFER_SIZE];
 		int bulk;
 		while(true) {
 			bulk= inputStream.read(buffer);
@@ -405,9 +403,11 @@ public class Importar extends IBaseAttribute implements Serializable {
   private void toCopyDocument(String alias, String name) {
 		try {
   	  this.attrs.put("temporal", JsfBase.getContext().concat("/").concat(Constantes.RUTA_TEMPORALES).concat(name).concat("?pfdrid_c=true"));
-  		File file= new File(JsfBase.getRealPath(Constantes.RUTA_TEMPORALES).concat(name));
-	  	FileInputStream input= new FileInputStream(new File(alias));
-      this.toWriteFile(file, input);		
+  		File source= new File(JsfBase.getRealPath(Constantes.RUTA_TEMPORALES).concat(name));
+			if(!source.exists()) {
+	  	  FileInputStream input= new FileInputStream(new File(alias));
+        this.toWriteFile(source, input);		
+			} // if	
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -434,13 +434,13 @@ public class Importar extends IBaseAttribute implements Serializable {
 	
 	public void doCerrar() {
 		try {
-			String name= (String)this.attrs.get("temporal");
-			if(name.endsWith("XML"))
-				name= JsfBase.getContext().concat(name);
-			else
-				name= name.substring(0, name.lastIndexOf("?"));
-			File file= new File(JsfBase.getRealPath(name));
-			file.delete();
+//			String name= (String)this.attrs.get("temporal");
+//			if(name.endsWith("XML"))
+//				name= JsfBase.getContext().concat(name);
+//			else
+//				name= name.substring(0, name.lastIndexOf("?"));
+//			File file= new File(JsfBase.getRealPath(name));
+//			file.delete();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);

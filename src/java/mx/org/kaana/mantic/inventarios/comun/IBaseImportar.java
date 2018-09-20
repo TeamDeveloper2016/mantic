@@ -401,9 +401,11 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
   private void toCopyDocument(String alias, String name) {
 		try {
   	  this.attrs.put("temporal", JsfBase.getContext().concat("/").concat(Constantes.RUTA_TEMPORALES).concat(name).concat("?pfdrid_c=true"));
-  		File file= new File(JsfBase.getRealPath().concat(Constantes.RUTA_TEMPORALES).concat(name));
-	  	FileInputStream input= new FileInputStream(new File(alias));
-      this.toWriteFile(file, input);		
+  		File source= new File(JsfBase.getRealPath().concat(Constantes.RUTA_TEMPORALES).concat(name));
+			if(!source.exists()) {
+  	  	FileInputStream input= new FileInputStream(new File(alias));
+        this.toWriteFile(source, input);		
+			} // if	
 		} // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -413,13 +415,13 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 	
 	public void doCerrar() {
 		try {
-			String name= (String)this.attrs.get("temporal");
-			if(name.endsWith("XML"))
-				name= JsfBase.getContext().concat(name);
-			else
-				name= name.substring(0, name.lastIndexOf("?"));
-			File file= new File(JsfBase.getRealPath().concat(name));
-			file.delete();
+//			String name= (String)this.attrs.get("temporal");
+//			if(name.endsWith("XML"))
+//				name= JsfBase.getContext().concat(name);
+//			else
+//				name= name.substring(0, name.lastIndexOf("?"));
+//			File file= new File(JsfBase.getRealPath().concat(name));
+//			file.delete();
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
