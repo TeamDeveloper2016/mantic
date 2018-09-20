@@ -2,6 +2,9 @@ package mx.org.kaana.kajool.seguridad.listeners;
 
 import java.beans.PropertyEditorManager;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -13,6 +16,9 @@ import mx.org.kaana.libs.pagina.Messages;
 import mx.org.kaana.kajool.procesos.beans.UsuariosEnLinea;
 import mx.org.kaana.kajool.seguridad.filters.control.LockUser;
 import mx.org.kaana.kajool.seguridad.init.Loader;
+import mx.org.kaana.libs.pagina.JsfUtilities;
+import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.reportes.FileSearch;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -26,8 +32,6 @@ public class ContextListener implements ServletContextListener {
     ServletContext context = event.getServletContext();
     setInitialAttribute(context, "nombreAplicacion", Constantes.NOMBRE_DE_APLICACION);
     UsuariosEnLinea usuarios= null;
-    
-    
     System.setProperty("java.awt.headless", "true");
     LOG.info("[+SISTEMA] ".concat((String) context.getAttribute("nombreAplicacion")));
     try {
@@ -40,6 +44,9 @@ public class ContextListener implements ServletContextListener {
       setJasperTempPath(context);
       Loader.getInstance(event);
       System.setProperty("java.awt.headless", "true");
+      LOG.info("[+PASANDO LOGOTIPOS]");
+			this.toMoveResource(Configuracion.getInstance().getPropiedadSistemaServidor("proveedores"), context.getRealPath("/resources/janal/img/proveedores/"), "*");
+      LOG.info("[-PASANDO LOGOTIPOS]");
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -87,4 +94,46 @@ public class ContextListener implements ServletContextListener {
   private void setJasperTempPath(ServletContext context) {
     System.setProperty("jasper.reports.compile.temp", context.getRealPath("/Temporal/"));
   } // setJasperTempPath
+	
+	private void toMoveResource(String target, String source, String type) {
+    FileSearch fileSearch = new FileSearch();
+    fileSearch.searchDirectory(new File(target), type.toLowerCase());
+    if(fileSearch.getResult().size()> 0)
+		  for (String matched: fileSearch.getResult()) {
+				String name= matched.substring((matched.lastIndexOf("/")< 0? matched.lastIndexOf("\\"): matched.lastIndexOf("/"))+ 1);
+   		  try {
+					File result= new File(source.concat(name));
+					if(result.exists())
+						LOG.info("Resources logotipo exists: "+ result.getAbsoluteFile());
+					else {
+						LOG.info("Copy resource logotipo: "+ result.getAbsoluteFile());
+						this.toWriteFile(result, new FileInputStream(new File(matched)));
+					} // if
+				} // try
+				catch (Exception e) {
+					Error.mensaje(e);
+				} // catch
+      } // for 
+	}
+	
+  private void toWriteFile(File result, InputStream inputStream) throws Exception {
+		FileOutputStream fileOutputStream= new FileOutputStream(result);
+		byte[] buffer                    = new byte[Constantes.BUFFER_SIZE];
+		int bulk;
+		try {
+      while(true) {
+        bulk= inputStream.read(buffer);
+        if (bulk < 0) 
+          break;  
+        fileOutputStream.write(buffer, 0, bulk);
+        fileOutputStream.flush();
+      } // while
+      fileOutputStream.close();
+      inputStream.close();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+	} // toWriteFile
+	
 }

@@ -2746,6 +2746,25 @@
 				order by 
 				  tc_mantic_articulos.nombre				
 			</select>
+			<select id="clientes">
+        select
+					tc_mantic_clientes.id_cliente as id_key,
+          tc_mantic_clientes.id_cliente,
+					tc_mantic_clientes.clave,  
+					tc_mantic_clientes.razon_social as nombre
+				from 
+					tc_mantic_ordenes_compras
+				inner join
+					tc_mantic_clientes on tc_mantic_ordenes_compras.id_cliente= tc_mantic_clientes.id_cliente
+				where 		
+				  tc_mantic_ordenes_compras.id_empresa in ({sucursales})
+				group by
+          tc_mantic_clientes.id_cliente,
+					tc_mantic_clientes.clave,  
+					tc_mantic_clientes.razon_social
+				order by
+				  tc_mantic_clientes.clave
+			</select>			
 			<select id="proveedores">
         select
 					tc_mantic_proveedores.id_proveedor as id_key,
@@ -4106,13 +4125,13 @@
         select 
           tc_mantic_listas_precios.id_lista_precio as id_key,
           tc_mantic_listas_precios.id_lista_precio,
+          tc_mantic_listas_precios.id_empresa,
           tc_mantic_listas_precios.id_proveedor,
           tc_mantic_listas_precios.observaciones,
           DATE_FORMAT(tc_mantic_listas_precios.registro,'%d/%m/%Y') registro,
           if(tc_mantic_listas_precios.id_proveedor is null, tc_mantic_listas_precios.nombre, tc_mantic_proveedores.razon_social) as razon_social,
           if(tc_mantic_listas_precios.id_proveedor is null, tc_mantic_listas_precios.nombre, tc_mantic_proveedores.clave) as clave,
           tc_mantic_proveedores.rfc,
-          tc_mantic_proveedores.id_empresa,
           if(tc_mantic_listas_precios.id_proveedor is null, tc_mantic_listas_precios.logotipo, ifnull(tc_mantic_proveedores.logotipo, 'bonanza.svg')) as logotipo,
           tc_mantic_listas_precios_archivos.alias,
           tc_mantic_listas_precios_archivos.nombre,
@@ -4127,6 +4146,37 @@
           tc_mantic_listas_precios.id_empresa in ({idEmpresa})
           and {condicion}
         {sortOrder}
+			</select>
+      <select id="porCatalogo">
+        select 
+          tc_mantic_listas_precios.id_lista_precio as id_key,
+          tc_mantic_listas_precios.id_lista_precio,
+          tc_mantic_listas_precios.id_empresa,
+          tc_mantic_listas_precios.id_proveedor,
+          tc_mantic_listas_precios.observaciones,
+          tc_mantic_listas_precios.registro,
+          if(tc_mantic_listas_precios.id_proveedor is null, tc_mantic_listas_precios.nombre, tc_mantic_proveedores.razon_social) as razon_social,
+          if(tc_mantic_listas_precios.id_proveedor is null, tc_mantic_listas_precios.nombre, tc_mantic_proveedores.clave) as clave,
+          tc_mantic_proveedores.rfc,
+          if(tc_mantic_listas_precios.id_proveedor is null, tc_mantic_listas_precios.logotipo, ifnull(tc_mantic_proveedores.logotipo, 'bonanza.svg')) as logotipo,
+          tc_mantic_listas_precios_archivos.alias,
+          tc_mantic_listas_precios_archivos.nombre,
+          tc_mantic_listas_precios_archivos.ruta
+        from 
+          tc_mantic_listas_precios 
+        inner join 
+      		tc_mantic_listas_precios_archivos on tc_mantic_listas_precios.id_lista_precio = tc_mantic_listas_precios_archivos.id_lista_precio and tc_mantic_listas_precios_archivos.id_tipo_archivo= 2 and tc_mantic_listas_precios_archivos.id_principal= 1
+        left join
+          tc_mantic_proveedores on tc_mantic_listas_precios.id_proveedor= tc_mantic_proveedores.id_proveedor
+        where
+          tc_mantic_listas_precios.id_empresa in ({idEmpresa})
+          and (
+				    upper(tc_mantic_listas_precios.nombre) regexp '.*{codigo}.*'
+				   or
+				    upper(tc_mantic_proveedores.clave) regexp '.*{codigo}.*'
+				   or
+				    upper(tc_mantic_proveedores.razon_social) regexp '.*{codigo}.*'
+				 )
 			</select>
       <select id="lazyArticulos">
 				select 
@@ -4157,6 +4207,50 @@
         where
 					{condicion}			      
 			</select>
+			<select id="porNombre">
+				select 
+				  tc_mantic_listas_precios_detalles.id_lista_precio_detalle as id_key,
+				  tc_mantic_listas_precios_detalles.id_lista_precio_detalle,
+				  tc_mantic_listas_precios_detalles.codigo,
+				  tc_mantic_listas_precios_detalles.auxiliar,
+				  tc_mantic_listas_precios_detalles.descripcion,
+				  tc_mantic_listas_precios_detalles.costo,
+				  tc_mantic_listas_precios_detalles.precio,
+				  tc_mantic_listas_precios_detalles.registro
+				from 
+					tc_mantic_listas_precios
+				inner join 
+					tc_mantic_listas_precios_detalles on tc_mantic_listas_precios.id_lista_precio = tc_mantic_listas_precios_detalles.id_lista_precio
+				where 
+					tc_mantic_listas_precios.id_empresa in ({sucursales})
+				  and upper(tc_mantic_listas_precios_detalles.descripcion) regexp '.*{codigo}.*'
+				order by 
+				  tc_mantic_listas_precios_detalles.descripcion				
+			</select>
+			<select id="porCodigo">
+				select 
+				  tc_mantic_listas_precios_detalles.id_lista_precio_detalle as id_key,
+				  tc_mantic_listas_precios_detalles.id_lista_precio_detalle,
+				  tc_mantic_listas_precios_detalles.codigo,
+				  tc_mantic_listas_precios_detalles.auxiliar,
+				  tc_mantic_listas_precios_detalles.descripcion,
+				  tc_mantic_listas_precios_detalles.costo,
+				  tc_mantic_listas_precios_detalles.precio,
+				  tc_mantic_listas_precios_detalles.registro
+				from 
+					tc_mantic_listas_precios
+				inner join 
+					tc_mantic_listas_precios_detalles on tc_mantic_listas_precios.id_lista_precio = tc_mantic_listas_precios_detalles.id_lista_precio
+				where 
+					tc_mantic_listas_precios.id_empresa in ({sucursales})
+				  and (
+				    upper(tc_mantic_articulos_codigos.codigo) like '{codigo}%'
+				   or
+				    upper(tc_mantic_articulos_codigos.auxiliar) like '{codigo}%'
+			    )
+				order by 
+				  tc_mantic_listas_precios_detalles.descripcion	
+			</select>			
 		</unit>
 		<unit id="VistaTcManticVentasDetallesDto">
 			<select id="detalle">

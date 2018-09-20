@@ -1,5 +1,9 @@
 package mx.org.kaana.kajool.procesos.acceso.backing;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,11 +53,21 @@ public class Encabezado extends IBaseFilter implements Serializable {
   private static final Log LOG = LogFactory.getLog(Encabezado.class);
 	
   private FormatLazyModel lazyFaltantes;
+  private FormatLazyModel lazyListaPrecios;
+  private List<Entity> lazyCatalogoArticulos;
 	private Faltante faltante;
 	private StreamedContent image;
 
 	public FormatLazyModel getLazyFaltantes() {
 		return lazyFaltantes;
+	}
+
+	public FormatLazyModel getLazyListaPrecios() {
+		return lazyListaPrecios;
+	}
+
+	public List<Entity> getLazyCatalogoArticulos() {
+		return lazyCatalogoArticulos;
 	}
 
 	public Faltante getFaltante() {
@@ -91,7 +105,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
       columns.add(new Columna("limiteMedioMayoreo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       columns.add(new Columna("limiteMayoreo", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", (String)this.attrs.get("idXml"), this.attrs, columns);
-      UIBackingUtilities.resetDataTable();
+      UIBackingUtilities.resetDataTable("verificadorTabla");
     } // try
     catch (Exception e) {
       mx.org.kaana.libs.formato.Error.mensaje(e);
@@ -205,7 +219,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
       columns.add(new Columna("cantidad", EFormatoDinamicos.MILES_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
       this.lazyFaltantes = new FormatCustomLazy("VistaOrdenesComprasDto", "registrados", this.attrs, columns);
-      UIBackingUtilities.resetDataTable();
+      UIBackingUtilities.resetDataTable("faltantesTabla");
     } // try
     catch (Exception e) {
       mx.org.kaana.libs.formato.Error.mensaje(e);
@@ -291,5 +305,125 @@ public class Encabezado extends IBaseFilter implements Serializable {
 		} // if
 		return regresar== null? regresar: regresar.concat(Constantes.REDIRECIONAR);
 	}
+	
+	public void doChangeListaPrecios() {
+		String codigo= (String)this.attrs.get("buscarPor");
+		if(codigo== null || codigo.equals(".*.")) 
+			this.lazyListaPrecios= null;
+		else {
+			boolean buscaPorCodigo= codigo.startsWith(".");
+			if(buscaPorCodigo)
+				codigo= codigo.trim().substring(1);
+			codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			this.attrs.put("codigo", codigo);
+			this.attrs.put("idXml", "porNombre");
+			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
+				this.attrs.put("idXml", "porCodigo");
+			this.doLoadListaPrecios();
+		} // else
+	}
+
+	public void doLoadListaPrecios() {
+    List<Columna> columns= null;
+    try {
+      columns = new ArrayList<>();
+      columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("auxiliar", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("precio", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      this.lazyListaPrecios= new FormatCustomLazy("VistaListasArchivosDto", (String)this.attrs.get("idXml"), this.attrs, columns);
+      UIBackingUtilities.resetDataTable("listaPreciosTabla");
+    } // try
+    catch (Exception e) {
+      mx.org.kaana.libs.formato.Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(columns);
+    } // finally			
+	}
+	
+	public void doChangeCatalogoArticulos() {
+		String codigo= (String)this.attrs.get("buscarPor");
+		if(codigo== null || codigo.equals(".*.")) 
+			this.lazyCatalogoArticulos= null;
+		else {
+			codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			this.attrs.put("codigo", codigo);
+			this.attrs.put("idXml", "porCatalogo");
+			this.doLoadCatalogoArticulos();
+		} // else
+	}
+
+	public void doLoadCatalogoArticulos() {
+    List<Columna> columns= null;
+    try {
+      columns = new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
+  		this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			this.lazyCatalogoArticulos= DaoFactory.getInstance().toEntitySet("VistaListasArchivosDto", (String)this.attrs.get("idXml"), this.attrs);
+			UIBackingUtilities.toFormatEntitySet(this.lazyCatalogoArticulos, columns);
+      UIBackingUtilities.resetDataTable("catalogoArticulosTabla");
+    } // try
+    catch (Exception e) {
+      mx.org.kaana.libs.formato.Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    finally {
+      Methods.clean(columns);
+    } // finally			
+	}
+
+  public void doViewPdfDocument(Entity item) { 
+		this.toCopyDocument(item.toString("alias"), item.toString("nombre"));
+	}
+  
+  private void toCopyDocument(String alias, String name) {
+		try {
+  	  this.attrs.put("temporal", JsfBase.getContext().concat("/").concat(Constantes.RUTA_TEMPORALES).concat(name).concat("?pfdrid_c=true"));
+  		File file= new File(JsfBase.getRealPath().concat(Constantes.RUTA_TEMPORALES).concat(name));
+	  	FileInputStream input= new FileInputStream(new File(alias));
+      this.toWriteFile(file, input);		
+		} // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+	}	// toCopyDocument
+
+ private void toWriteFile(File result, InputStream inputStream) throws Exception{
+		FileOutputStream fileOutputStream= new FileOutputStream(result);
+		byte[] buffer                    = new byte[Constantes.BUFFER_SIZE];
+		int bulk;
+		try {
+      while(true) {
+        bulk= inputStream.read(buffer);
+        if (bulk < 0) 
+          break;  
+        fileOutputStream.write(buffer, 0, bulk);
+        fileOutputStream.flush();
+      } // while
+      fileOutputStream.close();
+      inputStream.close();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+	} // toWriteFile
+
+  public void doCerrar() {
+		try {
+			String name= (String)this.attrs.get("temporal");
+			name= name.substring(0, name.lastIndexOf("?"));
+			File file= new File(JsfBase.getRealPath().concat(name));
+			file.delete();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+  } // doCerrar
 	
 }

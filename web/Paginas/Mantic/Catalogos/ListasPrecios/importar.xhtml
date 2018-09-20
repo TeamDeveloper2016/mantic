@@ -105,7 +105,7 @@
 											multiple="false" allowTypes="#{manticCatalogosListaPreciosImportar.attrs.logotipos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 involucrados janal-upload-frame"
 											invalidSizeMessage="El tamaño máximo permitido del archivo es de 100 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosListaPreciosImportar.attrs.logotipos}" onstart="return janal.bloquear()" oncomplete="$('#source-image').attr('href', $('#contenedorGrupos\\:icon-image').attr('src'));janal.desbloquear();"/>
 									</h:panelGrid>
-									<p:panel header="Logotipo precargado" styleClass="TexAlCenter janal-wid-100-txt involucrados logotipo" style="height:100%;display:#{manticCatalogosListaPreciosImportar.attrs.tipo eq '1'? '': 'none'}">
+									<p:panel header="Logotipo" styleClass="TexAlCenter janal-wid-100-txt involucrados logotipo" style="height:100%;display:#{manticCatalogosListaPreciosImportar.attrs.tipo eq '1'? '': 'none'}">
 										<a id="source-image" data-magnify="gallery" data-caption="#{manticCatalogosListaPreciosImportar.lista.logotipo}" data-group="icon-gallery" title="Click para ver más grande la imagen">
 											<p:graphicImage id="icon-image" library="janal" name="img/proveedores/#{manticCatalogosListaPreciosImportar.lista.logotipo}" styleClass="TexAlCenter logotipo" width="40" height="40" style="cursor:zoom-in;"/>
 										</a>	

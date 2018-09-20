@@ -53,6 +53,7 @@ public final class Constantes {
   public static final int SQL_PRIMER_REGISTRO  = 1;
   public static final int SI                   = 1;
   public static final int NO                   = 2;
+  public static final int BUFFER_SIZE          = 6124;
 
   //Constantes para la lectura del xml
   public static final String DML_IDENTICO        = "identically";

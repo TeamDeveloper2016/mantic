@@ -260,16 +260,28 @@ shortcut.add("Shift+C", function() {
 	} // if
 });
 
-shortcut.add("Shift+f10", function() {
-	janal.console('Shortcut verificador de precios:');
-	if(PF('dlgVerificador') && !PF('dlgVerificador').isVisible())
-	  PF('dlgVerificador').show();
+shortcut.add("Ctrl+M", function() {
+	janal.console('Shortcut lista de precios de los articulos:');
+	if(PF('dlgListaPrecios') && !PF('dlgListaPrecios').isVisible())
+	  PF('dlgListaPrecios').show();
+});
+
+shortcut.add("Ctrl+K", function() {
+	janal.console('Shortcut catalogos de articulos de los proveedores:');
+	if(PF('dlgCatalogoArticulos') && !PF('dlgCatalogoArticulos').isVisible())
+	  PF('dlgCatalogoArticulos').show();
 });
 
 shortcut.add("Shift+f9", function() {
 	janal.console('Shortcut registro de faltantes:');
 	if(PF('dlgFaltantes') && !PF('dlgFaltantes').isVisible())
 	  PF('dlgFaltantes').show();
+});
+
+shortcut.add("Shift+f10", function() {
+	janal.console('Shortcut verificador de precios:');
+	if(PF('dlgVerificador') && !PF('dlgVerificador').isVisible())
+	  PF('dlgVerificador').show();
 });
 
 shortcut.add("Ctrl+P", function() {

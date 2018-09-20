@@ -26,7 +26,6 @@ import mx.org.kaana.libs.reflection.Methods;
 public class Catalogos extends IBaseAttribute implements Serializable{
 	
   private static final long serialVersionUID= 862453896325723687L;
-  private static final int BUFFER_SIZE      = 6124;
   private List<Entity> lazyModel;
 
   public List<Entity> getLazyModel() {
@@ -114,12 +113,11 @@ public class Catalogos extends IBaseAttribute implements Serializable{
     } // catch		
 	}	// toCopyDocument
 
- private void toWriteFile(File result, InputStream upload) throws Exception{
+ private void toWriteFile(File result, InputStream inputStream) throws Exception{
 		FileOutputStream fileOutputStream= new FileOutputStream(result);
-		InputStream inputStream          = upload;
-		byte[] buffer                    = new byte[BUFFER_SIZE];
+		byte[] buffer                    = new byte[Constantes.BUFFER_SIZE];
 		int bulk;
-		try{
+		try {
       while(true) {
         bulk= inputStream.read(buffer);
         if (bulk < 0) 
@@ -139,7 +137,7 @@ public class Catalogos extends IBaseAttribute implements Serializable{
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
 		if(!Cadena.isVacio(this.attrs.get("clave")))
-  		sb.append("tc_mantic_proveedores.rfc like '%").append(this.attrs.get("clave")).append("%'");
+  		sb.append("(tc_mantic_proveedores.clave like '%").append(this.attrs.get("clave")).append("%' or tc_mantic_listas_precios.nombre like '%").append(this.attrs.get("clave")).append("%')");
 		if(!Cadena.isVacio(this.attrs.get("razonSocial")))
   		sb.append((!Cadena.isVacio(this.attrs.get("clave"))?" and ":" ").concat("tc_mantic_proveedores.razon_social like '%")).append(this.attrs.get("razonSocial")).append("%' ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))

@@ -335,7 +335,7 @@ public class Transaccion extends Inventarios implements Serializable {
 				  File file= new File(matched);
 				  file.delete();
 				} // if
-      } // for // for // for // for
+      } // for
 	}
 	
 	private List<Nombres> toListFile(Session sesion, Importado tmp, Long idTipoArchivo) throws Exception {

@@ -59,7 +59,7 @@
 						break;
 				} // swtich
 			});	
-	    $(document).on('keydown', '.janal-key-precios', function(e) {
+	    $(document).on('keydown', '.janal-key-verificador', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('Keydown: '+ key);
 				switch(key) {
@@ -72,7 +72,9 @@
             PF('dlgVerificador').hide();
 					  break;
 					case $precios.VK_ENTER:
-						return $precios.lookup();
+      			janal.console('jsPrecios.lookup');
+						lookup();
+						return false;
 						break;
 					case $precios.VK_PAGE_NEXT:
 						$('#verificadorTabla_paginator_top > a.ui-paginator-next').click();
@@ -81,6 +83,60 @@
 					case $precios.VK_PAGE_PREV:
 						$('#verificadorTabla_paginator_top > a.ui-paginator-prev').click();
 						return setTimeout($precios.next(false), 1000);
+						break;
+				} // swtich
+			});	
+	    $(document).on('keydown', '.janal-key-lista', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('Keydown: '+ key);
+				switch(key) {
+					case $precios.VK_UP:	
+					case $precios.VK_DOWN:	
+					case $precios.VK_TAB:
+						return $precios.forward(true);
+					  break;
+					case $precios.VK_ESC:
+            PF('dlgListaPrecios').hide();
+					  break;
+					case $precios.VK_ENTER:
+      			janal.console('jsPrecios.lookup');
+						listaPreciosLookup();
+						return false;
+						break;
+					case $precios.VK_PAGE_NEXT:
+						$('#listaPreciosTabla_paginator_top > a.ui-paginator-next').click();
+						return setTimeout($precios.forward(false), 1000);
+						break;
+					case $precios.VK_PAGE_PREV:
+						$('#listaPreciosTabla_paginator_top > a.ui-paginator-prev').click();
+						return setTimeout($precios.forward(false), 1000);
+						break;
+				} // swtich
+			});	
+	    $(document).on('keydown', '.janal-key-catalogo', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('Keydown: '+ key);
+				switch(key) {
+					case $precios.VK_UP:	
+					case $precios.VK_DOWN:	
+					case $precios.VK_TAB:
+						return $precios.advancing(true);
+					  break;
+					case $precios.VK_ESC:
+            PF('dlgCatalogoArticulos').hide();
+					  break;
+					case $precios.VK_ENTER:
+      			janal.console('jsPrecios.lookup');
+						catalogoArticulosLookup();
+						return false;
+						break;
+					case $precios.VK_PAGE_NEXT:
+						$('#catalogoArticulosTabla_paginator_top > a.ui-paginator-next').click();
+						return setTimeout($precios.advancing(false), 1000);
+						break;
+					case $precios.VK_PAGE_PREV:
+						$('#catalogoArticulosTabla_paginator_top > a.ui-paginator-prev').click();
+						return setTimeout($precios.advancing(false), 1000);
 						break;
 				} // swtich
 			});	
@@ -115,7 +171,7 @@
 						break;
 				} // swtich
 			});	
-	    $(document).on('keydown', '.janal-key-registros', function(e) {
+	    $(document).on('keydown', '.janal-row-verificador', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('jsPrecios.keydown: '+ $(this).attr('id')+ ' key: '+ key);
 				switch(key) {
@@ -152,6 +208,72 @@
 						break;
 				} // swtich
 			});	
+	    $(document).on('keydown', '.janal-row-lista', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('jsPrecios.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				switch(key) {
+					case $precios.VK_TAB:
+					case $precios.VK_ENTER:
+					  $('#listaPreciosValue').focus();
+						return false;
+					  break;
+					case $precios.VK_ESC:
+            PF('dlgListaPrecios').hide();
+						break;
+					case $precios.VK_UP:
+					case $precios.VK_DOWN:
+						break;
+					case $precios.VK_PAGE_NEXT:
+						if($('#listaPreciosTabla_paginator_top > a.ui-paginator-next')) {
+						  $('#listaPreciosTabla_paginator_top > a.ui-paginator-next').click();
+						  return setTimeout($precios.forward(false), 1000);
+						} // if
+						else
+							return false;
+						break;
+					case $precios.VK_PAGE_PREV:
+						if($('#listaPreciosTabla_paginator_top > a.ui-paginator-prev')) {
+  						$('#listaPreciosTabla_paginator_top > a.ui-paginator-prev').click();
+	  					return setTimeout($precios.forward(false), 1000);
+						} // if
+						else
+							return false;
+						break;
+				} // swtich
+			});	
+	    $(document).on('keydown', '.janal-row-catalogo', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('jsPrecios.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				switch(key) {
+					case $precios.VK_TAB:
+					case $precios.VK_ENTER:
+					  $('#catalogoArticulosValue').focus();
+						return false;
+					  break;
+					case $precios.VK_ESC:
+            PF('dlgCatalogoArticulos').hide();
+						break;
+					case $precios.VK_UP:
+					case $precios.VK_DOWN:
+						break;
+					case $precios.VK_PAGE_NEXT:
+						if($('#catalogoArticulosTabla_paginator_top > a.ui-paginator-next')) {
+						  $('#catalogoArticulosTabla_paginator_top > a.ui-paginator-next').click();
+						  return setTimeout($precios.advancing(false), 1000);
+						} // if
+						else
+							return false;
+						break;
+					case $precios.VK_PAGE_PREV:
+						if($('#catalogoArticulosTabla_paginator_top > a.ui-paginator-prev')) {
+  						$('#catalogoArticulosTabla_paginator_top > a.ui-paginator-prev').click();
+	  					return setTimeout($precios.advancing(false), 1000);
+						} // if
+						else
+							return false;
+						break;
+				} // swtich
+			});	
 	    $(document).on('keydown', '.janal-row-articulos', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('jsPrecios.keydown: '+ $(this).attr('id')+ ' key: '+ key);
@@ -170,7 +292,6 @@
 						break;
 					case $precios.VK_UP:
 					case $precios.VK_DOWN:
-						// return $precios.hide();
 						break;
 					case $precios.VK_PAGE_NEXT:
 						if($('#buscados_paginator_top > a.ui-paginator-next')) {
@@ -204,11 +325,6 @@
 				} // swtich
 			});	
 		},
-		lookup: function() {
-			janal.console('jsPrecios.lookup');
-			verificadorLookup();
-			return false;
-		},
 		show: function()  {
  			janal.console('jsPrecios.show');
       $('#source-gallery').attr('href', $('#icon-gallery').attr('src'));
@@ -232,6 +348,24 @@
 			PF('widgetVerificador').selectRow(0, true);	
 			if(focus)
 			  $('#verificadorTabla .ui-datatable-data').focus();
+			return false;
+		},
+		forward: function(focus) {
+			janal.console('jsPrecios.forward');
+			PF('widgetListaPrecios').clearSelection();
+			PF('widgetListaPrecios').writeSelections();
+			PF('widgetListaPrecios').selectRow(0, true);	
+			if(focus)
+			  $('#listaPreciosTabla .ui-datatable-data').focus();
+			return false;
+		},
+		advancing: function(focus) {
+			janal.console('jsPrecios.advancing');
+			PF('widgetCatalogoArticulos').clearSelection();
+			PF('widgetCatalogoArticulos').writeSelections();
+			PF('widgetCatalogoArticulos').selectRow(0, true);	
+			if(focus)
+			  $('#catalogoArticulosTabla .ui-datatable-data').focus();
 			return false;
 		},
 		move: function(focus) {

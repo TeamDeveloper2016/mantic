@@ -60,7 +60,6 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 
 	private static final long serialVersionUID= 5868488964656514537L;
 	private static final Log LOG              = LogFactory.getLog(IBaseImportar.class);
-  private static final int BUFFER_SIZE      = 6124;
 	
 	private Importado xls;
 	private Importado pdf;
@@ -135,7 +134,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			if (result.exists())
 				result.delete();			      
 			isXls= event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XLS.name());
-			this.toWriteFile(result, event.getFile().getInputstream(), isXls);
+			this.toWriteFile(result, event.getFile().getInputstream());
 			fileSize= event.getFile().getSize();			
 			if(isXls) {
 				if(!this.toVerificaXls(result)){
@@ -224,14 +223,9 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 		} // catch
 	} // doImageUpload	
 	
-	private void toWriteFile(File result, InputStream upload) throws Exception {
-		toWriteFile(result, upload, false);
-	} // toWriteFile
-  
-  private void toWriteFile(File result, InputStream upload, boolean xls) throws Exception{
+  private void toWriteFile(File result, InputStream inputStream) throws Exception {
 		FileOutputStream fileOutputStream= new FileOutputStream(result);
-		InputStream inputStream          = upload;
-		byte[] buffer                    = new byte[BUFFER_SIZE];
+		byte[] buffer                    = new byte[Constantes.BUFFER_SIZE];
 		int bulk;
 		try{
       while(true) {

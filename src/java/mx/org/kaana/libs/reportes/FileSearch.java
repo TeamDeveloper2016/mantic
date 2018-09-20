@@ -45,7 +45,7 @@ public class FileSearch {
           if (temp.isDirectory())
             search(temp);
           else
-            if (temp.getName().toLowerCase().endsWith(getFileNameToSearch()))
+            if (temp.getName().toLowerCase().endsWith(this.fileNameToSearch) || fileNameToSearch.equals("*"))
               result.add(temp.getAbsoluteFile().toString());
         } // for
       } // if
