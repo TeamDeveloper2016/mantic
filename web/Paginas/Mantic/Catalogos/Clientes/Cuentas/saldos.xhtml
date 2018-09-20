@@ -6,7 +6,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Estado de cuenta del cliente" />
+  <ui:param name="titulo" value="Cuentas por cobrar de los clientes" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {        
@@ -120,21 +120,21 @@
 							</f:facet>
 							<h:outputText value="#{filtro['importe']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.limite}">
-							<f:facet name="header">
-								<h:outputText value="Vence" title="Fecha en la que vence el crédito otorgado"/>
-							</f:facet>
-							<h:outputText value="#{filtro['limite']}"/>
-						</p:column>
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.saldo}">
 							<f:facet name="header">
 								<h:outputText value="Saldo"/>
 							</f:facet>
 							<h:outputText value="#{filtro['saldo']}"/>
 						</p:column>
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.limite}">
+							<f:facet name="header">
+								<h:outputText value="Vence" title="Fecha en la que vence el crédito otorgado"/>
+							</f:facet>
+							<h:outputText value="#{filtro['limite']}"/>
+						</p:column>
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.regitro}">
 							<f:facet name="header">
-								<h:outputText value="Fecha"/>
+								<h:outputText value="Fecha" title="Fecha en la que se hizo la venta"/>
 							</f:facet>
 							<h:outputText value="#{filtro['registro']}"/>
 						</p:column>
