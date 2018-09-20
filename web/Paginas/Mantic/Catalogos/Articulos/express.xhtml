@@ -11,10 +11,10 @@
 			'codigoDialog'      : {validaciones: 'requerido', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas', individual: true},
 			'satDialog'         : {validaciones: 'libre', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas', individual: true},			
 			'nombreDialog'      : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
-			'precioDialog'      : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre'},
-			'menudeoDialog'     : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre'},
-			'medioMayoreoDialog': {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre'},
-			'mayoreoDialog'     : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre'},
+			'precioDialog'      : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre', individual: true},
+			'menudeoDialog'     : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})|mayor-a({"cual":"medioMayoreoDialog"})', mascara: 'libre', individual: true},
+			'medioMayoreoDialog': {validaciones: 'requerido|flotante|mayor({"cuanto": 0})|mayor-a({"cual":"mayoreoDialog"})', mascara: 'libre', individual: true},
+			'mayoreoDialog'     : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})|mayor-a({"cual":"precioDialog"})', mascara: 'libre', individual: true},
 			'descripcionDialog' : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
 		};
 		
