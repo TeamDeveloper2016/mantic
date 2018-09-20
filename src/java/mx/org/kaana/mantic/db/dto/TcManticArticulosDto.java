@@ -98,7 +98,7 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
   }
 
   public TcManticArticulosDto(Long key) {
-    this(null, null, null, null, null, null, null, null, 16D, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, 3D, 5D, 3D, 8D, "");
+    this(null, null, null, null, null, null, null, null, 16D, null, 0D, null, null, new Long(-1L), 0D, null, 0D, null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, null, 3D, 5D, 3D, 8D, "");
     setKey(key);
   }
 
