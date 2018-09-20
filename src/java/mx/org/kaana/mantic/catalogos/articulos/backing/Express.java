@@ -271,4 +271,18 @@ public class Express extends IBaseAttribute implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	}
+	
+	public void doUpdateArticuloExpress() {
+		if(this.attrs.get("seleccionado")!= null) {
+			this.attrs.put("codigo", ((Entity)this.attrs.get("seleccionado")).toString("propio"));
+		  this.registroArticulo.getArticulo().setSat(((Entity)this.attrs.get("seleccionado")).toString("sat"));
+		  this.registroArticulo.getArticulo().setDescripcion(((Entity)this.attrs.get("seleccionado")).toString("descripcion"));
+		  this.registroArticulo.getArticulo().setNombre(((Entity)this.attrs.get("seleccionado")).toString("nombre"));
+		  this.registroArticulo.getArticulo().setPrecio(((Entity)this.attrs.get("seleccionado")).toDouble("precio"));
+		  this.registroArticulo.getArticulo().setMenudeo(((Entity)this.attrs.get("seleccionado")).toDouble("menudeo"));
+		  this.registroArticulo.getArticulo().setMedioMayoreo(((Entity)this.attrs.get("seleccionado")).toDouble("medioMayoreo"));
+		  this.registroArticulo.getArticulo().setMayoreo(((Entity)this.attrs.get("seleccionado")).toDouble("mayoreo"));
+		} // if
+	}
+	
 }
