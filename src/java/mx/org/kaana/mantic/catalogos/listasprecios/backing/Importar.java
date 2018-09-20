@@ -58,6 +58,7 @@ public class Importar extends IBaseImportar implements Serializable {
       doLoadProveedores();
 			if(JsfBase.getFlashAttribute("idListaPrecio")== null) {
 				this.lista = new TcManticListasPreciosDto();
+				this.lista.setLogotipo("bonanza.svg");
         this.attrs.put("isDeshabilitado", false);
         if(this.attrs.get("idProveedor")!= null) {
           this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, ((UISelectEntity)this.attrs.get("idProveedor")).getKey());
@@ -79,6 +80,7 @@ public class Importar extends IBaseImportar implements Serializable {
       } // else
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_LISTA_ARCHIVOS);
+			this.attrs.put("logotipos", Constantes.PATRON_IMPORTAR_LOGOTIPOS);
 			this.attrs.put("observaciones", ""); 
 			this.attrs.put("xls", ""); 
 			this.attrs.put("pdf", "");
@@ -201,4 +203,11 @@ public class Importar extends IBaseImportar implements Serializable {
 		  this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_CATALOGOS);
 	}
 
+	public void doImageUpload(FileUploadEvent event) {
+		if("1".equals((String)this.attrs.get("tipo"))) {
+		  this.doImageUpload(event, "proveedores");
+			this.lista.setLogotipo(this.getFile().getName());
+		} // if	
+	} 
+	
 }

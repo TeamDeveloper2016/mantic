@@ -31,6 +31,7 @@ public final class Constantes {
   public static final String PATRON_IMPORTAR_FACTURA= "/(\\.|\\/)(xml|pdf)$/";
   public static final String PATRON_IMPORTAR_CATALOGOS= "/(\\.|\\/)(pdf)$/";
   public static final String PATRON_IMPORTAR_LISTA_ARCHIVOS= "/(\\.|\\/)(xls|pdf)$/";
+  public static final String PATRON_IMPORTAR_LOGOTIPOS= "/(\\.|\\/)(png|svg|jpg|gif|jfif)$/";
   public static final String PATRON_IMPORTAR_IDENTIFICACION= "/(\\.|\\/)(pdf|png|jpe?g)$/";
 
   // Constantes de separadores y caracteres

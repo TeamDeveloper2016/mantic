@@ -40,6 +40,7 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.JsfUtilities;
 import mx.org.kaana.libs.pagina.KajoolBaseException;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -93,6 +94,17 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 	protected void doFileUpload(FileUploadEvent event, Long fechaFactura, String carpeta, String clave) {
 		this.doFileUpload(event, fechaFactura, carpeta, clave, true, 1D);
 	}
+
+	private String toNormalizerName(String name, boolean time) {
+		String regresar= name.toUpperCase();
+		try {
+		  regresar= new String(name.toUpperCase().getBytes(), "UTF-8");
+		} // catch
+		catch(Exception e) {
+			Error.mensaje(e);
+		} // catch
+	  return (time? Cadena.rellenar(Fecha.formatear(Fecha.FECHA_HORA_LARGA), 17, '0', false).trim().concat("_"): "")+ Cadena.toNormalizer(regresar);	
+	}
 	
 	protected void doFileUpload(FileUploadEvent event, Long fechaFactura, String carpeta, String clave, Boolean sinIva, Double tipoDeCambio) {
 		StringBuilder path= new StringBuilder();  
@@ -100,7 +112,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
     File result       = null;		
 		Long fileSize     = 0L;
 		boolean isXls     = false;
-    String nombreArchivo = null;
+    String name       = null;
 		try {
 			Calendar calendar= Calendar.getInstance();
 			calendar.setTimeInMillis(fechaFactura);
@@ -117,9 +129,8 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			result= new File(path.toString());		
 			if (!result.exists())
 				result.mkdirs();
-			nombreArchivo= new String(event.getFile().getFileName().toUpperCase().getBytes(), "UTF-8");
-      nombreArchivo= Cadena.rellenar(Fecha.formatear(Fecha.FECHA_HORA_LARGA), 17, '0', false).trim().concat("_").concat(Cadena.toNormalizer(nombreArchivo));
-      path.append(nombreArchivo);
+			name= this.toNormalizerName(event.getFile().getFileName(), true);
+      path.append(name);
 			result = new File(path.toString());
 			if (result.exists())
 				result.delete();			      
@@ -130,12 +141,12 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 				if(!this.toVerificaXls(result)){
           throw new KajoolBaseException("El archivo ["+this.xls.getName()+ "] no tiene el formato adecuado para la carga" );
         }
-        this.xls= new Importado(nombreArchivo, event.getFile().getContentType(), EFormatos.XLS, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
+        this.xls= new Importado(name, event.getFile().getContentType(), EFormatos.XLS, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
         this.attrs.put("xls", this.xls.getName());
 			} //
 			else
 			  if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.PDF.name())) {
-			    this.pdf= new Importado(nombreArchivo, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
+			    this.pdf= new Importado(name, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
   				this.attrs.put("pdf", this.pdf.getName()); 
 				} // if
 		} // try
@@ -162,13 +173,14 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			result= new File(path.toString());		
 			if (!result.exists())
 				result.mkdirs();
-      path.append(event.getFile().getFileName().toUpperCase());
+			String name= this.toNormalizerName(event.getFile().getFileName(), true);
+      path.append(name);
 			result = new File(path.toString());
 			if (result.exists())
 				result.delete();			      
 			this.toWriteFile(result, event.getFile().getInputstream());
 			fileSize= event.getFile().getSize();						
-			this.file= new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
+			this.file= new Importado(name, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
   		this.attrs.put("file", this.file.getName()); 			
 		} // try
 		catch (Exception e) {
@@ -178,6 +190,39 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			  result.delete();
 		} // catch
 	} // doFileUpload	
+	
+	public void doImageUpload(FileUploadEvent event, String propiedadServidor) {
+		StringBuilder path= new StringBuilder();  
+    File result       = null;		
+		Long fileSize     = 0L;
+		try {			
+      path.append(Configuracion.getInstance().getPropiedadSistemaServidor(propiedadServidor));
+			result= new File(path.toString());		
+			if (!result.exists())
+				result.mkdirs();
+			String name= this.toNormalizerName(event.getFile().getFileName(), false);
+      path.append(name);
+			result = new File(path.toString());
+			if (result.exists())
+				result.delete();			      
+			// pasar el archivo a la ruta de trabajo 
+			this.toWriteFile(result, event.getFile().getInputstream());
+			// pasar el archivo a la ruta de las imagenes de forma temporal
+			result= new File(JsfUtilities.getRealPath("/resources/janal/img/proveedores/").concat(name));
+			if (result.exists())
+				result.delete();			      
+			this.toWriteFile(result, event.getFile().getInputstream());
+			fileSize= event.getFile().getSize();						
+			this.file= new Importado(name, event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", "/img/proveedores", (String)this.attrs.get("observaciones"));
+  		this.attrs.put("file", this.file.getName()); 			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessage("Importar:", "El logotipo no cumple con el formato especificado["+ event.getFile().getFileName()+ "].", ETipoMensaje.ERROR);
+			if(result!= null)
+			  result.delete();
+		} // catch
+	} // doImageUpload	
 	
 	private void toWriteFile(File result, InputStream upload) throws Exception {
 		toWriteFile(result, upload, false);

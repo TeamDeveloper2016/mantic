@@ -115,6 +115,12 @@
 							</f:facet>
 							<h:outputText value="#{row['proveedor']}"/>
 						</p:column>											
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.factura}">
+							<f:facet name="header">
+								<h:outputText value="Factura"/>
+							</f:facet>
+							<h:outputText value="#{row['factura']}"/>
+						</p:column>
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
 							<f:facet name="header">
 								<h:outputText value="Importe"/>

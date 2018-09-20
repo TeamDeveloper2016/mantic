@@ -96,8 +96,23 @@
 								</p:selectOneRadio>
 							</p:panel>
               <h:panelGrid columns="1" styleClass="janal-wid-100">
-                <p:outputLabel for="nombre" value="Nombre:" styleClass="involucrados" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '1'? '': 'none'}"/>
-								<p:inputText id="nombre" value="#{manticCatalogosListaPreciosImportar.lista.nombre}" styleClass="janal-wid-100-txt involucrados" placeholder="Ej. COFLEX.PDF" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '1'? '': 'none'}" disabled="#{manticCatalogosListaPreciosImportar.attrs.isDeshabilitado}"/>
+								<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-80, jana-wid-20">
+									<h:panelGrid columns="1" styleClass="janal-wid-100">
+										<p:outputLabel for="nombre" value="Nombre:" styleClass="involucrados" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '1'? '': 'none'}"/>
+										<p:inputText id="nombre" value="#{manticCatalogosListaPreciosImportar.lista.nombre}" styleClass="janal-wid-100-txt involucrados" placeholder="Ej. COFLEX.PDF" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '1'? '': 'none'}" disabled="#{manticCatalogosListaPreciosImportar.attrs.isDeshabilitado}"/>
+										<p:fileUpload fileUploadListener="#{manticCatalogosListaPreciosImportar.doImageUpload}" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '1'? '': 'none'}"
+											mode="advanced" process="@form" update="@(.logotipo)" label="Selecciona logotipo" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="104857600"
+											multiple="false" allowTypes="#{manticCatalogosListaPreciosImportar.attrs.logotipos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 involucrados janal-upload-frame"
+											invalidSizeMessage="El tamaño máximo permitido del archivo es de 100 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosListaPreciosImportar.attrs.logotipos}" onstart="return janal.bloquear()" oncomplete="$('#source-image').attr('href', $('#contenedorGrupos\\:icon-image').attr('src'));janal.desbloquear();"/>
+									</h:panelGrid>
+									<p:panel header="Logotipo precargado" styleClass="TexAlCenter janal-wid-100-txt involucrados logotipo" style="height:100%;display:#{manticCatalogosListaPreciosImportar.attrs.tipo eq '1'? '': 'none'}">
+										<a id="source-image" data-magnify="gallery" data-caption="#{manticCatalogosListaPreciosImportar.lista.logotipo}" data-group="icon-gallery" title="Click para ver más grande la imagen">
+											<p:graphicImage id="icon-image" library="janal" name="img/proveedores/#{manticCatalogosListaPreciosImportar.lista.logotipo}" styleClass="TexAlCenter logotipo" width="40" height="40" style="cursor:zoom-in;"/>
+										</a>	
+										<br/>
+										<p:outputLabel value="#{manticCatalogosListaPreciosImportar.lista.logotipo}" styleClass="logotipo"/>
+									</p:panel>
+								</h:panelGrid>
                 <p:outputLabel for="idProveedor" value="Proveedor:" styleClass="involucrados" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '0'? '': 'none'}"/>
                 <p:selectOneMenu id="idProveedor" value="#{manticCatalogosListaPreciosImportar.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 involucrados"  effect="fade" filter="true" filterMatchMode="contains" disabled="#{manticCatalogosListaPreciosImportar.attrs.isDeshabilitado}" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '0'? '': 'none'}">
                   <f:selectItems value="#{manticCatalogosListaPreciosImportar.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>

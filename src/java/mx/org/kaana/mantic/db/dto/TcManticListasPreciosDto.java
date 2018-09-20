@@ -44,6 +44,8 @@ public class TcManticListasPreciosDto implements IBaseDto, Serializable {
   private Long idProveedor;
   @Column (name="nombre")
   private String nombre;
+  @Column (name="logotipo")
+  private String logotipo;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="observaciones")
@@ -56,15 +58,16 @@ public class TcManticListasPreciosDto implements IBaseDto, Serializable {
   }
 
   public TcManticListasPreciosDto(Long key) {
-    this(new Long(-1L), null, null, null, null, null);
+    this(new Long(-1L), null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticListasPreciosDto(Long idListaPrecio, Long idEmpresa, Long idProveedor, String nombre, Long idUsuario, String observaciones) {
+  public TcManticListasPreciosDto(Long idListaPrecio, Long idEmpresa, Long idProveedor, String nombre, String logotipo, Long idUsuario, String observaciones) {
     setIdListaPrecio(idListaPrecio);
     setIdEmpresa(idEmpresa);
     setIdProveedor(idProveedor);
     setNombre(nombre);
+    setLogotipo(logotipo);
     setIdUsuario(idUsuario);
     setObservaciones(observaciones);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
@@ -100,6 +103,14 @@ public class TcManticListasPreciosDto implements IBaseDto, Serializable {
 
 	public void setNombre(String nombre) {
 		this.nombre=nombre;
+	}
+
+	public String getLogotipo() {
+		return logotipo;
+	}
+
+	public void setLogotipo(String logotipo) {
+		this.logotipo=logotipo;
 	}
 
   public void setIdUsuario(Long idUsuario) {
@@ -149,6 +160,8 @@ public class TcManticListasPreciosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getNombre());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getLogotipo());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getObservaciones());
@@ -165,6 +178,7 @@ public class TcManticListasPreciosDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("idProveedor", getIdProveedor());
 		regresar.put("nombre", getNombre());
+		regresar.put("logotipo", getLogotipo());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("registro", getRegistro());
@@ -174,7 +188,7 @@ public class TcManticListasPreciosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-      getIdListaPrecio(), getIdEmpresa(), getIdProveedor(), getNombre(), getIdUsuario(), getObservaciones(), getRegistro()
+      getIdListaPrecio(), getIdEmpresa(), getIdProveedor(), getNombre(), getLogotipo(), getIdUsuario(), getObservaciones(), getRegistro()
     };
     return regresar;
   }
