@@ -76,58 +76,76 @@
 							</div>
 						</div>	
 					</div>
-					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosArticulosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosArticulosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosArticulosFiltro.lazyModel.rowCount gt manticCatalogosArticulosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosArticulosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosArticulosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosArticulosFiltro.lazyModel.rowCount gt manticCatalogosArticulosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
 						<f:facet name="header" >
-							<p:menuButton   value="Opciones">
-								<p:menuitem value="Agregar" action="#{manticCatalogosArticulosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar usuario" onstart="return janal.bloquear()"/>						
-								<p:separator/>
-								<p:menuitem id="express" icon="fa fa-file-text-o" value="Express" actionListener="#{manticCatalogosArticulosFiltro.doExpress}" onstart="janal.bloquear();" process="@this tabla"/>					
-								<p:separator/>
-								<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-								<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-							</p:menuButton>
+              <div class="lg-pantalla">
+								<p:menuButton value="Opciones">
+									<p:menuitem icon="fa fa-plus" value="Agregar" title="Agregar articulo" action="#{manticCatalogosArticulosFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>						
+									<p:separator/>
+									<p:menuitem icon="fa fa-file-text-o" value="Express" title="Articulo express" actionListener="#{manticCatalogosArticulosFiltro.doExpress}" onstart="janal.bloquear();" process="@this tabla">
+										<f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{null}"/>
+									</p:menuitem>	
+									<p:separator/>
+									<p:menuitem icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:menuitem icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+								</p:menuButton>
+							</div>	
+              <div class="xs-pantalla">
+									<p:menuitem icon="fa fa-plus" title="Agregar articulo" action="#{manticCatalogosArticulosFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>						
+									<p:separator/>
+									<p:menuitem icon="fa fa-file-text-o" title="Articulo express" actionListener="#{manticCatalogosArticulosFiltro.doExpress}" onstart="janal.bloquear();" process="@this tabla">
+										<f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{null}"/>
+									</p:menuitem>	
+									<p:separator/>
+									<p:menuitem icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+									<p:menuitem icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+							</div>	
 						</f:facet>												
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.propio}">
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.propio}">
 							<f:facet name="header">
 								<h:outputText value="Código"/>
 							</f:facet>
-							<h:outputText value="#{filtro['propio']}"/>
+							<h:outputText value="#{row['propio']}"/>
 						</p:column>														
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{filtro.nombre}">
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.nombre}">
 							<f:facet name="header">
 								<h:outputText value="Nombre"/>
 							</f:facet>
-							<h:outputText value="#{filtro['nombre']}"/>
+							<h:outputText value="#{row['nombre']}"/>
 						</p:column>														
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.menudeo}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.menudeo}">
 							<f:facet name="header">
 								<h:outputText value="Menudeo"/>
 							</f:facet>
-							<h:outputText value="#{filtro['menudeo']}"/>
+							<h:outputText value="#{row['menudeo']}"/>
 						</p:column>					
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.medioMayoreo}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.medioMayoreo}">
 							<f:facet name="header">
 								<h:outputText value="Medio mayoreo"/>
 							</f:facet>
-							<h:outputText value="#{filtro['medioMayoreo']}"/>
+							<h:outputText value="#{row['medioMayoreo']}"/>
 						</p:column>					
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.mayoreo}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.mayoreo}">
 							<f:facet name="header">
 								<h:outputText value="Mayoreo"/>
 							</f:facet>
-							<h:outputText value="#{filtro['mayoreo']}"/>
+							<h:outputText value="#{row['mayoreo']}"/>
 						</p:column>											
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.stock}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.stock}">
 							<f:facet name="header">
 								<h:outputText value="Stock"/>
 							</f:facet>
-							<h:outputText value="#{filtro['stock']}"/>
+							<h:outputText value="#{row['stock']}"/>
 						</p:column>					
 						<f:facet name="footer">
 							Total [#{manticCatalogosArticulosFiltro.lazyModel==null?0:manticCatalogosArticulosFiltro.lazyModel.rowCount}] registros
 						</f:facet>
 					</p:dataTable>
 					<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
+						<p:menuitem id="express" icon="fa fa-file-text-o" value="Express" actionListener="#{manticCatalogosArticulosFiltro.doExpress}" onstart="janal.bloquear();" process="@this tabla">					
+							<f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{manticCatalogosArticulosFiltro.attrs.seleccionado}" />
+						</p:menuitem>	
+						<p:separator/>
 						<p:menuitem id="consultar" action="#{manticCatalogosArticulosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator/>
 						<p:menuitem id="modificar" action="#{manticCatalogosArticulosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
@@ -151,6 +169,9 @@
 		</h:panelGrid>			
 	</ui:define>
 	<ui:define name="dialogos">
-		<ui:include src="/Paginas/Mantic/Catalogos/Articulos/express.xhtml"/>
+		<ui:include src="/Paginas/Mantic/Catalogos/Articulos/express.xhtml">
+			<ui:param name="dialogo" value="articulos"/>
+			<ui:param name="seleccionado" value="#{manticCatalogosArticulosFiltro.attrs.seleccionado}"/>
+		</ui:include>
 	</ui:define>
 </ui:composition>

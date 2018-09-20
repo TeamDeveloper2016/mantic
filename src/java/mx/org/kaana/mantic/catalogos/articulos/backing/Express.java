@@ -7,6 +7,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -23,7 +24,6 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloCodigo;
 import mx.org.kaana.mantic.catalogos.articulos.beans.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
-import org.primefaces.context.RequestContext;
 
 @Named(value = "manticCatalogosArticulosExpress")
 @ViewScoped
@@ -44,6 +44,7 @@ public class Express extends IBaseAttribute implements Serializable {
   @Override
   protected void init() {		
     try {
+			this.attrs.put("seleccionado", new Entity(-1L));				
 			this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null ? EAccion.AGREGAR : JsfBase.getFlashAttribute("accion"));				
 			this.attrs.put("idArticulo",  JsfBase.getFlashAttribute("idArticulo"));      			
       doLoad();
