@@ -80,6 +80,7 @@
 						<f:facet name="header" >
 							<p:menuButton   value="Opciones">
 								<p:menuitem value="Agregar" action="#{manticCatalogosArticulosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar usuario" onstart="return janal.bloquear()"/>						
+								<p:separator/>
 								<p:menuitem id="express" icon="fa fa-file-text-o" value="Express" actionListener="#{manticCatalogosArticulosFiltro.doExpress}" onstart="janal.bloquear();" process="@this tabla"/>					
 								<p:separator/>
 								<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>

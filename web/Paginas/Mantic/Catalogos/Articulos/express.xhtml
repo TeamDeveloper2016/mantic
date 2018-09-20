@@ -15,7 +15,7 @@
 			satDialog        : {validaciones: 'libre', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas', individual: true}
 		};
 		
-		function validaCaptura(){
+		function validaCaptura() {
 			var ok= janal.execute();
 			if(ok){
 				PF('dlgArtExpress').hide();
@@ -25,7 +25,7 @@
 			return ok;
 		}
 	</script>   	
-	<p:dialog header="Articulo express" id="dialogoArtExpress" widgetVar="dlgArtExpress" onShow="janal.change('formDialogoExpressArticulos', fieldsDialogExpressArt);janal.refresh();" width="60%">
+	<p:dialog header="Articulo express" id="dialogoArtExpress" widgetVar="dlgArtExpress" onShow="janal.change('formDialogoExpressArticulos', fieldsDialogExpressArt);janal.refresh();" width="70%" resizable="false" closeOnEscape="true" closable="true" appendTo="@(body)">
 		<h:form id="formDialogoExpressArticulos" prependId="false">
 			<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 				<div class="ui-grid-row janal-grid-row">

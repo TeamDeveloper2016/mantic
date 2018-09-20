@@ -67,7 +67,7 @@
   </ui:define>    
   <ui:define name="dialogos">
 		<h:form prependId="true">
-      <p:dialog id="dialogoPDF" widgetVar="dlgPDF" header="Listado de productos PDF" onHide="janal.sendLastFocus();janal.desbloquear();" height="470px" dynamic="true" width="650px" resizable="false" closeOnEscape="true" closable="true"  maximizable="true"  appendTo="@(body)">
+      <p:dialog id="dialogoPDF" widgetVar="dlgPDF" header="Listado de productos PDF" onHide="janal.sendLastFocus();janal.desbloquear();" height="470px" dynamic="true" width="650px" resizable="false" closeOnEscape="true" closable="true"  maximizable="true" appendTo="@(body)">
 				<object type="application/pdf" data="#{manticCatalogosListaPreciosCatalogos.attrs.temporal}" height="400px" width="100%" internalinstanceid="5">
 					 Tu navegador no soporta el desplegado de archivos PDF's, por favor da click en el boton de descargar
 				</object>
