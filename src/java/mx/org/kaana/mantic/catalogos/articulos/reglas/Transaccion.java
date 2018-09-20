@@ -113,6 +113,12 @@ public class Transaccion extends IBaseTnx {
 				this.articulo.getArticulo().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 				this.articulo.getArticulo().setIdVigente(1L);
 				this.articulo.getArticulo().setStock(0D);
+				if(this.articulo.getArticulo().getMenudeo()== null)
+					this.articulo.getArticulo().setMenudeo(toMenudeo());
+				if(this.articulo.getArticulo().getMedioMayoreo()== null)
+					this.articulo.getArticulo().setMedioMayoreo(toMedioMayoreo());
+				if(this.articulo.getArticulo().getMayoreo()== null)
+					this.articulo.getArticulo().setMayoreo(toMayoreo());
 				idArticulo= DaoFactory.getInstance().insert(sesion, this.articulo.getArticulo());
 				if(registraCodigos(sesion, idArticulo)) {
 					if(registraEspecificaciones(sesion, idArticulo)) {
@@ -121,10 +127,14 @@ public class Transaccion extends IBaseTnx {
 								if(registraPreciosSugeridos(sesion, idArticulo)) {
 									if(registraArticulosProveedor(sesion, idArticulo)) {
 										if(registraArticulosTipoVenta(sesion, idArticulo)) {
-											this.articulo.getArticuloDimencion().setIdArticulo(idArticulo);	
-											if(this.eaccionGeneral.equals(EAccion.COPIAR))
-												this.articulo.getArticuloDimencion().setIdArticuloDimension(-1L);
-											regresar= DaoFactory.getInstance().insert(sesion, this.articulo.getArticuloDimencion()) >= 1L;
+											if(this.articulo.getArticuloDimencion()!= null && this.articulo.getArticuloDimencion().getAlto()!= null){
+												this.articulo.getArticuloDimencion().setIdArticulo(idArticulo);	
+												if(this.eaccionGeneral.equals(EAccion.COPIAR))
+													this.articulo.getArticuloDimencion().setIdArticuloDimension(-1L);
+												regresar= DaoFactory.getInstance().insert(sesion, this.articulo.getArticuloDimencion()) >= 1L;
+											} // if
+											else
+												regresar= true;
 											if(regresar){										
 												image= loadImage(sesion, null, idArticulo);
 												if(image.isValid()){
@@ -148,6 +158,18 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // procesarArticulo
 	
+	private Double toMenudeo(){
+		return this.articulo.getArticulo().getPrecio() + (this.articulo.getArticulo().getPrecio() * .5);				
+	} // toMenudeo
+	
+	private Double toMedioMayoreo(){
+		return this.articulo.getArticulo().getPrecio() + (this.articulo.getArticulo().getPrecio() * .4);				
+	} // toMedioMayoreo
+	
+	private Double toMayoreo(){
+		return this.articulo.getArticulo().getPrecio() + (this.articulo.getArticulo().getPrecio() * .3);
+	} // toMayoreo
+	
 	private boolean actualizarArticulo(Session sesion) throws Exception{
 		TcManticArticulosDimencionesDto dimencion= null;
 		boolean regresar= false;
@@ -164,6 +186,9 @@ public class Transaccion extends IBaseTnx {
 											dimencion= this.articulo.getArticuloDimencion();
 											regresar= dimencion.isValid() ? DaoFactory.getInstance().update(sesion, this.articulo.getArticuloDimencion()) >= 0L : true;
 											if(regresar){
+												this.articulo.getArticulo().setMenudeo(toMenudeo());
+												this.articulo.getArticulo().setMedioMayoreo(toMedioMayoreo());
+												this.articulo.getArticulo().setMayoreo(toMayoreo());
 												regresar= this.articulo.getArticulo().getIdImagen()!= null && !this.articulo.getArticulo().getIdImagen().equals(-1L);
 												if(regresar){				
 													if(DaoFactory.getInstance().update(sesion, loadImage(sesion, this.articulo.getArticulo().getIdImagen(), idArticulo))>= 0L)
