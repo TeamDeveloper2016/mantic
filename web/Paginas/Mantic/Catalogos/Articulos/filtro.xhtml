@@ -13,10 +13,11 @@
 			Janal.Control.fields = {
 				codigo: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
 				nombre: {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
-			};			
+			};						
 		</script>		
 	</ui:define>
-	<ui:define name="contenido">
+	<ui:define name="contenido">		
+		<p:remoteCommand id="prepareDialogExpressAdd" name="prepareDialogExpressAdd" process="@this" actionListener="#{manticCatalogosArticulosExpress.doLoad}" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();"/>		
 		<p:commandButton id="replace" actionListener="#{manticCatalogosArticulosFiltro.doFindArticulo}" action="#{manticCatalogosArticulosFiltro.doAccion('MODIFICAR')}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:none"/>
 		<div class="janal-align-right xs-pantalla">
 			<p:commandButton icon="fa fa-search" onstart="janal.togglePanel('panelBusqueda');"/>
@@ -38,8 +39,8 @@
 							<p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" onstart="return janal.execute(true);" process="@this codigo nombre" actionListener="#{manticCatalogosArticulosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
 						</div>
 						<div class="janal-align-right xs-pantalla">
- 						  <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.execute(true);" process="@this codigo nombre" actionListener="#{manticCatalogosArticulosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
-					  </div>
+							<p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.execute(true);" process="@this codigo nombre" actionListener="#{manticCatalogosArticulosFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+						</div>
 					</p:panel>
 				</div>
 				<div id="collapse-content" class="ui-grid-col-9">
@@ -78,7 +79,8 @@
 					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosArticulosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosArticulosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosArticulosFiltro.lazyModel.rowCount gt manticCatalogosArticulosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
 						<f:facet name="header" >
 							<p:menuButton   value="Opciones">
-								<p:menuitem  value="Agregar" action="#{manticCatalogosArticulosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar usuario" onstart="return janal.bloquear()"/>						
+								<p:menuitem value="Agregar" action="#{manticCatalogosArticulosFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar usuario" onstart="return janal.bloquear()"/>						
+								<p:menuitem id="express" icon="fa fa-file-text-o" value="Express" actionListener="#{manticCatalogosArticulosFiltro.doExpress}" onstart="janal.bloquear();" process="@this tabla"/>					
 								<p:separator/>
 								<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
@@ -131,7 +133,7 @@
 						<p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
 						<p:separator/>
 						<p:menuitem id="clonar" action="#{manticCatalogosArticulosFiltro.doAccion('COPIAR')}" icon="fa fa-copy" ajax="false" value="Clonar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-					</p:contextMenu>
+					</p:contextMenu>					
 				</div>
 			</div>
 		</div>		           				
@@ -146,5 +148,8 @@
 			<p:outputLabel value="Categoría: "/>
 			<p:outputLabel value="#{manticCatalogosArticulosFiltro.attrs.seleccionado.nombre}"/>
 		</h:panelGrid>			
+	</ui:define>
+	<ui:define name="dialogos">
+		<ui:include src="/Paginas/Mantic/Catalogos/Articulos/express.xhtml"/>
 	</ui:define>
 </ui:composition>
