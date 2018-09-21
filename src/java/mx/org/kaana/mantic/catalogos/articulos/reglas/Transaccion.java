@@ -63,6 +63,7 @@ public class Transaccion extends IBaseTnx {
 					regresar= eliminarArticulo(sesion);				
 					break;
 				case COPIAR:
+				case ACTIVAR:
 					this.articulo.getArticulo().setIdArticulo(-1L);
 					regresar= procesarArticulo(sesion);
 					break;
