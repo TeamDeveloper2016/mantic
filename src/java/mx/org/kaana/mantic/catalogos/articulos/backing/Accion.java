@@ -69,7 +69,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     Long idArticulo= -1L;
     try {
       eaccion= (EAccion) this.attrs.get("accion");
-			this.attrs.put("activeClon", eaccion.equals(EAccion.ACTIVAR));
+			this.attrs.put("activeClon", eaccion.equals(EAccion.ACTIVAR) || eaccion.equals(EAccion.MODIFICAR));
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
       switch (eaccion) {
         case AGREGAR:
@@ -92,12 +92,13 @@ public class Accion extends IBaseAttribute implements Serializable {
     } // catch		
   } // doLoad
 
-  public String doAceptar() {
+  public String doAceptar(String accion) {
     Transaccion transaccion= null;
     String regresar        = null;
+		EAccion clonar         = EAccion.valueOf(accion.toUpperCase());
     try {
       transaccion = new Transaccion(this.registroArticulo);
-      if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
+      if (transaccion.ejecutar(clonar.equals(EAccion.ACTIVAR)? clonar: (EAccion)this.attrs.get("accion"))) {
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
         JsfBase.addMessage("Se registro el artículo de forma correcta.", ETipoMensaje.INFORMACION);
       } // if
