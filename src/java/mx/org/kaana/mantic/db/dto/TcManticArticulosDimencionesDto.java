@@ -52,7 +52,7 @@ public class TcManticArticulosDimencionesDto implements IBaseDto, Serializable {
   }
 
   public TcManticArticulosDimencionesDto(Long key) {
-    this(null, new Long(-1L), null, null, null);
+    this(0L, new Long(-1L), 0L, 0L, null);
     setKey(key);
   }
 
