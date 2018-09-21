@@ -19,7 +19,7 @@
 		};
 		
 		function validaCaptura() {
-			var ok= janal.execute();
+			var ok= janal.execute() &amp;&amp; confirm('Esta seguro que los datos son los correctos ?');
 			if(ok) {
 				PF('dlgArtExpress').hide();
 				janal.restore();
