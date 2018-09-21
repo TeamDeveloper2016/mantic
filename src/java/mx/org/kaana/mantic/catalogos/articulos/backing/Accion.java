@@ -95,10 +95,11 @@ public class Accion extends IBaseAttribute implements Serializable {
   public String doAceptar(String accion) {
     Transaccion transaccion= null;
     String regresar        = null;
-		EAccion clonar         = EAccion.valueOf(accion.toUpperCase());
+		EAccion eaccion        = null;
     try {
+			eaccion= EAccion.valueOf(accion.toUpperCase());
       transaccion = new Transaccion(this.registroArticulo);
-      if (transaccion.ejecutar(clonar.equals(EAccion.ACTIVAR)? clonar: (EAccion)this.attrs.get("accion"))) {
+      if (transaccion.ejecutar(eaccion)) {
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
         JsfBase.addMessage("Se registro el artículo de forma correcta.", ETipoMensaje.INFORMACION);
       } // if
