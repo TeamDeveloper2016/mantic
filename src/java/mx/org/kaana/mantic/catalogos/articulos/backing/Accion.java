@@ -69,6 +69,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     Long idArticulo= -1L;
     try {
       eaccion= (EAccion) this.attrs.get("accion");
+			this.attrs.put("activeClon", eaccion.equals(EAccion.ACTIVAR));
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
       switch (eaccion) {
         case AGREGAR:
@@ -78,6 +79,7 @@ public class Accion extends IBaseAttribute implements Serializable {
         case MODIFICAR:
         case CONSULTAR:
         case COPIAR:
+        case ACTIVAR:
           idArticulo = Long.valueOf(this.attrs.get("idArticulo").toString());
           this.registroArticulo = new RegistroArticulo(idArticulo);
 					this.image= LoadImages.getImage(this.registroArticulo.getArticulo().getIdEmpresa().toString(), Cadena.isVacio(this.registroArticulo.getImportado().getName()) ? "" : this.registroArticulo.getImportado().getName().substring(0, this.registroArticulo.getImportado().getName().lastIndexOf(".")));
