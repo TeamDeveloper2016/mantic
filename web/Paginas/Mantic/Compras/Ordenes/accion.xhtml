@@ -76,9 +76,11 @@
 		<p:remoteCommand name="lookup" actionListener="#{manticComprasOrdendesAccion.doUpdateDialogArticulos}" process="@this codigo" update="buscados localizado"/>
 		<p:remoteCommand name="clean" actionListener="#{manticComprasOrdendesAccion.doCleanArticulos}" process="@this codigo" update="buscados localizado"/>
 		<p:remoteCommand name="findout" actionListener="#{manticComprasOrdendesAccion.doFindOutArticulos}" onstart="return PF('dialogo').isVisible();" process="@this codigo" update="buscados localizado"/>
+		<p:remoteCommand name="prepareDialogExpressAdd" process="@this" actionListener="#{manticCatalogosArticulosExpress.doLoad}" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();"/>		
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
+					<h:outputText id="tabla" value="Solo sirve para la ventana emergente de articulos"/>
 					<p:tabView id="contenedorGrupos" dynamic="true" onTabShow="janal.reset(true);">
             <p:ajax event="tabChange" listener="#{manticComprasOrdendesAccion.doTabChange}" process="@this idAlmacen idProveedor" update="faltantes perdidos" oncomplete="jsArticulos.move();"/>
             <p:tab title="General">							
@@ -179,7 +181,11 @@
 												   </p:inputSwitch>
 											  </p:panelGrid>
 											</p:panelGrid>
-											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100"/>
+											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-column-center">
+                        <p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="prepareDialogExpressAdd();">
+										      <f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{null}"/>
+												</p:commandButton> 
+											</p:panelGrid>												
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100"/>
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 											  <p:outputLabel for="tipoDeCambio" value="Tipo de cambio (#{manticComprasOrdendesAccion.attrs.proveedor.moneda}):" rendered="#{manticComprasOrdendesAccion.attrs.proveedor.idTipoMoneda.toInteger ne 1}"/>
@@ -607,5 +613,11 @@
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticComprasOrdendesAccion.doAceptar}" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasOrdendesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
+	</ui:define>
+	<ui:define name="dialogos">
+		<ui:include src="/Paginas/Mantic/Catalogos/Articulos/express.xhtml">
+			<ui:param name="dialogo" value="articulos"/>
+			<ui:param name="seleccionado" value="#{null}"/>
+		</ui:include>
 	</ui:define>
 </ui:composition>

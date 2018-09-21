@@ -1282,6 +1282,11 @@
 		},
 		tableId: function(name) {
 			return $('#'+ name+ $parent.TABLE_RESERVE);
+		},
+		keyboard: function() {
+      $('input.janal-mask-random').each(function() {
+        janal.mask($(this).attr('id'), $(this), $(this).attr('alt'));
+      });			
 		}
   });
   window.Janal= Janal;
@@ -1293,6 +1298,7 @@ $(document).mousedown(function(e) {
 
 $(document).ready(function() {
   janal= new Janal.Control.Validations(Janal.Control.name, Janal.Control.form, Janal.Control.fields, Janal.Control.display, Janal.Control.stage, Janal.Control.growl, Janal.Control.lock, Janal.Control.errors);
+	janal.keyboard();
   janal.tableId('tabla').val('');
   console.info('Janal.Control.Validations.initialized: '+ janal.initialized);
 });

@@ -21,10 +21,13 @@
 				'contenedorGrupos\\:meta'           : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:metaDescripcion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:metaTeclado'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},				
+				'codigo'                            : {multiple: '$', validaciones: 'requerido', mascara: 'alfanumerico', individual: true},
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}				
 			};
 			
-			$(document).ready(function(){janal.readingMode('#{manticCatalogosArticulosAccion.attrs.nombreAccion}');});
+			$(document).ready(function(){
+				janal.readingMode('#{manticCatalogosArticulosAccion.attrs.nombreAccion}');
+			});
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
@@ -58,7 +61,7 @@
 							<p:panelGrid id="panelTablaCodigos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaCodigos" rowIndexVar="index" var="codigo" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosCodigos}" rows="6" paginator="false" reflow="true" rowKey="#{codigo.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Código" styleClass="janal-wid-30">		
-										<p:inputText id="codigo#{codigo.key}" styleClass="janal-wid-100-txt" value="#{codigo.codigo}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaCodigos', #{index}, 'codigo')"/>                    																																			
+										<p:inputText id="codigo#{codigo.key}" styleClass="janal-wid-100-txt" value="#{codigo.codigo}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaCodigos', #{index}, 'codigo')"/>	
 									</p:column>
 									<p:column headerText="Proveedor">										
 										<p:selectOneMenu id="proveedor#{codigo.key}" styleClass="janal-wid-100-txt" value="#{codigo.idProveedor}" filter="true" filterMatchMode="contains">
