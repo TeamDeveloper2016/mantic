@@ -76,7 +76,6 @@
 		<p:remoteCommand name="lookup" actionListener="#{manticComprasOrdendesAccion.doUpdateDialogArticulos}" process="@this codigo" update="buscados localizado"/>
 		<p:remoteCommand name="clean" actionListener="#{manticComprasOrdendesAccion.doCleanArticulos}" process="@this codigo" update="buscados localizado"/>
 		<p:remoteCommand name="findout" actionListener="#{manticComprasOrdendesAccion.doFindOutArticulos}" onstart="return PF('dialogo').isVisible();" process="@this codigo" update="buscados localizado"/>
-		<p:remoteCommand name="prepareDialogExpressAdd" process="@this" actionListener="#{manticCatalogosArticulosExpress.doLoad}" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();"/>		
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
@@ -182,7 +181,7 @@
 											  </p:panelGrid>
 											</p:panelGrid>
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-column-center">
-                        <p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="prepareDialogExpressAdd();">
+                        <p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();">
 										      <f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{null}"/>
 												</p:commandButton> 
 											</p:panelGrid>												

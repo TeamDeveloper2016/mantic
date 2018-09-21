@@ -46,7 +46,7 @@ public class Express extends IBaseAttribute implements Serializable {
     try {
 			this.attrs.put("seleccionado", new Entity(-1L));				
 			this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null ? EAccion.AGREGAR : JsfBase.getFlashAttribute("accion"));				
-			this.attrs.put("idArticulo", JsfBase.getFlashAttribute("idArticulo"));      			
+			this.attrs.put("idArticulo", JsfBase.getFlashAttribute("idArticulo")== null? -1L: JsfBase.getFlashAttribute("idArticulo"));
       doLoad();
       loadProveedores();
       loadCategorias();
