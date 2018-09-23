@@ -57,23 +57,23 @@ public class MotorBusqueda implements Serializable{
 				params.put(this.tree.getTipo().getIdParametro(), this.tree.getId());
 				nodes= DaoFactory.getInstance().toEntitySet(TreeOrden.class, "VistaEstructuraOrdenesCompraDto", this.tree.getTipo().getIdXml(), params, Constantes.SQL_TODOS_REGISTROS);
 				if(!nodes.isEmpty()){				
-					for(TreeOrden treeNode: nodes){
-						switch(this.tree.getTipo()){
+					for(TreeOrden item: nodes) {
+						switch(this.tree.getTipo()) {
 							case DEVOLUCION:
-								treeNode.setTipo(EDocumentosOrden.NOTA_CREDITO);
-								treeNode.setUltimoNivel(true);
+								item.setTipo(EDocumentosOrden.NOTA_CREDITO);
+								item.setUltimoNivel(true);
 								type="credito";
 								break;
 							case NOTA_ENTRADA:
-								treeNode.setTipo(EDocumentosOrden.DEVOLUCION);
+								item.setTipo(EDocumentosOrden.DEVOLUCION);
 								type="devolucion";							
 								break;
 							case ORDEN_COMPRA:
-								treeNode.setTipo(EDocumentosOrden.NOTA_ENTRADA);
+								item.setTipo(EDocumentosOrden.NOTA_ENTRADA);
 								type="entrada";
 								break;							
 						} // switch
-						regresar.add(new DefaultTreeNode(type, treeNode, null));
+						regresar.add(new DefaultTreeNode(type, item, null));
 					} // for
 				} // if
 			}

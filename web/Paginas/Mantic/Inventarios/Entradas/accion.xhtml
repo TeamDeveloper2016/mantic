@@ -24,9 +24,9 @@
 				'contenedorGrupos\\:idOrdenCompra'  : {validaciones: '#{manticInventariosEntradasAccion.validacion}', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:factura'        : {validaciones: '#{manticInventariosEntradasAccion.validacion}', mascara: 'texto', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:fechaFactura'   : {validaciones: 'fecha|#{manticInventariosEntradasAccion.validacion}', mascara: 'fecha', grupo: 'general'},
-				'contenedorGrupos\\:fechaRecepcion' : {validaciones: 'fecha|#{manticInventariosEntradasAccion.validacion}', mascara: 'fecha', grupo: 'general'},
+				'contenedorGrupos\\:fechaRecepcion' : {validaciones: 'fecha|fecha-mayor({"cual":"contenedorGrupos\\\\:fechaFactura"})|#{manticInventariosEntradasAccion.validacion}', mascara: 'fecha', grupo: 'general', individual: true},
 				'contenedorGrupos\\:diasPlazo'      : {validaciones: 'requerido|entero|mayor-igual({"cuanto": 0})', mascara: 'entero', grupo: 'general'},			
-				'contenedorGrupos\\:fechaPago'      : {validaciones: 'fecha|#{manticInventariosEntradasAccion.validacion}', mascara: 'fecha', grupo: 'general'},
+				'contenedorGrupos\\:fechaPago'      : {validaciones: 'fecha|fecha-mayor({"cual":"contenedorGrupos\\\\:fechaRecepcion"})|#{manticInventariosEntradasAccion.validacion}', mascara: 'fecha', grupo: 'general', individual: true},
 				'contenedorGrupos\\:deuda'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', formatos: 'sat', individual: true, grupo: 'general'},			
 				'contenedorGrupos\\:idAlmacen'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idProveedor'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
@@ -37,7 +37,7 @@
 				'contenedorGrupos\\:extra'          : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'articulo'},			
 				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
 				'contenedorGrupos\\:comentarios'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
-				'codigo'                            : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
+				'codigos'                           : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
 				'sat'                               : {multiple: '$', validaciones: 'entero|igual-caracteres({"cuantos": 8})', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
 				'auxiliares'                        : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},				
 				'precios'                           : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general', individual: true},				
@@ -224,8 +224,8 @@
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100"/>
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100"/>
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-											  <p:outputLabel for="tipoDeCambio" value="Tipo de cambio (#{manticInventariosEntradasAccion.attrs.proveedor.moneda}):" rendered="#{manticInventariosEntradasAccion.attrs.proveedor.idTipoMoneda.toInteger ne 1}" style="display:none"/>
-												<p:inputText id="tipoDeCambio" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticInventariosEntradasAccion.adminOrden.orden.tipoDeCambio}" rendered="#{manticInventariosEntradasAccion.attrs.proveedor.idTipoMoneda.toInteger ne 1}"  style="display:none">
+											  <p:outputLabel for="tipoDeCambio" value="Tipo de cambio (#{manticInventariosEntradasAccion.attrs.proveedor.moneda}):" style="display: #{manticInventariosEntradasAccion.attrs.proveedor.idTipoMoneda.toInteger ne 1? '': 'none'}"/>
+												<p:inputText id="tipoDeCambio" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticInventariosEntradasAccion.adminOrden.orden.tipoDeCambio}" style="display: #{manticInventariosEntradasAccion.attrs.proveedor.idTipoMoneda.toInteger ne 1? '': 'none'}">
 													<p:ajax event="blur" listener="#{manticInventariosEntradasAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.filas) @(.recalculo)" onstart="return !janal.precio($('#contenedorGrupos\\:tipoDeCambio'), '1').error;" oncomplete="janal.reset();"/> 
 												</p:inputText>	
 											</p:panelGrid>	
@@ -779,7 +779,7 @@
 	</ui:define>   
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticInventariosEntradasAccion.doAceptar}" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticInventariosEntradasAccion.doAceptar}" onstart="return execute(true);" oncomplete="janal.desbloquear()" />
 			<p:commandButton id="aplicar" value="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticInventariosEntradasAccion.doAplicar}" onstart="return execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticInventariosEntradasAccion.isAplicar}"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticInventariosEntradasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		

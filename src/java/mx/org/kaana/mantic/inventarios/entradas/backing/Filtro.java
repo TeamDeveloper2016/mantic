@@ -99,7 +99,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     EAccion eaccion= null;
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
-			if(((Entity)this.attrs.get("seleccionado")).toLong("idNotaTipo").equals(3L)) {
+			if(this.attrs.get("seleccionado")!= null && ((Entity)this.attrs.get("seleccionado")).toLong("idNotaTipo").equals(3L)) {
 				regresar= "/Paginas/Mantic/Catalogos/Empresas/Cuentas/accion".concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
 				JsfBase.setFlashAttribute("accion", eaccion.equals(EAccion.MODIFICAR)? EAccion.COMPLEMENTAR: EAccion.CONSULTAR);
 			} // if	

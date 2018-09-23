@@ -16,7 +16,7 @@
         //updateStyle();
       });
       
-			function methodExecute(item, method){
+			function methodExecute(item, method) {
         $(item).parent().parent().click();
         switch(method){
           case 'consultar':
@@ -147,6 +147,8 @@
 								<p:spacer/><p:spacer/>
 								<p:outputLabel value="Consecutivo:" styleClass="descripcion-titulo"/>
 								<p:outputLabel value="#{node.consecutivo}" styleClass="descripcion-nodo"/>	
+								<p:outputLabel value="Factura:" styleClass="descripcion-titulo"/>
+								<p:outputLabel value="#{node.factura}" styleClass="descripcion-nodo"/>	
 								<p:outputLabel value="Importe:" styleClass="descripcion-titulo"/>
 								<p:outputLabel value="$#{node.importe}" styleClass="descripcion-nodo"/>								
 								<p:outputLabel value="Estatus:" styleClass="descripcion-titulo"/>
@@ -202,15 +204,20 @@
 		<p:dialog id="dialogoDetalle" widgetVar="dlgDetalle" header="Detalle" closable="false" resizable="false" dynamic="true" onHide="janal.desbloquear();" position="center">
       <h:panelGrid columns="2">
         <p:outputLabel value="Empresa: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}"/>
-        <p:outputLabel value="#{manticComprasOrdenesEstructura.attrs.detalle.nombreEmpresa}" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}"/>
+        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.nombreEmpresa}" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}" readonly="true"/>
         <p:outputLabel value="Proveedor: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}"/>
-        <p:outputLabel value="#{manticComprasOrdenesEstructura.attrs.detalle.proveedor}" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}"/>
+        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.proveedor}" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}" readonly="true"/>
         <p:outputLabel value="Consecutivo: " style="font-weight: bold"/>
-        <p:outputLabel value="#{manticComprasOrdenesEstructura.attrs.detalle.consecutivo}"/>        
+        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.consecutivo}" readonly="true"/>        
         <p:outputLabel value="Importe: " style="font-weight: bold"/>
-        <p:outputLabel value="$#{manticComprasOrdenesEstructura.attrs.detalle.importe}"/>        
+        <p:inputText value="$#{manticComprasOrdenesEstructura.attrs.detalle.importe}" readonly="true"/>        
         <p:outputLabel value="Estatus: " style="font-weight: bold"/>
-        <p:outputLabel value="#{manticComprasOrdenesEstructura.attrs.detalle.estatus}"/>        
+        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.estatus}" readonly="true"/>    
+				<p:separator rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'entrada'}"/>
+        <p:outputLabel value="Factura: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'entrada'}"/>
+        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.factura}" readonly="true" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'entrada'}"/>        
+        <p:outputLabel value="Fecha faactura: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'entrada'}"/>
+        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.fechaFactura}" readonly="true" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'entrada'}"/>    
       </h:panelGrid>
       <hr class="ui-widget-content"/>
       <div class="janal-column-right">

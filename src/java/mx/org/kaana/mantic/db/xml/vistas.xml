@@ -4585,7 +4585,9 @@
           tc_mantic_notas_entradas.consecutivo consecutivo,
           tc_mantic_notas_entradas.registro registro,
           tc_mantic_notas_entradas.total importe,
-          tc_mantic_notas_estatus.nombre estatus
+          tc_mantic_notas_estatus.nombre estatus,
+				  tc_mantic_notas_entradas.factura,
+				  tc_mantic_notas_entradas.fechaFactura
         from 
           tc_mantic_ordenes_compras                
         inner join 
