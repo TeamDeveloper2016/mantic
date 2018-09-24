@@ -300,4 +300,20 @@ public class Saldos extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("idClienteDeuda",((Entity)this.attrs.get("seleccionado")).getKey());
 		return "importar".concat(Constantes.REDIRECIONAR);
 	}
+	
+	public String doTicketExpress(){
+		String regresar= null;
+		try {			
+			regresar= "/Paginas/Mantic/Ventas/express".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+		return regresar;
+	} // doTicketExpress
+	
+	public String toColor(Entity row) {
+		return row.toLong("idManual").equals(1L)? "janal-tr-orange": "";
+	}
 }
