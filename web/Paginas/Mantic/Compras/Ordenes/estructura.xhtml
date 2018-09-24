@@ -127,7 +127,7 @@
 		<p:remoteCommand name="consultar" onstart="return janal.bloquear();" process="@this tabla" action="#{manticComprasOrdenesEstructura.doAccion}"/>
     <p:remoteCommand name="detalle" onstart="return janal.bloquear();" process="@this tabla" actionListener="#{manticComprasOrdenesEstructura.doConsultarDetalle}" update="dialogoDetalle"/>    
 		<p:commandButton id="descargar" value="Descargar documentos" icon="fa fa-download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" title="Descargar todas las facturas" oncomplete="janal.desbloquear();" process="@this" style="display: none">
-			<p:fileDownload value="#{manticComprasOrdenesEstructura.doExportar}" />
+			<p:fileDownload value="#{manticComprasOrdenesEstructura.doExportar()}" />
 		</p:commandButton>
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">                 
@@ -251,6 +251,9 @@
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return execute(true);" oncomplete="janal.desbloquear()" rendered="true"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticComprasOrdenesEstructura.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
+		<p:dialog modal="true" widgetVar="statusDialog" header="Estatus de la descarga del archivo" draggable="false" closable="false" resizable="false">
+			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
+		</p:dialog>		
 	</ui:define>
   <ui:param name="componenteBloqueo" value="tabla"/>  	
 </ui:composition>

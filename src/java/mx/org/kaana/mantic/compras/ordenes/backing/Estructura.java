@@ -72,6 +72,7 @@ public class Estructura extends IBaseFilter implements Serializable {
     try {
 			if(JsfBase.getFlashAttribute("idOrdenCompra")== null)
 				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+			this.files= new ArrayList<>();
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idOrdenCompra", JsfBase.getFlashAttribute("idOrdenCompra"));			
@@ -120,7 +121,8 @@ public class Estructura extends IBaseFilter implements Serializable {
           seleccionado.getChildren().add(childNode);
 					createTree(childNode);
         } // for
-  			this.files= new ArrayList<>(gestor.getFiles());
+				if(gestor.getFiles().size()> 0)
+  			  this.files.addAll(gestor.getFiles());
       } // if                  
 		} // try
 		catch (Exception e) {

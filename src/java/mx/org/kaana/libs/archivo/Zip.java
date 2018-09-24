@@ -280,7 +280,7 @@ public class Zip {
       if (isDebug())
         LOG.debug("Archivos: " + (files!= null? 0: files.length));
       for (String name: files) {
-				String[] tokens= name.split("|");
+				String[] tokens= name.split("[|]");
         if (isDebug())
           LOG.debug("Sumando: " + tokens[1]);
 				FileInputStream fi = new FileInputStream(name);
@@ -293,10 +293,10 @@ public class Zip {
 				} // while
 				origen.close();
 				if (isEliminar()) {
-					File file= new File(name);
+					File file= new File(tokens[1]);
 					file.delete();
 				} // if
-      }// for
+      } // for
       out.close();
     }
     catch (Exception e) {
