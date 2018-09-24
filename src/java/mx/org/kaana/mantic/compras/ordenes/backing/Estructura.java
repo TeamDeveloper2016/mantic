@@ -1,6 +1,12 @@
 package mx.org.kaana.mantic.compras.ordenes.backing;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -8,11 +14,16 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.archivo.Zip;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.TreeOrden;
 import mx.org.kaana.mantic.compras.ordenes.reglas.MotorBusqueda;
@@ -20,8 +31,10 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.event.NodeExpandEvent;
 import org.primefaces.event.organigram.OrganigramNodeCollapseEvent;
 import org.primefaces.model.DefaultOrganigramNode;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.OrganigramNode;
+import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
 
 @Named(value = "manticComprasOrdenesEstructura")
@@ -31,6 +44,7 @@ public class Estructura extends IBaseFilter implements Serializable {
   private static final long serialVersionUID = 8793667741599428332L;	
 	private TreeNode tree;
   private TreeNode node;
+	private List<String> files;
 
 	public TreeNode getTree() {
 		return tree;
@@ -47,6 +61,10 @@ public class Estructura extends IBaseFilter implements Serializable {
 	public void setNode(TreeNode node) {
 		this.node = node;
 	}	
+
+	public List<String> getFiles() {
+		return files;
+	}
 	
   @PostConstruct
   @Override
@@ -72,9 +90,10 @@ public class Estructura extends IBaseFilter implements Serializable {
 		MotorBusqueda busqueda    = null;
     try {      
 			busqueda = new MotorBusqueda(Long.valueOf(this.attrs.get("idOrdenCompra").toString()));
-			this.tree= new DefaultTreeNode("orden", busqueda.toParent() , null);
+			this.tree= new DefaultTreeNode("orden", busqueda.toParent(), null);
 			this.tree.getChildren().add(new DefaultTreeNode());      
-			createTree(this.tree);			
+			createTree(this.tree);		
+			this.files= new ArrayList<>(busqueda.getFiles());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -200,9 +219,46 @@ public class Estructura extends IBaseFilter implements Serializable {
       JsfBase.addMessageError(e);
       Error.mensaje(e);      
     } // catch    
-    finally{
+    finally {
       this.node= null;
     } // finally      
 		return regresar;
   } // doConsultarDetalle  		
+	
+  public StreamedContent doExportar() {
+		StreamedContent regresar= null;
+		try {
+			regresar= this.toZipFile(this.files.toArray(new String[0]));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch
+		return regresar;
+	}
+
+	private StreamedContent toZipFile(String[] files) {
+		String zipName    = null;
+		String temporal   = Archivo.toFormatNameFile("DOCUMENTOS.").concat(EFormatos.ZIP.name().toLowerCase());
+		InputStream stream= null;
+		try {
+			Zip zip= new Zip();
+			zipName= "/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.ZIP.name()).concat("/").concat(temporal));
+			zip.setDebug(true);
+			zip.setEliminar(false);
+			zip.especial(JsfBase.getRealPath(zipName), files);
+  	  stream = new FileInputStream(new File(JsfBase.getRealPath(zipName)));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+    return new DefaultStreamedContent(stream, EFormatos.ZIP.getContent(), temporal);		
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+		Methods.clean(this.files);
+	}
+
 }

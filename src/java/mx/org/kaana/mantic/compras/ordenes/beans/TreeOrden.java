@@ -5,7 +5,7 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.mantic.enums.EDocumentosOrden;
 
-public class TreeOrden implements Serializable, IBaseDto{
+public class TreeOrden implements Serializable, IBaseDto {
 
 	private Long id;
 	private EDocumentosOrden tipo;
@@ -17,6 +17,9 @@ public class TreeOrden implements Serializable, IBaseDto{
 	private String importe;
 	private String estatus;
 	private String registro;	
+	private String factura;	
+	private String fechaFactura;	
+	private String alias;	
 	private boolean ultimoNivel;  
 
 	public TreeOrden() {
@@ -28,10 +31,10 @@ public class TreeOrden implements Serializable, IBaseDto{
 	}	
 	
 	public TreeOrden(Long id, boolean ultimoNivel) {
-		this(id, null, null, null, null, null, null, null, null, ultimoNivel);
+		this(id, null, null, null, null, null, null, null, null, ultimoNivel, null, null, null);
 	}	
 
-	public TreeOrden(Long id, String claveEmpresa, String nombreEmpresa, String tituloEmpresa, String consecutivo, String proveedor, String importe, String estatus, String registro, boolean ultimoNivel) {
+	public TreeOrden(Long id, String claveEmpresa, String nombreEmpresa, String tituloEmpresa, String consecutivo, String proveedor, String importe, String estatus, String registro, boolean ultimoNivel, String factura, String fechaFactura, String alias) {
 		this.id           = id;
 		this.claveEmpresa = claveEmpresa;
 		this.nombreEmpresa= nombreEmpresa;
@@ -42,6 +45,9 @@ public class TreeOrden implements Serializable, IBaseDto{
 		this.estatus      = estatus;
 		this.registro     = registro;
 		this.ultimoNivel  = ultimoNivel;
+		this.factura      = factura;
+		this.fechaFactura = fechaFactura;
+		this.alias        = alias;
 	}
 
 	public String getClaveEmpresa() {
@@ -131,6 +137,30 @@ public class TreeOrden implements Serializable, IBaseDto{
 	public void setTipo(EDocumentosOrden tipo) {
 		this.tipo = tipo;
 	}
+
+	public String getFactura() {
+		return factura;
+	}
+
+	public void setFactura(String factura) {
+		this.factura=factura;
+	}
+
+	public String getFechaFactura() {
+		return fechaFactura;
+	}
+
+	public void setFechaFactura(String fechaFactura) {
+		this.fechaFactura=fechaFactura;
+	}
+
+	public String getAlias() {
+		return alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias=alias;
+	}
 	
 	@Override
 	public Long getKey() {
@@ -176,4 +206,10 @@ public class TreeOrden implements Serializable, IBaseDto{
 	public Class toHbmClass() {
 		return null;
 	}
+
+	@Override
+	public String toString() {
+		return "TreeOrden{"+"id="+id+", tipo="+tipo+", claveEmpresa="+claveEmpresa+", nombreEmpresa="+nombreEmpresa+", tituloEmpresa="+tituloEmpresa+", consecutivo="+consecutivo+", proveedor="+proveedor+", importe="+importe+", estatus="+estatus+", registro="+registro+", factura="+factura+", fechaFactura="+fechaFactura+", alias="+alias+", ultimoNivel="+ultimoNivel+'}';
+	}
+
 }

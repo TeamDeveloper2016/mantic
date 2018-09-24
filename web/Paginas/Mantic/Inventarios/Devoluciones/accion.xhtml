@@ -40,7 +40,7 @@
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
-		<pe:remoteCommand name="refresh" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticInventariosDevolucionesAccion.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); $(jsArticulos.amount()).focus();">  
+		<pe:remoteCommand name="refresh" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticInventariosDevolucionesAccion.doCalculate}" onstart="this.current= $(jsArticulos.amount()).val(); return janal.bloquear();" oncomplete="janal.desbloquear(); $(jsArticulos.amount()).focus();">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
@@ -61,7 +61,7 @@
   	  						</div>	
 								</div>	
 								<div class="ui-grid-row janal-grid-row">
-									<div class="ui-grid-col-1">
+									<div class="ui-grid-col-1 janal-wid-col-120">
 								    <p:outputLabel for="idNotaEntrada" value="Nota de entrada:"/>
 									</div>
 									<div class="ui-grid-col-11">

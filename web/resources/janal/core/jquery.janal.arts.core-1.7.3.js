@@ -167,14 +167,20 @@
 						break;
 				} // swtich
 			});			
-      $(document).on('focus', this.focus+ '.key-move-event', function() {
-				janal.console('jsArticulos.focus: '+ $(this).attr('id'));
+      $(document).on('focus', this.focus, function() {
+				janal.console('jsArticulos.focus: '+ $(this).attr('id')+ ' value: '+ $(this).val());
+				$articulos.current= $(this).val();
+				$articulos.index($(this).attr('id'));
+				janal.lastNameFocus= this;
+			});  
+      $(document).on('focus', '.key-move-event', function() {
+				janal.console('jsArticulos.focus: '+ $(this).attr('id')+ ' value: '+ $(this).val());
 				$articulos.current= $(this).val();
 				$articulos.index($(this).attr('id'));
 				janal.lastNameFocus= this;
 			});  
       $(document).on('focus', this.selector, function() {
-				janal.console('jsArticulos.focus: '+ $(this).attr('id'));
+				janal.console('jsArticulos.focus: '+ $(this).attr('id')+ ' value: '+ $(this).val());
 				$articulos.index($(this).attr('id'));
 				janal.lastNameFocus= this;
 			});  
@@ -373,11 +379,11 @@
 			return false;
 		},
 		valid: function() {
-			janal.console('jsArticulo.valid: ');
+			janal.console('jsArticulo.valid: '+ $(this.key()).attr('id'));
 			return $(this.key()) && parseInt($(this.key()).val(), 10)> 0;
 		}, 
 		remove: function() {
-			janal.console('jsArticulo.remove: ');
+			janal.console('jsArticulo.remove: '+ $(this.lock()).attr('id'));
 			return this.valid() && $(this.lock()) && ($(this.lock()).val().length=== 0 || parseInt($(this.lock()).val(), 10)<= 0);
 		}, 
 		refresh: function() {
@@ -598,6 +604,7 @@
 		},
 		compare: function(index) {
 			janal.console('jsArticulos.compare: '+ index);
+			var tmp= this.cursor.index;
 			var msg= [];
 			if(typeof(index)=== 'undefined') {
 				for(var x= 0; x<= this.cursor.top; x++) {
@@ -605,6 +612,7 @@
 					if(parseFloat($(this.amount()).val(), 10)> parseFloat($(this.request()).val(), 10))
 						msg.push({summary: 'Informativo:', detail: 'La cantidad de la fila '+ (this.cursor.index+ 1)+ ' tiene que ser menor o igual a '+$(this.request()).val()+ '.', severity: 'error'});
 				} // for
+				this.cursor.index= tmp;
 			} // if
 			else {
 				this.cursor.index= index;
@@ -629,11 +637,13 @@
 		},
 		zeros: function() {
 			var count= 0;
+			var tmp  = this.cursor.index;
 			for(var x= 0; x<= this.cursor.top; x++) {
 				this.cursor.index= x;
 				if(parseFloat($(this.amount()).val(), 10)=== parseFloat($(this.request()).val(), 10))
 					count++;
 			} // for
+			this.cursor.index= tmp; 
 			janal.console('jsArticulos.zeros: '+ count+ ' => '+ this.cursor.top);
 			return this.cursor.top=== count;
 		},
