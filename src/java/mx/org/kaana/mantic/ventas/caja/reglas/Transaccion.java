@@ -766,27 +766,10 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			throw e;
 		} // catch		
 		return regresar;
-	} // toPagoCheque
+	} // toPagoCheque	
 	
-	private void registrarDeuda(Session sesion, Double importe) throws Exception{
-		TcManticClientesDeudasDto deuda= null;
-		try {
-			deuda= new TcManticClientesDeudasDto();
-			deuda.setIdVenta(getOrden().getIdVenta());
-			deuda.setIdCliente(getOrden().getIdCliente());
-			deuda.setIdUsuario(JsfBase.getIdUsuario());
-			deuda.setImporte(importe);
-			deuda.setSaldo(importe);
-			deuda.setLimite(toLimiteCredito(sesion));
-			deuda.setIdClienteEstatus(1L);
-			DaoFactory.getInstance().insert(sesion, deuda);
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-	} // registrarDeuda
-	
-	private Date toLimiteCredito(Session sesion) throws Exception{
+	@Override
+	public Date toLimiteCredito(Session sesion) throws Exception{
 		Date regresar              = null;
 		TcManticClientesDto cliente= null;
 		Long addDias               = 15L;
