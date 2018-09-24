@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -73,8 +74,7 @@ public class MotorBusqueda implements Serializable {
 							case DEVOLUCION:
 								item.setTipo(EDocumentosOrden.NOTA_CREDITO);
 								item.setUltimoNivel(true);
-								if(!Cadena.isVacio(item.getAlias()))
-								  this.files.add(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").length()+ "|NOTASDECREDITO|"+ item.getAlias());
+								this.toFillDocuments("creditoArchivos", "idCreditoNota", item.getId(), Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").length()+ "|NOTASDECREDITO|");
 								type="credito";
 								break;
 							case NOTA_ENTRADA:
@@ -83,8 +83,7 @@ public class MotorBusqueda implements Serializable {
 								break;
 							case ORDEN_COMPRA:
 								item.setTipo(EDocumentosOrden.NOTA_ENTRADA);
-								if(!Cadena.isVacio(item.getAlias()))
-								  this.files.add(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").length()+ "|NOTASDEENTRADA|"+ item.getAlias());
+								this.toFillDocuments("entradaArchivos", "idNotaEntrada", item.getId(), Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").length()+ "|NOTASDEENTRADA|");
 								type="entrada";
 								break;							
 						} // switch
@@ -99,6 +98,25 @@ public class MotorBusqueda implements Serializable {
 		return regresar;
 	} // toChildrens
 
+	private void toFillDocuments(String idKey, String key, Long id, String path) throws Exception {
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+      params.put(key, id);			
+			List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaEstructuraOrdenesCompraDto", idKey, params, Constantes.SQL_TODOS_REGISTROS);
+			if(items!= null && !items.isEmpty())
+				for (Entity item : items) {
+				  this.files.add(path+ item.toString("alias"));	
+				} // for
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+	
 	@Override
 	protected void finalize() throws Throwable {
 		super.finalize();

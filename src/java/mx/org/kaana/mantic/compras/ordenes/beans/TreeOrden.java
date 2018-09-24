@@ -7,6 +7,8 @@ import mx.org.kaana.mantic.enums.EDocumentosOrden;
 
 public class TreeOrden implements Serializable, IBaseDto {
 
+	private static final long serialVersionUID=4222652089397624991L;
+
 	private Long id;
 	private EDocumentosOrden tipo;
 	private String claveEmpresa;
@@ -19,7 +21,6 @@ public class TreeOrden implements Serializable, IBaseDto {
 	private String registro;	
 	private String factura;	
 	private String fechaFactura;	
-	private String alias;	
 	private boolean ultimoNivel;  
 
 	public TreeOrden() {
@@ -31,10 +32,10 @@ public class TreeOrden implements Serializable, IBaseDto {
 	}	
 	
 	public TreeOrden(Long id, boolean ultimoNivel) {
-		this(id, null, null, null, null, null, null, null, null, ultimoNivel, null, null, null);
+		this(id, null, null, null, null, null, null, null, null, ultimoNivel, null, null);
 	}	
 
-	public TreeOrden(Long id, String claveEmpresa, String nombreEmpresa, String tituloEmpresa, String consecutivo, String proveedor, String importe, String estatus, String registro, boolean ultimoNivel, String factura, String fechaFactura, String alias) {
+	public TreeOrden(Long id, String claveEmpresa, String nombreEmpresa, String tituloEmpresa, String consecutivo, String proveedor, String importe, String estatus, String registro, boolean ultimoNivel, String factura, String fechaFactura) {
 		this.id           = id;
 		this.claveEmpresa = claveEmpresa;
 		this.nombreEmpresa= nombreEmpresa;
@@ -47,7 +48,6 @@ public class TreeOrden implements Serializable, IBaseDto {
 		this.ultimoNivel  = ultimoNivel;
 		this.factura      = factura;
 		this.fechaFactura = fechaFactura;
-		this.alias        = alias;
 	}
 
 	public String getClaveEmpresa() {
@@ -154,14 +154,6 @@ public class TreeOrden implements Serializable, IBaseDto {
 		this.fechaFactura=fechaFactura;
 	}
 
-	public String getAlias() {
-		return alias;
-	}
-
-	public void setAlias(String alias) {
-		this.alias=alias;
-	}
-	
 	@Override
 	public Long getKey() {
 		return this.id;
@@ -209,7 +201,7 @@ public class TreeOrden implements Serializable, IBaseDto {
 
 	@Override
 	public String toString() {
-		return "TreeOrden{"+"id="+id+", tipo="+tipo+", claveEmpresa="+claveEmpresa+", nombreEmpresa="+nombreEmpresa+", tituloEmpresa="+tituloEmpresa+", consecutivo="+consecutivo+", proveedor="+proveedor+", importe="+importe+", estatus="+estatus+", registro="+registro+", factura="+factura+", fechaFactura="+fechaFactura+", alias="+alias+", ultimoNivel="+ultimoNivel+'}';
+		return "TreeOrden{"+"id="+id+", tipo="+tipo+", claveEmpresa="+claveEmpresa+", nombreEmpresa="+nombreEmpresa+", tituloEmpresa="+tituloEmpresa+", consecutivo="+consecutivo+", proveedor="+proveedor+", importe="+importe+", estatus="+estatus+", registro="+registro+", factura="+factura+", fechaFactura="+fechaFactura+", ultimoNivel="+ultimoNivel+'}';
 	}
 
 }

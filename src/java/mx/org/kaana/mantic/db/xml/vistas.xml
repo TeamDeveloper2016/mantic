@@ -4584,30 +4584,41 @@
 			<select id="entrada">
         select          
           tc_mantic_notas_entradas.id_nota_entrada as id,
+          tc_mantic_empresas.nombre as nombre_empresa,
           tc_mantic_notas_entradas.consecutivo consecutivo,
           tc_mantic_notas_entradas.registro registro,
           tc_mantic_notas_entradas.total importe,
           tc_mantic_notas_estatus.nombre estatus,
 				  tc_mantic_notas_entradas.factura,
 				  tc_mantic_notas_entradas.fecha_factura,
-          tc_mantic_proveedores.razon_social as proveedor,
-				  tc_mantic_notas_archivos.alias
+          tc_mantic_proveedores.razon_social as proveedor
         from 
           tc_mantic_ordenes_compras                
         inner join 
           tc_mantic_notas_entradas on tc_mantic_ordenes_compras.id_orden_compra= tc_mantic_notas_entradas.id_orden_compra
         inner join 
+          tc_mantic_empresas on tc_mantic_notas_entradas.id_empresa= tc_mantic_empresas.id_empresa
+        inner join 
           tc_mantic_notas_estatus on tc_mantic_notas_entradas.id_nota_estatus=tc_mantic_notas_estatus.id_nota_estatus        
         inner join 
           tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
-        left join
-          tc_mantic_notas_archivos on tc_mantic_notas_archivos.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada       
         where 
           tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}	        
       </select>
+			<select id="entradaArchivos">
+				select
+				  tc_mantic_notas_archivos.alias
+        from 
+          tc_mantic_notas_entradas                
+        left join
+          tc_mantic_notas_archivos on tc_mantic_notas_archivos.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada				
+				where
+  				tc_mantic_notas_entradas.id_nota_entrada= {idNotaEntrada}
+			</select>	
 			<select id="devolucion">
         select          
           tc_mantic_devoluciones.id_devolucion as id,
+          tc_mantic_empresas.nombre as nombre_empresa,
           tc_mantic_devoluciones.consecutivo consecutivo,
           tc_mantic_devoluciones.registro registro,
           tc_mantic_devoluciones.total importe,
@@ -4616,6 +4627,8 @@
           tc_mantic_notas_entradas        
         inner join
           tc_mantic_devoluciones on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_devoluciones.id_nota_entrada
+        inner join 
+          tc_mantic_empresas on tc_mantic_devoluciones.id_empresa= tc_mantic_empresas.id_empresa
         inner join 
           tc_mantic_devoluciones_estatus on tc_mantic_devoluciones.id_devolucion_estatus=tc_mantic_devoluciones_estatus.id_devolucion_estatus        
         where 
@@ -4628,8 +4641,7 @@
           tc_mantic_creditos_notas.registro registro,
           tc_mantic_creditos_notas.importe importe,
           tc_mantic_creditos_estatus.nombre estatus,
-          tc_mantic_proveedores.razon_social as proveedor,
-				  tc_mantic_creditos_archivos.alias
+          tc_mantic_proveedores.razon_social as proveedor
         from           
           tc_mantic_devoluciones        
         inner join
@@ -4638,11 +4650,19 @@
           tc_mantic_creditos_estatus on tc_mantic_creditos_notas.id_credito_estatus=tc_mantic_creditos_estatus.id_credito_estatus
         left join 
           tc_mantic_proveedores on tc_mantic_creditos_notas.id_proveedor= tc_mantic_proveedores.id_proveedor
-        left join
-          tc_mantic_creditos_archivos on tc_mantic_creditos_archivos.id_credito_nota= tc_mantic_creditos_notas.id_credito_nota
         where 
           tc_mantic_devoluciones.id_devolucion= {idDevolucion}	        
       </select>
+			<select id="creditoArchivos">
+				select
+				  tc_mantic_creditos_archivos.alias
+        from 
+          tc_mantic_creditos_notas                
+        left join
+          tc_mantic_creditos_archivos on tc_mantic_creditos_archivos.id_credito_nota= tc_mantic_creditos_notas.id_credito_nota
+				where
+  				tc_mantic_creditos_notas.id_credito_nota= {idCreditoNota}
+			</select>	
 		</unit>		
 	</dml>    
 </process>

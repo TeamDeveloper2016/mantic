@@ -6,7 +6,7 @@
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-  <ui:param name="titulo" value="Estructura de documentos de la orden de compra seleccionada" />
+  <ui:param name="titulo" value="Estructura de documentos de la orden de compra" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {        
@@ -213,28 +213,28 @@
 							<p:spacer/>
 						</p:treeNode>            						
 					</p:tree>		   
-					<p:outputLabel value="Cantidad de documentos asociados a la orden de compra: #{manticComprasOrdenesEstructura.files.size()}" styleClass="janal-color-blue"/>
+					<p:outputLabel value="Cantidad de documentos asociados a la orden de compra: &lt;strong class='janal-color-blue' &gt;#{manticComprasOrdenesEstructura.files.size()}&lt;/strong&gt;" escape="false"/>
         </div>
       </div>
     </div>
-		<p:dialog id="dialogoDetalle" widgetVar="dlgDetalle" header="Detalle" closable="false" resizable="false" dynamic="true" onHide="janal.desbloquear();" position="center">
-      <p:outputLabel value="#{manticComprasOrdenesEstructura.attrs.detalle}"/>
-			<h:panelGrid columns="2">
+		<p:dialog id="dialogoDetalle" widgetVar="dlgDetalle" header="Detalle del documento" closable="true" resizable="false" dynamic="true" closeOnEscape="true" onHide="janal.desbloquear();" position="center" width="600px">
+			<h:panelGrid columns="2" styleClass="janal-col-100" columnClasses="janal-wid-col-110, janal-wid-100">
         <p:outputLabel value="Empresa: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}"/>
-        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.nombreEmpresa}" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}" readonly="true"/>
+        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.nombreEmpresa}" styleClass="janal-wid-100-txt" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}" readonly="true"/>
         <p:outputLabel value="Proveedor: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}"/>
-        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.proveedor}" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}" readonly="true"/>
+        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.proveedor}" styleClass="janal-wid-100-txt" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}" readonly="true"/>
         <p:outputLabel value="Consecutivo: " style="font-weight: bold"/>
-        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.consecutivo}" readonly="true"/>        
+        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.consecutivo}" styleClass="janal-wid-100-txt" readonly="true"/>        
         <p:outputLabel value="Importe: " style="font-weight: bold"/>
-        <p:inputText value="$#{manticComprasOrdenesEstructura.attrs.detalle.importe}" readonly="true"/>        
+        <p:inputText value="$#{manticComprasOrdenesEstructura.attrs.detalle.importe}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>        
         <p:outputLabel value="Estatus: " style="font-weight: bold"/>
-        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.estatus}" readonly="true"/>    
-				<p:separator rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'entrada'}"/>
-        <p:outputLabel value="Factura: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'entrada'}"/>
-        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.factura}" readonly="true" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'entrada'}"/>        
-        <p:outputLabel value="Fecha faactura: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'entrada'}"/>
-        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.fechaFactura}" readonly="true" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'entrada'}"/>    
+        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.estatus}" styleClass="janal-wid-100-txt" readonly="true"/>    
+				<p:spacer height="1px" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'devolucion'}"/>
+				<p:separator rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'devolucion'}"/>
+        <p:outputLabel value="Factura: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'devolucion'}"/>
+        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.factura}" styleClass="janal-wid-100-txt" readonly="true" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'devolucion'}"/>        
+        <p:outputLabel value="Fecha factura: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'devolucion'}"/>
+        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.fechaFactura}" styleClass="janal-wid-100-txt" readonly="true" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'devolucion'}"/>    
       </h:panelGrid>
       <hr class="ui-widget-content"/>
       <div class="janal-column-right">
