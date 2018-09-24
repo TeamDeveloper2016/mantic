@@ -271,8 +271,8 @@
   </ui:define>    
   <ui:define name="acciones">
     <div class="lg-pantalla">
-      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@this contenedorGrupos" action="#{manticCatalogosAlamacenesAccion.doAceptar}" onstart="return janal.partial('general', true)" oncomplete="janal.desbloquear()"/>
-      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosAlamacenesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@this contenedorGrupos" action="#{manticCatalogosAlamacenesAccion.doAceptar}" onstart="return janal.partial('general', true)" oncomplete="janal.desbloquear()"/>
+      <p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="c" process="@this" action="#{manticCatalogosAlamacenesAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
     </div>		
     <div class="xs-pantalla">
       <p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@this contenedorGrupos" action="#{manticCatalogosAlamacenesAccion.doAceptar}" onstart="return janal.partial('general', true)" oncomplete="janal.desbloquear()"/>

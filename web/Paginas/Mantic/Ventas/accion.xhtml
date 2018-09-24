@@ -525,8 +525,8 @@
 				</div>	
 				<div class="ui-grid-col-3 janal-column-right">
 					<div class="lg-pantalla">
-						<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasAccion.doAceptar}" onstart="return janal.partial('articulo', true);" oncomplete="janal.desbloquear()" update="deudor contenido panelCliente panelEmpresa articulos total"/>
-						<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+						<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticVentasAccion.doAceptar}" onstart="return janal.partial('articulo', true);" oncomplete="janal.desbloquear()" update="deudor contenido panelCliente panelEmpresa articulos total"/>
+						<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="c" process="@this" action="#{manticVentasAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 					</div>	
 					<div class="xs-pantalla">
 						<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasAccion.doAceptar}" onstart="return janal.partial('articulo', true);" oncomplete="janal.desbloquear()" update="deudor contenido panelCliente panelEmpresa articulos total"/>

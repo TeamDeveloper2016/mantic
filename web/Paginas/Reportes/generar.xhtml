@@ -56,7 +56,7 @@
 	<div class="janal-line-button">
 		<p:separator/>
 		<ui:define name="acciones">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" onstart="return start(#{kajoolReportesGenerar.total})" oncomplete="download(xhr, status, args)" actionListener="#{kajoolReportesGenerar.doAceptar}" process="@form" update=":datos:confirmacion" widgetVar="procesar" disabled="#{kajoolReportesGenerar.total &gt; 0? 'false': 'true'}"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  onstart="return start(#{kajoolReportesGenerar.total})" oncomplete="download(xhr, status, args)" actionListener="#{kajoolReportesGenerar.doAceptar}" process="@form" update=":datos:confirmacion" widgetVar="procesar" disabled="#{kajoolReportesGenerar.total &gt; 0? 'false': 'true'}"/>
       <p:commandButton id="cancelar" value="Cancelar" process="@this" icon="fa fa-remove"  action="#{kajoolReportesGenerar.doCancelar}" immediate="true" ajax="false" oncomplete="progreso.cancel()" />
 		</ui:define>
 	</div>

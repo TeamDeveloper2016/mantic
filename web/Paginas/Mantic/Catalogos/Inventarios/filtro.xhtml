@@ -97,7 +97,7 @@
   </ui:define>    	
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" onstart="return janal.bloquear();" actionListener="#{manticCatalogosInventariosFiltro.doAceptar}" update="contenedorInventarios panelArticulo panelAlmacen" oncomplete="janal.desbloquear();"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" onstart="return janal.bloquear();" actionListener="#{manticCatalogosInventariosFiltro.doAceptar}" update="contenedorInventarios panelArticulo panelAlmacen" oncomplete="janal.desbloquear();"/>
 		</div>	
 		<div class="xs-pantalla">
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return janal.bloquear();" actionListener="#{manticCatalogosInventariosFiltro.doAceptar}" update="contenedorInventarios panelArticulo panelAlmacen" oncomplete="janal.desbloquear();"/>
