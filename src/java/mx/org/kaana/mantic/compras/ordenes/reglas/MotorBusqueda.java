@@ -74,7 +74,7 @@ public class MotorBusqueda implements Serializable {
 								item.setTipo(EDocumentosOrden.NOTA_CREDITO);
 								item.setUltimoNivel(true);
 								if(!Cadena.isVacio(item.getAlias()))
-								  this.files.add(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").length()+ "|"+ item.getAlias());
+								  this.files.add(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").length()+ "|NOTASDECREDITO|"+ item.getAlias());
 								type="credito";
 								break;
 							case NOTA_ENTRADA:
@@ -84,7 +84,7 @@ public class MotorBusqueda implements Serializable {
 							case ORDEN_COMPRA:
 								item.setTipo(EDocumentosOrden.NOTA_ENTRADA);
 								if(!Cadena.isVacio(item.getAlias()))
-								  this.files.add(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").length()+ "|"+ item.getAlias());
+								  this.files.add(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").length()+ "|NOTASDEENTRADA|"+ item.getAlias());
 								type="entrada";
 								break;							
 						} // switch

@@ -176,21 +176,21 @@ public class Zip {
       if (!(rutaArchivo.exists())) 
         rutaArchivo.mkdirs();
       FileOutputStream destino = new FileOutputStream(getNombre());
-      if (isDebug())
+      if (this.debug)
         LOG.debug("nombre zip: " + getNombre());
       CheckedOutputStream checksum = new CheckedOutputStream(destino, new Adler32());
       ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(checksum));
       byte data[] = new byte[BUFFER];
 
       File f = new File(getDirectorio());
-      if (isDebug())
+      if (this.debug)
         LOG.debug(" patron: " + getPatron() + " directorio: " + getDirectorio() + " f: " + f);
 
       String files[] = f.list();
-      if (isDebug())
+      if (this.debug)
         LOG.debug("Archivos: " + (files != null ? 0 : files.length));
       for (int i= 0; files != null && i < files.length; i++) {
-        if (isDebug())
+        if (this.debug)
           LOG.debug("Sumando: " + getDirectorio(true) + files[i]);
         if (acceptFile(getPatron(), files[i], true)) {
           FileInputStream fi = new FileInputStream(getDirectorio(true) + files[i]);
@@ -202,7 +202,7 @@ public class Zip {
             out.write(data, 0, count);
           } // while
           origen.close();
-          if (isEliminar()) {
+          if (this.eliminar) {
             f = new File(getDirectorio(true) + files[i]);
             f.delete();
           } // if
@@ -228,15 +228,15 @@ public class Zip {
       if (!(rutaArchivo.exists())) 
         rutaArchivo.mkdirs();
       FileOutputStream destino = new FileOutputStream(getNombre());
-      if (isDebug())
+      if (this.debug)
         LOG.debug("nombre zip: " + getNombre());
       CheckedOutputStream checksum = new CheckedOutputStream(destino, new Adler32());
       ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(checksum));
       byte data[] = new byte[BUFFER];
-      if (isDebug())
+      if (this.debug)
         LOG.debug("Archivos: " + (files!= null? 0: files.length));
       for (String name: files) {
-        if (isDebug())
+        if (this.debug)
           LOG.debug("Sumando: " + name);
 				FileInputStream fi = new FileInputStream(name);
 				origen = new BufferedInputStream(fi, BUFFER);
@@ -247,7 +247,7 @@ public class Zip {
 					out.write(data, 0, count);
 				} // while
 				origen.close();
-				if (isEliminar()) {
+				if (this.eliminar) {
 					File file= new File(name);
 					file.delete();
 				} // if
@@ -272,35 +272,34 @@ public class Zip {
       if (!(rutaArchivo.exists())) 
         rutaArchivo.mkdirs();
       FileOutputStream destino = new FileOutputStream(getNombre());
-      if (isDebug())
+      if (this.debug)
         LOG.debug("nombre zip: " + getNombre());
       CheckedOutputStream checksum = new CheckedOutputStream(destino, new Adler32());
       ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(checksum));
       byte data[] = new byte[BUFFER];
-      if (isDebug())
+      if (this.debug)
         LOG.debug("Archivos: " + (files!= null? 0: files.length));
       for (String name: files) {
 				String[] tokens= name.split("[|]");
-        if (isDebug())
-          LOG.debug("Sumando: " + tokens[1]);
-				FileInputStream fi = new FileInputStream(name);
+        if (this.debug)
+          LOG.debug("Sumando: " + tokens[2]);
+				FileInputStream fi = new FileInputStream(tokens[2]);
 				origen = new BufferedInputStream(fi, BUFFER);
-				ZipEntry entry = new ZipEntry(name.substring(Numero.getInteger(tokens[0], 0)));
+				ZipEntry entry = new ZipEntry(tokens[1].concat("/").concat(tokens[2].substring(Numero.getInteger(tokens[0], 0))));
 				out.putNextEntry(entry);
 				int count;
 				while ((count = origen.read(data, 0, BUFFER)) != -1) {
 					out.write(data, 0, count);
 				} // while
 				origen.close();
-				if (isEliminar()) {
-					File file= new File(tokens[1]);
+				if (this.eliminar) {
+					File file= new File(tokens[2]);
 					file.delete();
 				} // if
       } // for
       out.close();
     }
     catch (Exception e) {
-      Error.mensaje(e);
       throw e;
     }// try
   }
