@@ -20,6 +20,8 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteDomicilio;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
@@ -51,6 +53,7 @@ public class Transaccion extends IBaseTnx {
 	private String justificacion;
 	private Long idClienteNuevo;
 	private Date vigencia;
+	private boolean aplicar;
 
 	public Transaccion(TcManticVentasBitacoraDto bitacora) {
 		this.bitacora= bitacora;
@@ -81,6 +84,7 @@ public class Transaccion extends IBaseTnx {
 		this.articulos    = articulos;
 		this.justificacion= justificacion;
 		this.vigencia     = vigencia;
+		this.aplicar      = false;
 	} // Transaccion
 
 	public Transaccion(ClienteVenta clienteVenta) {
@@ -106,12 +110,21 @@ public class Transaccion extends IBaseTnx {
 	public Long getIdClienteNuevo() {
 		return idClienteNuevo;
 	}
+
+	public boolean isAplicar() {
+		return aplicar;
+	}
+
+	public void setAplicar(boolean aplicar) {
+		this.aplicar = aplicar;
+	}	
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar          = false;
 		Map<String, Object> params= null;
 		Long idEstatusVenta       = null;
+		Long consecutivo          = 1L;
 		try {
 			idEstatusVenta= EEstatusVentas.ELABORADA.getIdEstatusVenta();
 			params= new HashMap<>();
@@ -161,9 +174,20 @@ public class Transaccion extends IBaseTnx {
 							regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
 					} // if					
 					break;
-				case PROCESAR:
+				case PROCESAR:				
+					consecutivo= this.toSiguiente(sesion);			
+					this.orden.setConsecutivo(consecutivo);			
+					this.orden.setOrden(consecutivo);
 					this.orden.setIdUsuario(JsfBase.getIdUsuario());
-					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
+					if(this.orden.isValid())
+						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
+					else
+						regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
+					if(regresar){
+						regresar= registraBitacora(sesion, this.orden.getIdVenta(), this.orden.getIdVentaEstatus(), "Registro de venta express");
+						if(regresar && !this.aplicar)
+							registrarDeuda(sesion, this.orden.getTotal());
+					} // if					
 					break;
 			} // switch
 			if(!regresar)
@@ -492,4 +516,42 @@ public class Transaccion extends IBaseTnx {
 	private boolean registrarSentencia(Session sesion, IBaseDto dto) throws Exception {
     return DaoFactory.getInstance().insert(sesion, dto) >= 1L;
   } // registrar
+	
+	protected void registrarDeuda(Session sesion, Double importe) throws Exception{
+		TcManticClientesDeudasDto deuda= null;
+		try {
+			deuda= new TcManticClientesDeudasDto();
+			deuda.setIdVenta(getOrden().getIdVenta());
+			deuda.setIdCliente(getOrden().getIdCliente());
+			deuda.setIdUsuario(JsfBase.getIdUsuario());
+			deuda.setImporte(importe);
+			deuda.setSaldo(importe);
+			deuda.setLimite(toLimiteCredito(sesion));
+			deuda.setIdClienteEstatus(1L);
+			DaoFactory.getInstance().insert(sesion, deuda);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // registrarDeuda
+	
+	public Date toLimiteCredito(Session sesion) throws Exception{
+		Date regresar              = null;
+		TcManticClientesDto cliente= null;
+		Long addDias               = 15L;
+		Calendar calendar          = null;
+		try {			
+			cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDto.class, this.orden.getIdCliente());
+			addDias= cliente.getPlazoDias();			
+			calendar= Calendar.getInstance();
+			regresar= new Date(calendar.getTimeInMillis());			
+			calendar.setTime(regresar);
+			calendar.add(Calendar.DAY_OF_YEAR, addDias.intValue());
+			regresar= new Date(calendar.getTimeInMillis());
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch				
+		return regresar;
+	} // toLimiteCredito
 } 

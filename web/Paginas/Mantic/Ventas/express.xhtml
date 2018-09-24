@@ -99,10 +99,12 @@
 	<ui:define name="acciones">		
 		<div class="lg-pantalla">
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasExpress.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" disabled="#{manticVentasExpress.attrs.disabled}"/>
+			<p:commandButton id="aplicar" value="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticVentasExpress.doAplicar}" onstart="return execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticVentasExpress.attrs.isAplicar}"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasExpress.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 		</div>	
 		<div class="xs-pantalla">
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasExpress.doAceptar}" onstart="return janal.execute(true);" oncomplete="janal.desbloquear()" disabled="#{manticVentasExpress.attrs.disabled}"/>
+			<p:commandButton id="aplicarIcon" title="Aplicar" icon="fa fa-angle-double-down" process="@form" action="#{manticVentasExpress.doAplicar}" onstart="return execute(true);" oncomplete="janal.desbloquear()" rendered="#{manticVentasExpress.attrs.isAplicar}"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticVentasExpress.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
 		</div>						
 	</ui:define>			
