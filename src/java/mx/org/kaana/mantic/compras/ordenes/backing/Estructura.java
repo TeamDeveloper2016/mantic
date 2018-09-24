@@ -93,7 +93,6 @@ public class Estructura extends IBaseFilter implements Serializable {
 			this.tree= new DefaultTreeNode("orden", busqueda.toParent(), null);
 			this.tree.getChildren().add(new DefaultTreeNode());      
 			createTree(this.tree);		
-			this.files= new ArrayList<>(busqueda.getFiles());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -121,6 +120,7 @@ public class Estructura extends IBaseFilter implements Serializable {
           seleccionado.getChildren().add(childNode);
 					createTree(childNode);
         } // for
+  			this.files= new ArrayList<>(gestor.getFiles());
       } // if                  
 		} // try
 		catch (Exception e) {
