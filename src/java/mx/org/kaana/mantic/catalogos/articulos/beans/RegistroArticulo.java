@@ -94,6 +94,7 @@ public class RegistroArticulo implements Serializable{
 		this.deleteList          = new ArrayList<>();
 		this.importado           = new Importado();
 		this.articuloDimencion   = articuloDimencion;
+		this.articulo.setSat("40141700");
 	}
 
 	public Long getIdArticulo() {

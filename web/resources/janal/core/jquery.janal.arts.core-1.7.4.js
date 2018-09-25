@@ -53,7 +53,8 @@
 		VK_CTRL     : 17,
 		VK_MAYOR    : 226,
 		VK_F7       : 118,
-	  change      : [13, 27, 106, 107, 110, 111, 188, 189, 191, 220, 222, 226],
+		VK_F10      : 121,
+	  change      : [13, 27, 106, 107, 110, 111, 188, 121, 189, 191, 220, 222, 226],
 		cursor: {
 			top: 1, // el top debera ser elementos que van de 0 a n-1
 			index: 0
@@ -206,6 +207,9 @@
 					case $articulos.VK_DOWN:
 					case $articulos.VK_ENTER:
 						return $articulos.movedown('\\'+$(this).attr('id').substring($(this).attr('id').lastIndexOf(':')));
+						break;
+					case $articulos.VK_F7:
+						return $articulos.detail();
 						break;
 				} // switch
 			});	

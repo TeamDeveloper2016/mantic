@@ -18,11 +18,9 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -44,8 +42,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
 	private RegistroRequisicion registroRequisicion;	
-	private FormatLazyModel especificaciones;
-
+	
 	public Accion() {
 		super("menudeo");
 	}
@@ -58,10 +55,6 @@ public class Accion extends IBaseArticulos implements Serializable {
 		this.registroRequisicion = registroRequisicion;
 	}	
 
-	public FormatLazyModel getEspecificaciones() {
-		return especificaciones;
-	}	
-	
 	@PostConstruct
   @Override
   protected void init() {		
@@ -265,32 +258,6 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // catch		
 		return regresar;
 	} // toDescuentoVigente	
-	
-	public void doDetailArticulo(Long idArticulo, Integer index) {
-		MotorBusqueda motor      = null;
-		Entity detailArt         = null;
-		Map<String, Object>params= null;
-		List<Columna>campos      = null;
-		try {
-			if(idArticulo!= null){
-				motor= new MotorBusqueda(idArticulo);
-				detailArt= motor.toDetalleArticulo();
-				this.attrs.put("detailArticulo", detailArt);
-				params= new HashMap<>();
-				params.put(Constantes.SQL_CONDICION, "id_articulo=" + idArticulo);
-				campos= new ArrayList<>();
-				campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-				campos.add(new Columna("valor", EFormatoDinamicos.MAYUSCULAS));
-				this.especificaciones= new FormatLazyModel("TcManticArticulosEspecificacionesDto", "row", params, campos);
-				UIBackingUtilities.resetDataTable("especificaciones");
-				RequestContext.getCurrentInstance().execute("PF('dlgDetalleArt').show();");
-			} // if
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch		
-	} // doDetailArticulo	
 	
 	@Override
 	public void doUpdateArticulos() {

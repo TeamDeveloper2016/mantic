@@ -1142,6 +1142,7 @@
 			<select id="detalle">
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,
+				tc_mantic_articulos.id_articulo,
 				  tc_mantic_articulos.nombre,          
 				  tc_mantic_articulos.menudeo,          
 				  tc_mantic_articulos.medio_mayoreo,          

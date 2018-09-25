@@ -41,9 +41,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable{
 	private static final long serialVersionUID = 4853975930464243369L;
 	protected static final String INDIVIDUAL= "1";
 	protected SaldoCliente saldoCliente;
-	private FormatLazyModel especificaciones;
 	private FormatLazyModel almacenes;
-	private FormatLazyModel descuentos;
 	
 	public IBaseVenta(String precio) {
 		super(precio);
@@ -57,18 +55,10 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable{
 		this.saldoCliente = saldoCliente;
 	}
 	
-	public FormatLazyModel getEspecificaciones() {
-		return especificaciones;
-	}	
-
 	public FormatLazyModel getAlmacenes() {
 		return almacenes;
 	}	
 
-	public FormatLazyModel getDescuentos() {
-		return descuentos;
-	}
-	
 	public String doCancelar() {   
   	JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
     return this.attrs.get("retorno") != null ? (String)this.attrs.get("retorno") : "filtro";
@@ -93,42 +83,6 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable{
 			JsfBase.addMessageError(e);			
 		} // catch		
 	} // loadSucursales
-	
-	public void doDetailArticulo(Long idArticulo, Integer index) {
-		MotorBusqueda motor      = null;
-		Entity detailArt         = null;
-		Map<String, Object>params= null;
-		List<Columna>campos      = null;
-		try {
-			if(idArticulo!= null){
-				motor= new MotorBusqueda(idArticulo);
-				detailArt= motor.toDetalleArticulo();
-				this.attrs.put("detailArticulo", detailArt);
-				params= new HashMap<>();
-				params.put(Constantes.SQL_CONDICION, "id_articulo=" + idArticulo);
-				campos= new ArrayList<>();
-				campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-				campos.add(new Columna("valor", EFormatoDinamicos.MAYUSCULAS));
-				this.especificaciones= new FormatLazyModel("TcManticArticulosEspecificacionesDto", "row", params, campos);
-				UIBackingUtilities.resetDataTable("especificaciones");
-				campos.clear();
-				campos.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-				campos.add(new Columna("vigenciaIncial", EFormatoDinamicos.FECHA_HORA_CORTA));
-				campos.add(new Columna("vigenciaFinal", EFormatoDinamicos.FECHA_HORA_CORTA));
-				campos.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
-				this.descuentos= new FormatLazyModel("TcManticArticulosDescuentosDto", "row", params, campos);
-				UIBackingUtilities.resetDataTable("descuentosLazy");
-				RequestContext.getCurrentInstance().execute("PF('dlgDetalleArt').show();");
-			} // if
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally
-	} // doDetailArticulo
 	
 	public void doAlmacenesArticulo(Long idArticulo, Integer index) {
 		Map<String, Object>params= null;

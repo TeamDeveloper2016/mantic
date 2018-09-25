@@ -11,6 +11,8 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -20,6 +22,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloPrecioSugeridoDto;
@@ -28,6 +31,7 @@ import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.context.RequestContext;
+import org.primefaces.model.StreamedContent;
 
 /**
  *@company KAANA
@@ -43,6 +47,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	private static final Log LOG=LogFactory.getLog(IBaseArticulos.class);
 	
   private IAdminArticulos adminOrden;
+	private StreamedContent detailImage;
 	private String precio;
 
 	public IBaseArticulos() {
@@ -63,6 +68,10 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 		this.adminOrden=adminOrden;
 	}
 
+	public StreamedContent getDetailImage() {
+		return detailImage;
+	}
+	
 	public String getPrecio() {
 		return precio;
 	}
@@ -718,5 +727,35 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	  else
       this.attrs.put("encontrado", new UISelectEntity((Entity)this.attrs.get("buscado")));
 	}
+
+	public void doDetailArticulo(Long idArticulo, Integer index) {
+		Map<String, Object>params= null;
+		List<Columna>columns     = null;
+		try {
+			if(idArticulo!= null) {
+				params= new HashMap<>();
+				params.put("idArticulo", idArticulo);
+				columns= new ArrayList<>();
+				this.attrs.put("detailArticulo", DaoFactory.getInstance().toEntity("VistaArticulosDto", "detalle", params));
+				columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+				columns.add(new Columna("valor", EFormatoDinamicos.MAYUSCULAS));
+				params.put(Constantes.SQL_CONDICION, "id_articulo=" + idArticulo);
+				this.attrs.put("lazyEspecificaciones", new FormatLazyModel("TcManticArticulosEspecificacionesDto", "row", params, columns));
+				UIBackingUtilities.resetDataTable("lazyEspecificaciones");
+				columns.clear();
+				columns.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+				columns.add(new Columna("vigenciaIncial", EFormatoDinamicos.FECHA_HORA_CORTA));
+				columns.add(new Columna("vigenciaFinal", EFormatoDinamicos.FECHA_HORA_CORTA));
+				columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
+				this.attrs.put("lazyDescuentos", new FormatLazyModel("TcManticArticulosDescuentosDto", "row", params, columns));
+				UIBackingUtilities.resetDataTable("lazyDescuentos");
+				this.detailImage= LoadImages.getImage(String.valueOf(idArticulo));
+			} // if
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} 
 	
 }

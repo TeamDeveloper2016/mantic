@@ -56,7 +56,6 @@ public class Accion extends IBaseArticulos implements Serializable {
 	private EOrdenes tipoOrden;
 	private SaldoCliente saldoCliente;
 	private StreamedContent image;
-	private FormatLazyModel especificaciones;
 	private FormatLazyModel almacenes;
 
 	public Accion() {
@@ -82,10 +81,6 @@ public class Accion extends IBaseArticulos implements Serializable {
 	public StreamedContent getImage() {
 		return image;
 	}
-
-	public FormatLazyModel getEspecificaciones() {
-		return especificaciones;
-	}	
 
 	public FormatLazyModel getAlmacenes() {
 		return almacenes;
@@ -687,35 +682,6 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // catch
 		return regresar;
 	} // doClientes
-	
-	public void doDetailArticulo(Long idArticulo, Integer index) {
-		MotorBusqueda motor      = null;
-		Entity detailArt         = null;
-		Map<String, Object>params= null;
-		List<Columna>campos      = null;
-		try {
-			if(idArticulo!= null){
-				motor= new MotorBusqueda(idArticulo);
-				detailArt= motor.toDetalleArticulo();
-				this.attrs.put("detailArticulo", detailArt);
-				params= new HashMap<>();
-				params.put(Constantes.SQL_CONDICION, "id_articulo=" + idArticulo);
-				campos= new ArrayList<>();
-				campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-				campos.add(new Columna("valor", EFormatoDinamicos.MAYUSCULAS));
-				this.especificaciones= new FormatLazyModel("TcManticArticulosEspecificacionesDto", "row", params, campos);
-				UIBackingUtilities.resetDataTable("especificaciones");
-				RequestContext.getCurrentInstance().execute("PF('dlgDetalleArt').show();");
-			} // if
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally
-	} // doDetailArticulo
 	
 	public void doAlmacenesArticulo(Long idArticulo, Integer index) {
 		Map<String, Object>params= null;
