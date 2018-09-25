@@ -5,14 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.db.dto.TrJanalIndicadoresPerfilDto;
-import mx.org.kaana.kajool.enums.ECajas;
-import mx.org.kaana.kajool.enums.EPagos;
-import mx.org.kaana.kajool.enums.ESucursales;
 import mx.org.kaana.kajool.procesos.enums.EPerfiles;
 import mx.org.kaana.kajool.procesos.enums.ETipoGrafica;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Bar;
@@ -35,6 +30,7 @@ import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Xaxis;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Yaxis;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.mantic.enums.EGraficasTablero;
 
 /**
  *@company KAANA
@@ -49,314 +45,100 @@ public class BuildChart implements Serializable{
   private static final long serialVersionUID = -7923640837107557494L;
   private Long idPerfil;
   private Long idGrupo;
+	private String vistaGeneral;
 
+  public BuildChart() {
+		this(-1L, -1L);
+	} // BuildChart
+	
   public BuildChart(Long idPerfil, Long idGrupo) {
-    this.idPerfil = idPerfil;
-    this.idGrupo = idGrupo;
-  } // BuildChart
-
+    this.idPerfil    = idPerfil;
+    this.idGrupo     = idGrupo;
+		this.vistaGeneral= EGraficasTablero.getVista();
+  } // BuildChart  
+	
+  public Highcharts buildUtilidadSucursal() throws Exception{ 
+		return loadGeneralChar(EGraficasTablero.UTILIDAD_SUCURSAL);
+	} //buildUtilidadSucursal  
+  
+	public Highcharts buildUtilidadCaja() throws Exception{ 
+		return loadGeneralChar(EGraficasTablero.UTILIDAD_CAJA);
+	} // buildUtilidadCaja  
+	
+  public Highcharts buildCuentasCobrar() throws Exception{ 
+		return loadGeneralChar(EGraficasTablero.CUENTAS_COBRAR);
+	} // buildCuentasCobrar  
+  
+  public Highcharts buildCuentasPagar() throws Exception{ 
+		return loadGeneralChar(EGraficasTablero.CUENTAS_PAGAR);
+	} // buildCuentasPagar  
+  
   public List<Highcharts> build() throws Exception{
-    return build(ETipoGrafica.values()[(int)(Math.random()*3)]);
-  } // build
-  
-	public Highcharts buildNacional() throws Exception{    
-    return buildNacional(ETipoGrafica.values()[(int)(Math.random()*3)]);
-  } // build
-	
-  public Highcharts buildNacional(ETipoGrafica tipoGrafica) throws Exception{ 
-		return loadCharPropertiesNacional(" ", "Utilidad", "total", "Sucursales", "sucursal", "VistaIndicadoresPerfilesDto", "avanceEstatal", "", tipoGrafica);
-	}   
-  
-	public Highcharts buildNacionalCaja(ETipoGrafica tipoGrafica) throws Exception{ 
-		return loadCharPropertiesNacionalCaja(" ", "Utilidad", "total", "FERRETERIA BONANZA", "sucursal", "VistaIndicadoresPerfilesDto", "avanceEstatal", "", tipoGrafica);
-	}   
-	
-  public Highcharts buildNacionalCobro(ETipoGrafica tipoGrafica) throws Exception{ 
-		return loadCharPropertiesCobro(" ", "Utilidad", "total", "FERRETERIA BONANZA", "sucursal", "VistaIndicadoresPerfilesDto", "avanceEstatal", "", tipoGrafica);
-	}   
-  
-  public Highcharts buildNacionalPago(ETipoGrafica tipoGrafica) throws Exception{ 
-		return loadCharPropertiesPago(" ", "Utilidad", "total", "FERRETERIA BONANZA", "sucursal", "VistaIndicadoresPerfilesDto", "avanceEstatal", "", tipoGrafica);
-	}   
-  
-  public List<Highcharts> build(ETipoGrafica tipoChart) throws Exception{
-    List<Highcharts> regresar                    = null;
-    List<TrJanalIndicadoresPerfilDto> registrados= null;
+    List<Highcharts> regresar= null;
     try {
-      regresar= new ArrayList<>();
-      //registrados= toIndicadoresRegistradosPerfil();
-      registrados= new ArrayList<>();
-			if(!registrados.isEmpty()){
-				for(TrJanalIndicadoresPerfilDto indicador: registrados){
-					regresar.add(loadCharProperties(indicador, tipoChart));
-				} // for
+      regresar= new ArrayList<>();      	
+			for(EGraficasTablero grafica: EGraficasTablero.values()){
+				if(grafica.equals(EGraficasTablero.VENTAS_SUCURSAL))
+					regresar.add(loadGeneralChar(grafica));								
+			} // for
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch
+    return regresar;
+  } // build  
+  
+  private Highcharts loadGeneralChar(EGraficasTablero grafica) throws Exception{
+    Highcharts regresar        = null;
+    List<Entity> records       = null;
+    List<String> categoriesList= null;
+    String[] categories        = null;
+    List<Long> dataList        = null;
+    Totales[] totales          = null;
+		List<Totales> totalesList  = null;
+		Integer count              = 0;
+    try {
+			totalesList= new ArrayList<>();
+      categoriesList= new ArrayList<>();
+      records= loadRecords(this.vistaGeneral, grafica.getIdVista(), grafica.getRecords());      
+			if(!records.isEmpty()){				
+				for(Entity record: records)
+					categoriesList.add(record.toString(grafica.getAliasLadoy()));
+				for(count=0; count< grafica.getNumColumnas(); count++){
+					dataList= new ArrayList<>();
+					for(Entity record: records)
+						dataList.add(record.toLong(grafica.getAliasLadox().split("~")[count]));
+					totalesList.add(new Totales(Cadena.letraCapital(grafica.getAliasLadox().split("~")[count]), dataList.toArray(new Long[dataList.size()])));
+				}				
 			} // if
-			else{				
-				for(ESucursales sucursal: ESucursales.values()){
-					if(sucursal.equals(ESucursales.SUCURSAL_A))
-						regresar.add(loadCharProperties(null, tipoChart, sucursal));								
-				} // for
-			} // else
+      categories= new String[categoriesList.size()];
+      categories= categoriesList.toArray(categories);      
+      totales= totalesList.toArray(new Totales[totalesList.size()]);
+      regresar= new Highcharts(
+              new Chart(grafica.getTipoChart().getName(), grafica.getHeight()),
+              new Title(grafica.getTituloGeneral()),
+              new Xaxis(categories, new Title(grafica.getTituloLadoy())),
+              new Yaxis(0, new Title(grafica.getTituloLadox()), new Labels("justify")),
+              new Tooltip("  ".concat(grafica.getDescripcion()), grafica.getAliasLadox().equals("porcentaje") ? "{point.name}</br><b>{point.y:.2f}%</b>" : ""),
+              new PlotOptions(new Bar(new DataLabels(false)), new Series(new DataLabels(true, grafica.getAliasLadox().equals("porcentaje") ? "{point.y:.1f}%" : ""))),
+              new Legend("vertical", "left", "middle", -10, grafica.getSizeY(), true, 1, "#FFFFFF", true),
+              new Credits(false),
+              totales);
     } // try
     catch (Exception e) {
       throw e;
     } // catch
     return regresar;
-  } // build
+  } // loadGeneralChar  
 
-  private List<TrJanalIndicadoresPerfilDto> toIndicadoresRegistradosPerfil() throws Exception{
-    List<TrJanalIndicadoresPerfilDto> regresar= null;
-    Map<String, Object>params                 = null;
-    try {
-      params= new HashMap<>();
-      params.put(Constantes.SQL_CONDICION, "id_perfil=".concat(this.idPerfil.toString()));
-      regresar= DaoFactory.getInstance().findViewCriteria(TrJanalIndicadoresPerfilDto.class, params, Constantes.SQL_TODOS_REGISTROS);
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch
-    finally{
-      Methods.clean(params);
-    } // finally
-    return regresar;
-  } // toIndicadoresRegistradosPerfil
-
-  private Highcharts loadCharProperties(TrJanalIndicadoresPerfilDto indicador, ETipoGrafica tipoChart) throws Exception{
-		return loadCharProperties(indicador, tipoChart, null);
-	} // loadCharProperties
-	
-	private Highcharts loadCharProperties(TrJanalIndicadoresPerfilDto indicador, ETipoGrafica tipoChart, ESucursales sucursal) throws Exception{
-    Highcharts regresar        = null;
-    List<Entity> records       = null;
-    List<String> categoriesList= null;
-    String[] categories        = null;
-    List<Long> dataList        = null;
-    Long[] data                = null;
-    Totales[] totales          = null;
-    try {
-      dataList= new ArrayList<>();
-      categoriesList= new ArrayList<>();
-			if(indicador!= null){
-				records= loadRecords(indicador.getVista(), indicador.getIdVista());
-				for(Entity record: records)
-					categoriesList.add(record.toString(indicador.getAliasLadoy()));
-				for(Entity record: records)
-					dataList.add(record.toLong(indicador.getAliasLadox()));
-			} // if
-			else{
-				for(ESucursales esucursal: ESucursales.values()){
-					categoriesList.add(esucursal.getTitulo());
-					dataList.add(esucursal.getVentas());
-				} // for
-			} // else
-      categories= new String[categoriesList.size()];
-      categories= categoriesList.toArray(categories);
-      data= new Long[dataList.size()];
-      data= dataList.toArray(data);
-      totales= new Totales[]{new Totales("Ventas", data)};
-      regresar= new Highcharts(
-              new Chart(tipoChart.getName(), "180"),
-              new Title("Total de ventas por sucursal"),
-              new Xaxis(categories, new Title("Sucursales")),
-              new Yaxis(0, new Title("Ventas"), new Labels("justify")),
-              new Tooltip(" ", " "),
-              new PlotOptions(new Bar(new DataLabels(false)), new Series(new DataLabels(true, " "))),
-              new Legend("vertical", "left", "middle", -10, 80, true, 1, "#FFFFFF", true),
-              new Credits(false),
-              totales);
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch
-    return regresar;
-  } // loadCharProperties
-  
-  private Highcharts loadCharPropertiesNacional(String tituloGeneral, String tituloLadox, String aliasLadox, String tituloLadoy, String aliasLadoy, String vista, String idVista, String descripcion, ETipoGrafica tipoChart) throws Exception{
-    Highcharts regresar        = null;
-    List<Entity> records       = null;
-    List<String> categoriesList= null;
-    String[] categories        = null;
-    List<Long> dataList        = null;
-    Long[] data                = null;
-    Totales[] totales          = null;
-    try {
-      dataList= new ArrayList<>();
-      categoriesList= new ArrayList<>();
-      //records= loadRecords(vista, idVista);
-      records= new ArrayList<>();
-			if(!records.isEmpty()){
-				for(Entity record: records)
-					categoriesList.add(record.toString(aliasLadoy));
-				for(Entity record: records)
-					dataList.add(record.toLong(aliasLadox));
-			} // 
-			else{
-				for(ESucursales sucursal: ESucursales.values()){
-					categoriesList.add(sucursal.getTitulo());
-					dataList.add(sucursal.getUtilidad());
-				} // for
-			}
-      categories= new String[categoriesList.size()];
-      categories= categoriesList.toArray(categories);
-      data= new Long[dataList.size()];
-      data= dataList.toArray(data);
-      totales= new Totales[]{new Totales(tituloLadox, data)};
-      regresar= new Highcharts(
-              new Chart(tipoChart.getName()),
-              new Title(tituloGeneral),
-              new Xaxis(categories, new Title(tituloLadoy)),
-              new Yaxis(0, new Title(tituloLadox), new Labels("justify")),
-              new Tooltip("  ".concat(descripcion), aliasLadox.equals("porcentaje") ? "{point.name}</br><b>{point.y:.2f}%</b>" : ""),
-              new PlotOptions(new Bar(new DataLabels(false)), new Series(new DataLabels(true, aliasLadox.equals("porcentaje") ? "{point.y:.1f}%" : ""))),
-              new Legend("vertical", "left", "middle", -10, 110, true, 1, "#FFFFFF", true),
-              new Credits(false),
-              totales);
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch
-    return regresar;
-  } // loadCharProperties
-	
-  private Highcharts loadCharPropertiesNacionalCaja(String tituloGeneral, String tituloLadox, String aliasLadox, String tituloLadoy, String aliasLadoy, String vista, String idVista, String descripcion, ETipoGrafica tipoChart) throws Exception{
-    Highcharts regresar        = null;
-    List<Entity> records       = null;
-    List<String> categoriesList= null;
-    String[] categories        = null;
-    List<Long> dataList        = null;
-    Long[] data                = null;
-    Totales[] totales          = null;
-    try {
-      dataList= new ArrayList<>();
-      categoriesList= new ArrayList<>();
-      //records= loadRecords(vista, idVista);
-      records= new ArrayList<>();
-			if(!records.isEmpty()){
-				for(Entity record: records)
-					categoriesList.add(record.toString(aliasLadoy));
-				for(Entity record: records)
-					dataList.add(record.toLong(aliasLadox));
-			} // 
-			else{
-				for(ECajas caja: ECajas.values()){
-					categoriesList.add(caja.getCaja());
-					dataList.add(caja.getUtilidad());
-				} // for
-			}
-      categories= new String[categoriesList.size()];
-      categories= categoriesList.toArray(categories);
-      data= new Long[dataList.size()];
-      data= dataList.toArray(data);
-      totales= new Totales[]{new Totales(tituloLadox, data)};
-      regresar= new Highcharts(
-              new Chart(tipoChart.getName(), "180"),
-              new Title(tituloGeneral),
-              new Xaxis(categories, new Title(tituloLadoy)),
-              new Yaxis(0, new Title(tituloLadox), new Labels("justify")),
-              new Tooltip("  ".concat(descripcion), aliasLadox.equals("porcentaje") ? "{point.name}</br><b>{point.y:.2f}%</b>" : ""),
-              new PlotOptions(new Bar(new DataLabels(false)), new Series(new DataLabels(true, aliasLadox.equals("porcentaje") ? "{point.y:.1f}%" : ""))),
-              new Legend("vertical", "left", "middle", -10, 80, true, 1, "#FFFFFF", true),
-              new Credits(false),
-              totales);
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch
-    return regresar;
-  } // loadCharProperties
-  
-  private Highcharts loadCharPropertiesCobro(String tituloGeneral, String tituloLadox, String aliasLadox, String tituloLadoy, String aliasLadoy, String vista, String idVista, String descripcion, ETipoGrafica tipoChart) throws Exception{
-    Highcharts regresar        = null;
-    List<String> categoriesList= null;
-    String[] categories        = null;
-    List<Long> pago            = null;
-    List<Long> abono           = null;
-    Long[] pagos                = null;
-    Long[] abonos                = null;
-    Totales[] totales          = null;
-    try {
-      pago= new ArrayList<>();
-      abono= new ArrayList<>();
-      categoriesList= new ArrayList<>();
-      for(EPagos epago: EPagos.values()){
-        categoriesList.add(epago.getCliente());
-        pago.add(epago.getImporte());
-        abono.add(epago.getSaldo());
-      } // for
-      categories= new String[categoriesList.size()];
-      categories= categoriesList.toArray(categories);
-      abonos= new Long[pago.size()];
-      abonos= abono.toArray(abonos);
-      pagos= new Long[pago.size()];
-      pagos= pago.toArray(pagos);
-      totales= new Totales[]{new Totales("Importe", pagos), new Totales("Saldo", abonos)};
-      regresar= new Highcharts(
-              new Chart(tipoChart.getName(), "270"),
-              new Title(tituloGeneral),
-              new Xaxis(categories, new Title("Clientes")),
-              new Yaxis(0, new Title("Importe/Saldo"), new Labels("justify")),
-              new Tooltip("  ".concat(descripcion), aliasLadox.equals("porcentaje") ? "{point.name}</br><b>{point.y:.2f}%</b>" : ""),
-              new PlotOptions(new Bar(new DataLabels(false)), new Series(new DataLabels(true, aliasLadox.equals("porcentaje") ? "{point.y:.1f}%" : ""))),
-              new Legend("vertical", "left", "middle", -10, 80, true, 1, "#FFFFFF", true),
-              new Credits(false),
-              totales);
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch
-    return regresar;
-  } // loadCharProperties
-  
-  private Highcharts loadCharPropertiesPago(String tituloGeneral, String tituloLadox, String aliasLadox, String tituloLadoy, String aliasLadoy, String vista, String idVista, String descripcion, ETipoGrafica tipoChart) throws Exception{
-    Highcharts regresar        = null;
-    List<String> categoriesList= null;
-    String[] categories        = null;
-    List<Long> pago            = null;
-    List<Long> abono           = null;
-    Long[] pagos                = null;
-    Long[] abonos                = null;
-    Totales[] totales          = null;
-    try {
-      pago= new ArrayList<>();
-      abono= new ArrayList<>();
-      categoriesList= new ArrayList<>();
-      for(EPagos epago: EPagos.values()){
-        categoriesList.add(epago.getProveedor());
-        pago.add(epago.getDeuda());
-        abono.add(epago.getAbono());
-      } // for
-      categories= new String[categoriesList.size()];
-      categories= categoriesList.toArray(categories);
-      abonos= new Long[pago.size()];
-      abonos= abono.toArray(abonos);
-      pagos= new Long[pago.size()];
-      pagos= pago.toArray(pagos);
-      totales= new Totales[]{new Totales("Importe", pagos), new Totales("Saldo", abonos)};
-      regresar= new Highcharts(
-              new Chart(tipoChart.getName(), "270"),
-              new Title(tituloGeneral),
-              new Xaxis(categories, new Title("Proveedores")),
-              new Yaxis(0, new Title("Importe/Saldo"), new Labels("justify")),
-              new Tooltip("  ".concat(descripcion), aliasLadox.equals("porcentaje") ? "{point.name}</br><b>{point.y:.2f}%</b>" : ""),
-              new PlotOptions(new Bar(new DataLabels(false)), new Series(new DataLabels(true, aliasLadox.equals("porcentaje") ? "{point.y:.1f}%" : ""))),
-              new Legend("vertical", "left", "middle", -10, 80, true, 1, "#FFFFFF", true),
-              new Credits(false),
-              totales);
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch
-    return regresar;
-  } // loadCharProperties
-
-  private List<Entity> loadRecords(String vista, String idXml) throws Exception {
+  private List<Entity> loadRecords(String vista, String idXml, Long records) throws Exception {
     List<Entity> regresar    = null;
     Map<String, Object>params= null;
     try {
       params= new HashMap<>();
       params.put("idGrupo", this.idGrupo);
       params.put("idUsuario", JsfBase.getIdUsuario());
-      regresar= DaoFactory.getInstance().toEntitySet(vista, idXml, params, Constantes.SQL_TODOS_REGISTROS);
+      regresar= DaoFactory.getInstance().toEntitySet(vista, idXml, params, records);
     } // try
     catch (Exception e) {
       mx.org.kaana.libs.formato.Error.mensaje(e);

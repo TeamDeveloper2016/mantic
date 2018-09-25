@@ -18,16 +18,12 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.kajool.procesos.acceso.beans.Persona;
 import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.procesos.enums.EPerfiles;
-import mx.org.kaana.kajool.procesos.enums.ETipoGrafica;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Highcharts;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.HighchartsPie;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.JsonChart;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Title;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.reglas.BuildChart;
-import mx.org.kaana.kajool.reglas.comun.Columna;
-import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.formato.Fecha;
-import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,11 +43,16 @@ public class Tablero extends Comun implements Serializable {
   private static final long serialVersionUID = 5323749709626263801L;
   private static final Log LOG = LogFactory.getLog(Tablero.class);
   private List<UISelectItem> sucursales;
+	private List<Entity> articulos;
 
   public List<UISelectItem> getSucursales() {
     return sucursales;
   }  
 
+	public List<Entity> getArticulos() {
+		return articulos;
+	}	
+	
   @PostConstruct
   @Override
   protected void init() {
@@ -66,9 +67,8 @@ public class Tablero extends Comun implements Serializable {
       this.attrs.put("pathMensajes", JsfBase.getApplication().getContextPath() + "/Paginas/Mantenimiento/Mensajes/Notificacion/filtro.jsf");
       this.attrs.put("vigenciaInicial", new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
       this.attrs.put("vigenciaFin", new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
+			loadAllCharts();
       loadPieModel();      
-      loadLineModelNacional();      
-      loadLineModel();
       doLoadSucursales();
       doLoad();
       loadMeses();
@@ -84,56 +84,92 @@ public class Tablero extends Comun implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> campos= null;
     try {
-      campos = new ArrayList<>();      
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idUsuario", JsfBase.getIdUsuario());
       this.attrs.put("codigo", "");
       this.attrs.put("expresion", "");
-      this.attrs.put("sortOrder", "");
-      this.lazyModel = new FormatLazyModel("VistaArticulosDto", "row", this.attrs, campos);
-      UIBackingUtilities.resetDataTable();
+      this.attrs.put("sortOrder", "order by tc_mantic_articulos.stock asc");      
+			this.articulos= DaoFactory.getInstance().toEntitySet("VistaArticulosDto", "row", this.attrs, 50L);
     } // try
     catch (Exception e) {
       JsfBase.addMessageError(e);
     } // catch
   } // doLoad
 
-  private void loadLineModelNacional() throws Exception {
-    Highcharts charts     = null;
-    Highcharts chartsCaja = null;
-    Highcharts chartsCobro= null;
-    Highcharts chartsPago= null;
-    BuildChart buildChart = null;
+	private void loadAllCharts() throws Exception{
+		try {
+			doLoadChartUtilidadSucursal();
+			doLoadChartUtilidadCaja();
+			doLoadChartCuentasCobrar();
+			doLoadChartCuentasPagar();
+			doLoadChartsGeneral();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // loadAllCharts
+	
+	public void doLoadChartUtilidadSucursal() throws Exception{
+		Highcharts utilidadPorSucursal= null;
+		BuildChart buildChart         = null;
+		try {
+			buildChart = new BuildChart();
+			utilidadPorSucursal = buildChart.buildUtilidadSucursal();
+      this.attrs.put("utilidadPorSucursal", Decoder.toJson(utilidadPorSucursal));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // loadChartUtilidadSucursal
+	
+	public void doLoadChartUtilidadCaja() throws Exception{
+		BuildChart buildChart     = null;
+		Highcharts utilidadPorCaja= null;		
+		try {
+			buildChart = new BuildChart();
+			utilidadPorCaja = buildChart.buildUtilidadCaja();            
+      this.attrs.put("jsonUtilidadPorCaja", Decoder.toJson(utilidadPorCaja));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // loadChartUtilidadSucursal
+	
+	public void doLoadChartCuentasCobrar() throws Exception{
+		BuildChart buildChart      = null;
+		Highcharts cuentasPorCobrar= null;
+		try {
+			buildChart = new BuildChart();            
+			cuentasPorCobrar = buildChart.buildCuentasCobrar();
+      this.attrs.put("jsonCobro", Decoder.toJson(cuentasPorCobrar));
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch		
+	} // loadChartCuentasCobrar
+	
+  private void doLoadChartCuentasPagar() throws Exception {            
+    BuildChart buildChart     = null;
+		Highcharts cuentasPorPagar= null;
     try {
-      buildChart = new BuildChart(JsfBase.getAutentifica().getPersona().getIdPerfil(), Long.valueOf(this.attrs.get("idGrupo").toString()));
-      charts = buildChart.buildNacional(ETipoGrafica.COLUMNA);
-      chartsCaja = buildChart.buildNacionalCaja(ETipoGrafica.LINEAL);
-      this.attrs.put("tituloGeneralNacional", charts.getTitle().getText());
-      this.attrs.put("jsonGeneralNacional", Decoder.toJson(charts));
-      this.attrs.put("tituloGeneralNacionalCaja", chartsCaja.getTitle().getText());
-      this.attrs.put("jsonGeneralNacionalCaja", Decoder.toJson(chartsCaja));
-      chartsCobro = buildChart.buildNacionalCobro(ETipoGrafica.COLUMNA);
-      chartsPago = buildChart.buildNacionalPago(ETipoGrafica.COLUMNA);
-      this.attrs.put("tituloCobro", chartsCobro.getTitle().getText());
-      this.attrs.put("jsonCobro", Decoder.toJson(chartsCobro));
-      this.attrs.put("tituloPago", chartsPago.getTitle().getText());
-      this.attrs.put("jsonPago", Decoder.toJson(chartsPago));
+      buildChart = new BuildChart();                  
+      cuentasPorPagar = buildChart.buildCuentasPagar();      
+      this.attrs.put("jsonPago", Decoder.toJson(cuentasPorPagar));
     } // try
     catch (Exception e) {
       throw e;
     } // catch    
   } // loadLineModelNacional 
 
-  private void loadLineModel() throws Exception {
-    List<Highcharts> charts = null;
-    List<JsonChart> jsons = null;
-    BuildChart buildChart = null;
+  private void doLoadChartsGeneral() throws Exception {
+    List<Highcharts> charts= null;
+    List<JsonChart> jsons  = null;
+    BuildChart buildChart  = null;
     try {
       jsons = new ArrayList<>();
-      buildChart = new BuildChart(JsfBase.getAutentifica().getPersona().getIdPerfil(), Long.valueOf(this.attrs.get("idGrupo").toString()));
-      charts = buildChart.build(ETipoGrafica.BARRAS);
+      buildChart= new BuildChart();
+      charts= buildChart.build();
       for (Highcharts chart : charts) {
         JsonChart json = new JsonChart(Cadena.eliminaCaracter(chart.getTitle().getText(), ' ').toLowerCase(), chart.getTitle().getText(), "");
         chart.setTitle(new Title(""));
@@ -171,9 +207,8 @@ public class Tablero extends Comun implements Serializable {
     List<UISelectItem> meses = null;
     try {
       meses = new ArrayList<>();
-      for (String mes : Fecha.meses(12)) {
-        meses.add(new UISelectItem(mes, mes));
-      }
+      for (String mes : Fecha.meses(12)) 
+        meses.add(new UISelectItem(mes, mes));      
       this.attrs.put("meses", meses);
       this.attrs.put("mes", Fecha.meses(12)[Fecha.getMesActual() - 1]);
     } // try
@@ -203,13 +238,11 @@ public class Tablero extends Comun implements Serializable {
         this.attrs.put("diaFin", fechaFin.substring(6, 8));
         perfil = EPerfiles.fromOrdinal(JsfBase.getAutentifica().getPersona().getIdPerfil());
         contadores = (Entity) DaoFactory.getInstance().toEntity("VistaContadoresBienvenidaMensualesDto", perfil.getIdVistaContadoresMes(), this.attrs);
-        if (contadores != null) {
+        if (contadores != null) 
           this.attrs.put("contadoresMes", contadores);
-        }
       } // if
-      else {
+      else 
         JsfBase.addMessage("Reporte por fecha", "Las fechas seleccionadas son inconsistentes. Favor de verificarlas", ETipoMensaje.ERROR);
-      }
     } // try
     catch (Exception e) {
       throw e;
@@ -222,9 +255,8 @@ public class Tablero extends Comun implements Serializable {
     try {
       perfil = EPerfiles.fromOrdinal(JsfBase.getAutentifica().getPersona().getIdPerfil());
       contadores = (Entity) DaoFactory.getInstance().toEntity("VistaContadoresBienvenidaDto", perfil.getIdVistaContadores(), this.attrs);
-      if (contadores != null) {
+      if (contadores != null) 
         this.attrs.put("contadoresGenerales", contadores);
-      }
     } // try
     catch (Exception e) {
       throw e;
@@ -240,7 +272,7 @@ public class Tablero extends Comun implements Serializable {
     catch (Exception e) {
       throw e;
     } // catch    
-  }
+  } // toMensajesNoLeidos
 
   public void doLoadSucursales() {
     try {
@@ -251,5 +283,5 @@ public class Tablero extends Comun implements Serializable {
     catch (Exception e) {
       throw e;
     } // catch		
-  }
+  } // doLoadSucursales
 }
