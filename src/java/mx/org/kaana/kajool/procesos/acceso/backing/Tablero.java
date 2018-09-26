@@ -67,8 +67,7 @@ public class Tablero extends Comun implements Serializable {
       this.attrs.put("pathMensajes", JsfBase.getApplication().getContextPath() + "/Paginas/Mantenimiento/Mensajes/Notificacion/filtro.jsf");
       this.attrs.put("vigenciaInicial", new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
       this.attrs.put("vigenciaFin", new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
-			loadAllCharts();
-      loadPieModel();      
+			loadAllCharts();       
       doLoadSucursales();
       doLoad();
       loadMeses();
@@ -104,6 +103,7 @@ public class Tablero extends Comun implements Serializable {
 			doLoadChartCuentasCobrar();
 			doLoadChartCuentasPagar();
 			doLoadChartsGeneral();
+			doLoadChartsArticulos();
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -183,20 +183,20 @@ public class Tablero extends Comun implements Serializable {
     } // catch    
   } // loadLineModel    
 
-  private void loadPieModel() throws Exception {
-    HighchartsPie chartUtilidad= null;
-    HighchartsPie chartVentas  = null;
-    JsonChart json = null;
-    JsonChart jsonVentas = null;
-    BuildChart buildChart = null;
+  private void doLoadChartsArticulos() throws Exception {
+    HighchartsPie artMasUtilidad= null;
+    HighchartsPie artMasVentas  = null;
+    JsonChart jsonArtMasUtilidad= null;
+    JsonChart jsonArtMasVentas  = null;
+    BuildChart buildChart       = null;
     try {
-      buildChart = new BuildChart(JsfBase.getAutentifica().getPersona().getIdPerfil(), JsfBase.getAutentifica().getPersona().getIdGrupo());
-      chartUtilidad = buildChart.loadCharPropertiesPie("", "", "", "", "", "", "", "");
-      chartVentas = buildChart.loadCharPropertiesPie("", "", "", "", "", "", "", "", true);
-      json = new JsonChart("avanceNacional", "Articulos con mas utilidad", Decoder.toJson(chartUtilidad));
-      jsonVentas = new JsonChart("avanceNacional", "Articulos con mas ventas", Decoder.toJson(chartVentas));
-      this.attrs.put("jsonNacional", json);
-      this.attrs.put("jsonVentas", jsonVentas);
+      buildChart= new BuildChart();
+      artMasUtilidad= buildChart.buildArticulosMasUtilidad();
+      artMasVentas  = buildChart.buildArticulosMasVendidos();
+      jsonArtMasUtilidad = new JsonChart("avanceNacional", "Articulos con mas utilidad", Decoder.toJson(artMasUtilidad));
+      jsonArtMasVentas = new JsonChart("avanceNacional", "Articulos con mas ventas", Decoder.toJson(artMasVentas));
+      this.attrs.put("jsonUtilidad", jsonArtMasUtilidad);
+      this.attrs.put("jsonVentas", jsonArtMasVentas);
     } // try
     catch (Exception e) {
       throw e;
@@ -276,7 +276,7 @@ public class Tablero extends Comun implements Serializable {
 
   public void doLoadSucursales() {
     try {
-      this.sucursales = new ArrayList<>();
+      this.sucursales= new ArrayList<>();
       for (ESucursales sucursal : ESucursales.values()) 
         this.sucursales.add(new UISelectItem(sucursal.getIdKey(), Cadena.reemplazarCaracter(sucursal.getSucursal(), '_', ' ')));
     } // try
