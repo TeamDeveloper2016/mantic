@@ -269,6 +269,7 @@ public class Transaccion extends IBaseTnx {
 		boolean validate               = false;
 		boolean regresar               = false;
 		boolean asignaPrincipal        = false;
+		boolean alterSqlAction         = false;
 		try {
 			for(ArticuloCodigo codigo: this.articulo.getArticulosCodigos()){
 				if(codigo.getIdPrincipal().equals(1L))
@@ -284,12 +285,20 @@ public class Transaccion extends IBaseTnx {
 					codigo.setIdPrincipal(count==0 ? 1L : 2L);
 				} // if
 				codigo.setOrden(count + 1L);
-				dto= (TcManticArticulosCodigosDto) codigo;				
-				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) || this.eaccionGeneral.equals(EAccion.ACTIVAR) ? ESql.INSERT : codigo.getSqlAccion();
+				dto= (TcManticArticulosCodigosDto) codigo;
+				alterSqlAction= this.eaccionGeneral.equals(EAccion.COPIAR) || this.eaccionGeneral.equals(EAccion.ACTIVAR);
+				sqlAccion= alterSqlAction ? ESql.INSERT : codigo.getSqlAccion();
 				switch(sqlAccion){
 					case INSERT:
 						dto.setIdArticuloCodigo(-1L);
-						validate= registrar(sesion, dto);
+						if(alterSqlAction){
+							if(dto.getIdPrincipal().equals(1L))
+								validate= registrar(sesion, dto);
+							else
+								validate= true;
+						} // if
+						else
+							validate= registrar(sesion, dto);
 						break;
 					case UPDATE:
 						validate= actualizar(sesion, dto);
