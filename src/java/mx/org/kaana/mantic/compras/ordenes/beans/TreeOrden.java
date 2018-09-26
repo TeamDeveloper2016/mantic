@@ -1,6 +1,9 @@
 package mx.org.kaana.mantic.compras.ordenes.beans;
 
 import java.io.Serializable;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.mantic.enums.EDocumentosOrden;
@@ -18,9 +21,15 @@ public class TreeOrden implements Serializable, IBaseDto {
 	private String proveedor;
 	private String importe;
 	private String estatus;
-	private String registro;	
+	private Timestamp registro;	
 	private String factura;	
-	private String fechaFactura;	
+	private Timestamp fechaFactura;	
+	private Timestamp fechaRecepcion;	
+	private Timestamp fechaDocumento;	
+	private Timestamp fechaEntrega;	
+	private String folio;	
+	private String almacen;	
+	private String persona;	
 	private boolean ultimoNivel;  
 
 	public TreeOrden() {
@@ -32,23 +41,30 @@ public class TreeOrden implements Serializable, IBaseDto {
 	}	
 	
 	public TreeOrden(Long id, boolean ultimoNivel) {
-		this(id, null, null, null, null, null, null, null, null, ultimoNivel, null, null);
+		this(id, null, null, null, null, null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, new Timestamp(Calendar.getInstance().getTimeInMillis()), new Timestamp(Calendar.getInstance().getTimeInMillis()), new Timestamp(Calendar.getInstance().getTimeInMillis()), new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, ultimoNivel);
 	}	
 
-	public TreeOrden(Long id, String claveEmpresa, String nombreEmpresa, String tituloEmpresa, String consecutivo, String proveedor, String importe, String estatus, String registro, boolean ultimoNivel, String factura, String fechaFactura) {
-		this.id           = id;
-		this.claveEmpresa = claveEmpresa;
-		this.nombreEmpresa= nombreEmpresa;
-		this.tituloEmpresa= tituloEmpresa;
-		this.consecutivo  = consecutivo;
-		this.proveedor    = proveedor;
-		this.importe      = importe;
-		this.estatus      = estatus;
-		this.registro     = registro;
-		this.ultimoNivel  = ultimoNivel;
-		this.factura      = factura;
-		this.fechaFactura = fechaFactura;
+	public TreeOrden(Long id, EDocumentosOrden tipo, String claveEmpresa, String nombreEmpresa, String tituloEmpresa, String consecutivo, String proveedor, String importe, String estatus, Timestamp registro, String factura, Timestamp fechaFactura, Timestamp fechaRecepcion, Timestamp fechaDocumento, Timestamp fechaEntrega, String folio, String almacen, boolean ultimoNivel) {
+		this.id=id;
+		this.tipo=tipo;
+		this.claveEmpresa=claveEmpresa;
+		this.nombreEmpresa=nombreEmpresa;
+		this.tituloEmpresa=tituloEmpresa;
+		this.consecutivo=consecutivo;
+		this.proveedor=proveedor;
+		this.importe=importe;
+		this.estatus=estatus;
+		this.registro=registro;
+		this.factura=factura;
+		this.fechaFactura=fechaFactura;
+		this.fechaRecepcion=fechaRecepcion;
+		this.fechaDocumento=fechaDocumento;
+		this.fechaEntrega=fechaEntrega;
+		this.folio=folio;
+		this.almacen=almacen;
+		this.ultimoNivel=ultimoNivel;
 	}
+
 
 	public String getClaveEmpresa() {
 		return claveEmpresa;
@@ -106,14 +122,6 @@ public class TreeOrden implements Serializable, IBaseDto {
 		this.estatus = estatus;
 	}
 
-	public String getRegistro() {
-		return registro;
-	}
-
-	public void setRegistro(String registro) {
-		this.registro = registro;
-	}	
-	
 	public Long getId() {
 		return id;
 	}
@@ -146,12 +154,68 @@ public class TreeOrden implements Serializable, IBaseDto {
 		this.factura=factura;
 	}
 
-	public String getFechaFactura() {
+	public Timestamp getRegistro() {
+		return registro;
+	}
+
+	public void setRegistro(Timestamp registro) {
+		this.registro=registro;
+	}
+
+	public Timestamp getFechaFactura() {
 		return fechaFactura;
 	}
 
-	public void setFechaFactura(String fechaFactura) {
+	public void setFechaFactura(Timestamp fechaFactura) {
 		this.fechaFactura=fechaFactura;
+	}
+
+	public Timestamp getFechaRecepcion() {
+		return fechaRecepcion;
+	}
+
+	public void setFechaRecepcion(Timestamp fechaRecepcion) {
+		this.fechaRecepcion=fechaRecepcion;
+	}
+
+	public Timestamp getFechaDocumento() {
+		return fechaDocumento;
+	}
+
+	public void setFechaDocumento(Timestamp fechaDocumento) {
+		this.fechaDocumento=fechaDocumento;
+	}
+
+	public Timestamp getFechaEntrega() {
+		return fechaEntrega;
+	}
+
+	public void setFechaEntrega(Timestamp fechaEntrega) {
+		this.fechaEntrega=fechaEntrega;
+	}
+
+	public String getFolio() {
+		return folio;
+	}
+
+	public void setFolio(String folio) {
+		this.folio=folio;
+	}
+
+	public String getAlmacen() {
+		return almacen;
+	}
+
+	public void setAlmacen(String almacen) {
+		this.almacen=almacen;
+	}
+
+	public String getPersona() {
+		return persona;
+	}
+
+	public void setPersona(String persona) {
+		this.persona=persona;
 	}
 
 	@Override
@@ -201,7 +265,7 @@ public class TreeOrden implements Serializable, IBaseDto {
 
 	@Override
 	public String toString() {
-		return "TreeOrden{"+"id="+id+", tipo="+tipo+", claveEmpresa="+claveEmpresa+", nombreEmpresa="+nombreEmpresa+", tituloEmpresa="+tituloEmpresa+", consecutivo="+consecutivo+", proveedor="+proveedor+", importe="+importe+", estatus="+estatus+", registro="+registro+", factura="+factura+", fechaFactura="+fechaFactura+", ultimoNivel="+ultimoNivel+'}';
+		return "TreeOrden{"+"id="+id+", tipo="+tipo+", claveEmpresa="+claveEmpresa+", nombreEmpresa="+nombreEmpresa+", tituloEmpresa="+tituloEmpresa+", consecutivo="+consecutivo+", proveedor="+proveedor+", importe="+importe+", estatus="+estatus+", registro="+registro+", factura="+factura+", fechaFactura="+fechaFactura+", fechaRecepcion="+fechaRecepcion+", fechaDocumento="+fechaDocumento+", fechaEntrega="+fechaEntrega+", folio="+folio+", almacen="+almacen+", persona="+persona+", ultimoNivel="+ultimoNivel+'}';
 	}
 
 }

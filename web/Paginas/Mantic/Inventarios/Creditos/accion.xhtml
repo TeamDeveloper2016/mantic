@@ -24,9 +24,10 @@
 				'contenedorGrupos\\:idNotaEntrada': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idProveedor'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:folio'        : {validaciones: 'requerido', mascara: 'texto', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
+				'contenedorGrupos\\:fecha'        : {validaciones: 'requerido|fecha', mascara: 'fecha'},
 				'contenedorGrupos\\:importe'      : {validaciones: 'requerido|mayor-igual({"cuanto": 0})|menor-igual({"cuanto": #{manticInventariosCreditosAccion.idTipoCreditoNota eq '3'? 9999999999: manticInventariosCreditosAccion.orden.importe}})', mascara: 'no-aplica', grupo: 'general', formatos: 'sat', individual: true},
-				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
-				'contenedorGrupos\\:comentarios'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
+				'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+				'contenedorGrupos\\:comentarios'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'}
 			};	
 			
     	$(document).ready(function() {
@@ -109,7 +110,7 @@
 									</p:column>   
 								</p:selectOneMenu>
 								<p:outputLabel for="idProveedor" value="Proveedor:" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '3'}"/>
-								<p:selectOneMenu id="idProveedor" value="#{manticInventariosCreditosAccion.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="contains"  rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '3'}">
+								<p:selectOneMenu id="idProveedor" value="#{manticInventariosCreditosAccion.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="contains" rendered="#{manticInventariosCreditosAccion.idTipoCreditoNota eq '3'}">
 									<f:selectItems value="#{manticInventariosCreditosAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -123,6 +124,8 @@
 								</p:selectOneMenu>
 								<p:outputLabel for="folio" value="Folio:"/>
 								<p:inputText id="folio" styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosAccion.orden.folio}"/>
+								<p:outputLabel for="fecha" value="Fecha documento:"/>
+								<p:calendar id="fecha" inputStyleClass="janal-wid-94" styleClass="janal-wid-100 involucrados" value="#{manticInventariosCreditosAccion.orden.fecha}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 								<p:outputLabel for="importe" value="Importe:"/>
 								<p:inputText id="importe" styleClass="janal-column-right janal-wid-100-txt" value="#{manticInventariosCreditosAccion.orden.importe}"/>
 							</p:panelGrid>

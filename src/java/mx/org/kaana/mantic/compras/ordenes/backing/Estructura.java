@@ -5,8 +5,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.PostConstruct;
@@ -23,7 +21,6 @@ import mx.org.kaana.libs.archivo.Zip;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.TreeOrden;
 import mx.org.kaana.mantic.compras.ordenes.reglas.MotorBusqueda;
@@ -173,17 +170,17 @@ public class Estructura extends IBaseFilter implements Serializable {
 		return "filtro".concat(Constantes.REDIRECIONAR);
 	} // doCancelar  
 	
-	public void doConsultarDetalle(){
+	public void doConsultarDetalle() {
     TreeOrden seleccionado= null;
     RequestContext rc     = null;
     try {
       rc= RequestContext.getCurrentInstance();
-      if(this.node!= null){
+      if(this.node!= null) {
         seleccionado= (TreeOrden) this.node.getData();
         this.attrs.put("isPrincipal", seleccionado.getProveedor()!= null);
         this.attrs.put("detalle", seleccionado);        
-        rc.execute("PF('dlgDetalle').show();");
         rc.update("dialogoDetalle");
+        rc.execute("PF('dlgDetalle').show();");
       } // if
       else{
         rc.execute("janal.desbloquear();");        

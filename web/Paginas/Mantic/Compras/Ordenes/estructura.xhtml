@@ -218,23 +218,47 @@
       </div>
     </div>
 		<p:dialog id="dialogoDetalle" widgetVar="dlgDetalle" header="Detalle del documento" closable="true" resizable="false" dynamic="true" closeOnEscape="true" onHide="janal.desbloquear();" position="center" width="600px">
-			<h:panelGrid columns="2" styleClass="janal-col-100" columnClasses="janal-wid-col-110, janal-wid-100">
-        <p:outputLabel value="Empresa: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}"/>
-        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.nombreEmpresa}" styleClass="janal-wid-100-txt" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}" readonly="true"/>
-        <p:outputLabel value="Proveedor: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}"/>
-        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.proveedor}" styleClass="janal-wid-100-txt" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}" readonly="true"/>
+			<h:panelGrid columns="2" styleClass="janal-col-100" columnClasses="janal-wid-col-130, janal-wid-100">
         <p:outputLabel value="Consecutivo: " style="font-weight: bold"/>
         <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.consecutivo}" styleClass="janal-wid-100-txt" readonly="true"/>        
+        <p:outputLabel value="Empresa: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}"/>
+        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.nombreEmpresa}" styleClass="janal-wid-100-txt" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}" readonly="true"/>
+        <p:outputLabel value="Almacen: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'entrada'}"/>
+        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.almacen}" styleClass="janal-wid-100-txt" readonly="true" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'entrada'}"/>    
+        <p:outputLabel value="Proveedor: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}"/>
+        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.proveedor}" styleClass="janal-wid-100-txt" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}" readonly="true"/>
         <p:outputLabel value="Importe: " style="font-weight: bold"/>
         <p:inputText value="$#{manticComprasOrdenesEstructura.attrs.detalle.importe}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>        
         <p:outputLabel value="Estatus: " style="font-weight: bold"/>
         <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.estatus}" styleClass="janal-wid-100-txt" readonly="true"/>    
+				
 				<p:spacer height="1px" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'devolucion'}"/>
 				<p:separator rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'devolucion'}"/>
         <p:outputLabel value="Factura: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'devolucion'}"/>
         <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.factura}" styleClass="janal-wid-100-txt" readonly="true" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'devolucion'}"/>        
         <p:outputLabel value="Fecha factura: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'devolucion'}"/>
-        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.fechaFactura}" styleClass="janal-wid-100-txt" readonly="true" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'devolucion'}"/>    
+        <p:inputText value="#{manticComprasOrdenesEstructura.doFechaEstandar(manticComprasOrdenesEstructura.attrs.detalle.fechaFactura)}" styleClass="janal-wid-100-txt" readonly="true" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'devolucion'}"/>    
+        <p:outputLabel value="Fecha recepción: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'devolucion'}"/>
+        <p:inputText value="#{manticComprasOrdenesEstructura.doFechaEstandar(manticComprasOrdenesEstructura.attrs.detalle.fechaRecepcion)}" styleClass="janal-wid-100-txt" readonly="true" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'devolucion'}"/>    
+        <p:outputLabel value="Recibió: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'devolucion'}"/>
+        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.persona}" styleClass="janal-wid-100-txt" readonly="true" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'devolucion'}"/>    
+				
+				<p:spacer height="1px" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'entrada'}"/>
+				<p:separator rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'entrada'}"/>
+        <p:outputLabel value="Solicitó: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'entrada'}"/>
+        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.persona}" styleClass="janal-wid-100-txt" readonly="true" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'entrada'}"/>    
+				
+				<p:spacer height="1px" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'credito'}"/>
+				<p:separator rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'credito'}"/>
+        <p:outputLabel value="Fecha entrega: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'credito'}"/>
+        <p:inputText value="#{manticComprasOrdenesEstructura.doFechaEstandar(manticComprasOrdenesEstructura.attrs.detalle.fechaEntrega)}" styleClass="janal-wid-100-txt" readonly="true" rendered="#{manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml eq 'credito'}"/>    
+
+  			<p:spacer height="1px" rendered="#{empty manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml}"/>
+				<p:separator rendered="#{empty manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml}"/>
+        <p:outputLabel value="Folio: " style="font-weight: bold" rendered="#{empty manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml}"/>
+        <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.folio}" styleClass="janal-wid-100-txt" readonly="true" rendered="#{empty manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml}"/>
+        <p:outputLabel value="Fecha documento: " style="font-weight: bold" rendered="#{empty manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml}"/>
+        <p:inputText value="#{manticComprasOrdenesEstructura.doFechaEstandar(manticComprasOrdenesEstructura.attrs.detalle.fechaDocumento)}" styleClass="janal-wid-100-txt" readonly="true" rendered="#{empty manticComprasOrdenesEstructura.attrs.detalle.tipo.idXml}"/>
       </h:panelGrid>
       <hr class="ui-widget-content"/>
       <div class="janal-column-right">

@@ -4579,7 +4579,9 @@
           tc_mantic_proveedores.razon_social as proveedor,
           tc_mantic_ordenes_compras.total importe,
           tc_mantic_ordenes_estatus.nombre estatus,
-          tc_mantic_ordenes_compras.registro           
+          tc_mantic_ordenes_compras.registro,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
+          tc_mantic_almacenes.nombre as almacen
         from 
           tc_mantic_ordenes_compras
         inner join 
@@ -4590,6 +4592,12 @@
           tc_mantic_empresas on tc_mantic_ordenes_compras.id_empresa= tc_mantic_empresas.id_empresa
         inner join 
           tc_mantic_ordenes_estatus on tc_mantic_ordenes_compras.id_orden_estatus=tc_mantic_ordenes_estatus.id_orden_estatus        
+				inner join
+					tc_janal_usuarios on tc_mantic_ordenes_compras.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				inner join 
+					tc_mantic_almacenes on tc_mantic_ordenes_compras.id_almacen= tc_mantic_almacenes.id_almacen
         where 
           tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}	        
       </select>
@@ -4603,7 +4611,9 @@
           tc_mantic_notas_estatus.nombre estatus,
 				  tc_mantic_notas_entradas.factura,
 				  tc_mantic_notas_entradas.fecha_factura,
-          tc_mantic_proveedores.razon_social as proveedor
+				  tc_mantic_notas_entradas.fecha_recepcion,
+          tc_mantic_proveedores.razon_social as proveedor,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona
         from 
           tc_mantic_ordenes_compras                
         inner join 
@@ -4614,6 +4624,10 @@
           tc_mantic_notas_estatus on tc_mantic_notas_entradas.id_nota_estatus=tc_mantic_notas_estatus.id_nota_estatus        
         inner join 
           tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
+				inner join
+					tc_janal_usuarios on tc_mantic_notas_entradas.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
         where 
           tc_mantic_ordenes_compras.id_orden_compra= {idOrdenCompra}	        
       </select>
@@ -4634,7 +4648,8 @@
           tc_mantic_devoluciones.consecutivo consecutivo,
           tc_mantic_devoluciones.registro registro,
           tc_mantic_devoluciones.total importe,
-          tc_mantic_devoluciones_estatus.nombre estatus          
+          tc_mantic_devoluciones_estatus.nombre estatus,
+				  tc_mantic_devoluciones_bitacora.registro as fecha_entrega
         from           
           tc_mantic_notas_entradas        
         inner join
@@ -4643,6 +4658,8 @@
           tc_mantic_empresas on tc_mantic_devoluciones.id_empresa= tc_mantic_empresas.id_empresa
         inner join 
           tc_mantic_devoluciones_estatus on tc_mantic_devoluciones.id_devolucion_estatus=tc_mantic_devoluciones_estatus.id_devolucion_estatus        
+				left join
+				  tc_mantic_devoluciones_bitacora on tc_mantic_devoluciones.id_devolucion= tc_mantic_devoluciones_bitacora.id_devolucion and tc_mantic_devoluciones_bitacora.id_devolucion_estatus= 3 
         where 
           tc_mantic_notas_entradas.id_nota_entrada= {idNotaEntrada}	        
       </select>
@@ -4650,18 +4667,17 @@
         select          
           tc_mantic_creditos_notas.id_credito_nota as id,
           tc_mantic_creditos_notas.consecutivo consecutivo,
+				  tc_mantic_creditos_notas.folio,
+				  tc_mantic_creditos_notas.fecha as fecha_documento,
           tc_mantic_creditos_notas.registro registro,
           tc_mantic_creditos_notas.importe importe,
-          tc_mantic_creditos_estatus.nombre estatus,
-          tc_mantic_proveedores.razon_social as proveedor
+          tc_mantic_creditos_estatus.nombre estatus
         from           
           tc_mantic_devoluciones        
         inner join
           tc_mantic_creditos_notas on tc_mantic_devoluciones.id_devolucion = tc_mantic_creditos_notas.id_devolucion 
         inner join 
           tc_mantic_creditos_estatus on tc_mantic_creditos_notas.id_credito_estatus=tc_mantic_creditos_estatus.id_credito_estatus
-        left join 
-          tc_mantic_proveedores on tc_mantic_creditos_notas.id_proveedor= tc_mantic_proveedores.id_proveedor
         where 
           tc_mantic_devoluciones.id_devolucion= {idDevolucion}	        
       </select>
