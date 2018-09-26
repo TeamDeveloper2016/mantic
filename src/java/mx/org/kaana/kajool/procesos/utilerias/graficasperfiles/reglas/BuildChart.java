@@ -8,7 +8,6 @@ import java.util.Map;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.procesos.enums.EPerfiles;
 import mx.org.kaana.kajool.procesos.enums.ETipoGrafica;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Bar;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Chart;
@@ -71,6 +70,13 @@ public class BuildChart implements Serializable{
   
   public Highcharts buildCuentasPagar() throws Exception{ 
 		return loadGeneralChar(EGraficasTablero.CUENTAS_PAGAR);
+	} // buildCuentasPagar  
+  public HighchartsPie buildArticulosMasVendidos() throws Exception{ 
+		return loadCharPropertiesPie(EGraficasTablero.ART_MAS_VENDIDOS);
+	} // buildCuentasPagar  
+  
+	public HighchartsPie buildArticulosMasUtilidad() throws Exception{ 
+		return loadCharPropertiesPie(EGraficasTablero.ART_MAS_UTILIDAD);
 	} // buildCuentasPagar  
   
   public List<Highcharts> build() throws Exception{
@@ -149,89 +155,74 @@ public class BuildChart implements Serializable{
     } // finally
     return regresar;
   } // loadRecords
-  
-  public HighchartsPie buildPie() throws Exception{
-    return buildPie(EPerfiles.fromOrdinal(this.idPerfil));
-  } // buildPie
-  
-  public HighchartsPie buildPie(EPerfiles perfil) throws Exception{
-    HighchartsPie regresar= null;
-    try {
-      switch(perfil){
-        case ADMINISTRADOR_ENCUESTA:
-        case ADMINISTRADOR:
-        case CONSULTOR:
-          regresar= loadCharPropertiesPie("nacional", "", "Con captura", "Sin captura", "capturaCompleta", "sinCaptura", "viviendas");
-          break;
-        case RESPONSABLE_ESTATAL:
-        case CAPTURISTA:        
-          regresar= loadCharPropertiesPie("estatal", "", "Con captura", "Sin captura", "capturaCompleta", "sinCaptura", "viviendas");
-          break;
-      } // switch
-    } // try
-    catch (Exception e) {      
-      throw e;
-    } // catch    
-    return regresar;
-  } // buildPie
-  
-  private HighchartsPie loadCharPropertiesPie(String idVista, String titulo, String x, String y, String campoX, String campoY, String tipoConteo) throws Exception{
-    return loadCharPropertiesPie("VistaIndicadoresPerfilesDto", idVista, titulo, x, y, campoX, campoY, tipoConteo);
-  } // loadCharPropertiesPie
-  
-  public HighchartsPie loadCharPropertiesPie(String vista, String idVista, String titulo, String x, String y, String campoX, String campoY, String tipoConteo) throws Exception{
-		return loadCharPropertiesPie(vista, idVista, titulo, x, y, campoX, campoY, tipoConteo, false);
-	}
-  
-	public HighchartsPie loadCharPropertiesPie(String vista, String idVista, String titulo, String x, String y, String campoX, String campoY, String tipoConteo, boolean defaultLoad) throws Exception{
+	
+	public HighchartsPie loadCharPropertiesPie(EGraficasTablero grafica) throws Exception{
     HighchartsPie regresar     = null;
     List<Entity> records       = null;
     List<String> categoriesList= null;    
     List<DetailData> dataList  = null;
     DetailData[] data          = null;
     TotalesPie[] totales       = null;
+		String nombre              = null;
     try {
       dataList= new ArrayList<>();
       categoriesList= new ArrayList<>();
-      //records= loadRecords(vista, idVista);      
-      records= new ArrayList<>();
-      categoriesList.add("Total");
+      records= loadRecords(this.vistaGeneral, grafica.getIdVista(), grafica.getRecords());      
+      categoriesList.add(grafica.getTituloLadoy());
 			if(!records.isEmpty()) {
-				for(Entity record: records) {
-					dataList.add(new DetailData(x.concat(": ").concat(record.toString(Cadena.toBeanName("por_".concat(Cadena.toSqlName(campoX))))).concat("%"), record.toLong(campoX)));
-					dataList.add(new DetailData(y.concat(": ").concat(record.toString(Cadena.toBeanName("por_".concat(Cadena.toSqlName(campoY))))).concat("%"), record.toLong(campoY)));        
-				} // for
-			} // if
-			else {				
-				if(defaultLoad){
-					dataList.add(new DetailData("ACEITE P/COMPRESOR<br> 250 ML GONI".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("15")))).concat("%"), 30L));
-					dataList.add(new DetailData("ACEITE LUBRI. <br>100 ML. SELANUSA".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("5")))).concat("%"), 10L));
-					dataList.add(new DetailData("AEROGRAFO <br>ADIR #684".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("50")))).concat("%"), 70L));
-					dataList.add(new DetailData("AGUJA ARREA #6".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("10")))).concat("%"), 25L));
-					dataList.add(new DetailData("ARCO P/SEGUETA<br> FOY 17E".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("20")))).concat("%"), 45L));
-				} // if
-				else{
-					dataList.add(new DetailData("ATOMIZADOR <br>1 LT ECONOMICO".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("15")))).concat("%"), 30L));
-					dataList.add(new DetailData("AZADON C/MANGO<br> TRUPER AL-1M #1".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("30")))).concat("%"), 55L));
-					dataList.add(new DetailData("BANDOLA C/SEGURO<br> TRUE POWER PZA.".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("15")))).concat("%"), 21L));
-					dataList.add(new DetailData("BANQUETERO GALV.".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("10")))).concat("%"), 23L));
-					dataList.add(new DetailData("BARRETA ECONOMICA<br> 1 X 1.8 MTS".concat(": ").concat(Cadena.toBeanName("".concat(Cadena.toSqlName("30")))).concat("%"), 54L));
-				} // else
-			} // else
+				for(Entity record: records){ 					
+					nombre= toFormatName(Cadena.eliminaCaracter(record.toString(grafica.getAliasLadoy()), '"'));
+					dataList.add(new DetailData(nombre.concat("<br>").concat(record.toString("porcentaje")).concat("%"), record.toLong(grafica.getAliasLadox())));									
+				} // 
+			} // if			
 			data= new DetailData[dataList.size()];
 			data= dataList.toArray(data);
-			totales= new TotalesPie[]{new TotalesPie("Total", data)};
+			totales= new TotalesPie[]{new TotalesPie(grafica.getTituloLadox(), data)};
 			regresar= new HighchartsPie(              
-							new Chart(ETipoGrafica.PIE.getName(), "313"),
-							//new Title(titulo),              
+							new Chart(grafica.getTipoChart().getName(), grafica.getHeight()),							            
 							new Title(" "),              
-							new Tooltip("  ".concat(tipoConteo)),
+							new Tooltip(" "),
 							new PlotOptions(new Pie(true, "pointer", new DataLabels(true), false)),              
-								totales);													
+							totales);													
     } // try
     catch (Exception e) {
       throw e;
     } // catch
     return regresar;
   } // loadCharProperties
+	
+	private String toFormatName(String name){
+		String regresar= "";
+		int count      = 0;
+		int countChart = 0;
+		Long countEsp  = 0L;
+		Double espacios= 0D;
+		Long result    = 0L;
+		try {
+			for(count=0; count<name.length(); count++){
+				if(name.charAt(count)== ' ')
+					espacios= espacios + 1;
+			} // for
+			if(espacios > 0)
+				result= Math.round(espacios/2);
+			else
+				regresar= name;
+			if(result>0){
+				for(countChart=0; countChart<name.length(); countChart++){
+					if(name.charAt(countChart)== ' ')
+						countEsp= countEsp + 1;
+					if(countEsp.equals(result)){
+						regresar= regresar.concat("<br>");
+						countEsp= countEsp + 1;
+					} // if
+					else
+						regresar= regresar.concat(Character.toString(name.charAt(countChart)));
+				} // for
+			}
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // 
 }
