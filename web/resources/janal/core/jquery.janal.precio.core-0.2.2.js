@@ -343,38 +343,46 @@
 		},
 		next: function(focus) {
 			janal.console('jsPrecios.next');
-			PF('widgetVerificador').clearSelection();
-			PF('widgetVerificador').writeSelections();
-			PF('widgetVerificador').selectRow(0, true);	
-			if(focus)
-			  $('#verificadorTabla .ui-datatable-data').focus();
+			if(!PF('widgetVerificador').isEmpty()) {
+				PF('widgetVerificador').clearSelection();
+				PF('widgetVerificador').writeSelections();
+				PF('widgetVerificador').selectRow(0, true);	
+				if(focus)
+					$('#verificadorTabla .ui-datatable-data').focus();
+			} // if	
 			return false;
 		},
 		forward: function(focus) {
 			janal.console('jsPrecios.forward');
-			PF('widgetListaPrecios').clearSelection();
-			PF('widgetListaPrecios').writeSelections();
-			PF('widgetListaPrecios').selectRow(0, true);	
-			if(focus)
-			  $('#listaPreciosTabla .ui-datatable-data').focus();
+			if(!PF('widgetListaPrecios').isEmpty()) {
+				PF('widgetListaPrecios').clearSelection();
+				PF('widgetListaPrecios').writeSelections();
+				PF('widgetListaPrecios').selectRow(0, true);	
+				if(focus)
+					$('#widgetListaPrecios .ui-datatable-data').focus();
+			} // if	
 			return false;
 		},
 		advancing: function(focus) {
 			janal.console('jsPrecios.advancing');
-			PF('widgetCatalogoArticulos').clearSelection();
-			PF('widgetCatalogoArticulos').writeSelections();
-			PF('widgetCatalogoArticulos').selectRow(0, true);	
-			if(focus)
-			  $('#catalogoArticulosTabla .ui-datatable-data').focus();
+			if(!PF('widgetCatalogoArticulos').isEmpty()) {
+				PF('widgetCatalogoArticulos').clearSelection();
+				PF('widgetCatalogoArticulos').writeSelections();
+				PF('widgetCatalogoArticulos').selectRow(0, true);	
+				if(focus)
+					$('#catalogoArticulosTabla .ui-datatable-data').focus();
+			} // if	
 			return false;
 		},
 		move: function(focus) {
 			janal.console('jsPrecios.move');
-			PF('widgetBuscados').clearSelection();
-			PF('widgetBuscados').writeSelections();
-			PF('widgetBuscados').selectRow(0, true);	
-			if(focus)
-			  $('#widgetBuscados .ui-datatable-data').focus();
+			if(!PF('widgetBuscados').isEmpty()) {
+				PF('widgetBuscados').clearSelection();
+				PF('widgetBuscados').writeSelections();
+				PF('widgetBuscados').selectRow(0, true);	
+				if(focus)
+					$('#widgetBuscados .ui-datatable-data').focus();
+			} // if	
 			return false;
 		},
 		clear: function() {
@@ -384,11 +392,13 @@
 		},
 		goto: function(focus) {
 			janal.console('jsPrecios.goto');
-			PF('widgetBuscados').clearSelection();
-			PF('widgetBuscados').writeSelections();
-			PF('widgetBuscados').selectRow(0, true);	
-			if(focus)
-			  $('#buscados .ui-datatable-data').focus();
+			if(!PF('widgetBuscados').isEmpty()) {
+				PF('widgetBuscados').clearSelection();
+				PF('widgetBuscados').writeSelections();
+				PF('widgetBuscados').selectRow(0, true);	
+				if(focus)
+					$('#buscados .ui-datatable-data').focus();
+			} // if	
 			return false;
 		},
 		ask: function(text) {

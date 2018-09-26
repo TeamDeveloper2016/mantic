@@ -97,10 +97,10 @@ public class Diferencias extends IBaseFilter implements Serializable {
 					this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 					break;
 				case 1: // DIFERENCIA POR PRECIO
-					this.attrs.put(Constantes.SQL_CONDICION, " tc_mantic_ordenes_detalles.cantidades != 0 ");
+					this.attrs.put(Constantes.SQL_CONDICION, " tc_mantic_ordenes_detalles.importes != 0 ");
 					break;
 				case 2: // DIFERENCIA POR CANTIDAD
-					this.attrs.put(Constantes.SQL_CONDICION, " tc_mantic_ordenes_detalles.importes != 0 ");
+					this.attrs.put(Constantes.SQL_CONDICION, " tc_mantic_ordenes_detalles.cantidades != 0 ");
 					break;
 				case 3: // PARTIDAS NO 
 					this.attrs.put("seleccionado", null);

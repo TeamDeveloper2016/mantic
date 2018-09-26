@@ -11,7 +11,17 @@
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'justificacion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
-			};			
+			};	
+			
+			function reload() {
+				janal.console('reload: ');
+				if(!PF('kajoolTable').isEmpty()) {
+				  PF('kajoolTable').clearSelection();
+				  PF('kajoolTable').writeSelections();
+				  setTimeout(PF('kajoolTable').selectRow(0, false), 500);	
+				  $('#kajoolTable .ui-datatable-data').focus();
+				} // if	
+			}
 		</script>   
 		<style>
 			.janal-tr-diferencias {
@@ -31,7 +41,7 @@
         <div id="collapse-content" class="ui-grid-col-12">
 					<p:panel header="Tipos de diferencias que se pueden encontrar">
 						<p:selectOneRadio value="#{manticComprasOrdenesDiferencias.attrs.tipoDiferencia}" columns="3" converter="javax.faces.Integer">
-							<p:ajax event="change" listener="#{manticComprasOrdenesDiferencias.doChangeArticulos}" process="@this" update="tabla notas"/>
+							<p:ajax event="change" listener="#{manticComprasOrdenesDiferencias.doChangeArticulos}" process="@this" update="tabla notas" oncomplete="reload();"/>
 							<f:selectItem itemLabel="TODAS" itemValue="0"/>
 							<f:selectItem itemLabel="DIFERENCIA POR PRECIO" itemValue="1"/>
 							<f:selectItem itemLabel="DIFERENCIA POR CANTIDAD" itemValue="2"/>
@@ -64,6 +74,7 @@
                 <p:menuitem icon="fa fa-rotate-right" title="Recargar la orden de compra" actionListener="#{manticComprasOrdenesDiferencias.doLoad}" process="@this" update="tabla notas" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
+            <p:column headerText="Fila" selectionMode="single" style="width:38px; text-align:center"/>
 						<p:column class="MarAuto Responsive janal-wid-3">
 							<f:facet name="header">
 								<h:outputText value="No."/>
@@ -151,7 +162,7 @@
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'notas')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
-						<p:column class="MarAuto Responsive janal-wid-3">
+            <p:column class="MarAuto Responsive janal-wid-3">
 							<f:facet name="header">
 								<h:outputText value="No."/>
 							</f:facet>
