@@ -228,7 +228,7 @@
 								<p:ajax event="change" process="@this notas" update="notas" listener="#{manticComprasOrdenesDiferencias.doChangeAplicar(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 							</p:selectBooleanCheckbox>
 						</p:column>		
-						<p:column style="text-align: center" styleClass="janal-wid-col-38">
+						<p:column headerText="PDF" style="text-align: center" styleClass="janal-wid-col-38">
 							<p:commandLink actionListener="#{manticComprasOrdenesDiferencias.doViewPdfDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idPrincipal.toLong() eq 1}">
 								<p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
 							</p:commandLink>	

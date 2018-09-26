@@ -88,7 +88,7 @@
               </f:facet>
               <h:outputText value="#{row['cantidades']}"/>
             </p:column>		
-						<p:column style="text-align: center" styleClass="janal-wid-col-38">
+						<p:column headerText="PDF" style="text-align: center" styleClass="janal-wid-col-38">
 							<p:commandLink actionListener="#{manticNotasEntradasDiferencias.doViewPdfDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idPrincipal.toLong() eq 1}">
 								<p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
 							</p:commandLink>	
@@ -175,10 +175,10 @@
     <hr class="ui-widget-content" style="#{empty lineaSeparacion? '': 'display:none'}"/>
     <div class="janal-line-button">
       <div class="lg-pantalla">
-        <p:commandButton id="regresar" process="@this" icon="fa fa-reply" value="Regresar" action="#{manticNotasEntradasDiferencias.doRegresar}" immediate="true"/>
+        <p:commandButton id="regresar" process="@this" icon="fa fa-reply" accesskey="r" value="Regresar" action="#{manticNotasEntradasDiferencias.doRegresar}" immediate="true"/>
       </div>	
       <div class="xs-pantalla">
-        <p:commandButton id="regresarIcon" process="@this" icon="fa fa-reply" title="Regresar" action="#{manticNotasEntradasDiferencias.doRegresar}" immediate="true"/>
+        <p:commandButton id="regresarIcon" process="@this" icon="fa fa-reply" accesskey="r" title="Regresar" action="#{manticNotasEntradasDiferencias.doRegresar}" immediate="true"/>
       </div>		
     </div>
   </ui:define>  

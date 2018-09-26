@@ -92,7 +92,7 @@
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticVentasCajaCierresAbonos.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
-			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="c" process="@this" action="#{manticVentasCajaCierresAbonos.doCancelar}" ajax="false" onstart="janal.bloquear()" immediate="true"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticVentasCajaCierresAbonos.doCancelar}" ajax="false" onstart="janal.bloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaCierresAbonos.doAceptar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
