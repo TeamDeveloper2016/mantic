@@ -41,7 +41,7 @@ public class TrManticProveedorPagoDto implements IBaseDto, Serializable {
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="descuento")
-  private Double descuento;
+  private String descuento;
   @Column (name="plazo")
   private Long plazo;
   @Column (name="observaciones")
@@ -54,11 +54,11 @@ public class TrManticProveedorPagoDto implements IBaseDto, Serializable {
   }
 
   public TrManticProveedorPagoDto(Long key) {
-    this(new Long(-1L), null, null, null, null, null, null, null);
+    this(new Long(-1L), null, null, null, null, "0.00", null, null);
     setKey(key);
   }
 
-  public TrManticProveedorPagoDto(Long idProveedorPago, Long idProveedor, String clave, Long idTipoPago, Long idUsuario, Double descuento, String observaciones, Long plazo) {
+  public TrManticProveedorPagoDto(Long idProveedorPago, Long idProveedor, String clave, Long idTipoPago, Long idUsuario, String descuento, String observaciones, Long plazo) {
     setIdProveedorPago(idProveedorPago);
     setIdProveedor(idProveedor);
     setClave(clave);
@@ -118,11 +118,11 @@ public class TrManticProveedorPagoDto implements IBaseDto, Serializable {
     return idUsuario;
   }
 
-  public void setDescuento(Double descuento) {
+  public void setDescuento(String descuento) {
     this.descuento = descuento;
   }
 
-  public Double getDescuento() {
+  public String getDescuento() {
     return descuento;
   }
 

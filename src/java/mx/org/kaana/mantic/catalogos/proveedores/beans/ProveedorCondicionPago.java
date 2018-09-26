@@ -3,7 +3,7 @@ package mx.org.kaana.mantic.catalogos.proveedores.beans;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.mantic.db.dto.TrManticProveedorPagoDto;
 
-public class ProveedorCondicionPago extends TrManticProveedorPagoDto{
+public class ProveedorCondicionPago extends TrManticProveedorPagoDto {
 	
 	private static final long serialVersionUID = 4330788422027394579L;
 	private ESql sqlAccion;
@@ -42,4 +42,5 @@ public class ProveedorCondicionPago extends TrManticProveedorPagoDto{
 	public void setNuevo(Boolean nuevo) {
 		this.nuevo = nuevo;
 	}
+	
 }

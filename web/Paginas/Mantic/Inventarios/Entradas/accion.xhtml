@@ -348,14 +348,14 @@
 												<f:facet name="header">
 													<h:outputText value="Descuento(%)"/>
 												</f:facet>
-												<p:outputLabel value="#{manticInventariosEntradasAccion.doNumericoSat(row['descuento'])}" styleClass="filas"/>
+												<p:outputLabel value="#{row['descuento']}" styleClass="filas"/>
 												<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'));" style="display: none"/>
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
 													<h:outputText value="Extra(%)"/>
 												</f:facet>
-												<p:outputLabel value="#{manticInventariosEntradasAccion.doNumericoSat(row['extras'])}" styleClass="filas"/>
+												<p:outputLabel value="#{row['extras']}" styleClass="filas"/>
 												<p:inputText id="extras" value="#{row['extras']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event  filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:extras'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:extras'));" style="display: none"/>
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-col-50">

@@ -39,7 +39,7 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
   @Column (name="dias_entrega")
   private Long diasEntrega;
   @Column (name="descuento")
-  private Double descuento;
+  private String descuento;
   @Column (name="prefijo")
   private String prefijo;
   @Column (name="razon_social")
@@ -64,11 +64,11 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
   }
 
   public TcManticProveedoresDto(Long key) {
-    this(null, new Long(-1L), null, 5L, 0.00, null, null, null, null, null, null, null, null);
+    this(null, new Long(-1L), null, 5L, "0.00", null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticProveedoresDto(Long idTipoProveedor, Long idProveedor, String clave, Long diasEntrega, Double descuento, String prefijo, String razonSocial, String rfc, Long idTipoDia, Long idUsuario, Long idTipoMoneda, String observaciones, Long idEmpresa) {
+  public TcManticProveedoresDto(Long idTipoProveedor, Long idProveedor, String clave, Long diasEntrega, String descuento, String prefijo, String razonSocial, String rfc, Long idTipoDia, Long idUsuario, Long idTipoMoneda, String observaciones, Long idEmpresa) {
     setIdTipoProveedor(idTipoProveedor);
     setIdProveedor(idProveedor);
     setClave(clave);
@@ -117,11 +117,11 @@ public class TcManticProveedoresDto implements IBaseDto, Serializable {
     return diasEntrega;
   }
 
-  public void setDescuento(Double descuento) {
+  public void setDescuento(String descuento) {
     this.descuento = descuento;
   }
 
-  public Double getDescuento() {
+  public String getDescuento() {
     return descuento;
   }
 

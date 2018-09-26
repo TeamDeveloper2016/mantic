@@ -461,7 +461,7 @@ public class Transaccion extends IBaseTnx {
 					proveedorCondicionPago.setIdProveedor(idProveedor);
 					proveedorCondicionPago.setIdUsuario(JsfBase.getIdUsuario());
 					if(proveedorCondicionPago.getClave()== null || Cadena.isVacio(proveedorCondicionPago.getClave()))
-						proveedorCondicionPago.setClave(claveProveedor.concat(ETipoPago.fromIdTipoPago(proveedorCondicionPago.getIdTipoPago()).name()).concat(Cadena.rellenar(String.valueOf(proveedorCondicionPago.getDescuento().longValue()), 6, '0', true)));
+						proveedorCondicionPago.setClave(ETipoPago.fromIdTipoPago(proveedorCondicionPago.getIdTipoPago()).name().concat("-")+ proveedorCondicionPago.getPlazo());
 					dto = (TrManticProveedorPagoDto) proveedorCondicionPago;
 					sqlAccion = proveedorCondicionPago.getSqlAccion();
 					switch (sqlAccion) {

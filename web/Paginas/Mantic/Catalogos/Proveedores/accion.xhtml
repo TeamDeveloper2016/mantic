@@ -12,10 +12,10 @@
     <script type="text/javascript">
       Janal.Control.fields = {
         'contenedorGrupos\\:prefijo': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:rfc': {validaciones: 'requerido', mascara: 'rfc', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:rfc': {validaciones: 'requerido', mascara: 'rfc', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:idTipoProveedor': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:descuento': {validaciones: 'flotante', mascara: 'flotante', grupo: 'general'},
+        'contenedorGrupos\\:descuento': {validaciones: 'porcentaje', mascara: 'libre', grupo: 'general', individual: true},
         'contenedorGrupos\\:dias_entrega': {validaciones: 'entero', mascara: 'entero', grupo: 'general'},
         'contenedorGrupos\\:idTipoDia': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:idTipoMoneda': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -23,23 +23,26 @@
         'contenedorGrupos\\:detalleCalle': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:clave': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:diasEntrega': {validaciones: 'libre', mascara: 'numero', grupo: 'general'},
-				'contenedorGrupos\\:pagina': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-				'contenedorGrupos\\:cuenta': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-				'contenedorGrupos\\:contrasenia': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:pagina': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:cuenta': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:contrasenia': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:entidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:municipio': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
         'contenedorGrupos\\:localidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio'},
-        'contenedorGrupos\\:cp': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:calle': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:exterior': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:interior': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:asentamiento': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:entreCalle': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:ycalle': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:cp': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:calle': {validaciones: 'requerido', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:exterior': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:interior': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:asentamiento': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:entreCalle': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:ycalle': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:nombreRepresentante': {validaciones: 'requerido', mascara: 'libre', mensaje:'La captura del campo nombres es obligatorio', grupo: 'representantes', formatos: 'cambiar-mayusculas', individual: true},
 				'contenedorGrupos\\:nombreAgente': {validaciones: 'requerido', mascara: 'libre', grupo: 'agente', formatos: 'cambiar-mayusculas', individual: true},
-				'contenedorGrupos\\:paternoAgente': {validaciones: 'requerido', mascara: 'libre', grupo: 'agente', formatos: 'cambiar-mayusculas', individual: true},
-				'contenedorGrupos\\:maternoAgente': {validaciones: 'requerido', mascara: 'libre', grupo: 'agente', formatos: 'cambiar-mayusculas', individual: true}        
+				'contenedorGrupos\\:paternoAgente': {validaciones: 'requerido', mascara: 'libre', grupo: 'agente', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:maternoAgente': {validaciones: 'requerido', mascara: 'libre', grupo: 'agente', formatos: 'cambiar-mayusculas'},
+				'llave': {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'extra': {multiple: '$', validaciones: 'porcentaje|requerido', mascara: 'libre', individual: true},
+				'plazo': {multiple: '$', validaciones: 'porcentaje|requerido', mascara: 'libre'}
       };      
 			
 			fieldsDialog= {
@@ -86,7 +89,7 @@
                   <f:selectItem itemLabel="NO ESPECIFICADO" itemValue="3"/>
                 </p:selectOneMenu>
                 <p:outputLabel value="Descuento:" for="descuento"/>
-                <p:inputNumber id="descuento" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.descuento}" /> 
+                <p:inputText id="descuento" styleClass="janal-wid-100-txt" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.descuento}" /> 
                 <p:outputLabel value="Tipo de mondeda" for="idTipoMoneda"/>
                 <p:selectOneMenu id="idTipoMoneda" var="item" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedor.idTipoMoneda}" converter="javax.faces.Long"  styleClass="janal-wid-100-txt">
                   <f:selectItem itemLabel="PESOS" itemValue="1"/>
@@ -206,8 +209,8 @@
             <p:tab id="tabTipoPago" title="Condiciones de pago">
               <p:panelGrid id="panelTablaTipoPago" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaTipoPago" rowIndexVar="index" var="tipoPago" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresCondicionPago}" rows="6" paginator="false" reflow="true" rowKey="#{tipoPago.key}" emptyMessage=" " styleClass="paginated">																					
-                  <p:column headerText="Clave" styleClass="janal-wid-30">		
-                    <p:inputText id="clave#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.clave}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaTipoPago', #{index}, 'clave')" disabled="#{!tipoPago.nuevo}"/>                    																																			
+                  <p:column headerText="Clave" styleClass="janal-wid-30 llave">		
+                    <p:inputText id="llave#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.clave}" disabled="#{!tipoPago.nuevo}"/>                    																																			
                   </p:column>
 									<p:column headerText="Tipo de pago">										
                     <p:selectOneMenu id="tipoPago#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.idTipoPago}" filter="true" filterMatchMode="contains" disabled="#{!tipoPago.nuevo}">
@@ -215,11 +218,11 @@
 											<f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.tiposPago}"/>
                     </p:selectOneMenu> 				
                   </p:column>	
-                  <p:column headerText="Descuento adicional" styleClass="janal-wid-30">		
-                    <p:inputText id="valor#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.descuento}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaTipoPago', #{index}, 'valor')" disabled="#{!tipoPago.nuevo}"/>                    																																			
+                  <p:column headerText="Descuento adicional" styleClass="janal-wid-30 extra">		
+                    <p:inputText id="extra#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.descuento}" disabled="#{!tipoPago.nuevo}"/>                    																																			
                   </p:column>
-                  <p:column headerText="Plazo" styleClass="janal-wid-5">		
-                    <p:inputNumber decimalPlaces="0" id="plazo#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.plazo}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaTipoPago', #{index}, 'valor')" disabled="#{!tipoPago.nuevo}"/>
+                  <p:column headerText="Plazo" styleClass="janal-wid-5 plazo">		
+                    <p:inputNumber decimalPlaces="0" id="plazo#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.plazo}" disabled="#{!tipoPago.nuevo}"/>
                   </p:column>
                   <p:column style="width:32px;text-align: center">
                     <p:commandButton update="tablaTipoPago" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.registroProveedor.doEliminarProveedorCondicionPago}">

@@ -174,9 +174,10 @@ public class Accion extends IBaseArticulos implements Serializable {
       this.attrs.put("condiciones", UIEntity.build("VistaOrdenesComprasDto", "condiciones", params, columns));
 			List<UISelectEntity> condiciones= (List<UISelectEntity>) this.attrs.get("condiciones");
 			if(!condiciones.isEmpty())
-				((OrdenCompra)this.getAdminOrden().getOrden()).setDescuento(condiciones.get(0).toString("descuento"));
+				((OrdenCompra)this.getAdminOrden().getOrden()).setExtras(condiciones.get(0).toString("descuento"));
 			this.attrs.put("proveedor", proveedor);
-			Calendar fechaEstimada= Calendar.getInstance();
+      ((OrdenCompra)this.getAdminOrden().getOrden()).setDescuento(proveedor.toString("descuento"));
+	    Calendar fechaEstimada= Calendar.getInstance();
 			int tipoDia= proveedor.toInteger("idTipoDia");
 			int dias   = proveedor.toInteger("dias");
 	    fechaEstimada.set(Calendar.DATE, fechaEstimada.get(Calendar.DATE)+ dias);

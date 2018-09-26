@@ -65,7 +65,7 @@ PrimeFaces.locales['es'] = {
     allDayText : 'Todo el d\u00EDa'
 };
 try {
-  if(typeof PrimeFacesExt!== 'undefined') {
+  if(typeof(PrimeFacesExt)!== 'undefined') {
     PrimeFacesExt.locales.TimePicker['es'] = {
         hourText: 'Hora',
         minuteText: 'Minuto',
@@ -175,14 +175,14 @@ $.mask.masks = $.extend($.mask.masks, {
 (function() {
   $.validator.addMethod('precio', function(value, element, params) {
       if(typeof(params)=== 'undefined')
-				params= {default: '0'};
-		  if(typeof(params.default)=== 'undefined')
-				params.default= '0';
+				params= {initialize: '0.0'};
+		  if(typeof(params.initialize)=== 'undefined')
+				params.initialize= '0.0';
       if (janal.empty(value))
-				$(element).val(parseFloat(params.default).toFixed(janal.decimals));
+				$(element).val(parseFloat(params.initialize).toFixed(janal.decimals));
 		  else		
-        if(Number.isNaN(parseFloat(value, 10)) || parseFloat(value, 10)< parseFloat(params.default, 10))
-					$(element).val(parseFloat(params.default).toFixed(janal.decimals));
+        if(Number.isNaN(parseFloat(value, 10)) || parseFloat(value, 10)< parseFloat(params.initialize, 10))
+					$(element).val(parseFloat(params.initialize).toFixed(janal.decimals));
 				else
 					$(element).val(parseFloat(value, 10).toFixed(janal.decimals)); 
       return true;
@@ -192,14 +192,14 @@ $.mask.masks = $.extend($.mask.masks, {
     
   $.validator.addMethod('cantidad', function(value, element, params) {
 		  if(typeof(params)=== 'undefined')
-				params= {default: 0};
-		  if(typeof(params.default)=== 'undefined')
-				params.default= 0;
+				params= {initialize: 0};
+		  if(typeof(params.initialize)=== 'undefined')
+				params.initialize= 0;
       if (janal.empty(value) || $(element).hasClass('ignore'))
-				$(element).val(params.default);
+				$(element).val(params.initialize);
 		  else		
-        if(Number.isNaN(parseInt(value, 10)) || parseInt(value, 10)< parseInt(params.default, 10))
-				  $(element).val(params.default);
+        if(Number.isNaN(parseInt(value, 10)) || parseInt(value, 10)< parseInt(params.initialize, 10))
+				  $(element).val(params.initialize);
 				else
 					$(element).val(parseInt(value, 10)); 
       return true;
@@ -210,11 +210,11 @@ $.mask.masks = $.extend($.mask.masks, {
   $.validator.addMethod('descuentos', function(value, element, params) {
 			var values= '';
       if(typeof(params)=== 'undefined')
-				params= {default: '0'};
-		  if(typeof(params.default)=== 'undefined')
-				params.default= '0';
+				params= {initialize: '0.0'};
+		  if(typeof(params.initialize)=== 'undefined')
+				params.initialize= '0.0';
 			if(janal.empty(value))
-				$(element).val(params.default);
+				$(element).val(params.initialize);
 			else {
 				var items= value.split(',');
 				for (item in items) {
@@ -225,7 +225,7 @@ $.mask.masks = $.extend($.mask.masks, {
 						values+= items[item]+ ', ';
 					} // else	
 				} // for
-				$(element).val(values.length=== 0? params.default: values.substring(0, values.length- 2));
+				$(element).val(values.length=== 0? params.initialize: values.substring(0, values.length- 2));
 			} // else	
       return true;
     }, function(params, element) {
@@ -301,12 +301,12 @@ $.mask.masks = $.extend($.mask.masks, {
 	$.validator.addMethod('porcentaje', function(value, element, params) {
 			var values= '';
       if(typeof(params)=== 'undefined')
-				params= {default: '0'};
-		  if(typeof(params.default)=== 'undefined')
-				params.default= '0';
+				params= {initialize: '0.0'};
+		  if(typeof(params.initialize)=== 'undefined')
+				params.initialize= '0.0';
 			params.suma= 0;
 			if(janal.empty(value))
-				$(element).val(params.default);
+				$(element).val(params.initialize);
 			else {
 				var items= value.split(',');
 				for (item in items) {
@@ -318,7 +318,7 @@ $.mask.masks = $.extend($.mask.masks, {
 					} // else	
 					params.suma+= items[item];
 				} // for
-				$(element).val(values.length=== 0? params.default: values.substring(0, values.length- 2));
+				$(element).val(values.length=== 0? params.initialize: values.substring(0, values.length- 2));
 			} // else	
       return params.suma<= 100;
     }, function(params, element) {

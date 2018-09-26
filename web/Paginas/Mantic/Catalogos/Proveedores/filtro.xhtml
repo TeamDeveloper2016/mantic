@@ -55,7 +55,7 @@
           </p:panel>
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosProveedoresFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosProveedoresFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosProveedoresFiltro.lazyModel.rowCount gt manticCatalogosProveedoresFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosProveedoresFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosProveedoresFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosProveedoresFiltro.lazyModel.rowCount gt manticCatalogosProveedoresFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
             <f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton   value="Opciones">
@@ -72,23 +72,23 @@
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>												
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-5" sortBy="#{filtro.clave}">
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.clave}">
               <f:facet name="header">
                 <h:outputText value="Clave"/>
               </f:facet>
-              <h:outputText value="#{filtro['clave']}"/>
+              <h:outputText value="#{row['clave']}"/>
             </p:column>														
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-20" sortBy="#{filtro.rfc}">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{row.rfc}">
               <f:facet name="header">
                 <h:outputText value="RFC"/>
               </f:facet>
-              <h:outputText value="#{filtro['rfc']}"/>
+              <h:outputText value="#{row['rfc']}"/>
             </p:column>					
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-50" sortBy="#{filtro.razonSocial}">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-50" sortBy="#{row.razonSocial}">
               <f:facet name="header">
                 <h:outputText value="Razón social"/>
               </f:facet>
-              <h:outputText value="#{filtro['razonSocial']}"/>
+              <h:outputText value="#{row['razonSocial']}"/>
             </p:column>	            	
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCatalogosProveedoresFiltro.lazyModel==null?0:manticCatalogosProveedoresFiltro.lazyModel.rowCount}] registros"/>
