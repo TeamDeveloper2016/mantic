@@ -19,13 +19,13 @@ import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Global;
-import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.ParametrosComunes;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.mantic.libs.pagina.IFilterImportar;
 import org.primefaces.context.RequestContext;
 
 /**
@@ -38,7 +38,7 @@ import org.primefaces.context.RequestContext;
 
 @Named(value = "manticNotasEntradasDiferencias")
 @ViewScoped
-public class Diferencias extends IBaseFilter implements Serializable {
+public class Diferencias extends IFilterImportar implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428311L;
   private Reporte reporte;

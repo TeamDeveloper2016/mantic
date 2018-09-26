@@ -102,35 +102,36 @@
               </f:facet>
               <h:outputText value="#{row['nombre']}" title="Código propio: #{row['propio']}"/>
             </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.costo}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.costo}">
               <f:facet name="header">
                 <h:outputText value="Costo"/>
               </f:facet>
               <h:outputText value="#{row['costo']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidad}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.cantidad}">
               <f:facet name="header">
                 <h:outputText value="Cantidad"/>
               </f:facet>
               <h:outputText value="#{row['cantidad']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.importe}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
               <h:outputText value="#{row['importe']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidades}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.cantidades}">
               <f:facet name="header">
                 <h:outputText value="Cantidad [+/-]"/>
               </f:facet>
               <h:outputText value="#{row['cantidades']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importes}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.importes}">
               <f:facet name="header">
                 <h:outputText value="Importe [+/-]"/>
               </f:facet>
-              <h:outputText value="#{row['importes']}" title="Diferencia: #{row['porcentaje']} %"/>
+              <h:outputLabel value="&lt;span class='#{row['color']}' style='float:left;'&gt;[#{row['porcentaje']}%]&lt;/span&gt;" escape="false"/>
+              <h:outputText value="#{row['importes']}"/>
             </p:column>		
             <f:facet name="footer">
 							<p:outputLabel value="Las filas en color son articulos que tiene diferencia en cantidad o costo" style="float: left;"/>
@@ -227,6 +228,11 @@
 								<p:ajax event="change" process="@this notas" update="notas" listener="#{manticComprasOrdenesDiferencias.doChangeAplicar(row)}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 							</p:selectBooleanCheckbox>
 						</p:column>		
+						<p:column style="text-align: center" styleClass="janal-wid-col-38">
+							<p:commandLink actionListener="#{manticComprasOrdenesDiferencias.doViewPdfDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idPrincipal.toLong() eq 1}">
+								<p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
+							</p:commandLink>	
+						</p:column>
             <f:facet name="footer">
 							<p:outputLabel value="Las filas en color son articulos no solicitados, las que estan en color marron presentan diferencia en cantidad con respecto a la factura" style="float: left;"/>
               <p:outputLabel value="Total [#{manticComprasOrdenesDiferencias.lazyNotas==null?0:manticComprasOrdenesDiferencias.lazyNotas.rowCount}] registros"/>
@@ -263,5 +269,18 @@
 		</div>	
   </div>
   </ui:define> 
+	<ui:define name="dialogos">
+		<h:form prependId="true">
+			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" header="Factura en formato digital" onHide="janal.sendLastFocus(); janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+				<object type="application/pdf" data="#{manticComprasOrdenesDiferencias.attrs.temporal}" height="390px" width="100%" internalinstanceid="5">
+					 Tu navegador no soporta el desplegado de archivos PDF's, por favor da click en el boton de descargar
+				</object>
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" actionListener="#{manticComprasOrdenesDiferencias.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
+			  </div>
+			</p:dialog>
+		</h:form>
+	</ui:define>
   <ui:param name="componenteBloqueo" value="tabla notas aceptar aceptarIcon"/>
 </ui:composition>

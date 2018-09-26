@@ -65,7 +65,6 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 
 	private static final long serialVersionUID= 3555865994317044663L;
 	private static final Log LOG              = LogFactory.getLog(IBaseImportar.class);
-  private static final int BUFFER_SIZE      = 6124;
 	
 	private ComprobanteFiscal factura;
 	private Importado xml;
@@ -193,7 +192,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 	private void toWriteFile(File result, InputStream upload, boolean xml) throws Exception {
 		FileOutputStream fileOutputStream= new FileOutputStream(result);
 		InputStream inputStream          = upload;
-		byte[] buffer                    = new byte[BUFFER_SIZE];
+		byte[] buffer                    = new byte[Constantes.BUFFER_SIZE];
 		int bulk;
 		while(true) {
 			if(xml)
@@ -335,6 +334,10 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 	
 	public void doViewPdfDocument(UISelectEntity item) { 
 		this.toCopyDocument(item.toString("alias"), item.toString("nombre"));
+	}
+	
+	public void doViewPdfDocument(Entity item) { 
+		this.toCopyDocument(item.toString("alias"), item.toString("archivo"));
 	}
 	
 	protected void doViewDocument(String carpeta) {
