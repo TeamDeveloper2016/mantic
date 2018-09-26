@@ -9,10 +9,12 @@ import mx.org.kaana.libs.Constantes;
 public enum EGraficasTablero {
 
   UTILIDAD_SUCURSAL(" ", "Utilidad", "total", "Sucursales", "sucursal", "utilidadSucursales", " ", ETipoGrafica.COLUMNA, "270", 110, 1, Constantes.SQL_TODOS_REGISTROS),  
-  UTILIDAD_CAJA    (" ", "Utilidad", "utilidadCaja", "Cajas", "caja", "utilidadCaja", " ", ETipoGrafica.LINEAL, "180", 80, 1, Constantes.SQL_TODOS_REGISTROS),  
-  CUENTAS_COBRAR   (" ", "Importe / Saldo", "importe~saldo", "Clientes", "cliente", "cuentasCobrar", " ", ETipoGrafica.COLUMNA, "270", 80, 2, 5L),
-  CUENTAS_PAGAR    (" ", "Importe / Saldo", "importe~saldo", "Proveedores", "proveedor", "cuentasPagar", " ", ETipoGrafica.COLUMNA, "270", 80, 2, 5L),  
-  VENTAS_SUCURSAL  ("Total de ventas por sucursal", "Ventas", "total", "Sucursales", "sucursal", "ventasSucursal", " ", ETipoGrafica.BARRAS, "180", 80, 1, Constantes.SQL_TODOS_REGISTROS);  
+  UTILIDAD_CAJA    (" ", "Utilidad", "utilidadCaja", "Cajas", "caja", "utilidadCaja", " ", ETipoGrafica.LINEAL, "180", 80, 1, Constantes.SQL_TODOS_REGISTROS),    
+	CUENTAS_COBRAR   (" ", "Importe / Saldo", "importe~saldo", "Clientes", "cliente", "cuentasCobrar", " ", ETipoGrafica.COLUMNA, "270", 80, 2, 5L),
+  CUENTAS_PAGAR    (" ", "Importe / Saldo", "importe~saldo", "Proveedores", "proveedor", "cuentasPagar", " ", ETipoGrafica.COLUMNA, "270", 80, 2, 5L),    
+	VENTAS_SUCURSAL  ("Total de ventas por sucursal", "Ventas", "total", "Sucursales", "sucursal", "ventasSucursal", " ", ETipoGrafica.BARRAS, "180", 80, 1, Constantes.SQL_TODOS_REGISTROS),
+	ART_MAS_VENDIDOS ("Articulos con mas ventas", "Total", "total", "Articulo", "articulo", "articulosMasVentas", " ", ETipoGrafica.PIE, "313", 80, 1, 5L),
+	ART_MAS_UTILIDAD ("Articulos con mas utilidad", "Total", "total", "Articulo", "articulo", "articulosMasUtilidad", " ", ETipoGrafica.PIE, "313", 80, 1, 5L);  
   
 	private static final String vista= "VistaIndicadoresTableroDto";
   private String tituloGeneral;
