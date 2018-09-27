@@ -1873,6 +1873,8 @@
           tc_mantic_empresas on tc_mantic_devoluciones.id_empresa= tc_mantic_empresas.id_empresa         
         inner join
           tc_mantic_notas_entradas on tc_mantic_devoluciones.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+				inner join
+					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor       
         where
 					tc_mantic_notas_entradas.id_empresa in ({idEmpresa})
 					and {condicion}
@@ -2029,6 +2031,28 @@
 				order by
 				  tc_mantic_devoluciones_detalles.registro
 			</select>	
+			<select id="proveedores">
+        select
+					tc_mantic_proveedores.id_proveedor as id_key,
+					tc_mantic_proveedores.clave,  
+					tc_mantic_proveedores.razon_social as nombre,
+					tc_mantic_proveedores.dias_entrega
+				from 
+					tc_mantic_notas_entradas
+				inner join
+					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor       
+				inner join
+					tc_mantic_devoluciones on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_devoluciones.id_nota_entrada       
+				where 		
+				  tc_mantic_notas_entradas.id_empresa in ({sucursales})
+				group by
+          tc_mantic_proveedores.id_proveedor,
+					tc_mantic_proveedores.clave,  
+					tc_mantic_proveedores.razon_social,
+					tc_mantic_proveedores.dias_entrega			
+				order by
+				  tc_mantic_proveedores.clave
+			</select>
 		</unit>
 		<unit id="VistaNotasEntradasDto">
 			<select id="surtidores">
@@ -2803,9 +2827,9 @@
 				from 
 					tc_mantic_ordenes_compras
 				inner join
-						tr_mantic_proveedor_pago on tc_mantic_ordenes_compras.id_proveedor_pago= tr_mantic_proveedor_pago.id_proveedor_pago
+					tr_mantic_proveedor_pago on tc_mantic_ordenes_compras.id_proveedor_pago= tr_mantic_proveedor_pago.id_proveedor_pago
 				inner join
-						tc_mantic_proveedores on tr_mantic_proveedor_pago.id_proveedor= tc_mantic_proveedores.id_proveedor       
+					tc_mantic_proveedores on tr_mantic_proveedor_pago.id_proveedor= tc_mantic_proveedores.id_proveedor       
 				where 		
 				  tc_mantic_ordenes_compras.id_empresa in ({sucursales})
 				group by

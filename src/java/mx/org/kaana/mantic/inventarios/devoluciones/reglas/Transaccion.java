@@ -86,7 +86,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					this.orden.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
 					this.orden.setOrden(consecutivo);
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
-  				this.orden.setIdDevolucionEstatus(3L);
+  				this.orden.setIdDevolucionEstatus(1L);
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 					bitacoraNota= new TcManticDevolucionesBitacoraDto(this.orden.getIdDevolucionEstatus(), "", this.orden.getIdDevolucion(), JsfBase.getIdUsuario(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
