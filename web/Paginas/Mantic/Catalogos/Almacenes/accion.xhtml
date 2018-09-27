@@ -180,7 +180,7 @@
                     </p:selectOneMenu> 				
                   </p:column>	
                   <p:column headerText="Valor" styleClass="janal-wid-50">		
-                    <p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaContactos', #{index}, 'valor')" disabled="#{!contacto.nuevo}"/>                    																																			
+                    <p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}" disabled="#{!contacto.nuevo}"/>                    																																			
                   </p:column>
                   <p:column style="width:32px;text-align: center">
                     <p:commandButton update="tablaContactos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosAlamacenesAccion.registroAlmacen.doEliminarAlamcenTipoContacto}">
@@ -197,16 +197,16 @@
 							<p:panelGrid id="panelTablaUbicacion" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaUbicacion" rowIndexVar="index" var="ubicacion" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.ubicaciones}" rows="8" paginator="false" reflow="true" rowKey="#{ubicacion.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Piso" >										
-                    <p:inputText id="piso#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.piso}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaUbicacion', #{index}, 'piso')" disabled="#{!ubicacion.nuevo}"/>                    																																			
+                    <p:inputText id="piso#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.piso}" disabled="#{!ubicacion.nuevo}"/>                    																																			
                   </p:column>	
                   <p:column headerText="Cuarto" >		
-                    <p:inputText id="cuarto#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.cuarto}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaUbicacion', #{index}, 'cuarto')" disabled="#{!ubicacion.nuevo}"/>                    																																			
+                    <p:inputText id="cuarto#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.cuarto}" disabled="#{!ubicacion.nuevo}"/>                    																																			
                   </p:column>
                   <p:column headerText="Anaquel">		
-                    <p:inputText id="anaquel#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.anaquel}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaUbicacion', #{index}, 'anaquel')" disabled="#{!ubicacion.nuevo}"/>                    																																			
+                    <p:inputText id="anaquel#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.anaquel}" disabled="#{!ubicacion.nuevo}"/>                    																																			
                   </p:column>
                   <p:column headerText="Charola">		
-                    <p:inputText id="charola#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.charola}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaUbicacion', #{index}, 'charola')" disabled="#{!ubicacion.nuevo}"/>                    																																			
+                    <p:inputText id="charola#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.charola}" disabled="#{!ubicacion.nuevo}"/>                    																																			
                   </p:column>
                   <p:column style="width:32px;text-align: center">
                     <p:commandButton update="tablaUbicacion" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosAlamacenesAccion.registroAlmacen.doEliminarAlmacenUbicacion}">
