@@ -112,6 +112,7 @@
       .descripcion-titulo{
         font-size: smaller !important; 
         font-weight: bold !important;
+				color: blue !important;
       }      
 			.janal-align-right-icon {
 				position: relative !important;
@@ -135,7 +136,7 @@
           <p:tree id="tabla" value="#{manticComprasOrdenesEstructura.tree}" var="node" selectionMode="single" selection="#{manticComprasOrdenesEstructura.node}" orientation="horizontal" styleClass="tabla-filtro" dynamic="true">
 						<p:ajax event="expand" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" listener="#{manticComprasOrdenesEstructura.onNodeExpand}" process="@this tabla" update=":datos:tabla"/>            
 						<p:treeNode type="orden">		
-							<p:outputLabel value="ORDEN DE COMPRA" class="descripcion-titulo"/>
+							<h:outputText value="ORDEN DE COMPRA" class="descripcion-titulo"/>
 							 <h:panelGrid columns="2" styleClass="janal-wid-col-140" columnClasses=" ,janal-column-right">
 								<p:spacer/><p:spacer/>
 								<p:outputLabel value="Consecutivo:" styleClass="descripcion-titulo"/>
@@ -154,7 +155,7 @@
 							<p:spacer/>							
 						</p:treeNode>                  
 						<p:treeNode type="entrada">
-							<p:outputLabel value="NOTA DE ENTRADA" class="descripcion-titulo"/>
+							<h:outputText value="NOTA DE ENTRADA" class="descripcion-titulo"/>
 							 <h:panelGrid columns="2" styleClass="janal-wid-col-140" columnClasses=" ,janal-column-right">
 								<p:spacer/><p:spacer/>
 								<p:outputLabel value="Consecutivo:" styleClass="descripcion-titulo"/>
@@ -175,7 +176,7 @@
 							<p:spacer/>							
 						</p:treeNode>            
 						<p:treeNode type="devolucion" ariaLabel="#{node.id}">
-							<p:outputLabel value="DEVOLUCIÓN" class="descripcion-titulo"/>
+							<h:outputText value="DEVOLUCIÓN" class="descripcion-titulo"/>
 							 <h:panelGrid columns="2" styleClass="janal-wid-col-140" columnClasses=" ,janal-column-right">
 								<p:spacer/><p:spacer/>
 								<p:outputLabel value="Consecutivo:" styleClass="descripcion-titulo"/>
@@ -194,7 +195,7 @@
 							<p:spacer/>
 						</p:treeNode>            
 						<p:treeNode type="credito" ariaLabel="#{node.id}">
-							<p:outputLabel value="NOTA DE CRÉDITO" class="descripcion-titulo"/>
+							<h:outputText value="NOTA DE CRÉDITO" class="descripcion-titulo"/>
 							 <h:panelGrid columns="2" styleClass="janal-wid-col-140" columnClasses=" ,janal-column-right">
 								<p:spacer/><p:spacer/>
 								<p:outputLabel value="Consecutivo:" styleClass="descripcion-titulo"/>
