@@ -247,4 +247,18 @@ public class Saldos extends IBaseFilter implements Serializable {
 		return row.toLong("idNotaTipo").equals(3L)? "janal-tr-orange": "";
 	} 
 
+	public String doDeuda(){
+		String regresar    = null;
+		Entity seleccionado= null;
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");
+			JsfBase.setFlashAttribute("idProveedor", seleccionado.toString("idProveedor"));
+			regresar= "deuda".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		return regresar;
+	} // doPago
 }
