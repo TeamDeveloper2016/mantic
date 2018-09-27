@@ -68,19 +68,19 @@ public abstract class IBaseAttribute implements Serializable {
 	}
 	
   public String doDecimalSat(Double numero) {
-		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(numero));
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(numero));
 	}
 	
   public String doDecimalSat(String numero) {
-		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(new Double(numero)));
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(new Double(numero)));
 	}
 	
   public String doDecimalSat(BigDecimal numero) {
-		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(numero.doubleValue()));
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(numero.doubleValue()));
 	}
 	
   public String doDecimalSat(Value numero) {
-		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(numero.toDouble()));
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondearSat(numero.toDouble()));
 	}
 	
   public String doMonedaSat(Double numero) {
