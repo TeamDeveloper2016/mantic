@@ -597,7 +597,7 @@
 								<p:panelGrid id="panelTablaCorreos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 									<p:dataTable id="tablaCorreos" rowIndexVar="index" var="contacto" value="#{manticVentasCajaAccion.clientesTiposContacto}" rows="6" paginator="false" reflow="true" rowKey="#{contacto.key}" emptyMessage=" " styleClass="paginated">																															
 										<p:column headerText="Correo electronico">		
-											<p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" placeholder="Ej. nombre.apellido@empresa.com.mx" value="#{contacto.valor}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaCorreos', #{index}, 'valor')" disabled="#{!contacto.nuevo}"/>                    																																			
+											<p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" placeholder="Ej. nombre.apellido@empresa.com.mx" value="#{contacto.valor}" disabled="#{!contacto.nuevo}"/>                    																																			
 										</p:column>
 										<p:column style="width:32px;text-align: center">
 											<p:commandButton update="tablaCorreos" icon="fa fa-close" title="Eliminar" action="#{manticVentasCajaAccion.doEliminarClienteTipoContacto}">
