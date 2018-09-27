@@ -85,18 +85,6 @@ public class Filtro extends Comun implements Serializable {
     return "accion".concat(Constantes.REDIRECIONAR);
   } // doAccion
   
-	public void doExpress() {
-		try {
-			JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
-			JsfBase.setFlashAttribute("idArticulo", -1L);			
-			RequestContext.getCurrentInstance().execute("prepareDialogExpressAdd();");
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch
-	} // doExpress
-
 	public void doOpenDialog(EAccion accion, Long idArticulo){
 		Map<String, List<String>> params= null;
 		List<String> options            = null;		

@@ -133,15 +133,4 @@ public class Articulos extends Comun implements Serializable {
 		return regresar;
 	} // doCancelar	
 
-	public void doExpress() {
-		try {
-			JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
-			JsfBase.setFlashAttribute("idArticulo", -1L);			
-	  } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch
-	} // doExpress
-
 }

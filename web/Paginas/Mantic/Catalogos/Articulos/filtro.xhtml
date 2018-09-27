@@ -17,7 +17,6 @@
 		</script>		
 	</ui:define>
 	<ui:define name="contenido">		
-		<p:remoteCommand id="prepareDialogExpressAdd" name="prepareDialogExpressAdd" process="@this" actionListener="#{manticCatalogosArticulosExpress.doLoad}" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();"/>		
 		<p:commandButton id="replace" actionListener="#{manticCatalogosArticulosFiltro.doFindArticulo}" action="#{manticCatalogosArticulosFiltro.doAccion('ACTIVAR')}" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" style="display:none"/>
 		<div class="janal-align-right xs-pantalla">
 			<p:commandButton icon="fa fa-search" onstart="janal.togglePanel('panelBusqueda');"/>
@@ -82,7 +81,7 @@
 								<p:menuButton value="Opciones">
 									<p:menuitem icon="fa fa-plus" value="Agregar" title="Agregar articulo" action="#{manticCatalogosArticulosFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>						
 									<p:separator/>
-									<p:menuitem icon="fa fa-file-text-o" value="Express" title="Articulo express" actionListener="#{manticCatalogosArticulosFiltro.doExpress}" onstart="janal.bloquear();" process="@this tabla">
+									<p:menuitem icon="fa fa-file-text-o" value="Express" title="Articulo express" onstart="janal.bloquear();" process="@this tabla" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();">
 										<f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{null}"/>
 									</p:menuitem>	
 									<p:separator/>
@@ -142,7 +141,7 @@
 						</f:facet>
 					</p:dataTable>
 					<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-						<p:menuitem id="express" icon="fa fa-file-text-o" value="Express" actionListener="#{manticCatalogosArticulosFiltro.doExpress}" onstart="janal.bloquear();" process="@this tabla">
+						<p:menuitem id="express" icon="fa fa-file-text-o" value="Express" onstart="janal.bloquear();" process="@this tabla" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();">
 							<f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{manticCatalogosArticulosFiltro.attrs.seleccionado}" />
 						</p:menuitem>	
 						<p:separator/>

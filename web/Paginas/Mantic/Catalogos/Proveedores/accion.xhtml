@@ -351,10 +351,10 @@
 												<f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.bancos}"/>
 											</p:selectOneMenu> 				
 										</p:column>	
-										<p:column headerText="Cuenta" styleClass="janal-wid-30">		
+										<p:column headerText="Cuenta" styleClass="janal-wid-30 convenio">		
 											<p:inputText id="convenio#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.convenioCuenta}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaTransferencia', #{index}, 'convenio')" disabled="#{!transferencia.nuevo}"/>                    																																			
 										</p:column>
-										<p:column headerText="Clave" styleClass="janal-wid-30">		
+										<p:column headerText="Clave" styleClass="janal-wid-30 referencia">		
 											<p:inputText id="referencia#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.clabeReferencia}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaTransferencia', #{index}, 'referencia')" disabled="#{!transferencia.nuevo}"/>                    																																			
 										</p:column>
 										<p:column style="width:32px;text-align: center">

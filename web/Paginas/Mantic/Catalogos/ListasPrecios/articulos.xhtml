@@ -88,7 +88,7 @@
 							<h:outputText value="#{row['precio']}"/>
 						</p:column>
 						<p:column headerText="Clonar" styleClass="janal-wid-col-38 janal-column-center">
-							<p:commandButton icon="fa fa-sort-alpha-desc" title="Agregar un articulo" actionListener="#{manticCatalogosListaPreciosArticulos.doExpress}" process="@this tabla" update="dialogoArtExpress" onstart="janal.bloquear();" oncomplete="PF('dlgArtExpress').show();">
+							<p:commandButton icon="fa fa-sort-alpha-desc" title="Agregar un articulo" process="@this tabla" update="dialogoArtExpress" onstart="janal.bloquear();" oncomplete="PF('dlgArtExpress').show();">
 								<f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{row}"/>
 							</p:commandButton> 
 						</p:column>
