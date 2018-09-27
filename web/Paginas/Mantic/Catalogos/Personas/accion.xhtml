@@ -228,7 +228,7 @@
                     </p:selectOneMenu> 				
                   </p:column>	
                   <p:column headerText="Valor" styleClass="janal-wid-50">		
-                    <p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaContactos', #{index}, 'valor')" disabled="#{!contacto.nuevo}"/>                    																																			
+                    <p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}" disabled="#{!contacto.nuevo}"/>                    																																			
                   </p:column>
                   <p:column style="width:32px;text-align: center">
                     <p:commandButton update="tablaContactos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosPersonasAccion.registroPersona.doEliminarClienteTipoContacto}">
