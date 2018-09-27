@@ -176,14 +176,17 @@
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-12">
-      							<p:panelGrid id="datosArticulos" columns="6" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-150, janal-wid-col-60, janal-wid-col-40 janal-column-center">
+      							<p:panelGrid id="datosArticulos" columns="6" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-150, janal-wid-col-100, janal-column-center">
 											<p:outputLabel for="sinIva" value="Los precios incluyen IVA:"/>
-											<p:inputSwitch id="sinIva" widgetVar="widgetSinIva" value="#{manticComprasOrdendesAccion.attrs.sinIva}" onLabel="SI" offLabel="NO">
-												 <p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.filas) @(.recalculo)"/>
-											</p:inputSwitch>
-											<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();">
-												<f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{null}"/>
-											</p:commandButton> 
+											<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">
+												<p:inputSwitch id="sinIva" widgetVar="widgetSinIva" value="#{manticComprasOrdendesAccion.attrs.sinIva}" onLabel="SI" offLabel="NO">
+													 <p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.filas) @(.recalculo)"/>
+												</p:inputSwitch>
+												<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();" style="float:right;">
+													<f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{null}"/>
+												</p:commandButton> 
+											</p:panelGrid>	
+											<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"/>
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 											  <p:outputLabel for="tipoDeCambio" value="Tipo de cambio (#{manticComprasOrdendesAccion.attrs.proveedor.moneda}):" rendered="#{manticComprasOrdendesAccion.attrs.proveedor.idTipoMoneda.toInteger ne 1}"/>
 												<p:inputText id="tipoDeCambio" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticComprasOrdendesAccion.adminOrden.orden.tipoDeCambio}" rendered="#{manticComprasOrdendesAccion.attrs.proveedor.idTipoMoneda.toInteger ne 1}">
