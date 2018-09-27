@@ -136,12 +136,12 @@
 						<p:ajax event="expand" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" listener="#{manticComprasOrdenesEstructura.onNodeExpand}" process="@this tabla" update=":datos:tabla"/>            
 						<p:treeNode type="orden">		
 							<p:outputLabel value="ORDEN DE COMPRA" class="descripcion-titulo"/>
-							 <h:panelGrid columns="2" styleClass="janal-wid-col-130" columnClasses=" ,janal-column-right">
+							 <h:panelGrid columns="2" styleClass="janal-wid-col-140" columnClasses=" ,janal-column-right">
 								<p:spacer/><p:spacer/>
 								<p:outputLabel value="Consecutivo:" styleClass="descripcion-titulo"/>
 								<p:outputLabel value="#{node.consecutivo}" styleClass="descripcion-nodo"/>																
 								<p:outputLabel value="Importe:" styleClass="descripcion-titulo"/>
-								<p:outputLabel value="$#{node.importe}" styleClass="descripcion-nodo"/>								
+								<p:outputLabel value="$ #{manticComprasOrdenesEstructura.doNumericoSat(node.importe)}" styleClass="descripcion-nodo"/>								
 								<p:outputLabel value="Estatus:" styleClass="descripcion-titulo"/>
 								<p:outputLabel value="#{node.estatus}" styleClass="descripcion-nodo"/>								
 								<p:spacer/><p:spacer/>
@@ -155,14 +155,14 @@
 						</p:treeNode>                  
 						<p:treeNode type="entrada">
 							<p:outputLabel value="NOTA DE ENTRADA" class="descripcion-titulo"/>
-							 <h:panelGrid columns="2" styleClass="janal-wid-col-130" columnClasses=" ,janal-column-right">
+							 <h:panelGrid columns="2" styleClass="janal-wid-col-140" columnClasses=" ,janal-column-right">
 								<p:spacer/><p:spacer/>
 								<p:outputLabel value="Consecutivo:" styleClass="descripcion-titulo"/>
 								<p:outputLabel value="#{node.consecutivo}" styleClass="descripcion-nodo"/>	
 								<p:outputLabel value="Factura:" styleClass="descripcion-titulo"/>
 								<p:outputLabel value="#{node.factura}" styleClass="descripcion-nodo"/>								
 								<p:outputLabel value="Importe:" styleClass="descripcion-titulo"/>
-								<p:outputLabel value="$#{node.importe}" styleClass="descripcion-nodo"/>								
+								<p:outputLabel value="$ #{manticComprasOrdenesEstructura.doNumericoSat(node.importe)}" styleClass="descripcion-nodo"/>								
 								<p:outputLabel value="Estatus:" styleClass="descripcion-titulo"/>
 								<p:outputLabel value="#{node.estatus}" styleClass="descripcion-nodo"/>								
 								<p:spacer/><p:spacer/>
@@ -176,12 +176,12 @@
 						</p:treeNode>            
 						<p:treeNode type="devolucion" ariaLabel="#{node.id}">
 							<p:outputLabel value="DEVOLUCIÓN" class="descripcion-titulo"/>
-							 <h:panelGrid columns="2" styleClass="janal-wid-col-130" columnClasses=" ,janal-column-right">
+							 <h:panelGrid columns="2" styleClass="janal-wid-col-140" columnClasses=" ,janal-column-right">
 								<p:spacer/><p:spacer/>
 								<p:outputLabel value="Consecutivo:" styleClass="descripcion-titulo"/>
 								<p:outputLabel value="#{node.consecutivo}" styleClass="descripcion-nodo"/>
 								<p:outputLabel value="Importe:" styleClass="descripcion-titulo"/>
-								<p:outputLabel value="$#{node.importe}" styleClass="descripcion-nodo"/>								
+								<p:outputLabel value="$ #{manticComprasOrdenesEstructura.doNumericoSat(node.importe)}" styleClass="descripcion-nodo"/>								
 								<p:outputLabel value="Estatus:" styleClass="descripcion-titulo"/>
 								<p:outputLabel value="#{node.estatus}" styleClass="descripcion-nodo"/>								
 								<p:spacer/><p:spacer/>
@@ -195,12 +195,12 @@
 						</p:treeNode>            
 						<p:treeNode type="credito" ariaLabel="#{node.id}">
 							<p:outputLabel value="NOTA DE CRÉDITO" class="descripcion-titulo"/>
-							 <h:panelGrid columns="2" styleClass="janal-wid-col-130" columnClasses=" ,janal-column-right">
+							 <h:panelGrid columns="2" styleClass="janal-wid-col-140" columnClasses=" ,janal-column-right">
 								<p:spacer/><p:spacer/>
 								<p:outputLabel value="Consecutivo:" styleClass="descripcion-titulo"/>
 								<p:outputLabel value="#{node.consecutivo}" styleClass="descripcion-nodo"/>	
 								<p:outputLabel value="Importe:" styleClass="descripcion-titulo"/>
-								<p:outputLabel value="$#{node.importe}" styleClass="descripcion-nodo"/>								
+								<p:outputLabel value="$ #{manticComprasOrdenesEstructura.doNumericoSat(node.importe)}" styleClass="descripcion-nodo"/>								
 								<p:outputLabel value="Estatus:" styleClass="descripcion-titulo"/>
 								<p:outputLabel value="#{node.estatus}" styleClass="descripcion-nodo"/>								
 								<p:spacer/><p:spacer/>
@@ -228,7 +228,7 @@
         <p:outputLabel value="Proveedor: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}"/>
         <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.proveedor}" styleClass="janal-wid-100-txt" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}" readonly="true"/>
         <p:outputLabel value="Importe: " style="font-weight: bold"/>
-        <p:inputText value="$#{manticComprasOrdenesEstructura.attrs.detalle.importe}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>        
+        <p:inputText value="$ #{manticComprasOrdenesEstructura.doNumericoSat(manticComprasOrdenesEstructura.attrs.detalle.importe)}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>        
         <p:outputLabel value="Estatus: " style="font-weight: bold"/>
         <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.estatus}" styleClass="janal-wid-100-txt" readonly="true"/>    
 				

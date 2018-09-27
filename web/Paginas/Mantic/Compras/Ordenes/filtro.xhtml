@@ -64,7 +64,7 @@
               <p:outputLabel for="consecutivo" value="No. orden:"/>
               <p:inputText id="consecutivo" value="#{manticComprasOrdenesFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
 							<p:outputLabel for="idCliente" value="Cliente:"/>
-							<p:selectOneMenu id="idCliente" value="#{manticComprasOrdenesFiltro.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
+							<p:selectOneMenu id="idCliente" value="#{manticComprasOrdenesFiltro.attrs.idCliente}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
 								<f:selectItems value="#{manticComprasOrdenesFiltro.attrs.clientes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
 								<p:column headerText="Clave">

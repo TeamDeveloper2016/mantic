@@ -19,7 +19,7 @@ public class TreeOrden implements Serializable, IBaseDto {
 	private String tituloEmpresa;
 	private String consecutivo;
 	private String proveedor;
-	private String importe;
+	private Double importe;
 	private String estatus;
 	private Timestamp registro;	
 	private String factura;	
@@ -44,7 +44,7 @@ public class TreeOrden implements Serializable, IBaseDto {
 		this(id, null, null, null, null, null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null, new Timestamp(Calendar.getInstance().getTimeInMillis()), new Timestamp(Calendar.getInstance().getTimeInMillis()), new Timestamp(Calendar.getInstance().getTimeInMillis()), new Timestamp(Calendar.getInstance().getTimeInMillis()), null, null, ultimoNivel);
 	}	
 
-	public TreeOrden(Long id, EDocumentosOrden tipo, String claveEmpresa, String nombreEmpresa, String tituloEmpresa, String consecutivo, String proveedor, String importe, String estatus, Timestamp registro, String factura, Timestamp fechaFactura, Timestamp fechaRecepcion, Timestamp fechaDocumento, Timestamp fechaEntrega, String folio, String almacen, boolean ultimoNivel) {
+	public TreeOrden(Long id, EDocumentosOrden tipo, String claveEmpresa, String nombreEmpresa, String tituloEmpresa, String consecutivo, String proveedor, Double importe, String estatus, Timestamp registro, String factura, Timestamp fechaFactura, Timestamp fechaRecepcion, Timestamp fechaDocumento, Timestamp fechaEntrega, String folio, String almacen, boolean ultimoNivel) {
 		this.id=id;
 		this.tipo=tipo;
 		this.claveEmpresa=claveEmpresa;
@@ -106,11 +106,11 @@ public class TreeOrden implements Serializable, IBaseDto {
 		this.proveedor = proveedor;
 	}
 
-	public String getImporte() {
+	public Double getImporte() {
 		return importe;
 	}
 
-	public void setImporte(String importe) {
+	public void setImporte(Double importe) {
 		this.importe = importe;
 	}
 
