@@ -2334,6 +2334,24 @@
       </select>
 		</unit>
 		<unit id="VistaOrdenesComprasDto">
+			<select id="pendientes">
+				select
+					tc_mantic_devoluciones.id_devolucion as id_key,
+					tc_mantic_devoluciones.consecutivo,
+					tc_mantic_devoluciones.id_devolucion_estatus,
+					tc_mantic_devoluciones.total,
+					tc_mantic_devoluciones.registro registro
+				from
+					tc_mantic_notas_entradas                 
+				inner join
+					tc_mantic_devoluciones on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_devoluciones.id_nota_entrada         
+				inner join
+					tc_mantic_empresas on tc_mantic_devoluciones.id_empresa= tc_mantic_empresas.id_empresa         
+				inner join
+					tc_mantic_devoluciones_estatus on tc_mantic_devoluciones.id_devolucion_estatus=tc_mantic_devoluciones_estatus.id_devolucion_estatus and tc_mantic_devoluciones.id_devolucion_estatus= 1
+				where
+					tc_mantic_notas_entradas.id_proveedor= {idProveedor}			
+			</select>
 			<select id="movimientos">
 				select
 					tc_mantic_ordenes_bitacora.id_orden_bitacora as id_key,

@@ -14,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 public class TransformDto extends Transformer {
 
   private static final Log LOG= LogFactory.getLog(TransformDto.class);
+	private static final long serialVersionUID=8126932408512312555L;
 
   public TransformDto(Class<? extends IBaseDto> dto) {
     super(dto);

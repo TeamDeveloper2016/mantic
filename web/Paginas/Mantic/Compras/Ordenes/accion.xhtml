@@ -114,10 +114,10 @@
 										<h:outputText value="#{item.razonSocial}"/>
 									</p:column>   
 								</p:selectOneMenu>
-								<p:spacer width="1px"/><p:separator/>
+								<p:spacer width="1px"/><p:outputLabel value="#{manticComprasOrdendesAccion.attrs.pendientes}" escape="false" styleClass="devoluciones"/>
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
 								<p:selectOneMenu id="idProveedor" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
-									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdateProveedor}" update="idProveedorPago entregaEstimada datosProveedor datosArticulos" process="@form" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdateProveedor}" update="idProveedorPago entregaEstimada datosProveedor datosArticulos @(.devoluciones)" process="@form" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>

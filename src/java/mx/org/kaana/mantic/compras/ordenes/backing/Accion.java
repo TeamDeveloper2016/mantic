@@ -11,6 +11,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -188,6 +189,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 		    fechaEstimada.add(Calendar.DATE, dias);
 			} // if
 			((OrdenCompra)this.getAdminOrden().getOrden()).setEntregaEstimada(new Date(fechaEstimada.getTimeInMillis()));
+			this.checkDevolucionesPendientes(proveedor.getKey());
     } // try
     catch (Exception e) {
 			Error.mensaje(e);
@@ -272,4 +274,37 @@ public class Accion extends IBaseArticulos implements Serializable {
     } // finally
 	}
 
+	private void checkDevolucionesPendientes(Long idProveedor) {
+		Map<String, Object> params= null;
+		List<Entity> pendientes   = null;
+		try {
+			params    = new HashMap<>();
+			params.put("idProveedor", idProveedor);
+			pendientes= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaOrdenesComprasDto", "pendientes", params);
+			this.attrs.put("pendientes", "<hr class='ui-separator ui-state-default ui-corner-all'/>");
+			if(pendientes!= null && !pendientes.isEmpty()) {
+				StringBuilder sb= new StringBuilder("<hr class='ui-separator ui-state-default ui-corner-all'/><i style='margin-top:-23px; margin-right:-10px; float: right;' class='fa fa-fw fa-2x fa-truck janal-color-orange' style='float:right;' title='");
+			  sb.append("Devoluciones pendientes por entregar al proveedor:\n\n");	
+				for (Entity pendiente: pendientes) {
+				  sb.append(pendiente.toString("consecutivo"));	
+				  sb.append(" - ");	
+				  sb.append(this.doFechaEstandar(pendiente.toTimestamp("registro")));	
+				  sb.append(" - [ $ ");	
+				  sb.append(this.doDecimalSat(pendiente.toDouble("total")));	
+				  sb.append(" ]\n");	
+				} // for
+				sb.append("\n'></i>");
+  			this.attrs.put("pendientes", sb.toString());
+			} // if	
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+			Methods.clean(pendientes);
+		} // finally
+	}
+	
 }
