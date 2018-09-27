@@ -61,7 +61,7 @@
 							<p:panelGrid id="panelTablaCodigos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaCodigos" rowIndexVar="index" var="codigo" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosCodigos}" rows="6" paginator="false" reflow="true" rowKey="#{codigo.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Código" styleClass="janal-wid-30">		
-										<p:inputText id="codigo#{codigo.key}" styleClass="janal-wid-100-txt" value="#{codigo.codigo}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaCodigos', #{index}, 'codigo')"/>	
+										<p:inputText id="codigo#{codigo.key}" styleClass="janal-wid-100-txt" value="#{codigo.codigo}"/>	
 									</p:column>
 									<p:column headerText="Proveedor">										
 										<p:selectOneMenu id="proveedor#{codigo.key}" styleClass="janal-wid-100-txt" value="#{codigo.idProveedor}" filter="true" filterMatchMode="contains">
@@ -90,10 +90,10 @@
 							<p:panelGrid id="panelTablaEspecificaciones" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaEspecificaciones" rowIndexVar="index" var="especificacion" value="#{manticCatalogosArticulosAccion.registroArticulo.especificaciones}" rows="6" paginator="false" reflow="true" rowKey="#{especificacion.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Nombre" styleClass="janal-wid-30">		
-										<p:inputText id="nombre#{especificacion.key}" styleClass="janal-wid-100-txt" value="#{especificacion.nombre}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaEspecificaciones', #{index}, 'nombre')"/>                    																																			
+										<p:inputText id="nombre#{especificacion.key}" styleClass="janal-wid-100-txt" value="#{especificacion.nombre}"/>                    																																			
 									</p:column>
 									<p:column headerText="Valor">										
-										<p:inputText id="valor#{especificacion.key}" styleClass="janal-wid-100-txt" value="#{especificacion.valor}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaEspecificaciones', #{index}, 'valor')"/>                    																																							
+										<p:inputText id="valor#{especificacion.key}" styleClass="janal-wid-100-txt" value="#{especificacion.valor}"/>                    																																							
 									</p:column>				
 									 <p:column style="width:32px;text-align: center">
 										 <p:commandButton update="tablaEspecificaciones" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarEspecificacion}">
@@ -192,7 +192,7 @@
 										<p:inputNumber id="descuento#{precioSugerido.key}" styleClass="janal-wid-100-txt" value="#{precioSugerido.descuento}" symbol="%" emptyValue="zero" symbolPosition="s"/>                    																																			
 									</p:column>
 									<p:column headerText="Observaciones">		
-										<p:inputText id="observaciones#{precioSugerido.key}" styleClass="janal-wid-100-txt" value="#{precioSugerido.observaciones}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaPreciosSugeridos', #{index}, 'observaciones')"/>                    																																			
+										<p:inputText id="observaciones#{precioSugerido.key}" styleClass="janal-wid-100-txt" value="#{precioSugerido.observaciones}"/>                    																																			
 									</p:column>												
 									 <p:column style="width:32px;text-align: center">
 										 <p:commandButton update="tablaPreciosSugeridos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarPrecioSugerido}">
@@ -245,7 +245,7 @@
 										</p:selectOneMenu> 				
 									</p:column>											
 									<p:column headerText="Porcentaje" styleClass="janal-wid-30">		
-										<p:inputNumber id="porcentaje#{tipoVenta.key}" styleClass="janal-wid-100-txt" value="#{tipoVenta.porcentaje}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaTiposVenta', #{index}, 'porcentaje')" symbol="%" emptyValue="zero" symbolPosition="s"/>																													
+										<p:inputNumber id="porcentaje#{tipoVenta.key}" styleClass="janal-wid-100-txt" value="#{tipoVenta.porcentaje}" symbol="%" emptyValue="zero" symbolPosition="s"/>																													
 									</p:column>									
 									 <p:column style="width:32px;text-align: center">
 										 <p:commandButton update="tablaTiposVenta" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarTipoVenta}">
