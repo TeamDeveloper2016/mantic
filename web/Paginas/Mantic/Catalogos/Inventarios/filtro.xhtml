@@ -72,7 +72,7 @@
 						<p:tab title="Historial">
 							<p:dataTable id="tablaInventarios" rowIndexVar="index" var="contacto" value="#{manticCatalogosInventariosFiltro.inventarios}" rows="6" paginator="false" reflow="true" rowKey="#{contacto.key}" emptyMessage=" " styleClass="paginated">																															
 								<p:column headerText="Ejercicio">		
-									<p:inputText id="ejercicio#{contacto.key}" styleClass="janal-wid-100-txt janal-column-right" placeholder="Ej. 2019" value="#{contacto.ejercicio}" onblur="janal.capitalLetterTable('contenedorInventarios', 'tablaInventarios', #{index}, 'ejercicio')" disabled="#{!contacto.nuevo}"/>
+									<p:inputText id="ejercicio#{contacto.key}" styleClass="janal-wid-100-txt janal-column-right" placeholder="Ej. 2019" value="#{contacto.ejercicio}" disabled="#{!contacto.nuevo}"/>
 								</p:column>
 								<p:column headerText="Inicial">		
 									<p:inputNumber id="inicial#{contacto.key}" inputStyleClass="janal-wid-100-txt janal-column-right" placeholder="Ej. 100" value="#{contacto.inicial}" disabled="#{!contacto.nuevo}"/>
