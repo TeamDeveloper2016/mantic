@@ -45,7 +45,7 @@ public class Express extends IBaseAttribute implements Serializable {
   protected void init() {		
     try {
 			this.attrs.put("seleccionado", new Entity(-1L));				
-			this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null ? EAccion.AGREGAR : JsfBase.getFlashAttribute("accion"));				
+			this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));				
 			this.attrs.put("idArticulo", JsfBase.getFlashAttribute("idArticulo")== null? -1L: JsfBase.getFlashAttribute("idArticulo"));
       doLoad();
       loadProveedores();
@@ -113,7 +113,7 @@ public class Express extends IBaseAttribute implements Serializable {
     } // catch    
   } // doAccion
 
-	private void prepareRegistro(){	
+	private void prepareRegistro() {	
 		ArticuloCodigo codigo= null;
 		try {
 			codigo= new ArticuloCodigo(-1L, ESql.INSERT, true);
@@ -274,14 +274,24 @@ public class Express extends IBaseAttribute implements Serializable {
 	
 	public void doUpdateArticuloExpress() {
 		if(this.attrs.get("seleccionado")!= null) {
-			this.attrs.put("codigo", ((Entity)this.attrs.get("seleccionado")).toString("propio"));
-		  this.registroArticulo.getArticulo().setSat(((Entity)this.attrs.get("seleccionado")).toString("sat"));
-		  this.registroArticulo.getArticulo().setDescripcion(((Entity)this.attrs.get("seleccionado")).toString("descripcion"));
-		  this.registroArticulo.getArticulo().setNombre(((Entity)this.attrs.get("seleccionado")).toString("nombre"));
-		  this.registroArticulo.getArticulo().setPrecio(((Entity)this.attrs.get("seleccionado")).toDouble("precio"));
-		  this.registroArticulo.getArticulo().setMenudeo(((Entity)this.attrs.get("seleccionado")).toDouble("menudeo"));
-		  this.registroArticulo.getArticulo().setMedioMayoreo(((Entity)this.attrs.get("seleccionado")).toDouble("medioMayoreo"));
-		  this.registroArticulo.getArticulo().setMayoreo(((Entity)this.attrs.get("seleccionado")).toDouble("mayoreo"));
+			Entity entity= (Entity)this.attrs.get("seleccionado");
+			if(entity.containsKey("idListaPrecio")) {
+				this.attrs.put("codigo", entity.toString("codigo"));
+				this.registroArticulo.getArticulo().setDescripcion(entity.toString("descripcion"));
+				this.registroArticulo.getArticulo().setNombre(entity.toString("descripcion"));
+				this.registroArticulo.getArticulo().setPrecio(entity.toDouble("costo"));
+				this.doActualizaPrecios();
+			} // if
+			else {
+				this.attrs.put("codigo", entity.toString("propio"));
+				this.registroArticulo.getArticulo().setSat(entity.toString("sat"));
+				this.registroArticulo.getArticulo().setDescripcion(entity.toString("descripcion"));
+				this.registroArticulo.getArticulo().setNombre(entity.toString("nombre"));
+				this.registroArticulo.getArticulo().setPrecio(entity.toDouble("precio"));
+				this.registroArticulo.getArticulo().setMenudeo(entity.toDouble("menudeo"));
+				this.registroArticulo.getArticulo().setMedioMayoreo(entity.toDouble("medioMayoreo"));
+				this.registroArticulo.getArticulo().setMayoreo(entity.toDouble("mayoreo"));
+			} // else	
 		} // if
 	}
 	

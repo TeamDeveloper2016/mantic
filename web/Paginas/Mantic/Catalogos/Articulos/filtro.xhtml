@@ -142,7 +142,7 @@
 						</f:facet>
 					</p:dataTable>
 					<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-						<p:menuitem id="express" icon="fa fa-file-text-o" value="Express" actionListener="#{manticCatalogosArticulosFiltro.doExpress}" onstart="janal.bloquear();" process="@this tabla">					
+						<p:menuitem id="express" icon="fa fa-file-text-o" value="Express" actionListener="#{manticCatalogosArticulosFiltro.doExpress}" onstart="janal.bloquear();" process="@this tabla">
 							<f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{manticCatalogosArticulosFiltro.attrs.seleccionado}" />
 						</p:menuitem>	
 						<p:separator/>

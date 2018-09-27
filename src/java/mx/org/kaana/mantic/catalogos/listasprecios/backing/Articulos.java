@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.procesos.comun.Comun;
@@ -62,7 +63,6 @@ public class Articulos extends Comun implements Serializable {
     try {
       campos= new ArrayList<>();
       campos.add(new Columna("descripcion", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       campos.add(new Columna("precio", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       this.lazyModel = new FormatCustomLazy("VistaListasArchivosDto", "lazyArticulos", params, campos);
       UIBackingUtilities.resetDataTable();
@@ -119,7 +119,7 @@ public class Articulos extends Comun implements Serializable {
 		return regresar;
 	}
   
-	public String doCancelar(){
+	public String doCancelar() {
 		String regresar= null;
 		try {
 			JsfBase.setFlashAttribute("idVenta", this.attrs.get("idVenta"));
@@ -132,4 +132,16 @@ public class Articulos extends Comun implements Serializable {
 		} // catch
 		return regresar;
 	} // doCancelar	
+
+	public void doExpress() {
+		try {
+			JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
+			JsfBase.setFlashAttribute("idArticulo", -1L);			
+	  } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+	} // doExpress
+
 }

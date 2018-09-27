@@ -79,14 +79,19 @@
 							<f:facet name="header">
 								<h:outputText value="Costo s/iva"/>
 							</f:facet>
-							<h:outputText value="#{row['costo']}"/>
+							<h:outputText value="#{manticCatalogosListaPreciosArticulos.doMonedaSat(row['costo'])}"/>
 						</p:column>					
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.precio}">
 							<f:facet name="header">
 								<h:outputText value="Precio neto"/>
 							</f:facet>
 							<h:outputText value="#{row['precio']}"/>
-						</p:column>					
+						</p:column>
+						<p:column headerText="Clonar" styleClass="janal-wid-col-38 janal-column-center">
+							<p:commandButton icon="fa fa-sort-alpha-desc" title="Agregar un articulo" actionListener="#{manticCatalogosListaPreciosArticulos.doExpress}" process="@this tabla" update="dialogoArtExpress" onstart="janal.bloquear();" oncomplete="PF('dlgArtExpress').show();">
+								<f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{row}"/>
+							</p:commandButton> 
+						</p:column>
 						<f:facet name="footer">
 							Total [#{manticCatalogosListaPreciosArticulos.lazyModel==null?0:manticCatalogosListaPreciosArticulos.lazyModel.rowCount}] registros
 						</f:facet>
@@ -95,4 +100,10 @@
 			</div>
 		</div>		           				
 	</ui:define>    
+	<ui:define name="dialogos">
+		<ui:include src="/Paginas/Mantic/Catalogos/Articulos/express.xhtml">
+			<ui:param name="dialogo" value="articulos"/>
+			<ui:param name="seleccionado" value="#{null}"/>
+		</ui:include>
+	</ui:define>
 </ui:composition>
