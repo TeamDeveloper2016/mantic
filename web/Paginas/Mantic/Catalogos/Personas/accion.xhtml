@@ -29,7 +29,8 @@
         'contenedorGrupos\\:interior'    : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:asentamiento': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:entreCalle'  : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:ycalle'      : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true}				
+        'contenedorGrupos\\:ycalle'      : {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas', individual: true},
+				'valor'                          : {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor'}
 			};					
 			
 			fieldsDialog= {
@@ -227,8 +228,8 @@
                       <f:selectItems value="#{manticCatalogosPersonasAccion.attrs.tiposContactos}"/>
                     </p:selectOneMenu> 				
                   </p:column>	
-                  <p:column headerText="Valor" styleClass="janal-wid-50">		
-                    <p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}" disabled="#{!contacto.nuevo}"/>                    																																			
+                  <p:column headerText="Valor" styleClass="janal-wid-50 valor">		
+                    <p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}" disabled="#{!contacto.nuevo}"  />                    																																			
                   </p:column>
                   <p:column style="width:32px;text-align: center">
                     <p:commandButton update="tablaContactos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosPersonasAccion.registroPersona.doEliminarClienteTipoContacto}">
