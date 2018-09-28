@@ -838,7 +838,7 @@
       container= $parent.build('div', '', container, 'ui-growl-item-container, ui-state-highlight, ui-corner-all, ui-helper-hidden, ui-shadow, ui-growl-'+ type+ '-container');
       container.css({'display': 'block'});
       container= $parent.build('div', '', container, 'ui-growl-item, ui-growl-'+ type+ '-item');
-      $('<a href="#" onclick="$(this).parent().parent().slideUp();" style="float:right;cursor:pointer"><span class="ui-icon ui-icon-close ui-growl-'+ type+ '-icon-close"></span></a>').appendTo(container);
+      $('<a href="#" onclick="$(this).parent().parent().slideUp();" style="float:right;cursor:pointer"><span class="ui-icon ui-growl-'+ type+ '-icon-close"></span></a>').appendTo(container);
       $parent.build('span', '', container, 'ui-growl-image, ui-growl-'+ type+ '-image, ui-growl-image-error');
       $parent.detail(items, container);
     }, // growl
@@ -848,7 +848,7 @@
       var container= $parent.build('div', 'growl_container', $('body'), 'ui-messages, ui-widget, ui-messages-'+ type);
       container.insertBefore($('#'+ $parent.form));
       container= $parent.build('div', '', container, 'ui-corner-all, ui-'+ type+ '-messages');
-      $('<a href="#" class="ui-messages-close ui-messages-'+ type+ '-icon-close" onclick="$(this).parent().parent().slideUp();return false;"><span class="ui-icon ui-icon-close"></span></a>').appendTo(container);
+      $('<a href="#" class="ui-messages-close" onclick="$(this).parent().parent().slideUp();return false;"><span class="ui-icon ui-messages-'+ type+ '-icon-close"></span></a>').appendTo(container);
       // $parent.build('span', '', container, 'ui-messages-'+ type+ '-icon');
       $parent.detail(items, container);
     }, // inline
@@ -1137,7 +1137,7 @@
       container= $parent.build('div', '', container, 'ui-growl-item-container, ui-state-highlight, ui-corner-all, ui-helper-hidden, ui-shadow, ui-growl-'+ item.severity+ '-container');
       container.css({'display': 'block'});
       container= $parent.build('div', '', container, 'ui-growl-item, ui-growl-'+ item.severity+ '-item');
-      $('<a href="#" onclick="$(this).parent().parent().slideUp();" style="float:right;cursor:pointer"><span class="ui-icon ui-icon-close"></span></a>').appendTo(container);
+      $('<a href="#" onclick="$(this).parent().parent().slideUp();" style="float:right;cursor:pointer"><span class="ui-icon ui-growl-'+ item.severity+ '-icon-close"></span></a>').appendTo(container);
       $parent.build('span', '', container, 'ui-growl-image, ui-growl-'+ item.severity+ '-image');
       var $span= $parent.build('span', '', container, 'ui-messages-'+ item.severity+ '-summary');
       $span.text(item.summary);

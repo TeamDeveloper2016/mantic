@@ -488,10 +488,10 @@ div.ui-panelgrid-content {
 .ui-growl-info-container, .ui-info-messages { color: #004085; background-color: #cce5ff; border-color: #b8daff; border-radius: .25rem; }
 .ui-growl-fatal-container, .ui-fatal-messages { color: #0c5460; background-color: #d1ecf1; border-color: #bee5eb; border-radius: .25rem; }
 .ui-growl-fade.show { opacity: 1; }
-.ui-growl-error-image {background-image:url("#{resource['primefaces-sentinel:images/error-gray.svg']}") !important; background-position:center !important; background-size: 140% !important; margin-top:5px;}
-.ui-growl-warn-image {background-image:url("#{resource['primefaces-sentinel:images/warn-blue.svg']}") !important; background-position:center !important; background-size: 140% !important; margin-top:5px;}
-.ui-growl-info-image {background-image:url("#{resource['primefaces-sentinel:images/info-blue.svg']}") !important; background-position:center !important; background-size: 140% !important; margin-top:5px;}
-.ui-growl-fatal-image {background-image:url("#{resource['primefaces-sentinel:images/delete-blue.svg']}") !important; background-position:center !important; background-size: 140% !important; margin-top:5px;}
+.ui-growl-error-image {background-image:url("#{resource['janal:icon/acciones/error.svg']}") !important; background-position:center !important; background-size: 140% !important; margin-top:5px;}
+.ui-growl-warn-image {background-image:url("#{resource['janal:icon/acciones/warn.svg']}") !important; background-position:center !important; background-size: 140% !important; margin-top:5px;}
+.ui-growl-info-image {background-image:url("#{resource['janal:icon/acciones/info.svg']}") !important; background-position:center !important; background-size: 140% !important; margin-top:5px;}
+.ui-growl-fatal-image {background-image:url("#{resource['janal:icon/acciones/fatal.svg']}") !important; background-position:center !important; background-size: 140% !important; margin-top:5px;}
 strong { font-weight: bolder; }
 .ui-growl-error-item { background: rgba(255, 255, 255, 0.8); border: solid 1px #721c24; }
 .ui-growl-warn-item { background: rgba(255, 255, 255, 0.8); border: solid 1px #856404; }
@@ -501,3 +501,12 @@ strong { font-weight: bolder; }
 .ui-messages-warn { border: solid 1px #856404 !important; border-radius: .25rem; }
 .ui-messages-info { border: solid 1px #004085 !important; border-radius: .25rem; }
 .ui-messages-fatal { border: solid 1px #0c5460 !important; border-radius: .25rem; }
+.ui-growl-error-icon-close { background-image:url("#{resource['janal:icon/acciones/close-error.svg']}") !important; background-position: -80px -128px; background-size: 110%; background-position: center; }
+.ui-growl-warn-icon-close { background-image:url("#{resource['janal:icon/acciones/close-warn.svg']}") !important; background-position: -80px -128px; background-size: 110%; background-position: center; }
+.ui-growl-info-icon-close { background-image:url("#{resource['janal:icon/acciones/close-info.svg']}") !important; background-position: -80px -128px; background-size: 110%; background-position: center; }
+.ui-growl-fatal-icon-close { background-image:url("#{resource['janal:icon/acciones/close-fatal.svg']}") !important; background-position: -80px -128px; background-size: 110%; background-position: center; }
+.ui-messages-error-icon-close { background-image:url("#{resource['janal:icon/acciones/close-error.svg']}") !important; background-size: 110%; background-position: center; }
+.ui-messages-warn-icon-close { background-image:url("#{resource['janal:icon/acciones/close-warn.svg']}") !important; background-size: 110%; background-position: center; }
+.ui-messages-info-icon-close { background-image:url("#{resource['janal:icon/acciones/close-info.svg']}") !important; background-size: 110%; background-position: center; }
+.ui-messages-fatal-icon-close { background-image:url("#{resource['janal:icon/acciones/close-fatal.svg']}") !important; background-size: 110%; background-position: center; }
+                                                                 
