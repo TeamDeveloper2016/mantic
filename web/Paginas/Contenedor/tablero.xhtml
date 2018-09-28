@@ -108,12 +108,34 @@
 				background-color: cyan !important;				
 				background-image: none !important;
       }
+			.wid-calendarizacion-48{
+				width: 48%
+			}
+			.wid-calendarizacion-5{
+				width: 5%
+			}
+			.wid-calendarizacion-47{
+				width: 47%
+			}
     </style>
   </ui:define>
   <ui:define name="contenido">
     <!-- SECTION 1 -->
     <div class="Container100">
       <div class="ContainerIndent">
+        <div class="Container100 Responsive TexAlCenter">					
+					<h:panelGrid id="cambioCalendario" columns="3" class="Wid100 graphic-update" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-5, wid-calendarizacion-47 janal-column-left">
+						<p:commandLink>
+							<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false)}" update="@(.graphic-update)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+							<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+						</p:commandLink>
+						<h:outputLabel value="#{kajoolTablero.attrs.fechaSeleccionada}"/>
+						<p:commandLink disabled="#{kajoolTablero.attrs.ultimoDia}">
+							<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(true)}" update="@(.graphic-update)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+							<i class="fa fa-angle-right"/>
+						</p:commandLink>
+					</h:panelGrid>
+				</div>					
         <div class="Container50 Responsive">					
 					<div class="Container50 Responsive">					
 						<div class="ContainerIndent">
@@ -164,7 +186,7 @@
         </div>   						
         <div class="Container50 Responsive">
           <div class="ContainerIndent">            
-            <p:panel style="height:290px;">
+            <p:panel style="height:290px;" class="graphic-update">
               <div class="Container100 Responsive Fs20">
                 <i class="icon-chart-outline"></i> Utilidad por sucursal
               </div>
