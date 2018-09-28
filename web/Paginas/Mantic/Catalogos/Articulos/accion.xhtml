@@ -16,15 +16,26 @@
 				'contenedorGrupos\\:ancho'          : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:alto'           : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:largo'          : {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:descripcion'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
-				'contenedorGrupos\\:sat'            : {validaciones: 'libre', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas', individual: true},
-				'contenedorGrupos\\:meta'           : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
-				'contenedorGrupos\\:metaDescripcion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
-				'contenedorGrupos\\:metaTeclado'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},				
-				'codigo'                            : {multiple: '$', validaciones: 'requerido', mascara: 'alfanumerico', individual: true},
-				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}				
+				'contenedorGrupos\\:descripcion'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:sat'            : {validaciones: 'libre', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:meta'           : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:metaDescripcion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:metaTeclado'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},				
+				'codigo'                            : {multiple: '$', validaciones: 'requerido', mascara: 'alfanumerico', individual: true, mensaje:'Es necesario la captura del codigo'},
+				'nombres'                           : {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del nombre de la especificacion'},
+				'valor'                             : {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor de la especificacion'},
+				'obsv'                              : {multiple: '$', validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
+				'porcentaje'                        : {multiple: '$', validaciones: 'requerido', mascara: 'libre', individual: true, mensaje:'Es necesario la captura del porcentaje'},
+				'pocentaje'                         : {multiple: '$', validaciones: 'requerido', mascara: 'libre', individual: true, mensaje:'Es necesario la captura del porcentaje'},
+				'porcDesc'                          : {multiple: '$', validaciones: 'requerido', mascara: 'libre', individual: true, mensaje:'Es necesario la captura del porcentaje'},
+				'precios'                           : {multiple: '$', validaciones: 'requerido', mascara: 'libre', individual: true, mensaje:'Es necesario la captura del precio'},
+				'descuento'                         : {multiple: '$', validaciones: 'requerido', mascara: 'libre', individual: true, mensaje:'Es necesario la captura del descuento'},
+				'provcantidad'                      : {multiple: '$', validaciones: 'requerido', mascara: 'libre', individual: true, mensaje:'Es necesario la captura de la cantidad'},
+				'provprecio'                        : {multiple: '$', validaciones: 'requerido', mascara: 'libre', individual: true, mensaje:'Es necesario la captura del precio'},
+				'provdescuento'                     : {multiple: '$', validaciones: 'requerido', mascara: 'libre', individual: true, mensaje:'Es necesario la captura del descuento'},
+				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}				
 			};
-			
+																			
 			$(document).ready(function(){
 				janal.readingMode('#{manticCatalogosArticulosAccion.attrs.nombreAccion}');
 			});
@@ -60,8 +71,8 @@
             <p:tab id="tabCodigos" title="Códigos">														
 							<p:panelGrid id="panelTablaCodigos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaCodigos" rowIndexVar="index" var="codigo" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosCodigos}" rows="6" paginator="false" reflow="true" rowKey="#{codigo.key}" emptyMessage=" " styleClass="paginated">												
-									<p:column headerText="Código" styleClass="janal-wid-30">		
-										<p:inputText id="codigo#{codigo.key}" styleClass="janal-wid-100-txt" value="#{codigo.codigo}"/>	
+									<p:column headerText="Código" styleClass="janal-wid-30 codigo">		
+										<p:inputText id="codigo#{codigo.key}" styleClass="janal-wid-100-txt" value="#{codigo.codigo}"  />	
 									</p:column>
 									<p:column headerText="Proveedor">										
 										<p:selectOneMenu id="proveedor#{codigo.key}" styleClass="janal-wid-100-txt" value="#{codigo.idProveedor}" filter="true" filterMatchMode="contains">
@@ -89,11 +100,11 @@
 						<p:tab id="tabEspecificaciones" title="Especificaciones">
 							<p:panelGrid id="panelTablaEspecificaciones" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaEspecificaciones" rowIndexVar="index" var="especificacion" value="#{manticCatalogosArticulosAccion.registroArticulo.especificaciones}" rows="6" paginator="false" reflow="true" rowKey="#{especificacion.key}" emptyMessage=" " styleClass="paginated">												
-									<p:column headerText="Nombre" styleClass="janal-wid-30">		
-										<p:inputText id="nombre#{especificacion.key}" styleClass="janal-wid-100-txt" value="#{especificacion.nombre}"/>                    																																			
+									<p:column headerText="Nombre" styleClass="janal-wid-30 nombres">		
+										<p:inputText id="nombres#{especificacion.key}" styleClass="janal-wid-100-txt" value="#{especificacion.nombre}"  />                    																																			
 									</p:column>
-									<p:column headerText="Valor">										
-										<p:inputText id="valor#{especificacion.key}" styleClass="janal-wid-100-txt" value="#{especificacion.valor}"/>                    																																							
+									<p:column headerText="Valor" styleClass="valor">										
+										<p:inputText id="valor#{especificacion.key}" styleClass="janal-wid-100-txt" value="#{especificacion.valor}"  />                    																																							
 									</p:column>				
 									 <p:column style="width:32px;text-align: center">
 										 <p:commandButton update="tablaEspecificaciones" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarEspecificacion}">
@@ -121,8 +132,8 @@
 						<p:tab id="tabDescuentos" title="Descuentos">
 							<p:panelGrid id="panelTablaDescuentos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaDescuentos" rowIndexVar="index" var="descuento" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosDescuentos}" rows="6" paginator="false" reflow="true" rowKey="#{descuento.key}" emptyMessage=" " styleClass="paginated">												
-									<p:column headerText="Porcentaje" styleClass="janal-wid-20">		
-										<p:inputNumber id="pocentaje#{descuento.key}" styleClass="janal-wid-100-txt" value="#{descuento.porcentaje}"  symbol="%" emptyValue="zero" symbolPosition="s"/>                    																																			
+									<p:column headerText="Porcentaje" styleClass="janal-wid-20 porcDesc">		
+										<p:inputNumber id="porcDesc#{descuento.key}" styleClass="janal-wid-100-txt" value="#{descuento.porcentaje}"  symbol="%" emptyValue="zero" symbolPosition="s"/>                    																																			
 									</p:column>
 									<p:column headerText="Vigencia inicial">										
 										<p:calendar id="vigenciaInicial#{descuento.key}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" styleClass="janal-wid-100-txt" value="#{descuento.vigenciaIni}" mode="popup"/>                    																																							
@@ -149,7 +160,7 @@
 											<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.gruposGeneral}"/>
 										</p:selectOneMenu> 				
 									</p:column>		
-									<p:column headerText="Porcentaje" styleClass="janal-wid-10">		
+									<p:column headerText="Porcentaje" styleClass="janal-wid-10 pocentaje">		
 										<p:inputNumber id="pocentaje#{descuentoEspecial.key}" styleClass="janal-wid-100-txt" value="#{descuentoEspecial.porcentaje}" symbol="%" emptyValue="zero" symbolPosition="s"/>                    																																			
 									</p:column>
 									<p:column headerText="Vigencia inicial" styleClass="janal-wid-20">										
@@ -185,14 +196,14 @@
 											<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.proveedoresGeneral}"/>
 										</p:selectOneMenu> 				
 									</p:column>		
-									<p:column headerText="Precio" styleClass="janal-wid-10">		
-										<p:inputNumber id="precio#{precioSugerido.key}" styleClass="janal-wid-100-txt" value="#{precioSugerido.precio}" emptyValue="zero"/>                    																																			
+									<p:column headerText="Precio" styleClass="janal-wid-10 precio">		
+										<p:inputNumber id="precios#{precioSugerido.key}" styleClass="janal-wid-100-txt" value="#{precioSugerido.precio}" emptyValue="zero"/>                    																																			
 									</p:column>
-									<p:column headerText="Descuento" styleClass="janal-wid-10">		
+									<p:column headerText="Descuento" styleClass="janal-wid-10 descuento">		
 										<p:inputNumber id="descuento#{precioSugerido.key}" styleClass="janal-wid-100-txt" value="#{precioSugerido.descuento}" symbol="%" emptyValue="zero" symbolPosition="s"/>                    																																			
 									</p:column>
-									<p:column headerText="Observaciones">		
-										<p:inputText id="observaciones#{precioSugerido.key}" styleClass="janal-wid-100-txt" value="#{precioSugerido.observaciones}"/>                    																																			
+									<p:column headerText="Observaciones" styleClass="obsv">		
+										<p:inputText id="obsv#{precioSugerido.key}" styleClass="janal-wid-100-txt" value="#{precioSugerido.observaciones}"  />                    																																			
 									</p:column>												
 									 <p:column style="width:32px;text-align: center">
 										 <p:commandButton update="tablaPreciosSugeridos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarPrecioSugerido}">
@@ -212,15 +223,15 @@
 										<p:selectOneMenu id="proveedorPrecioSugerido#{articuloProveedor.key}" styleClass="janal-wid-100-txt" value="#{articuloProveedor.idProveedor}" filter="true" filterMatchMode="contains">
 											<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.proveedoresGeneral}"/>
 										</p:selectOneMenu> 				
-									</p:column>		
-									<p:column headerText="Cantidad" styleClass="janal-wid-10">		
-										<p:inputNumber id="cantidad#{articuloProveedor.key}" styleClass="janal-wid-100-txt" value="#{articuloProveedor.cantidad}" emptyValue="zero"/>                    																																			
+									</p:column>											
+									<p:column headerText="Cantidad" styleClass="janal-wid-10 provcantidad">		
+										<p:inputNumber id="provcantidad#{articuloProveedor.key}" styleClass="janal-wid-100-txt" value="#{articuloProveedor.cantidad}" emptyValue="zero"/>                    																																			
 									</p:column>
-									<p:column headerText="Precio" styleClass="janal-wid-10">		
-										<p:inputNumber id="precio#{articuloProveedor.key}" styleClass="janal-wid-100-txt" value="#{articuloProveedor.precio}" emptyValue="zero"/>                    																																			
+									<p:column headerText="Precio" styleClass="janal-wid-10 provprecio">		
+										<p:inputNumber id="provprecio#{articuloProveedor.key}" styleClass="janal-wid-100-txt" value="#{articuloProveedor.precio}" emptyValue="zero"/>                    																																			
 									</p:column>
-									<p:column headerText="Descuento" styleClass="janal-wid-10">		
-										<p:inputNumber id="descuento#{articuloProveedor.key}" styleClass="janal-wid-100-txt" value="#{articuloProveedor.descuento}" symbol="%" emptyValue="zero" symbolPosition="s"/>																													
+									<p:column headerText="Descuento" styleClass="janal-wid-10 provdescuento">		
+										<p:inputNumber id="provdescuento#{articuloProveedor.key}" styleClass="janal-wid-100-txt" value="#{articuloProveedor.descuento}" symbol="%" emptyValue="zero" symbolPosition="s"/>																													
 									</p:column>
 									<p:column headerText="Fecha compra" styleClass="janal-wid-20">										
 										<p:calendar id="fechaCompra#{articuloProveedor.key}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-96" value="#{articuloProveedor.compra}" mode="popup" showOn="button"/>                    																																							
@@ -244,8 +255,8 @@
 											<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.tiposVentasGeneral}"/>
 										</p:selectOneMenu> 				
 									</p:column>											
-									<p:column headerText="Porcentaje" styleClass="janal-wid-30">		
-										<p:inputNumber id="porcentaje#{tipoVenta.key}" styleClass="janal-wid-100-txt" value="#{tipoVenta.porcentaje}" symbol="%" emptyValue="zero" symbolPosition="s"/>																													
+									<p:column headerText="Porcentaje" styleClass="janal-wid-30 porcentaje">		
+										<p:inputNumber id="porcentaje#{tipoVenta.key}" styleClass="janal-wid-100-txt" value="#{tipoVenta.porcentaje}" symbol="%" emptyValue="zero" symbolPosition="s"  />																													
 									</p:column>									
 									 <p:column style="width:32px;text-align: center">
 										 <p:commandButton update="tablaTiposVenta" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarTipoVenta}">
