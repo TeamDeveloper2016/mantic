@@ -42,7 +42,13 @@
 				'contenedorGrupos\\:maternoAgente': {validaciones: 'requerido', mascara: 'libre', grupo: 'agente', formatos: 'cambiar-mayusculas'},
 				'llave': {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
 				'extra': {multiple: '$', validaciones: 'porcentaje|requerido', mascara: 'libre', individual: true},
-				'plazo': {multiple: '$', validaciones: 'porcentaje|requerido', mascara: 'libre'}
+				'plazo': {multiple: '$', validaciones: 'porcentaje|requerido', mascara: 'libre'},
+				'valor': {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor del contacto'},
+				'agentevalor': {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor del agente'},
+				'bancaconvenio': {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del convenio'},
+				'bancavalor': {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura de la referencia'},
+				'convenio': {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del convenio'},
+				'referencia': {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura de la referencia'}
       };      
 			
 			fieldsDialog= {
@@ -235,7 +241,7 @@
                 </p:dataTable>	
               </p:panelGrid>	
             </p:tab>
-            <p:tab id="tabTipoContacto" title="Contacto">
+            <p:tab title="Contacto">
               <p:panelGrid id="panelTablaContactos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaContactos" rowIndexVar="index" var="contacto" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresTipoContacto}" rows="6" paginator="false" reflow="true" rowKey="#{contacto.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Tipo contacto">										
@@ -243,8 +249,8 @@
                       <f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.tiposContactos}"/>
                     </p:selectOneMenu> 				
                   </p:column>	
-                  <p:column headerText="Valor" styleClass="janal-wid-50">		
-                    <p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaContactos', #{index}, 'valor')" disabled="#{!contacto.nuevo}"/>                    																																			
+                  <p:column headerText="Valor" styleClass="janal-wid-50 valor">		
+                    <p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}" disabled="#{!contacto.nuevo}"  />                    																																			
                   </p:column>
                   <p:column style="width:32px;text-align: center">
                     <p:commandButton update="tablaContactos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.registroProveedor.doEliminarProveedorTipoContacto}">
@@ -257,7 +263,7 @@
                 </p:dataTable>	
               </p:panelGrid>	
             </p:tab>
-            <p:tab id="tabAgentes" title="Agentes">
+            <p:tab title="Agentes">
               <p:panelGrid id="panelTablaAgentes" columns="2" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-20, janal-wid-100">
 								<p:dataList id="tablaAgentes" value="#{manticCatalogosProveedoresAccion.registroProveedor.personasTiposContacto}" var="agente" type="unordered" itemType="none" paginator="false" rows="10" styleClass="paginated" emptyMessage=" ">						
                   <p:commandLink update="contenedorGrupos:formularioTablaAgentes contenedorGrupos:formularioNombreAgentes contenedorGrupos:tablaAgentes" title="Eliminar" action="#{manticCatalogosProveedoresAccion.doEliminarAgente}" onstart="return janal.bloquear();" oncomplete="janal.refresh();janal.desbloquear();">                    
@@ -291,8 +297,8 @@
 												<f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.tiposContactos}"/>
 											</p:selectOneMenu> 				
 										</p:column>	
-										<p:column headerText="Valor" styleClass="janal-wid-50">		
-											<p:inputText id="valor#{contactoAgente.key}" styleClass="janal-wid-100-txt" value="#{contactoAgente.valor}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaContacto', #{index}, 'valor')" disabled="#{!contactoAgente.nuevo}"/>                    																																			
+										<p:column headerText="Valor" styleClass="janal-wid-50 agentevalor">		
+											<p:inputText id="agentevalor#{contactoAgente.key}" styleClass="janal-wid-100-txt" value="#{contactoAgente.valor}" disabled="#{!contactoAgente.nuevo}"/>                    																																			
 										</p:column>
 										<p:column style="width:32px;text-align: center">
 											<p:commandButton update="tablaContacto" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.registroProveedor.doEliminarAgenteContacto}">
@@ -326,11 +332,11 @@
 												<f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.bancos}"/>
 											</p:selectOneMenu> 				
 										</p:column>	
-										<p:column headerText="Convenio" styleClass="janal-wid-30">		
-											<p:inputText id="convenio#{servicio.key}" styleClass="janal-wid-100-txt" value="#{servicio.convenioCuenta}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaServicios', #{index}, 'convenio')" disabled="#{!servicio.nuevo}"/>                    																																			
+										<p:column headerText="Convenio" styleClass="janal-wid-30 bancaconvenio">		
+											<p:inputText id="bancaconvenio#{servicio.key}" styleClass="janal-wid-100-txt" value="#{servicio.convenioCuenta}" disabled="#{!servicio.nuevo}"/>                    																																			
 										</p:column>
-										<p:column headerText="Referencia" styleClass="janal-wid-30">		
-											<p:inputText id="valor#{servicio.key}" styleClass="janal-wid-100-txt" value="#{servicio.clabeReferencia}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaServicios', #{index}, 'valor')" disabled="#{!servicio.nuevo}"/>                    																																			
+										<p:column headerText="Referencia" styleClass="janal-wid-30 bancavalor">		
+											<p:inputText id="bancavalor#{servicio.key}" styleClass="janal-wid-100-txt" value="#{servicio.clabeReferencia}" disabled="#{!servicio.nuevo}"/>                    																																			
 										</p:column>
 										<p:column style="width:32px;text-align: center">
 											<p:commandButton update="tablaServicios" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.registroProveedor.doEliminarProveedorServicio}">
@@ -352,10 +358,10 @@
 											</p:selectOneMenu> 				
 										</p:column>	
 										<p:column headerText="Cuenta" styleClass="janal-wid-30 convenio">		
-											<p:inputText id="convenio#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.convenioCuenta}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaTransferencia', #{index}, 'convenio')" disabled="#{!transferencia.nuevo}"/>                    																																			
+											<p:inputText id="convenio#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.convenioCuenta}" disabled="#{!transferencia.nuevo}"/>                    																																			
 										</p:column>
 										<p:column headerText="Clave" styleClass="janal-wid-30 referencia">		
-											<p:inputText id="referencia#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.clabeReferencia}" onblur="janal.capitalLetterTable('contenedorGrupos', 'tablaTransferencia', #{index}, 'referencia')" disabled="#{!transferencia.nuevo}"/>                    																																			
+											<p:inputText id="referencia#{transferencia.key}" styleClass="janal-wid-100-txt" value="#{transferencia.clabeReferencia}" disabled="#{!transferencia.nuevo}"/>                    																																			
 										</p:column>
 										<p:column style="width:32px;text-align: center">
 											<p:commandButton update="tablaTransferencia" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.registroProveedor.doEliminarProveedorTransferencia}">
