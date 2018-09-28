@@ -10,7 +10,10 @@
   <ui:define name="librerias">
     <script type="text/javascript">
 			Janal.Control.fields = {				
-				'articulo': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'}
+				'articulo' : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'ejercicio': {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del ejercicio'},
+				'inicial'  : {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura inicial'},
+				'entradas' : {multiple: '$', validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura entrada'}
 			};
 			
 			fieldsDialog= {
@@ -71,13 +74,13 @@
 						</p:tab>
 						<p:tab title="Historial">
 							<p:dataTable id="tablaInventarios" rowIndexVar="index" var="contacto" value="#{manticCatalogosInventariosFiltro.inventarios}" rows="6" paginator="false" reflow="true" rowKey="#{contacto.key}" emptyMessage=" " styleClass="paginated">																															
-								<p:column headerText="Ejercicio">		
-									<p:inputText id="ejercicio#{contacto.key}" styleClass="janal-wid-100-txt janal-column-right" placeholder="Ej. 2019" value="#{contacto.ejercicio}" disabled="#{!contacto.nuevo}"/>
+								<p:column headerText="Ejercicio" styleClass="ejercicio">		
+									<p:inputText id="ejercicio#{contacto.key}" styleClass="janal-wid-100-txt janal-column-right" placeholder="Ej. 2019" value="#{contacto.ejercicio}" disabled="#{!contacto.nuevo}"  />
 								</p:column>
-								<p:column headerText="Inicial">		
+								<p:column headerText="Inicial" styleClass="inicial">		
 									<p:inputNumber id="inicial#{contacto.key}" inputStyleClass="janal-wid-100-txt janal-column-right" placeholder="Ej. 100" value="#{contacto.inicial}" disabled="#{!contacto.nuevo}"/>
 								</p:column>
-								<p:column headerText="Entradas">		
+								<p:column headerText="Entradas" styleClass="entradas">		
 									<p:inputNumber id="entradas#{contacto.key}" inputStyleClass="janal-wid-100-txt janal-column-right" placeholder="Ej. 100" value="#{contacto.entradas}" disabled="#{!contacto.nuevo}"/>
 								</p:column>
 								<p:column style="width:50px;text-align: center">
@@ -97,7 +100,7 @@
   </ui:define>    	
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" onstart="return janal.bloquear();" actionListener="#{manticCatalogosInventariosFiltro.doAceptar}" update="contenedorInventarios panelArticulo panelAlmacen" oncomplete="janal.desbloquear();"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" onstart="return janal.execute(true);" actionListener="#{manticCatalogosInventariosFiltro.doAceptar}" update="contenedorInventarios panelArticulo panelAlmacen" oncomplete="janal.desbloquear();"/>
 		</div>	
 		<div class="xs-pantalla">
 			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return janal.bloquear();" actionListener="#{manticCatalogosInventariosFiltro.doAceptar}" update="contenedorInventarios panelArticulo panelAlmacen" oncomplete="janal.desbloquear();"/>
