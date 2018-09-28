@@ -1,6 +1,7 @@
 package mx.org.kaana.kajool.procesos.acceso.backing;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -67,6 +68,8 @@ public class Tablero extends Comun implements Serializable {
       this.attrs.put("pathMensajes", JsfBase.getApplication().getContextPath() + "/Paginas/Mantenimiento/Mensajes/Notificacion/filtro.jsf");
       this.attrs.put("vigenciaInicial", new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
       this.attrs.put("vigenciaFin", new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
+			this.attrs.put("calendario", Calendar.getInstance());
+			this.attrs.put("fechaSeleccionada", Fecha.formatear(Fecha.FECHA_MINIMA, cambiarDia(Fecha.formatear(Fecha.FECHA_MINIMA, (Calendar)this.attrs.get("calendario")), Boolean.FALSE)));
 			loadAllCharts();       
       doLoadSucursales();
       doLoad();
@@ -284,4 +287,44 @@ public class Tablero extends Comun implements Serializable {
       throw e;
     } // catch		
   } // doLoadSucursales
+	
+	public void doCambiarDia(boolean isAdelante) {
+    Calendar seleccionada= null;
+    Calendar actual      = null;
+    try {
+      this.attrs.put("fechaSeleccionada", Fecha.formatear(Fecha.FECHA_MINIMA, cambiarDia(this.attrs.get("fechaSeleccionada").toString(), isAdelante)));
+      loadAllCharts();
+      if(isAdelante) {
+        seleccionada= Calendar.getInstance();
+        seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get("fechaSeleccionada").toString()));
+        actual= Calendar.getInstance();
+        actual.setTime(new SimpleDateFormat("dd/MM/yy").parse(Fecha.getHoy()));
+        this.attrs.put("ultimoDia", seleccionada.compareTo(actual)== 0);
+      } // if
+      else
+        this.attrs.put("ultimoDia", false);
+    } // try
+    catch(Exception e) {
+			LOG.debug("Error en método doCambiarDia: ".concat(e.toString()));
+      JsfBase.addMessageError(e);
+      Error.mensaje(e);
+    } // catch
+  } // doCambiarDia
+  
+  private Calendar cambiarDia(String fecha, Boolean isAdelante) throws Exception {
+    Calendar regresar= null;
+    try {
+      regresar= Calendar.getInstance();
+      regresar.setTime(new SimpleDateFormat("dd/MM/yy").parse(fecha));
+      if(isAdelante)         
+        regresar.add(Calendar.DATE, 1);
+      else         
+        regresar.add(Calendar.DATE, -1);
+    } // try
+		catch (Exception e) {
+			LOG.debug("Error en método cambiarDia: ".concat(e.toString()));
+      throw e;
+		} // catch
+    return regresar;
+  } // cambiarDia
 }
