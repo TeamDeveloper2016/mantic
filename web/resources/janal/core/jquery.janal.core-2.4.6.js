@@ -803,16 +803,16 @@
         });
       }); // each
     }, // cleanMarks
-    show: function(items) {
+    show: function(items, type) {
       switch($parent.kind) {
         case 'classic':
-          $parent.classic(items);
+          $parent.classic(items, type);
           break;
         case 'inline':
-          $parent.inline(items);
+          $parent.inline(items, type);
           break;
         case 'growl':
-          $parent.growl(items);
+          $parent.growl(items, type);
           break;
       }; // switch
     }, // show
@@ -831,21 +831,25 @@
         PF($parent.message).show(all);
       } // if  
     }, // classic
-    growl: function(items) {
-      var container= $parent.build('div', 'growl_container', $('#'+ $parent.form), 'ui-growl,ui-widget');
-      container= $parent.build('div', '', container, 'ui-growl-item-container,ui-state-highlight,ui-corner-all,ui-helper-hidden,ui-shadow');
+    growl: function(items, type) {
+			if(typeof(type)==='undefined')
+				type= 'error';
+      var container= $parent.build('div', 'growl_container', $('#'+ $parent.form), 'ui-growl, ui-widget, ui-growl-'+ type);
+      container= $parent.build('div', '', container, 'ui-growl-item-container, ui-state-highlight, ui-corner-all, ui-helper-hidden, ui-shadow, ui-growl-'+ type+ '-container');
       container.css({'display': 'block'});
-      container= $parent.build('div', '', container, 'ui-growl-item');
+      container= $parent.build('div', '', container, 'ui-growl-item, ui-growl-'+ type+ '-item');
       $('<a href="#" onclick="$(this).parent().parent().slideUp();" style="float:right;cursor:pointer"><span class="ui-icon ui-icon-close"></span></a>').appendTo(container);
-      $parent.build('span', '', container, 'ui-growl-image, ui-growl-image-error');
+      $parent.build('span', '', container, 'ui-growl-image, ui-growl-'+ type+ '-image, ui-growl-image-error');
       $parent.detail(items, container);
     }, // growl
-    inline: function(items) {
-      var container= $parent.build('div', 'growl_container', $('body'), 'ui-messages,ui-widget');
+    inline: function(items, type) {
+			if(typeof(type)==='undefined')
+				type= 'error';
+      var container= $parent.build('div', 'growl_container', $('body'), 'ui-messages, ui-widget, ui-messages-'+ type);
       container.insertBefore($('#'+ $parent.form));
-      container= $parent.build('div', '', container, 'ui-messages-error,ui-corner-all');
-      $('<a href="#" class="ui-messages-close" onclick="$(this).parent().slideUp();return false;"><span class="ui-icon ui-icon-close"></span></a>').appendTo(container);
-      $parent.build('span', '', container, 'ui-messages-error-icon');
+      container= $parent.build('div', '', container, 'ui-corner-all, ui-'+ type+ '-messages');
+      $('<a href="#" class="ui-messages-close" onclick="$(this).parent().parent().slideUp();return false;"><span class="ui-icon ui-icon-close"></span></a>').appendTo(container);
+      // $parent.build('span', '', container, 'ui-messages-'+ type+ '-icon');
       $parent.detail(items, container);
     }, // inline
 		addClassError: function(id) {
@@ -883,6 +887,7 @@
           $parent.build('br', '', container, '');
           return false;
         };
+        $parent.build('br', '', container, '');
       });
     }, // detail
     programmer: function(items) {
@@ -1126,14 +1131,14 @@
 			PF('dialogoConfirmacion').hide();
 		}, // cerrarDialogo
     custom: function(item) {
-      var container= $parent.build('div', 'growl_container', $('#'+ $parent.form), 'ui-growl,ui-widget');
-      container= $parent.build('div', '', container, 'ui-growl-item-container,ui-state-highlight,ui-corner-all,ui-helper-hidden,ui-shadow');
-      container.css({'display': 'block'});
-      container= $parent.build('div', '', container, 'ui-growl-item');
-      $('<a href="#" onclick="$(this).parent().parent().slideUp();" style="float:right;cursor:pointer"><span class="ui-icon ui-icon-close"></span></a>').appendTo(container);
       if(typeof(item.severity)=== 'undefined')
         item.severity= 'error';
-      $parent.build('span', '', container, 'ui-growl-image, ui-growl-image-'+ item.severity);
+      var container= $parent.build('div', 'growl_container', $('#'+ $parent.form), 'ui-growl, ui-widget, ui-growl-'+ item.severity);
+      container= $parent.build('div', '', container, 'ui-growl-item-container, ui-state-highlight, ui-corner-all, ui-helper-hidden, ui-shadow, ui-growl-'+ item.severity+ '-container');
+      container.css({'display': 'block'});
+      container= $parent.build('div', '', container, 'ui-growl-item, ui-growl-'+ item.severity+ '-item');
+      $('<a href="#" onclick="$(this).parent().parent().slideUp();" style="float:right;cursor:pointer"><span class="ui-icon ui-icon-close"></span></a>').appendTo(container);
+      $parent.build('span', '', container, 'ui-growl-image, ui-growl-'+ item.severity+ '-image');
       var $span= $parent.build('span', '', container, 'ui-messages-'+ item.severity+ '-summary');
       $span.text(item.summary);
       $parent.build('br', '', container, '');
@@ -1147,7 +1152,7 @@
 					$parent.custom({summary: title, detail: id, severity: type});
 					break;
 				case 4:	
-					$parent.show([{id: id, summary: title, detail: msg, severity: type}]);
+					$parent.show([{id: id, summary: title, detail: msg, severity: type}], type);
 					break;
 	    } // switch
     }, // info
@@ -1174,7 +1179,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.2.4.2';
+      return '0.2.4.5';
     }, // version
     align: function(pixels) {
       try {

@@ -50,17 +50,19 @@ public class TcManticEmpresasPagosDto implements IBaseDto, Serializable {
   private Double pago;
   @Column (name="registro")
   private Timestamp registro;
+  @Column (name="id_credito_nota")
+  private Long idCreditoNota;
 
   public TcManticEmpresasPagosDto() {
     this(new Long(-1L));
   }
 
   public TcManticEmpresasPagosDto(Long key) {
-    this(null, null, null, null, new Long(-1L), null);
+    this(null, null, null, null, new Long(-1L), null, null);
     setKey(key);
   }
 
-  public TcManticEmpresasPagosDto(Long idTipoMedioPago, Long idUsuario, Long idEmpresaDeuda, String observaciones, Long idEmpresaPago, Double pago) {
+  public TcManticEmpresasPagosDto(Long idTipoMedioPago, Long idUsuario, Long idEmpresaDeuda, String observaciones, Long idEmpresaPago, Double pago, Long idCreditoNota) {
     setIdTipoMedioPago(idTipoMedioPago);
     setIdUsuario(idUsuario);
     setIdEmpresaDeuda(idEmpresaDeuda);
@@ -68,6 +70,7 @@ public class TcManticEmpresasPagosDto implements IBaseDto, Serializable {
     setIdEmpresaPago(idEmpresaPago);
     setPago(pago);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    setIdCreditoNota(idCreditoNota);
   }
 	
   public void setIdTipoMedioPago(Long idTipoMedioPago) {
@@ -126,6 +129,14 @@ public class TcManticEmpresasPagosDto implements IBaseDto, Serializable {
     return registro;
   }
 
+	public Long getIdCreditoNota() {
+		return idCreditoNota;
+	}
+
+	public void setIdCreditoNota(Long idCreditoNota) {
+		this.idCreditoNota=idCreditoNota;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -154,6 +165,8 @@ public class TcManticEmpresasPagosDto implements IBaseDto, Serializable {
 		regresar.append(getPago());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdCreditoNota());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -168,13 +181,14 @@ public class TcManticEmpresasPagosDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresaPago", getIdEmpresaPago());
 		regresar.put("pago", getPago());
 		regresar.put("registro", getRegistro());
+		regresar.put("idCreditoNota", getIdCreditoNota());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdTipoMedioPago(), getIdUsuario(), getIdEmpresaDeuda(), getObservaciones(), getIdEmpresaPago(), getPago(), getRegistro()
+    getIdTipoMedioPago(), getIdUsuario(), getIdEmpresaDeuda(), getObservaciones(), getIdEmpresaPago(), getPago(), getRegistro(), getIdCreditoNota()
     };
     return regresar;
   }

@@ -68,17 +68,19 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
   private Long idCreditoNota;
   @Column (name="fecha")
   private Date fecha;
+  @Column (name="saldo")
+  private Double saldo;
 
   public TcManticCreditosNotasDto() {
     this(new Long(-1L));
   }
 
   public TcManticCreditosNotasDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()));
+    this(null, null, null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), 0.0);
     setKey(key);
   }
 
-  public TcManticCreditosNotasDto(Long idProveedor, Long idNotaEntrada, Double importe, Long ejercicio, String consecutivo, Long idCreditoEstatus, Long idTipoCreditoNota, Long idDevolucion, Long idUsuario, String folio, String observaciones, Long idEmpresa, Long orden, Long idCreditoNota, Date fecha) {
+  public TcManticCreditosNotasDto(Long idProveedor, Long idNotaEntrada, Double importe, Long ejercicio, String consecutivo, Long idCreditoEstatus, Long idTipoCreditoNota, Long idDevolucion, Long idUsuario, String folio, String observaciones, Long idEmpresa, Long orden, Long idCreditoNota, Date fecha, Double saldo) {
     setIdProveedor(idProveedor);
     setIdNotaEntrada(idNotaEntrada);
     setImporte(importe);
@@ -95,6 +97,7 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
     setOrden(orden);
     setIdCreditoNota(idCreditoNota);
 		setFecha(fecha);
+		setSaldo(saldo);
   }
 	
   public void setIdProveedor(Long idProveedor) {
@@ -225,6 +228,14 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
 		this.fecha=fecha;
 	}
 
+	public Double getSaldo() {
+		return saldo;
+	}
+
+	public void setSaldo(Double saldo) {
+		this.saldo=saldo;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -271,6 +282,8 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
 		regresar.append(getIdCreditoNota());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getFecha());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getSaldo());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -294,13 +307,14 @@ public class TcManticCreditosNotasDto implements IBaseDto, Serializable {
 		regresar.put("orden", getOrden());
 		regresar.put("idCreditoNota", getIdCreditoNota());
 		regresar.put("fecha", getFecha());
+		regresar.put("saldo", getSaldo());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdProveedor(), getIdNotaEntrada(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getIdCreditoEstatus(), getIdTipoCreditoNota(), getIdDevolucion(), getIdUsuario(), getFolio(), getObservaciones(), getIdEmpresa(), getOrden(), getIdCreditoNota(), getFecha()
+    getIdProveedor(), getIdNotaEntrada(), getImporte(), getEjercicio(), getRegistro(), getConsecutivo(), getIdCreditoEstatus(), getIdTipoCreditoNota(), getIdDevolucion(), getIdUsuario(), getFolio(), getObservaciones(), getIdEmpresa(), getOrden(), getIdCreditoNota(), getFecha(), getSaldo()
     };
     return regresar;
   }
