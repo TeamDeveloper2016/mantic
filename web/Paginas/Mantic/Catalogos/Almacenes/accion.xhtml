@@ -14,24 +14,29 @@
         'contenedorGrupos\\:clave': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'contenedorGrupos\\:idPrincipal': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:nombre': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:descripcion': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:descripcion': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:responsable': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},        				
-        'contenedorGrupos\\:busquedaArticulo': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},        				
+        'contenedorGrupos\\:busquedaArticulo': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},        				
         'contenedorGrupos\\:entidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'ubicacion'},
         'contenedorGrupos\\:municipio': {validaciones: 'requerido', mascara: 'libre', grupo: 'ubicacion'},
         'contenedorGrupos\\:localidad': {validaciones: 'requerido', mascara: 'libre', grupo: 'ubicacion'},
-        'contenedorGrupos\\:cp': {validaciones: 'libre', mascara: 'libre', grupo: 'ubicacion', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:calle': {validaciones: 'requerido', mascara: 'libre', grupo: 'ubicacion', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:exterior': {validaciones: 'libre', mascara: 'libre', grupo: 'ubicacion', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:interior': {validaciones: 'libre', mascara: 'libre', grupo: 'ubicacion', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:asentamiento': {validaciones: 'libre', mascara: 'libre', grupo: 'ubicacion', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:entreCalle': {validaciones: 'libre', mascara: 'libre', grupo: 'ubicacion', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:ycalle': {validaciones: 'libre', mascara: 'libre', grupo: 'ubicacion', formatos: 'cambiar-mayusculas', individual: true},				
+        'contenedorGrupos\\:cp': {validaciones: 'libre', mascara: 'libre', grupo: 'ubicacion', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:calle': {validaciones: 'requerido', mascara: 'libre', grupo: 'ubicacion', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:exterior': {validaciones: 'libre', mascara: 'libre', grupo: 'ubicacion', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:interior': {validaciones: 'libre', mascara: 'libre', grupo: 'ubicacion', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:asentamiento': {validaciones: 'libre', mascara: 'libre', grupo: 'ubicacion', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:entreCalle': {validaciones: 'libre', mascara: 'libre', grupo: 'ubicacion', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:ycalle': {validaciones: 'libre', mascara: 'libre', grupo: 'ubicacion', formatos: 'cambiar-mayusculas'},				
         'contenedorGrupos\\:idAlmacen': {validaciones: 'libre', mascara: 'libre', grupo: 'articulo'},				
         'contenedorGrupos\\:maximo': {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo'},				
         'contenedorGrupos\\:minimo': {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo'},				
         'contenedorGrupos\\:stock': {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo'},				
-        'contenedorGrupos\\:articulo': {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo'}				
+        'contenedorGrupos\\:articulo': {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo'},
+				'valor': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura del valor del contacto'},
+				'piso': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura del valor del piso'},
+				'cuarto': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura del valor del cuarto'},
+				'anaquel': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura del valor del anaquel'},
+				'charola': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo:'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura del valor del charola'}
       };
 			
 			fieldsDialog ={
@@ -148,8 +153,8 @@
                     <f:selectItem itemValue="-1" itemLabel="SELECCIONE"/>
                     <f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.codigosPostales}"/>
                   </p:selectOneMenu>	
-                  <p:spacer id="spacerCp" rendered="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.nuevoCp}"/>
-                  <p:inputText placeholder="Captura el nuevo código postal. Ej. 20284" id="cp" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.codigoPostal}" />                  																										
+                  <p:spacer id="spacerCp" rendered="#{!manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.nuevoCp}"/>
+                  <p:inputText placeholder="Captura el nuevo código postal. Ej. 20284" id="cp" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.codigoPostal}" rendered="#{!manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.nuevoCp}"/>                  																										
                   <p:outputLabel for="calle" value="Calle:"/>
                   <p:inputText id="calle" styleClass="janal-wid-100-txt" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.domicilio.calle}" />
                   <p:outputLabel for="exterior" value="Número exterior:"/>
@@ -179,8 +184,8 @@
                       <f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.tiposContactos}"/>
                     </p:selectOneMenu> 				
                   </p:column>	
-                  <p:column headerText="Valor" styleClass="janal-wid-50">		
-                    <p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}" disabled="#{!contacto.nuevo}"/>                    																																			
+                  <p:column headerText="Valor" styleClass="janal-wid-50 valor">		
+                    <p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}" disabled="#{!contacto.nuevo}"  />                    																																			
                   </p:column>
                   <p:column style="width:32px;text-align: center">
                     <p:commandButton update="tablaContactos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosAlamacenesAccion.registroAlmacen.doEliminarAlamcenTipoContacto}">
@@ -196,17 +201,17 @@
 						<p:tab id="tabUbicacion" title="Ubicación">
 							<p:panelGrid id="panelTablaUbicacion" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaUbicacion" rowIndexVar="index" var="ubicacion" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.ubicaciones}" rows="8" paginator="false" reflow="true" rowKey="#{ubicacion.key}" emptyMessage=" " styleClass="paginated">																					
-                  <p:column headerText="Piso" >										
-                    <p:inputText id="piso#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.piso}" disabled="#{!ubicacion.nuevo}"/>                    																																			
+                  <p:column headerText="Piso" styleClass="piso">										
+                    <p:inputText id="piso#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.piso}" disabled="#{!ubicacion.nuevo}"  />                    																																			
                   </p:column>	
-                  <p:column headerText="Cuarto" >		
-                    <p:inputText id="cuarto#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.cuarto}" disabled="#{!ubicacion.nuevo}"/>                    																																			
+                  <p:column headerText="Cuarto" styleClass="cuarto">		
+                    <p:inputText id="cuarto#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.cuarto}" disabled="#{!ubicacion.nuevo}"  />                    																																			
                   </p:column>
-                  <p:column headerText="Anaquel">		
-                    <p:inputText id="anaquel#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.anaquel}" disabled="#{!ubicacion.nuevo}"/>                    																																			
+                  <p:column headerText="Anaquel" styleClass="anaquel">		
+                    <p:inputText id="anaquel#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.anaquel}" disabled="#{!ubicacion.nuevo}"  />                    																																			
                   </p:column>
-                  <p:column headerText="Charola">		
-                    <p:inputText id="charola#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.charola}" disabled="#{!ubicacion.nuevo}"/>                    																																			
+                  <p:column headerText="Charola" styleClass="charola">		
+                    <p:inputText id="charola#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.charola}" disabled="#{!ubicacion.nuevo}"  />                    																																			
                   </p:column>
                   <p:column style="width:32px;text-align: center">
                     <p:commandButton update="tablaUbicacion" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosAlamacenesAccion.registroAlmacen.doEliminarAlmacenUbicacion}">
