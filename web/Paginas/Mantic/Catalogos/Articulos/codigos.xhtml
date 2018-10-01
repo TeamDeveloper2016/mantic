@@ -71,6 +71,9 @@
 						<p:column headerText="Código de barras" styleClass="janal-column-center janal-wid-15">
 							<p:barcode value="1234567890" type="#{row.codigo}"/>
 						</p:column>   
+						<p:column headerText="QR" styleClass="janal-column-center janal-wid-15">
+							<p:barcode value="#{row.propio}" type="qr"/>
+						</p:column>   
 						<p:column headerText="Cantidad" styleClass="janal-wid-10 cantidad">
 							<p:inputNumber styleClass="janal-wid-100-txt janal-column-right" value="#{row.cantidad}"/>
 						</p:column>   
