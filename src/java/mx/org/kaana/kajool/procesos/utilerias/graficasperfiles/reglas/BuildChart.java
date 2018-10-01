@@ -8,7 +8,6 @@ import java.util.Map;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
-import mx.org.kaana.kajool.procesos.enums.ETipoGrafica;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Bar;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Chart;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Credits;
@@ -27,9 +26,11 @@ import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Totales;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.TotalesPie;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Xaxis;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Yaxis;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.mantic.enums.EGraficasTablero;
+import org.eclipse.jdt.internal.compiler.impl.Constant;
 
 /**
  *@company KAANA
@@ -45,15 +46,21 @@ public class BuildChart implements Serializable{
   private Long idPerfil;
   private Long idGrupo;
 	private String vistaGeneral;
+	private String condicionGeneral;
 
   public BuildChart() {
-		this(-1L, -1L);
+		this(Constantes.SQL_VERDADERO);
 	} // BuildChart
 	
-  public BuildChart(Long idPerfil, Long idGrupo) {
-    this.idPerfil    = idPerfil;
-    this.idGrupo     = idGrupo;
-		this.vistaGeneral= EGraficasTablero.getVista();
+  public BuildChart(String condicionGeneral) {
+		this(-1L, -1L, condicionGeneral);
+	} // BuildChart
+	
+  public BuildChart(Long idPerfil, Long idGrupo, String condicionGeneral) {
+    this.idPerfil        = idPerfil;
+    this.idGrupo         = idGrupo;
+		this.vistaGeneral    = EGraficasTablero.getVista();
+		this.condicionGeneral= condicionGeneral;
   } // BuildChart  
 	
   public Highcharts buildUtilidadSucursal() throws Exception{ 
@@ -106,7 +113,7 @@ public class BuildChart implements Serializable{
     try {
 			totalesList= new ArrayList<>();
       categoriesList= new ArrayList<>();
-      records= loadRecords(this.vistaGeneral, grafica.getIdVista(), grafica.getRecords());      
+      records= loadRecords(this.vistaGeneral, grafica.getIdVista(), grafica.getRecords(), grafica);      
 			if(!records.isEmpty()){				
 				for(Entity record: records)
 					categoriesList.add(record.toString(grafica.getAliasLadoy()));
@@ -137,13 +144,14 @@ public class BuildChart implements Serializable{
     return regresar;
   } // loadGeneralChar  
 
-  private List<Entity> loadRecords(String vista, String idXml, Long records) throws Exception {
+  private List<Entity> loadRecords(String vista, String idXml, Long records, EGraficasTablero grafica) throws Exception {
     List<Entity> regresar    = null;
     Map<String, Object>params= null;
     try {
       params= new HashMap<>();
       params.put("idGrupo", this.idGrupo);
       params.put("idUsuario", JsfBase.getIdUsuario());
+      params.put("condicionGeneral", toFormatCondicionGeneral(grafica));
       regresar= DaoFactory.getInstance().toEntitySet(vista, idXml, params, records);
     } // try
     catch (Exception e) {
@@ -156,6 +164,19 @@ public class BuildChart implements Serializable{
     return regresar;
   } // loadRecords
 	
+	private String toFormatCondicionGeneral(EGraficasTablero grafica){
+		String regresar= Constantes.SQL_VERDADERO;
+		try {
+			if(this.condicionGeneral.matches("(.*)registro(.*)"))
+				regresar= this.condicionGeneral.replaceAll("registro", grafica.getTablaPivote().concat(".").concat("registro"));			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		return regresar;		
+	} // toFormatCondicionGeneral
+	
+	
 	public HighchartsPie loadCharPropertiesPie(EGraficasTablero grafica) throws Exception{
     HighchartsPie regresar     = null;
     List<Entity> records       = null;
@@ -167,7 +188,7 @@ public class BuildChart implements Serializable{
     try {
       dataList= new ArrayList<>();
       categoriesList= new ArrayList<>();
-      records= loadRecords(this.vistaGeneral, grafica.getIdVista(), grafica.getRecords());      
+      records= loadRecords(this.vistaGeneral, grafica.getIdVista(), grafica.getRecords(), grafica);      
       categoriesList.add(grafica.getTituloLadoy());
 			if(!records.isEmpty()) {
 				for(Entity record: records){ 					
