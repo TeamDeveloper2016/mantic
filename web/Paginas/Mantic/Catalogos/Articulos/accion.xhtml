@@ -60,12 +60,17 @@
 								<p:outputLabel for="iva" value="Iva:"/>
 								<p:inputNumber id="iva" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.iva}"/>                    
 								<p:outputLabel for="redondear" value="Redondear:"/>
-								<p:selectBooleanCheckbox id="redondear" value="#{manticCatalogosArticulosAccion.registroArticulo.redondear}" styleClass="janal-wid-100-txt" />                    
+								<p:inputSwitch id="redondear" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.redondear}" offLabel="NO" onLabel="SI"/>
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="pesoEstimado" value="Peso estimado:"/>
 								<p:inputNumber id="pesoEstimado" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.pesoEstimado}"/>                    																	
 								<p:outputLabel for="desperdicio" value="Desperdicio:"/>
 								<p:inputNumber id="desperdicio" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.desperdicio}"/>                    																	
+								<p:spacer width="1px"/><p:separator/>
+								<p:outputLabel for="idServicio" value="Es servicio:"/>
+								<p:inputSwitch id="idServicio" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.idServicio}" offLabel="NO" onLabel="SI"/>
+								<p:outputLabel for="idBarras" value="Código de barras:"/>
+								<p:inputSwitch id="idBarras" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.idBarras}" offLabel="NO" onLabel="SI"/>
               </p:panelGrid>
 						</p:tab>						
             <p:tab id="tabCodigos" title="Códigos">														
