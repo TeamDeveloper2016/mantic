@@ -24,8 +24,10 @@ import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.HighchartsP
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.JsonChart;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Title;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.reglas.BuildChart;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.mantic.enums.EPeriodosTableros;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -70,6 +72,13 @@ public class Tablero extends Comun implements Serializable {
       this.attrs.put("vigenciaFin", new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
 			this.attrs.put("calendario", Calendar.getInstance());
 			this.attrs.put("fechaSeleccionada", Fecha.formatear(Fecha.FECHA_MINIMA, cambiarDia(Fecha.formatear(Fecha.FECHA_MINIMA, (Calendar)this.attrs.get("calendario")), Boolean.FALSE)));
+			this.attrs.put("idPeriodo", 1L);
+			this.attrs.put("nombrePeriodo", EPeriodosTableros.fromIdPeriodo((Long)this.attrs.get("idPeriodo")).getNombre());
+			this.attrs.put("ultimoDia", false);
+			this.attrs.put("ultimoPeriodo", false);
+			this.attrs.put("primerPeriodo", true);
+			this.attrs.put("condicionGeneral", Constantes.SQL_VERDADERO);
+			initPeriodos();
 			loadAllCharts();       
       doLoadSucursales();
       doLoad();
@@ -82,8 +91,23 @@ public class Tablero extends Comun implements Serializable {
       JsfBase.addMessageError(e);
       Error.mensaje(e);
     } // catch        
-  }
+  } // init
 
+	private void initPeriodos(){
+		try {
+			this.attrs.put("renderedDia", false);
+			this.attrs.put("renderedSemana", true);
+			this.attrs.put("renderedQuincena", true);
+			this.attrs.put("renderedMes", true);
+			this.attrs.put("renderedTrimestre", true);
+			this.attrs.put("renderedSemestre", true);
+			this.attrs.put("renderedAnio", true);			
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch		
+	} // initPeriodos
+	
   @Override
   public void doLoad() {
     try {
@@ -101,6 +125,7 @@ public class Tablero extends Comun implements Serializable {
 
 	private void loadAllCharts() throws Exception{
 		try {
+			toCreateCondicion();
 			doLoadChartUtilidadSucursal();
 			doLoadChartUtilidadCaja();
 			doLoadChartCuentasCobrar();
@@ -117,7 +142,7 @@ public class Tablero extends Comun implements Serializable {
 		Highcharts utilidadPorSucursal= null;
 		BuildChart buildChart         = null;
 		try {
-			buildChart = new BuildChart();
+			buildChart = new BuildChart(this.attrs.get("condicionGeneral").toString());
 			utilidadPorSucursal = buildChart.buildUtilidadSucursal();
       this.attrs.put("utilidadPorSucursal", Decoder.toJson(utilidadPorSucursal));
 		} // try
@@ -130,7 +155,7 @@ public class Tablero extends Comun implements Serializable {
 		BuildChart buildChart     = null;
 		Highcharts utilidadPorCaja= null;		
 		try {
-			buildChart = new BuildChart();
+			buildChart = new BuildChart(this.attrs.get("condicionGeneral").toString());
 			utilidadPorCaja = buildChart.buildUtilidadCaja();            
       this.attrs.put("jsonUtilidadPorCaja", Decoder.toJson(utilidadPorCaja));
 		} // try
@@ -143,7 +168,7 @@ public class Tablero extends Comun implements Serializable {
 		BuildChart buildChart      = null;
 		Highcharts cuentasPorCobrar= null;
 		try {
-			buildChart = new BuildChart();            
+			buildChart = new BuildChart(this.attrs.get("condicionGeneral").toString());       
 			cuentasPorCobrar = buildChart.buildCuentasCobrar();
       this.attrs.put("jsonCobro", Decoder.toJson(cuentasPorCobrar));
 		} // try
@@ -156,7 +181,7 @@ public class Tablero extends Comun implements Serializable {
     BuildChart buildChart     = null;
 		Highcharts cuentasPorPagar= null;
     try {
-      buildChart = new BuildChart();                  
+      buildChart = new BuildChart(this.attrs.get("condicionGeneral").toString());           
       cuentasPorPagar = buildChart.buildCuentasPagar();      
       this.attrs.put("jsonPago", Decoder.toJson(cuentasPorPagar));
     } // try
@@ -171,7 +196,7 @@ public class Tablero extends Comun implements Serializable {
     BuildChart buildChart  = null;
     try {
       jsons = new ArrayList<>();
-      buildChart= new BuildChart();
+      buildChart = new BuildChart(this.attrs.get("condicionGeneral").toString());
       charts= buildChart.build();
       for (Highcharts chart : charts) {
         JsonChart json = new JsonChart(Cadena.eliminaCaracter(chart.getTitle().getText(), ' ').toLowerCase(), chart.getTitle().getText(), "");
@@ -193,7 +218,7 @@ public class Tablero extends Comun implements Serializable {
     JsonChart jsonArtMasVentas  = null;
     BuildChart buildChart       = null;
     try {
-      buildChart= new BuildChart();
+      buildChart = new BuildChart(this.attrs.get("condicionGeneral").toString());
       artMasUtilidad= buildChart.buildArticulosMasUtilidad();
       artMasVentas  = buildChart.buildArticulosMasVendidos();
       jsonArtMasUtilidad = new JsonChart("avanceNacional", "Articulos con mas utilidad", Decoder.toJson(artMasUtilidad));
@@ -292,8 +317,7 @@ public class Tablero extends Comun implements Serializable {
     Calendar seleccionada= null;
     Calendar actual      = null;
     try {
-      this.attrs.put("fechaSeleccionada", Fecha.formatear(Fecha.FECHA_MINIMA, cambiarDia(this.attrs.get("fechaSeleccionada").toString(), isAdelante)));
-      loadAllCharts();
+      this.attrs.put("fechaSeleccionada", Fecha.formatear(Fecha.FECHA_MINIMA, cambiarDia(this.attrs.get("fechaSeleccionada").toString(), isAdelante)));      
       if(isAdelante) {
         seleccionada= Calendar.getInstance();
         seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get("fechaSeleccionada").toString()));
@@ -302,7 +326,8 @@ public class Tablero extends Comun implements Serializable {
         this.attrs.put("ultimoDia", seleccionada.compareTo(actual)== 0);
       } // if
       else
-        this.attrs.put("ultimoDia", false);
+        this.attrs.put("ultimoDia", false);			
+			loadAllCharts();
     } // try
     catch(Exception e) {
 			LOG.debug("Error en método doCambiarDia: ".concat(e.toString()));
@@ -327,4 +352,265 @@ public class Tablero extends Comun implements Serializable {
 		} // catch
     return regresar;
   } // cambiarDia
+	
+	public void doCambiarPeriodo(boolean isAdelante) {    
+		Long idPeriodo= -1L;
+    try {    
+			idPeriodo= (Long) this.attrs.get("idPeriodo");
+      if(isAdelante){ 
+				idPeriodo= idPeriodo + 1L;
+        this.attrs.put("nombrePeriodo", EPeriodosTableros.fromIdPeriodo(idPeriodo).getNombre());      
+				this.attrs.put("primerPeriodo", idPeriodo.equals(EPeriodosTableros.DIA.getIdTipoPeriodo()));
+				this.attrs.put("ultimoPeriodo", idPeriodo.equals(EPeriodosTableros.ANIO.getIdTipoPeriodo()));
+			} // if
+			else{
+				idPeriodo= idPeriodo - 1L;
+        this.attrs.put("nombrePeriodo", EPeriodosTableros.fromIdPeriodo(idPeriodo).getNombre());
+				this.attrs.put("primerPeriodo", idPeriodo.equals(EPeriodosTableros.DIA.getIdTipoPeriodo()));
+				this.attrs.put("ultimoPeriodo", idPeriodo.equals(EPeriodosTableros.ANIO.getIdTipoPeriodo()));
+			} // else
+			refreshPeriodos(idPeriodo);
+			this.attrs.put("idPeriodo", idPeriodo);						
+			loadAllCharts();
+    } // try
+    catch(Exception e) {
+			LOG.debug("Error en método doCambiarDia: ".concat(e.toString()));
+      JsfBase.addMessageError(e);
+      Error.mensaje(e);
+    } // catch
+  } // doCambiarDia
+	
+	private void refreshPeriodos(Long idPeriodo){		
+    try {    	
+			this.attrs.put("renderedDia", true);
+			this.attrs.put("renderedSemana", true);
+			this.attrs.put("renderedQuincena", true);
+			this.attrs.put("renderedMes", true);
+			this.attrs.put("renderedTrimestre", true);
+			this.attrs.put("renderedSemestre", true);
+			this.attrs.put("renderedAnio", true);			
+			switch(EPeriodosTableros.fromIdPeriodo(idPeriodo)){
+				case DIA:
+					this.attrs.put("renderedDia", false);
+					break;
+				case SEMANA:
+					this.attrs.put("renderedSemana", false);
+					break;
+				case QUINCENA:
+					this.attrs.put("renderedQuincena", false);
+					break;
+				case MES:
+					this.attrs.put("renderedMes", false);
+					break;
+				case TRIMESTRE:
+					this.attrs.put("renderedTrimestre", false);
+					break;
+				case SEMESTRE:
+					this.attrs.put("renderedSemestre", false);
+					break;
+				case ANIO:
+					this.attrs.put("renderedAnio", false);			
+					break;
+			} // switch
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // refreshPeriodos
+	
+	private void toCreateCondicion() throws Exception{
+		Long idPeriodo= -1L;
+		try {
+			idPeriodo= (Long) this.attrs.get("idPeriodo");
+			switch(EPeriodosTableros.fromIdPeriodo(idPeriodo)){
+				case DIA:
+					toCondicionDia();
+					break;
+				case SEMANA:
+					toCondicionSemana();
+					break;
+				case QUINCENA:
+					toCondicionQuincena();
+					break;
+				case MES:
+					toCondicionMes();
+					break;
+				case TRIMESTRE:
+					toCondicionTrimestre();
+					break;
+				case SEMESTRE:
+					toCondicionSemestre();
+					break;
+				case ANIO:
+					toCondicionAnio();
+					break;
+			} // switch
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // toCreateCondicion
+	
+	private void toCondicionDia() throws Exception{
+		Calendar seleccionada= null;
+		try {      
+			seleccionada= Calendar.getInstance();
+			seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get("fechaSeleccionada").toString()));			
+			this.attrs.put("condicionGeneral", "date_format( registro , '%Y%m%d') = '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));      
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // toCondicionDia
+	
+	private void toCondicionSemana() throws Exception{
+		Calendar seleccionada= null;
+		StringBuilder sb     = null;
+		try {      
+			seleccionada= Calendar.getInstance();
+			sb= new StringBuilder("");
+			seleccionada.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+			sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+			seleccionada.add(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+			sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+			this.attrs.put("condicionGeneral", sb.toString());      			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch	
+	} // toCondicionSemana
+	
+	private void toCondicionQuincena() throws Exception{
+		Calendar seleccionada= null;
+		StringBuilder sb     = null;
+		try {      
+			seleccionada= Calendar.getInstance();
+			sb= new StringBuilder("");
+			if(seleccionada.get(Calendar.DAY_OF_MONTH)<= 15){
+				seleccionada.set(Calendar.WEEK_OF_MONTH, 1);
+				seleccionada.set(Calendar.DAY_OF_MONTH, 1);
+				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				seleccionada.add(Calendar.DAY_OF_MONTH, 14);
+				sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+			} // if
+			else{
+				seleccionada.set(Calendar.DAY_OF_MONTH, 16);
+				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getActualMaximum(Calendar.DAY_OF_MONTH));
+				sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+			} // else
+			this.attrs.put("condicionGeneral", sb.toString());      			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // toCondicionQuincena
+	
+	private void toCondicionMes(){
+		Calendar seleccionada= null;
+		StringBuilder sb     = null;
+		try {      
+			seleccionada= Calendar.getInstance();
+			sb= new StringBuilder("");						
+			seleccionada.set(Calendar.DAY_OF_MONTH, 1);
+			sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+			seleccionada.add(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
+			sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));						
+			this.attrs.put("condicionGeneral", sb.toString());      			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch				
+	} // toCondicionMes
+	
+	private void toCondicionTrimestre(){
+		Calendar seleccionada= null;
+		StringBuilder sb     = null;
+		try {      
+			seleccionada= Calendar.getInstance();
+			sb= new StringBuilder("");
+			if(seleccionada.get(Calendar.MONTH)<= 2){
+				seleccionada.set(Calendar.MONTH, 0);
+				seleccionada.set(Calendar.DAY_OF_MONTH, 1);
+				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				seleccionada.set(Calendar.MONTH, 2);
+				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
+				sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+			} // if
+			else if (seleccionada.get(Calendar.MONTH)<= 5){
+				seleccionada.set(Calendar.MONTH, 3);
+				seleccionada.set(Calendar.DAY_OF_MONTH, 1);
+				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				seleccionada.set(Calendar.MONTH, 5);
+				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
+				sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+			} // else
+			else if (seleccionada.get(Calendar.MONTH)<= 8){
+				seleccionada.set(Calendar.MONTH, 6);
+				seleccionada.set(Calendar.DAY_OF_MONTH, 1);
+				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				seleccionada.set(Calendar.MONTH, 8);
+				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
+				sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+			} // else
+			else {
+				seleccionada.set(Calendar.MONTH, 9);
+				seleccionada.set(Calendar.DAY_OF_MONTH, 1);
+				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				seleccionada.set(Calendar.MONTH, 11);
+				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
+				sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+			} // else
+			this.attrs.put("condicionGeneral", sb.toString());      			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // toCondicionTrimestre
+	
+	private void toCondicionSemestre(){
+		Calendar seleccionada= null;
+		StringBuilder sb     = null;
+		try {      
+			seleccionada= Calendar.getInstance();
+			sb= new StringBuilder("");
+			if(seleccionada.get(Calendar.MONTH)<= 5){
+				seleccionada.set(Calendar.MONTH, 0);
+				seleccionada.set(Calendar.DAY_OF_MONTH, 1);
+				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				seleccionada.set(Calendar.MONTH, 5);
+				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
+				sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+			} // if
+			else{
+				seleccionada.set(Calendar.MONTH, 6);
+				seleccionada.set(Calendar.DAY_OF_MONTH, 1);
+				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				seleccionada.set(Calendar.MONTH, 11);
+				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
+				sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+			} // else
+			this.attrs.put("condicionGeneral", sb.toString());      			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // toCondicionSemestre
+	
+	private void toCondicionAnio(){
+		Calendar seleccionada= null;
+		StringBuilder sb     = null;
+		try {      
+			sb= new StringBuilder("");
+			seleccionada= Calendar.getInstance();						
+			seleccionada.set(Calendar.DAY_OF_YEAR, 1);
+			sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+			seleccionada.add(Calendar.DAY_OF_YEAR, seleccionada.getMaximum(Calendar.DAY_OF_YEAR));
+			sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));						
+			this.attrs.put("condicionGeneral", sb.toString());      			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // toCondicionAnio
 }
