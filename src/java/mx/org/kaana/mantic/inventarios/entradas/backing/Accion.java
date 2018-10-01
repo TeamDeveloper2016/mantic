@@ -182,7 +182,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 			transaccion = new Transaccion(((NotaEntrada)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.aplicar, this.getXml(), this.getPdf());
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR) || this.aplicar) {
- 				  regresar = this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+    			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");
+ 				  regresar =  "/Paginas/Mantic/Catalogos/Articulos/codigos".concat(Constantes.REDIRECIONAR); // this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
 					if(this.accion.equals(EAccion.AGREGAR))
     			  RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 					else

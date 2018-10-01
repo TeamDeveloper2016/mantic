@@ -8,10 +8,12 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
@@ -46,7 +48,35 @@ public class Codigos extends IBaseAttribute implements Serializable {
 	@PostConstruct
 	protected void init() {
   	this.attrs.put("buscaPorCodigo", false);
-		this.articulos= new ArrayList<>();
+    this.attrs.put("idNotaEntrada", JsfBase.getFlashAttribute("idNotaEntrada")== null? -1L: JsfBase.getFlashAttribute("idNotaEntrada"));
+		this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "/Paginas/Mantic/Inventarios/Entradas/filtro": JsfBase.getFlashAttribute("retorno"));
+    if(this.attrs.get("idNotaEntrada")!= null) 
+			this.doLoad();
+		else
+		  this.articulos= new ArrayList<>();
+	}
+	
+	private void doLoad() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			columns= new ArrayList<>(); 
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			params = new HashMap<>();
+			params.put("idNotaEntrada", this.attrs.get("idNotaEntrada"));
+			params.put("idBarras", 2L);
+			this.articulos= (List<CodigoArticulo>)DaoFactory.getInstance().toEntitySet(CodigoArticulo.class, "VistaArticulosDto", "barras", params);
+			if(this.articulos== null)
+				this.articulos= new ArrayList<>();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		finally {
+      Methods.clean(columns);
+			Methods.clean(params);
+		} // finally	
 	}
 	
 	private void updateArticulo(UISelectEntity articulo) throws Exception {
@@ -146,5 +176,10 @@ public class Codigos extends IBaseAttribute implements Serializable {
 		if(seleccionado!= null) 
 	    this.articulos.remove(seleccionado);
 	}
-	
+
+	public String doCancelar() {   
+  	JsfBase.setFlashAttribute("idNotaEntrada", this.attrs.get("idNotaEntrada"));
+    return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
+  } // doCancelar
+
 }

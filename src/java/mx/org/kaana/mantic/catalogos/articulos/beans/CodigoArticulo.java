@@ -1,7 +1,11 @@
 package mx.org.kaana.mantic.catalogos.articulos.beans;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
+import mx.org.kaana.libs.reflection.Methods;
 
 /**
  *@company KAANA
@@ -11,27 +15,31 @@ import java.util.Objects;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class CodigoArticulo implements Serializable {
+public class CodigoArticulo implements IBaseDto, Serializable {
 
 	private static final long serialVersionUID=795752101228019032L;
 	
 	private Long idArticulo;
 	private String propio;
 	private String nombre;
-	private Long cantidad;
-	private Long tope;
+	private Double cantidad;
+	private Double tope;
 	private String codigo;
 	private Boolean agregado;
 
+	public CodigoArticulo() {
+		this(-1L);
+	}
+	
 	public CodigoArticulo(Long idArticulo) {
 		this(idArticulo, null, null);
 	}
 
 	public CodigoArticulo(Long idArticulo, String propio, String nombre) {
-		this(idArticulo, propio, nombre, 0L, 999999L, "code128", true);
+		this(idArticulo, propio, nombre, 0D, 9999D, "code128", true);
 	}
 	
-	public CodigoArticulo(Long idArticulo, String propio, String nombre, Long cantidad, Long tope, String codigo, Boolean agregado) {
+	public CodigoArticulo(Long idArticulo, String propio, String nombre, Double cantidad, Double tope, String codigo, Boolean agregado) {
 		this.idArticulo=idArticulo;
 		this.propio=propio;
 		this.nombre=nombre;
@@ -65,19 +73,23 @@ public class CodigoArticulo implements Serializable {
 		this.nombre=nombre;
 	}
 
-	public Long getCantidad() {
+	public Double getCantidad() {
 		return cantidad;
 	}
+	
+	public Long getCantidad$() {
+		return cantidad!= null? cantidad.longValue(): 1;
+	}
 
-	public void setCantidad(Long cantidad) {
+	public void setCantidad(Double cantidad) {
 		this.cantidad=cantidad;
 	}
 
-	public Long getTope() {
+	public Double getTope() {
 		return tope;
 	}
 
-	public void setTope(Long tope) {
+	public void setTope(Double tope) {
 		this.tope=tope;
 	}
 
@@ -100,7 +112,7 @@ public class CodigoArticulo implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash=5;
-		hash=23*hash+Objects.hashCode(this.idArticulo);
+		hash=97*hash+Objects.hashCode(this.idArticulo);
 		return hash;
 	}
 
@@ -122,9 +134,71 @@ public class CodigoArticulo implements Serializable {
 		return true;
 	}
 
+
 	@Override
 	public String toString() {
 		return "CodigoArticulo{"+"idArticulo="+idArticulo+", propio="+propio+", nombre="+nombre+", cantidad="+cantidad+", tope="+tope+", codigo="+codigo+", agregado="+agregado+'}';
+	}
+
+	@Override
+	public Long getKey() {
+		return this.idArticulo;
+	}
+
+	@Override
+	public void setKey(Long key) {
+		this.idArticulo= key;
+	}
+
+	@Override
+	public Map<String, Object> toMap() {
+    Map regresar = new HashMap();
+		regresar.put("idArticulo", getIdArticulo());
+		regresar.put("nombre", getNombre());
+		regresar.put("propio", getPropio());
+		regresar.put("cantidad", getCantidad());
+		regresar.put("tope", getTope());
+		regresar.put("agregado", getAgregado());
+		regresar.put("codigo", getCodigo());
+  	return regresar;
+	}
+
+	@Override
+	public Object[] toArray() {
+    Object[] regresar = new Object[]{
+    getNombre(), getIdArticulo(), getCodigo(), getPropio(), getAgregado(), getCantidad(), getTope()
+    };
+    return regresar;
+	}
+
+	@Override
+	public boolean isValid() {
+		return this.idArticulo> 0;
+	}
+
+	@Override
+	public Object toValue(String name) {
+    return Methods.getValue(this, name);
+	}
+
+	@Override
+	public String toAllKeys() {
+    StringBuilder regresar= new StringBuilder();
+    regresar.append("|");
+    regresar.append("idArticulo~");
+    regresar.append(this.idArticulo);
+    regresar.append("|");
+    return regresar.toString();
+	}
+
+	@Override
+	public String toKeys() {
+		return String.valueOf(this.idArticulo);
+	}
+
+	@Override
+	public Class toHbmClass() {
+		return null;
 	}
 
 }
