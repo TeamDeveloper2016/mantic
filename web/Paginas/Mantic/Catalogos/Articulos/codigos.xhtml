@@ -69,7 +69,7 @@
 							<h:outputText value="#{row.nombre}"/>
 						</p:column>   
 						<p:column headerText="Código de barras" styleClass="janal-column-center janal-wid-15">
-							<p:barcode value="1234567890" type="#{row.codigo}"/>
+							<p:barcode value="#{row.propio}" type="#{row.codigo}"/>
 						</p:column>   
 						<p:column headerText="QR" styleClass="janal-column-center janal-wid-15">
 							<p:barcode value="#{row.propio}" type="qr"/>
