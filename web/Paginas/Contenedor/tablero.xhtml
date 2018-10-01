@@ -124,14 +124,25 @@
     <div class="Container100">
       <div class="ContainerIndent">
         <div class="Container100 Responsive TexAlCenter">					
-					<h:panelGrid id="cambioCalendario" columns="3" class="Wid100 graphic-update" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-5, wid-calendarizacion-47 janal-column-left">
-						<p:commandLink>
-							<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false)}" update="@(.graphic-update)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+					<h:panelGrid id="cambioPeriodo" columns="3" class="Wid100 graphic-update" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-5, wid-calendarizacion-47 janal-column-left">
+						<p:commandLink disabled="#{kajoolTablero.attrs.primerPeriodo}">
+							<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(false)}" update="@(.graphic-update) @(.periodo-update)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 							<i class="fa fa-angle-left" style="margin-right: -5px;"/>
 						</p:commandLink>
-						<h:outputLabel value="#{kajoolTablero.attrs.fechaSeleccionada}"/>
-						<p:commandLink disabled="#{kajoolTablero.attrs.ultimoDia}">
-							<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(true)}" update="@(.graphic-update)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+						<h:outputLabel value="#{kajoolTablero.attrs.nombrePeriodo}" styleClass="graphic-update"/>
+						<p:commandLink disabled="#{kajoolTablero.attrs.ultimoPeriodo}">
+							<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(true)}" update="@(.graphic-update) @(.periodo-update)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+							<i class="fa fa-angle-right"/>
+						</p:commandLink>
+					</h:panelGrid>
+					<h:panelGrid id="cambioCalendario" columns="3" class="Wid100 periodo-update" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-5, wid-calendarizacion-47 janal-column-left">
+						<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDia}">
+							<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false)}" update="@(.graphic-update) @(.periodo-update)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+							<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+						</p:commandLink>
+						<h:outputLabel value="#{kajoolTablero.attrs.fechaSeleccionada}" styleClass="graphic-update" rendered="#{!kajoolTablero.attrs.renderedDia}"/>
+						<p:commandLink disabled="#{kajoolTablero.attrs.ultimoDia}" rendered="#{!kajoolTablero.attrs.renderedDia}">
+							<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(true)}" update="@(.graphic-update) @(.periodo-update)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 							<i class="fa fa-angle-right"/>
 						</p:commandLink>
 					</h:panelGrid>
@@ -205,7 +216,7 @@
         <div class="Container50 Responsive">
           <div class="ContainerIndent">
             <div class="EmptyBox10"></div>                
-            <p:panel id="panelMest" style="min-height: 420px;">
+            <p:panel id="panelMest" style="min-height: 420px;" class="graphic-update">
               <i class="icon-users Fs50 Fleft Wid25 orange TexAlCenter"></i>
               <div class="Fs24 Fright MarTop10 leaden Wid70">Ventas por trabajador</div>
               <div class="Fs12 Fright leaden Wid70">Cantidad de ventas realizadas por trabajador: <span class="orange">320</span></div>
@@ -280,7 +291,7 @@
           </div>
           <div class="EmptyBox10"></div>
           <div class="ContainerIndent">
-            <p:panel style="min-height:290px;">
+            <p:panel style="min-height:290px;" class="graphic-update">
               <div class="Container40 Responsive Fs20">
                 <i class="icon-down-big"></i> Articulos por terminarse
               </div>
@@ -329,7 +340,7 @@
 					<c:forEach items="#{kajoolTablero.attrs.jsons}" var="prop" varStatus="index">													
 						<!--div class="Container50 Responsive"-->
 							<div class="ContainerIndent">
-								<p:panel style="min-height:250px;">
+								<p:panel style="min-height:250px;" class="graphic-update">
 									<div class="Container100 Responsive Fs20">
 										<i class="icon-chart-bar"></i> #{prop.titulo}
 									</div>
@@ -347,7 +358,7 @@
 					</c:forEach>
 					<!--div class="Container50 Responsive"-->
 						<div class="ContainerIndent">            
-							<p:panel style="height:290px;">
+							<p:panel style="height:290px;" class="graphic-update">
 								<div class="Container100 Responsive Fs20">
 									<i class="icon-money"></i> Cuentas por cobrar
 								</div>
@@ -367,7 +378,7 @@
         <div class="Container50 Responsive">
           <div class="ContainerIndent">            
             <div class="EmptyBox10"></div>
-            <p:panel style="height:240px;">
+            <p:panel style="height:240px;" class="graphic-update">
               <div class="Container100 Responsive Fs20">
                 <i class="icon-chart-outline"></i> Utilidad por caja
               </div>
@@ -385,7 +396,7 @@
           <div class="Container100 Responsive">
             <div class="ContainerIndent">
               <div class="EmptyBox10"></div>
-              <p:panel style="min-height:402px;">
+              <p:panel style="min-height:402px;" class="graphic-update">
                 <div class="Container100 Responsive Fs20">
                   <i class="icon-cube"></i>Articulos mas vendidos 
                   <p:separator styleClass="Wid100"/>
@@ -404,7 +415,7 @@
           <div class="Container100 Responsive">
             <div class="ContainerIndent">
               <div class="EmptyBox10"></div>
-              <p:panel style="min-height:402px;">
+              <p:panel style="min-height:402px;" class="graphic-update">
                 <div class="Container100 Responsive Fs20">
                   <i class="icon-dollar"></i>Articulos con mayor utilidad 
                   <p:separator styleClass="Wid100"/>
@@ -428,7 +439,7 @@
         </div>            				
 				<div class="Container50 Responsive">
           <div class="ContainerIndent">            
-            <p:panel style="height:290px;">
+            <p:panel style="height:290px;" class="graphic-update">
               <div class="Container100 Responsive Fs20">
                 <i class="icon-bank"></i> Cuentas por pagar
               </div>
