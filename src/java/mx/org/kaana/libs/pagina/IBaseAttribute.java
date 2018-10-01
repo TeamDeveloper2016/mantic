@@ -114,5 +114,13 @@ public abstract class IBaseAttribute implements Serializable {
   public String doNumericoSat(Value numero) {
 		return Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, Numero.toRedondearSat(numero.toDouble()));
 	}
+
+  public String doNumerico(Long numero) {
+		return Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, numero);
+	}
+
+  public String doNumerico(Value numero) {
+		return Global.format(EFormatoDinamicos.MILES_SIN_DECIMALES, numero.toLong());
+	}
 	
 }

@@ -184,7 +184,7 @@
 											<f:facet name="header">
 												<h:outputText value="No."/>
 											</f:facet>
-											<h:outputText value="#{index+ 1}"/>
+											<h:outputText value="#{index+ 1}.-"/>
 										</p:column>																				
 										<p:column  class="MarAuto Responsive janal-wid-15">
 											<f:facet name="header">
@@ -274,7 +274,7 @@
 		<p:dialog id="dialogoAlmacenes" widgetVar="dlgAlmacenes" header="Articulo en sucursales" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();restoreCursoArt();" width="60%">						
 			<p:dataTable lazy="true" id="almacenes" widgetVar="kajoolTable" var="row" value="#{manticVentasGarantiasAccion.almacenes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticVentasGarantiasAccion.almacenes.rowCount gt manticVentasGarantiasAccion.almacenes.pageSize}" rowIndexVar="index" reflow="true">            	
 				<p:column headerText="No" styleClass="janal-wid-10">
-					<h:outputText value="#{index+ 1}"/>
+					<h:outputText value="#{index+ 1}.-"/>
 				</p:column>   
 				<p:column headerText="Clave" styleClass="janal-wid-30">
 					<h:outputText value="#{row.clave}"/>

@@ -887,8 +887,8 @@
           $parent.build('br', '', container, '');
           return false;
         };
-        $parent.build('br', '', container, '');
       });
+			$parent.build('br', '', container, '');
     }, // detail
     programmer: function(items) {
       if(items.length> 0) {

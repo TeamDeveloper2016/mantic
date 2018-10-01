@@ -171,7 +171,7 @@
 									<f:facet name="header">
 										<h:outputText value="No."/>
 									</f:facet>
-									<h:outputText value="#{index+ 1}"/>
+									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>		
 								<p:column  class="MarAuto Responsive janal-wid-13">
 									<f:facet name="header">
@@ -310,7 +310,7 @@
 					<p:dataTable id="buscados" widgetVar="widgetBuscados" lazy="true" styleClass="janal-row-articulos janal-wid-100" value="#{manticVentasCotizacionAccion.attrs.lazyModel}" selection="#{manticVentasCotizacionAccion.attrs.buscado}" var="item" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="50" liveScroll="true" liveScrollBuffer="50" scrollable="true" scrollHeight="280" style="margin-bottom:0">
 						<p:ajax event="rowDblselect" oncomplete="$('#localizado').click();"/>
 					  <p:column headerText="No" styleClass="janal-wid-col-30">
-							<h:outputText value="#{index+ 1}"/>
+							<h:outputText value="#{index+ 1}.-"/>
 						</p:column>   
     				<p:column headerText="Nombre">
 							<h:outputText value="#{item.nombre}"/>
@@ -432,7 +432,7 @@
 		<p:dialog id="dialogoAlmacenes" widgetVar="dlgAlmacenes" header="Ubicación de articulo" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();" width="60%">						
 			<p:dataTable lazy="true" id="almacenes" widgetVar="kajoolTable" var="row" value="#{manticVentasCotizacionAccion.almacenes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}"  selectionMode="single" paginator="#{manticVentasCotizacionAccion.almacenes.rowCount gt manticVentasCotizacionAccion.almacenes.pageSize}" rowIndexVar="index" reflow="true">            	
 				<p:column headerText="No" styleClass="janal-wid-3">
-					<h:outputText value="#{index+ 1}"/>
+					<h:outputText value="#{index+ 1}.-"/>
 				</p:column>   
 				<p:column headerText="Clave" styleClass="janal-wid-10">
 					<h:outputText value="#{row.clave}"/>

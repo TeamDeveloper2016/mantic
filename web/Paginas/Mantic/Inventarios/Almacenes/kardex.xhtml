@@ -140,9 +140,9 @@
 								</div>
 							</div>	
 							<p:spacer width="3px"/>
-							<p:dataTable id="tabla" var="item" value="#{manticInventariosAlmacenesKardex.adminKardex.tiposVentas}" paginator="false" reflow="true" rowKey="#{row.index}" emptyMessage=" " styleClass="paginated filas" rowIndexVar="index">
+							<p:dataTable id="tabla" var="item" value="#{manticInventariosAlmacenesKardex.adminKardex.tiposVentas}" paginator="false" reflow="true" rowKey="#{row.index}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated filas" rowIndexVar="index">
 								<p:column headerText="No." styleClass="janal-wid-3">
-									<h:outputText value="#{index+ 1}"/>
+									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   
 								<p:column headerText="Nombre" styleClass="janal-wid-10">
 									<h:outputText value="#{item.nombre}"/>
@@ -166,9 +166,9 @@
 							</p:dataTable>	
 						</p:tab>
 						<p:tab title="Códigos">
-							<p:dataTable var="item" value="#{manticInventariosAlmacenesKardex.attrs.codigos}" paginator="false" reflow="true" rowKey="#{row.idKey}" emptyMessage=" " styleClass="paginated filas" rowIndexVar="index">
+							<p:dataTable var="item" value="#{manticInventariosAlmacenesKardex.attrs.codigos}" paginator="false" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated filas" rowIndexVar="index">
 								<p:column headerText="No" styleClass="janal-wid-3">
-									<h:outputText value="#{index+ 1}"/>
+									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   
 								<p:column headerText="Código" styleClass="janal-wid-15">
 									<h:outputText value="#{item.codigo}"/>
@@ -191,7 +191,7 @@
 							<p:dataTable var="row" value="#{manticInventariosAlmacenesKardex.attrs.almacenes}" paginator="false" reflow="true" emptyMessage=" " styleClass="paginated filas" rowIndexVar="index" selectionMode="single" selection="#{manticInventariosAlmacenesKardex.attrs.selected}" rowKey="#{row.idKey}">
 								<p:ajax event="rowSelect" listener="#{manticInventariosAlmacenesKardex.doUpdateInventario}" process="@this" update="@(.inventario)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 								<p:column headerText="No" styleClass="janal-wid-3">
-									<h:outputText value="#{index+ 1}"/>
+									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   
 								<p:column headerText="Clave" styleClass="janal-wid-10">
 									<h:outputText value="#{row.clave}"/>
@@ -237,7 +237,7 @@
 						<p:tab title="Historial">
 							<p:dataTable var="item" value="#{manticInventariosAlmacenesKardex.attrs.historial}" paginator="false" reflow="true" rowKey="#{row.idKey}" emptyMessage=" " styleClass="paginated filas" rowIndexVar="index">
 								<p:column headerText="No" styleClass="janal-wid-3">
-									<h:outputText value="#{index+ 1}"/>
+									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   
 								<p:column headerText="Usuario">
 									<h:outputText value="#{item.persona}"/>

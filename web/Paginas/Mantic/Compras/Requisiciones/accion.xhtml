@@ -90,7 +90,7 @@
 									<f:facet name="header">
 										<h:outputText value="No."/>
 									</f:facet>
-									<h:outputText value="#{index+ 1}"/>
+									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>		
 								<p:column  class="MarAuto Responsive janal-wid-13">
 									<f:facet name="header">
@@ -206,7 +206,7 @@
 					<p:dataTable id="buscados" widgetVar="widgetBuscados" lazy="true" styleClass="janal-row-articulos janal-wid-100" value="#{manticComprasRequisicionesAccion.attrs.lazyModel}" selection="#{manticComprasRequisicionesAccion.attrs.buscado}" var="item" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="50" liveScroll="true" liveScrollBuffer="50" scrollable="true" scrollHeight="280" style="margin-bottom:0">
 						<p:ajax event="rowDblselect" oncomplete="$('#localizado').click();"/>
 						<p:column headerText="No" styleClass="janal-wid-col-30">
-							<h:outputText value="#{index+ 1}"/>
+							<h:outputText value="#{index+ 1}.-"/>
 						</p:column>   
 						<p:column headerText="Nombre">
 							<h:outputText value="#{item.nombre}"/>

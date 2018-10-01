@@ -58,7 +58,7 @@ public class Zebra {
 			Doc doc=new SimpleDoc(by, flavor, null);
 			job.print(doc, null);
 		} // try
-		catch (PrintException e) {
+		catch (Exception e) {
 			e.printStackTrace();
 		} // catch
 	}

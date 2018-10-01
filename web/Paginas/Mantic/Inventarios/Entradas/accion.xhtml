@@ -253,7 +253,7 @@
 												<f:facet name="header">
 													<h:outputText value="No."/>
 												</f:facet>
-												<h:outputText value="#{index+ 1}"/>
+												<h:outputText value="#{index+ 1}.-"/>
 											</p:column>		
 											<p:column  class="MarAuto Responsive janal-wid-10">
 												<f:facet name="header">
@@ -480,7 +480,7 @@
 									<div class="ui-grid-col-12" style="display: #{empty manticInventariosEntradasAccion.attrs.sugeridos? 'none': ''}">
 										<p:dataTable id="sugeridos" var="row" value="#{manticInventariosEntradasAccion.attrs.sugeridos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index">
 											<p:column headerText="No." styleClass="janal-wid-3">
-												<h:outputText value="#{index+ 1}"/>
+												<h:outputText value="#{index+ 1}.-"/>
 											</p:column>   
 											<p:column headerText="Proveedor" styleClass="janal-wid-20">
 												<h:outputText value="#{row.proveedor}"/>
@@ -712,7 +712,7 @@
 					<p:dataTable id="buscados" widgetVar="widgetBuscados" lazy="true" styleClass="janal-row-articulos janal-wid-100" value="#{manticInventariosEntradasAccion.attrs.lazyModel}" selection="#{manticInventariosEntradasAccion.attrs.buscado}" var="item" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="50" liveScroll="true" liveScrollBuffer="50" scrollable="true" scrollHeight="280" style="margin-bottom:0">
 						<p:ajax event="rowDblselect" oncomplete="$('#localizado').click();"/>
 						<p:column headerText="No" styleClass="janal-wid-col-30">
-							<h:outputText value="#{index+ 1}"/>
+							<h:outputText value="#{index+ 1}.-"/>
 						</p:column>   
 						<p:column headerText="Nombre">
 							<h:outputText value="#{item.nombre}"/>
