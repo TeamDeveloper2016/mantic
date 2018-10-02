@@ -22,7 +22,7 @@ public class CodigoArticulo implements IBaseDto, Serializable {
 	private Long idArticulo;
 	private String propio;
 	private String nombre;
-	private Double cantidad;
+	private Long cantidad;
 	private Double tope;
 	private String codigo;
 	private Boolean agregado;
@@ -36,10 +36,10 @@ public class CodigoArticulo implements IBaseDto, Serializable {
 	}
 
 	public CodigoArticulo(Long idArticulo, String propio, String nombre) {
-		this(idArticulo, propio, nombre, 0D, 9999D, "code128", true);
+		this(idArticulo, propio, nombre, 0L, 9999D, "code128", true);
 	}
 	
-	public CodigoArticulo(Long idArticulo, String propio, String nombre, Double cantidad, Double tope, String codigo, Boolean agregado) {
+	public CodigoArticulo(Long idArticulo, String propio, String nombre, Long cantidad, Double tope, String codigo, Boolean agregado) {
 		this.idArticulo=idArticulo;
 		this.propio=propio;
 		this.nombre=nombre;
@@ -73,15 +73,11 @@ public class CodigoArticulo implements IBaseDto, Serializable {
 		this.nombre=nombre;
 	}
 
-	public Double getCantidad() {
+	public Long getCantidad() {
 		return cantidad;
 	}
 	
-	public Long getCantidad$() {
-		return cantidad!= null? cantidad.longValue(): 1;
-	}
-
-	public void setCantidad(Double cantidad) {
+	public void setCantidad(Long cantidad) {
 		this.cantidad=cantidad;
 	}
 

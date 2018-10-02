@@ -59,12 +59,12 @@
 		source      : '/resources/janal/', /* /janal/ inside of jar file */ /* '/resources/janal/ inside of webapp */
 		decimals    : 2,
     init: function(root) {
-      $self= this;
-      $self.console('Janal.Control.Function.init');
+      $control= this;
+      $control.console('Janal.Control.Function.init');
       if(typeof(root)!== 'undefined')
         this.root   = root;
-      $self.load(0, ['/resources/janal/core/jquery.shortcut.core.0.2.2.js','/resources/janal/core/jquery.janal.sticky.min-1.0.0.js','/resources/janal/js/jquery.janal.menu-2.0.1.js','/resources/janal/core/jquery.longclick-1.0.0.js', '/resources/janal/core/jquery.validate.min-1.15.0.js', '/resources/janal/core/jquery.meio.mask.min-1.1.15.js', '/resources/janal/core/jquery.janal.fns-1.3.5.js']);
-      $self.console('Janal.Control.Function.init resource loaded');
+      $control.load(0, ['/resources/janal/core/jquery.shortcut.core.0.2.2.js','/resources/janal/core/jquery.janal.sticky.min-1.0.0.js','/resources/janal/js/jquery.janal.menu-2.0.1.js','/resources/janal/core/jquery.longclick-1.0.0.js', '/resources/janal/core/jquery.validate.min-1.15.0.js', '/resources/janal/core/jquery.meio.mask.min-1.1.15.js', '/resources/janal/core/jquery.janal.fns-1.3.6.js']);
+      $control.console('Janal.Control.Function.init resource loaded');
     },
     dateFormat: function(format) {
       var date= new Date();
@@ -83,7 +83,7 @@
       return format;
     }, // dateFormat
     console: function(msg) {
-      if("produccion"!== $self.toUnicodeString($self.stage) || $self.logger)
+      if("produccion"!== $control.toUnicodeString($control.stage) || $control.logger)
         console.log('INFO '+ this.dateFormat('yyyy-mm-dd hh:ii:ss')+ ': '+ msg);
     }, // console
     cache: function(url, options, count, items) {
@@ -95,7 +95,7 @@
         url  : url,
         complete: function(jqXHR, textStatus) {
           if(count< items.length) 
-            $self.load(count, items);
+            $control.load(count, items);
         }
       });
       // Use $.ajax() since it is more flexible than $.getScript
@@ -104,17 +104,17 @@
     }, // cache
     load: function(count, items) {  
       var url= items[count]; 
-      $self.cache(this.toContext()+ url, {}, count+ 1, items)
+      $control.cache(this.toContext()+ url, {}, count+ 1, items)
       .done(function(script, status) {
-         $self.console(url+ ' loaded');
+         $control.console(url+ ' loaded');
       }) // done
       .fail(function(jqxhr, settings, exception) {
-        $self.console(url+ ' load error '+ exception);
+        $control.console(url+ ' load error '+ exception);
         alert('Desarrollador:\n    Fallo la carga de las librerias de Janal \n    revisar por favor la consola del navegador\n    y notifique a su jefe del error.!\n'+ url+ '\n\n     Error: '+ exception);
       }); // fail
     }, // load
     loadJS: function(items) {  
-      $self.load(0, items);
+      $control.load(0, items);
     },
     empty: function(value) {
       return value=== null || $.trim(value).length=== 0;
@@ -286,16 +286,16 @@
        return this.toUnicodeString(this.root);
      }, // toContext
      labels: function(id) {
-       return $('label[for$="'+ id+ '"], label[for$="'+ id+ $parent.SELECT_FOCUS+ '"], label[for$="'+ id+ $parent.INPUT_RESERVE+ '"], th.'+ (id.indexOf(':')> 0? id.substring(id.indexOf(':')+ 1): id)+ '>span, a.'+ id);
+       return $('label[for$="'+ id+ '"], label[for$="'+ id+ $janal.SELECT_FOCUS+ '"], label[for$="'+ id+ $janal.INPUT_RESERVE+ '"], th.'+ (id.indexOf(':')> 0? id.substring(id.indexOf(':')+ 1): id)+ '>span, a.'+ id);
      }, // labels
      selector: function(multiple, id) {
-       return 'input[id'+ multiple+ '="'+ id+ '"], input[id'+ multiple+ '="'+ id+ $parent.INPUT_RESERVE+ '"], select[id'+ multiple+ '="'+ id+ $parent.INPUT_RESERVE+ '"], textarea[id'+ multiple+ '="'+ id+ '"], input[id^="'+ id+ ':"], input[id*=":'+ id+ ':"], input[id'+ multiple+ '=":'+ id+ '"]';       
+       return 'input[id'+ multiple+ '="'+ id+ '"], input[id'+ multiple+ '="'+ id+ $janal.INPUT_RESERVE+ '"], select[id'+ multiple+ '="'+ id+ $janal.INPUT_RESERVE+ '"], textarea[id'+ multiple+ '="'+ id+ '"], input[id^="'+ id+ ':"], input[id*=":'+ id+ ':"], input[id'+ multiple+ '=":'+ id+ '"]';       
      },
      components: function(multiple, id) {
        return $(this.selector(multiple, id));
      }, // components
      inputs: function(multiple, id) {
-       return $('input[id'+ multiple+ '="'+ id+ '"], input[id'+ multiple+ '="'+ id+ $parent.INPUT_RESERVE+ '"]');
+       return $('input[id'+ multiple+ '="'+ id+ '"], input[id'+ multiple+ '="'+ id+ $janal.INPUT_RESERVE+ '"]');
      }, // inputs
      search: function(id) {
        return this.components('$', id);
@@ -311,9 +311,26 @@
 				var input= $('#'+ id);
 				input.val(input.val().toUpperCase());
 		 },
+     cross: function(source, target) {
+				var result= '';
+				if(target.indexOf('?')>= 0) {
+					var one= source.split(":");
+					var two= target.split("\\:");
+					$.each(two, function(index, item) {
+						if(item=== '?')
+							result+= one[index]+ (index< two.length- 1? '\\:': '');
+						else
+							result+= item+ (index< two.length- 1? '\\:': '');
+					});
+					$janal.console('janal.cross: source ['+ source+ '] target: ['+ target+ '] result: '+ result);
+				} // if
+				else
+					result= target;
+				return result;
+		 },		 
      value: function(id) {
        var values= '';
-       var items= $('input[id$="'+ id+ '"], input[id$="'+ id+ $parent.INPUT_RESERVE+ '"], select[id$="'+ id+ $parent.INPUT_RESERVE+ '"] option:selected, textarea[id$="'+ id+ '"], input[id^="'+ id+ ':"]:checked, input[id*=":'+ id+ ':"]:checked, input[id$="'+ id+ ':"]:checked');
+       var items= $('input[id$="'+ id+ '"], input[id$="'+ id+ $janal.INPUT_RESERVE+ '"], select[id$="'+ id+ $janal.INPUT_RESERVE+ '"] option:selected, textarea[id$="'+ id+ '"], input[id^="'+ id+ ':"]:checked, input[id*=":'+ id+ ':"]:checked, input[id$="'+ id+ ':"]:checked');
        $.each(items, function(idx) {
          values+= $(this).val()+ (items.length-1!== idx? '|': '');
        });
@@ -492,71 +509,71 @@
     init: function(root, form, fields, kind, stage, growl, lock, showMaxError) {
       this._super(root, stage);
       this.console('janal.init');
-      $parent        = this;
-  		$parent.backup = fields;
-      $parent.kind   = kind;
-      $parent.stage  = stage;
-      $parent.message= growl;
-      $parent.lock   = lock;
-      $parent.offContextMenu= "desarrollo"!==$parent.toUnicodeString(stage);
-      $parent.lockContextMenu($parent.offContextMenu);
-      $parent.overrideContextMenu();
-      $parent.prepare(form, fields, showMaxError);  
-      $parent.ready();
+      $janal        = this;
+  		$janal.backup = fields;
+      $janal.kind   = kind;
+      $janal.stage  = stage;
+      $janal.message= growl;
+      $janal.lock   = lock;
+      $janal.offContextMenu= "desarrollo"!==$janal.toUnicodeString(stage);
+      $janal.lockContextMenu($janal.offContextMenu);
+      $janal.overrideContextMenu();
+      $janal.prepare(form, fields, showMaxError);  
+      $janal.ready();
 			$(document).on('focus', 'input, select, textarea', function(e) {
 				if(!$(this).hasClass('janal-not-focus') && ($(this).attr('readonly')=== 'false' || $(this).attr('disabled')=== 'false' || !$(this).attr('readonly') || !$(this).attr('disabled'))) {
-  				$parent.console('janal.focus: '+ $(this).attr('id'));
-				  $parent.lastNameFocus= this;
+  				$janal.console('janal.focus: '+ $(this).attr('id'));
+				  $janal.lastNameFocus= this;
 				} // if	
 			});
     }, // init
     prepare: function(form, fields, showMaxError) {
-      $parent.console('janal.prepare');
+      $janal.console('janal.prepare');
       if (typeof(form)!== 'undefined')
         this.form= form;
       if (typeof(fields)!== 'undefined') {
         this.fields= fields;  
 			};
-      if ((typeof(showMaxError)!== 'undefined') && ($parent.isNonnegativeInteger(''+showMaxError)))
+      if ((typeof(showMaxError)!== 'undefined') && ($janal.isNonnegativeInteger(''+showMaxError)))
         this.errors.show= showMaxError;
-      $form= $('#'+ $parent.form).validate({	ignore: "ignore", onkeyup: false, onfocusout: false, focusInvalid: true, onsubmit: false, 
+      $form= $('#'+ $janal.form).validate({	ignore: "ignore", onkeyup: false, onfocusout: false, focusInvalid: true, onsubmit: false, 
         errorPlacement: function(error, element) {
-          $parent.format(error.text(), element.is(':checkbox')||element.is(':radio')? element.attr('name'): element.attr('id'), $parent.errors.inputs);
+          $janal.format(error.text(), element.is(':checkbox')||element.is(':radio')? element.attr('name'): element.attr('id'), $janal.errors.inputs);
         }
       });      
-      if(typeof($parent.lazy)!== 'undefined')
-        $parent.lazy($form);
-      $parent.reset(false);
+      if(typeof($janal.lazy)!== 'undefined')
+        $janal.lazy($form);
+      $janal.reset(false);
       this.addTabIndex();
       this.initialized= true;
     }, // startUp
     display: function(kind) {
       if (typeof(kind)!== 'undefined' && 'growl|inline|classic'.indexOf(kind)>= 0)
-        $parent.kind= kind;
+        $janal.kind= kind;
     }, // display
     add: function(name, method, message) {
       var tokens= name;
       if(name.constructor!== Array)
-        tokens= $parent.vector(name, ['\\\|', '\\\ ', '\\\,']);
+        tokens= $janal.vector(name, ['\\\|', '\\\ ', '\\\,']);
       $.each(tokens, function() {
-        if($parent.validate(String(this), $parent.names.validations.concat($parent.names.customs)))
-          $parent.format('Ya existe la validaci\u00F3n ['+ String(this)+ '], cambie el nombre.', 'Personalizada', $parent.errors.validations);
+        if($janal.validate(String(this), $janal.names.validations.concat($janal.names.customs)))
+          $janal.format('Ya existe la validaci\u00F3n ['+ String(this)+ '], cambie el nombre.', 'Personalizada', $janal.errors.validations);
       }); // each
-      if($parent.errors.validations.length> 0)
-        $parent.programmer($parent.errors.validations);
+      if($janal.errors.validations.length> 0)
+        $janal.programmer($janal.errors.validations);
       else {
-        $parent.names.customs= $parent.names.customs.concat(tokens);
+        $janal.names.customs= $janal.names.customs.concat(tokens);
         $.validator.addMethod(name, method, message);
       } // else  
-      $parent.errors.validations= [];
+      $janal.errors.validations= [];
     }, // add
     format: function(error, id, items) {
-      //$parent.console('janal.format: '+ id+ ': '+ String(error));
+      //$janal.console('janal.format: '+ id+ ': '+ String(error));
 			var name= id.indexOf(':')> 0? id.substring(id.lastIndexOf(':')+ 1): id;
-					name=	name.indexOf($parent.INPUT_RESERVE)> 0? name.substring(0, name.lastIndexOf($parent.INPUT_RESERVE)): name;
+					name=	name.indexOf($janal.INPUT_RESERVE)> 0? name.substring(0, name.lastIndexOf($janal.INPUT_RESERVE)): name;
 			if(!$('#'+ name).hasClass('janal-input-error'))
 			  $('#'+ name).addClass('janal-input-error');
-      var titles= $parent.labels(name);
+      var titles= $janal.labels(name);
       if(titles.length=== 0)
         items.push({summary: 'Informativo:', detail: error, severity: 'error'});		  
       else
@@ -569,101 +586,101 @@
     }, // format
     blank: function(id, value) {
       if(typeof(value.multiple)==='undefined') {
-        if(typeof($parent.fields[id].multiple)==='undefined')
-          $parent.fields[id].multiple= '$';
+        if(typeof($janal.fields[id].multiple)==='undefined')
+          $janal.fields[id].multiple= '$';
       } // if
       else
-        $parent.fields[id].multiple= value.multiple;
+        $janal.fields[id].multiple= value.multiple;
       if(typeof(value.mensaje)==='undefined') {
-        if(typeof($parent.fields[id].mensaje)==='undefined')
-          $parent.fields[id].mensaje= '';
+        if(typeof($janal.fields[id].mensaje)==='undefined')
+          $janal.fields[id].mensaje= '';
       } // if
       else
-        $parent.fields[id].mensaje= value.mensaje;
+        $janal.fields[id].mensaje= value.mensaje;
       if(typeof(value.grupo)==='undefined') {
-        if(typeof($parent.fields[id].grupo)==='undefined')
-          $parent.fields[id].grupo= $parent.JANAL_RESERVE;
+        if(typeof($janal.fields[id].grupo)==='undefined')
+          $janal.fields[id].grupo= $janal.JANAL_RESERVE;
       } // if
       else
-        $parent.fields[id].grupo= value.grupo;
+        $janal.fields[id].grupo= value.grupo;
       if(typeof(value.mascara)==='undefined') {
-        if(typeof($parent.fields[id].mascara)==='undefined')
-          $parent.fields[id].mascara= 'libre';
+        if(typeof($janal.fields[id].mascara)==='undefined')
+          $janal.fields[id].mascara= 'libre';
       } // if 
       else
-        $parent.fields[id].mascara= value.mascara;
+        $janal.fields[id].mascara= value.mascara;
       if(typeof(value.validaciones)==='undefined') {
-        if(typeof($parent.fields[id].validaciones)==='undefined')
-          $parent.fields[id].validaciones= 'libre';
+        if(typeof($janal.fields[id].validaciones)==='undefined')
+          $janal.fields[id].validaciones= 'libre';
       } // if 
       else
-        $parent.fields[id].validaciones= value.validaciones;
+        $janal.fields[id].validaciones= value.validaciones;
       if(typeof(value.formatos)==='undefined') {
-        if(typeof($parent.fields[id].formatos)==='undefined')
-          $parent.fields[id].formatos= 'libre';
+        if(typeof($janal.fields[id].formatos)==='undefined')
+          $janal.fields[id].formatos= 'libre';
       } // if 
       else
-        $parent.fields[id].formatos= value.formatos;
+        $janal.fields[id].formatos= value.formatos;
       if(typeof(value.individual)==='undefined') {
-        if(typeof($parent.fields[id].individual)==='undefined')
-          $parent.fields[id].individual= false;
+        if(typeof($janal.fields[id].individual)==='undefined')
+          $janal.fields[id].individual= false;
       } // if 
       else
-        $parent.fields[id].individual= value.individual;
+        $janal.fields[id].individual= value.individual;
     },
     cleanForm: function() {
-      $parent.console('janal.cleanForm');
-      $.each($parent.fields, function(id, value) {
-        var $components= $parent.components(value.multiple, id);
+      $janal.console('janal.cleanForm');
+      $.each($janal.fields, function(id, value) {
+        var $components= $janal.components(value.multiple, id);
         $.each($components, function() {
           $(this).val("");
         });
       }); // each
     }, // cleanForm
     data: function(id, value) {
-      $parent.hide();
-      var $components= $parent.components(value.multiple, id);
-      $parent.console('janal.data: '+ id+ ' encontrados: '+ $components.length);
+      $janal.hide();
+      var $components= $janal.components(value.multiple, id);
+      $janal.console('janal.data: '+ id+ ' encontrados: '+ $components.length);
       $.each($components, function() {
-        $parent.console('janal.data: '+ id+ ' formatos: '+ value.formatos+ '  individual: '+ value.individual);
-        $parent.mask(id, $(this), value.mascara);
-        $parent.required(id, value.validaciones, true);
+        $janal.console('janal.data: '+ id+ ' formatos: '+ value.formatos+ '  individual: '+ value.individual);
+        $janal.mask(id, $(this), value.mascara);
+        $janal.required(id, value.validaciones, true);
         if(value.formatos!== 'libre' || value.individual)
           $(this).on('blur', function() {
-            $parent.reference= this;
-            $parent.element(false, id);
+            $janal.reference= this;
+            $janal.element(false, id);
           });
       });
-      $parent.programmer($parent.errors.masks);
+      $janal.programmer($janal.errors.masks);
     },
     reset: function(clean) {
-      $parent.console('janal.reset');
+      $janal.console('janal.reset');
 			if(clean)
-        $parent.clean();
-      $parent.errors.masks= [];
-      $.each($parent.fields, function(id, value) {
-        $parent.blank(id, value);
-        $parent.data(id, value);
+        $janal.clean();
+      $janal.errors.masks= [];
+      $.each($janal.fields, function(id, value) {
+        $janal.blank(id, value);
+        $janal.data(id, value);
       }); // each
     }, // reset
     refresh: function(items) {
-      $parent.console('janal.refresh');
-      $parent.errors.masks= [];
+      $janal.console('janal.refresh');
+      $janal.errors.masks= [];
       if (typeof(items)=== "string")
-        items= $parent.vector(items, ['\\\|', '\\\,', '\\\ ']);
-      $.each($parent.fields, function(id, value) {
+        items= $janal.vector(items, ['\\\|', '\\\,', '\\\ ']);
+      $.each($janal.fields, function(id, value) {
         if(typeof(items)=== 'undefined' || items.length=== 0 || items.indexOf(id)>= 0 || items.indexOf(value.grupo)>= 0) 
-          $parent.data(id, value);
+          $janal.data(id, value);
       }); // each
     }, // refresh
     renovate: function(id, value) {
-      $parent.console('janal.renovate');
-      if($parent.fields[id]) {
-        $parent.blank(id, value);
-        $parent.refresh([id]);
+      $janal.console('janal.renovate');
+      if($janal.fields[id]) {
+        $janal.blank(id, value);
+        $janal.refresh([id]);
       } // if  
       else
-        $parent.show([{summary: 'No existe el ID', detail: 'El elemento llamado['+ id+ '] no existe !!!'}]);
+        $janal.show([{summary: 'No existe el ID', detail: 'El elemento llamado['+ id+ '] no existe !!!'}]);
     }, // refresh
     whatIsIt: function(object) {
       var stringConstructor = "janal".constructor;
@@ -687,51 +704,51 @@
                  return 'don t know';
     }, // whatIsIt
     mask: function(id, component, mask) {
-      if($parent.whatIsIt(mask)=== 'String' && mask.indexOf('{')=== 0) {
+      if($janal.whatIsIt(mask)=== 'String' && mask.indexOf('{')=== 0) {
         try {
           component.setMask($.parseJSON(mask));
         } // try
         catch(e) {
-          $parent.format('Los parametros de la mascara ['+ mask+ '] son incorrectos ', id, $parent.errors.masks);
+          $janal.format('Los parametros de la mascara ['+ mask+ '] son incorrectos ', id, $janal.errors.masks);
         } // catch
       } // if
       else
-        if($parent.whatIsIt(mask)=== 'Object') {
+        if($janal.whatIsIt(mask)=== 'Object') {
           try {
             component.setMask(mask);
           } // try
           catch(e) {
-            $parent.format('Los parametros de la mascara ['+ mask+ '] son incorrectos ', id, $parent.errors.masks);
+            $janal.format('Los parametros de la mascara ['+ mask+ '] son incorrectos ', id, $janal.errors.masks);
           } // catch
         } // if
         else
-          if($parent.validate(mask, $parent.names.masks)) {
+          if($janal.validate(mask, $janal.names.masks)) {
             if(mask!== 'no-aplica') {
               component.attr('alt', mask);
               component.setMask();
             } // if  
           } // if  
           else
-            $parent.format('No existe la mascara ['+ mask+ ']', id, $parent.errors.masks);
+            $janal.format('No existe la mascara ['+ mask+ ']', id, $janal.errors.masks);
     }, // mask     
     cut: function(name) {
       return $.trim(name.indexOf('(')>= 0? name.substring(0, name.indexOf('(')): name);
     }, // cut
     complete: function(name) {
-      return $.trim(name.indexOf('(')>= 0? name: name+ '({"default": "'+ $parent.JANAL_RESERVE+ '"})');
+      return $.trim(name.indexOf('(')>= 0? name: name+ '({"default": "'+ $janal.JANAL_RESERVE+ '"})');
     }, // complete
     // Converts a simple string to a {string: true} rule, e.g., "required" to {required:true}
     normalize: function(id, component, data, message) {
       if (typeof data === "string") {
-        var tokens= $parent.vector(data, ['\\\(', '\\\)']);
+        var tokens= $janal.vector(data, ['\\\(', '\\\)']);
         var $json = {messages: {}};
         try {
           $json[tokens[0]]= $.parseJSON(tokens[1]);
         } // try
         catch(e) {
-          $parent.format('Los parametros de la validaci\u00F3n ['+ tokens[0]+ '] son incorrectos '+ tokens[1], id, $parent.errors.validations);
+          $janal.format('Los parametros de la validaci\u00F3n ['+ tokens[0]+ '] son incorrectos '+ tokens[1], id, $janal.errors.validations);
         } // catch
-        if(!$parent.empty(message))
+        if(!$janal.empty(message))
           $json.messages[tokens[0]]= message;
         data = $json;
       } // if
@@ -739,18 +756,18 @@
     }, // normalize
     rules: function(id, component, methods, message) {
       $.each(methods, function() {
-        var method= $parent.cut(this);
-        if($parent.validate(method, $parent.names.validations.concat($parent.names.formats).concat($parent.names.customs))) {
+        var method= $janal.cut(this);
+        if($janal.validate(method, $janal.names.validations.concat($janal.names.formats).concat($janal.names.customs))) {
           if(method!== 'no-aplica')
-            component.rules('add', $parent.normalize(id, component, $parent.complete(String(this)), message));
+            component.rules('add', $janal.normalize(id, component, $janal.complete(String(this)), message));
         } // if  
         else
-          $parent.format('No existe la validaci\u00F3n ['+ method+ ']', id, $parent.errors.validations);
+          $janal.format('No existe la validaci\u00F3n ['+ method+ ']', id, $janal.errors.validations);
       }); // each
     }, // rules
     required: function(id, method, colocate) {
       if(method.indexOf('requerido')>= 0) {
-        var titles= $parent.labels(id);
+        var titles= $janal.labels(id);
         $.each(titles, function() {
           if(colocate)
             $(this).text(($(this).text().indexOf('*')< 0? '*': '')+ $(this).text());
@@ -766,97 +783,97 @@
       $('input, select, textarea').removeClass('janal-input-error');
       $('label, th>span').removeClass('janal-field-error');
       $('#growl_container').remove();
-      if(typeof(PF($parent.message))!== 'undefined')
-        PF($parent.message).removeAll();
-      $parent.errors.inputs= [];
+      if(typeof(PF($janal.message))!== 'undefined')
+        PF($janal.message).removeAll();
+      $janal.errors.inputs= [];
     }, // hide
     clean: function() {
-      $parent.console('janal.clean');
-      $.each($parent.fields, function(id, value) {
-        $parent.blank(id, value);
-        var $components= $parent.components(value.multiple, id);
+      $janal.console('janal.clean');
+      $.each($janal.fields, function(id, value) {
+        $janal.blank(id, value);
+        var $components= $janal.components(value.multiple, id);
         $.each($components, function() {
           $(this).unsetMask();
           //$(this).css('text-align', 'left');
           $(this).rules('remove');
-          $parent.required(id, value.validaciones, false);
+          $janal.required(id, value.validaciones, false);
         });
       }); // each
-      $parent.hide();
+      $janal.hide();
     }, // clean
     isWaterMark: function(methods) {
 			var count= 0;
       $.each(methods, function() {
-        if($parent.names.watermarks.indexOf($parent.cut(this))>= 0)
+        if($janal.names.watermarks.indexOf($janal.cut(this))>= 0)
           count++;
       });
       return count> 0;
     }, // isWaterMark
     cleanMarks: function() {
-      $.each($parent.fields, function(id, value) {
+      $.each($janal.fields, function(id, value) {
         if(typeof(value.multiple)==='undefined')
           value.multiple= '$';
-        var $components= $parent.inputs(value.multiple, id);
+        var $components= $janal.inputs(value.multiple, id);
         $.each($components, function() {
-          if($parent.isWaterMark($parent.vector(value.validaciones, ['\\\|'])))
-            $(this).val($parent.cleanToken($(this).val()));
+          if($janal.isWaterMark($janal.vector(value.validaciones, ['\\\|'])))
+            $(this).val($janal.cleanToken($(this).val()));
         });
       }); // each
     }, // cleanMarks
     show: function(items, type) {
-      switch($parent.kind) {
+      switch($janal.kind) {
         case 'classic':
-          $parent.classic(items, type);
+          $janal.classic(items, type);
           break;
         case 'inline':
-          $parent.inline(items, type);
+          $janal.inline(items, type);
           break;
         case 'growl':
-          $parent.growl(items, type);
+          $janal.growl(items, type);
           break;
       }; // switch
     }, // show
     classic: function(items) {
-      if(typeof(PF($parent.message))!== 'undefined') {
-        PF($parent.message).removeAll();			
-				$.each($parent.errors.customs, function() {
+      if(typeof(PF($janal.message))!== 'undefined') {
+        PF($janal.message).removeAll();			
+				$.each($janal.errors.customs, function() {
           if(typeof(this.id)!== 'undefined')
-	  				$parent.addClassError($parent.vector(this.id, ['\\\|']));
+	  				$janal.addClassError($janal.vector(this.id, ['\\\|']));
 				}); // customs
-				var all= items.concat($parent.errors.customs);
-				if(($parent.errors.show> 0) && (all.length> $parent.errors.show)) {
-					all= all.slice(0, $parent.errors.show);
-					all.push({severity: 'Informativo', summary: 'Total de errores:', detail: items.concat($parent.errors.customs).length});
+				var all= items.concat($janal.errors.customs);
+				if(($janal.errors.show> 0) && (all.length> $janal.errors.show)) {
+					all= all.slice(0, $janal.errors.show);
+					all.push({severity: 'Informativo', summary: 'Total de errores:', detail: items.concat($janal.errors.customs).length});
 				} // if
-        PF($parent.message).show(all);
+        PF($janal.message).show(all);
       } // if  
     }, // classic
     growl: function(items, type) {
 			if(typeof(type)==='undefined')
 				type= 'error';
-      var container= $parent.build('div', 'growl_container', $('#'+ $parent.form), 'ui-growl, ui-widget, ui-growl-'+ type);
-      container= $parent.build('div', '', container, 'ui-growl-item-container, ui-state-highlight, ui-corner-all, ui-helper-hidden, ui-shadow, ui-growl-'+ type+ '-container');
+      var container= $janal.build('div', 'growl_container', $('#'+ $janal.form), 'ui-growl, ui-widget, ui-growl-'+ type);
+      container= $janal.build('div', '', container, 'ui-growl-item-container, ui-state-highlight, ui-corner-all, ui-helper-hidden, ui-shadow, ui-growl-'+ type+ '-container');
       container.css({'display': 'block'});
-      container= $parent.build('div', '', container, 'ui-growl-item, ui-growl-'+ type+ '-item');
+      container= $janal.build('div', '', container, 'ui-growl-item, ui-growl-'+ type+ '-item');
       $('<a href="#" onclick="$(this).parent().parent().slideUp();" style="float:right;cursor:pointer"><span class="ui-icon ui-growl-'+ type+ '-icon-close"></span></a>').appendTo(container);
-      $parent.build('span', '', container, 'ui-growl-image, ui-growl-'+ type+ '-image, ui-growl-image-error');
-      $parent.detail(items, container);
+      $janal.build('span', '', container, 'ui-growl-image, ui-growl-'+ type+ '-image, ui-growl-image-error');
+      $janal.detail(items, container);
     }, // growl
     inline: function(items, type) {
 			if(typeof(type)==='undefined')
 				type= 'error';
-      var container= $parent.build('div', 'growl_container', $('body'), 'ui-messages, ui-widget, ui-messages-'+ type);
-      container.insertBefore($('#'+ $parent.form));
-      container= $parent.build('div', '', container, 'ui-corner-all, ui-'+ type+ '-messages');
+      var container= $janal.build('div', 'growl_container', $('body'), 'ui-messages, ui-widget, ui-messages-'+ type);
+      container.insertBefore($('#'+ $janal.form));
+      container= $janal.build('div', '', container, 'ui-corner-all, ui-'+ type+ '-messages');
       $('<a href="#" class="ui-messages-close" onclick="$(this).parent().parent().slideUp();return false;"><span class="ui-icon ui-messages-'+ type+ '-icon-close"></span></a>').appendTo(container);
-      // $parent.build('span', '', container, 'ui-messages-'+ type+ '-icon');
-      $parent.detail(items, container);
+      // $janal.build('span', '', container, 'ui-messages-'+ type+ '-icon');
+      $janal.detail(items, container);
     }, // inline
 		addClassError: function(id) {
 			$.each(id, function() {
   			if(!$('#'+ this).hasClass('janal-input-error'))
 			    $('#'+ this).addClass('janal-input-error')
-				var titles= $parent.labels(this.indexOf(':')> 0? this.substring(this.lastIndexOf(':')+ 1): this.indexOf($parent.INPUT_RESERVE)> 0? this.substring(0, this.lastIndexOf($parent.INPUT_RESERVE)): this);
+				var titles= $janal.labels(this.indexOf(':')> 0? this.substring(this.lastIndexOf(':')+ 1): this.indexOf($janal.INPUT_RESERVE)> 0? this.substring(0, this.lastIndexOf($janal.INPUT_RESERVE)): this);
 				if(titles.length!== 0) {
 					$.each(titles, function() {
 						if(!$(this).hasClass('janal-field-error')) {
@@ -867,28 +884,28 @@
 			}); // ids
 		},
     detail: function(items, container) {
-      $parent.build('br', '', container, '');
-      var $container= $parent.build('ul', '', container, '');
-      var allItems= items.concat($parent.errors.customs);
+      $janal.build('br', '', container, '');
+      var $container= $janal.build('ul', '', container, '');
+      var allItems= items.concat($janal.errors.customs);
       $.each(allItems, function(index) {
         if(typeof(this.severity)=== 'undefined')
           this.severity= 'error';
         if(typeof(this.id)!== 'undefined')
-					$parent.addClassError($parent.vector(this.id, ['\\\|']));
-        var $li  = $parent.build('li', '', $container, '');
-        var $span= $parent.build('span', '', $li, 'ui-messages-'+ this.severity+ '-summary');
+					$janal.addClassError($janal.vector(this.id, ['\\\|']));
+        var $li  = $janal.build('li', '', $container, '');
+        var $span= $janal.build('span', '', $li, 'ui-messages-'+ this.severity+ '-summary');
         $span.text(this.summary);
-        $span= $parent.build('span', '', $li, 'ui-messages-'+ this.severity+ '-detail');
+        $span= $janal.build('span', '', $li, 'ui-messages-'+ this.severity+ '-detail');
         $span.text(this.detail);
-        if(($parent.errors.show> 0) && ((index+ 1)>= $parent.errors.show)) {
-          $parent.build('br', '', container, '');
-          var $count= $parent.build('div', '', container, 'janal-align-right janal-font-bold');
+        if(($janal.errors.show> 0) && ((index+ 1)>= $janal.errors.show)) {
+          $janal.build('br', '', container, '');
+          var $count= $janal.build('div', '', container, 'janal-align-right janal-font-bold');
           $count.text('Total de errores: '+ allItems.length+ '');
-          $parent.build('br', '', container, '');
+          $janal.build('br', '', container, '');
           return false;
         };
       });
-			$parent.build('br', '', container, '');
+			$janal.build('br', '', container, '');
     }, // detail
     programmer: function(items) {
       if(items.length> 0) {
@@ -902,7 +919,7 @@
     }, // programmer
     addTabIndex: function() {
       var idx= 1;	   
-      $('#'+ $parent.form).each(function() {
+      $('#'+ $janal.form).each(function() {
         $('*', this).not('*[for]').each(function() {              
           if ($(this).is('input:text, input:checkbox, input:radio, select, textarea, button')) {         
             if (!$(this).is(':disabled'))
@@ -910,12 +927,12 @@
           } // if
         });
       });        
-      $parent.keyEnter();
+      $janal.keyEnter();
       setTimeout(function(){$('*[tabIndex=1]').focus();}, 1000);
 	  }, // addTabIndex
     keyEnter: function() {
       $('input:text, input:radio, input:checkbox, select, button').on('keydown', function(e) {
-	  		$parent.move(e, $(this)); 
+	  		$janal.move(e, $(this)); 
   		});
     }, // keyEnter
     move: function(event, element) {
@@ -933,71 +950,71 @@
       } // if
     }, // move    
     apply: function(group, clear) {
-      $parent.console('janal.apply');
-      $parent.errors.validations= [];
-      $.each($parent.fields, function(id, value) {
-        var $components= $parent.components(value.multiple, id);
+      $janal.console('janal.apply');
+      $janal.errors.validations= [];
+      $.each($janal.fields, function(id, value) {
+        var $components= $janal.components(value.multiple, id);
         $.each($components, function() {
 					if(typeof(clear) === 'undefined' || clear)
 						$(this).rules('remove');
-          if(group=== $parent.JANAL_RESERVE || value.grupo.indexOf(group)>= 0)
-            $parent.rules(id, $(this), $parent.vector(value.validaciones, ['\\\|']), value.mensaje);
+          if(group=== $janal.JANAL_RESERVE || value.grupo.indexOf(group)>= 0)
+            $janal.rules(id, $(this), $janal.vector(value.validaciones, ['\\\|']), value.mensaje);
         });
       }); // each
-      $parent.programmer($parent.errors.validations);
+      $janal.programmer($janal.errors.validations);
     }, // apply
     check: function(customs, blockui) {
-      $parent.console('janal.check');
-      $parent.hide();
+      $janal.console('janal.check');
+      $janal.hide();
       if(typeof(customs)!== 'undefined' && typeof(customs)!== 'boolean')
-        $parent.errors.customs= customs;
+        $janal.errors.customs= customs;
       if((typeof(customs)!== 'undefined' && typeof(customs)=== 'boolean' && customs) || (typeof(blockui)!== 'undefined' && blockui))
-        $parent.bloquear();
-      var ok= $('#'+ $parent.form).valid() && $parent.errors.customs.length=== 0;
+        $janal.bloquear();
+      var ok= $('#'+ $janal.form).valid() && $janal.errors.customs.length=== 0;
       if(ok) 
-        $parent.cleanMarks();
+        $janal.cleanMarks();
       else
-        $parent.show($parent.errors.inputs);
-      $parent.errors.customs= [];
+        $janal.show($janal.errors.inputs);
+      $janal.errors.customs= [];
       if((typeof(customs)!== 'undefined' && typeof(customs)=== 'boolean' && customs) || (typeof(blockui)!== 'undefined' && blockui))
-        $parent.desbloquear();
+        $janal.desbloquear();
       return ok;
     }, // check    
     update: function(fields) {
-      $parent.console('janal.update '+ fields);
-      $parent.clean();
-      $parent.fields= fields;
-      $parent.reset(false);
+      $janal.console('janal.update '+ fields);
+      $janal.clean();
+      $janal.fields= fields;
+      $janal.reset(false);
     }, // update
 		restore: function() {
-			$parent.change('datos', $parent.backup);
+			$janal.change('datos', $janal.backup);
 		},
     change: function(form, fields) {
-      $parent.console('janal.update '+ fields);
-      $parent.clean();
-      $parent.prepare(form, fields, $parent.errors.show);
+      $janal.console('janal.update '+ fields);
+      $janal.clean();
+      $janal.prepare(form, fields, $janal.errors.show);
     }, // update
     execute: function(customs, blockui) {
-      $parent.console('janal.execute');
-      $parent.apply($parent.JANAL_RESERVE);
-      return $parent.check(customs, blockui);
+      $janal.console('janal.execute');
+      $janal.apply($janal.JANAL_RESERVE);
+      return $janal.check(customs, blockui);
     }, // execute
     partial: function(group, customs, blockui) {
-      $parent.console('janal.partial');
-      var tokens= $parent.vector(group, ['\\\|', '\\\ ', '\\\,']);
+      $janal.console('janal.partial');
+      var tokens= $janal.vector(group, ['\\\|', '\\\ ', '\\\,']);
       $.each(tokens, function(idx) {
-        $parent.apply(String(this), idx=== 0);
+        $janal.apply(String(this), idx=== 0);
       }); // each
-      return $parent.check(customs, blockui);
+      return $janal.check(customs, blockui);
     }, // partial
     element: function(all, field, blockui) {
-      $parent.console('janal.element');
-      $parent.errors.validations= [];
-      $.each($parent.fields, function(id, value) {
+      $janal.console('janal.element');
+      $janal.errors.validations= [];
+      $.each($janal.fields, function(id, value) {
         if(id=== field) {
           // search all components with same selector
-          $parent.data(false, id, value);
-          var $components= $parent.components(value.multiple, id);
+          $janal.data(false, id, value);
+          var $components= $janal.components(value.multiple, id);
           $.each($components, function() {
 						$(this).rules('remove');
             var complete= value.formatos;
@@ -1006,44 +1023,44 @@
                 complete+= value.validaciones;
               else
                 complete+= '|'+ value.validaciones;
-            $parent.rules(id, $(this), $parent.vector(complete, ['\\\|']), '');
+            $janal.rules(id, $(this), $janal.vector(complete, ['\\\|']), '');
           });
         } // if  
       }); // each
-      $parent.programmer($parent.errors.validations);
-      $parent.hide();
+      $janal.programmer($janal.errors.validations);
+      $janal.hide();
       if(typeof(blockui)!== 'undefined' && blockui)
-        $parent.bloquear();
-      var validator= $('#'+ $parent.form).validate();
+        $janal.bloquear();
+      var validator= $('#'+ $janal.form).validate();
       var ok= false;
-			if($parent.reference!== null) 
-				validator.element('#'+ $($parent.reference).attr('id').replace(/:/gi, '\\:'));
+			if($janal.reference!== null) 
+				validator.element('#'+ $($janal.reference).attr('id').replace(/:/gi, '\\:'));
 			else
-				validator.element($('#'+ $parent.form).find($parent.selector('$', field)));
+				validator.element($('#'+ $janal.form).find($janal.selector('$', field)));
       if(ok) 
-        $parent.cleanMarks();
+        $janal.cleanMarks();
       else
-				if($parent.errors.inputs.length> 0)
-          $parent.show($parent.errors.inputs);
+				if($janal.errors.inputs.length> 0)
+          $janal.show($janal.errors.inputs);
       if(typeof(blockui)!== 'undefined' && blockui)
-        $parent.desbloquear();
-      $parent.reference= null;
+        $janal.desbloquear();
+      $janal.reference= null;
       return ok;
     }, 
     individual: function(field, blockui) {
-      $parent.console('janal.individual');
+      $janal.console('janal.individual');
       var ok= true;
-      if($parent.fields[field] && !$parent.fields[field].individual)
-        ok= $parent.element(true, field, blockui);
+      if($janal.fields[field] && !$janal.fields[field].individual)
+        ok= $janal.element(true, field, blockui);
       return ok;
     },
     exportTable: function(name, data) {
-      $parent.bloquear();
+      $janal.bloquear();
       var ok= $("#"+ data+ " div.ui-dt-c:contains('No existen registros')").text().length> 0;
       if(ok) {
-        $parent.hide();
-        $parent.show([{summary: "Error del sistema", detail: "No existen registro que exportar"}]);
-        $parent.desbloquear();
+        $janal.hide();
+        $janal.show([{summary: "Error del sistema", detail: "No existen registro que exportar"}]);
+        $janal.desbloquear();
       } // else
       else	
         $('#'+ name).click(); 
@@ -1064,15 +1081,15 @@
       });
     },// overrideContextMenu  
     lockContextMenu: function(server) {
-      $parent.console('janal.lockContextMenu');
+      $janal.console('janal.lockContextMenu');
       if(typeof(server)!== 'undefined')
-        $parent.offContextMenu= server;
+        $janal.offContextMenu= server;
       $(document).bind('contextmenu', function(e) { 
-        return !($parent.offContextMenu);
+        return !($janal.offContextMenu);
       });       
     },
     hideStackMenu: function() {
-      $parent.console('janal.hideStackMenu');
+      $janal.console('janal.hideStackMenu');
       if(PF('stackMenu'))
         PF('stackMenu').collapse(PF('stackMenu').jq.children('img'));
       $('.ui-stack').bind('mousedown', function(e) { 
@@ -1085,7 +1102,7 @@
       }); 
     },
 		toCorreoHtml : function() {		
-      $parent.bloquear();
+      $janal.bloquear();
       var styles       = "";
       var clasesABuscar= [];
       var clasesSplit  = [];
@@ -1118,13 +1135,13 @@
       //remoteTabla({text:'$("#tabla").text()'});
     }, // toCorreoHtml
     bloquear: function() {
-      if (typeof($parent.locked)!== 'undefined')
-        PF($parent.locked).show();
+      if (typeof($janal.locked)!== 'undefined')
+        PF($janal.locked).show();
       return true;
     }, // bloquear
     desbloquear: function() {
-      if (typeof($parent.locked)!== 'undefined')
-        PF($parent.locked).hide();
+      if (typeof($janal.locked)!== 'undefined')
+        PF($janal.locked).hide();
     }, // desbloquear
 		cerrarDialogo: function() {
 			this.desbloquear();
@@ -1133,49 +1150,49 @@
     custom: function(item) {
       if(typeof(item.severity)=== 'undefined')
         item.severity= 'error';
-      var container= $parent.build('div', 'growl_container', $('#'+ $parent.form), 'ui-growl, ui-widget, ui-growl-'+ item.severity);
-      container= $parent.build('div', '', container, 'ui-growl-item-container, ui-state-highlight, ui-corner-all, ui-helper-hidden, ui-shadow, ui-growl-'+ item.severity+ '-container');
+      var container= $janal.build('div', 'growl_container', $('#'+ $janal.form), 'ui-growl, ui-widget, ui-growl-'+ item.severity);
+      container= $janal.build('div', '', container, 'ui-growl-item-container, ui-state-highlight, ui-corner-all, ui-helper-hidden, ui-shadow, ui-growl-'+ item.severity+ '-container');
       container.css({'display': 'block'});
-      container= $parent.build('div', '', container, 'ui-growl-item, ui-growl-'+ item.severity+ '-item');
+      container= $janal.build('div', '', container, 'ui-growl-item, ui-growl-'+ item.severity+ '-item');
       $('<a href="#" onclick="$(this).parent().parent().slideUp();" style="float:right;cursor:pointer"><span class="ui-icon ui-growl-'+ item.severity+ '-icon-close"></span></a>').appendTo(container);
-      $parent.build('span', '', container, 'ui-growl-image, ui-growl-'+ item.severity+ '-image');
-      var $span= $parent.build('span', '', container, 'ui-messages-'+ item.severity+ '-summary');
+      $janal.build('span', '', container, 'ui-growl-image, ui-growl-'+ item.severity+ '-image');
+      var $span= $janal.build('span', '', container, 'ui-messages-'+ item.severity+ '-summary');
       $span.text(item.summary);
-      $parent.build('br', '', container, '');
-      $span= $parent.build('span', '', container, 'ui-messages-'+ item.severity+ '-detail');
+      $janal.build('br', '', container, '');
+      $span= $janal.build('span', '', container, 'ui-messages-'+ item.severity+ '-detail');
       $span.text(item.detail);
     }, // custom    
     notify: function(title, type, id, msg) {
-			$parent.clean();
+			$janal.clean();
 			switch (arguments.length) {
         case 3: 
-					$parent.custom({summary: title, detail: id, severity: type});
+					$janal.custom({summary: title, detail: id, severity: type});
 					break;
 				case 4:	
-					$parent.show([{id: id, summary: title, detail: msg, severity: type}], type);
+					$janal.show([{id: id, summary: title, detail: msg, severity: type}], type);
 					break;
 	    } // switch
     }, // info
     info: function(id, msg) {
 			if(arguments.length=== 1)
-			  $parent.notify('Informaci\u00F3n:', 'info', id);
+			  $janal.notify('Informaci\u00F3n:', 'info', id);
 			else
-			  $parent.notify('Informaci\u00F3n:', 'info', id, msg);
+			  $janal.notify('Informaci\u00F3n:', 'info', id, msg);
     }, // info
     warn: function(id, msg) {
 			if(arguments.length=== 1)
-  			$parent.notify('Precauci\u00F3n:', 'warn', id);
+  			$janal.notify('Precauci\u00F3n:', 'warn', id);
 			else
-  			$parent.notify('Precauci\u00F3n:', 'warn', id, msg);
+  			$janal.notify('Precauci\u00F3n:', 'warn', id, msg);
     }, // warn
     error: function(id, msg) {
 			if(arguments.length=== 1)
-			  $parent.notify('Error:', 'error', id);
+			  $janal.notify('Error:', 'error', id);
 		  else
-			  $parent.notify('Error:', 'error', id, msg);
+			  $janal.notify('Error:', 'error', id, msg);
     }, // error
     alert: function(msg) {
-			$parent.console('janal.alert: ');
+			$janal.console('janal.alert: ');
 			alert(msg);
     }, // alert
     version: function() {
@@ -1211,22 +1228,22 @@
 			  $('#' + id).removeClass('xs-pantalla').addClass('lg-pantalla');			
 		},
     ready: function() {
-      $parent.console('janal.ready');
-      if(typeof($parent.start)!== 'undefined')
-        $parent.start();
+      $janal.console('janal.ready');
+      if(typeof($janal.start)!== 'undefined')
+        $janal.start();
       else
-        $parent.console('janal.start not implemented !');
+        $janal.console('janal.start not implemented !');
     }, // ready		
 		maxDescuentos: function(descuento, extra) {
-		 $parent.hide();
-		 var importeDescuento= $parent.descuentos($('#'+ descuento)).suma;
-		 var importeExtra    = $parent.descuentos($('#'+ extra)).suma;
+		 $janal.hide();
+		 var importeDescuento= $janal.descuentos($('#'+ descuento)).suma;
+		 var importeExtra    = $janal.descuentos($('#'+ extra)).suma;
 		 var total           = parseFloat(importeDescuento, 10)+ parseFloat(importeExtra, 10);
 		 if(total> 100) 
-			 $parent.info(descuento, 'El importe de los descuentos excede el 100% ['+ total+ ']');
+			 $janal.info(descuento, 'El importe de los descuentos excede el 100% ['+ total+ ']');
 	  }, 
 		back: function(title, count) {
-      $parent.console('janal.back');
+      $janal.console('janal.back');
 			alert('Se '+ title+ ' con consecutivo: '+ count);
 		},
 		readingMode: function(action) {
@@ -1247,7 +1264,7 @@
 							} // if
 							else 
 								$(this).prop('disabled', 'disabled').addClass('ui-state-disabled'); 
-						//$parent.console('janal.readingMode: '+ this.tagName+ ' => '+ this.id+ ' => '+ $(this).attr('disabled')+ ' -> '+ $(this).attr('class'));
+						//$janal.console('janal.readingMode: '+ this.tagName+ ' => '+ this.id+ ' => '+ $(this).attr('disabled')+ ' -> '+ $(this).attr('class'));
 					} // if
 				} // if
 				else {
@@ -1286,7 +1303,7 @@
 			setTimeout("PF('retiroEfectivo').hide();", 15000);
 		},
 		tableId: function(name) {
-			return $('#'+ name+ $parent.TABLE_RESERVE);
+			return $('#'+ name+ $janal.TABLE_RESERVE);
 		},
 		keyboard: function() {
       $('input.janal-mask-random').each(function() {

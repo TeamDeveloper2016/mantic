@@ -13,7 +13,7 @@
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'codigos' : {validaciones: 'libre', mascara: 'libre'},
-				'cantidad': {multiple: '$', validaciones: 'entero|mayor({"cuanto": 0})|menor({"cuanto": 9999})', mascara: 'libre'}
+				'cantidad': {multiple: '$', validaciones: 'entero|mayor({"cuanto": 0})|menor-a({"cual":"tabla\\\\:?\\\\:limite"})', mascara: 'libre'}
 			};	
 		</script>   
 	</ui:define>
@@ -71,14 +71,14 @@
 						<p:column headerText="Código de barras" styleClass="janal-column-center janal-wid-15">
 							<p:barcode value="#{row.propio}" type="#{row.codigo}"/>
 						</p:column>   
-						<p:column headerText="QR" styleClass="janal-column-center janal-wid-15">
+						<p:column headerText="QR" styleClass="janal-column-center janal-wid-15" rendered="false">
 							<p:barcode value="#{row.propio}" type="qr"/>
 						</p:column>   
 						<p:column headerText="Cantidad" styleClass="janal-wid-10 cantidad">
-							<p:inputNumber id="cantidad" styleClass="janal-wid-100-txt janal-column-right" value="#{row.cantidad$}" decimalPlaces="0"/>
+							<p:inputNumber id="cantidad" styleClass="janal-wid-100-txt janal-column-right" value="#{row.cantidad}" decimalPlaces="0"/>
 						</p:column>   
 						<p:column headerText="Limite" styleClass="janal-wid-10 janal-column-right limite">
-							<p:inputText value="#{row.tope}" style="display:none"/>
+							<p:inputText id="limite" value="#{row.tope}" style="display:none"/>
 							<h:outputText value="#{manticCatalogosArticulosCodigos.doNumerico(row.tope)}"/>
 						</p:column>   
 						<p:column headerText="Quitar" styleClass="janal-wid-col-38 janal-column-center">

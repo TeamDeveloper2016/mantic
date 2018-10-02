@@ -536,9 +536,9 @@ $.mask.masks = $.extend($.mask.masks, {
           return false;
 				} // if	
         else
-  			  return value=== janal.value(params.cual);
+  			  return value=== janal.value(janal.cross($(element).attr('id'), params.cual));
 		}, function(params, element) {
-      return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser igual a '+ janal.value(params.cual)+ '.';
+      return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser igual a '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
     });
 
 	$.validator.addMethod('menor-a', function(value, element, params) {
@@ -549,10 +549,12 @@ $.mask.masks = $.extend($.mask.masks, {
 					janal.programmer([{summary: 'Funci\u00F3n: menor-a', detail: 'falta el parametro {cual}'}]);
           return false;
 				} // if	
-        else
-  			  return janal.double(janal.cleanToken(value), 0)<= janal.double(janal.cleanToken(janal.value(params.cual)), 0);
+        else {
+					janal.console('janal.menor-a: value ['+ value+ '] cual: ['+ janal.value(janal.cross($(element).attr('id'), params.cual))+ ']');
+  			  return janal.double(janal.cleanToken(value), 0)<= janal.double(janal.cleanToken(janal.value(janal.cross($(element).attr('id'), params.cual))), 0);
+				} // else
 		}, function(params, element) {
-      return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser menor o igual '+ janal.value(params.cual)+ '.';
+      return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser menor o igual '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
     });
 
 	$.validator.addMethod('mayor-a', function(value, element, params) {
@@ -564,9 +566,9 @@ $.mask.masks = $.extend($.mask.masks, {
           return false;
 				}	// if
         else 
-  			  return janal.double(janal.cleanToken(value), 0)>= janal.double(janal.cleanToken(janal.value(params.cual)), 0);
+  			  return janal.double(janal.cleanToken(value), 0)>= janal.double(janal.cleanToken(janal.value(janal.cross($(element).attr('id'), params.cual))), 0);
 		}, function(params, element) {
-      return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser mayor o igual '+ janal.value(params.cual)+ '.';
+      return 'El valor '+ janal.value($(element).attr('id'))+ ' debe ser mayor o igual '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
     });
 
 	$.validator.addMethod('asterisco', function(value, element, params) {
@@ -745,7 +747,7 @@ $.mask.masks = $.extend($.mask.masks, {
             return false;
 					} // if	
           else {
-            var before= janal.value(params.cual);
+            var before= janal.value(janal.cross($(element).attr('id'), params.cual));
             if(janal.empty(before))
               return true;
             else
@@ -755,7 +757,7 @@ $.mask.masks = $.extend($.mask.masks, {
 			    return false;
 		}, function(params, element) {
       var before= $(element).val();
-      var msg   = 'La fecha '+ $(element).val()+ ' con la que se compara es mayor a '+ janal.value(params.cual)+ '.';
+      var msg   = 'La fecha '+ $(element).val()+ ' con la que se compara es mayor a '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
       if(!janal.isCustomDate(before))
         msg= 'Formato de la fecha '+ $(element).val()+ ' es inv\u00E1lida, el formato es [dd/mm/yyyy].';
       return msg;
@@ -771,7 +773,7 @@ $.mask.masks = $.extend($.mask.masks, {
             return false;
 					} // if	
           else {
-            var before= janal.value(params.cual);
+            var before= janal.value(janal.cross($(element).attr('id'), params.cual));
             if(janal.empty(before))
               return true;
             else
@@ -781,7 +783,7 @@ $.mask.masks = $.extend($.mask.masks, {
 			    return false;
 		}, function(params, element) {
       var before= $(element).val();
-      var msg   = 'La fecha '+ $(element).val()+ ' con la que se compara es menor a '+ janal.value(params.cual)+ '.';
+      var msg   = 'La fecha '+ $(element).val()+ ' con la que se compara es menor a '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
       if(!janal.isCustomDate(before))
         msg= 'Formato de la fecha '+ $(element).val()+ ' es inv\u00E1lida, el formato es [dd/mm/yyyy].';
       return msg;
@@ -825,7 +827,7 @@ $.mask.masks = $.extend($.mask.masks, {
             return false;
 					}	// if
           else {
-            var before= janal.value(params.cual);
+            var before= janal.value(janal.cross($(element).attr('id'), params.cual));
             if(typeof(before)!== 'undefined' && before.length=== 5)
                before= before+ ':00';
             if(janal.empty(before))
@@ -838,7 +840,7 @@ $.mask.masks = $.extend($.mask.masks, {
       } // else  
 		}, function(params, element) {
       var before= $(element).val();
-      var msg   = 'La hora '+ before+ ' con la que se compara es mayor a '+ janal.value(params.cual)+ '.';
+      var msg   = 'La hora '+ before+ ' con la que se compara es mayor a '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
       var zeros = '';
       if(typeof(before)!== 'undefined' && before.length=== 5)
         zeros= zeros+ ':00';
@@ -859,7 +861,7 @@ $.mask.masks = $.extend($.mask.masks, {
             return false;
 					} // if	
           else {
-            var before= janal.value(params.cual);
+            var before= janal.value(janal.cross($(element).attr('id'), params.cual));
             if(typeof(before)!== 'undefined' && before.length=== 5)
                before= before+ ':00';
             if(janal.empty(before))
@@ -872,7 +874,7 @@ $.mask.masks = $.extend($.mask.masks, {
       } // else  
 		}, function(params, element) {
       var before= $(element).val();
-      var msg   = 'La hora '+ before+ ' con la que se compara es menor a '+ janal.value(params.cual)+ '.';
+      var msg   = 'La hora '+ before+ ' con la que se compara es menor a '+ janal.value(janal.cross($(element).attr('id'), params.cual))+ '.';
       var zeros = '';
       if(typeof(before)!== 'undefined' && before.length=== 5)
         zeros= zeros+ ':00';
