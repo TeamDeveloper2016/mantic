@@ -402,13 +402,13 @@
 							<p:panelGrid id="panelTotales" layout="grid" columns="3" styleClass="janal-wid-99" columnClasses="janal-wid-80, janal-wid-20">
 								<p:panelGrid id="panelPago" columns="4" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-13, janal-wid-20, janal-wid-30, janal-wid-30">																											
 									<p:outputLabel for="efectivo" value="Efectivo:"/>
-									<p:inputNumber id="efectivo" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.pago.efectivo}" inputStyleClass="janal-column-right">
+									<p:inputNumber dir="RTL" id="efectivo" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.pago.efectivo}">
 										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria"/>
 									</p:inputNumber>
 									<p:spacer/><p:spacer/>																										
 									
 									<p:outputLabel for="credito" value="T. de credito/debito:"/>
-									<p:inputNumber id="credito" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.pago.credito}" inputStyleClass="janal-column-right">
+									<p:inputNumber dir="RTL" id="credito" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.pago.credito}">
 										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria" oncomplete="applyValidacionesCredito();"/>
 									</p:inputNumber>
 									<p:selectOneMenu id="bancoCredito" value="#{manticVentasCajaAccion.attrs.pago.bancoCredito}" filter="true" filterMatchMode="contains" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
@@ -424,7 +424,7 @@
 									<p:inputText id="referenciaCredito" value="#{manticVentasCajaAccion.attrs.pago.referenciaCredito}" styleClass="janal-wid-100-txt" placeholder="Ej. Referencia 4564"/>																		
 									
 									<p:outputLabel for="transferencia" value="Transferencia:"/>
-									<p:inputNumber id="transferencia" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.pago.transferencia}" inputStyleClass="janal-column-right">
+									<p:inputNumber dir="RTL" id="transferencia" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.pago.transferencia}">
 										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria" oncomplete="applyValidacionesCredito();"/>
 									</p:inputNumber>
 									<p:selectOneMenu id="bancoTransferencia" value="#{manticVentasCajaAccion.attrs.pago.bancoTransferencia}" filter="true" filterMatchMode="contains" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
@@ -440,7 +440,7 @@
 									<p:inputText id="referenciaTransferencia" value="#{manticVentasCajaAccion.attrs.pago.referenciaTransferencia}" styleClass="janal-wid-100-txt" placeholder="Ej. Referencia 4564"/>																																				
 									
 									<p:outputLabel for="cheque" value="Cheque:"/>
-									<p:inputNumber id="cheque" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.pago.cheque}" inputStyleClass="janal-column-right">
+									<p:inputNumber dir="RTL" id="cheque" styleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.pago.cheque}">
 										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria" oncomplete="applyValidacionesCredito();"/>
 									</p:inputNumber>
 									<p:selectOneMenu id="bancoCheque" value="#{manticVentasCajaAccion.attrs.pago.bancoCheque}" filter="true" filterMatchMode="contains" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
@@ -916,10 +916,10 @@
 					</p:selectOneRadio>
 				</h:panelGrid>				
 				<h:panelGrid id="panelDescuentoEspecificacionIndividual" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-95 janal-column-right, janal-wid-5">			
-					<p:inputNumber id="descuentoIndividual" inputStyleClass="janal-column-right" value="#{manticVentasCajaAccion.attrs.descuentoIndividual}" rendered="#{manticVentasCajaAccion.attrs.isIndividual}"/><p:outputLabel value="%" rendered="#{manticVentasCajaAccion.attrs.isIndividual}"/>  
+					<p:inputNumber dir="RTL" id="descuentoIndividual" value="#{manticVentasCajaAccion.attrs.descuentoIndividual}" rendered="#{manticVentasCajaAccion.attrs.isIndividual}"/><p:outputLabel value="%" rendered="#{manticVentasCajaAccion.attrs.isIndividual}"/>  
 				</h:panelGrid>				
 				<h:panelGrid id="panelDescuentoEspecificacionGlobal" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-5, janal-wid-95 janal-column-right">
-					<p:outputLabel value="$" rendered="#{!manticVentasCajaAccion.attrs.isIndividual}"/><p:inputNumber id="descuentoGlobal" inputStyleClass="janal-column-right" value="#{manticVentasCajaAccion.attrs.descuentoGlobal}" rendered="#{!manticVentasCajaAccion.attrs.isIndividual}"/>		
+					<p:outputLabel value="$" rendered="#{!manticVentasCajaAccion.attrs.isIndividual}"/><p:inputNumber dir="RTL" id="descuentoGlobal" value="#{manticVentasCajaAccion.attrs.descuentoGlobal}" rendered="#{!manticVentasCajaAccion.attrs.isIndividual}"/>		
 				</h:panelGrid>				
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
@@ -939,7 +939,7 @@
 				</h:panelGrid>			
 				<p:outputLabel for="cambioPrecio" value="Precio:"/>
 				<h:panelGrid id="panelCambioPrecio" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-5, janal-wid-95 janal-column-right">
-					<p:outputLabel value="$"/><p:inputNumber id="cambioPrecio" inputStyleClass="janal-column-right" value="#{manticVentasCajaAccion.attrs.cambioPrecio}"/>		
+					<p:outputLabel value="$"/><p:inputNumber dir="RTL" id="cambioPrecio" value="#{manticVentasCajaAccion.attrs.cambioPrecio}"/>		
 				</h:panelGrid>				
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">

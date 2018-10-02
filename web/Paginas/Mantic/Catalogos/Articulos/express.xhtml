@@ -52,12 +52,12 @@
 							<p:outputLabel for="menudeoDialog" value="Menudeo:"/>
 							<p:outputLabel for="medioMayoreoDialog" value="Medio mayoreo:"/>
 							<p:outputLabel for="mayoreoDialog" value="Mayoreo:"/>
-							<p:inputNumber id="precioDialog" styleClass="janal-wid-100-txt express" value="#{manticCatalogosArticulosExpress.registroArticulo.articulo.precio}" inputStyleClass="janal-wid-100-txt janal-column-right">
+								<p:inputNumber dir="RTL" id="precioDialog" styleClass="janal-wid-100-txt express" value="#{manticCatalogosArticulosExpress.registroArticulo.articulo.precio}" inputStyleClass="janal-wid-100-txt">
 								<p:ajax event="blur" listener="#{manticCatalogosArticulosExpress.doActualizaPrecios}" process="@this precioDialog" update="menudeoDialog medioMayoreoDialog mayoreoDialog"/>
 							</p:inputNumber>                    														
-							<p:inputNumber id="menudeoDialog" styleClass="janal-wid-100-txt express" value="#{manticCatalogosArticulosExpress.registroArticulo.articulo.menudeo}" inputStyleClass="janal-wid-100-txt janal-column-right"/>							
-							<p:inputNumber id="medioMayoreoDialog" styleClass="janal-wid-100-txt express" value="#{manticCatalogosArticulosExpress.registroArticulo.articulo.medioMayoreo}" inputStyleClass="janal-wid-100-txt janal-column-right"/>                    														
-							<p:inputNumber id="mayoreoDialog" styleClass="janal-wid-100-txt express" value="#{manticCatalogosArticulosExpress.registroArticulo.articulo.mayoreo}" inputStyleClass="janal-wid-100-txt janal-column-right"/>                    							
+							<p:inputNumber dir="RTL" id="menudeoDialog" styleClass="janal-wid-100-txt express" value="#{manticCatalogosArticulosExpress.registroArticulo.articulo.menudeo}" inputStyleClass="janal-wid-100-txt"/>							
+							<p:inputNumber dir="RTL" id="medioMayoreoDialog" styleClass="janal-wid-100-txt express" value="#{manticCatalogosArticulosExpress.registroArticulo.articulo.medioMayoreo}" inputStyleClass="janal-wid-100-txt"/>                    														
+							<p:inputNumber dir="RTL" id="mayoreoDialog" styleClass="janal-wid-100-txt express" value="#{manticCatalogosArticulosExpress.registroArticulo.articulo.mayoreo}" inputStyleClass="janal-wid-100-txt"/>                    							
 						</p:panelGrid>								
 					</div>
 				</div>

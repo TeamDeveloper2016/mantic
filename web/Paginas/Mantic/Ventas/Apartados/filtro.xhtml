@@ -186,15 +186,15 @@
             </p:column>   
 					</p:selectOneMenu>
           <p:outputLabel for="porcentaje" value="Porcentaje retenido:" rendered="#{manticVentasApartados.attrs.mostrarCantidades}"/>
-          <p:inputNumber id="porcentaje" symbol="%" symbolPosition="s" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasApartados.attrs.porcentajeRetenido}" rendered="#{manticVentasApartados.attrs.mostrarCantidades}" disabled="#{manticVentasApartados.attrs.disabledCantidades}">
+          <p:inputNumber dir="RTL" id="porcentaje" symbol="%" symbolPosition="s" inputStyleClass="janal-wid-100-txt key-press-enter" value="#{manticVentasApartados.attrs.porcentajeRetenido}" rendered="#{manticVentasApartados.attrs.mostrarCantidades}" disabled="#{manticVentasApartados.attrs.disabledCantidades}">
             <p:ajax event="blur" listener="#{manticVentasApartados.doUpdatePorcentaje}" process="@this" update="formDialogoEstatus" onstart="janal.bloquear();" oncomplete="janal.desbloquear(); janal.reset();"/>
           </p:inputNumber>
           <p:outputLabel for="cantidad" value="Cantidad retenida:" rendered="#{manticVentasApartados.attrs.mostrarCantidades}" />
-          <p:inputNumber id="cantidad" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasApartados.attrs.cantidadRetenida}" rendered="#{manticVentasApartados.attrs.mostrarCantidades}" disabled="#{manticVentasApartados.attrs.disabledCantidades}">
+          <p:inputNumber dir="RTL" id="cantidad" inputStyleClass="janal-wid-100-txt key-press-enter" value="#{manticVentasApartados.attrs.cantidadRetenida}" rendered="#{manticVentasApartados.attrs.mostrarCantidades}" disabled="#{manticVentasApartados.attrs.disabledCantidades}">
             <p:ajax event="blur" listener="#{manticVentasApartados.doUpdateCantidad}" process="@this" update="formDialogoEstatus" onstart="janal.bloquear();" oncomplete="janal.desbloquear(); janal.reset();"/>
           </p:inputNumber>	 
           <p:outputLabel for="importe" value="Importe devuelto" rendered="#{manticVentasApartados.attrs.mostrarCantidades}"/>
-          <p:inputNumber id="importe" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasApartados.attrs.importeDevuelto}" rendered="#{manticVentasApartados.attrs.mostrarCantidades}" disabled="true"/>
+          <p:inputNumber dir="RTL" id="importe" inputStyleClass="janal-wid-100-txt key-press-enter" value="#{manticVentasApartados.attrs.importeDevuelto}" rendered="#{manticVentasApartados.attrs.mostrarCantidades}" disabled="true"/>
           <p:outputLabel for="cambiar" value="Cambiar porcentaje:" rendered="#{manticVentasApartados.attrs.mostrarCantidades}"/>	
           <p:inputSwitch id = "cambiar" value="#{manticVentasApartados.attrs.devolucion}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt" rendered="#{manticVentasApartados.attrs.mostrarCantidades}">
             <p:ajax listener="#{manticVentasApartados.doActiveTexts}" process="@this formDialogoEstatus" update="formDialogoEstatus" onstart="janal.bloquear();" oncomplete="janal.desbloquear(); janal.reset();"/>
