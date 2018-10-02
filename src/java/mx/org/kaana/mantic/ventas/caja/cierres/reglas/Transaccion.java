@@ -86,7 +86,7 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 					  this.retiro.setObservaciones("ESTE ABONO FUE CANCELADO ["+ this.retiro.getImporte()+ "] CON FECHA DE "+ Fecha.getHoyExtendido()+ " HRS. POR "+ JsfBase.getAutentifica().getCredenciales().getCuenta());
 					else
 					  this.retiro.setObservaciones("ESTE RETIRO FUE CANCELADO ["+ this.retiro.getImporte()+ "] CON FECHA DE "+ Fecha.getHoyExtendido()+ " HRS. POR "+ JsfBase.getAutentifica().getCredenciales().getCuenta());
-					this.retiro.setImporte(0D);
+					this.retiro.setImporte(this.retiro.getImporte()* -1L);
 					regresar= DaoFactory.getInstance().update(sesion, this.retiro)>= 1L;
 					if(this.retiro.getIdAbono().equals(1L))
 					  bitacora= new TcManticCierresBitacoraDto("ABONO DE EFECTIVO CANCELADO POR "+ JsfBase.getAutentifica().getCredenciales().getCuenta(), -1L, this.idCierre, JsfBase.getIdUsuario(), 2L);
@@ -95,9 +95,9 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 					caja= (TcManticCierresCajasDto)DaoFactory.getInstance().findFirst(TcManticCierresCajasDto.class, "caja", bitacora.toMap());
 					if(this.retiro.getIdAbono().equals(1L))
-  					caja.setSaldo(Numero.toRedondearSat(caja.getSaldo()- this.retiro.getImporte()));
+  					caja.setSaldo(Numero.toRedondearSat(caja.getSaldo()- Math.abs(this.retiro.getImporte())));
 					else
-  					caja.setSaldo(Numero.toRedondearSat(caja.getSaldo()+ this.retiro.getImporte()));
+  					caja.setSaldo(Numero.toRedondearSat(caja.getSaldo()+ Math.abs(this.retiro.getImporte())));
 					regresar= DaoFactory.getInstance().update(sesion, caja)>= 1L;
 					this.toCheckCajaAlerta(sesion, caja);
 					break;
@@ -109,7 +109,7 @@ public class Transaccion extends IBaseTnx implements Serializable  {
       Error.mensaje(e);			
 			throw new Exception(this.messageError.concat("\n\n")+ e.getMessage());
 		} // catch		
-		LOG.info("Se genero de forma correcta el registro del abono/retiro de caja: "+ this.retiro.getConsecutivo());
+		LOG.info("Se genero de forma correcta el registro del "+ (this.retiro.getIdAbono().equals(1L)? "abono": "retiro")+ " de caja: "+ this.retiro.getConsecutivo());
 		return regresar;
 	}
 

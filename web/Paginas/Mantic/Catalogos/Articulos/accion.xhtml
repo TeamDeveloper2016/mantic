@@ -53,19 +53,19 @@
 								<p:outputLabel for="descripcion" value="Descripción:"/>
 								<p:inputTextarea id="descripcion" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.descripcion}"/>                    
 								<p:outputLabel for="precio" value="Precio:"/>
-								<p:inputNumber dir="RTL" id="precio" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.precio}"/>                    
+								<p:inputNumber id="precio" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.precio}"/>                    
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="sat" value="Código SAT:"/>
 								<p:inputText id="sat" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.sat}"/>                    
 								<p:outputLabel for="iva" value="Iva:"/>
-								<p:inputNumber dir="RTL" id="iva" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.iva}"/>                    
+								<p:inputNumber id="iva" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.iva}"/>                    
 								<p:outputLabel for="redondear" value="Redondear:"/>
 								<p:inputSwitch id="redondear" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.redondear}" offLabel="NO" onLabel="SI"/>
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="pesoEstimado" value="Peso estimado:"/>
-								<p:inputNumber dir="RTL" id="pesoEstimado" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.pesoEstimado}"/>                    																	
+								<p:inputNumber id="pesoEstimado" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.pesoEstimado}"/>                    																	
 								<p:outputLabel for="desperdicio" value="Desperdicio:"/>
-								<p:inputNumber dir="RTL" id="desperdicio" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.desperdicio}"/>                    																	
+								<p:inputNumber id="desperdicio" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.desperdicio}"/>                    																	
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="idServicio" value="Es servicio:"/>
 								<p:inputSwitch id="idServicio" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.idServicio}" offLabel="NO" onLabel="SI"/>
@@ -138,7 +138,7 @@
 							<p:panelGrid id="panelTablaDescuentos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
 								<p:dataTable id="tablaDescuentos" rowIndexVar="index" var="descuento" value="#{manticCatalogosArticulosAccion.registroArticulo.articulosDescuentos}" rows="6" paginator="false" reflow="true" rowKey="#{descuento.key}" emptyMessage=" " styleClass="paginated">												
 									<p:column headerText="Porcentaje" styleClass="janal-wid-20 porcDesc">		
-										<p:inputNumber dir="RTL" id="porcDesc#{descuento.key}" styleClass="janal-wid-100-txt" value="#{descuento.porcentaje}"  symbol="%" emptyValue="zero" symbolPosition="s"/>                    																																			
+										<p:inputNumber id="porcDesc#{descuento.key}" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{descuento.porcentaje}"  symbol="%" emptyValue="zero" symbolPosition="s"/>                    																																			
 									</p:column>
 									<p:column headerText="Vigencia inicial">										
 										<p:calendar id="vigenciaInicial#{descuento.key}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" styleClass="janal-wid-100-txt" value="#{descuento.vigenciaIni}" mode="popup"/>                    																																							
@@ -166,7 +166,7 @@
 										</p:selectOneMenu> 				
 									</p:column>		
 									<p:column headerText="Porcentaje" styleClass="janal-wid-10 pocentaje">		
-										<p:inputNumber dir="RTL" id="pocentaje#{descuentoEspecial.key}" styleClass="janal-wid-100-txt" value="#{descuentoEspecial.porcentaje}" symbol="%" emptyValue="zero" symbolPosition="s"/>                    																																			
+										<p:inputNumber id="pocentaje#{descuentoEspecial.key}" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{descuentoEspecial.porcentaje}" symbol="%" emptyValue="zero" symbolPosition="s"/>                    																																			
 									</p:column>
 									<p:column headerText="Vigencia inicial" styleClass="janal-wid-20">										
 										<p:calendar id="vigenciaInicial#{descuentoEspecial.key}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" styleClass="janal-wid-100-txt" value="#{descuentoEspecial.vigenciaIni}" mode="popup"/>                    																																							
@@ -202,10 +202,10 @@
 										</p:selectOneMenu> 				
 									</p:column>		
 									<p:column headerText="Precio" styleClass="janal-wid-10 precio">		
-										<p:inputNumber dir="RTL" id="precios#{precioSugerido.key}" styleClass="janal-wid-100-txt" value="#{precioSugerido.precio}" emptyValue="zero"/>                    																																			
+										<p:inputNumber id="precios#{precioSugerido.key}" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{precioSugerido.precio}" emptyValue="zero"/>                    																																			
 									</p:column>
 									<p:column headerText="Descuento" styleClass="janal-wid-10 descuento">		
-										<p:inputNumber dir="RTL" id="descuento#{precioSugerido.key}" styleClass="janal-wid-100-txt" value="#{precioSugerido.descuento}" symbol="%" emptyValue="zero" symbolPosition="s"/>                    																																			
+										<p:inputNumber id="descuento#{precioSugerido.key}" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{precioSugerido.descuento}" symbol="%" emptyValue="zero" symbolPosition="s"/>                    																																			
 									</p:column>
 									<p:column headerText="Observaciones" styleClass="obsv">		
 										<p:inputText id="obsv#{precioSugerido.key}" styleClass="janal-wid-100-txt" value="#{precioSugerido.observaciones}"  />                    																																			
@@ -230,13 +230,13 @@
 										</p:selectOneMenu> 				
 									</p:column>											
 									<p:column headerText="Cantidad" styleClass="janal-wid-10 provcantidad">		
-										<p:inputNumber dir="RTL" id="provcantidad#{articuloProveedor.key}" styleClass="janal-wid-100-txt" value="#{articuloProveedor.cantidad}" emptyValue="zero"/>                    																																			
+										<p:inputNumber id="provcantidad#{articuloProveedor.key}" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{articuloProveedor.cantidad}" emptyValue="zero"/>                    																																			
 									</p:column>
 									<p:column headerText="Precio" styleClass="janal-wid-10 provprecio">		
-										<p:inputNumber dir="RTL" id="provprecio#{articuloProveedor.key}" styleClass="janal-wid-100-txt" value="#{articuloProveedor.precio}" emptyValue="zero"/>                    																																			
+										<p:inputNumber id="provprecio#{articuloProveedor.key}" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{articuloProveedor.precio}" emptyValue="zero"/>                    																																			
 									</p:column>
 									<p:column headerText="Descuento" styleClass="janal-wid-10 provdescuento">		
-										<p:inputNumber dir="RTL" id="provdescuento#{articuloProveedor.key}" styleClass="janal-wid-100-txt" value="#{articuloProveedor.descuento}" symbol="%" emptyValue="zero" symbolPosition="s"/>																													
+										<p:inputNumber id="provdescuento#{articuloProveedor.key}" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{articuloProveedor.descuento}" symbol="%" emptyValue="zero" symbolPosition="s"/>																													
 									</p:column>
 									<p:column headerText="Fecha compra" styleClass="janal-wid-20">										
 										<p:calendar id="fechaCompra#{articuloProveedor.key}" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-96" value="#{articuloProveedor.compra}" mode="popup" showOn="button"/>                    																																							
@@ -261,7 +261,7 @@
 										</p:selectOneMenu> 				
 									</p:column>											
 									<p:column headerText="Porcentaje" styleClass="janal-wid-30 porcentaje">		
-										<p:inputNumber dir="RTL" id="porcentaje#{tipoVenta.key}" styleClass="janal-wid-100-txt" value="#{tipoVenta.porcentaje}" symbol="%" emptyValue="zero" symbolPosition="s"  />																													
+										<p:inputNumber id="porcentaje#{tipoVenta.key}" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{tipoVenta.porcentaje}" symbol="%" emptyValue="zero" symbolPosition="s"  />																													
 									</p:column>									
 									 <p:column style="width:32px;text-align: center">
 										 <p:commandButton update="tablaTiposVenta" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosArticulosAccion.registroArticulo.doEliminarTipoVenta}">
@@ -286,21 +286,21 @@
 									<f:selectItems value="#{manticCatalogosArticulosAccion.attrs.unidadesMedidas}"/>
 								</p:selectOneMenu>
 								<p:outputLabel for="cantidad" value="Cantidad:"/>
-								<p:inputNumber dir="RTL" id="cantidad" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.cantidad}"/>                    
+								<p:inputNumber id="cantidad" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.cantidad}"/>                    
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="ancho" value="Ancho:"/>
-								<p:inputNumber dir="RTL" id="ancho" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.ancho}"/>                    
+								<p:inputNumber id="ancho" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.ancho}"/>                    
 								<p:outputLabel for="largo" value="Largo:"/>
-								<p:inputNumber dir="RTL" id="largo" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.largo}"/>                    
+								<p:inputNumber id="largo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.largo}"/>                    
 								<p:outputLabel for="alto" value="Alto:"/>
-								<p:inputNumber dir="RTL" id="alto" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.alto}"/>                    
+								<p:inputNumber id="alto" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articuloDimencion.alto}"/>                    
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="stock" value="Existencias:"/>
-								<p:inputNumber dir="RTL" id="stock" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.stock}"/>                    
+								<p:inputNumber id="stock" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.stock}"/>                    
 								<p:outputLabel for="minimo" value="Stock mínimo:"/>
-								<p:inputNumber dir="RTL" id="minimo" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.minimo}"/>                    
+								<p:inputNumber id="minimo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.minimo}"/>                    
 								<p:outputLabel for="maximo" value="Stock máximo:"/>
-								<p:inputNumber dir="RTL" id="maximo" styleClass="janal-wid-100-txt" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.maximo}"/>                    
+								<p:inputNumber id="maximo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticCatalogosArticulosAccion.registroArticulo.articulo.maximo}"/>                    
 							</p:panelGrid>							
 						</p:tab>
 						<p:tab title="Observaciones">

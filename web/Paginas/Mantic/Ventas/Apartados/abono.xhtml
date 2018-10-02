@@ -134,7 +134,7 @@
 						</p:column>   
 					</p:selectOneMenu>
 					<p:outputLabel for="pago" value="Pago: $"/>
-					<p:inputNumber dir="RTL" id="pago" value="#{manticVentasApartadosAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt"/>
+					<p:inputNumber id="pago" value="#{manticVentasApartadosAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right"/>
 					<p:outputLabel for="tipoPago" value="Tipo de pago:"/>
 					<p:selectOneMenu id="tipoPago" value="#{manticVentasApartadosAbono.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="contains">					
 						<p:ajax event="change" process="@this pago" listener="#{manticVentasApartadosAbono.doValidaTipoPago}" update="panelDialog lblBanco banco lblReferencia referencia" oncomplete="janal.refresh();"/>

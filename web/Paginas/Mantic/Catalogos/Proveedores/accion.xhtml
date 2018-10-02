@@ -228,7 +228,7 @@
                     <p:inputText id="extra#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.descuento}" disabled="#{!tipoPago.nuevo}"/>                    																																			
                   </p:column>
                   <p:column headerText="Plazo" styleClass="janal-wid-5 plazo">		
-                    <p:inputNumber dir="RTL" decimalPlaces="0" id="plazo#{tipoPago.key}" inputStyleClass="janal-wid-100-txt" value="#{tipoPago.plazo}" disabled="#{!tipoPago.nuevo}"/>
+                    <p:inputNumber decimalPlaces="0" id="plazo#{tipoPago.key}" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{tipoPago.plazo}" disabled="#{!tipoPago.nuevo}"/>
                   </p:column>
                   <p:column style="width:32px;text-align: center">
                     <p:commandButton update="tablaTipoPago" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosProveedoresAccion.registroProveedor.doEliminarProveedorCondicionPago}">

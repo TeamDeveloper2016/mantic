@@ -78,10 +78,10 @@
 									<p:inputText id="ejercicio#{contacto.key}" styleClass="janal-wid-100-txt janal-column-right" placeholder="Ej. 2019" value="#{contacto.ejercicio}" disabled="#{!contacto.nuevo}"  />
 								</p:column>
 								<p:column headerText="Inicial" styleClass="inicial">		
-									<p:inputNumber dir="RTL" id="inicial#{contacto.key}" inputStyleClass="janal-wid-100-txt" placeholder="Ej. 100" value="#{contacto.inicial}" disabled="#{!contacto.nuevo}"/>
+									<p:inputNumber id="inicial#{contacto.key}" inputStyleClass="janal-wid-100-txt janal-column-right" placeholder="Ej. 100" value="#{contacto.inicial}" disabled="#{!contacto.nuevo}"/>
 								</p:column>
 								<p:column headerText="Entradas" styleClass="entradas">		
-									<p:inputNumber dir="RTL" id="entradas#{contacto.key}" inputStyleClass="janal-wid-100-txt" placeholder="Ej. 100" value="#{contacto.entradas}" disabled="#{!contacto.nuevo}"/>
+									<p:inputNumber id="entradas#{contacto.key}" inputStyleClass="janal-wid-100-txt janal-column-right" placeholder="Ej. 100" value="#{contacto.entradas}" disabled="#{!contacto.nuevo}"/>
 								</p:column>
 								<p:column style="width:50px;text-align: center">
 									<p:commandButton update="tablaInventarios" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosInventariosFiltro.doEliminarInventario}">

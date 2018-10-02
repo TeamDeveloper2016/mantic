@@ -114,7 +114,7 @@
 			<h:form id="formDialogoPago" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-80">
 					<p:outputLabel for="pago" value="Pago: $"/>
-					<p:inputNumber dir="RTL" id="pago" value="#{manticCatalogosEmpresasCuentasAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt"/>
+					<p:inputNumber id="pago" value="#{manticCatalogosEmpresasCuentasAbono.attrs.pago}" inputStyleClass="janal-wid-100-txt janal-column-right"/>
 					<p:outputLabel for="tipoPago" value="Tipo de pago:"/>
 					<p:selectOneMenu id="tipoPago" value="#{manticCatalogosEmpresasCuentasAbono.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="contains">					
 						<f:selectItems value="#{manticCatalogosEmpresasCuentasAbono.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
