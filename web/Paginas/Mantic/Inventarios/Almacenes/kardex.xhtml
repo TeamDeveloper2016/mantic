@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Kardex de un articulo"/>
 	<ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.janal.kardex.core-0.2.8.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.kardex.core-0.3.5.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:codigos': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -133,7 +133,7 @@
 									<p:outputLabel value="Costo base:"/>
 								</div>
 								<div class="ui-grid-col-12" style="padding-right: 14px;">
-									<p:inputNumber id="costos" value="#{manticInventariosAlmacenesKardex.attrs.precio}" converter="javax.faces.Double" styleClass="janal-wid-98 janal-column-right key-focus-event recalculo"/>
+									<p:inputNumber id="costos" value="#{manticInventariosAlmacenesKardex.attrs.precio}" converter="javax.faces.Double" styleClass="janal-wid-98 janal-column-right key-focus-event key-change-event recalculo"/>
 								</div>
 								<div style="width: 10px; margin-left: -4px; margin-top: 1px;">
 									<p:outputLabel value="#{manticInventariosAlmacenesKardex.attrs.costoMayorMenor}" escape="false" styleClass="filas"/>
@@ -147,12 +147,12 @@
 								<p:column headerText="Nombre" styleClass="janal-wid-10">
 									<h:outputText value="#{item.nombre}"/>
 								</p:column>   
-								<p:column headerText="Unidades mínimas" styleClass="janal-wid-10 limites">#{index eq 0? 0.0: manticInventariosAlmacenesKardex.adminKardex.tiposVentas[index- 1].limite}  -  <p:inputNumber id="limites" value="#{item.limite}" styleClass="janal-wid-60 janal-column-right key-focus-event recalculo" rendered="#{item.limite gt 0}" onblur="janal.individual('contenedorGrupos\\:tabla\\:#{index}\\:limites');"/>#{index eq 2? 'MAS': ''}</p:column>   
+								<p:column headerText="Unidades mínimas" styleClass="janal-wid-10 limites">#{index eq 0? 0.0: manticInventariosAlmacenesKardex.adminKardex.tiposVentas[index- 1].limite}  -  <p:inputNumber id="limites" value="#{item.limite}" styleClass="janal-wid-60 janal-column-right key-focus-event key-change-event recalculo" rendered="#{item.limite gt 0}" onblur="janal.individual('contenedorGrupos\\:tabla\\:#{index}\\:limites');"/>#{index eq 2? 'MAS': ''}</p:column>   
 								<p:column headerText="Utilidad" styleClass="janal-wid-10">
-									<p:inputText id="utilidades" value="#{item.utilidad}" styleClass="janal-wid-80 janal-column-right key-focus-event"/>%
+									<p:inputText id="utilidades" value="#{item.utilidad}" styleClass="janal-wid-80 janal-column-right key-focus-event key-change-event"/>%
 								</p:column>   
 								<p:column headerText="Precio venta" styleClass="janal-wid-10">
-									$<p:inputText id="precios" value="#{item.precio}" styleClass="janal-wid-80 janal-column-right key-focus-event"/>
+									$<p:inputText id="precios" value="#{item.precio}" styleClass="janal-wid-80 janal-column-right key-focus-event key-change-event"/>
 								</p:column>   
 								<p:column headerText="IVA" styleClass="janal-wid-10 janal janal-column-right">
 									<h:outputText value="#{manticInventariosAlmacenesKardex.doPercentageValueFormat(item.iva)}"/>

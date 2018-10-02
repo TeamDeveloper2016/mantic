@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Listado de articulo para imprmir sus códigos de barras"/>
 	<ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.janal.kardex.core-0.2.8.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.kardex.core-0.3.5.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'codigos' : {validaciones: 'libre', mascara: 'libre'},
@@ -74,8 +74,8 @@
 						<p:column headerText="QR" styleClass="janal-column-center janal-wid-15" rendered="false">
 							<p:barcode value="#{row.propio}" type="qr"/>
 						</p:column>   
-						<p:column headerText="Cantidad" styleClass="janal-wid-10 cantidad">
-							<p:inputNumber id="cantidad" styleClass="janal-wid-100-txt janal-column-right" value="#{row.cantidad}" decimalPlaces="0"/>
+						<p:column headerText="Cantidad" styleClass="janal-wid-15 cantidad">
+							<p:inputNumber id="cantidad" styleClass="janal-wid-100-txt janal-column-right" inputStyleClass="key-focus-event key-move-event" value="#{row.cantidad}" decimalPlaces="0"/>
 						</p:column>   
 						<p:column headerText="Limite" styleClass="janal-wid-10 janal-column-right limite">
 							<p:inputText id="limite" value="#{row.tope}" style="display:none"/>

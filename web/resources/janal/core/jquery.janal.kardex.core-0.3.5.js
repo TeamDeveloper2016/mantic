@@ -45,6 +45,7 @@
  			janal.console('jsKardex.events');
       $(document).on('focus', this.focus, function() {
 				janal.lastNameFocus= this;
+  			janal.console('jsKardex.focus: '+ $(this).attr('id')+ ' value: '+ $(this).val());
 				$kardex.current= $kardex.number($(this));
 				$kardex.id     = $(this).attr('id');
 				if($kardex.id.indexOf(':')>= 0)
@@ -52,7 +53,7 @@
 				$kardex.index();
   			janal.console('jsKardex.focus: '+ $kardex.id+ ' value: '+ $kardex.current);
 			});  
-      $(document).on('keydown', this.focus, function(e) {
+      $(document).on('keydown', '.key-change-event', function(e) {
 				var key= e.keyCode ? e.keyCode : e.which;
   			janal.console('jsKardex.keydown: '+ key);
 				if($kardex.change.indexOf(key)>= 0)
@@ -87,7 +88,26 @@
 						break;
 				} // switch
 			});	
-      $(document).on('blur', this.focus, function(e) {
+      $(document).on('keydown', '.key-move-event', function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
+  			janal.console('jsKardex.keydown: '+ key);
+				if($kardex.change.indexOf(key)>= 0)
+					$kardex.leavePage= false;
+				$kardex.joker= 'tabla\\:';
+				switch(key) {
+					case $kardex.VK_UP:
+ 						return $kardex.up();
+						break;
+					case $kardex.VK_ENTER:
+					case $kardex.VK_DOWN:
+    				return $kardex.down();
+						break;
+					case $kardex.VK_ESC:
+ 						return $kardex.back();
+						break;
+				} // switch
+			});	
+      $(document).on('blur', '.key-change-event', function(e) {
 				$kardex.leavePage= false;
 				if($kardex.id.endsWith('costos'))
 					return $kardex.costo(this);

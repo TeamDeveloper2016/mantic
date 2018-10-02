@@ -36,7 +36,7 @@ public class CodigoArticulo implements IBaseDto, Serializable {
 	}
 
 	public CodigoArticulo(Long idArticulo, String propio, String nombre) {
-		this(idArticulo, propio, nombre, 0L, 9999D, "code128", true);
+		this(idArticulo, propio, nombre, 1L, 9999D, "code128", true);
 	}
 	
 	public CodigoArticulo(Long idArticulo, String propio, String nombre, Long cantidad, Double tope, String codigo, Boolean agregado) {
