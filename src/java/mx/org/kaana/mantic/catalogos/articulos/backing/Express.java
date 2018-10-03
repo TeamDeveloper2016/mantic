@@ -102,7 +102,7 @@ public class Express extends IBaseAttribute implements Serializable {
     try {
 			prepareRegistro();
       transaccion = new Transaccion(this.registroArticulo);
-      if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) 
+      if (transaccion.ejecutar(EAccion.COPIAR)) 
 				JsfBase.addMessage("Se registro el artículo de forma correcta.", ETipoMensaje.INFORMACION);
       else
 				JsfBase.addMessage("Ocurrió un error al registrar el artículo", ETipoMensaje.ERROR);						
@@ -115,7 +115,7 @@ public class Express extends IBaseAttribute implements Serializable {
 
 	private void prepareRegistro() {	
 		ArticuloCodigo codigo= null;
-		try {
+		try {			
 			codigo= new ArticuloCodigo(-1L, ESql.INSERT, true);
 			codigo.setCodigo((String) this.attrs.get("codigo"));
 			codigo.setIdPrincipal(1L);
@@ -293,6 +293,5 @@ public class Express extends IBaseAttribute implements Serializable {
 				this.registroArticulo.getArticulo().setMayoreo(entity.toDouble("mayoreo"));
 			} // else	
 		} // if
-	}
-	
+	}	
 }
