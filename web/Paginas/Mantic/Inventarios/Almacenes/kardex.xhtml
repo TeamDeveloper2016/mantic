@@ -101,9 +101,9 @@
 									<p:outputLabel for="ulitmoCambio" value="Último cambio:"/>
 									<p:inputText id="ulitmoCambio" value="#{manticInventariosAlmacenesKardex.attrs.ultimo}" styleClass="janal-wid-90 filas" readonly="true"/>
 								</p:panelGrid>
-								<p:panel id="panelImage" header="Imagen" styleClass="TexAlCenter janal-wid-100-txt" style="height:100%">
+								<p:panel id="panelImage" header="#{manticInventariosAlmacenesKardex.attrs.articulo.propio}" styleClass="TexAlCenter janal-wid-100-txt" style="height:100%">
 									<a id="source-image" data-magnify="gallery" data-caption="#{manticInventariosAlmacenesKardex.attrs.articulo.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">
-										<p:graphicImage id="icon-image" value="#{manticInventariosAlmacenesKardex.image}" styleClass="janal-logo-mini filas" width="165" height="165" stream="false" style="cursor:zoom-in;"/>
+										<p:graphicImage id="icon-image" value="#{manticInventariosAlmacenesKardex.image}" styleClass="janal-logo-mini" width="165" height="165" stream="false" style="cursor:zoom-in;"/>
 									</a>	
 								</p:panel>
 							</p:panelGrid>	

@@ -18,24 +18,24 @@
 	<ui:define name="contenido">
     <h:panelGrid columns="1" styleClass="janal-content-table">
       <p:fieldset legend="Contraseña actual" styleClass="Responsive100">
-        <p:panelGrid layout="grid" columns="2" columnClasses="ui-grid-col-2 janal-wid-col-100,ui-grid-col-3">
+        <p:panelGrid layout="grid" columns="2" columnClasses="ui-grid-col-2 janal-wid-col-100, janal-wid-100">
           <label for="nombre">Nombre:</label>
-          <p:inputText id="nombre" value="#{kajoolUsuariosContrasenia.attrs.usuario}" readonly="true" styleClass="Container100 Fnone MarAuto"/>
+          <p:inputText id="nombre" value="#{kajoolUsuariosContrasenia.attrs.usuario}" readonly="true" styleClass="janal-wid-100-txt Fnone MarAuto"/>
           <label for="cuenta">Cuenta:</label>
-          <p:inputText id="cuenta" value="#{kajoolUsuariosContrasenia.attrs.cuenta}" readonly="true" styleClass="Container50 Fnone MarAuto"/>
+          <p:inputText id="cuenta" value="#{kajoolUsuariosContrasenia.attrs.cuenta}" readonly="true" styleClass="janal-wid-100-txt Fnone MarAuto"/>
           <label>Perfil:</label>
-          <p:inputText value="#{kajoolUsuariosContrasenia.attrs.perfil}" readonly="true" styleClass="Container100 Fnone MarAuto"/>
+          <p:inputText value="#{kajoolUsuariosContrasenia.attrs.perfil}" readonly="true" styleClass="janal-wid-100-txt Fnone MarAuto"/>
           <label for="actual">Contraseña:</label>
-          <p:password id="actual" value="#{kajoolUsuariosContrasenia.attrs.actual}" size="35"/>
+          <p:password id="actual" value="#{kajoolUsuariosContrasenia.attrs.actual}" size="35" styleClass="janal-wid-100-txt"/>
         </p:panelGrid>  
       </p:fieldset>
       <p:spacer height="5"/>
       <p:fieldset legend="Contraseña  nueva" styleClass="Responsive100">
-        <p:panelGrid layout="grid" columns="2" columnClasses="ui-grid-col-2 janal-wid-col-100,ui-grid-col-3">
+        <p:panelGrid layout="grid" columns="2" columnClasses="ui-grid-col-2 janal-wid-col-100, janal-wid-100">
           <label for="nueva">Contraseña:</label>
-          <p:password id="nueva" value="#{kajoolUsuariosContrasenia.attrs.nueva}" size="35"/>
+          <p:password id="nueva" value="#{kajoolUsuariosContrasenia.attrs.nueva}" size="35" styleClass="janal-wid-100-txt"/>
           <label for="ratifica">Ratificar:</label>
-          <p:password id="ratifica" value="#{kajoolUsuariosContrasenia.attrs.ratifica}" size="35"/>
+          <p:password id="ratifica" value="#{kajoolUsuariosContrasenia.attrs.ratifica}" size="35" styleClass="janal-wid-100-txt"/>
         </p:panelGrid>
       </p:fieldset> 
     </h:panelGrid>  

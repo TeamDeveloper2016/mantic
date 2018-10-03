@@ -26,16 +26,16 @@
   <ui:define name="contenido">
 		<p:remoteCommand name="asignarIcono" actionListener="#{kajoolMantenimientoMenusEncabezadoAgregar.doAsignarIcono}" update="textoIcono,labelIcono,tamanio" onstart="PF('dialogoIconos').hide();" oncomplete="janal.desbloquear();"/>
     <p:spacer/>
-		<p:panelGrid id="definicion" columns="2" class="ui-grid ui-grid-responsive" columnClasses="ui-grid-col-2,ui-grid-col-10" layout="grid">
+		<p:panelGrid id="definicion" columns="2" class="ui-grid ui-grid-responsive" columnClasses="janal-wid-col-130, janal-wid-100" layout="grid">
 			<label for="descripcion">Descripción:</label>
-			<p:inputText id="descripcion" styleClass="Wid70" value="#{kajoolMantenimientoMenusEncabezadoAgregar.actual.descripcion}" disabled="#{kajoolMantenimientoMenusEncabezadoAgregar.soloLectura}"/>
+			<p:inputText id="descripcion" styleClass="janal-wid-100-txt" value="#{kajoolMantenimientoMenusEncabezadoAgregar.actual.descripcion}" disabled="#{kajoolMantenimientoMenusEncabezadoAgregar.soloLectura}"/>
 			<label for="ayuda">Ayuda:</label>
-			<p:inputText id="ayuda" styleClass="Wid70" value="#{kajoolMantenimientoMenusEncabezadoAgregar.actual.ayuda}" disabled="#{kajoolMantenimientoMenusEncabezadoAgregar.soloLectura}"/>
+			<p:inputText id="ayuda" styleClass="janal-wid-100-txt" value="#{kajoolMantenimientoMenusEncabezadoAgregar.actual.ayuda}" disabled="#{kajoolMantenimientoMenusEncabezadoAgregar.soloLectura}"/>
 			<label for="url">URL:</label>
-			<p:inputText id="url" styleClass="Wid70" value="#{kajoolMantenimientoMenusEncabezadoAgregar.actual.ruta}" disabled="#{kajoolMantenimientoMenusEncabezadoAgregar.soloLectura}"/>
+			<p:inputText id="url" styleClass="janal-wid-100-txt" value="#{kajoolMantenimientoMenusEncabezadoAgregar.actual.ruta}" disabled="#{kajoolMantenimientoMenusEncabezadoAgregar.soloLectura}"/>
 			<p:outputLabel value="Icono:"/>
-			<p:panelGrid columns="3" layout="grid" columnClasses="ui-grid-col-4,ui-grid-col-1,ui-grid-col-4">
-				<p:inputText id="textoIcono" value="#{kajoolMantenimientoMenusEncabezadoAgregar.actual.icono}" disabled="#{kajoolMantenimientoMenusEncabezadoAgregar.soloLectura}">
+			<p:panelGrid columns="3" layout="grid" columnClasses="janal-wid-100, janal-wid-col-50 janal-column-center, janal-wid-col-130">
+				<p:inputText id="textoIcono" value="#{kajoolMantenimientoMenusEncabezadoAgregar.actual.icono}" disabled="#{kajoolMantenimientoMenusEncabezadoAgregar.soloLectura}" styleClass="janal-wid-100-txt">
 					<p:ajax event="blur" update="labelIcono"/>
 				</p:inputText>
 				<p:commandButton id="muestraIconos" icon="fa fa-search" onstart="janal.bloquear(); PF('dialogoIconos').show()" disabled="#{kajoolMantenimientoMenusEncabezadoAgregar.soloLectura}"/>
@@ -45,7 +45,7 @@
 				</p:outputLabel>
 			</p:panelGrid>	
 			<label for="tamanio">Tamaño:</label>
-			<p:selectOneMenu id="tamanio" disabled="#{kajoolMantenimientoMenusEncabezadoAgregar.soloLectura}" value="#{kajoolMantenimientoMenusEncabezadoAgregar.tamanio}">
+			<p:selectOneMenu id="tamanio" disabled="#{kajoolMantenimientoMenusEncabezadoAgregar.soloLectura}" value="#{kajoolMantenimientoMenusEncabezadoAgregar.tamanio}" styleClass="janal-wid-98">
 				<p:ajax event="change" listener="#{kajoolMantenimientoMenusEncabezadoAgregar.doAsignarTamanio}" process="@this" update="labelIcono" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 				<f:selectItem itemValue="fa-1x" itemLabel="1x"/>
 				<f:selectItem itemValue="fa-2x" itemLabel="2x"/>
@@ -54,7 +54,7 @@
 				<f:selectItem itemValue="fa-5x" itemLabel="5x"/>
 			</p:selectOneMenu>
 			<label for="publicar">Publicar:</label>
-			<p:selectOneMenu id="publicar" disabled="#{kajoolMantenimientoMenusEncabezadoAgregar.soloLectura}" value="#{kajoolMantenimientoMenusEncabezadoAgregar.actual.publicar}" >
+			<p:selectOneMenu id="publicar" disabled="#{kajoolMantenimientoMenusEncabezadoAgregar.soloLectura}" value="#{kajoolMantenimientoMenusEncabezadoAgregar.actual.publicar}" styleClass="janal-wid-98">
 				<f:selectItem itemValue="1" itemLabel="Sí"/>
 				<f:selectItem itemValue="0" itemLabel="No"/>
 				<f:selectItem itemValue="3" itemLabel="En construcción"/>

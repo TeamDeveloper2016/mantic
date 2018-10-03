@@ -31,14 +31,14 @@
         <p:column headerText="Icono" styleClass="TexAlCenter Responsive janal-wid-col-40">
           <i class="#{row.icono} fa-lg"/>
         </p:column>
-        <p:column headerText="Descripción" class="janal-column-left MarAuto Responsive">
+        <p:column headerText="Descripción" class="janal-column-left MarAuto Responsive janal-wid-13">
           <h:outputText value="#{row.descripcion}"/>					
         </p:column>
         <p:column headerText="Ayuda">
-          <h:outputText value="#{row.ayuda}" class="janal-column-left MarAuto Responsive janal-wid-20"/>					
+          <h:outputText value="#{row.ayuda}" class="janal-column-left MarAuto Responsive"/>					
         </p:column>
         <p:column headerText="Ruta">
-          <h:outputText value="#{row.ruta}" class="janal-column-left MarAuto Responsive janal-wid-40"/>					
+          <h:outputText value="#{row.ruta}" class="janal-column-left MarAuto Responsive"/>					
         </p:column>
         <p:column headerText="Publicar" styleClass="TexAlCenter Responsive janal-wid-col-50">
           <p:graphicImage library="janal" name="icon/acciones/#{kajoolMantenimientoMenusEncabezadoFiltro.doSemaforo(row.publicar)}.png"/>

@@ -55,6 +55,7 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 		TcManticCierresBitacoraDto bitacora= null;
 		try {
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el retiro de caja.");
+			Long consecutivo = null;
 			switch(accion) {
 				case AGREGAR:
 				case ASIGNAR:
@@ -65,11 +66,13 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 					regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
 					caja= (TcManticCierresCajasDto)DaoFactory.getInstance().findFirst(TcManticCierresCajasDto.class, "caja", bitacora.toMap());
 					if(this.retiro.getIdAbono().equals(1L))
-  					caja.setSaldo(Numero.toRedondearSat(caja.getSaldo()+ this.retiro.getImporte()));
-					else
-  					caja.setSaldo(Numero.toRedondearSat(caja.getSaldo()- this.retiro.getImporte()));
+  					caja.setSaldo(Numero.toRedondearSat(caja.getSaldo()+ Math.abs(this.retiro.getImporte())));
+					else {
+  					caja.setSaldo(Numero.toRedondearSat(caja.getSaldo()- Math.abs(this.retiro.getImporte())));
+  					this.retiro.setImporte(this.retiro.getImporte()* -1L);
+					} // else
 					regresar= DaoFactory.getInstance().update(sesion, caja)>= 1L;
-					Long consecutivo= this.toSiguiente(sesion);
+					consecutivo= this.toSiguiente(sesion);
 					this.retiro.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
 					this.retiro.setOrden(consecutivo);
 					this.retiro.setEjercicio(new Long(Fecha.getAnioActual()));
@@ -87,7 +90,20 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 					else
 					  this.retiro.setObservaciones("ESTE RETIRO FUE CANCELADO ["+ this.retiro.getImporte()+ "] CON FECHA DE "+ Fecha.getHoyExtendido()+ " HRS. POR "+ JsfBase.getAutentifica().getCredenciales().getCuenta());
 					this.retiro.setImporte(this.retiro.getImporte()* -1L);
-					regresar= DaoFactory.getInstance().update(sesion, this.retiro)>= 1L;
+					consecutivo= this.toSiguiente(sesion);
+					this.retiro= new TcManticCierresRetirosDto(
+						Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true), 
+						JsfBase.getIdUsuario(), 
+						this.retiro.getIdCierreRetiro(), 
+						this.retiro.getObservaciones(), 
+						this.retiro.getIdCierreCaja(), 
+						consecutivo, 
+						this.retiro.getIdAbono(), 
+						this.retiro.getImporte(), 
+						new Long(Fecha.getAnioActual()), 
+						this.retiro.getConcepto(), 
+						this.retiro.getIdTipoMedioPago());
+					regresar= DaoFactory.getInstance().insert(sesion, this.retiro)>= 1L;
 					if(this.retiro.getIdAbono().equals(1L))
 					  bitacora= new TcManticCierresBitacoraDto("ABONO DE EFECTIVO CANCELADO POR "+ JsfBase.getAutentifica().getCredenciales().getCuenta(), -1L, this.idCierre, JsfBase.getIdUsuario(), 2L);
 					else

@@ -96,6 +96,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 							this.orden.setIdNotaEntrada(null);
 							break;
 					} // switch
+					this.orden.setSaldo(this.orden.getImporte());
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 					bitacoraNota= new TcManticCreditosBitacoraDto(this.orden.getConsecutivo(), "", this.orden.getIdCreditoEstatus(), -1L, JsfBase.getIdUsuario(), this.orden.getIdCreditoNota(), this.orden.getImporte());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
@@ -108,9 +109,11 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					this.orden.setIdCreditoEstatus(3L);
 					bitacoraNota= new TcManticCreditosBitacoraDto(this.orden.getConsecutivo(), "", this.orden.getIdCreditoEstatus(), -1L, JsfBase.getIdUsuario(), this.orden.getIdCreditoNota(), this.orden.getImporte());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
-					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
 					
 					this.importe+= (this.orden.getImporte()- anterior.getImporte());
+					this.orden.setSaldo(this.orden.getSaldo()+ this.importe);
+					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
+					
 					if(this.orden.getIdTipoCreditoNota().equals(1L))
 						this.toCheckOrdenDevolucion(sesion);
      	    this.toUpdateDeleteXml(sesion);	
