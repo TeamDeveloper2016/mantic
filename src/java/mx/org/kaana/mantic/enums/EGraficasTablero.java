@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 import mx.org.kaana.kajool.procesos.enums.ETipoGrafica;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 
 public enum EGraficasTablero {
 
@@ -112,4 +113,8 @@ public enum EGraficasTablero {
 	public static EGraficasTablero fromNameTablero(String name) {
     return lookup.get(name);
   } // fromNameTablero
+	
+	public String getIdPivote(){
+		return Cadena.toNameBean(idVista);
+	}
 }
