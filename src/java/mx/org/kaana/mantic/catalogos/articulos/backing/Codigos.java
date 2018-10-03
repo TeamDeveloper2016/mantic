@@ -18,6 +18,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
@@ -172,6 +173,18 @@ public class Codigos extends IBaseAttribute implements Serializable {
     } // catch   
 	} 
 
+	public void doUpdateArticulo(String codigo) {
+    try {
+  		List<UISelectEntity> list= this.doCompleteArticulo(codigo);
+			UISelectEntity articulo= UIBackingUtilities.toFirstKeySelectEntity(list);
+			this.updateArticulo(articulo);
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	}	
+	
 	public void doEliminar(CodigoArticulo seleccionado) {
 		if(seleccionado!= null) 
 	    this.articulos.remove(seleccionado);

@@ -191,7 +191,7 @@
 				id= id.replace(/:/gi, '\\:');
 			$('#'+ id).attr('value', value);
 			$(name).val(value);
-			janal.console('jsKardex.number ['+ id+ ']  value: ['+ value+ '] name ['+ $(name).val().trim()+ ']');
+			janal.console('jsKardex.number ['+ id+ ']  value: ['+ value+ '] set ['+ $(name).val().trim()+ ']');
 			return value;
 		},
 		different: function(value) {

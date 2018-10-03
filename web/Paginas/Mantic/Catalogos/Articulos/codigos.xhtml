@@ -18,6 +18,10 @@
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
+		<pe:remoteCommand name="locate" process="@this" update="@(.filas) @(.recalculo) @(.inventario)" actionListener="#{manticCatalogosArticulosCodigos.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();setTimeout(jsKardex.locate(), 500);">  
+			<pe:methodSignature parameters="java.lang.String"/>  
+			<pe:methodParam name="codigo"/>  
+		</pe:remoteCommand>		
 		<p:remoteCommand name="replace" actionListener="#{manticCatalogosArticulosCodigos.doFindArticulo}" process="@this" update="@(.filas) @(.recalculo)" onstart="return janal.bloquear();" oncomplete="jsKardex.locate();janal.desbloquear();"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
@@ -76,7 +80,7 @@
 						</p:column>   
 						<p:column headerText="Cantidad" styleClass="janal-wid-15 cantidad">
 							<p:inputNumber id="cantidad" inputStyleClass="key-focus-event key-move-event janal-wid-100-txt janal-column-right" value="#{row.cantidad}" decimalPlaces="0" onblur="janal.cantidad('#tabla\\:#{index}\\:cantidad_input', '1');">
-								<p:ajax event="blur" process="@this" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+								<p:ajax event="blur" process="@this" onstart="return jsKardex.different(jsKardex.number($('#tabla\\:#{index}\\:cantidad_input'))) &amp;&amp; janal.bloquear();" oncomplete="janal.desbloquear();"/>
 							</p:inputNumber>	
 						</p:column>   
 						<p:column headerText="Limite" styleClass="janal-wid-10 janal-column-right limite">
