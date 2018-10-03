@@ -25,8 +25,11 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ContadoresListas;
@@ -324,29 +327,54 @@ public class Accion extends IBaseVenta implements Serializable {
 		return regresar.toString();
 	} // toCondicion
 	
-	@Override
-	public void doAsignaTicketAbierto(){
-		UISelectEntity ticketAbierto= null;
-		ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
-		doAsignaTicketAbiertoGeneral(ticketAbierto);
-	} // doAsignaTicketAbierto
-	
 	public void doAsignaTicketAbiertoDlg(){
-		UISelectEntity ticketAbierto= null;
-		ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbiertoDlg");
-		doAsignaTicketAbiertoGeneral(ticketAbierto);
+		List<UISelectItem> ticketsAbiertos= null;
+		Map<String, Object>params         = null;
+		List<String> fields               = null;
+		try {
+			fields= new ArrayList<>();
+			params= new HashMap<>();
+			params.put("sortOrder", "");
+			params.put("idEmpresa", this.attrs.get("idEmpresa"));
+			fields.add("consecutivo");
+			fields.add("cuenta");
+			fields.add("precioTotal");
+			fields.add("cliente");
+			params.put(Constantes.SQL_CONDICION, toCondicion());
+			ticketsAbiertos= UISelect.build("VistaVentasDto", "lazy", params, fields, " - ", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			if(!ticketsAbiertos.isEmpty()){
+				this.attrs.put("ticketsAbiertosDlg", ticketsAbiertos);
+				if(!ticketsAbiertos.isEmpty())
+					this.attrs.put("ticketAbiertoDlg", UIBackingUtilities.toFirstKeySelectItem(ticketsAbiertos));
+				RequestContext.getCurrentInstance().execute("PF('dlgOpenTickets').show();");
+			} // if
+			else{
+				JsfBase.addMessage("Cuentas", "Actualmente no hay cuentas abiertas", ETipoMensaje.INFORMACION);
+				RequestContext.getCurrentInstance().execute("janal.desbloquear();");
+			} // else
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
 	} // doAsignaTicketAbiertoDlg
 	
-	public void doAsignaTicketAbiertoGeneral(UISelectEntity ticketAbierto){
+	@Override
+	public void doAsignaTicketAbierto(){		
 		Map<String, Object>params           = null;		
+		UISelectEntity ticketAbierto        = null;
 		UISelectEntity ticketAbiertoPivote  = null;
 		List<UISelectEntity> ticketsAbiertos= null;
 		try {			
+			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
 			params= new HashMap<>();
 			params.put("idVenta", ticketAbierto.getKey());
 			setDomicilio(new Domicilio());
 			this.attrs.put("registroCliente", new TcManticClientesDto());
-			if(!ticketAbierto.getKey().equals(-1L)){
+			if(!ticketAbierto.getKey().equals(-1L)){				
 				ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
 				ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));
 				this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), false));
