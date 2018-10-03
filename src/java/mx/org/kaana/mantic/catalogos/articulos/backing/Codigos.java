@@ -64,7 +64,7 @@ public class Codigos extends IBaseAttribute implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params = new HashMap<>();
 			params.put("idNotaEntrada", this.attrs.get("idNotaEntrada"));
-			params.put("idBarras", 2L);
+			params.put("idBarras", 1L);
 			this.articulos= (List<CodigoArticulo>)DaoFactory.getInstance().toEntitySet(CodigoArticulo.class, "VistaArticulosDto", "barras", params);
 			if(this.articulos== null)
 				this.articulos= new ArrayList<>();

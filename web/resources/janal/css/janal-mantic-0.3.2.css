@@ -43,7 +43,7 @@ div.ui-panelgrid-content {
   text-align: right !important;
 }
 .ui-growl, .ui-growl-message {
-  width: 350px !important;
+  width: auto !important;
 }
 .janal-growl-message {
   float:none !important;
