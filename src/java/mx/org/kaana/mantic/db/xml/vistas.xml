@@ -278,6 +278,7 @@
 					tc_mantic_tipos_medios_pagos.id_tipo_medio_pago,
 					tc_mantic_tipos_medios_pagos.nombre as moneda,
 					tc_mantic_cierres_cajas.id_cierre_caja,
+				  tc_mantic_cierres_retiros.id_terminado,
 				  tc_mantic_cierres_retiros.id_cierre_retiro
 				from
 					tc_mantic_cierres

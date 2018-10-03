@@ -12,16 +12,19 @@
 			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield {
 				width:225% !important;
 			}
+			.janal-tr-diferencias {
+				background-color: #ABEBC6 !important;
+			}
 	  </style>		
   </ui:define>
   <ui:define name="contenido">
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
-				<div class="ui-grid-col-1">
+				<div class="ui-grid-col-1 janal-wid-col-80">
 					<p:outputLabel for="idEmpresas" value="Sucursal:"/>
 				</div>	
-				<div class="ui-grid-col-11">
-					<p:selectOneMenu id="idEmpresas" value="#{manticVentasCajaCierresAmbos.attrs.idEmpresas}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+				<div class="ui-grid-col-12">
+					<p:selectOneMenu id="idEmpresas" value="#{manticVentasCajaCierresAmbos.attrs.idEmpresas}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
 						<f:selectItems value="#{manticVentasCajaCierresAmbos.attrs.empresas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 						<p:column headerText="Clave">
 							<h:outputText value="#{item.clave}"/>
@@ -33,11 +36,11 @@
 				</div>	
 			</div>	
 			<div class="ui-grid-row janal-grid-row">
-				<div class="ui-grid-col-1">
+				<div class="ui-grid-col-1 janal-wid-col-80">
 					<p:outputLabel for="idCajas" value="Caja:"/>
 				</div>
-				<div class="ui-grid-col-11">
-					<p:selectOneMenu id="idCajas" value="#{manticVentasCajaCierresAmbos.attrs.idCajas}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99"  effect="fade" filter="true" filterMatchMode="contains">
+				<div class="ui-grid-col-12">
+					<p:selectOneMenu id="idCajas" value="#{manticVentasCajaCierresAmbos.attrs.idCajas}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="contains">
 						<f:selectItems value="#{manticVentasCajaCierresAmbos.attrs.cajas}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
 						<p:column headerText="Clave">
 							<h:outputText value="#{item.clave}"/>
@@ -53,7 +56,7 @@
 			</div>	
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-content" class="ui-grid-col-12">
-          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticVentasCajaCierresAmbos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticVentasCajaCierresAmbos.lazyModel.rowCount gt manticVentasCajaCierresAmbos.lazyModel.pageSize}"  selection="#{manticVentasCajaCierresAmbos.attrs.seleccionado}" selectionMode="single" rowIndexVar="index" reflow="true">
+          <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticVentasCajaCierresAmbos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="#{manticVentasCajaCierresAmbos.lazyModel.rowCount gt manticVentasCajaCierresAmbos.lazyModel.pageSize}"  selection="#{manticVentasCajaCierresAmbos.attrs.seleccionado}" selectionMode="single" rowIndexVar="index" reflow="true" rowStyleClass="#{row.idTerminado.data eq 1? 'janal-tr-diferencias': ''}">
             <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="@this tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
             <f:facet name="header" >
@@ -140,7 +143,7 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="eliminar" value="Cancelar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" disabled="#{manticVentasCajaCierresAmbos.attrs.seleccionado.importe.data lt 0.01}"/>
+            <p:menuitem id="eliminar" value="Cancelar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" disabled="#{manticVentasCajaCierresAmbos.attrs.seleccionado.idTerminado.data eq 1}"/>
           </p:contextMenu>					
 					<hr class="ui-widget-content"/>
 					<div class="janal-line-button">

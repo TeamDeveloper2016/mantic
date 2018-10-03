@@ -85,24 +85,28 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 					this.toCheckCajaAlerta(sesion, caja);
 					break;
 				case ELIMINAR:
+					this.retiro.setIdTerminado(1L);
+					regresar= DaoFactory.getInstance().update(sesion, this.retiro)>= 1L;
 					if(this.retiro.getIdAbono().equals(1L))
-					  this.retiro.setObservaciones("ESTE ABONO FUE CANCELADO ["+ this.retiro.getImporte()+ "] CON FECHA DE "+ Fecha.getHoyExtendido()+ " HRS. POR "+ JsfBase.getAutentifica().getCredenciales().getCuenta());
+					  this.retiro.setConcepto("CANCELADO POR "+ JsfBase.getAutentifica().getCredenciales().getCuenta());
 					else
-					  this.retiro.setObservaciones("ESTE RETIRO FUE CANCELADO ["+ this.retiro.getImporte()+ "] CON FECHA DE "+ Fecha.getHoyExtendido()+ " HRS. POR "+ JsfBase.getAutentifica().getCredenciales().getCuenta());
+					  this.retiro.setConcepto("CANCELADO POR "+ JsfBase.getAutentifica().getCredenciales().getCuenta());
 					this.retiro.setImporte(this.retiro.getImporte()* -1L);
 					consecutivo= this.toSiguiente(sesion);
 					this.retiro= new TcManticCierresRetirosDto(
 						Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true), 
 						JsfBase.getIdUsuario(), 
-						this.retiro.getIdCierreRetiro(), 
-						this.retiro.getObservaciones(), 
+						-1L, 
+						"CONSECUTIVO: ".concat(this.retiro.getConsecutivo()), 
 						this.retiro.getIdCierreCaja(), 
 						consecutivo, 
 						this.retiro.getIdAbono(), 
 						this.retiro.getImporte(), 
 						new Long(Fecha.getAnioActual()), 
 						this.retiro.getConcepto(), 
-						this.retiro.getIdTipoMedioPago());
+						this.retiro.getIdTipoMedioPago(),
+						1L
+					);
 					regresar= DaoFactory.getInstance().insert(sesion, this.retiro)>= 1L;
 					if(this.retiro.getIdAbono().equals(1L))
 					  bitacora= new TcManticCierresBitacoraDto("ABONO DE EFECTIVO CANCELADO POR "+ JsfBase.getAutentifica().getCredenciales().getCuenta(), -1L, this.idCierre, JsfBase.getIdUsuario(), 2L);
