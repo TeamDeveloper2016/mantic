@@ -122,31 +122,7 @@
   <ui:define name="contenido">
     <!-- SECTION 1 -->
     <div class="Container100">
-      <div class="ContainerIndent">
-        <div class="Container100 Responsive TexAlCenter">					
-					<h:panelGrid id="cambioPeriodo" columns="3" class="Wid100 graphic-update" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-5, wid-calendarizacion-47 janal-column-left">
-						<p:commandLink disabled="#{kajoolTablero.attrs.primerPeriodo}">
-							<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(false)}" update="@(.graphic-update) @(.periodo-update)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-							<i class="fa fa-angle-left" style="margin-right: -5px;"/>
-						</p:commandLink>
-						<h:outputLabel value="#{kajoolTablero.attrs.nombrePeriodo}" styleClass="graphic-update"/>
-						<p:commandLink disabled="#{kajoolTablero.attrs.ultimoPeriodo}">
-							<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(true)}" update="@(.graphic-update) @(.periodo-update)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-							<i class="fa fa-angle-right"/>
-						</p:commandLink>
-					</h:panelGrid>
-					<h:panelGrid id="cambioCalendario" columns="3" class="Wid100 periodo-update" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-5, wid-calendarizacion-47 janal-column-left">
-						<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDia}">
-							<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false)}" update="@(.graphic-update) @(.periodo-update)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-							<i class="fa fa-angle-left" style="margin-right: -5px;"/>
-						</p:commandLink>
-						<h:outputLabel value="#{kajoolTablero.attrs.fechaSeleccionada}" styleClass="graphic-update" rendered="#{!kajoolTablero.attrs.renderedDia}"/>
-						<p:commandLink disabled="#{kajoolTablero.attrs.ultimoDia}" rendered="#{!kajoolTablero.attrs.renderedDia}">
-							<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(true)}" update="@(.graphic-update) @(.periodo-update)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
-							<i class="fa fa-angle-right"/>
-						</p:commandLink>
-					</h:panelGrid>
-				</div>					
+      <div class="ContainerIndent">        					
         <div class="Container50 Responsive">					
 					<div class="Container50 Responsive">					
 						<div class="ContainerIndent">
@@ -197,7 +173,7 @@
         </div>   						
         <div class="Container50 Responsive">
           <div class="ContainerIndent">            
-            <p:panel style="height:290px;" class="graphic-update">
+            <p:panel style="height:360px;" class="graphic-update-sucursal">
               <div class="Container100 Responsive Fs20">
                 <i class="icon-chart-outline"></i> Utilidad por sucursal
               </div>
@@ -209,21 +185,45 @@
 									});
                 </script>
               </div>
-            </p:panel>
+							<div class="Container100 Responsive TexAlCenter">					
+								<h:panelGrid  columns="3" class="Wid100 graphic-update-sucursal" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-5, wid-calendarizacion-47 janal-column-left">
+									<p:commandLink disabled="#{kajoolTablero.attrs.primerPeriodoUtilidadSucursales}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(false, 'UTILIDAD_SUCURSAL')}" update="@(.graphic-update-sucursal) @(.periodo-update-sucursal)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.nombrePeriodoUtilidadSucursales}" styleClass="graphic-update-sucursal"/>
+									<p:commandLink disabled="#{kajoolTablero.attrs.ultimoPeriodoUtilidadSucursales}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(true, 'UTILIDAD_SUCURSAL')}" update="@(.graphic-update-sucursal) @(.periodo-update-sucursal)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>
+								</h:panelGrid>
+								<h:panelGrid  columns="3" class="Wid100 periodo-update-sucursal" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-5, wid-calendarizacion-47 janal-column-left">
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaUtilidadSucursales}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false, 'UTILIDAD_SUCURSAL')}" update="@(.graphic-update-sucursal) @(.periodo-update-sucursal)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.fechaSeleccionadaUtilidadSucursales}" styleClass="graphic-update-sucursal" rendered="#{!kajoolTablero.attrs.renderedDiaUtilidadSucursales}"/>
+									<p:commandLink disabled="#{kajoolTablero.attrs.ultimoDiaUtilidadSucursales}" rendered="#{!kajoolTablero.attrs.renderedDiaUtilidadSucursales}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(true, 'UTILIDAD_SUCURSAL')}" update="@(.graphic-update-sucursal) @(.periodo-update-sucursal)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>																												
+								</h:panelGrid>
+							</div>
+            </p:panel>						
           </div>
         </div>
 
         <div class="Container50 Responsive">
           <div class="ContainerIndent">
             <div class="EmptyBox10"></div>                
-            <p:panel id="panelMest" style="min-height: 420px;" class="graphic-update">
+            <p:panel id="panelMest" style="min-height: 483px;" class="graphic-update">
               <i class="icon-users Fs50 Fleft Wid25 orange TexAlCenter"></i>
               <div class="Fs24 Fright MarTop10 leaden Wid70">Ventas por trabajador</div>
               <div class="Fs12 Fright leaden Wid70">Cantidad de ventas realizadas por trabajador: <span class="orange">320</span></div>
               <div class="EmptyBox10"></div>
               <p:separator styleClass="Wid100"/>
               <div>
-                <p:scrollPanel styleClass="Wid95" style="height: 315px;">
+                <p:scrollPanel styleClass="Wid95" style="height: 350px;">
                   <h:panelGroup id="panelVentas" styleClass="Wid90">									
                     <div style="width:100%; text-align:left; padding-left: 4px;"><i class="icon-user"></i><p:outputLabel value="ALEJANDRO JIMENEZ GARCIA"/></div>
                     <h:panelGrid columns="2" title="Total de ventas: 30" columnClasses="janal-wid-90, janal-wid-10" style="width: 100%">
@@ -291,7 +291,7 @@
           </div>
           <div class="EmptyBox10"></div>
           <div class="ContainerIndent">
-            <p:panel style="min-height:290px;" class="graphic-update">
+            <p:panel style="min-height:360px;" class="graphic-update">
               <div class="Container40 Responsive Fs20">
                 <i class="icon-down-big"></i> Articulos por terminarse
               </div>
@@ -340,7 +340,7 @@
 					<c:forEach items="#{kajoolTablero.attrs.jsons}" var="prop" varStatus="index">													
 						<!--div class="Container50 Responsive"-->
 							<div class="ContainerIndent">
-								<p:panel style="min-height:250px;" class="graphic-update">
+								<p:panel style="min-height:250px;" class="graphic-update-ventas">
 									<div class="Container100 Responsive Fs20">
 										<i class="icon-chart-bar"></i> #{prop.titulo}
 									</div>
@@ -352,13 +352,37 @@
 											});
 										</script>
 									</div>
+									<div class="Container100 Responsive TexAlCenter">					
+										<h:panelGrid  columns="3" class="Wid100 graphic-update-ventas" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-5, wid-calendarizacion-47 janal-column-left">
+											<p:commandLink disabled="#{kajoolTablero.attrs.primerPeriodoVentasSucursal}">
+												<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(false, 'VENTAS_SUCURSAL')}" update="@(.graphic-update-ventas) @(.periodo-update-ventas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+												<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+											</p:commandLink>
+											<h:outputLabel value="#{kajoolTablero.attrs.nombrePeriodoVentasSucursal}" styleClass="graphic-update-ventas"/>
+											<p:commandLink disabled="#{kajoolTablero.attrs.ultimoPeriodoVentasSucursal}">
+												<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(true, 'VENTAS_SUCURSAL')}" update="@(.graphic-update-ventas) @(.periodo-update-ventas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+												<i class="fa fa-angle-right"/>
+											</p:commandLink>
+										</h:panelGrid>
+										<h:panelGrid  columns="3" class="Wid100 periodo-update-ventas" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-5, wid-calendarizacion-47 janal-column-left">
+											<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaVentasSucursal}">
+												<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false, 'VENTAS_SUCURSAL')}" update="@(.graphic-update-ventas) @(.periodo-update-ventas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+												<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+											</p:commandLink>
+											<h:outputLabel value="#{kajoolTablero.attrs.fechaSeleccionadaVentasSucursal}" styleClass="graphic-update-ventas" rendered="#{!kajoolTablero.attrs.renderedDiaVentasSucursal}"/>
+											<p:commandLink disabled="#{kajoolTablero.attrs.ultimoDiaVentasSucursal}" rendered="#{!kajoolTablero.attrs.renderedDiaVentasSucursal}">
+												<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(true, 'VENTAS_SUCURSAL')}" update="@(.graphic-update-ventas) @(.periodo-update-ventas)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+												<i class="fa fa-angle-right"/>
+											</p:commandLink>																												
+										</h:panelGrid>
+									</div>
 								</p:panel>
 							</div>
 						<!--/div-->
 					</c:forEach>
 					<!--div class="Container50 Responsive"-->
 						<div class="ContainerIndent">            
-							<p:panel style="height:290px;" class="graphic-update">
+							<p:panel style="height:360px;" class="graphic-update-cobrar">
 								<div class="Container100 Responsive Fs20">
 									<i class="icon-money"></i> Cuentas por cobrar
 								</div>
@@ -370,6 +394,30 @@
 										});
 									</script>
 								</div>
+								<div class="Container100 Responsive TexAlCenter">					
+									<h:panelGrid  columns="3" class="Wid100 graphic-update-cobrar" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-5, wid-calendarizacion-47 janal-column-left">
+										<p:commandLink disabled="#{kajoolTablero.attrs.primerPeriodoCuentasCobrar}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(false, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.nombrePeriodoCuentasCobrar}" styleClass="graphic-update-cobrar"/>
+										<p:commandLink disabled="#{kajoolTablero.attrs.ultimoPeriodoCuentasCobrar}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(true, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>
+									</h:panelGrid>
+									<h:panelGrid  columns="3" class="Wid100 periodo-update-cobrar" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-5, wid-calendarizacion-47 janal-column-left">
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaCuentasCobrar}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.fechaSeleccionadaCuentasCobrar}" styleClass="graphic-update-cobrar" rendered="#{!kajoolTablero.attrs.renderedDiaCuentasCobrar}"/>
+										<p:commandLink disabled="#{kajoolTablero.attrs.ultimoDiaCuentasCobrar}" rendered="#{!kajoolTablero.attrs.renderedDiaCuentasCobrar}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(true, 'CUENTAS_COBRAR')}" update="@(.graphic-update-cobrar) @(.periodo-update-cobrar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>																												
+									</h:panelGrid>
+								</div>
 							</p:panel>
 						</div>
 					<!--/div-->
@@ -378,7 +426,7 @@
         <div class="Container50 Responsive">
           <div class="ContainerIndent">            
             <div class="EmptyBox10"></div>
-            <p:panel style="height:240px;" class="graphic-update">
+            <p:panel style="height:270px;" class="graphic-update-utilidad-caja">
               <div class="Container100 Responsive Fs20">
                 <i class="icon-chart-outline"></i> Utilidad por caja
               </div>
@@ -390,13 +438,37 @@
 									});
                 </script>
               </div>
+							<div class="Container100 Responsive TexAlCenter">					
+								<h:panelGrid  columns="3" class="Wid100 graphic-update-utilidad-caja" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-5, wid-calendarizacion-47 janal-column-left">
+									<p:commandLink disabled="#{kajoolTablero.attrs.primerPeriodoUtilidadCaja}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(false, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.nombrePeriodoUtilidadCaja}" styleClass="graphic-update-utilidad-caja"/>
+									<p:commandLink disabled="#{kajoolTablero.attrs.ultimoPeriodoUtilidadCaja}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(true, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>
+								</h:panelGrid>
+								<h:panelGrid  columns="3" class="Wid100 periodo-update-utilidad-caja" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-5, wid-calendarizacion-47 janal-column-left">
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaUtilidadCaja}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.fechaSeleccionadaUtilidadCaja}" styleClass="graphic-update-utilidad-caja" rendered="#{!kajoolTablero.attrs.renderedDiaUtilidadCaja}"/>
+									<p:commandLink disabled="#{kajoolTablero.attrs.ultimoDiaUtilidadCaja}" rendered="#{!kajoolTablero.attrs.renderedDiaUtilidadCaja}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(true, 'UTILIDAD_CAJA')}" update="@(.graphic-update-utilidad-caja) @(.periodo-update-utilidad-caja)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>																												
+								</h:panelGrid>
+							</div>
             </p:panel>
           </div>
 
           <div class="Container100 Responsive">
             <div class="ContainerIndent">
               <div class="EmptyBox10"></div>
-              <p:panel style="min-height:402px;" class="graphic-update">
+              <p:panel style="min-height:402px;" class="graphic-update-art-vendidos">
                 <div class="Container100 Responsive Fs20">
                   <i class="icon-cube"></i>Articulos mas vendidos 
                   <p:separator styleClass="Wid100"/>
@@ -406,16 +478,45 @@
                   <script type="text/javascript">
 										$(document).ready(function () {
 											loadChart('kajool-chart-avance-nacional', '#{kajoolTablero.attrs.jsonVentas.json}');
+											$("text").each(function (index) {
+												if ($(this).text() === 'Highcharts.com') {
+													$(this).text(' ');
+												}
+											});
 										});
                   </script>
                 </div>
+								<div class="Container100 Responsive TexAlCenter">					
+									<h:panelGrid  columns="3" class="Wid100 graphic-update-art-vendidos" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-5, wid-calendarizacion-47 janal-column-left">
+										<p:commandLink disabled="#{kajoolTablero.attrs.primerPeriodoArticulosMasVentas}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(false, 'ART_MAS_VENDIDOS')}" update="@(.graphic-update-art-vendidos) @(.periodo-update-art-vendidos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.nombrePeriodoArticulosMasVentas}" styleClass="graphic-update-art-vendidos"/>
+										<p:commandLink disabled="#{kajoolTablero.attrs.ultimoPeriodoArticulosMasVentas}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(true, 'ART_MAS_VENDIDOS')}" update="@(.graphic-update-art-vendidos) @(.periodo-update-art-vendidos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>
+									</h:panelGrid>
+									<h:panelGrid  columns="3" class="Wid100 periodo-update-art-vendidos" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-5, wid-calendarizacion-47 janal-column-left">
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaArticulosMasVentas}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false, 'ART_MAS_VENDIDOS')}" update="@(.graphic-update-art-vendidos) @(.periodo-update-art-vendidos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.fechaSeleccionadaArticulosMasVentas}" styleClass="graphic-update-art-vendidos" rendered="#{!kajoolTablero.attrs.renderedDiaArticulosMasVentas}"/>
+										<p:commandLink disabled="#{kajoolTablero.attrs.ultimoDiaArticulosMasVentas}" rendered="#{!kajoolTablero.attrs.renderedDiaArticulosMasVentas}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(true, 'ART_MAS_VENDIDOS')}" update="@(.graphic-update-art-vendidos) @(.periodo-update-art-vendidos)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>																												
+									</h:panelGrid>
+								</div>
               </p:panel>
             </div>	
           </div>
           <div class="Container100 Responsive">
             <div class="ContainerIndent">
               <div class="EmptyBox10"></div>
-              <p:panel style="min-height:402px;" class="graphic-update">
+              <p:panel style="min-height:402px;" class="graphic-update-art-utilidad">
                 <div class="Container100 Responsive Fs20">
                   <i class="icon-dollar"></i>Articulos con mayor utilidad 
                   <p:separator styleClass="Wid100"/>
@@ -433,13 +534,37 @@
 										});
                   </script>
                 </div>
+								<div class="Container100 Responsive TexAlCenter">					
+									<h:panelGrid  columns="3" class="Wid100 graphic-update-art-utilidad" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-5, wid-calendarizacion-47 janal-column-left">
+										<p:commandLink disabled="#{kajoolTablero.attrs.primerPeriodoArticulosMasUtilidad}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(false, 'ART_MAS_UTILIDAD')}" update="@(.graphic-update-art-utilidad) @(.periodo-update-art-utilidad)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.nombrePeriodoArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad"/>
+										<p:commandLink disabled="#{kajoolTablero.attrs.ultimoPeriodoArticulosMasUtilidad}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(true, 'ART_MAS_UTILIDAD')}" update="@(.graphic-update-art-utilidad) @(.periodo-update-art-utilidad)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>
+									</h:panelGrid>
+									<h:panelGrid  columns="3" class="Wid100 periodo-update-art-utilidad" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-5, wid-calendarizacion-47 janal-column-left">
+										<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaArticulosMasUtilidad}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false, 'ART_MAS_UTILIDAD')}" update="@(.graphic-update-art-utilidad) @(.periodo-update-art-utilidad)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+										</p:commandLink>
+										<h:outputLabel value="#{kajoolTablero.attrs.fechaSeleccionadaArticulosMasUtilidad}" styleClass="graphic-update-art-utilidad" rendered="#{!kajoolTablero.attrs.renderedDiaArticulosMasUtilidad}"/>
+										<p:commandLink disabled="#{kajoolTablero.attrs.ultimoDiaArticulosMasUtilidad}" rendered="#{!kajoolTablero.attrs.renderedDiaArticulosMasUtilidad}">
+											<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(true, 'ART_MAS_UTILIDAD')}" update="@(.graphic-update-art-utilidad) @(.periodo-update-art-utilidad)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+											<i class="fa fa-angle-right"/>
+										</p:commandLink>																												
+									</h:panelGrid>
+								</div>
               </p:panel>
             </div>				     
           </div>						
         </div>            				
 				<div class="Container50 Responsive">
           <div class="ContainerIndent">            
-            <p:panel style="height:290px;" class="graphic-update">
+            <p:panel style="height:360px;" class="graphic-update-pagar">
               <div class="Container100 Responsive Fs20">
                 <i class="icon-bank"></i> Cuentas por pagar
               </div>
@@ -451,6 +576,30 @@
 									});
                 </script>
               </div>
+							<div class="Container100 Responsive TexAlCenter">					
+								<h:panelGrid  columns="3" class="Wid100 graphic-update-pagar" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-5, wid-calendarizacion-47 janal-column-left">
+									<p:commandLink disabled="#{kajoolTablero.attrs.primerPeriodoCuentasPagar}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(false, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.nombrePeriodoCuentasPagar}" styleClass="graphic-update-pagar"/>
+									<p:commandLink disabled="#{kajoolTablero.attrs.ultimoPeriodoCuentasPagar}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarPeriodo(true, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>
+								</h:panelGrid>
+								<h:panelGrid  columns="3" class="Wid100 periodo-update-pagar" columnClasses="wid-calendarizacion-48 janal-column-right, wid-calendarizacion-5, wid-calendarizacion-47 janal-column-left">
+									<p:commandLink rendered="#{!kajoolTablero.attrs.renderedDiaCuentasPagar}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(false, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-left" style="margin-right: -5px;"/>
+									</p:commandLink>
+									<h:outputLabel value="#{kajoolTablero.attrs.fechaSeleccionadaCuentasPagar}" styleClass="graphic-update-pagar" rendered="#{!kajoolTablero.attrs.renderedDiaCuentasPagar}"/>
+									<p:commandLink disabled="#{kajoolTablero.attrs.ultimoDiaCuentasPagar}" rendered="#{!kajoolTablero.attrs.renderedDiaCuentasPagar}">
+										<p:ajax event="click" listener="#{kajoolTablero.doCambiarDia(true, 'CUENTAS_PAGAR')}" update="@(.graphic-update-pagar) @(.periodo-update-pagar)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+										<i class="fa fa-angle-right"/>
+									</p:commandLink>																												
+								</h:panelGrid>
+							</div>
             </p:panel>
           </div>
         </div>
