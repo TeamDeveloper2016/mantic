@@ -106,9 +106,9 @@ public class Transaccion extends IBaseTnx {
 		TcManticImagenesDto image= null;
 		Long idArticulo = -1L;
 		Long idImagen   = -1L;
-		try {
-			this.messageError= "Error al registrar el articulo";
+		try {			
 			if(eliminarRegistros(sesion)){
+				this.messageError= "Error al registrar el articulo";
 				this.articulo.getArticulo().setIdRedondear(this.articulo.isRedondear() ? ACTIVO : INACTIVO);
 				this.articulo.getArticulo().setIdUsuario(JsfBase.getIdUsuario());
 				this.articulo.getArticulo().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
