@@ -625,10 +625,10 @@
 			janal.desbloquear();
 		},
 		activeLogin: function(){				
-			$parent.readingMode('CONSULTAR');
+			janal.readingMode('CONSULTAR');
 			$('#cancelar').prop('disabled', 'disabled').addClass('ui-state-disabled'); 
 			$('#cancelarIcon').prop('disabled', 'disabled').addClass('ui-state-disabled');
-			$parent.desbloquear();
+			janal.desbloquear();
 			$('.janal-login-view').attr('style', 'display: ');				
 			$('.janal-login-block').attr('style', 'display: none;');				
 			$('#cuenta').prop('disabled', '').removeClass('ui-state-disabled'); 				
@@ -637,7 +637,7 @@
 			setTimeout("$('#cuenta').focus();", 500);						
 		},			
 		disabledLogin: function() {
-			$parent.readingMode('AGREGAR');
+			janal.readingMode('AGREGAR');
 			$('.janal-login-view').attr('style', 'display: none');				
 			$('.janal-login-block').attr('style', 'display: ');				
 			$('#cancelar').prop('disabled', '').removeClass('ui-state-disabled'); 
@@ -648,16 +648,16 @@
 		},			
 		toLoginEnter: function() {
 			if (window.event.keyCode === 13)
-				$parent.toPassword();
+				toPassword();
 		}, // toLoginEnter			
 		toPasswordEnter: function() {
 			if (window.event.keyCode === 13) {
-				$parent.bloquear();
-				var ok= $parent.partial('login');
+				janal.bloquear();
+				var ok= janal.partial('login');
 				if(ok) 
 					loginValidate();
 				else
-					$parent.desbloquear();
+					janal.desbloquear();
 			} // if
 		}, // toPasswordEnter		
 		refreshCobroValidate: function(){
@@ -672,65 +672,65 @@
 			this.refreshCredito(credito);
 			this.refreshCheque(cheque);
 			this.refreshTransferencia(transferencia);
-			$parent.refresh();
+			janal.refresh();
 		}, // refreshCobroValidate		
 		validateApartado: function(minPago){				
 			this.refreshCredito(0);
 			this.refreshCheque(0);
 			this.refreshTransferencia(0);
-			$parent.fields.credito.validaciones= 'libre';
-			$parent.fields.cheque.validaciones= 'libre';
-			$parent.fields.pago.validaciones= 'requerido|min-valor({"cuanto":'+minPago+'})';
-			$parent.fields.transferencia.validaciones= 'libre';
-			$parent.refresh();
+			janal.fields.credito.validaciones= 'libre';
+			janal.fields.cheque.validaciones= 'libre';
+			janal.fields.pago.validaciones= 'requerido|min-valor({"cuanto":'+minPago+'})';
+			janal.fields.transferencia.validaciones= 'libre';
+			janal.refresh();
 		},			
 		validateCredito: function(){							
 			this.refreshCredito(0);
 			this.refreshCheque(0);
 			this.refreshTransferencia(0);
 			this.refreshFreeValidationsPagos();
-			$parent.refresh();
+			janal.refresh();
 		}, // validateCredito
 		refreshValidationsPagos: function(limiteCredito, limiteCheque, totalVenta, limiteTransferencia){
-			$parent.fields.credito.validaciones= 'libre|max-valor({"cuanto":'+limiteCredito+'})';
-			$parent.fields.cheque.validaciones= 'libre|max-valor({"cuanto":'+limiteCheque+'})';
-			$parent.fields.pago.validaciones= 'requerido|min-valor({"cuanto":'+totalVenta+'})';
-			$parent.fields.transferencia.validaciones= 'libre|max-valor({"cuanto":'+limiteTransferencia+'})';
+			janal.fields.credito.validaciones= 'libre|max-valor({"cuanto":'+limiteCredito+'})';
+			janal.fields.cheque.validaciones= 'libre|max-valor({"cuanto":'+limiteCheque+'})';
+			janal.fields.pago.validaciones= 'requerido|min-valor({"cuanto":'+totalVenta+'})';
+			janal.fields.transferencia.validaciones= 'libre|max-valor({"cuanto":'+limiteTransferencia+'})';
 		}, // refreshValidationsPagos
 		refreshFreeValidationsPagos: function(){
-			$parent.fields.credito.validaciones= 'libre';
-			$parent.fields.cheque.validaciones= 'libre';
-			$parent.fields.pago.validaciones= 'libre';
-			$parent.fields.transferencia.validaciones= 'libre';
+			janal.fields.credito.validaciones= 'libre';
+			janal.fields.cheque.validaciones= 'libre';
+			janal.fields.pago.validaciones= 'libre';
+			janal.fields.transferencia.validaciones= 'libre';
 		}, // refreshValidationsPagos		
 		refreshCredito: function(total){
 			if(total > 0){
-				$parent.fields.referenciaCredito.validaciones= "requerido";
-				$parent.fields.bancoCredito.validaciones= "requerido";										
+				janal.fields.referenciaCredito.validaciones= "requerido";
+				janal.fields.bancoCredito.validaciones= "requerido";										
 			} // if
 			else{
-				$parent.fields.referenciaCredito.validaciones= "libre";
-				$parent.fields.bancoCredito.validaciones= "libre";										
+				janal.fields.referenciaCredito.validaciones= "libre";
+				janal.fields.bancoCredito.validaciones= "libre";										
 			} // else
 		}, // refreshCredito
 		refreshCheque: function(total){
 			if(total > 0){
-				$parent.fields.referenciaCheque.validaciones= "requerido";
-				$parent.fields.bancoCheque.validaciones= "requerido";					
+				janal.fields.referenciaCheque.validaciones= "requerido";
+				janal.fields.bancoCheque.validaciones= "requerido";					
 			} // if
 			else{
-				$parent.fields.referenciaCheque.validaciones= "libre";
-				$parent.fields.bancoCheque.validaciones= "libre";					
+				janal.fields.referenciaCheque.validaciones= "libre";
+				janal.fields.bancoCheque.validaciones= "libre";					
 			} // else
 		}, // refreshCheque
 		refreshTransferencia: function(total){
 			if(total > 0){
-				$parent.fields.referenciaTransferencia.validaciones= "requerido";
-				$parent.fields.bancoTransferencia.validaciones= "requerido";					
+				janal.fields.referenciaTransferencia.validaciones= "requerido";
+				janal.fields.bancoTransferencia.validaciones= "requerido";					
 			} // if
 			else{
-				$parent.fields.referenciaTransferencia.validaciones= "libre";
-				$parent.fields.bancoTransferencia.validaciones= "libre";					
+				janal.fields.referenciaTransferencia.validaciones= "libre";
+				janal.fields.bancoTransferencia.validaciones= "libre";					
 			} // else
 		}, // refreshCheque
 		restoreAutenticate: function(){
