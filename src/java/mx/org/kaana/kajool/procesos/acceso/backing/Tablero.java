@@ -27,6 +27,7 @@ import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.reglas.BuildChart
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.mantic.enums.EGraficasTablero;
 import mx.org.kaana.mantic.enums.EPeriodosTableros;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,9 +60,12 @@ public class Tablero extends Comun implements Serializable {
   @PostConstruct
   @Override
   protected void init() {
-    Persona empleado = null;
+    Persona empleado  = null;
+		String fechaActual= null;
     try {
-      empleado = JsfBase.getAutentifica().getPersona();
+      empleado= JsfBase.getAutentifica().getPersona();
+			this.attrs.put("calendario", Calendar.getInstance());
+			fechaActual= Fecha.formatear(Fecha.FECHA_MINIMA, cambiarDia(Fecha.formatear(Fecha.FECHA_MINIMA, (Calendar)this.attrs.get("calendario")), Boolean.FALSE));
       this.attrs.put("isAdmin", JsfBase.isAdminEncuestaOrAdmin());
       this.attrs.put("titulotabla", EPerfiles.fromOrdinal(empleado.getIdPerfil()).getTituloTabla());
       this.attrs.put("isTablaGeneral", EPerfiles.CAPTURISTA.getKey().equals(empleado.getIdPerfil()));
@@ -69,16 +73,8 @@ public class Tablero extends Comun implements Serializable {
       this.attrs.put("pathCaptura", JsfBase.getApplication().getContextPath() + "/Paginas/Captura/filtro.jsf");
       this.attrs.put("pathMensajes", JsfBase.getApplication().getContextPath() + "/Paginas/Mantenimiento/Mensajes/Notificacion/filtro.jsf");
       this.attrs.put("vigenciaInicial", new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
-      this.attrs.put("vigenciaFin", new java.sql.Date(Calendar.getInstance().getTimeInMillis()));
-			this.attrs.put("calendario", Calendar.getInstance());
-			this.attrs.put("fechaSeleccionada", Fecha.formatear(Fecha.FECHA_MINIMA, cambiarDia(Fecha.formatear(Fecha.FECHA_MINIMA, (Calendar)this.attrs.get("calendario")), Boolean.FALSE)));
-			this.attrs.put("idPeriodo", 1L);
-			this.attrs.put("nombrePeriodo", EPeriodosTableros.fromIdPeriodo((Long)this.attrs.get("idPeriodo")).getNombre());
-			this.attrs.put("ultimoDia", false);
-			this.attrs.put("ultimoPeriodo", false);
-			this.attrs.put("primerPeriodo", true);
-			this.attrs.put("condicionGeneral", Constantes.SQL_VERDADERO);
-			initPeriodos();
+      this.attrs.put("vigenciaFin", new java.sql.Date(Calendar.getInstance().getTimeInMillis()));						
+			initPeriodos(fechaActual);
 			loadAllCharts();       
       doLoadSucursales();
       doLoad();
@@ -93,15 +89,25 @@ public class Tablero extends Comun implements Serializable {
     } // catch        
   } // init
 
-	private void initPeriodos(){
+	private void initPeriodos(String fechaActual){
 		try {
-			this.attrs.put("renderedDia", false);
-			this.attrs.put("renderedSemana", true);
-			this.attrs.put("renderedQuincena", true);
-			this.attrs.put("renderedMes", true);
-			this.attrs.put("renderedTrimestre", true);
-			this.attrs.put("renderedSemestre", true);
-			this.attrs.put("renderedAnio", true);			
+			for(EGraficasTablero grafica: EGraficasTablero.values()){
+				this.attrs.put("fechaSeleccionada".concat(grafica.getIdPivote()), fechaActual);
+				this.attrs.put("fechaSeleccionadaSemana".concat(grafica.getIdPivote()), fechaActual);			
+				this.attrs.put("idPeriodo".concat(grafica.getIdPivote()), 1L);
+				this.attrs.put("nombrePeriodo".concat(grafica.getIdPivote()), EPeriodosTableros.fromIdPeriodo((Long)this.attrs.get("idPeriodo".concat(grafica.getIdPivote()))).getNombre());
+				this.attrs.put("ultimoDia".concat(grafica.getIdPivote()), false);
+				this.attrs.put("ultimoPeriodo".concat(grafica.getIdPivote()), false);
+				this.attrs.put("primerPeriodo".concat(grafica.getIdPivote()), true);
+				this.attrs.put("condicionGeneral".concat(grafica.getIdPivote()), Constantes.SQL_VERDADERO);
+				this.attrs.put("renderedDia".concat(grafica.getIdPivote()), false);
+				this.attrs.put("renderedSemana".concat(grafica.getIdPivote()), true);
+				this.attrs.put("renderedQuincena".concat(grafica.getIdPivote()), true);
+				this.attrs.put("renderedMes".concat(grafica.getIdPivote()), true);
+				this.attrs.put("renderedTrimestre".concat(grafica.getIdPivote()), true);
+				this.attrs.put("renderedSemestre".concat(grafica.getIdPivote()), true);
+				this.attrs.put("renderedAnio".concat(grafica.getIdPivote()), true);			
+			} // for
 		} // try
 		catch (Exception e) {		
 			throw e;
@@ -124,8 +130,7 @@ public class Tablero extends Comun implements Serializable {
   } // doLoad
 
 	private void loadAllCharts() throws Exception{
-		try {
-			toCreateCondicion();
+		try {			
 			doLoadChartUtilidadSucursal();
 			doLoadChartUtilidadCaja();
 			doLoadChartCuentasCobrar();
@@ -138,11 +143,42 @@ public class Tablero extends Comun implements Serializable {
 		} // catch		
 	} // loadAllCharts
 	
+	private void loadChart(EGraficasTablero grafica) throws Exception{
+		try {			
+			switch(grafica){
+				case UTILIDAD_SUCURSAL:
+					doLoadChartUtilidadSucursal();
+					break;
+				case UTILIDAD_CAJA:
+					doLoadChartUtilidadCaja();
+					break;
+				case VENTAS_SUCURSAL:
+					doLoadChartsGeneral();
+					break;
+				case ART_MAS_UTILIDAD:
+					doLoadChartsArticulos();
+					break;
+				case ART_MAS_VENDIDOS:
+					doLoadChartsArticulos();
+					break;
+				case CUENTAS_COBRAR:
+					doLoadChartCuentasCobrar();
+					break;
+				case CUENTAS_PAGAR:
+					doLoadChartCuentasPagar();
+					break;
+			} // switch
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // loadAllCharts
+	
 	public void doLoadChartUtilidadSucursal() throws Exception{
 		Highcharts utilidadPorSucursal= null;
 		BuildChart buildChart         = null;
 		try {
-			buildChart = new BuildChart(this.attrs.get("condicionGeneral").toString());
+			buildChart = new BuildChart(toCreateCondicion(EGraficasTablero.UTILIDAD_SUCURSAL));
 			utilidadPorSucursal = buildChart.buildUtilidadSucursal();
       this.attrs.put("utilidadPorSucursal", Decoder.toJson(utilidadPorSucursal));
 		} // try
@@ -155,7 +191,7 @@ public class Tablero extends Comun implements Serializable {
 		BuildChart buildChart     = null;
 		Highcharts utilidadPorCaja= null;		
 		try {
-			buildChart = new BuildChart(this.attrs.get("condicionGeneral").toString());
+			buildChart = new BuildChart(toCreateCondicion(EGraficasTablero.UTILIDAD_CAJA));
 			utilidadPorCaja = buildChart.buildUtilidadCaja();            
       this.attrs.put("jsonUtilidadPorCaja", Decoder.toJson(utilidadPorCaja));
 		} // try
@@ -168,7 +204,7 @@ public class Tablero extends Comun implements Serializable {
 		BuildChart buildChart      = null;
 		Highcharts cuentasPorCobrar= null;
 		try {
-			buildChart = new BuildChart(this.attrs.get("condicionGeneral").toString());       
+			buildChart = new BuildChart(toCreateCondicion(EGraficasTablero.CUENTAS_COBRAR));       
 			cuentasPorCobrar = buildChart.buildCuentasCobrar();
       this.attrs.put("jsonCobro", Decoder.toJson(cuentasPorCobrar));
 		} // try
@@ -181,7 +217,7 @@ public class Tablero extends Comun implements Serializable {
     BuildChart buildChart     = null;
 		Highcharts cuentasPorPagar= null;
     try {
-      buildChart = new BuildChart(this.attrs.get("condicionGeneral").toString());           
+      buildChart = new BuildChart(toCreateCondicion(EGraficasTablero.CUENTAS_PAGAR));           
       cuentasPorPagar = buildChart.buildCuentasPagar();      
       this.attrs.put("jsonPago", Decoder.toJson(cuentasPorPagar));
     } // try
@@ -196,7 +232,7 @@ public class Tablero extends Comun implements Serializable {
     BuildChart buildChart  = null;
     try {
       jsons = new ArrayList<>();
-      buildChart = new BuildChart(this.attrs.get("condicionGeneral").toString());
+      buildChart = new BuildChart(toCreateCondicion(EGraficasTablero.VENTAS_SUCURSAL));
       charts= buildChart.build();
       for (Highcharts chart : charts) {
         JsonChart json = new JsonChart(Cadena.eliminaCaracter(chart.getTitle().getText(), ' ').toLowerCase(), chart.getTitle().getText(), "");
@@ -218,12 +254,13 @@ public class Tablero extends Comun implements Serializable {
     JsonChart jsonArtMasVentas  = null;
     BuildChart buildChart       = null;
     try {
-      buildChart = new BuildChart(this.attrs.get("condicionGeneral").toString());
+      buildChart = new BuildChart(toCreateCondicion(EGraficasTablero.ART_MAS_UTILIDAD));
       artMasUtilidad= buildChart.buildArticulosMasUtilidad();
-      artMasVentas  = buildChart.buildArticulosMasVendidos();
-      jsonArtMasUtilidad = new JsonChart("avanceNacional", "Articulos con mas utilidad", Decoder.toJson(artMasUtilidad));
-      jsonArtMasVentas = new JsonChart("avanceNacional", "Articulos con mas ventas", Decoder.toJson(artMasVentas));
-      this.attrs.put("jsonUtilidad", jsonArtMasUtilidad);
+			jsonArtMasUtilidad = new JsonChart("avanceNacional", "Articulos con mas utilidad", Decoder.toJson(artMasUtilidad));
+			this.attrs.put("jsonUtilidad", jsonArtMasUtilidad);
+			buildChart = new BuildChart(toCreateCondicion(EGraficasTablero.ART_MAS_VENDIDOS));
+      artMasVentas  = buildChart.buildArticulosMasVendidos();      
+      jsonArtMasVentas = new JsonChart("avanceNacional", "Articulos con mas ventas", Decoder.toJson(artMasVentas));      
       this.attrs.put("jsonVentas", jsonArtMasVentas);
     } // try
     catch (Exception e) {
@@ -313,21 +350,23 @@ public class Tablero extends Comun implements Serializable {
     } // catch		
   } // doLoadSucursales
 	
-	public void doCambiarDia(boolean isAdelante) {
-    Calendar seleccionada= null;
-    Calendar actual      = null;
+	public void doCambiarDia(boolean isAdelante, String enumGrafica) {
+    Calendar seleccionada   = null;
+    Calendar actual         = null;
+		EGraficasTablero grafica= null;
     try {
-      this.attrs.put("fechaSeleccionada", Fecha.formatear(Fecha.FECHA_MINIMA, cambiarDia(this.attrs.get("fechaSeleccionada").toString(), isAdelante)));      
+			grafica= EGraficasTablero.fromNameTablero(enumGrafica);
+      this.attrs.put("fechaSeleccionada".concat(grafica.getIdPivote()), Fecha.formatear(Fecha.FECHA_MINIMA, cambiarDia(this.attrs.get("fechaSeleccionada".concat(grafica.getIdPivote())).toString(), isAdelante)));      
       if(isAdelante) {
         seleccionada= Calendar.getInstance();
-        seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get("fechaSeleccionada").toString()));
+        seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get("fechaSeleccionada".concat(grafica.getIdPivote())).toString()));
         actual= Calendar.getInstance();
         actual.setTime(new SimpleDateFormat("dd/MM/yy").parse(Fecha.getHoy()));
-        this.attrs.put("ultimoDia", seleccionada.compareTo(actual)== 0);
+        this.attrs.put("ultimoDia".concat(grafica.getIdPivote()), seleccionada.compareTo(actual)== 0);
       } // if
       else
-        this.attrs.put("ultimoDia", false);			
-			loadAllCharts();
+        this.attrs.put("ultimoDia".concat(grafica.getIdPivote()), false);			
+			loadChart(grafica);
     } // try
     catch(Exception e) {
 			LOG.debug("Error en método doCambiarDia: ".concat(e.toString()));
@@ -353,25 +392,22 @@ public class Tablero extends Comun implements Serializable {
     return regresar;
   } // cambiarDia
 	
-	public void doCambiarPeriodo(boolean isAdelante) {    
-		Long idPeriodo= -1L;
-    try {    
-			idPeriodo= (Long) this.attrs.get("idPeriodo");
-      if(isAdelante){ 
-				idPeriodo= idPeriodo + 1L;
-        this.attrs.put("nombrePeriodo", EPeriodosTableros.fromIdPeriodo(idPeriodo).getNombre());      
-				this.attrs.put("primerPeriodo", idPeriodo.equals(EPeriodosTableros.DIA.getIdTipoPeriodo()));
-				this.attrs.put("ultimoPeriodo", idPeriodo.equals(EPeriodosTableros.ANIO.getIdTipoPeriodo()));
-			} // if
-			else{
-				idPeriodo= idPeriodo - 1L;
-        this.attrs.put("nombrePeriodo", EPeriodosTableros.fromIdPeriodo(idPeriodo).getNombre());
-				this.attrs.put("primerPeriodo", idPeriodo.equals(EPeriodosTableros.DIA.getIdTipoPeriodo()));
-				this.attrs.put("ultimoPeriodo", idPeriodo.equals(EPeriodosTableros.ANIO.getIdTipoPeriodo()));
-			} // else
-			refreshPeriodos(idPeriodo);
-			this.attrs.put("idPeriodo", idPeriodo);						
-			loadAllCharts();
+	public void doCambiarPeriodo(boolean isAdelante, String enumGrafica) {    
+		Long idPeriodo          = -1L;
+    EGraficasTablero grafica= null;
+    try {
+			grafica= EGraficasTablero.fromNameTablero(enumGrafica);
+			idPeriodo= (Long) this.attrs.get("idPeriodo".concat(grafica.getIdPivote()));
+      if(isAdelante)
+				idPeriodo= idPeriodo + 1L;        
+			else
+				idPeriodo= idPeriodo - 1L;      
+			this.attrs.put("nombrePeriodo".concat(grafica.getIdPivote()), EPeriodosTableros.fromIdPeriodo(idPeriodo).getNombre());      
+			this.attrs.put("primerPeriodo".concat(grafica.getIdPivote()), idPeriodo.equals(EPeriodosTableros.DIA.getIdTipoPeriodo()));
+			this.attrs.put("ultimoPeriodo".concat(grafica.getIdPivote()), idPeriodo.equals(EPeriodosTableros.ANIO.getIdTipoPeriodo()));
+			refreshPeriodos(idPeriodo, grafica);
+			this.attrs.put("idPeriodo".concat(grafica.getIdPivote()), idPeriodo);						
+			loadChart(grafica);
     } // try
     catch(Exception e) {
 			LOG.debug("Error en método doCambiarDia: ".concat(e.toString()));
@@ -380,36 +416,36 @@ public class Tablero extends Comun implements Serializable {
     } // catch
   } // doCambiarDia
 	
-	private void refreshPeriodos(Long idPeriodo){		
+	private void refreshPeriodos(Long idPeriodo, EGraficasTablero grafica){		
     try {    	
-			this.attrs.put("renderedDia", true);
-			this.attrs.put("renderedSemana", true);
-			this.attrs.put("renderedQuincena", true);
-			this.attrs.put("renderedMes", true);
-			this.attrs.put("renderedTrimestre", true);
-			this.attrs.put("renderedSemestre", true);
-			this.attrs.put("renderedAnio", true);			
+			this.attrs.put("renderedDia".concat(grafica.getIdPivote()), true);
+			this.attrs.put("renderedSemana".concat(grafica.getIdPivote()), true);
+			this.attrs.put("renderedQuincena".concat(grafica.getIdPivote()), true);
+			this.attrs.put("renderedMes".concat(grafica.getIdPivote()), true);
+			this.attrs.put("renderedTrimestre".concat(grafica.getIdPivote()), true);
+			this.attrs.put("renderedSemestre".concat(grafica.getIdPivote()), true);
+			this.attrs.put("renderedAnio".concat(grafica.getIdPivote()), true);			
 			switch(EPeriodosTableros.fromIdPeriodo(idPeriodo)){
 				case DIA:
-					this.attrs.put("renderedDia", false);
+					this.attrs.put("renderedDia".concat(grafica.getIdPivote()), false);
 					break;
 				case SEMANA:
-					this.attrs.put("renderedSemana", false);
+					this.attrs.put("renderedSemana".concat(grafica.getIdPivote()), false);
 					break;
 				case QUINCENA:
-					this.attrs.put("renderedQuincena", false);
+					this.attrs.put("renderedQuincena".concat(grafica.getIdPivote()), false);
 					break;
 				case MES:
-					this.attrs.put("renderedMes", false);
+					this.attrs.put("renderedMes".concat(grafica.getIdPivote()), false);
 					break;
 				case TRIMESTRE:
-					this.attrs.put("renderedTrimestre", false);
+					this.attrs.put("renderedTrimestre".concat(grafica.getIdPivote()), false);
 					break;
 				case SEMESTRE:
-					this.attrs.put("renderedSemestre", false);
+					this.attrs.put("renderedSemestre".concat(grafica.getIdPivote()), false);
 					break;
 				case ANIO:
-					this.attrs.put("renderedAnio", false);			
+					this.attrs.put("renderedAnio".concat(grafica.getIdPivote()), false);			
 					break;
 			} // switch
 		} // try
@@ -418,69 +454,111 @@ public class Tablero extends Comun implements Serializable {
 		} // catch		
 	} // refreshPeriodos
 	
-	private void toCreateCondicion() throws Exception{
-		Long idPeriodo= -1L;
+	private String toCreateCondicion(EGraficasTablero grafica) throws Exception{
+		String regresar= null;
+		Long idPeriodo = -1L;
 		try {
-			idPeriodo= (Long) this.attrs.get("idPeriodo");
+			idPeriodo= (Long) this.attrs.get("idPeriodo".concat(grafica.getIdPivote()));
 			switch(EPeriodosTableros.fromIdPeriodo(idPeriodo)){
 				case DIA:
-					toCondicionDia();
+					regresar= toCondicionDia("fechaSeleccionada".concat(grafica.getIdPivote()));
 					break;
 				case SEMANA:
-					toCondicionSemana();
+					regresar= toCondicionSemana();
 					break;
 				case QUINCENA:
-					toCondicionQuincena();
+					regresar= toCondicionQuincena();
 					break;
 				case MES:
-					toCondicionMes();
+					regresar= toCondicionMes();
 					break;
 				case TRIMESTRE:
-					toCondicionTrimestre();
+					regresar= toCondicionTrimestre();
 					break;
 				case SEMESTRE:
-					toCondicionSemestre();
+					regresar= toCondicionSemestre();
 					break;
 				case ANIO:
-					toCondicionAnio();
+					regresar= toCondicionAnio();
 					break;
 			} // switch
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
+		return regresar;
 	} // toCreateCondicion
 	
-	private void toCondicionDia() throws Exception{
+	private String toCondicionDia(String nombreFecha) throws Exception{
+		String regresar      = null;
 		Calendar seleccionada= null;
 		try {      
 			seleccionada= Calendar.getInstance();
-			seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get("fechaSeleccionada").toString()));			
-			this.attrs.put("condicionGeneral", "date_format( registro , '%Y%m%d') = '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));      
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-	} // toCondicionDia
-	
-	private void toCondicionSemana() throws Exception{
-		Calendar seleccionada= null;
-		StringBuilder sb     = null;
-		try {      
-			seleccionada= Calendar.getInstance();
-			sb= new StringBuilder("");
-			seleccionada.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-			sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-			seleccionada.add(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
-			sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-			this.attrs.put("condicionGeneral", sb.toString());      			
+			seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get(nombreFecha).toString()));			
+			regresar= "date_format( registro , '%Y%m%d') = '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"); 
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch	
+		return regresar;
+	} // toCondicionDia 
+	
+	public void doCambiarSemana(boolean isAdelante, String enumGrafica) {
+    Calendar seleccionada= null;    
+    EGraficasTablero grafica= null;
+    try {
+			grafica= EGraficasTablero.fromNameTablero(enumGrafica);
+      this.attrs.put("fechaSeleccionadaSemana".concat(grafica.getIdPivote()), Fecha.formatear(Fecha.FECHA_MINIMA, cambiarSemana(this.attrs.get("fechaSeleccionadaSemana".concat(grafica.getIdPivote())).toString(), isAdelante)));      
+			seleccionada= Calendar.getInstance();
+      seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get("fechaSeleccionadaSemana".concat(grafica.getIdPivote())).toString()));      			      
+      this.attrs.put("primerSemana".concat(grafica.getIdPivote()), seleccionada.get(Calendar.WEEK_OF_MONTH)== 1);			
+      this.attrs.put("ultimaSemana".concat(grafica.getIdPivote()), seleccionada.get(Calendar.WEEK_OF_MONTH)== seleccionada.getMaximum(Calendar.WEEK_OF_MONTH));										
+			loadChart(grafica);
+    } // try
+    catch(Exception e) {
+			LOG.debug("Error en método doCambiarDia: ".concat(e.toString()));
+      JsfBase.addMessageError(e);
+      Error.mensaje(e);
+    } // catch
+  } // doCambiarDia
+  
+  private Calendar cambiarSemana(String fecha, Boolean isAdelante) throws Exception {
+    Calendar regresar= null;
+    try {
+      regresar= Calendar.getInstance();
+      regresar.setTime(new SimpleDateFormat("dd/MM/yy").parse(fecha));
+      if(isAdelante)         
+        regresar.add(Calendar.WEEK_OF_MONTH, 1);
+      else         
+        regresar.add(Calendar.WEEK_OF_MONTH, -1);
+    } // try
+		catch (Exception e) {
+			LOG.debug("Error en método cambiarDia: ".concat(e.toString()));
+      throw e;
+		} // catch
+    return regresar;
+  } // cambiarDia
+	
+	private String toCondicionSemana() throws Exception{
+		Calendar seleccionada= null;
+		StringBuilder sb     = null;
+		try {      
+			seleccionada= Calendar.getInstance();
+			seleccionada.add(Calendar.WEEK_OF_YEAR, -1);
+			sb= new StringBuilder("");
+			seleccionada.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+			sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+			seleccionada.add(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+			sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+			this.attrs.put("semana", seleccionada.get(Calendar.WEEK_OF_MONTH));			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch	
+		return sb.toString();
 	} // toCondicionSemana
 	
-	private void toCondicionQuincena() throws Exception{
+	private String toCondicionQuincena() throws Exception{
 		Calendar seleccionada= null;
 		StringBuilder sb     = null;
 		try {      
@@ -491,22 +569,22 @@ public class Tablero extends Comun implements Serializable {
 				seleccionada.set(Calendar.DAY_OF_MONTH, 1);
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
 				seleccionada.add(Calendar.DAY_OF_MONTH, 14);
-				sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
 			} // if
 			else{
 				seleccionada.set(Calendar.DAY_OF_MONTH, 16);
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
 				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getActualMaximum(Calendar.DAY_OF_MONTH));
-				sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
 			} // else
-			this.attrs.put("condicionGeneral", sb.toString());      			
 		} // try
 		catch (Exception e) {			
 			throw e;
-		} // catch		
+		} // catch	
+		return sb.toString();
 	} // toCondicionQuincena
 	
-	private void toCondicionMes(){
+	private String toCondicionMes(){
 		Calendar seleccionada= null;
 		StringBuilder sb     = null;
 		try {      
@@ -515,15 +593,15 @@ public class Tablero extends Comun implements Serializable {
 			seleccionada.set(Calendar.DAY_OF_MONTH, 1);
 			sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
 			seleccionada.add(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
-			sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));						
-			this.attrs.put("condicionGeneral", sb.toString());      			
+			sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));						
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch				
+		return sb.toString();
 	} // toCondicionMes
 	
-	private void toCondicionTrimestre(){
+	private String toCondicionTrimestre(){
 		Calendar seleccionada= null;
 		StringBuilder sb     = null;
 		try {      
@@ -535,7 +613,7 @@ public class Tablero extends Comun implements Serializable {
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
 				seleccionada.set(Calendar.MONTH, 2);
 				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
-				sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
 			} // if
 			else if (seleccionada.get(Calendar.MONTH)<= 5){
 				seleccionada.set(Calendar.MONTH, 3);
@@ -543,7 +621,7 @@ public class Tablero extends Comun implements Serializable {
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
 				seleccionada.set(Calendar.MONTH, 5);
 				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
-				sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
 			} // else
 			else if (seleccionada.get(Calendar.MONTH)<= 8){
 				seleccionada.set(Calendar.MONTH, 6);
@@ -551,7 +629,7 @@ public class Tablero extends Comun implements Serializable {
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
 				seleccionada.set(Calendar.MONTH, 8);
 				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
-				sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
 			} // else
 			else {
 				seleccionada.set(Calendar.MONTH, 9);
@@ -559,16 +637,16 @@ public class Tablero extends Comun implements Serializable {
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
 				seleccionada.set(Calendar.MONTH, 11);
 				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
-				sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
 			} // else
-			this.attrs.put("condicionGeneral", sb.toString());      			
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
+		return sb.toString();
 	} // toCondicionTrimestre
 	
-	private void toCondicionSemestre(){
+	private String toCondicionSemestre(){
 		Calendar seleccionada= null;
 		StringBuilder sb     = null;
 		try {      
@@ -580,7 +658,7 @@ public class Tablero extends Comun implements Serializable {
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
 				seleccionada.set(Calendar.MONTH, 5);
 				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
-				sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
 			} // if
 			else{
 				seleccionada.set(Calendar.MONTH, 6);
@@ -588,16 +666,16 @@ public class Tablero extends Comun implements Serializable {
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
 				seleccionada.set(Calendar.MONTH, 11);
 				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
-				sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
 			} // else
-			this.attrs.put("condicionGeneral", sb.toString());      			
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
+		return sb.toString();
 	} // toCondicionSemestre
 	
-	private void toCondicionAnio(){
+	private String toCondicionAnio(){
 		Calendar seleccionada= null;
 		StringBuilder sb     = null;
 		try {      
@@ -606,11 +684,11 @@ public class Tablero extends Comun implements Serializable {
 			seleccionada.set(Calendar.DAY_OF_YEAR, 1);
 			sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
 			seleccionada.add(Calendar.DAY_OF_YEAR, seleccionada.getMaximum(Calendar.DAY_OF_YEAR));
-			sb.append("and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));						
-			this.attrs.put("condicionGeneral", sb.toString());      			
+			sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));						
 		} // try
 		catch (Exception e) {			
 			throw e;
-		} // catch		
+		} // catch	
+		return sb.toString();
 	} // toCondicionAnio
 }
