@@ -43,8 +43,8 @@ public class Transaccion extends IBaseTnx {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar                     = false;
-		Map<String, Object> params           = null;
+		boolean regresar          = false;
+		Map<String, Object> params= null;
 		try {
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" el precio del tipo de venta del articulo.");
 			switch(accion) {

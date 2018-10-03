@@ -44,14 +44,14 @@ div.ui-panelgrid-content {
 }
 .ui-growl, .ui-growl-message {
   width: auto !important;
+	color: #0c5460 !important;
 }
 .janal-growl-message {
   float:none !important;
   padding: 0px !important
 }
-.ui-growl-item-container {
-  margin: 49px 16px 10px 0 !important;
-}
+.ui-growl-item-container { margin: 49px 16px 10px 0 !important; color: #0c5460; background-color: #d1ecf1; border-color: #bee5eb; border-radius: .25rem; }
+.ui-growl-item { background: rgba(255, 255, 255, 0.8); border: solid 1px #0c5460; }
 .janal-growl-error.ui-growl-message,
 .janal-growl-error.ui-growl-item {
   float: none;

@@ -114,6 +114,7 @@ public class Transaccion extends IBaseTnx {
 				this.articulo.getArticulo().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 				this.articulo.getArticulo().setIdVigente(1L);
 				this.articulo.getArticulo().setStock(0D);
+				this.articulo.getArticulo().setCantidad(1D);
 				if(this.articulo.getArticulo().getMenudeo()== null)
 					this.articulo.getArticulo().setMenudeo(toMenudeo());
 				if(this.articulo.getArticulo().getMedioMayoreo()== null)
