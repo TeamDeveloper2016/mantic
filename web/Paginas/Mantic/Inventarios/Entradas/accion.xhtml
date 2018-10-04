@@ -130,12 +130,12 @@
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
-		<pe:remoteCommand name="lookup" actionListener="#{manticInventariosEntradasAccion.doUpdateDialogArticulos}" onstart="return PF('dialogo').isVisible();" process="@this codigo @(.clasico)" update="buscados localizado">
+		<pe:remoteCommand name="lookup" actionListener="#{manticInventariosEntradasAccion.doUpdateDialogArticulos}" onstart="return PF('dialogo').isVisible();" process="@this codigo" update="buscados localizado">
 			<pe:methodSignature parameters="java.lang.String"/>  
 			<pe:methodParam name="codigo"/>  
 		</pe:remoteCommand>		
 		<p:remoteCommand name="clean" actionListener="#{manticInventariosEntradasAccion.doCleanArticulos}" process="@this codigo @(.clasico)" update="buscados localizado"/>
-		<pe:remoteCommand name="findout" actionListener="#{manticInventariosEntradasAccion.doFindOutArticulos}" onstart="return PF('buscador').isVisible();" process="@this auxiliar @(.intercambio)" update="encontrados encontrado">
+		<pe:remoteCommand name="findout" actionListener="#{manticInventariosEntradasAccion.doFindOutArticulos}" onstart="return PF('buscador').isVisible();" process="@this auxiliar" update="encontrados encontrado">
 			<pe:methodSignature parameters="java.lang.String"/>  
 			<pe:methodParam name="codigo"/>  
 		</pe:remoteCommand>		
@@ -721,7 +721,7 @@
 			</div>	
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
-					<p:inputText id="codigo" value="#{manticInventariosEntradasAccion.attrs.codigo}" styleClass="janal-wid-100-txt key-up-event janal-key-articulo clasico" style="text-transform: uppercase"/>
+					<p:inputText id="codigo" value="#{manticInventariosEntradasAccion.attrs.codigo}" styleClass="janal-wid-100-txt key-up-event janal-key-articulo" style="text-transform: uppercase"/>
 				</div>			
 			</div>
 			<div class="ui-grid-row janal-grid-row">
@@ -768,7 +768,7 @@
 			</div>	
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
-					<p:inputText id="auxiliar" value="#{manticInventariosEntradasAccion.attrs.codigo}" styleClass="janal-wid-100-txt key-find-event intercambio" style="text-transform: uppercase"/>
+					<p:inputText id="auxiliar" value="#{manticInventariosEntradasAccion.attrs.codigo}" styleClass="janal-wid-100-txt key-find-event" style="text-transform: uppercase"/>
 				</div>			
 			</div>
 			<div class="ui-grid-row janal-grid-row">
