@@ -141,7 +141,7 @@ public class Detalle extends IBaseArticulos implements Serializable {
 	} // doUpdateArticulos
 
 	@Override
-	public void doUpdateDialogArticulos() {
+	public void doUpdateDialogArticulos(String codigo) {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
@@ -151,7 +151,7 @@ public class Detalle extends IBaseArticulos implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
-			params.put("codigo", this.attrs.get("codigo"));
+			params.put("codigo", codigo== null? "WXYZ": codigo.toUpperCase());
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
         this.attrs.put("lazyModel", new FormatCustomLazy("VistaTallerServiciosDto", "porCodigo", params, columns));
 			else

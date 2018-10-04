@@ -16,9 +16,11 @@ import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesBitacoraDto;
@@ -225,14 +227,20 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			
 			// afectar los precios del catalogo de articulos
 			if(this.aplicar) {
-  			TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(global.getIva(), JsfBase.getIdUsuario(), global.getMayoreo(), -1L, global.getMenudeo(), global.getCantidad()* -1L, global.getIdArticulo(), idNotaEntrada, global.getMedioMayoreo(), global.getPrecio(), global.getLimiteMedioMayoreo(), global.getLimiteMayoreo());
+  			TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(global.getIva(), JsfBase.getIdUsuario(), global.getMayoreo(), -1L, global.getMenudeo(), global.getCantidad()* -1L, global.getIdArticulo(), idNotaEntrada, global.getMedioMayoreo(), global.getPrecio(), global.getLimiteMedioMayoreo(), global.getLimiteMayoreo(), global.getDescuento(), global.getExtra());
 	  		DaoFactory.getInstance().insert(sesion, movimiento);
 				TcManticArticulosBitacoraDto ultimo= (TcManticArticulosBitacoraDto)DaoFactory.getInstance().findFirst(sesion, TcManticArticulosBitacoraDto.class, "ultimo", params);
 				if(ultimo!= null) {
+	   			Descuentos descuentos= new Descuentos(ultimo.getCosto(), ultimo.getDescuento());
+					
+		  		// aplicar el descuento sobre el valor del costo del articulo para afectar el catalogo
+  			  global.setPrecio(Numero.toRedondearSat(descuentos.toImporte()== 0D? ultimo.getCosto(): descuentos.toImporte()));
 					global.setPrecio(ultimo.getCosto());
 					global.setMenudeo(ultimo.getMenudeo());
 					global.setMedioMayoreo(ultimo.getMedioMayoreo());
 					global.setMayoreo(ultimo.getMayoreo());
+					global.setDescuento(ultimo.getDescuento());
+					global.setExtra(ultimo.getExtras());
 				} // if	
 			} // if
 			global.setStock(global.getStock()- item.getCantidad());

@@ -91,7 +91,10 @@
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
-		<p:remoteCommand name="lookup" actionListener="#{manticVentasCotizacionAccion.doUpdateDialogArticulos}" process="@this codigo"/>
+		<pe:remoteCommand name="lookup" actionListener="#{manticVentasCotizacionAccion.doUpdateDialogArticulos}" onstart="return PF('dialogo').isVisible();" process="@this codigo" update="buscados localizado">
+			<pe:methodSignature parameters="java.lang.String"/>  
+			<pe:methodParam name="codigo"/>  
+		</pe:remoteCommand>		
 		<p:remoteCommand name="clean" actionListener="#{manticVentasCotizacionAccion.doCleanArticulos}" process="@this codigo" update="buscados localizado"/>
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
@@ -321,7 +324,7 @@
 						<p:column headerText="Código proveedor" styleClass="janal-wid-15">
 							<h:outputText value="#{item.codigo}"/>
 						</p:column>   
-						<p:column headerText="Precio" styleClass="janal-column-right janal-wid-10">
+						<p:column headerText="Costo" styleClass="janal-column-right janal-wid-10">
 							<h:outputText value="#{item.precio}"/>
 						</p:column>   
             <f:facet name="footer">

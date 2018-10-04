@@ -90,7 +90,6 @@ public class Diferencias extends IFilterImportar implements Serializable {
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("cantidades", EFormatoDinamicos.NUMERO_CON_DECIMALES));      
       columns.add(new Columna("importes", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
-      columns.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
       this.attrs.put("sortOrder", "order by nombre");
 			switch((Integer)this.attrs.get("tipoDiferencia")) {
 				case 0: // TODOS
@@ -198,6 +197,7 @@ public class Diferencias extends IFilterImportar implements Serializable {
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
       columns.add(new Columna("costo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));      
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
 		  params.put(Constantes.SQL_CONDICION, " ");
 			if(seleccionado!= null) {
 				params.put("idOrdenCompra", seleccionado.toLong("idOrdenCompra"));

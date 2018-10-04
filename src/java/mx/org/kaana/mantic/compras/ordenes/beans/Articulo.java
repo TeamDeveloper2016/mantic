@@ -45,7 +45,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private UISelectEntity idEntity;
 	private String observacion;
 	private double diferencia;
-	private double individual;
+	private double real;
+	private double calculado;
 
 	public Articulo() {
 		this(-1L);
@@ -71,7 +72,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
     this.stock       = stock;
 		this.observacion = "";
 		this.diferencia  = 0D;
-		this.individual  = 0D;
+		this.real        = costo;
+		this.calculado   = costo;
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -159,12 +161,20 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		return "<span class='".concat(color).concat("' style='float:left;'>[").concat(String.valueOf(Numero.toRedondear(this.diferencia))).concat("%]</span>");
 	}
 
+	public double getReal() {
+		return real;
+	}
+
+	public double getCalculado() {
+		return calculado;
+	}
+
 	public String getCostoMayorMenor() {
 		String color     = this.diferencia< -5? "janal-color-orange": this.diferencia> 5? "janal-color-blue": "janal-color-green";
 		boolean display  = this.diferencia!= 0D;
 		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(display? "": "none").concat("' title='Costo anterior: ").concat(
 			Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, this.getValor())
-		).concat("\n\nCosto digitado:").concat(Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Math.abs(this.individual))
+		).concat("\n\nCosto digitado:").concat(Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Math.abs(this.real))
 		).concat("\n\nDiferencia: ").concat(String.valueOf(this.diferencia)).concat("%'></i>");
 	}
 
@@ -258,9 +268,12 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 		
 	private void toDiferencia() {
-		Descuentos descuentos= new Descuentos(this.getCosto(), this.getDescuento().concat(",").concat(this.getExtras()));
-		double value   = descuentos.toImporte();
-		this.individual= Numero.toRedondearSat(value== 0? this.getCosto(): value);
+		Descuentos descuentos= new Descuentos(this.getCosto(), this.getDescuento());
+		double value  = descuentos.toImporte();
+		this.calculado= Numero.toRedondearSat(value== 0? this.getCosto(): value);
+		descuentos    = new Descuentos(this.getCosto(), this.getDescuento().concat(",").concat(this.getExtras()));
+		value         = descuentos.toImporte();
+		this.real     = Numero.toRedondearSat(value== 0? this.getCosto(): value);
 		value= Numero.toRedondearSat((value== 0? this.getCosto(): value)- this.getValor()); 
   	this.diferencia= this.getValor()== 0? 0: Numero.toRedondearSat(value* 100/ this.getValor());
 	}	

@@ -183,7 +183,10 @@
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
-		<p:remoteCommand name="lookup" actionListener="#{manticVentasCajaAccion.doUpdateDialogArticulos}" process="@this" update="buscados localizado"/>
+		<pe:remoteCommand name="lookup" actionListener="#{manticVentasCajaAccion.doUpdateDialogArticulos}" onstart="return PF('dialogo').isVisible();" process="@this" update="buscados localizado">
+			<pe:methodSignature parameters="java.lang.String"/>  
+			<pe:methodParam name="codigo"/>  
+		</pe:remoteCommand>		
 		<p:remoteCommand name="clean" actionListener="#{manticVentasCajaAccion.doCleanArticulos}" process="@this codigo" update="buscados localizado"/>
 		<p:tabView id="contenedorGrupos" widgetVar="contenedorCaja" activeIndex="#{manticVentasCajaAccion.attrs.tabIndex}">		
 			<p:ajax event="tabChange" listener="#{manticVentasCajaAccion.doTabChange}" update="@(.cotizar)" oncomplete="janal.refresh();"/>
@@ -871,7 +874,7 @@
 						<p:column headerText="Código proveedor" styleClass="janal-wid-15">
 							<h:outputText value="#{item.codigo}"/>
 						</p:column>   
-						<p:column headerText="Precio" styleClass="janal-column-right janal-wid-10">
+						<p:column headerText="Costo" styleClass="janal-column-right janal-wid-10">
 							<h:outputText value="#{item.precio}"/>
 						</p:column>   
             <f:facet name="footer">

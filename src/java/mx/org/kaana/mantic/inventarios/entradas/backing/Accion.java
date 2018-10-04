@@ -182,8 +182,12 @@ public class Accion extends IBaseArticulos implements Serializable {
 			transaccion = new Transaccion(((NotaEntrada)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.aplicar, this.getXml(), this.getPdf());
 			if (transaccion.ejecutar(this.accion)) {
 				if(this.accion.equals(EAccion.AGREGAR) || this.aplicar) {
-    			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");
- 				  regresar =  "/Paginas/Mantic/Catalogos/Articulos/codigos".concat(Constantes.REDIRECIONAR); // this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+					if(this.doCheckCodigoBarras(((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada())) {
+    			  JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");
+ 				    regresar=  "/Paginas/Mantic/Catalogos/Articulos/codigos".concat(Constantes.REDIRECIONAR);
+					} // if
+					else
+						regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
 					if(this.accion.equals(EAccion.AGREGAR))
     			  RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la nota de entrada', '"+ ((NotaEntrada)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 					else
@@ -483,4 +487,23 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // if
 	}
 
+	private boolean doCheckCodigoBarras(Long idNotaEntrada) throws Exception {
+		boolean regresar          = false;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("idNotaEntrada", idNotaEntrada);
+			Value value= DaoFactory.getInstance().toField("VistaNotasEntradasDto", "codigos", params);
+			if(value.getData()!= null)
+			  regresar= value.toLong()> 0;
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	  return regresar;	
+	}
+	
 }

@@ -73,9 +73,15 @@
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
-		<p:remoteCommand name="lookup" actionListener="#{manticComprasOrdendesAccion.doUpdateDialogArticulos}" process="@this codigo" update="buscados localizado"/>
+		<pe:remoteCommand name="lookup" actionListener="#{manticComprasOrdendesAccion.doUpdateDialogArticulos}" onstart="return PF('dialogo').isVisible();" process="@this codigo" update="buscados localizado">
+			<pe:methodSignature parameters="java.lang.String"/>  
+			<pe:methodParam name="codigo"/>  
+		</pe:remoteCommand>		
 		<p:remoteCommand name="clean" actionListener="#{manticComprasOrdendesAccion.doCleanArticulos}" process="@this codigo" update="buscados localizado"/>
-		<p:remoteCommand name="findout" actionListener="#{manticComprasOrdendesAccion.doFindOutArticulos}" onstart="return PF('dialogo').isVisible();" process="@this codigo" update="buscados localizado"/>
+		<pe:remoteCommand name="findout" actionListener="#{manticComprasOrdendesAccion.doFindOutArticulos}" onstart="return PF('dialogo').isVisible();" process="@this codigo" update="buscados localizado">
+			<pe:methodSignature parameters="java.lang.String"/>  
+			<pe:methodParam name="codigo"/>  
+		</pe:remoteCommand>		
 		<pe:remoteCommand name="detail" process="@this" update="dialogoDetalleArticulo" actionListener="#{manticComprasOrdendesAccion.doDetailArticulo}" onstart="return janal.bloquear();" oncomplete="$('#detail-image').attr('href', $('#tabDetalleArticulo\\:specific-image').attr('src'));PF('dlgDetalleArticulo').show();">
 			<pe:methodSignature parameters="java.lang.Long, java.lang.Integer"/>  
 			<pe:methodParam name="idArticulo"/>  
@@ -213,7 +219,7 @@
 												</f:facet>
 												<h:outputText value="#{index+ 1}.-"/>
 											</p:column>		
-											<p:column  class="MarAuto Responsive janal-wid-13">
+											<p:column  class="MarAuto Responsive janal-wid-12">
 												<f:facet name="header">
                           <p:selectBooleanCheckbox value="#{manticComprasOrdendesAccion.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
 														<p:ajax event="change" process="@this" update="@this"/>
@@ -259,21 +265,33 @@
 												</f:facet>
 												<h:outputText id="nombres" value="[#{row['codigo']}] #{row['nombre']}" title="Código propio: #{row['propio']}  Existencias almacen: #{row['stock']}" escape="false"/>
 											</p:column>		
-											<p:column class="cantidades janal-column-right MarAuto Responsive janal-wid-8">
+											<p:column class="cantidades janal-column-right MarAuto Responsive janal-wid-6">
 												<f:facet name="header">
 													<h:outputText value="Cantidad"/>
 												</f:facet>
 												<p:outputLabel value="#{manticComprasOrdendesAccion.doNumericoSat(row['cantidad'])}" styleClass="filas"/>
 												<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" style="display: none"/>
 											</p:column>		
-											<p:column class="precios janal-column-right MarAuto Responsive janal-wid-13">
+											<p:column class="costos janal-column-right MarAuto Responsive janal-wid-5">
 												<f:facet name="header">
 													<h:outputText value="Costo"/>
+												</f:facet>
+												<p:outputLabel value="#{manticComprasOrdendesAccion.doDecimalSat(row['costo'])}" styleClass="filas"/>
+											</p:column>	
+											<p:column class="costos janal-column-right MarAuto Responsive janal-wid-7">
+												<f:facet name="header">
+													<h:outputText value="Costo real"/>
+												</f:facet>
+												<p:outputLabel value="#{manticComprasOrdendesAccion.doDecimalSat(row['real'])}" styleClass="filas"/>
+											</p:column>	
+											<p:column class="precios janal-column-right MarAuto Responsive janal-wid-12">
+												<f:facet name="header">
+													<h:outputText value="Costo calculado"/>
 												</f:facet>
 												<div class="ui-grid-row janal-grid-row">
 													<div class="ui-grid-col-12 janal-column-right" style="padding-right: 14px;">
 														<p:outputLabel value="#{row['diferencia']}" escape="false" styleClass="filas"/>
-    												<p:outputLabel value="#{manticComprasOrdendesAccion.doDecimalSat(row['costo'])}" styleClass="filas"/>
+    												<p:outputLabel value="#{manticComprasOrdendesAccion.doDecimalSat(row['calculado'])}" styleClass="filas"/>
     												<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
 												    <p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>
 													</div>	 
@@ -284,14 +302,14 @@
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
-													<h:outputText value="Descuento(%)"/>
+													<h:outputText value="% Descuento"/>
 												</f:facet>
 												<p:outputLabel value="#{row['descuento']}" styleClass="filas"/>
 												<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" style="display: none"/>
 											</p:column>		
-											<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+											<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
 												<f:facet name="header">
-													<h:outputText value="Extra(%)"/>
+													<h:outputText value="% Extra"/>
 												</f:facet>
 												<p:outputLabel value="#{row['extras']}" styleClass="filas"/>
 												<p:inputText id="extras" value="#{row['extras']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" style="display: none"/>
@@ -305,7 +323,7 @@
 											</p:column>		
 											<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 												<f:facet name="header">
-													<h:outputText value="Precio  (#{manticComprasOrdendesAccion.attrs.sinIva? 'c': 's'}/iva)"/>
+													<h:outputText value="Precio  (#{manticComprasOrdendesAccion.attrs.sinIva? 's': 'c'}/iva)"/>
 												</f:facet>
 												<p:outputLabel value="#{row['importe$']}" styleClass="filas"/>
 											</p:column>		
@@ -354,13 +372,29 @@
 										<p:outputLabel value="No. orden"/><br/>
 										<h:outputText value="#{manticComprasOrdendesAccion.attrs.solicitado.consecutivo}"/>
 									</div>	
-									<div class="ui-grid-col-6">
+									<div class="ui-grid-col-3">
 										<p:outputLabel value="Proveedor:"/><br/>
 										<h:outputText value="#{manticComprasOrdendesAccion.attrs.solicitado.razonSocial}"/>
 									</div>	
 									<div class="ui-grid-col-1 janal-column-center">
-										<p:outputLabel value="Precio:"/><br/>
+										<p:outputLabel value="Costo:"/><br/>
 										<h:outputText value="#{manticComprasOrdendesAccion.attrs.solicitado.costo}"/>
+									</div>	
+									<div class="ui-grid-col-1 janal-column-center">
+										<p:outputLabel value="Costo real:"/><br/>
+										<h:outputText value="#{manticComprasOrdendesAccion.attrs.solicitado.real}"/>
+									</div>	
+									<div class="ui-grid-col-1 janal-column-center">
+										<p:outputLabel value="Costo calculado:"/><br/>
+										<h:outputText value="#{manticComprasOrdendesAccion.attrs.solicitado.calculado}"/>
+									</div>	
+									<div class="ui-grid-col-1 janal-column-center">
+										<p:outputLabel value="Descuento:"/><br/>
+										<h:outputText value="#{manticComprasOrdendesAccion.attrs.solicitado.descuento}"/>
+									</div>	
+									<div class="ui-grid-col-1 janal-column-center">
+										<p:outputLabel value="Extra:"/><br/>
+										<h:outputText value="#{manticComprasOrdendesAccion.attrs.solicitado.extra}"/>
 									</div>	
 									<div class="ui-grid-col-1 janal-column-center">
 										<p:outputLabel value="Cantidad:"/><br/>
@@ -378,17 +412,33 @@
 									</div>	
 								</div>	
 								<div class="ui-grid-row janal-grid-row" style="display: #{empty manticComprasOrdendesAccion.attrs.ultimo? 'none': ''}">
-									<div class="ui-grid-col-1  janal-column-center">
+									<div class="ui-grid-col-1 janal-column-center">
 										<p:outputLabel value="No. orden"/><br/>
 										<h:outputText value="#{manticComprasOrdendesAccion.attrs.ultimo.consecutivo}"/>
 									</div>	
-									<div class="ui-grid-col-6">
+									<div class="ui-grid-col-3">
 										<p:outputLabel value="Proveedor:"/><br/>
 										<h:outputText value="#{manticComprasOrdendesAccion.attrs.ultimo.razonSocial}"/>
 									</div>	
 									<div class="ui-grid-col-1 janal-column-center">
-										<p:outputLabel value="Precio:"/><br/>
-										<h:outputText value="$ #{manticComprasOrdendesAccion.attrs.ultimo.costo}"/>
+										<p:outputLabel value="Costo:"/><br/>
+										<h:outputText value="#{manticComprasOrdendesAccion.attrs.ultimo.costo}"/>
+									</div>	
+									<div class="ui-grid-col-1 janal-column-center">
+										<p:outputLabel value="Costo real:"/><br/>
+										<h:outputText value="#{manticComprasOrdendesAccion.attrs.ultimo.real}"/>
+									</div>	
+									<div class="ui-grid-col-1 janal-column-center">
+										<p:outputLabel value="Costo calculado:"/><br/>
+										<h:outputText value="#{manticComprasOrdendesAccion.attrs.ultimo.calculado}"/>
+									</div>	
+									<div class="ui-grid-col-1 janal-column-center">
+										<p:outputLabel value="Descuento:"/><br/>
+										<h:outputText value="#{manticComprasOrdendesAccion.attrs.ultimo.descuento}"/>
+									</div>	
+									<div class="ui-grid-col-1 janal-column-center">
+										<p:outputLabel value="Extra:"/><br/>
+										<h:outputText value="#{manticComprasOrdendesAccion.attrs.ultimo.extra}"/>
 									</div>	
 									<div class="ui-grid-col-1 janal-column-center">
 										<p:outputLabel value="Stock:"/><br/>
@@ -414,7 +464,7 @@
 											<p:column headerText="Proveedor" styleClass="janal-wid-20">
 												<h:outputText value="#{row.proveedor}"/>
 											</p:column>   
-											<p:column styleClass="janal-wid-10 janal-column-right" headerText="Precio">
+											<p:column styleClass="janal-wid-10 janal-column-right" headerText="Costo">
 												<h:outputText value="#{row.precio}"/>
 											</p:column>   
 											<p:column styleClass="janal-wid-8 janal-column-right" headerText="Descuento">
@@ -482,7 +532,7 @@
 								</p:column>		
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 									<f:facet name="header">
-										<h:outputText value="Precio"/>
+										<h:outputText value="Costo"/>
 									</f:facet>
 									<h:outputText value="#{row['costo']}"/>
 								</p:column>		
@@ -588,7 +638,7 @@
 						<p:column headerText="Proveedor" styleClass="janal-wid-15">
 							<h:outputText value="#{item.codigo}"/>
 						</p:column>   
-						<p:column headerText="Precio" styleClass="janal-column-right janal-wid-10">
+						<p:column headerText="Costo" styleClass="janal-column-right janal-wid-10">
 							<h:outputText value="#{item.precio}"/>
 						</p:column>   
             <f:facet name="footer">

@@ -43,7 +43,7 @@
 						<p:selectOneRadio value="#{manticComprasOrdenesDiferencias.attrs.tipoDiferencia}" columns="3" converter="javax.faces.Integer">
 							<p:ajax event="change" listener="#{manticComprasOrdenesDiferencias.doChangeArticulos}" process="@this" update="tabla notas" oncomplete="reload();"/>
 							<f:selectItem itemLabel="TODAS" itemValue="0"/>
-							<f:selectItem itemLabel="DIFERENCIA POR PRECIO" itemValue="1"/>
+							<f:selectItem itemLabel="DIFERENCIA POR COSTO" itemValue="1"/>
 							<f:selectItem itemLabel="DIFERENCIA POR CANTIDAD" itemValue="2"/>
 							<f:selectItem itemLabel="PARTIDAS NO SOLICITADAS" itemValue="3"/>
             </p:selectOneRadio>
@@ -126,11 +126,10 @@
               </f:facet>
               <h:outputText value="#{row['cantidades']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.importes}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.importes}">
               <f:facet name="header">
                 <h:outputText value="Importe [+/-]"/>
               </f:facet>
-              <h:outputLabel value="&lt;span class='#{row['color']}' style='float:left;'&gt;[#{row['porcentaje']}%]&lt;/span&gt;" escape="false"/>
               <h:outputText value="#{row['importes']}"/>
             </p:column>		
             <f:facet name="footer">
@@ -190,10 +189,11 @@
               </f:facet>
               <h:outputText value="#{row['nombre']}" title="Código propio: #{row['propio']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.costo}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.costo}">
               <f:facet name="header">
                 <h:outputText value="Costo"/>
               </f:facet>
+              <h:outputLabel value="&lt;span class='#{row['color']}' style='float:left;'&gt;[#{row['porcentaje']}%]&lt;/span&gt;" escape="false"/>
               <h:outputText value="#{row['costo']}"/>
             </p:column>		
             <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidad}">

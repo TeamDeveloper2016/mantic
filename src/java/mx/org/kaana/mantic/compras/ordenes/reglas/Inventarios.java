@@ -69,9 +69,10 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 				ubicacion.setStock(ubicacion.getStock()+ item.getCantidad());
 				DaoFactory.getInstance().update(sesion, ubicacion);
 			} // if
+			
 			// registar el cambio de precios en la bitacora de articulo 
 			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, item.getIdArticulo());
-			TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(global.getIva(), JsfBase.getIdUsuario(), global.getMayoreo(), -1L, global.getMenudeo(), global.getCantidad(), global.getIdArticulo(), idNotaEntrada, global.getMedioMayoreo(), global.getPrecio(), global.getLimiteMedioMayoreo(), global.getLimiteMayoreo());
+			TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(global.getIva(), JsfBase.getIdUsuario(), global.getMayoreo(), -1L, global.getMenudeo(), global.getCantidad(), global.getIdArticulo(), idNotaEntrada, global.getMedioMayoreo(), global.getPrecio(), global.getLimiteMedioMayoreo(), global.getLimiteMayoreo(), global.getDescuento(), global.getExtra());			
 			DaoFactory.getInstance().insert(sesion, movimiento);
 			
 			// afectar el inventario general de articulos dentro del almacen
@@ -90,10 +91,14 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 			
 			// si esta marcado como afectar los costos se aplicara el cambio en el catalogo de articulos
 			if(codigos.getIdAplicar().equals(1L)) {
-			  global.setPrecio(Numero.toRedondearSat(item.getCosto()));
+				Descuentos descuentos= new Descuentos(item.getCosto(), item.getDescuento());
+				// aplicar el descuento sobre el valor del costo del articulo para afectar el catalogo
+			  global.setPrecio(Numero.toRedondearSat(descuentos.toImporte()== 0D? item.getCosto(): descuentos.toImporte()));
 			  global.setMenudeo(Numero.toRedondearSat(item.getCosto()* Constantes.PORCENTAJE_MENUDEO));
 			  global.setMedioMayoreo(Numero.toRedondearSat(item.getCosto()* Constantes.PORCENTAJE_MEDIO_MAYOREO));
 			  global.setMayoreo(Numero.toRedondearSat(item.getCosto()* Constantes.PORCENTAJE_MAYOREO));
+				global.setDescuento(item.getDescuento());
+				global.setExtra(item.getExtras());
 			} // if	
 			
 			global.setStock(global.getStock()+ item.getCantidad());

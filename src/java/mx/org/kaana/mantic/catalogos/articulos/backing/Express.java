@@ -106,6 +106,8 @@ public class Express extends IBaseAttribute implements Serializable {
 				JsfBase.addMessage("Se registro el artículo de forma correcta.", ETipoMensaje.INFORMACION);
       else
 				JsfBase.addMessage("Ocurrió un error al registrar el artículo", ETipoMensaje.ERROR);						
+			this.registroArticulo= new RegistroArticulo();
+			this.attrs.put("codigo", "");
     } // try
     catch (Exception e) {
       Error.mensaje(e);

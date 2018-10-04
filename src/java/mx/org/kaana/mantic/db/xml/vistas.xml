@@ -1018,6 +1018,8 @@
 					tc_mantic_articulos.sat,
 					if(tc_mantic_articulos.id_vigente= 1, "Si", 'NO') as vigente,
 					tc_mantic_articulos.fecha,
+					tc_mantic_articulos.descuento,
+					tc_mantic_articulos.extra,
 					tc_mantic_articulos.registro
 				from
 					tc_mantic_articulos
@@ -2076,6 +2078,16 @@
 			</select>
 		</unit>
 		<unit id="VistaNotasEntradasDto">
+			<select id="codigos">
+				select
+				  count(*) as total
+			  from
+				  tc_mantic_notas_detalles
+        inner join
+          tc_mantic_articulos on tc_mantic_notas_detalles.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos.id_barras= 1
+				where
+				  tc_mantic_notas_detalles.id_nota_entrada= {idNotaEntrada}
+			</select>	
 			<select id="surtidores">
 				select
 					tc_mantic_proveedores.id_proveedor as id_key,
@@ -2371,7 +2383,7 @@
         from      
           tc_mantic_notas_detalles
         left join
-           tc_mantic_ordenes_detalles on tc_mantic_notas_detalles.id_orden_detalle= tc_mantic_ordenes_detalles.id_orden_detalle
+          tc_mantic_ordenes_detalles on tc_mantic_notas_detalles.id_orden_detalle= tc_mantic_ordenes_detalles.id_orden_detalle
         where      
           tc_mantic_notas_detalles.id_nota_entrada = {idNotaEntrada}
 				order by
@@ -2462,6 +2474,8 @@
 				  tc_mantic_ordenes_compras.consecutivo,
           tc_mantic_ordenes_detalles.cantidad,
           tc_mantic_ordenes_detalles.costo/tc_mantic_ordenes_compras.tipo_de_cambio as costo,
+				  tc_mantic_articulos.descuento,
+				  tc_mantic_articulos.extra,
           tc_mantic_proveedores.rfc,
           tc_mantic_proveedores.prefijo,
           tc_mantic_proveedores.razon_social,
@@ -2605,7 +2619,9 @@
           tc_mantic_ordenes_detalles.id_orden_detalle as id_key,
 				  tc_mantic_articulos.nombre,
 				  tc_mantic_ordenes_compras.consecutivo,
-          tc_mantic_ordenes_detalles.costo/tc_mantic_ordenes_compras.tipo_de_cambio	as costo,
+          tc_mantic_ordenes_detalles.costo/ tc_mantic_ordenes_compras.tipo_de_cambio as costo,
+				  tc_mantic_articulos.descuento,
+				  tc_mantic_articulos.extra,
           tc_mantic_articulos.stock,
           tc_mantic_proveedores.razon_social,
           tc_mantic_tipos_monedas.nombre as moneda,
@@ -2617,11 +2633,11 @@
 				inner join 
 					tc_mantic_ordenes_compras on tc_mantic_ordenes_detalles.id_orden_compra= tc_mantic_ordenes_compras.id_orden_compra
 				inner join
-						tc_mantic_proveedores on tc_mantic_ordenes_compras.id_proveedor= tc_mantic_proveedores.id_proveedor       
+					tc_mantic_proveedores on tc_mantic_ordenes_compras.id_proveedor= tc_mantic_proveedores.id_proveedor       
         inner join 
           tc_mantic_tipos_monedas on tc_mantic_proveedores.id_tipo_moneda= tc_mantic_tipos_monedas.id_tipo_moneda
         where      
-          tc_mantic_ordenes_detalles.id_articulo =  {idArticulo}
+          tc_mantic_ordenes_detalles.id_articulo= {idArticulo}
           and tc_mantic_ordenes_compras.id_orden_estatus in (6)
         order by
           tc_mantic_ordenes_detalles.registro desc				
@@ -2924,7 +2940,9 @@
 				  tc_mantic_notas_entradas.id_nota_entrada,
 				  tc_mantic_notas_entradas.id_orden_compra,
 				  if(tc_mantic_ordenes_detalles.costo is null, 0, tc_mantic_ordenes_detalles.costo) as valor,
-				  if(tc_mantic_ordenes_detalles.costo is null, tc_mantic_notas_detalles.costo, tc_mantic_ordenes_detalles.costo- tc_mantic_notas_detalles.costo) as temporal,				
+				  if(tc_mantic_ordenes_detalles.costo is null, tc_mantic_notas_detalles.costo, tc_mantic_ordenes_detalles.costo- tc_mantic_notas_detalles.costo) as temporal,
+				  if((if(tc_mantic_ordenes_detalles.costo is null, 100, tc_mantic_notas_detalles.costo* 100/ tc_mantic_ordenes_detalles.costo))&lt; -5, 'janal-color-orange', if((if(tc_mantic_ordenes_detalles.costo is null, 100, tc_mantic_notas_detalles.costo* 100/ tc_mantic_ordenes_detalles.costo))&gt; 5, 'janal-color-blue', 'janal-color-green')) as color,
+				  if(tc_mantic_ordenes_detalles.costo is null, 100, tc_mantic_notas_detalles.costo* 100/ tc_mantic_ordenes_detalles.costo) as porcentaje,
 				  tc_mantic_notas_detalles.id_aplicar,
 					tc_mantic_notas_detalles.id_articulo,
 				  ifnull(tc_mantic_notas_archivos.id_principal, 2) as id_principal,
@@ -2961,8 +2979,6 @@
 					tc_mantic_ordenes_detalles.cantidades as unidades,
 					tc_mantic_ordenes_detalles.importes,
 					tc_mantic_ordenes_detalles.importes as valores,
-				  if((abs(tc_mantic_ordenes_detalles.importes)* 100/ tc_mantic_ordenes_detalles.importe)&lt; -5, 'janal-color-orange', if((abs(tc_mantic_ordenes_detalles.importes)* 100/ tc_mantic_ordenes_detalles.importe)&gt; 5, 'janal-color-blue', 'janal-color-green')) as color,
-				  (abs(tc_mantic_ordenes_detalles.importes)* 100/ tc_mantic_ordenes_detalles.importe) as porcentaje,
 				  tc_mantic_ordenes_compras.id_orden_compra,
 					tc_mantic_ordenes_detalles.id_articulo
 				from

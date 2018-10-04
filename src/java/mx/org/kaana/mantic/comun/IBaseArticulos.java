@@ -24,6 +24,7 @@ import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloPrecioSugeridoDto;
 import mx.org.kaana.mantic.enums.EPrecioArticulo;
@@ -301,6 +302,14 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
 			Entity solicitado= (Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "solicitado", this.attrs);
+			if(solicitado!= null) {
+		     Descuentos descuentos= new Descuentos(solicitado.toDouble("costo"), solicitado.toString("descuento").concat(",").concat("extra"));
+		     Value value= new Value("real", Numero.toRedondearSat(descuentos.toImporte()== 0? solicitado.toDouble("costo"):  descuentos.toImporte()));
+				 solicitado.put("real", value);
+		     descuentos= new Descuentos(solicitado.toDouble("costo"), solicitado.toString("descuento"));
+		     value     = new Value("calculado", Numero.toRedondearSat(descuentos.toImporte()== 0? solicitado.toDouble("costo"):  descuentos.toImporte()));
+				 solicitado.put("calculado", value);
+			} // if
       this.attrs.put("solicitado", solicitado!= null? UIBackingUtilities.toFormatEntity(solicitado, columns): null);
     } // try
     catch (Exception e) {
@@ -317,7 +326,13 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			if(idArticulo!= null)
 			  this.attrs.put("idArticulo", idArticulo);
 			Entity ultimoPrecio= (Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "ultimo", this.attrs);
-			if(ultimoPrecio!= null && !ultimoPrecio.isEmpty())
+			if(ultimoPrecio!= null && !ultimoPrecio.isEmpty()) {
+				Descuentos descuentos= new Descuentos(ultimoPrecio.toDouble("costo"), ultimoPrecio.toString("descuento").concat(",").concat("extra"));
+				Value calculo= new Value("real", Numero.toRedondearSat(descuentos.toImporte()== 0? ultimoPrecio.toDouble("costo"):  descuentos.toImporte()));
+				ultimoPrecio.put("real", calculo);
+				descuentos= new Descuentos(ultimoPrecio.toDouble("costo"), ultimoPrecio.toString("descuento"));
+				calculo   = new Value("calculado", Numero.toRedondearSat(descuentos.toImporte()== 0? ultimoPrecio.toDouble("costo"):  descuentos.toImporte()));
+				ultimoPrecio.put("calculado", calculo);
 				for (Value value : ultimoPrecio.values()) {
 				  if("|costo|".indexOf(value.getName())> 0)
 						value.setData(Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(value.toDouble())));
@@ -328,6 +343,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
               if("|stock|".indexOf(value.getName())> 0) 
 		  			    value.setData(Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, value.toDouble()));						
 				} // for
+			} // if	
  		  this.attrs.put("ultimo", ultimoPrecio);
     } // try
     catch (Exception e) {
@@ -399,7 +415,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
     }// finally
 	}	
 	
-	public void doUpdateDialogArticulos() {
+	public void doUpdateDialogArticulos(String codigo) {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
@@ -409,7 +425,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
-			params.put("codigo", this.attrs.get("codigo"));
+			params.put("codigo", codigo== null? "WXYZ": codigo.toUpperCase());
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
         this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porCodigo", params, columns));
 			else
@@ -445,7 +461,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
     }// finally
 	}
  
-	public void doFindOutArticulos() {
+	public void doFindOutArticulos(String codigo) {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
 		boolean buscaPorCodigo    = false;
@@ -455,16 +471,15 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
-			String search= (String)this.attrs.get("codigo"); 
-			if(!Cadena.isVacio(search)) {
-				buscaPorCodigo= search.startsWith(".");
+			if(!Cadena.isVacio(codigo)) {
+				buscaPorCodigo= codigo.startsWith(".");
 				if(buscaPorCodigo)
-					search= search.trim().substring(1);
-				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+					codigo= codigo.trim().substring(1);
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
 			} // if	
 			else
-				search= "WXYZ";
-			params.put("codigo", search);
+				codigo= "WXYZ";
+			params.put("codigo", codigo.toUpperCase());
 			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
         this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porCodigo", params, columns));
 			else
