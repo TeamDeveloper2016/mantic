@@ -172,10 +172,14 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	public String getCostoMayorMenor() {
 		String color     = this.diferencia< -5? "janal-color-orange": this.diferencia> 5? "janal-color-blue": "janal-color-green";
 		boolean display  = this.diferencia!= 0D;
-		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(display? "": "none").concat("' title='Costo anterior: ").concat(
-			Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, this.getValor())
-		).concat("\n\nCosto digitado:").concat(Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Math.abs(this.real))
-		).concat("\n\nDiferencia: ").concat(String.valueOf(this.diferencia)).concat("%'></i>");
+		return "<i class='fa fa-fw fa-question-circle ".concat(color).concat("' style='float:right; display:").concat(display? "": "").concat("' title='")
+		.concat("Costo: ").concat(Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, this.getCosto())
+		).concat("\nCosto real: ").concat(Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, this.real)
+		).concat("\nCosto calculado: ").concat(Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, this.calculado)
+		).concat("\n\nIVA: ").concat(Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, this.getIva())
+		).concat("%\n\nCosto anterior: ").concat(Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, this.getValor())
+		).concat("\nCosto digitado: ").concat(Global.format(EFormatoDinamicos.MONEDA_CON_DECIMALES, Math.abs(this.real))
+		).concat("\nDiferencia: ").concat(String.valueOf(this.diferencia)).concat("%'></i>");
 	}
 
 	public String getCantidadMayorMenor() {
