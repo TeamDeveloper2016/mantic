@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -46,6 +47,7 @@ public class Tablero extends Comun implements Serializable {
 
   private static final long serialVersionUID = 5323749709626263801L;
   private static final Log LOG = LogFactory.getLog(Tablero.class);
+	private String mes[] = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
   private List<UISelectItem> sucursales;
 	private List<Entity> articulos;
 
@@ -94,6 +96,11 @@ public class Tablero extends Comun implements Serializable {
 			for(EGraficasTablero grafica: EGraficasTablero.values()){
 				this.attrs.put("fechaSeleccionada".concat(grafica.getIdPivote()), fechaActual);
 				this.attrs.put("fechaSeleccionadaSemana".concat(grafica.getIdPivote()), fechaActual);			
+				this.attrs.put("fechaSeleccionadaQuincena".concat(grafica.getIdPivote()), fechaActual);			
+				this.attrs.put("fechaSeleccionadaMes".concat(grafica.getIdPivote()), fechaActual);			
+				this.attrs.put("fechaSeleccionadaTrimestre".concat(grafica.getIdPivote()), fechaActual);			
+				this.attrs.put("fechaSeleccionadaSemestre".concat(grafica.getIdPivote()), fechaActual);			
+				this.attrs.put("fechaSeleccionadaAnio".concat(grafica.getIdPivote()), fechaActual);			
 				this.attrs.put("idPeriodo".concat(grafica.getIdPivote()), 1L);
 				this.attrs.put("nombrePeriodo".concat(grafica.getIdPivote()), EPeriodosTableros.fromIdPeriodo((Long)this.attrs.get("idPeriodo".concat(grafica.getIdPivote()))).getNombre());
 				this.attrs.put("ultimoDia".concat(grafica.getIdPivote()), false);
@@ -464,22 +471,22 @@ public class Tablero extends Comun implements Serializable {
 					regresar= toCondicionDia("fechaSeleccionada".concat(grafica.getIdPivote()));
 					break;
 				case SEMANA:
-					regresar= toCondicionSemana();
+					regresar= toCondicionSemana("fechaSeleccionadaSemana".concat(grafica.getIdPivote()), grafica.getIdPivote());
 					break;
 				case QUINCENA:
-					regresar= toCondicionQuincena();
+					regresar= toCondicionQuincena("fechaSeleccionadaQuincena".concat(grafica.getIdPivote()), grafica.getIdPivote());
 					break;
 				case MES:
-					regresar= toCondicionMes();
+					regresar= toCondicionMes("fechaSeleccionadaMes".concat(grafica.getIdPivote()), grafica.getIdPivote());
 					break;
 				case TRIMESTRE:
-					regresar= toCondicionTrimestre();
+					regresar= toCondicionTrimestre("fechaSeleccionadaTrimestre".concat(grafica.getIdPivote()), grafica.getIdPivote());
 					break;
 				case SEMESTRE:
-					regresar= toCondicionSemestre();
+					regresar= toCondicionSemestre("fechaSeleccionadaSemestre".concat(grafica.getIdPivote()), grafica.getIdPivote());
 					break;
 				case ANIO:
-					regresar= toCondicionAnio();
+					regresar= toCondicionAnio("fechaSeleccionadaAnio".concat(grafica.getIdPivote()), grafica.getIdPivote());
 					break;
 			} // switch
 		} // try
@@ -510,9 +517,7 @@ public class Tablero extends Comun implements Serializable {
 			grafica= EGraficasTablero.fromNameTablero(enumGrafica);
       this.attrs.put("fechaSeleccionadaSemana".concat(grafica.getIdPivote()), Fecha.formatear(Fecha.FECHA_MINIMA, cambiarSemana(this.attrs.get("fechaSeleccionadaSemana".concat(grafica.getIdPivote())).toString(), isAdelante)));      
 			seleccionada= Calendar.getInstance();
-      seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get("fechaSeleccionadaSemana".concat(grafica.getIdPivote())).toString()));      			      
-      this.attrs.put("primerSemana".concat(grafica.getIdPivote()), seleccionada.get(Calendar.WEEK_OF_MONTH)== 1);			
-      this.attrs.put("ultimaSemana".concat(grafica.getIdPivote()), seleccionada.get(Calendar.WEEK_OF_MONTH)== seleccionada.getMaximum(Calendar.WEEK_OF_MONTH));										
+      seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get("fechaSeleccionadaSemana".concat(grafica.getIdPivote())).toString()));      			            
 			loadChart(grafica);
     } // try
     catch(Exception e) {
@@ -537,20 +542,26 @@ public class Tablero extends Comun implements Serializable {
       throw e;
 		} // catch
     return regresar;
-  } // cambiarDia
+  } // cambiarQuincena
 	
-	private String toCondicionSemana() throws Exception{
+	private String toCondicionSemana(String nombreFecha, String nombrePivote) throws Exception{
 		Calendar seleccionada= null;
 		StringBuilder sb     = null;
-		try {      
+		StringBuilder title  = null;
+		try {      			
 			seleccionada= Calendar.getInstance();
+			seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get(nombreFecha).toString()));									
 			seleccionada.add(Calendar.WEEK_OF_YEAR, -1);
 			sb= new StringBuilder("");
+			title= new StringBuilder("");
 			seleccionada.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 			sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-			seleccionada.add(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+			title.append(Fecha.formatear(Fecha.FECHA_CORTA, seleccionada)).append(" - ");			
+			seleccionada.add(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
 			sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-			this.attrs.put("semana", seleccionada.get(Calendar.WEEK_OF_MONTH));			
+			title.append(Fecha.formatear(Fecha.FECHA_CORTA, seleccionada));			
+			this.attrs.put("semana".concat(nombrePivote), "7 dias");			
+			this.attrs.put("semanaTitle".concat(nombrePivote), title);			
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -558,25 +569,68 @@ public class Tablero extends Comun implements Serializable {
 		return sb.toString();
 	} // toCondicionSemana
 	
-	private String toCondicionQuincena() throws Exception{
+	public void doCambiarQuincena(boolean isAdelante, String enumGrafica) {
+    Calendar seleccionada= null;    
+    EGraficasTablero grafica= null;
+    try {
+			grafica= EGraficasTablero.fromNameTablero(enumGrafica);
+      this.attrs.put("fechaSeleccionadaQuincena".concat(grafica.getIdPivote()), Fecha.formatear(Fecha.FECHA_MINIMA, cambiarQuincena(this.attrs.get("fechaSeleccionadaQuincena".concat(grafica.getIdPivote())).toString(), isAdelante)));      
+			seleccionada= Calendar.getInstance();
+      seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get("fechaSeleccionadaQuincena".concat(grafica.getIdPivote())).toString()));      			            
+			loadChart(grafica);
+    } // try
+    catch(Exception e) {
+			LOG.debug("Error en método doCambiarDia: ".concat(e.toString()));
+      JsfBase.addMessageError(e);
+      Error.mensaje(e);
+    } // catch
+  } // doCambiarDia
+  
+  private Calendar cambiarQuincena(String fecha, Boolean isAdelante) throws Exception {
+    Calendar regresar= null;
+    try {
+      regresar= Calendar.getInstance();
+      regresar.setTime(new SimpleDateFormat("dd/MM/yy").parse(fecha));
+      if(isAdelante)         
+        regresar.add(Calendar.WEEK_OF_MONTH, 2);
+      else         
+        regresar.add(Calendar.WEEK_OF_MONTH, -2);
+    } // try
+		catch (Exception e) {
+			LOG.debug("Error en método cambiarQuincena: ".concat(e.toString()));
+      throw e;
+		} // catch
+    return regresar;
+  } // cambiarQuincena
+	
+	private String toCondicionQuincena(String nombreFecha, String nombrePivote) throws Exception{
 		Calendar seleccionada= null;
 		StringBuilder sb     = null;
+		StringBuilder title  = null;
 		try {      
 			seleccionada= Calendar.getInstance();
+			seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get(nombreFecha).toString()));									
 			sb= new StringBuilder("");
+			title= new StringBuilder("");
 			if(seleccionada.get(Calendar.DAY_OF_MONTH)<= 15){
 				seleccionada.set(Calendar.WEEK_OF_MONTH, 1);
 				seleccionada.set(Calendar.DAY_OF_MONTH, 1);
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				title.append(Fecha.formatear(Fecha.FECHA_CORTA, seleccionada)).append(" - ");
 				seleccionada.add(Calendar.DAY_OF_MONTH, 14);
 				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				title.append(Fecha.formatear(Fecha.FECHA_CORTA, seleccionada));
 			} // if
 			else{
 				seleccionada.set(Calendar.DAY_OF_MONTH, 16);
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				title.append(Fecha.formatear(Fecha.FECHA_CORTA, seleccionada)).append(" - ");
 				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getActualMaximum(Calendar.DAY_OF_MONTH));
 				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				title.append(Fecha.formatear(Fecha.FECHA_CORTA, seleccionada));
 			} // else
+			this.attrs.put("quincena".concat(nombrePivote), "15 dias");			
+			this.attrs.put("quincenaTitle".concat(nombrePivote), title);			
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -584,107 +638,274 @@ public class Tablero extends Comun implements Serializable {
 		return sb.toString();
 	} // toCondicionQuincena
 	
-	private String toCondicionMes(){
+	public void doCambiarMes(boolean isAdelante, String enumGrafica) {
+    Calendar seleccionada= null;    
+    EGraficasTablero grafica= null;
+    try {
+			grafica= EGraficasTablero.fromNameTablero(enumGrafica);
+      this.attrs.put("fechaSeleccionadaMes".concat(grafica.getIdPivote()), Fecha.formatear(Fecha.FECHA_MINIMA, cambiarMes(this.attrs.get("fechaSeleccionadaMes".concat(grafica.getIdPivote())).toString(), isAdelante)));      
+			seleccionada= Calendar.getInstance();
+      seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get("fechaSeleccionadaMes".concat(grafica.getIdPivote())).toString()));      			            
+			loadChart(grafica);
+    } // try
+    catch(Exception e) {
+			LOG.debug("Error en método doCambiarDia: ".concat(e.toString()));
+      JsfBase.addMessageError(e);
+      Error.mensaje(e);
+    } // catch
+  } // doCambiarDia
+  
+  private Calendar cambiarMes(String fecha, Boolean isAdelante) throws Exception {
+    Calendar regresar= null;
+    try {
+      regresar= Calendar.getInstance();
+      regresar.setTime(new SimpleDateFormat("dd/MM/yy").parse(fecha));
+      if(isAdelante)         
+        regresar.add(Calendar.MONTH, 1);
+      else         
+        regresar.add(Calendar.MONTH, -1);
+    } // try
+		catch (Exception e) {
+			LOG.debug("Error en método cambiarQuincena: ".concat(e.toString()));
+      throw e;
+		} // catch
+    return regresar;
+  } // cambiarQuincena
+	
+	private String toCondicionMes(String nombreFecha, String nombrePivote) throws Exception{
 		Calendar seleccionada= null;
-		StringBuilder sb     = null;
+		StringBuilder sb     = null;		
 		try {      
 			seleccionada= Calendar.getInstance();
+			seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get(nombreFecha).toString()));									
 			sb= new StringBuilder("");						
 			seleccionada.set(Calendar.DAY_OF_MONTH, 1);
 			sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
 			seleccionada.add(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
 			sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));						
+			this.attrs.put("mes".concat(nombrePivote), this.mes[seleccionada.get(Calendar.MONTH)]);			
+			this.attrs.put("mesTitle".concat(nombrePivote), "Del año: " + seleccionada.get(Calendar.YEAR));			
 		} // try
 		catch (Exception e) {			
-			throw e;
+			throw e; 
 		} // catch				
 		return sb.toString();
 	} // toCondicionMes
 	
-	private String toCondicionTrimestre(){
+	public void doCambiarTrimestre(boolean isAdelante, String enumGrafica) {
+    Calendar seleccionada= null;    
+    EGraficasTablero grafica= null;
+    try {
+			grafica= EGraficasTablero.fromNameTablero(enumGrafica);
+      this.attrs.put("fechaSeleccionadaTrimestre".concat(grafica.getIdPivote()), Fecha.formatear(Fecha.FECHA_MINIMA, cambiarTrimestre(this.attrs.get("fechaSeleccionadaTrimestre".concat(grafica.getIdPivote())).toString(), isAdelante)));      
+			seleccionada= Calendar.getInstance();
+      seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get("fechaSeleccionadaTrimestre".concat(grafica.getIdPivote())).toString()));      			            
+			loadChart(grafica);
+    } // try
+    catch(Exception e) {
+			LOG.debug("Error en método doCambiarDia: ".concat(e.toString()));
+      JsfBase.addMessageError(e);
+      Error.mensaje(e);
+    } // catch
+  } // doCambiarDia
+  
+  private Calendar cambiarTrimestre(String fecha, Boolean isAdelante) throws Exception {
+    Calendar regresar= null;
+    try {
+      regresar= Calendar.getInstance();
+      regresar.setTime(new SimpleDateFormat("dd/MM/yy").parse(fecha));
+      if(isAdelante)         
+        regresar.add(Calendar.MONTH, 3);
+      else         
+        regresar.add(Calendar.MONTH, -3);
+    } // try
+		catch (Exception e) {
+			LOG.debug("Error en método cambiarQuincena: ".concat(e.toString()));
+      throw e;
+		} // catch
+    return regresar;
+  } // cambiarTrimestre
+	
+	private String toCondicionTrimestre(String nombreFecha, String nombrePivote) throws Exception{
 		Calendar seleccionada= null;
 		StringBuilder sb     = null;
+		StringBuilder title  = null;
 		try {      
 			seleccionada= Calendar.getInstance();
+			seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get(nombreFecha).toString()));									
 			sb= new StringBuilder("");
+			title= new StringBuilder("");
 			if(seleccionada.get(Calendar.MONTH)<= 2){
 				seleccionada.set(Calendar.MONTH, 0);
 				seleccionada.set(Calendar.DAY_OF_MONTH, 1);
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-				seleccionada.set(Calendar.MONTH, 2);
-				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
+				title.append(this.mes[seleccionada.get(Calendar.MONTH)]).append(" - ");
+				seleccionada.add(Calendar.MONTH, 2);
+				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getActualMaximum(Calendar.DAY_OF_MONTH));
 				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				title.append(this.mes[seleccionada.get(Calendar.MONTH)]);				
 			} // if
 			else if (seleccionada.get(Calendar.MONTH)<= 5){
 				seleccionada.set(Calendar.MONTH, 3);
 				seleccionada.set(Calendar.DAY_OF_MONTH, 1);
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-				seleccionada.set(Calendar.MONTH, 5);
-				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
+				title.append(this.mes[seleccionada.get(Calendar.MONTH)]).append(" - ");
+				seleccionada.add(Calendar.MONTH, 2);
+				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getActualMaximum(Calendar.DAY_OF_MONTH));
 				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				title.append(this.mes[seleccionada.get(Calendar.MONTH)]);
 			} // else
 			else if (seleccionada.get(Calendar.MONTH)<= 8){
 				seleccionada.set(Calendar.MONTH, 6);
 				seleccionada.set(Calendar.DAY_OF_MONTH, 1);
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-				seleccionada.set(Calendar.MONTH, 8);
-				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
+				title.append(this.mes[seleccionada.get(Calendar.MONTH)]).append(" - ");
+				seleccionada.add(Calendar.MONTH, 2);
+				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getActualMaximum(Calendar.DAY_OF_MONTH));
 				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				title.append(this.mes[seleccionada.get(Calendar.MONTH)]);
 			} // else
 			else {
 				seleccionada.set(Calendar.MONTH, 9);
 				seleccionada.set(Calendar.DAY_OF_MONTH, 1);
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-				seleccionada.set(Calendar.MONTH, 11);
-				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
+				title.append(this.mes[seleccionada.get(Calendar.MONTH)]).append(" - ");
+				seleccionada.add(Calendar.MONTH, 2);
+				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getActualMaximum(Calendar.DAY_OF_MONTH));
 				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				title.append(this.mes[seleccionada.get(Calendar.MONTH)]);
 			} // else
+			this.attrs.put("trimestre".concat(nombrePivote), "3 meses");			
+			this.attrs.put("trimestreTitle".concat(nombrePivote), title + " del " + seleccionada.get(Calendar.YEAR));			
 		} // try
 		catch (Exception e) {			
-			throw e;
+			throw e; 
 		} // catch		
 		return sb.toString();
 	} // toCondicionTrimestre
 	
-	private String toCondicionSemestre(){
+	public void doCambiarSemestre(boolean isAdelante, String enumGrafica) {
+    Calendar seleccionada= null;    
+    EGraficasTablero grafica= null;
+    try {
+			grafica= EGraficasTablero.fromNameTablero(enumGrafica);
+      this.attrs.put("fechaSeleccionadaSemestre".concat(grafica.getIdPivote()), Fecha.formatear(Fecha.FECHA_MINIMA, cambiarSemestre(this.attrs.get("fechaSeleccionadaSemestre".concat(grafica.getIdPivote())).toString(), isAdelante)));      
+			seleccionada= Calendar.getInstance();
+      seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get("fechaSeleccionadaSemestre".concat(grafica.getIdPivote())).toString()));      			            
+			loadChart(grafica);
+    } // try
+    catch(Exception e) {
+			LOG.debug("Error en método doCambiarDia: ".concat(e.toString()));
+      JsfBase.addMessageError(e);
+      Error.mensaje(e);
+    } // catch
+  } // doCambiarSemestre
+  
+  private Calendar cambiarSemestre(String fecha, Boolean isAdelante) throws Exception {
+    Calendar regresar= null;
+    try {
+      regresar= Calendar.getInstance();
+      regresar.setTime(new SimpleDateFormat("dd/MM/yy").parse(fecha));
+      if(isAdelante)         
+        regresar.add(Calendar.MONTH, 6);
+      else         
+        regresar.add(Calendar.MONTH, -6);
+    } // try
+		catch (Exception e) {
+			LOG.debug("Error en método cambiarQuincena: ".concat(e.toString()));
+      throw e;
+		} // catch
+    return regresar;
+  } // cambiarSemestre
+	
+	private String toCondicionSemestre(String nombreFecha, String nombrePivote) throws Exception{
 		Calendar seleccionada= null;
 		StringBuilder sb     = null;
+		StringBuilder title  = null;
 		try {      
 			seleccionada= Calendar.getInstance();
+			seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get(nombreFecha).toString()));									
 			sb= new StringBuilder("");
+			title= new StringBuilder("");
 			if(seleccionada.get(Calendar.MONTH)<= 5){
 				seleccionada.set(Calendar.MONTH, 0);
 				seleccionada.set(Calendar.DAY_OF_MONTH, 1);
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				title.append(this.mes[seleccionada.get(Calendar.MONTH)]).append(" - ");
 				seleccionada.set(Calendar.MONTH, 5);
-				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
+				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getActualMaximum(Calendar.DAY_OF_MONTH));
 				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				title.append(this.mes[seleccionada.get(Calendar.MONTH)]);
 			} // if
 			else{
 				seleccionada.set(Calendar.MONTH, 6);
 				seleccionada.set(Calendar.DAY_OF_MONTH, 1);
 				sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				title.append(this.mes[seleccionada.get(Calendar.MONTH)]).append(" - ");
 				seleccionada.set(Calendar.MONTH, 11);
-				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
+				seleccionada.set(Calendar.DAY_OF_MONTH, seleccionada.getActualMaximum(Calendar.DAY_OF_MONTH));
 				sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
+				title.append(this.mes[seleccionada.get(Calendar.MONTH)]);
 			} // else
+			this.attrs.put("semestre".concat(nombrePivote), "6 meses");			
+			this.attrs.put("semestreTitle".concat(nombrePivote), title + " del " + seleccionada.get(Calendar.YEAR));			
 		} // try
 		catch (Exception e) {			
-			throw e;
+			throw e; 
 		} // catch		
 		return sb.toString();
 	} // toCondicionSemestre
 	
-	private String toCondicionAnio(){
+	public void doCambiarAnio(boolean isAdelante, String enumGrafica) {
+    Calendar seleccionada   = null;    
+    EGraficasTablero grafica= null;
+    try {
+			grafica= EGraficasTablero.fromNameTablero(enumGrafica);
+      this.attrs.put("fechaSeleccionadaAnio".concat(grafica.getIdPivote()), Fecha.formatear(Fecha.FECHA_MINIMA, cambiarAnio(this.attrs.get("fechaSeleccionadaAnio".concat(grafica.getIdPivote())).toString(), isAdelante)));      
+			seleccionada= Calendar.getInstance();
+      seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get("fechaSeleccionadaAnio".concat(grafica.getIdPivote())).toString()));      			            
+			loadChart(grafica);
+    } // try
+    catch(Exception e) {
+			LOG.debug("Error en método doCambiarDia: ".concat(e.toString()));
+      JsfBase.addMessageError(e);
+      Error.mensaje(e);
+    } // catch
+  } // doCambiarSemestre
+  
+  private Calendar cambiarAnio(String fecha, Boolean isAdelante) throws Exception {
+    Calendar regresar= null;
+    try {
+      regresar= Calendar.getInstance();
+      regresar.setTime(new SimpleDateFormat("dd/MM/yy").parse(fecha));
+      if(isAdelante)         
+        regresar.add(Calendar.YEAR, 1);
+      else         
+        regresar.add(Calendar.YEAR, -1);
+    } // try
+		catch (Exception e) {
+			LOG.debug("Error en método cambiarQuincena: ".concat(e.toString()));
+      throw e;
+		} // catch
+    return regresar;
+  } // cambiarAnio
+	
+	private String toCondicionAnio(String nombreFecha, String nombrePivote) throws Exception{
 		Calendar seleccionada= null;
 		StringBuilder sb     = null;
+		StringBuilder title  = null;
 		try {      
 			sb= new StringBuilder("");
+			title= new StringBuilder("");
 			seleccionada= Calendar.getInstance();						
+			seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get(nombreFecha).toString()));									
 			seleccionada.set(Calendar.DAY_OF_YEAR, 1);
 			sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
 			seleccionada.add(Calendar.DAY_OF_YEAR, seleccionada.getMaximum(Calendar.DAY_OF_YEAR));
 			sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));						
+			title.append(seleccionada.get(Calendar.YEAR));
+			this.attrs.put("anio".concat(nombrePivote), seleccionada.get(Calendar.YEAR));			
+			this.attrs.put("anioTitle".concat(nombrePivote), title);			
 		} // try
 		catch (Exception e) {			
 			throw e;
