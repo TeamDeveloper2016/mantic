@@ -4,8 +4,9 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -18,6 +19,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.json.Decoder;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.kajool.procesos.acceso.beans.Persona;
+import mx.org.kaana.kajool.procesos.acceso.beans.VentaEmpleado;
 import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.procesos.enums.EPerfiles;
 import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.beans.Highcharts;
@@ -28,6 +30,7 @@ import mx.org.kaana.kajool.procesos.utilerias.graficasperfiles.reglas.BuildChart
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.UISelectItem;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.enums.EGraficasTablero;
 import mx.org.kaana.mantic.enums.EPeriodosTableros;
 import org.apache.commons.logging.Log;
@@ -144,6 +147,7 @@ public class Tablero extends Comun implements Serializable {
 			doLoadChartCuentasPagar();
 			doLoadChartsGeneral();
 			doLoadChartsArticulos();
+			doLoadVentasEmpleado();
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -173,6 +177,9 @@ public class Tablero extends Comun implements Serializable {
 					break;
 				case CUENTAS_PAGAR:
 					doLoadChartCuentasPagar();
+					break;
+				case VENTAS_EMPLEADO:
+					doLoadVentasEmpleado();
 					break;
 			} // switch
 		} // try
@@ -912,4 +919,24 @@ public class Tablero extends Comun implements Serializable {
 		} // catch	
 		return sb.toString();
 	} // toCondicionAnio
+	
+	public void doLoadVentasEmpleado(){
+		List<VentaEmpleado> ventas= null;
+		Map<String, Object>params = null;
+		BuildChart build          = null;
+		try {
+			build= new BuildChart();
+			params= new HashMap<>();
+			params.put("condicionGeneral", build.toFormatCondicionGeneral(EGraficasTablero.VENTAS_EMPLEADO, toCreateCondicion(EGraficasTablero.VENTAS_EMPLEADO)));
+			ventas= DaoFactory.getInstance().toEntitySet(VentaEmpleado.class, "VistaIndicadoresTableroDto", "ventasPorEmpleado", params, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("ventasEmpleados", ventas);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	} // doLoadVentasEmpleado	
 }
