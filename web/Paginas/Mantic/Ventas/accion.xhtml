@@ -104,7 +104,7 @@
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>
-		<pe:remoteCommand name="lookup" actionListener="#{manticVentasAccion.doUpdateDialogArticulos}" update="buscados localizado" process="@this codigo" update="buscados localizado"/>
+		<pe:remoteCommand name="lookup" actionListener="#{manticVentasAccion.doUpdateDialogArticulos}" update="buscados localizado" process="@this codigo">
 			<pe:methodSignature parameters="java.lang.String"/>  
 			<pe:methodParam name="codigo"/>  
 		</pe:remoteCommand>		
