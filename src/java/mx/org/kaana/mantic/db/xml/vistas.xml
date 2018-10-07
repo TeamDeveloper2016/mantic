@@ -4940,6 +4940,31 @@
 				group by 
 					id_key, articulo, total
 			</select>
+			<select id="ventasPorEmpleado">
+				select
+					id_key, nombre, total,
+					((total * 100)/(select count(*) total from tc_mantic_ventas where tc_mantic_ventas.id_venta_estatus in (3,4,9))) porcentaje
+				from (
+				select 
+					tc_mantic_personas.id_persona as id_key,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) nombre,
+					count(*) total
+				from 
+					tc_mantic_ventas
+				inner join 
+					tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
+				inner join 
+					tc_mantic_personas on tc_janal_usuarios.id_persona = tc_mantic_personas.id_persona
+				where 
+					{condicionGeneral}
+				and 
+					tc_mantic_ventas.id_venta_estatus in (3,4,9)
+				group by   
+					tc_mantic_personas.id_persona,
+					concat(tc_mantic_personas.nombres, tc_mantic_personas.paterno, tc_mantic_personas.materno)) principal
+				group by 
+					id_key, nombre, total
+			</select>
 		</unit>
 	</dml>    
 </process>
