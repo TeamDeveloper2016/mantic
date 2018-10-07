@@ -165,18 +165,21 @@ public class BuildChart implements Serializable{
   } // loadRecords
 	
 	private String toFormatCondicionGeneral(EGraficasTablero grafica){
+		return toFormatCondicionGeneral(grafica, this.condicionGeneral);
+	} // toFormatCondicionGeneral
+
+	public String toFormatCondicionGeneral(EGraficasTablero grafica, String condicion){
 		String regresar= Constantes.SQL_VERDADERO;
 		try {
-			if(this.condicionGeneral.matches("(.*)registro(.*)"))
-				regresar= this.condicionGeneral.replaceAll("registro", grafica.getTablaPivote().concat(".").concat("registro"));			
+			if(condicion.matches("(.*)registro(.*)"))
+				regresar= condicion.replaceAll("registro", grafica.getTablaPivote().concat(".").concat("registro"));			
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch
 		return regresar;		
 	} // toFormatCondicionGeneral
-	
-	
+		
 	public HighchartsPie loadCharPropertiesPie(EGraficasTablero grafica) throws Exception{
     HighchartsPie regresar     = null;
     List<Entity> records       = null;
