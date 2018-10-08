@@ -10,11 +10,21 @@
 	<ui:param name="titulo" value="Listado de articulo para imprimir sus códigos de barras"/>
 	<ui:define name="librerias">
     <h:outputScript library="janal" name="core/jquery.janal.kardex.core-0.3.5.js"/>
+		<h:outputScript library="janal" name="zebra/rsvp-3.1.0.min.js"/>
+    <h:outputScript library="janal" name="zebra/sha-256.min.js"/>
+    <h:outputScript library="janal" name="zebra/qz-tray.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.zebra.core-0.1.0.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'codigos' : {validaciones: 'libre', mascara: 'libre'},
 				'cantidad': {multiple: '$', validaciones: 'entero|mayor({"cuanto": 0})|menor-a({"cual":"tabla\\\\:?\\\\:limite"})', mascara: 'libre'}
 			};	
+			
+			function printCode(codes){
+				janal.bloquear();
+				printEPL(codes);
+				janal.desbloquear();
+			} // printCodes
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
