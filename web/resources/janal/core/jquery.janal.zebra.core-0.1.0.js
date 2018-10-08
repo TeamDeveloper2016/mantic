@@ -143,7 +143,7 @@ qz.websocket.setErrorCallbacks(handleConnectionError);
 
 function handleConnectionError(err) {
 	updateState('Error', 'danger');
-	if (err.target != undefined) {
+	if (err.target !== undefined) {
 		if (err.target.readyState >= 2) { //if CLOSING or CLOSED
 			displayError("Connection to QZ Tray was closed");
 		} else {
@@ -170,10 +170,10 @@ qz.usb.setUsbCallbacks(function (streamEvent) {
 	var vendor = streamEvent.vendorId;
 	var product = streamEvent.productId;
 
-	if (vendor.substring(0, 2) != '0x') {
+	if (vendor.substring(0, 2) !== '0x') {
 		vendor = '0x' + vendor;
 	}
-	if (product.substring(0, 2) != '0x') {
+	if (product.substring(0, 2) !== '0x') {
 		product = '0x' + product;
 	}
 	var $pin = $('#' + vendor + product);
@@ -194,10 +194,10 @@ qz.hid.setHidCallbacks(function (streamEvent) {
 	var vendor = streamEvent.vendorId;
 	var product = streamEvent.productId;
 
-	if (vendor.substring(0, 2) != '0x') {
+	if (vendor.substring(0, 2) !== '0x') {
 		vendor = '0x' + vendor;
 	}
-	if (product.substring(0, 2) != '0x') {
+	if (product.substring(0, 2) !== '0x') {
 		product = '0x' + product;
 	}
 	var $pin = $('#' + vendor + product);
@@ -260,17 +260,17 @@ function endConnection() {
 
 function listNetworkInfo() {
 	qz.websocket.getNetworkInfo().then(function (data) {
-		if (data.macAddress == null) {
+		if (data.macAddress === null) {
 			data.macAddress = 'UNKNOWN';
 		}
-		if (data.ipAddress == null) {
+		if (data.ipAddress === null) {
 			data.ipAddress = "UNKNOWN";
 		}
 
 		var macFormatted = '';
 		for (var i = 0; i < data.macAddress.length; i++) {
 			macFormatted += data.macAddress[i];
-			if (i % 2 == 1 && i < data.macAddress.length - 1) {
+			if (i % 2 === 1 && i < data.macAddress.length - 1) {
 				macFormatted += ":";
 			}
 		}
@@ -324,7 +324,7 @@ function printEPL(code) {
 }
 
 function convertEPCL(data) {
-	if (data == null || data.length == 0) {
+	if (data === null || data.length === 0) {
 		console.warn('Empty EPCL data, skipping');
 	}
 
