@@ -12,6 +12,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -144,8 +145,26 @@ public class Codigos extends IBaseAttribute implements Serializable {
 
 	public String doAceptar() {
 		EAccion eaccion= EAccion.MODIFICAR;
+		String[] codes = null;
+		String code    = "";
+		Long size      = 0L;
     try {			
-			
+			if(!this.articulos.isEmpty()){
+				for(CodigoArticulo codigo: this.articulos)
+					size= size + codigo.getCantidad();
+				codes= new String[size.intValue()];
+				for(int count=0; count<this.articulos.size(); count ++){
+					for(int countC=0; countC<this.articulos.get(count).getCantidad().intValue(); countC ++){
+						codes[count]= this.articulos.get(count).getPropio();
+						code= code.concat(this.articulos.get(count).getPropio()).concat("~");
+					} // for
+				} // for
+				this.attrs.put("codes", codes);
+				code= code.substring(0, code.length()-1);
+				RequestContext.getCurrentInstance().execute("printCode('"+code+"');");
+			} // if
+			else
+				JsfBase.addMessage("No hay códigos por imprimir", ETipoMensaje.ERROR);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
