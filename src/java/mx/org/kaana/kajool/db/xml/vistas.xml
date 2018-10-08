@@ -1147,29 +1147,25 @@
         select
           id_key, 
           sum(admin_encuesta) admin_encuesta,
-          sum(admin) admin,
-          sum(resp_estatal) resp_estatal,
-          sum(consultor) consultor,
-          sum(capturista) capturista,
-          (sum(admin)+
-            sum(resp_estatal)+sum(consultor)+
-            sum(capturista)) total
+          sum(gerente) gerente,
+          sum(vendedor) vendedor,
+          sum(cajero) cajero,
+          (sum(admin_encuesta) + sum(gerente) + sum(vendedor) + sum(cajero)) total
         from(
           select
             tc_janal_proyectos.id_grupo as id_key,
             case when tc_janal_perfiles.id_perfil=1 then 1 else 0 end admin_encuesta,
-            case when tc_janal_perfiles.id_perfil=2 then 1 else 0 end admin,
-            case when tc_janal_perfiles.id_perfil=3 then 1 else 0 end resp_estatal,
-            case when tc_janal_perfiles.id_perfil=5 then 1 else 0 end consultor,
-            case when tc_janal_perfiles.id_perfil=4 then 1 else 0 end capturista            
+            case when tc_janal_perfiles.id_perfil=2 then 1 else 0 end gerente,
+            case when tc_janal_perfiles.id_perfil=3 then 1 else 0 end vendedor,
+            case when tc_janal_perfiles.id_perfil=4 then 1 else 0 end cajero
           from 
             tc_janal_proyectos
           inner join 
             tc_janal_perfiles on tc_janal_proyectos.id_grupo = tc_janal_perfiles.id_grupo
           inner join 
-            tc_janal_usuarios on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil
+            tc_janal_usuarios on tc_janal_perfiles.id_perfil = tc_janal_usuarios.id_perfil          
           where 
-            tc_janal_proyectos.id_grupo= {idGrupo} ) principal
+            tc_janal_proyectos.id_grupo= {idGrupo}) principal
       </select>
       <select id="estatal">
         select
