@@ -329,11 +329,9 @@ public class Tablero extends Comun implements Serializable {
   } // loadContadoresGenerales 
 
   private void loadContadoresGenerales() throws Exception {
-    EPerfiles perfil = null;
     Entity contadores = null;
     try {
-      perfil = EPerfiles.fromOrdinal(JsfBase.getAutentifica().getPersona().getIdPerfil());
-      contadores = (Entity) DaoFactory.getInstance().toEntity("VistaContadoresBienvenidaDto", perfil.getIdVistaContadores(), this.attrs);
+      contadores = (Entity) DaoFactory.getInstance().toEntity("VistaContadoresBienvenidaDto", "nacional", this.attrs);
       if (contadores != null) 
         this.attrs.put("contadoresGenerales", contadores);
     } // try
