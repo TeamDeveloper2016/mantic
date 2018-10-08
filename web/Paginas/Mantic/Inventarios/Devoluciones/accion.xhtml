@@ -111,7 +111,7 @@
 											<p:column class="MarAuto Responsive janal-wid-8">
 												<f:facet name="header">
 													<h:outputText value="Proveedor"/>
-													<p:inputText value="#{manticInventariosDevolucionesAccion.attrs.filterCode}" styleClass="janal-wid-100-txt key-filter-event"/>
+													<p:inputText id="filterCode" value="#{manticInventariosDevolucionesAccion.attrs.filterCode}" styleClass="janal-wid-100-txt key-filter-event"/>
 											  </f:facet>
 	  									  <p:inputText id="auxiliares" value="#{row['codigo']}" styleClass="janal-wid-100-txt key-event-sat fila" style="display: none"/>
 												<p:outputLabel value="#{row['codigo']}"/>
@@ -119,7 +119,7 @@
 											<p:column class="MarAuto Responsive">
 												<f:facet name="header">
 													<h:outputText value="Articulo"/>
-													<p:inputText value="#{manticInventariosDevolucionesAccion.attrs.filterName}" styleClass="janal-wid-100-txt key-filter-event"/>
+													<p:inputText id="filterName" value="#{manticInventariosDevolucionesAccion.attrs.filterName}" styleClass="janal-wid-100-txt key-filter-event"/>
 												</f:facet>
 												<h:outputText id="nombres" value="#{row['nombre']}" title="Código propio: #{row['propio']}    Existencias almacen: #{row['stock']}" escape="false"/>
 											</p:column>		

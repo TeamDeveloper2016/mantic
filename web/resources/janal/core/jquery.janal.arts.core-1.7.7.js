@@ -657,10 +657,11 @@
 			if(top>= 0)
 			  this.cursor.top= top;
 			janal.reset();
-			if($('#contenedorGrupos\\:tabla\\:filterCode').val().trim().length> 0 || $('#contenedorGrupos\\:tabla\\:filterName').val().trim().length> 0)
-			  PF('listado').deactivate();
-			else
-			  PF('listado').activate();
+			if(PF('listado'))
+			  if($('#contenedorGrupos\\:tabla\\:filterCode').val().trim().length> 0 || $('#contenedorGrupos\\:tabla\\:filterName').val().trim().length> 0)
+			    PF('listado').deactivate();
+			  else
+			    PF('listado').activate();
 			janal.desbloquear();
 		},
 		process: function() {
