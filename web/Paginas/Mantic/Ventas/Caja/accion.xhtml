@@ -390,7 +390,7 @@
 									</p:column>   
 								</p:selectOneMenu>
 								<p:inputText id="descuento" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticVentasCajaAccion.adminOrden.descuento}" disabled="true">
-									<p:ajax event="blur" listener="#{manticVentasCajaAccion.doUpdatePorcentaje}" process="@this" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#descuento'), '0'); return true;"/>
+									<p:ajax event="blur" listener="#{manticVentasCajaAccion.doUpdateDescuento}" process="@this" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#descuento'), '0'); return true;"/>
 								</p:inputText>	
 								<p:inputSwitch value="#{manticVentasCajaAccion.attrs.apartado}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt">
 									<p:ajax listener="#{manticVentasCajaAccion.doActiveApartado}" process="@this contenedorGrupos:panelTotales" update="contenedorGrupos contenedorGrupos:switchFacturar" onstart="janal.bloquear();" oncomplete="janal.desbloquear();applyValidacionesCredito();"/>

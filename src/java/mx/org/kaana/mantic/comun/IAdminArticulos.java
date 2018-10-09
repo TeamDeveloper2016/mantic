@@ -158,6 +158,20 @@ public abstract class IAdminArticulos implements Serializable {
 		this.toCalculate();
 	}
 	
+	public void toUpdateDescuento() {
+		for (Articulo articulo : this.articulos) {
+			articulo.setDescuento(this.getDescuento());
+		} // for
+		this.toCalculate();
+	}
+	
+	public void toUpdateExtras() {
+		for (Articulo articulo : this.articulos) {
+			articulo.setExtras(this.getExtras());
+		} // for
+		this.toCalculate();
+	}
+	
 	public void toAdjustArticulos() {
 		int count= 0;
 		while(count< this.articulos.size()) {

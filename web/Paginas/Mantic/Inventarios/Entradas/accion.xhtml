@@ -244,13 +244,13 @@
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
   											<p:outputLabel for="descuento" value="% Descuentos:"/>
 												<p:inputText id="descuento" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticInventariosEntradasAccion.adminOrden.orden.descuento}">
-													<p:ajax event="blur" listener="#{manticInventariosEntradasAccion.doUpdatePorcentaje}" process="@this descuento extra" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#contenedorGrupos\\:descuento'), '0.00'); janal.maxDescuentos('contenedorGrupos\\:descuento', 'contenedorGrupos\\:extra'); return true;" oncomplete="janal.reset();"/>
+													<p:ajax event="blur" listener="#{manticInventariosEntradasAccion.doUpdateDescuento}" process="@this descuento" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#contenedorGrupos\\:descuento'), '0.00'); janal.maxDescuentos('contenedorGrupos\\:descuento', 'contenedorGrupos\\:extra'); return true;" oncomplete="janal.reset();"/>
 												</p:inputText>	
 											</p:panelGrid>
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 											  <p:outputLabel for="extra" value="% Extra:"/>
 											  <p:inputText id="extra" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticInventariosEntradasAccion.adminOrden.orden.extras}">
-													<p:ajax event="blur" listener="#{manticInventariosEntradasAccion.doUpdatePorcentaje}" process="@this descuento extra" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#contenedorGrupos\\:extra'), '0.00'); janal.maxDescuentos('contenedorGrupos\\:extra', 'contenedorGrupos\\:descuento'); return true;" oncomplete="janal.reset();"/>
+													<p:ajax event="blur" listener="#{manticInventariosEntradasAccion.doUpdateExtras}" process="@this extra" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#contenedorGrupos\\:extra'), '0.00'); janal.maxDescuentos('contenedorGrupos\\:extra', 'contenedorGrupos\\:descuento'); return true;" oncomplete="janal.reset();"/>
 												</p:inputText>
 											</p:panelGrid>	 
 										</p:panelGrid>	

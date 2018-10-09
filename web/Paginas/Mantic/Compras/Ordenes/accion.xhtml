@@ -202,13 +202,13 @@
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
   											<p:outputLabel for="descuento" value="% Descuentos:"/>
 												<p:inputText id="descuento" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticComprasOrdendesAccion.adminOrden.orden.descuento}">
-													<p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdatePorcentaje}" process="@this descuento extra" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#contenedorGrupos\\:descuento'), '0.00'); janal.maxDescuentos('contenedorGrupos\\:descuento', 'contenedorGrupos\\:extra'); return true;" oncomplete="janal.reset();"/>
+													<p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateDescuento}" process="@this descuento" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#contenedorGrupos\\:descuento'), '0.00'); janal.maxDescuentos('contenedorGrupos\\:descuento', 'contenedorGrupos\\:extra'); return true;" oncomplete="janal.reset();"/>
 												</p:inputText>	
 											</p:panelGrid>
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 											  <p:outputLabel for="extra" value="% Extra:"/>
 											  <p:inputText id="extra" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticComprasOrdendesAccion.adminOrden.orden.extras}">
-													<p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdatePorcentaje}" process="@this descuento extra" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#contenedorGrupos\\:extra'), '0.00'); janal.maxDescuentos('contenedorGrupos\\:extra', 'contenedorGrupos\\:descuento'); return true;" oncomplete="janal.reset();"/>
+													<p:ajax event="blur" listener="#{manticComprasOrdendesAccion.doUpdateExtras}" process="@this extra" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#contenedorGrupos\\:extra'), '0.00'); janal.maxDescuentos('contenedorGrupos\\:extra', 'contenedorGrupos\\:descuento'); return true;" oncomplete="janal.reset();"/>
 												</p:inputText>
 											</p:panelGrid>	 
 										</p:panelGrid>	
@@ -394,7 +394,7 @@
 									</div>	
 									<div class="ui-grid-col-1 janal-column-center">
 										<p:outputLabel value="% Extra"/><br/>
-										<h:outputText value="#{manticComprasOrdendesAccion.attrs.solicitado.extra}"/>
+										<h:outputText value="#{manticComprasOrdendesAccion.attrs.solicitado.extras}"/>
 									</div>	
 									<div class="ui-grid-col-1 janal-column-center">
 										<p:outputLabel value="Cantidad"/><br/>
@@ -438,7 +438,7 @@
 									</div>	
 									<div class="ui-grid-col-1 janal-column-center">
 										<p:outputLabel value="% Extra"/><br/>
-										<h:outputText value="#{manticComprasOrdendesAccion.attrs.ultimo.extra}"/>
+										<h:outputText value="#{manticComprasOrdendesAccion.attrs.ultimo.extras}"/>
 									</div>	
 									<div class="ui-grid-col-1 janal-column-center">
 										<p:outputLabel value="Stock"/><br/>

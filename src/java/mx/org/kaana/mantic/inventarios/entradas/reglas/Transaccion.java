@@ -124,8 +124,6 @@ public class Transaccion extends Inventarios implements Serializable {
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
 					if(this.orden.getIdNotaTipo().equals(1L))
 						this.orden.setIdOrdenCompra(null);
-  				if(this.aplicar)
-						this.orden.setIdNotaEstatus(3L);
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
@@ -281,8 +279,11 @@ public class Transaccion extends Inventarios implements Serializable {
 				  ordenCompra.setIdOrdenEstatus(6L); // TERMINADA
 					this.toApplyNotaEntrada(sesion);
 				} // if	
-				else
+				else {
 					ordenCompra.setIdOrdenEstatus(5L); // INCOMPLETA
+   				if(this.aplicar)
+  					this.toApplyNotaEntrada(sesion);
+				} // else	
 				DaoFactory.getInstance().update(sesion, ordenCompra);
 				TcManticOrdenesBitacoraDto estatus= new TcManticOrdenesBitacoraDto(ordenCompra.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), ordenCompra.getIdOrdenCompra(), -1L, ordenCompra.getConsecutivo(), this.orden.getTotal());
 				DaoFactory.getInstance().insert(sesion, estatus);

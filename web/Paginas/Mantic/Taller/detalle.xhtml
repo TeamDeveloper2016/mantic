@@ -85,7 +85,7 @@
 											<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
   											<p:outputLabel for="descuento" value="% Descuentos:"/>
 												<p:inputText id="descuento" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticTallerDetalle.adminOrden.orden.descuento}">
-													<p:ajax event="blur" listener="#{manticTallerDetalle.doUpdatePorcentaje}" process="@this descuento" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#contenedorGrupos\\:descuento'), '0'); return true;"/>
+													<p:ajax event="blur" listener="#{manticTallerDetalle.doUpdateDescuento}" process="@this descuento" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#contenedorGrupos\\:descuento'), '0'); return true;"/>
 												</p:inputText>	
 											</p:panelGrid>
 										</p:panelGrid>	

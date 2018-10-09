@@ -274,6 +274,14 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 		this.adminOrden.toUpdatePorcentajes();
 	} 
 
+	public void doUpdateDescuento() {
+		this.adminOrden.toUpdateDescuento();
+	} 
+
+	public void doUpdateExtras() {
+		this.adminOrden.toUpdateExtras();
+	} 
+
 	public void doUpdateIvaTipoDeCambio() {
 		boolean sinIva= (boolean)this.attrs.get("sinIva");
 		this.adminOrden.setIdSinIva(sinIva? 1L: 2L);
