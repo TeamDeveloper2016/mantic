@@ -144,7 +144,7 @@ public class Codigos extends IBaseAttribute implements Serializable {
 	}	
 
 	public String doAceptar() {
-		EAccion eaccion= EAccion.MODIFICAR;
+		String regresar= null;
 		String[] codes = null;
 		String code    = "";
 		Long size      = 0L;
@@ -162,6 +162,7 @@ public class Codigos extends IBaseAttribute implements Serializable {
 				this.attrs.put("codes", codes);
 				code= code.substring(0, code.length()-1);
 				RequestContext.getCurrentInstance().execute("printCode('"+code+"');");
+				regresar= ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 			} // if
 			else
 				JsfBase.addMessage("No hay códigos por imprimir", ETipoMensaje.ERROR);
@@ -170,7 +171,7 @@ public class Codigos extends IBaseAttribute implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-		return null;
+		return regresar;
 	}
 	
   public void doFindArticulo() {
