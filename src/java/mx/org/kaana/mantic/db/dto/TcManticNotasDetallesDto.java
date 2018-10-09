@@ -82,17 +82,21 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
   private Double declarados;
   @Column (name="diferencia")
   private Double diferencia;
+  @Column (name="costo_real")
+  private Double costoReal;
+  @Column (name="costo_calculado")
+  private Double costoCalculado;
 
   public TcManticNotasDetallesDto() {
     this(new Long(-1L));
   }
 
   public TcManticNotasDetallesDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, 2L, 0D, 0D);
+    this(null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, 2L, 0D, 0D, 0D, 0D);
     setKey(key);
   }
 
-  public TcManticNotasDetallesDto(String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, Long idNotaEntrada, String nombre, Double importe, Double iva, Long idNotaDetalle, Double subTotal, Double cantidad, Long idArticulo, Double descuentos, Double impuestos, Long idOrdenDetalle, Double cantidades, Double excedentes, Long idAplicar, Double declarados, Double diferencia) {
+  public TcManticNotasDetallesDto(String codigo, String unidadMedida, Double costo, String descuento, String sat, String extras, Long idNotaEntrada, String nombre, Double importe, Double iva, Long idNotaDetalle, Double subTotal, Double cantidad, Long idArticulo, Double descuentos, Double impuestos, Long idOrdenDetalle, Double cantidades, Double excedentes, Long idAplicar, Double declarados, Double diferencia, Double costoReal, Double costoCalculado) {
     setCodigo(codigo);
     setUnidadMedida(unidadMedida);
     setCosto(costo);
@@ -116,6 +120,8 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
 		setIdAplicar(idAplicar);
     setDeclarados(declarados);
     setDiferencia(diferencia);
+		this.costoReal= costoReal;
+		this.costoCalculado= costoCalculado;
   }
 	
   public void setCodigo(String codigo) {
@@ -301,6 +307,22 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
 	public void setDiferencia(Double diferencia) {
 		this.diferencia=diferencia;
 	}
+
+	public Double getCostoReal() {
+		return costoReal;
+	}
+
+	public void setCostoReal(Double costoReal) {
+		this.costoReal=costoReal;
+	}
+
+	public Double getCostoCalculado() {
+		return costoCalculado;
+	}
+
+	public void setCostoCalculado(Double costoCalculado) {
+		this.costoCalculado=costoCalculado;
+	}
 	
   @Transient
   @Override
@@ -362,6 +384,10 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
 		regresar.append(getDeclarados());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDiferencia());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCostoReal());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCostoCalculado());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -392,13 +418,15 @@ public class TcManticNotasDetallesDto implements IBaseDto, Serializable {
 		regresar.put("idAplicar", getIdAplicar());
 		regresar.put("declarados", getDeclarados());
 		regresar.put("diferencia", getDiferencia());
+		regresar.put("costoReal", getCostoReal());
+		regresar.put("costoCalculado", getCostoCalculado());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getCodigo(), getUnidadMedida(), getCosto(), getDescuento(), getSat(), getExtras(), getIdNotaEntrada(), getNombre(), getImporte(), getRegistro(), getIva(), getIdNotaDetalle(), getSubTotal(), getCantidad(), getIdArticulo(), getDescuentos(), getImpuestos(), getIdOrdenDetalle(), getCantidades(), getExcedentes(), getIdAplicar(), getDeclarados(), getDiferencia()
+    getCodigo(), getUnidadMedida(), getCosto(), getDescuento(), getSat(), getExtras(), getIdNotaEntrada(), getNombre(), getImporte(), getRegistro(), getIva(), getIdNotaDetalle(), getSubTotal(), getCantidad(), getIdArticulo(), getDescuentos(), getImpuestos(), getIdOrdenDetalle(), getCantidades(), getExcedentes(), getIdAplicar(), getDeclarados(), getDiferencia(), getCostoReal(), getCostoCalculado()
     };
     return regresar;
   }

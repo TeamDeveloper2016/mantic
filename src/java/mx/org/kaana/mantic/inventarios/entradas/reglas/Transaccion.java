@@ -213,8 +213,8 @@ public class Transaccion extends Inventarios implements Serializable {
 			    DaoFactory.getInstance().update(sesion, item);
 				else
 			    DaoFactory.getInstance().insert(sesion, item);
-				if(this.aplicar)
-				  this.toAffectAlmacenes(sesion, this.orden.getIdNotaEntrada(), item, articulo);
+				// if(this.aplicar)
+				//  this.toAffectAlmacenes(sesion, this.orden.getIdNotaEntrada(), item, articulo);
 	  		articulo.setObservacion("ARTICULO SURTIDO EN LA NOTA DE ENTRADA ".concat(this.orden.getConsecutivo()).concat(" EL DIA ").concat(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, this.orden.getRegistro())));
    			DaoFactory.getInstance().updateAll(sesion, TcManticFaltantesDto.class, articulo.toMap());
 			} // if
@@ -313,9 +313,9 @@ public class Transaccion extends Inventarios implements Serializable {
 		// Una vez que la nota de entrada es cambiada a terminar se registra la cuenta por cobrar
 		TcManticEmpresasDeudasDto deuda= null;
 		if(this.orden.getDiasPlazo()> 1) 
-		  deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), this.orden.getDeuda()* -1, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda());
+		  deuda= new TcManticEmpresasDeudasDto(1L, JsfBase.getIdUsuario(), -1L, "", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), (this.orden.getDeuda()- this.orden.getExcedentes())* -1, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes());
 		else
-		  deuda= new TcManticEmpresasDeudasDto(3L, JsfBase.getIdUsuario(), -1L, "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 0D, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda());
+		  deuda= new TcManticEmpresasDeudasDto(3L, JsfBase.getIdUsuario(), -1L, "ESTE DEUDA FUE LIQUIDADA EN EFECTIVO", JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), 0D, this.orden.getIdNotaEntrada(), this.orden.getFechaPago(), this.orden.getDeuda(), this.orden.getDeuda()- this.orden.getExcedentes());
 	  DaoFactory.getInstance().insert(sesion, deuda);
 		
 		TcManticNotasBitacoraDto registro= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());

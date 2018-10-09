@@ -125,7 +125,7 @@ public class Diferencias extends IFilterImportar implements Serializable {
 		String regreso         = "filtro".concat(Constantes.REDIRECIONAR);
 		try {
 			TcManticOrdenesBitacoraDto bitacora= new TcManticOrdenesBitacoraDto(7L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), this.orden.getIdOrdenCompra(), -1L, this.orden.getConsecutivo(), this.orden.getTotal());
-			transaccion = new Transaccion(orden, bitacora);
+			transaccion = new Transaccion(this.orden, bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
     		RequestContext.getCurrentInstance().execute("alert('Se aplicarón las diferencias en la orden de compra.');");
 			else {
@@ -199,12 +199,12 @@ public class Diferencias extends IFilterImportar implements Serializable {
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
 		  params.put(Constantes.SQL_CONDICION, " ");
-			if(seleccionado!= null) {
-				params.put("idOrdenCompra", seleccionado.toLong("idOrdenCompra"));
+			params.put("idOrdenCompra", this.attrs.get("idOrdenCompra"));
+			if(seleccionado!= null) 
 				params.put(Constantes.SQL_CONDICION, " and tc_mantic_notas_detalles.id_articulo= "+ seleccionado.toLong("idArticulo"));
-			} // if
-			else 
-				params.put("idOrdenCompra", this.attrs.get("idOrdenCompra"));
+			else
+				if((Integer)this.attrs.get("tipoDiferencia")!= 0)
+  			  params.put("idOrdenCompra", -1L);
 			if((Integer)this.attrs.get("tipoDiferencia")== 3)
   		  params.put(Constantes.SQL_CONDICION, " and tc_mantic_notas_detalles.id_orden_detalle is null ");
 			params.put("sortOrder", "order by tc_mantic_notas_entradas.consecutivo, tc_mantic_notas_detalles.nombre");

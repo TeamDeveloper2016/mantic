@@ -305,7 +305,9 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getExcedentes(),
 			this.getIdAplicar(),
 			this.getIdOrdenDetalle()== null? this.getSolicitados(): 0D,
-			this.getIdOrdenDetalle()== null? this.getCantidad()- this.getSolicitados(): 0D
+			this.getIdOrdenDetalle()== null? this.getCantidad()- this.getSolicitados(): 0D,
+			this.real,
+			this.calculado
 		);	
 	}
 
@@ -329,7 +331,9 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getCantidad(), 
 			this.getIdComodin(), /*idOrdenDetalle, */
 			this.getIdArticulo(),
-		  this.getExcedentes()
+		  this.getExcedentes(),
+			this.real,
+			this.calculado
 		);
 	}
 	

@@ -21,6 +21,8 @@
 				  setTimeout(PF('kajoolTable').selectRow(0, false), 500);	
 				  $('#kajoolTable .ui-datatable-data').focus();
 				} // if	
+				else
+					populate();
 			}
 		</script>   
 		<style>
@@ -36,6 +38,7 @@
 		</style>
 	</ui:define>
   <ui:define name="contenido">
+		<p:remoteCommand name="populate" actionListener="#{manticComprasOrdenesDiferencias.doRowSelectEvent}" update="notas tabla" process="@this"/>
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div id="collapse-content" class="ui-grid-col-12">
