@@ -208,7 +208,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 	
 	private void toCalculate() {
-		double porcentajeIva = this.getIva()/ 100;       
+		double porcentajeIva = 1+ (this.getIva()/ 100);
 		double costoMoneda   = this.getCosto()* this.tipoDeCambio;
 		double costoReal     = this.getCantidad()* costoMoneda;
 		double utilidad      = (this.getCosto()*this.getCantidad()) - (this.getPrecio()*this.getCantidad());
@@ -225,13 +225,20 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.importes.setExtra(Numero.toRedondearSat(temporal> 0? (this.importes.getImporte()- this.importes.getSubTotal())- this.importes.getDescuento(): 0D));
 
 		if(this.sinIva) {
-	  	this.importes.setIva(Numero.toRedondearSat(this.importes.getSubTotal()- (this.importes.getSubTotal()/(1+ porcentajeIva))));
+	  	this.importes.setIva(Numero.toRedondearSat(this.importes.getSubTotal()- (this.importes.getSubTotal()/ porcentajeIva)));
 	  	this.importes.setSubTotal(Numero.toRedondearSat(this.importes.getSubTotal()- this.importes.getIva()));
 		} // if	
 		else {
-	  	this.importes.setIva(Numero.toRedondearSat((this.importes.getSubTotal()* (1+ porcentajeIva))- this.importes.getSubTotal()));
+	  	this.importes.setIva(Numero.toRedondearSat((this.importes.getSubTotal()* porcentajeIva)- this.importes.getSubTotal()));
 		} // else
-		this.importes.setTotal(Numero.toRedondearSat(this.importes.getSubTotal() + this.importes.getIva()));
+		this.importes.setTotal(Numero.toRedondearSat(this.importes.getSubTotal()+ this.importes.getIva()));
+		
+		// esto es para ajustar los importes quitando el descuento extra que se añade porque no debe de afecta el importe total de la factura
+		this.importes.setIva(Numero.toRedondearSat(this.importes.getIva()+ (this.importes.getExtra()* porcentajeIva- this.importes.getExtra())));
+		this.importes.setSubTotal(Numero.toRedondearSat(this.importes.getSubTotal()+ this.importes.getExtra()));
+		this.importes.setTotal(Numero.toRedondearSat(this.importes.getTotal()+ (this.importes.getExtra()* porcentajeIva)));
+    // termina aqui los ajustes de los descuentos extras que se asignaron a los articulos 		
+		
 		this.setSubTotal(this.importes.getSubTotal());
 		this.setImpuestos(this.importes.getIva());
 		this.setDescuentos(this.importes.getDescuento());		
