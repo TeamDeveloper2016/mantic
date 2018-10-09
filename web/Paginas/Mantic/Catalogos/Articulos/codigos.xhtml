@@ -13,21 +13,18 @@
 		<h:outputScript library="janal" name="zebra/rsvp-3.1.0.min.js"/>
     <h:outputScript library="janal" name="zebra/sha-256.min.js"/>
     <h:outputScript library="janal" name="zebra/qz-tray.js"/>
-    <h:outputScript library="janal" name="core/jquery.janal.zebra.core-0.1.0.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.zebra.core-0.1.5.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
-				'codigos' : {validaciones: 'libre', mascara: 'libre'},
-				'cantidad': {multiple: '$', validaciones: 'entero|mayor({"cuanto": 0})|menor-a({"cual":"tabla\\\\:?\\\\:limite"})', mascara: 'libre'}
-			};	
-			
-			function printCode(codes){
-				janal.bloquear();
-				printEPL(codes);
-				janal.desbloquear();
-			} // printCodes
+				'codigos'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'cantidad'     : {multiple: '$', validaciones: 'entero|mayor({"cuanto": 0})|menor-a({"cual":"tabla\\\\:?\\\\:limite"})', mascara: 'libre', grupo:'general'},
+				'tabla\\:total': {validaciones: 'requerido|mayor({"cuanto":0})', mascara: 'libre', grupo:'general'},
+				'impresora'    : {validaciones: 'requerido', mascara: 'libre', grupo:'impresora', mensaje:'No se detecto la impresora, verificar que este conectada y encendida.'}
+			};										
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
+		<pe:remoteCommand name="executeDoAceptar" process="@form" action="#{manticCatalogosArticulosCodigos.doAceptar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>  
 		<pe:remoteCommand name="locate" process="@this" update="@(.filas) @(.recalculo) @(.inventario)" actionListener="#{manticCatalogosArticulosCodigos.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();setTimeout(jsKardex.locate(), 500);">  
 			<pe:methodSignature parameters="java.lang.String"/>  
 			<pe:methodParam name="codigo"/>  
@@ -42,6 +39,7 @@
 		  				<p:ajax event="change" process="@this" update="@this"/>
 			  		</p:selectBooleanCheckbox>
 					</p:panelGrid>	
+					<p:inputText id="impresora" value=" " style="display: none"/>
 				</div>
 				<div class="ui-grid-col-11">
 					<p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosArticulosCodigos.attrs.custom}" completeMethod="#{manticCatalogosArticulosCodigos.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
@@ -100,18 +98,22 @@
 						<p:column headerText="Quitar" styleClass="janal-wid-col-38 janal-column-center">
 							<p:commandButton icon="fa fa-minus" title="Eliminar articulo" actionListener="#{manticCatalogosArticulosCodigos.doEliminar(row)}" process="@this" update="@(.filas)" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 						</p:column>
-					</p:dataTable>
+						<f:facet name="footer">
+							<p:outputLabel value="Total [#{manticCatalogosArticulosCodigos.articulos.size()}] registros"/>							
+							<p:outputLabel id="total" value="#{manticCatalogosArticulosCodigos.articulos.size()}" style="display: none"/>
+						</f:facet>
+					</p:dataTable>					
 				</div>
 			</div>
 		</div>		
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticCatalogosArticulosCodigos.doAceptar}" onstart="return janal.execute(true) &amp;&amp; confirm('Esta seguro que desea imprimir los códigos ?');" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" onstart="verifyPrinter();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosArticulosCodigos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosArticulosCodigos.doAceptar}" onstart="return janal.execute(true) &amp;&amp; confirm('Esta seguro que desea guardar los cambios ?');" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" onstart="verifyPrinter();" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosArticulosCodigos.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>
 		</div>		
 	</ui:define>
