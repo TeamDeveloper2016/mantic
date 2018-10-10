@@ -4892,7 +4892,7 @@
 			</select>
 			<select id="articulosMasVentas">
 				select
-					id_key, articulo, total, ((total * 100)/(select sum(cantidad) from tc_mantic_ventas inner join tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta and tc_mantic_ventas.id_venta_estatus in (3,4,9) where tc_mantic_ventas.id_venta_estatus in (3,4,9))) porcentaje
+					id_key, articulo, total, ((total * 100)/(select sum(cantidad) from tc_mantic_ventas inner join tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta and tc_mantic_ventas.id_venta_estatus in (3,4,9) where tc_mantic_ventas.id_venta_estatus in (3,4,9) and {condicionGeneral})) porcentaje
 				from(
 				select
 					id_key, articulo, sum(cantidad) total
@@ -4918,7 +4918,7 @@
 			</select>
 			<select id="articulosMasUtilidad">
 				select
-					id_key, articulo, total, ((total * 100)/(select sum(utilidad) from tc_mantic_ventas where tc_mantic_ventas.id_venta_estatus in (3,4,9))) porcentaje
+					id_key, articulo, total, ((total * 100)/(select sum(utilidad) from tc_mantic_ventas where tc_mantic_ventas.id_venta_estatus in (3,4,9) and {condicionGeneral})) porcentaje
 				from(
 				select
 					id_key, articulo, sum(utilidad) total
@@ -4945,7 +4945,7 @@
 			<select id="ventasPorEmpleado">
 				select
 					id_key, nombre, total,
-					((total * 100)/(select count(*) total from tc_mantic_ventas where tc_mantic_ventas.id_venta_estatus in (3,4,9))) porcentaje
+					((total * 100)/(select count(*) total from tc_mantic_ventas where tc_mantic_ventas.id_venta_estatus in (3,4,9) and {condicionGeneral})) porcentaje
 				from (
 				select 
 					tc_mantic_personas.id_persona as id_key,
