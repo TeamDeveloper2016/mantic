@@ -33,6 +33,7 @@ import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
+import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticVentaMedioPagoDto;
@@ -416,6 +417,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			} // if						
 			if(DaoFactory.getInstance().update(sesion, getOrden())>= 1L){
 				regresar= registraBitacora(sesion, getOrden().getIdVenta(), idEstatusVenta, "La venta ha sido finalizada.");				
+				params= new HashMap<>();
+				params.put("idVenta", getOrden().getIdVenta());
+				regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticVentasDetallesDto.class, params)>= 1;
 				toFillArticulos(sesion, this.ventaFinalizada.getArticulos());
 			} // if
 		} // try
