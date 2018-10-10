@@ -33,33 +33,35 @@ public class ArticuloVenta extends Articulo {
 		double porcentajeIva = this.getIva()/ 100;       
 		double costoMoneda   = this.getCosto()* getTipoDeCambio();
 		double costoReal     = this.getCantidad()* costoMoneda;
-		double utilidad      = (this.getCosto()*this.getCantidad()) - (this.getPrecio()*this.getCantidad());
-		getImportes().setImporte(Numero.toRedondear(costoReal));
+		this.getImportes().setImporte(Numero.toRedondear(costoReal));
 		
-		Descuentos descuentos= new Descuentos(getImportes().getImporte(), this.getDescuento().concat(",").concat(this.getExtras()));
+		Descuentos descuentos= new Descuentos(this.getImportes().getImporte(), this.getDescuento().concat(",").concat(this.getExtras()));
 		double temporal= descuentos.toImporte();
-		getImportes().setSubTotal(Numero.toRedondear(temporal<= 0? getImportes().getImporte(): temporal));
+		this.getImportes().setSubTotal(Numero.toRedondear(temporal<= 0? this.getImportes().getImporte(): temporal));
 	  
+		// la utilidad es calculada tomando como base el costo menos los descuento y a eso quitarle el precio de lista
+		double utilidad      = this.getImportes().getSubTotal()- (this.getPrecio()*this.getCantidad());
+		
 		temporal= descuentos.toImporte(this.getDescuento());
-		getImportes().setDescuento(Numero.toRedondear(temporal> 0? getImportes().getImporte()- temporal: 0D));
+		this.getImportes().setDescuento(Numero.toRedondear(temporal> 0? this.getImportes().getImporte()- temporal: 0D));
 		
 		temporal= descuentos.toImporte(this.getExtras());
-		getImportes().setExtra(Numero.toRedondear(temporal> 0? (getImportes().getImporte()- getImportes().getSubTotal())- getImportes().getDescuento(): 0D));
+		this.getImportes().setExtra(Numero.toRedondear(temporal> 0? (this.getImportes().getImporte()- this.getImportes().getSubTotal())- this.getImportes().getDescuento(): 0D));
 
 		if(isSinIva()) {
-	  	getImportes().setIva(Numero.toRedondear(getImportes().getSubTotal()- (getImportes().getSubTotal()/(1+ porcentajeIva))));
-	  	getImportes().setSubTotal(Numero.toRedondear(getImportes().getSubTotal()- getImportes().getIva()));
+	  	this.getImportes().setIva(Numero.toRedondear(this.getImportes().getSubTotal()- (this.getImportes().getSubTotal()/(1+ porcentajeIva))));
+	  	this.getImportes().setSubTotal(Numero.toRedondear(this.getImportes().getSubTotal()- this.getImportes().getIva()));
 		} // if	
 		else {
-	  	getImportes().setIva(Numero.toRedondear((getImportes().getSubTotal()* (1+ porcentajeIva))- getImportes().getSubTotal()));
+	  	this.getImportes().setIva(Numero.toRedondear((this.getImportes().getSubTotal()* (1+ porcentajeIva))- this.getImportes().getSubTotal()));
 		} // else
-		getImportes().setTotal(Numero.toRedondear(getImportes().getSubTotal() + getImportes().getIva()));
-		this.setSubTotal(getImportes().getSubTotal());
-		this.setImpuestos(getImportes().getIva());
-		this.setDescuentos(getImportes().getDescuento());		
-		this.setDescuentoDescripcion(!Cadena.isVacio(this.getDescuento()) && !this.getDescuento().equals("0") ? this.getDescuento().concat("% [ $").concat(String.valueOf(getImportes().getDescuento())).concat(" ] ") : "0");
-		this.setExcedentes(getImportes().getExtra());
-		this.setImporte(Numero.toRedondear(getImportes().getTotal()));
+		this.getImportes().setTotal(Numero.toRedondear(this.getImportes().getSubTotal() + this.getImportes().getIva()));
+		this.setSubTotal(this.getImportes().getSubTotal());
+		this.setImpuestos(this.getImportes().getIva());
+		this.setDescuentos(this.getImportes().getDescuento());		
+		this.setDescuentoDescripcion(!Cadena.isVacio(this.getDescuento()) && !this.getDescuento().equals("0") ? this.getDescuento().concat("% [ $").concat(String.valueOf(this.getImportes().getDescuento())).concat(" ] ") : "0");
+		this.setExcedentes(this.getImportes().getExtra());
+		this.setImporte(Numero.toRedondear(this.getImportes().getTotal()));
 		this.setUtilidad(utilidad);
 		this.toDiferencia();
 	}

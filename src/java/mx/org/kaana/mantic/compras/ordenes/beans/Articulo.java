@@ -235,12 +235,14 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		double porcentajeIva = 1+ (this.getIva()/ 100);
 		double costoMoneda   = this.getCosto()* this.tipoDeCambio;
 		double costoReal     = this.getCantidad()* costoMoneda;
-		double utilidad      = (this.getCosto()*this.getCantidad()) - (this.getPrecio()*this.getCantidad());
 		this.importes.setImporte(Numero.toRedondearSat(costoReal));
 		
 		Descuentos descuentos= new Descuentos(this.importes.getImporte(), this.getDescuento().concat(",").concat(this.getExtras()));
 		double temporal= descuentos.toImporte();
 		this.importes.setSubTotal(Numero.toRedondearSat(temporal<= 0? this.importes.getImporte(): temporal));
+		
+		// la utilidad es calculada tomando como base el costo menos los descuento y a eso quitarle el precio de lista
+		double utilidad      = this.importes.getSubTotal()- (this.getPrecio()*this.getCantidad());
 	  
 		temporal= descuentos.toImporte(this.getDescuento());
 		this.importes.setDescuento(Numero.toRedondearSat(temporal> 0? this.importes.getImporte()- temporal: 0D));
