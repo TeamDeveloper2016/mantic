@@ -197,7 +197,91 @@ public final class Totales implements Serializable {
 	public void addCantidad(double cantidad) {
 		this.cantidad+= cantidad;
 	}
+	
+	public double getImporteDosDecimales() {
+		return Numero.toRedondear(importe);
+	}
 
+	public String getImporteDosDecimales$() {
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(importe));
+	}
+	
+	public void setImporteDosDecimales(double importe) {
+		this.importe=importe;
+	}
+	
+	public double getIvaDosDecimales() {
+		return Numero.toRedondear(iva);
+	}
+
+	public String getIvaDosDecimales$() {
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(iva));
+	}
+
+	public void setIvaDosDecimales(double iva) {
+		this.iva=iva;
+	}
+	
+	public double getDescuentoDosDecimales() {
+		return Numero.toRedondear(descuento);
+	}
+
+	public String getDescuentoDosDecimales$() {
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(descuento));
+	}
+
+	public void setDescuentoDosDecimales(double descuento) {
+		this.descuento=descuento;
+	}
+	
+	public double getExtraDosDecimales() {
+		return Numero.toRedondear(extra);
+	}
+
+	public String getExtraDosDecimales$() {
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(extra));
+	}
+
+	public void setExtraDosDecimales(double extra) {
+		this.extra=extra;
+	}
+	
+	public double getSubTotalDosDecimales() {
+		return Numero.toRedondear(subTotal);
+	}
+
+	public String getSubTotalDosDecimales$() {
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(subTotal));
+	}
+
+	public void setSubTotalDosDecimales(double subTotal) {
+		this.subTotal=subTotal;
+	}
+	
+	public double getTotalDosDecimales() {
+		return Numero.toRedondear(total);
+	}
+
+	public String getTotalDosDecimales$() {
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(total));
+	}
+
+	public void setTotalDosDecimales(double total) {
+		this.total=total;
+	}
+	
+	public double getDescuentosDosDecimales() {
+		return Numero.toRedondear(this.descuento+ this.extra);
+	}
+	
+	public String getGlobalDosDecimales$() {
+		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(global));
+	}
+
+	public void setGlobalDosDecimales(double global) {
+		this.global = global;
+	}
+	
 	public void reset() {
 	  this.articulos= 0;
 		this.descuento= 0;
