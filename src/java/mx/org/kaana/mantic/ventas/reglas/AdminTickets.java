@@ -8,9 +8,9 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.mantic.ventas.beans.TicketVenta;
-import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.comun.IAdminArticulos;
+import mx.org.kaana.mantic.ventas.beans.TicketVenta;
+import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -34,21 +34,24 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 	}
 	
 	public AdminTickets(TicketVenta orden, boolean loadDefault) throws Exception {
+		List<ArticuloVenta> arts= null;
 		this.orden  = orden;
 		if(this.orden.isValid()) {
-  	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaTcManticVentasDetallesDto", "detalle", orden.toMap()));
+			arts=(List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticVentasDetallesDto", "detalle", orden.toMap());
+  	  this.setArticulos(arts);
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
       this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdCliente())));
 		}	// if
 		else	{
-		  this.setArticulos(new ArrayList<>());
+			arts= new ArrayList<>();
+		  this.setArticulos(arts);
 			this.orden.setConsecutivo(1L);
 			this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
 			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.orden.setIdAlmacen(JsfBase.getAutentifica().getEmpresa().getIdAlmacen());
 		} // else	
 		if(loadDefault)
-			this.getArticulos().add(new Articulo(-1L));
+			this.getArticulos().add(new ArticuloVenta(-1L));
 		this.toCalculate();
 	}
 
