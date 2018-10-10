@@ -203,9 +203,9 @@ function	findPrinter(query, set) {
 	});
 }
 
-function printCode(codes){
+function printCode(codes, title){
 	janal.bloquear();
-	printEPL(codes);
+	printEPL(codes, title);
 	janal.desbloquear();
 } // printCodes
 
@@ -228,7 +228,7 @@ function findPrinters() {
 	}).catch(displayError);
 }
 		/// Raw Printers ///
-function printEPL(code) {	
+function printEPL(code, title) {	
 	var config = getUpdatedConfig();
 	var codes= code.split('~');
 	$.each(codes, function(index, value){
@@ -236,7 +236,7 @@ function printEPL(code) {
 		var printData = [
 			'N\n',
 			'B372,152,2,1,5,15,97,B,"'+value+'"\n',
-			'A262,181,2,4,1,1,N,"BONANZA"\n',
+			'A372,181,2,4,1,1,N,"'+title+'"\n',
 			'\nP1,1\n'						
 		];
 		qz.print(config, printData).catch(function(){
