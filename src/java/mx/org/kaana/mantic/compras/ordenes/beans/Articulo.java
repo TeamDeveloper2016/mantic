@@ -169,6 +169,30 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		return calculado;
 	}
 
+	public void setCalculado(double calculado) {
+		this.calculado = calculado;
+	}	
+	
+	public Double getDiferenciaReal() {
+		return this.diferencia;
+	}
+	
+	public void setDiferencia(double diferencia) {
+		this.diferencia = diferencia;
+	}
+
+	public void setReal(double real) {
+		this.real = real;
+	}	
+
+	public boolean isSinIva() {
+		return sinIva;
+	}
+
+	public double getTipoDeCambio() {
+		return tipoDeCambio;
+	}
+	
 	public String getCostoMayorMenor() {
 		String color     = this.diferencia< -5? "janal-color-orange": this.diferencia> 5? "janal-color-blue": "janal-color-green";
 		boolean display  = this.diferencia!= 0D;
@@ -207,7 +231,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.idProveedor = idProvedores;
 	}
 	
-	private void toCalculate() {
+	protected void toCalculate() {
 		double porcentajeIva = 1+ (this.getIva()/ 100);
 		double costoMoneda   = this.getCosto()* this.tipoDeCambio;
 		double costoReal     = this.getCantidad()* costoMoneda;
@@ -278,7 +302,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		return Numero.toRedondearSat(this.diferencia);
 	}
 		
-	private void toDiferencia() {
+	protected void toDiferencia() {
 		Descuentos descuentos= new Descuentos(this.getCosto(), this.getDescuento());
 		double value  = descuentos.toImporte();
 		this.calculado= Numero.toRedondearSat(value== 0? this.getCosto(): value);
