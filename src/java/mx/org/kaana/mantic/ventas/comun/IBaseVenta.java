@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
@@ -16,6 +17,8 @@ import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -24,10 +27,12 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
+import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.comun.IAdminArticulos;
 import mx.org.kaana.mantic.comun.IBaseCliente;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
+import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
@@ -473,4 +478,150 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable{
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doActivarDescuento
+	
+	@Override
+	protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
+		ArticuloVenta temporal= (ArticuloVenta) getAdminOrden().getArticulos().get(index);
+		Map<String, Object> params= new HashMap<>();
+		try {
+			if(articulo.size()> 1) {
+				this.doSearchArticulo(articulo.toLong("idArticulo"), index);
+				params.put("idArticulo", articulo.toLong("idArticulo"));
+				params.put("idProveedor", getAdminOrden().getIdProveedor());
+				params.put("idAlmacen", getAdminOrden().getIdAlmacen());
+				temporal.setKey(articulo.toLong("idArticulo"));
+				temporal.setIdArticulo(articulo.toLong("idArticulo"));
+				temporal.setIdProveedor(getAdminOrden().getIdProveedor());
+				temporal.setIdRedondear(articulo.toLong("idRedondear"));
+				Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
+				temporal.setCodigo(codigo== null? "": codigo.toString());
+				temporal.setPropio(articulo.toString("propio"));
+				temporal.setNombre(articulo.toString("nombre"));
+				temporal.setValor(articulo.toDouble(getPrecio()));
+				temporal.setCosto(articulo.toDouble(getPrecio()));
+				temporal.setIva(articulo.toDouble("iva"));				
+				temporal.setSat(articulo.get("sat").getData()!= null ? articulo.toString("sat") : "");				
+				temporal.setDescuento(getAdminOrden().getDescuento());
+				temporal.setExtras(getAdminOrden().getExtras());				
+				// SON ARTICULOS QUE ESTAN EN LA FACTURA MAS NO EN LA ORDEN DE COMPRA
+				if(articulo.containsKey("descuento")) 
+				  temporal.setDescuento(articulo.toString("descuento"));
+				if(articulo.containsKey("cantidad")) {
+				  temporal.setCantidad(articulo.toDouble("cantidad"));
+				  temporal.setSolicitados(articulo.toDouble("cantidad"));
+				} // if	
+				if(temporal.getCantidad()< 1D)					
+					temporal.setCantidad(1D);
+				temporal.setUltimo(this.attrs.get("ultimo")!= null);
+				temporal.setSolicitado(this.attrs.get("solicitado")!= null);
+				temporal.setUnidadMedida(articulo.toString("unidadMedida"));
+				temporal.setPrecio(articulo.toDouble("precio"));				
+				Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
+				temporal.setStock(stock== null? 0D: stock.toDouble());
+				if(index== getAdminOrden().getArticulos().size()- 1) {
+					getAdminOrden().getArticulos().add(new ArticuloVenta(-1L));
+					RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (getAdminOrden().getArticulos().size()- 1)+ ");");
+				} // if	
+				RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
+				getAdminOrden().toCalculate();
+			} // if	
+			else
+				temporal.setNombre("<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
+		} // try
+		finally {
+			Methods.clean(params);
+		}
+	}
+	
+	@Override
+	public void doUpdateSolicitado(Long idArticulo) {
+		List<Columna> columns= null;
+    try {
+			if(idArticulo!= null)
+  			this.attrs.put("idArticulo", idArticulo);
+			columns= new ArrayList<>();
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("moneda", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+			Entity solicitado= (Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "solicitado", this.attrs);
+			if(solicitado!= null) {
+		     Descuentos descuentos= new Descuentos(solicitado.toDouble("costo"), solicitado.toString("descuento").concat(",").concat("extra"));
+		     Value value= new Value("real", Numero.toRedondear(descuentos.toImporte()== 0? solicitado.toDouble("costo"):  descuentos.toImporte()));
+				 solicitado.put("real", value);
+		     descuentos= new Descuentos(solicitado.toDouble("costo"), solicitado.toString("descuento"));
+		     value     = new Value("calculado", Numero.toRedondear(descuentos.toImporte()== 0? solicitado.toDouble("costo"):  descuentos.toImporte()));
+				 solicitado.put("calculado", value);
+			} // if
+      this.attrs.put("solicitado", solicitado!= null? UIBackingUtilities.toFormatEntity(solicitado, columns): null);
+    } // try
+    catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+    }// finally
+	}
+	
+	@Override
+	public void doUpdateInformacion(Long idArticulo) {
+    try {
+			if(idArticulo!= null)
+			  this.attrs.put("idArticulo", idArticulo);
+			Entity ultimoPrecio= (Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "ultimo", this.attrs);
+			if(ultimoPrecio!= null && !ultimoPrecio.isEmpty()) {
+				Descuentos descuentos= new Descuentos(ultimoPrecio.toDouble("costo"), ultimoPrecio.toString("descuento").concat(",").concat("extra"));
+				Value calculo= new Value("real", Numero.toRedondear(descuentos.toImporte()== 0? ultimoPrecio.toDouble("costo"):  descuentos.toImporte()));
+				ultimoPrecio.put("real", calculo);
+				descuentos= new Descuentos(ultimoPrecio.toDouble("costo"), ultimoPrecio.toString("descuento"));
+				calculo   = new Value("calculado", Numero.toRedondear(descuentos.toImporte()== 0? ultimoPrecio.toDouble("costo"):  descuentos.toImporte()));
+				ultimoPrecio.put("calculado", calculo);
+				for (Value value : ultimoPrecio.values()) {
+				  if("|costo|".indexOf(value.getName())> 0)
+						value.setData(Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, Numero.toRedondear(value.toDouble())));
+					else
+            if("|registro|".indexOf(value.getName())> 0) 
+					    value.setData(Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, value.toTimestamp()));						
+  					else
+              if("|stock|".indexOf(value.getName())> 0) 
+		  			    value.setData(Global.format(EFormatoDinamicos.NUMERO_CON_DECIMALES, value.toDouble()));						
+				} // for
+			} // if	
+ 		  this.attrs.put("ultimo", ultimoPrecio);
+    } // try
+    catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	}
+	
+	@Override
+	public void toLoadFaltantes() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
+			params.put("idProveedor", this.getAdminOrden().getIdProveedor());
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("minimo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("maximo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      this.attrs.put("faltantes", UIEntity.build("VistaOrdenesComprasDto", "faltantes", params, columns));
+    } // try
+    catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(params);
+      Methods.clean(columns);
+    }// finally
+	}
 }
