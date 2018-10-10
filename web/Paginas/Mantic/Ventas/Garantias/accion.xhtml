@@ -247,13 +247,13 @@
 										<p:outputLabel for="articulos" value="Articulos:"/>
 										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasGarantiasAccion.adminOrden.totales.articulos}"/>
 										<p:outputLabel value="Descuento:"/>
-										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasGarantiasAccion.adminOrden.totales.descuento$}"/>
+										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasGarantiasAccion.adminOrden.totales.descuentoDosDecimales$}"/>
 										<p:outputLabel value="Subtotal:"/>
-										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasGarantiasAccion.adminOrden.totales.subTotal$}"/>
+										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasGarantiasAccion.adminOrden.totales.subTotalDosDecimales$}"/>
 										<p:outputLabel value="IVA:"/>
-										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasGarantiasAccion.adminOrden.totales.iva$}"/>
+										<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasGarantiasAccion.adminOrden.totales.ivaDosDecimales$}"/>
 										<p:outputLabel for="total" value="Total:" styleClass="janal-total-compra janal-color-orange"/>
-										<p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticVentasGarantiasAccion.adminOrden.totales.total$}"/>
+										<p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticVentasGarantiasAccion.adminOrden.totales.totalDosDecimales$}"/>
 									</p:panelGrid>
 								</p:panelGrid>
 							</p:panelGrid>
@@ -261,7 +261,7 @@
 					</div>
 				</div>
 				<p:inputText id="articulos" value="#{manticVentasGarantiasAccion.adminOrden.totales.articulos}" style="display:none"/>
-				<p:inputText id="total" styleClass="recalculo" value="#{manticVentasGarantiasAccion.adminOrden.totales.total}" style="display:none"/>					
+				<p:inputText id="total" styleClass="recalculo" value="#{manticVentasGarantiasAccion.adminOrden.totales.totalDosDecimales}" style="display:none"/>					
 			</p:tab>						
 		</p:tabView>				
 		<p:dialog id="dialogoLimiteCaja" widgetVar="dlgLimiteCaja" header="Limite de efectivo en caja" resizable="false" closable="false" responsive="true" width="40%">
@@ -408,10 +408,10 @@
 					<p:spacer/><p:spacer/><p:spacer/><p:spacer/><p:spacer/>
 					<p:outputLabel value="Descuento" styleClass="font-resume-venta-detail"/>
 					<p:outputLabel value="$"/>
-					<p:outputLabel value="#{manticVentasGarantiasAccion.attrs.pago.totales.descuento$}"/>				
+					<p:outputLabel value="#{manticVentasGarantiasAccion.attrs.pago.totales.descuentoDosDecimales$}"/>				
 					<p:outputLabel value="Total:" styleClass="font-resume-venta-detail janal-color-orange"/>
 					<p:outputLabel value="$" styleClass="janal-color-orange"/>
-					<p:outputLabel value="#{manticVentasGarantiasAccion.attrs.pago.totales.total$}" styleClass="janal-color-orange"/>								
+					<p:outputLabel value="#{manticVentasGarantiasAccion.attrs.pago.totales.totalDosDecimales$}" styleClass="janal-color-orange"/>								
 					<p:spacer/><p:spacer/><p:spacer/>
 				</h:panelGrid>				
 				<h:panelGrid columns="1" styleClass="janal-wid-100">

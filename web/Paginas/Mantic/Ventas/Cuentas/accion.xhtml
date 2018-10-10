@@ -224,20 +224,20 @@
 								<p:outputLabel for="articulos" value="Articulos:"/>
 								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCuentasAccion.adminOrden.totales.articulos}"/>
 								<p:outputLabel value="Descuento:"/>
-								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCuentasAccion.adminOrden.totales.descuento$}"/>
+								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCuentasAccion.adminOrden.totales.descuentoDosDecimales$}"/>
 								<p:outputLabel value="Global:"/>
-								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCuentasAccion.adminOrden.totales.global$}"/>
+								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCuentasAccion.adminOrden.totales.globalDosDecimales$}"/>
 								<p:outputLabel value="Subtotal:"/>
-								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCuentasAccion.adminOrden.totales.subTotal$}"/>
+								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCuentasAccion.adminOrden.totales.subTotalDosDecimales$}"/>
 								<p:outputLabel value="IVA:"/>
-								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCuentasAccion.adminOrden.totales.iva$}"/>
+								<p:outputLabel styleClass="janal-wid-100-txt recalculo" value="#{manticVentasCuentasAccion.adminOrden.totales.ivaDosDecimales$}"/>
 								<p:outputLabel for="total" value="Total:" styleClass="janal-total-compra janal-color-orange"/>
-								<p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticVentasCuentasAccion.adminOrden.totales.total$}"/>
+								<p:outputLabel styleClass="janal-wid-100-txt recalculo janal-total-compra janal-color-orange" value="$ #{manticVentasCuentasAccion.adminOrden.totales.totalDosDecimales$}"/>
 							</p:panelGrid>
 						</p:panelGrid>
 					</p:panelGrid>
 					<p:inputText id="articulos" value="#{manticVentasCuentasAccion.adminOrden.totales.articulos}" styleClass="recalculo" style="display:none"/>
-          <p:inputText id="total" value="#{manticVentasCuentasAccion.adminOrden.totales.total}" styleClass="recalculo" style="display:none"/>
+          <p:inputText id="total" value="#{manticVentasCuentasAccion.adminOrden.totales.totalDosDecimales}" styleClass="recalculo" style="display:none"/>
 				</div>
 			</div>
 		</div>																
