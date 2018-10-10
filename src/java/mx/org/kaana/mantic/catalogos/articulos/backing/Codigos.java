@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.procesos.acceso.beans.Sucursal;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -148,6 +149,7 @@ public class Codigos extends IBaseAttribute implements Serializable {
 		String[] codes = null;
 		String code    = "";
 		Long size      = 0L;
+		String title   = "";
     try {			
 			if(!this.articulos.isEmpty()){
 				for(CodigoArticulo codigo: this.articulos)
@@ -161,7 +163,11 @@ public class Codigos extends IBaseAttribute implements Serializable {
 				} // for
 				this.attrs.put("codes", codes);
 				code= code.substring(0, code.length()-1);
-				RequestContext.getCurrentInstance().execute("printCode('"+code+"');");
+				for(Sucursal sucursal: JsfBase.getAutentifica().getSucursales()){
+					if(sucursal.isMatriz())
+						title= sucursal.getTitulo();
+				} // for					
+				RequestContext.getCurrentInstance().execute("printCode('"+code+"','"+title+"');");
 				regresar= ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
 			} // if
 			else
