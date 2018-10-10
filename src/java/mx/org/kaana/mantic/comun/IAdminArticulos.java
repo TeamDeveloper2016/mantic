@@ -41,8 +41,8 @@ public abstract class IAdminArticulos implements Serializable {
 		return articulos;
 	}
 
-	public void setArticulos(List<Articulo> articulos) {
-		this.articulos=articulos;
+	public void setArticulos(List<? extends Articulo> articulos) {
+		this.articulos= (List<Articulo>) articulos;
 	}
 
 	public List<Articulo> getFiltrados() {
