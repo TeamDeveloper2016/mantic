@@ -21,16 +21,17 @@
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:consecutivo'    : {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:factura'        : {validaciones: 'requerido', mascara: 'texto', formatos: 'cambiar-mayusculas', grupo: 'general'},
-				'contenedorGrupos\\:fechaFactura'   : {validaciones: 'requerido|fecha', mascara: 'fecha', grupo: 'general'},
-				'contenedorGrupos\\:fechaRecepcion' : {validaciones: 'requerido|fecha', mascara: 'fecha', grupo: 'general'},
-				'contenedorGrupos\\:diasPlazo'      : {validaciones: 'requerido|entero|mayor-igual({"cuanto": 0})', mascara: 'entero', grupo: 'general'},			
-				'contenedorGrupos\\:fechaPago'      : {validaciones: 'requerido|fecha', mascara: 'fecha', grupo: 'general'},
-				'contenedorGrupos\\:deuda'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', formatos: 'sat', individual: true, grupo: 'general'},			
-				'contenedorGrupos\\:idAlmacen'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:idProveedor'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true},
-				'contenedorGrupos\\:comentarios'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general', individual: true}
+				'contenedorGrupos\\:factura'        : {validaciones: 'requerido', mascara: 'texto', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:fechaFactura'   : {validaciones: 'requerido|fecha', mascara: 'fecha'},
+				'contenedorGrupos\\:fechaRecepcion' : {validaciones: 'requerido|fecha', mascara: 'fecha'},
+				'contenedorGrupos\\:diasPlazo'      : {validaciones: 'requerido|entero|mayor-igual({"cuanto": 0})', mascara: 'entero'},			
+				'contenedorGrupos\\:fechaPago'      : {validaciones: 'requerido|fecha', mascara: 'fecha'},
+				'contenedorGrupos\\:extra'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})|menor-a({"cual": "contenedorGrupos\\\\:deuda"})', mascara: 'libre', formatos:'precio', individual: true},			
+				'contenedorGrupos\\:deuda'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', formatos:'precio', individual: true},			
+				'contenedorGrupos\\:idAlmacen'      : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:idProveedor'    : {validaciones: 'requerido', mascara: 'libre'},
+				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:comentarios'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
 			};			
     	$(document).ready(function() {
 				setTimeout("janal.readingMode('#{manticCatalogosEmpresasCuentasAccion.attrs.nombreAccion}')", 500);
@@ -96,6 +97,8 @@
 								<p:inputText id="diasPlazo" styleClass="janal-wid-100-txt janal-column-right involucrados" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.diasPlazo}">
 									<p:ajax event="blur" listener="#{manticCatalogosEmpresasCuentasAccion.doCalculateFechaPago}" process="@this" update="fechaPago"/>
 								</p:inputText>
+								<p:outputLabel for="extra" value="Descuento extra:"/>
+								<p:inputText id="extra" styleClass="recalculo janal-wid-100-txt janal-column-right" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.excedentes}"/>
 								<p:outputLabel for="deuda" value="Deuda:"/>
 								<p:inputText id="deuda" styleClass="recalculo janal-wid-100-txt janal-column-right" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.deuda}"/>
 								<p:outputLabel for="fechaPago" value="Fecha de pago:"/>

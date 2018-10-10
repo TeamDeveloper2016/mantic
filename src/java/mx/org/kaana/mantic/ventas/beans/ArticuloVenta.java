@@ -7,26 +7,17 @@ import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 
-public class ArticuloVenta extends Articulo{	
+public class ArticuloVenta extends Articulo {	
 	
 	private static final long serialVersionUID = -7272868284456340705L;
 
 	public ArticuloVenta() {
-		super();
-	} // ArticuloCaja
+	}
 
 	public ArticuloVenta(Long key) {
 		super(key);
-	} // ArticuloCaja
-	
-	public ArticuloVenta(boolean sinIva, double tipoDeCambio, String nombre, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Double cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos, Long idProveedor, boolean ultimo, boolean solicitado, double stock, Double excedentes, String sat, String unidadMedida) {
-		super(sinIva, tipoDeCambio, nombre, codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos, idProveedor, ultimo, solicitado, stock, excedentes, sat, unidadMedida);
-	} // ArticuloCaja
+	}
 
-	public ArticuloVenta(boolean sinIva, double tipoDeCambio, String nombre, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Double cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos, Long idProveedor, boolean ultimo, boolean solicitado, double stock, Double excedentes, String sat, String unidadMedida, Long idAplicar) {
-		super(sinIva, tipoDeCambio, nombre, codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos, idProveedor, ultimo, solicitado, stock, excedentes, sat, unidadMedida, idAplicar);
-	} // ArticuloCaja
-	
 	@Override
 	public Double getImporte() {
     return Numero.toRedondear(super.getImporte());

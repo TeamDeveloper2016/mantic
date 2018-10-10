@@ -41,10 +41,11 @@ import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import org.primefaces.context.RequestContext;
 
 
-public abstract class IBaseVenta extends IBaseCliente implements Serializable{
+public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 
-	private static final long serialVersionUID = 4853975930464243369L;
-	protected static final String INDIVIDUAL= "1";
+	private static final long serialVersionUID= 4853975930464243369L;
+	protected static final String INDIVIDUAL  = "1";
+	
 	protected SaldoCliente saldoCliente;
 	private FormatLazyModel almacenes;
 	

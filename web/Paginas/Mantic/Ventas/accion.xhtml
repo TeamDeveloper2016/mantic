@@ -53,7 +53,7 @@
 		</script>   
 		<style type="text/css">
 			.janal-total-compra {
-				font-size: 30px !important;
+				font-size: 25px !important;
 				font-weight: bold !important;
 				font-style: italic;	
 			}			
@@ -77,7 +77,7 @@
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
-		<pe:remoteCommand name="refresh" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticVentasAccion.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.next();">  
+		<pe:remoteCommand name="refresh" process="@this @(.filas)" update="@(.filas) @(.recalculo)" actionListener="#{manticVentasAccion.doCalculate}" onstart="return janal.bloquear();" oncomplete="janal.reset(); janal.desbloquear();">  
 			<pe:methodSignature parameters="java.lang.Integer"/>  
 			<pe:methodParam name="index"/>  
 		</pe:remoteCommand>		
@@ -211,7 +211,7 @@
 												<f:facet name="itemtip">
 													<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
 														<f:facet name="header" class="TexAlCenter">
-															<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30" style="cursor:zoom-in;"/>
+															<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30" height="30" style="cursor:zoom-in;"/>
 														</f:facet>
 														<h:outputText value="Código:" />
 														<h:outputText value="#{custom.propio}" />
@@ -277,7 +277,7 @@
 						<p:panelGrid id="panelTotales" columns="1" layout="grid" styleClass="janal-wid-99" columnClasses="janal-wid-100">
 							<p:panel header="Imagen" styleClass="TexAlCenter janal-wid-100-txt" style="height:100%">
                 <a id="source-image" data-magnify="gallery" data-caption="#{manticVentasAccion.attrs.descripcion}" data-group="icon-image" href="" title="Click para ver más grande la imagen">
-								  <p:graphicImage id="icon-image" cache="false" value="#{manticVentasAccion.image}" styleClass="janal-logo-mini filas" width="50" stream="false"/>
+								  <p:graphicImage id="icon-image" cache="false" value="#{manticVentasAccion.image}" styleClass="janal-logo-mini filas" width="85" height="85" stream="false"/>
 								</a>	
 								<br/>
 								<p:outputLabel value="#{manticVentasAccion.attrs.idArticulo}.jpg" styleClass="filas"/>
