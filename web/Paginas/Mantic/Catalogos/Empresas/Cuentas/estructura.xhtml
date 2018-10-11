@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Estructura de documentos de la orden de compra" />
+  <ui:define name="librerias">
+    <script type="text/javascript">
+      Janal.Control.fields = {        
+      };												
+      
+			function methodExecute(item, method) {
+        $(item).parent().parent().click();
+        switch(method){
+          case 'consultar':
+            consultar();
+            break;
+          case 'detalle':
+            detalle();
+            break;          
+        } // switch       
+      } // methodExecute			     
+			
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
+    </script>		
+		<style type="text/css">
+			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield{
+				width:225% !important;
+			}						
+      .ui-organigram-node {
+        font-size: 13px !important;
+        border-radius: 10px !important;
+      }
+      .descripcion-nodo{
+        font-size: smaller !important; 
+      }
+      .descripcion-titulo{
+        font-size: smaller !important; 
+        font-weight: bold !important;
+				color: blue !important;
+      }      
+			.janal-align-right-icon {
+				position: relative !important;
+				float: right !important;
+				margin-right: -10px !important;
+			}
+			.ui-outputlabel, table tbody tr td {
+					color: black !important;
+			}
+	  </style>		
+  </ui:define>
+  <ui:define name="contenido">  
+		<p:remoteCommand name="consultar" onstart="return janal.bloquear();" process="@this tabla" action="#{manticEmpresasCuentasEstructura.doAccion}"/>
+    <p:remoteCommand name="detalle" onstart="return janal.bloquear();" process="@this tabla" actionListener="#{manticEmpresasCuentasEstructura.doConsultarDetalle}" update="dialogoDetalle"/>    
+		<p:commandButton id="descargar" value="Descargar documentos" icon="fa fa-download" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" title="Descargar todas las facturas" oncomplete="janal.desbloquear();" process="@this" style="display: none">
+			<p:fileDownload value="#{manticEmpresasCuentasEstructura.doExportar()}" />
+		</p:commandButton>
+    <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+      <div class="ui-grid-row janal-grid-row">                 
+        <div id="collapse-content" class="ui-grid-col-12">
+          <p:tree id="tabla" value="#{manticEmpresasCuentasEstructura.tree}" var="node" selectionMode="single" selection="#{manticEmpresasCuentasEstructura.node}" orientation="horizontal" styleClass="tabla-filtro" dynamic="true">
+						<p:ajax event="expand" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();" listener="#{manticEmpresasCuentasEstructura.onNodeExpand}" process="@this tabla" update=":datos:tabla"/>            
+						<p:treeNode type="cuenta">		
+							<h:outputText value="CUENTA POR PAGAR" class="descripcion-titulo"/>
+							 <h:panelGrid columns="2" styleClass="janal-wid-col-170" columnClasses=" ,janal-column-right">
+								<p:spacer/><p:spacer/>
+								<p:outputLabel value="Proveedor:" styleClass="descripcion-titulo"/>
+								<p:outputLabel value="#{node.proveedor}" styleClass="descripcion-nodo"/>																
+								<p:outputLabel value="Consecutivo:" styleClass="descripcion-titulo"/>
+								<p:outputLabel value="#{node.consecutivo}" styleClass="descripcion-nodo"/>																
+								<p:outputLabel value="Importe:" styleClass="descripcion-titulo"/>
+								<p:outputLabel value="$ #{manticEmpresasCuentasEstructura.doNumericoSat(node.importe)}" styleClass="descripcion-nodo"/>								
+								<p:outputLabel value="Saldo:" styleClass="descripcion-titulo"/>
+								<p:outputLabel value="$ #{manticEmpresasCuentasEstructura.doNumericoSat(node.saldo)}" styleClass="descripcion-nodo"/>																
+								<p:spacer/><p:spacer/>
+							</h:panelGrid>							
+							<div id="icons" class="janal-align-right-icon">
+								<i class="fa fa-download" onclick="$('#descargar').click();" title="Documentos" style="display: #{manticEmpresasCuentasEstructura.files.size() eq 0? 'none': ''}"></i>								
+								<i class="fa fa-list-alt" onclick="methodExecute(this, 'detalle');" title="Detalle"></i>								
+								<i class="fa fa-search" onclick="methodExecute(this, 'consultar');" title="Consultar"></i>
+							</div>  
+							<p:spacer/>							
+						</p:treeNode>                  
+						<p:treeNode type="pago">
+							<h:outputText value="PAGO" class="descripcion-titulo"/>
+							 <h:panelGrid columns="2" styleClass="janal-wid-col-170" columnClasses=" ,janal-column-right">
+								<p:spacer/><p:spacer/>
+								<p:outputLabel value="Clave:" styleClass="descripcion-titulo"/>
+								<p:outputLabel value="#{node.clave}" styleClass="descripcion-nodo"/>	
+								<p:outputLabel value="Tipo pago:" styleClass="descripcion-titulo"/>
+								<p:outputLabel value="#{node.nombre}" styleClass="descripcion-nodo"/>								
+								<p:outputLabel value="Importe:" styleClass="descripcion-titulo"/>
+								<p:outputLabel value="$ #{manticEmpresasCuentasEstructura.doNumericoSat(node.pago)}" styleClass="descripcion-nodo"/>																
+								<p:spacer/><p:spacer/>
+							</h:panelGrid>							
+							<div id="icons" class="janal-align-right-icon">								
+								<i class="fa fa-list-alt" onclick="methodExecute(this,'detalle');" title="Detalle"></i>								
+							</div>  
+							<p:spacer/>							
+						</p:treeNode>            						       						
+					</p:tree>		   
+					<p:outputLabel value="Cantidad de documentos asociados a la orden de compra: &lt;strong class='janal-color-blue' &gt;#{manticEmpresasCuentasEstructura.files.size()}&lt;/strong&gt;" escape="false"/>
+        </div>
+      </div>
+    </div>
+		<p:dialog id="dialogoDetalle" widgetVar="dlgDetalle" header="Detalle del documento" closable="true" resizable="false" dynamic="true" closeOnEscape="true" onHide="janal.desbloquear();" position="center" width="600px">
+			<h:panelGrid columns="2" styleClass="janal-col-100" columnClasses="janal-wid-col-130, janal-wid-100">
+        <p:outputLabel value="Consecutivo: " style="font-weight: bold"/>
+        <p:inputText value="#{manticEmpresasCuentasEstructura.attrs.detalle.consecutivo}" styleClass="janal-wid-100-txt" readonly="true"/>                        
+        <p:outputLabel value="Proveedor: " style="font-weight: bold" rendered="#{!manticEmpresasCuentasEstructura.attrs.isPrincipal}"/>
+        <p:inputText value="#{manticEmpresasCuentasEstructura.attrs.detalle.proveedor}" styleClass="janal-wid-100-txt"  readonly="true" rendered="#{!manticEmpresasCuentasEstructura.attrs.isPrincipal}"/>
+        <p:outputLabel value="Importe: " style="font-weight: bold"/>
+        <p:inputText value="$ #{manticEmpresasCuentasEstructura.doNumericoSat(manticEmpresasCuentasEstructura.attrs.detalle.importe)}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>        
+        <p:outputLabel value="Saldo " style="font-weight: bold"/>
+        <p:inputText value="$ #{manticEmpresasCuentasEstructura.doNumericoSat(manticEmpresasCuentasEstructura.attrs.detalle.saldo)}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>                																
+        <p:outputLabel value="Pago " style="font-weight: bold" rendered="#{manticEmpresasCuentasEstructura.attrs.isPrincipal}"/>
+        <p:inputText value="$ #{manticEmpresasCuentasEstructura.doNumericoSat(manticEmpresasCuentasEstructura.attrs.detalle.pago)}" styleClass="janal-wid-100-txt janal-column-right" readonly="true" rendered="#{manticEmpresasCuentasEstructura.attrs.isPrincipal}"/>                																
+				<p:outputLabel value="Tipo de pago: " style="font-weight: bold" rendered="#{manticEmpresasCuentasEstructura.attrs.isPrincipal}"/>
+        <p:inputText value="#{manticEmpresasCuentasEstructura.attrs.detalle.nombre}" styleClass="janal-wid-100-txt" rendered="#{manticEmpresasCuentasEstructura.attrs.isPrincipal}" readonly="true"/>
+			</h:panelGrid>
+      <hr class="ui-widget-content"/>
+      <div class="janal-column-right">
+        <p:commandButton id="cerrarDetalle" icon="fa fa-close" value="Cerrar" onstart="PF('dlgDetalle').hide();" update="tabla"/>
+      </div>
+    </p:dialog>
+  </ui:define>   
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticEmpresasCuentasEstructura.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" onstart="return execute(true);" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticEmpresasCuentasEstructura.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<p:dialog modal="true" widgetVar="statusDialog" header="Estatus de la descarga del archivo" draggable="false" closable="false" resizable="false">
+			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
+		</p:dialog>		
+	</ui:define>
+  <ui:param name="componenteBloqueo" value="tabla"/>  	
+</ui:composition>
