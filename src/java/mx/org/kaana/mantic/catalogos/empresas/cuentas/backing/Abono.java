@@ -25,6 +25,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
+import mx.org.kaana.mantic.enums.ETipoMediosPago;
 
 @Named(value = "manticCatalogosEmpresasCuentasAbono")
 @ViewScoped
@@ -39,8 +40,12 @@ public class Abono extends IBaseFilter implements Serializable {
       this.attrs.put("sortOrder", "order by	tc_mantic_empresas_deudas.registro desc");
       this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa"));     
       this.attrs.put("idEmpresaDeuda", JsfBase.getFlashAttribute("idEmpresaDeuda"));     
+      this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));  
+			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
+			this.attrs.put("mostrarBanco", false);
 			loadTiposPagos();
-			loadClienteDeuda();
+			loadBancos();
+			loadProveedorDeuda();
 			doLoad();
     } // try
     catch (Exception e) {
@@ -49,7 +54,29 @@ public class Abono extends IBaseFilter implements Serializable {
     } // catch		
   } // init
 
-	private void loadClienteDeuda() throws Exception{
+	private void loadBancos(){
+		List<UISelectEntity> bancos= null;
+		Map<String, Object> params = null;
+		List<Columna> campos       = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			campos= new ArrayList<>();
+			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			bancos= UIEntity.build("TcManticBancosDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("bancos", bancos);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadBancos
+	
+	private void loadProveedorDeuda() throws Exception{
 		Entity deuda             = null;
 		Map<String, Object>params= null;
 		try {
@@ -93,13 +120,21 @@ public class Abono extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad
 
-	public String doRegresar() {	  
-		return "saldos".concat(Constantes.REDIRECIONAR);
+	public String doRegresar() {
+		String regresar= null;
+		if(this.attrs.get("retorno")!= null){
+			JsfBase.setFlashAttribute("idEmpresaDeuda", this.attrs.get("idEmpresaDeuda"));
+			regresar= this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR);
+		} // if
+		else
+			regresar=	"saldos".concat(Constantes.REDIRECIONAR);
+		return regresar;
 	} // doRegresar
 	
 	public void doRegistrarPago(){
 		Transaccion transaccion      = null;
 		TcManticEmpresasPagosDto pago= null;
+		boolean tipoPago             = false;
 		try {
 			if(validaPago()){
 				pago= new TcManticEmpresasPagosDto();
@@ -108,10 +143,11 @@ public class Abono extends IBaseFilter implements Serializable {
 				pago.setObservaciones(this.attrs.get("observaciones").toString());
 				pago.setPago(Double.valueOf(this.attrs.get("pago").toString()));
 				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
-				transaccion= new Transaccion(pago);
+				tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
+				transaccion= new Transaccion(pago, -1L, Long.valueOf(this.attrs.get("idEmpresa").toString()), tipoPago ? -1 : Long.valueOf(this.attrs.get("banco").toString()), tipoPago ? "" : this.attrs.get("referencia").toString(), false);
 				if(transaccion.ejecutar(EAccion.AGREGAR)){
 					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta", ETipoMensaje.INFORMACION);
-					loadClienteDeuda();
+					loadProveedorDeuda();
 				} // if
 				else
 					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
@@ -125,7 +161,7 @@ public class Abono extends IBaseFilter implements Serializable {
 		} // catch		
 	} // doRegistrarPago
 	
-	private boolean validaPago(){
+	private boolean validaPago(){		
 		boolean regresar= false;
 		Double pago     = 0D;
 		Double saldo    = 0D;
@@ -135,7 +171,7 @@ public class Abono extends IBaseFilter implements Serializable {
 			if(pago > 0D){
 				deuda= (Entity) this.attrs.get("deuda");
 				saldo= Double.valueOf(deuda.toString("saldo"));
-				regresar= pago<= saldo;
+				regresar= pago<= (saldo * -1);
 			} // if
 		} // try
 		catch (Exception e) {		
@@ -149,7 +185,7 @@ public class Abono extends IBaseFilter implements Serializable {
 		Map<String, Object>params      = null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			params.put(Constantes.SQL_CONDICION, "id_cobro_caja=1");
 			tiposPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
 			this.attrs.put("tiposPagos", tiposPagos);
 			this.attrs.put("tipoPago", UIBackingUtilities.toFirstKeySelectEntity(tiposPagos));
@@ -158,4 +194,16 @@ public class Abono extends IBaseFilter implements Serializable {
 			throw e;
 		} // catch		
 	} // loadTiposPagos
+	
+	public void doValidaTipoPago(){
+		Long tipoPago= -1L;
+		try {
+			tipoPago= Long.valueOf(this.attrs.get("tipoPago").toString());
+			this.attrs.put("mostrarBanco", !ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(tipoPago));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doValidaTipoPago
 }
