@@ -261,4 +261,20 @@ public class Saldos extends IBaseFilter implements Serializable {
 		} // catch		
 		return regresar;
 	} // doPago
+	
+	public String doEstructura(){
+		String regresar    = null;
+		Entity seleccionado= null;
+		try {
+			seleccionado= (Entity) this.attrs.get("seleccionado");
+			JsfBase.setFlashAttribute("idEmpresaDeuda", seleccionado.getKey());
+			JsfBase.setFlashAttribute("idEmpresa", seleccionado.toString("idEmpresa"));
+			regresar= "estructura".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		return regresar;
+	} // doEstructura
 }
