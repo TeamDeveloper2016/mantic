@@ -4861,7 +4861,7 @@
 					tc_mantic_empresas_deudas.id_empresa_deuda as id_key,
 					tc_mantic_proveedores.razon_social as proveedor,
 					tc_mantic_empresas_deudas.importe,
-					tc_mantic_empresas_deudas.saldo
+					(tc_mantic_empresas_deudas.saldo * -1) saldo
 				from 
 					tc_mantic_empresas_deudas				
 				inner join 
