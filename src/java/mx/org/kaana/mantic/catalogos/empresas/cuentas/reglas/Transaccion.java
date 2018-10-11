@@ -117,9 +117,13 @@ public class Transaccion extends IBaseTnx{
 		TcManticEmpresasDeudasDto deuda= null;
 		Double saldo                   = 0D;
 		try {
+			if(!this.pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
+				this.pago.setReferencia(this.referencia);
+				this.pago.setIdBanco(this.idBanco);
+			} // if
 			if(DaoFactory.getInstance().insert(sesion, this.pago)>= 1L){
 				deuda= (TcManticEmpresasDeudasDto) DaoFactory.getInstance().findById(sesion, TcManticEmpresasDeudasDto.class, this.pago.getIdEmpresaDeuda());
-				saldo= deuda.getSaldo() - this.pago.getPago();
+				saldo= deuda.getSaldo() + this.pago.getPago();
 				deuda.setSaldo(saldo);
 				deuda.setIdEmpresaEstatus(saldo.equals(0L) ? 3L : 2L);
 				regresar= DaoFactory.getInstance().update(sesion, deuda)>= 1L;
