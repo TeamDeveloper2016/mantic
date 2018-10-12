@@ -103,17 +103,11 @@
 							</f:facet>
 							<h:outputText value="#{row['consecutivo']}"/>
 						</p:column>														
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-13" sortBy="#{row.nombre}">
-							<f:facet name="header">
-								<h:outputText value="Empresa"/>
-							</f:facet>
-							<h:outputText value="#{row['nombre']}"/>
-						</p:column>											
 						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.proveedor}">
 							<f:facet name="header">
 								<h:outputText value="Proveedor"/>
 							</f:facet>
-							<h:outputText value="#{row['proveedor']}"/>
+							<h:outputText value="#{row['proveedor']}" title="Empresa: #{row['nombre']}"/>
 						</p:column>											
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.factura}">
 							<f:facet name="header">
@@ -123,10 +117,16 @@
 						</p:column>
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
 							<f:facet name="header">
-								<h:outputText value="Importe"/>
+								<h:outputText value="Documento"/>
 							</f:facet>
 							<h:outputText value="#{row['importe']}"/>
 						</p:column>
+						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.pagar}">
+							<f:facet name="header">
+								<h:outputText value="Deuda"/>
+							</f:facet>
+							<h:outputText value="#{row['pagar']}"/>
+						</p:column>											
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.saldo}">
 							<f:facet name="header">
 								<h:outputText value="Saldo"/>

@@ -69,6 +69,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 			params.put("proveedor", this.attrs.get("proveedor"));			
       columns= new ArrayList<>();
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
+      columns.add(new Columna("pagar", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
       columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));    
       columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));    
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    

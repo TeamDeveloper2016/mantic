@@ -164,6 +164,17 @@ public class Accion extends IBaseArticulos implements Serializable {
     } // finally
 	}
 
+	private Date toCalculateFechaEstimada(Calendar fechaEstimada, int tipoDia, int dias) {
+		fechaEstimada.set(Calendar.DATE, fechaEstimada.get(Calendar.DATE)+ dias);
+		if(tipoDia== 2) {
+			fechaEstimada.add(Calendar.DATE, ((int)(dias/5)* 2));
+			int dia= fechaEstimada.get(Calendar.DAY_OF_WEEK);
+			dias= dia== Calendar.SUNDAY? 1: dia== Calendar.SATURDAY? 2: 0;
+			fechaEstimada.add(Calendar.DATE, dias);
+		} // if
+		return new Date(fechaEstimada.getTimeInMillis());
+	}
+	
 	private void toLoadCondiciones(UISelectEntity proveedor) {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
@@ -174,21 +185,16 @@ public class Accion extends IBaseArticulos implements Serializable {
   		params.put("idProveedor", proveedor.getKey());
       this.attrs.put("condiciones", UIEntity.build("VistaOrdenesComprasDto", "condiciones", params, columns));
 			List<UISelectEntity> condiciones= (List<UISelectEntity>) this.attrs.get("condiciones");
-			if(!condiciones.isEmpty())
-				((OrdenCompra)this.getAdminOrden().getOrden()).setExtras(condiciones.get(0).toString("descuento"));
+			if(!condiciones.isEmpty()) {
+        ((OrdenCompra)this.getAdminOrden().getOrden()).setDescuento(condiciones.get(0).toString("descuento"));
+        this.doUpdatePorcentaje();
+				if(this.accion.equals(EAccion.AGREGAR))
+				  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkProveedorPago(condiciones.get(0));
+				else
+				  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkProveedorPago(condiciones.get(condiciones.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedorPago())));
+			} // if	
 			this.attrs.put("proveedor", proveedor);
-      ((OrdenCompra)this.getAdminOrden().getOrden()).setDescuento(proveedor.toString("descuento"));
-	    Calendar fechaEstimada= Calendar.getInstance();
-			int tipoDia= proveedor.toInteger("idTipoDia");
-			int dias   = proveedor.toInteger("dias");
-	    fechaEstimada.set(Calendar.DATE, fechaEstimada.get(Calendar.DATE)+ dias);
-			if(tipoDia== 2) {
-		    fechaEstimada.add(Calendar.DATE, ((int)(dias/5)* 2));
-			  int dia= fechaEstimada.get(Calendar.DAY_OF_WEEK);
-			  dias= dia== Calendar.SUNDAY? 1: dia== Calendar.SATURDAY? 2: 0;
-		    fechaEstimada.add(Calendar.DATE, dias);
-			} // if
-			((OrdenCompra)this.getAdminOrden().getOrden()).setEntregaEstimada(new Date(fechaEstimada.getTimeInMillis()));
+			((OrdenCompra)this.getAdminOrden().getOrden()).setEntregaEstimada(this.toCalculateFechaEstimada(Calendar.getInstance(), proveedor.toInteger("idTipoDia"), proveedor.toInteger("dias")));
 			this.checkDevolucionesPendientes(proveedor.getKey());
     } // try
     catch (Exception e) {
@@ -306,5 +312,14 @@ public class Accion extends IBaseArticulos implements Serializable {
 			Methods.clean(pendientes);
 		} // finally
 	}
+
+  public void doUpdatePlazo() {
+		if(((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedorPago()!= null) {
+			List<UISelectEntity> condiciones= (List<UISelectEntity>) this.attrs.get("condiciones");
+      ((OrdenCompra)this.getAdminOrden().getOrden()).setIkProveedorPago(condiciones.get(condiciones.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedorPago())));
+      ((OrdenCompra)this.getAdminOrden().getOrden()).setDescuento(((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedorPago().toString("descuento"));
+      this.doUpdatePorcentaje();
+		} // if
+	}	
 	
 }

@@ -20,6 +20,7 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
 	
 	private UISelectEntity ikAlmacen;
 	private UISelectEntity ikProveedor;
+  private UISelectEntity ikProveedorPago;
 	private UISelectEntity ikOrdenCompra;
 
 	public NotaEntrada() {
@@ -31,11 +32,11 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
 	}
 
 	public NotaEntrada(Long key, Long idOrdenCompra) {
-		super(0D, null, "0.00", idOrdenCompra, 1L, new Date(Calendar.getInstance().getTimeInMillis()), "0.00", key, new Date(Calendar.getInstance().getTimeInMillis()), 1L, new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", 0D, "", 1L, -1L, 0D, 0D, 1D, 2L, "", -1L, 1L, 0D, 30L, new Date(Calendar.getInstance().getTimeInMillis()), 0D);
+		super(0D, null, "0.00", idOrdenCompra, 1L, new Date(Calendar.getInstance().getTimeInMillis()), "0.00", key, new Date(Calendar.getInstance().getTimeInMillis()), 1L, new Long(Calendar.getInstance().get(Calendar.YEAR)), Calendar.getInstance().get(Calendar.YEAR)+ "00000", 0D, "", 1L, -1L, 0D, 0D, 1D, 2L, "", -1L, 1L, 0D, 30L, new Date(Calendar.getInstance().getTimeInMillis()), 0D, -1L);
 	}
 
-	public NotaEntrada(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idDirecta, Date fechaRecepcion, String extras, Long idNotaEntrada, Date fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subTotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes) {
-		super(descuentos, idProveedor, descuento, idOrdenCompra, idDirecta, fechaRecepcion, extras, idNotaEntrada, fechaFactura, idNotaEstatus, ejercicio, consecutivo, total, factura, idUsuario, idAlmacen, subTotal, impuestos, tipoDeCambio, idSinIva, observaciones, idEmpresa, orden, excedentes, 30L, new Date(Calendar.getInstance().getTimeInMillis()), 0D);
+	public NotaEntrada(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idDirecta, Date fechaRecepcion, String extras, Long idNotaEntrada, Date fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subTotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes, Long idProveedorPago) {
+		super(descuentos, idProveedor, descuento, idOrdenCompra, idDirecta, fechaRecepcion, extras, idNotaEntrada, fechaFactura, idNotaEstatus, ejercicio, consecutivo, total, factura, idUsuario, idAlmacen, subTotal, impuestos, tipoDeCambio, idSinIva, observaciones, idEmpresa, orden, excedentes, 30L, new Date(Calendar.getInstance().getTimeInMillis()), 0D, idProveedorPago);
 	}
 
 	public UISelectEntity getIkAlmacen() {
@@ -58,6 +59,16 @@ public class NotaEntrada extends TcManticNotasEntradasDto implements Serializabl
 		  this.setIdProveedor(this.ikProveedor.getKey());
 	}
 
+	public UISelectEntity getIkProveedorPago() {
+		return ikProveedorPago;
+	}
+
+	public void setIkProveedorPago(UISelectEntity ikProveedorPago) {
+		this.ikProveedorPago=ikProveedorPago;
+		if(this.ikProveedorPago!= null)
+		  this.setIdProveedorPago(this.ikProveedorPago.getKey());
+	}
+	
 	public UISelectEntity getIkOrdenCompra() {
 		return ikOrdenCompra;
 	}

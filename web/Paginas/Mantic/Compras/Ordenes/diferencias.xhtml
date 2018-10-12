@@ -196,8 +196,15 @@
               <f:facet name="header">
                 <h:outputText value="Costo"/>
               </f:facet>
-              <h:outputLabel value="&lt;span class='#{row['color']}' style='float:left;'&gt;[#{row['porcentaje']}%]&lt;/span&gt;" escape="false"/>
-              <h:outputText value="#{row['costo']}"/>
+							<div class="ui-grid-row janal-grid-row">
+								<div class="ui-grid-col-12 janal-column-right" style="padding-right: 14px;">
+									<h:outputLabel value="&lt;span class='#{row['color']}' style='float:left;'&gt;[#{row['porcentaje']}%]&lt;/span&gt;" escape="false"/>
+									<h:outputText value="#{row['costoCalculado']}"/>
+								</div>	 
+								<div style="width: 10px; margin-left: -4px; margin-top: 1px;">
+									<h:outputText value="#{manticComprasOrdenesDiferencias.doCostos(row)}" escape="false"/>
+								 </div>
+							</div>	
             </p:column>		
             <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.cantidad}">
               <f:facet name="header">

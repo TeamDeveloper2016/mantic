@@ -65,6 +65,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 	private EOrdenes tipoOrden;
 	private boolean aplicar;
 	private TcManticProveedoresDto proveedor;
+	private Calendar fechaEstimada;
 
 	public String getValidacion() {
 		return this.tipoOrden.equals(EOrdenes.NORMAL)? "libre": "requerido";
@@ -122,6 +123,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
+			this.fechaEstimada= Calendar.getInstance();
 			doLoad();
     } // try
     catch (Exception e) {
@@ -144,8 +146,9 @@ public class Accion extends IBaseArticulos implements Serializable {
 					else {
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkAlmacen(new UISelectEntity(new Entity(ordenCompra.getIdAlmacen())));
 						((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(new UISelectEntity(new Entity(ordenCompra.getIdProveedor())));
+						((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedorPago(new UISelectEntity(new Entity(ordenCompra.getIdProveedorPago())));
+						this.fechaEstimada.setTimeInMillis(ordenCompra.getRegistro().getTime());
 					} // else	
-					this.doCalculateFechaPago();
           break;
         case MODIFICAR:					
         case CONSULTAR:					
@@ -237,8 +240,13 @@ public class Accion extends IBaseArticulos implements Serializable {
 				  index= proveedores.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor());
 				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedor(proveedores.get(index));
 				} // else
-		    this.attrs.put("proveedor", proveedores.get(index));
+        UISelectEntity temporal= proveedores.get(index);
+				temporal.put("fechaEstimada", new Value("fechaEstimada", Global.format(EFormatoDinamicos.FECHA_CORTA, this.toCalculateFechaEstimada(this.fechaEstimada, temporal.toInteger("idTipoDia"), temporal.toInteger("dias")))));
+		    this.attrs.put("proveedor", temporal);
 			  this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, ((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor().getKey());
+  			this.toLoadCondiciones(new UISelectEntity(new Entity(this.proveedor.getIdProveedor())));
+				if(this.accion.equals(EAccion.AGREGAR))
+					this.doCalculateFechaPago();
 			} // if	
 			if(this.attrs.get("idOrdenCompra")!= null) {
         columns.add(new Columna("total", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
@@ -265,8 +273,11 @@ public class Accion extends IBaseArticulos implements Serializable {
 				this.getAdminOrden().toCalculate();
 			} // if	
 			List<UISelectEntity> proveedores= (List<UISelectEntity>)this.attrs.get("proveedores");
-			UISelectEntity proveedor= ((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor();
-			this.attrs.put("proveedor", proveedores.get(proveedores.indexOf(proveedor)));
+			UISelectEntity temporal= ((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor();
+			temporal= proveedores.get(proveedores.indexOf(temporal));
+			temporal.put("fechaEstimada", new Value("fechaEstimada", this.toCalculateFechaEstimada(this.fechaEstimada, temporal.toInteger("idTipoDia"), temporal.toInteger("dias"))));
+			this.attrs.put("proveedor", temporal);
+			this.toLoadCondiciones(proveedores.get(proveedores.indexOf((UISelectEntity)((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedor())));
 			this.doCalculateFechaPago();
 		}	
 	  catch (Exception e) {
@@ -274,6 +285,47 @@ public class Accion extends IBaseArticulos implements Serializable {
 			JsfBase.addMessageError(e);
     } // catch   
 	} 
+	
+	private Date toCalculateFechaEstimada(Calendar fechaEstimada, int tipoDia, int dias) {
+		fechaEstimada.set(Calendar.DATE, fechaEstimada.get(Calendar.DATE)+ dias);
+		if(tipoDia== 2) {
+			fechaEstimada.add(Calendar.DATE, ((int)(dias/5)* 2));
+			int dia= fechaEstimada.get(Calendar.DAY_OF_WEEK);
+			dias= dia== Calendar.SUNDAY? 1: dia== Calendar.SATURDAY? 2: 0;
+			fechaEstimada.add(Calendar.DATE, dias);
+		} // if
+		return new Date(fechaEstimada.getTimeInMillis());
+	}
+
+  private void toLoadCondiciones(UISelectEntity proveedor) {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("idProveedor", proveedor.getKey());
+      this.attrs.put("condiciones", UIEntity.build("VistaOrdenesComprasDto", "condiciones", params, columns));
+			List<UISelectEntity> condiciones= (List<UISelectEntity>) this.attrs.get("condiciones");
+			if(!condiciones.isEmpty()) {
+				if(this.accion.equals(EAccion.AGREGAR) && ((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago()== null)
+				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedorPago(condiciones.get(0));
+				else
+				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedorPago(condiciones.get(condiciones.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago())));
+				((NotaEntrada)this.getAdminOrden().getOrden()).setDiasPlazo(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago().toLong("plazo")+ 1);
+        ((NotaEntrada)this.getAdminOrden().getOrden()).setDescuento(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago().toString("descuento"));
+        this.doUpdatePorcentaje();
+			} // if
+    } // try
+    catch (Exception e) {
+			Error.mensaje(e);
+			//JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}
 
 	public void doUpdateAlmacen() {
 		if(this.tipoOrden.equals(EOrdenes.ALMACEN)) {
@@ -505,5 +557,16 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // finally
 	  return regresar;	
 	}
+	
+  public void doUpdatePlazo() {
+		if(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago()!= null) {
+			List<UISelectEntity> condiciones= (List<UISelectEntity>) this.attrs.get("condiciones");
+      ((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedorPago(condiciones.get(condiciones.indexOf(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago())));
+			((NotaEntrada)this.getAdminOrden().getOrden()).setDiasPlazo(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago().toLong("plazo")+ 1);
+      this.doCalculateFechaPago();		
+      ((NotaEntrada)this.getAdminOrden().getOrden()).setDescuento(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago().toString("descuento"));
+			this.doUpdatePorcentaje();
+		}
+	}	
 	
 }

@@ -335,12 +335,12 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			  this.attrs.put("idArticulo", idArticulo);
 			Entity ultimoPrecio= (Entity)DaoFactory.getInstance().toEntity("VistaOrdenesComprasDto", "ultimo", this.attrs);
 			if(ultimoPrecio!= null && !ultimoPrecio.isEmpty()) {
-				Descuentos descuentos= new Descuentos(ultimoPrecio.toDouble("costo"), ultimoPrecio.toString("descuento").concat(",").concat("extra"));
-				Value calculo= new Value("real", Numero.toRedondearSat(descuentos.toImporte()== 0? ultimoPrecio.toDouble("costo"):  descuentos.toImporte()));
-				ultimoPrecio.put("real", calculo);
-				descuentos= new Descuentos(ultimoPrecio.toDouble("costo"), ultimoPrecio.toString("descuento"));
-				calculo   = new Value("calculado", Numero.toRedondearSat(descuentos.toImporte()== 0? ultimoPrecio.toDouble("costo"):  descuentos.toImporte()));
-				ultimoPrecio.put("calculado", calculo);
+//				Descuentos descuentos= new Descuentos(ultimoPrecio.toDouble("costo"), ultimoPrecio.toString("descuento").concat(",").concat("extra"));
+//				Value calculo= new Value("real", Numero.toRedondearSat(descuentos.toImporte()== 0? ultimoPrecio.toDouble("costo"):  descuentos.toImporte()));
+//				ultimoPrecio.put("real", calculo);
+//				descuentos= new Descuentos(ultimoPrecio.toDouble("costo"), ultimoPrecio.toString("descuento"));
+//				calculo   = new Value("calculado", Numero.toRedondearSat(descuentos.toImporte()== 0? ultimoPrecio.toDouble("costo"):  descuentos.toImporte()));
+//				ultimoPrecio.put("calculado", calculo);
 				for (Value value : ultimoPrecio.values()) {
 				  if("|costo|".indexOf(value.getName())> 0)
 						value.setData(Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(value.toDouble())));

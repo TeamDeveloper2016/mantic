@@ -30,6 +30,7 @@
 				'contenedorGrupos\\:deuda'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', formatos: 'sat', individual: true, grupo: 'general'},			
 				'contenedorGrupos\\:idAlmacen'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:idProveedor'    : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				'contenedorGrupos\\:idProveedorPago': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:articulos'      : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
 				'contenedorGrupos\\:total'          : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'general'},			
 				'contenedorGrupos\\:tipoDeCambio'   : {validaciones: 'flotante|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'articulo'},			
@@ -206,7 +207,7 @@
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
 								<p:selectOneMenu id="idProveedor" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="contains" disabled="#{not manticInventariosEntradasAccion.isDirecta}">
-									<p:ajax event="change" listener="#{manticInventariosEntradasAccion.doUpdateProveedor}" update="datosArticulos" process="@form" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="change" listener="#{manticInventariosEntradasAccion.doUpdateProveedor}" update="idProveedorPago datosArticulos tabla @(.recalculo)" process="@form" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{manticInventariosEntradasAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -218,7 +219,51 @@
 										<h:outputText value="#{item.diasEntrega}"/>
 									</p:column>   
 								</p:selectOneMenu>
+								<p:outputLabel for="idProveedorPago" value="Condición de pago:"/>
+								<p:selectOneMenu id="idProveedorPago" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikProveedorPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99" effect="fade" filter="true" filterMatchMode="contains">
+									<p:ajax event="change" listener="#{manticInventariosEntradasAccion.doUpdatePlazo}" update="datosProveedor datosArticulos diasPlazo fechaPago tabla @(.recalculo)" process="@this"/>
+									<f:selectItems value="#{manticInventariosEntradasAccion.attrs.condiciones}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombre}"/>
+									</p:column>   
+									<p:column styleClass="janal-column-right" headerText="Descuento otorgado">
+										<h:outputText value="#{item.descuento}"/>
+									</p:column>   
+									<p:column styleClass="janal-column-right" headerText="Plazo en día para pagar">
+										<h:outputText value="#{item.plazo}"/>
+									</p:column>   
+								</p:selectOneMenu>
               </p:panelGrid>
+							<p:separator/>
+							<p:panelGrid id="datosProveedor" columns="6" layout="grid" styleClass="janal-wid-100">		
+								<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
+									<p:outputLabel for="moneda" value="Tipo de moneda:"/>
+									<p:inputText id="moneda" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.attrs.proveedor.moneda}" readonly="true"/>
+								</p:panelGrid>	
+								<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
+									<p:outputLabel for="tipoProveedor" value="Tipo proveedor:"/>
+									<p:inputText id="tipoProveedor" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.attrs.proveedor.tipoProveedor}" readonly="true"/>
+								</p:panelGrid>
+								<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-column-right">	
+									<p:outputLabel for="tipoDia" value="Dias plazo entrega: "/>
+									<p:inputText id="tipoDia" styleClass="janal-wid-100-txt" value="#{manticInventariosEntradasAccion.attrs.proveedor.dias}" readonly="true"/>
+								</p:panelGrid>
+								<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
+									<p:outputLabel for="dias" value="Entrega estimada: "/>
+									<p:inputText id="dias" styleClass="janal-wid-100-txt janal-column-center" value="#{manticInventariosEntradasAccion.attrs.proveedor.fechaEstimada}" readonly="true"/>
+								</p:panelGrid>
+								<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
+									<p:outputLabel for="excedente" value="Descuento otorgado: "/>
+									<p:inputText id="excedente" styleClass="janal-wid-100-txt janal-column-right" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikProveedorPago.descuento}%" readonly="true"/>
+								</p:panelGrid>
+								<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">	
+									<p:outputLabel for="plazo" value="Dias plazo para pagar: "/>
+									<p:inputText id="plazo" styleClass="janal-wid-100-txt janal-column-right" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikProveedorPago.plazo}" readonly="true"/>
+								</p:panelGrid>
+							</p:panelGrid>								
 						</p:tab>						            						            																																																
 						<p:tab title="Articulos">
 							<div class="ui-grid ui-grid-responsive" style="rfovelow-y:hidden;">

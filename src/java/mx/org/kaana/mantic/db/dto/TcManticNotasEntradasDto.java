@@ -35,6 +35,8 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   private Double excedentes;
   @Column (name="id_proveedor")
   private Long idProveedor;
+  @Column (name="id_proveedor_pago")
+  private Long idProveedorPago;
   @Column (name="descuento")
   private String descuento;
   @Column (name="id_orden_compra")
@@ -93,11 +95,11 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   }
 
   public TcManticNotasEntradasDto(Long key) {
-    this(null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 30L, new Date(Calendar.getInstance().getTimeInMillis()), 0D);
+    this(null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null, new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, 30L, new Date(Calendar.getInstance().getTimeInMillis()), 0D, null);
     setKey(key);
   }
 
-  public TcManticNotasEntradasDto(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idNotaTipo, Date fechaRecepcion, String extras, Long idNotaEntrada, Date fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subTotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes, Long diasPlazo, Date fechaPago, Double deuda) {
+  public TcManticNotasEntradasDto(Double descuentos, Long idProveedor, String descuento, Long idOrdenCompra, Long idNotaTipo, Date fechaRecepcion, String extras, Long idNotaEntrada, Date fechaFactura, Long idNotaEstatus, Long ejercicio, String consecutivo, Double total, String factura, Long idUsuario, Long idAlmacen, Double subTotal, Double impuestos, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes, Long diasPlazo, Date fechaPago, Double deuda, Long idProveedorPago) {
     setDescuentos(descuentos);
     setExcedentes(excedentes);
     setIdProveedor(idProveedor);
@@ -126,6 +128,7 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
     setDiasPlazo(diasPlazo);
     setFechaPago(fechaPago);
     setDeuda(deuda);
+		this.idProveedorPago= idProveedorPago;
 	}
 
   public void setDescuentos(Double descuentos) {
@@ -151,6 +154,14 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   public Long getIdProveedor() {
     return idProveedor;
   }
+
+	public Long getIdProveedorPago() {
+		return idProveedorPago;
+	}
+
+	public void setIdProveedorPago(Long idProveedorPago) {
+		this.idProveedorPago=idProveedorPago;
+	}
 
   public void setDescuento(String descuento) {
     this.descuento = descuento;
@@ -373,6 +384,8 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdProveedor());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdProveedorPago());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDescuento());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdOrdenCompra());
@@ -432,6 +445,7 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
 		regresar.put("descuentos", getDescuentos());
 		regresar.put("excedentes", getExcedentes());
 		regresar.put("idProveedor", getIdProveedor());
+		regresar.put("idProveedorPago", getIdProveedorPago());
 		regresar.put("descuento", getDescuento());
 		regresar.put("idOrdenCompra", getIdOrdenCompra());
 		regresar.put("idNotaTipo", getIdNotaTipo());
@@ -463,7 +477,7 @@ public class TcManticNotasEntradasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescuentos(), getIdProveedor(), getDescuento(), getIdOrdenCompra(), getIdNotaTipo(), getFechaRecepcion(), getExtras(), getIdNotaEntrada(), getFechaFactura(), getIdNotaEstatus(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getFactura(), getIdUsuario(), getIdAlmacen(), getSubTotal(), getImpuestos(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden(), getExcedentes(), getDiasPlazo(), getFechaPago(), getDeuda()
+    getDescuentos(), getIdProveedor(), getIdProveedorPago(), getDescuento(), getIdOrdenCompra(), getIdNotaTipo(), getFechaRecepcion(), getExtras(), getIdNotaEntrada(), getFechaFactura(), getIdNotaEstatus(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getFactura(), getIdUsuario(), getIdAlmacen(), getSubTotal(), getImpuestos(), getTipoDeCambio(), getIdSinIva(), getObservaciones(), getIdEmpresa(), getOrden(), getExcedentes(), getDiasPlazo(), getFechaPago(), getDeuda()
     };
     return regresar;
   }

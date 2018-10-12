@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
@@ -195,7 +196,7 @@ public class Diferencias extends IFilterImportar implements Serializable {
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_SIN_DECIMALES));      
-      columns.add(new Columna("costo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));      
+      columns.add(new Columna("costoCalculado", EFormatoDinamicos.NUMERO_SAT_DECIMALES));      
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       columns.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
 		  params.put(Constantes.SQL_CONDICION, " ");
@@ -267,4 +268,11 @@ public class Diferencias extends IFilterImportar implements Serializable {
 		this.doLoad();
 	}	
 
+	public String doCostos(Entity row) {
+		String regresar= "<i class='fa fa-fw fa-question-circle janal-color-green' style='float:right;' title='\n\nCosto: "+ Global.format(EFormatoDinamicos.NUMERO_SAT_DECIMALES, row.toDouble("costo"))+ 
+			"\nCosto real: "+ Global.format(EFormatoDinamicos.NUMERO_SAT_DECIMALES, row.toDouble("costoReal"))+ 
+			"\nCosto calculado: " + row.toString("costoCalculado")+ "'\n\n'></i>";
+		return regresar;
+	}
+	
 }
