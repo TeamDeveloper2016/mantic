@@ -46,6 +46,7 @@ import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.ventas.caja.beans.Pago;
 import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
+import mx.org.kaana.mantic.ventas.caja.reglas.CreateTicket;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import org.primefaces.context.RequestContext;
@@ -165,6 +166,7 @@ public class Accion extends IBaseVenta implements Serializable {
     String regresar        = null;
 		Boolean validarCredito = true;
 		Boolean creditoVenta   = null;
+		CreateTicket ticket    = null;
     try {	
 			creditoVenta= (Boolean) this.attrs.get("creditoVenta");
 			if(creditoVenta)
@@ -172,6 +174,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			if(validarCredito){
 				transaccion = new Transaccion(loadVentaFinalizada());
 				if (transaccion.ejecutar(EAccion.REPROCESAR)) {
+					ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), "VENTA DE MOSTRADOR");
+					RequestContext.getCurrentInstance().execute("imprimirTicket('" + ((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
 					regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
 					JsfBase.addMessage("Se finalizo el pago del ticket de venta.", ETipoMensaje.INFORMACION);
 					this.setAdminOrden(new AdminTickets(new TicketVenta()));
