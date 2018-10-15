@@ -226,8 +226,8 @@ public class CreateTicket {
 			regresar.append("<tr style=\"border-collapse: collapse;\">");			
 			regresar.append("<td style=\"font-size: 8px;width: 70px;max-width: 35px;word-break: break-all;border-collapse: collapse;\"></td>");			
 			regresar.append("<td style=\"font-size: 8px;width: 35px; max-width: 80px;border-collapse: collapse;\"></td>");			
-			regresar.append("<td style=\"font-size: 8px;width: 55px;max-width: 45px;word-break: break-all;border-collapse: collapse;text-align: right;\">BASE:</td>");			
-			regresar.append("<td style=\"font-size: 8px;width: 45px;max-width: 45px;word-break: break-all;border-collapse: collapse;text-align: right\">").append(this.ticket.getTotales().getIva$()).append("</td>");			
+			regresar.append("<td style=\"font-size: 8px;width: 55px;max-width: 45px;word-break: break-all;border-collapse: collapse;text-align: right;\">IVA:</td>");			
+			regresar.append("<td style=\"font-size: 8px;width: 45px;max-width: 45px;word-break: break-all;border-collapse: collapse;text-align: right\">").append(this.ticket.getTotales().getIvaDosDecimales$()).append("</td>");			
 			regresar.append("</tr>");			
 			
 			regresar.append("<tr style=\"border-collapse: collapse;\">");			
@@ -350,7 +350,7 @@ public class CreateTicket {
 			regresar.append("<p style=\"width: 200px;text-align: center;align-content: center;font-size: 8px;\">");
 			regresar.append("PARA CUALQUIER ACLARACION, MANTENER SU TICKET");
 			regresar.append("</p>");
-			regresar.append("<svg id=\"barcode\" style=\"display: none\"></svg>");
+			//regresar.append("<svg id=\"barcode\"></svg>");
 			regresar.append("</div>");
 		} // try
 		catch (Exception e) {			
