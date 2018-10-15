@@ -611,7 +611,7 @@
 			<select id="perfilUsuario">
 				select
 					tc_janal_usuarios.id_usuario as id_key,
-					concat(nombres,' ',primer_apellido,' ',segundo_apellido) nombre_completo,
+					concat(nombres,' ',paterno,' ',materno) nombre_completo,
 					tc_janal_perfiles.descripcion as nombre_perfil,
 					tc_mantic_personas.id_persona
 				from

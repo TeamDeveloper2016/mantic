@@ -11,6 +11,7 @@
 	<ui:param name="notIsCaja" value="false" class="javax.faces.Boolean"/>
 	<ui:define name="librerias">    		
 		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryVentasJs}"/>
+		<h:outputScript library="janal" name="barcode/js.barcode.all.min.js"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
 				'valor': {multiple: '$', validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor del correo electronico'},
@@ -117,6 +118,47 @@
 			
 			function descuentoUserFocus(){
 				setTimeout("$('#descuentousr').focus();", 1000);						
+			}
+			
+			function imprimirTicket(noTicket, ticket) {
+				localStorage.clear();
+				localStorage.setItem('noTicket', noTicket);
+				localStorage.setItem('ticket', ticket);				
+				JsBarcode("#barcode", localStorage.getItem('noTicket'), {				
+					width: 1.8,
+					height: 40,
+					displayValue: false
+				});
+			};
+						
+			function clicTicket(){
+				setTimeout("$('#printTicket').click();", 2000);										
+			};
+						
+			function loadTicket(){				
+				// <![CDATA[				
+					var win = window.open();				
+					win.document.open();
+					win.document.write('<'+'html'+'><'+'body'+'>');
+					win.document.write(localStorage.getItem('ticket'));		
+					win.document.write('<svg id=\"barcode\">');					
+					win.document.write(document.getElementById("barcode").innerHTML);
+					win.document.write('</svg>');					
+					win.document.write('<'+'/body'+'><'+'/html'+'>');
+					win.setTimeout(function(){
+						win.document.close();
+						win.print();
+						win.close();					
+					}, 100);												
+				// ]]>				
+			};		
+			
+			function createBarCode(){
+				JsBarcode("#barcode", localStorage.getItem('noTicket'), {				
+					width: 1.8,
+					height: 40,
+					displayValue: false
+				});
 			}
 		</script>   
 		<style type="text/css">
@@ -678,7 +720,7 @@
 			</h:panelGrid>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton id="aceptarFinalizar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaAccion.doAceptar}" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear()" update="contenedorGrupos @(.filas) @(.recalculo)" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>
+				<p:commandButton id="aceptarFinalizar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaAccion.doAceptar}" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();clicTicket();" update="contenedorGrupos @(.filas) @(.recalculo)" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>
 				<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>
@@ -888,7 +930,9 @@
 				<p:commandButton id="localizado" icon="fa fa-check" process="@this buscados" update="@(.filas) @(.recalculo)" value="Aceptar" actionListener="#{manticVentasCajaAccion.doChangeBuscado}" oncomplete="PF('dialogo').hide(); jsArticulos.close();" disabled="#{manticVentasCajaAccion.attrs.lazyModel.rowCount lt 1}"/>
 				<p:commandButton process="@none" icon="fa fa-remove" value="Cancelar" oncomplete="PF('dialogo').hide(); jsArticulos.move();"/>
 			</div>
-		</p:dialog>		
+		</p:dialog>
+		<svg id="barcode" style="display: none"></svg>	
+		<button id="printTicket" style="display: none" onclick="loadTicket()">Imprimir</button>		
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
