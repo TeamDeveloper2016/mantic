@@ -121,12 +121,18 @@
 			}
 			
 			function imprimirTicket(noTicket, ticket) {
+				localStorage.clear();
 				localStorage.setItem('noTicket', noTicket);
 				localStorage.setItem('ticket', ticket);				
+				JsBarcode("#barcode", localStorage.getItem('noTicket'), {				
+					width: 1.8,
+					height: 40,
+					displayValue: false
+				});
 			};
 						
 			function clicTicket(){
-				setTimeout("$('#printTicket').click();", 3000);										
+				setTimeout("$('#printTicket').click();", 2000);										
 			};
 						
 			function loadTicket(){				
@@ -134,18 +140,26 @@
 					var win = window.open();				
 					win.document.open();
 					win.document.write('<'+'html'+'><'+'body'+'>');
-					win.document.write(localStorage.getItem('ticket'));					
-					JsBarcode("#barcode", localStorage.getItem('noTicket'), {				
-						width: 2.3,
-						height: 40,
-						displayValue: false
-					});
+					win.document.write(localStorage.getItem('ticket'));		
+					win.document.write('<svg id=\"barcode\">');					
+					win.document.write(document.getElementById("barcode").innerHTML);
+					win.document.write('</svg>');					
 					win.document.write('<'+'/body'+'><'+'/html'+'>');
-					win.document.close();
-					win.print();
-					win.close();				
+					win.setTimeout(function(){
+						win.document.close();
+						win.print();
+						win.close();					
+					}, 100);												
 				// ]]>				
 			};		
+			
+			function createBarCode(){
+				JsBarcode("#barcode", localStorage.getItem('noTicket'), {				
+					width: 1.8,
+					height: 40,
+					displayValue: false
+				});
+			}
 		</script>   
 		<style type="text/css">
 			.janal-total-compra {
