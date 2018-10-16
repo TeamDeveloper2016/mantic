@@ -102,7 +102,7 @@
 						<p:inputText id="noTicket" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticFacturasAccion.attrs.consecutivo}" disabled="true"/>								
 						<p:selectOneMenu id="idEmpresa" value="#{manticFacturasAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticFacturasAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">
 							<p:ajax event="change" process="@this" update="contenido tabla" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
-							<f:selectItems value="#{manticFacturasAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+							<f:selectItems value="#{manticFacturasAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
 							<p:column headerText="Clave">
 								<h:outputText value="#{item.clave}"/>
 							</p:column>   
