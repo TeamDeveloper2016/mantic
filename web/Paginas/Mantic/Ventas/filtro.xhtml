@@ -118,17 +118,23 @@
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{filtro.empresa}">
+            <p:column class="MarAuto Responsive janal-wid-15" sortBy="#{filtro.nombreEmpresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
-              <h:outputText value="#{filtro['empresa']}"/>
+              <h:outputText value="#{filtro['nombreEmpresa']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="No. cuenta"/>
               </f:facet>
               <h:outputText value="#{filtro['consecutivo']}"/>
+            </p:column>		
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.ticket}">
+              <f:facet name="header">
+                <h:outputText value="No. ticket"/>
+              </f:facet>
+              <h:outputText value="#{filtro['ticket']}"/>
             </p:column>		
             <p:column class="MarAuto Responsive" sortBy="#{filtro.proveedor}">
               <f:facet name="header">

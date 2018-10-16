@@ -381,10 +381,10 @@ public class Accion extends IBaseVenta implements Serializable {
 		try {			
 			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
 			params= new HashMap<>();
-			params.put("idVenta", ticketAbierto.getKey());
+			params.put("idVenta", ticketAbierto!= null? ticketAbierto.getKey(): -1L);
 			setDomicilio(new Domicilio());
 			this.attrs.put("registroCliente", new TcManticClientesDto());
-			if(!ticketAbierto.getKey().equals(-1L)){				
+			if(ticketAbierto!= null && !ticketAbierto.getKey().equals(-1L)){				
 				ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
 				ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));
 				this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), false));

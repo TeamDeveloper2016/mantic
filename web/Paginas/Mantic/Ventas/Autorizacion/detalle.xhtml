@@ -64,16 +64,9 @@
 									<f:facet name="header">
 										<h:outputText value="Precio"/>
 									</f:facet>
-									<div class="ui-grid-row janal-grid-row">
-										<div class="ui-grid-col-12 janal-column-right" style="padding-right: 14px;">
-											<p:outputLabel value="#{row['costo']}"/>
-											<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
-											<p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>
-										</div>	 
-										<div style="width: 10px; margin-left: -4px; margin-top: 1px;">
-											<h:outputText value="#{row['costoMayorMenor']}" escape="false"/>
-										 </div>
-									</div>	
+									<p:outputLabel value="#{row['costo']}"/>
+									<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
+									<p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>
 								</p:column>		
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 									<f:facet name="header">
