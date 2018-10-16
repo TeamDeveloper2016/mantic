@@ -124,10 +124,12 @@ public class CreateTicket {
 	} // toFindDomicilio
 	
 	private String toNoTicket(){
-		StringBuilder regresar= null;
-		try {
+		StringBuilder regresar  = null;
+		String descripcionTicket= null;
+		try {			
 			regresar= new StringBuilder();
-			regresar.append("<p style=\"width: 200px;text-align: center;align-content: center;font-size: 12px;font-weight: bold\">TICKET No: ").append(this.principal.getClave()).append("-").append(((TicketVenta)this.ticket.getOrden()).getTicket()).append("</p>");
+			descripcionTicket= this.tipoTransaccion.equals("COTIZACIÓN") ? ((TicketVenta)this.ticket.getOrden()).getCotizacion(): ((TicketVenta)this.ticket.getOrden()).getTicket();
+			regresar.append("<p style=\"width: 200px;text-align: center;align-content: center;font-size: 12px;font-weight: bold\">TICKET No: ").append(this.principal.getClave()).append("-").append(descripcionTicket).append("</p>");
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -346,10 +348,12 @@ public class CreateTicket {
 	
 	private String toFooter(){
 		StringBuilder regresar= null;
+		String descripcion    = null;
 		try {
+			descripcion= this.tipoTransaccion.equals("COTIZACIÓN") ? "GRACIAS POR SU PREFERENCIA" : "GRACIAS POR SU COMPRA";
 			regresar= new StringBuilder();
 			regresar.append("<p style=\"width: 200px;text-align: center;align-content: center;font-size: 11px;border-top: 1px solid black;border-collapse: collapse;\">");
-			regresar.append("<br/>¡GRACIAS POR SU COMPRA!");
+			regresar.append("<br/>¡").append(descripcion).append("!");
 			regresar.append("</p>");
 			regresar.append("<p style=\"width: 200px;text-align: center;align-content: center;font-size: 8px;\">");
 			regresar.append("PARA CUALQUIER ACLARACION, MANTENER SU TICKET");
