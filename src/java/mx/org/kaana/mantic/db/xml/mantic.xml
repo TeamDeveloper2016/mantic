@@ -3834,6 +3834,15 @@
 				where 
 				  tc_mantic_cierres_cajas.id_caja={idCaja}				
 			</select>	
+			<select id="ticket">
+				select      
+					tr_mantic_venta_medio_pago.id_venta_medio_pago as id_key,
+          tr_mantic_venta_medio_pago.*
+        from      
+          tr_mantic_venta_medio_pago
+        where      
+          id_venta = {idVenta}
+			</select>
     </unit>
 		<unit id="TcManticClientesDeudasDto">
       <select id="row">
