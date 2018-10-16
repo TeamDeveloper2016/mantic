@@ -53,7 +53,7 @@
 							<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasApartados.attrs.isMatriz}"/>
 							<p:selectOneMenu id="idEmpresa" value="#{manticVentasApartados.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-								<f:selectItems value="#{manticVentasApartados.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+								<f:selectItems value="#{manticVentasApartados.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
 								<p:column headerText="Clave">
 									<h:outputText value="#{item.clave}"/>
 								</p:column>   
