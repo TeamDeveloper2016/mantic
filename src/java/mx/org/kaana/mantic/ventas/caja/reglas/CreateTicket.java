@@ -337,7 +337,7 @@ public class CreateTicket {
 	private String toCajero(){
 		StringBuilder regresar= null;
 		try {
-			regresar= new StringBuilder("<strong>COBRO:</strong>").append(JsfBase.getAutentifica().getPersona().getNombreCompleto());
+			regresar= new StringBuilder("<strong>CAJERO:</strong>").append(JsfBase.getAutentifica().getPersona().getNombreCompleto());
 			regresar.append("</p>");
 		} // try
 		catch (Exception e) {			
