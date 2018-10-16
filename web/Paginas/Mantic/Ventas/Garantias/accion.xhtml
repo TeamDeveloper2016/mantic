@@ -7,15 +7,13 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Listado de tickets disponibles para garantias"/>	
+	<ui:param name="titulo" value="Tickets disponibles para garantias"/>	
 	<ui:define name="librerias">    		
 		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryVentasJs}"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
 				'descuento': {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'general'},
-				
 				'ticketsAbiertos': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', mensaje:'Selecciona al menos un ticket abierto.'},				
-				
 				'total'            : {validaciones: 'min-valor({"cuanto":1})', mascara: 'libre', grupo: 'general'},
 				'efectivo'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'credito'          : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasGarantiasAccion.attrs.pago.limiteCredito}})', mascara: 'libre', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
