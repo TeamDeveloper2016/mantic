@@ -686,10 +686,10 @@ public class Tablero extends Comun implements Serializable {
 			sb= new StringBuilder("");						
 			seleccionada.set(Calendar.DAY_OF_MONTH, 1);
 			sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-			seleccionada.add(Calendar.DAY_OF_MONTH, seleccionada.getMaximum(Calendar.DAY_OF_MONTH));
+			seleccionada.add(Calendar.DAY_OF_MONTH, seleccionada.getActualMaximum(Calendar.DAY_OF_MONTH)-1);
 			sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));						
 			this.attrs.put("mes".concat(nombrePivote), this.mes[seleccionada.get(Calendar.MONTH)]);			
-			this.attrs.put("mesTitle".concat(nombrePivote), "Del año: " + seleccionada.get(Calendar.YEAR));			
+			this.attrs.put("mesTitle".concat(nombrePivote), " del " + seleccionada.get(Calendar.YEAR));			
 		} // try
 		catch (Exception e) {			
 			throw e; 
@@ -906,7 +906,7 @@ public class Tablero extends Comun implements Serializable {
 			seleccionada.setTime(new SimpleDateFormat("dd/MM/yy").parse(this.attrs.get(nombreFecha).toString()));									
 			seleccionada.set(Calendar.DAY_OF_YEAR, 1);
 			sb.append("date_format( registro , '%Y%m%d')>= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));			
-			seleccionada.add(Calendar.DAY_OF_YEAR, seleccionada.getMaximum(Calendar.DAY_OF_YEAR));
+			seleccionada.add(Calendar.DAY_OF_YEAR, seleccionada.getActualMaximum(Calendar.DAY_OF_YEAR)-1);
 			sb.append(" and date_format( registro , '%Y%m%d')<= '".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, seleccionada.getTime())).concat("'"));						
 			title.append(seleccionada.get(Calendar.YEAR));
 			this.attrs.put("anio".concat(nombrePivote), seleccionada.get(Calendar.YEAR));			

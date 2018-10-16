@@ -60,6 +60,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	private boolean isNuevoCierre;
 	private Double cierreCaja;
 	private Long idCierreVigente;
+	private String cotizacion;
 	
 	public Transaccion(IBaseDto dto) {
 		super(new TicketVenta());
@@ -78,6 +79,10 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	public Long getIdCierreVigente() {
 		return idCierreVigente;
 	}	
+
+	public String getCotizacion() {
+		return cotizacion;
+	}
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
@@ -118,8 +123,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			if(Cadena.isVacio(cotizacion.getCotizacion())){
 				consecutivoCotizacion= this.toSiguienteCotizacion(sesion, cotizacion.getIdEmpresa());
 				cotizacion.setCcotizacion(consecutivoCotizacion);
-				cotizacion.setCotizacion(Fecha.getAnioActual() + Cadena.rellenar(consecutivoCotizacion.toString(), 5, '0', true));
+				cotizacion.setCotizacion(Fecha.getAnioActual() + Cadena.rellenar(consecutivoCotizacion.toString(), 5, '0', true));				
 			} // if
+			this.cotizacion= cotizacion.getCotizacion();
 			calendar= Calendar.getInstance();
 			calendar.add(Calendar.DAY_OF_YEAR, 8);
 			cotizacion.setVigencia(new Date(calendar.getTimeInMillis()));

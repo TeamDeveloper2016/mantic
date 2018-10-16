@@ -162,20 +162,22 @@ public class Accion extends IBaseVenta implements Serializable {
   } // doLoad
 	
   public String doAceptar() {  
-    Transaccion transaccion= null;
-    String regresar        = null;
-		Boolean validarCredito = true;
-		Boolean creditoVenta   = null;
-		CreateTicket ticket    = null;
+    Transaccion transaccion        = null;
+    String regresar                = null;
+		Boolean validarCredito         = true;
+		Boolean creditoVenta           = null;
+		CreateTicket ticket            = null;
+		VentaFinalizada ventaFinalizada= null;
     try {	
 			creditoVenta= (Boolean) this.attrs.get("creditoVenta");
 			if(creditoVenta)
 				validarCredito= doValidaCreditoVenta();
 			if(validarCredito){
-				transaccion = new Transaccion(loadVentaFinalizada());
+				ventaFinalizada= loadVentaFinalizada();
+				transaccion = new Transaccion(ventaFinalizada);
 				if (transaccion.ejecutar(EAccion.REPROCESAR)) {
-					ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), "VENTA DE MOSTRADOR");
-					RequestContext.getCurrentInstance().execute("imprimirTicket('" + ((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
+					ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), ventaFinalizada.getApartado() ? "APARTADO" : "VENTA DE MOSTRADOR");
+					RequestContext.getCurrentInstance().execute("imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
 					regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
 					JsfBase.addMessage("Se finalizo el pago del ticket de venta.", ETipoMensaje.INFORMACION);
 					this.setAdminOrden(new AdminTickets(new TicketVenta()));
@@ -214,9 +216,13 @@ public class Accion extends IBaseVenta implements Serializable {
   public String doAceptarCotizacion() {	  
     Transaccion transaccion= null;
     String regresar        = null;
-    try {				
+		CreateTicket ticket    = null;
+    try {							
 			transaccion = new Transaccion((TicketVenta)this.getAdminOrden().getOrden());
 			if (transaccion.ejecutar(EAccion.MODIFICAR)) {
+				((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).setCotizacion(transaccion.getCotizacion());
+				ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), "COTIZACIÓN");
+				RequestContext.getCurrentInstance().execute("imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + transaccion.getCotizacion()+ "','" + ticket.toHtml() + "');");
 				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
 				JsfBase.addMessage("Se genero la cotización del ticket de venta.", ETipoMensaje.INFORMACION);
 				this.setAdminOrden(new AdminTickets(new TicketVenta()));

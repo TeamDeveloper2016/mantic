@@ -125,7 +125,7 @@
 				localStorage.setItem('noTicket', noTicket);
 				localStorage.setItem('ticket', ticket);				
 				JsBarcode("#barcode", localStorage.getItem('noTicket'), {				
-					width: 1.8,
+					width: 1.4,
 					height: 40,
 					displayValue: false
 				});
@@ -155,7 +155,7 @@
 			
 			function createBarCode(){
 				JsBarcode("#barcode", localStorage.getItem('noTicket'), {				
-					width: 1.8,
+					width: 1.4,
 					height: 40,
 					displayValue: false
 				});
@@ -240,7 +240,7 @@
 								<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasCajaAccion.attrs.isMatriz}"/>
 								<p:selectOneMenu id="idEmpresa" value="#{manticVentasCajaAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticVentasCajaAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">
 									<p:ajax event="change" process="@this" listener="#{manticVentasCajaAccion.doLoadTicketAbiertos}" update="encabezadoVenta contenedorGrupos:contenido caja" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
-									<f:selectItems value="#{manticVentasCajaAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+									<f:selectItems value="#{manticVentasCajaAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
 									</p:column>   
@@ -728,7 +728,7 @@
 			<p:outputLabel value="¿ Deseas continuar con la finalización del ticket como una cotización ?"/>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton id="aceptarCotizacion" value="Aceptar" icon="fa fa-check" process="@this" action="#{manticVentasCajaAccion.doAceptarCotizacion}" onstart="PF('dlgCotizacion').hide();" oncomplete="janal.desbloquear()" update="contenedorGrupos @(.filas) @(.recalculo)"/>
+				<p:commandButton id="aceptarCotizacion" value="Aceptar" icon="fa fa-check" process="@this" action="#{manticVentasCajaAccion.doAceptarCotizacion}" onstart="PF('dlgCotizacion').hide();" oncomplete="janal.desbloquear();clicTicket();" update="contenedorGrupos @(.filas) @(.recalculo)"/>
 				<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCotizacion').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>

@@ -22,12 +22,18 @@ public class Empresa implements Serializable {
   private String nombreCorto;
   private String titulo;
   private String sucursales;
+	private String ticket;
+	private String clave;
 
   public Empresa () {
     this(-1L, -1L, -1L, "", "", "", "-1");
   }     
 
   public Empresa(Long idEmpresa, Long idEmpresaDepende, Long idTipoEmpresa, String nombre, String nombreCorto, String titulo, String sucursales) {
+		this(idEmpresa, idEmpresaDepende, idTipoEmpresa, nombre, nombreCorto, titulo, sucursales, "", "");
+	}
+	
+  public Empresa(Long idEmpresa, Long idEmpresaDepende, Long idTipoEmpresa, String nombre, String nombreCorto, String titulo, String sucursales, String ticket, String clave) {
     this.nombre          = nombre;
     this.idEmpresa       = idEmpresa;
     this.idEmpresaDepende= idEmpresaDepende;
@@ -35,6 +41,8 @@ public class Empresa implements Serializable {
 		this.sucursales      = sucursales;
     this.nombreCorto     = nombreCorto;
     this.titulo          = titulo;
+		this.ticket          = ticket;
+		this.clave           = clave;
   }
 
   public Long getIdEmpresaDepende() {
@@ -96,6 +104,22 @@ public class Empresa implements Serializable {
 	public boolean isMatriz() {
 	  return this.getIdTipoEmpresa()!= null && this.getIdTipoEmpresa().intValue()==Constantes.SI;
 	}
+
+	public String getTicket() {
+		return ticket;
+	}
+
+	public void setTicket(String ticket) {
+		this.ticket = ticket;
+	}
+
+	public String getClave() {
+		return clave;
+	}
+
+	public void setClave(String clave) {
+		this.clave = clave;
+	}	
 	
   @Override
   public String toString() {
@@ -134,7 +158,4 @@ public class Empresa implements Serializable {
     }
     return true;
   }
-  
-  
- 
 }
