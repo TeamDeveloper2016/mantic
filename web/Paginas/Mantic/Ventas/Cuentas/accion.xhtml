@@ -59,7 +59,7 @@
 						<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticVentasCuentasAccion.attrs.isMatriz}"/>
 						<p:selectOneMenu id="idEmpresa" value="#{manticVentasCuentasAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticVentasCuentasAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">
 							<p:ajax event="change" process="@this" listener="#{manticVentasCuentasAccion.doUpdateForEmpresa}" update="clientes cliente contenido tabla" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
-							<f:selectItems value="#{manticVentasCuentasAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+							<f:selectItems value="#{manticVentasCuentasAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
 							<p:column headerText="Clave">
 								<h:outputText value="#{item.clave}"/>
 							</p:column>   
