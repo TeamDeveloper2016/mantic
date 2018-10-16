@@ -220,8 +220,9 @@ public class Accion extends IBaseVenta implements Serializable {
     try {							
 			transaccion = new Transaccion((TicketVenta)this.getAdminOrden().getOrden());
 			if (transaccion.ejecutar(EAccion.MODIFICAR)) {
+				((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).setCotizacion(transaccion.getCotizacion());
 				ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), "COTIZACIÓN");
-				RequestContext.getCurrentInstance().execute("imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
+				RequestContext.getCurrentInstance().execute("imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + transaccion.getCotizacion()+ "','" + ticket.toHtml() + "');");
 				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
 				JsfBase.addMessage("Se genero la cotización del ticket de venta.", ETipoMensaje.INFORMACION);
 				this.setAdminOrden(new AdminTickets(new TicketVenta()));
