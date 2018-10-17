@@ -824,6 +824,7 @@
 			<select id="lazy">
         select
 					tc_mantic_ventas.id_venta as id_key,
+					tc_mantic_ventas.id_venta,
 					tc_mantic_ventas.id_empresa,  
 				  tc_mantic_empresas.clave as empresa,  
 				  tc_mantic_empresas.nombre as nombre_empresa,  
@@ -907,6 +908,7 @@
 				select * from (
 					select
 						tc_mantic_ventas.id_venta as id_key,
+						tc_mantic_ventas.id_venta,
 						tc_mantic_ventas.id_empresa,  
 						tc_mantic_empresas.clave as empresa,  
 						tc_mantic_empresas.nombre as nombre_empresa,  
@@ -947,7 +949,7 @@
 						tc_mantic_ventas.id_empresa in ({idEmpresa})
 						and {condicion}) principal
 				group by 
-					id_key, id_empresa, empresa, nombre_empresa, consecutivo, id_cliente, cliente, limite_credito, clave, almacen, 
+					id_key, id_venta, id_empresa, empresa, nombre_empresa, consecutivo, id_cliente, cliente, limite_credito, clave, almacen, 
 				  total, precio_total, estatus, id_venta_estatus, registro, estatus_asociados, cuenta, nombre, id_credito, saldo, limite				
 				{sortOrder}
 			</select>
@@ -4570,6 +4572,7 @@
             datediff(now(),tc_mantic_apartados.registro) as dias,
             tc_mantic_apartados.id_apartado_estatus,
             tc_mantic_ventas.id_venta,
+            tc_mantic_ventas.id_venta_estatus,
             tc_mantic_apartados_estatus.nombre estatus
           from
             tc_mantic_apartados
