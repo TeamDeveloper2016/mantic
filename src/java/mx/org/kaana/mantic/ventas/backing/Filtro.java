@@ -21,7 +21,6 @@ import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
-import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -33,19 +32,13 @@ import mx.org.kaana.mantic.ventas.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticVentasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
-import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.EReportes;
-import mx.org.kaana.mantic.enums.ETipoMediosPago;
-import mx.org.kaana.mantic.enums.ETipoPago;
-import mx.org.kaana.mantic.ventas.beans.TicketVenta;
-import mx.org.kaana.mantic.ventas.caja.beans.Pago;
-import mx.org.kaana.mantic.ventas.caja.reglas.CreateTicket;
-import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
+import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
 import org.primefaces.context.RequestContext;
 
 @Named(value= "manticVentasFiltro")
 @ViewScoped
-public class Filtro extends IBaseFilter implements Serializable {
+public class Filtro extends IBaseTicket implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;
 	private Reporte reporte;
@@ -281,102 +274,4 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
 		return regresar;
 	} // doTicketExpress
-	
-	public void doTicket(){
-		Entity seleccionado      = null;
-		Map<String, Object>params= null;
-		CreateTicket ticket      = null;
-		AdminTickets adminTicket = null;
-		try {			
-			seleccionado= (Entity) this.attrs.get("seleccionado");
-			params= new HashMap<>();
-			params.put("idVenta", seleccionado.getKey());
-			adminTicket= new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params));			
-			ticket= new CreateTicket(adminTicket, toPago(adminTicket, seleccionado.getKey()), toTipoTransaccion(seleccionado.toLong("idVentaEstatus")));
-			RequestContext.getCurrentInstance().execute("imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + toConsecutivoTicket(seleccionado.toLong("idVentaEstatus"), adminTicket) + "','" + ticket.toHtml() + "');");
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);
-		} // catch		
-	} // doTicket
-	
-	private String toTipoTransaccion(Long idEstatus){
-		String regresar       = null;
-		EEstatusVentas estatus= null;
-		try {
-			estatus= EEstatusVentas.fromIdTipoPago(idEstatus);
-			switch(estatus){
-				case PAGADA:
-				case TERMINADA:
-					regresar= "VENTA DE MOSTRADOR";
-				break;
-				case COTIZACION:
-					regresar= "COTIZACIÓN";
-					break;
-				case APARTADO:
-					regresar= "APARTADO";
-					break;
-			} // switch			
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar;
-	} // toTipoTransaccion
-	
-	private String toConsecutivoTicket(Long idEstatus, AdminTickets ticket){
-		String regresar       = null;
-		EEstatusVentas estatus= null;
-		try {
-			estatus= EEstatusVentas.fromIdTipoPago(idEstatus);
-			if(estatus.equals(EEstatusVentas.TERMINADA) || estatus.equals(EEstatusVentas.APARTADO))
-				regresar= ((TicketVenta)(ticket.getOrden())).getTicket();
-			else
-				regresar= ((TicketVenta)(ticket.getOrden())).getCotizacion();
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar;
-	} // toTipoTransaccion
-	
-	private Pago toPago(AdminTickets adminTicket, Long idVenta) throws Exception{
-		Pago regresar            = null;
-		List<Entity> detallePago = null;
-		Map<String, Object>params= null;
-		ETipoMediosPago medioPago= null;
-		try {
-			regresar= new Pago(adminTicket.getTotales());
-			params= new HashMap<>();
-			params.put("idVenta", idVenta);
-			detallePago= DaoFactory.getInstance().toEntitySet("TrManticVentaMedioPagoDto", "ticket", params, Constantes.SQL_TODOS_REGISTROS);
-			if(!detallePago.isEmpty()){
-				for(Entity pago: detallePago){
-					medioPago= ETipoMediosPago.fromIdTipoPago(pago.toLong("idTipoMedioPago"));
-					switch(medioPago){
-						case EFECTIVO:
-							regresar.setEfectivo(pago.toDouble("importe"));							
-							break;
-						case TARJETA:
-							regresar.setCredito(pago.toDouble("importe"));							
-							regresar.setReferenciaCredito(pago.toString("referencia"));							
-							break;
-						case CHEQUE:
-							regresar.setCheque(pago.toDouble("importe"));							
-							regresar.setReferenciaCheque(pago.toString("referencia"));							
-							break;
-						case TRANSFERENCIA:
-							regresar.setTransferencia(pago.toDouble("importe"));							
-							regresar.setReferenciaTransferencia(pago.toString("referencia"));							
-							break;
-					} // switch
-				} // for
-			} // if
-		} // try
-		catch (Exception e) {			
-			throw e; 
-		} // catch		
-		return regresar;
-	} // toPago
 }

@@ -21,7 +21,6 @@ import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
-import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
@@ -34,11 +33,12 @@ import mx.org.kaana.mantic.db.dto.TcManticApartadosDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.ventas.apartados.reglas.Transaccion;
+import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
 import org.primefaces.context.RequestContext;
 
 @Named(value = "manticVentasApartados")
 @ViewScoped
-public class Filtro extends IBaseFilter implements Serializable {
+public class Filtro extends IBaseTicket implements Serializable {
 
   private static final long serialVersionUID = 8793578963299428879L;
   private TcManticApartadosDto apartado;
