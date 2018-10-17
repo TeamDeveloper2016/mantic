@@ -8,6 +8,7 @@
   <ui:param name="titulo" value="Cuentas de ventas generados" />
   <ui:define name="librerias">
 		<h:outputScript library="janal" name="barcode/js.barcode.all.min.js"/>
+		<h:outputScript library="janal" name="core/jquery.janal.ticket.core-0.0.1.js"/>
     <script type="text/javascript">
       Janal.Control.fields = {
         'idEmpresa'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -30,41 +31,7 @@
 					janal.refresh();
 				} // if
 				return ok;
-			} // validaJustificacion
-			
-			function imprimirTicket(noTicket, ticket) {
-				localStorage.clear();
-				localStorage.setItem('noTicket', noTicket);
-				localStorage.setItem('ticket', ticket);				
-				JsBarcode("#barcode", localStorage.getItem('noTicket'), {				
-					width: 1.4,
-					height: 40,
-					displayValue: false
-				});
-			};
-						
-			function clicTicket(){
-				setTimeout("$('#printTicket').click();", 2000);										
-			};
-						
-			function loadTicket(){				
-				// <![CDATA[				
-					var win = window.open();				
-					win.document.open();
-					win.document.write('<'+'html'+'><'+'body'+'>');
-					win.document.write(localStorage.getItem('ticket'));		
-					win.document.write('<svg id=\"barcode\">');					
-					win.document.write(document.getElementById("barcode").innerHTML);
-					win.document.write('</svg>');					
-					win.document.write('<'+'/body'+'><'+'/html'+'>');
-					win.setTimeout(function(){
-						win.document.close();
-						win.print();
-						win.close();					
-					}, 100);												
-				// ]]>				
-			};	
-			
+			} // validaJustificacion			
     </script>		
 		<style>
 			.ui-selectonemenu-panel .ui-selectonemenu-filter-container .ui-inputfield {
@@ -207,13 +174,13 @@
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticVentasFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					            
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{(manticVentasFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					
 						<p:separator rendered="#{(manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '9')}"/>					
-						<p:menuitem id="ticket" icon="fa fa-file-text-o" value="Ticket" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasFiltro.doTicket}" oncomplete="janal.desbloquear();clicTicket();" update="tabla" rendered="#{(manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '9')}"/>
+						<p:menuitem id="ticket" icon="fa fa-file-text-o" value="Ticket" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasFiltro.doTicket}" oncomplete="janal.desbloquear();jsTicket.clicTicket();" update="tabla" rendered="#{(manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticVentasFiltro.attrs.seleccionado.idVentaEstatus eq '9')}"/>
           </p:contextMenu>
         </div>
       </div>
     </div>		    
 		<svg id="barcode" style="display: none"></svg>	
-		<button id="printTicket" style="display: none" onclick="loadTicket()">Imprimir</button>		
+		<button id="printTicket" style="display: none" onclick="jsTicket.loadTicket()">Imprimir</button>		
   </ui:define>   
 	<ui:define name="dialogos">
 		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoEstatus', fieldsDialog);janal.refresh();">

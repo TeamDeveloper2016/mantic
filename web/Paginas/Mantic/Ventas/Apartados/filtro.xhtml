@@ -9,6 +9,8 @@
                 template="/WEB-INF/plantillas/reporte.xhtml">
   <ui:param name="titulo" value="Apartados" />
   <ui:define name="librerias">
+		<h:outputScript library="janal" name="barcode/js.barcode.all.min.js"/>
+		<h:outputScript library="janal" name="core/jquery.janal.ticket.core-0.0.1.js"/>
     <script type="text/javascript">
       Janal.Control.fields = {        
         'idEmpresa'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -169,10 +171,14 @@
             <p:menuitem id="aplazar" icon="fa fa-calendar-plus-o" value="Aplazar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doLoadEstatus('APLAZADA')}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|5|', manticVentasApartados.attrs.seleccionado.idApartadoEstatus) and (manticVentasApartados.attrs.seleccionado.dias.toInteger() gt 29)}"/>					            
             <p:separator/>					
             <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doReporte('APARTADO_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>
+						<p:separator rendered="#{(manticVentasApartados.attrs.seleccionado.idVentaEstatus eq '3') or (manticVentasApartados.attrs.seleccionado.idVentaEstatus eq '7') or (manticVentasApartados.attrs.seleccionado.idVentaEstatus eq '9')}"/>					
+						<p:menuitem id="ticket" icon="fa fa-file-text-o" value="Ticket" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticVentasApartados.doTicket}" oncomplete="janal.desbloquear();jsTicket.clicTicket();" update="tabla" rendered="#{(manticVentasApartados.attrs.seleccionado.idVentaEstatus eq '3') or (manticVentasApartados.attrs.seleccionado.idVentaEstatus eq '7') or (manticVentasApartados.attrs.seleccionado.idVentaEstatus eq '9')}"/>
           </p:contextMenu>
 				</div>
 			</div>	
-    </div>			
+    </div>	
+		<svg id="barcode" style="display: none"></svg>	
+		<button id="printTicket" style="display: none" onclick="jsTicket.loadTicket()">Imprimir</button>				
   </ui:define>  	
   <ui:define name="dialogos">
 		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onHide="janal.refresh();" onShow="janal.change('formDialogoEstatus', fieldsDialog);janal.refresh();">
