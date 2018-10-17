@@ -481,6 +481,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		return String.valueOf(this.getIdArticulo());
 	}
 	
+	
 	public static void main(String ... args) {
 		Articulo articulo= new Articulo(-1L);
 		articulo.setCosto(1131.63);
@@ -491,4 +492,5 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		articulo.toCalculate();
 		LOG.info(articulo);
 	}		
+	
 }

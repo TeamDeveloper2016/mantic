@@ -276,7 +276,7 @@
 								<p:selectOneMenu id="ticketsAbiertos" value="#{manticVentasCajaAccion.attrs.ticketAbierto}" styleClass="janal-wid-100-txt" var="item" converter="janal.convertidor.Entity" effect="fade" filter="true" filterMatchMode="contains">
 									<p:ajax event="change" onstart="loadTicketAbiertos();" update="@(.cotizar)" oncomplete="janal.desbloquear();" />
 									<f:selectItem itemValue="" itemLabel="SELECCIONE"/> 
-									<f:selectItems value="#{manticVentasCajaAccion.attrs.ticketsAbiertos}" var="element" itemValue="#{element}" itemLabel="No.: #{element.consecutivo} - Cliente: #{element.cliente} - Precio: #{element.precioTotal}"/>
+									<f:selectItems value="#{manticVentasCajaAccion.attrs.ticketsAbiertos}" var="element" itemValue="#{element}" itemLabel="No.: #{element.consecutivo} - Cliente: #{element.cliente} - Importe: #{element.precioTotal}"/>
 									<p:column headerText="No. cuenta">
 										<h:outputText value="#{item.consecutivo}"/>
 									</p:column>   
@@ -445,7 +445,7 @@
 									</p:inputNumber>
 									<p:spacer/><p:spacer/>																										
 									
-									<p:outputLabel for="credito" value="T. credito/debito:"/>
+									<p:outputLabel for="credito" value="T. de credito/debito:"/>
 									<p:inputNumber id="credito" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticVentasCajaAccion.attrs.pago.credito}">
 										<p:ajax event="blur" process="@this" update="contenedorGrupos:panelSumatoria" oncomplete="applyValidacionesCredito();"/>
 									</p:inputNumber>
@@ -702,7 +702,7 @@
 				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.pago$}" styleClass="janal-color-green"/>
 				<p:outputLabel value="Efectivo:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
 				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.efectivo}"/>				
-				<p:outputLabel value="T. credito/debito:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
+				<p:outputLabel value="T. de credito/debito:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
 				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.credito}"/>
 				<p:outputLabel value="Transferencia:" styleClass="font-resume-venta-detail"/><p:outputLabel value="$"/>
 				<p:outputLabel value="#{manticVentasCajaAccion.attrs.pago.transferencia}"/>

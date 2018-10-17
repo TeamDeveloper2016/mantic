@@ -82,4 +82,5 @@ public class ArticuloVenta extends Articulo {
 		value= Numero.toRedondear((value== 0? this.getCosto(): value)- this.getValor()); 
   	setDiferencia(this.getValor()== 0? 0: Numero.toRedondear(value* 100/ this.getValor()));
 	}	// toDiferencia
+	
 }

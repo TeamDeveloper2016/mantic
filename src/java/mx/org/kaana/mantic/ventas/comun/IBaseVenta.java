@@ -625,4 +625,41 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
       Methods.clean(columns);
     }// finally
 	}
+	
+	@Override
+  public void doFindArticulo(Integer index) {
+		try {
+    	List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");
+	    UISelectEntity articulo  = (UISelectEntity)this.attrs.get("articulo");
+	    UISelectEntity encontrado= (UISelectEntity)this.attrs.get("encontrado");
+			if(encontrado!= null) {
+				articulo= encontrado;
+				this.attrs.remove("encontrado");
+			} // else
+			else 
+				if(articulo== null)
+					articulo= new UISelectEntity(new Entity(-1L));
+				else
+					if(articulos.indexOf(articulo)>= 0) 
+						articulo= articulos.get(articulos.indexOf(articulo));
+					else
+						articulo= articulos.get(0);
+			if(articulo.size()> 1) {
+				int position= this.getAdminOrden().getArticulos().indexOf(new ArticuloVenta(articulo.toLong("idArticulo")));
+				if(articulo.size()> 1 && position>= 0) {
+					if(index!= position)
+						RequestContext.getCurrentInstance().execute("jsArticulos.exists("+ position+ ");");
+				} // if	
+				else
+					this.toMoveData(articulo, index);
+			} // else
+			else 
+					this.toMoveData(articulo, index);
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	} 
+	
 }
