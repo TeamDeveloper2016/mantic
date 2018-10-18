@@ -31,7 +31,6 @@
 		averages    : '.key-press-enter',
 		filter      : '.key-filter-event',
 		current     : '',
-		dialog      : 'dialogo',
 		typingTimer : null,
 		doneInterval: 10000,
 		continue    : false,
@@ -575,7 +574,7 @@
 		show: function(name) {
 			if(!this.valid()) {
 			  janal.bloquear();
-			  PF(this.dialog).show();
+			  PF('dialogo').show();
 			} // if	
 			return false;
 		},

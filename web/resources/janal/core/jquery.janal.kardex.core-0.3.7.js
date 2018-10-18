@@ -16,6 +16,8 @@
 		reference   : '#codigos_input', 
 		panels      : 'codigos_panel', 
 		itemtips    : 'codigos_itemtip', 
+		typingTimer : null,
+		doneInterval: 10000,
 		leavePage   : true,
 		VK_ENTER    : 13, 
 		VK_ESC      : 27,
@@ -43,6 +45,14 @@
 		}, // init
 		events: function() {
  			janal.console('jsKardex.events');
+      $(document).on('keyup', '.key-up-event', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('jsKardex.keyup: '+ $(this).attr('id')+ ' key: '+ key);
+				clearTimeout($kardex.typingTimer);
+				if ($(this).val() && $(this).val().trim().length> 0) 
+					$kardex.typingTimer= setTimeout($kardex.look($(this)), $kardex.doneInterval);
+				return false;
+			});  
       $(document).on('focus', this.focus, function() {
 				janal.lastNameFocus= this;
   			janal.console('jsKardex.focus: '+ $(this).attr('id')+ ' value: '+ $(this).val());
@@ -126,6 +136,9 @@
 				switch(key) {
 					case $kardex.VK_ENTER:
 						return $kardex.find();
+						break;
+					case $kardex.VK_MAYOR:
+						return $kardex.show($(this));
 						break;
 				} // switch
 			}); // keydownd	
@@ -236,6 +249,16 @@
 			janal.reset();
 			setTimeout($kardex.locate(), 500);
 			$('#source-image').attr('href', $('#contenedorGrupos\\:icon-image').attr('src'));
+		},
+		show: function(name) {
+			console.log('jsKardex.show: '+ $(name).val());
+  	  janal.bloquear();
+		  PF('dialogo').show();
+			return false;
+		},
+		look: function(name) {
+			console.log('jsKardex.look: '+ $(name).val());
+			lookup($(name).val());
 		}
 	});
 	

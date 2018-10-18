@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Listado de articulo para imprimir sus códigos de barras"/>
 	<ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.janal.kardex.core-0.3.5.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.kardex.core-0.3.7.js"/>
 		<h:outputScript library="janal" name="zebra/rsvp-3.1.0.min.js"/>
     <h:outputScript library="janal" name="zebra/sha-256.min.js"/>
     <h:outputScript library="janal" name="zebra/qz-tray.js"/>
@@ -24,6 +24,7 @@
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
+		<p:focus context="codigos"/>
 		<pe:remoteCommand name="executeDoAceptar" process="@form" action="#{manticCatalogosArticulosCodigos.doAceptar}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>  
 		<pe:remoteCommand name="locate" process="@this" update="@(.filas) @(.recalculo) @(.inventario)" actionListener="#{manticCatalogosArticulosCodigos.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();janal.reset();setTimeout(jsKardex.locate(), 500);">  
 			<pe:methodSignature parameters="java.lang.String"/>  
