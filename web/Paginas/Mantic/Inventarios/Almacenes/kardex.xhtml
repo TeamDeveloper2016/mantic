@@ -310,20 +310,20 @@
 						<p:column headerText="No" styleClass="janal-wid-col-30">
 							<h:outputText value="#{index+ 1}.-"/>
 						</p:column>   
-						<p:column headerText="Nombre">
-							<h:outputText value="#{item.nombre}"/>
-						</p:column>   
-						<p:column headerText="Nombre">
-							<h:outputText value="#{item.nombre}"/>
-						</p:column>   
 						<p:column headerText="Propio" styleClass="janal-wid-15">
 							<h:outputText value="#{item.propio}"/>
 						</p:column>   
-						<p:column headerText="Proveedor" styleClass="janal-wid-15">
-							<h:outputText value="#{item.codigo}"/>
+						<p:column headerText="Nombre">
+							<h:outputText value="#{item.nombre}"/>
+						</p:column>   
+						<p:column headerText="Nombre">
+							<h:outputText value="#{item.nombre}"/>
 						</p:column>   
 						<p:column headerText="Costo" styleClass="janal-column-right janal-wid-10">
 							<h:outputText value="#{item.precio}"/>
+						</p:column>   
+						<p:column headerText="Precio" styleClass="janal-column-right janal-wid-10">
+							<h:outputText value="#{item.menudeo}"/>
 						</p:column>   
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticInventariosAlmacenesKardex.attrs.lazyModel==null? 0: manticInventariosAlmacenesKardex.attrs.lazyModel.rowCount}] registros"/>
