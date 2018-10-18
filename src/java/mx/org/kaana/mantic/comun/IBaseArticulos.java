@@ -433,8 +433,15 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
-			params.put("codigo", codigo== null? "WXYZ": codigo.toUpperCase());
-			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
+			if(!Cadena.isVacio(codigo)) {
+				buscaPorCodigo= codigo.startsWith(".");
+				if(buscaPorCodigo)
+					codigo= codigo.trim().substring(1);
+			} // if	
+			else
+				codigo= "WXYZ";
+			params.put("codigo", codigo.toUpperCase());
+			if(buscaPorCodigo)
         this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porCodigo", params, columns));
 			else
         this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porLikeNombre", params, columns));
