@@ -163,7 +163,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	}	
 	
 	private void toFillArticulos(Session sesion) throws Exception {
-		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticDevolucionesDetallesDto", "detalle", this.orden.toMap());
+		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaDevolucionesDto", "registro", this.orden.toMap());
   	TcManticNotasEntradasDto nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, this.orden.getIdNotaEntrada());
 		for (Articulo item: todos) 
 			if(this.articulos.indexOf(item)< 0) {
