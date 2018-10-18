@@ -2081,6 +2081,28 @@
 				order by
 				  tc_mantic_proveedores.clave
 			</select>
+      <select id="registro">
+        select      
+				  tc_mantic_devoluciones_detalles.id_devolucion as id_comodin,
+          tc_mantic_devoluciones_detalles.id_nota_detalle as id_orden_detalle,
+          tc_mantic_notas_detalles.id_articulo,
+				  tc_mantic_notas_detalles.codigo,
+				  tc_mantic_notas_detalles.sat,
+				  tc_mantic_notas_detalles.nombre,
+				  tc_mantic_devoluciones_detalles.cantidad,
+				  tc_mantic_notas_detalles.costo,
+				  tc_mantic_notas_detalles.descuento,
+				  tc_mantic_notas_detalles.extras,
+				  tc_mantic_notas_detalles.iva
+        from      
+          tc_mantic_devoluciones_detalles
+				inner join 
+				  tc_mantic_notas_detalles on tc_mantic_devoluciones_detalles.id_nota_detalle= tc_mantic_notas_detalles.id_nota_detalle
+        where      
+          tc_mantic_devoluciones_detalles.id_devolucion = {idDevolucion}
+				order by
+				  tc_mantic_devoluciones_detalles.registro
+      </select>
 		</unit>
 		<unit id="VistaNotasEntradasDto">
 			<select id="codigos">
@@ -2143,7 +2165,7 @@
 					tc_mantic_notas_entradas.id_nota_entrada,
           tc_mantic_notas_entradas.id_empresa,
 					tc_mantic_notas_entradas.consecutivo,
-					tc_mantic_empresas.clave as empresa,
+					tc_mantic_empresas.nombre as empresa,
 					tc_mantic_proveedores.razon_social,
 					tc_mantic_notas_entradas.total,
 					tc_mantic_notas_entradas.registro     
@@ -2225,7 +2247,7 @@
           tc_mantic_proveedores.id_proveedor,
 					tc_mantic_ordenes_compras.consecutivo as orden_compra,
 					tc_mantic_notas_entradas.consecutivo,
-					tc_mantic_empresas.clave as empresa,
+					tc_mantic_empresas.nombre as empresa,
 					tc_mantic_notas_tipos.nombre as directa,
 					tc_mantic_notas_entradas.id_nota_tipo,
 					tc_mantic_proveedores.razon_social,
@@ -2442,7 +2464,7 @@
 					tc_mantic_ordenes_compras.id_empresa,  
           tc_mantic_ordenes_compras.id_almacen,
           tc_mantic_almacenes.nombre as almacen,
-				  tc_mantic_empresas.clave as empresa,  
+				  tc_mantic_empresas.nombre as empresa,  
 					tc_mantic_ordenes_compras.consecutivo,  
 					tc_mantic_proveedores.id_proveedor,  
 					tc_mantic_proveedores.razon_social as proveedor,

@@ -283,7 +283,7 @@ public void doReporte(String nombre) throws Exception{
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			TcManticDevolucionesDto orden= (TcManticDevolucionesDto)DaoFactory.getInstance().findById(TcManticDevolucionesDto.class, seleccionado.getKey());
-			bitacora= new TcManticDevolucionesBitacoraDto(-1L, (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), Long.valueOf(this.attrs.get("estatus").toString()), orden.getConsecutivo(), orden.getTotal());
+			bitacora= new TcManticDevolucionesBitacoraDto(Long.valueOf(this.attrs.get("estatus").toString()), (String)this.attrs.get("justificacion"), JsfBase.getIdUsuario(), seleccionado.getKey(), -1L, orden.getConsecutivo(), orden.getTotal());
 			transaccion= new Transaccion(orden, bitacora);
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);

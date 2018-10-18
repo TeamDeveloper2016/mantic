@@ -281,7 +281,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-		finally{
+		finally {
 			this.attrs.put("justificacion", "");
 		} // finally
 	}	// doActualizaEstatus

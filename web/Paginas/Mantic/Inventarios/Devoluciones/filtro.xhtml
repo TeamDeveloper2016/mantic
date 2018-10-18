@@ -130,9 +130,9 @@
 						</p:column>
             <p:column class="MarAuto Responsive" sortBy="#{filtro.empresa}">
               <f:facet name="header">
-                <h:outputText value="Empresa"/>
+                <h:outputText value="Sucursal"/>
               </f:facet>
-              <h:outputText value="#{filtro['empresa']}"/>
+              <h:outputText value="#{filtro['nombreEmpresa']}"/>
             </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.consecutivo}">
               <f:facet name="header">
@@ -203,8 +203,8 @@
   <ui:param name="eventoConfirmacion" value="doEliminar"	/>	
   <ui:param name="renderedConfirmacion" value="true"/>	
   <ui:define name="detalleConfirmacion">
-    <p:panelGrid layout="grid" columns="2">
-      <p:outputLabel value="No. de nota:"/>
+    <p:panelGrid layout="grid" columns="2" columnClasses="janal-wid-20,janal-wid-80">
+      <p:outputLabel value="No. de devolucion:"/>
       <p:outputLabel value="#{manticInventariosDevolucionesFiltro.attrs.seleccionado.consecutivo}"/>
     </p:panelGrid>			
   </ui:define>

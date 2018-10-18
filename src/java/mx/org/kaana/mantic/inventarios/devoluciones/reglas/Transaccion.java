@@ -138,7 +138,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
       Error.mensaje(e);			
 			throw new Exception(this.messageError.concat("\n\n")+ e.getMessage());
 		} // catch		
-		LOG.info("Se genero de forma correcta la devolución de entrada: "+ this.orden.getConsecutivo());
+		LOG.info("Se generó de forma correcta la devolución de entrada: "+ this.orden.getConsecutivo());
 		return regresar;
 	}	// ejecutar
 	
@@ -167,7 +167,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
   	TcManticNotasEntradasDto nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, this.orden.getIdNotaEntrada());
 		for (Articulo item: todos) 
 			if(this.articulos.indexOf(item)< 0) {
-				this.toAffectOrdenDetalle(sesion, item);
+				this.toCancelOrdenDetalle(sesion, item);
+				this.toCancelAlmacenes(sesion, this.orden.getIdNotaEntrada(), item, nota.getIdAlmacen());
 				DaoFactory.getInstance().delete(sesion, item);
 			} // if
 		for (Articulo articulo: this.articulos) {
@@ -186,6 +187,14 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		} // for
 	}
 
+	private void toCancelOrdenDetalle(Session sesion, Articulo articulo) throws Exception {
+		if(articulo.getIdOrdenDetalle()!= null && articulo.getIdOrdenDetalle()> 0L) {
+			TcManticNotasDetallesDto detalle= (TcManticNotasDetallesDto)DaoFactory.getInstance().findById(sesion, TcManticNotasDetallesDto.class, articulo.getIdOrdenDetalle());
+      detalle.setCantidades(detalle.getCantidades()+ articulo.getCantidad());
+			DaoFactory.getInstance().update(sesion, detalle);
+		} // if
+	}
+	
 	private void toAffectOrdenDetalle(Session sesion, Articulo articulo) throws Exception {
 		if(articulo.getIdOrdenDetalle()!= null && articulo.getIdOrdenDetalle()> 0L) {
 			TcManticNotasDetallesDto detalle= (TcManticNotasDetallesDto)DaoFactory.getInstance().findById(sesion, TcManticNotasDetallesDto.class, articulo.getIdOrdenDetalle());
@@ -195,14 +204,45 @@ public class Transaccion extends IBaseTnx implements Serializable {
 	}
 	
 	private void toRemoveOrdenDetalle(Session sesion) throws Exception {
-		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticDevolucionesDetallesDto", "detalle", this.orden.toMap());
+		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaDevolucionesDto", "registro", this.orden.toMap());
+		TcManticNotasEntradasDto nota= (TcManticNotasEntradasDto)DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, this.orden.getIdNotaEntrada());
 		for (Articulo articulo: todos) {
 			if(articulo.getIdOrdenDetalle()!= null && articulo.getIdOrdenDetalle()> 0L) {
 				TcManticNotasDetallesDto detalle= (TcManticNotasDetallesDto)DaoFactory.getInstance().findById(sesion, TcManticNotasDetallesDto.class, articulo.getIdOrdenDetalle());
 				detalle.setCantidades(detalle.getCantidades()+ articulo.getCantidad());
 				DaoFactory.getInstance().update(sesion, detalle);
+				this.toCancelAlmacenes(sesion, this.orden.getIdNotaEntrada(), articulo, nota.getIdAlmacen());
 			} // if
 		} // for
+	}
+	
+	protected void toCancelAlmacenes(Session sesion, Long idNotaEntrada, Articulo item, Long idAlmacen) throws Exception {
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("idArticulo", item.getIdArticulo());
+			params.put("idAlmacen", idAlmacen);
+			params.put("idNotaEntrada", idNotaEntrada);
+			// registar el stock de los articulos en la bitacora de articulo 
+			TcManticArticulosDto global= (TcManticArticulosDto)DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, item.getIdArticulo());
+			// afectar el inventario general de articulos dentro del almacen
+			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().findFirst(sesion, TcManticInventariosDto.class, "inventario", params);
+			if(inventario== null)
+				DaoFactory.getInstance().insert(sesion, new TcManticInventariosDto(JsfBase.getIdUsuario(), idAlmacen, item.getCantidad(), -1L, item.getIdArticulo(), 0D, 0D, item.getCantidad(), new Long(Calendar.getInstance().get(Calendar.YEAR))));
+			else {
+				inventario.setEntradas(inventario.getEntradas()+ item.getCantidad());
+				inventario.setStock(inventario.getStock()+ item.getCantidad());
+				DaoFactory.getInstance().update(sesion, inventario);
+			} // else
+			global.setStock(global.getStock()+ item.getCantidad());
+			DaoFactory.getInstance().update(sesion, global);
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
 	}
 	
 	protected void toAffectAlmacenes(Session sesion, Long idNotaEntrada, Articulo item, Long idAlmacen) throws Exception {
@@ -210,6 +250,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		try {
 			params=new HashMap<>();
 			params.put("idArticulo", item.getIdArticulo());
+			params.put("idAlmacen", idAlmacen);
 			params.put("idNotaEntrada", idNotaEntrada);
 			
 			// registar el cambio de precios en la bitacora de articulo 
@@ -218,7 +259,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			// afectar el inventario general de articulos dentro del almacen
 			TcManticInventariosDto inventario= (TcManticInventariosDto)DaoFactory.getInstance().findFirst(sesion, TcManticInventariosDto.class, "inventario", params);
 			if(inventario== null)
-				DaoFactory.getInstance().insert(sesion, new TcManticInventariosDto(JsfBase.getIdUsuario(), idAlmacen, item.getCantidad(), -1L, item.getIdArticulo(), 0D, 0D, item.getCantidad(), new Long(Calendar.getInstance().get(Calendar.YEAR))));
+				DaoFactory.getInstance().insert(sesion, new TcManticInventariosDto(JsfBase.getIdUsuario(), idAlmacen, item.getCantidad(), -1L, item.getIdArticulo(), 0D, 0D, item.getCantidad()* -1L, new Long(Calendar.getInstance().get(Calendar.YEAR))));
 			else {
 				inventario.setEntradas(inventario.getEntradas()- item.getCantidad());
 				inventario.setStock(inventario.getStock()- item.getCantidad());
