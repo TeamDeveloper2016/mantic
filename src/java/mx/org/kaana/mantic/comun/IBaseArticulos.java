@@ -32,6 +32,7 @@ import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
 
 /**
@@ -431,6 +432,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("original", EFormatoDinamicos.MONEDA_CON_DECIMALES));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
 			if(!Cadena.isVacio(codigo)) {
@@ -746,16 +748,14 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	}	
 	
 	public void doChangeBuscado() {
-		if(this.attrs.get("buscado")== null) {
+		if(this.attrs.get("encontrado")== null) {
 			FormatCustomLazy list= (FormatCustomLazy)this.attrs.get("lazyModel");
 			if(list!= null) {
-				List<Entity> items   = (List<Entity>)list.getWrappedData();
+				List<Entity> items= (List<Entity>)list.getWrappedData();
 				if(items.size()> 0)
 					this.attrs.put("encontrado", new UISelectEntity(items.get(0)));
 			} // if
-		} // else
-	  else
-      this.attrs.put("encontrado", new UISelectEntity((Entity)this.attrs.get("buscado")));
+		} // if
 	}
 
 	public void doDetailArticulo(Long idArticulo, Integer index) {
@@ -787,5 +787,9 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			JsfBase.addMessageError(e);
 		} // catch		
 	} 
+
+  public void doRowDblselect(SelectEvent event) {
+		this.attrs.put("encontrado", new UISelectEntity((Entity)event.getObject()));
+	}	
 	
 }

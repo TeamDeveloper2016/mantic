@@ -15,6 +15,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
@@ -214,31 +215,8 @@ public class Accion extends IBaseVenta implements Serializable {
     } // finally
 	}	// doUpdateClientes
 	
-	public void doAsignaCliente(SelectEvent event){
-		UISelectEntity seleccion              = null;
-		List<UISelectEntity> clientes         = null;
-		List<UISelectEntity> clientesSeleccion= null;
-		MotorBusqueda motorBusqueda           = null;
-		try {
-			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
-			seleccion= clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
-			clientesSeleccion= new ArrayList<>();
-			clientesSeleccion.add(seleccion);
-			motorBusqueda= new MotorBusqueda(-1L);
-			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
-			this.attrs.put("clientesSeleccion", clientesSeleccion);
-			this.attrs.put("clienteSeleccion", seleccion);
-			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
-			doReCalculatePreciosArticulos(seleccion.getKey());		
-			doLoadSaldos(seleccion.getKey());
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch		
-	} // doAsignaCliente
 	
-	public void doAsignaClienteInicial(Long idCliente){
+	public void doAsignaClienteInicial(Long idCliente) {
 		UISelectEntity seleccion              = null;
 		List<UISelectEntity> clientesSeleccion= null;
 		MotorBusqueda motorBusqueda           = null; 
@@ -250,7 +228,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
-			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
+			this.setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -607,4 +585,37 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 		return regresar;
 	} // doCatalogos
+	
+	public void doUpdateDialogClientes(String codigo) {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		boolean buscaPorCodigo    = false;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			if(!Cadena.isVacio(codigo)) {
+				buscaPorCodigo= codigo.startsWith(".");
+				if(buscaPorCodigo)
+					codigo= codigo.trim().substring(1);
+			} // if	
+			else
+				codigo= "WXYZ";
+			if(buscaPorCodigo)
+    		params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_clientes.rfc) like '".concat(codigo.toUpperCase()).concat("%'"));			
+			else
+    		params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_clientes.razon_social) like '".concat(codigo.toUpperCase()).concat("%'"));
+      this.attrs.put("lazyModelClientes", new FormatCustomLazy("VistaClientesDto", "findRazonSocial", params, columns));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}
+	
 }

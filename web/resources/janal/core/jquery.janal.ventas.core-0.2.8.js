@@ -30,7 +30,6 @@
 		averages    : '.key-press-enter',
 		filter      : '.key-filter-event',
 		current     : '',
-		dialog      : 'dialogo',
 		typingTimer : null,
 		doneInterval: 10000,
 		continue    : false,
@@ -211,6 +210,92 @@
 						break;
 				} // switch
       });
+      $(document).on('keydown', '.key-down-clientes', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.keyup: '+ $(this).attr('id')+ ' key: '+ key);
+				switch(key) {
+					case $articulos.VK_MAYOR:
+						return $articulos.display($(this));
+						break;
+				} // switch
+			});  
+      $(document).on('keyup', '.key-up-clientes', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.keyup: '+ $(this).attr('id')+ ' key: '+ key);
+				clearTimeout($articulos.typingTimer);
+				if ($(this).val() && $(this).val().trim().length> 0) 
+					$articulos.typingTimer= setTimeout($articulos.clientes($(this)), $articulos.doneInterval);
+				return false;
+			});  
+	    $(document).on('keydown', '.janal-key-clientes', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.keydown: '+ key);
+				switch(key) {
+					case $articulos.VK_UP:	
+					case $articulos.VK_DOWN:	
+					case $articulos.VK_ENTER:
+					case $articulos.VK_TAB:
+						return $articulos.goon(true);
+					  break;
+					case $articulos.VK_ESC:
+						if(PF('dialogoClientes'))
+              PF('dialogoClientes').hide();
+						break;
+					case $articulos.VK_PAGE_NEXT:
+						if($('#compradores_paginator_top > a.ui-paginator-next')) {
+						  $('#compradores_paginator_top > a.ui-paginator-next').click();
+						  return setTimeout($articulos.goon(false), 1000);
+						} // if
+						else
+							return false;
+						break;
+					case $articulos.VK_PAGE_PREV:
+						if($('#compradores_paginator_top > a.ui-paginator-prev')) {
+	  					$('#compradores_paginator_top > a.ui-paginator-prev').click();
+  						return setTimeout($articulos.goon(false), 1000);
+						} // if
+						else
+							return false;
+						break;
+				} // swtich
+			});
+	    $(document).on('keydown', '.janal-row-clientes', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				switch(key) {
+					case $articulos.VK_TAB:
+					  $('#rfcClientes').focus();
+						return false;
+					  break;
+					case $articulos.VK_ESC:
+            PF('dialogoClientes').hide();
+						break;
+					case $articulos.VK_F7:
+					case $articulos.VK_ENTER:
+			      $('#comprador').click();		
+				    return false;
+						break;
+					case $articulos.VK_UP:
+					case $articulos.VK_DOWN:
+						break;
+					case $articulos.VK_PAGE_NEXT:
+						if($('#compradores_paginator_top > a.ui-paginator-next')) {
+						  $('#compradores_paginator_top > a.ui-paginator-next').click();
+						  return setTimeout($articulos.goon(false), 1000);
+					  } // if
+						else
+							return false;
+						break;
+					case $articulos.VK_PAGE_PREV:
+						if($('#compradores_paginator_top > a.ui-paginator-prev')) {
+  						$('#compradores_paginator_top > a.ui-paginator-prev').click();
+	  					return setTimeout($articulos.goon(false), 1000);
+					  } // if
+						else
+							return false;
+						break;
+				} // swtich
+			});	
 			setTimeout('$articulos.goto()', 1000);
 		},
 		moveup: function(which) {
@@ -541,7 +626,7 @@
 		},
 		show: function(name) {
 			janal.bloquear();
-			PF(this.dialog).show();
+			PF('dialogo').show();
 			return false;
 		},
 	  callback: function(code) {
@@ -747,6 +832,26 @@
 			janal.desbloquear(); 
 			setTimeout('jsArticulos.next()', 500);
 			$('#source-image').attr('href', $('#icon-image').attr('src'));
+		},
+		clientes: function(name) {
+			console.log('jsArticulo.clientes: '+ $(name).val());
+			listado($(name).val());
+		},
+		goon: function(focus) {
+			janal.console('jsArticulo.goon');
+			if(!PF('widgetClientes').isEmpty()) {
+				PF('widgetClientes').clearSelection();
+				PF('widgetClientes').writeSelections();
+				PF('widgetClientes').selectRow(0, true);	
+				if(focus)
+					$('#compradores .ui-datatable-data').focus();
+			} // if	
+			return false;
+		},
+		display: function(name) {
+			janal.bloquear();
+			PF('dialogoClientes').show();
+			return false;
 		}
 	});
 	

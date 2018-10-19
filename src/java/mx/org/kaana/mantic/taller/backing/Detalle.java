@@ -149,6 +149,7 @@ public class Detalle extends IBaseArticulos implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("original", EFormatoDinamicos.MONEDA_CON_DECIMALES));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
 			if(!Cadena.isVacio(codigo)) {

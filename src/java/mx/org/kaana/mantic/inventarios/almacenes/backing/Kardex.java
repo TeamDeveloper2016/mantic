@@ -394,7 +394,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 	
 	public void doChangeBuscado() {
 		try {
-			if(this.attrs.get("buscado")== null) {
+			if(this.attrs.get("encontrado")== null) {
 				FormatCustomLazy list= (FormatCustomLazy)this.attrs.get("lazyModel");
 				if(list!= null) {
 					List<Entity> items= (List<Entity>)list.getWrappedData();
@@ -403,7 +403,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 				} // if
 			} // else
 			else
-				this.updateArticulo(new UISelectEntity((Entity)this.attrs.get("buscado")));
+				this.updateArticulo((UISelectEntity)this.attrs.get("encontrado"));
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
@@ -419,6 +419,7 @@ public class Kardex extends IBaseAttribute implements Serializable {
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("original", EFormatoDinamicos.MONEDA_CON_DECIMALES));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
 			if(!Cadena.isVacio(codigo)) {
@@ -443,5 +444,9 @@ public class Kardex extends IBaseAttribute implements Serializable {
       Methods.clean(params);
     }// finally
 	}
+
+  public void doRowDblselect(SelectEvent event) {
+		this.attrs.put("encontrado", new UISelectEntity((Entity)event.getObject()));
+	}	
 	
 }

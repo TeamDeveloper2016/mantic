@@ -13,6 +13,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -39,6 +40,7 @@ import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 
 
 public abstract class IBaseVenta extends IBaseCliente implements Serializable {
@@ -661,5 +663,75 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			JsfBase.addMessageError(e);
     } // catch   
 	} 
+	
+	public void doCleanClientes() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		try {
+			columns= new ArrayList<>();
+  		params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put(Constantes.SQL_CONDICION, Constantes.SQL_FALSO);
+      this.attrs.put("lazyModelClientes", new FormatCustomLazy("VistaClientesDto", "findRazonSocial", params, columns));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}
+	
+  public void doAsignaCliente(SelectEvent event) {
+		UISelectEntity seleccion     = null;
+		List<UISelectEntity> clientes= null;
+		try {
+			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
+			seleccion= clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
+			this.toFindCliente(seleccion);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaCliente
+	
+  private void toFindCliente(UISelectEntity seleccion) {
+		List<UISelectEntity> clientesSeleccion= null;
+		MotorBusqueda motorBusqueda           = null;
+		try {
+			clientesSeleccion= new ArrayList<>();
+			clientesSeleccion.add(seleccion);
+			motorBusqueda= new MotorBusqueda(-1L);
+			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
+			this.attrs.put("clientesSeleccion", clientesSeleccion);
+			this.attrs.put("clienteSeleccion", seleccion);
+			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
+			doReCalculatePreciosArticulos(seleccion.getKey());		
+			doLoadSaldos(seleccion.getKey());
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	}
+ 
+	public void doChangeCliente() {
+		if(this.attrs.get("comprador")== null) {
+			FormatCustomLazy list= (FormatCustomLazy)this.attrs.get("lazyModelClientes");
+			if(list!= null) {
+				List<Entity> items= (List<Entity>)list.getWrappedData();
+				if(items.size()> 0)
+					this.toFindCliente(new UISelectEntity(items.get(0)));
+			} // if
+		} // else
+	  else
+      this.toFindCliente((UISelectEntity)this.attrs.get("comprador"));
+	}
+
+  public void doRowDblCliente(SelectEvent event) {
+		this.attrs.put("comprador", new UISelectEntity((Entity)event.getObject()));
+	}	
 	
 }

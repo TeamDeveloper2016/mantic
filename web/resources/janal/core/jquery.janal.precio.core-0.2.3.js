@@ -31,7 +31,7 @@
 			this.hide();
 	    $(document).on('keydown', '.janal-key-event', function(e) {
 				var key= e.keyCode? e.keyCode: e.which;
-				janal.console('Keydown: '+ key);
+				janal.console('jsPrecios.keydown: '+ key);
 				switch(key) {
 					case $precios.VK_UP:	
 					case $precios.VK_DOWN:	
@@ -61,7 +61,7 @@
 			});	
 	    $(document).on('keydown', '.janal-key-verificador', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('Keydown: '+ key);
+				janal.console('jsPrecios.keydown: '+ key);
 				switch(key) {
 					case $precios.VK_UP:	
 					case $precios.VK_DOWN:	
@@ -88,7 +88,7 @@
 			});	
 	    $(document).on('keydown', '.janal-key-lista', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('Keydown: '+ key);
+				janal.console('jsPrecios.keydown: '+ key);
 				switch(key) {
 					case $precios.VK_UP:	
 					case $precios.VK_DOWN:	
@@ -115,7 +115,7 @@
 			});	
 	    $(document).on('keydown', '.janal-key-catalogo', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('Keydown: '+ key);
+				janal.console('jsPrecios.keydown: '+ key);
 				switch(key) {
 					case $precios.VK_UP:	
 					case $precios.VK_DOWN:	
@@ -142,16 +142,17 @@
 			});	
 	    $(document).on('keydown', '.janal-key-articulo', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
-				janal.console('Keydown: '+ key);
+				janal.console('jsPrecios.keydown: '+ key);
 				switch(key) {
 					case $precios.VK_UP:	
 					case $precios.VK_DOWN:	
 					case $precios.VK_ENTER:
 					case $precios.VK_TAB:
-						return $precios.goto(true);
+						return $precios.move(true);
 					  break;
 					case $precios.VK_ESC:
-            PF('dialogo').hide();
+						if(PF('dialogo'))
+              PF('dialogo').hide();
 						break;
 					case $precios.VK_PAGE_NEXT:
 						if($('#buscados_paginator_top > a.ui-paginator-next')) {
@@ -277,7 +278,6 @@
 	    $(document).on('keydown', '.janal-row-articulos', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('jsPrecios.keydown: '+ $(this).attr('id')+ ' key: '+ key);
-				janal.console('Keydown: '+ key);
 				switch(key) {
 					case $precios.VK_TAB:
 					  $('#codigo').focus();
@@ -296,7 +296,7 @@
 					case $precios.VK_PAGE_NEXT:
 						if($('#buscados_paginator_top > a.ui-paginator-next')) {
 						  $('#buscados_paginator_top > a.ui-paginator-next').click();
-						  return setTimeout($precios.next(false), 1000);
+						  return setTimeout($precios.move(false), 1000);
 					  } // if
 						else
 							return false;
@@ -304,7 +304,7 @@
 					case $precios.VK_PAGE_PREV:
 						if($('#buscados_paginator_top > a.ui-paginator-prev')) {
   						$('#buscados_paginator_top > a.ui-paginator-prev').click();
-	  					return setTimeout($precios.next(false), 1000);
+	  					return setTimeout($precios.move(false), 1000);
 					  } // if
 						else
 							return false;
@@ -374,6 +374,11 @@
 			} // if	
 			return false;
 		},
+		clear: function() {
+			janal.console('jsPrecios.clear');
+			if(PF('widgetBuscados')) 
+			  PF('widgetBuscados').clearSelection();
+		},
 		move: function(focus) {
 			janal.console('jsPrecios.move');
 			if(!PF('widgetBuscados').isEmpty()) {
@@ -382,22 +387,6 @@
 				PF('widgetBuscados').selectRow(0, true);	
 				if(focus)
 					$('#widgetBuscados .ui-datatable-data').focus();
-			} // if	
-			return false;
-		},
-		clear: function() {
-			janal.console('jsPrecios.clear');
-			if(PF('widgetBuscados')) 
-			  PF('widgetBuscados').clearSelection();
-		},
-		goto: function(focus) {
-			janal.console('jsPrecios.goto');
-			if(!PF('widgetBuscados').isEmpty()) {
-				PF('widgetBuscados').clearSelection();
-				PF('widgetBuscados').writeSelections();
-				PF('widgetBuscados').selectRow(0, true);	
-				if(focus)
-					$('#buscados .ui-datatable-data').focus();
 			} // if	
 			return false;
 		},
