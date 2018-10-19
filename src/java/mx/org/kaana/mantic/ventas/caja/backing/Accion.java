@@ -373,7 +373,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // doAsignaTicketAbiertoDlg
 	
 	@Override
-	public void doAsignaTicketAbierto(){		
+	public void doAsignaTicketAbierto() {
 		Map<String, Object>params           = null;		
 		UISelectEntity ticketAbierto        = null;
 		UISelectEntity ticketAbiertoPivote  = null;
@@ -387,7 +387,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			if(ticketAbierto!= null && !ticketAbierto.getKey().equals(-1L)){				
 				ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
 				ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));
-				this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), false));
+				this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), true));
 				this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 				loadCatalog();
 				doAsignaClienteTicketAbierto();

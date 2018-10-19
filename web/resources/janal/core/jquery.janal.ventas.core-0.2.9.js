@@ -625,8 +625,10 @@
 			return false;
 		},
 		show: function(name) {
-			janal.bloquear();
-			PF('dialogo').show();
+			if(!this.valid()) {
+			  janal.bloquear();
+   			PF('dialogo').show();
+			} // if
 			return false;
 		},
 	  callback: function(code) {
