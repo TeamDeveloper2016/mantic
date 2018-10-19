@@ -145,7 +145,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				JsfBase.setFlashAttribute("idVenta", null);
 				JsfBase.setFlashAttribute("accion", null);
 				this.init();
-				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la cuenta."), ETipoMensaje.INFORMACION);
+				//JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la cuenta."), ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
 				RequestContext.getCurrentInstance().execute("userUpdate();");
 			} // if

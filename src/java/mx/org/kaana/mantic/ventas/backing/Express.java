@@ -152,7 +152,7 @@ public class Express extends IBaseVenta implements Serializable {
 				else	
 					regresar= "filtro".concat(Constantes.REDIRECIONAR);
     		RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la cuenta ', '"+ this.venta.getConsecutivo()+ "');");													
-				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la cuenta."), ETipoMensaje.INFORMACION);  			
+				// JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la cuenta."), ETipoMensaje.INFORMACION);  			
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al registrar el ticket.", ETipoMensaje.ERROR);      			

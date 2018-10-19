@@ -784,11 +784,8 @@
 						<p:column headerText="Nombre">
 							<h:outputText value="#{item.nombre}"/>
 						</p:column>   
-						<p:column headerText="Costo" styleClass="janal-column-right janal-wid-10">
+						<p:column headerText="Costo" styleClass="janal-column-right janal-wid-13">
 							<h:outputText value="#{item.original}"/>
-						</p:column>   
-						<p:column headerText="Precio" styleClass="janal-column-right janal-wid-10">
-							<h:outputText value="#{manticInventariosEntradasAccion.doMonedaSat(item.menudeo)}"/>
 						</p:column>   
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticInventariosEntradasAccion.attrs.lazyModel==null? 0: manticInventariosEntradasAccion.attrs.lazyModel.rowCount}] registros"/>
