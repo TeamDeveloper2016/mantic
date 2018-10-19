@@ -86,6 +86,7 @@
 				  return 'Es probable que los cambios no se hayan guardado\n¿Aun asi deseas salir de esta opción?.';
 			});			
       $(document).on('keyup', this.lookup, function(e) {
+				var key= e.keyCode ? e.keyCode : e.which;
 				clearTimeout($articulos.typingTimer);
         if ($(this).val() && $(this).val().trim().length> 0 && $articulos.control.indexOf(key)< 0) 
           $articulos.typingTimer= setTimeout($articulos.look($(this)), $articulos.doneInterval);
@@ -860,6 +861,14 @@
 			var ok= true;
 			if($('#buscados_selection') && $('#buscados_selection').val().trim().length> 0 && PF('widgetBuscados')) {
 			  PF('widgetBuscados').fireRowSelectEvent($('#buscados_selection').val(), 'rowDblselect'); 
+				ok= false;
+			} // if	
+			return ok;
+		},
+		comprador: function() {
+			var ok= true;
+			if($('#compradores_selection') && $('#compradores_selection').val().trim().length> 0 && PF('widgetClientes')) {
+			  PF('widgetClientes').fireRowSelectEvent($('#compradores_selection').val(), 'rowDblselect'); 
 				ok= false;
 			} // if	
 			return ok;

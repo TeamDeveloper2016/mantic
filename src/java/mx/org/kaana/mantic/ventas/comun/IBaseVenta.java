@@ -731,7 +731,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	}
 
   public void doRowDblCliente(SelectEvent event) {
-		this.attrs.put("comprador", new UISelectEntity((Entity)event.getObject()));
+		this.toFindCliente(new UISelectEntity((Entity)event.getObject()));
 	}	
 	
 }
