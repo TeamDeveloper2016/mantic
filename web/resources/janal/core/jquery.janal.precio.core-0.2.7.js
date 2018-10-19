@@ -359,7 +359,7 @@
 				PF('widgetListaPrecios').writeSelections();
 				PF('widgetListaPrecios').selectRow(0, true);	
 				if(focus)
-					$('#widgetListaPrecios .ui-datatable-data').focus();
+					$('#listaPreciosTabla .ui-datatable-data').focus();
 			} // if	
 			return false;
 		},
@@ -386,7 +386,7 @@
 				PF('widgetBuscados').writeSelections();
 				PF('widgetBuscados').selectRow(0, true);	
 				if(focus)
-					$('#widgetBuscados .ui-datatable-data').focus();
+					$('#buscados .ui-datatable-data').focus();
 			} // if	
 			return false;
 		},

@@ -33,6 +33,7 @@
 		VK_CTRL     : 17,
 		VK_MAYOR    : 226,
 	  change      : [13, 106, 111, 107, 110, 27, 226, 189, 220],
+		control     : [9, 13, 17, 27, 38, 40, 220, 118, 121, 122],
 		current     : 0,
 		id          : '',
     cursor      : {
@@ -49,7 +50,7 @@
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('jsKardex.keyup: '+ $(this).attr('id')+ ' key: '+ key);
 				clearTimeout($kardex.typingTimer);
-				if ($(this).val() && $(this).val().trim().length> 0) 
+				if ($(this).val() && $(this).val().trim().length> 0 && $kardex.control.indexOf(key)< 0) 
 					$kardex.typingTimer= setTimeout($kardex.look($(this)), $kardex.doneInterval);
 				return false;
 			});  
@@ -259,6 +260,14 @@
 		look: function(name) {
 			console.log('jsKardex.look: '+ $(name).val());
 			lookup($(name).val());
+		},
+		parche: function() {
+			var ok= true;
+			if($('#buscados_selection') && $('#buscados_selection').val().trim().length> 0 && PF('widgetBuscados')) {
+			  PF('widgetBuscados').fireRowSelectEvent($('#buscados_selection').val(), 'rowDblselect'); 
+				ok= false;
+			} // if	
+			return ok;
 		}
 	});
 	
