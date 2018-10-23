@@ -1,11 +1,14 @@
 package mx.org.kaana.mantic.ventas.beans;
 
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 
 public class ArticuloVenta extends Articulo {	
 	
@@ -30,7 +33,8 @@ public class ArticuloVenta extends Articulo {
 	
 	@Override
 	public void toCalculate() {
-		double porcentajeIva = this.getIva()/ 100;       
+		toCalculateCostoPorCantidad();
+		double porcentajeIva = this.getIva()/ 100; 		
 		double costoMoneda   = this.getCosto()* getTipoDeCambio();
 		double costoReal     = this.getCantidad()* costoMoneda;
 		this.getImportes().setImporte(Numero.toRedondear(costoReal));
@@ -65,6 +69,28 @@ public class ArticuloVenta extends Articulo {
 		this.setUtilidad(utilidad);
 		this.toDiferencia();
 	}
+	
+	private void toCalculateCostoPorCantidad(){
+		TcManticArticulosDto artValidate= null;
+		try {
+			artValidate= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.getIdArticulo());
+			if(artValidate!= null)
+				this.setCosto(artValidate.getMenudeo());
+			if(!(this.getDescuentos()> 0D)){				
+				if(artValidate!= null && this.getCantidad() >= artValidate.getLimiteMedioMayoreo()){				
+					if(this.getCantidad()>= artValidate.getLimiteMedioMayoreo() && this.getCantidad() < artValidate.getLimiteMayoreo())
+						this.setCosto(artValidate.getMedioMayoreo());
+					else if (this.getCantidad()>= artValidate.getLimiteMayoreo())
+						this.setCosto(artValidate.getMayoreo());
+					else
+						this.setCosto(artValidate.getMenudeo());
+				} // if				
+			} // if			
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+		} // catch		
+	} // toCalculateCostoPorCantidad
 	
 	@Override
 	public double getDiferenciaCosto() {
