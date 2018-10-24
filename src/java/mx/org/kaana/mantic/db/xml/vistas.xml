@@ -994,6 +994,19 @@
 				and 
 					tc_mantic_articulos.id_empresa= {idEmpresa}
 			</select>
+			<select id="descuentoArticuloVigente">
+				select 
+					tc_mantic_articulos.id_articulo as id_key,
+					tc_mantic_articulos_descuentos.porcentaje
+				from 
+					tc_mantic_articulos
+				inner join 
+					tc_mantic_articulos_descuentos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_descuentos.id_articulo	    				
+				where
+					tc_mantic_articulos.id_articulo= {idArticulo}				
+				and 
+					(sysdate() between tc_mantic_articulos_descuentos.vigencia_inicial and tc_mantic_articulos_descuentos.vigencia_final)				
+			</select>
 		</unit>		
 		<unit id="VistaKardexDto">
 			<select id="row">
