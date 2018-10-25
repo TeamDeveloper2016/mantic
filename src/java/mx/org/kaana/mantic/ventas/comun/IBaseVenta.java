@@ -397,6 +397,11 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			descuentoVigente= motorBusqueda.toDescuentoGrupo();
 			if(descuentoVigente!= null)
 				regresar= descuentoVigente.toString("porcentaje");
+			else{
+				descuentoVigente= motorBusqueda.toDescuentoArticulo();
+				if(descuentoVigente!= null)
+					regresar= descuentoVigente.toString("porcentaje");
+			} // else
 		} // try
 		catch (Exception e) {			
 			throw e;			
