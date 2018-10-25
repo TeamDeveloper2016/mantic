@@ -73,19 +73,21 @@ public class ArticuloVenta extends Articulo {
 	private void toCalculateCostoPorCantidad(){
 		TcManticArticulosDto artValidate= null;
 		try {
-			artValidate= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.getIdArticulo());
-			if(artValidate!= null)
-				this.setCosto(artValidate.getMenudeo());
-			if(!(this.getDescuentos()> 0D)){				
-				if(artValidate!= null && this.getCantidad() >= artValidate.getLimiteMedioMayoreo()){				
-					if(this.getCantidad()>= artValidate.getLimiteMedioMayoreo() && this.getCantidad() < artValidate.getLimiteMayoreo())
-						this.setCosto(artValidate.getMedioMayoreo());
-					else if (this.getCantidad()>= artValidate.getLimiteMayoreo())
-						this.setCosto(artValidate.getMayoreo());
-					else
-						this.setCosto(artValidate.getMenudeo());
-				} // if				
-			} // if			
+			artValidate= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.getIdArticulo());							
+			if(artValidate!= null){
+				if(this.getDescuentos()> 0D)
+					this.setCosto(artValidate.getMenudeo());
+				else{
+					if(this.getCantidad() >= artValidate.getLimiteMedioMayoreo()){
+						if(this.getCantidad()>= artValidate.getLimiteMedioMayoreo() && this.getCantidad() < artValidate.getLimiteMayoreo())
+							this.setCosto(artValidate.getMedioMayoreo());
+						else if (this.getCantidad()>= artValidate.getLimiteMayoreo())
+							this.setCosto(artValidate.getMayoreo());
+						else
+							this.setCosto(artValidate.getMenudeo());
+					} // if
+				} // else						
+			} // if
 		} // try
 		catch (Exception e) {			
 			Error.mensaje(e);
@@ -107,6 +109,5 @@ public class ArticuloVenta extends Articulo {
 		setReal(Numero.toRedondear(value== 0? this.getCosto(): value));
 		value= Numero.toRedondear((value== 0? this.getCosto(): value)- this.getValor()); 
   	setDiferencia(this.getValor()== 0? 0: Numero.toRedondear(value* 100/ this.getValor()));
-	}	// toDiferencia
-	
+	}	// toDiferencia	
 }
