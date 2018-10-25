@@ -186,7 +186,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 						beanArticulo.setValor((Double) articulo.toValue(getPrecio()));
 						beanArticulo.setCosto((Double) articulo.toValue(getPrecio()));
 						if(descuentoVigente){
-							descuento= toDescuentoVigente(beanArticulo.getIdArticulo(), idCliente);
+							descuento= toDescuentoVigente(beanArticulo.getIdArticulo());
 							if(descuento!= null)
 								beanArticulo.setDescuento(descuento);							
 						} // if
@@ -208,8 +208,15 @@ public class Accion extends IBaseArticulos implements Serializable {
 
 	@Override
 	protected void toMoveData(UISelectEntity articulo, Integer index) throws Exception {
+		String descuentoPivote = null;
+		String descuentoVigente= null;		
 		try {			
+			descuentoPivote= getAdminOrden().getDescuento();
+			descuentoVigente= toDescuentoVigente(articulo.toLong("idArticulo"));				
+			if(descuentoVigente!= null)
+				getAdminOrden().setDescuento(descuentoVigente);					
 			super.toMoveData(articulo, index);	
+			getAdminOrden().setDescuento(descuentoPivote);
 			this.attrs.put("descripcion", articulo.toString("nombre"));
 			this.image= LoadImages.getImage(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), articulo.toLong("idArticulo").toString());
 			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
@@ -223,8 +230,15 @@ public class Accion extends IBaseArticulos implements Serializable {
 	
 	@Override
 	protected void toMoveDataArt(Articulo articulo, Integer index) throws Exception {		
+		String descuentoPivote = null;
+		String descuentoVigente= null;		
 		try {	
+			descuentoPivote= getAdminOrden().getDescuento();
+			descuentoVigente= toDescuentoVigente(articulo.getIdArticulo());				
+			if(descuentoVigente!= null)					
+				getAdminOrden().setDescuento(descuentoVigente);																	
 			super.toMoveDataArt(articulo, index);	
+			getAdminOrden().setDescuento(descuentoPivote);
 			this.attrs.put("descripcion", articulo.getNombre());
 			this.image= LoadImages.getImage(JsfBase.getAutentifica().getEmpresa().getIdEmpresa().toString(), articulo.getIdArticulo().toString());
 			this.saldoCliente.setTotalVenta(getAdminOrden().getTotales().getTotal());
@@ -236,13 +250,13 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // catch	
 	} // toMoveData
 	
-	private String toDescuentoVigente(Long idArticulo, Long idCliente) throws Exception{
+	private String toDescuentoVigente(Long idArticulo) throws Exception{
 		MotorBusqueda motorBusqueda= null;
 		Entity descuentoVigente    = null;
 		String regresar            = null;
 		try {
-			motorBusqueda= new MotorBusqueda(idArticulo, idCliente);
-			descuentoVigente= motorBusqueda.toDescuentoGrupo();
+			motorBusqueda= new MotorBusqueda(idArticulo, -1L);			
+			descuentoVigente= motorBusqueda.toDescuentoArticulo();
 			if(descuentoVigente!= null)
 				regresar= descuentoVigente.toString("porcentaje");
 		} // try
