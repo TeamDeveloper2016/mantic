@@ -6,9 +6,9 @@ import java.util.List;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.comun.IAdminArticulos;
 import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
+import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -32,18 +32,21 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 	}
 	
 	public AdminFacturas(FacturaFicticia orden, boolean loadDefault) throws Exception {
-		this.orden  = orden;
+		List<ArticuloVenta> arts= null;
+		this.orden= orden;
 		if(this.orden.isValid()) {
-  	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaTcManticFicticiasDetallesDto", "detalle", orden.toMap()));      
+			arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticFicticiasDetallesDto", "detalle", orden.toMap());
+  	  this.setArticulos(arts);      
 		}	// if
 		else	{
-		  this.setArticulos(new ArrayList<>());
+		  arts= new ArrayList<>();
+		  this.setArticulos(arts);
 			this.orden.setConsecutivo(1L);
 			this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
 			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 		} // else	
 		if(loadDefault)
-			this.getArticulos().add(new Articulo(-1L));
+			this.getArticulos().add(new ArticuloVenta(-1L));
 		this.toCalculate();
 	}
 	
