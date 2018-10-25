@@ -35,9 +35,10 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
 		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
+    Map<String, Object> params= null;
     try {
 			columns= new ArrayList<>();
+			params= new HashMap<>();
       this.attrs.put("sortOrder", "order by tc_mantic_grupos.registro");
       this.attrs.put("nombre", "");
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
@@ -63,6 +64,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       campos = new ArrayList<>();
       campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("registro", EFormatoDinamicos.DIA_FECHA_HORA));      
+			this.attrs.put("condicionCliente", this.attrs.get("idCliente")==null ? "" : " or tc_mantic_grupos_clientes.id_cliente in (" + this.attrs.get("idCliente") + ")");
       this.lazyModel = new FormatCustomLazy("VistaGruposClientesDto", "row", this.attrs, campos);
       UIBackingUtilities.resetDataTable();
     } // try

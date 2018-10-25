@@ -36,7 +36,6 @@ import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
 
 @Named(value= "manticVentasAccion")
@@ -329,6 +328,11 @@ public class Accion extends IBaseVenta implements Serializable {
 			descuentoVigente= motorBusqueda.toDescuentoGrupo();
 			if(descuentoVigente!= null)
 				regresar= descuentoVigente.toString("porcentaje");
+			else{
+				descuentoVigente= motorBusqueda.toDescuentoArticulo();
+				if(descuentoVigente!= null)
+					regresar= descuentoVigente.toString("porcentaje");
+			} // else
 		} // try
 		catch (Exception e) {			
 			throw e;			

@@ -1806,11 +1806,10 @@
 					tc_mantic_grupos.registro
 				from      
 					tc_mantic_grupos
-				inner join
+				left join
 					tc_mantic_grupos_clientes on tc_mantic_grupos.id_grupo= tc_mantic_grupos_clientes.id_grupo
 				where      
-					tc_mantic_grupos.nombre like '%{nombre}%' 
-					or tc_mantic_grupos_clientes.id_cliente= {idCliente}
+					tc_mantic_grupos.nombre like '%{nombre}%' {condicionCliente}
 				group by
 					tc_mantic_grupos.id_grupo,
 					tc_mantic_grupos.nombre,
