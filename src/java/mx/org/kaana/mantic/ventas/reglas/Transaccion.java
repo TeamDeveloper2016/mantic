@@ -280,12 +280,14 @@ public class Transaccion extends IBaseTnx {
 			if(detalleArt.indexOf(item)< 0)
 				DaoFactory.getInstance().delete(sesion, item);
 		for (Articulo articulo: detalleArt) {
-			TcManticVentasDetallesDto item= articulo.toVentaDetalle();
-			item.setIdVenta(this.orden.getIdVenta());
-			if(DaoFactory.getInstance().findIdentically(sesion, TcManticVentasDetallesDto.class, item.toMap())== null) 
-				DaoFactory.getInstance().insert(sesion, item);
-			else
-				DaoFactory.getInstance().update(sesion, item);
+			if(articulo.isValid()){
+				TcManticVentasDetallesDto item= articulo.toVentaDetalle();
+				item.setIdVenta(this.orden.getIdVenta());
+				if(DaoFactory.getInstance().findIdentically(sesion, TcManticVentasDetallesDto.class, item.toMap())== null) 
+					DaoFactory.getInstance().insert(sesion, item);
+				else
+					DaoFactory.getInstance().update(sesion, item);
+			} // if
 		} // for
 	} // toFillArticulos
 	

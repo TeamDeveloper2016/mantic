@@ -810,21 +810,25 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		try {			
 			params= new HashMap<>();
 			for(Articulo articulo: this.ventaFinalizada.getArticulos()){
-				params.put(Constantes.SQL_CONDICION, "id_articulo=".concat(articulo.getIdArticulo().toString()));
-				almacenArticulo= (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesArticulosDto.class, "TcManticAlmacenesArticulosDto", "row", params);
-				if(almacenArticulo!= null){
-					almacenArticulo.setStock(almacenArticulo.getStock() - articulo.getCantidad());
-					regresar= DaoFactory.getInstance().update(sesion, almacenArticulo)>= 1L;
+				if(articulo.isValid()){
+					params.put(Constantes.SQL_CONDICION, "id_articulo=".concat(articulo.getIdArticulo().toString()));
+					almacenArticulo= (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().toEntity(sesion, TcManticAlmacenesArticulosDto.class, "TcManticAlmacenesArticulosDto", "row", params);
+					if(almacenArticulo!= null){
+						almacenArticulo.setStock(almacenArticulo.getStock() - articulo.getCantidad());
+						regresar= DaoFactory.getInstance().update(sesion, almacenArticulo)>= 1L;
+					} // if
+					else
+						regresar= generarAlmacenArticulo(sesion, articulo.getIdArticulo(), articulo.getCantidad());
+					if(regresar){
+						articuloVenta= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, articulo.getIdArticulo());
+						articuloVenta.setStock(articuloVenta.getStock() - articulo.getCantidad());
+						if(DaoFactory.getInstance().update(sesion, articuloVenta)>= 1L)
+							regresar= actualizaInventario(sesion, articulo.getIdArticulo(), articulo.getCantidad());
+					} // if
+					if(regresar)
+						count++;
 				} // if
 				else
-					regresar= generarAlmacenArticulo(sesion, articulo.getIdArticulo(), articulo.getCantidad());
-				if(regresar){
-					articuloVenta= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, articulo.getIdArticulo());
-					articuloVenta.setStock(articuloVenta.getStock() - articulo.getCantidad());
-					if(DaoFactory.getInstance().update(sesion, articuloVenta)>= 1L)
-						regresar= actualizaInventario(sesion, articulo.getIdArticulo(), articulo.getCantidad());
-				} // if
-				if(regresar)
 					count++;
 			} // for		
 			regresar= count== this.ventaFinalizada.getArticulos().size();			

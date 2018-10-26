@@ -713,7 +713,7 @@
 			</h:panelGrid>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton id="aceptarFinalizar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaAccion.doAceptar}" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();clicTicket();" update="contenedorGrupos @(.filas) @(.recalculo)" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>
+				<p:commandButton id="aceptarFinalizar" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticVentasCajaAccion.doAceptar}" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();" update="contenedorGrupos @(.filas) @(.recalculo)" disabled="#{!manticVentasCajaAccion.attrs.cobroVenta}"/>
 				<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCerrarVenta').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>
