@@ -49,7 +49,7 @@ public class Filtro extends IBaseTicket implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
-      this.attrs.put("sortOrder", "order by tc_mantic_ventas.id_empresa, tc_mantic_ventas.ejercicio, tc_mantic_ventas.orden");
+      this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");
 			toLoadCatalog();      
     } // try
     catch (Exception e) {
@@ -95,7 +95,27 @@ public class Filtro extends IBaseTicket implements Serializable {
 			switch(tipoConsulta){
 				case VENDEDOR:
 					if(!Cadena.isVacio(this.attrs.get("vendedor")))
-						sb.append("concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) like '%").append(this.attrs.get("vendedor")).append("%'");					
+						sb.append("upper(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)) like upper('%").append(this.attrs.get("vendedor")).append("%')");					
+					break;
+				case ARTICULO:
+					if(!Cadena.isVacio(this.attrs.get("vendedor")))
+						sb.append("upper(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)) like upper('%").append(this.attrs.get("vendedor")).append("%') and ");					
+					if(!Cadena.isVacio(this.attrs.get("articulo")))
+						sb.append("upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(this.attrs.get("articulo")).append("%')");					
+					else if(!Cadena.isVacio(this.attrs.get("vendedor")))
+						sb= new StringBuilder(sb.substring(0, sb.length()-4));
+					break;
+				case VENTA:
+					if(!Cadena.isVacio(this.attrs.get("articulo")))
+						sb.append("upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(this.attrs.get("articulo")).append("%')");					
+					break;
+				case CONDICION:
+					break;
+				case DIARIA:
+					break;
+				case CLIENTE:
+					break;
+				case PROVEEDOR:
 					break;
 			} // switch			
 			this.attrs.put(Constantes.SQL_CONDICION, sb.length()== 0 ? Constantes.SQL_VERDADERO : sb);
