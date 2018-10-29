@@ -11,8 +11,14 @@
 		<h:outputScript library="janal" name="core/jquery.janal.ticket.core-0.0.1.js"/>
     <script type="text/javascript">
       Janal.Control.fields = {
-        'idEmpresa': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},        				
-				'articulo' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'}
+				'consecutivo' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        'idEmpresa'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},        				
+				'articulo'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+				'vendedor'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+				'cliente'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+				'proveedor'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+				'fechaInicio' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'fechaTermino': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'}
       };							
     </script>		
 		<style>
@@ -42,15 +48,41 @@
                 <p:column headerText="Nombre">
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
-              </p:selectOneMenu>              
+              </p:selectOneMenu>          
+							<p:outputLabel for="consecutivo" value="No. cuenta:"/>
+              <p:inputText id="consecutivo" value="#{manticConsultasFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
+							<p:outputLabel for="vendedor" value="Vendedor:"/>
+              <p:selectOneMenu id="vendedor" value="#{manticConsultasFiltro.attrs.vendedor}" styleClass="janal-wid-96" filter="true" filterMatchMode="contains">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                <f:selectItems value="#{manticConsultasFiltro.attrs.vendedores}"/>                   
+              </p:selectOneMenu>                                       
+							<p:outputLabel for="cliente" value="Cliente:"/>
+              <p:inputText id="cliente" value="#{manticConsultasFiltro.attrs.cliente}" styleClass="janal-wid-100-txt"/>                             
+							<p:outputLabel for="proveedor" value="Proveedor:"/>
+              <p:inputText id="proveedor" value="#{manticConsultasFiltro.attrs.proveedor}" styleClass="janal-wid-100-txt"/>                             
               <p:outputLabel for="articulo" value="Articulo:"/>
-              <p:inputText id="articulo" value="#{manticConsultasFiltro.attrs.articulo}" styleClass="janal-wid-100-txt"/>                             
+              <p:inputText id="articulo" value="#{manticConsultasFiltro.attrs.articulo}" styleClass="janal-wid-100-txt"/>                             							
+							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticConsultasFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+              <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticConsultasFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>							
+							<p:outputLabel for="tipoPago" value="Tipo de pago:"/>
+							<p:selectOneMenu id="tipoPago" value="#{manticConsultasFiltro.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="contains">													
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+								<f:selectItems value="#{manticConsultasFiltro.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+								<p:column headerText="Clave">
+									<h:outputText value="#{item.clave}"/>
+								</p:column>   
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.nombre}"/>
+								</p:column>   
+							</p:selectOneMenu>		
             </p:panelGrid>
             <div class="janal-align-right lg-pantalla">
-              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticConsultasFiltro.doConsultar('VENTA')}" oncomplete="janal.desbloquear();" update="tabla"/>
+              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticConsultasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
             </div>
             <div class="janal-align-right xs-pantalla">
-              <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticConsultasFiltro.doConsultar('VENTA')}" oncomplete="janal.desbloquear();" update="tabla" />
+              <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticConsultasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
             </div>
           </p:panel>
         </div>
@@ -118,15 +150,7 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-						<p:menuitem id="consultar" action="#{manticConsultasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-						<!--p:separator/>
-            <p:menuitem id="modificar" action="#{manticConsultasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{!(manticConsultasFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					
-            <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{!(manticConsultasFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					
-            <p:separator rendered="#{!(manticConsultasFiltro.attrs.seleccionado.idVentaEstatus eq '6')}"/>					
-            <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticConsultasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticConsultasFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					            
-            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticConsultasFiltro.doReporte}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{(manticConsultasFiltro.attrs.seleccionado.idOrdenEstatus eq '6')}"/>					
-						<p:separator rendered="#{(manticConsultasFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticConsultasFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticConsultasFiltro.attrs.seleccionado.idVentaEstatus eq '9')}"/>					
-						<p:menuitem id="ticket" icon="fa fa-file-text-o" value="Ticket" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticConsultasFiltro.doTicket}" oncomplete="janal.desbloquear();jsTicket.clicTicket();" update="tabla" rendered="#{(manticConsultasFiltro.attrs.seleccionado.idVentaEstatus eq '3') or (manticConsultasFiltro.attrs.seleccionado.idVentaEstatus eq '7') or (manticConsultasFiltro.attrs.seleccionado.idVentaEstatus eq '9')}"/-->
+						<p:menuitem id="consultar" action="#{manticConsultasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />											
           </p:contextMenu>
         </div>
       </div>
