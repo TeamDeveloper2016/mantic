@@ -21,6 +21,8 @@
 					tc_mantic_almacenes.clave,
 					tc_mantic_almacenes.nombre as almacen,
 					tc_mantic_ventas.total,
+					tc_mantic_ventas.sub_total,
+					tc_mantic_ventas.impuestos,
 					tc_mantic_ventas.total as precio_total,
 				  tc_mantic_ventas_estatus.nombre as estatus,
 					tc_mantic_ventas.id_venta_estatus,
@@ -31,7 +33,8 @@
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
 					tc_mantic_clientes.id_credito,
           (select saldo from tc_mantic_clientes_deudas where tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta) saldo,
-          (select limite from tc_mantic_clientes_deudas where tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta) limite
+          (select limite from tc_mantic_clientes_deudas where tc_mantic_clientes_deudas.id_venta= tc_mantic_ventas.id_venta) limite,
+					tc_mantic_tipos_medios_pagos.nombre medio_pago
 				from 
 					tc_mantic_ventas
 				inner join 
@@ -74,15 +77,130 @@
 					tc_mantic_clientes.limite_credito,
 					tc_mantic_almacenes.clave,
 					tc_mantic_almacenes.nombre ,
-					tc_mantic_ventas.total,					
+					tc_mantic_ventas.total,		
+					tc_mantic_ventas.sub_total,
+					tc_mantic_ventas.impuestos,			
 				  tc_mantic_ventas_estatus.nombre,
 					tc_mantic_ventas.id_venta_estatus,
 					tc_mantic_ventas.registro,					
 					tc_mantic_ventas_estatus.estatus_asociados, 					
 					tc_mantic_personas.cuenta,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno),
-					tc_mantic_clientes.id_credito
+					tc_mantic_clientes.id_credito,
+					tc_mantic_tipos_medios_pagos.nombre
 				{sortOrder}
+			</select>
+			<select id="diarias">
+				select 
+					if(id_key is null, -1, id_key) id_key,
+					if(empresa is null, ' ', empresa) empresa,
+					if(nombre_empresa is null, ' ', nombre_empresa) nombre_empresa,
+					if(caja is null, ' ', caja) caja,
+					if(total is null, 0, sum(total)) total,
+					if(sub_total is null, 0, sum(sub_total)) sub_total,
+					if(impuestos is null, 0, sum(impuestos)) impuestos
+				from(
+        select					
+					tc_mantic_ventas.id_empresa as id_key,  				  
+				  tc_mantic_empresas.clave as empresa,  
+				  tc_mantic_empresas.nombre as nombre_empresa,  					
+					tc_mantic_cajas.clave caja,
+					tc_mantic_ventas.total total,
+					tc_mantic_ventas.sub_total sub_total,
+					tc_mantic_ventas.impuestos impuestos					
+				from 
+					tc_mantic_ventas
+				inner join 
+					tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta
+				left join 
+					tr_mantic_articulo_proveedor ON tc_mantic_ventas_detalles.id_articulo = tr_mantic_articulo_proveedor.id_articulo
+				left join
+					tc_mantic_proveedores ON tr_mantic_articulo_proveedor.id_proveedor = tc_mantic_proveedores.id_proveedor											
+				inner join 
+					tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
+				inner join 
+					tc_mantic_almacenes on tc_mantic_ventas.id_almacen= tc_mantic_almacenes.id_almacen
+				inner join 
+					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus=tc_mantic_ventas_estatus.id_venta_estatus
+				inner join 
+				  tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona				
+				inner join
+				  tr_mantic_venta_medio_pago on tc_mantic_ventas.id_venta = tr_mantic_venta_medio_pago.id_venta
+				inner join 
+					tc_mantic_tipos_medios_pagos on tr_mantic_venta_medio_pago.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+				inner join 
+					(select id_cierre_caja, id_cierre, id_caja from tc_mantic_cierres_cajas group by id_cierre_caja, id_cierre, id_caja) cierre on tr_mantic_venta_medio_pago.id_cierre = cierre.id_cierre
+				inner join 
+					tc_mantic_cajas on cierre.id_caja = tc_mantic_cajas.id_caja
+				where
+					tc_mantic_ventas.id_empresa in ({idEmpresa})
+				and 
+					{condicion}
+				group by 
+					tc_mantic_ventas.id_empresa,  				  
+				  tc_mantic_empresas.clave,  
+				  tc_mantic_empresas.nombre,
+					tc_mantic_cajas.clave) principal
+			</select>
+			<select id="horas">
+				select 					
+					if(id_key is null, -1, id_key) id_key,
+					if(empresa is null, ' ', empresa) empresa,
+					if(nombre_empresa is null, ' ', nombre_empresa) nombre_empresa,
+					if(total_ventas is null, 0, total_ventas) total_ventas,					
+					if(total is null, 0, sum(total)) total,
+					if(sub_total is null, 0, sum(sub_total)) sub_total,
+					if(impuestos is null, 0, sum(impuestos)) impuestos,
+					if(hora is null, '00', hora) hora	
+				from(
+        select					
+					tc_mantic_ventas.id_empresa as id_key,  				  
+				  tc_mantic_empresas.clave as empresa,  
+				  tc_mantic_empresas.nombre as nombre_empresa,  					
+					count(tc_mantic_ventas.total) total_ventas,
+					tc_mantic_ventas.total total,
+					tc_mantic_ventas.sub_total sub_total,
+					tc_mantic_ventas.impuestos impuestos,
+					DATE_FORMAT(tc_mantic_ventas.registro, '%H') hora						
+				from 
+					tc_mantic_ventas
+				inner join 
+					tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta = tc_mantic_ventas_detalles.id_venta
+				left join 
+					tr_mantic_articulo_proveedor ON tc_mantic_ventas_detalles.id_articulo = tr_mantic_articulo_proveedor.id_articulo
+				left join
+					tc_mantic_proveedores ON tr_mantic_articulo_proveedor.id_proveedor = tc_mantic_proveedores.id_proveedor											
+				inner join 
+					tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
+				inner join 
+					tc_mantic_almacenes on tc_mantic_ventas.id_almacen= tc_mantic_almacenes.id_almacen
+				inner join 
+					tc_mantic_empresas on tc_mantic_ventas.id_empresa= tc_mantic_empresas.id_empresa
+				inner join 
+					tc_mantic_ventas_estatus on tc_mantic_ventas.id_venta_estatus=tc_mantic_ventas_estatus.id_venta_estatus
+				inner join 
+				  tc_janal_usuarios on tc_mantic_ventas.id_usuario = tc_janal_usuarios.id_usuario
+				inner join				
+					tc_mantic_personas on tc_mantic_personas.id_persona = tc_janal_usuarios.id_persona				
+				inner join
+				  tr_mantic_venta_medio_pago on tc_mantic_ventas.id_venta = tr_mantic_venta_medio_pago.id_venta
+				inner join 
+					tc_mantic_tipos_medios_pagos on tr_mantic_venta_medio_pago.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
+				where
+					tc_mantic_ventas.id_empresa in ({idEmpresa})
+				and 
+					{condicion}
+				group by 
+					tc_mantic_ventas.id_empresa,  				  
+				  tc_mantic_empresas.clave,  
+				  tc_mantic_empresas.nombre,
+					DATE_FORMAT(tc_mantic_ventas.registro, '%H')
+				order by 
+					DATE_FORMAT(tc_mantic_ventas.registro, '%H'), tc_mantic_empresas.clave) principal
 			</select>
 			<select id="vendedor">
 				select
@@ -101,6 +219,19 @@
 				group by 
 					tc_mantic_ventas.id_usuario,					
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)
+			</select>
+			<select id="detalle">
+				select
+					tc_mantic_ventas_detalles.id_venta_detalle as id_key,
+          tc_mantic_ventas_detalles.*,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					tc_mantic_articulos.stock
+				from 
+					tc_mantic_ventas_detalles 
+				inner join
+					tc_mantic_articulos on tc_mantic_ventas_detalles.id_articulo = tc_mantic_articulos.id_articulo				
+				where  
+					id_venta = {idVenta}				
 			</select>
 		</unit>
 		<unit id="VistaHistorialIvaDto">
