@@ -3819,7 +3819,8 @@
 					 where 
         	tc_mantic_empresas.id_empresa) emails_empresa,
         	concat(responsable_empresa.nombres,' ' ,responsable_empresa.paterno,' ',responsable_empresa.materno) as responsable_empresa,
-          responsable_empresa.rfc rfc_empresa,	        
+          responsable_empresa.rfc rfc_empresa,	 
+          concat(replace(replace(upper(municipio_empresa.descripcion),char(10),' '),char(13),' '),', ' ,upper(entidad_empresa.descripcion),', ',upper(pais_empresa.descripcion)) as empresa_region,            
           (select 
 					  group_concat(tr_mantic_persona_tipo_contacto.valor separator ' , ') emails 
 					 from 
@@ -3838,6 +3839,14 @@
 					tr_mantic_empresa_domicilio  on tc_mantic_empresas.id_empresa= tr_mantic_empresa_domicilio.id_empresa
 				inner join 
 					tc_mantic_domicilios  domicilio_empresa on tr_mantic_empresa_domicilio.id_domicilio = domicilio_empresa.id_domicilio				
+				inner join 
+					tc_janal_localidades localidad_empresa on domicilio_empresa.id_localidad = localidad_empresa.id_localidad
+				inner join
+          tc_janal_municipios municipio_empresa on localidad_empresa.id_municipio = municipio_empresa.id_municipio
+        inner join
+					tc_janal_entidades  entidad_empresa on municipio_empresa.id_entidad = entidad_empresa.id_entidad
+				inner join
+					tc_janal_paises  pais_empresa on entidad_empresa.id_pais = pais_empresa.id_pais
 				left join 
 					tc_mantic_personas responsable_empresa on tc_mantic_empresas.id_responsable = responsable_empresa.id_persona
 				left join 
