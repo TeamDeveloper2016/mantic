@@ -193,7 +193,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       params.put("sortOrder", "order by tc_mantic_requisiciones.id_empresa, tc_mantic_requisiciones.ejercicio, tc_mantic_requisiciones.orden");
       reporteSeleccion= EReportes.valueOf(nombre);
       parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      this.reporte.clean();
+      //this.reporte.clean();
       this.reporte= JsfBase.toReporte();	
       parametros= parametrosComunes.getParametrosComunes();
       parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
