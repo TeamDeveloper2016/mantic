@@ -119,7 +119,7 @@
           tc_mantic_empresas.clave,
           tc_mantic_empresas.clave as nombre_corto,
 				  tc_mantic_empresas.titulo,
-				  tc_mantic_empresas.ticket				  
+				  '' as ticket				  
         from 
           tr_mantic_empresa_personal
         inner join
