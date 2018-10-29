@@ -20,6 +20,7 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
@@ -43,6 +44,7 @@ import mx.org.kaana.mantic.db.dto.TcManticApartadosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticVentasDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
+import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.ventas.caja.beans.Pago;
 import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
@@ -61,6 +63,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	private static final String CLAVE_VENTA_GRAL= "VENTA";
 	private List<ClienteTipoContacto> clientesTiposContacto;
 	private ClienteTipoContacto clienteTipoContactoSeleccion;
+	private FormatCustomLazy lazyModelTicket;
 	private EOrdenes tipoOrden;	
 	private TcManticApartadosDto apartado;
 	private boolean pagar;
@@ -96,6 +99,10 @@ public class Accion extends IBaseVenta implements Serializable {
   public boolean getPagar() {
 		return pagar;
 	}	
+
+	public FormatCustomLazy getLazyModelTicket() {
+		return lazyModelTicket;
+	}	
 	
 	@PostConstruct
   @Override
@@ -105,6 +112,7 @@ public class Accion extends IBaseVenta implements Serializable {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null ? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null ? -1L: JsfBase.getFlashAttribute("idVenta"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null ? null : JsfBase.getFlashAttribute("retorno"));
+			this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
 			this.attrs.put("buscaPorCodigo", false);
@@ -177,8 +185,8 @@ public class Accion extends IBaseVenta implements Serializable {
 				transaccion = new Transaccion(ventaFinalizada);
 				if (transaccion.ejecutar(EAccion.REPROCESAR)) {
 					ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), ventaFinalizada.getApartado() ? "APARTADO" : "VENTA DE MOSTRADOR");
-					RequestContext.getCurrentInstance().execute("imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
-					RequestContext.getCurrentInstance().execute("clicTicket();");
+					RequestContext.getCurrentInstance().execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + ((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).getTicket() + "','" + ticket.toHtml() + "');");
+					RequestContext.getCurrentInstance().execute("jsTicket.clicTicket();");
 					regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
 					JsfBase.addMessage("Se finalizo el pago del ticket de venta.", ETipoMensaje.INFORMACION);
 					this.setAdminOrden(new AdminTickets(new TicketVenta()));
@@ -731,6 +739,8 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	public void doTabChange(TabChangeEvent event) {
 		this.pagar= event.getTab().getTitle().equals("Pagar");
+		if(event.getTab().getTitle().equals("Tickets"))
+			doLoadTickets();
 	}
 
 	public void doAplicarCambioPrecio(){
@@ -762,4 +772,142 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("passwordCambioPrecio", "");
 		} // finally
 	} // doAplicarCambioPrecio
+	
+	public void doLoadTickets(){
+		List<Columna> columns     = null;
+		Map<String, Object> params= null;
+		try {
+			params= toPrepare();
+      columns = new ArrayList<>();
+      columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
+      columns.add(new Columna("hora", EFormatoDinamicos.HORA_CORTA));      			
+      this.lazyModelTicket = new FormatCustomLazy("VistaConsultasDto", params, columns);
+      UIBackingUtilities.resetDataTable("tablaTicket");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch				
+	} // doLoadTickets
+	
+	private Map<String, Object> toPrepare(){
+		Map<String, Object> regresar= new HashMap<>();	
+		StringBuilder sb= new StringBuilder();				
+		if(!Cadena.isVacio(this.attrs.get("busquedaTicket")) && !this.attrs.get("busquedaTicket").toString().equals("-1")){
+			sb.append("(upper(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)) like upper('%").append(this.attrs.get("busquedaTicket")).append("%') or ");					
+			sb.append("upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(this.attrs.get("busquedaTicket")).append("%') or ");					
+			sb.append("upper(tc_mantic_clientes.razon_social) like upper('%").append(this.attrs.get("busquedaTicket")).append("%')").append(" or upper(tc_mantic_clientes.razon_social) like upper('%").append(this.attrs.get("busquedaTicket")).append("%') or ");
+			sb.append("(tc_mantic_ventas.consecutivo like '%").append(this.attrs.get("busquedaTicket")).append("%'))");
+			sb.append(" and tc_mantic_ventas.id_venta_estatus in (").append(EEstatusVentas.PAGADA.getIdEstatusVenta()).append(",").append(EEstatusVentas.TERMINADA.getIdEstatusVenta()).append(")");
+		} // if
+		regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+		if(sb.length()== 0)
+		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+		else	
+		  regresar.put(Constantes.SQL_CONDICION, sb);
+		return regresar;		
+	} // toPrepare
+	
+	public void doPrintTicket(){
+		Entity seleccionado      = null;
+		Map<String, Object>params= null;
+		CreateTicket ticket      = null;
+		AdminTickets adminTicket = null;
+		try {			
+			seleccionado= (Entity) this.attrs.get("seleccionTicket");
+			params= new HashMap<>();
+			params.put("idVenta", seleccionado.toLong("idVenta"));
+			adminTicket= new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params));			
+			ticket= new CreateTicket(adminTicket, toPago(adminTicket, seleccionado.getKey()), toTipoTransaccion(seleccionado.toLong("idVentaEstatus")));
+			RequestContext.getCurrentInstance().execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + toConsecutivoTicket(seleccionado.toLong("idVentaEstatus"), adminTicket) + "','" + ticket.toHtml() + "');");
+			RequestContext.getCurrentInstance().execute("jsTicket.clicTicket();");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			mx.org.kaana.libs.formato.Error.mensaje(e);
+		} // catch		
+	} // doPrintTicket
+	
+	private String toTipoTransaccion(Long idEstatus){
+		String regresar       = null;
+		EEstatusVentas estatus= null;
+		try {
+			estatus= EEstatusVentas.fromIdTipoPago(idEstatus);
+			switch(estatus){
+				case PAGADA:
+				case TERMINADA:
+					regresar= "VENTA DE MOSTRADOR";
+				break;
+				case COTIZACION:
+					regresar= "COTIZACIÓN";
+					break;
+				case APARTADO:
+					regresar= "APARTADO";
+					break;
+			} // switch			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toTipoTransaccion
+	
+	private String toConsecutivoTicket(Long idEstatus, AdminTickets ticket){
+		String regresar       = null;
+		EEstatusVentas estatus= null;
+		try {
+			estatus= EEstatusVentas.fromIdTipoPago(idEstatus);
+			if(estatus.equals(EEstatusVentas.TERMINADA) || estatus.equals(EEstatusVentas.APARTADO))
+				regresar= ((TicketVenta)(ticket.getOrden())).getTicket();
+			else
+				regresar= ((TicketVenta)(ticket.getOrden())).getCotizacion();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toTipoTransaccion
+	
+	private Pago toPago(AdminTickets adminTicket, Long idVenta) throws Exception{
+		Pago regresar            = null;
+		List<Entity> detallePago = null;
+		Map<String, Object>params= null;
+		ETipoMediosPago medioPago= null;
+		try {
+			regresar= new Pago(adminTicket.getTotales());
+			params= new HashMap<>();
+			params.put("idVenta", idVenta);
+			detallePago= DaoFactory.getInstance().toEntitySet("TrManticVentaMedioPagoDto", "ticket", params, Constantes.SQL_TODOS_REGISTROS);
+			if(!detallePago.isEmpty()){
+				for(Entity pago: detallePago){
+					medioPago= ETipoMediosPago.fromIdTipoPago(pago.toLong("idTipoMedioPago"));
+					switch(medioPago){
+						case EFECTIVO:
+							regresar.setEfectivo(pago.toDouble("importe"));							
+							break;
+						case TARJETA:
+							regresar.setCredito(pago.toDouble("importe"));							
+							regresar.setReferenciaCredito(pago.toString("referencia"));							
+							break;
+						case CHEQUE:
+							regresar.setCheque(pago.toDouble("importe"));							
+							regresar.setReferenciaCheque(pago.toString("referencia"));							
+							break;
+						case TRANSFERENCIA:
+							regresar.setTransferencia(pago.toDouble("importe"));							
+							regresar.setReferenciaTransferencia(pago.toString("referencia"));							
+							break;
+					} // switch
+				} // for
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e; 
+		} // catch		
+		return regresar;
+	} // toPago
 }
