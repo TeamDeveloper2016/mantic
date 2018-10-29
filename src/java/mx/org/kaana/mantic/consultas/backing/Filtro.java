@@ -23,11 +23,14 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.enums.EConsultas;
 import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.ventas.comun.IBaseTicket;
 import org.primefaces.context.RequestContext;
 
@@ -50,6 +53,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta"));
       this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");
+			loadTiposPagos();
 			toLoadCatalog();      
     } // try
     catch (Exception e) {
@@ -63,16 +67,14 @@ public class Filtro extends IBaseTicket implements Serializable {
     List<Columna> columns     = null;
 		Map<String, Object> params= null;
     try {
-			params= new HashMap<>();
+			params= toPrepare();
       columns = new ArrayList<>();
       columns.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
-      columns.add(new Columna("hora", EFormatoDinamicos.HORA_CORTA));      
-			params.put(Constantes.SQL_CONDICION, this.attrs.get(Constantes.SQL_CONDICION));
-			params.put("idEmpresa", !Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1") ? this.attrs.get("idEmpresa") : JsfBase.getAutentifica().getEmpresa().getSucursales());
+      columns.add(new Columna("hora", EFormatoDinamicos.HORA_CORTA));      			
       this.lazyModel = new FormatCustomLazy("VistaConsultasDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
@@ -85,47 +87,6 @@ public class Filtro extends IBaseTicket implements Serializable {
       Methods.clean(columns);
     } // finally		
   } // doLoad
-
-	public void doConsultar(String consulta){
-		EConsultas tipoConsulta= null;
-		StringBuilder sb       = null;
-		try {
-			sb= new StringBuilder();
-			tipoConsulta= EConsultas.valueOf(consulta);
-			switch(tipoConsulta){
-				case VENDEDOR:
-					if(!Cadena.isVacio(this.attrs.get("vendedor")))
-						sb.append("upper(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)) like upper('%").append(this.attrs.get("vendedor")).append("%')");					
-					break;
-				case ARTICULO:
-					if(!Cadena.isVacio(this.attrs.get("vendedor")))
-						sb.append("upper(concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno)) like upper('%").append(this.attrs.get("vendedor")).append("%') and ");					
-					if(!Cadena.isVacio(this.attrs.get("articulo")))
-						sb.append("upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(this.attrs.get("articulo")).append("%')");					
-					else if(!Cadena.isVacio(this.attrs.get("vendedor")))
-						sb= new StringBuilder(sb.substring(0, sb.length()-4));
-					break;
-				case VENTA:
-					if(!Cadena.isVacio(this.attrs.get("articulo")))
-						sb.append("upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(this.attrs.get("articulo")).append("%')");					
-					break;
-				case CONDICION:
-					break;
-				case DIARIA:
-					break;
-				case CLIENTE:
-					break;
-				case PROVEEDOR:
-					break;
-			} // switch			
-			this.attrs.put(Constantes.SQL_CONDICION, sb.length()== 0 ? Constantes.SQL_VERDADERO : sb);
-			doLoad();
-		} // try
-		catch (Exception e) {
-			JsfBase.addMessageError(e);
-			Error.mensaje(e);			
-		} // catch		
-	} // doConsultar
 	
   public String doAccion(String accion) {
     EAccion eaccion= null;
@@ -133,12 +94,8 @@ public class Filtro extends IBaseTicket implements Serializable {
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Ventas/filtro");					
-			JsfBase.setFlashAttribute("idVenta", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
-			if(eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)){
-				if(((Entity)this.attrs.get("seleccionado")).toString("idManual").equals("1"))
-					regresar= "/Paginas/Mantic/Ventas/express".concat(Constantes.REDIRECIONAR); 
-			} // if
+			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Consultas/ventas");					
+			JsfBase.setFlashAttribute("idVenta", ((Entity)this.attrs.get("seleccionado")).getKey());			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -149,20 +106,23 @@ public class Filtro extends IBaseTicket implements Serializable {
 
 	protected Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
-		StringBuilder sb= new StringBuilder();
-		UISelectEntity estatus= (UISelectEntity) this.attrs.get("idVentaEstatus");
-		if(!Cadena.isVacio(this.attrs.get("idVenta")) && !this.attrs.get("idVenta").toString().equals("-1"))
-  		sb.append("(tc_mantic_ventas.id_venta=").append(this.attrs.get("idVenta")).append(") and ");
+		StringBuilder sb= new StringBuilder();				
+		if(!Cadena.isVacio(this.attrs.get("vendedor")) && !this.attrs.get("vendedor").toString().equals("-1"))
+			sb.append("tc_mantic_ventas.id_usuario=").append(this.attrs.get("vendedor")).append(" and ");					
+		if(!Cadena.isVacio(this.attrs.get("tipoPago")) && !this.attrs.get("tipoPago").toString().equals("-1"))
+			sb.append("tc_mantic_tipos_medios_pagos.id_tipo_medio_pago=").append(this.attrs.get("tipoPago")).append(" and ");					
+		if(!Cadena.isVacio(this.attrs.get("articulo")))
+			sb.append("upper(tc_mantic_ventas_detalles.nombre) like upper('%").append(this.attrs.get("articulo")).append("%') and");					
+		if(!Cadena.isVacio(this.attrs.get("cliente")))
+			sb.append("upper(tc_mantic_clientes.razon_social) like upper('%").append(this.attrs.get("cliente")).append("%')").append(" or upper(tc_mantic_clientes.razon_social) like upper('%").append(this.attrs.get("cliente")).append("%') and");					
+		if(!Cadena.isVacio(this.attrs.get("proveedor")))
+			sb.append("upper(tc_mantic_proveedores.razon_social) like upper('%").append(this.attrs.get("proveedor")).append("%')").append(" or upper(tc_mantic_proveedores.rfc) like upper('%").append(this.attrs.get("proveedor")).append("%') or upper(tc_mantic_proveedores.clave) like upper('%").append(this.attrs.get("proveedor")).append("%') and");									
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_mantic_ventas.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
 		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
-		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("idCliente")) && !this.attrs.get("idCliente").toString().equals("-1"))
-  		sb.append("(tc_mantic_clientes.id_cliente= ").append(this.attrs.get("idCliente")).append(") and ");
-		if(estatus!= null && !estatus.getKey().equals(-1L))
-  		sb.append("(tc_mantic_ventas.id_venta_estatus= ").append(estatus.getKey()).append(") and ");
+		  sb.append("(date_format(tc_mantic_ventas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");			
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
@@ -172,7 +132,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 		else	
 		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
 		return regresar;		
-	}
+	} // toPrepare
 	
 	protected void toLoadCatalog() {
 		List<Columna> columns     = null;
@@ -189,6 +149,7 @@ public class Filtro extends IBaseTicket implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
 			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
+			doLoadVendedores();
       columns.add(new Columna("limiteCredito", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
       this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("VistaVentasDto", "clientes", params, columns));
 			this.attrs.put("idCliente", new UISelectEntity("-1"));
@@ -205,6 +166,33 @@ public class Filtro extends IBaseTicket implements Serializable {
       Methods.clean(params);
     }// finally
 	}
+	
+	public void doLoadVendedores(){
+		try {						
+			this.attrs.put("condicionVendedor", !Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1") ? this.attrs.get("idEmpresa") : JsfBase.getAutentifica().getEmpresa().getSucursales());
+			this.attrs.put("vendedores", (List<UISelectItem>) UISelect.build("VistaConsultasDto", "vendedor", this.attrs, "nombre",  EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS));
+			this.attrs.put("vendedor", new UISelectEntity("-1"));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doLoadVendedores
+	
+	private void loadTiposPagos(){
+		List<UISelectEntity> tiposPagos= null;
+		Map<String, Object>params      = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_cobro_caja=1");
+			tiposPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
+			this.attrs.put("tiposPagos", tiposPagos);
+			this.attrs.put("tipoPago", new UISelectEntity("-1"));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // loadTiposPagos
 	
 	public void doReporte() throws Exception {
 		Map<String, Object>params    = null;
