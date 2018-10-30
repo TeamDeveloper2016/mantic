@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.ventas.caja.reglas;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -504,7 +505,6 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		TcManticFacturasDto factura= null;
 		try {			
 			factura= new TcManticFacturasDto();
-			factura.setFechaEmision(new Date(Calendar.getInstance().getTimeInMillis()));
 			factura.setIdVenta(getOrden().getIdVenta());
 			factura.setIdUsuario(JsfBase.getIdUsuario());
 			factura.setIntentos(0L);
