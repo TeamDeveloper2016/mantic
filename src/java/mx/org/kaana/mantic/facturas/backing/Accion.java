@@ -121,6 +121,7 @@ public class Accion extends IBaseVenta implements Serializable {
 
   public void doLoad() {
     EAccion eaccion= null;
+		Long idCliente = -1L;
     try {
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
@@ -134,7 +135,11 @@ public class Accion extends IBaseVenta implements Serializable {
         case CONSULTAR:			
           this.setAdminOrden(new AdminFacturas((FacturaFicticia)DaoFactory.getInstance().toEntity(FacturaFicticia.class, "TcManticFicticiasDto", "detalle", this.attrs)));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));					
-					this.attrs.put("consecutivo", ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo());			
+					this.attrs.put("consecutivo", ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo());	
+					idCliente= ((FacturaFicticia)getAdminOrden().getOrden()).getIdCliente();
+					if(idCliente!= null && !idCliente.equals(-1L))
+						doAsignaClienteInicial(idCliente);
+					loadCatalogs();					
           break;
       } // switch			
     } // try
@@ -144,6 +149,61 @@ public class Accion extends IBaseVenta implements Serializable {
     } // catch		
   } // doLoad
 
+	private void loadCatalogs(){
+		List<UISelectEntity> sucursales     = null;
+		List<UISelectEntity> cfdis          = null;
+		List<UISelectEntity> tiposMedioPagos= null;
+		List<UISelectEntity> tiposPagos     = null;
+		try {
+			sucursales= (List<UISelectEntity>) this.attrs.get("sucursales");
+			for(Entity sucursal: sucursales){
+				if(sucursal.getKey().equals(((FacturaFicticia)getAdminOrden().getOrden()).getIdEmpresa()))
+					this.attrs.put("idEmpresa", sucursal);
+			} // for
+			cfdis= (List<UISelectEntity>) this.attrs.get("cfdis");
+			for(Entity cfdi: cfdis){
+				if(cfdi.getKey().equals(((FacturaFicticia)getAdminOrden().getOrden()).getIdUsoCfdi()))
+					this.attrs.put("cfdi", cfdi);
+			} // for
+			tiposMedioPagos= (List<UISelectEntity>) this.attrs.get("tiposMedioPagos");
+			for(Entity tiposMedioPago: tiposMedioPagos){
+				if(tiposMedioPago.getKey().equals(((FacturaFicticia)getAdminOrden().getOrden()).getIdTipoMedioPago()))
+					this.attrs.put("tipoMedioPago", tiposMedioPago);
+			} // for
+			tiposPagos= (List<UISelectEntity>) this.attrs.get("tiposPagos");
+			for(Entity tipoPago: tiposPagos){
+				if(tipoPago.getKey().equals(((FacturaFicticia)getAdminOrden().getOrden()).getIdTipoPago()))
+					this.attrs.put("tipoPagos", tipoPago);
+			} // for
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+			throw e;
+		} // catch		
+	}
+	
+	public void doAsignaClienteInicial(Long idCliente) {
+		UISelectEntity seleccion              = null;
+		List<UISelectEntity> clientesSeleccion= null;
+		MotorBusqueda motorBusqueda           = null; 
+		try {
+			motorBusqueda= new MotorBusqueda(null, idCliente);
+			seleccion= new UISelectEntity(motorBusqueda.toCliente());
+			clientesSeleccion= new ArrayList<>();
+			clientesSeleccion.add(seleccion);
+			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
+			this.attrs.put("clientesSeleccion", clientesSeleccion);
+			this.attrs.put("clienteSeleccion", seleccion);
+			this.setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaCliente	
+
+	
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
