@@ -161,9 +161,13 @@
 								</f:facet>
 							</p:autoComplete>	
 						</p:panelGrid>	
-						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-column-center">
-							<p:spacer/>
-							<p:commandButton id="catalogoCliente" title="Catalogo de clientes" icon="fa fa-users" process="@this" action="#{manticFacturasAccion.doClientes}" ajax="false" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+						<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-column-center">
+							<p:spacer width="1"/>
+							<p:spacer width="1"/>
+						  <p:commandButton id="catalogoCliente" title="Catalogo de clientes" icon="fa fa-users" process="@this" action="#{manticFacturasAccion.doClientes}" ajax="false" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+							<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();" style="float:right;">
+							  <f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{null}"/>
+							</p:commandButton> 
 						</p:panelGrid>
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-wid-100-txt" columnClasses="janal-wid-100-txt">
 							<p:outputLabel for="cliente" value="Cliente seleccionado:"/>							
@@ -524,6 +528,10 @@
 		</div>						
 	</ui:define>	
 	<ui:define name="dialogos">		
+		<ui:include src="/Paginas/Mantic/Catalogos/Articulos/express.xhtml">
+			<ui:param name="dialogo" value="articulos"/>
+			<ui:param name="seleccionado" value="#{null}"/>
+		</ui:include>
 		<p:dialog widgetVar="dialogoClientes" header="Buscar clientes" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onHide="janal.desbloquear();" onShow="$('input[name=rfcClientes]').val('');erase();" width="900px" height="470px" resizable="false" appendTo="@(body)">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">
