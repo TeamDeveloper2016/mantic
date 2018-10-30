@@ -62,6 +62,7 @@ public class Cliente extends IBaseAttribute implements Serializable {
   @Override
   protected void init() {
     try {
+			this.attrs.put("regreso", JsfBase.getFlashAttribute("regreso"));
 			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin());
       doLoad();      					
     } // try
@@ -107,7 +108,10 @@ public class Cliente extends IBaseAttribute implements Serializable {
 			clienteVenta= toClienteVenta();			
       transaccion = new Transaccion(clienteVenta);
       if (transaccion.ejecutar(EAccion.ASIGNAR)) {
-        regresar = "accion".concat(Constantes.REDIRECIONAR);
+				if(this.attrs.get("regreso")!= null)
+					regresar= this.attrs.get("regreso").toString().concat(Constantes.REDIRECIONAR);
+				else
+					regresar = "accion".concat(Constantes.REDIRECIONAR);
         JsfBase.addMessage("Se registro el cliente de forma correcta.", ETipoMensaje.INFORMACION);
       } // if
       else {
@@ -154,7 +158,10 @@ public class Cliente extends IBaseAttribute implements Serializable {
 	} // toClienteVenta
 	
   public String doCancelar() {
-    return "accion".concat(Constantes.REDIRECIONAR);
+		String regresar= "accion".concat(Constantes.REDIRECIONAR);
+		if(this.attrs.get("regreso")!= null)
+			regresar= this.attrs.get("regreso").toString().concat(Constantes.REDIRECIONAR);			
+    return regresar;
   } // doAccion
 
   private void loadTiposDomicilios() {
