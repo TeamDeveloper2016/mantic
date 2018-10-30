@@ -34,6 +34,8 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 public class TcManticTiposPagosDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
+  @Column (name="clave")
+  private String clave;
   @Column (name="descripcion")
   private String descripcion;
   @Column (name="id_tipo_medio_pago")
@@ -56,19 +58,28 @@ public class TcManticTiposPagosDto implements IBaseDto, Serializable {
   }
 
   public TcManticTiposPagosDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null);
+    this(null, null, new Long(-1L), null, null, null, null);
     setKey(key);
   }
 
-  public TcManticTiposPagosDto(String descripcion, Long idTipoMedioPago, Long idTipoPago, Long idUsuario, Double descuento, String nombre) {
+  public TcManticTiposPagosDto(String descripcion, Long idTipoMedioPago, Long idTipoPago, Long idUsuario, Double descuento, String nombre, String clave) {
     setDescripcion(descripcion);
     setIdTipoMedioPago(idTipoMedioPago);
     setIdTipoPago(idTipoPago);
     setIdUsuario(idUsuario);
     setDescuento(descuento);
     setNombre(nombre);
+		this.clave= clave;
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
+
+	public String getClave() {
+		return clave;
+	}
+
+	public void setClave(String clave) {
+		this.clave=clave;
+	}
 	
   public void setDescripcion(String descripcion) {
     this.descripcion = descripcion;
@@ -141,6 +152,8 @@ public class TcManticTiposPagosDto implements IBaseDto, Serializable {
   public String toString() {
     StringBuilder regresar= new StringBuilder();
     regresar.append("[");
+		regresar.append(getClave());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDescripcion());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoMedioPago());
@@ -161,6 +174,7 @@ public class TcManticTiposPagosDto implements IBaseDto, Serializable {
   @Override
   public Map toMap() {
     Map regresar = new HashMap();
+		regresar.put("clave", getClave());
 		regresar.put("descripcion", getDescripcion());
 		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
 		regresar.put("idTipoPago", getIdTipoPago());
@@ -174,7 +188,7 @@ public class TcManticTiposPagosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getIdTipoMedioPago(), getIdTipoPago(), getIdUsuario(), getDescuento(), getNombre(), getRegistro()
+    getClave(), getDescripcion(), getIdTipoMedioPago(), getIdTipoPago(), getIdUsuario(), getDescuento(), getNombre(), getRegistro()
     };
     return regresar;
   }
