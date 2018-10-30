@@ -56,9 +56,11 @@
 				$(jsArticulos.sats()).addClass('ignore');
 				$(jsArticulos.amount()).addClass('ignore');
 				$(jsArticulos.price()).addClass('ignore');
-				var ok= janal.execute('articulo', lock);
+				var ok= janal.execute(lock);
 				if(!ok) {
 					jsArticulos.cursor.index= index;
+  				$(jsArticulos.descriptions()).removeClass('ignore');
+	  			$(jsArticulos.sats()).removeClass('ignore');
   				$(jsArticulos.amount()).removeClass('ignore');
 	  			$(jsArticulos.price()).removeClass('ignore');
 				} // else	
