@@ -79,9 +79,6 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
-		<p:defaultCommand target="limpio"/>
-		<p:commandButton id="limpio" value="" styleClass="janal-zero-size"/>
-		
 		<pe:remoteCommand name="updateDescuentos" process="@this" update="panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd"/>  					
 		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticFacturasAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
@@ -301,7 +298,7 @@
 									<f:facet name="header">
 										<h:outputText value="Propio"/>
 									</f:facet>
-									<p:outputLabel value="#{row['propio']}" title="Código: #{row['codigo']}, Existencias: #{row['stock']}"/>
+									<p:outputLabel value="#{row['propio']}" title="Existencias: #{row['stock']}"/>
 								</p:column>		
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
 									<f:facet name="header">
@@ -325,7 +322,7 @@
 									<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
 									<p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>
 								</p:column>				
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
 									<f:facet name="header">
 										<h:outputText value="Descuento"/>
 									</f:facet>
@@ -512,7 +509,9 @@
 				<p:commandButton icon="fa fa-check" process="@form" value="Aceptar" onstart="PF('dlgCloseTicket').hide();" action="#{manticFacturasAccion.doCerrarTicket}" oncomplete="janal.desbloquear();"/>
 				<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgCloseTicket').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
-		</p:dialog>			
+		</p:dialog>	
+		<p:defaultCommand target="limpio"/>
+		<p:commandButton id="limpio" value="" styleClass="janal-zero-size"/>
 	</ui:define>    
 	<ui:define name="acciones">		
 		<div class="lg-pantalla">
