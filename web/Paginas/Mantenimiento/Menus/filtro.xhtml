@@ -10,7 +10,7 @@
   </ui:define>
   <ui:define name="contenido">
     <p:panelGrid id="contenidoPrincipal" columns="1" class="margen-panel" layout="grid">
-      <p:toolbar  styleClass="janal-content-table" id="seguimiento">
+      <p:toolbar  styleClass="janal-wid-99" id="seguimiento">
         <f:facet name="left">
           <p:commandButton value="Inicio" icon="fa fa-caret-right" actionListener="#{kajoolMantenimientoMenusFiltro.doInicio}"  update=":datos:tabla,:datos:seguimiento" id="visitados"/>
           <ui:repeat var="visitado" value="#{kajoolMantenimientoMenusFiltro.visitados}" >
