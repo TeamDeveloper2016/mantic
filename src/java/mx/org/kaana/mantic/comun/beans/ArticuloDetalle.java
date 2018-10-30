@@ -7,7 +7,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 
 /**
@@ -120,6 +122,10 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 
   public Double getCosto() {
     return Numero.toRedondearSat(costo);
+  }
+
+  public String getCosto$() {
+		return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getCosto());
   }
 
   public void setDescuento(String descuento) {
@@ -308,6 +314,10 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 
 	public String getDescuentoDescripcion() {
 		return descuentoDescripcion;
+	}
+	
+	public String getDescuentoDescripcion$() {
+		return descuentoDescripcion+ "%";
 	}
 
 	public void setDescuentoDescripcion(String descuentoDescripcion) {

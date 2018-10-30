@@ -59,7 +59,7 @@ public final class Totales implements Serializable {
 	}
 
 	public String getImporte$() {
-		return Global.format(EFormatoDinamicos.MILES_SAT_DECIMALES, Numero.toRedondearSat(importe));
+		return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, Numero.toRedondearSat(importe));
 	}
 
 	public void setImporte(double importe) {

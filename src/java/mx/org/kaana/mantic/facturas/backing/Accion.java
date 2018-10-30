@@ -30,12 +30,12 @@ import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
-import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
 import mx.org.kaana.mantic.facturas.reglas.AdminFacturas;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
+import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
@@ -43,7 +43,7 @@ import org.primefaces.model.StreamedContent;
 
 @Named(value= "manticFacturasAccion")
 @ViewScoped
-public class Accion extends IBaseArticulos implements Serializable {
+public class Accion extends IBaseVenta implements Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
 	private static final String VENDEDOR_PERFIL= "VENDEDOR DE PISO";
@@ -443,7 +443,8 @@ public class Accion extends IBaseArticulos implements Serializable {
     } // finally
 	} // doUpdateArticulos	
 	
-	private void loadSucursales(){
+	@Override
+	protected void loadSucursales(){
 		List<UISelectEntity> sucursales= null;
 		Map<String, Object>params      = null;
 		List<Columna> columns          = null;

@@ -28,7 +28,7 @@ public class ArticuloVenta extends Articulo {
 	
 	@Override
 	public String getImporte$() {
-		return Global.format(EFormatoDinamicos.MILES_CON_DECIMALES, this.getImporte()); 
+		return Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, this.getImporte()); 
 	}
 	
 	@Override

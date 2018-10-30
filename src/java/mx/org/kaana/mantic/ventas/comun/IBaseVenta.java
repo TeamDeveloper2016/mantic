@@ -739,4 +739,36 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		this.toFindCliente(new UISelectEntity((Entity)event.getObject()));
 	}	
 	
+	public void doUpdateDialogClientes(String codigo) {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		boolean buscaPorCodigo    = false;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			if(!Cadena.isVacio(codigo)) {
+				buscaPorCodigo= codigo.startsWith(".");
+				if(buscaPorCodigo)
+					codigo= codigo.trim().substring(1);
+			} // if	
+			else
+				codigo= "WXYZ";
+			if(buscaPorCodigo)
+    		params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_clientes.rfc) like '".concat(codigo.toUpperCase()).concat("%'"));			
+			else
+    		params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_clientes.razon_social) like '".concat(codigo.toUpperCase()).concat("%'"));
+      this.attrs.put("lazyModelClientes", new FormatCustomLazy("VistaClientesDto", "findRazonSocial", params, columns));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}
+		
 }

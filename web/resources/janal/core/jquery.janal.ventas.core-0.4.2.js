@@ -24,11 +24,14 @@
 		keys        : '\\:keys',
 		locks       : '\\:locks',
 		values      : '\\:values',
+		sats        : '\\:sat',
 		selector    : '.key-down-event',
 		focus       : '.key-focus-event',
 		lookup      : '.key-up-event',
 		averages    : '.key-press-enter',
 		filter      : '.key-filter-event',
+		ctrlPlus    : false,
+		ctrlDiv     : false,
 		current     : '',
 		typingTimer : null,
 		doneInterval: 10000,
@@ -52,17 +55,22 @@
 		VK_MAYOR    : 226,
 		VK_F7       : 118,
 		VK_F8       : 119,
+		VK_SAT	    : 188,
 	  change      : [13, 27, 106, 107, 110, 111, 188, 189, 191, 220, 222, 226],
 	  control     : [9, 13, 17, 27, 38, 40, 220, 118, 121, 122],
 		cursor: {
 			top: 1, // el top debera ser elementos que van de 0 a n-1
 			index: 0
 		},
-		init: function(top, content) { // Constructor
+		init: function(top, content, plus, div) { // Constructor
 			$articulos= this;
 			this.cursor.top= top-1;
 			if(typeof(content)!== 'undefined')
 			  this.joker= content;
+			if(typeof(plus)!== 'undefined')
+			  this.ctrlPlus= typeof(plus)=== 'boolean'? plus: false;
+			if(typeof(div)!== 'undefined')
+			  this.ctrlDiv= typeof(div)=== 'boolean'? div: false;
 			this.events();
 		}, // init
 		events: function() {
@@ -170,6 +178,18 @@
 						break;
 					case $articulos.VK_COMA:
 						return $articulos.point();
+						break;
+					case $articulos.VK_SAT:
+						janal.console('jsArticulo.sat: ');
+						var ok= true;
+						var value= $(this).val().trim();
+						if(janal.isInteger(value) && value.length=== 8) {
+							$('#'+ $articulos.joker+ $articulos.cursor.index+ $articulos.sats).val(value);
+							$articulos.set('');
+							$articulos.refresh();
+							ok= false;
+						} // if	
+						return ok;
 						break;
 					case $articulos.VK_REST:
 						var txt  = $(this).val().trim().length<= 0;
@@ -441,21 +461,21 @@
 		},
 		div: function() {
 			janal.console('jsArticulo.div: ');		
-			/*
-			var value= this.get().trim();
-			var temp = $(this.discount()).val();
-			if($(this.discount()) && value.length> 0 && this.isPorcentaje(value)) {
-			  $(this.discount()).val(value);
-				var ok= janal.descuentos($(this.discount()));
-				if(ok.error)
-				  $(this.discount()).val(temp);
-				else {
-					this.set('');
-  				this.refresh();
-				} // if
-			  return ok.error;
+		  if(this.ctrlDiv) {
+				var value= this.get().trim();
+				var temp = $(this.discount()).val();
+				if($(this.discount()) && value.length> 0 && this.isPorcentaje(value)) {
+					$(this.discount()).val(value);
+					var ok= janal.descuentos($(this.discount()));
+					if(ok.error)
+						$(this.discount()).val(temp);
+					else {
+						this.set('');
+						this.refresh();
+					} // if
+					return ok.error;
+				} // if	 
 			} // if	 
-			*/
 			return true;
 		},
 		autorizedDiscount: function() {
@@ -502,21 +522,21 @@
 		},
 		plus: function() {
 			janal.console('jsArticulo.plus: ');			
-			/*
-			var value = this.get().trim();
-			var temp = $(this.price()).val();
-			if($(this.price()) && value.length> 0 && this.isFlotante(value)) {
-			  $(this.price()).val(value);
-				var ok= janal.precio($(this.price()), value);
-				if(ok.error)
-				  $(this.price()).val(temp);
-				else {
-					this.set('');
-	 				this.refresh();
-				} // if
-			  return ok.error;
+		  if(this.ctrlPlus) {
+				var value = this.get().trim();
+				var temp = $(this.price()).val();
+				if($(this.price()) && value.length> 0 && this.isFlotante(value)) {
+					$(this.price()).val(value);
+					var ok= janal.precio($(this.price()), value);
+					if(ok.error)
+						$(this.price()).val(temp);
+					else {
+						this.set('');
+						this.refresh();
+					} // if
+					return ok.error;
+				} // if	 
 			} // if	 
-			*/
 			return true;
 		},
 		point: function() {
