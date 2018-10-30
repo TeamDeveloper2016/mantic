@@ -52,15 +52,15 @@
       function execute(lock) {
 				var index= jsArticulos.cursor.index;
 				jsArticulos.cursor.index= jsArticulos.cursor.top;
-				$(jsArticulos.descriptions()).addClass('ignore');
-				$(jsArticulos.sats()).addClass('ignore');
+				$(jsArticulos.description()).addClass('ignore');
+				$(jsArticulos.sat()).addClass('ignore');
 				$(jsArticulos.amount()).addClass('ignore');
 				$(jsArticulos.price()).addClass('ignore');
 				var ok= janal.execute(lock);
 				if(!ok) {
 					jsArticulos.cursor.index= index;
-  				$(jsArticulos.descriptions()).removeClass('ignore');
-	  			$(jsArticulos.sats()).removeClass('ignore');
+  				$(jsArticulos.description()).removeClass('ignore');
+	  			$(jsArticulos.sat()).removeClass('ignore');
   				$(jsArticulos.amount()).removeClass('ignore');
 	  			$(jsArticulos.price()).removeClass('ignore');
 				} // else	
@@ -171,7 +171,7 @@
 							<p:spacer width="1"/>
 							<p:spacer width="1"/>
 						  <p:commandButton id="catalogoCliente" title="Agregar un clientes" icon="fa fa-users" process="@this" action="#{manticFacturasAccion.doClientes}" ajax="false" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
-							<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();" style="float:right;">
+							<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();">
 							  <f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{null}"/>
 							</p:commandButton> 
 						</p:panelGrid>
@@ -298,7 +298,7 @@
 										</div>	
 									</div>	
 								</p:column>
-								<p:column  class="MarAuto Responsive">
+								<p:column  class="MarAuto Responsive nombres">
 									<f:facet name="header">
 										<h:outputText value="Articulo"/>
 									</f:facet>
@@ -310,7 +310,7 @@
 									</f:facet>
 									<p:outputLabel value="#{row['propio']}" title="Existencias: #{row['stock']}"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-8 sat">
 									<f:facet name="header">
 										<h:outputText value="Sat"/>
 									</f:facet>
