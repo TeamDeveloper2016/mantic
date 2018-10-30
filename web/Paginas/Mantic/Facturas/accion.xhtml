@@ -12,9 +12,12 @@
 		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryVentasJs}"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
-				'articulos': {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'articulo'},			
-				'total'    : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'articulo'},			
-				'descuento': {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'articulo'}
+				'articulos' : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'articulo'},			
+				'total'     : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'articulo'},			
+				'descuento' : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'articulo'},
+				'cfdi'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo', mensaje:'Selecciona en tipo de CFDI en la pestaña de cliente, es obligatorio.'},
+				'referencia': {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo'},
+				'tipoPago'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo'}
 			};	
 			
 			fieldsDialog ={
@@ -101,7 +104,7 @@
 						<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticFacturasAccion.attrs.isMatriz}"/>
 						<p:inputText id="noTicket" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticFacturasAccion.attrs.consecutivo}" disabled="true"/>								
 						<p:selectOneMenu id="idEmpresa" value="#{manticFacturasAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticFacturasAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">
-							<p:ajax event="change" process="@this" update="contenido tabla" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+							<p:ajax event="change" process="@this" listener="#{manticVentasAccion.doUpdateForEmpresa}" update="clientes cliente contenido tabla" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 							<f:selectItems value="#{manticFacturasAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
 							<p:column headerText="Clave">
 								<h:outputText value="#{item.clave}"/>
@@ -110,7 +113,96 @@
 								<h:outputText value="#{item.nombre}"/>
 							</p:column>   
 						</p:selectOneMenu>
-					</p:panelGrid>
+					</p:panelGrid>					
+					<p:panelGrid id="panelCliente" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-5, janal-wid-70">												
+						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+							<p:outputLabel for="clientes" value="Buscar cliente:"/>							
+							<p:autoComplete id="clientes" placeholder="RFC o nombre" widgetVar="listadoClientes" var="customCliente" itemLabel="#{customCliente.rfc}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticFacturasAccion.attrs.cliente}" completeMethod="#{manticFacturasAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticFacturasAccion.doAsignaCliente}" update="cliente contenido" oncomplete="janal.desbloquear();"/>
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
+										<h:outputText value="Clave" />
+										<h:outputText value="#{customCliente.clave}"/>
+										<h:outputText value="RFC:" />
+										<h:outputText value="#{customCliente.rfc}"/>
+										<h:outputText value="Razón social:"/>
+										<h:outputText value="#{customCliente.razonSocial}"/>												
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
+						</p:panelGrid>	
+						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-column-center">
+							<p:spacer/>
+							<p:commandButton id="catalogoCliente" title="Catalogo de clientes" icon="fa fa-users" process="@this" action="#{manticFacturasAccion.doClientes}" ajax="false" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>						
+						</p:panelGrid>
+						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-wid-100-txt" columnClasses="janal-wid-100-txt">
+							<p:outputLabel for="cliente" value="Cliente:"/>							
+							<p:selectOneMenu id="cliente" value="#{manticFacturasAccion.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
+								<p:ajax event="change" process="@this idEmpresa" onstart="return janal.bloquear();" listener="#{manticFacturasAccion.doActualizaPrecioCliente}" oncomplete="janal.desbloquear();" update="tabla clientes"/>
+								<f:selectItems value="#{manticFacturasAccion.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
+								<p:column headerText="Clave">
+									<h:outputText value="#{item.clave}"/>
+								</p:column>   
+								<p:column headerText="RFC">
+									<h:outputText value="#{item.rfc}"/>
+								</p:column>   
+								<p:column headerText="Razón social">
+									<h:outputText value="#{item.razonSocial}"/>
+								</p:column>   
+							</p:selectOneMenu>
+						</p:panelGrid>						
+					</p:panelGrid>	
+
+					<h:panelGrid id="panelTiposPagos" columns="5" style="width: 100%">																								
+						<p:outputLabel for="tipoMedioPago" value="Forma de pago:"/>												
+						<p:outputLabel id="lbanco" for="banco" value="Banco:" rendered="#{manticFacturasAccion.attrs.mostrarBanco}"/>
+						<p:outputLabel id="lreferencia" for="referencia" value="Referencia:" rendered="#{manticFacturasAccion.attrs.mostrarBanco}"/>												
+						<p:outputLabel for="tipoPago" value="Método de pago:"/>												
+						<p:outputLabel for="cfdi" value="CFDI:"/>												
+						<p:spacer id="sp1" rendered="#{!manticFacturasAccion.attrs.mostrarBanco}"/>
+						<p:spacer id="sp2" rendered="#{!manticFacturasAccion.attrs.mostrarBanco}"/>						
+						<p:selectOneMenu id="tipoMedioPago" value="#{manticFacturasAccion.attrs.tipoMedioPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains">					
+							<p:ajax event="change" process="@this" listener="#{manticFacturasAccion.doValidaTipoPago}" update="panelTiposPagos banco referencia lbanco lreferencia sp1 sp2" oncomplete="janal.refresh();"/>
+							<f:selectItems value="#{manticFacturasAccion.attrs.tiposMedioPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+							<p:column headerText="Clave">
+								<h:outputText value="#{item.clave}"/>
+							</p:column>   
+							<p:column headerText="Nombre">
+								<h:outputText value="#{item.nombre}"/>
+							</p:column>   
+						</p:selectOneMenu>
+						<p:selectOneMenu id="banco" value="#{manticFacturasAccion.attrs.banco}" filter="true" filterMatchMode="contains" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity" rendered="#{manticFacturasAccion.attrs.mostrarBanco}">														
+							<f:selectItems value="#{manticFacturasAccion.attrs.bancos}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>										
+							<p:column headerText="Nombre">
+								<h:outputText value="#{item.nombre}"/>
+							</p:column>   
+							<p:column headerText="Razón social">
+								<h:outputText value="#{item.razonSocial}"/>
+							</p:column>   
+						</p:selectOneMenu>
+						<p:inputText id="referencia" value="#{manticFacturasAccion.attrs.referencia}" styleClass="janal-wid-100-txt" placeholder="Ej. Referencia 4564" rendered="#{manticFacturasAccion.attrs.mostrarBanco}"/>										
+						<p:selectOneMenu id="tipoPago" value="#{manticFacturasAccion.attrs.tipoPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" effect="fade" filter="true" filterMatchMode="contains">					
+							<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
+							<f:selectItems value="#{manticFacturasAccion.attrs.tiposPagos}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+							<p:column headerText="Clave">
+								<h:outputText value="#{item.clave}"/>
+							</p:column>   
+							<p:column headerText="Nombre">
+								<h:outputText value="#{item.nombre}"/>
+							</p:column>   
+						</p:selectOneMenu>
+						<p:selectOneMenu id="cfdi" value="#{manticFacturasAccion.attrs.cfdi}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">																			
+							<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
+							<f:selectItems value="#{manticFacturasAccion.attrs.cfdis}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+							<p:column  styleClass="janal-column-left janal-wid-col-50">
+								<h:outputText value="#{item.clave}"/>
+							</p:column>   										
+							<p:column  styleClass="janal-column-left">
+								<h:outputText value="#{item.nombre}"/>
+							</p:column>   										
+						</p:selectOneMenu>		
+					</h:panelGrid>
+					
 				</div>
 			</div>
 			<div class="ui-grid-row janal-grid-row">
@@ -193,17 +285,10 @@
 									<f:facet name="header">
 										<h:outputText value="Precio"/>
 									</f:facet>
-									<div class="ui-grid-row janal-grid-row">
-										<div class="ui-grid-col-12 janal-column-right" style="padding-right: 14px;">
-											<p:outputLabel value="#{row['costo']}" style="display:none"/>
-											<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
-											<p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas janal-column-right" onblur="refresh();"/>
-										</div>	 
-										<div style="width: 10px; margin-left: -4px; margin-top: 1px;">
-											<h:outputText value="#{row['costoMayorMenor']}" escape="false"/>
-										 </div>
-									</div>	
-								</p:column>		
+									<p:outputLabel value="#{row['costo']}"/>
+									<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
+									<p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>
+								</p:column>				
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 									<f:facet name="header">
 										<h:outputText value="% Descuento"/>

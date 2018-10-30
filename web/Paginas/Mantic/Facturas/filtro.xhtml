@@ -12,6 +12,9 @@
         'idEmpresa'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'consecutivo'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'fechaInicio'      : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'fechaTermino'     : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+				'articulo'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+				'cliente'          : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'idFicticiaEstatus': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
       };
 			
@@ -60,8 +63,16 @@
               </p:selectOneMenu>
               <p:outputLabel for="consecutivo" value="No. factura:"/>
               <p:inputText id="consecutivo" value="#{manticFacturasFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>               
-              <p:outputLabel for="fechaInicio" value="Fecha:"/>
+              <p:outputLabel for="folio" value="Folio:"/>
+              <p:inputText id="folio" value="#{manticFacturasFiltro.attrs.folio}" styleClass="janal-wid-100-txt"/>               
+              <p:outputLabel for="cliente" value="Cliente:"/>
+              <p:inputText id="cliente" value="#{manticFacturasFiltro.attrs.cliente}" styleClass="janal-wid-100-txt"/>                             
+							<p:outputLabel for="articulo" value="Articulo:"/>
+              <p:inputText id="articulo" value="#{manticFacturasFiltro.attrs.articulo}" styleClass="janal-wid-100-txt"/>                             							
+							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticFacturasFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>              
+							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticFacturasFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>							
               <p:outputLabel for="idFicticiaEstatus" value="Estatus:"/>
               <p:selectOneMenu id="idFicticiaEstatus" value="#{manticFacturasFiltro.attrs.idFicticiaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
@@ -106,11 +117,23 @@
               </f:facet>
               <h:outputText value="#{filtro['nombreEmpresa']}"/>
             </p:column>		
+            <p:column class="MarAuto Responsive" sortBy="#{filtro.cliente}">
+              <f:facet name="header">
+                <h:outputText value="Cliente"/>
+              </f:facet>
+              <h:outputText value="#{filtro['cliente']}"/>
+            </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="No. factura"/>
               </f:facet>
               <h:outputText value="#{filtro['consecutivo']}"/>
+            </p:column>		            
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.folio}">
+              <f:facet name="header">
+                <h:outputText value="Folio"/>
+              </f:facet>
+              <h:outputText value="#{filtro['folio']}"/>
             </p:column>		            
             <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
               <f:facet name="header">
@@ -124,9 +147,15 @@
               </f:facet>
               <h:outputText value="#{filtro['estatus']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.fecha}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.fechaEmision}">
               <f:facet name="header">
-                <h:outputText value="Fecha"/>
+                <h:outputText value="Timbrado"/>
+              </f:facet>
+              <h:outputText value="#{filtro['timbrado']}"/>
+            </p:column>		
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.registro}">
+              <f:facet name="header">
+                <h:outputText value="Registro"/>
               </f:facet>
               <h:outputText value="#{filtro['registro']}"/>
             </p:column>		
