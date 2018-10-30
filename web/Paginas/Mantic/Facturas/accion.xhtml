@@ -8,20 +8,21 @@
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Facturas"/>
+	<ui:param name="notIsCaja" value="false" class="javax.faces.Boolean"/>
 	<ui:define name="librerias">
 		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryVentasJs}"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
-				'articulos' : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'articulo'},			
-				'total'     : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica', grupo: 'articulo'},			
-				'descuento' : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'articulo'},
-				'cfdi'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo', mensaje:'Tipo de CFDI obligatorio.'},
-				'referencia': {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo'},
-				'tipoPago'  : {validaciones: 'requerido', mascara: 'libre', grupo: 'articulo'},
-				'nombres'   : {multiple: '$', validaciones: 'requerido|libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'articulo', individual: true},				
-				'sat'       : {multiple: '$', validaciones: 'requerido|entero|igual-caracteres({"cuantos": 8})', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas', grupo: 'articulo'},
-				'cantidades': {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'articulo'},
-				'precios'   : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'articulo'}				
+				'articulos' : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica'},			
+				'total'     : {validaciones: 'requerido|mayor({"cuanto": 0})', mascara: 'no-aplica'},			
+				'descuento' : {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos'},
+				'cfdi'      : {validaciones: 'requerido', mascara: 'libre', mensaje:'Tipo de CFDI obligatorio.'},
+				'referencia': {validaciones: 'requerido', mascara: 'libre'},
+				'tipoPago'  : {validaciones: 'requerido', mascara: 'libre'},
+				'nombres'   : {multiple: '$', validaciones: 'requerido|libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},				
+				'sat'       : {multiple: '$', validaciones: 'requerido|entero|igual-caracteres({"cuantos": 8})', mascara: 'ocho-digitos', formatos: 'cambiar-mayusculas'},
+				'cantidades': {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre'},
+				'precios'   : {multiple: '$', validaciones: 'mayor-igual({"cuanto": 0})', mascara: 'libre'}
 			};	
 			
 			fieldsDialog = {
@@ -51,9 +52,11 @@
       function execute(lock) {
 				var index= jsArticulos.cursor.index;
 				jsArticulos.cursor.index= jsArticulos.cursor.top;
+				$(jsArticulos.descriptions()).addClass('ignore');
+				$(jsArticulos.sats()).addClass('ignore');
 				$(jsArticulos.amount()).addClass('ignore');
 				$(jsArticulos.price()).addClass('ignore');
-				var ok= janal.partial('articulo', lock);
+				var ok= janal.execute('articulo', lock);
 				if(!ok) {
 					jsArticulos.cursor.index= index;
   				$(jsArticulos.amount()).removeClass('ignore');
@@ -79,6 +82,7 @@
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
+		<p:defaultCommand target="limpio"/>
 		<pe:remoteCommand name="updateDescuentos" process="@this" update="panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd"/>  					
 		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticFacturasAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
@@ -132,7 +136,7 @@
 					<p:panelGrid id="panelEmpresa" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-90">						
 						<p:outputLabel for="noTicket" value="No. factura:"/>
 						<p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticFacturasAccion.attrs.isMatriz}"/>
-						<p:inputText id="noTicket" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticFacturasAccion.attrs.consecutivo}" disabled="true"/>								
+						<p:inputText id="noTicket" styleClass="janal-wid-100-txt janal-column-right key-press-enter" value="#{manticFacturasAccion.attrs.consecutivo}" readonly="true"/>								
 						<p:selectOneMenu id="idEmpresa" value="#{manticFacturasAccion.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{manticFacturasAccion.attrs.isMatriz}" effect="fade" filter="true" filterMatchMode="contains">
 							<p:ajax event="change" process="@this" listener="#{manticFacturasAccion.doUpdateForEmpresa}" update="clientes cliente contenido tabla" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
 							<f:selectItems value="#{manticFacturasAccion.attrs.sucursales}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.titulo}"/>
@@ -144,7 +148,7 @@
 							</p:column>   
 						</p:selectOneMenu>
 					</p:panelGrid>					
-					<p:panelGrid id="panelCliente" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-5, janal-wid-70">												
+					<p:panelGrid id="panelCliente" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-8, janal-wid-70">												
 						<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 							<p:outputLabel for="clientes" value="Buscar cliente:"/>							
 							<p:autoComplete id="clientes" placeholder="RFC o nombre" widgetVar="listadoClientes" var="customCliente" itemLabel="#{customCliente.rfc}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticFacturasAccion.attrs.cliente}" completeMethod="#{manticFacturasAccion.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
@@ -164,7 +168,7 @@
 						<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-column-center">
 							<p:spacer width="1"/>
 							<p:spacer width="1"/>
-						  <p:commandButton id="catalogoCliente" title="Catalogo de clientes" icon="fa fa-users" process="@this" action="#{manticFacturasAccion.doClientes}" ajax="false" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+						  <p:commandButton id="catalogoCliente" title="Agregar un clientes" icon="fa fa-users" process="@this" action="#{manticFacturasAccion.doClientes}" ajax="false" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 							<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();" style="float:right;">
 							  <f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{null}"/>
 							</p:commandButton> 
@@ -261,9 +265,9 @@
 											<p:ajax event="change" process="@this" update="@this"/>
 										</p:selectBooleanCheckbox>
 										<h:outputText value="Código"/>
-										<span class="janal-help-icon janal-help-9 fa fa-fw fa-question-circle Fright" onclick="countHelp(9);"/>	
-										<pe:tooltip for="@(.janal-help-9)" showEvent="click">
-											<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(9)}" styleClass="Fs15" escape="false"/>
+										<span class="janal-help-icon janal-help-11 fa fa-fw fa-question-circle Fright" onclick="countHelp(11);"/>	
+										<pe:tooltip for="@(.janal-help-11)" showEvent="click">
+											<h:outputLabel value="#{kajoolUtilAplicacion.toTextHelp(11)}" styleClass="Fs15" escape="false"/>
 										</pe:tooltip>
 									</f:facet>
 									<div class="ui-grid-row janal-grid-row">
@@ -276,7 +280,7 @@
 												<f:facet name="itemtip">
 													<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
 														<f:facet name="header" class="TexAlCenter">
-															<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>
+															<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="100" height="80"/>
 														</f:facet>
 														<h:outputText value="Código:" />
 														<h:outputText value="#{custom.propio}" />
@@ -514,7 +518,6 @@
 				<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgCloseTicket').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>	
-		<p:defaultCommand target="limpio"/>
 		<p:commandButton id="limpio" value="" styleClass="janal-zero-size"/>
 	</ui:define>    
 	<ui:define name="acciones">		

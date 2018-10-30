@@ -321,7 +321,7 @@
 			</div>	
 		</h:form>
 	</p:dialog>	
-	<p:dialog id="dialogoTeclasAyuda" widgetVar="dlgTeclasAyuda" header="Teclas rapidas de la aplicaci&oacute;n" onShow="janal.bloquear();" onHide="janal.sendLastFocus();janal.desbloquear();" height="#{empty notIsCaja or notIsCaja? '220px': '290px'}" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
+	<p:dialog id="dialogoTeclasAyuda" widgetVar="dlgTeclasAyuda" header="Teclas rapidas de la aplicaci&oacute;n" onShow="janal.bloquear();" onHide="janal.sendLastFocus();janal.desbloquear();" height="#{empty notIsCaja or notIsCaja? '220px': '320px'}" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form id="teclasAyuda" prependId="false">
 			<div class="ui-datatable ui-widget ui-datatable-reflow">
 				<div class="ui-datatable-tablewrapper">
@@ -350,6 +350,12 @@
 							</tr>
 							<tr style="display: #{empty notIsCaja or notIsCaja? 'none': ''}">
 								<td colspan="3">&nbsp;</td>
+							</tr>
+							<tr style="display: #{empty notIsCaja or notIsCaja? 'none': ''}">
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-desktop"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[F7]</strong></td><td>Detalle del articulo</td>	
+							</tr>
+							<tr style="display: #{empty notIsCaja or notIsCaja? 'none': ''}">
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-truck"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[F8]</strong></td><td>Articulo en sucursales</td>	
 							</tr>
 							<tr style="display: #{empty notIsCaja or notIsCaja? 'none': ''}">
 								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-thumbs-o-up"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[F10]</strong></td><td>Aplicar descuento</td>	
