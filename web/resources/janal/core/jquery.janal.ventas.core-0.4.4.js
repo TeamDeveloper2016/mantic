@@ -24,8 +24,8 @@
 		keys        : '\\:keys',
 		locks       : '\\:locks',
 		values      : '\\:values',
-		sat         : '\\:sat',
-		description : '\\:nombres',
+		sats        : '\\:sat',
+		descriptions: '\\:nombres',
 		selector    : '.key-down-event',
 		focus       : '.key-focus-event',
 		lookup      : '.key-up-event',
@@ -185,7 +185,7 @@
 						var ok= true;
 						var value= $(this).val().trim();
 						if(janal.isInteger(value) && value.length=== 8) {
-							$($articulos.sats()).val(value);
+							$($articulos.sat()).val(value);
 							$articulos.set('');
 							$articulos.refresh();
 							ok= false;
@@ -356,11 +356,14 @@
 		name: function() {
 			return '#'+ this.joker+ this.cursor.index+ this.codes;
 		},
-		descriptions: function() {
-			return '#'+ this.joker+ this.cursor.index+ this.description;
+		amount: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.amounts;
 		},
-		sats: function() {
-			return '#'+ this.joker+ this.cursor.index+ this.sat;
+		description: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.descriptions;
+		},
+		sat: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.sats;
 		},
 		request: function() {
 			return '#'+ this.joker+ this.cursor.index+ this.requested;

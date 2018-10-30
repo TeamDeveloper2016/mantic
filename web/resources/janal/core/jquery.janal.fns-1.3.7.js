@@ -465,10 +465,10 @@ $.mask.masks = $.extend($.mask.masks, {
             if (this.checkable(element))
               return this.getLength(value, element)> 0;
             else
-              return !janal.empty(value);
+              return $(element).hasClass('ignore') || !janal.empty(value);
             break;
           default:
-             return !janal.empty(value);
+             return $(element).hasClass('ignore') || !janal.empty(value);
         } // switch
     }, function(params, element) {
       var msg= 'El dato es obligatorio.';
