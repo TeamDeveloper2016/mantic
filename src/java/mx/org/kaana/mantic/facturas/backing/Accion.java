@@ -173,7 +173,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			tiposPagos= (List<UISelectEntity>) this.attrs.get("tiposPagos");
 			for(Entity tipoPago: tiposPagos){
 				if(tipoPago.getKey().equals(((FacturaFicticia)getAdminOrden().getOrden()).getIdTipoPago()))
-					this.attrs.put("tipoPagos", tipoPago);
+					this.attrs.put("tipoPago", tipoPago);
 			} // for
 		} // try
 		catch (Exception e) {
