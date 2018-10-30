@@ -105,6 +105,9 @@
 				order by
 				  tc_mantic_ficticias_detalles.registro
       </select>
+			<delete id="rows">
+				delete from tc_mantic_ficticias_detalles where id_ficticia= {idFicticia}
+			</delete>
     </unit>
 		<unit id="TcManticFicticiasBitacoraDto">
       <select id="row">
