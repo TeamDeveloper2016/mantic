@@ -159,7 +159,8 @@ public class Accion extends IBaseVenta implements Serializable {
     			RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 					this.init();
 				} // if	
-				JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la factura."), ETipoMensaje.INFORMACION);
+				if(eaccion.equals(EAccion.MODIFICAR))
+				  JsfBase.addMessage("Se modificó la factura con consecutivo ["+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "].", ETipoMensaje.INFORMACION);
   			JsfBase.setFlashAttribute("idFicticia", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia());				
 			} // if
 			else 
