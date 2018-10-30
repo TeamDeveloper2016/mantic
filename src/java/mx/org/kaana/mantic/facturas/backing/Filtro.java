@@ -75,6 +75,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
+      columns.add(new Columna("timbrado", EFormatoDinamicos.FECHA_CORTA));      
       this.lazyModel = new FormatCustomLazy("VistaTcManticFicticiasDetallesDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
@@ -124,12 +125,18 @@ public class Filtro extends IBaseFilter implements Serializable {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
 		UISelectEntity estatus= (UISelectEntity) this.attrs.get("idFicticiaEstatus");
+		if(!Cadena.isVacio(this.attrs.get("articulo")))
+  		sb.append("(upper(tc_mantic_ficticias_detalles.nombre) like upper('%").append(this.attrs.get("articulo")).append("%')) and ");
+		if(!Cadena.isVacio(this.attrs.get("cliente")))
+			sb.append("upper(tc_mantic_clientes.razon_social) like upper('%").append(this.attrs.get("cliente")).append("%')").append(" or upper(tc_mantic_clientes.razon_social) like upper('%").append(this.attrs.get("cliente")).append("%') and");					
 		if(!Cadena.isVacio(this.attrs.get("idFicticia")) && !this.attrs.get("idFicticia").toString().equals("-1"))
   		sb.append("(tc_mantic_ficticias.id_ficticia=").append(this.attrs.get("idFicticia")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_mantic_ficticias.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
-		  sb.append("(date_format(tc_mantic_ficticias.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");			
+		  sb.append("(date_format(tc_mantic_facturas.timbrado, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");			
+		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
+		  sb.append("(date_format(tc_mantic_facturas.timbrado, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");			
 		if(estatus!= null && !estatus.getKey().equals(-1L))
   		sb.append("(tc_mantic_ficticias.id_ficticia_estatus= ").append(estatus.getKey()).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))

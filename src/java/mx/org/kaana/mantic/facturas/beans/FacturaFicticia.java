@@ -15,13 +15,13 @@ public class FacturaFicticia extends TcManticFicticiasDto implements Serializabl
 	}
 
 	public FacturaFicticia(Long key) {
-		super(0D,	2L, key, "", "", 0D, Long.valueOf(Fecha.getAnioActual()), -1L, 0D, 1L, -1L, 0D, 2L, 1D, 2L, 0D, "", -1L, -1L, new Date(Calendar.getInstance().getTimeInMillis()));
-	}
-
-	public FacturaFicticia(Double descuentos, Long idFactura, Long idFicticia, String descuento, String extras, Double global, Long ejercicio, Long consecutivo, Double total, Long idFicticiaEstatus, Long idUsuario, Double impuestos, Long idUsoCfdi, Double tipoDeCambio, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long orden, Date dia) {
-		super(descuentos, idFactura, idFicticia, descuento, extras, global, ejercicio, consecutivo, total, idFicticiaEstatus, idUsuario, impuestos, idUsoCfdi, tipoDeCambio, idSinIva, subTotal, observaciones, idEmpresa, orden, dia);
+		this(0D,2L, -1L,key,"", 0D, 0D, 1L, 1D, -1L, -1L, -1L, "", null, Long.valueOf(Fecha.getAnioActual()), -1L, -1L, 0D, 2L, 2L, 0D, "", -1L, new Date(Calendar.getInstance().getTimeInMillis()),"");
 	}
 	
+	public FacturaFicticia(Double descuentos, Long idFactura, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, String descuento, Long idBanco, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Date dia, String referencia) {
+		super(descuentos, idFactura, idTipoPago, idFicticia, extras, global, total, idFicticiaEstatus, tipoDeCambio, orden, idTipoMedioPago, idCliente, descuento, idBanco, ejercicio, consecutivo, idUsuario, impuestos, idUsoCfdi, idSinIva, subTotal, observaciones, idEmpresa, dia, referencia);
+	}
+
 	@Override
 	public Class toHbmClass() {
 		return TcManticFicticiasDto.class;

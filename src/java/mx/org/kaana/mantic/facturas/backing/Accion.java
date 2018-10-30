@@ -17,6 +17,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.facturama.models.request.*;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -31,11 +32,13 @@ import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
 import mx.org.kaana.mantic.facturas.reglas.AdminFacturas;
 import mx.org.kaana.mantic.ventas.beans.SaldoCliente;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
 
 @Named(value= "manticFacturasAccion")
@@ -97,11 +100,17 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("descuentoGlobal", 0);
 			this.attrs.put("tipoDescuento", INDIVIDUAL);
 			this.attrs.put("descripcion", "Imagen no disponible");
+			this.attrs.put("mostrarBanco", false);
 			this.image= LoadImages.getImage("-1");
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());
+			loadClienteDefault();
 			if(JsfBase.isAdminEncuestaOrAdmin())
 				loadSucursales();
+			loadBancos();
+			loadCfdis();
+			loadTiposMediosPagos();
+			loadTiposPagos();
 			doLoad();
     } // try
     catch (Exception e) {
@@ -267,8 +276,18 @@ public class Accion extends IBaseArticulos implements Serializable {
 	} // toDescuentoVigente
 	
 	private void loadOrdenVenta(){		
+		UISelectEntity cliente = null;
 		try {
+			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");			
 			((FacturaFicticia)this.getAdminOrden().getOrden()).setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
+			((FacturaFicticia)this.getAdminOrden().getOrden()).setIdCliente(cliente.getKey());
+			((FacturaFicticia)this.getAdminOrden().getOrden()).setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
+			((FacturaFicticia)this.getAdminOrden().getOrden()).setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoMedioPago").toString()));
+			((FacturaFicticia)this.getAdminOrden().getOrden()).setIdUsoCfdi(Long.valueOf(this.attrs.get("cfdi").toString()));
+			if(!Long.valueOf(this.attrs.get("tipoMedioPago").toString()).equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
+				((FacturaFicticia)this.getAdminOrden().getOrden()).setIdBanco(Long.valueOf(this.attrs.get("banco").toString()));
+				((FacturaFicticia)this.getAdminOrden().getOrden()).setReferencia(this.attrs.get("referencia").toString());
+			} // if
 			((FacturaFicticia)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
 			((FacturaFicticia)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
 			((FacturaFicticia)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
@@ -521,4 +540,231 @@ public class Accion extends IBaseArticulos implements Serializable {
 			JsfBase.addMessageError(e);			
 		} // catch		
 	} // doVerificaVigenciaCotizacion	
+	
+	public void doGenerateFactura(){
+		Cfdi cfdi= null;
+		try {
+			cfdi= new Cfdi();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doGenerateFactura
+	
+	public void doUpdateForEmpresa(){
+		try {
+			loadClienteDefault();
+			doActualizaPrecioCliente();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doUpdateForEmpresa	
+	
+	private void loadClienteDefault(){
+		UISelectEntity seleccion              = null;
+		List<UISelectEntity> clientesSeleccion= null;
+		MotorBusqueda motorBusqueda           = null;
+		try {
+			motorBusqueda= new MotorBusqueda(-1L);
+			seleccion= new UISelectEntity(motorBusqueda.toClienteDefault());
+			clientesSeleccion= new ArrayList<>();
+			clientesSeleccion.add(seleccion);			
+			this.attrs.put("clientesSeleccion", clientesSeleccion);
+			this.attrs.put("clienteSeleccion", seleccion);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // loadClienteDefault	
+	
+	public void doAsignaCliente(SelectEvent event) {
+		UISelectEntity seleccion     = null;
+		List<UISelectEntity> clientes= null;
+		try {
+			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
+			seleccion= clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
+			this.toFindCliente(seleccion);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaCliente
+	
+	private void toFindCliente(UISelectEntity seleccion) {
+		List<UISelectEntity> clientesSeleccion= null;
+		MotorBusqueda motorBusqueda           = null;
+		try {
+			clientesSeleccion= new ArrayList<>();
+			clientesSeleccion.add(seleccion);
+			motorBusqueda= new MotorBusqueda(-1L);
+			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
+			this.attrs.put("clientesSeleccion", clientesSeleccion);
+			this.attrs.put("clienteSeleccion", seleccion);
+			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
+			doReCalculatePreciosArticulos(seleccion.getKey());		
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // toFindCliente
+	
+	public List<UISelectEntity> doCompleteCliente(String query) {
+		this.attrs.put("codigoCliente", query);
+    this.doUpdateClientes();		
+		return (List<UISelectEntity>)this.attrs.get("clientes");
+	}	// doCompleteCliente
+	
+	public void doUpdateClientes() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {
+			params= new HashMap<>();
+			columns= new ArrayList<>();
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("idEmpresa", this.attrs.get("idEmpresa"));
+			String search= (String) this.attrs.get("codigoCliente"); 
+			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*") : "WXYZ";
+  		params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_clientes.razon_social) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*'")));			
+      this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("VistaClientesDto", "findRazonSocial", params, columns, 20L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}	// doUpdateClientes
+	
+	public void doActualizaPrecioCliente(){
+		List<UISelectEntity> clientesSeleccion= null;
+		UISelectEntity clienteSeleccion       = null;
+		boolean precioVigente                 = false;
+		try {
+			clienteSeleccion= (UISelectEntity) this.attrs.get("clienteSeleccion");
+			precioVigente= clienteSeleccion!= null && !clienteSeleccion.getKey().equals(-1L);
+			if(precioVigente){
+				clientesSeleccion= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
+				clienteSeleccion= clientesSeleccion.get(clientesSeleccion.indexOf(clienteSeleccion));
+				setPrecio(Cadena.toBeanNameEspecial(clienteSeleccion.toString("tipoVenta")));				
+			} // if
+			else
+				setPrecio("menudeo");
+			doReCalculatePreciosArticulos(precioVigente, clienteSeleccion.getKey());
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doActualizaPrecioCliente
+	
+	public String doClientes(){
+		String regresar= null;
+		try {
+			JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Facturas/accion.jsf");
+			regresar= "/Paginas/Mantic/Ventas/cliente.jsf".concat(Constantes.REDIRECIONAR);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+		return regresar;
+	} // doClientes
+	
+	private void loadBancos(){
+		List<UISelectEntity> bancos= null;
+		Map<String, Object> params = null;
+		List<Columna> campos       = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			campos= new ArrayList<>();
+			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+			bancos= UIEntity.build("TcManticBancosDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("bancos", bancos);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadBancos
+	
+	private void loadCfdis(){
+		List<UISelectEntity> cfdis= null;
+		List<Columna> campos      = null;
+		Map<String, Object>params = null;
+		try {
+			params= new HashMap<>();
+			campos= new ArrayList<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			cfdis= UIEntity.build("TcManticUsosCfdiDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
+			this.attrs.put("cfdis", cfdis);
+			this.attrs.put("cfdi", new UISelectEntity("-1"));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // loadCfdis
+	
+	private void loadTiposMediosPagos(){
+		List<UISelectEntity> tiposPagos= null;
+		Map<String, Object>params      = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_cobro_caja=1");
+			tiposPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
+			this.attrs.put("tiposMedioPagos", tiposPagos);
+			this.attrs.put("tipoMedioPago", UIBackingUtilities.toFirstKeySelectEntity(tiposPagos));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadTiposPagos
+	
+	private void loadTiposPagos(){
+		List<UISelectEntity> tiposPagos= null;
+		Map<String, Object>params      = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+			tiposPagos= UIEntity.build("TcManticTiposPagosDto", "row", params);
+			this.attrs.put("tiposPagos", tiposPagos);
+			this.attrs.put("tipoPago", UIBackingUtilities.toFirstKeySelectEntity(tiposPagos));
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // loadTiposPagos
+	
+	public void doValidaTipoPago(){
+		Long tipoPago= -1L;
+		try {
+			tipoPago= Long.valueOf(this.attrs.get("tipoMedioPago").toString());
+			this.attrs.put("mostrarBanco", !ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(tipoPago));
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doValidaTipoPago
 }

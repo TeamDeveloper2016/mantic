@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.facturas.reglas;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -237,7 +238,6 @@ public class Transaccion extends IBaseTnx {
 		TcManticFacturasDto factura= null;
 		try {			
 			factura= new TcManticFacturasDto();
-			factura.setFechaEmision(new Date(Calendar.getInstance().getTimeInMillis()));
 			factura.setIdUsuario(JsfBase.getIdUsuario());
 			factura.setIntentos(0L);
 			regresar= DaoFactory.getInstance().insert(sesion, factura);
