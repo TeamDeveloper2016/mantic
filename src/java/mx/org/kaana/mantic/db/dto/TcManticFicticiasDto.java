@@ -1,9 +1,7 @@
 package mx.org.kaana.mantic.db.dto;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.sql.Date;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,9 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Lob;
 import javax.persistence.Table;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
@@ -38,34 +33,44 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   private Double descuentos;
   @Column (name="id_factura")
   private Long idFactura;
+  @Column (name="id_tipo_pago")
+  private Long idTipoPago;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_ficticia")
   private Long idFicticia;
-  @Column (name="descuento")
-  private String descuento;
   @Column (name="extras")
   private String extras;
   @Column (name="global")
   private Double global;
+  @Column (name="total")
+  private Double total;
+  @Column (name="id_ficticia_estatus")
+  private Long idFicticiaEstatus;
+  @Column (name="tipo_de_cambio")
+  private Double tipoDeCambio;
+  @Column (name="orden")
+  private Long orden;
+  @Column (name="id_tipo_medio_pago")
+  private Long idTipoMedioPago;
+  @Column (name="id_cliente")
+  private Long idCliente;
+  @Column (name="descuento")
+  private String descuento;
+  @Column (name="id_banco")
+  private Long idBanco;
   @Column (name="ejercicio")
   private Long ejercicio;
   @Column (name="registro")
   private Timestamp registro;
   @Column (name="consecutivo")
   private Long consecutivo;
-  @Column (name="total")
-  private Double total;
-  @Column (name="id_ficticia_estatus")
-  private Long idFicticiaEstatus;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="impuestos")
   private Double impuestos;
   @Column (name="id_uso_cfdi")
   private Long idUsoCfdi;
-  @Column (name="tipo_de_cambio")
-  private Double tipoDeCambio;
   @Column (name="id_sin_iva")
   private Long idSinIva;
   @Column (name="sub_total")
@@ -74,42 +79,47 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   private String observaciones;
   @Column (name="id_empresa")
   private Long idEmpresa;
-  @Column (name="orden")
-  private Long orden;
   @Column (name="dia")
   private Date dia;
+  @Column (name="referencia")
+  private String referencia;
 
   public TcManticFicticiasDto() {
     this(new Long(-1L));
   }
 
   public TcManticFicticiasDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()));
+    this(null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null);
     setKey(key);
   }
 
-  public TcManticFicticiasDto(Double descuentos, Long idFactura, Long idFicticia, String descuento, String extras, Double global, Long ejercicio, Long consecutivo, Double total, Long idFicticiaEstatus, Long idUsuario, Double impuestos, Long idUsoCfdi, Double tipoDeCambio, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Long orden, Date dia) {
+  public TcManticFicticiasDto(Double descuentos, Long idFactura, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, String descuento, Long idBanco, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Date dia, String referencia) {
     setDescuentos(descuentos);
     setIdFactura(idFactura);
+    setIdTipoPago(idTipoPago);
     setIdFicticia(idFicticia);
-    setDescuento(descuento);
     setExtras(extras);
     setGlobal(global);
+    setTotal(total);
+    setIdFicticiaEstatus(idFicticiaEstatus);
+    setTipoDeCambio(tipoDeCambio);
+    setOrden(orden);
+    setIdTipoMedioPago(idTipoMedioPago);
+    setIdCliente(idCliente);
+    setDescuento(descuento);
+    setIdBanco(idBanco);
     setEjercicio(ejercicio);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
     setConsecutivo(consecutivo);
-    setTotal(total);
-    setIdFicticiaEstatus(idFicticiaEstatus);
     setIdUsuario(idUsuario);
     setImpuestos(impuestos);
     setIdUsoCfdi(idUsoCfdi);
-    setTipoDeCambio(tipoDeCambio);
     setIdSinIva(idSinIva);
     setSubTotal(subTotal);
     setObservaciones(observaciones);
     setIdEmpresa(idEmpresa);
-    setOrden(orden);
     setDia(dia);
+    setReferencia(referencia);
   }
 	
   public void setDescuentos(Double descuentos) {
@@ -128,20 +138,20 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     return idFactura;
   }
 
+  public void setIdTipoPago(Long idTipoPago) {
+    this.idTipoPago = idTipoPago;
+  }
+
+  public Long getIdTipoPago() {
+    return idTipoPago;
+  }
+
   public void setIdFicticia(Long idFicticia) {
     this.idFicticia = idFicticia;
   }
 
   public Long getIdFicticia() {
     return idFicticia;
-  }
-
-  public void setDescuento(String descuento) {
-    this.descuento = descuento;
-  }
-
-  public String getDescuento() {
-    return descuento;
   }
 
   public void setExtras(String extras) {
@@ -158,6 +168,70 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 
   public Double getGlobal() {
     return global;
+  }
+
+  public void setTotal(Double total) {
+    this.total = total;
+  }
+
+  public Double getTotal() {
+    return total;
+  }
+
+  public void setIdFicticiaEstatus(Long idFicticiaEstatus) {
+    this.idFicticiaEstatus = idFicticiaEstatus;
+  }
+
+  public Long getIdFicticiaEstatus() {
+    return idFicticiaEstatus;
+  }
+
+  public void setTipoDeCambio(Double tipoDeCambio) {
+    this.tipoDeCambio = tipoDeCambio;
+  }
+
+  public Double getTipoDeCambio() {
+    return tipoDeCambio;
+  }
+
+  public void setOrden(Long orden) {
+    this.orden = orden;
+  }
+
+  public Long getOrden() {
+    return orden;
+  }
+
+  public void setIdTipoMedioPago(Long idTipoMedioPago) {
+    this.idTipoMedioPago = idTipoMedioPago;
+  }
+
+  public Long getIdTipoMedioPago() {
+    return idTipoMedioPago;
+  }
+
+  public void setIdCliente(Long idCliente) {
+    this.idCliente = idCliente;
+  }
+
+  public Long getIdCliente() {
+    return idCliente;
+  }
+
+  public void setDescuento(String descuento) {
+    this.descuento = descuento;
+  }
+
+  public String getDescuento() {
+    return descuento;
+  }
+
+  public void setIdBanco(Long idBanco) {
+    this.idBanco = idBanco;
+  }
+
+  public Long getIdBanco() {
+    return idBanco;
   }
 
   public void setEjercicio(Long ejercicio) {
@@ -184,22 +258,6 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     return consecutivo;
   }
 
-  public void setTotal(Double total) {
-    this.total = total;
-  }
-
-  public Double getTotal() {
-    return total;
-  }
-
-  public void setIdFicticiaEstatus(Long idFicticiaEstatus) {
-    this.idFicticiaEstatus = idFicticiaEstatus;
-  }
-
-  public Long getIdFicticiaEstatus() {
-    return idFicticiaEstatus;
-  }
-
   public void setIdUsuario(Long idUsuario) {
     this.idUsuario = idUsuario;
   }
@@ -222,14 +280,6 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 
   public Long getIdUsoCfdi() {
     return idUsoCfdi;
-  }
-
-  public void setTipoDeCambio(Double tipoDeCambio) {
-    this.tipoDeCambio = tipoDeCambio;
-  }
-
-  public Double getTipoDeCambio() {
-    return tipoDeCambio;
   }
 
   public void setIdSinIva(Long idSinIva) {
@@ -264,20 +314,20 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     return idEmpresa;
   }
 
-  public void setOrden(Long orden) {
-    this.orden = orden;
-  }
-
-  public Long getOrden() {
-    return orden;
-  }
-
   public void setDia(Date dia) {
     this.dia = dia;
   }
 
   public Date getDia() {
     return dia;
+  }
+
+  public void setReferencia(String referencia) {
+    this.referencia = referencia;
+  }
+
+  public String getReferencia() {
+    return referencia;
   }
 
   @Transient
@@ -299,13 +349,29 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdFactura());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdFicticia());
+		regresar.append(getIdTipoPago());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getDescuento());
+		regresar.append(getIdFicticia());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getExtras());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getGlobal());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getTotal());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdFicticiaEstatus());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getTipoDeCambio());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getOrden());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdTipoMedioPago());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdCliente());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getDescuento());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdBanco());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getEjercicio());
 		regresar.append(Constantes.SEPARADOR);
@@ -313,17 +379,11 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getConsecutivo());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getTotal());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdFicticiaEstatus());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsuario());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getImpuestos());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdUsoCfdi());
-		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getTipoDeCambio());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdSinIva());
 		regresar.append(Constantes.SEPARADOR);
@@ -333,9 +393,9 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdEmpresa());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getOrden());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getDia());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getReferencia());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -345,32 +405,37 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     Map regresar = new HashMap();
 		regresar.put("descuentos", getDescuentos());
 		regresar.put("idFactura", getIdFactura());
+		regresar.put("idTipoPago", getIdTipoPago());
 		regresar.put("idFicticia", getIdFicticia());
-		regresar.put("descuento", getDescuento());
 		regresar.put("extras", getExtras());
 		regresar.put("global", getGlobal());
+		regresar.put("total", getTotal());
+		regresar.put("idFicticiaEstatus", getIdFicticiaEstatus());
+		regresar.put("tipoDeCambio", getTipoDeCambio());
+		regresar.put("orden", getOrden());
+		regresar.put("idTipoMedioPago", getIdTipoMedioPago());
+		regresar.put("idCliente", getIdCliente());
+		regresar.put("descuento", getDescuento());
+		regresar.put("idBanco", getIdBanco());
 		regresar.put("ejercicio", getEjercicio());
 		regresar.put("registro", getRegistro());
 		regresar.put("consecutivo", getConsecutivo());
-		regresar.put("total", getTotal());
-		regresar.put("idFicticiaEstatus", getIdFicticiaEstatus());
 		regresar.put("idUsuario", getIdUsuario());
 		regresar.put("impuestos", getImpuestos());
 		regresar.put("idUsoCfdi", getIdUsoCfdi());
-		regresar.put("tipoDeCambio", getTipoDeCambio());
 		regresar.put("idSinIva", getIdSinIva());
 		regresar.put("subTotal", getSubTotal());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idEmpresa", getIdEmpresa());
-		regresar.put("orden", getOrden());
 		regresar.put("dia", getDia());
+		regresar.put("referencia", getReferencia());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescuentos(), getIdFactura(), getIdFicticia(), getDescuento(), getExtras(), getGlobal(), getEjercicio(), getRegistro(), getConsecutivo(), getTotal(), getIdFicticiaEstatus(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getTipoDeCambio(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getOrden(), getDia()
+    getDescuentos(), getIdFactura(), getIdTipoPago(), getIdFicticia(), getExtras(), getGlobal(), getTotal(), getIdFicticiaEstatus(), getTipoDeCambio(), getOrden(), getIdTipoMedioPago(), getIdCliente(), getDescuento(), getIdBanco(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getDia(), getReferencia()
     };
     return regresar;
   }
@@ -428,7 +493,4 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     hash = 67 * hash + (getIdFicticia() != null ? getIdFicticia().hashCode() : 0);
     return hash;
   }
-
 }
-
-
