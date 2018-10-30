@@ -715,6 +715,10 @@ public class Accion extends IBaseVenta implements Serializable {
 			cfdis= UIEntity.build("TcManticUsosCfdiDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("cfdis", cfdis);
 			this.attrs.put("cfdi", new UISelectEntity("-1"));
+			for(Entity record: cfdis){
+				if(record.getKey().equals(3L))
+					this.attrs.put("cfdi", record);
+			} // for
 		} // try
 		catch (Exception e) {			
 			throw e;
