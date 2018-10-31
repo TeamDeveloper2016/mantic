@@ -3926,6 +3926,15 @@
         where      
           id_factura = {idFactura} and id_venta = {idVenta}
       </select>
+			<select id="detalle">
+				select      
+					tc_mantic_facturas.id_factura as id_key,
+          tc_mantic_facturas.*
+        from      
+          tc_mantic_facturas
+        where      
+          id_ficticia = {idFicticia}
+			</select>
     </unit>
 		<unit id="TcManticTrabajosDto">
       <select id="row">
