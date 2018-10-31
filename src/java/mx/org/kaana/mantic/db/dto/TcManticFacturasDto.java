@@ -51,6 +51,12 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
   private String nombre;
   @Column (name="intentos")
   private Long intentos;
+  @Column (name="correos")
+  private String correos;
+  @Column (name="comentarios")
+  private String comentarios;
+  @Column (name="observaciones")
+  private String observaciones;
   @Column (name="registro")
   private Timestamp registro;
 
@@ -59,11 +65,11 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
   }
 
   public TcManticFacturasDto(Long key) {
-    this(new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null);
+    this(new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticFacturasDto(Long idFactura, Date ultimoIntento, Timestamp timbrado, String ruta, Long idUsuario, Long idFicticia, String folio, Long idVenta, String nombre, Long intentos) {
+  public TcManticFacturasDto(Long idFactura, Date ultimoIntento, Timestamp timbrado, String ruta, Long idUsuario, Long idFicticia, String folio, Long idVenta, String nombre, Long intentos, String correos, String comentarios, String observaciones) {
     setIdFactura(idFactura);
     setUltimoIntento(ultimoIntento);
     setTimbrado(timbrado);
@@ -74,6 +80,9 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
     setIdVenta(idVenta);
     setNombre(nombre);
     setIntentos(intentos);
+		this.correos= correos;
+		this.comentarios= comentarios;
+		this.observaciones= observaciones;
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -157,6 +166,30 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
     return intentos;
   }
 
+	public String getCorreos() {
+		return correos;
+	}
+
+	public void setCorreos(String correos) {
+		this.correos=correos;
+	}
+
+	public String getComentarios() {
+		return comentarios;
+	}
+
+	public void setComentarios(String comentarios) {
+		this.comentarios=comentarios;
+	}
+
+	public String getObservaciones() {
+		return observaciones;
+	}
+
+	public void setObservaciones(String observaciones) {
+		this.observaciones=observaciones;
+	}
+
   public void setRegistro(Timestamp registro) {
     this.registro = registro;
   }
@@ -200,6 +233,12 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIntentos());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCorreos());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getComentarios());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getObservaciones());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -218,14 +257,17 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 		regresar.put("idVenta", getIdVenta());
 		regresar.put("nombre", getNombre());
 		regresar.put("intentos", getIntentos());
+		regresar.put("correos", getCorreos());
+		regresar.put("comentarios", getComentarios());
+		regresar.put("observaciones", getObservaciones());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
-    Object[] regresar = new Object[]{
-    getIdFactura(), getUltimoIntento(), getTimbrado(), getRuta(), getIdUsuario(), getIdFicticia(), getFolio(), getIdVenta(), getNombre(), getIntentos(), getRegistro()
+    Object[] regresar = new Object[] {
+    getIdFactura(), getUltimoIntento(), getTimbrado(), getRuta(), getIdUsuario(), getIdFicticia(), getFolio(), getIdVenta(), getNombre(), getIntentos(), getCorreos(), getComentarios(), getObservaciones(), getRegistro()
     };
     return regresar;
   }
