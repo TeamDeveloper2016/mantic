@@ -1,6 +1,5 @@
 package mx.org.kaana.mantic.facturas.reglas;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,15 +33,24 @@ import org.apache.log4j.Logger;
 
 public class Transaccion extends IBaseTnx {
 
-  private static final Logger LOG  = Logger.getLogger(Transaccion.class);
+  private static final Logger LOG   = Logger.getLogger(Transaccion.class);
+	private static final Long TIMBRADA= 3L;
 	private TcManticFicticiasBitacoraDto bitacora;
 	private TcManticFicticiasDto orden;	
 	private List<Articulo> articulos;
 	private String messageError;	
 	private String justificacion;
+	private String correos;
+	private String comentarios;	
 
-	public Transaccion(TcManticFicticiasBitacoraDto bitacora) {
-		this.bitacora= bitacora;
+	public Transaccion(TcManticFicticiasBitacoraDto bitacora) { 
+		this(bitacora, "", "");
+	} // Transaccion
+	
+	public Transaccion(TcManticFicticiasBitacoraDto bitacora, String correos, String comentarios) {
+		this.bitacora   = bitacora;
+		this.correos    = correos;
+		this.comentarios= comentarios;
 	} // Transaccion
 	
 	public Transaccion(TcManticFicticiasDto orden) {
@@ -77,9 +85,10 @@ public class Transaccion extends IBaseTnx {
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar          = false;
-		Map<String, Object> params= null;
-		Long idEstatusFactura       = null;
+		boolean regresar           = false;
+		Map<String, Object> params = null;
+		Long idEstatusFactura      = null;
+		TcManticFacturasDto factura= null;
 		try {
 			idEstatusFactura= EEstatusFicticias.ELABORADA.getIdEstatusFicticia();
 			params= new HashMap<>();
@@ -102,11 +111,23 @@ public class Transaccion extends IBaseTnx {
 					if(DaoFactory.getInstance().update(sesion, this.orden)>= 1L)
 						regresar= registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFactura, this.justificacion);					
 					break;
-				case JUSTIFICAR:
+				case JUSTIFICAR:																		
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L){
 						this.orden= (TcManticFicticiasDto) DaoFactory.getInstance().findById(sesion, TcManticFicticiasDto.class, this.bitacora.getIdFicticia());
-						this.orden.setIdFicticiaEstatus(this.bitacora.getIdFicticiaEstatus());
+						this.orden.setIdFicticiaEstatus(this.bitacora.getIdFicticiaEstatus());						
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
+						if(this.bitacora.getIdFicticiaEstatus().equals(TIMBRADA)){
+							params= new HashMap<>();
+							params.put("idFicticia", this.orden.getIdFicticia());
+							factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
+							if(factura!= null){
+								params= new HashMap<>();
+								params.put("correos", this.correos);
+								params.put("comentarios", this.comentarios);								
+								params.put("timbrado", new Timestamp(Calendar.getInstance().getTimeInMillis()));								
+								DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, factura.getIdFactura(), params);
+							} // 
+						} // if
 					} // if
 					break;								
 				case REPROCESAR:
@@ -240,6 +261,8 @@ public class Transaccion extends IBaseTnx {
 			factura= new TcManticFacturasDto();
 			factura.setIdUsuario(JsfBase.getIdUsuario());
 			factura.setIntentos(0L);
+			factura.setCorreos("");
+			factura.setObservaciones(this.justificacion);
 			regresar= DaoFactory.getInstance().insert(sesion, factura);
 		} // try
 		catch (Exception e) {			
