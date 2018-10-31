@@ -38,7 +38,7 @@ public class Consultas {
 		List<CfdiSearchResult> cfdis= CFDIFactory.getInstance().getCfdis();
 		count= 0;
 		for (CfdiSearchResult cfdi : cfdis) {
-   		LOG.info(++count+ ".-["+ cfdi.getFolio()+ "] "+ cfdi.getEmail());	
+   		LOG.info(++count+ ".-["+ cfdi.getFolio()+ "] "+ cfdi.getEmail()+ " -> "+ cfdi.getId());	
 		} // for
 	}
 
