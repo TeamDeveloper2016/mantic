@@ -328,7 +328,7 @@
 									<f:facet name="header">
 										<h:outputText value="Precio"/>
 									</f:facet>
-									<p:outputLabel value="#{row['costo$']}"/>
+									<p:outputLabel value="#{row['costo']}"/>
 									<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
 									<p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>
 								</p:column>				
@@ -336,7 +336,7 @@
 									<f:facet name="header">
 										<h:outputText value="Descuento"/>
 									</f:facet>
-									<p:outputLabel value="#{row['descuentoDescripcion$']}"/>
+									<p:outputLabel value="#{row['descuentoDescripcion']}"/>
 									<p:inputText id="descuentos" value="#{row['descuento']}" styleClass="janal-wid-100-txt janal-column-right key-focus-event filas" onblur="janal.descuentos($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'), '0'); jsArticulos.calculate($('#contenedorGrupos\\:tabla\\:#{index}\\:descuentos'));" style="display: none"/>
 								</p:column>		
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-5">

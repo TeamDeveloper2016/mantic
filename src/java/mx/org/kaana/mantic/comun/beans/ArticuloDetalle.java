@@ -316,10 +316,6 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		return descuentoDescripcion;
 	}
 	
-	public String getDescuentoDescripcion$() {
-		return descuentoDescripcion+ "%";
-	}
-
 	public void setDescuentoDescripcion(String descuentoDescripcion) {
 		this.descuentoDescripcion = descuentoDescripcion;
 	}	
