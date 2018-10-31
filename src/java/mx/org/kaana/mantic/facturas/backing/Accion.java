@@ -102,6 +102,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("descripcion", "Imagen no disponible");
 			this.attrs.put("mostrarBanco", false);
 			this.image= LoadImages.getImage("-1");
+			this.attrs.put("observaciones", "");
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());
 			loadClienteDefault();
@@ -211,7 +212,7 @@ public class Accion extends IBaseVenta implements Serializable {
     try {			
 			loadOrdenVenta();
 			eaccion= (EAccion) this.attrs.get("accion");						
-			transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+			transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.attrs.get("observaciones").toString());
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(eaccion)) {
 				if(eaccion.equals(EAccion.AGREGAR)) {
