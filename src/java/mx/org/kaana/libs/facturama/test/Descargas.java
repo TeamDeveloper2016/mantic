@@ -1,8 +1,6 @@
 package mx.org.kaana.libs.facturama.test;
 
 import java.util.List;
-import mx.org.kaana.libs.facturama.models.Client;
-import mx.org.kaana.libs.facturama.models.Product;
 import mx.org.kaana.libs.facturama.models.response.CfdiSearchResult;
 import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import org.apache.commons.logging.Log;
