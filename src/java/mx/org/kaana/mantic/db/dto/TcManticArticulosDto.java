@@ -100,7 +100,7 @@ public class TcManticArticulosDto implements IBaseDto, Serializable {
   private String descuento;
   @Column (name="extra")
   private String extra;
-  @Column (name="idFacturama")
+  @Column (name="id_facturama")
   private String idFacturama;
 
   public TcManticArticulosDto() {
