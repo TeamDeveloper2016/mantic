@@ -55,6 +55,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       this.criteriosBusqueda = new CriteriosBusqueda();
       this.accion= JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
       this.attrs.put("idUsuario", JsfBase.getFlashAttribute("idUsuario")!= null? (Long)JsfBase.getFlashAttribute("idUsuario"): -1L);
+			this.attrs.put("nuevo", JsfBase.getFlashAttribute("idUsuario")!= null);
       loadPerfiles();
       loadPersonas();      
       loadUsuario();
@@ -137,7 +138,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 		CargaInformacionUsuarios ciu= null;
 		try {
 			ciu= new CargaInformacionUsuarios(this.criteriosBusqueda);
-			ciu.cargarPerfilesDisponible();
+			ciu.cargarPerfilesDisponible();	
+			this.attrs.put("tcManticPersonasDto", (TcManticPersonasDto) DaoFactory.getInstance().findById(TcManticPersonasDto.class, this.criteriosBusqueda.getPersona().getKey()));			
 			buscar();
 		} // try
 		catch (Exception e) {
@@ -150,7 +152,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     TcJanalUsuariosDto usuario= null;
     int index                 = -1;
     try {
-			TcManticPersonasDto persona= (TcManticPersonasDto)this.attrs.get("tcManticPersonasDto");
+			TcManticPersonasDto persona= (TcManticPersonasDto)this.attrs.get("tcManticPersonasDto");			
       if (persona.isValid()) {
 				persona.setContrasenia(BouncyEncryption.decrypt(persona.getContrasenia()));
         index = this.getCriteriosBusqueda().getListaPersonas().indexOf(new UISelectEntity(new Entity(persona.getIdPersona())));
