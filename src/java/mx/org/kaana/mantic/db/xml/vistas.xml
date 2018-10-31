@@ -4796,7 +4796,6 @@
 					tc_mantic_ficticias.total,
 					tc_mantic_ficticias.sub_total,
 					tc_mantic_ficticias.impuestos as iva,
-					tc_mantic_ficticias.total,
 					tc_mantic_ficticias.total as precio_total,
 				  tc_mantic_ficticias_estatus.nombre as estatus,
 					tc_mantic_ficticias.id_ficticia_estatus,
