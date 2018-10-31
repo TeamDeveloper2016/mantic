@@ -34,6 +34,7 @@ import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.mantic.facturas.beans.Correo;
 import org.primefaces.context.RequestContext;
 
 @Named(value= "manticFacturasFiltro")
@@ -41,11 +42,16 @@ import org.primefaces.context.RequestContext;
 public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;
+	private List<Correo> correos;
 	private Reporte reporte;
 	
 	public Reporte getReporte() {
 		return reporte;
 	}	// getReporte
+
+	public List<Correo> getCorreos() {
+		return correos;
+	}
 	
   @PostConstruct
   @Override
@@ -58,6 +64,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 			toLoadCatalog();
       if(this.attrs.get("idFicticia")!= null) 
 			  this.doLoad();
+			this.correos= new ArrayList<>();
+			correos.add(new Correo());
+			correos.add(new Correo());
+			correos.add(new Correo());
+			correos.add(new Correo());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -214,7 +225,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // else
 	} // doVerificarReporte		
 	
-	public void doLoadEstatus(){
+	public void doLoadEstatus() {
 		Entity seleccionado          = null;
 		Map<String, Object>params    = null;
 		List<UISelectItem> allEstatus= null;

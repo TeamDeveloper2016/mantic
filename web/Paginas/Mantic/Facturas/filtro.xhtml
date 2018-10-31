@@ -182,11 +182,18 @@
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
 					<p:selectOneMenu id="estatusDlg" value="#{manticFacturasFiltro.attrs.estatus}" styleClass="janal-wid-100-txt">									
-						<f:selectItems value="#{manticFacturasFiltro.attrs.allEstatus}"/>					
+						<p:ajax event="change" update="tablaCorreos" process="@this"/>
+						<f:selectItems value="#{manticFacturasFiltro.attrs.allEstatus}"/>	
 					</p:selectOneMenu>
-					<p:outputLabel for="justificacion" value="Justificación:"/>
-					<p:inputTextarea id="justificacion" value="#{manticFacturasFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt"/>
 				</h:panelGrid>
+				<p:outputLabel for="justificacion" value="#{manticFacturasFiltro.attrs.estatus.label eq 'TIMBRADA'? 'Comentarios': 'Justificación'}:"/>
+				<p:inputTextarea id="justificacion" value="#{manticFacturasFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt" rows="2"/>
+				<p:dataTable id="tablaCorreos" var="row" value="#{manticFacturasFiltro.correos}" selection="#{manticFacturasFiltro.attrs.correos}" rowKey="#{row.idCorreo}" style="margin-bottom:0" rendered="#{manticFacturasFiltro.attrs.estatus.label eq 'TIMBRADA'}">
+					<p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+					<p:column headerText="Correo disponibles del cliente">
+						<h:outputText value="#{row.descripcion}" />
+					</p:column>
+				</p:dataTable>		
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
 					<p:commandButton icon="fa fa-check" process="@this dialogoEstatus" update="tabla" value="Aceptar" action="#{manticFacturasFiltro.doActualizarEstatus}" onstart="return validaJustificacion()" oncomplete="janal.desbloquear();"/>
@@ -207,6 +214,6 @@
       <p:outputLabel value="#{manticFacturasFiltro.attrs.seleccionado.consecutivo}"/>      
     </h:panelGrid>			
 		<p:outputLabel value="Justificación:"/>
-    <p:inputTextarea value="#{manticFacturasFiltro.attrs.justificacionEliminar}" styleClass="janal-wid-100-txt"/>
+    <p:inputTextarea value="#{manticFacturasFiltro.attrs.justificacionEliminar}" styleClass="janal-wid-100-txt" rows="2"/>
   </ui:define>
 </ui:composition>
