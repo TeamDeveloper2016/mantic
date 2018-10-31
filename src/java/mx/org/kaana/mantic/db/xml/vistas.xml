@@ -4794,6 +4794,9 @@
 				  tc_mantic_empresas.nombre as nombre_empresa,  
 					tc_mantic_ficticias.consecutivo,  													
 					tc_mantic_ficticias.total,
+					tc_mantic_ficticias.sub_total,
+					tc_mantic_ficticias.impuestos as iva,
+					tc_mantic_ficticias.total,
 					tc_mantic_ficticias.total as precio_total,
 				  tc_mantic_ficticias_estatus.nombre as estatus,
 					tc_mantic_ficticias.id_ficticia_estatus,
@@ -4802,7 +4805,9 @@
 					tc_mantic_personas.cuenta,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
 					tc_mantic_facturas.timbrado,
-					tc_mantic_clientes.razon_social cliente
+					tc_mantic_facturas.folio,
+					tc_mantic_clientes.razon_social cliente,
+          tc_mantic_clientes.id_cliente
 				from 
 					tc_mantic_ficticias						
 				inner join 
