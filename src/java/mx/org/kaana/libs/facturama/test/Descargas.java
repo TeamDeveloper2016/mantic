@@ -24,16 +24,13 @@ public class Descargas {
 	 */
 	public static void main(String[] args) throws Exception {
 		List<CfdiSearchResult> cfdis= CFDIFactory.getInstance().getCfdis();
-		CfdiSearchResult folio= null;
 		int count= 0;
 		for (CfdiSearchResult cfdi : cfdis) {
-   		LOG.info(++count+ ". ["+ cfdi.getFolio()+ "] "+ cfdi.getEmail());	
-			folio= cfdi;
+   		LOG.info(++count+ ".- Descargando la factura ["+ cfdi.getFolio()+ "] "+ cfdi.getEmail());	
+   		// Descarga de los archivos de la factura
+	  	String path = "d:/temporal/mantic/descargas/".concat(cfdi.getRfc()).concat("/");
+		  CFDIFactory.getInstance().download(path, cfdi.getRfc().concat("-").concat(cfdi.getFolio()), cfdi.getId());
 		} // for
-		
-		// Descarga de los archivos de la factura
-		String filePath = "d:/temporal/mantic/descargas/factura-"+ folio.getFolio()+ "-"+ folio.getRfc();
-		CFDIFactory.getInstance().download(filePath, folio.getId());
 		LOG.info("Ok.");
 	}
 

@@ -1,5 +1,6 @@
 package mx.org.kaana.libs.facturama.reglas;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.List;
 import mx.org.kaana.libs.facturama.container.FacturamaApi;
@@ -67,9 +68,12 @@ public class CFDIFactory implements Serializable {
 		return this.facturama.Cfdis().List();
 	}
 
-  public void download(String path, String id) throws Exception {
-		this.facturama.Cfdis().SavePdf(path+ ".pdf", id);
-		this.facturama.Cfdis().SaveXml(path+ ".xml", id);
+  public void download(String path, String name, String id) throws Exception {
+		File result= new File(path);		
+		if (!result.exists())
+			result.mkdirs();
+		this.facturama.Cfdis().SavePdf(path.concat(name).concat(".pdf"), id);
+		this.facturama.Cfdis().SaveXml(path.concat(name).concat(".xml"), id);
 	}	
 	
 }

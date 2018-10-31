@@ -2,6 +2,7 @@ package mx.org.kaana.libs.facturama.models;
 
 import mx.org.kaana.libs.facturama.models.request.ProductTax;
 import java.util.List;
+import java.util.Objects;
 
 public class Product {
 
@@ -95,4 +96,36 @@ public class Product {
 	public void setTaxes(List<ProductTax> Taxes) {
 		this.Taxes = Taxes;
 	}
+
+	@Override
+	public int hashCode() {
+		int hash=7;
+		hash=11*hash+Objects.hashCode(this.IdentificationNumber);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this==obj) {
+			return true;
+		}
+		if (obj==null) {
+			return false;
+		}
+		if (getClass()!=obj.getClass()) {
+			return false;
+		}
+		final Product other=(Product) obj;
+		if (!Objects.equals(this.IdentificationNumber, other.IdentificationNumber)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Product{"+"Id="+Id+", UnitCode="+UnitCode+", Unit="+Unit+", IdentificationNumber="+IdentificationNumber+", Name="+Name+", Description="+Description+", Price="+Price+", CodeProdServ="+CodeProdServ+", CuentaPredial="+CuentaPredial+", Taxes="+Taxes+'}';
+	}
+	
+	
 }

@@ -1,5 +1,7 @@
 package mx.org.kaana.libs.facturama.models;
 
+import java.util.Objects;
+
 public class Client {
 
 	private String Id;
@@ -91,6 +93,36 @@ public class Client {
 
 	public void setNumRegIdTrib(String NumRegIdTrib) {
 		this.NumRegIdTrib = NumRegIdTrib;
+	}
+
+	@Override
+	public int hashCode() {
+		int hash=5;
+		hash=29*hash+Objects.hashCode(this.Rfc);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this==obj) {
+			return true;
+		}
+		if (obj==null) {
+			return false;
+		}
+		if (getClass()!=obj.getClass()) {
+			return false;
+		}
+		final Client other=(Client) obj;
+		if (!Objects.equals(this.Rfc, other.Rfc)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Client{"+"Id="+Id+", Email="+Email+", EmailOp1="+EmailOp1+", EmailOp2="+EmailOp2+", Address="+Address+", Rfc="+Rfc+", Name="+Name+", CfdiUse="+CfdiUse+", TaxResidence="+TaxResidence+", NumRegIdTrib="+NumRegIdTrib+'}';
 	}
 
 }

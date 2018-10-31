@@ -1,5 +1,7 @@
 package mx.org.kaana.libs.facturama.models.response;
 
+import java.util.Objects;
+
 public class CfdiSearchResult {
 
 	private String Id;
@@ -101,4 +103,39 @@ public class CfdiSearchResult {
 	public void setEmailSent(Boolean EmailSent) {
 		this.EmailSent = EmailSent;
 	}
+
+	@Override
+	public int hashCode() {
+		int hash=7;
+		hash=59*hash+Objects.hashCode(this.Folio);
+		hash=59*hash+Objects.hashCode(this.Rfc);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this==obj) {
+			return true;
+		}
+		if (obj==null) {
+			return false;
+		}
+		if (getClass()!=obj.getClass()) {
+			return false;
+		}
+		final CfdiSearchResult other=(CfdiSearchResult) obj;
+		if (!Objects.equals(this.Folio, other.Folio)) {
+			return false;
+		}
+		if (!Objects.equals(this.Rfc, other.Rfc)) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "CfdiSearchResult{"+"Id="+Id+", Folio="+Folio+", Serie="+Serie+", TaxName="+TaxName+", Rfc="+Rfc+", Date="+Date+", Total="+Total+", Uuid="+Uuid+", Email="+Email+", IsActive="+IsActive+", EmailSent="+EmailSent+'}';
+	}
+	
 }
