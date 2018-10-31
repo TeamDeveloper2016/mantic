@@ -18,6 +18,7 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.template.backing.Reporte;
+import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -29,13 +30,17 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
+import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 import mx.org.kaana.mantic.enums.EReportes;
+import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.Correo;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.SelectEvent;
 
 @Named(value= "manticFacturasFiltro")
 @ViewScoped
@@ -43,15 +48,24 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428332L;
 	private List<Correo> correos;
+	private List<Correo> selectedCorreos;	
 	private Reporte reporte;
 	
 	public Reporte getReporte() {
 		return reporte;
 	}	// getReporte
-
+	
 	public List<Correo> getCorreos() {
 		return correos;
 	}
+
+	public List<Correo> getSelectedCorreos() {
+		return selectedCorreos;
+	}
+
+	public void setSelectedCorreos(List<Correo> selectedCorreos) {
+		this.selectedCorreos = selectedCorreos;
+	}	
 	
   @PostConstruct
   @Override
@@ -63,11 +77,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("sortOrder", "order by tc_mantic_ficticias.id_empresa, tc_mantic_ficticias.ejercicio, tc_mantic_ficticias.orden");
 			toLoadCatalog();
       if(this.attrs.get("idFicticia")!= null) 
-			  this.doLoad();
-			this.correos= new ArrayList<>();
-			correos.add(new Correo());
-			correos.add(new Correo());
-			correos.add(new Correo(-1L, ""));
+			  this.doLoad();			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -137,8 +147,8 @@ public class Filtro extends IBaseFilter implements Serializable {
 		UISelectEntity estatus= (UISelectEntity) this.attrs.get("idFicticiaEstatus");
 		if(!Cadena.isVacio(this.attrs.get("articulo")))
   		sb.append("(upper(tc_mantic_ficticias_detalles.nombre) like upper('%").append(this.attrs.get("articulo")).append("%')) and ");
-		if(!Cadena.isVacio(this.attrs.get("cliente")))
-			sb.append("upper(tc_mantic_clientes.razon_social) like upper('%").append(this.attrs.get("cliente")).append("%')").append(" or upper(tc_mantic_clientes.razon_social) like upper('%").append(this.attrs.get("cliente")).append("%') and");					
+		if(!Cadena.isVacio(this.attrs.get("cliente")) && !this.attrs.get("cliente").toString().equals("-1"))
+			sb.append("tc_mantic_clientes.id_cliente = ").append(((Entity)this.attrs.get("cliente")).getKey()).append(" and ");					
 		if(!Cadena.isVacio(this.attrs.get("idFicticia")) && !this.attrs.get("idFicticia").toString().equals("-1"))
   		sb.append("(tc_mantic_ficticias.id_ficticia=").append(this.attrs.get("idFicticia")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
@@ -190,6 +200,67 @@ public class Filtro extends IBaseFilter implements Serializable {
     }// finally
 	}
 	
+	public List<UISelectEntity> doCompleteCliente(String query) {
+		this.attrs.put("codigoCliente", query);
+    this.doUpdateClientes();		
+		return (List<UISelectEntity>)this.attrs.get("clientes");
+	}	// doCompleteCliente
+	
+	public void doUpdateClientes() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {
+			params= new HashMap<>();
+			columns= new ArrayList<>();
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("idEmpresa", this.attrs.get("idEmpresa"));
+			String search= (String) this.attrs.get("codigoCliente"); 
+			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*") : "WXYZ";
+  		params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_clientes.razon_social) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*'")));			
+      this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("VistaClientesDto", "findRazonSocial", params, columns, 20L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}	// doUpdateClientes
+	
+	public void doAsignaCliente(SelectEvent event) {
+		UISelectEntity seleccion     = null;
+		List<UISelectEntity> clientes= null;
+		try {
+			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
+			seleccion= clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
+			this.toFindCliente(seleccion);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // doAsignaCliente
+	
+	private void toFindCliente(UISelectEntity seleccion) {
+		List<UISelectEntity> clientesSeleccion= null;
+		MotorBusqueda motorBusqueda           = null;
+		try {
+			clientesSeleccion= new ArrayList<>();
+			clientesSeleccion.add(seleccion);
+			motorBusqueda= new mx.org.kaana.mantic.ventas.reglas.MotorBusqueda(-1L);
+			clientesSeleccion.add(0, new UISelectEntity(motorBusqueda.toClienteDefault()));
+			this.attrs.put("clientesSeleccion", clientesSeleccion);
+			this.attrs.put("clienteSeleccion", seleccion);			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+	} // toFindCliente
+	
 	public void doReporte() throws Exception {
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
@@ -225,9 +296,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 	} // doVerificarReporte		
 	
 	public void doLoadEstatus() {
-		Entity seleccionado          = null;
-		Map<String, Object>params    = null;
-		List<UISelectItem> allEstatus= null;
+		Entity seleccionado               = null;
+		Map<String, Object>params         = null;
+		List<UISelectItem> allEstatus     = null;
+		MotorBusquedaCatalogos motor      = null; 
+		List<ClienteTipoContacto>contactos= null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			params= new HashMap<>();
@@ -235,6 +308,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 			allEstatus= UISelect.build("TcManticFicticiasEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
 			this.attrs.put("estatus", allEstatus.get(0).getValue().toString());
+			motor= new MotorBusqueda(-1L, seleccionado.toLong("idCliente"));
+			contactos= motor.toClientesTipoContacto();
+			this.correos= new ArrayList<>();
+			for(ClienteTipoContacto contacto: contactos){
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()))
+					this.correos.add(new Correo(contacto.getIdClienteTipoContacto(), contacto.getValor()));				
+			} // for
+			this.correos.add(new Correo(-1L, ""));
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -250,11 +331,17 @@ public class Filtro extends IBaseFilter implements Serializable {
 		TcManticFicticiasDto orden           = null;
 		TcManticFicticiasBitacoraDto bitacora= null;
 		Entity seleccionado                  = null;
+		StringBuilder correos                = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			orden= (TcManticFicticiasDto)DaoFactory.getInstance().findById(TcManticFicticiasDto.class, seleccionado.getKey());
 			bitacora= new TcManticFicticiasBitacoraDto(orden.getConsecutivo(), (String)this.attrs.get("justificacion"), Long.valueOf(this.attrs.get("estatus").toString()), JsfBase.getIdUsuario(), seleccionado.getKey(), -1L, orden.getTotal());
-			transaccion= new Transaccion(bitacora);
+			correos= new StringBuilder("");
+			if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()){
+				for(Correo mail: this.selectedCorreos)
+					correos.append(mail.getDescripcion()).append(";");
+			} // if
+			transaccion= new Transaccion(bitacora, correos.toString(), (String)this.attrs.get("justificacion"));
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
 			else
