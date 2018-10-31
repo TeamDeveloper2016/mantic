@@ -207,11 +207,11 @@ public class Filtro extends IBaseFilter implements Serializable {
       params= toPrepare();	
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
       params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());	
-      this.attrs.put("sortOrder", "order by tc_mantic_ficticias.id_empresa, tc_mantic_ficticias.ejercicio, tc_mantic_ficticias.orden");
+      params.put("sortOrder", "order by tc_mantic_ordenes_compras.id_empresa, tc_mantic_ordenes_compras.ejercicio, tc_mantic_ordenes_compras.orden");
       reporteSeleccion= EReportes.valueOf(nombre);
-      if(!reporteSeleccion.equals(EReportes.FACTURAS_FICTICIAS)){
-        params.put("idFicticia", seleccionado.getKey());
-        parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),-1L, -1L,  seleccionado.toLong("idCliente"));
+      if(!reporteSeleccion.equals(EReportes.ORDENES_COMPRA)){
+        params.put("idOrdenCompra", ((Entity)this.attrs.get("seleccionado")).getKey());
+        parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), seleccionado.toLong("idAlmacen"), seleccionado.toLong("idProveedor"), -1L);
       }
       else
         parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
@@ -238,7 +238,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			rc.execute("generalHide()");		
 			JsfBase.addMessage("Generar reporte","No se encontraron registros para el reporte", ETipoMensaje.ALERTA);
 		} // else
-	} // doVerificarReporte	
+	} // doVerificarReporte		
 	
 	public void doLoadEstatus(){
 		Entity seleccionado          = null;
