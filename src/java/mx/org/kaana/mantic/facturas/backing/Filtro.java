@@ -32,6 +32,7 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
+import mx.org.kaana.mantic.catalogos.reportes.reglas.ParametrosComunes;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
@@ -261,29 +262,38 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // catch		
 	} // toFindCliente
 	
-	public void doReporte() throws Exception {
+	public void doReporte(String nombre) throws Exception{
+		ParametrosComunes parametrosComunes = null;
 		Map<String, Object>params    = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
-		try{				
-			reporteSeleccion= EReportes.ORDEN_COMPRA;
-			this.reporte= JsfBase.toReporte();
-			params= new HashMap<>();
-			params.put("idFicticia", ((Entity)this.attrs.get("seleccionado")).getKey());			
-			parametros= new HashMap<>();
-			parametros.put("REPORTE_EMPRESA", JsfBase.getAutentifica().getEmpresa().getNombreCorto());
-		  parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
-			parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
-			parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
-			this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
-			doVerificarReporte();
-			this.reporte.doAceptar();			
-		} // try
-		catch(Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
+    Entity seleccionado          = null;
+		try{		
+      params= toPrepare();	
+      seleccionado = ((Entity)this.attrs.get("seleccionado"));
+      //es importante este orden para los grupos en el reporte	
+      params.put("sortOrder", "order by tc_mantic_ficticias.id_empresa, tc_mantic_clientes.id_cliente, tc_mantic_ficticias.ejercicio, tc_mantic_ficticias.orden");
+      reporteSeleccion= EReportes.valueOf(nombre);
+      if(!reporteSeleccion.equals(EReportes.FACTURAS_FICTICIAS)){
+        params.put("idFicticia", seleccionado.getKey());
+        parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),-1L, -1L,  seleccionado.toLong("idCliente"));
+      }
+      else
+        parametrosComunes = new ParametrosComunes(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.reporte= JsfBase.toReporte();	
+      parametros= parametrosComunes.getParametrosComunes();
+      parametros.put("ENCUESTA", JsfBase.getAutentifica().getEmpresa().getNombre().toUpperCase());
+      parametros.put("NOMBRE_REPORTE", reporteSeleccion.getTitulo());
+      parametros.put("REPORTE_ICON", JsfBase.getRealPath("").concat("resources/iktan/icon/acciones/"));			
+      this.reporte.toAsignarReporte(new ParametrosReporte(reporteSeleccion, params, parametros));		
+      doVerificarReporte();
+      this.reporte.doAceptar();			
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
     } // catch	
-	} // doReporte
+} // doReporte
 	
 	public void doVerificarReporte() {
 		RequestContext rc= RequestContext.getCurrentInstance();
@@ -291,9 +301,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 			rc.execute("start(" + this.reporte.getTotal() + ")");		
 		else{
 			rc.execute("generalHide()");		
-			JsfBase.addMessage("Generar reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+			JsfBase.addMessage("Generar reporte","No se encontraron registros para el reporte", ETipoMensaje.ALERTA);
 		} // else
-	} // doVerificarReporte		
+	} // doVerificarReporte	
 	
 	public void doLoadEstatus() {
 		Entity seleccionado               = null;
