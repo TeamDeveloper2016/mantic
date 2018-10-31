@@ -67,7 +67,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.correos= new ArrayList<>();
 			correos.add(new Correo());
 			correos.add(new Correo());
-			correos.add(new Correo());
+			correos.add(new Correo(-1L, ""));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -234,7 +234,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			params.put(Constantes.SQL_CONDICION, "id_ficticia_estatus in (".concat(seleccionado.toString("estatusAsociados")).concat(")"));
 			allEstatus= UISelect.build("TcManticFicticiasEstatusDto", params, "nombre", EFormatoDinamicos.MAYUSCULAS);			
 			this.attrs.put("allEstatus", allEstatus);
-			this.attrs.put("estatus", allEstatus.get(0));
+			this.attrs.put("estatus", allEstatus.get(0).getValue().toString());
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
