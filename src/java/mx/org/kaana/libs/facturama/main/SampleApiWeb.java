@@ -145,7 +145,7 @@ public class SampleApiWeb {
          clientAddress.setStreet("Cañada de Gomez");
          clientAddress.setZipCode("78220");
          
-         newClient.setAddress(clientAddress);         
+         newClient.setAddress(clientAddress);
          newClient.setCfdiUse("P01");
          newClient.setRfc("ESO1202108R2");
          newClient.setEmail("diego@facturama.com.mx");
