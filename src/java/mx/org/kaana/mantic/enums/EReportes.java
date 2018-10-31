@@ -38,7 +38,9 @@ public enum EReportes implements IReportAttribute{
   CIERRES_CAJA  ("VistaCierresCajasDto", "lazy", "Cierres caja", "/Paginas/Mantic/Ventas/Caja/Cierres/Reportes/cierres", EFormatos.PDF, "cierres_caja", "/Paginas/Mantic/Ventas/Caja/Cierres/filtro"),
   ABONOS_RETIROS("VistaCierresCajasDto", "retiros", "Abonos y retiros de efectivo", "/Paginas/Mantic/Ventas/Caja/Cierres/Reportes/abonosRetiros", EFormatos.PDF, "abonos_retiros", "/Paginas/Mantic/Ventas/Caja/Cierres/ambos"),
   APARTADOS   ("VistaTcManticApartadosDto", "apartados", "Apartados", "/Paginas/Mantic/Ventas/Apartados/Reportes/apartados", EFormatos.PDF, "apartados", "/Paginas/Mantic/Ventas/Apartados/filtro"),
-	APARTADO_DETALLE("VistaTcManticApartadosDto", "pagosApartado", "Apartado", "/Paginas/Mantic/Ventas/Apartados/Reportes/apartadoDetalle", EFormatos.PDF, "apartado_detalle", "/Paginas/Mantic/Ventas/Apartados/abono");
+	APARTADO_DETALLE("VistaTcManticApartadosDto", "pagosApartado", "Apartado", "/Paginas/Mantic/Ventas/Apartados/Reportes/apartadoDetalle", EFormatos.PDF, "apartado_detalle", "/Paginas/Mantic/Ventas/Apartados/abono"),
+  FACTURAS_FICTICIAS("VistaTcManticFicticiasDetallesDto", "lazy", "Listado de facturación", "/Paginas/Mantic/Facturas/Reportes/facturas", EFormatos.PDF, "listado_de_facturacion", "/Paginas/Mantic/Facturas/filtro"),
+	FACTURAS_FICTICIAS_DETALLE("VistaTcManticFicticiasDetallesDto", "detalle", "Facturación", "/Paginas/Mantic/Facturas/Reportes/facturaDetalle", EFormatos.PDF, "facturacion", "/Paginas/Mantic/Facturas/filtro");
 	
 	
 	private final String proceso;
