@@ -68,7 +68,6 @@ public class Filtro extends IBaseFilter implements Serializable {
 			correos.add(new Correo());
 			correos.add(new Correo());
 			correos.add(new Correo());
-			correos.add(new Correo());
     } // try
     catch (Exception e) {
       Error.mensaje(e);

@@ -189,9 +189,9 @@
 				<p:outputLabel for="justificacion" value="#{manticFacturasFiltro.attrs.estatus.label eq 'TIMBRADA'? 'Comentarios': 'Justificación'}:"/>
 				<p:inputTextarea id="justificacion" value="#{manticFacturasFiltro.attrs.justificacion}" styleClass="janal-wid-100-txt" rows="2"/>
 				<p:dataTable id="tablaCorreos" var="row" value="#{manticFacturasFiltro.correos}" selection="#{manticFacturasFiltro.attrs.correos}" rowKey="#{row.idCorreo}" style="margin-bottom:0" rendered="#{manticFacturasFiltro.attrs.estatus.label eq 'TIMBRADA'}">
-					<p:column selectionMode="multiple" style="width:16px;text-align:center"/>
+					<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
 					<p:column headerText="Correo disponibles del cliente">
-						<h:outputText value="#{row.descripcion}" />
+						<p:inputText value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
 					</p:column>
 				</p:dataTable>		
 				<hr class="ui-widget-content"/>
