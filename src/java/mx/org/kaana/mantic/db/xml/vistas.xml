@@ -4806,7 +4806,7 @@
 					tc_mantic_facturas.timbrado,
 					tc_mantic_facturas.folio,
 					tc_mantic_clientes.razon_social cliente,
-          tc_mantic_clientes.id_cliente
+					tc_mantic_clientes.id_cliente
 				from 
 					tc_mantic_ficticias						
 				inner join 
@@ -4832,7 +4832,9 @@
 				  tc_mantic_empresas.clave ,  
 				  tc_mantic_empresas.nombre,  
 					tc_mantic_ficticias.consecutivo,  													
-					tc_mantic_ficticias.total,					
+					tc_mantic_ficticias.total,	
+					tc_mantic_ficticias.sub_total,
+					tc_mantic_ficticias.impuestos,				
 				  tc_mantic_ficticias_estatus.nombre,
 					tc_mantic_ficticias.id_ficticia_estatus,
 					tc_mantic_ficticias.registro,
@@ -4840,7 +4842,9 @@
 					tc_mantic_personas.cuenta,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) ,
 					tc_mantic_facturas.timbrado,
-					tc_mantic_clientes.razon_social 
+					tc_mantic_facturas.folio,
+					tc_mantic_clientes.razon_social,
+					tc_mantic_clientes.id_cliente 
 				{sortOrder}
 			</select>
 			<select id="detalle">
