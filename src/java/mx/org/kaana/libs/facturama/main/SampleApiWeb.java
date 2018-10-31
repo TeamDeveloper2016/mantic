@@ -2,8 +2,6 @@ package mx.org.kaana.libs.facturama.main;
 
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mx.org.kaana.libs.facturama.container.FacturamaApi;
 import mx.org.kaana.libs.facturama.services.*;
 import mx.org.kaana.libs.facturama.models.*;
@@ -12,7 +10,6 @@ import mx.org.kaana.libs.facturama.models.request.CfdiType;
 import mx.org.kaana.libs.facturama.models.request.Item;
 import mx.org.kaana.libs.facturama.models.request.Receiver;
 import mx.org.kaana.libs.facturama.models.request.Tax;
-import mx.org.kaana.libs.facturama.models.request.Cfdi;
 import mx.org.kaana.libs.facturama.models.response.catalogs.*;
 import mx.org.kaana.libs.facturama.models.response.catalogs.cfdi.*;
 import mx.org.kaana.libs.facturama.models.response.*;
