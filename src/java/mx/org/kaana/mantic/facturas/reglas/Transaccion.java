@@ -97,8 +97,9 @@ public class Transaccion extends IBaseTnx {
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la factura.");
 			switch(accion) {				
 				case AGREGAR:
-				case REGISTRAR:			
-					idEstatusFactura= accion.equals(EAccion.AGREGAR) ? EEstatusFicticias.ABIERTA.getIdEstatusFicticia() : idEstatusFactura;
+				case REGISTRAR:	
+				case DESACTIVAR:
+					idEstatusFactura= accion.equals(EAccion.AGREGAR) ? EEstatusFicticias.ABIERTA.getIdEstatusFicticia() : (accion.equals(EAccion.DESACTIVAR) ? this.orden.getIdFicticiaEstatus() : idEstatusFactura);
 					regresar= this.orden.getIdFicticia()!= null && !this.orden.getIdFicticia().equals(-1L) ? actualizarFicticia(sesion, idEstatusFactura) : registrarFicticia(sesion, idEstatusFactura);					
 					break;
 				case MODIFICAR:
@@ -159,8 +160,8 @@ public class Transaccion extends IBaseTnx {
 		Long consecutivo         = -1L;
 		Long idFactura           = -1L;
 		Map<String, Object>params= null;
-		try {						
-			idFactura= registrarFactura(sesion);
+		try {									
+			idFactura= registrarFactura(sesion);										
 			if(idFactura>= 1L){
 				consecutivo= this.toSiguiente(sesion);			
 				this.orden.setConsecutivo(consecutivo);			
@@ -168,13 +169,13 @@ public class Transaccion extends IBaseTnx {
 				this.orden.setIdFicticiaEstatus(idEstatusFicticia);
 				this.orden.setEjercicio(new Long(Fecha.getAnioActual()));						
 				this.orden.setIdFactura(idFactura);
-				if(DaoFactory.getInstance().insert(sesion, this.orden)>= 1L){
+				if(DaoFactory.getInstance().insert(sesion, this.orden)>= 1L){					
 					params= new HashMap<>();
 					params.put("idFicticia", this.orden.getIdFicticia());
 					if(DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, idFactura, params)>= 1L){					
 						regresar= registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "");
 						toFillArticulos(sesion);
-					} // if
+					} // if					
 				} // if
 			} // if
 		} // try
@@ -185,16 +186,21 @@ public class Transaccion extends IBaseTnx {
 	} // registrarFicticia
 	
 	private boolean actualizarFicticia(Session sesion, Long idEstatusFicticia) throws Exception{
-		boolean regresar         = false;
-		Map<String, Object>params= null;
+		boolean regresar           = false;
+		Map<String, Object>params  = null;
+		TcManticFacturasDto factura=null;
 		try {						
 			this.orden.setIdFicticiaEstatus(idEstatusFicticia);						
 			regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-			if(registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "")){
-				params= new HashMap<>();
-				params.put("idFicticia", this.orden.getIdFicticia());
-				regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticFicticiasDetallesDto.class, params)>= 1;
-				toFillArticulos(sesion);
+			factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, this.orden.getIdFactura());
+			factura.setObservaciones(this.justificacion);
+			if(DaoFactory.getInstance().update(sesion, factura)>= 1L){
+				if(registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "")){
+					params= new HashMap<>();
+					params.put("idFicticia", this.orden.getIdFicticia());
+					regresar= DaoFactory.getInstance().deleteAll(sesion, TcManticFicticiasDetallesDto.class, params)>= 1;
+					toFillArticulos(sesion);
+				} // if
 			} // if
 		} // try
 		catch (Exception e) {			
