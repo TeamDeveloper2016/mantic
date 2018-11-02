@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
@@ -23,6 +24,7 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.ventas.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.MotorBusqueda;
@@ -63,7 +65,12 @@ public class Cliente extends IBaseAttribute implements Serializable {
   protected void init() {
     try {
 			this.attrs.put("regreso", JsfBase.getFlashAttribute("regreso"));
+			this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));
+			this.attrs.put("idFicticia", JsfBase.getFlashAttribute("idFicticia"));
+			this.attrs.put("observaciones", JsfBase.getFlashAttribute("observaciones"));
+			this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
 			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin());
+			this.attrs.put("contactos", new ArrayList<>());
       doLoad();      					
     } // try
     catch (Exception e) {
@@ -88,11 +95,26 @@ public class Cliente extends IBaseAttribute implements Serializable {
 	
   public void doLoad() { 
 		TcManticClientesDto registroCliente= null;
+		EAccion accion                     = null;
+		Long idCliente                     = -1L;
     try {      
-			registroCliente= new TcManticClientesDto();
-			this.domicilio= new Domicilio();
+			accion= this.attrs.get("idCliente")!= null && !Long.valueOf(this.attrs.get("idCliente").toString()).equals(-1L) ? EAccion.MODIFICAR : EAccion.AGREGAR;
+			switch(accion){
+				case MODIFICAR:
+					idCliente= Long.valueOf(this.attrs.get("idCliente").toString());
+					registroCliente= (TcManticClientesDto) DaoFactory.getInstance().findById(TcManticClientesDto.class, idCliente);					
+					loadTiposDomicilios();	
+					loadTiposVentas();
+					loadDomicilioActual(idCliente);
+					loadContactosActual(idCliente);
+					break;
+				case AGREGAR:
+					registroCliente= new TcManticClientesDto();
+					this.domicilio= new Domicilio();					
+					loadCollections();
+					break;
+			} // switch			
 			this.attrs.put("registroCliente", registroCliente);
-      loadCollections();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -100,22 +122,103 @@ public class Cliente extends IBaseAttribute implements Serializable {
     } // catch		
   } // doLoad
 
+	private void loadDomicilioActual(Long idCliente) throws Exception{
+		MotorBusqueda motor            = null;		
+		List<UISelectEntity> domicilios= null;
+		try {
+			motor= new MotorBusqueda(idCliente);			
+			this.domicilio= motor.toClienteDomicilioPrinicipal(true);
+			domicilios= doBusquedaDomiciliosActual(this.domicilio.getIdDomicilio());
+			this.attrs.put("domicilios", domicilios);		
+			this.domicilio.setDomicilio(domicilios.get(0));
+			loadEntidades();
+			toAsignaEntidad();
+			loadMunicipios();
+			toAsignaMunicipio();
+			loadLocalidades();
+			toAsignaLocalidad();
+			loadCodigosPostales();      
+			toAsignaCodigoPostal();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // loadDomicilioActual
+	
+	private void loadContactosActual(Long idCliente) throws Exception{
+		MotorBusqueda motor                = null;		
+		List<ClienteTipoContacto> contactos= null;
+		try {
+			motor= new MotorBusqueda(idCliente);			
+			contactos= motor.toClientesTipoContacto();			
+			this.attrs.put("contactos", contactos);
+			for(ClienteTipoContacto contacto: contactos){
+				if(contacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()))
+					this.attrs.put("correo", contacto.getValor());
+				else if(contacto.getIdTipoContacto().equals(ETiposContactos.TELEFONO.getKey()))
+					this.attrs.put("telefono", contacto.getValor());
+				else if(contacto.getIdTipoContacto().equals(ETiposContactos.CELULAR.getKey()))
+					this.attrs.put("celular", contacto.getValor());
+			} // for
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // loadDomicilioActual
+	
+	private List<UISelectEntity> doBusquedaDomiciliosActual(Long idDomicilio) {
+    List<UISelectEntity> regresar= null;
+    Map<String, Object> params   = null;
+		List<Columna>campos          = null;
+    try {
+      params = new HashMap<>();      
+			campos= new ArrayList<>();
+      params.put(Constantes.SQL_CONDICION, "tc_mantic_domicilios.id_domicilio=".concat(idDomicilio.toString()));			
+			campos.add(new Columna("calle", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("numeroExterior", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("numeroInterior", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("asentamiento", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("entidad", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("municipio", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("domicilio", EFormatoDinamicos.MAYUSCULAS));
+      regresar = UIEntity.build("VistaDomiciliosCatalogosDto", "domicilios", params, campos, Constantes.SQL_TODOS_REGISTROS);      
+			this.attrs.put("resultados", regresar.size());      
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+		return regresar;
+  } // doLoadDomicilios
+	
   public String doAceptar() {
     Transaccion transaccion  = null;
 		ClienteVenta clienteVenta= null;
     String regresar          = null;
+		EAccion accion           = null;
     try {
+			accion= this.attrs.get("idCliente")!= null && !Long.valueOf(this.attrs.get("idCliente").toString()).equals(-1L) ? EAccion.TRANSFORMACION : EAccion.ASIGNAR;
 			clienteVenta= toClienteVenta();			
       transaccion = new Transaccion(clienteVenta);
-      if (transaccion.ejecutar(EAccion.ASIGNAR)) {
-				if(this.attrs.get("regreso")!= null)
+      if (transaccion.ejecutar(accion)) {
+				if(this.attrs.get("regreso")!= null){
+					JsfBase.setFlashAttribute("observaciones", this.attrs.get("observaciones"));																							
+					JsfBase.setFlashAttribute("idFicticia", this.attrs.get("idFicticia"));																							
+					if(accion.equals(EAccion.ASIGNAR))						
+						JsfBase.setFlashAttribute("idCliente", transaccion.getIdClienteNuevo());					
+					else
+						JsfBase.setFlashAttribute("idCliente", this.attrs.get("idCliente"));					
+					JsfBase.setFlashAttribute("accion", Long.valueOf(this.attrs.get("idFicticia").toString()).equals(-1L) ? EAccion.AGREGAR : EAccion.MODIFICAR);
 					regresar= this.attrs.get("regreso").toString().concat(Constantes.REDIRECIONAR);
+				} // if
 				else
 					regresar = "accion".concat(Constantes.REDIRECIONAR);
-        JsfBase.addMessage("Se registro el cliente de forma correcta.", ETipoMensaje.INFORMACION);
+        JsfBase.addMessage("Se" + (accion.equals(EAccion.TRANSFORMACION) ? "modificó" : "agregó") + "registro el cliente de forma correcta.", ETipoMensaje.INFORMACION);
       } // if
       else {
-        JsfBase.addMessage("Ocurrió un error al registrar el cliente", ETipoMensaje.ERROR);
+        JsfBase.addMessage("Ocurrió un error al " + (accion.equals(EAccion.TRANSFORMACION) ? "modificar" : "agregar") + " el cliente", ETipoMensaje.ERROR);
       }
     } // try
     catch (Exception e) {
@@ -129,25 +232,46 @@ public class Cliente extends IBaseAttribute implements Serializable {
 		ClienteVenta regresar                         = null;
 		List<TrManticClienteTipoContactoDto> contactos= null;
 		TrManticClienteTipoContactoDto contacto       = null;
+		List<ClienteTipoContacto> contactosList       = null;
 		try {
 			regresar= new ClienteVenta();
 			regresar.setCliente((TcManticClientesDto) this.attrs.get("registroCliente"));
-			regresar.setDomicilio(this.domicilio);
+			regresar.setDomicilio(this.domicilio);			
+			regresar.setIdClienteDomicilio(this.domicilio.getIdClienteDomicilio());
+			contactosList= (List<ClienteTipoContacto>) this.attrs.get("contactos");
 			contactos= new ArrayList<>();
 			contacto= new TrManticClienteTipoContactoDto();
 			contacto.setIdTipoContacto(ETiposContactos.CORREO.getKey());
 			contacto.setValor(this.attrs.get("correo").toString());
 			contacto.setOrden(1L);
+			if(!contactosList.isEmpty()){
+				for(ClienteTipoContacto record: contactosList){
+					if(record.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()))
+						contacto.setIdClienteTipoContacto(record.getIdClienteTipoContacto());
+				}
+			} // if
 			contactos.add(contacto);
 			contacto= new TrManticClienteTipoContactoDto();
 			contacto.setIdTipoContacto(ETiposContactos.TELEFONO.getKey());
 			contacto.setValor(this.attrs.get("telefono").toString());
 			contacto.setOrden(2L);
+			if(!contactosList.isEmpty()){
+				for(ClienteTipoContacto record: contactosList){
+					if(record.getIdTipoContacto().equals(ETiposContactos.TELEFONO.getKey()))
+						contacto.setIdClienteTipoContacto(record.getIdClienteTipoContacto());
+				}
+			} // if
 			contactos.add(contacto);
 			contacto= new TrManticClienteTipoContactoDto();
 			contacto.setIdTipoContacto(ETiposContactos.CELULAR.getKey());
 			contacto.setValor(this.attrs.get("celular").toString());
 			contacto.setOrden(3L);
+			if(!contactosList.isEmpty()){
+				for(ClienteTipoContacto record: contactosList){
+					if(record.getIdTipoContacto().equals(ETiposContactos.CELULAR.getKey()))
+						contacto.setIdClienteTipoContacto(record.getIdClienteTipoContacto());
+				}
+			} // if
 			contactos.add(contacto);
 			regresar.setContacto(contactos);
 		} // try
@@ -159,8 +283,13 @@ public class Cliente extends IBaseAttribute implements Serializable {
 	
   public String doCancelar() {
 		String regresar= "accion".concat(Constantes.REDIRECIONAR);
-		if(this.attrs.get("regreso")!= null)
-			regresar= this.attrs.get("regreso").toString().concat(Constantes.REDIRECIONAR);			
+		if(this.attrs.get("regreso")!= null){
+			JsfBase.setFlashAttribute("idFicticia", this.attrs.get("idFicticia"));																							
+			JsfBase.setFlashAttribute("idCliente", this.attrs.get("idCliente"));					
+			JsfBase.setFlashAttribute("observaciones", this.attrs.get("observaciones"));					
+			JsfBase.setFlashAttribute("accion", Long.valueOf(this.attrs.get("idFicticia").toString()).equals(-1L) ? EAccion.AGREGAR : EAccion.MODIFICAR);
+			regresar= this.attrs.get("regreso").toString().concat(Constantes.REDIRECIONAR);						
+		} // if
     return regresar;
   } // doAccion
 
