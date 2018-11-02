@@ -2424,6 +2424,9 @@
 			<delete id="rows">
         delete from tr_mantic_cliente_domicilio where id_cliente={idCliente}
       </delete>
+			<update id="principal">
+        update tr_mantic_cliente_domicilio set id_principal=2 where id_cliente={idCliente}
+      </update>
     </unit>	
 		<unit id="TrManticClienteTipoContactoDto">
       <select id="row">
@@ -2441,7 +2444,7 @@
           tr_mantic_cliente_tipo_contacto
         where      
           id_cliente = {idCliente} and id_cliente_tipo_contacto = {idClienteTipoContacto} and id_tipo_contacto = {idTipoContacto}
-      </select>
+      </select>      
 			<select id="maximo">
         select      
           max(id_cliente_tipo_contacto) maximo
