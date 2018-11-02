@@ -14,12 +14,17 @@ public class Domicilio extends TcManticDomiciliosDto{
 	private boolean nuevoCp;
 	private Boolean principal;	
 	private Long idTipoDomicilio;
+	private Long idClienteDomicilio;
 	
 	public Domicilio() {
 		this(null, null, null, null, -1L, false, false, -1L);
 	}
 
 	public Domicilio(Entity idEntidad, Entity idMunicipio, Entity localidad, Entity domicilio, Long idCodigoPostal, boolean nuevoCp, Boolean principal, Long idTipoDomicilio) {
+		this(null, null, null, null, -1L, false, false, -1L, null);
+	}
+		
+	public Domicilio(Entity idEntidad, Entity idMunicipio, Entity localidad, Entity domicilio, Long idCodigoPostal, boolean nuevoCp, Boolean principal, Long idTipoDomicilio, Long idClienteDomicilio) {
 		this.idEntidad      = idEntidad;
 		this.idMunicipio    = idMunicipio;
 		this.idCodigoPostal = idCodigoPostal;
@@ -28,6 +33,7 @@ public class Domicilio extends TcManticDomiciliosDto{
 		this.idTipoDomicilio= idTipoDomicilio;
 		this.localidad      = localidad;
 		this.domicilio      = domicilio;
+		this.idClienteDomicilio= idClienteDomicilio;
 	}
 
 	public Entity getIdEntidad() {
@@ -92,5 +98,13 @@ public class Domicilio extends TcManticDomiciliosDto{
 
 	public void setDomicilio(Entity domicilio) {
 		this.domicilio = domicilio;
+	}	
+
+	public Long getIdClienteDomicilio() {
+		return idClienteDomicilio;
+	}
+
+	public void setIdClienteDomicilio(Long idClienteDomicilio) {
+		this.idClienteDomicilio = idClienteDomicilio;
 	}	
 }
