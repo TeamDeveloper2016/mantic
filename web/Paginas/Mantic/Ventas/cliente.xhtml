@@ -60,11 +60,7 @@
 					<p:fieldset id="fieldDomicilios" legend="Domicilio">
 					<p:panelGrid id="panelDomicilios" columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 						<p:spacer/>
-						<p:commandButton process="@this" update="dialogoDomicilios" icon="fa fa-search" onstart="return janal.bloquear();" oncomplete="PF('dlgDomicilios').show();" title="Buscar domicilio" style="float: right !important"/>						
-						<p:outputLabel for="tipoDomicilio" value="Tipo domicilio:"/>
-						<p:selectOneMenu id="tipoDomicilio" value="#{manticVentasCliente.domicilio.idTipoDomicilio}" styleClass="janal-wid-100-txt">									
-							<f:selectItems value="#{manticVentasCliente.attrs.tiposDomicilios}"/>
-						</p:selectOneMenu>												  						
+						<p:commandButton process="@this" update="dialogoDomicilios" icon="fa fa-search" onstart="return janal.bloquear();" oncomplete="PF('dlgDomicilios').show();" title="Buscar domicilio" style="float: right !important"/>												
 						<p:outputLabel for="domicilio" value="Domicilio:"/>
 						<p:selectOneMenu id="domicilio" value="#{manticVentasCliente.domicilio.domicilio}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity">									
 							<p:ajax event="change" listener="#{manticVentasCliente.doLoadAtributos}" process="@this domicilio" update="entidad municipio localidad codigoPostal spacerCp calle exterior interior asentamiento entreCalle tipoDomicilio" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>										
@@ -83,6 +79,10 @@
 								<h:outputText value="#{item.asentamiento}"/>
 							</p:column>  
 						</p:selectOneMenu>													
+						<p:outputLabel for="tipoDomicilio" value="Tipo domicilio:"/>
+						<p:selectOneMenu id="tipoDomicilio" value="#{manticVentasCliente.domicilio.idTipoDomicilio}" styleClass="janal-wid-100-txt">									
+							<f:selectItems value="#{manticVentasCliente.attrs.tiposDomicilios}"/>
+						</p:selectOneMenu>												  						
 					</p:panelGrid>
 					<p:panelGrid id="panelDetalleDomicilio" columns="3" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-40, janal-wid-30, janal-wid-30">						
 						<p:outputLabel for="entidad" value="Entidad:"/>
