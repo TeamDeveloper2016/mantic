@@ -193,6 +193,10 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		return sinIva;
 	}
 
+	public void setSinIva(boolean sinIva) {
+		this.sinIva = sinIva;
+	}
+	
 	public double getTipoDeCambio() {
 		return tipoDeCambio;
 	}
