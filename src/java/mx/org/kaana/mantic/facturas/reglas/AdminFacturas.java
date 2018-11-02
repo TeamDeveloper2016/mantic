@@ -33,7 +33,7 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 	
 	public AdminFacturas(FacturaFicticia orden, boolean loadDefault) throws Exception {
 		List<ArticuloVenta> arts= null;
-		this.orden= orden;
+		this.orden= orden;		
 		if(this.orden.isValid()) {
 			arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticFicticiasDetallesDto", "detalle", orden.toMap());
   	  this.setArticulos(arts);      
@@ -47,6 +47,7 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 		} // else	
 		if(loadDefault)
 			this.getArticulos().add(new ArticuloVenta(-1L));
+		setIdSinIva(1L);
 		this.toCalculate();
 	}
 	
