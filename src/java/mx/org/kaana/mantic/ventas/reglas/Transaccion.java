@@ -12,6 +12,7 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -19,6 +20,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteDomicilio;
+import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
@@ -162,6 +164,9 @@ public class Transaccion extends IBaseTnx {
 				case ASIGNAR:
 					regresar= procesarCliente(sesion);
 					break;					
+				case TRANSFORMACION:
+					regresar= actualizarCliente(sesion);
+					break;
 				case REPROCESAR:
 				case COPIAR:
 					regresar= actualizarVenta(sesion, accion.equals(EAccion.REPROCESAR) ? EEstatusVentas.PAGADA.getIdEstatusVenta() : EEstatusVentas.CREDITO.getIdEstatusVenta());				
@@ -355,7 +360,6 @@ public class Transaccion extends IBaseTnx {
     Long idCliente  = -1L;
     try {
       this.messageError = "Error al registrar el cliente";
-			this.clienteVenta.getCliente().setIdTipoVenta(ETipoVenta.MENUDEO.getIdTipoVenta());
 			this.clienteVenta.getCliente().setIdCredito(2L);
 			this.clienteVenta.getCliente().setLimiteCredito(0D);
 			this.clienteVenta.getCliente().setPlazoDias(15L);
@@ -363,8 +367,32 @@ public class Transaccion extends IBaseTnx {
 			this.clienteVenta.getCliente().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			idCliente = DaoFactory.getInstance().insert(sesion, this.clienteVenta.getCliente());
 			this.idClienteNuevo= idCliente;
-			if (registraClientesDomicilios(sesion, idCliente)) 
-				regresar = registraClientesTipoContacto(sesion, idCliente);			
+			if(updateDomicilioPrincipal(sesion, this.clienteVenta.getCliente().getIdCliente())){
+				if (registraClientesDomicilios(sesion, idCliente)) 
+					regresar = registraClientesTipoContacto(sesion, idCliente);			
+			}
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    return regresar;
+  } // procesarCliente
+	
+	protected boolean actualizarCliente(Session sesion) throws Exception {
+    boolean regresar= false;
+		TrManticClienteDomicilioDto domicilio= null;
+    try {
+      this.messageError = "Error al registrar el cliente";						
+			if(DaoFactory.getInstance().update(sesion, this.clienteVenta.getCliente())>= 1L){
+				domicilio= (TrManticClienteDomicilioDto) DaoFactory.getInstance().findById(sesion, TrManticClienteDomicilioDto.class, this.clienteVenta.getDomicilio().getIdClienteDomicilio());
+				domicilio.setIdDomicilio(toIdDomicilio(sesion, toClienteDomicilio(), false));
+				domicilio.setIdTipoDomicilio(this.clienteVenta.getDomicilio().getIdTipoDomicilio());
+				domicilio.setIdPrincipal(1L);
+				if(updateDomicilioPrincipal(sesion, this.clienteVenta.getCliente().getIdCliente())){
+					if (DaoFactory.getInstance().update(sesion, domicilio)>= 1L) 
+						regresar = registraClientesTipoContacto(sesion, this.clienteVenta.getCliente().getIdCliente());			
+				} // if
+			} // if			
     } // try
     catch (Exception e) {
       throw e;
@@ -382,6 +410,7 @@ public class Transaccion extends IBaseTnx {
 			clienteDomicilio.setIdUsuario(JsfBase.getIdUsuario());
 			clienteDomicilio.setIdDomicilio(toIdDomicilio(sesion, clienteDomicilio));		
 			clienteDomicilio.setIdClienteDomicilio(-1L);
+			clienteDomicilio.setIdPrincipal(1L);
 			dto= (TrManticClienteDomicilioDto) clienteDomicilio;
 			regresar= DaoFactory.getInstance().insert(sesion, dto)>= 1L;			
     } // try
@@ -394,12 +423,28 @@ public class Transaccion extends IBaseTnx {
     return regresar;
   } // registraClientesDomicilios
 	
+	private boolean updateDomicilioPrincipal(Session sesion, Long idCliente) throws Exception{
+		boolean regresar         = false;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idCliente", idCliente);
+			regresar= DaoFactory.getInstance().execute(ESql.UPDATE, sesion, "TrManticClienteDomicilioDto", "principal", params)>= 0L;
+		} // try
+		catch (Exception e) {			
+			throw e; 
+		} // catch
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;		
+	} // updateDomicilioPrincipal
+	
 	private ClienteDomicilio toClienteDomicilio() throws Exception{
 		ClienteDomicilio regresar= null;
 		try {
 			regresar= new ClienteDomicilio();
 			regresar.setIdPrincipal(1L);			
-			regresar.setIdPrincipal(this.clienteVenta.getDomicilio().getPrincipal() ? 1L : 2L);			
 			regresar.setDomicilio(this.clienteVenta.getDomicilio().getDomicilio());
 			regresar.setIdDomicilio(this.clienteVenta.getDomicilio().getDomicilio().getKey());
 			regresar.setIdUsuario(JsfBase.getIdUsuario());
@@ -424,14 +469,22 @@ public class Transaccion extends IBaseTnx {
 	} // setValuesClienteDomicilio
 	
 	private Long toIdDomicilio(Session sesion, ClienteDomicilio clienteDomicilio) throws Exception{		
+		return toIdDomicilio(sesion, clienteDomicilio, true);
+	}
+	
+	private Long toIdDomicilio(Session sesion, ClienteDomicilio clienteDomicilio, boolean agregar) throws Exception{		
 		Entity entityDomicilio= null;
 		Long regresar= -1L;
 		try {
-			entityDomicilio= toDomicilio(sesion, clienteDomicilio);
+			if(agregar)
+				entityDomicilio= toDomicilio(sesion, clienteDomicilio);
+			else
+				entityDomicilio= toDomicilio(sesion, this.clienteVenta.getDomicilio());
 			if(entityDomicilio!= null)
 				regresar= entityDomicilio.getKey();
-			else
+			else{
 				regresar= insertDomicilio(sesion, clienteDomicilio);					
+			}
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -485,18 +538,49 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toDomicilio
 	
+	private Entity toDomicilio(Session sesion, Domicilio clienteDomicilio) throws Exception{
+		Entity regresar= null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idLocalidad", clienteDomicilio.getIdLocalidad());
+			params.put("codigoPostal", clienteDomicilio.getCodigoPostal());
+			params.put("calle", clienteDomicilio.getCalle());
+			params.put("numeroExterior", clienteDomicilio.getNumeroExterior());
+			params.put("numeroInterior", clienteDomicilio.getNumeroInterior());
+			params.put("asentamiento", clienteDomicilio.getAsentamiento());
+			params.put("entreCalle", clienteDomicilio.getEntreCalle());
+			params.put("yCalle", clienteDomicilio.getYcalle());
+			regresar= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticDomiciliosDto", "domicilioExiste", params);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toDomicilio
+	
 	public boolean registraClientesTipoContacto(Session sesion, Long idCliente) throws Exception {
-    TrManticClienteTipoContactoDto dto = null;
     int count       = 0;
     boolean validate= false;
     boolean regresar= false;
+		TrManticClienteTipoContactoDto pivote= null;
     try {
       for (TrManticClienteTipoContactoDto clienteTipoContacto : this.clienteVenta.getContacto()) {
 				if(clienteTipoContacto.getValor()!= null && !Cadena.isVacio(clienteTipoContacto.getValor())){
-					clienteTipoContacto.setIdCliente(idCliente);
-					clienteTipoContacto.setIdUsuario(JsfBase.getIdUsuario());
-					clienteTipoContacto.setIdClienteTipoContacto(-1L);
-					validate = registrarSentencia(sesion, clienteTipoContacto);							
+					if(clienteTipoContacto.getIdClienteTipoContacto().equals(-1L)){
+						clienteTipoContacto.setIdCliente(idCliente);
+						clienteTipoContacto.setIdUsuario(JsfBase.getIdUsuario());
+						clienteTipoContacto.setIdClienteTipoContacto(-1L);
+						validate = registrarSentencia(sesion, clienteTipoContacto);		
+					}	// if				
+					else{
+						pivote= (TrManticClienteTipoContactoDto) DaoFactory.getInstance().findById(sesion, TrManticClienteTipoContactoDto.class, clienteTipoContacto.getIdClienteTipoContacto());
+						pivote.setValor(clienteTipoContacto.getValor());
+						validate = actualizarSentencia(sesion, pivote);		
+					} // else
 				} // if
 				else
 					validate= true;
@@ -517,6 +601,10 @@ public class Transaccion extends IBaseTnx {
 	
 	private boolean registrarSentencia(Session sesion, IBaseDto dto) throws Exception {
     return DaoFactory.getInstance().insert(sesion, dto) >= 1L;
+  } // registrar
+	
+	private boolean actualizarSentencia(Session sesion, IBaseDto dto) throws Exception {
+    return DaoFactory.getInstance().update(sesion, dto) >= 1L;
   } // registrar
 	
 	protected void registrarDeuda(Session sesion, Double importe) throws Exception{
