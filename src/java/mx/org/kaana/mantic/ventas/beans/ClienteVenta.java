@@ -10,15 +10,21 @@ public class ClienteVenta {
 	private TcManticClientesDto cliente;
 	private Domicilio domicilio;
 	private List<TrManticClienteTipoContactoDto> contacto;
+	private Long idClienteDomicilio;
 
 	public ClienteVenta() {
 		this(null, null, null);
 	}
 	
 	public ClienteVenta(TcManticClientesDto cliente, Domicilio domicilio, List<TrManticClienteTipoContactoDto> contacto) {
+		this(null, null, null, null);
+	}
+	
+	public ClienteVenta(TcManticClientesDto cliente, Domicilio domicilio, List<TrManticClienteTipoContactoDto> contacto, Long idClienteDomicilio) {
 		this.cliente = cliente;
 		this.domicilio = domicilio;
 		this.contacto = contacto;
+		this.idClienteDomicilio= idClienteDomicilio;
 	}
 
 	public TcManticClientesDto getCliente() {
@@ -43,5 +49,13 @@ public class ClienteVenta {
 
 	public void setContacto(List<TrManticClienteTipoContactoDto> contacto) {
 		this.contacto = contacto;
+	}	
+
+	public Long getIdClienteDomicilio() {
+		return idClienteDomicilio;
+	}
+
+	public void setIdClienteDomicilio(Long idClienteDomicilio) {
+		this.idClienteDomicilio = idClienteDomicilio;
 	}	
 }
