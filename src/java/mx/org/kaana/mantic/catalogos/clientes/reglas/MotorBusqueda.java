@@ -12,6 +12,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteContactoRepresentante;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteDomicilio;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteRepresentante;
+import mx.org.kaana.mantic.catalogos.clientes.beans.Domicilio;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
@@ -78,6 +79,73 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		} // finally
 		return regresar;
 	} // toClientesDomicilio
+	
+	public Domicilio toClienteDomicilioPrinicipal(boolean update) throws Exception {
+		Domicilio regresar               = null;
+		TcManticDomiciliosDto domicilio  = null;
+		List<ClienteDomicilio> domicilios= null;
+		Map<String, Object>params        = null;
+		Entity entityDomicilio           = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente);
+			domicilios= DaoFactory.getInstance().toEntitySet(ClienteDomicilio.class, "TrManticClienteDomicilioDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+			for(ClienteDomicilio clienteDomicilio: domicilios){
+				if(clienteDomicilio.getIdPrincipal().equals(1L)){
+					clienteDomicilio.setIdLocalidad(toLocalidad(clienteDomicilio.getIdDomicilio()));
+					clienteDomicilio.setIdMunicipio(toMunicipio(clienteDomicilio.getIdLocalidad().getKey()));
+					clienteDomicilio.setIdEntidad(toEntidad(clienteDomicilio.getIdMunicipio().getKey()));
+					domicilio= toDomicilio(clienteDomicilio.getIdDomicilio());
+					regresar= loadDomicilio(domicilio);
+					regresar.setIdTipoDomicilio(clienteDomicilio.getIdTipoDomicilio());
+					regresar.setIdClienteDomicilio(clienteDomicilio.getIdClienteDomicilio());
+					regresar.setIdEntidad(clienteDomicilio.getIdEntidad());
+					regresar.setIdMunicipio(clienteDomicilio.getIdMunicipio());
+					regresar.setLocalidad(clienteDomicilio.getIdLocalidad());
+					entityDomicilio= new Entity(clienteDomicilio.getIdDomicilio());
+					entityDomicilio.put("idEntidad", new Value("idEntidad", clienteDomicilio.getIdEntidad().getKey()));
+					entityDomicilio.put("idMunicipio", new Value("idMunicipio", clienteDomicilio.getIdMunicipio().getKey()));
+					entityDomicilio.put("idLocalidad", new Value("idLocalidad", clienteDomicilio.getIdLocalidad().getKey()));
+					entityDomicilio.put("codigoPostal", new Value("codigoPostal", clienteDomicilio.getCodigoPostal()));
+					regresar.setDomicilio(entityDomicilio);
+				} // if
+				if(regresar== null)
+					regresar= new Domicilio();								
+			} // for
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toClientesDomicilio
+	
+	private Domicilio loadDomicilio(TcManticDomiciliosDto domicilio){
+		Domicilio regresar= null;
+		try {
+			regresar= new Domicilio();
+			regresar.setAsentamiento(domicilio.getAsentamiento());
+			regresar.setCalle(domicilio.getCalle());
+			regresar.setCodigoPostal(domicilio.getCodigoPostal());
+			regresar.setEntreCalle(domicilio.getEntreCalle());
+			regresar.setLatitud(domicilio.getLatitud());
+			regresar.setLongitud(domicilio.getLongitud());
+			regresar.setNumeroExterior(domicilio.getNumeroExterior());
+			regresar.setNumeroInterior(domicilio.getNumeroInterior());
+			regresar.setObservaciones(domicilio.getObservaciones());
+			regresar.setYcalle(domicilio.getYcalle());
+			regresar.setIdDomicilio(domicilio.getIdDomicilio());
+			regresar.setIdLocalidad(domicilio.getIdLocalidad());
+			regresar.setIdUsuario(domicilio.getIdUsuario());
+			regresar.setRegistro(domicilio.getRegistro());
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // loadDomicilio
 	
 	public List<ClienteRepresentante> toClientesRepresentantes() throws Exception {
 		List<ClienteRepresentante> regresar= null;
