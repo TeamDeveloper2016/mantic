@@ -11,16 +11,21 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDetallesDto;
+import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.enums.EEstatusFicticias;
+import mx.org.kaana.mantic.enums.ETiposContactos;
+import mx.org.kaana.mantic.facturas.beans.Correo;
 import org.apache.log4j.Logger;
 
 /**
@@ -42,7 +47,14 @@ public class Transaccion extends IBaseTnx {
 	private String justificacion;
 	private String correos;
 	private String comentarios;	
+	private Correo correo;
+	private Long idCliente;
 
+	public Transaccion(Correo correo, Long idCliente) {
+		this.correo   = correo;
+		this.idCliente= idCliente;
+	}	// Transaccion
+	
 	public Transaccion(TcManticFicticiasBitacoraDto bitacora) { 
 		this(bitacora, "", "");
 	} // Transaccion
@@ -141,6 +153,9 @@ public class Transaccion extends IBaseTnx {
 						if(DaoFactory.getInstance().deleteAll(sesion, TcManticFicticiasDetallesDto.class, params)>= 0)
 							regresar= DaoFactory.getInstance().delete(sesion, this.orden)>= 1L;
 					} // if					
+					break;
+				case COMPLEMENTAR: 
+					regresar= agregarContacto(sesion);
 					break;
 			} // switch
 			if(!regresar)
@@ -279,4 +294,52 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
 	} // registrarFactura
+	
+	private boolean agregarContacto(Session sesion) throws Exception{
+		boolean regresar                       = false;
+		List<ClienteTipoContacto> correos      = null;
+		TrManticClienteTipoContactoDto contacto= null;
+		int count                              = 0;
+		Long records                           = 1L;
+		try {
+			correos= toClientesTipoContacto();
+			if(!correos.isEmpty()){
+				for(ClienteTipoContacto tipoContacto: correos){
+					if(tipoContacto.getValor().equals(this.correo.getDescripcion()))
+						count++;
+				} // for				
+				records= correos.size() + 1L;
+			} // if
+			if(count== 0){
+				contacto= new TrManticClienteTipoContactoDto();
+				contacto.setIdCliente(this.idCliente);
+				contacto.setIdTipoContacto(ETiposContactos.CORREO.getKey());
+				contacto.setIdUsuario(JsfBase.getIdUsuario());
+				contacto.setValor(this.correo.getDescripcion());
+				contacto.setOrden(records);
+				regresar= DaoFactory.getInstance().insert(sesion, contacto)>= 1L;
+			} // else
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // agregarContacto
+	
+	public List<ClienteTipoContacto> toClientesTipoContacto() throws Exception {
+		List<ClienteTipoContacto> regresar= null;
+		Map<String, Object>params    = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente + " and id_tipo_contacto=" + ETiposContactos.CORREO.getKey());
+			regresar= DaoFactory.getInstance().toEntitySet(ClienteTipoContacto.class, "TrManticClienteTipoContactoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toClientesTipoContacto
 } 
