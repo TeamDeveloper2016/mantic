@@ -1,0 +1,197 @@
+package mx.org.kaana.mantic.facturas.beans;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+public class ClienteFactura implements Serializable{
+
+	private static final long serialVersionUID = -6145604204242433218L;
+	//Cliente
+	private String id;
+	private String idFacturama;
+	private String correo;
+	private String rfc;
+	private String nombre;
+	private String tipoCfdi;
+	//Direccion
+	private String calle;
+	private String numeroExterior;
+	private String numeroInterior;
+	private String colonia;
+	private String codigoPostal;
+	private String localidad;
+	private String municipio;
+	private String estado;
+	private String pais;
+
+	public ClienteFactura() {
+		this(null);
+	}	
+
+	public ClienteFactura(String id) {
+		this(id, null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+	}
+
+	public ClienteFactura(String id, String idFacturama, String correo, String rfc, String nombre, String tipoCfdi, String calle, String numeroExterior, String numeroInterior, String colonia, String codigoPostal, String localidad, String municipio, String estado, String pais) {
+		this.id            = id;
+		this.idFacturama   = idFacturama;
+		this.correo        = correo;
+		this.rfc           = rfc;
+		this.nombre        = nombre;
+		this.tipoCfdi      = tipoCfdi;
+		this.calle         = calle;
+		this.numeroExterior= numeroExterior;
+		this.numeroInterior= numeroInterior;
+		this.colonia       = colonia;
+		this.codigoPostal  = codigoPostal;
+		this.localidad     = localidad;
+		this.municipio     = municipio;
+		this.estado        = estado;
+		this.pais          = pais;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(String correo) {
+		this.correo = correo;
+	}
+
+	public String getRfc() {
+		return rfc;
+	}
+
+	public void setRfc(String rfc) {
+		this.rfc = rfc;
+	}
+
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+
+	public String getTipoCfdi() {
+		return tipoCfdi;
+	}
+
+	public void setTipoCfdi(String tipoCfdi) {
+		this.tipoCfdi = tipoCfdi;
+	}
+
+	public String getCalle() {
+		return calle;
+	}
+
+	public void setCalle(String calle) {
+		this.calle = calle;
+	}
+
+	public String getNumeroExterior() {
+		return numeroExterior;
+	}
+
+	public void setNumeroExterior(String numeroExterior) {
+		this.numeroExterior = numeroExterior;
+	}
+
+	public String getNumeroInterior() {
+		return numeroInterior;
+	}
+
+	public void setNumeroInterior(String numeroInterior) {
+		this.numeroInterior = numeroInterior;
+	}
+
+	public String getColonia() {
+		return colonia;
+	}
+
+	public void setColonia(String colonia) {
+		this.colonia = colonia;
+	}
+
+	public String getCodigoPostal() {
+		return codigoPostal;
+	}
+
+	public void setCodigoPostal(String codigoPostal) {
+		this.codigoPostal = codigoPostal;
+	}
+
+	public String getLocalidad() {
+		return localidad;
+	}
+
+	public void setLocalidad(String localidad) {
+		this.localidad = localidad;
+	}
+
+	public String getMunicipio() {
+		return municipio;
+	}
+
+	public void setMunicipio(String municipio) {
+		this.municipio = municipio;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public String getPais() {
+		return pais;
+	}
+
+	public void setPais(String pais) {
+		this.pais = pais;
+	}	
+
+	public String getIdFacturama() {
+		return idFacturama;
+	}
+
+	public void setIdFacturama(String idFacturama) {
+		this.idFacturama = idFacturama;
+	}	
+	
+		@Override
+	public int hashCode() {
+		int hash=5;
+		hash=29*hash+Objects.hashCode(this.rfc);
+		return hash;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this==obj) {
+			return true;
+		}
+		if (obj==null) {
+			return false;
+		}
+		if (getClass()!=obj.getClass()) {
+			return false;
+		}
+		final ClienteFactura other=(ClienteFactura) obj;
+		if (!Objects.equals(this.rfc, other.rfc)) {
+			return false;
+		}
+		return true;
+	}
+}
