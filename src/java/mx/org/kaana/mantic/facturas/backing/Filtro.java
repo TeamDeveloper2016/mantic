@@ -50,6 +50,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   private static final long serialVersionUID = 8793667741599428332L;
 	private List<Correo> correos;
 	private List<Correo> selectedCorreos;	
+	private Correo correo;
 	private Reporte reporte;
 	
 	public Reporte getReporte() {
@@ -66,6 +67,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	public void setSelectedCorreos(List<Correo> selectedCorreos) {
 		this.selectedCorreos = selectedCorreos;
+	}	
+
+	public Correo getCorreo() {
+		return correo;
+	}
+
+	public void setCorreo(Correo correo) {
+		this.correo = correo;
 	}	
 	
   @PostConstruct
@@ -365,4 +374,25 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("justificacion", "");
 		} // finally
 	}	// doActualizaEstatus
+	
+	public void doAgregarCorreo(){
+		Entity seleccionado    = null;
+		Transaccion transaccion= null;
+		try {
+			if(!Cadena.isVacio(this.correo.getDescripcion())){
+				seleccionado= (Entity)this.attrs.get("seleccionado");
+				transaccion= new Transaccion(this.correo, seleccionado.toLong("idCliente"));
+				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
+					JsfBase.addMessage("Se agrego el correo electronico");
+				else
+					JsfBase.addMessage("Ocurrió un error al agregar el correo electronico");
+			} // if
+			else
+				JsfBase.addMessage("Es necesario capturar un correo electronico");
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doAgregarCorreo
 }
