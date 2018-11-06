@@ -490,7 +490,7 @@ div.ui-panelgrid-content {
 .janal-color-cyan{color: cyan;}
 .jana-bar-top { filter:alpha(opacity=80); opacity:0.8; padding:10px 0 0 50px; z-index: 1000; height: 120px !important; }
 .janal-padding-cero { padding-bottom: 0 !important; padding-left:  0 !important; padding-right: 0 !important;	padding-top: 0 !important; }
-.janal-wid-100-txt { width: -webkit-fill-available; }
+.janal-wid-100-txt { width: -webkit-fill-available; width: -moz-available;}
 .ui-datalist .ui-paginator { background-color: transparent !important; margin: 0px; padding: 5px 0px; }
 
 .ui-growl-error-container, .ui-error-messages { color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; border-radius: .25rem; }
