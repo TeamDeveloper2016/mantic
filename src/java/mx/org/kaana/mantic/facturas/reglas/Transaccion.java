@@ -210,6 +210,7 @@ public class Transaccion extends IBaseTnx {
 			params= new HashMap<>();
 			params.put("idFicticia", this.orden.getIdFicticia());
 			factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
+			factura.setIdVenta(null);
 			factura.setObservaciones(this.justificacion);
 			if(DaoFactory.getInstance().update(sesion, factura)>= 1L){
 				if(registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "")){
