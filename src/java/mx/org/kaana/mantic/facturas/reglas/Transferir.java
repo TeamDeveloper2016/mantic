@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -159,11 +160,16 @@ public class Transferir extends IBaseTnx {
 
 	private void toDownload(Session sesion) throws Exception {
 		List<CfdiSearchResult> cfdis= CFDIFactory.getInstance().getCfdis();
+ 	  Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
+    monitoreo.comenzar(0L);
+    monitoreo.setTotal(Long.valueOf(cfdis.size()));
 		int x= 0;
 		for (CfdiSearchResult cfdi : cfdis) {
 			this.toProcess(sesion, cfdi);
 			if(x % 100== 0)
 			  sesion.flush();
+      monitoreo.setProgreso((long)(x* 100/ monitoreo.getTotal()));
+      monitoreo.incrementar();
 		} // for
 		this.count= cfdis.size();
 	}
