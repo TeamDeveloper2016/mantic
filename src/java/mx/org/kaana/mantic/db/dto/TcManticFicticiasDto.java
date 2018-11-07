@@ -64,7 +64,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   @Column (name="registro")
   private Timestamp registro;
   @Column (name="consecutivo")
-  private Long consecutivo;
+  private String consecutivo;
   @Column (name="id_usuario")
   private Long idUsuario;
   @Column (name="impuestos")
@@ -93,7 +93,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticFicticiasDto(Double descuentos, Long idFactura, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, String descuento, Long idBanco, Long ejercicio, Long consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Date dia, String referencia) {
+  public TcManticFicticiasDto(Double descuentos, Long idFactura, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, String descuento, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Date dia, String referencia) {
     setDescuentos(descuentos);
     setIdFactura(idFactura);
     setIdTipoPago(idTipoPago);
@@ -250,11 +250,11 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     return registro;
   }
 
-  public void setConsecutivo(Long consecutivo) {
+  public void setConsecutivo(String consecutivo) {
     this.consecutivo = consecutivo;
   }
 
-  public Long getConsecutivo() {
+  public String getConsecutivo() {
     return consecutivo;
   }
 
