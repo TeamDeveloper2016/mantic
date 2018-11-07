@@ -35,7 +35,7 @@ public class TcManticFicticiasBitacoraDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="consecutivo")
-  private Long consecutivo;
+  private String consecutivo;
   @Column (name="justificacion")
   private String justificacion;
   @Column (name="id_ficticia_estatus")
@@ -62,7 +62,7 @@ public class TcManticFicticiasBitacoraDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticFicticiasBitacoraDto(Long consecutivo, String justificacion, Long idFicticiaEstatus, Long idUsuario, Long idFicticia, Long idFicticiaBitacora, Double importe) {
+  public TcManticFicticiasBitacoraDto(String consecutivo, String justificacion, Long idFicticiaEstatus, Long idUsuario, Long idFicticia, Long idFicticiaBitacora, Double importe) {
     setConsecutivo(consecutivo);
     setJustificacion(justificacion);
     setIdFicticiaEstatus(idFicticiaEstatus);
@@ -73,11 +73,11 @@ public class TcManticFicticiasBitacoraDto implements IBaseDto, Serializable {
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
-  public void setConsecutivo(Long consecutivo) {
+  public void setConsecutivo(String consecutivo) {
     this.consecutivo = consecutivo;
   }
 
-  public Long getConsecutivo() {
+  public String getConsecutivo() {
     return consecutivo;
   }
 
