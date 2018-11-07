@@ -40,8 +40,7 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 		}	// if
 		else	{
 		  arts= new ArrayList<>();
-		  this.setArticulos(arts);
-			this.orden.setConsecutivo(1L);
+		  this.setArticulos(arts);			
 			this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
 			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 		} // else	
