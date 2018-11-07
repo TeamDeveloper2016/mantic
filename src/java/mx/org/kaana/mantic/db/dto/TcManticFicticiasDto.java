@@ -31,8 +31,6 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   private static final long serialVersionUID=1L;
   @Column (name="descuentos")
   private Double descuentos;
-  @Column (name="id_factura")
-  private Long idFactura;
   @Column (name="id_tipo_pago")
   private Long idTipoPago;
   @Id
@@ -89,13 +87,12 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   }
 
   public TcManticFicticiasDto(Long key) {
-    this(null, null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null);
+    this(null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null);
     setKey(key);
   }
 
-  public TcManticFicticiasDto(Double descuentos, Long idFactura, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, String descuento, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Date dia, String referencia) {
+  public TcManticFicticiasDto(Double descuentos, Long idTipoPago, Long idFicticia, String extras, Double global, Double total, Long idFicticiaEstatus, Double tipoDeCambio, Long orden, Long idTipoMedioPago, Long idCliente, String descuento, Long idBanco, Long ejercicio, String consecutivo, Long idUsuario, Double impuestos, Long idUsoCfdi, Long idSinIva, Double subTotal, String observaciones, Long idEmpresa, Date dia, String referencia) {
     setDescuentos(descuentos);
-    setIdFactura(idFactura);
     setIdTipoPago(idTipoPago);
     setIdFicticia(idFicticia);
     setExtras(extras);
@@ -128,14 +125,6 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
 
   public Double getDescuentos() {
     return descuentos;
-  }
-
-  public void setIdFactura(Long idFactura) {
-    this.idFactura = idFactura;
-  }
-
-  public Long getIdFactura() {
-    return idFactura;
   }
 
   public void setIdTipoPago(Long idTipoPago) {
@@ -347,8 +336,6 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
     regresar.append("[");
 		regresar.append(getDescuentos());
 		regresar.append(Constantes.SEPARADOR);
-		regresar.append(getIdFactura());
-		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdTipoPago());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdFicticia());
@@ -404,7 +391,6 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   public Map toMap() {
     Map regresar = new HashMap();
 		regresar.put("descuentos", getDescuentos());
-		regresar.put("idFactura", getIdFactura());
 		regresar.put("idTipoPago", getIdTipoPago());
 		regresar.put("idFicticia", getIdFicticia());
 		regresar.put("extras", getExtras());
@@ -435,7 +421,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescuentos(), getIdFactura(), getIdTipoPago(), getIdFicticia(), getExtras(), getGlobal(), getTotal(), getIdFicticiaEstatus(), getTipoDeCambio(), getOrden(), getIdTipoMedioPago(), getIdCliente(), getDescuento(), getIdBanco(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getDia(), getReferencia()
+    getDescuentos(), getIdTipoPago(), getIdFicticia(), getExtras(), getGlobal(), getTotal(), getIdFicticiaEstatus(), getTipoDeCambio(), getOrden(), getIdTipoMedioPago(), getIdCliente(), getDescuento(), getIdBanco(), getEjercicio(), getRegistro(), getConsecutivo(), getIdUsuario(), getImpuestos(), getIdUsoCfdi(), getIdSinIva(), getSubTotal(), getObservaciones(), getIdEmpresa(), getDia(), getReferencia()
     };
     return regresar;
   }
