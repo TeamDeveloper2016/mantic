@@ -126,6 +126,14 @@
         where      
           id_ficticia_estatus = {idFicticiaEstatus} and id_ficticia = {idFicticia} and id_ficticia_bitacora = {idFicticiaBitacora}
       </select>
+			<select id="siguiente">
+        select
+					max(consecutivo)+ 1 as siguiente
+				from 
+					tc_mantic_ficticias_bitacora
+				where				  
+				  id_ficticia= {idFicticia}				
+			</select>			
     </unit>
 		<unit id="TcManticFicticiasDto">
       <select id="row">
