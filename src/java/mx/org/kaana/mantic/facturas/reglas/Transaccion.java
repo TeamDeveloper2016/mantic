@@ -266,7 +266,7 @@ public class Transaccion extends IBaseTnx {
 			params.put("ejercicio", Fecha.getAnioActual());
 			params.put("idEmpresa", this.orden.getIdEmpresa());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDto", "siguiente", params, "siguiente");
-			if(next.getData()!= null)
+			if(next!= null && next.getData()!= null)
 				regresar= next.toLong();
 		} // try
 		catch (Exception e) {
@@ -285,7 +285,7 @@ public class Transaccion extends IBaseTnx {
 			params=new HashMap<>();
 			params.put("idFicticia", this.orden.getIdFicticia());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasBitacoraDto", "siguiente", params, "siguiente");
-			if(next.getData()!= null)
+			if(next!= null && next.getData()!= null)
 				regresar= next.toLong();
 		} // try
 		catch (Exception e) {

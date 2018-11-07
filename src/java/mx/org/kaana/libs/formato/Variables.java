@@ -61,7 +61,7 @@ public class Variables implements Serializable {
   }
 
   private void parse(Object ... codigos) {
-    StringBuilder cadena= new StringBuilder(getTokens());
+    StringBuilder cadena= new StringBuilder().append(getTokens());
     for(int x= 0; x< codigos.length; x++) {
       cadena.append(x);
       cadena.append("=");
@@ -113,10 +113,10 @@ public class Variables implements Serializable {
     StringTokenizer st= new StringTokenizer(getCodigos(), Constantes.SEPARADOR, false);
     while(st.hasMoreTokens()) {
       String token= st.nextToken();
-      if(token.indexOf("=")>= 0) {
+      if(token.contains("=")) {
         sb.append(token.substring(0, token.indexOf("=")+ 1));
         token= token.substring(token.indexOf("=")+ 1);
-        if(token.indexOf("=")>= 0)
+        if(token.contains("="))
           token= token.replace('=', Constantes.TILDE.charAt(0));
       } // if
       sb.append(token);
@@ -125,8 +125,8 @@ public class Variables implements Serializable {
     setCodigos(sb.toString());
   }
 
-  public static Map<String, String> toMap(String params, char separator, char delimited) {
-    Map<String, String> regresar= new HashMap<String, String>();
+  public static Map<String, Object> toMap(String params, char separator, char delimited) {
+    Map<String, Object> regresar= new HashMap<>();
     String token = null;
     String name  = null;
     String value = null;
@@ -153,8 +153,8 @@ public class Variables implements Serializable {
     return regresar;
   }
 
-  public static Map<String, String> toMap(String params, String separator, String delimited) {
-    Map<String, String> regresar= new HashMap<String, String>();
+  public static Map<String, Object> toMap(String params, String separator, String delimited) {
+    Map<String, Object> regresar= new HashMap<>();
     String[] separados = params.toLowerCase().split(separator);
     String[] filtros   = null;
     for(String separado : separados) {
@@ -164,11 +164,11 @@ public class Variables implements Serializable {
     return regresar;
   }
 
-  public static Map<String, String> toMap(String params, char tokens) {
+  public static Map<String, Object> toMap(String params, char tokens) {
     return toMap(params, tokens, Constantes.TILDE.charAt(0));
   }
 
-  public static Map<String, String> toMap(String params) {
+  public static Map<String, Object> toMap(String params) {
     return toMap(params, Constantes.SEPARADOR.charAt(0));
   }
 
@@ -177,10 +177,10 @@ public class Variables implements Serializable {
     StringTokenizer st= new StringTokenizer(params, Constantes.SEPARADOR, false);
     while(st.hasMoreTokens()) {
       String token= st.nextToken();
-      if(token.indexOf("=")>= 0) {
+      if(token.contains("=")) {
         sb.append(token.substring(0, token.indexOf("=")+ 1));
         token= token.substring(token.indexOf("=")+ 1);
-        if(token.indexOf("=")>= 0)
+        if(token.contains("="))
           token= token.replace('=', Constantes.TILDE.charAt(0));
       } // if
       sb.append(token);
@@ -189,7 +189,7 @@ public class Variables implements Serializable {
   }
 
   public static List<String> toList(String params, char tokens) {
-    List<String> regresar= new ArrayList<String>();
+    List<String> regresar= new ArrayList<>();
     String token         = null;
     StringTokenizer values = new StringTokenizer(params, String.valueOf(tokens), false);
     while (values.hasMoreTokens()) {

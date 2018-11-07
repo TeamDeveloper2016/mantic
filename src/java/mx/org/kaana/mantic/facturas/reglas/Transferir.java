@@ -11,6 +11,7 @@ import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.models.response.Cfdi;
@@ -23,6 +24,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticFacturasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
@@ -38,7 +40,7 @@ import org.apache.log4j.Logger;
 
 public class Transferir extends IBaseTnx {
 
-  private static final Logger LOG   = Logger.getLogger(Transferir.class);
+  private static final Logger LOG= Logger.getLogger(Transferir.class);
 
   private Integer count= 0;
 	private String messageError;	
@@ -64,16 +66,15 @@ public class Transferir extends IBaseTnx {
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
-		boolean regresar          = false;
-		Map<String, Object> params= null;
+		boolean regresar= false;
 		try {
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la sincronización de facturas.");
 			switch(accion) {				
 				case GENERAR:
-					this.toDownload(sesion);
+					regresar= this.toDownload(sesion);
 					break;
 				case PROCESAR:
-					this.toDownload(sesion, "");
+					regresar= this.toDownload(sesion, "");
 					break;
 			} // switch
 			if(!regresar)
@@ -110,11 +111,11 @@ public class Transferir extends IBaseTnx {
 			new Long(calendar.get(Calendar.YEAR)), // Long ejercicio, 
 			Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true),  // Long consecutivo, 
 			JsfBase.getIdUsuario(), //  Long idUsuario, 
-			taxes,  // Double impuestos, 
+			taxes, // Double impuestos, 
 			1L,  // Long idUsoCfdi, 
 			1L,  // Long idSinIva, 
 			detail.getSubtotal(),  // Double subTotal, 
-			detail.getCfdiType()+ "|"+ detail.getPaymentMethod()+ "|"+ detail.getPaymentConditions()+ "|"+ detail.getObservations(),  // String observaciones, 
+			detail.getObservations(),  // String observaciones, 
 			JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),  //  Long idEmpresa, 
 			new Date(calendar.getTimeInMillis()),  // Date dia, 
 			detail.getPaymentAccountNumber() //  referencia
@@ -122,23 +123,20 @@ public class Transferir extends IBaseTnx {
 		return regresar;
 	}
 	
-	private TcManticFacturasDto toFactura(CfdiSearchResult cfdi, Calendar calendar, Long idFicticia, String path, String name) {
+	private TcManticFacturasDto toFactura(CfdiSearchResult cfdi, Calendar calendar, Long idFicticia) {
 		TcManticFacturasDto regresar= new TcManticFacturasDto(
 			-1L, // Long idFactura, 
 			new Date(Calendar.getInstance().getTimeInMillis()), // Date ultimoIntento, 
 			new Timestamp(calendar.getTimeInMillis()), // Timestamp timbrado, 
-			path, // String ruta, 
 			JsfBase.getIdUsuario(), // Long idUsuario, 
 			idFicticia, // Long idFicticia, 
 			cfdi.getFolio(), // String folio, 
 			null, // Long idVenta, 
-			name, // String nombre, 
 			0L, // Long intentos, 
 			cfdi.getEmail(), // String correos, 
 			"", // String comentarios, 
 			"", // String observaciones, 
-			cfdi.getId(), // String idFacturama, 
-			path.concat(name) // String alias
+			cfdi.getId() // String idFacturama, 
 		);
 		return regresar;
 	}
@@ -150,7 +148,7 @@ public class Transferir extends IBaseTnx {
 			params=new HashMap<>();
 			params.put("rfc", rfc);
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticClientesDto", "rfc", params, "idCliente");
-			if(next.getData()!= null)
+			if(next!= null && next.getData()!= null)
 				regresar= next.toLong();
 			else
 				LOG.warn("El cliente con RFC ["+ rfc+ "] no existe favor de verificarlo !");
@@ -164,24 +162,25 @@ public class Transferir extends IBaseTnx {
 		return regresar;
 	} // toSiguiente
 
-	private void toDownload(Session sesion) throws Exception {
+	private boolean toDownload(Session sesion) throws Exception {
 		List<CfdiSearchResult> cfdis= CFDIFactory.getInstance().getCfdis();
  	  Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
     monitoreo.comenzar(0L);
     monitoreo.setTotal(Long.valueOf(cfdis.size()));
 		int x= 0;
-		for (CfdiSearchResult cfdi : cfdis) {
+		for (CfdiSearchResult cfdi: cfdis) {
 			this.toProcess(sesion, cfdi, CFDIFactory.getInstance().toCfdiDetail(cfdi.getId()));
-			if(x % 100== 0)
+			if(x % 50== 0)
 			  sesion.flush();
       monitoreo.setProgreso((long)(x* 100/ monitoreo.getTotal()));
       monitoreo.incrementar();
-			break;
+			x++;
 		} // for
 		this.count= cfdis.size();
+		return true;
 	}
 	
-	private void toDownload(Session sesion, String idFacturama) throws Exception {
+	private boolean toDownload(Session sesion, String idFacturama) throws Exception {
 		List<CfdiSearchResult> cfdis= CFDIFactory.getInstance().getCfdis();
 		int index= cfdis.indexOf(new CfdiSearchResult(idFacturama));
 		if(index>= 0) {
@@ -189,6 +188,7 @@ public class Transferir extends IBaseTnx {
 		} // for
 		else
 			throw new RuntimeException("La factura con id "+ idFacturama+ " no se encuentra generada !");
+		return true;
 	}
 
 	private boolean exists(Session sesion, String idFacturama) throws Exception {
@@ -198,7 +198,7 @@ public class Transferir extends IBaseTnx {
 			params=new HashMap<>();
 			params.put("idFacturama", idFacturama);
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFacturasDto", "facturama", params, "idFactura");
-			if(next.getData()!= null)
+			if(next!= null && next.getData()!= null)
 				regresar= true;
 		} // try
 		catch (Exception e) {
@@ -216,11 +216,47 @@ public class Transferir extends IBaseTnx {
 			String path = Configuracion.getInstance().getPropiedadSistemaServidor("facturama")+ calendar.get(Calendar.YEAR)+ "/"+ Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase()+"/"+ cfdi.getRfc().concat("/");
 			CFDIFactory.getInstance().download(path, cfdi.getRfc().concat("-").concat(cfdi.getFolio()), cfdi.getId());
 			Long idCliente= this.toCliente(sesion, cfdi.getRfc()); 
-			if(idCliente< 0) {
+			if(idCliente> 0) {
 				TcManticFicticiasDto ficticia= this.toFicticia(sesion, cfdi, detail, calendar, idCliente);
 				DaoFactory.getInstance().insert(sesion, ficticia);
-				TcManticFacturasDto factura= this.toFactura(cfdi, calendar, ficticia.getIdFicticia(), path, cfdi.getRfc().concat("-").concat(cfdi.getFolio()));
+				TcManticFacturasDto factura= this.toFactura(cfdi, calendar, ficticia.getIdFicticia());
 				DaoFactory.getInstance().insert(sesion, factura);
+				TcManticFacturasArchivosDto xml= new TcManticFacturasArchivosDto(
+					factura.getIdFactura(), 
+					path, 
+					null, 
+					cfdi.getRfc().concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase()), 
+					new Long(calendar.get(Calendar.YEAR)),
+					null, 
+					-1L,
+					0L,
+					JsfBase.getIdUsuario(),
+					1L, // idTipoArchivo XML
+					1L, // idPrincipal
+					detail.getCfdiType()+ "|"+ detail.getPaymentMethod()+ "|"+ detail.getPaymentConditions(), // observaciones, 
+					path.concat(cfdi.getRfc()).concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase()), 
+					new Long(calendar.get(Calendar.MONTH)+ 1), 
+					"" // comentarios
+				);
+				DaoFactory.getInstance().insert(sesion, xml);
+				TcManticFacturasArchivosDto pdf= new TcManticFacturasArchivosDto(
+					factura.getIdFactura(), 
+					path, 
+					null, 
+					cfdi.getRfc().concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.PDF.name().toLowerCase()), 
+					new Long(calendar.get(Calendar.YEAR)),
+					null, 
+					-1L,
+					0L,
+					JsfBase.getIdUsuario(),
+					2L, // idTipoArchivo PDF
+					1L, // idPrincipal
+					detail.getCfdiType()+ "|"+ detail.getPaymentMethod()+ "|"+ detail.getPaymentConditions(), // observaciones, 
+					path.concat(cfdi.getRfc()).concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.PDF.name().toLowerCase()), 
+					new Long(calendar.get(Calendar.MONTH)+ 1), 
+					"" // comentarios
+				);
+				DaoFactory.getInstance().insert(sesion, pdf);
 				TcManticFicticiasBitacoraDto bitacora= new TcManticFicticiasBitacoraDto(ficticia.getConsecutivo(), "FACTURA REGISTRADA DE FORMA AUTOMATICA", 3l, 1L, ficticia.getIdFicticia(), -1L, ficticia.getTotal());
 				DaoFactory.getInstance().insert(sesion, bitacora);
 			} // if
@@ -237,7 +273,7 @@ public class Transferir extends IBaseTnx {
 			params.put("ejercicio", Fecha.getAnioActual());
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDto", "siguiente", params, "siguiente");
-			if(next.getData()!= null)
+			if(next!= null && next.getData()!= null)
 				regresar= next.toLong();
 		} // try
 		catch (Exception e) {

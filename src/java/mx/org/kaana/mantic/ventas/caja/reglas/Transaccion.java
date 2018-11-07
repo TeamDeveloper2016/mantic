@@ -147,7 +147,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			params.put("ejercicio", Fecha.getAnioActual());
 			params.put("idEmpresa", idEmpresa);
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticVentasDto", "siguienteCotizacion", params, "siguiente");
-			if(next.getData()!= null)
+			if(next!= null && next.getData()!= null)
 				regresar= next.toLong();
 		} // try
 		catch (Exception e) {
@@ -448,7 +448,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			params.put("ejercicio", Fecha.getAnioActual());
 			params.put("idEmpresa", getOrden().getIdEmpresa());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticVentasDto", "siguienteTicket", params, "siguiente");
-			if(next.getData()!= null)
+			if(next!= null && next.getData()!= null)
 				regresar= next.toLong();
 		} // try
 		catch (Exception e) {

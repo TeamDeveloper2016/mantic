@@ -35,7 +35,7 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 		List<ArticuloVenta> arts= null;
 		this.orden= orden;		
 		if(this.orden.isValid()) {
-			arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaTcManticFicticiasDetallesDto", "detalle", orden.toMap());
+			arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaFicticiasDto", "detalle", orden.toMap());
   	  this.setArticulos(arts);      
 		}	// if
 		else	{

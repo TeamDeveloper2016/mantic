@@ -7,6 +7,42 @@
   </model>
 
   <dml>	
+    <unit id="TcManticFacturasArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_facturas_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_facturas_archivos
+        where      
+          id_factura = {idFactura} and id_factura_archivo = {idFacturaArchivo} and id_tipo_archivo = {idTipoArchivo} and mes = {mes} and nombre = '{nombre}' and ejercicio = {ejercicio}
+      </select>
+    </unit>		
+    <unit id="TcManticFacturamaBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_facturama_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_facturama_bitacora
+        where      
+          id_facturama_bitacora = {idFacturamaBitacora}
+      </select>
+    </unit>		
 		<unit id="TrManticGarantiaMedioPagoDto">
       <select id="row">
         select      
@@ -3959,7 +3995,7 @@
         from      
           tc_mantic_facturas
         where      
-          id_facturama = {idFacturama}
+          id_facturama = '{idFacturama}'
 			</select>
     </unit>
 		<unit id="TcManticTrabajosDto">

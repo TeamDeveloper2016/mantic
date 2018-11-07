@@ -106,7 +106,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
       columns.add(new Columna("timbrado", EFormatoDinamicos.FECHA_CORTA));      
-      this.lazyModel = new FormatCustomLazy("VistaTcManticFicticiasDetallesDto", params, columns);
+      this.lazyModel = new FormatCustomLazy("VistaFicticiasDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -405,5 +405,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("retorno", "filtro");		
 		return "sincronizar".concat(Constantes.REDIRECIONAR);
   } // doAccion  
-	
+
+	public String doImportar() {
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Facturas/filtro");		
+		JsfBase.setFlashAttribute("idFicticia",((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("idFactura",((Entity)this.attrs.get("seleccionado")).toLong("idFactura"));
+		return "importar".concat(Constantes.REDIRECIONAR);
+	}
+
 }

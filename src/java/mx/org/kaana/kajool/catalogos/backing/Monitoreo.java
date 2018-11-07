@@ -93,5 +93,10 @@ public class Monitoreo implements Serializable {
 	public void addError(String error) {
 	  this.messages.add(error);
 	}
+
+	@Override
+	public String toString() {
+		return "Monitoreo{"+"total="+total+", progreso="+progreso+", corriendo="+corriendo+'}';
+	}
 	
 }

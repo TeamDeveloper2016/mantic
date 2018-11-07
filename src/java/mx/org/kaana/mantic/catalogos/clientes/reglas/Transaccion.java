@@ -1,7 +1,6 @@
 package mx.org.kaana.mantic.catalogos.clientes.reglas;
 
 import java.io.File;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +25,6 @@ import mx.org.kaana.mantic.db.dto.TcManticClientesArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesPagosArchivosDto;
-import mx.org.kaana.mantic.db.dto.TcManticCreditosArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteDomicilioDto;

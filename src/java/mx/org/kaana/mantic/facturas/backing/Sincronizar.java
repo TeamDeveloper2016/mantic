@@ -38,7 +38,7 @@ public class Sincronizar extends IBaseAttribute implements Serializable {
 				this.attrs.put("total", transferir.getCount());
 				this.attrs.put("clientes", transferir.getClientes());
   			regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
-   			RequestContext.getCurrentInstance().execute("jsArticulos.back('transfirieron las facturas', '"+ transferir.getCount()+ "');");
+   			RequestContext.getCurrentInstance().execute("janal.alert('Se transfirieron ["+ transferir.getCount()+ "] facturas del portal de facturama');");
 			} // if
 			else 
 				JsfBase.addMessage("Ocurrió un error al transferir las facturas.", ETipoMensaje.ERROR);      			
@@ -46,6 +46,7 @@ public class Sincronizar extends IBaseAttribute implements Serializable {
     catch (Exception e) {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
+ 			RequestContext.getCurrentInstance().execute("cancel();");
     } // catch
     return regresar;
   } // doAccion

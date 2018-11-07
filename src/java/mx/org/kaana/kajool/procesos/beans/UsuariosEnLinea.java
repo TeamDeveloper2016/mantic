@@ -225,9 +225,10 @@ public class UsuariosEnLinea implements Serializable {
 		StringBuilder sb= new StringBuilder();
 		sb.append("+REGISTRO USUARIOS [");
 		sb.append(this.hora.getTime().toString());
-		sb.append("] {");
+		sb.append("]");
 		if(!this.cuentas.isEmpty()) {
 			Iterator listado= this.cuentas.entrySet().iterator();
+  		sb.append("{");
 			while(listado.hasNext()) {
 				sb.append("(");
 				Map.Entry cuentasEntry= (Map.Entry)listado.next();

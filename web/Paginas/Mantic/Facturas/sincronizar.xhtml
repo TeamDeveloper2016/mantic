@@ -17,7 +17,8 @@
     	$(document).ready(function() {
       });							
 		
-	      function cancel() {
+	    function cancel() {
+        PF('progressBar').cancel();
         clearInterval(window['progress']);
         PF('progressBar').setValue(0);
       }
@@ -65,11 +66,11 @@
 	</ui:define>    
 	<ui:define name="acciones">		
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticFacturasSincronizar.doAceptar}" onstart="start(); return true;" oncomplete="janal.desbloquear(); cancel();"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticFacturasSincronizar.doAceptar}" onstart="start(); return janal.bloquear();" oncomplete="janal.desbloquear(); cancel();"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticFacturasSincronizar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticFacturasSincronizar.doAceptar}" onstart="start(); return true;" oncomplete="janal.desbloquear(); cancel();"/>
+			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticFacturasSincronizar.doAceptar}" onstart="start(); return janal.bloquear();" oncomplete="janal.desbloquear(); cancel();"/>
 			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticFacturasSincronizar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
 		</div>						
 	</ui:define>	

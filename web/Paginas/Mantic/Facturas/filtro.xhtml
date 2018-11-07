@@ -4,8 +4,9 @@
                 xmlns:h="http://java.sun.com/jsf/html"
                 xmlns:f="http://java.sun.com/jsf/core"
                 xmlns:p="http://primefaces.org/ui"
+								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Facturas ficticias generadas" />
+  <ui:param name="titulo" value="Facturas generadas hasta el momento" />
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
@@ -19,7 +20,7 @@
       };
 			
 			fieldsDialog= {
-				'justificacion'         : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}				
+				'justificacion': {validaciones: 'libre', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}				
 			};
 			
 			function validaJustificacion() {
@@ -194,6 +195,8 @@
             <p:menuitem id="reenviar" icon="fa fa-mail-forward" value="Reenviar" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos" rendered="#{manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus eq '3'}"/>					            
             <p:separator rendered="#{manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus eq '3'}"/>					
 						<p:menuitem id="ticket" icon="fa fa-file-text-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doReporte('FACTURAS_FICTICIAS_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar"/>			
+            <p:separator rendered="#{fn:contains('|3|4|', manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus)}"/>			
+            <p:menuitem id="importar" icon="fa fa-external-link" value="Ver XML/PDF" onstart="return janal.bloquear()" process="@this tabla" action="#{manticFacturasFiltro.doImportar}" rendered="#{fn:contains('|3|4|', manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus)}"/>
           </p:contextMenu>
         </div>
       </div>
