@@ -48,4 +48,8 @@ public class Sincronizar extends IBaseAttribute implements Serializable {
     return regresar;
   } // doAccion
 
+	public void doCompleto() {
+		
+	}
+	
 }

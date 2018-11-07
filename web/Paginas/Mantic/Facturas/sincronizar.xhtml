@@ -11,11 +11,22 @@
 	<ui:define name="librerias">
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
-				'articulos' : {validaciones: 'requerido', mascara: 'no-aplica'},			
+				'total' : {validaciones: 'libre', mascara: 'no-aplica'},			
 			};	
 			
     	$(document).ready(function() {
       });							
+		
+	      function cancel() {
+        clearInterval(window['progress']);
+        PF('progressBar').setValue(0);
+      }
+      
+      function start() {
+        PF('progressBar').cancel();
+        PF('progressBar').setValue(0);
+        PF('progressBar').start();
+      }
 		</script>   
 		<style type="text/css">
 			.janal-zero-size {
@@ -39,16 +50,26 @@
 					<p:inputText id="clientes" value="#{manticFacturasSincronizar.attrs.clientes}" styleClass="janal-wid-100-txt" readonly="true"/>
 				</div>
 			</div>
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">	
+					<p:panel styleClass="tabla-filtro" id="barra" >
+						Proceso:
+						<p:progressBar interval="500" styleClass="animate" labelTemplate="{value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.monitoreo.progreso}" global="false" >
+							<p:ajax event="complete" listener="#{manticFacturasSincronizar.doCompleto}" />  
+						</p:progressBar>  			
+					</p:panel>
+				</div>
+			</div>
 		</div>		
 		<p:commandButton id="limpio" value="" styleClass="janal-zero-size"/>
 	</ui:define>    
 	<ui:define name="acciones">		
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticFacturasSincronizar.doAceptar}" onstart="return execute(true);" oncomplete="janal.desbloquear()" update="deudor contenido panelEmpresa articulos total"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticFacturasSincronizar.doAceptar}" onstart="start(); return true;" oncomplete="janal.desbloquear(); cancel();" update="deudor contenido panelEmpresa articulos total"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticFacturasSincronizar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticFacturasSincronizar.doAceptar}" onstart="return janal.partial('articulo', true);" oncomplete="janal.desbloquear()" update="deudor contenido panelEmpresa articulos total"/>
+			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticFacturasSincronizar.doAceptar}" onstart="start(); return true;" oncomplete="janal.desbloquear(); cancel();" update="deudor contenido panelEmpresa articulos total"/>
 			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticFacturasSincronizar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
 		</div>						
 	</ui:define>	
