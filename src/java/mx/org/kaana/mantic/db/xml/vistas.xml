@@ -4792,7 +4792,7 @@
 					tc_mantic_facturas_archivos.id_factura,
 			  	tc_mantic_facturas_archivos.id_tipo_archivo,
 					tc_mantic_tipos_archivos.nombre as tipo,
-					tc_mantic_facturas_archivos.nombre as archivo,
+					tc_mantic_facturas_archivos.nombre,
 					tc_mantic_facturas_archivos.alias,
 					tc_mantic_facturas_archivos.ruta,
 					tc_mantic_facturas_archivos.id_principal,

@@ -47,7 +47,7 @@
 				<div class="ui-grid-col-12">	
 					<p:panel styleClass="tabla-filtro">
 						Estatus del proceso:
-						<p:progressBar interval="500" styleClass="animate" labelTemplate="{value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.monitoreo.progreso}" global="false" >
+						<p:progressBar interval="500" styleClass="animate" labelTemplate="Facturas [{index} de {count}] transferidas, porcentaje {value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.monitoreo.progreso}" global="false" >
 							<p:ajax event="complete" listener="#{manticFacturasSincronizar.doCompleto}" />  
 						</p:progressBar>  			
 					</p:panel>

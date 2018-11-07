@@ -1,35 +1,21 @@
 package mx.org.kaana.mantic.facturas.backing;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.libs.formato.Error;
-import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
-import mx.org.kaana.libs.reflection.Methods;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Variables;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
-import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
-import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
-import mx.org.kaana.mantic.inventarios.entradas.reglas.Importados;
 import org.primefaces.context.RequestContext;
-import org.primefaces.event.FileUploadEvent;
-import org.primefaces.event.TabChangeEvent;
 
 /**
  *@company KAANA
