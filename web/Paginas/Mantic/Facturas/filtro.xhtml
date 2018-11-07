@@ -213,7 +213,7 @@
 					<p:column headerText="Correos disponibles del cliente" styleClass="descripcion tablaCorreos_selection">
 						<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
 					</p:column>
-					<p:column style="width:32px;text-align: center">
+					<p:column style="width:45px;text-align: center">
 						<p:commandButton update="tablaCorreos" icon="fa fa-check" title="Agregar" action="#{manticFacturasFiltro.doAgregarCorreo}">
 							<f:setPropertyActionListener value="#{row}" target="#{manticFacturasFiltro.correo}" />
 						</p:commandButton>
@@ -235,7 +235,7 @@
 						<p:column headerText="Correos disponibles del cliente" styleClass="descripcion tablaCorreos_selection">
 							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
 						</p:column>
-						<p:column style="width:32px;text-align: center">
+						<p:column style="width:45px;text-align: center">
 							<p:commandButton update="tablaCorreos" icon="fa fa-check" title="Agregar" action="#{manticFacturasFiltro.doAgregarCorreo}">
 								<f:setPropertyActionListener value="#{row}" target="#{manticFacturasFiltro.correo}" />
 							</p:commandButton>
