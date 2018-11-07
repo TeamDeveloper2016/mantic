@@ -166,11 +166,13 @@ public class Accion extends IBaseVenta implements Serializable {
 		List<UISelectEntity> tiposPagos     = null;
 		List<UISelectEntity> bancos         = null;
 		try {
-			sucursales= (List<UISelectEntity>) this.attrs.get("sucursales");
-			for(Entity sucursal: sucursales){
-				if(sucursal.getKey().equals(((FacturaFicticia)getAdminOrden().getOrden()).getIdEmpresa()))
-					this.attrs.put("idEmpresa", sucursal);
-			} // for
+			if(this.attrs.get("sucursales")!= null){
+				sucursales= (List<UISelectEntity>) this.attrs.get("sucursales");
+				for(Entity sucursal: sucursales){
+					if(sucursal.getKey().equals(((FacturaFicticia)getAdminOrden().getOrden()).getIdEmpresa()))
+						this.attrs.put("idEmpresa", sucursal);
+				} // for
+			} // if
 			cfdis= (List<UISelectEntity>) this.attrs.get("cfdis");
 			for(Entity cfdi: cfdis){
 				if(cfdi.getKey().equals(((FacturaFicticia)getAdminOrden().getOrden()).getIdUsoCfdi()))
