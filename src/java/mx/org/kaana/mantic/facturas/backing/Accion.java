@@ -141,7 +141,7 @@ public class Accion extends IBaseVenta implements Serializable {
           break;
         case MODIFICAR:			
         case CONSULTAR:			
-          this.setAdminOrden(new AdminFacturas((FacturaFicticia)DaoFactory.getInstance().toEntity(FacturaFicticia.class, "TcManticFicticiasDto", "detalle", this.attrs)));
+          this.setAdminOrden(new AdminFacturas((FacturaFicticia)DaoFactory.getInstance().toEntity(FacturaFicticia.class, "VistaTcManticFicticiasDetallesDto", "facturaFicticia", this.attrs)));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));					
 					this.attrs.put("consecutivo", ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo());	
 					factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(TcManticFacturasDto.class, ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFactura());
