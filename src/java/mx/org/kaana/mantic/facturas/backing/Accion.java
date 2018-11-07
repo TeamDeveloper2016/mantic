@@ -105,7 +105,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("descripcion", "Imagen no disponible");
 			this.attrs.put("mostrarBanco", false);
 			this.image= LoadImages.getImage("-1");
-			this.attrs.put("observaciones", JsfBase.getFlashAttribute("retorno")== null? "" : JsfBase.getFlashAttribute("observaciones"));
+			this.attrs.put("observaciones", JsfBase.getFlashAttribute("observaciones")== null? "" : JsfBase.getFlashAttribute("observaciones"));
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.isAdminEncuestaOrAdmin());
 			loadClienteDefault();
@@ -768,7 +768,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
 					((FacturaFicticia)this.getAdminOrden().getOrden()).setIdFicticiaEstatus(ESTATUS_ELABORADA);
 					loadOrdenVenta();
-					transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+					transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.attrs.get("observaciones").toString());
 					this.getAdminOrden().toAdjustArticulos();
 					transaccion.ejecutar(EAccion.DESACTIVAR);
 					JsfBase.setFlashAttribute("idFicticia", transaccion.getOrden().getIdFicticia());
