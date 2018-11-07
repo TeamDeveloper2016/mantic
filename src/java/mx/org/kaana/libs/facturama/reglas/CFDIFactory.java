@@ -10,6 +10,7 @@ import mx.org.kaana.libs.facturama.models.Client;
 import mx.org.kaana.libs.facturama.models.Product;
 import mx.org.kaana.libs.facturama.models.exception.FacturamaException;
 import mx.org.kaana.libs.facturama.models.request.ProductTax;
+import mx.org.kaana.libs.facturama.models.response.Cfdi;
 import mx.org.kaana.libs.facturama.models.response.CfdiSearchResult;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
@@ -95,7 +96,7 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // facturar
 	
-	public String createClientId(ClienteFactura detalleCliente) throws Exception{
+	public String createClientId(ClienteFactura detalleCliente) throws Exception {
 		String regresar= null;
 		Client cliente = null;
 		try {
@@ -108,7 +109,7 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // createClient
 	
-	public Client createClient(ClienteFactura detalleCliente) throws Exception{
+	public Client createClient(ClienteFactura detalleCliente) throws Exception {
 		Client regresar= null;
 		Client cliente = null;
 		try {
@@ -121,7 +122,7 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // createClient
 	
-	public Client createClient(Client client) throws Exception{
+	public Client createClient(Client client) throws Exception {
 		Client regresar= null;
 		try {
 			regresar= this.facturama.Clients().Create(client);
@@ -132,7 +133,7 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // createClient
 	
-	public Client updateClient(ClienteFactura detalleCliente) throws Exception{
+	public Client updateClient(ClienteFactura detalleCliente) throws Exception {
 		return updateClient(detalleCliente, detalleCliente.getIdFacturama());
 	} // updateCliente
 	
@@ -149,7 +150,7 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // updateCliente
 	
-	public Client clientFindById(String id) throws Exception, Exception{
+	public Client clientFindById(String id) throws Exception, Exception {
 		Client regresar= null;
 		try {
 			regresar= this.facturama.Clients().Retrieve(id);
@@ -160,7 +161,7 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // clientFindById
 	
-	public Client clientRemove(String id) throws Exception{
+	public Client clientRemove(String id) throws Exception {
 		Client regresar= null;
 		try {
 			regresar= this.facturama.Clients().Remove(id);
@@ -171,7 +172,7 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // clientFindById
 	
-	private Client loadCliente(ClienteFactura cliente){
+	private Client loadCliente(ClienteFactura cliente) {
 		Client regresar= null;
 		Address address= null;
 		try {
@@ -189,7 +190,7 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	}	// loadCliente
 	
-	private Address loadAddress(ClienteFactura cliente){
+	private Address loadAddress(ClienteFactura cliente) {
 		Address regresar= null;
 		try {
 			regresar= new Address();
@@ -209,7 +210,7 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // loadAddress
 	
-	public String createProductId(ArticuloFactura detalleArticulo) throws Exception{
+	public String createProductId(ArticuloFactura detalleArticulo) throws Exception {
 		String regresar= null;
 		Product product = null;
 		try {
@@ -222,7 +223,7 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // createProduct
 	
-	public Product createProduct(ArticuloFactura detalleArticulo) throws Exception{
+	public Product createProduct(ArticuloFactura detalleArticulo) throws Exception {
 		Product regresar= null;
 		Product product = null;
 		try {
@@ -235,7 +236,7 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // createProduct
 	
-	public Product createProduct(Product client) throws Exception{
+	public Product createProduct(Product client) throws Exception {
 		Product regresar= null;
 		try {
 			regresar= this.facturama.Products().Create(client);
@@ -246,11 +247,11 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // createClient
 	
-	public Product updateProduct(ArticuloFactura detalleArticulo) throws Exception{
+	public Product updateProduct(ArticuloFactura detalleArticulo) throws Exception {
 		return updateProduct(detalleArticulo, detalleArticulo.getIdFacturama());
 	} // updateProduct
 	
-	public Product updateProduct(ArticuloFactura detalleArticulo, String id) throws Exception{
+	public Product updateProduct(ArticuloFactura detalleArticulo, String id) throws Exception {
 		Product regresar= null;
 		Product product = null;
 		try {
@@ -263,7 +264,7 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // updateProduct
 	
-	public Product productFindById(String id) throws Exception{
+	public Product productFindById(String id) throws Exception {
 		Product regresar= null;
 		try {
 			regresar= this.facturama.Products().Retrieve(id);
@@ -274,7 +275,7 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // clientFindById
 	
-	public Product productRemove(String id) throws Exception{
+	public Product productRemove(String id) throws Exception {
 		Product regresar= null;
 		try {
 			regresar= this.facturama.Products().Remove(id);
@@ -285,7 +286,7 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // clientFindById
 	
-	private Product loadProduct(ArticuloFactura articulo) throws Exception{
+	private Product loadProduct(ArticuloFactura articulo) throws Exception {
 		Product regresar      = null;
 		List<ProductTax> taxes= null;
 		try {
@@ -307,7 +308,7 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	}	// loadProduct
 	
-	private ProductTax loadTaxes(){
+	private ProductTax loadTaxes() {
 		ProductTax regresar= null;
 		try {
 			regresar= new ProductTax();
@@ -321,11 +322,16 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // loadTaxes
 	
-	private String toCodProductoServicio() throws Exception{
+	private String toCodProductoServicio() throws Exception {
 		return this.facturama.Catalogs().ProductsOrServices("desarrollo").get(0).getValue();
 	}
 	
-	private String toUnitCode() throws Exception{
+	private String toUnitCode() throws Exception {
 		return this.facturama.Catalogs().Units("servicio").get(0).getValue();
 	}
+	
+	public Cfdi toCfdiDetail(String id) throws FacturamaException, Exception {
+	  return this.facturama.Cfdis().Retrive(id);
+	}
+	
 }

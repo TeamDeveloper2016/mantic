@@ -13,7 +13,9 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.facturama.models.response.Cfdi;
 import mx.org.kaana.libs.facturama.models.response.CfdiSearchResult;
+import mx.org.kaana.libs.facturama.models.response.Tax;
 import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -85,17 +87,21 @@ public class Transferir extends IBaseTnx {
 		return regresar;
 	}	// ejecutar
 
-  private TcManticFicticiasDto toFicticia(Session sesion, CfdiSearchResult cfdi, Calendar calendar,Long idCliente) throws Exception {
+  private TcManticFicticiasDto toFicticia(Session sesion, CfdiSearchResult cfdi, Cfdi detail, Calendar calendar,Long idCliente) throws Exception {
 		Long consecutivo= this.toSiguiente(sesion);
+		double taxes    = 0;
+		for (Tax tax: detail.getTaxes()) {
+			taxes+= tax.getTotal();
+		} // for
 		TcManticFicticiasDto regresar= new TcManticFicticiasDto(
-			0D, // Double descuentos, 
+			detail.getDiscount(), // Double descuentos, 
 			1L, // Long idTipoPago, 
 			-1L,// Long idFicticia, 
 			"0", // String extras, 
 			0D, // Double global, 
 			cfdi.getTotal(), // Double total, 
 			3L, // Long idFicticiaEstatus, 
-			0D, // Double tipoDeCambio, 
+			detail.getExchangeRate(), // Double tipoDeCambio, 
 			consecutivo, // Long orden, 
 			1L, // Long idTipoMedioPago, 
 			idCliente, // Long idCliente, 
@@ -104,19 +110,19 @@ public class Transferir extends IBaseTnx {
 			new Long(calendar.get(Calendar.YEAR)), // Long ejercicio, 
 			Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true),  // Long consecutivo, 
 			JsfBase.getIdUsuario(), //  Long idUsuario, 
-			0D,  // Double impuestos, 
+			taxes,  // Double impuestos, 
 			1L,  // Long idUsoCfdi, 
 			1L,  // Long idSinIva, 
-			0D,  // Double subTotal, 
-			cfdi.getUuid(),  // String observaciones, 
+			detail.getSubtotal(),  // Double subTotal, 
+			detail.getCfdiType()+ "|"+ detail.getPaymentMethod()+ "|"+ detail.getPaymentConditions()+ "|"+ detail.getObservations(),  // String observaciones, 
 			JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),  //  Long idEmpresa, 
 			new Date(calendar.getTimeInMillis()),  // Date dia, 
-			null //  referencia
+			detail.getPaymentAccountNumber() //  referencia
 		);
 		return regresar;
 	}
 	
-	private TcManticFacturasDto toFactura(Session sesion, CfdiSearchResult cfdi, Calendar calendar, Long idFicticia, String path, String name) {
+	private TcManticFacturasDto toFactura(CfdiSearchResult cfdi, Calendar calendar, Long idFicticia, String path, String name) {
 		TcManticFacturasDto regresar= new TcManticFacturasDto(
 			-1L, // Long idFactura, 
 			new Date(Calendar.getInstance().getTimeInMillis()), // Date ultimoIntento, 
@@ -165,11 +171,12 @@ public class Transferir extends IBaseTnx {
     monitoreo.setTotal(Long.valueOf(cfdis.size()));
 		int x= 0;
 		for (CfdiSearchResult cfdi : cfdis) {
-			this.toProcess(sesion, cfdi);
+			this.toProcess(sesion, cfdi, CFDIFactory.getInstance().toCfdiDetail(cfdi.getId()));
 			if(x % 100== 0)
 			  sesion.flush();
       monitoreo.setProgreso((long)(x* 100/ monitoreo.getTotal()));
       monitoreo.incrementar();
+			break;
 		} // for
 		this.count= cfdis.size();
 	}
@@ -178,7 +185,7 @@ public class Transferir extends IBaseTnx {
 		List<CfdiSearchResult> cfdis= CFDIFactory.getInstance().getCfdis();
 		int index= cfdis.indexOf(new CfdiSearchResult(idFacturama));
 		if(index>= 0) {
-			this.toProcess(sesion, cfdis.get(index));
+			this.toProcess(sesion, cfdis.get(index), CFDIFactory.getInstance().toCfdiDetail(cfdis.get(index).getId()));
 		} // for
 		else
 			throw new RuntimeException("La factura con id "+ idFacturama+ " no se encuentra generada !");
@@ -203,16 +210,16 @@ public class Transferir extends IBaseTnx {
 		return regresar;
 	} // toSiguiente
 
-	private void toProcess(Session sesion, CfdiSearchResult cfdi) throws Exception {
+	private void toProcess(Session sesion, CfdiSearchResult cfdi, Cfdi detail) throws Exception {
 		if(!this.exists(sesion, cfdi.getId())) {
 			Calendar calendar= Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19));
 			String path = Configuracion.getInstance().getPropiedadSistemaServidor("facturama")+ calendar.get(Calendar.YEAR)+ "/"+ Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase()+"/"+ cfdi.getRfc().concat("/");
 			CFDIFactory.getInstance().download(path, cfdi.getRfc().concat("-").concat(cfdi.getFolio()), cfdi.getId());
 			Long idCliente= this.toCliente(sesion, cfdi.getRfc()); 
 			if(idCliente< 0) {
-				TcManticFicticiasDto ficticia= this.toFicticia(sesion, cfdi, calendar, idCliente);
+				TcManticFicticiasDto ficticia= this.toFicticia(sesion, cfdi, detail, calendar, idCliente);
 				DaoFactory.getInstance().insert(sesion, ficticia);
-				TcManticFacturasDto factura= this.toFactura(sesion, cfdi, calendar, ficticia.getIdFicticia(), path, cfdi.getRfc().concat("-").concat(cfdi.getFolio()));
+				TcManticFacturasDto factura= this.toFactura(cfdi, calendar, ficticia.getIdFicticia(), path, cfdi.getRfc().concat("-").concat(cfdi.getFolio()));
 				DaoFactory.getInstance().insert(sesion, factura);
 				TcManticFicticiasBitacoraDto bitacora= new TcManticFicticiasBitacoraDto(ficticia.getConsecutivo(), "FACTURA REGISTRADA DE FORMA AUTOMATICA", 3l, 1L, ficticia.getIdFicticia(), -1L, ficticia.getTotal());
 				DaoFactory.getInstance().insert(sesion, bitacora);

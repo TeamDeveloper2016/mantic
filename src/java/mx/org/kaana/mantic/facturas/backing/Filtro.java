@@ -379,7 +379,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		} // finally
 	}	// doActualizaEstatus
 	
-	public void doAgregarCorreo(){
+	public void doAgregarCorreo() {
 		Entity seleccionado    = null;
 		Transaccion transaccion= null;
 		try {
@@ -399,4 +399,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doAgregarCorreo
+	
+  public String doSincronizar() {
+		JsfBase.setFlashAttribute("accion", EAccion.GENERAR);		
+		JsfBase.setFlashAttribute("retorno", "filtro");		
+		return "sincronizar".concat(Constantes.REDIRECIONAR);
+  } // doAccion  
+	
 }

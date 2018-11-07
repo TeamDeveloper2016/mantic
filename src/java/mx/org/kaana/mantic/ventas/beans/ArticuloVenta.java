@@ -33,7 +33,7 @@ public class ArticuloVenta extends Articulo {
 	
 	@Override
 	public void toCalculate() {
-		toCalculateCostoPorCantidad();
+		this.toCalculateCostoPorCantidad();
 		double porcentajeIva = this.getIva()/ 100; 		
 		double costoMoneda   = this.getCosto()* getTipoDeCambio();
 		double costoReal     = this.getCantidad()* costoMoneda;
@@ -70,21 +70,21 @@ public class ArticuloVenta extends Articulo {
 		this.toDiferencia();
 	}
 	
-	private void toCalculateCostoPorCantidad(){
-		TcManticArticulosDto artValidate= null;
+	private void toCalculateCostoPorCantidad() {
+		TcManticArticulosDto validate= null;
 		try {
-			artValidate= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.getIdArticulo());							
-			if(artValidate!= null){
+			validate= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.getIdArticulo());
+			if(validate!= null && (this.getCosto().equals(validate.getMenudeo()) || this.getCosto().equals(validate.getMedioMayoreo()) || this.getCosto().equals(validate.getMayoreo()))) {
 				if(this.getDescuentos()> 0D)
-					this.setCosto(artValidate.getMenudeo());
+					this.setCosto(validate.getMenudeo());
 				else{
-					if(this.getCantidad() >= artValidate.getLimiteMedioMayoreo()){
-						if(this.getCantidad()>= artValidate.getLimiteMedioMayoreo() && this.getCantidad() < artValidate.getLimiteMayoreo())
-							this.setCosto(artValidate.getMedioMayoreo());
-						else if (this.getCantidad()>= artValidate.getLimiteMayoreo())
-							this.setCosto(artValidate.getMayoreo());
+					if(this.getCantidad() >= validate.getLimiteMedioMayoreo()) {
+						if(this.getCantidad()>= validate.getLimiteMedioMayoreo() && this.getCantidad() < validate.getLimiteMayoreo())
+							this.setCosto(validate.getMedioMayoreo());
+						else if (this.getCantidad()>= validate.getLimiteMayoreo())
+							this.setCosto(validate.getMayoreo());
 						else
-							this.setCosto(artValidate.getMenudeo());
+							this.setCosto(validate.getMenudeo());
 					} // if
 				} // else						
 			} // if

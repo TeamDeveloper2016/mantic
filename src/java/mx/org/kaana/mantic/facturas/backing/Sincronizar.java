@@ -21,6 +21,8 @@ public class Sincronizar extends IBaseAttribute implements Serializable {
 	@Override
 	protected void init() {
 		this.attrs.put("total", 0);
+		if(JsfBase.getFlashAttribute("accion")== null)
+			RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
 	}
 
   public String doCancelar() {   
