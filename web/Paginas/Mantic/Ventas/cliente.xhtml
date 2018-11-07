@@ -25,7 +25,7 @@
         'asentamiento': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'entreCalle': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'ycalle': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},        
-        'telefono': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'telefono': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'correo': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},        
         'celular': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'}        
       };		
@@ -46,15 +46,13 @@
 						<p:outputLabel for="clave" value="Clave:"/>
 						<p:outputLabel for="rfc" value="RFC:"/>
 						<p:outputLabel for="razonSocial" value="Razon social:"/>
-						<p:outputLabel for="tipoVenta" value="Tipo de venta:" rendered="#{manticVentasCliente.attrs.admin}"/>
-						<p:spacer rendered="#{!manticVentasCliente.attrs.admin}"/>
+						<p:outputLabel for="tipoVenta" value="Tipo de venta:"/>						
 						<p:inputText id="clave" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.attrs.registroCliente.clave}"/>                    						
 						<p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.attrs.registroCliente.rfc}" />                    						
 						<p:inputText id="razonSocial" styleClass="janal-wid-100-txt" value="#{manticVentasCliente.attrs.registroCliente.razonSocial}"/>                                    						
-						<p:selectOneMenu id="tipoVenta" value="#{manticVentasCliente.attrs.registroCliente.idTipoVenta}" styleClass="janal-wid-100-txt" rendered="#{manticVentasCliente.attrs.admin}">
+						<p:selectOneMenu id="tipoVenta" value="#{manticVentasCliente.attrs.registroCliente.idTipoVenta}" styleClass="janal-wid-100-txt">
 							<f:selectItems value="#{manticVentasCliente.attrs.tiposVentas}"/>
-						</p:selectOneMenu>
-						<p:spacer rendered="#{!manticVentasCliente.attrs.admin}"/>
+						</p:selectOneMenu>						
 					</p:panelGrid>								
 					</p:fieldset>
 					<p:fieldset id="fieldDomicilios" legend="Domicilio">
