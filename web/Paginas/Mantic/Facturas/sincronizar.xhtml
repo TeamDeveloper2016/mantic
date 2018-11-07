@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="Sincronizar todas las facturas generadas en facturama"/>
+	<ui:define name="librerias">
+		<script type="text/javascript">			
+			Janal.Control.fields = {				 				
+				'articulos' : {validaciones: 'requerido', mascara: 'no-aplica'},			
+			};	
+			
+    	$(document).ready(function() {
+      });							
+		</script>   
+		<style type="text/css">
+			.janal-zero-size {
+				visibility: hidden;
+				padding: 0px;
+				margin: 0px;
+				border: 0px;
+				width: 0px;
+				height: 0px;
+     }
+		</style>
+	</ui:define>
+	<ui:define name="contenido">
+		<p:defaultCommand target="limpio"/>
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">	
+					<p:outputLabel for="total" value="Total de facturas a importar de facturama:"/>
+					<p:inputText id="total" value="#{manticFacturasSincronizar.attrs.total}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+					<p:outputLabel for="clientes" value="Clientes que no existen en la BD propia:"/>
+					<p:inputText id="clientes" value="#{manticFacturasSincronizar.attrs.clientes}" styleClass="janal-wid-100-txt" readonly="true"/>
+				</div>
+			</div>
+		</div>		
+		<p:commandButton id="limpio" value="" styleClass="janal-zero-size"/>
+	</ui:define>    
+	<ui:define name="acciones">		
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticFacturasSincronizar.doAceptar}" onstart="return execute(true);" oncomplete="janal.desbloquear()" update="deudor contenido panelEmpresa articulos total"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticFacturasSincronizar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
+		</div>	
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticFacturasSincronizar.doAceptar}" onstart="return janal.partial('articulo', true);" oncomplete="janal.desbloquear()" update="deudor contenido panelEmpresa articulos total"/>
+			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticFacturasSincronizar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
+		</div>						
+	</ui:define>	
+	<ui:define name="dialogos">		
+	</ui:define>
+</ui:composition>

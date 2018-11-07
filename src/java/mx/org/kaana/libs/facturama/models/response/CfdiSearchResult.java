@@ -16,6 +16,14 @@ public class CfdiSearchResult {
 	private Boolean IsActive;
 	private Boolean EmailSent;
 
+	public CfdiSearchResult() {
+		this("");
+	}
+
+	public CfdiSearchResult(String Id) {
+		this.Id=Id;
+	}
+
 	public String getId() {
 		return Id;
 	}
@@ -106,9 +114,8 @@ public class CfdiSearchResult {
 
 	@Override
 	public int hashCode() {
-		int hash=7;
-		hash=59*hash+Objects.hashCode(this.Folio);
-		hash=59*hash+Objects.hashCode(this.Rfc);
+		int hash=3;
+		hash=97*hash+Objects.hashCode(this.Id);
 		return hash;
 	}
 
@@ -124,10 +131,7 @@ public class CfdiSearchResult {
 			return false;
 		}
 		final CfdiSearchResult other=(CfdiSearchResult) obj;
-		if (!Objects.equals(this.Folio, other.Folio)) {
-			return false;
-		}
-		if (!Objects.equals(this.Rfc, other.Rfc)) {
+		if (!Objects.equals(this.Id, other.Id)) {
 			return false;
 		}
 		return true;

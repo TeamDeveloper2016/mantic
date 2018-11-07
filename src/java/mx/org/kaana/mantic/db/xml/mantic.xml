@@ -2361,9 +2361,9 @@
         from      
           tc_mantic_clientes
         where 
-          tc_mantic_clientes.id_empresa in ({sucursales})
+          id_empresa in ({sucursales})
 				order by
-				  tc_mantic_clientes.clave
+				  clave
       </select>
 			<select id="clienteDefault">
         select      
@@ -2372,9 +2372,16 @@
         from      
           tc_mantic_clientes
         where 
-          tc_mantic_clientes.id_empresa in ({sucursales})
-				and 
-					tc_mantic_clientes.clave='{clave}'				
+          id_empresa in ({sucursales})
+				  and clave='{clave}'				
+      </select>
+			<select id="rfc">
+        select      
+          id_cliente
+        from      
+          tc_mantic_clientes
+        where 
+          rfc= '{rfc}'
       </select>
     </unit>		
 		<unit id="TcManticImagenesDto">
@@ -3937,6 +3944,14 @@
           tc_mantic_facturas
         where      
           id_ficticia = {idFicticia}
+			</select>
+			<select id="facturama">
+				select      
+					tc_mantic_facturas.id_factura
+        from      
+          tc_mantic_facturas
+        where      
+          id_facturama = {idFacturama}
 			</select>
     </unit>
 		<unit id="TcManticTrabajosDto">

@@ -564,4 +564,21 @@ public  class Fecha {
 	  return regresar;
   }
 	
+  public static Calendar toCalendar(String date) {
+		// date equals 2018-11-01
+		return toCalendar(date, "00:00:00");
+	}
+
+	public static Calendar toCalendar(String date, String time) {
+		// date equals 2018-11-01 and time equals 23:59:59
+		Calendar regresar= Calendar.getInstance();
+		regresar.set(Calendar.YEAR, Integer.parseInt(date.substring(0, 4)));
+		regresar.set(Calendar.MONTH, Integer.parseInt(date.substring(5, 7))- 1);
+		regresar.set(Calendar.DATE, Integer.parseInt(date.substring(8, 10)));
+		regresar.set(Calendar.HOUR, Integer.parseInt(time.substring(0, 2)));
+		regresar.set(Calendar.MINUTE, Integer.parseInt(time.substring(3, 5)));
+		regresar.set(Calendar.SECOND, Integer.parseInt(time.substring(6, 8)));
+		return regresar;
+	}
+
 } // Fecha
