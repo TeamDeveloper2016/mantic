@@ -88,6 +88,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			toLoadCatalog();
       if(this.attrs.get("idFicticia")!= null) 
 			  this.doLoad();			
+      this.attrs.remove("idFicticia"); 
     } // try
     catch (Exception e) {
       Error.mensaje(e);
