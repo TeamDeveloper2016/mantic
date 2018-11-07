@@ -12,6 +12,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -124,7 +125,7 @@ public class Transaccion extends IBaseTnx {
 					if(DaoFactory.getInstance().update(sesion, this.orden)>= 1L)
 						regresar= registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFactura, this.justificacion);					
 					break;
-				case JUSTIFICAR:																		
+				case JUSTIFICAR:		
 					if(DaoFactory.getInstance().insert(sesion, this.bitacora)>= 1L){
 						this.orden= (TcManticFicticiasDto) DaoFactory.getInstance().findById(sesion, TcManticFicticiasDto.class, this.bitacora.getIdFicticia());
 						this.orden.setIdFicticiaEstatus(this.bitacora.getIdFicticiaEstatus());						
@@ -179,11 +180,10 @@ public class Transaccion extends IBaseTnx {
 			idFactura= registrarFactura(sesion);										
 			if(idFactura>= 1L){
 				consecutivo= this.toSiguiente(sesion);			
-				this.orden.setConsecutivo(consecutivo);			
+				this.orden.setConsecutivo(Fecha.getAnioActual() + Cadena.rellenar(consecutivo.toString(), 5, '0', true));			
 				this.orden.setOrden(consecutivo);
 				this.orden.setIdFicticiaEstatus(idEstatusFicticia);
 				this.orden.setEjercicio(new Long(Fecha.getAnioActual()));						
-				this.orden.setIdFactura(idFactura);
 				if(DaoFactory.getInstance().insert(sesion, this.orden)>= 1L){					
 					params= new HashMap<>();
 					params.put("idFicticia", this.orden.getIdFicticia());
@@ -207,7 +207,9 @@ public class Transaccion extends IBaseTnx {
 		try {						
 			this.orden.setIdFicticiaEstatus(idEstatusFicticia);						
 			regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-			factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, this.orden.getIdFactura());
+			params= new HashMap<>();
+			params.put("idFicticia", this.orden.getIdFicticia());
+			factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
 			factura.setObservaciones(this.justificacion);
 			if(DaoFactory.getInstance().update(sesion, factura)>= 1L){
 				if(registraBitacora(sesion, this.orden.getIdFicticia(), idEstatusFicticia, "")){
@@ -263,6 +265,25 @@ public class Transaccion extends IBaseTnx {
 			params.put("ejercicio", Fecha.getAnioActual());
 			params.put("idEmpresa", this.orden.getIdEmpresa());
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDto", "siguiente", params, "siguiente");
+			if(next.getData()!= null)
+				regresar= next.toLong();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toSiguiente
+	
+	private Long toSiguienteBitacora(Session sesion) throws Exception {
+		Long regresar             = 1L;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("idFicticia", this.orden.getIdFicticia());
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasBitacoraDto", "siguiente", params, "siguiente");
 			if(next.getData()!= null)
 				regresar= next.toLong();
 		} // try
