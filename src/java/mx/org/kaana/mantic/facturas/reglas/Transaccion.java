@@ -296,7 +296,7 @@ public class Transaccion extends IBaseTnx {
 	} // registrarFactura
 	
 	private boolean agregarContacto(Session sesion) throws Exception{
-		boolean regresar                       = false;
+		boolean regresar                       = true;
 		List<ClienteTipoContacto> correos      = null;
 		TrManticClienteTipoContactoDto contacto= null;
 		int count                              = 0;
