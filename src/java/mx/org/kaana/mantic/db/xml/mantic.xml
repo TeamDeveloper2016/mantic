@@ -4196,5 +4196,23 @@
           id_requisicion_estatus = {idRequisicionEstatus} and nombre = '{nombre}'
       </select>
     </unit>
+		<unit id="TcManticFacturamaBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_facturama_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_facturama_bitacora
+        where      
+          id_facturama_bitacora = {idFacturamaBitacora}
+      </select>
+    </unit>
   </dml>    
 </process>
