@@ -55,6 +55,10 @@
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="folio" value="Folio:"/>
 								<p:inputText id="folio" styleClass="janal-wid-100-txt" value="#{manticFacturasImportar.attrs.factura.folio}" readonly="true"/>
+								<p:outputLabel for="rfc" value="RFC:"/>
+								<p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticFacturasImportar.attrs.cliente.rfc}" readonly="true"/>
+								<p:outputLabel for="razonSocial" value="Razon social: "/>
+								<p:inputText id="razonSocial" styleClass="janal-wid-100-txt" value="#{manticFacturasImportar.attrs.cliente.razonSocial}" readonly="true"/>
 								<p:outputLabel for="correos" value="Correos:"/>
 								<p:inputText id="correos" styleClass="janal-wid-100-txt" value="#{manticFacturasImportar.attrs.factura.correos}" readonly="true"/>
 								<p:outputLabel for="timbrado" value="Fecha timbrado:"/>
@@ -114,9 +118,11 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
+			<p:commandButton id="reenviar" value="Reenviar" icon="fa fa-send-o" process="@this" action="#{manticFacturasImportar.doReenviar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticFacturasImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
+			<p:commandButton id="reenviarIcon" title="Reenviar" icon="fa fa-send-o" process="@this" action="#{manticFacturasImportar.doReenviar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticFacturasImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>

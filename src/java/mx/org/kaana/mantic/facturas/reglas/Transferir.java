@@ -14,6 +14,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.facturama.models.Client;
 import mx.org.kaana.libs.facturama.models.response.Cfdi;
 import mx.org.kaana.libs.facturama.models.response.CfdiSearchResult;
 import mx.org.kaana.libs.facturama.models.response.Tax;
@@ -24,10 +25,13 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
+import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import org.apache.log4j.Logger;
 
 /**
@@ -45,6 +49,7 @@ public class Transferir extends IBaseTnx {
   private Integer count= 0;
 	private String messageError;	
 	private StringBuffer clientes;
+	private List<Client> clients;
 
 	public Transferir() { 		
 		this.count       = 0;
@@ -67,6 +72,7 @@ public class Transferir extends IBaseTnx {
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
 		boolean regresar= false;
+		this.clients    =	CFDIFactory.getInstance().getClients();
 		try {
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la sincronización de facturas.");
 			switch(accion) {				
@@ -150,8 +156,64 @@ public class Transferir extends IBaseTnx {
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticClientesDto", "rfc", params, "idCliente");
 			if(next!= null && next.getData()!= null)
 				regresar= next.toLong();
-			else
+			else {
 				LOG.warn("El cliente con RFC ["+ rfc+ "] no existe favor de verificarlo !");
+				Client client= this.clients.get(this.clients.indexOf(new Client(rfc)));
+				TcManticClientesDto cliente= new TcManticClientesDto(
+					rfc, // String clave, 
+					0L, // Long plazoDias, 
+					-1L, // Long idCliente, 
+					0D, // Double limiteCredito, 
+					2L, // Long idCredito, 
+					client.getName(), // String razonSocial, 
+					0D, // Double saldo, 
+					rfc, // String rfc, 
+					JsfBase.getIdUsuario(), // Long idUsuario, 
+					1L, // Long idUsoCfdi, 
+					client.getCfdiUse(), // String observaciones, 
+					JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), //  Long idEmpresa, 
+					1L, // Long idTipoVenta, 
+					client.getId() // String idFacturama
+				);
+				DaoFactory.getInstance().insert(sesion, cliente);
+				if(!Cadena.isVacio(client.getEmail())) {
+					TrManticClienteTipoContactoDto contacto= new TrManticClienteTipoContactoDto(
+						cliente.getIdCliente(), // Long idCliente, 
+						JsfBase.getIdUsuario(), //Long idUsuario, 
+						client.getEmail(), // String valor, 
+						"", // String observaciones, 
+						-1L, // Long idClienteTipoContacto, 
+						1L, // Long orden, 
+						9L // Long idTipoContacto
+					);
+					DaoFactory.getInstance().insert(sesion, contacto);
+				} // if
+				if(!Cadena.isVacio(client.getEmailOp1())) {
+					TrManticClienteTipoContactoDto contacto= new TrManticClienteTipoContactoDto(
+						cliente.getIdCliente(), // Long idCliente, 
+						JsfBase.getIdUsuario(), //Long idUsuario, 
+						client.getEmailOp1(), // String valor, 
+						"", // String observaciones, 
+						-1L, // Long idClienteTipoContacto, 
+						2L, // Long orden, 
+						10L // Long idTipoContacto
+					);
+					DaoFactory.getInstance().insert(sesion, contacto);
+				} // if
+				if(!Cadena.isVacio(client.getEmailOp2())) {
+					TrManticClienteTipoContactoDto contacto= new TrManticClienteTipoContactoDto(
+						cliente.getIdCliente(), // Long idCliente, 
+						JsfBase.getIdUsuario(), //Long idUsuario, 
+						client.getEmailOp2(), // String valor, 
+						"", // String observaciones, 
+						-1L, // Long idClienteTipoContacto, 
+						3L, // Long orden, 
+						11L // Long idTipoContacto
+					);
+					DaoFactory.getInstance().insert(sesion, contacto);
+				} // if
+				regresar= cliente.getIdCliente();
+			} // if
 		} // try
 		catch (Exception e) {
 			throw e;

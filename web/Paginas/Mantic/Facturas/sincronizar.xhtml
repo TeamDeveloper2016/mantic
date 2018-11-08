@@ -9,24 +9,25 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Sincronizar todas las facturas generadas en facturama"/>
 	<ui:define name="librerias">
+    <h:outputScript library="janal" name="core/jquery.progress.core.0.0.2.js"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
-				'total' : {validaciones: 'libre', mascara: 'no-aplica'},			
+				'total' : {validaciones: 'libre', mascara: 'no-aplica'}		
 			};	
 			
     	$(document).ready(function() {
+			   $('div.ui-progressbar-label').hide();
       });							
 		
 	    function cancel() {
-        PF('progressBar').cancel();
-        clearInterval(window['progress']);
-        PF('progressBar').setValue(0);
+        PF('transferir').cancel();
       }
       
       function start() {
-        PF('progressBar').cancel();
-        PF('progressBar').setValue(0);
-        PF('progressBar').start();
+				$('div.ui-progressbar-label').show();
+        PF('transferir').cancel();
+        PF('transferir').setValue(0);
+        PF('transferir').start(#{manticFacturasSincronizar.attrs.top});
       }
 		</script>   
 		<style type="text/css">
@@ -47,7 +48,7 @@
 				<div class="ui-grid-col-12">	
 					<p:panel styleClass="tabla-filtro">
 						Estatus del proceso:
-						<p:progressBar interval="500" styleClass="animate" labelTemplate="Facturas [{index} de {count}] transferidas, porcentaje {value}%" ajax="true" widgetVar="progressBar" value="#{sessionScope.autentifica.monitoreo.progreso}" global="false" >
+						<p:progressBar interval="500" styleClass="animate" labelTemplate="Facturas [{index} de {count}] transferidas, porcentaje {value}%" ajax="true" widgetVar="transferir" value="#{sessionScope.autentifica.monitoreo.progreso}" global="false" >
 							<p:ajax event="complete" listener="#{manticFacturasSincronizar.doCompleto}" />  
 						</p:progressBar>  			
 					</p:panel>
@@ -56,7 +57,7 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">	
 					<p:outputLabel for="total" value="Total de facturas a importar de facturama:"/>
-					<p:inputText id="total" value="#{manticFacturasSincronizar.attrs.total}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
+					<p:inputText id="total" value="#{manticFacturasSincronizar.attrs.top}" styleClass="janal-wid-100-txt janal-column-right" readonly="true"/>
 					<p:outputLabel for="clientes" value="Clientes que no existen en la BD propia:"/>
 					<p:inputText id="clientes" value="#{manticFacturasSincronizar.attrs.clientes}" styleClass="janal-wid-100-txt" readonly="true"/>
 				</div>
@@ -66,11 +67,11 @@
 	</ui:define>    
 	<ui:define name="acciones">		
 		<div class="lg-pantalla">
-			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticFacturasSincronizar.doAceptar}" onstart="start(); return janal.bloquear();" oncomplete="janal.desbloquear(); cancel();"/>
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" update="total clientes" action="#{manticFacturasSincronizar.doAceptar}" onstart="start(); return janal.bloquear();" oncomplete="janal.desbloquear(); cancel();"/>
 			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticFacturasSincronizar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
 		</div>	
 		<div class="xs-pantalla">
-			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticFacturasSincronizar.doAceptar}" onstart="start(); return janal.bloquear();" oncomplete="janal.desbloquear(); cancel();"/>
+			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" update="total clientes" action="#{manticFacturasSincronizar.doAceptar}" onstart="start(); return janal.bloquear();" oncomplete="janal.desbloquear(); cancel();"/>
 			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticFacturasSincronizar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" immediate="true"/>						
 		</div>						
 	</ui:define>	

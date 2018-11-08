@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Variables;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
@@ -46,6 +47,7 @@ public class Importar extends IBaseImportar implements Serializable {
         this.idFicticia= JsfBase.getFlashAttribute("idFicticia")== null? -1L: (Long)JsfBase.getFlashAttribute("idFicticia");
 				this.attrs.put("factura", DaoFactory.getInstance().findById(TcManticFacturasDto.class, this.idFactura));
 				this.attrs.put("ficticia", DaoFactory.getInstance().findById(TcManticFicticiasDto.class, this.idFicticia));
+				this.attrs.put("cliente", DaoFactory.getInstance().findById(TcManticClientesDto.class, ((TcManticFicticiasDto)this.attrs.get("ficticia")).getIdCliente()));
 			} // if
 			this.doLoadImportados("VistaFicticiasDto", "importados", Variables.toMap("idFactura~"+ this.idFactura)); 
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
@@ -72,5 +74,8 @@ public class Importar extends IBaseImportar implements Serializable {
     return ((String)this.attrs.get("retorno")).concat(Constantes.REDIRECIONAR);
   } // doCancelar
 	
+	public void doReenviar() {
+		
+	}
 	
 }

@@ -1,11 +1,13 @@
 package mx.org.kaana.mantic.facturas.backing;
 
 import java.io.Serializable;
+import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -18,11 +20,18 @@ public class Sincronizar extends IBaseAttribute implements Serializable {
 
 	private static final long serialVersionUID=8124872510277721444L;
 
+	@PostConstruct
 	@Override
 	protected void init() {
-		this.attrs.put("total", 0);
 		if(JsfBase.getFlashAttribute("accion")== null)
 			RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
+		try {
+		  this.attrs.put("top", CFDIFactory.getInstance().toCfdisSize());
+		} // try
+		catch(Exception e) {
+		  this.attrs.put("top", 0);
+		} // catch
+		this.attrs.put("total", 0);
 	}
 
   public String doCancelar() {   

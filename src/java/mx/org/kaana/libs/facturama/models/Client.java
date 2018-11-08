@@ -15,6 +15,14 @@ public class Client {
 	private String TaxResidence;
 	private String NumRegIdTrib;
 
+	public Client() {
+		this("");
+	}
+
+	public Client(String Rfc) {
+		this.Rfc=Rfc;
+	}
+
 	public String getId() {
 		return Id;
 	}

@@ -74,6 +74,10 @@ public class CFDIFactory implements Serializable {
 		return this.facturama.Cfdis().List();
 	}
 
+	public int toCfdisSize() throws FacturamaException, Exception {
+		return this.facturama.Cfdis().List().size();
+	}
+
   public void download(String path, String name, String id) throws Exception {
 		File result= new File(path);		
 		if (!result.exists())

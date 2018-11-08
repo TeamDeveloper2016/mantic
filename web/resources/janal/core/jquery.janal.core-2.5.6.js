@@ -1309,7 +1309,13 @@
       $('input.janal-mask-random').each(function() {
         janal.mask($(this).attr('id'), $(this), $(this).attr('alt'));
       });			
-		}
+		},
+		truncate: function(value) {
+		  if (value >= 0)
+			  return Math.floor(value);
+		  else
+			  return Math.ceil(value);
+	  }
   });
   window.Janal= Janal;
 })(window);
