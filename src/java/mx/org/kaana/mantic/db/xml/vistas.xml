@@ -4830,6 +4830,7 @@
 					tc_mantic_personas.cuenta,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
 					tc_mantic_facturas.id_factura,
+					tc_mantic_facturas.id_facturama,
 					tc_mantic_facturas.timbrado,
 					tc_mantic_facturas.folio,
 					tc_mantic_clientes.razon_social cliente,

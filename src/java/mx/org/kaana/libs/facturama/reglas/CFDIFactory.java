@@ -13,6 +13,7 @@ import mx.org.kaana.libs.facturama.models.exception.FacturamaException;
 import mx.org.kaana.libs.facturama.models.request.ProductTax;
 import mx.org.kaana.libs.facturama.models.response.Cfdi;
 import mx.org.kaana.libs.facturama.models.response.CfdiSearchResult;
+import mx.org.kaana.libs.facturama.services.CfdiService;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 
@@ -341,6 +342,10 @@ public class CFDIFactory implements Serializable {
 	
 	public Cfdi toCfdiDetail(String id) throws FacturamaException, Exception {
 	  return this.facturama.Cfdis().Retrive(id);
+	}
+	
+	public void toSendMail(String email, String id) throws Exception {
+		this.facturama.Cfdis().SendEmail(email, CfdiService.InvoiceType.Issued, id);
 	}
 	
 }

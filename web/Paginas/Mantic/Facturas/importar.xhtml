@@ -118,11 +118,11 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="reenviar" value="Reenviar" icon="fa fa-send-o" process="@this" action="#{manticFacturasImportar.doReenviar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="reenviar" value="Reenviar" icon="fa fa-send-o" process="@this" action="#{manticFacturasImportar.doReenviar}" ajax="false" onstart="janal.bloquear()" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
 			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticFacturasImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="reenviarIcon" title="Reenviar" icon="fa fa-send-o" process="@this" action="#{manticFacturasImportar.doReenviar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="reenviarIcon" title="Reenviar" icon="fa fa-send-o" process="@this" action="#{manticFacturasImportar.doReenviar}" ajax="false" onstart="janal.bloquear()" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
 			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticFacturasImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
@@ -147,5 +147,27 @@
 			  </div>
 			</p:dialog>
 		</h:form>
+		<p:dialog id="dialogoCorreos" widgetVar="dlgCorreos" header="Reenviar factura" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%">
+			<h:form id="formDialogoCorreos" prependId="false">				
+				<h:panelGrid id="panelCorreos" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">					
+					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{manticFacturasImportar.correos}" selection="#{manticFacturasImportar.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
+						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
+						<p:column headerText="Correos disponibles del cliente" styleClass="descripcion tablaCorreos_selection">
+							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
+						</p:column>
+						<p:column style="width:45px;text-align: center">
+							<p:commandButton update="tablaCorreos" icon="fa fa-check" title="Agregar" action="#{manticFacturasImportar.doAgregarCorreo}">
+								<f:setPropertyActionListener value="#{row}" target="#{manticFacturasImportar.correo}" />
+							</p:commandButton>
+						</p:column>
+					</p:dataTable>		
+				</h:panelGrid>
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton icon="fa fa-check" process="@this dialogoCorreos" value="Aceptar" actionListener="#{manticFacturasImportar.doSendmail()}" onstart="return PF('dlgCorreos').hide();"  oncomplete="janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="return PF('dlgCorreos').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>
 	</ui:define>
 </ui:composition>

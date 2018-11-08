@@ -20,6 +20,7 @@ import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
@@ -355,17 +356,17 @@ public class Filtro extends IBaseFilter implements Serializable {
 		TcManticFicticiasDto orden           = null;
 		TcManticFicticiasBitacoraDto bitacora= null;
 		Entity seleccionado                  = null;
-		StringBuilder correos                = null;
+		StringBuilder emails                 = null;
 		try {
 			seleccionado= (Entity)this.attrs.get("seleccionado");
 			orden= (TcManticFicticiasDto)DaoFactory.getInstance().findById(TcManticFicticiasDto.class, seleccionado.getKey());
 			bitacora= new TcManticFicticiasBitacoraDto(orden.getConsecutivo(), (String)this.attrs.get("justificacion"), Long.valueOf(this.attrs.get("estatus").toString()), JsfBase.getIdUsuario(), seleccionado.getKey(), -1L, orden.getTotal());
-			correos= new StringBuilder("");
+			emails= new StringBuilder("");
 			if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()){
 				for(Correo mail: this.selectedCorreos)
-					correos.append(mail.getDescripcion()).append(";");
+					emails.append(mail.getDescripcion()).append(", ");
 			} // if
-			transaccion= new Transaccion(bitacora, correos.toString(), (String)this.attrs.get("justificacion"));
+			transaccion= new Transaccion(bitacora, emails.toString(), (String)this.attrs.get("justificacion"));
 			if(transaccion.ejecutar(EAccion.JUSTIFICAR))
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
 			else
@@ -388,12 +389,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 				seleccionado= (Entity)this.attrs.get("seleccionado");
 				transaccion= new Transaccion(this.correo, seleccionado.toLong("idCliente"));
 				if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
-					JsfBase.addMessage("Se agrego el correo electronico");
+					JsfBase.addMessage("Se agrego el correo electronico correctamente !");
 				else
 					JsfBase.addMessage("Ocurrió un error al agregar el correo electronico");
 			} // if
 			else
-				JsfBase.addMessage("Es necesario capturar un correo electronico");
+				JsfBase.addMessage("Es necesario capturar un correo electronico !");
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
@@ -409,9 +410,26 @@ public class Filtro extends IBaseFilter implements Serializable {
 
 	public String doImportar() {
 		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Facturas/filtro");		
-		JsfBase.setFlashAttribute("idFicticia",((Entity)this.attrs.get("seleccionado")).getKey());
-		JsfBase.setFlashAttribute("idFactura",((Entity)this.attrs.get("seleccionado")).toLong("idFactura"));
+		JsfBase.setFlashAttribute("idFicticia", ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("idFactura", ((Entity)this.attrs.get("seleccionado")).toLong("idFactura"));
 		return "importar".concat(Constantes.REDIRECIONAR);
 	}
 
+	public void doSendmail() {
+		try {
+			StringBuilder emails= new StringBuilder("");
+			if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()){
+				for(Correo mail: this.selectedCorreos)
+					emails.append(mail.getDescripcion()).append(", ");
+			} // if
+			String idFacturama= ((Entity)this.attrs.get("seleccionado")).toString("idFacturama");
+			if(false && emails.length()> 0 && !Cadena.isVacio(idFacturama))
+  	    CFDIFactory.getInstance().toSendMail(emails.substring(0, emails.length()- 2), idFacturama);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch
+	}
+	
 }
