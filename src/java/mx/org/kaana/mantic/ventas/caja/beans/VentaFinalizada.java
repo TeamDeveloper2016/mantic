@@ -26,12 +26,13 @@ public class VentaFinalizada implements Serializable{
 	private Long idCaja;
 	private Boolean apartado;
 	private TcManticApartadosDto detailApartado;
+	private String observaciones;
 
 	public VentaFinalizada() {
-		this(new TicketVenta(), new ArrayList<ClienteTipoContacto>(), new ClienteTipoContacto(), new ClienteTipoContacto(), new Pago(), new Domicilio(), new TcManticClientesDto(), false, false, new ArrayList<Articulo>(), -1L, false, new TcManticApartadosDto());
+		this(new TicketVenta(), new ArrayList<ClienteTipoContacto>(), new ClienteTipoContacto(), new ClienteTipoContacto(), new Pago(), new Domicilio(), new TcManticClientesDto(), false, false, new ArrayList<Articulo>(), -1L, false, new TcManticApartadosDto(), "");
 	}
 	
-	public VentaFinalizada(TicketVenta ticketVenta, List<ClienteTipoContacto> correosContacto, ClienteTipoContacto telefono, ClienteTipoContacto celular, Pago totales, Domicilio domicilio, TcManticClientesDto cliente, Boolean facturar, Boolean credito, List<Articulo> articulos, Long idCaja, Boolean apartado, TcManticApartadosDto detailApartado) {
+	public VentaFinalizada(TicketVenta ticketVenta, List<ClienteTipoContacto> correosContacto, ClienteTipoContacto telefono, ClienteTipoContacto celular, Pago totales, Domicilio domicilio, TcManticClientesDto cliente, Boolean facturar, Boolean credito, List<Articulo> articulos, Long idCaja, Boolean apartado, TcManticApartadosDto detailApartado, String observaciones) {
 		this.ticketVenta    = ticketVenta;
 		this.correosContacto= correosContacto;
 		this.telefono       = telefono;
@@ -149,5 +150,13 @@ public class VentaFinalizada implements Serializable{
 
 	public void setDetailApartado(TcManticApartadosDto detailApartado) {
 		this.detailApartado = detailApartado;
+	}	
+
+	public String getObservaciones() {
+		return observaciones;
+	}
+
+	public void setObservaciones(String observaciones) {
+		this.observaciones = observaciones;
 	}	
 }
