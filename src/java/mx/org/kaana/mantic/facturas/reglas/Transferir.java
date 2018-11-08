@@ -158,6 +158,7 @@ public class Transferir extends IBaseTnx {
 				regresar= next.toLong();
 			else {
 				LOG.warn("El cliente con RFC ["+ rfc+ "] no existe favor de verificarlo !");
+				this.clientes.append(cfdi.getRfc()).append("-").append(cfdi.getEmail()).append(Constantes.SEPARADOR);
 				Client client= this.clients.get(this.clients.indexOf(new Client(rfc)));
 				TcManticClientesDto cliente= new TcManticClientesDto(
 					rfc, // String clave, 
@@ -322,8 +323,6 @@ public class Transferir extends IBaseTnx {
 				TcManticFicticiasBitacoraDto bitacora= new TcManticFicticiasBitacoraDto(ficticia.getConsecutivo(), "FACTURA REGISTRADA DE FORMA AUTOMATICA", 3l, 1L, ficticia.getIdFicticia(), -1L, ficticia.getTotal());
 				DaoFactory.getInstance().insert(sesion, bitacora);
 			} // if
-			else
-				this.clientes.append(cfdi.getRfc()).append("-").append(cfdi.getEmail()).append(Constantes.SEPARADOR);
 		} // if
 	}
 	
