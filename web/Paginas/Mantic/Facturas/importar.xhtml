@@ -63,8 +63,6 @@
 								<p:inputText id="correos" styleClass="janal-wid-100-txt" value="#{manticFacturasImportar.attrs.factura.correos}" readonly="true"/>
 								<p:outputLabel for="timbrado" value="Fecha timbrado:"/>
 								<p:calendar id="timbrado" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{manticFacturasImportar.attrs.factura.timbrado}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"  disabled="true"/>
-								<p:outputLabel for="fechaFactura" value="Fecha factura:"/>
-								<p:calendar id="fechaFactura" inputStyleClass="janal-wid-94" styleClass="janal-wid-99" value="#{manticFacturasImportar.attrs.ficticia.registro}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario" disabled="true"/>
 								<p:outputLabel for="subtotal" value="Subtotal:"/>
 								<p:inputText id="subtotal" styleClass="janal-wid-100-txt janal-column-right" value="#{manticFacturasImportar.attrs.ficticia.subTotal}" readonly="true"/>
 								<p:outputLabel for="iva" value="IVA:"/>
@@ -118,11 +116,11 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-			<p:commandButton id="reenviar" value="Reenviar" icon="fa fa-send-o" process="@this" action="#{manticFacturasImportar.doReenviar}" ajax="false" onstart="janal.bloquear()" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
+			<p:commandButton id="reenviar" value="Reenviar" icon="fa fa-send-o" process="@this" actionListener="#{manticFacturasImportar.doReenviar}" onstart="janal.bloquear()" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
 			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticFacturasImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-			<p:commandButton id="reenviarIcon" title="Reenviar" icon="fa fa-send-o" process="@this" action="#{manticFacturasImportar.doReenviar}" ajax="false" onstart="janal.bloquear()" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
+			<p:commandButton id="reenviarIcon" title="Reenviar" icon="fa fa-send-o" process="@this" actionListener="#{manticFacturasImportar.doReenviar}" onstart="janal.bloquear()" oncomplete="PF('dlgCorreos').show();" update="dialogoCorreos"/>
 			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticFacturasImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>
@@ -156,7 +154,7 @@
 							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
 						</p:column>
 						<p:column style="width:45px;text-align: center">
-							<p:commandButton update="tablaCorreos" icon="fa fa-check" title="Agregar" action="#{manticFacturasImportar.doAgregarCorreo}">
+							<p:commandButton update="tablaCorreosReenviar" icon="fa fa-check" title="Agregar" action="#{manticFacturasImportar.doAgregarCorreo}">
 								<f:setPropertyActionListener value="#{row}" target="#{manticFacturasImportar.correo}" />
 							</p:commandButton>
 						</p:column>
