@@ -8,15 +8,12 @@ package mx.org.kaana.jobs;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-
 import java.io.Serializable;
 import java.util.List;
-
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.beans.DetalleConfiguracion;
 import mx.org.kaana.kajool.beans.TareaServidor;
 import mx.org.kaana.kajool.seguridad.quartz.Especial;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.Job;
@@ -43,6 +40,6 @@ public class Demo implements Job, Serializable {
 		catch (Exception e) {
 			Error.mensaje(e);
 		} // catch	
-	}
+	} // execute
 }
 

@@ -12,28 +12,28 @@ import java.io.Serializable;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.recurso.Configuracion;
-import mx.org.kaana.mantic.respaldos.reglas.Transaccion;
+import mx.org.kaana.mantic.facturas.reglas.Transferir;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-public class Respaldos implements Job, Serializable {
+public class Facturas implements Job, Serializable {
 
-	private static final Log LOG              = LogFactory.getLog(Respaldos.class);
-	private static final long serialVersionUID= 7960794038594054567L;
+	private static final Log LOG              = LogFactory.getLog(Facturas.class);
+	private static final long serialVersionUID= 1809037806413388478L;
 
 	@Override
 	public void execute(JobExecutionContext jec) throws JobExecutionException {
-		Transaccion transaccion = null;
+		Transferir transferir= null;
 		try {
 			if(!Configuracion.getInstance().isEtapaDesarrollo()){
-				transaccion= new Transaccion();
-				if(transaccion.ejecutar(EAccion.AGREGAR))
-					LOG.info("Se realizo el respaldo de la BD de forma correcta");
+				transferir = new Transferir();
+				if (transferir.ejecutar(EAccion.GENERAR)) 
+					LOG.info("Se realizo la sincronización de las facturas de forma correcta");
 				else
-					LOG.error("Ocurrio un error al realizar el respaldo de la BD");				
+					LOG.error("Ocurrio un error al realizar la sincronización de las facturas");				
 			} // if
 	  } // try
 		catch (Exception e) {
