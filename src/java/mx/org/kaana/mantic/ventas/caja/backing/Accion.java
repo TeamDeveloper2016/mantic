@@ -130,6 +130,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("activeApartado", false);
 			this.attrs.put("disabledFacturar", false);			
 			this.attrs.put("apartado", false);			
+			this.attrs.put("observaciones", "");			
 			this.apartado= new TcManticApartadosDto();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				loadSucursales();							
@@ -661,6 +662,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			regresar.setIdCaja(Long.valueOf(this.attrs.get("caja").toString()));
 			regresar.setApartado((Boolean) this.attrs.get("apartado"));
 			regresar.setDetailApartado(this.apartado);
+			regresar.setObservaciones(this.attrs.get("observaciones").toString());
 		} // try
 		catch (Exception e) {			
 			throw e;
