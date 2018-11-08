@@ -503,11 +503,19 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	private boolean registrarFactura(Session sesion) throws Exception{
 		boolean regresar           = false;
 		TcManticFacturasDto factura= null;
+		StringBuilder correos      = null;
 		try {			
 			factura= new TcManticFacturasDto();
 			factura.setIdVenta(getOrden().getIdVenta());
 			factura.setIdUsuario(JsfBase.getIdUsuario());
 			factura.setIntentos(0L);
+			correos= new StringBuilder("");
+			if(!this.ventaFinalizada.getCorreosContacto().isEmpty()){				
+				for(ClienteTipoContacto correo: this.ventaFinalizada.getCorreosContacto())
+					correos.append(correo.getValor()).append(";");
+			} // if			
+			factura.setCorreos(correos.toString());
+			factura.setObservaciones(this.ventaFinalizada.getObservaciones());
 			regresar= DaoFactory.getInstance().insert(sesion, factura)>= 1L;
 		} // try
 		catch (Exception e) {			
