@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.libs.facturama.container.FacturamaApi;
 import mx.org.kaana.libs.facturama.models.Address;
 import mx.org.kaana.libs.facturama.models.Client;
@@ -82,8 +83,12 @@ public class CFDIFactory implements Serializable {
 		File result= new File(path);		
 		if (!result.exists())
 			result.mkdirs();
-		this.facturama.Cfdis().SavePdf(path.concat(name).concat(".pdf"), id);
-		this.facturama.Cfdis().SaveXml(path.concat(name).concat(".xml"), id);
+		result= new File(path.concat(name).concat(".").concat(EFormatos.PDF.name().toLowerCase()));
+		if(!result.exists())
+		  this.facturama.Cfdis().SavePdf(path.concat(name).concat(".").concat(EFormatos.PDF.name().toLowerCase()), id);
+		result= new File(path.concat(name).concat(".").concat(EFormatos.XML.name().toLowerCase()));
+		if(!result.exists())
+  		this.facturama.Cfdis().SaveXml(path.concat(name).concat(".").concat(EFormatos.XML.name().toLowerCase()), id);
 	}	
 
 	private boolean facturar(){

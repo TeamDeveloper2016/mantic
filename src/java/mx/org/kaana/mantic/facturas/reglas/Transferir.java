@@ -234,7 +234,7 @@ public class Transferir extends IBaseTnx {
 			this.toProcess(sesion, cfdi, CFDIFactory.getInstance().toCfdiDetail(cfdi.getId()));
 			if(x % 50== 0)
 			  sesion.flush();
-      monitoreo.setProgreso((long)(x* 100/ monitoreo.getTotal()));
+      monitoreo.setProgreso(new Long(x));
       monitoreo.incrementar();
 			x++;
 		} // for
@@ -295,7 +295,7 @@ public class Transferir extends IBaseTnx {
 					JsfBase.getIdUsuario(),
 					1L, // idTipoArchivo XML
 					1L, // idPrincipal
-					detail.getCfdiType()+ "|"+ detail.getPaymentMethod()+ "|"+ detail.getPaymentConditions(), // observaciones, 
+					detail.getCfdiType()+ "|"+ detail.getPaymentMethod()+ "|"+ detail.getSerie(), // observaciones, 
 					path.concat(cfdi.getRfc()).concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase()), 
 					new Long(calendar.get(Calendar.MONTH)+ 1), 
 					"" // comentarios

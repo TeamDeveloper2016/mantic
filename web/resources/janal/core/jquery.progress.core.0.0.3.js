@@ -42,8 +42,8 @@
 				if (this.top> 0)
 					percentage= janal.truncate(value * 100 / this.top);
 				else
-				if (value> 100)
-					percentage= 100;
+				  if (value> 100)
+					  percentage= 100;
 				if (value=== 0) {
 					this.jqValue.hide().css('width', '0%');
 					this.jqLabel.hide();
@@ -55,7 +55,7 @@
 						this.jqLabel.html(formattedLabel).show();
 					} // if
 				} // else
-				this.value = percentage;
+				this.value = value;
 			} // if
 		}; // function
 	});
