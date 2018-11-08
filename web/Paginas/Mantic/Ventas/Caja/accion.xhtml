@@ -19,6 +19,7 @@
 				
 				'descuento': {validaciones: 'libre', mascara: 'libre', formatos: 'descuentos', grupo: 'general'},
 				
+				'observacionesFactura' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
 				'ticketsAbiertos': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', mensaje:'Selecciona al menos un ticket abierto.'},
 				'clave'        : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
         'rfc'          : {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
@@ -339,6 +340,8 @@
 											<p:outputLabel value="#{row['importe$']}"/>
 										</p:column>		
 									</p:dataTable>
+									<p:outputLabel for="observacionesFactura" value="Observaciones:"/>
+									<p:inputTextarea id="observacionesFactura" value="#{manticVentasCajaAccion.attrs.observaciones}" styleClass="janal-wid-100-txt" rows="2"/>
 								</p:panelGrid>
 								<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" columnClasses="janal-wid-100">									
 									<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-100 janal-column-right">
@@ -391,7 +394,7 @@
 									<p:ajax listener="#{manticVentasCajaAccion.doActiveApartado}" process="@this contenedorGrupos:panelTotales" update="contenedorGrupos contenedorGrupos:switchFacturar" onstart="janal.bloquear();" oncomplete="janal.desbloquear();applyValidacionesCredito();"/>
 								</p:inputSwitch>
 								<p:inputSwitch id="switchFacturar" value="#{manticVentasCajaAccion.attrs.facturarVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt" disabled="#{manticVentasCajaAccion.attrs.disabledFacturar}">
-									<p:ajax listener="#{manticVentasCajaAccion.doActivarCliente}" process="@this contenedorGrupos:panelTotales" update="contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();janal.refresh();"/>
+									<p:ajax listener="#{manticVentasCajaAccion.doActivarCliente}" process="@this contenedorGrupos:panelTotales contenedorGrupos:observacionesFactura" update="contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();janal.refresh();"/>
 								</p:inputSwitch>
 								<p:inputSwitch id="creditoCliente" value="#{manticVentasCajaAccion.attrs.creditoVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt" disabled="#{!manticVentasCajaAccion.attrs.creditoCliente}">
 									<p:ajax process="@this" update="contenedorGrupos:panelSumatoria" onstart="janal.bloquear();" oncomplete="applyValidacionesCredito();" />
@@ -607,9 +610,8 @@
 										<f:facet name="footer">
 											<p:commandButton actionListener="#{manticVentasCajaAccion.doAgregarClienteTipoContacto}" process="@this tablaCorreos" update="tablaCorreos" icon="fa fa-plus"/>						
 										</f:facet>
-									</p:dataTable>	
-								</p:panelGrid>
-								
+									</p:dataTable>										
+								</p:panelGrid>								
 							</p:fieldset>
 						</div>
 					</div>
