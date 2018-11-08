@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="Importar los archivos XML/PDF de la factura correspondiente"/>
+	<ui:param name="titulo" value="Archivos XML/PDF de la factura seleccionada"/>
 	<ui:define name="librerias">
 		<h:outputStylesheet library="janal" name="css/sh.css"/>
 		<h:outputStylesheet library="janal" name="css/shCore.css"/>
@@ -59,7 +59,7 @@
 								<p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticFacturasImportar.attrs.cliente.rfc}" readonly="true"/>
 								<p:outputLabel for="razonSocial" value="Razon social: "/>
 								<p:inputText id="razonSocial" styleClass="janal-wid-100-txt" value="#{manticFacturasImportar.attrs.cliente.razonSocial}" readonly="true"/>
-								<p:outputLabel for="correos" value="Correos:"/>
+								<p:outputLabel for="correos" value="Correo(s):"/>
 								<p:inputText id="correos" styleClass="janal-wid-100-txt" value="#{manticFacturasImportar.attrs.factura.correos}" readonly="true"/>
 								<p:outputLabel for="timbrado" value="Fecha timbrado:"/>
 								<p:calendar id="timbrado" inputStyleClass="janal-wid-94" styleClass="janal-wid-100" value="#{manticFacturasImportar.attrs.factura.timbrado}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"  disabled="true"/>
