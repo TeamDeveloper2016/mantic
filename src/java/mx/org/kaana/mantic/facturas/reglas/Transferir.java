@@ -158,8 +158,8 @@ public class Transferir extends IBaseTnx {
 				regresar= next.toLong();
 			else {
 				LOG.warn("El cliente con RFC ["+ rfc+ "] no existe favor de verificarlo !");
-				this.clientes.append(cfdi.getRfc()).append("-").append(cfdi.getEmail()).append(Constantes.SEPARADOR);
 				Client client= this.clients.get(this.clients.indexOf(new Client(rfc)));
+				this.clientes.append("{").append(rfc).append(Constantes.SEPARADOR).append(client.getName()).append(Constantes.SEPARADOR).append(client.getEmail()).append(Constantes.SEPARADOR).append("}");
 				TcManticClientesDto cliente= new TcManticClientesDto(
 					rfc, // String clave, 
 					0L, // Long plazoDias, 
