@@ -70,6 +70,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null? -1L: JsfBase.getFlashAttribute("idVenta"));
+      this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente")== null? -1L: JsfBase.getFlashAttribute("idCliente"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? null: JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
@@ -107,6 +108,10 @@ public class Accion extends IBaseVenta implements Serializable {
         case AGREGAR:											
           this.setAdminOrden(new AdminTickets(new TicketVenta(-1L)));
 					this.saldoCliente= new SaldoCliente();
+					this.attrs.put("consecutivo", "");		
+					idCliente= Long.valueOf(this.attrs.get("idCliente").toString());
+					if(idCliente!= null && !idCliente.equals(-1L))
+						doAsignaClienteInicial(idCliente);
           break;
         case MODIFICAR:			
         case CONSULTAR:			
@@ -117,6 +122,7 @@ public class Accion extends IBaseVenta implements Serializable {
 						doAsignaClienteInicial(idCliente);
 						doLoadSaldos(idCliente);
 					} // if
+					loadCatalogs();
           break;
       } // switch
 			this.attrs.put("consecutivo", "");
@@ -128,6 +134,24 @@ public class Accion extends IBaseVenta implements Serializable {
     } // catch		
   } // doLoad
 
+	private void loadCatalogs(){
+		List<UISelectEntity> sucursales= null;		
+		try {
+			if(this.attrs.get("sucursales")!= null){
+				sucursales= (List<UISelectEntity>) this.attrs.get("sucursales");
+				for(Entity sucursal: sucursales){
+					if(sucursal.getKey().equals(((TicketVenta)getAdminOrden().getOrden()).getIdEmpresa()))
+						this.attrs.put("idEmpresa", sucursal);
+				} // for
+			} // if									
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+			throw e;
+		} // catch		
+	}
+	
   public String doAceptar() {  
     Transaccion transaccion= null;
     String regresar        = null;
@@ -138,13 +162,11 @@ public class Accion extends IBaseVenta implements Serializable {
 			transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(eaccion)) {				
- 				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
     		RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la cuenta ', '"+ ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");									
 				JsfBase.setFlashAttribute("idVenta", null);
 				JsfBase.setFlashAttribute("accion", null);
 				this.init();
-				//JsfBase.addMessage("Se ".concat(eaccion.equals(EAccion.AGREGAR) ? "agregó" : "modificó").concat(" la cuenta."), ETipoMensaje.INFORMACION);
-  			JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
+				doAsignaClienteInicial(3515L);
 				RequestContext.getCurrentInstance().execute("userUpdate();");
 			} // if
 			else 
@@ -410,16 +432,38 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // doLogin		
 	
 	public String doClientes(){
-		String regresar= null;
+		String regresar        = null;
+		Transaccion transaccion= null;
 		try {
-			regresar= "cliente.jsf".concat(Constantes.REDIRECIONAR);
+			if(this.attrs.get("clienteSeleccion")!= null && !((Entity)this.attrs.get("clienteSeleccion")).getKey().equals(-1L)){
+				if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
+					((TicketVenta)this.getAdminOrden().getOrden()).setIdVentaEstatus(EEstatusVentas.EN_CAPTURA.getIdEstatusVenta());
+					loadOrdenVenta();
+					transaccion = new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+					this.getAdminOrden().toAdjustArticulos();
+					transaccion.ejecutar(EAccion.DESACTIVAR);
+					JsfBase.setFlashAttribute("idVenta", transaccion.getOrden().getIdVenta());
+				}
+				else
+					JsfBase.setFlashAttribute("idVenta", -1L);																											
+				JsfBase.setFlashAttribute("idCliente", ((Entity)this.attrs.get("clienteSeleccion")).getKey().equals(((UISelectEntity)this.attrs.get("clienteDefault")).getKey()) ? -1L : ((Entity)this.attrs.get("clienteSeleccion")).getKey() );					
+				JsfBase.setFlashAttribute("accion", EAccion.MODIFICAR);
+			} // if
+			else{
+				JsfBase.setFlashAttribute("idVenta", -1L);																							
+				JsfBase.setFlashAttribute("idCliente", -1L);
+				JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
+			} // else
+			JsfBase.setFlashAttribute("observaciones", "");								
+			JsfBase.setFlashAttribute("regreso", "/Paginas/Mantic/Ventas/accion.jsf");								
+			regresar= "/Paginas/Mantic/Ventas/cliente.jsf".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
-			Error.mensaje(e);
 			JsfBase.addMessageError(e);
-		} // catch
+			Error.mensaje(e);
+		} // catch		
 		return regresar;
-	} // doClientes
+	} // doCatalogos
 	
 	public void doLoadUsers(){
 		List<UISelectEntity> vendedores= null;
@@ -541,6 +585,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			clientesSeleccion.add(seleccion);			
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);			
+			this.attrs.put("clienteDefault", seleccion);			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -588,6 +633,4 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 		return regresar;
 	} // doCatalogos
-	
-
 }
