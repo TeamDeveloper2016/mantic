@@ -87,23 +87,19 @@ public class Generar extends BaseReportes implements Serializable {
 			this.ireporte.getParametros().put(Constantes.REPORTE_IMAGENES, JsfBase.getRealPath(Constantes.RUTA_IMAGENES).concat(File.separator));
 			this.ireporte.getParametros().put(Constantes.REPORTE_TITULOS, this.idTitulos);
 			this.ireporte.getParametros().put(Constantes.REPORTE_SUBREPORTE, source.substring(0, source.lastIndexOf(File.separator)+File.separator.length()));
-			if (ireporte instanceof IReporteDataSource) {
+			if (ireporte instanceof IReporteDataSource)
 				reporte=reporteDataSource(source, nombreArchivo);
-			} // if
-			else {
+			else 
 				reporte=reporteConnection(source, nombreArchivo);
-			} // else
 			if (this.ireporte.getJrxml().startsWith(Constantes.NOMBRE_RESOURCES)) {
 				LOG.warn("Reporte: "+this.ireporte.getJrxml().concat(".jasper"));
 				LOG.warn("Referencia: "+input);
 				reporte.procesar(this.idFormato, input);
 			} // if
-			else {
+			else 
 				reporte.procesar(this.idFormato);
-			} // else
-			if (RequestContext.getCurrentInstance()!=null) {
+			if (RequestContext.getCurrentInstance()!=null) 
 				RequestContext.getCurrentInstance().addCallbackParam("janalOK", true);
-			} // if
 			monitoreo=JsfBase.getAutentifica().getMonitoreo();
 			monitoreo.comenzar(this.total);
 		} // try

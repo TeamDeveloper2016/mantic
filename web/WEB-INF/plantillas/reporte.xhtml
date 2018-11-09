@@ -32,17 +32,18 @@
 
         function download(xhr, status, args) {
           if (args.janalOk) {
-              $('#descargar').show();
+            $('#descargar').show();
           } // if
           PF('progreso').cancel();
           $('#barra').hide();
         }
 
         function start() {
-          if (arguments.length === 1)
-            registros= arguments[0] ;    
+          if (arguments.length === 1) {
+            registros= arguments[0];    
             grupoValidacion= undefined;   
-            previsualizar= undefined ;    
+            previsualizar= undefined;  
+					} // if	
           if (arguments.length === 2) {
             registros= arguments[0] ; 
             grupoValidacion= arguments[1]; 
@@ -70,7 +71,7 @@
           return ok;
         }
         
-        function toBarraDescargar(registros ) {
+        function toBarraDescargar(registros) {
           $('#barra').show();
           PF('progreso').cancel();
           PrimeFaces.scrollTo('barra');
@@ -79,6 +80,7 @@
 				
         function hideBarra() {
           $('#barra').hide();
+					$('#descargar').show();
         }
 
         function generalHide() {
@@ -151,8 +153,7 @@
 								<p:panel styleClass="tabla-filtro" id='descargar' widgetVar="descargaArchivo">
 									<h:panelGrid columns="2" id="archivo" styleClass="janal-column-center"  >
 										<label for="generado">Archivo generado:</label>				
-										<p:commandLink id="generado" title="Click para descargar el archivo" ajax="false" onclick="$('#descargar').hide();
-												$('#barra').hide();">
+										<p:commandLink id="generado" title="Click para descargar el archivo" ajax="false" onclick="$('#descargar').hide();$('#barra').hide();">
 											<p:fileDownload value="#{kajoolTemplateReporte.descargar}" /> 
 											<div class="alinear-centro">
 												<h:panelGrid columns="1">
