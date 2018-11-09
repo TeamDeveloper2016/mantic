@@ -45,7 +45,7 @@
 										var value = args[_self.id + '_value'];
 										_self.setValue(value);
 										//trigger complete listener
-										if (value === 100 || value >= top) {
+										if ((_self.top> 0 && _self.value >= _self.top) || (_self.top=== 0 && _self.value === 100)) {
 											_self.fireCompleteEvent();
 										} // if
 									} // oncomplete
