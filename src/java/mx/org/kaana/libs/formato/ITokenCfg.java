@@ -7,7 +7,7 @@ package mx.org.kaana.libs.formato;
 
 /**
  *
- * @author alejandro.jimenez
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public interface ITokenCfg {
 

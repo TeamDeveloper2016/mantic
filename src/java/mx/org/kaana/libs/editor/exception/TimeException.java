@@ -7,7 +7,7 @@ package mx.org.kaana.libs.editor.exception;
 
 /**
  *
- * @author alejandro.jimenez
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public class TimeException extends IllegalArgumentException {
    /**

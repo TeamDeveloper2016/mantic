@@ -16,7 +16,7 @@ import mx.org.kaana.libs.formato.Error;
 
 /**
  *
- * @author alejandro.jimenez
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public class ListEditor extends PropertyEditorSupport {
 

@@ -13,7 +13,7 @@ import mx.org.kaana.libs.formato.Fecha;
 
 /**
  *
- * @author alejandro.jimenez
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public class DateEditor extends PropertyEditorSupport {
 

@@ -11,7 +11,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 
 /**
  *
- * @author alejandro.jimenez
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public final class PageRecords {
 

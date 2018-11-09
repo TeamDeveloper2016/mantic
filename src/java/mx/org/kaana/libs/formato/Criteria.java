@@ -9,7 +9,7 @@ import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 
 /**
  *
- * @author alejandro.jimenez
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public class Criteria {
 

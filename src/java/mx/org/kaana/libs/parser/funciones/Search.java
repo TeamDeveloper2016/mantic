@@ -14,7 +14,7 @@ import com.eteks.parser.Interpreter;
 
 /**
  *
- * @author alejandro.jimenez
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public class Search extends NullField implements Function {
 

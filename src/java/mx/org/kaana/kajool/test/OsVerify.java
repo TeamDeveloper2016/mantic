@@ -3,11 +3,11 @@ package mx.org.kaana.kajool.test;
 import mx.org.kaana.libs.recurso.Configuracion;
 
 /**
- * @company INEGI
- * @project IKTAN (Seguimiento y control de proyectos)
+ * @company KAANA
+ * @project KAJOOL (Control system polls)
  * @date 7/12/2016
  * @time 10:39:20 AM
- * @author Alejandro Jiménez García <alejandro.jimenez@inegi.org.mx>
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public class OsVerify {
 

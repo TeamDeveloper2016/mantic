@@ -84,4 +84,9 @@ public class Address {
 		this.Country = Country;
 	}
 
+	@Override
+	public String toString() {
+		return "Address{"+"Street="+Street+", ExteriorNumber="+ExteriorNumber+", InteriorNumber="+InteriorNumber+", Neighborhood="+Neighborhood+", ZipCode="+ZipCode+", Locality="+Locality+", Municipality="+Municipality+", State="+State+", Country="+Country+'}';
+	}
+	
 }

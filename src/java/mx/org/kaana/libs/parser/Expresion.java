@@ -45,7 +45,7 @@ import org.apache.commons.logging.LogFactory;
 
 
 /**
- * @author alejandro.jimenez
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public class Expresion {
 

@@ -13,7 +13,7 @@ import com.eteks.parser.Interpreter;
 
 /**
  *
- * @author alejandro.jimenez
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public class Concat extends NullField implements Function {
 	private static final long serialVersionUID=-4700441816821794113L;

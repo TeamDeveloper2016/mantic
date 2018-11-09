@@ -12,11 +12,11 @@ import mx.org.kaana.libs.formato.Numero;
 import org.primefaces.model.SortOrder;
 
 /**
- *@company INEGI
- *@project IKTAN (Sistema de seguimiento y control de proyectos)
- *@date 19/07/2018
- *@time 10:30:05 AM 
- *@author Alejandro Jimenez Garcia <alejandro.jimenez@inegi.org.mx>
+ * @company KAANA
+ * @project KAJOOL (Control system polls)
+ * @date 19/07/2018
+ * @time 10:30:05 AM 
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
 public class ArticulosLazyLoad extends FormatCustomLazy implements Serializable {

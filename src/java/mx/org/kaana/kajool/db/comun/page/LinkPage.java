@@ -7,7 +7,7 @@ package mx.org.kaana.kajool.db.comun.page;
 
 /**
  *
- * @author alejandro.jimenez
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public final class LinkPage {
 

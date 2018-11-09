@@ -4,11 +4,11 @@ import java.io.Serializable;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 
 /**
- *@company INEGI
- *@project IKTAN (Sistema de seguimiento y control de proyectos)
- *@date 11/07/2018
- *@time 12:12:28 PM 
- *@author Alejandro Jimenez Garcia <alejandro.jimenez@inegi.org.mx>
+ * @company KAANA
+ * @project KAJOOL (Control system polls)
+ * @date 11/07/2018
+ * @time 12:12:28 PM 
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
 public class Faltante extends TcManticFaltantesDto implements Serializable {

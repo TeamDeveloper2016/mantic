@@ -4,11 +4,11 @@ import java.io.File;
 import mx.org.kaana.libs.reportes.FileSearch;
 
 /**
- * @company INEGI
- * @project IKTAN (Sistema de seguimiento y control de proyectos)
+ * @company KAANA
+ * @project KAJOOL (Control system polls)
  * @date 13/07/2018
  * @time 10:00:01 PM
- * @author Alejandro Jimenez Garcia <alejandro.jimenez@inegi.org.mx>
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public class Search {
 

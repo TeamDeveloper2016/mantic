@@ -3,7 +3,7 @@
  *
  * Creado: 21 de mayo de 2007, 12:16 AM
  *
- * Write by: alejandro.jimenez
+ * Write by: Team Developer 2016 <team.developer@kaana.org.mx>
  */
 package mx.org.kaana.libs.formato;
 

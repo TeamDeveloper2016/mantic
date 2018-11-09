@@ -9,11 +9,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * @company INEGI
- * @project IKTAN (Sistema de seguimiento y control de proyectos)
+ * @company KAANA
+ * @project KAJOOL (Control system polls)
  * @date 30/10/2018
  * @time 10:29:39 PM
- * @author Alejandro Jimenez Garcia <alejandro.jimenez@inegi.org.mx>
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public class Descargas {
 	

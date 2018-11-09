@@ -20,7 +20,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 
 /**
  *
- * @author alejandro.jimenez
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public class Catalogo implements Function {
 

@@ -3,7 +3,6 @@ package mx.org.kaana.mantic.test.printer;
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
-import javax.print.PrintException;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javax.print.SimpleDoc;
@@ -11,11 +10,11 @@ import javax.print.attribute.PrintServiceAttribute;
 import javax.print.attribute.standard.PrinterName;
 
 /**
- * @company INEGI
- * @project IKTAN (Sistema de seguimiento y control de proyectos)
+ * @company KAANA
+ * @project KAJOOL (Control system polls)
  * @date 28/09/2018
  * @time 11:43:37 AM
- * @author Alejandro Jimenez Garcia <alejandro.jimenez@inegi.org.mx>
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 public class Zebra {
 
