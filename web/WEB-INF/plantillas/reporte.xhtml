@@ -22,65 +22,9 @@
       <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryJs}"/>
       <h:outputText escape="false" value="#{kajoolUtilAplicacion.defaultScripts}"/>
       <h:outputText escape="false" value="#{kajoolUtilAplicacion.defaultCss}"/>      
+      <h:outputScript library="janal" name="core/jquery.progress.core.0.0.6.js"/>
       <script type="text/javascript">
-				function truncate(value) {
-          if (value >= 0)
-            return Math.floor(value);
-          else
-            return Math.ceil(value);
-        } // truncate
-
         $(function () {
-          PrimeFaces.widget.ProgressBar.prototype.top = 0;
-          PrimeFaces.widget.ProgressBar.prototype.start = function (top) {
-            this.value = 0;
-            this.jqValue.hide().css('width', '0%');
-            this.jqLabel.hide();
-            this.top = top;
-            var _self = this;
-            if (this.cfg.ajax) {
-              this.progressPoll = setInterval(function () {
-                var options = {
-                  source: _self.id,
-                  process: _self.id,
-                  formId: _self.cfg._formId,
-                  async: true,
-                  oncomplete: function (xhr, status, args) {
-                    var value = args[_self.id + '_value'];
-                    _self.setValue(value);
-                    //trigger complete listener
-                    if ((_self.top> 0 && _self.value >= _self.top) || (_self.top=== 0 && _self.value === 100)) {
-                      _self.fireCompleteEvent();
-                      $('#descargar').show();
-                    } // if
-                  } // oncomplete
-                };
-                PrimeFaces.ajax.AjaxRequest(options);
-              }, this.cfg.interval);
-            } // if
-          };
-
-          PrimeFaces.widget.ProgressBar.prototype.setValue = function (value) {
-            var percentage = value;
-            if (value >= 0) {
-              if (this.top > 0)
-                percentage = truncate(value * 100 / this.top);
-              else
-              if (value > 100)
-                percentage = 100;
-              if (value === 0) {
-                this.jqValue.hide().css('width', '0%');
-                this.jqLabel.hide();
-              } else {
-                this.jqValue.show().animate({'width': percentage + '%'}, 500, 'easeInOutCirc');
-                if (this.cfg.labelTemplate) {
-                  var formattedLabel = this.cfg.labelTemplate.replace(/{value}/gi, percentage).replace(/{index}/gi, value).replace(/{count}/gi, this.top);
-                  this.jqLabel.html(formattedLabel).show();
-                } // if
-              } // else
-              this.value = percentage;
-            } // if
-          } // function
           $('#barra').hide();
           actualizarComponentes();
           $('#descargar').hide();
@@ -132,6 +76,7 @@
           PrimeFaces.scrollTo('barra');
           PF('progreso').start(registros);
         }
+				
         function hideBarra() {
           $('#barra').hide();
         }

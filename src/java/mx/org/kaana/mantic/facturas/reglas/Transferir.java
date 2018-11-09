@@ -47,14 +47,20 @@ public class Transferir extends IBaseTnx {
   private static final Logger LOG= Logger.getLogger(Transferir.class);
 
   private Integer count= 0;
+	private String idFacturama;
 	private String messageError;	
 	private StringBuffer clientes;
 	private List<Client> clients;
 
 	public Transferir() { 		
+		this(null);
+	} // Transaccion
+	
+	public Transferir(String idFacturama) { 		
 		this.count       = 0;
 		this.messageError= "";
 		this.clientes    = new StringBuffer();
+		this.idFacturama = idFacturama;
 	} // Transaccion
 
 	public Integer getCount() {
@@ -80,7 +86,7 @@ public class Transferir extends IBaseTnx {
 					regresar= this.toDownload(sesion);
 					break;
 				case PROCESAR:
-					regresar= this.toDownload(sesion, "");
+					regresar= this.toDownload(sesion, this.idFacturama);
 					break;
 			} // switch
 			if(!regresar)

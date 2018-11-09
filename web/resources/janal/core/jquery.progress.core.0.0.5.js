@@ -23,7 +23,7 @@
 						var value = args[_self.id + '_value'];
 						_self.setValue(value);
 						//trigger complete listener
-						if ((_self.top> 0 && _self.value >= _self.top) || (_self.top=== 0 && _self.value === 100)) {
+						if ((_self.top> 0 && _self.value>= _self.top) || (_self.top=== 0 && _self.value>= 100)) {
 							_self.fireCompleteEvent();
 						} // if
 					} // oncomplete
