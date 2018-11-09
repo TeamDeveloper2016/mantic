@@ -177,7 +177,6 @@ public class Encabezado extends IBaseFilter implements Serializable {
   				this.faltante= new Faltante(JsfBase.getIdUsuario(), -1L, "", 1D, 1L, -1L);
 				} // if	
 			} // else	
-			RequestContext.getCurrentInstance().execute("$('#codigosFaltantes').focus();");
 			RequestContext.getCurrentInstance().update("@(.faltantes)");
 		} // try
 	  catch (Exception e) {

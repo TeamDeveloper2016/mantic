@@ -235,7 +235,6 @@ public class Transferir extends IBaseTnx {
 			this.toProcess(sesion, cfdi, CFDIFactory.getInstance().toCfdiDetail(cfdi.getId()));
 			if(x % 50== 0)
 			  sesion.flush();
-      monitoreo.setProgreso(new Long(x));
       monitoreo.incrementar();
 			x++;
 		} // for

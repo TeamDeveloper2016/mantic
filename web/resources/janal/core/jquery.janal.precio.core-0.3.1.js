@@ -20,6 +20,7 @@
 		VK_PAGE_NEXT: 34,
 		VK_PAGE_PREV: 33,
 		VK_F7       : 118,
+		VK_REST     : 189,
 		VK_MINUS    : 109,
 		VK_REST     : 189,
 		fields      : {
@@ -33,8 +34,6 @@
 				var key= e.keyCode? e.keyCode: e.which;
 				janal.console('jsPrecios.keydown: '+ key);
 				switch(key) {
-					case $precios.VK_UP:	
-					case $precios.VK_DOWN:	
 					case $precios.VK_TAB:
 					case $precios.VK_ENTER:
 						janal.console('jsPrecios.keydown: '+ $(this).attr('alt'));
@@ -53,6 +52,10 @@
 							$('.janal-clean-input').val('');
 							return false;
 						} // if	
+					case $precios.VK_UP:	
+					case $precios.VK_DOWN:
+					  $precios.jump(true);
+					  break;
 					default: 
 						if('faltantesCantidad'=== $(this).attr('id'))
 						  return (key>=48 && key<=57) || (key>=96 && key<=105) || key===8 || key===37 || key===39 || key===110 || key===190;
@@ -203,6 +206,39 @@
 						if($('#verificadorTabla_paginator_top > a.ui-paginator-prev')) {
   						$('#verificadorTabla_paginator_top > a.ui-paginator-prev').click();
 	  					return setTimeout($precios.next(false), 1000);
+						} // if
+						else
+							return false;
+						break;
+				} // swtich
+			});	
+	    $(document).on('keydown', '.janal-row-faltantes', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('jsPrecios.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				switch(key) {
+					case $precios.VK_TAB:
+					  $('#codigosFaltantes').focus();
+						return false;
+					  break;
+					case $precios.VK_ESC:
+            PF('dlgFaltantes').hide();
+						break;
+   		    case $precios.VK_MINUS:
+		      case $precios.VK_REST:
+            //$('#faltantesTabla\\:0\\:faltanteEliminar').click();
+						break;
+					case $precios.VK_PAGE_NEXT:
+						if($('#faltantesTabla_paginator_top > a.ui-paginator-next')) {
+						  $('#faltantesTabla_paginator_top > a.ui-paginator-next').click();
+						  return setTimeout($precios.jump(false), 1000);
+						} // if
+						else
+							return false;
+						break;
+					case $precios.VK_PAGE_PREV:
+						if($('#faltantesTabla_paginator_top > a.ui-paginator-prev')) {
+  						$('#faltantesTabla_paginator_top > a.ui-paginator-prev').click();
+	  					return setTimeout($precios.jump(false), 1000);
 						} // if
 						else
 							return false;
@@ -392,7 +428,7 @@
 		},
 		ask: function(text) {
 			janal.console('jsPrecios.ask');
-      return confirm('¿ Esta seguro que desea eliminar el articulo ?\n ['+ text+ ']');			
+      return confirm('Esta seguro que desea eliminar el articulo ?\n ['+ text+ ']');			
 		},
 		refresh: function() {
 			janal.console('jsPrecios.refresh');
@@ -404,10 +440,25 @@
 			janal.console('jsPrecios.execute: '+ ok);
 			if(ok)
 				faltantesVerificar();
+			$('#codigosFaltantes').focus();
 		},
 		update: function() {
 			janal.console('jsPrecios.update');
 			janal.restore();
+		},
+		jump: function(focus) {
+			janal.console('jsPrecios.next');
+			if(!PF('widgetFaltantes').isEmpty()) {
+				PF('widgetFaltantes').clearSelection();
+				PF('widgetFaltantes').writeSelections();
+				PF('widgetFaltantes').selectRow(0, true);	
+				if(focus)
+					$('#faltantesTabla .ui-datatable-data').focus();
+			} // if	
+			return false;
+		},
+		start: function() {
+			setTimeout("$('#codigosFaltantes_input').focus();", 2000);
 		}
 	});
 	
