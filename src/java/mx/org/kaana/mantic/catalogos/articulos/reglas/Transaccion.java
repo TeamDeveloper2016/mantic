@@ -10,9 +10,11 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.mantic.db.dto.TcManticImagenesDto;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
-import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.archivo.Archivo;
+import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
+import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.mantic.catalogos.articulos.beans.ArticuloCodigo;
@@ -33,9 +35,10 @@ import mx.org.kaana.mantic.db.dto.TrManticArticuloPrecioSugeridoDto;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloProveedorDto;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloTipoVentaDto;
 import mx.org.kaana.mantic.enums.ETipoImagen;
+import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import org.hibernate.Session;
 
-public class Transaccion extends IBaseTnx {
+public class Transaccion extends TransaccionFactura {
 
 	private static final Long ACTIVO  = 1L;
 	private static final Long INACTIVO= 2L;
@@ -93,6 +96,7 @@ public class Transaccion extends IBaseTnx {
 										if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosDimencionesDto.class, params)> -1L){
 											if(DaoFactory.getInstance().deleteAll(sesion, TcManticImagenesDto.class, params)> -1L){
 												regresar= DaoFactory.getInstance().delete(sesion, TcManticArticulosDto.class, this.articulo.getIdArticulo())>= 1L;
+												eliminarArticuloFacturama(sesion, this.articulo.getArticulo().getIdFacturama());
 				}	}	}	}	}	}	}	}	} // if		
 		} // try
 		catch (Exception e) {			
@@ -101,7 +105,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // eliminarArticulo
 	
-	private boolean procesarArticulo(Session sesion) throws Exception{
+	public boolean procesarArticulo(Session sesion) throws Exception{
 		boolean regresar         = false;
 		TcManticImagenesDto image= null;
 		Long idArticulo = -1L;
@@ -151,7 +155,9 @@ public class Transaccion extends IBaseTnx {
 							} 
 						} 
 					} 
-				} 
+				}
+				if(idArticulo > -1)
+					registraArticuloFacturama(sesion, idArticulo);
 			} // if
 		} // try
 		catch (Exception e) {						
@@ -159,6 +165,47 @@ public class Transaccion extends IBaseTnx {
 		} // catch				
 		return regresar;
 	} // procesarArticulo
+	
+	private void registraArticuloFacturama(Session sesion, Long idArticulo){		
+		CFDIGestor gestor       = null;
+		ArticuloFactura articulo= null;
+		try {			
+			gestor= new CFDIGestor(idArticulo);
+			articulo= gestor.toArticuloFactura(sesion);
+			setArticulo(articulo);
+			super.procesarArticulo(sesion);
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+		} // catch		
+	} // registraArticuloFacturama
+	
+	private void actualizarArticuloFacturama(Session sesion, Long idArticulo){		
+		CFDIGestor gestor       = null;
+		ArticuloFactura articulo= null;
+		try {
+			gestor= new CFDIGestor(idArticulo);
+			articulo= gestor.toArticuloFactura(sesion);			
+			setArticulo(articulo);
+			if(articulo.getIdFacturama()!= null && Long.valueOf(articulo.getIdFacturama())>=1L)
+				updateArticulo(sesion);
+			else
+				super.procesarArticulo(sesion);
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+		} // catch		
+	} // actualizarArticuloFacturama
+	
+	private void eliminarArticuloFacturama(Session sesion, String idArticulo){						
+		try {			
+			if(idArticulo!= null && Long.valueOf(idArticulo)>= 1L)
+				removeArticulo(sesion, idArticulo);
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+		} // catch		
+	} // actualizarArticuloFacturama
 	
 	private Double toMenudeo(){
 		return this.articulo.getArticulo().getPrecio() + (this.articulo.getArticulo().getPrecio() * .5);				
@@ -198,6 +245,7 @@ public class Transaccion extends IBaseTnx {
 												} // if 
 												else
 													regresar= DaoFactory.getInstance().update(sesion, this.articulo.getArticulo())>= 1L;
+												actualizarArticuloFacturama(sesion, this.articulo.getIdArticulo());
 			} } } } } } } } 
 		} // try
 		catch (Exception e) {			
