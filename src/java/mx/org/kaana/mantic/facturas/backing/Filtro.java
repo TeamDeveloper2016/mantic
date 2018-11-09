@@ -311,11 +311,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 } // doReporte
 	
 	public void doVerificarReporte() {
-		RequestContext rc= RequestContext.getCurrentInstance();
 		if(this.reporte.getTotal()> 0L)
-			rc.execute("start(" + this.reporte.getTotal() + ")");		
-		else{
-			rc.execute("generalHide()");		
+			RequestContext.getCurrentInstance().execute("start(" + this.reporte.getTotal() + ")");		
+		else {
+			RequestContext.getCurrentInstance().execute("generalHide();");		
 			JsfBase.addMessage("Generar reporte","No se encontraron registros para el reporte", ETipoMensaje.ALERTA);
 		} // else
 	} // doVerificarReporte	
