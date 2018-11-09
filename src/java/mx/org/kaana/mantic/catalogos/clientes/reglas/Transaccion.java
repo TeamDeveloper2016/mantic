@@ -9,8 +9,10 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
-import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
+import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -32,10 +34,11 @@ import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteRepresentanteDto;
 import mx.org.kaana.mantic.db.dto.TrManticPersonaTipoContactoDto;
 import mx.org.kaana.mantic.enums.ETipoPersona;
+import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 import org.hibernate.Session;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 
-public class Transaccion extends IBaseTnx {
+public class Transaccion extends TransaccionFactura {
 
 	private static final String ESTILO= "sentinel";
   private IBaseDto dto;
@@ -105,7 +108,7 @@ public class Transaccion extends IBaseTnx {
     return regresar;
   } // ejecutar
 
-  private boolean procesarCliente(Session sesion) throws Exception {
+  public boolean procesarCliente(Session sesion) throws Exception {
     boolean regresar = false;
     Long idCliente = -1L;
     try {
@@ -120,6 +123,8 @@ public class Transaccion extends IBaseTnx {
           }
         } // if
       } // if
+			if(idCliente > -1)
+				registraClienteFacturama(sesion, idCliente);
     } // try
     catch (Exception e) {
       throw e;
@@ -127,6 +132,47 @@ public class Transaccion extends IBaseTnx {
     return regresar;
   } // procesarCliente
 
+	private void registraClienteFacturama(Session sesion, Long idCliente){		
+		CFDIGestor gestor     = null;
+		ClienteFactura cliente= null;
+		try {
+			gestor= new CFDIGestor(idCliente);
+			cliente= gestor.toClienteFactura(sesion);
+			setCliente(cliente);
+			super.procesarCliente(sesion);
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+		} // catch		
+	} // registraArticuloFacturama
+	
+	private void actualizarClienteFacturama(Session sesion, Long idCliente){		
+		CFDIGestor gestor     = null;
+		ClienteFactura cliente= null;
+		try {
+			gestor= new CFDIGestor(idCliente, null);
+			cliente= gestor.toClienteFactura(sesion);
+			setCliente(cliente);
+			if(cliente.getIdFacturama()!= null && Long.valueOf(idCliente)>= 1L)
+				updateCliente(sesion);
+			else
+				super.procesarCliente(sesion);
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+		} // catch		
+	} // actualizarArticuloFacturama
+	
+	private void eliminarClienteFacturama(Session sesion, String idCliente){						
+		try {			
+			if(idCliente!= null && Long.valueOf(idCliente)>= 1L)
+				removeCliente(sesion, idCliente);
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+		} // catch		
+	} // actualizarArticuloFacturama
+	
   private boolean actualizarCliente(Session sesion) throws Exception {
     boolean regresar = false;
     Long idCliente = -1L;
@@ -136,6 +182,7 @@ public class Transaccion extends IBaseTnx {
         if (registraClientesRepresentantes(sesion, idCliente)) {
           if (registraClientesTipoContacto(sesion, idCliente)) {
             regresar = DaoFactory.getInstance().update(sesion, this.registroCliente.getCliente()) >= 1L;
+						actualizarClienteFacturama(sesion, this.registroCliente.getIdCliente());
           }
         } // if
       } // if
@@ -156,6 +203,7 @@ public class Transaccion extends IBaseTnx {
         if (DaoFactory.getInstance().deleteAll(sesion, TrManticClienteRepresentanteDto.class, params) > -1L) {
           if (DaoFactory.getInstance().deleteAll(sesion, TrManticClienteTipoContactoDto.class, params) > -1L) {
             regresar = DaoFactory.getInstance().delete(sesion, TcManticClientesDto.class, this.registroCliente.getIdCliente()) >= 1L;
+						eliminarClienteFacturama(sesion, this.registroCliente.getCliente().getIdFacturama());
           }
         } // if
       } // if
