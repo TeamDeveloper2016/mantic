@@ -190,7 +190,7 @@
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosDevolucionesFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{fn:contains('|1|2|', manticInventariosDevolucionesFiltro.attrs.seleccionado.idDevolucionEstatus)}"/>					
             <p:menuitem id="notaCredito" icon="fa fa-usd" value="Nota de credito" onstart="return janal.bloquear()" process="@this tabla" action="#{manticInventariosDevolucionesFiltro.doCreditosNotas}" rendered="#{fn:contains('|3|4|', manticInventariosDevolucionesFiltro.attrs.seleccionado.idDevolucionEstatus)}"/>
             <p:separator rendered="#{fn:contains('|3|4|5|6|', manticInventariosDevolucionesFiltro.attrs.seleccionado.idDevolucionEstatus)}"/>			
-            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosDevolucionesFiltro.doReporte('DEVOLUCIONES_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar" rendered="#{fn:contains('|3|4|5|6|', manticInventariosDevolucionesFiltro.attrs.seleccionado.idDevolucionEstatus)}"/>
+            <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticInventariosDevolucionesFiltro.doReporte('DEVOLUCIONES_DETALLE')}" oncomplete="janal.desbloquear();" update="descargar" />
           </p:contextMenu>					
         </div>
       </div>
