@@ -24,7 +24,6 @@ import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.almacenes.beans.AlmacenUbicacion;
 import mx.org.kaana.mantic.catalogos.almacenes.beans.RegistroAlmacen;
 import mx.org.kaana.mantic.catalogos.almacenes.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.catalogos.almacenes.reglas.Transaccion;
