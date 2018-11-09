@@ -14,6 +14,7 @@ import mx.org.kaana.libs.facturama.models.request.ProductTax;
 import mx.org.kaana.libs.facturama.models.response.Cfdi;
 import mx.org.kaana.libs.facturama.models.response.CfdiSearchResult;
 import mx.org.kaana.libs.facturama.services.CfdiService;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 
@@ -27,10 +28,13 @@ import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 
 public class CFDIFactory implements Serializable {
 
-	private static final long serialVersionUID=-5361573067043698091L;
-  private static final String USER       = "FERRBONANZA";
-  private static final String PASSWORD   = "ZABONAN2018";
-	private static final Boolean PRODUCTION= false;
+	private static final long serialVersionUID =-5361573067043698091L;
+  private static final String USER           = "FERRBONANZA";
+  private static final String PASSWORD       = "ZABONAN2018";
+  private static final String USER_PU        = "FERRBONANZASANDBOX";
+  private static final String PASSWORD_PU    = "zabonan2018sandbox";
+  private static final String DESCRIPCION_IVA= "IVA";
+	private static final Boolean PRODUCTION    = true;
 	
 	private FacturamaApi facturama;
 	
@@ -47,7 +51,10 @@ public class CFDIFactory implements Serializable {
    * Contructor default
    */
   private CFDIFactory() {
-		this.facturama= new FacturamaApi(this.USER, this.PASSWORD, this.PRODUCTION);
+		if(this.PRODUCTION)
+			this.facturama= new FacturamaApi(this.USER, this.PASSWORD, false);
+		else
+			this.facturama= new FacturamaApi(this.USER_PU, this.PASSWORD_PU, true);
   }
 
   /**
@@ -92,7 +99,7 @@ public class CFDIFactory implements Serializable {
   		this.facturama.Cfdis().SaveXml(path.concat(name).concat(".").concat(EFormatos.XML.name().toLowerCase()), id);
 	}	
 
-	private boolean facturar(){
+	public boolean facturar(){
 		boolean regresar= false;
 		try {
 			
@@ -246,10 +253,10 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // createProduct
 	
-	public Product createProduct(Product client) throws Exception {
+	public Product createProduct(Product product) throws Exception {
 		Product regresar= null;
-		try {
-			regresar= this.facturama.Products().Create(client);
+		try {			
+			regresar= this.facturama.Products().Create(product);
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -301,16 +308,18 @@ public class CFDIFactory implements Serializable {
 		List<ProductTax> taxes= null;
 		try {
 			regresar= new Product();		
-			taxes= new ArrayList();
-			taxes.add(loadTaxes());
-			regresar.setTaxes(taxes);
-			regresar.setUnitCode(toUnitCode());
-			regresar.setCodeProdServ(toCodProductoServicio());
-			regresar.setDescription(articulo.getDescripcion());
-			regresar.setIdentificationNumber(articulo.getIdentificador());
-			regresar.setName(articulo.getNombre());
-			regresar.setPrice(articulo.getPrecio());
+			if(articulo.getIva() > 0D){
+				taxes= new ArrayList();
+				taxes.add(loadTaxes(articulo.getIva()));
+				regresar.setTaxes(taxes);
+			} // if
 			regresar.setUnit(articulo.getUnidad());
+			regresar.setUnitCode(articulo.getCodigo());
+			regresar.setIdentificationNumber(articulo.getIdentificador());
+			regresar.setName(articulo.getNombre());			
+			regresar.setDescription(Cadena.isVacio(articulo.getDescripcion()) ? articulo.getNombre() : articulo.getDescripcion());						
+			regresar.setPrice(articulo.getPrecio());			
+			regresar.setCodeProdServ(articulo.getCodigoHacienda());						
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -318,12 +327,12 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	}	// loadProduct
 	
-	private ProductTax loadTaxes() {
+	private ProductTax loadTaxes(Double iva) {
 		ProductTax regresar= null;
 		try {
 			regresar= new ProductTax();
-      regresar.setName("IVA");
-      regresar.setRate(0.16);
+      regresar.setName(DESCRIPCION_IVA);
+      regresar.setRate(iva);
       regresar.setIsRetention(false);
 		} // try
 		catch (Exception e) {			
@@ -331,21 +340,12 @@ public class CFDIFactory implements Serializable {
 		} // catch		
 		return regresar;
 	} // loadTaxes
-	
-	private String toCodProductoServicio() throws Exception {
-		return this.facturama.Catalogs().ProductsOrServices("desarrollo").get(0).getValue();
-	}
-	
-	private String toUnitCode() throws Exception {
-		return this.facturama.Catalogs().Units("servicio").get(0).getValue();
-	}
-	
+			
 	public Cfdi toCfdiDetail(String id) throws FacturamaException, Exception {
 	  return this.facturama.Cfdis().Retrive(id);
 	}
 	
 	public void toSendMail(String email, String id) throws Exception {
 		this.facturama.Cfdis().SendEmail(email, CfdiService.InvoiceType.Issued, id);
-	}
-	
+	}	
 }
