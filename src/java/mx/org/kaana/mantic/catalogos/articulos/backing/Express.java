@@ -123,6 +123,7 @@ public class Express extends IBaseAttribute implements Serializable {
 			codigo.setIdPrincipal(1L);
 			codigo.setIdUsuario(JsfBase.getIdUsuario());
 			codigo.setOrden(1L);
+			this.registroArticulo.getArticulosCodigos().clear();
 			this.registroArticulo.getArticulosCodigos().add(codigo);
 			this.registroArticulo.getArticulo().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.registroArticulo.getArticulo().setIdEmpaqueUnidadMedida(1L);
