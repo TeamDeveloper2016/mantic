@@ -35,7 +35,7 @@ public class CFDIGestor implements Serializable{
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente);
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_cliente=" + this.idCliente);
 			regresar= (ClienteFactura) DaoFactory.getInstance().toEntity(ClienteFactura.class, "VistaClientesDto", "facturama", params);
 		} // try
 		catch (Exception e) {
@@ -52,7 +52,7 @@ public class CFDIGestor implements Serializable{
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente);
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_cliente=" + this.idCliente);
 			regresar= (ClienteFactura) DaoFactory.getInstance().toEntity(sesion, ClienteFactura.class, "VistaClientesDto", "facturama", params);
 		} // try
 		catch (Exception e) {
@@ -69,7 +69,7 @@ public class CFDIGestor implements Serializable{
 		Map<String, Object>params    = null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_facturama is null or id_facturama < 1");
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_facturama is null or tc_mantic_clientes.id_facturama < 1");
 			regresar= DaoFactory.getInstance().toEntitySet(ClienteFactura.class, "VistaClientesDto", "facturama", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {
@@ -86,7 +86,7 @@ public class CFDIGestor implements Serializable{
 		Map<String, Object>params    = null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_facturama is null or id_facturama < 1");
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_facturama is null or tc_mantic_clientes.id_facturama < 1");
 			regresar= DaoFactory.getInstance().toEntitySet(sesion, ClienteFactura.class, "VistaClientesDto", "facturama", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {
@@ -103,8 +103,8 @@ public class CFDIGestor implements Serializable{
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_articulo=" + this.idArticulo);
-			regresar= (ArticuloFactura) DaoFactory.getInstance().toEntity(ArticuloFactura.class, "VistaClientesDto", "facturama", params);
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_articulos.id_articulo=" + this.idArticulo);
+			regresar= (ArticuloFactura) DaoFactory.getInstance().toEntity(ArticuloFactura.class, "VistaArticulosDto", "facturama", params);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -120,8 +120,8 @@ public class CFDIGestor implements Serializable{
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_articulo=" + this.idArticulo);
-			regresar= (ArticuloFactura) DaoFactory.getInstance().toEntity(sesion, ArticuloFactura.class, "VistaClientesDto", "facturama", params);
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_articulos.id_articulo=" + this.idArticulo);
+			regresar= (ArticuloFactura) DaoFactory.getInstance().toEntity(sesion, ArticuloFactura.class, "VistaArticulosDto", "facturama", params);			
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -137,8 +137,8 @@ public class CFDIGestor implements Serializable{
 		Map<String, Object>params     = null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_facturama is null or id_facturama < 1");
-			regresar= DaoFactory.getInstance().toEntitySet(ArticuloFactura.class, "VistaClientesDto", "facturama", params, Constantes.SQL_TODOS_REGISTROS);
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_articulos.id_facturama is null or tc_mantic_articulos.id_facturama < 1");
+			regresar= DaoFactory.getInstance().toEntitySet(ArticuloFactura.class, "VistaArticulosDto", "facturama", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -154,8 +154,8 @@ public class CFDIGestor implements Serializable{
 		Map<String, Object>params     = null;
 		try {
 			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_facturama is null or id_facturama < 1");
-			regresar= DaoFactory.getInstance().toEntitySet(sesion, ArticuloFactura.class, "VistaClientesDto", "facturama", params, Constantes.SQL_TODOS_REGISTROS);
+			params.put(Constantes.SQL_CONDICION, "tc_mantic_articulos.id_facturama is null or tc_mantic_articulos.id_facturama < 1");
+			regresar= DaoFactory.getInstance().toEntitySet(sesion, ArticuloFactura.class, "VistaArticulosDto", "facturama", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {
 			throw e;
