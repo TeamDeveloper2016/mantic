@@ -1,37 +1,43 @@
 package mx.org.kaana.mantic.facturas.beans;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.Objects;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 
-public class ArticuloFactura implements Serializable{
+public class ArticuloFactura implements Serializable, IBaseDto{
 
 	private static final long serialVersionUID = -4697872800407924572L;	
 	private String id;
 	private String idFacturama;
 	private String codigo;
+	private String codigoHacienda;
 	private String unidad;
 	private String identificador;
 	private String nombre;
 	private String descripcion;
 	private double precio;
+	private double iva;
 
 	public ArticuloFactura() {
-		this(null);
+		this("-1");
 	}
 	
 	public ArticuloFactura(String id) {
 		this.id = id;
 	}
 
-	public ArticuloFactura(String id, String idFacturama, String codigo, String unidad, String identificador, String nombre, String descripcion, double precio) {
-		this.id           = id;
-		this.idFacturama  = idFacturama;
-		this.codigo       = codigo;
-		this.unidad       = unidad;
-		this.identificador= identificador;
-		this.nombre       = nombre;
-		this.descripcion  = descripcion;
-		this.precio       = precio;
+	public ArticuloFactura(String id, String idFacturama, String codigo, String unidad, String identificador, String nombre, String descripcion, double precio, String codigoHacienda, double iva) {
+		this.id            = id;
+		this.idFacturama   = idFacturama;
+		this.codigo        = codigo;
+		this.unidad        = unidad;
+		this.identificador = identificador;
+		this.nombre        = nombre;
+		this.descripcion   = descripcion;
+		this.precio        = precio;
+		this.codigoHacienda= codigoHacienda;
+		this.iva           = iva;
 	}
 
 	public String getId() {
@@ -97,6 +103,22 @@ public class ArticuloFactura implements Serializable{
 	public void setPrecio(double precio) {
 		this.precio = precio;
 	}	
+
+	public String getCodigoHacienda() {
+		return codigoHacienda;
+	}
+
+	public void setCodigoHacienda(String codigoHacienda) {
+		this.codigoHacienda = codigoHacienda;
+	}	
+
+	public double getIva() {
+		return iva;
+	}
+
+	public void setIva(double iva) {
+		this.iva = iva;
+	}	
 	
 	@Override
 	public int hashCode() {
@@ -121,5 +143,53 @@ public class ArticuloFactura implements Serializable{
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public Long getKey() {
+		if(id!= null)
+			return Long.valueOf(id);
+		else
+			return -1L;
+	}
+
+	@Override
+	public void setKey(Long key) {
+		this.id= key.toString();
+	}
+
+	@Override
+	public Map<String, Object> toMap() {
+		return null;
+	}
+
+	@Override
+	public Object[] toArray() {
+		return null;
+	}
+
+	@Override
+	public boolean isValid() {
+		return this.id!= null && Long.valueOf(this.id) > -1L;
+	}
+
+	@Override
+	public Object toValue(String name) {
+		return null;
+	}
+
+	@Override
+	public String toAllKeys() {
+		return null;
+	}
+
+	@Override
+	public String toKeys() {
+		return null;
+	}
+
+	@Override
+	public Class toHbmClass() {
+		return ArticuloFactura.class;
 	}
 }

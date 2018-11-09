@@ -1,9 +1,11 @@
 package mx.org.kaana.mantic.facturas.beans;
 
 import java.io.Serializable;
+import java.util.Map;
 import java.util.Objects;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 
-public class ClienteFactura implements Serializable{
+public class ClienteFactura implements Serializable, IBaseDto{
 
 	private static final long serialVersionUID = -6145604204242433218L;
 	//Cliente
@@ -193,5 +195,53 @@ public class ClienteFactura implements Serializable{
 			return false;
 		}
 		return true;
+	}
+
+	@Override
+	public Long getKey() {
+		if(id!= null)
+			return Long.valueOf(id);
+		else
+			return -1L;
+	}
+
+	@Override
+	public void setKey(Long key) {
+		this.id= key.toString();
+	}
+
+	@Override
+	public Map<String, Object> toMap() {
+		return null;
+	}
+
+	@Override
+	public Object[] toArray() {
+		return null;
+	}
+
+	@Override
+	public boolean isValid() {
+		return this.id!= null && Long.valueOf(this.id) > -1L;
+	}
+
+	@Override
+	public Object toValue(String name) {
+		return null;
+	}
+
+	@Override
+	public String toAllKeys() {
+		return null;
+	}
+
+	@Override
+	public String toKeys() {
+		return null;
+	}
+
+	@Override
+	public Class toHbmClass() {
+		return ClienteFactura.class;
 	}
 }
