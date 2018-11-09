@@ -9,13 +9,14 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Sincronizar todas las facturas generadas en facturama"/>
 	<ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.progress.core.0.0.3.js"/>
+    <h:outputScript library="janal" name="core/jquery.progress.core.0.0.5.js"/>
 		<script type="text/javascript">			
 			Janal.Control.fields = {				 				
 				'total' : {validaciones: 'libre', mascara: 'no-aplica'}		
 			};	
 			
     	$(document).ready(function() {
+			   $('div.ui-progressbar-value').hide();
 			   $('div.ui-progressbar-label').hide();
       });							
 		
@@ -26,6 +27,7 @@
       function start() {
         PF('transferir').cancel();
         PF('transferir').setValue(0);
+				$('div.ui-progressbar-value').show();
 				$('div.ui-progressbar-label').show();
         PF('transferir').start(#{manticFacturasSincronizar.attrs.top});
       }

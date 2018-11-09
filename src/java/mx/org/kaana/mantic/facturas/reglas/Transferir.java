@@ -212,6 +212,7 @@ public class Transferir extends IBaseTnx {
 						11L // Long idTipoContacto
 					);
 					DaoFactory.getInstance().insert(sesion, contacto);
+					// client.getAddress().
 				} // if
 				regresar= cliente.getIdCliente();
 			} // if
@@ -228,8 +229,7 @@ public class Transferir extends IBaseTnx {
 	private boolean toDownload(Session sesion) throws Exception {
 		List<CfdiSearchResult> cfdis= CFDIFactory.getInstance().getCfdis();
  	  Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
-    monitoreo.comenzar(0L);
-    monitoreo.setTotal(Long.valueOf(cfdis.size()));
+    monitoreo.comenzar(Long.valueOf(cfdis.size()));
 		int x= 0;
 		for (CfdiSearchResult cfdi: cfdis) {
 			this.toProcess(sesion, cfdi, CFDIFactory.getInstance().toCfdiDetail(cfdi.getId()));
