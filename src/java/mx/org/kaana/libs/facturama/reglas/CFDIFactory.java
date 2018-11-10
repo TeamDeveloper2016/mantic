@@ -157,9 +157,16 @@ public class CFDIFactory implements Serializable {
 	public Client updateClient(ClienteFactura detalleCliente, String id) throws Exception{
 		Client regresar= null;
 		Client cliente = null;
+		Client pivote  = null;
 		try {
 			cliente= loadCliente(detalleCliente);
-			regresar= this.facturama.Clients().Update(cliente, id);
+			pivote= clientFindById(id);
+			pivote.setAddress(cliente.getAddress());
+			pivote.setCfdiUse(cliente.getCfdiUse());
+			pivote.setEmail(cliente.getEmail());
+			pivote.setName(cliente.getName());
+			pivote.setRfc(cliente.getRfc());
+			regresar= this.facturama.Clients().Update(pivote, pivote.getId());
 		} // try
 		catch (Exception e) {			
 			throw e;
