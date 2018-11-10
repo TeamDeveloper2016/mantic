@@ -187,7 +187,7 @@
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
 						<p:menuitem id="consultar" action="#{manticFacturasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator/>
-            <p:menuitem id="modificar" action="#{manticFacturasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{!(manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus eq '3')}"/>					
+            <p:menuitem id="modificar" action="#{manticFacturasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|2|', manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus)}"/>					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{!(manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus eq '3')}"/>					
             <p:separator rendered="#{!(manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus eq '3')}"/>					
             <p:menuitem id="estatus" icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticFacturasFiltro.attrs.seleccionado.idFicticiaEstatus eq '6')}"/>					            
