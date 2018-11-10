@@ -187,7 +187,7 @@ public class Transaccion extends TransaccionFactura {
 			gestor= new CFDIGestor(idArticulo);
 			articulo= gestor.toArticuloFactura(sesion);			
 			setArticulo(articulo);
-			if(articulo.getIdFacturama()!= null && Long.valueOf(articulo.getIdFacturama())>=1L)
+			if(articulo.getIdFacturama()!= null)
 				updateArticulo(sesion);
 			else
 				super.procesarArticulo(sesion);
@@ -199,7 +199,7 @@ public class Transaccion extends TransaccionFactura {
 	
 	private void eliminarArticuloFacturama(Session sesion, String idArticulo){						
 		try {			
-			if(idArticulo!= null && Long.valueOf(idArticulo)>= 1L)
+			if(idArticulo!= null)
 				removeArticulo(sesion, idArticulo);
 		} // try
 		catch (Exception e) {			
