@@ -271,9 +271,21 @@ public class CFDIFactory implements Serializable {
 	public Product updateProduct(ArticuloFactura detalleArticulo, String id) throws Exception {
 		Product regresar= null;
 		Product product = null;
+		Product pivote  = null;
 		try {
-			product= loadProduct(detalleArticulo);
-			regresar= this.facturama.Products().Update(product, id);
+			pivote= productFindById(id);
+			product= loadProduct(detalleArticulo);			
+			pivote.getTaxes().clear();
+			pivote.setTaxes(product.getTaxes());
+			pivote.setUnit(Cadena.letraCapital(product.getUnit()));
+			pivote.setUnitCode(product.getUnitCode());
+			pivote.setIdentificationNumber(product.getIdentificationNumber());
+			pivote.setName(product.getName());			
+			pivote.setDescription(Cadena.isVacio(product.getDescription()) ? product.getName(): product.getDescription());						
+			pivote.setPrice(product.getPrice());			
+			pivote.setCodeProdServ(product.getCodeProdServ());
+			pivote.setCuentaPredial(null);
+			regresar= this.facturama.Products().Update(pivote, pivote.getId());
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -307,19 +319,16 @@ public class CFDIFactory implements Serializable {
 		Product regresar      = null;
 		List<ProductTax> taxes= null;
 		try {
-			regresar= new Product();		
-			if(articulo.getIva() > 0D){
-				taxes= new ArrayList();
-				taxes.add(loadTaxes(articulo.getIva()));
-				regresar.setTaxes(taxes);
-			} // if
-			regresar.setUnit(articulo.getUnidad());
+			regresar= new Product();					
+			taxes= loadTaxes(articulo.getIva());				
+			regresar.setTaxes(taxes);			
+			regresar.setUnit(Cadena.letraCapital(articulo.getUnidad()));
 			regresar.setUnitCode(articulo.getCodigo());
 			regresar.setIdentificationNumber(articulo.getIdentificador());
 			regresar.setName(articulo.getNombre());			
 			regresar.setDescription(Cadena.isVacio(articulo.getDescripcion()) ? articulo.getNombre() : articulo.getDescripcion());						
 			regresar.setPrice(articulo.getPrecio());			
-			regresar.setCodeProdServ(articulo.getCodigoHacienda());						
+			regresar.setCodeProdServ(articulo.getCodigoHacienda());
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -327,13 +336,16 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	}	// loadProduct
 	
-	private ProductTax loadTaxes(Double iva) {
-		ProductTax regresar= null;
+	private List<ProductTax> loadTaxes(Double iva) {
+		List<ProductTax> regresar= null;
+		ProductTax tax           = null;
 		try {
-			regresar= new ProductTax();
-      regresar.setName(DESCRIPCION_IVA);
-      regresar.setRate(iva);
-      regresar.setIsRetention(false);
+			regresar= new ArrayList<>();
+			tax= new ProductTax();
+      tax.setName(DESCRIPCION_IVA);
+      tax.setRate(iva>1 ? (iva/100) : iva);
+      tax.setIsRetention(false);			
+			regresar.add(tax);			
 		} // try
 		catch (Exception e) {			
 			throw e;
