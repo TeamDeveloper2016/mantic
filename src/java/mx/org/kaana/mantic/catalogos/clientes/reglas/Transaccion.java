@@ -153,7 +153,7 @@ public class Transaccion extends TransaccionFactura {
 			gestor= new CFDIGestor(idCliente, null);
 			cliente= gestor.toClienteFactura(sesion);
 			setCliente(cliente);
-			if(cliente.getIdFacturama()!= null && Long.valueOf(idCliente)>= 1L)
+			if(cliente.getIdFacturama()!= null)
 				updateCliente(sesion);
 			else
 				super.procesarCliente(sesion);
