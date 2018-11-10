@@ -126,6 +126,7 @@ public class TransaccionFactura extends IBaseTnx{
 		Client clientePivote          = null;		
 		String idBitacora             = null;
 		String id                     = null;
+		int index                     = -1;
 		try {
 			gestor= new CFDIGestor();
 			clientes= gestor.toAllClientesFactura(sesion);
@@ -135,13 +136,16 @@ public class TransaccionFactura extends IBaseTnx{
 					for(ClienteFactura recordCliente: clientes){
 						idBitacora= recordCliente.getId();
 						clientePivote= new Client(recordCliente.getRfc());
-						if(clientesFacturama.indexOf(clientePivote)== -1){
+						index= clientesFacturama.indexOf(clientePivote);
+						if(index== -1){
 							id= CFDIFactory.getInstance().createClientId(recordCliente);
 							if(isCorrectId(id))
 								actualizarCliente(sesion, recordCliente.getId(), id);
 							else
 								registrarBitacora(sesion, recordCliente.getId(), id);								
 						} // if
+						else
+							CFDIFactory.getInstance().updateClient(recordCliente);
 					} // for
 				} // if
 			} // if
@@ -248,6 +252,7 @@ public class TransaccionFactura extends IBaseTnx{
 		Product articuloPivote          = null;		
 		String idBitacora               = null;
 		String id                       = null;
+		int index                      = -1;
 		try {
 			gestor= new CFDIGestor();
 			articulos= gestor.toAllArticulosFactura(sesion);
@@ -257,14 +262,17 @@ public class TransaccionFactura extends IBaseTnx{
 					for(ArticuloFactura recordArticulo: articulos){
 						idBitacora= recordArticulo.getId();
 						articuloPivote= new Product();
-						articuloPivote.setIdentificationNumber(recordArticulo.getCodigo());
-						if(articulosFacturama.indexOf(articuloPivote)== -1){
+						articuloPivote.setIdentificationNumber(recordArticulo.getIdentificador());
+						index= articulosFacturama.indexOf(articuloPivote);
+						if(index == -1){
 							id= CFDIFactory.getInstance().createProductId(recordArticulo);
 							if(isCorrectId(id))
 								actualizarProducto(sesion, recordArticulo.getId(), id);
 							else
 								registrarBitacora(sesion, recordArticulo.getId(), id, false);								
 						} // if
+						else
+							CFDIFactory.getInstance().updateProduct(recordArticulo);						
 					} // for
 				} // if
 			} // if
