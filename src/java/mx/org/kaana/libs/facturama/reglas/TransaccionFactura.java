@@ -12,10 +12,13 @@ import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturamaBitacoraDto;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
 public class TransaccionFactura extends IBaseTnx{
 
+	private static final Log LOG                 = LogFactory.getLog(TransaccionFactura.class);
 	private static final String REGISTRO_CLIENTE = "REGISTRO DE CLIENTE";
 	private static final String REGISTRO_ARTICULO= "REGISTRO DE ARTICULO";
 	private ClienteFactura cliente;
@@ -134,18 +137,22 @@ public class TransaccionFactura extends IBaseTnx{
 				clientesFacturama= CFDIFactory.getInstance().getClients();
 				if(!clientesFacturama.isEmpty()){
 					for(ClienteFactura recordCliente: clientes){
-						idBitacora= recordCliente.getId();
-						clientePivote= new Client(recordCliente.getRfc());
-						index= clientesFacturama.indexOf(clientePivote);
-						if(index== -1){
-							id= CFDIFactory.getInstance().createClientId(recordCliente);
-							if(isCorrectId(id))
-								actualizarCliente(sesion, recordCliente.getId(), id);
+						if(recordCliente.getCorreo()!= null && !Cadena.isVacio(recordCliente.getCorreo())){
+							idBitacora= recordCliente.getId();
+							clientePivote= new Client(recordCliente.getRfc());
+							index= clientesFacturama.indexOf(clientePivote);
+							if(index== -1){
+								id= CFDIFactory.getInstance().createClientId(recordCliente);
+								if(isCorrectId(id))
+									actualizarCliente(sesion, recordCliente.getId(), id);
+								else
+									registrarBitacora(sesion, recordCliente.getId(), id);								
+							} // if
 							else
-								registrarBitacora(sesion, recordCliente.getId(), id);								
+								CFDIFactory.getInstance().updateClient(recordCliente);
 						} // if
 						else
-							CFDIFactory.getInstance().updateClient(recordCliente);
+							LOG.info("El cliente con rfc: " + recordCliente.getRfc() + " no cuenta con correo por lo que no fue publicado en facturama.");
 					} // for
 				} // if
 			} // if
