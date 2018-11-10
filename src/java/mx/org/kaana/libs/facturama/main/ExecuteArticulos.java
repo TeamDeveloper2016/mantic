@@ -8,7 +8,7 @@ public class ExecuteArticulos {
 
 	public static void main(String[] args) {
 		TransaccionFactura transaccion= null;
-		try {
+		try {			
 			transaccion= new TransaccionFactura();
 			transaccion.ejecutar(EAccion.REPROCESAR);				
 		} // try
