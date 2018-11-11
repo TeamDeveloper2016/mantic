@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.inventarios.entradas.backing;
 
+import java.io.File;
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.ArrayList;
@@ -156,6 +157,10 @@ public class Accion extends IBaseArticulos implements Serializable {
 					this.tipoOrden         = notaEntrada.getIdNotaTipo().equals(1L)? EOrdenes.NORMAL: EOrdenes.PROVEEDOR;
           this.setAdminOrden(new AdminNotas(notaEntrada, this.tipoOrden));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
+					
+          // ESTO ES PARA CARGAR LOS ARTICULOS DE LA FACTURA CUANDO SE ENTRA POR LA OPCION DE MODIFICAR Y VUELVA A HACER LA COMPARACION DE LOS ARTICULOS
+					this.doLoadFiles("TcManticNotasArchivosDto", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada(), "idNotaEntrada", (boolean)this.attrs.get("sinIva"), this.getAdminOrden().getTipoDeCambio());
+					this.toPrepareDisponibles(false);
           break;
       } // switch
 			this.toLoadCatalog();
@@ -345,13 +350,13 @@ public class Accion extends IBaseArticulos implements Serializable {
 		if(event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XML.name())) {
 		  ((NotaEntrada)this.getAdminOrden().getOrden()).setFactura(this.getFactura().getFolio());
 		  ((NotaEntrada)this.getAdminOrden().getOrden()).setFechaFactura(Fecha.toDateDefault(this.getFactura().getFecha()));
-  		this.toPrepareDisponibles();
+  		this.toPrepareDisponibles(true);
 	  	this.doCheckFolio();
 			this.doCalculatePagoFecha();
 		} // if
 	} // doFileUpload	
 	
-	private void toPrepareDisponibles() {
+	private void toPrepareDisponibles(boolean checkItems) {
 		List<Articulo> disponibles= new ArrayList<>();
 		for (Articulo disponible : this.getAdminOrden().getArticulos()) {
 			if(disponible.isDisponible() && disponible.getIdArticulo()> -1L)
@@ -359,10 +364,10 @@ public class Accion extends IBaseArticulos implements Serializable {
 		} // for
 		Collections.sort(disponibles);
 		this.attrs.put("disponibles", disponibles);
-		this.toCheckArticulos();
+    this.toCheckArticulos(checkItems);
 	}
 
-	private void toCheckArticulos() {
+	private void toCheckArticulos(boolean checkItems) {
 		Articulo faltante, disponible= null;
 		int relacionados             = 0;
 		try {
@@ -380,7 +385,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 						found= true;
       			faltantes.remove(faltante);
     			  disponibles.remove(disponible);
-    			  this.toMoveArticulo(disponible, faltante);
+						if(checkItems)
+    			    this.toMoveArticulo(disponible, faltante);
 						break;
 					} // if	
 					y++;

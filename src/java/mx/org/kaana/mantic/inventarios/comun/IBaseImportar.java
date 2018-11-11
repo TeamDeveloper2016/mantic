@@ -216,7 +216,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 		inputStream.close();
 	} // toWriteFile 
 
-	private void toReadFactura(File file, Boolean sinIva, Double tipoDeCambio) throws Exception {
+	public void toReadFactura(File file, Boolean sinIva, Double tipoDeCambio) throws Exception {
     Reader reader           = null;
 		List<Articulo> faltantes= null;
 		try {
@@ -278,14 +278,14 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 				params.put("idTipoArchivo", 1L);
 				tmp= (Entity)DaoFactory.getInstance().toEntity(proceso, "exists", params);
 				if(tmp!= null) {
-					this.xml= new Importado(tmp.toString("nombre"), "XML", EFormatos.XML, 0L, tmp.toLong("tamanio"), "", tmp.toString("ruta"), tmp.toString("observaciones"));
+					this.xml= new Importado(tmp.toString("nombre"), EFormatos.XML.name(), EFormatos.XML, 0L, tmp.toLong("tamanio"), "", tmp.toString("ruta"), tmp.toString("observaciones"));
 					this.toReadFactura(new File(tmp.toString("alias")), sinIva, tipoDeCambio);
   				this.attrs.put("xml", this.xml.getName()); 
 				} // if	
 				params.put("idTipoArchivo", 2L);
 				tmp= (Entity)DaoFactory.getInstance().toEntity(proceso, "exists", params);
 				if(tmp!= null) {
-					this.pdf= new Importado(tmp.toString("nombre"), "PDF", EFormatos.XML, 0L, tmp.toLong("tamanio"), "", tmp.toString("ruta"), tmp.toString("observaciones"));
+					this.pdf= new Importado(tmp.toString("nombre"), EFormatos.PDF.name(), EFormatos.XML, 0L, tmp.toLong("tamanio"), "", tmp.toString("ruta"), tmp.toString("observaciones"));
   				this.attrs.put("pdf", this.pdf.getName()); 
 				} // if	
 			} // try

@@ -28,7 +28,7 @@ public class Facturas implements Job, Serializable {
 	public void execute(JobExecutionContext jec) throws JobExecutionException {
 		Transferir transferir= null;
 		try {
-			if(!Configuracion.getInstance().isEtapaDesarrollo()){
+			if(!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion()) {
 				transferir = new Transferir();
 				if (transferir.ejecutar(EAccion.GENERAR)) 
 					LOG.info("Se realizo la sincronización de las facturas de forma correcta");

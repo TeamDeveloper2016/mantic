@@ -28,7 +28,7 @@ public class Respaldos implements Job, Serializable {
 	public void execute(JobExecutionContext jec) throws JobExecutionException {
 		Transaccion transaccion = null;
 		try {
-			if(!Configuracion.getInstance().isEtapaDesarrollo()){
+			if(!Configuracion.getInstance().isEtapaDesarrollo() && !Configuracion.getInstance().isEtapaCapacitacion()) {
 				transaccion= new Transaccion();
 				if(transaccion.ejecutar(EAccion.AGREGAR))
 					LOG.info("Se realizo el respaldo de la BD de forma correcta");
