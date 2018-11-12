@@ -18,6 +18,10 @@ public class ArticuloFactura implements Serializable, IBaseDto{
 	private String descripcion;
 	private double precio;
 	private double iva;
+	private double cantidad;
+	private double subtotal;
+	private double total;
+	private double base;
 
 	public ArticuloFactura() {
 		this("-1");
@@ -28,6 +32,10 @@ public class ArticuloFactura implements Serializable, IBaseDto{
 	}
 
 	public ArticuloFactura(String id, String idFacturama, String codigo, String unidad, String identificador, String nombre, String descripcion, double precio, String codigoHacienda, double iva) {
+		this(id, idFacturama, codigo, unidad, identificador, nombre, descripcion, precio, codigoHacienda, iva, 0D, 0D, 0D, 100D);
+	}
+	
+	public ArticuloFactura(String id, String idFacturama, String codigo, String unidad, String identificador, String nombre, String descripcion, double precio, String codigoHacienda, double iva, double cantidad,	double subtotal, double total, double base) {
 		this.id            = id;
 		this.idFacturama   = idFacturama;
 		this.codigo        = codigo;
@@ -38,6 +46,10 @@ public class ArticuloFactura implements Serializable, IBaseDto{
 		this.precio        = precio;
 		this.codigoHacienda= codigoHacienda;
 		this.iva           = iva;
+		this.cantidad      = cantidad;
+		this.subtotal      = subtotal;
+		this.total         = total;
+		this.base          = base;
 	}
 
 	public String getId() {
@@ -119,6 +131,38 @@ public class ArticuloFactura implements Serializable, IBaseDto{
 	public void setIva(double iva) {
 		this.iva = iva;
 	}	
+
+	public double getCantidad() {
+		return cantidad;
+	}
+
+	public void setCantidad(double cantidad) {
+		this.cantidad = cantidad;
+	}
+
+	public double getSubtotal() {
+		return subtotal;
+	}
+
+	public void setSubtotal(double subtotal) {
+		this.subtotal = subtotal;
+	}
+
+	public double getTotal() {
+		return total;
+	}
+
+	public void setTotal(double total) {
+		this.total = total;
+	}
+
+	public double getBase() {
+		return base;
+	}
+
+	public void setBase(double base) {
+		this.base = base;
+	}
 	
 	@Override
 	public int hashCode() {
