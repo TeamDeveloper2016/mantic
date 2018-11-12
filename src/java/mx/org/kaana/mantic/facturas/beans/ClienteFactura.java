@@ -9,12 +9,19 @@ public class ClienteFactura implements Serializable, IBaseDto{
 
 	private static final long serialVersionUID = -6145604204242433218L;
 	//Cliente
-	private String id;
+	private String id;	
 	private String idFacturama;
 	private String correo;
 	private String rfc;
 	private String nombre;
 	private String tipoCfdi;
+	// Cfdi
+	private String idFactura;
+	private String observaciones;
+	private String abreviaturaCfdi;
+	private String medioPago;
+	private String metodoPago;
+	private String usoCfdi;
 	//Direccion
 	private String calle;
 	private String numeroExterior;
@@ -35,21 +42,31 @@ public class ClienteFactura implements Serializable, IBaseDto{
 	}
 
 	public ClienteFactura(String id, String idFacturama, String correo, String rfc, String nombre, String tipoCfdi, String calle, String numeroExterior, String numeroInterior, String colonia, String codigoPostal, String localidad, String municipio, String estado, String pais) {
-		this.id            = id;
-		this.idFacturama   = idFacturama;
-		this.correo        = correo;
-		this.rfc           = rfc;
-		this.nombre        = nombre;
-		this.tipoCfdi      = tipoCfdi;
-		this.calle         = calle;
-		this.numeroExterior= numeroExterior;
-		this.numeroInterior= numeroInterior;
-		this.colonia       = colonia;
-		this.codigoPostal  = codigoPostal;
-		this.localidad     = localidad;
-		this.municipio     = municipio;
-		this.estado        = estado;
-		this.pais          = pais;
+		this(id, idFacturama, correo, rfc, nombre, tipoCfdi, calle, numeroExterior, numeroInterior, colonia, codigoPostal, localidad, municipio, estado, pais, null, null, null, null, null, null);
+	}
+	
+	public ClienteFactura(String id, String idFacturama, String correo, String rfc, String nombre, String tipoCfdi, String calle, String numeroExterior, String numeroInterior, String colonia, String codigoPostal, String localidad, String municipio, String estado, String pais, String idFactura, String observaciones, String abreviaturaCfdi, String medioPago, String metodoPago, String usoCfdi) {
+		this.id             = id;
+		this.idFacturama    = idFacturama;
+		this.correo         = correo;
+		this.rfc            = rfc;
+		this.nombre         = nombre;
+		this.tipoCfdi       = tipoCfdi;
+		this.calle          = calle;
+		this.numeroExterior = numeroExterior;
+		this.numeroInterior = numeroInterior;
+		this.colonia        = colonia;
+		this.codigoPostal   = codigoPostal;
+		this.localidad      = localidad;
+		this.municipio      = municipio;
+		this.estado         = estado;
+		this.pais           = pais;
+		this.idFactura      = idFactura;
+		this.observaciones  = observaciones;
+		this.abreviaturaCfdi= abreviaturaCfdi;
+		this.medioPago      = medioPago;
+		this.metodoPago     = metodoPago;
+		this.usoCfdi        = usoCfdi;
 	}
 
 	public String getId() {
@@ -171,8 +188,56 @@ public class ClienteFactura implements Serializable, IBaseDto{
 	public void setIdFacturama(String idFacturama) {
 		this.idFacturama = idFacturama;
 	}	
+
+	public String getIdFactura() {
+		return idFactura;
+	}
+
+	public void setIdFactura(String idFactura) {
+		this.idFactura = idFactura;
+	}
+
+	public String getObservaciones() {
+		return observaciones;
+	}
+
+	public void setObservaciones(String observaciones) {
+		this.observaciones = observaciones;
+	}
+
+	public String getAbreviaturaCfdi() {
+		return abreviaturaCfdi;
+	}
+
+	public void setAbreviaturaCfdi(String abreviaturaCfdi) {
+		this.abreviaturaCfdi = abreviaturaCfdi;
+	}
+
+	public String getMedioPago() {
+		return medioPago;
+	}
+
+	public void setMedioPago(String medioPago) {
+		this.medioPago = medioPago;
+	}
+
+	public String getMetodoPago() {
+		return metodoPago;
+	}
+
+	public void setMetodoPago(String metodoPago) {
+		this.metodoPago = metodoPago;
+	}
+
+	public String getUsoCfdi() {
+		return usoCfdi;
+	}
+
+	public void setUsoCfdi(String usoCfdi) {
+		this.usoCfdi = usoCfdi;
+	}	
 	
-		@Override
+	@Override
 	public int hashCode() {
 		int hash=5;
 		hash=29*hash+Objects.hashCode(this.rfc);
