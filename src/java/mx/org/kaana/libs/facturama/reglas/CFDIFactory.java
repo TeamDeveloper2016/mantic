@@ -11,7 +11,11 @@ import mx.org.kaana.libs.facturama.models.Client;
 import mx.org.kaana.libs.facturama.models.Product;
 import mx.org.kaana.libs.facturama.models.exception.FacturamaException;
 import mx.org.kaana.libs.facturama.models.request.ProductTax;
-import mx.org.kaana.libs.facturama.models.response.Cfdi;
+import mx.org.kaana.libs.facturama.models.request.Cfdi;
+import mx.org.kaana.libs.facturama.models.request.CfdiType;
+import mx.org.kaana.libs.facturama.models.request.Item;
+import mx.org.kaana.libs.facturama.models.request.Receiver;
+import mx.org.kaana.libs.facturama.models.request.Tax;
 import mx.org.kaana.libs.facturama.models.response.CfdiSearchResult;
 import mx.org.kaana.libs.facturama.services.CfdiService;
 import mx.org.kaana.libs.formato.Cadena;
@@ -34,6 +38,9 @@ public class CFDIFactory implements Serializable {
   private static final String USER_PU        = "FERRBONANZASANDBOX";
   private static final String PASSWORD_PU    = "zabonan2018sandbox";
   private static final String DESCRIPCION_IVA= "IVA";
+  private static final String CURRENCY       = "MXN";
+  private static final String METODO_PUE     = "PUE";
+  private static final String METODO_PPD     = "PPD";	
 	private static final Boolean PRODUCTION    = true;
 	
 	private FacturamaApi facturama;
@@ -99,19 +106,131 @@ public class CFDIFactory implements Serializable {
   		this.facturama.Cfdis().SaveXml(path.concat(name).concat(".").concat(EFormatos.XML.name().toLowerCase()), id);
 	}	
 
-	public boolean facturar(){
-		boolean regresar= false;
+	public mx.org.kaana.libs.facturama.models.response.Cfdi cfdiRemove(String id) throws Exception {
+		mx.org.kaana.libs.facturama.models.response.Cfdi regresar= null;
 		try {
-			
+			regresar= this.facturama.Cfdis().Remove(id);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // cfdiRemove
+	
+	public String createCfdiId(ClienteFactura encabezado, List<ArticuloFactura> detalle) throws Exception {
+		String regresar= null;
+		Cfdi cfdi      = null;
+		try {
+			cfdi= loadCfdi(encabezado, detalle);
+			regresar= createCfdi(cfdi).getId();
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch	
+		return regresar;
+	} // createCfdiId	
+	
+	public mx.org.kaana.libs.facturama.models.response.Cfdi createCfdi(ClienteFactura encabezado, List<ArticuloFactura> detalle) throws Exception {
+		mx.org.kaana.libs.facturama.models.response.Cfdi regresar= null;
+		Cfdi cfdi    = null;
+		try {
+			cfdi= loadCfdi(encabezado, detalle);
+			regresar= createCfdi(cfdi);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch	
+		return regresar;
+	} // createCfdi
+	
+	public mx.org.kaana.libs.facturama.models.response.Cfdi createCfdi(Cfdi cfdi) throws Exception {
+		mx.org.kaana.libs.facturama.models.response.Cfdi regresar= null;
+		try {
+			regresar= this.facturama.Cfdis().Create(cfdi);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch	
+		return regresar;
+	} // createCfdi
+	
+	private Cfdi loadCfdi(ClienteFactura encabezado, List<ArticuloFactura> detalle){		
+		Cfdi regresar= null;
+		try {
+			regresar= new Cfdi();
+			regresar.setCurrency(CURRENCY);
+			regresar.setExpeditionPlace(encabezado.getCodigoPostal());
+			regresar.setPaymentConditions(encabezado.getObservaciones());
+			regresar.setCfdiType(CfdiType.Ingreso.getValue());
+			regresar.setPaymentForm(encabezado.getMedioPago());
+			regresar.setPaymentMethod(METODO_PUE);
+			regresar.setReceiver(toReceiver(encabezado));
+			regresar.setItems(detalleFactura(detalle));
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch
-		finally {
-			
-		} // finally
 		return regresar;
-	} // facturar
+	} // loadCfdi
+	
+	private Receiver toReceiver(ClienteFactura encabezado){
+		Receiver regresar= null;
+		try {
+			regresar= new Receiver();
+			regresar.setRfc(encabezado.getRfc());
+			regresar.setName(encabezado.getNombre());
+			regresar.setCfdiUse(encabezado.getUsoCfdi());
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toReceiver
+	
+	private List<Item> detalleFactura(List<ArticuloFactura> articulos){
+		List<Item> regresar= null;
+		Item articulo      = null;
+		try {
+			regresar= new ArrayList<>();
+			for(ArticuloFactura record: articulos){
+				articulo= new Item();
+				articulo.setProductCode(record.getCodigoHacienda());
+				articulo.setIdentificationNumber(record.getIdentificador());
+				articulo.setDescription(record.getNombre());
+				articulo.setUnit(Cadena.letraCapital(record.getUnidad()));
+				articulo.setUnitCode(record.getCodigo());
+				articulo.setUnitPrice(record.getPrecio());
+				articulo.setQuantity(record.getCantidad());
+				articulo.setSubtotal(record.getSubtotal());
+				articulo.setTotal(record.getTotal());				
+				articulo.setTaxes(toTaxArticulo(record));
+				regresar.add(articulo);
+			} // for
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;		
+	} // detalleFactura
+	
+	private List<Tax> toTaxArticulo(ArticuloFactura articulo){
+		List<Tax> regresar= null;
+		Tax taxArticulo   = null;
+		try {
+			regresar= new ArrayList<>();
+			taxArticulo= new Tax();
+			taxArticulo.setTotal(articulo.getIva());
+			taxArticulo.setName(DESCRIPCION_IVA);
+			taxArticulo.setBase(100);
+			taxArticulo.setRate(articulo.getIva()>1 ? articulo.getIva()/100 : articulo.getIva());
+			taxArticulo.setIsRetention(false);
+			regresar.add(taxArticulo);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;		
+	} // detalleFactura
 	
 	public String createClientId(ClienteFactura detalleCliente) throws Exception {
 		String regresar= null;
@@ -360,7 +479,7 @@ public class CFDIFactory implements Serializable {
 		return regresar;
 	} // loadTaxes
 			
-	public Cfdi toCfdiDetail(String id) throws FacturamaException, Exception {
+	public mx.org.kaana.libs.facturama.models.response.Cfdi toCfdiDetail(String id) throws FacturamaException, Exception {
 	  return this.facturama.Cfdis().Retrive(id);
 	}
 	
