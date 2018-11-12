@@ -150,7 +150,7 @@ public class Transaccion extends TransaccionFactura {
 		CFDIGestor gestor     = null;
 		ClienteFactura cliente= null;
 		try {
-			gestor= new CFDIGestor(idCliente, null);
+			gestor= new CFDIGestor(idCliente);
 			cliente= gestor.toClienteFactura(sesion);
 			setCliente(cliente);
 			if(cliente.getIdFacturama()!= null)
