@@ -15,6 +15,7 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.procesos.reportes.beans.Definicion;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.template.backing.Reporte;
@@ -34,6 +35,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.ParametrosComunes;
+import mx.org.kaana.mantic.comun.JuntarReporte;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
@@ -308,15 +310,43 @@ public class Filtro extends IBaseFilter implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);			
     } // catch	
-} // doReporte
+  } // doReporte
+  
+  public void doReporteFacturas(String nombre) throws Exception{
+		Map<String, Object>params    = null;
+		EReportes reporteSeleccion   = null;
+    List<Definicion> definiciones= null;
+		try{		
+      params= toPrepare();	
+      //es importante este orden para los grupos en el reporte	
+      definiciones = new ArrayList<Definicion>();
+      params.put("sortOrder", "order by tc_mantic_ficticias.id_empresa, tc_mantic_clientes.id_cliente, tc_mantic_ficticias.ejercicio, tc_mantic_ficticias.orden");
+      reporteSeleccion= EReportes.valueOf(nombre);
+      this.reporte= JsfBase.toReporte();	
+      definiciones.add(new Definicion((Map<String, Object>) ((HashMap) params).clone(), params, reporteSeleccion.getProceso(), reporteSeleccion.getIdXml(), reporteSeleccion.getJrxml()));
+      this.reporte.toAsignarReportes(new JuntarReporte(definiciones, reporteSeleccion, "/Paginas/Mantic/Facturas/filtro",false, false));
+      if(doVerificarReporte())
+        this.reporte.doAceptar();
+    } // try
+    catch(Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);			
+    } // catch	
+  } // doReporte
 	
-	public void doVerificarReporte() {
-		if(this.reporte.getTotal()> 0L)
-			RequestContext.getCurrentInstance().execute("start(" + this.reporte.getTotal() + ")");		
-		else {
-			RequestContext.getCurrentInstance().execute("generalHide();");		
-			JsfBase.addMessage("Generar reporte","No se encontraron registros para el reporte", ETipoMensaje.ALERTA);
+	public boolean doVerificarReporte() {
+    boolean regresar = false;
+		RequestContext rc= RequestContext.getCurrentInstance();
+		if(this.reporte.getTotal()> 0L){
+			rc.execute("start(" + this.reporte.getTotal() + ")");	
+      regresar = true;
+    }
+		else{
+			rc.execute("generalHide();");		
+			JsfBase.addMessage("Reporte", "No se encontraron registros para el reporte", ETipoMensaje.ERROR);
+      regresar = false;
 		} // else
+    return regresar;
 	} // doVerificarReporte	
 	
 	public void doLoadEstatus() {
