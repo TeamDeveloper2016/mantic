@@ -1,15 +1,18 @@
 package mx.org.kaana.libs.facturama.reglas;
 
+import java.sql.Timestamp;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.facturama.models.Client;
 import mx.org.kaana.libs.facturama.models.Product;
+import mx.org.kaana.libs.facturama.models.response.Cfdi;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturamaBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 import org.apache.commons.logging.Log;
@@ -21,11 +24,12 @@ public class TransaccionFactura extends IBaseTnx{
 	private static final Log LOG                 = LogFactory.getLog(TransaccionFactura.class);
 	private static final String REGISTRO_CLIENTE = "REGISTRO DE CLIENTE";
 	private static final String REGISTRO_ARTICULO= "REGISTRO DE ARTICULO";
+	private static final String REGISTRO_CFDI    = "REGISTRO DE CFDI";
 	private ClienteFactura cliente;
 	private ArticuloFactura articulo;	
+	private List<ArticuloFactura> articulos;	
 
-	public TransaccionFactura() {
-		this(null, null);
+	public TransaccionFactura() {		
 	} // Transaccion
 
 	public TransaccionFactura(ClienteFactura cliente) {
@@ -40,6 +44,11 @@ public class TransaccionFactura extends IBaseTnx{
 		this.cliente = cliente;
 		this.articulo= articulo;
 	} // Transaccion
+	
+	public TransaccionFactura(List<ArticuloFactura> articulos, ClienteFactura cliente) {
+		this.cliente  = cliente;
+		this.articulos= articulos;
+	} // Transaccion
 
 	public void setCliente(ClienteFactura cliente) {
 		this.cliente = cliente;
@@ -48,6 +57,10 @@ public class TransaccionFactura extends IBaseTnx{
 	public void setArticulo(ArticuloFactura articulo) {
 		this.articulo = articulo;
 	}	// setArticulo	
+
+	public void setArticulos(List<ArticuloFactura> articulos) {
+		this.articulos = articulos;
+	}		
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
@@ -71,6 +84,9 @@ public class TransaccionFactura extends IBaseTnx{
 					break;
 				case COMPLEMENTAR:
 					regresar= updateArticulo(sesion);
+					break;
+				case TRANSFORMACION:
+					regresar= generarCfdi(sesion);
 					break;
 			} // switch			
 		} // try
@@ -182,13 +198,17 @@ public class TransaccionFactura extends IBaseTnx{
 		return registrarBitacora(sesion, id, error, true);
 	} // registrarBitacora
 	
-	protected boolean registrarBitacora(Session sesion, String id, String error, boolean cliente) throws Exception{
+	protected boolean registrarBitacora(Session sesion, String id, String error, boolean cliente) throws Exception{		
+		return registrarBitacora(sesion, id, error, cliente ? REGISTRO_CLIENTE : REGISTRO_ARTICULO);
+	} // actualizarCliente
+	
+	protected boolean registrarBitacora(Session sesion, String id, String error, String proceso) throws Exception{
 		boolean regresar                     = false;		
 		TcManticFacturamaBitacoraDto bitacora= null;
 		try {
 			bitacora= new TcManticFacturamaBitacoraDto();
 			bitacora.setIdKey(Long.valueOf(id));
-			bitacora.setProceso(cliente ? REGISTRO_CLIENTE : REGISTRO_ARTICULO);
+			bitacora.setProceso(proceso);
 			bitacora.setObservacion(error);
 			bitacora.setCodigo("99");
 			regresar= DaoFactory.getInstance().insert(sesion, bitacora)>= 1L;
@@ -298,6 +318,39 @@ public class TransaccionFactura extends IBaseTnx{
 			articulo= (TcManticArticulosDto) DaoFactory.getInstance().findById(sesion, TcManticArticulosDto.class, Long.valueOf(id));
 			articulo.setIdFacturama(idFacturama);
 			regresar= DaoFactory.getInstance().update(sesion, articulo)>= 1L;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // actualizarCliente
+	
+	public boolean generarCfdi(Session sesion) throws Exception{
+		boolean regresar= false;
+		Cfdi cfdi       = null;
+		try {
+			cfdi= CFDIFactory.getInstance().createCfdi(this.cliente, this.articulos);
+			if(isCorrectId(cfdi.getId()))
+				regresar= actualizarFactura(sesion, this.cliente.getIdFactura(), cfdi);
+			else
+				registrarBitacora(sesion, this.cliente.getIdFactura(), cfdi.getId(), REGISTRO_CFDI);
+		} // try
+		catch (Exception e) {
+			registrarBitacora(sesion, this.articulo.getId(), e.getMessage(), REGISTRO_CFDI);
+			throw e;
+		} // catch		
+		return regresar;
+	} // generarCfdi
+	
+	protected boolean actualizarFactura(Session sesion, String id, Cfdi cfdi) throws Exception{
+		boolean regresar           = false;
+		TcManticFacturasDto factura= null;
+		try {
+			factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, Long.valueOf(id));
+			factura.setIdFacturama(cfdi.getId());
+			factura.setFolio(cfdi.getFolio());
+			factura.setTimbrado(Timestamp.valueOf(cfdi.getDate()));
+			regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;
 		} // try
 		catch (Exception e) {			
 			throw e;
