@@ -119,6 +119,8 @@
                   <p:menuitem id="reporte" icon="fa fa-file-word-o" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doReporte('FACTURAS_FICTICIAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
                   <p:separator/>
                   <p:menuitem id="sincronizar" icon="fa fa-refresh" value="Sincronizar" action="#{manticFacturasFiltro.doSincronizar()}" onstart="return janal.bloquear()"/>
+                  <p:separator/>
+                  <p:menuitem id="facturasPdf" icon="fa fa-file-pdf-o" value="Facturama pdf" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doReporteFacturas('FACTURAS_PDF')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              
@@ -130,6 +132,8 @@
                 <p:menuitem id="reporteIcon" icon="fa fa-file-word-o" title="Listado" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doReporte('FACTURAS_FICTICIAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 <p:separator/>
                 <p:menuitem id="sincronizarIcon" icon="fa fa-refresh" title="Sincronizar" action="#{manticFacturasFiltro.doSincronizar()}" onstart="return janal.bloquear()"/>
+                <p:separator/>
+                <p:menuitem id="facturasPdfIcon" icon="fa fa-file-pdf-o" title="Facturama pdf" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doReporteFacturas('FACTURAS_PDF')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>	            
             <p:column class="MarAuto Responsive" sortBy="#{filtro.empresa}">
