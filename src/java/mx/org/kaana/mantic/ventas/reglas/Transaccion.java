@@ -31,7 +31,6 @@ import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
-import mx.org.kaana.mantic.enums.ETipoVenta;
 import mx.org.kaana.mantic.ventas.beans.ClienteVenta;
 import org.apache.log4j.Logger;
 
