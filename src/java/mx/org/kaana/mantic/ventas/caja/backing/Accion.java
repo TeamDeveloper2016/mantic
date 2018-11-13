@@ -127,10 +127,10 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("contador", 0L);
 			this.attrs.put("creditoVenta", false);
 			this.pagar= false;
-			this.attrs.put("activeApartado", false);
-			this.attrs.put("disabledFacturar", false);			
+			this.attrs.put("activeApartado", false);			
 			this.attrs.put("apartado", false);			
-			this.attrs.put("observaciones", "");			
+			this.attrs.put("observaciones", "");		
+			this.attrs.put("disabledFacturar", false);			
 			this.apartado= new TcManticApartadosDto();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				loadSucursales();							
@@ -414,6 +414,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				this.attrs.put("tabIndex", 0);
 				this.attrs.put("creditoCliente", false);				
 			} // else			
+			validaFacturacion();
 			RequestContext.getCurrentInstance().execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
 			this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
 		} // try
@@ -911,4 +912,24 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 		return regresar;
 	} // toPago
+	
+	private void validaFacturacion() throws Exception{
+		List<Entity> ticketsAbiertos= null;
+		Entity ticketAbierto        = null;
+		MotorBusqueda motor         = null;
+		Entity cliente              = null;		
+		try {
+			motor= new MotorBusqueda(-1L);
+			cliente= motor.toClienteDefault();
+			ticketsAbiertos= (List<Entity>) this.attrs.get("ticketsAbiertos");
+			ticketAbierto= (Entity) this.attrs.get("ticketAbierto");
+			if(ticketAbierto!= null)
+				this.attrs.put("disabledFacturar", cliente.getKey().equals(ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto)).toLong("idCliente")));
+			else
+				this.attrs.put("disabledFacturar", false);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // validaFacturacion
 }
