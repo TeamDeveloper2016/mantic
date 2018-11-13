@@ -1,7 +1,6 @@
 package mx.org.kaana.mantic.ventas.caja.reglas;
 
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -15,6 +14,8 @@ import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
+import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -30,7 +31,6 @@ import mx.org.kaana.mantic.db.dto.TcManticCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresAlertasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresCajasDto;
 import mx.org.kaana.mantic.db.dto.TcManticCierresDto;
-import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
@@ -170,9 +170,10 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 					if(registrarPagos(sesion))					
 						regresar= alterarStockArticulos(sesion);
 				} // if
-				if(this.ventaFinalizada.getApartado()){
+				if(this.ventaFinalizada.getApartado())
 					regresar= registrarApartado(sesion);
-				} // if
+				if(this.ventaFinalizada.isFacturar() && !this.ventaFinalizada.getApartado())
+					generarTimbradoFactura(sesion);
 			} // if
 		} // try
 		catch (Exception e) {			
@@ -516,7 +517,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			} // if			
 			factura.setCorreos(correos.toString());
 			factura.setObservaciones(this.ventaFinalizada.getObservaciones());
-			regresar= DaoFactory.getInstance().insert(sesion, factura)>= 1L;
+			regresar= DaoFactory.getInstance().insert(sesion, factura)>= 1L;			
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -927,4 +928,19 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		} // catch		
 		return regresar;
 	} // actualizaInventario
+	
+	private void generarTimbradoFactura(Session sesion){
+		TransaccionFactura factura= null;
+		CFDIGestor gestor         = null;
+		try {
+			gestor= new CFDIGestor(this.ventaFinalizada.getTicketVenta().getIdVenta());			
+			factura= new TransaccionFactura();
+			factura.setArticulos(gestor.toDetalleCfdiVentas(sesion));
+			factura.setCliente(gestor.toClienteCfdiVenta(sesion));
+			factura.generarCfdi(sesion);			
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+		} // catch				
+	} // generarTimbradoFactura
 }
