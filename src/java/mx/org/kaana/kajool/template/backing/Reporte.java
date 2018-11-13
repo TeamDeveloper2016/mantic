@@ -13,6 +13,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import javax.servlet.ServletContext;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.procesos.reportes.backing.BaseReportes;
@@ -108,7 +109,7 @@ public class Reporte extends BaseReportes implements Serializable{
 		try {
       if(this.ijuntar!= null) 
         regresar= getDescargarVarios();
-        else 
+      else 
         regresar= super.getDescargar();
 		}// try
 		catch (Exception e) {
@@ -134,7 +135,10 @@ public class Reporte extends BaseReportes implements Serializable{
 	public void doAceptar() {
     try {
       if(this.ijuntar!= null)
-        this.doAceptarVarios();
+        if(this.ijuntar.getDefiniciones().size()>1L)
+          this.doAceptarVarios();
+        else
+          this.doAceptarVariosPdf();
       else
         this.doAceptarSimple();
     }
@@ -234,6 +238,35 @@ public class Reporte extends BaseReportes implements Serializable{
 			throw e;
 		} // catch
 	} // doAceptarVarios
+  
+  private void doAceptarVariosPdf() throws Exception {
+    String fileName       = null;
+    JuntarPdfs juntar     = null;
+    List<Entity> facturas = null;
+    try {
+      listaPDFs= new ArrayList<String>();
+      if(this.nombre.equals("")){
+        this.nombre=this.idFormato.toPath().concat(this.fileName.concat(".")).concat(this.idFormato.name().toLowerCase());
+        this.nombre= Cadena.reemplazarCaracter(this.nombre, '/' , File.separatorChar);      
+      } // if
+      fileName   = Archivo.toFormatNameFile(ijuntar.getNombre());
+      this.nombre= EFormatos.PDF.toPath().concat(fileName.concat(".")).concat(EFormatos.PDF.name().toLowerCase());
+      facturas= DaoFactory.getInstance().toEntitySet(this.ijuntar.getDefiniciones().get(0).getProceso(), this.ijuntar.getDefiniciones().get(0).getIdXml(), this.ijuntar.getDefiniciones().get(0).getParams(),Constantes.SQL_TODOS_REGISTROS);
+      for(Entity factura: facturas)
+        listaPDFs.add(factura.toString("alias"));
+      if (RequestContext.getCurrentInstance()!= null)
+        RequestContext.getCurrentInstance().addCallbackParam("janalOK", true); 
+      fileName= Archivo.toFormatNameFile(ijuntar.getNombre());
+      this.nombre= JsfBase.getRealPath("/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.PDF.name())).concat(File.separator).concat(fileName.concat(".")).concat(EFormatos.PDF.name().toLowerCase()));
+      juntar= new JuntarPdfs(listaPDFs, this.nombre, this.ijuntar.getIntercalar());
+      if(!juntar.concatenar()) {
+        throw new RuntimeException(" Ocurrio un error en la generación del reporte. "+ this.nombre);
+      } // if
+		} // try
+		catch(Exception e) {
+			throw e;
+		} // catch
+	} // doAceptarVariosPdf
 	
 	@Override
 	public void doCompleto() {
@@ -257,7 +290,7 @@ public class Reporte extends BaseReportes implements Serializable{
 				zip.setDebug(true);
 				zip.setEliminar(true);
         if(!this.ijuntar.getSeparar())
-          zip.compactar(JsfBase.getRealPath(zipName), JsfBase.getRealPath(EFormatos.PDF.toPath()), getArchivo());
+          zip.compactar(JsfBase.getRealPath("/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.PDF.name()))).concat(File.separator).concat(zipName), JsfBase.getRealPath("/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.PDF.name()))), getArchivo());
         else {
           zip.compactar(JsfBase.getRealPath("/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.PDF.name()))).concat(File.separator).concat(zipName) , JsfBase.getRealPath("/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.PDF.name()))), "*".concat(this.ijuntar.getNombre().concat(".pdf")));
         }
@@ -268,13 +301,8 @@ public class Reporte extends BaseReportes implements Serializable{
 		catch(Exception e) {
 			Error.mensaje(e);
 		} // catch
-    if(!this.ijuntar.getSeparar()){
-      InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream(this.nombre);  
-      return new DefaultStreamedContent(stream, contentType, getArchivo());		
-    }else{
-      InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream("/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.PDF.name())).concat(File.separator).concat(this.nombre));  
-      return new DefaultStreamedContent(stream, contentType, getArchivo());	
-    }
+    InputStream stream= ((ServletContext)FacesContext.getCurrentInstance().getExternalContext().getContext()).getResourceAsStream("/".concat(Constantes.RUTA_TEMPORALES).concat(Cadena.letraCapital(EFormatos.PDF.name())).concat(File.separator).concat(this.nombre));  
+    return new DefaultStreamedContent(stream, contentType, getArchivo());	
 	}
   
   public void clean() {
