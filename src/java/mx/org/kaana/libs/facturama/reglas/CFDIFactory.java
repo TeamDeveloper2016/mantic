@@ -42,7 +42,7 @@ public class CFDIFactory implements Serializable {
   private static final String CURRENCY       = "MXN";
   private static final String METODO_PUE     = "PUE";
   private static final String METODO_PPD     = "PPD";	
-	private static final Boolean PRODUCTION    = true;
+	private static final Boolean PRODUCTION    = false;
 	
 	private FacturamaApi facturama;
 	
@@ -185,7 +185,7 @@ public class CFDIFactory implements Serializable {
 			regresar= new Receiver();
 			regresar.setRfc(encabezado.getRfc());
 			regresar.setName(encabezado.getNombre());
-			regresar.setCfdiUse(encabezado.getUsoCfdi());
+			regresar.setCfdiUse(encabezado.getUsoCfdi().substring(0, 3));
 			//regresar.setCfdiUse("G03");
 		} // try
 		catch (Exception e) {			
