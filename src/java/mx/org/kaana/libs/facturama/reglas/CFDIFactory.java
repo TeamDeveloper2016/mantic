@@ -19,6 +19,7 @@ import mx.org.kaana.libs.facturama.models.request.Tax;
 import mx.org.kaana.libs.facturama.models.response.CfdiSearchResult;
 import mx.org.kaana.libs.facturama.services.CfdiService;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 
@@ -57,7 +58,7 @@ public class CFDIFactory implements Serializable {
   /**
    * Contructor default
    */
-  private CFDIFactory() {
+  private CFDIFactory() {		
 		if(this.PRODUCTION)
 			this.facturama= new FacturamaApi(this.USER, this.PASSWORD, false);
 		else
@@ -88,6 +89,10 @@ public class CFDIFactory implements Serializable {
 
 	public List<CfdiSearchResult> getCfdis() throws FacturamaException, Exception {
 		return this.facturama.Cfdis().List();
+	}
+	
+	public List<CfdiSearchResult> getCfdis(String rfc) throws FacturamaException, Exception {
+		return this.facturama.Cfdis().ListFilterByRfc(rfc);
 	}
 
 	public int toCfdisSize() throws FacturamaException, Exception {
@@ -160,9 +165,10 @@ public class CFDIFactory implements Serializable {
 			regresar= new Cfdi();
 			regresar.setCurrency(CURRENCY);
 			regresar.setExpeditionPlace(encabezado.getCodigoPostal());
-			regresar.setPaymentConditions(encabezado.getObservaciones());
+			regresar.setPaymentConditions(Cadena.isVacio(encabezado.getObservaciones()) ? null : encabezado.getObservaciones());
 			regresar.setCfdiType(CfdiType.Ingreso.getValue());
 			regresar.setPaymentForm(encabezado.getMedioPago());
+			//regresar.setPaymentForm("03");
 			regresar.setPaymentMethod(METODO_PUE);
 			regresar.setReceiver(toReceiver(encabezado));
 			regresar.setItems(detalleFactura(detalle));
@@ -180,6 +186,7 @@ public class CFDIFactory implements Serializable {
 			regresar.setRfc(encabezado.getRfc());
 			regresar.setName(encabezado.getNombre());
 			regresar.setCfdiUse(encabezado.getUsoCfdi());
+			//regresar.setCfdiUse("G03");
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -201,8 +208,8 @@ public class CFDIFactory implements Serializable {
 				articulo.setUnitCode(record.getCodigo());
 				articulo.setUnitPrice(record.getPrecio());
 				articulo.setQuantity(record.getCantidad());
-				articulo.setSubtotal(record.getSubtotal());
-				articulo.setTotal(record.getTotal());				
+				articulo.setSubtotal(Numero.getDouble(Numero.formatear(Numero.NUMERO_CON_DECIMALES, (record.getCantidad() * record.getPrecio()))));
+				articulo.setTotal(Numero.getDouble(Numero.formatear(Numero.NUMERO_CON_DECIMALES,(articulo.getSubtotal() + (articulo.getSubtotal() * (record.getIva()>1 ? record.getIva()/100 : record.getIva()))))));				
 				articulo.setTaxes(toTaxArticulo(record));
 				regresar.add(articulo);
 			} // for
@@ -219,9 +226,9 @@ public class CFDIFactory implements Serializable {
 		try {
 			regresar= new ArrayList<>();
 			taxArticulo= new Tax();
-			taxArticulo.setTotal(articulo.getIva());
+			taxArticulo.setTotal(Numero.getDouble(Numero.formatear(Numero.NUMERO_CON_DECIMALES,(articulo.getCantidad() * articulo.getPrecio()) * (articulo.getIva()>1 ? articulo.getIva()/100 : articulo.getIva()))));
 			taxArticulo.setName(DESCRIPCION_IVA);
-			taxArticulo.setBase(100);
+			taxArticulo.setBase(Numero.getDouble(Numero.formatear(Numero.NUMERO_CON_DECIMALES,(articulo.getCantidad() * articulo.getPrecio()))));
 			taxArticulo.setRate(articulo.getIva()>1 ? articulo.getIva()/100 : articulo.getIva());
 			taxArticulo.setIsRetention(false);
 			regresar.add(taxArticulo);
