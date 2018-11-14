@@ -57,7 +57,8 @@
 	  control     : [9, 13, 17, 27, 38, 40, 220, 118, 121, 122],
 		cursor: {
 			top: 1, // el top debera ser elementos que van de 0 a n-1
-			index: 0
+			index: 0,
+			tmp: 0
 		},
 		init: function(top, content) { // Constructor
 			$articulos= this;
@@ -592,10 +593,10 @@
 		},
 		exists: function(index) {
 			janal.console('jsArticulo.exists: '+ index);
- 		  this.cursor.index= index;
-			this.goto();
+			this.cursor.tmp= index;
 			alert('El articulo ya existe en la orden y se encuentra en la fila '+ (index+ 1)+ '.');
-			setTimeout($articulos.goto(), 1000);
+			setTimeout('$articulos.cursor.index= $articulos.cursor.tmp;$articulos.goto();', 1000);
+			janal.desbloquear();
  		}, 
 		goto: function() {
 			janal.console('jsArticulo.goto: '+ this.name());
@@ -678,7 +679,6 @@
 		close: function() {
 			janal.console('jsArticulo.close: ');
 		  replace(this.cursor.index);
-      this.continue= true;
 			return false;
 		},
 		look: function(name) {
