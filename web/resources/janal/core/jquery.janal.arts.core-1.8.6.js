@@ -397,12 +397,12 @@
 		},
 		index: function(id) {
 			janal.console('jsArticulos.index: '+ this.cursor.index+ ' =>'+ id+ ' =>'+ this.continue);
-			if(!this.continue) {
+			// if(!this.continue) {
 				id= id.replace(/:/gi, '\\:');
 				var start= id.indexOf(this.joker)>= 0? this.joker.length: -1;
 				if(start> 0)
 					this.cursor.index= parseInt(id.substring(start, id.lastIndexOf('\\:')), 10);
-			} // if	
+			// } // if	
 		},
 		move: function() {
 			janal.console('jsArticulos.move: '+ this.name());

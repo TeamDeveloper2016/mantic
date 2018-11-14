@@ -412,6 +412,16 @@
           {condicion}
           {sortOrder}
 			</select>			
+			<select id="entidad">
+				select
+					*
+        from
+          tc_janal_entidades
+				where
+          upper(replace(replace(replace(replace(replace(descripcion, 'á', 'a'), 'é', 'e'), 'í', 'i'), 'ó', 'o'), 'ú', 'u')) regexp '.*{descripcion}.*'
+				order by
+				  clave
+			</select>
 		</unit>
 		<unit id="TcJanalMunicipiosDto">
 			<select id="row">
@@ -436,6 +446,17 @@
 				order by
 				  clave
 			</select>
+			<select id="municipio">
+				select
+					*
+        from
+          tc_janal_municipios
+				where
+				  id_entidad= {idEntidad}
+          and upper(replace(replace(replace(replace(replace(descripcion, 'á', 'a'), 'é', 'e'), 'í', 'i'), 'ó', 'o'), 'ú', 'u')) regexp '.*{descripcion}.*'
+				order by
+				  descripcion
+			</select>
 		</unit>
 		<unit id="TcJanalLocalidadesDto">
 			<select id="row">
@@ -459,6 +480,17 @@
           id_municipio= {idMunicipio}
 				order by
 				  clave
+			</select>
+			<select id="localidad">
+				select
+					*
+        from
+          tc_janal_localidades
+				where
+				  id_municipio= {idMunicipio}
+          and upper(replace(replace(replace(replace(replace(descripcion, 'á', 'a'), 'é', 'e'), 'í', 'i'), 'ó', 'o'), 'ú', 'u')) regexp '.*{descripcion}.*'
+				order by
+				  descripcion
 			</select>
 		</unit>
     <unit id="TrJanalUsuariosDelegaDto">
