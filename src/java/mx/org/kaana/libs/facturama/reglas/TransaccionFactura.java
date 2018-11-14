@@ -9,6 +9,8 @@ import mx.org.kaana.libs.facturama.models.Client;
 import mx.org.kaana.libs.facturama.models.Product;
 import mx.org.kaana.libs.facturama.models.response.Cfdi;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturamaBitacoraDto;
@@ -336,7 +338,7 @@ public class TransaccionFactura extends IBaseTnx{
 				registrarBitacora(sesion, this.cliente.getIdFactura(), cfdi.getId(), REGISTRO_CFDI);
 		} // try
 		catch (Exception e) {
-			registrarBitacora(sesion, this.articulo.getId(), e.getMessage(), REGISTRO_CFDI);
+			registrarBitacora(sesion, this.cliente.getId(), e.getMessage(), REGISTRO_CFDI);
 			throw e;
 		} // catch		
 		return regresar;
@@ -348,12 +350,12 @@ public class TransaccionFactura extends IBaseTnx{
 		try {
 			factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, Long.valueOf(id));
 			factura.setIdFacturama(cfdi.getId());
-			factura.setFolio(cfdi.getFolio());
-			factura.setTimbrado(Timestamp.valueOf(cfdi.getDate()));
+			factura.setFolio(cfdi.getFolio());			
+			factura.setTimbrado(new Timestamp(Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19)).getTimeInMillis()));
 			regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;
 		} // try
 		catch (Exception e) {			
-			throw e;
+			Error.mensaje(e);
 		} // catch		
 		return regresar;
 	} // actualizarCliente
