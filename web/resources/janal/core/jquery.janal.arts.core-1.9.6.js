@@ -592,17 +592,11 @@
 		},
 		exists: function(index) {
 			janal.console('jsArticulo.exists: '+ index);
-			alert('El articulo ya existe en la orden y se encuentra en la fila '+ (index+ 1)+ '.');
-			if(index>= 0 && index< this.cursor.top) {
-				if(index=== 0)
-					this.cursor.index= this.cursor.top;
-				else
-			    this.cursor.index= index- 1;
-				this.continue= true;
-			} // if	
-			janal.console('jsArticulo.exists: '+ this.cursor.index);
+ 		  this.cursor.index= index;
 			this.goto();
-		}, 
+			alert('El articulo ya existe en la orden y se encuentra en la fila '+ (index+ 1)+ '.');
+			setTimeout($articulos.goto(), 1000);
+ 		}, 
 		goto: function() {
 			janal.console('jsArticulo.goto: '+ this.name());
 			if($(this.name())) 
