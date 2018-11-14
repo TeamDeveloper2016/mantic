@@ -601,6 +601,7 @@
 				this.continue= true;
 			} // if	
 			janal.console('jsArticulo.exists: '+ this.cursor.index);
+			this.goto();
 		}, 
 		goto: function() {
 			janal.console('jsArticulo.goto: '+ this.name());
