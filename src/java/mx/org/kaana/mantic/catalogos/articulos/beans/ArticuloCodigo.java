@@ -45,7 +45,7 @@ public class ArticuloCodigo extends TcManticArticulosCodigosDto implements Seria
 	}
 
 	public Boolean getPrincipal() {
-		return getIdPrincipal()!= null && getIdPrincipal().equals(1L);
+		return getIdPrincipal().equals(1L);
 	}
 
 	public void setPrincipal(Boolean principal) {
