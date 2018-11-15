@@ -54,7 +54,7 @@ public class TcManticArticulosCodigosDto implements IBaseDto, Serializable {
   }
 
   public TcManticArticulosCodigosDto(Long key) {
-    this(null, null, null, null, null, new Long(-1L), null, null);
+    this(null, null, null, 2L, null, new Long(-1L), null, null);
     setKey(key);
   }
 
