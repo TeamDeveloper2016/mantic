@@ -130,7 +130,7 @@ public class Transaccion extends Inventarios implements Serializable {
 		List<Articulo> todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "VistaOrdenesComprasDto", "detalle", this.orden.toMap());
 		for (Articulo item: todos) 
 			if(this.articulos.indexOf(item)< 0)
-				DaoFactory.getInstance().delete(sesion, item);
+				DaoFactory.getInstance().delete(sesion, item.toOrdenDetalle());
 		for (Articulo articulo: this.articulos) {
 			TcManticOrdenesDetallesDto item= articulo.toOrdenDetalle();
 			item.setIdOrdenCompra(this.orden.getIdOrdenCompra());
