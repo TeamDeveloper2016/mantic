@@ -1395,7 +1395,7 @@
           id_servicio_estatus = {idServicioEstatus} and id_servicio = {idServicio} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
       </select>
 			<delete id="rows">
-        delte from tc_mantic_servicios_bitacora where id_servicio= {idServicio} 
+        delete from tc_mantic_servicios_bitacora where id_servicio= {idServicio} 
       </delete>
     </unit>		
     <unit id="TcManticServiciosDetallesDto">
@@ -1427,7 +1427,7 @@
 				  tc_mantic_servicios_detalles.registro
       </select>
 			<delete id="rows">
-        delte from tc_mantic_servicios_detalles where id_servicio= {idServicio} 
+        delete from tc_mantic_servicios_detalles where id_servicio= {idServicio} 
       </delete>
     </unit>		
     <unit id="TcManticServiciosEstatusDto">
@@ -1498,7 +1498,7 @@
           tc_mantic_inventarios
       </select>
 			<delete id="rows">
-        delte from tc_mantic_inventarios where id_inventario = {idInventario}
+        delete from tc_mantic_inventarios where id_inventario = {idInventario}
       </delete>
     </unit>		
     <unit id="TcManticArticulosBitacoraDto">
@@ -1661,7 +1661,7 @@
 				  registro
       </select>
 			<delete id="rows">
-        delte from tr_mantic_articulo_precio_sugerido where id_articulo= {idArticulo} 
+        delete from tr_mantic_articulo_precio_sugerido where id_articulo= {idArticulo} 
       </delete>
     </unit>    
      <unit id="TrManticAlmacenDomicilioDto">
@@ -1688,7 +1688,7 @@
           tr_mantic_almacen_domicilio
       </select>
 			<delete id="rows">
-        delte from tr_mantic_almacen_domicilio where id_almacen = {idAlmacen}
+        delete from tr_mantic_almacen_domicilio where id_almacen = {idAlmacen}
       </delete>
     </unit>    
     <unit id="TrManticAlmacenTipoContactoDto">
@@ -1715,7 +1715,7 @@
           tr_mantic_almacen_tipo_contacto
       </select>
 			<delete id="rows">
-        delte from tr_mantic_almacen_tipo_contacto where id_almacen = {idAlmacen}
+        delete from tr_mantic_almacen_tipo_contacto where id_almacen = {idAlmacen}
       </delete>
     </unit>
     <unit id="TrManticArticuloCodigoDto">
@@ -1754,6 +1754,9 @@
         where      
           id_articulo_presentacion = {idArticuloPresentacion} and id_articulo = {idArticulo} and id_presentacion_unidad_medida = {idPresentacionUnidadMedida}
       </select>
+			<delete id="rows">
+        delete from tr_mantic_articulo_presentacion where id_articulo= {idArticulo} 
+      </delete>
     </unit>
     
      <unit id="TrManticArticuloProveedorDto">
@@ -2680,7 +2683,7 @@
 					and id_articulo= {idArticulo}
 			</select>
 			<delete id="rows">
-        delte from tc_mantic_almacenes_articulos where id_almacen={idAlmacen} 
+        delete from tc_mantic_almacenes_articulos where id_almacen={idAlmacen} 
       </delete>
     </unit>
 		<unit id="TcManticProveedoresBancosDto">
@@ -2708,7 +2711,7 @@
           tc_mantic_proveedores_bancos
       </select>
 			<delete id="rows">
-        delte from tc_mantic_proveedores_bancos where id_proveedor={idProveedor} 
+        delete from tc_mantic_proveedores_bancos where id_proveedor={idProveedor} 
       </delete>
     </unit>
 		<unit id="TcManticProveedoresPortalesDto">
@@ -2736,7 +2739,7 @@
           tc_mantic_proveedores_portales
       </select>
 			<delete id="rows">
-        delte from tc_mantic_proveedores_portales where id_proveedor={idProveedor} 
+        delete from tc_mantic_proveedores_portales where id_proveedor={idProveedor} 
       </delete>
     </unit>
 	  <unit id="TcManticAlmacenesUbicacionesDto">
@@ -2782,7 +2785,7 @@
 				  and piso= 'GENERAL'
 			</select>
 			<delete id="rows">
-        delte from tc_mantic_almacenes_ubicaciones where id_almacen={idAlmacen} 
+        delete from tc_mantic_almacenes_ubicaciones where id_almacen={idAlmacen} 
       </delete>
     </unit>	    
 	  <unit id="TcManticCargosComprasDto">
@@ -3814,7 +3817,7 @@
           tr_mantic_articulo_grupo_descuento
       </select>
 			<delete id="rows">
-        delte from tr_mantic_articulo_grupo_descuento where id_articulo={idArticulo} 
+        delete from tr_mantic_articulo_grupo_descuento where id_articulo={idArticulo} 
       </delete>
     </unit>    		
     <unit id="TcManticOrdenesBitacoraDto">
