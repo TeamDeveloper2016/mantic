@@ -562,7 +562,7 @@
 										<f:setPropertyActionListener value="#{manticComprasOrdendesAccion.adminOrden.orden.ikAlmacen}" target="#{manticComprasOrdendesAccion.attrs.idAlmacen}" />
 										<f:setPropertyActionListener value="#{manticComprasOrdendesAccion.adminOrden.orden.ikProveedor}" target="#{manticComprasOrdendesAccion.attrs.idProveedor}" />
 									</p:commandButton>
-								</p:column>
+								</p:column>								
 							</p:dataTable>
 						</p:tab>
 						<p:tab title="Ventas perdidas">
@@ -609,6 +609,11 @@
 								<p:column style="width:38px; text-align: center">
 									<p:commandButton process="@this" update="perdidos @(.filas) @(.recalculo)" icon="fa fa-plus" title="Agregar el articulo a la orden de compra" action="#{manticComprasOrdendesAccion.doAgregarPerdido}">
 										<f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.perdido}" />
+									</p:commandButton>
+								</p:column>
+								<p:column style="width:38px; text-align: center">
+									<p:commandButton update="perdidos @(.filas) @(.recalculo)" icon="fa fa-close" title="Eliminar" action="#{manticComprasOrdendesAccion.doEliminarPerdido}">
+										<f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.perdidoRemove}" />										
 									</p:commandButton>
 								</p:column>
 								<f:facet name="footer">
