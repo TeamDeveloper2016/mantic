@@ -43,15 +43,16 @@ public class Transaccion extends Inventarios implements Serializable {
 	private List<Articulo> articulos;
 	private String messageError;
 	private TcManticOrdenesBitacoraDto bitacora;
+	private Long idFaltante;
 
 	public Transaccion(TcManticOrdenesComprasDto orden, TcManticOrdenesBitacoraDto bitacora) {
 		this(orden);
 		this.bitacora= bitacora;
-	}
+	} // Transaccion
 	
 	public Transaccion(TcManticOrdenesComprasDto orden) {
 		this(orden, new ArrayList<Articulo>());
-	}
+	} // Transaccion
 
 	public Transaccion(TcManticOrdenesComprasDto orden, List<Articulo> articulos) {
 		super(orden.getIdAlmacen(), orden.getIdProveedor());
@@ -59,9 +60,14 @@ public class Transaccion extends Inventarios implements Serializable {
 		this.articulos= articulos;
 	} // Transaccion
 
+	public Transaccion(Long idFaltante) {
+		super(-1L, -1L);
+		this.idFaltante= idFaltante;
+	} // Transaccion
+	
 	public String getMessageError() {
 		return messageError;
-	}
+	} // getMessageError
 
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
@@ -114,6 +120,9 @@ public class Transaccion extends Inventarios implements Serializable {
 							this.toCommonNotaEntrada(sesion, -1L, this.orden.toMap());
 					} // if
 					break;
+				case DEPURAR:
+					regresar= DaoFactory.getInstance().delete(sesion, TcManticFaltantesDto.class, this.idFaltante)>= 1L;
+					break;
 			} // switch
 			if(!regresar)
         throw new Exception("");
@@ -122,7 +131,8 @@ public class Transaccion extends Inventarios implements Serializable {
 			Error.mensaje(e);
 			throw new Exception(this.messageError.concat("\n\n")+ e.getMessage());
 		} // catch		
-		LOG.info("Se genero de forma correcta la orden: "+ this.orden.getConsecutivo());
+		if(this.orden!= null)
+			LOG.info("Se genero de forma correcta la orden: "+ this.orden.getConsecutivo());
 		return regresar;
 	}	// ejecutar
 
