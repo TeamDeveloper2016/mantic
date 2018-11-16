@@ -321,5 +321,22 @@ public class Accion extends IBaseArticulos implements Serializable {
       this.doUpdatePorcentaje();
 		} // if
 	}	
+
+	public void doEliminarPerdido() {
+		Transaccion transaccion= null;
+		try {
+			UISelectEntity perdido= (UISelectEntity)this.attrs.get("perdidoRemove");   		
+			transaccion= new Transaccion(perdido.getKey());
+			if(transaccion.ejecutar(EAccion.DEPURAR)){
+				List<UISelectEntity> perdidos= (List<UISelectEntity>)this.attrs.get("perdidos");
+				perdidos.remove(perdidos.indexOf(perdido));
+				this.attrs.put("perdidos", perdidos);
+			} // if
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	}
 	
 }
