@@ -47,7 +47,7 @@
 	  			$(jsArticulos.price()).removeClass('ignore');
 				} // if	
 				return ok;
-			}
+			} // execute			
 		</script>   
 	</ui:define>
 	<ui:define name="contenido">
@@ -86,7 +86,7 @@
 			<pe:methodSignature parameters="java.lang.Long, java.lang.Integer"/>  
 			<pe:methodParam name="idArticulo"/>  
 			<pe:methodParam name="index"/>  
-		</pe:remoteCommand>		
+		</pe:remoteCommand>				
 		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
@@ -197,10 +197,10 @@
 											<p:outputLabel for="sinIva" value="Los precios incluyen IVA:"/>
 											<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100">
 												<p:inputSwitch id="sinIva" widgetVar="widgetSinIva" value="#{manticComprasOrdendesAccion.attrs.sinIva}" onLabel="SI" offLabel="NO">
-													 <p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.filas) @(.recalculo)"/>
+													<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doUpdateIvaTipoDeCambio}" process="@this" update="@(.filas) @(.recalculo)"/>
 												</p:inputSwitch>
 												<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();" style="float:right;">
-													<f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{null}"/>
+													<f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{manticComprasOrdendesAccion.attrs.seleccionado}"/>
 												</p:commandButton> 
 											</p:panelGrid>	
 											<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-100"/>
@@ -223,13 +223,13 @@
 												</p:inputText>
 											</p:panelGrid>	 
 										</p:panelGrid>	
-										<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticComprasOrdendesAccion.adminOrden.articulos}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">
+										<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticComprasOrdendesAccion.adminOrden.articulos}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">											
 											<p:column class="MarAuto Responsive janal-wid-3">
 												<f:facet name="header">
 													<h:outputText value="No."/>
 												</f:facet>
 												<h:outputText value="#{index+ 1}.-"/>
-											</p:column>		
+											</p:column>													
 											<p:column  class="MarAuto Responsive janal-wid-12">
 												<f:facet name="header">
                           <p:selectBooleanCheckbox value="#{manticComprasOrdendesAccion.attrs.buscaPorCodigo}" title="Buscar por código" styleClass="filas">
@@ -683,7 +683,7 @@
 	<ui:define name="dialogos">
 		<ui:include src="/Paginas/Mantic/Catalogos/Articulos/express.xhtml">
 			<ui:param name="dialogo" value="articulos"/>
-			<ui:param name="seleccionado" value="#{null}"/>
+			<ui:param name="seleccionado" value="#{manticComprasOrdendesAccion.attrs.seleccionado}"/>
 		</ui:include>
 		<p:dialog id="dialogoDetalleArticulo" widgetVar="dlgDetalleArticulo" header="Articulo [#{manticComprasOrdendesAccion.attrs.detailArticulo.codigo}]" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear(); setTimeout('jsArticulos.goto();', 1000);" width="70%">			
 			<p:tabView id="tabDetalleArticulo">
