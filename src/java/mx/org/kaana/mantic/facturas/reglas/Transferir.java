@@ -26,10 +26,12 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
+import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
+import mx.org.kaana.mantic.db.dto.TrManticClienteDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import org.apache.log4j.Logger;
 
@@ -152,6 +154,83 @@ public class Transferir extends IBaseTnx {
 		return regresar;
 	}
 	
+	private Long toFindEntidad(Session sesion, String entidad) throws Exception {
+		Long regresar= -1L;
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("descripcion", entidad.toUpperCase().replaceAll("(,| |\\t)+", ".*.*"));
+			Value value= DaoFactory.getInstance().toField(sesion, "TcJanalEntidadesDto", "entidad", params, "idEntidad");
+			if(value!= null && value.getData()!= null)
+				regresar= value.toLong();
+			else {
+				value= DaoFactory.getInstance().toField(sesion, "TcJanalEntidadesDto", "primero", params, "idEntidad");
+  			if(value!= null && value.getData()!= null)
+	  			regresar= value.toLong();
+			} // else
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+
+	private Long toFindMunicipio(Session sesion, Long idEntidad, String municipio) throws Exception {
+		Long regresar= -1L;
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("idEntidad", idEntidad);
+			params.put("descripcion", municipio.toUpperCase().replaceAll("(,| |\\t)+", ".*.*"));
+			Value value= DaoFactory.getInstance().toField(sesion, "TcJanalMunicipiosDto", "municipio", params, "idMunicipio");
+			if(value!= null && value.getData()!= null)
+				regresar= value.toLong();
+			else {
+				value= DaoFactory.getInstance().toField(sesion, "TcJanalMunicipiosDto", "primero", params, "idMunicipio");
+  			if(value!= null && value.getData()!= null)
+	  			regresar= value.toLong();
+			} // else
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+	
+	private Long toFindLocalidad(Session sesion, Long idMunicipio, String localidad) throws Exception {
+		Long regresar= -1L;
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("idMunicipio", idMunicipio);
+			params.put("descripcion", localidad!= null? localidad.toUpperCase().replaceAll("(,| |\\t)+", ".*.*"): "XYZ");
+			Value value= DaoFactory.getInstance().toField(sesion, "TcJanalLocalidadesDto", "localidad", params, "idLocalidad");
+			if(value!= null && value.getData()!= null)
+				regresar= value.toLong();
+			else {
+				value= DaoFactory.getInstance().toField(sesion, "TcJanalLocalidadesDto", "primero", params, "idLocalidad");
+  			if(value!= null && value.getData()!= null)
+	  			regresar= value.toLong();
+			} // else
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+
 	private Long toCliente(Session sesion, String rfc) throws Exception {
 		Long regresar             = -1L;
 		Map<String, Object> params= null;
@@ -217,8 +296,47 @@ public class Transferir extends IBaseTnx {
 						11L // Long idTipoContacto
 					);
 					DaoFactory.getInstance().insert(sesion, contacto);
-					// client.getAddress().
 				} // if
+					
+				  Long idEntidad  = this.toFindEntidad(sesion, client.getAddress().getState());
+			    Long idMunicipio= this.toFindMunicipio(sesion, idEntidad, client.getAddress().getMunicipality());
+			    Long idLocalidad= this.toFindLocalidad(sesion, idMunicipio, client.getAddress().getLocality());
+					TcManticDomiciliosDto domicilio= new TcManticDomiciliosDto(
+					  client.getAddress().getNeighborhood(), // String asentamiento, 
+						idLocalidad, // Long idLocalidad, 
+						client.getAddress().getZipCode(), // String codigoPostal, 
+						null, // String latitud, 
+						"", // String entreCalle, 
+						client.getAddress().getStreet(), // String calle, 
+						-1L, // Long idDomicilio, 
+						client.getAddress().getInteriorNumber(), // String numeroInterior,  
+						"", // String ycalle, 
+						null, // String longitud, 
+						client.getAddress().getExteriorNumber(), // String numeroExterior, 
+						JsfBase.getIdUsuario(), // Long idUsuario, 
+						"" // String observaciones
+					);
+					DaoFactory.getInstance().insert(sesion, domicilio);
+					TrManticClienteDomicilioDto particular= new TrManticClienteDomicilioDto(
+					  cliente.getIdCliente(), // Long idCliente, 
+					  -1L, // Long idClienteDomicilio, 
+						JsfBase.getIdUsuario(), // Long idUsuario, 
+						1L, // Long idTipoDomicilio, 
+						domicilio.getIdDomicilio(), // Long idDomicilio, 
+						1L, // Long idPrincipal, 
+						"" // String observaciones
+					);
+					DaoFactory.getInstance().insert(sesion, particular);
+					particular= new TrManticClienteDomicilioDto(
+					  cliente.getIdCliente(), // Long idCliente, 
+					  -1L, // Long idClienteDomicilio, 
+						JsfBase.getIdUsuario(), // Long idUsuario, 
+						2L, // Long idTipoDomicilio, 
+						domicilio.getIdDomicilio(), // Long idDomicilio, 
+						1L, // Long idPrincipal, 
+						"" // String observaciones
+					);
+					DaoFactory.getInstance().insert(sesion, particular);
 				regresar= cliente.getIdCliente();
 			} // if
 		} // try

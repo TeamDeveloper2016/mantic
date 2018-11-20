@@ -340,4 +340,14 @@ public class Accion extends IBaseArticulos implements Serializable {
 			JsfBase.addMessageError(e);
     } // catch   
 	}	
+	
+	@Override
+  public void doFindArticulo(Integer index) {
+		super.doFindArticulo(index);
+		List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");
+		int position= articulos.indexOf((UISelectEntity)this.attrs.get("articulo"));
+		if(position>= 0)
+      this.attrs.put("seleccionado", articulos.get(position));
+	}
+	
 }

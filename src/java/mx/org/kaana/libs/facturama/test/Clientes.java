@@ -38,6 +38,11 @@ public class Clientes {
 			Value value= DaoFactory.getInstance().toField("TcJanalEntidadesDto", "entidad", params, "idEntidad");
 			if(value!= null && value.getData()!= null)
 				regresar= value.toLong();
+			else {
+				value= DaoFactory.getInstance().toField("TcJanalEntidadesDto", "primero", params, "idEntidad");
+  			if(value!= null && value.getData()!= null)
+	  			regresar= value.toLong();
+			} // else
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -59,6 +64,11 @@ public class Clientes {
 			Value value= DaoFactory.getInstance().toField("TcJanalMunicipiosDto", "municipio", params, "idMunicipio");
 			if(value!= null && value.getData()!= null)
 				regresar= value.toLong();
+			else {
+				value= DaoFactory.getInstance().toField("TcJanalMunicipiosDto", "primero", params, "idMunicipio");
+  			if(value!= null && value.getData()!= null)
+	  			regresar= value.toLong();
+			} // else
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -77,9 +87,14 @@ public class Clientes {
 			params=new HashMap<>();
 			params.put("idMunicipio", idMunicipio);
 			params.put("descripcion", localidad!= null? localidad.toUpperCase().replaceAll("(,| |\\t)+", ".*.*"): "XYZ");
-			Value value= DaoFactory.getInstance().toField("TcJanalLocalidadesDto", "localidad", params, "idMunicipio");
+			Value value= DaoFactory.getInstance().toField("TcJanalLocalidadesDto", "localidad", params, "idLocalidad");
 			if(value!= null && value.getData()!= null)
 				regresar= value.toLong();
+			else {
+				value= DaoFactory.getInstance().toField("TcJanalLocalidadesDto", "primero", params, "idLocalidad");
+  			if(value!= null && value.getData()!= null)
+	  			regresar= value.toLong();
+			} // else
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -92,33 +107,34 @@ public class Clientes {
 	}
 	
 	public static void main(String[] args) throws Exception {
-//		List<CfdiSearchResult> cfdis= CFDIFactory.getInstance().getCfdis();
-//		List<Client> clients        =	CFDIFactory.getInstance().getClients();
-//		Collections.sort(cfdis);
-//		int count= 0;
-//		StringBuffer ent= new StringBuffer();
-//		StringBuffer mun= new StringBuffer();
-//		StringBuffer loc= new StringBuffer();
-//		for (CfdiSearchResult cfdi : cfdis) {
-//			Client client= clients.get(clients.indexOf(new Client(cfdi.getRfc())));
-//			//LOG.warn(++count+ ".- "+ cfdi.getDate()+ " -> "+ client.getName()+ "  ["+ client.getRfc()+ "]");
-//			Long idEntidad  = toFindEntidad(client.getAddress().getState());
-//			Long idMunicipio= toFindMunicipio(idEntidad, client.getAddress().getMunicipality());
-//			Long idLocalidad= toFindLocalidad(idMunicipio, client.getAddress().getLocality());
-//			LOG.warn(idEntidad+ " ["+ client.getAddress().getState()+ "], "+ idMunicipio+ " ["+ client.getAddress().getMunicipality()+ "], "+ idLocalidad+ "["+ client.getAddress().getLocality()+ "]");
-//			//LOG.warn(client.getAddress().getState()+ " - "+ client.getAddress().getMunicipality()+ " - "+ client.getAddress().getLocality()+ " - "+ client.getAddress().getNeighborhood());
-//			// break;
-//			if(idEntidad< 0L)
-//				ent.append(client.getAddress().getState()).append(", ");
-//			if(idMunicipio< 0L)
-//				mun.append(client.getAddress().getMunicipality()).append(", ");
-//			if(idLocalidad< 0L)
-//				loc.append(client.getAddress().getLocality()).append(", ");
-//		} // for
-//		LOG.info("Municipios que no existen: ["+ mun.toString()+ "] Ok.");
-//		LOG.info("Localidades que no existen: ["+ loc.toString()+ "] Ok.");
+		List<CfdiSearchResult> cfdis= CFDIFactory.getInstance().getCfdis();
+		List<Client> clients        =	CFDIFactory.getInstance().getClients();
+		Collections.sort(cfdis);
+		int count= 0;
+		StringBuilder ent= new StringBuilder();
+		StringBuilder mun= new StringBuilder();
+		StringBuilder loc= new StringBuilder();
+		for (CfdiSearchResult cfdi : cfdis) {
+			Client client= clients.get(clients.indexOf(new Client(cfdi.getRfc())));
+			//LOG.warn(++count+ ".- "+ cfdi.getDate()+ " -> "+ client.getName()+ "  ["+ client.getRfc()+ "]");
+			Long idEntidad  = toFindEntidad(client.getAddress().getState());
+			Long idMunicipio= toFindMunicipio(idEntidad, client.getAddress().getMunicipality());
+			Long idLocalidad= toFindLocalidad(idMunicipio, client.getAddress().getLocality());
+			LOG.warn(idEntidad+ " ["+ client.getAddress().getState()+ "], "+ idMunicipio+ " ["+ client.getAddress().getMunicipality()+ "], "+ idLocalidad+ "["+ client.getAddress().getLocality()+ "]");
+			//LOG.warn(client.getAddress().getState()+ " - "+ client.getAddress().getMunicipality()+ " - "+ client.getAddress().getLocality()+ " - "+ client.getAddress().getNeighborhood());
+			// break;
+			if(idEntidad< 0L)
+				ent.append(client.getAddress().getState()).append(", ");
+			if(idMunicipio< 0L)
+				mun.append(client.getAddress().getMunicipality()).append(", ");
+			if(idLocalidad< 0L)
+				loc.append(client.getAddress().getLocality()).append(", ");
+		} // for
+		LOG.info("Entidades que no existen: ["+ ent.toString()+ "]");
+		LOG.info("Municipios que no existen: ["+ mun.toString()+ "]");
+		LOG.info("Localidades que no existen: ["+ loc.toString()+ "]");
+		LOG.info("Ok");
 
-			LOG.info("XYZ".toUpperCase().replaceAll("(,| |\\t)+", ".*.*"));
 	}
 
 }

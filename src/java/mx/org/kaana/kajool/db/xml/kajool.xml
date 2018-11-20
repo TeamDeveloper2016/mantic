@@ -422,6 +422,16 @@
 				order by
 				  clave
 			</select>
+			<select id="primero">
+				select
+					*
+        from
+          tc_janal_entidades
+				where
+          clave>= '01'
+				order by
+				  clave
+			</select>
 		</unit>
 		<unit id="TcJanalMunicipiosDto">
 			<select id="row">
@@ -457,6 +467,17 @@
 				order by
 				  descripcion
 			</select>
+			<select id="primero">
+				select
+					*
+        from
+          tc_janal_municipios
+				where
+				  id_entidad= {idEntidad}
+          and clave>= '001'
+				order by
+				  clave
+			</select>
 		</unit>
 		<unit id="TcJanalLocalidadesDto">
 			<select id="row">
@@ -491,6 +512,17 @@
           and upper(replace(replace(replace(replace(replace(descripcion, 'á', 'a'), 'é', 'e'), 'í', 'i'), 'ó', 'o'), 'ú', 'u')) regexp '.*{descripcion}.*'
 				order by
 				  descripcion
+			</select>
+			<select id="primero">
+				select
+					*
+        from
+          tc_janal_localidades
+				where
+				  id_municipio= {idMunicipio}
+          and clave>= '0001'
+				order by
+				  clave
 			</select>
 		</unit>
     <unit id="TrJanalUsuariosDelegaDto">
