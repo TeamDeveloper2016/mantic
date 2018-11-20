@@ -64,6 +64,7 @@ public class Accion extends IBaseArticulos implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
 			this.attrs.put("buscaPorCodigo", false);
+			this.attrs.put("seleccionado", null);
 			doLoad();
     } // try
     catch (Exception e) {
@@ -185,11 +186,12 @@ public class Accion extends IBaseArticulos implements Serializable {
   		params.put("idProveedor", proveedor.getKey());
       this.attrs.put("condiciones", UIEntity.build("VistaOrdenesComprasDto", "condiciones", params, columns));
 			List<UISelectEntity> condiciones= (List<UISelectEntity>) this.attrs.get("condiciones");
-			if(!condiciones.isEmpty()) {
-        ((OrdenCompra)this.getAdminOrden().getOrden()).setDescuento(condiciones.get(0).toString("descuento"));
-        this.doUpdatePorcentaje();
-				if(this.accion.equals(EAccion.AGREGAR))
+			if(!condiciones.isEmpty()) {        
+				if(this.accion.equals(EAccion.AGREGAR)){
+					((OrdenCompra)this.getAdminOrden().getOrden()).setDescuento(condiciones.get(0).toString("descuento"));
+					this.doUpdatePorcentaje();
 				  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkProveedorPago(condiciones.get(0));
+				} // if
 				else
 				  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkProveedorPago(condiciones.get(condiciones.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkProveedorPago())));
 			} // if	
@@ -337,6 +339,5 @@ public class Accion extends IBaseArticulos implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
     } // catch   
-	}
-	
+	}	
 }
