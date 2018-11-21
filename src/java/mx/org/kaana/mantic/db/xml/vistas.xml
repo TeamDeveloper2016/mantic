@@ -1745,7 +1745,7 @@
 				left join
 					tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_cliente_domicilio.id_domicilio
 				where   
-					{condicion}
+					({condicion})
 				  and tc_mantic_clientes.id_empresa in ({idEmpresa})
 				order by
 				  tc_mantic_clientes.rfc 
