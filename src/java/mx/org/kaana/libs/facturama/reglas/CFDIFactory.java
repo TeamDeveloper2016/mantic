@@ -20,6 +20,7 @@ import mx.org.kaana.libs.facturama.models.response.CfdiSearchResult;
 import mx.org.kaana.libs.facturama.services.CfdiService;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 
@@ -59,11 +60,13 @@ public class CFDIFactory implements Serializable {
    * Contructor default
    */
   private CFDIFactory() {		
-		if(this.PRODUCTION)
+		if (Configuracion.getInstance().isEtapaProduccion())
 			this.facturama= new FacturamaApi(this.USER, this.PASSWORD, false);
-		else
+		else if (Configuracion.getInstance().isEtapaPruebas())
 			this.facturama= new FacturamaApi(this.USER_PU, this.PASSWORD_PU, true);
-  }
+		else
+			this.facturama= new FacturamaApi();
+  } // CFDIFactory
 
   /**
    * Devuelve la instancia de la clase.
