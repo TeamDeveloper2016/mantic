@@ -96,7 +96,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				temporal.setIdProveedor(this.adminOrden.getIdProveedor());
 				temporal.setIdRedondear(articulo.toLong("idRedondear"));
 				Value codigo= (Value)DaoFactory.getInstance().toField("TcManticArticulosCodigosDto", "codigo", params, "codigo");
-				temporal.setCodigo(codigo== null? articulo.toString("codigo"): codigo.toString());
+				temporal.setCodigo(codigo== null? articulo.containsKey("codigo")? articulo.toString("codigo"): "": codigo.toString());
 				temporal.setPropio(articulo.toString("propio"));
 				temporal.setNombre(articulo.toString("nombre"));
 				temporal.setValor(articulo.toDouble(this.precio));
