@@ -22,6 +22,7 @@ public class Empresa implements Serializable {
   private String nombreCorto;
   private String titulo;
   private String sucursales;
+  private String dependencias;
 	private String ticket;
 	private String clave;
 
@@ -30,10 +31,10 @@ public class Empresa implements Serializable {
   }     
 
   public Empresa(Long idEmpresa, Long idEmpresaDepende, Long idTipoEmpresa, String nombre, String nombreCorto, String titulo, String sucursales) {
-		this(idEmpresa, idEmpresaDepende, idTipoEmpresa, nombre, nombreCorto, titulo, sucursales, "", "");
+		this(idEmpresa, idEmpresaDepende, idTipoEmpresa, nombre, nombreCorto, titulo, sucursales, "", "", "");
 	}
 	
-  public Empresa(Long idEmpresa, Long idEmpresaDepende, Long idTipoEmpresa, String nombre, String nombreCorto, String titulo, String sucursales, String ticket, String clave) {
+  public Empresa(Long idEmpresa, Long idEmpresaDepende, Long idTipoEmpresa, String nombre, String nombreCorto, String titulo, String sucursales, String ticket, String clave, String dependencias) {
     this.nombre          = nombre;
     this.idEmpresa       = idEmpresa;
     this.idEmpresaDepende= idEmpresaDepende;
@@ -43,6 +44,7 @@ public class Empresa implements Serializable {
     this.titulo          = titulo;
 		this.ticket          = ticket;
 		this.clave           = clave;
+		this.dependencias    = dependencias;
   }
 
   public Long getIdEmpresaDepende() {
@@ -119,6 +121,14 @@ public class Empresa implements Serializable {
 
 	public void setClave(String clave) {
 		this.clave = clave;
+	}	
+
+	public String getDependencias() {
+		return dependencias;
+	}
+
+	public void setDependencias(String dependencias) {
+		this.dependencias = dependencias;
 	}	
 	
   @Override
