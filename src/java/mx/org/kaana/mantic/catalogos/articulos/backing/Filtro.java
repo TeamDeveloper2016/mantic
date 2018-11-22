@@ -55,8 +55,10 @@ public class Filtro extends Comun implements Serializable {
     try {
       campos = new ArrayList<>();
       campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			if(this.attrs.get("nombre")!= null)
-				this.attrs.put("expresion", ((String)this.attrs.get("nombre")).toUpperCase().replaceAll("(,| |\\t)+", ".*.*"));
+			if(this.attrs.get("nombre")!= null) {
+				String codigo= ((String)this.attrs.get("nombre")).replaceAll(Constantes.CLEAN_SQL, "").trim();
+				this.attrs.put("expresion", codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*"));
+			} // if
 			else
 				this.attrs.put("expresion", "A");
       this.lazyModel = new FormatCustomLazy("VistaArticulosDto", "row", this.attrs, campos);
@@ -166,6 +168,7 @@ public class Filtro extends Comun implements Serializable {
   		params.put("idProveedor", -1L);
 			String search= (String)this.attrs.get("codigo"); 
 			if(!Cadena.isVacio(search)) {
+  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
 				buscaPorCodigo= search.startsWith(".");
 				if(buscaPorCodigo)
 					search= search.trim().substring(1);

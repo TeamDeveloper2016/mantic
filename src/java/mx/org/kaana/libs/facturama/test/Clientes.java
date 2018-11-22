@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.models.Client;
 import mx.org.kaana.libs.facturama.models.response.CfdiSearchResult;
 import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
@@ -34,7 +35,8 @@ public class Clientes {
 		Map<String, Object> params=null;
 		try {
 			params=new HashMap<>();
-			params.put("descripcion", entidad.toUpperCase().replaceAll("(,| |\\t)+", ".*.*"));
+			String codigo= entidad.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim();
+			params.put("descripcion", codigo.replaceAll("(,| |\\t)+", ".*.*"));
 			Value value= DaoFactory.getInstance().toField("TcJanalEntidadesDto", "entidad", params, "idEntidad");
 			if(value!= null && value.getData()!= null)
 				regresar= value.toLong();
@@ -60,7 +62,8 @@ public class Clientes {
 		try {
 			params=new HashMap<>();
 			params.put("idEntidad", idEntidad);
-			params.put("descripcion", municipio.toUpperCase().replaceAll("(,| |\\t)+", ".*.*"));
+			String codigo= municipio.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim();
+			params.put("descripcion", codigo.replaceAll("(,| |\\t)+", ".*.*"));
 			Value value= DaoFactory.getInstance().toField("TcJanalMunicipiosDto", "municipio", params, "idMunicipio");
 			if(value!= null && value.getData()!= null)
 				regresar= value.toLong();
@@ -86,7 +89,7 @@ public class Clientes {
 		try {
 			params=new HashMap<>();
 			params.put("idMunicipio", idMunicipio);
-			params.put("descripcion", localidad!= null? localidad.toUpperCase().replaceAll("(,| |\\t)+", ".*.*"): "XYZ");
+			params.put("descripcion", localidad!= null? localidad.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*"): "XYZ");
 			Value value= DaoFactory.getInstance().toField("TcJanalLocalidadesDto", "localidad", params, "idLocalidad");
 			if(value!= null && value.getData()!= null)
 				regresar= value.toLong();

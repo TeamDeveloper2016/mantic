@@ -91,7 +91,7 @@ public class Filtro extends IBaseTicket implements Serializable {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
     if(!Cadena.isVacio(this.attrs.get("cliente"))) {
-		  String nombre= ((String)this.attrs.get("cliente")).toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+		  String nombre= ((String)this.attrs.get("cliente")).toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
   		sb.append("upper(cliente) regexp '.*").append(nombre).append(".*'");
     }
     if(!Cadena.isVacio(this.attrs.get("dias")))

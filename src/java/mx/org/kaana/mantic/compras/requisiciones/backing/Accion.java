@@ -272,6 +272,7 @@ public class Accion extends IBaseArticulos implements Serializable {
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
 			String search= (String)this.attrs.get("codigo"); 
 			if(!Cadena.isVacio(search)) {
+  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
 				buscaPorCodigo= search.startsWith(".");
 				if(buscaPorCodigo)
 					search= search.trim().substring(1);

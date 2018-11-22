@@ -193,11 +193,12 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 	} // toMoveDataArt
 	
 	public void doUpdateArticulo(String codigo, Integer index) {
-		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
+		List<Columna> columns         = null;
+    Map<String, Object> params    = new HashMap<>();
 		List<UISelectEntity> articulos= null;
-		boolean buscaPorCodigo    = false;
+		boolean buscaPorCodigo        = false;
     try {
+			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -401,6 +402,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
 			String search= (String)this.attrs.get("codigo"); 
 			if(!Cadena.isVacio(search)) {
+  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
 				buscaPorCodigo= search.startsWith(".");
 				if(buscaPorCodigo)
 					search= search.trim().substring(1);
@@ -489,6 +491,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
 			if(!Cadena.isVacio(codigo)) {
+  			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
 				buscaPorCodigo= codigo.startsWith(".");
 				if(buscaPorCodigo)
 					codigo= codigo.trim().substring(1);

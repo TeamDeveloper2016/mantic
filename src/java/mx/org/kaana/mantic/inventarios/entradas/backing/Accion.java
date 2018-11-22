@@ -577,4 +577,9 @@ public class Accion extends IBaseArticulos implements Serializable {
 		}
 	}	
 	
+	public void doLoadXmlFile() {
+		this.doLoadFiles("TcManticNotasArchivosDto", ((NotaEntrada)this.getAdminOrden().getOrden()).getIdNotaEntrada(), "idNotaEntrada", (boolean)this.attrs.get("sinIva"), this.getAdminOrden().getTipoDeCambio());
+		this.toPrepareDisponibles(false);
+	}
+	
 }
