@@ -34,6 +34,8 @@ public class TcManticFaltantesDto implements IBaseDto, Serializable {
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_faltante")
   private Long idFaltante;
+	@Column (name="id_empresa")
+  private Long idEmpresa;
   @Column (name="observaciones")
   private String observaciones;
   @Column (name="cantidad")
@@ -50,17 +52,18 @@ public class TcManticFaltantesDto implements IBaseDto, Serializable {
   }
 
   public TcManticFaltantesDto(Long key) {
-    this(null, new Long(-1L), null, null, null, null);
+    this(null, new Long(-1L), null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticFaltantesDto(Long idUsuario, Long idFaltante, String observaciones, Double cantidad, Long idVigente, Long idArticulo) {
+  public TcManticFaltantesDto(Long idUsuario, Long idFaltante, String observaciones, Double cantidad, Long idVigente, Long idArticulo, Long idEmpresa) {
     setIdUsuario(idUsuario);
     setIdFaltante(idFaltante);
     setObservaciones(observaciones);
     setCantidad(cantidad);
     setIdVigente(idVigente);
     setIdArticulo(idArticulo);
+		this.idEmpresa= idEmpresa;
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -79,6 +82,14 @@ public class TcManticFaltantesDto implements IBaseDto, Serializable {
   public Long getIdFaltante() {
     return idFaltante;
   }
+
+	public Long getIdEmpresa() {
+		return idEmpresa;
+	}
+
+	public void setIdEmpresa(Long idEmpresa) {
+		this.idEmpresa=idEmpresa;
+	}
 
   public void setObservaciones(String observaciones) {
     this.observaciones = observaciones;
@@ -147,6 +158,8 @@ public class TcManticFaltantesDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdArticulo());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdEmpresa());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -161,6 +174,7 @@ public class TcManticFaltantesDto implements IBaseDto, Serializable {
 		regresar.put("cantidad", getCantidad());
 		regresar.put("idVigente", getIdVigente());
 		regresar.put("idArticulo", getIdArticulo());
+		regresar.put("idEmpresa", getIdEmpresa());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -168,7 +182,7 @@ public class TcManticFaltantesDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdUsuario(), getIdFaltante(), getObservaciones(), getCantidad(), getIdVigente(), getIdArticulo(), getRegistro()
+    getIdUsuario(), getIdFaltante(), getObservaciones(), getCantidad(), getIdVigente(), getIdArticulo(), getIdEmpresa(), getRegistro()
     };
     return regresar;
   }

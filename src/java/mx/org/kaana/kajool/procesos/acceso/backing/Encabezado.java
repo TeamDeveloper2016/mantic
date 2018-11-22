@@ -89,7 +89,8 @@ public class Encabezado extends IBaseFilter implements Serializable {
 		this.attrs.put("buscarPor", "");
 		this.attrs.put("buscaPorCodigo", false);
 	  this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-		this.faltante= new Faltante(JsfBase.getIdUsuario(), -1L, "", 1D, 1L, -1L);
+		this.faltante= new Faltante(JsfBase.getIdUsuario(), -1L, "", 1D, 1L, -1L, JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+	  this.toLoadCatalog();	
 	}
 	
 	@Override
@@ -168,14 +169,14 @@ public class Encabezado extends IBaseFilter implements Serializable {
 			if(existe== null) {
 				if(DaoFactory.getInstance().insert(this.faltante)> 0L) {
 	  			JsfBase.addMessage("Agregado:", "El articulo fue agregado a la relación de faltantes. !", ETipoMensaje.INFORMACION);
-  				this.faltante= new Faltante(JsfBase.getIdUsuario(), -1L, "", 1D, 1L, -1L);
+  				this.faltante= new Faltante(JsfBase.getIdUsuario(), -1L, "", 1D, 1L, -1L, JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 				} // if	
 		  }	// if
 			else {
 				existe.setCantidad(existe.getCantidad()+ this.faltante.getCantidad());
 				if(DaoFactory.getInstance().update(existe)> 0L) {
 	  			JsfBase.addMessage("Agregado:", "El articulo fue actualizado en la relación de faltantes. !", ETipoMensaje.INFORMACION);
-  				this.faltante= new Faltante(JsfBase.getIdUsuario(), -1L, "", 1D, 1L, -1L);
+  				this.faltante= new Faltante(JsfBase.getIdUsuario(), -1L, "", 1D, 1L, -1L, JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 				} // if	
 			} // else	
 			RequestContext.getCurrentInstance().update("@(.faltantes)");
@@ -442,5 +443,29 @@ public class Encabezado extends IBaseFilter implements Serializable {
 		} // for
 		return regresar;
 	}
-	
+
+  private void toLoadCatalog() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			columns= new ArrayList<>();
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+			else
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}
+
 }

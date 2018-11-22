@@ -216,6 +216,17 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 		inputStream.close();
 	} // toWriteFile 
 
+	private int existsItem(List<Articulo> faltantes, Concepto concepto) {
+		int regresar= 0;
+		for (Articulo faltante: faltantes) {
+			if(faltante.getNombre().equals(concepto.getDescripcion()) && faltante.getUnidadMedida().equals(concepto.getUnidad()))
+				break;
+			else
+				regresar++;
+		} // for
+		return regresar>= faltantes.size()? -1: regresar;
+	}
+	
 	public void toReadFactura(File file, Boolean sinIva, Double tipoDeCambio) throws Exception {
     Reader reader           = null;
 		List<Articulo> faltantes= null;
@@ -226,14 +237,22 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			this.emisor  = this.factura.getEmisor();
 			this.receptor= this.factura.getReceptor();
 			for (Concepto concepto: this.factura.getConceptos()) {
+				int index= this.existsItem(faltantes, concepto);
+				if(index>= 0) {
+					Articulo item= faltantes.get(index);
+					item.setCantidad(item.getCantidad()+ Double.parseDouble(concepto.getCantidad()));
+					item.setCosto(Numero.toRedondearSat((item.getSubTotal()+ Double.parseDouble(concepto.getImporte()))/ item.getCantidad()));
+					item.setSubTotal(item.getSubTotal()+ Double.parseDouble(concepto.getImporte()));
+				} // if
+				else 
 		    //this(sinIva, tipoDeCambio, nombre, codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos, idProveedor, ultimo, solicitado, stock, excedentes, sat, unidadMedida);
 		    faltantes.add(new Articulo(
 				  sinIva,
 					tipoDeCambio,
 					concepto.getDescripcion(),
 					concepto.getNoIdentificacion(),
-					Numero.toRedondearSat(Double.parseDouble(concepto.getValorUnitario())),
-					concepto.getDescuento(),
+					Numero.toRedondearSat(Double.parseDouble(concepto.getImporte())/ Double.parseDouble(concepto.getCantidad())), // Double.parseDouble(concepto.getValorUnitario()),
+					"", // concepto.getDescuento(),
 					-1L,
 					"",
 					0D,

@@ -612,7 +612,7 @@
 									</p:commandButton>
 								</p:column>
 								<p:column style="width:38px; text-align: center">
-									<p:commandButton update="perdidos @(.filas) @(.recalculo)" icon="fa fa-close" title="Eliminar" action="#{manticComprasOrdendesAccion.doEliminarPerdido}">
+									<p:commandButton update="perdidos @(.filas) @(.recalculo)" icon="fa fa-minus" title="Eliminar" action="#{manticComprasOrdendesAccion.doEliminarPerdido}">
 										<f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.perdidoRemove}" />										
 									</p:commandButton>
 								</p:column>

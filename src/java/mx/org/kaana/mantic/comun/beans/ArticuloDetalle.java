@@ -505,4 +505,5 @@ public class ArticuloDetalle implements IBaseDto, Serializable {
 		}
 		return true;
 	}	
+	
 }
