@@ -1,6 +1,7 @@
 package mx.org.kaana.libs.facturama.reglas;
 
 import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -11,6 +12,7 @@ import mx.org.kaana.libs.facturama.models.response.Cfdi;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturamaBitacoraDto;
@@ -56,6 +58,10 @@ public class TransaccionFactura extends IBaseTnx{
 		this.cliente = cliente;
 	} // setCliente
 
+	public ClienteFactura getCliente() {
+		return cliente;
+	}	
+	
 	public void setArticulo(ArticuloFactura articulo) {
 		this.articulo = articulo;
 	}	// setArticulo	
@@ -332,8 +338,12 @@ public class TransaccionFactura extends IBaseTnx{
 		Cfdi cfdi       = null;
 		try {
 			cfdi= CFDIFactory.getInstance().createCfdi(this.cliente, this.articulos);
-			if(isCorrectId(cfdi.getId()))
+			if(isCorrectId(cfdi.getId())){
 				regresar= actualizarFactura(sesion, this.cliente.getIdFactura(), cfdi);
+				Calendar calendar= Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19));
+				String path = Configuracion.getInstance().getPropiedadSistemaServidor("facturama")+ calendar.get(Calendar.YEAR)+ "/"+ Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase()+"/"+ this.cliente.getRfc().concat("/");
+				CFDIFactory.getInstance().download(path, this.cliente.getRfc().concat("-").concat(cfdi.getFolio()), cfdi.getId());
+			} // if
 			else
 				registrarBitacora(sesion, this.cliente.getIdFactura(), cfdi.getId(), REGISTRO_CFDI);
 		} // try
