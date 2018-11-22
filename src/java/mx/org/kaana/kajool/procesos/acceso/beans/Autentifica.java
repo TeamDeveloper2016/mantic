@@ -171,15 +171,16 @@ public class Autentifica implements Serializable {
   } // validaRedirect
 
   public void loadSucursales() throws Exception {
-    Privilegios privilegios = null;
+    Privilegios privilegios= null;
     try {
-      privilegios = new Privilegios(this.persona);
+      privilegios= new Privilegios(this.persona);
       this.sucursales= privilegios.toSucursales();
-      this.redirect  = EPaginasPrivilegios.DEFAULT;
-      this.empresa   = sucursales.get(0);
+      this.redirect= EPaginasPrivilegios.DEFAULT;
+      this.empresa= this.sucursales.get(0);
 			this.empresa.setSucursales(toLoadSucursales());
-      this.menu      = privilegios.procesarModulosPerfil();
-      this.topMenu   = privilegios.procesarTopModulos();
+			this.empresa.setDependencias(toLoadDependencias());
+      this.menu= privilegios.procesarModulosPerfil();
+      this.topMenu= privilegios.procesarTopModulos();
       if (this.menu.isEmpty() && this.topMenu.isEmpty()) {
         LOG.info(" Error: El usuario no tiene acceso a ningun modulo.");
         Error.mensaje(new Exception("El usuario no tiene acceso a ninguna opción del sistema"));
@@ -421,4 +422,29 @@ public class Autentifica implements Serializable {
 		} // finally
 		return regresar.substring(0, regresar.length()- 2);
 	}
+	
+	private String toLoadDependencias() throws Exception {
+		StringBuilder regresar    = null;
+		Map<String, Object> params= null;
+		try {
+			regresar= new StringBuilder("");
+			params=new HashMap<>();
+			params.put("idEmpresa", this.getEmpresa().getIdEmpresaDepende());
+			List<TcManticEmpresasDto> items= DaoFactory.getInstance().findViewCriteria(TcManticEmpresasDto.class, params, "sucursales");
+			if(items.isEmpty())
+				regresar.append(this.getEmpresa().getIdEmpresa().toString().concat(", "));
+			else{		
+				for (TcManticEmpresasDto item: items) 
+					regresar.append(item.getIdEmpresa()).append(", ");				
+			} // else
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar.substring(0, regresar.length()- 2);
+	} // toLoadDependencias
 }

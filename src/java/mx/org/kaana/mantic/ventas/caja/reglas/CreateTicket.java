@@ -28,11 +28,16 @@ public class CreateTicket {
 	}
 	
 	private void init(){		
+		Sucursal matriz= null;
 		try {
 			for(Sucursal sucursal: JsfBase.getAutentifica().getSucursales()){
 				if(sucursal.isMatriz())
-					this.principal= sucursal;
+					matriz= sucursal;					
 			} // for
+			if(matriz!= null)
+				this.principal= matriz;
+			else
+				this.principal= JsfBase.getAutentifica().getEmpresa();
 		} // try
 		catch (Exception e) {			
 			throw e;

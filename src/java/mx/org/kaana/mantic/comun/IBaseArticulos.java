@@ -202,7 +202,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
 			buscaPorCodigo= codigo.startsWith(".");
 			if(buscaPorCodigo)
@@ -398,7 +398,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
 			String search= (String)this.attrs.get("codigo"); 
 			if(!Cadena.isVacio(search)) {
@@ -435,7 +435,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("original", EFormatoDinamicos.MONEDA_CON_DECIMALES));
-  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
 			if(!Cadena.isVacio(codigo)) {
 				buscaPorCodigo= codigo.startsWith(".");
@@ -465,7 +465,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
     Map<String, Object> params= new HashMap<>();
 		try {
 			columns= new ArrayList<>();
-  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
 			params.put("codigo", "WXYZ");
       this.attrs.put("lazyModel", new FormatCustomLazy("VistaOrdenesComprasDto", "porLikeNombre", params, columns));
@@ -488,7 +488,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
 			if(!Cadena.isVacio(codigo)) {
   			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
@@ -685,7 +685,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
     try {
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
 			params.put("idAlmacen", this.getAdminOrden().getIdAlmacen());
 			params.put("idProveedor", this.getAdminOrden().getIdProveedor());
 			columns= new ArrayList<>();
