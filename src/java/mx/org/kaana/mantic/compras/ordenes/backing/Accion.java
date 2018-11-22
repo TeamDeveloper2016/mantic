@@ -20,6 +20,8 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
+import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -30,13 +32,14 @@ import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.compras.ordenes.reglas.AdminOrdenes;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
+import mx.org.kaana.mantic.comun.IBaseStorage;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.TabChangeEvent;
 
 
 @Named(value= "manticComprasOrdendesAccion")
 @ViewScoped
-public class Accion extends IBaseArticulos implements Serializable {
+public class Accion extends IBaseArticulos implements IBaseStorage, Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
 	private EAccion accion;
@@ -348,6 +351,31 @@ public class Accion extends IBaseArticulos implements Serializable {
 		int position= articulos.indexOf((UISelectEntity)this.attrs.get("articulo"));
 		if(position>= 0)
       this.attrs.put("seleccionado", articulos.get(position));
+	}
+
+	@Override
+	public void toSaveRecord() {
+    Transaccion transaccion= null;
+    try {			
+			((OrdenCompra)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuento());
+			((OrdenCompra)this.getAdminOrden().getOrden()).setExcedentes(this.getAdminOrden().getTotales().getExtra());
+			((OrdenCompra)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
+			((OrdenCompra)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
+			((OrdenCompra)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
+			transaccion = new Transaccion(((OrdenCompra)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
+			this.getAdminOrden().toAdjustArticulos();
+			if (transaccion.ejecutar(this.accion)) {
+				this.accion= EAccion.MODIFICAR;
+				// if(this.accion.equals(EAccion.AGREGAR)) 
+   			  // RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 orden de compra', '"+ ((OrdenCompra)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+				this.getAdminOrden().getArticulos().add(new Articulo(-1L));
+				this.attrs.put("autoSave", Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, Fecha.getRegistro()));
+			} // if	
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
 	}
 	
 }

@@ -126,6 +126,8 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				} // if	
 				RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
 				this.adminOrden.toCalculate();
+				if(this instanceof IBaseStorage)
+ 					((IBaseStorage)this).toSaveRecord();
 			} // if	
 			else
 				temporal.setNombre("<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
@@ -257,6 +259,8 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 			else
 			  this.adminOrden.toCalculate();
 			RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
+			if(this instanceof IBaseStorage)
+				((IBaseStorage)this).toSaveRecord();
 		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
