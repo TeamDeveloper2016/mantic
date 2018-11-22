@@ -594,7 +594,7 @@
 											<div style="display: flow-root;">
 												<p:outputLabel value="Articulos cargados del archivo XML" style="font-weight: normal;" styleClass="janal-text-white"/>
 												<div style="float:right;">
-													<p:commandButton title="Refrescar articulos" icon="fa fa-refresh" process="@this" update="faltante" action="#{manticInventariosEntradasAccion.doLoadXmlFile()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+													<p:commandButton title="Refrescar articulos" icon="fa fa-refresh" process="@this" update="@(.importado)" action="#{manticInventariosEntradasAccion.doLoadXmlFile()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
     											<p:commandButton update="@(.importado) @(.filas) @(.recalculo)" process="@this @(.importado)" icon="fa fa-share" title="Asociar articulo" actionListener="#{manticInventariosEntradasAccion.doFaltanteArticulo}" disabled="#{manticInventariosEntradasAccion.attrs.disponibles.size() eq 0 or manticInventariosEntradasAccion.attrs.faltantes.size() eq 0}" onstart="return checkValueList();"/>
 												</div>
 											</div>	
