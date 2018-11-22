@@ -169,14 +169,14 @@ public class Encabezado extends IBaseFilter implements Serializable {
 			if(existe== null) {
 				if(DaoFactory.getInstance().insert(this.faltante)> 0L) {
 	  			JsfBase.addMessage("Agregado:", "El articulo fue agregado a la relación de faltantes. !", ETipoMensaje.INFORMACION);
-  				this.faltante= new Faltante(JsfBase.getIdUsuario(), -1L, "", 1D, 1L, -1L, JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+  				this.faltante= new Faltante(JsfBase.getIdUsuario(), -1L, "", 1D, 1L, -1L, this.faltante.getIdEmpresa());
 				} // if	
 		  }	// if
 			else {
 				existe.setCantidad(existe.getCantidad()+ this.faltante.getCantidad());
 				if(DaoFactory.getInstance().update(existe)> 0L) {
 	  			JsfBase.addMessage("Agregado:", "El articulo fue actualizado en la relación de faltantes. !", ETipoMensaje.INFORMACION);
-  				this.faltante= new Faltante(JsfBase.getIdUsuario(), -1L, "", 1D, 1L, -1L, JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+  				this.faltante= new Faltante(JsfBase.getIdUsuario(), -1L, "", 1D, 1L, -1L, this.faltante.getIdEmpresa());
 				} // if	
 			} // else	
 			RequestContext.getCurrentInstance().update("@(.faltantes)");

@@ -3515,7 +3515,7 @@
 				where 
 				  tc_mantic_faltantes.id_vigente= 1
 				order by
-				   tc_mantic_articulos.nombre
+				   tc_mantic_faltantes.registro
 			</select>
       <select id="detalle">
         select      
