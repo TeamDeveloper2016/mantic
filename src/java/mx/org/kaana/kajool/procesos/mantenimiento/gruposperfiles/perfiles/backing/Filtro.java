@@ -125,33 +125,32 @@ public class Filtro extends IBaseFilter implements Serializable {
  }// doSeleccion
 
   public String doJerarquia(){
-    JsfBase.setFlashAttribute("idGrupo", (Long)this.attrs.get("grupoDto"));
-    JsfBase.setFlashAttribute("idPerfil",((TcJanalPerfilesDto)this.attrs.get("grupoDto")).getIdPerfil());
-	JsfBase.setFlashAttribute("descripcion",((TcJanalGruposDto)this.attrs.get("grupoDto")).getDescripcion());
+    JsfBase.setFlashAttribute("idGrupo", (Long)this.attrs.get("idGrupo"));
+    JsfBase.setFlashAttribute("idPerfil",((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("descripcion",((Entity)this.attrs.get("seleccionado")).toString("descripcion"));
     return "jerarquia";
-   }
+   } // doJerarquia
 
-   public String doIrOpcionesMenu(){
+  public String doIrOpcionesMenu(){
     JsfBase.setFlashAttribute("idGrupo", (Long)this.attrs.get("idGrupo"));
     JsfBase.setFlashAttribute("idPerfil", ((Entity)this.attrs.get("seleccionado")).getKey());
-	return "/Paginas/Mantenimiento/GruposPerfiles/OpcionesMenu/filtro".concat(Constantes.REDIRECIONAR);
-  }
+		return "/Paginas/Mantenimiento/GruposPerfiles/OpcionesMenu/filtro".concat(Constantes.REDIRECIONAR);
+  } // doIrOpcionesMenu
 
-   public String doIrOpcionesEncabezado(){
+  public String doIrOpcionesEncabezado(){
     JsfBase.setFlashAttribute("idGrupo", (Long)this.attrs.get("idGrupo"));
     JsfBase.setFlashAttribute("idPerfil", ((Entity)this.attrs.get("seleccionado")).getKey());
-	return "/Paginas/Mantenimiento/GruposPerfiles/OpcionesEncabezado/filtro".concat(Constantes.REDIRECIONAR);
+		return "/Paginas/Mantenimiento/GruposPerfiles/OpcionesEncabezado/filtro".concat(Constantes.REDIRECIONAR);
   } // doIrOpcionesEncabezado
 	
-	 public String doIrPaginaInicial(){
+	public String doIrPaginaInicial(){
     JsfBase.setFlashAttribute("idPerfil", ((Entity)this.attrs.get("seleccionado")).getKey());
     JsfBase.setFlashAttribute("idGrupo", ((TcJanalGruposDto)this.attrs.get("grupoDto")).getIdGrupo());
-	return "paginaInicial";
-  }
+		return "paginaInicial";
+  } // doIrPaginaInicial
 
   public String doOpcionUsuarios(){
     JsfBase.setFlashAttribute("idPerfil", ((TcJanalPerfilesDto)this.attrs.get("grupoDto")).getIdPerfil());
     return "/Paginas/Mantenimiento/GruposPerfiles/Perfiles/Usuarios/filtro";
-  }		
-
+  }	// doOpcionUsuarios
 }

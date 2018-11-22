@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="http://java.sun.com/jsf/facelets" 
+                xmlns:h="http://java.sun.com/jsf/html" 
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui" 
+                template="/WEB-INF/plantillas/accion.xhtml">
+  <ui:param name="titulo" value="Jerarquía de perfiles asignados" />
+	<ui:define name="librerias">
+		<style type="text/css">
+      .ui-picklist .ui-picklist-list {
+        width: 490px !important;
+        height: 200px !important;
+      }
+      .ui-picklist .ui-picklist-filter {      
+        width: 94% !important;
+      }
+			.ui-picklist-button-add-all{
+				display: none !important
+			}
+			.ui-picklist-button-remove-all{
+				display: none !important
+			}
+    </style>
+	</ui:define>	
+  <ui:define name="contenido">			
+      <h:panelGrid columns="2">
+        <label id="nombreGrupo">Perfil:  </label>
+        <h:outputText value="#{kajoolMantenimientoGruposperfilesPerfilesJerarquia.descripcion}"/>
+      </h:panelGrid>    
+    <h:panelGrid columns="2">  
+			<p:pickList id="cobertura" value="#{kajoolMantenimientoGruposperfilesPerfilesJerarquia.selectionItems}" var="itemSelection" converter="janal.convertidor.SelectionItem" itemValue="#{itemSelection}" itemLabel="#{itemSelection.item}" style="width: 30%">
+        <f:facet  name="sourceCaption">Disponibles</f:facet>  
+        <f:facet name="targetCaption">Asignados</f:facet>  
+        <p:column style="width:100%">  
+          #{itemSelection.item}
+        </p:column>
+				<p:ajax event="transfer" listener="#{kajoolMantenimientoGruposperfilesPerfilesJerarquia.doTransferir}" update=":datos:aceptar " process="@form"/>
+      </p:pickList>
+      <p:spacer height="10px" />
+    </h:panelGrid>      
+  </ui:define>
+	<ui:define name="acciones">
+    <p:commandButton id="aceptar" icon="fa fa-check" value="Aceptar" action="#{kajoolMantenimientoGruposperfilesPerfilesJerarquia.doAceptar}" process="@form" />
+    <p:commandButton id="cancelar" icon="fa fa-close" value="Cancelar" ajax="false" action="#{kajoolMantenimientoGruposperfilesPerfilesJerarquia.doCancelar}" process="@none" /> 
+	</ui:define>
+</ui:composition>

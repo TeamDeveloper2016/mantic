@@ -1203,6 +1203,9 @@
         where
           {condicion} 	
 			</select>
+			<delete id="rows">
+				delete from tr_janal_perfiles_jerarquias where id_perfil= {idPerfil}
+			</delete>
 		</unit>
     <unit id="TcJanalConfiguracionesDto">
       <select id="row">
