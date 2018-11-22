@@ -1213,7 +1213,7 @@
 				and 
 					(sysdate() between tr_mantic_articulo_grupo_descuento.vigencia_inicial and tr_mantic_articulo_grupo_descuento.vigencia_final)
 				and 
-					tc_mantic_articulos.id_empresa= {idEmpresa}
+					tc_mantic_articulos.id_empresa in ({idEmpresa})
 			</select>
 			<select id="descuentoArticuloVigente">
 				select 
