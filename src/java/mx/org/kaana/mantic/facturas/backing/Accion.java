@@ -32,6 +32,7 @@ import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
+import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
 import mx.org.kaana.mantic.facturas.reglas.AdminFacturas;
@@ -89,6 +90,7 @@ public class Accion extends IBaseVenta implements Serializable {
     try {
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
+      this.attrs.put("accionInicial", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idFicticia", JsfBase.getFlashAttribute("idFicticia")== null? -1L: JsfBase.getFlashAttribute("idFicticia"));
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente")== null? -1L: JsfBase.getFlashAttribute("idCliente"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? null: JsfBase.getFlashAttribute("retorno"));
@@ -224,7 +226,6 @@ public class Accion extends IBaseVenta implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doAsignaCliente	
-
 	
   public String doAceptar() {  
     Transaccion transaccion= null;
@@ -232,7 +233,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		EAccion eaccion        = null;		
     try {			
 			loadOrdenVenta();
-			eaccion= (EAccion) this.attrs.get("accion");						
+			eaccion= ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia().equals(-1L) ? EAccion.AGREGAR : EAccion.MODIFICAR;						
 			transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.attrs.get("observaciones").toString());
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(eaccion)) {
@@ -257,8 +258,20 @@ public class Accion extends IBaseVenta implements Serializable {
 
 	@Override
   public String doCancelar() {   
-  	JsfBase.setFlashAttribute("idFicticia", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia());
-    return this.attrs.get("retorno") != null ? (String)this.attrs.get("retorno") : "filtro";
+		String regresar= null;
+		try {
+			if(((EAccion)this.attrs.get("accionInicial")).equals(EAccion.AGREGAR)){
+				Transaccion transaccion= new Transaccion(new TcManticFicticiasDto(((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia()), "Cancelación de captura");
+				transaccion.ejecutar(EAccion.ELIMINAR);
+			} // if						
+			JsfBase.setFlashAttribute("idFicticia", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia());
+			regresar= this.attrs.get("retorno") != null ? (String)this.attrs.get("retorno") : "filtro";
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+    return regresar;
   } // doCancelar
 	
 	@Override
@@ -887,4 +900,39 @@ public class Accion extends IBaseVenta implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doValidaTipoPago
+	
+	@Override
+  public void doFindArticulo(Integer index) {
+		try {
+			super.doFindArticulo(index);
+    	doRegistroParcial();
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	} // doFindArticulo
+	
+	public String doRegistroParcial() {  
+    Transaccion transaccion= null;
+    String regresar        = null;
+		EAccion eaccion        = null;		
+    try {			
+			loadOrdenVenta();
+			eaccion= ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia().equals(-1L) ? EAccion.AGREGAR : EAccion.MODIFICAR;						
+			transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.attrs.get("observaciones").toString());			
+			if (transaccion.ejecutar(eaccion)){ 
+				if(eaccion.equals(EAccion.AGREGAR))
+					RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 la factura ', '"+ ((FacturaFicticia)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
+  			JsfBase.setFlashAttribute("idFicticia", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia());							
+			} // if
+			else 
+				JsfBase.addMessage("Ocurrió un error al registrar la factura.", ETipoMensaje.ERROR);      			
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+    return regresar;
+  } // doAccion
 }
