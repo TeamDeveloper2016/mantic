@@ -3488,6 +3488,9 @@
 			<select id="registrados">
         select      
           tc_mantic_faltantes.id_faltante as id_key,
+          tc_mantic_faltantes.id_empresa,
+				  tc_mantic_empresas.clave as empresa,  
+				  tc_mantic_empresas.nombre as nombre_empresa,  
           tc_mantic_articulos_codigos.codigo,
           tc_mantic_articulos_codigos.codigo as propio,
 				  tc_mantic_articulos.id_articulo,
@@ -3499,6 +3502,8 @@
 				  tc_mantic_faltantes.registro
         from      
           tc_mantic_faltantes
+				inner join 
+					tc_mantic_empresas on tc_mantic_faltantes.id_empresa = tc_mantic_empresas.id_empresa
         inner join
           tc_mantic_articulos on tc_mantic_faltantes.id_articulo= tc_mantic_articulos.id_articulo
         inner join
