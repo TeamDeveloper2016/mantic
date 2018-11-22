@@ -12,6 +12,8 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
+import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
@@ -140,6 +142,7 @@ public class Transaccion extends IBaseTnx {
 								params.put("comentarios", this.comentarios);								
 								params.put("timbrado", new Timestamp(Calendar.getInstance().getTimeInMillis()));								
 								DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, factura.getIdFactura(), params);
+								generarTimbradoFactura(sesion, this.orden.getIdFicticia(), factura.getIdFactura().toString());
 							} // 
 						} // if
 					} // if
@@ -366,4 +369,22 @@ public class Transaccion extends IBaseTnx {
 		} // finally
 		return regresar;
 	} // toClientesTipoContacto
+	
+	private void generarTimbradoFactura(Session sesion, Long idFicticia, String idFactura) throws Exception{
+		TransaccionFactura factura= null;
+		CFDIGestor gestor         = null;
+		try {
+			gestor= new CFDIGestor(idFicticia);			
+			factura= new TransaccionFactura();
+			factura.setArticulos(gestor.toDetalleCfdiFicticia(sesion));
+			factura.setCliente(gestor.toClienteCfdiFicticia(sesion));
+			factura.getCliente().setIdFactura(idFactura);
+			factura.generarCfdi(sesion);			
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+			this.messageError= "";
+			throw new Exception("No fue posible generar la factura");
+		} // catch				
+	} // generarTimbradoFactura
 } 
