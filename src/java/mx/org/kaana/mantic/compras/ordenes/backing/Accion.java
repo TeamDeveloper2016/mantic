@@ -369,7 +369,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				// if(this.accion.equals(EAccion.AGREGAR)) 
    			  // RequestContext.getCurrentInstance().execute("jsArticulos.back('gener\\u00F3 orden de compra', '"+ ((OrdenCompra)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				this.getAdminOrden().getArticulos().add(new Articulo(-1L));
-				this.attrs.put("autoSave", Global.format(EFormatoDinamicos.FECHA_HORA_CORTA, Fecha.getRegistro()));
+				this.attrs.put("autoSave", Global.format(EFormatoDinamicos.FECHA_HORA, Fecha.getRegistro()));
 			} // if	
     } // try
     catch (Exception e) {
