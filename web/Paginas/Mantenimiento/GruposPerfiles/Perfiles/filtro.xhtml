@@ -73,6 +73,8 @@
       <p:menuitem value="Opciones de encabezado" action="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doIrOpcionesEncabezado}"  icon="fa fa-th-list" ajax="false"  />
       <p:separator/>
 			<p:menuitem value="Pagina inicial" action="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doIrPaginaInicial}"  icon="fa fa-home" ajax="false"  />
+			<p:separator/>
+			<p:menuitem value="Jerarquías" icon="fa fa-user" action="#{kajoolMantenimientoGruposperfilesPerfilesFiltro.doJerarquia}" ajax="false" />			
     </p:contextMenu>
     <ui:param name="componenteBloqueo" value="tabla"/>
     <ui:param name="textoConfirmacion" value="¿Está seguro de eliminar el perfil #{kajoolMantenimientoGruposperfilesPerfilesFiltro.attrs.seleccionado.descripcion} ?" />
