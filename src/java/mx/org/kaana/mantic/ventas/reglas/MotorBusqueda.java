@@ -51,7 +51,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			params= new HashMap<>();
 			params.put("idArticulo", this.idArticulo);
 			params.put("idCliente", this.idCliente);
-			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
 			regresar= (Entity) DaoFactory.getInstance().toEntity("VistaVentasDto", "descuentoGrupoVigente", params);
 		} // try
 		catch (Exception e) {			
@@ -79,7 +79,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		Map<String, Object>params= null;
 		try {
 			params= new HashMap<>();
-			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_clientes.id_cliente=" + this.idCliente);
 			regresar= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "findRazonSocial", params);
 		} // try
@@ -126,7 +126,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 		try {
 			params= new HashMap<>();
 			params.put("clave", VENTA);
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
 			regresar= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "clienteDefault", params);			
 		} // try
 		catch (Exception e) {			
