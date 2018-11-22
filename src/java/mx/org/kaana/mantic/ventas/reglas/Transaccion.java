@@ -344,7 +344,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params= new HashMap<>();
 			params.put("clave", VENTA);
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
 			cliente= (Entity) DaoFactory.getInstance().toEntity(sesion, "TcManticClientesDto", "clienteDefault", params);
 			if(cliente!= null)
 				regresar= cliente.getKey();
