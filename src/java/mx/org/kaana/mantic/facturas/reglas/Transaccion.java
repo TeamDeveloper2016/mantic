@@ -249,12 +249,14 @@ public class Transaccion extends IBaseTnx {
 			if(this.articulos.indexOf(item)< 0)
 				DaoFactory.getInstance().delete(sesion, item);
 		for (Articulo articulo: this.articulos) {
-			TcManticFicticiasDetallesDto item= articulo.toFicticiaDetalle();
-			item.setIdFicticia(this.orden.getIdFicticia());
-			if(DaoFactory.getInstance().findIdentically(sesion, TcManticFicticiasDetallesDto.class, item.toMap())== null) 
-				DaoFactory.getInstance().insert(sesion, item);
-			else
-				DaoFactory.getInstance().update(sesion, item);
+			if(articulo.isValid()){
+				TcManticFicticiasDetallesDto item= articulo.toFicticiaDetalle();
+				item.setIdFicticia(this.orden.getIdFicticia());
+				if(DaoFactory.getInstance().findIdentically(sesion, TcManticFicticiasDetallesDto.class, item.toMap())== null) 
+					DaoFactory.getInstance().insert(sesion, item);
+				else
+					DaoFactory.getInstance().update(sesion, item);
+			} // if
 		} // for
 	} // toFillArticulos
 	
