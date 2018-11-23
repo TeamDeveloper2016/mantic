@@ -33,6 +33,9 @@ public class ArticuloVenta extends Articulo {
 	
 	@Override
 	public void toCalculate() {
+		boolean asignar= this.getImportes().getTotal()<= 0D;
+		if(!asignar)
+			this.setTotal(this.getTotal());
 		this.toCalculateCostoPorCantidad();
 		double porcentajeIva = this.getIva()/ 100; 		
 		double costoMoneda   = this.getCosto()* getTipoDeCambio();
@@ -65,7 +68,9 @@ public class ArticuloVenta extends Articulo {
 		this.setDescuentos(this.getImportes().getDescuento());		
 		this.setDescuentoDescripcion(!Cadena.isVacio(this.getDescuento()) && !this.getDescuento().equals("0") ? this.getDescuento().concat("% [ $").concat(String.valueOf(this.getImportes().getDescuento())).concat(" ] ") : "0");
 		this.setExcedentes(this.getImportes().getExtra());
-		this.setImporte(Numero.toRedondear(this.getImportes().getTotal()));
+		this.setImporte(Numero.toRedondear(this.getImportes().getTotal()));	
+		if(asignar)
+			this.setTotal(Numero.toRedondear(this.getImportes().getTotal()));
 		this.setUtilidad(utilidad);
 		this.toDiferencia();
 	}
