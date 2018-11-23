@@ -99,6 +99,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			if(idArticulo!= null){
 				params= new HashMap<>();
 				params.put("idArticulo", idArticulo);
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
 				columns= new ArrayList<>();
 				columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 				columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -106,7 +107,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				columns.add(new Columna("minimo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
 				columns.add(new Columna("maximo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
 				columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
-				this.almacenes= new FormatLazyModel("VistaKardexDto", "almacenes", params, columns);
+				this.almacenes= new FormatLazyModel("VistaKardexDto", "almacenesDetalle", params, columns);
 				UIBackingUtilities.resetDataTable("almacenes");
 				RequestContext.getCurrentInstance().execute("PF('dlgAlmacenes').show();");				
 			} // if
