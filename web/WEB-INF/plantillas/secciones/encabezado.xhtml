@@ -264,7 +264,7 @@
 				</p:panelGrid>	
 			</p:panelGrid>	
 			<p:spacer height="3px"/>
-			<p:dataTable lazy="true" id="faltantesTabla" widgetVar="widgetFaltantes" var="row" styleClass="janal-row-faltantes faltantes janal-wid-100" value="#{kajoolEncabezado.lazyFaltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="500" rowIndexVar="index" reflow="true" scrollRows="500" scrollable="true" virtualScroll="true" scrollHeight="250" style="margin-bottom:0">
+			<p:dataTable lazy="true" id="faltantesTabla" widgetVar="widgetFaltantes" var="row" styleClass="janal-row-faltantes faltantes janal-wid-100" value="#{kajoolEncabezado.lazyFaltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="500" rowIndexVar="index" reflow="true" scrollRows="500" scrollable="true" virtualScroll="true" scrollHeight="250" style="margin-bottom:0" selectionMode="single" selection="#{kajoolEncabezado.attrs.itemSelected}">
 				<p:column class="MarAuto Responsive janal-wid-col-15">
 					<f:facet name="header">
 						<h:outputText value="No."/>

@@ -8,6 +8,8 @@
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="#{manticInventariosEntradasAccion.attrs.nombreAccion} una nota de entrada #{manticInventariosEntradasAccion.titulo}"/>
+  <ui:param name="janalBackingPage" value="#{manticInventariosEntradasAccion}"/>
+  <ui:param name="janalEventPage" value="doGlobalEvent"	/>	
 	<ui:define name="librerias">
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.articulosJs}"/>
 		<h:outputStylesheet library="janal" name="css/sh.css"/>
@@ -153,6 +155,9 @@
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<h:outputText id="tabla" value="Solo sirve para la ventana emergente de articulos express" style="display:none"/>					
+					<div class="janal-wid-100-txt janal-column-center janal-font-bold">
+						<p:outputLabel value="LA ORDEN DE COMPRA [#{manticInventariosEntradasAccion.adminOrden.orden.consecutivo}] SE AUTOGUARDO A LAS #{manticInventariosEntradasAccion.attrs.autoSave} HRS." style="display: #{empty(manticInventariosEntradasAccion.attrs.autoSave)? 'none': ''}" styleClass="recalculo janal-color-blue"/>
+					</div>
 					<p:tabView id="contenedorGrupos">
             <p:ajax event="tabChange" listener="#{manticInventariosEntradasAccion.doTabChange}" process="@this idAlmacen idProveedor" update="@(.importado) @(.involucrados)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>						
             <p:tab title="General">							

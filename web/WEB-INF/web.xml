@@ -90,6 +90,7 @@
     <exception-type>java.lang.Throwable</exception-type>
     <location>/Exclusiones/throwable.jsf</location>
   </error-page>
+	
   <error-page>
     <exception-type>javax.faces.application.ViewExpiredException</exception-type>
     <location>/Exclusiones/salir.jsf</location>

@@ -41,6 +41,7 @@ import java.util.Collections;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
@@ -57,7 +58,7 @@ import org.primefaces.model.StreamedContent;
 
 @Named(value= "manticInventariosEntradasAccion")
 @ViewScoped
-public class Accion extends IBaseArticulos implements Serializable {
+public class Accion extends IBaseArticulos implements IBaseStorage, Serializable {
 
 	private static final Log LOG              = LogFactory.getLog(Accion.class);
   private static final long serialVersionUID= 327393488565639367L;
@@ -588,6 +589,34 @@ public class Accion extends IBaseArticulos implements Serializable {
 		catch (Exception e) {
 			Error.mensaje(e);
 		} // catch
+	}
+
+	@Override
+	public void toSaveRecord() {
+    Transaccion transaccion= null;
+    try {			
+			((NotaEntrada)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuento());
+			((NotaEntrada)this.getAdminOrden().getOrden()).setExcedentes(this.getAdminOrden().getTotales().getExtra());
+			((NotaEntrada)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
+			((NotaEntrada)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
+			((NotaEntrada)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
+			transaccion = new Transaccion(((NotaEntrada)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), false, this.getXml(), this.getPdf());
+			this.getAdminOrden().toAdjustArticulos();
+			if (transaccion.ejecutar(this.accion)) {
+				this.accion= EAccion.MODIFICAR;
+				this.getAdminOrden().getArticulos().add(new Articulo(-1L));
+				this.attrs.put("autoSave", Global.format(EFormatoDinamicos.FECHA_HORA, Fecha.getRegistro()));
+			} // if	
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch
+	}
+	
+	public void doGlobalEvent(Boolean isViewException) {
+		LOG.error("ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION");
+		// RequestContext.getCurrentInstance().execute("alert('ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION');");
 	}
 	
 }

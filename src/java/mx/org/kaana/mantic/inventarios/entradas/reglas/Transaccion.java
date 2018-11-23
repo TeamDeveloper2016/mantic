@@ -104,6 +104,25 @@ public class Transaccion extends Inventarios implements Serializable {
 			} // if
 			this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" la nota de entrada.");
 			switch(accion) {
+				case MOVIMIENTOS:
+					if(this.orden.isValid()) {
+  					regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
+  					this.toRemoveOrdenDetalle(sesion);
+					} // if
+					else {
+					  consecutivo= this.toSiguiente(sesion);
+					  this.orden.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
+					  this.orden.setOrden(consecutivo);
+					  this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
+					  if(this.orden.getIdNotaTipo().equals(1L))
+						  this.orden.setIdOrdenCompra(null);
+					  regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
+					  bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
+					  regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
+       	    this.toUpdateDeleteXml(sesion);	
+					} // else	
+					this.toFillArticulos(sesion);
+					break;
 				case COMPLETO:
 					consecutivo= this.toSiguiente(sesion);
 					this.orden.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
@@ -348,7 +367,7 @@ public class Transaccion extends Inventarios implements Serializable {
 			params.put("ruta", tmp.getRuta());
 			regresar= (List<Nombres>)DaoFactory.getInstance().toEntitySet(sesion, Nombres.class, "TcManticNotasArchivosDto", "listado", params);
 			regresar.add(new Nombres(tmp.getName()));
-		} // try // try // try // try
+		} // try 
 		catch (Exception e) {
 			Error.mensaje(e);
 			throw e;
