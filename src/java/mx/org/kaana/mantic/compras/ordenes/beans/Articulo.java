@@ -290,12 +290,18 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 
 	public boolean autorizedDiscount(){
-		boolean regresar= false;
-		Double utilidad = (this.getCosto()*this.getCantidad()) - (this.getPrecio()*this.getCantidad());
-		Descuentos descuentos= new Descuentos(this.importes.getImporte(), this.getDescuento().concat(",").concat(this.getExtras()));
-		regresar= (this.importes.getImporte() - descuentos.toImporte()) < utilidad;
-		if(!regresar)
-			setDescuento("");
+		boolean regresar= false;	
+		if(this.getDescuento().equals("0")){
+			regresar= true;
+			setDescuento(this.getDescuento());
+		} // if
+		else{
+			Double utilidad = (this.getCosto()*this.getCantidad()) - (this.getPrecio()*this.getCantidad());
+			Descuentos descuentos= new Descuentos(this.importes.getImporte(), this.getDescuento().concat(",").concat(this.getExtras()));
+			regresar= (this.importes.getImporte() - descuentos.toImporte()) < utilidad;
+			if(!regresar)
+				setDescuento("");
+		} // else
 		return regresar;
 	} // autorizedDiscount
 	
