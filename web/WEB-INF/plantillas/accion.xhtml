@@ -109,7 +109,7 @@
 				</pe:remoteCommand>	
 				<p:dialog id="janalGlobalException" header="Ocurrió una excepción: '#{pfExceptionHandler.type}' !" widgetVar="exceptionGlobalDialog" height="500px" closeOnEscape="true" closable="true" onShow="janal.bloquear();#{empty janalBackingPage? '': pfExceptionHandler.type eq 'javax.faces.application.ViewExpiredException'? 'executeGlobalException(true);': 'executeGlobalException(false);'}" onHide="janal.desbloquear();">
 						<div class="janal-wid-100-txt janal-column-center janal-font-bold">
-							<p:outputLabel value="FAVOR DE NOTIFICAR DE ESTE ERROR AL EQUIPO DE DESARROLLOR DE ESTE SISTEMA !" styleClass="recalculo janal-color-blue"/>
+							<p:outputLabel value="FAVOR DE NOTIFICAR DE ESTE ERROR AL EQUIPO DE DESARROLLO DE ESTE SISTEMA !" styleClass="recalculo janal-color-blue"/>
 						</div>
 						<strong>Message: </strong>#{pfExceptionHandler.message} <br/><br/>
 						<strong>StackTrace: </strong><h:outputText value="#{pfExceptionHandler.formattedStackTrace}" escape="false" /><br/>
