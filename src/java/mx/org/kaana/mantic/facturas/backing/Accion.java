@@ -33,7 +33,6 @@ import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
-import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
 import mx.org.kaana.mantic.facturas.reglas.AdminFacturas;
@@ -43,11 +42,14 @@ import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 @Named(value= "manticFacturasAccion")
 @ViewScoped
 public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 
+	private static final Log LOG               = LogFactory.getLog(Accion.class);  
   private static final long serialVersionUID = 327393488565639367L;
 	private static final String VENDEDOR_PERFIL= "VENDEDOR DE PISO";
 	private static final String INDIVIDUAL     = "1";
@@ -920,4 +922,11 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
       JsfBase.addMessageError(e);
     } // catch
 	} // toSaveRecord
+	
+	public void doGlobalEvent(Boolean isViewException) {
+		LOG.error("ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA");
+		if(isViewException && this.getAdminOrden().getArticulos().size()> 0)
+		  this.toSaveRecord();
+    //RequestContext.getCurrentInstance().execute("alert('ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA');");
+	} // doGlobalEvent
 }
