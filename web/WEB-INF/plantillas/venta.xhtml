@@ -101,7 +101,7 @@
         </p:layoutUnit>
       </p:layout>
 			<h:form prependId="false">
-     		<pe:remoteCommand name="executeGlobalException" actionListener="#{janalBackingPage[janalEventPage]}" process="@all" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
+     		<pe:remoteCommand name="executeGlobalException" actionListener="#{janalBackingPage[janalEventPage]}" process="@all">
 			    <pe:methodSignature parameters="java.lang.Boolean"/>  
 			    <pe:methodParam name="isViewException"/>  
 				</pe:remoteCommand>	
