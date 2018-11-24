@@ -615,8 +615,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	}
 	
 	public void doGlobalEvent(Boolean isViewException) {
-		LOG.error("ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION");
-		// RequestContext.getCurrentInstance().execute("alert('ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION');");
+		LOG.error("ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA");
+		if(isViewException)
+		  RequestContext.getCurrentInstance().execute("alert('ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA');");
+		  //this.toSaveRecord();
 	}
 	
 }

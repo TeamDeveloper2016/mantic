@@ -201,16 +201,20 @@
           <ui:insert name="dialogos"/>
 				</p:layoutUnit>
 			</p:layout>
-			<p:dialog id="janalGlobalException" header="Ocurrió una excepción: '#{pfExceptionHandler.type}' !" widgetVar="exceptionGlobalDialog" height="500px" closeOnEscape="true" dynamic="true" closable="true">
-				<h:form prependId="false">
-					<div class="janal-wid-100-txt janal-column-center janal-font-bold">
-						<p:outputLabel value="FAVOR DE NOTIFICAR DE ESTE ERROR AL EQUIPO DE DESARROLLOR DE ESTE SISTEMA !" styleClass="recalculo janal-color-blue"/>
-					</div>
-					<strong>Message: </strong>#{pfExceptionHandler.message} <br/>
-					<strong>StackTrace: </strong><h:outputText value="#{pfExceptionHandler.formattedStackTrace}" escape="false" /><br/>
-					<p:commandButton type="button" onclick="document.location.href= document.location.href;" value="Recargar pagina!" rendered="#{pfExceptionHandler.type eq 'javax.faces.application.ViewExpiredException'}" />
-				</h:form>	
-			</p:dialog>							
+			<h:form prependId="false">
+     		<pe:remoteCommand name="executeGlobalException" actionListener="#{janalBackingPage[janalEventPage]}" process="@all" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">
+			    <pe:methodSignature parameters="java.lang.Boolean"/>  
+			    <pe:methodParam name="isViewException"/>  
+				</pe:remoteCommand>	
+				<p:dialog id="janalGlobalException" header="Ocurrió una excepción: '#{pfExceptionHandler.type}' !" widgetVar="exceptionGlobalDialog" height="500px" closeOnEscape="true" closable="true" onShow="janal.bloquear();#{empty janalBackingPage? '': pfExceptionHandler.type eq 'javax.faces.application.ViewExpiredException'? 'executeGlobalException(true);': 'executeGlobalException(false);'}" onHide="janal.desbloquear();">
+						<div class="janal-wid-100-txt janal-column-center janal-font-bold">
+							<p:outputLabel value="FAVOR DE NOTIFICAR DE ESTE ERROR AL EQUIPO DE DESARROLLOR DE ESTE SISTEMA !" styleClass="recalculo janal-color-blue"/>
+						</div>
+						<strong>Message: </strong>#{pfExceptionHandler.message} <br/><br/>
+						<strong>StackTrace: </strong><h:outputText value="#{pfExceptionHandler.formattedStackTrace}" escape="false" /><br/>
+						<p:commandButton type="button" onclick="document.location.href= document.location.href;" value="Recargar pagina!" rendered="#{pfExceptionHandler.type eq 'javax.faces.application.ViewExpiredException'}" />
+				</p:dialog>							
+			</h:form>	
     </h:body>
   </f:view>
 </html>
