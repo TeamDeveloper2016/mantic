@@ -683,15 +683,21 @@
 		},
 		look: function(name) {
 			console.log('jsArticulo.look: '+ $(name).val());
-			lookup($(name).val());
+			var search= $(name).val().replace(janal.cleanString, '').trim();
+			if(search.length> 2)
+			  lookup(search);
 		},
 		clientes: function(name) {
 			console.log('jsArticulo.clientes: '+ $(name).val());
-			listado($(name).val());
+			var search= $(name).val().replace(janal.cleanString, '').trim();
+			if(search.length> 2)
+  			listado(search);
 		},
 		relocate: function(name) {
 			console.log('jsArticulo.relocate: '+ $(name).val());
-			findout($(name).val());
+			var search= $(name).val().replace(janal.cleanString, '').trim();
+			if(search.length> 2)
+  			findout(search);
 		},
 		back: function(title, count) {
 			janal.console('jsArticulo.back: ');

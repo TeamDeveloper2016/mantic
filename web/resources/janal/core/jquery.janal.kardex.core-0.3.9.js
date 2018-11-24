@@ -259,7 +259,9 @@
 		},
 		look: function(name) {
 			console.log('jsKardex.look: '+ $(name).val());
-			lookup($(name).val());
+			var search= $(name).val().replace(janal.cleanString, '').trim();
+			if(search.length> 2)
+			  lookup(search);
 		},
 		parche: function() {
 			var ok= true;

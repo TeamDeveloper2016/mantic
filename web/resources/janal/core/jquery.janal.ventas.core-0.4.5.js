@@ -672,7 +672,9 @@
 		},
 		look: function(name) {
 			console.log('jsArticulo.look: '+ $(name).val());
-			lookup($(name).val());
+			var search= $(name).val().replace(janal.cleanString, '').trim();
+			if(search.length> 2)
+			  lookup(search);
 		},
 		back: function(title, count) {
 			janal.console('jsArticulo.back: ');
@@ -866,7 +868,9 @@
 		},
 		clientes: function(name) {
 			console.log('jsArticulo.clientes: '+ $(name).val());
-			listado($(name).val());
+			var search= $(name).val().replace(janal.cleanString, '').trim();
+			if(search.length> 2)
+  			listado(search);
 		},
 		goon: function(focus) {
 			janal.console('jsArticulo.goon');

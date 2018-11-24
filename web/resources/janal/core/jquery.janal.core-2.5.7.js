@@ -491,6 +491,7 @@
     offContextMenu: true,
 		lastNameFocus : null,
 		reference     : null,
+		cleanString   : /[(|)|'|*|/|!||<|>|?|¿|!|&|%|$|#|;|:|{|}|\[|\]|~|\\]/g,
   	errors        : {
       inputs      : [],
       masks       : [],
@@ -1196,7 +1197,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.2.4.5';
+      return '0.2.5.7';
     }, // version
     align: function(pixels) {
       try {
