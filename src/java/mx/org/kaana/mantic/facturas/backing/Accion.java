@@ -30,6 +30,7 @@ import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.facturas.reglas.Transaccion;
 import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
+import mx.org.kaana.mantic.comun.IBaseStorage;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
@@ -45,7 +46,7 @@ import org.primefaces.model.StreamedContent;
 
 @Named(value= "manticFacturasAccion")
 @ViewScoped
-public class Accion extends IBaseVenta implements Serializable {
+public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 
   private static final long serialVersionUID = 327393488565639367L;
 	private static final String VENDEDOR_PERFIL= "VENDEDOR DE PISO";
@@ -259,11 +260,7 @@ public class Accion extends IBaseVenta implements Serializable {
 	@Override
   public String doCancelar() {   
 		String regresar= null;
-		try {
-			if(((EAccion)this.attrs.get("accionInicial")).equals(EAccion.AGREGAR)){
-				Transaccion transaccion= new Transaccion(new TcManticFicticiasDto(((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia()), "Cancelación de captura");
-				transaccion.ejecutar(EAccion.ELIMINAR);
-			} // if						
+		try {			
 			JsfBase.setFlashAttribute("idFicticia", ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia());
 			regresar= this.attrs.get("retorno") != null ? (String)this.attrs.get("retorno") : "filtro";
 		} // try
@@ -901,22 +898,10 @@ public class Accion extends IBaseVenta implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doValidaTipoPago
-	
+
 	@Override
-  public void doFindArticulo(Integer index) {
-		try {
-			super.doFindArticulo(index);
-    	doRegistroParcial();
-		} // try
-	  catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
-	} // doFindArticulo
-	
-	public String doRegistroParcial() {  
-    Transaccion transaccion= null;
-    String regresar        = null;
+	public void toSaveRecord() {
+		Transaccion transaccion= null;
 		EAccion eaccion        = null;		
     try {			
 			loadOrdenVenta();
@@ -934,6 +919,5 @@ public class Accion extends IBaseVenta implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
-    return regresar;
-  } // doAccion
+	} // toSaveRecord
 }
