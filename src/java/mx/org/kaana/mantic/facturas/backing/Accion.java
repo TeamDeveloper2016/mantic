@@ -234,7 +234,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		EAccion eaccion        = null;		
     try {			
 			loadOrdenVenta();
-			eaccion= ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia().equals(-1L) ? EAccion.AGREGAR : EAccion.MODIFICAR;						
+			eaccion= (EAccion) this.attrs.get("accion");						
 			transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.attrs.get("observaciones").toString());
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(eaccion)) {
