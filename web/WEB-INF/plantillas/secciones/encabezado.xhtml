@@ -5,7 +5,8 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core"
-			xmlns:ui="http://java.sun.com/jsf/facelets">	
+			xmlns:ui="http://java.sun.com/jsf/facelets"
+			xmlns:pe="http://primefaces.org/ui/extensions">	
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.preciosJs}"/>
     <h:outputScript library="janal" name="js/jquery.magnify.min-1.2.0.js"/>
     <h:outputScript library="janal" name="core/jquery.janal.magnify-0.0.1.js"/>
@@ -107,19 +108,44 @@
       <h:outputText value="#{kajoolAccesoAlerta.checkCaja}" escape="false" styleClass="Fs14"/>
     </p:panelGrid>
   </p:notificationBar>
-	<p:idleMonitor timeout="1620000" onidle="janal.bloquear(); PF('dialogoInactivo').show(); $('#dialogoInactividad_modal').removeClass('ui-widget-overlay');  console.log('Clase ui-widget-overlay eliminada');"/>		
-	<p:dialog id="dialogoInactividad" header="Inactividad" resizable="false" widgetVar="dialogoInactivo" onShow="janal.monitor(1);" closable="false">														
-		<div class="alinear-derecha">														
+	<p:ajaxExceptionHandler type="java.lang.RuntimeException" update="janalGlobalException" onexception="#{pfExceptionHandler.type eq 'javax.faces.application.ViewExpiredException'? 'timeoutGlobalException();': 'PF(\'exceptionGlobalDialog\').show();'}" />
+	<h:form prependId="false">
+		<p:remoteCommand name="timeoutGlobalException" action="/Exclusiones/salir.jsf?faces-redirect=true" process="@this" onstart="janal.console('Se activo el evento de redireccionar para salir');" global="true" immediate="true"/>
+		<pe:remoteCommand name="executeGlobalException" action="/Exclusiones/salir.jsf?faces-redirect=true" actionListener="#{janalBackingPage[janalEventPage]}" process="@all">
+			<pe:methodSignature parameters="java.lang.Boolean"/>  
+			<pe:methodParam name="isViewException"/>  
+		</pe:remoteCommand>	
+		<p:dialog id="janalGlobalException" header="Ocurrió una excepción: '#{pfExceptionHandler.type}' !" widgetVar="exceptionGlobalDialog" width="1300px" height="400px" closeOnEscape="true" closable="true" onShow="janal.bloquear();" onHide="janal.desbloquear();">
+			<div class="janal-wid-100-txt janal-column-center janal-font-bold">
+				<p:outputLabel value="FAVOR DE NOTIFICAR DE ESTE ERROR AL EQUIPO DE DESARROLLO DE ESTE SISTEMA !" styleClass="recalculo janal-field-error"/>
+			</div>
+			<strong>Message: </strong>#{pfExceptionHandler.message} <br/><br/>
+			<strong>StackTrace: </strong><h:outputText value="#{pfExceptionHandler.formattedStackTrace}" escape="false" /><br/>
+			<hr class="ui-widget-content" style="display: #{pfExceptionHandler.type eq 'javax.faces.application.ViewExpiredException'? '': 'none'}"/>
+			<div class="janal-line-button">						  
+				<p:commandButton type="button" icon="fa fa-refresh" onclick="document.location.href= document.location.href;" value="Recargar!" rendered="#{pfExceptionHandler.type eq 'javax.faces.application.ViewExpiredException'}" />
+			</div>	
+		</p:dialog>							
+	</h:form>	
+	<p:idleMonitor timeout="#{(session.maxInactiveInterval* 1000)- 50000}" onidle="janal.bloquear(); PF('dialogoInactivo').show(); $('#dialogoInactividad_modal').removeClass('ui-widget-overlay'); janal.console('El clase ui-widget-overlay fué eliminada del dialogo !');"/>		
+	<p:dialog id="dialogoInactividad" header="Está por expirar la sesión" resizable="false" widgetVar="dialogoInactivo" onShow="janal.globalTimeout= true; janal.monitor(1);" closable="false" width="650px" onHide="janal.console('Salir automático ['+ janal.globalTimeout+ ']'); if(janal.globalTimeout)#{empty(janalBackingPage)? 'timeoutGlobalException();': 'executeGlobalException(true);'}">
+		<div class="janal-column-center janal-field-error strong">														
 			<h:outputText id="segundos"/>
 		</div>						
-		<h:panelGrid columns="1">					
-			<p:spacer width="5px"/>
-			<h:outputText value="La sesi&oacute;n terminar&aacute; pronto debido a la inactividad. Para continuar esta sesi&oacute;n, haga clic en Aceptar."/>
-			<p:spacer width="5px"/>
-			<p:separator/>
+		<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-30, janal-wid-70">
+			<div class="janal-column-center strong">
+			  <i class="fa fa-refresh Fs130 janal-color-orange"/>
+			</div>
+      <h:panelGrid columns="1">					
+				<p:spacer width="2px"/>
+				<h:outputText value="Para continuar es necesario, dar clic en el boton Aceptrar. "/>
+				<h:outputText value="Para no perder sus datos, recuerde guardarlos antes."/>
+				<p:spacer width="1px"/>
+			</h:panelGrid>	
 		</h:panelGrid>
-		<div class="alinear-derecha">
-			<p:commandButton value="Aceptar" onstart="janal.monitor(0);" oncomplete="PF('dialogoInactivo').hide(); janal.desbloquear();"/>							
+		<hr class="ui-widget-content"/>
+  	<div class="janal-line-button">
+			<p:commandButton value="Aceptar" icon="fa fa-check" onstart="janal.monitor(0);" oncomplete="janal.globalTimeout= false; PF('dialogoInactivo').hide(); janal.desbloquear();"/>							
 		</div>				
 	</p:dialog>
 	<p:dialog id="dialogoVerificador" widgetVar="dlgVerificador" header="Verificador de precios" onShow="$('#verificadorValue').val(''); $('#verificadorValue').focus();janal.bloquear();" onHide="jsPrecios.hide(); janal.sendLastFocus(); janal.desbloquear();" height="440px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
@@ -475,5 +501,4 @@
 			</div>
 		</h:form>
 	</p:dialog>  	
-	<p:commandButton id="salir" action="/Exclusiones/salir.jsf?faces-redirect=true" style="display: none"/>
 </html>

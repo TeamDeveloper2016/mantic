@@ -57,8 +57,6 @@
 			</style>		
     </h:head>
     <h:body class="ui-widget-content">			
-			<p:ajaxExceptionHandler type="java.lang.RuntimeException" update="janalGlobalException" onexception="PF('exceptionGlobalDialog').show();" />
-			<p:ajaxExceptionHandler type="javax.faces.application.ViewExpiredException" update="janalGlobalException" onexception="PF('exceptionGlobalDialog').show();" />
       <p:layout fullPage="true">
         <p:layoutUnit position="north" styleClass="janal-header-page" style="border:0;" resizable="false" gutter="0">
           <ui:include src="/WEB-INF/plantillas/secciones/superior.xhtml"/>
@@ -100,23 +98,6 @@
           <ui:insert name="dialogos"/>
         </p:layoutUnit>
       </p:layout>
-			<h:form prependId="false">
-     		<pe:remoteCommand name="executeGlobalException" actionListener="#{janalBackingPage[janalEventPage]}" process="@all">
-			    <pe:methodSignature parameters="java.lang.Boolean"/>  
-			    <pe:methodParam name="isViewException"/>  
-				</pe:remoteCommand>	
-				<p:dialog id="janalGlobalException" header="Ocurrió una excepción: '#{pfExceptionHandler.type}' !" widgetVar="exceptionGlobalDialog" width="1300px" height="500px" closeOnEscape="true" closable="true" onShow="janal.bloquear();#{empty janalBackingPage? '': pfExceptionHandler.type eq 'javax.faces.application.ViewExpiredException'? 'executeGlobalException(true);': 'executeGlobalException(false);'}" onHide="janal.desbloquear();">
-					<div class="janal-wid-100-txt janal-column-center janal-font-bold">
-						<p:outputLabel value="FAVOR DE NOTIFICAR DE ESTE ERROR AL EQUIPO DE DESARROLLO DE ESTE SISTEMA !" styleClass="recalculo janal-field-error"/>
-					</div>
-					<strong>Message: </strong>#{pfExceptionHandler.message} <br/><br/>
-					<strong>StackTrace: </strong><h:outputText value="#{pfExceptionHandler.formattedStackTrace}" escape="false" /><br/>
-					<hr class="ui-widget-content"/>
-					<div class="janal-line-button">						  
-						<p:commandButton type="button" icon="fa-refresh" onclick="document.location.href= document.location.href;" value="Recargar pagina!" rendered="#{pfExceptionHandler.type eq 'javax.faces.application.ViewExpiredException'}" />
-					</div>	
-				</p:dialog>							
-			</h:form>	
     </h:body>
   </f:view>
 </html>

@@ -36,13 +36,16 @@ import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.enums.EReportes;
 import mx.org.kaana.mantic.enums.ETipoMovimiento;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.primefaces.context.RequestContext;
 
 @Named(value = "manticComprasOrdenesFiltro")
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
-  private static final long serialVersionUID = 8793667741599428332L;
+	private static final Log LOG              = LogFactory.getLog(Filtro.class);
+  private static final long serialVersionUID= 8793667741599428332L;
 	private Reporte reporte;
 	
   @PostConstruct
@@ -308,4 +311,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("idOrdenCompra",((Entity)this.attrs.get("seleccionado")).getKey());		
 		return "estructura".concat(Constantes.REDIRECIONAR);
 	} // doEstructura
+	
+	public void doGlobalEvent(Boolean isViewException) {
+		LOG.error("ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA ["+ isViewException+ "]");
+	}
+
 }

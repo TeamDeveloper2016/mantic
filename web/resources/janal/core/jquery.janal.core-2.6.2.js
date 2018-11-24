@@ -447,7 +447,7 @@
      }, // fecha     
      monitor:	function (value) {
       var count   = 11;
-      var contador= count;									
+      var contador= count;	
       if(value === 0)
         clearInterval(interval);										
       else {																							
@@ -464,7 +464,6 @@
           else {						
             clearInterval(interval);
             PF('dialogoInactivo').hide();
-            document.getElementById('salir').click();						
           } // else
         }, 1000);							
       } // else
@@ -491,6 +490,7 @@
     offContextMenu: true,
 		lastNameFocus : null,
 		reference     : null,
+		globalTimeout : true,
 		cleanString   : /[(|)|'|*|/|!||<|>|?|¿|!|&|%|$|#|;|:|{|}|\[|\]|~|\\]/g,
   	errors        : {
       inputs      : [],

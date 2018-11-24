@@ -52,10 +52,10 @@ public class Invalidar implements Serializable {
           } // catch
         } // while
       } // if
+			session.removeAttribute(Constantes.ATRIBUTO_AUTENTIFICA);
       session.setMaxInactiveInterval(0);
       FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 			LOG.warn("Eliminando el objeto del autentifica de la sesión: "+ session.getId());
-			session.removeAttribute(Constantes.ATRIBUTO_AUTENTIFICA);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
