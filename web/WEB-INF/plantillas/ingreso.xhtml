@@ -58,10 +58,10 @@
 					</h:form>
 				</p:layoutUnit>
 			</p:layout>
-			<p:dialog id="janalGlobalException" header="Ocurrió una excepción: '#{pfExceptionHandler.type}' !" widgetVar="exceptionGlobalDialog" height="500px" closeOnEscape="true" dynamic="true" closable="true">
+			<p:dialog id="janalGlobalException" header="Ocurrió una excepción: '#{pfExceptionHandler.type}' !" widgetVar="exceptionGlobalDialog" width="1300px" height="500px" closeOnEscape="true" dynamic="true" closable="true">
 				<h:form prependId="false">
 					<div class="janal-wid-100-txt janal-column-center janal-font-bold">
-						<p:outputLabel value="FAVOR DE NOTIFICAR DE ESTE ERROR AL EQUIPO DE DESARROLLO DE ESTE SISTEMA !" styleClass="recalculo janal-color-blue"/>
+						<p:outputLabel value="FAVOR DE NOTIFICAR DE ESTE ERROR AL EQUIPO DE DESARROLLO DE ESTE SISTEMA !" styleClass="recalculo janal-field-error"/>
 					</div>
 					<strong>Message: </strong>#{pfExceptionHandler.message} <br/>
 					<strong>StackTrace: </strong><h:outputText value="#{pfExceptionHandler.formattedStackTrace}" escape="false" /><br/>

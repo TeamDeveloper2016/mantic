@@ -112,7 +112,7 @@
 						<p:outputLabel value="FAVOR DE NOTIFICAR DE ESTE ERROR AL EQUIPO DE DESARROLLO DE ESTE SISTEMA !" styleClass="recalculo janal-field-error"/>
 					</div>
 					<strong>Message: </strong>#{pfExceptionHandler.message} <br/><br/>
-					<strong>StackTrace: </strong><h:outputText value="#{pfExceptionHandler.formattedStackTrace}" escape="false" /><br/>
+					<strong>StackTrace: </strong><h:outputText value="#{pfExceptionHandler.formattedStackTrace}" escape="false"/><br/>
 					<hr class="ui-widget-content"/>
 					<div class="janal-line-button">						  
 						<p:commandButton type="button" icon="fa-refresh" onclick="document.location.href= document.location.href;" value="Recargar pagina!" rendered="#{pfExceptionHandler.type eq 'javax.faces.application.ViewExpiredException'}" />
