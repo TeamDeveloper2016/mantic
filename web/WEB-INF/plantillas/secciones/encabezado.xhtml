@@ -110,7 +110,7 @@
   </p:notificationBar>
 	<p:ajaxExceptionHandler type="java.lang.RuntimeException" update="janalGlobalException" onexception="#{pfExceptionHandler.type eq 'javax.faces.application.ViewExpiredException'? 'timeoutGlobalException();': 'PF(\'exceptionGlobalDialog\').show();'}" />
 	<h:form prependId="false">
-		<p:remoteCommand name="timeoutGlobalException" action="/Exclusiones/salir.jsf?faces-redirect=true" process="@this" onstart="janal.console('Se activo el evento de redireccionar para salir');" global="true" immediate="true"/>
+		<p:remoteCommand name="timeoutGlobalException" action="/Exclusiones/salir.jsf?faces-redirect=true" process="@this" onstart="janal.desbloquear();setTimeout('timeoutGlobalException()', 2000);janal.console('Se activo el evento de redireccionar para salir');" global="true" immediate="true"/>
 		<pe:remoteCommand name="executeGlobalException" action="/Exclusiones/salir.jsf?faces-redirect=true" actionListener="#{janalBackingPage[janalEventPage]}" process="@all">
 			<pe:methodSignature parameters="java.lang.Boolean"/>  
 			<pe:methodParam name="isViewException"/>  
