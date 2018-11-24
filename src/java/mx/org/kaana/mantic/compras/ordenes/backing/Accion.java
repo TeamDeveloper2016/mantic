@@ -33,6 +33,8 @@ import mx.org.kaana.mantic.compras.ordenes.enums.EOrdenes;
 import mx.org.kaana.mantic.compras.ordenes.reglas.AdminOrdenes;
 import mx.org.kaana.mantic.comun.IBaseArticulos;
 import mx.org.kaana.mantic.comun.IBaseStorage;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.TabChangeEvent;
 
@@ -41,7 +43,8 @@ import org.primefaces.event.TabChangeEvent;
 @ViewScoped
 public class Accion extends IBaseArticulos implements IBaseStorage, Serializable {
 
-  private static final long serialVersionUID = 327393488565639367L;
+	private static final Log LOG              = LogFactory.getLog(mx.org.kaana.mantic.inventarios.entradas.backing.Accion.class);
+  private static final long serialVersionUID= 327393488565639367L;
 	private EAccion accion;
 	private EOrdenes tipoOrden;
 
@@ -374,6 +377,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch
+	}
+
+	public void doGlobalEvent(Boolean isViewException) {
+		LOG.error("ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA");
+		if(isViewException)
+		  this.toSaveRecord();
+    //RequestContext.getCurrentInstance().execute("alert('ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA');");
 	}
 	
 }
