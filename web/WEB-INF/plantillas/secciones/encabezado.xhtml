@@ -127,7 +127,7 @@
 			</div>	
 		</p:dialog>							
 	</h:form>	
-	<p:idleMonitor timeout="#{(session.maxInactiveInterval* 1000)- 50000}" onidle="janal.bloquear(); PF('dialogoInactivo').show(); $('#dialogoInactividad_modal').removeClass('ui-widget-overlay'); janal.console('El clase ui-widget-overlay fué eliminada del dialogo !');"/>		
+	<p:idleMonitor timeout="#{(session.maxInactiveInterval* 1000)- 120000}" onidle="janal.bloquear(); PF('dialogoInactivo').show(); $('#dialogoInactividad_modal').removeClass('ui-widget-overlay'); janal.console('El clase ui-widget-overlay fué eliminada del dialogo !');"/>		
 	<p:dialog id="dialogoInactividad" header="Está por expirar la sesión" resizable="false" widgetVar="dialogoInactivo" onShow="janal.globalTimeout= true; janal.monitor(1);" closable="false" width="650px" onHide="janal.console('Salir automático ['+ janal.globalTimeout+ ']'); if(janal.globalTimeout)#{empty(janalBackingPage)? 'timeoutGlobalException();': 'executeGlobalException(true);'}">
 		<div class="janal-column-center janal-field-error strong">														
 			<h:outputText id="segundos"/>

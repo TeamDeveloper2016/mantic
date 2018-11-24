@@ -126,7 +126,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				} // if	
 				RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
 				this.adminOrden.toCalculate();
-				// if(this instanceof IBaseStorage)
+				//if(this instanceof IBaseStorage)
  				//	((IBaseStorage)this).toSaveRecord();
 			} // if	
 			else
