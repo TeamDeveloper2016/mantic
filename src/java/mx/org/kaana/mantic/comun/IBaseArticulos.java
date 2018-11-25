@@ -99,6 +99,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				temporal.setCodigo(codigo== null? articulo.containsKey("codigo")? articulo.toString("codigo"): "": codigo.toString());
 				temporal.setPropio(articulo.toString("propio"));
 				temporal.setNombre(articulo.toString("nombre"));
+				temporal.setOrigen(articulo.toString("origen"));
 				temporal.setValor(articulo.toDouble(this.precio));
 				temporal.setCosto(articulo.toDouble(this.precio));
 				temporal.setIva(articulo.toDouble("iva"));				

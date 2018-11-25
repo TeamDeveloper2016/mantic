@@ -1316,7 +1316,12 @@
 			  return Math.floor(value);
 		  else
 			  return Math.ceil(value);
-	  }
+	  },
+		forward: function() {
+			$janal.console('janal.forward: Se activo el evento de redireccionar para salir');
+			$janal.desbloquear();
+			document.location.href= $janal.toContext().concat("/Exclusiones/salir.jsf?faces-redirect=true");
+		}
   });
   window.Janal= Janal;
 })(window);

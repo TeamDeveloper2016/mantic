@@ -383,7 +383,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   			boolean found= false;
 				while (y< disponibles.size()) {
 					disponible= disponibles.get(y);
-					if(faltante.getCodigo()!= null && faltante.getCodigo().equals(disponible.getCodigo())) {
+					if(faltante.getNombre()!= null && disponible.getOrigen()!= null && faltante.getNombre().equals(disponible.getOrigen())) {
 						relacionados++;
 						found= true;
       			faltantes.remove(faltante);
@@ -435,6 +435,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		disponible.setDescuento(faltante.getDescuento());
 		disponible.setIva(faltante.getIva());
 		disponible.setUnidadMedida(faltante.getUnidadMedida());
+		disponible.setOrigen(faltante.getOrigen());
 		disponible.setDisponible(false);
 		this.getAdminOrden().toCalculate();
 	}
@@ -543,6 +544,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 				buscado.put("descuento", new Value("descuento", faltante.getDescuento()));
 				buscado.put("iva", new Value("iva", faltante.getIva()));
 				buscado.put("unidadMedida", new Value("unidadMedida", faltante.getUnidadMedida()!= null? faltante.getUnidadMedida().toUpperCase(): ""));
+				buscado.put("origen", new Value("origen", faltante.getNombre()));
 			} // if	
 			this.attrs.put("encontrado", new UISelectEntity(buscado));
 		} // if

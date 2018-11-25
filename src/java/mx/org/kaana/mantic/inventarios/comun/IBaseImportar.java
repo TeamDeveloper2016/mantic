@@ -271,8 +271,10 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 					0D,
 					concepto.getClaveProdServ(),
 					concepto.getUnidad(),
-					2L
+					2L,
+					concepto.getDescripcion()
 				));
+				
 			} // for
 			Collections.sort(faltantes);
 			this.attrs.put("faltantes", faltantes);
