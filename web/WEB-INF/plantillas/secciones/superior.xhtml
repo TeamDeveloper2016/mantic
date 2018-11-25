@@ -142,28 +142,28 @@
 			<p:commandButton value="Aceptar" icon="fa fa-check" onstart="janal.monitor(0);" oncomplete="janal.globalTimeout= false; PF('dialogoInactivo').hide(); janal.desbloquear();"/>							
 		</div>				
 	</p:dialog>
-	<p:dialog id="dialogoVerificador" widgetVar="dlgVerificador" header="Verificador de precios" onShow="$('#verificadorValue').val('.*.');verificadorLookup();$('#verificadorValue').focus();" onHide="jsPrecios.hide(); janal.sendLastFocus(); janal.desbloquear();" height="440px" width="950px" resizable="false" closeOnEscape="true">
+	<p:dialog id="dialogoVerificador" widgetVar="dlgVerificador" header="Verificador de precios" onShow="$('#verificadorValue').val(''); $('#verificadorValue').focus();janal.bloquear();" onHide="jsPrecios.hide(); janal.sendLastFocus(); janal.desbloquear();" height="440px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form prependId="false">
-  		<p:remoteCommand name="verificadorLookup" actionListener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor verificadorValue" update="verificadorPrecio verificadorTabla" oncomplete="if($('#verificadorValue').val()==='.*.') $('#verificadorValue').val('');"/>
+			<p:remoteCommand name="verificadorLookup" actionListener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor verificadorValue" update="verificadorPrecio verificadorTabla" oncomplete="if($('#verificadorValue').val()==='.*.') $('#verificadorValue').val('');"/>
 			<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-90, janal-wid-15">
 				<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-					<p:outputLabel for="verificadorValue" value="Código o articulo:"/>
-					<p:inputText id="verificadorValue" styleClass="janal-key-precios janal-wid-100-txt" value="#{kajoolEncabezado.attrs.buscarPor}">   
+					<p:outputLabel for="verificadorValue" value="C&oacute;digo o nombre articulo:"/>
+					<p:inputText id="verificadorValue" styleClass="janal-key-verificador janal-wid-100-txt" value="#{kajoolEncabezado.attrs.buscarPor}">   
 						<p:ajax event="keyup" listener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor" update="verificadorPrecio verificadorTabla" onstart="return $('#verificadorValue').val().trim().length> 1"/>
 					</p:inputText>
 				</p:panelGrid>	
 				<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-right">
-					<p:outputLabel value="Buscar por código:"/>
+					<p:outputLabel value="Buscar por c&oacute;digo:"/>
 					<p:inputSwitch id="verificadorBuscarPor" onLabel="SI" offLabel="NO" value="#{kajoolEncabezado.attrs.buscaPorCodigo}">
 						<p:ajax event="change" process="@this" update="verificadorValue"/>
 					</p:inputSwitch>	
 				</p:panelGrid>	
 			</p:panelGrid>
-			<p:panel id="verificadorPrecio" header="Precios [ #{kajoolEncabezado.attrs.selected.nombre} ]" styleClass="janal-wid-100" style="display: none">
+			<p:panel id="verificadorPrecio" header="Precios [ #{kajoolEncabezado.attrs.selected.nombre} ]" styleClass="janal-wid-99" style="display: none">
 				<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 					<div class="ui-grid-row janal-grid-row">
 						<div class="ui-grid-col-10">
-							<p:panelGrid layout="grid" columns="6" styleClass="janal-wid-100" columnClasses="janal-column-center,janal-column-center,janal-column-center,janal-column-center,janal-column-center,janal-column-center">
+							<p:panelGrid layout="grid" columns="6" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center, janal-column-center, janal-column-center">
 								<p:outputLabel value="Menudeo"/>
 								<p:outputLabel value="Medio mayoreo"/>
 								<p:outputLabel value="Mayoreo"/>
@@ -177,7 +177,7 @@
 								<p:inputText styleClass="janal-column-center janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.limiteMedioMayoreo} - #{kajoolEncabezado.attrs.selected.limiteMayoreo}" readonly="true"/>
 								<p:inputText styleClass="janal-column-center janal-wid-100-txt" value="#{kajoolEncabezado.attrs.selected.limiteMayoreo} - #######" readonly="true"/>
 							</p:panelGrid>
-							<p:outputLabel value="Existencias por almacen:" styleClass="janal-wid-100"/>
+							<p:outputLabel value="Existencias por almacen:" styleClass="janal-wid-99"/>
 							<p:selectOneMenu value="#{kajoolEncabezado.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98" effect="fade" filter="true" filterMatchMode="contains">
 								<f:selectItems value="#{kajoolEncabezado.attrs.almacenes}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre} - #{element.stock}"/>
 								<p:column headerText="Clave">
@@ -189,22 +189,22 @@
 								<p:column styleClass="janal-column-right" headerText="Existencias">
 									<h:outputText value="#{item.stock}"/>
 								</p:column>   
-								<p:column headerText="Ubicación">
+								<p:column headerText="Ubicaci&oacute;n">
 									<h:outputText value="#{item.ubicacion}"/>
 								</p:column>   
 							</p:selectOneMenu>
 						</div>
 						<p:spacer width="5px"/>
 						<div class="ui-grid-col-2 TexAlCenter">
-							<a id="source-gallery" data-magnify="gallery" data-caption="#{kajoolEncabezado.attrs.selected.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">  
-							  <p:graphicImage id="icon-gallery" value="#{kajoolEncabezado.image}" styleClass="janal-logo-mini filas" width="110" height="110" stream="false" style="cursor:zoom-in;"/>
+							<a id="source-gallery" data-magnify="gallery" data-caption="#{kajoolEncabezado.attrs.selected.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">
+								<p:graphicImage id="icon-gallery" value="#{kajoolEncabezado.image}" styleClass="janal-logo-mini filas" width="120" height="120" stream="false" style="cursor:zoom-in;"/>
 							</a>	
 						</div>	
 					</div>
 				</div>
 			</p:panel>
 			<p:spacer height="3px"/>
-			<p:dataTable lazy="true" id="verificadorTabla" widgetVar="widgetVerificador" var="filtro" styleClass="janal-key-registros janal-wid-100" value="#{kajoolEncabezado.lazyModel}" selection="#{kajoolEncabezado.attrs.selected}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="270" style="margin-bottom:0">
+			<p:dataTable lazy="true" id="verificadorTabla" widgetVar="widgetVerificador" var="row" styleClass="janal-row-verificador janal-wid-100" value="#{kajoolEncabezado.lazyModel}" selection="#{kajoolEncabezado.attrs.selected}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="270" style="margin-bottom:0">
 				<p:ajax event="rowSelect" process="@this" update="verificadorPrecio" listener="#{kajoolEncabezado.doRowDblSelectEvent}" />
 				<p:ajax event="rowDblselect" process="@this" update="verificadorPrecio" listener="#{kajoolEncabezado.doRowDblSelectEvent}" oncomplete="jsPrecios.show();"/>
 				<p:column class="MarAuto Responsive janal-wid-col-30">
@@ -215,28 +215,28 @@
 				</p:column>		
 				<p:column class="MarAuto Responsive janal-wid-20">
 					<f:facet name="header">
-						<h:outputText value="Código"/>
+						<h:outputText value="C&oacute;digo"/>
 					</f:facet>
-					<h:outputText value="#{filtro['propio']}"/>
+					<h:outputText value="#{row['propio']}"/>
 				</p:column>		
 				<p:column class="MarAuto Responsive">
 					<f:facet name="header">
 						<h:outputText value="Nombre"/>
 					</f:facet>
-					<h:outputText value="#{filtro['nombre']}"/>
+					<h:outputText value="#{row['nombre']}"/>
 				</p:column>		
 				<p:column class="janal-column-right MarAuto Responsive janal-wid-20">
 					<f:facet name="header">
 						<h:outputText value="Importe"/>
 					</f:facet>
-					<h:outputText value="#{filtro['menudeo']}"/>
+					<h:outputText value="#{row['menudeo']}"/>
 				</p:column>		
 				<f:facet name="footer">
 					<p:outputLabel value="Total [#{kajoolEncabezado.lazyModel==null?0:kajoolEncabezado.lazyModel.rowCount}] registros"/>
 				</f:facet>
 			</p:dataTable>
 		</h:form>
-	</p:dialog>  	
+	</p:dialog>   	 	
 	<p:dialog id="dialogoFaltantes" widgetVar="dlgFaltantes" header="Lista de articulos faltantes" onShow="jsPrecios.refresh();faltantesLookup();$('#codigosFaltantes').focus();janal.bloquear();" onHide="janal.sendLastFocus();jsPrecios.update();janal.desbloquear();" height="450px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form id="faltantes" prependId="false">
 			<p:remoteCommand name="faltantesLookup" actionListener="#{kajoolEncabezado.doLoadFaltantes}" process="@this" update="@(.faltantes)"/>
