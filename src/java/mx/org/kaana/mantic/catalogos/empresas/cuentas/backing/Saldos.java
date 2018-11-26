@@ -44,6 +44,7 @@ public class Saldos extends IBaseFilter implements Serializable {
     try {
 			this.attrs.put("empresa", "");
 			this.attrs.put("almacen", "");
+			this.attrs.put("vencidos", new Long(3));
       this.attrs.put("sortOrder", "order by	tc_mantic_empresas_deudas.registro desc");
       this.attrs.put("idEmpresa", JsfBase.getFlashAttribute("idEmpresa")== null? JsfBase.getAutentifica().getEmpresa().getIdEmpresa() : Long.valueOf(JsfBase.getFlashAttribute("idEmpresa").toString()));     
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
@@ -102,8 +103,16 @@ public class Saldos extends IBaseFilter implements Serializable {
 		  sb.append("(date_format(tc_mantic_empresas_deudas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
 		  sb.append("(date_format(tc_mantic_empresas_deudas.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
-		if(!Cadena.isVacio(this.attrs.get("vencidos")) && this.attrs.get("vencidos").toString().equals("1"))
-  		sb.append("(now()> tc_mantic_empresas_deudas.limite) and ");
+		if(!Cadena.isVacio(this.attrs.get("vencidos")))
+			switch(((Long)this.attrs.get("vencidos")).intValue()) {
+				case 1: // SI
+      		sb.append("(now()> tc_mantic_empresas_deudas.limite) and ");
+				case 2: // NO
+         	sb.append("(tc_mantic_clientes_deudas.saldo<> 0) and ");
+					break;
+				case 3: // TODOS
+					break;
+			} // switch
 		if(!Cadena.isVacio(this.attrs.get("dias")))
   		sb.append("(datediff(tc_mantic_empresas_deudas.limite, now())>= ").append(this.attrs.get("dias")).append(") and ");
 		regresar.put("idEmpresa", this.attrs.get("idEmpresa"));		
