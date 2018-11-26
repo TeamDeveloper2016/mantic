@@ -1875,10 +1875,8 @@
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				where
 					{condicion}				
-				and 
-					(tc_mantic_clientes.razon_social like upper('%{cliente}%') or tc_mantic_clientes.clave like upper('%{cliente}%') or tc_mantic_clientes.rfc like upper('%{cliente}%'))
-				and 
-					tc_mantic_ventas.id_empresa in ({idEmpresa})
+				  and (tc_mantic_clientes.razon_social like '%{cliente}%' or tc_mantic_clientes.clave like '%{cliente}%' or tc_mantic_clientes.rfc like '%{cliente}%')
+				  and tc_mantic_ventas.id_empresa in ({idEmpresa})
 				{sortOrder}						
 			</select>		
 			<select id="deuda">
@@ -3745,14 +3743,10 @@
 					tc_mantic_notas_tipos on tc_mantic_notas_entradas.id_nota_tipo= tc_mantic_notas_tipos.id_nota_tipo
 				where
 					{condicion}				
-				and 					
-					tc_mantic_proveedores.razon_social like '%{proveedor}%'
-				and 
-					tc_mantic_almacenes.id_empresa in ({idEmpresa})
-				and 
-					(tc_mantic_almacenes.clave like upper('%{almacen}%') or tc_mantic_almacenes.nombre like upper('%{almacen}%'))
-				and 
-					tc_mantic_notas_entradas.id_empresa in ({idEmpresa})
+				  and tc_mantic_proveedores.razon_social like '%{razonSocial}%'
+				  and tc_mantic_almacenes.id_empresa in ({idEmpresa})
+				  and (tc_mantic_almacenes.clave like '%{almacen}%' or tc_mantic_almacenes.nombre like '%{almacen}%')
+				  and tc_mantic_notas_entradas.id_empresa in ({idEmpresa})
 				{sortOrder}						
 			</select>		
 			<select id="cuentas">

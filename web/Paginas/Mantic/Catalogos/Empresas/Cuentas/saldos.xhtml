@@ -11,9 +11,9 @@
     <script type="text/javascript">
       Janal.Control.fields = {
         'idEmpresa'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'proveedor'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'almacen'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'consecutivo' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'consecutivo', individual: true},
+        'razonSocial' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'almacen'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'consecutivo' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'consecutivo'},
         'dias'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'vencidos'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'fechaInicio' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -50,8 +50,19 @@
 							</p:selectOneMenu>
 							<p:outputLabel for="almacen" value="Almacen:"/>
 							<p:inputText id="almacen" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.almacen}" styleClass="janal-wid-100-txt"/> 
-							<p:outputLabel for="proveedor" value="Proveedor:"/>
-							<p:inputText id="proveedor" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.proveedor}" styleClass="janal-wid-100-txt"/> 							
+              <p:outputLabel for="razonSocial" value="Razón social:"/>
+							<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: HERRAJES HF. S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.proveedor}" completeMethod="#{manticCatalogosEmpresasCuentasSaldos.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<h:outputText value="Clave:" />
+										<h:outputText value="#{custom.clave}" />
+										<h:outputText value="RFC:" />
+										<h:outputText value="#{custom.rfc}" />
+										<h:outputText value="Razón social:" />
+										<h:outputText value="#{custom.razonSocial}" />
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>			
 							<p:outputLabel for="consecutivo" value="Nota entrada:"/>
 							<p:inputText id="consecutivo" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.consecutivo}" styleClass="janal-wid-100-txt janal-column-right"/> 
 							<p:outputLabel for="dias" value="Días vencidos:"/>

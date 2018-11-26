@@ -42,7 +42,6 @@ public class Saldos extends IBaseFilter implements Serializable {
   @Override
   protected void init() {
     try {
-			this.attrs.put("proveedor", "");
 			this.attrs.put("empresa", "");
 			this.attrs.put("almacen", "");
       this.attrs.put("sortOrder", "order by	tc_mantic_empresas_deudas.registro desc");
@@ -66,7 +65,6 @@ public class Saldos extends IBaseFilter implements Serializable {
 			params.put("empresa", this.attrs.get("empresa"));
 			params.put("idEmpresa", this.attrs.get("idEmpresa").toString().equals("-1") ? this.attrs.get("allEmpresa") : this.attrs.get("idEmpresa"));			
 			params.put("almacen", this.attrs.get("almacen"));			
-			params.put("proveedor", this.attrs.get("proveedor"));			
       columns= new ArrayList<>();
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
       columns.add(new Columna("pagar", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
@@ -91,6 +89,13 @@ public class Saldos extends IBaseFilter implements Serializable {
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
+	  UISelectEntity proveedor      = (UISelectEntity)this.attrs.get("proveedor");
+		List<UISelectEntity>provedores= (List<UISelectEntity>)this.attrs.get("proveedores");
+		if(provedores!= null && proveedor!= null && provedores.indexOf(proveedor)>= 0) 
+			regresar.put("razonSocial", provedores.get(provedores.indexOf(proveedor)).toString("razonSocial"));			
+		else
+ 		  if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
+  			regresar.put("razonSocial", JsfBase.getParametro("razonSocial_input"));			
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_mantic_notas_entradas.consecutivo= ").append(this.attrs.get("consecutivo")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
@@ -165,7 +170,6 @@ public class Saldos extends IBaseFilter implements Serializable {
       params.put("empresa", this.attrs.get("empresa"));
 			params.put("idEmpresa", this.attrs.get("idEmpresa").toString().equals("-1") ? this.attrs.get("allEmpresa") : this.attrs.get("idEmpresa"));			
 			params.put("almacen", this.attrs.get("almacen"));			
-			params.put("proveedor", this.attrs.get("proveedor"));	
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
       params.put("sortOrder", "order by	tc_mantic_empresas_deudas.registro desc");
       reporteSeleccion= EReportes.valueOf(nombre);
@@ -278,4 +282,41 @@ public class Saldos extends IBaseFilter implements Serializable {
 		} // catch		
 		return regresar;
 	} // doEstructura
+	
+	public List<UISelectEntity> doCompleteProveedor(String codigo) {
+ 		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		boolean buscaPorCodigo    = false;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", -1L);
+			if(!Cadena.isVacio(codigo)) {
+  			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
+				buscaPorCodigo= codigo.startsWith(".");
+				if(buscaPorCodigo)
+					codigo= codigo.trim().substring(1);
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			} // if	
+			else
+				codigo= "WXYZ";
+  		params.put("codigo", codigo);
+			if(buscaPorCodigo)
+        this.attrs.put("proveedores", UIEntity.build("TcManticProveedoresDto", "porCodigo", params, columns, 40L));
+			else
+        this.attrs.put("proveedores", UIEntity.build("TcManticProveedoresDto", "porNombre", params, columns, 40L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+		return (List<UISelectEntity>)this.attrs.get("proveedores");
+	}		
 }
