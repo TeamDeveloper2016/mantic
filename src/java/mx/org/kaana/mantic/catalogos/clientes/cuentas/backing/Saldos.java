@@ -78,7 +78,6 @@ public class Saldos extends IBaseFilter implements Serializable {
     try {
   	  params = toPrepare();	
 			params.put("idCliente", this.idCliente);
-			params.put("cliente", this.attrs.get("cliente"));
       columns= new ArrayList<>();
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
       columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));    
@@ -103,8 +102,15 @@ public class Saldos extends IBaseFilter implements Serializable {
 
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
-		StringBuilder sb= new StringBuilder();
-		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
+		StringBuilder sb            = new StringBuilder();
+	  UISelectEntity cliente      = (UISelectEntity)this.attrs.get("cliente");
+		List<UISelectEntity>clientes= (List<UISelectEntity>)this.attrs.get("clientes");
+		if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
+			regresar.put("razonSocial", clientes.get(clientes.indexOf(cliente)).toString("razonSocial"));			
+		else
+ 		  if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
+  			regresar.put("razonSocial", JsfBase.getParametro("razonSocial_input"));			
+  	if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_mantic_ventas.consecutivo= ").append(this.attrs.get("consecutivo")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
 		  sb.append("(date_format(tc_mantic_clientes_deudas.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
@@ -316,4 +322,41 @@ public class Saldos extends IBaseFilter implements Serializable {
 	public String toColor(Entity row) {
 		return row.toLong("idManual").equals(1L)? "janal-tr-orange": "";
 	}
+	
+	public List<UISelectEntity> doCompleteCliente(String codigo) {
+ 		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		boolean buscaPorCodigo    = false;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			if(!Cadena.isVacio(codigo)) {
+  			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
+				buscaPorCodigo= codigo.startsWith(".");
+				if(buscaPorCodigo)
+					codigo= codigo.trim().substring(1);
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			} // if	
+			else
+				codigo= "WXYZ";
+  		params.put("codigo", codigo);
+			if(buscaPorCodigo)
+        this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "porCodigo", params, columns, 40L));
+			else
+        this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "porNombre", params, columns, 40L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+		return (List<UISelectEntity>)this.attrs.get("clientes");
+	}		
+		
 }

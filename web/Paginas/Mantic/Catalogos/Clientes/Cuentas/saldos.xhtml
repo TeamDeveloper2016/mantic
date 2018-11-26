@@ -11,7 +11,7 @@
     <script type="text/javascript">
       Janal.Control.fields = {        
         'idEmpresa'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'cliente'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'razonSocial' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'consecutivo' : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'dias'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'vencidos'    : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -52,10 +52,21 @@
 									<h:outputText value="#{item.nombre}"/>
 								</p:column>   
 							</p:selectOneMenu>
-							<p:outputLabel for="cliente" value="Cliente:"/>
-							<p:inputText id="cliente" value="#{manticCatalogosClientesCuentasSaldos.attrs.cliente}" styleClass="janal-wid-100-txt"/> 
 							<p:outputLabel for="consecutivo" value="No. ticket:"/>
 							<p:inputText id="consecutivo" value="#{manticCatalogosClientesCuentasSaldos.attrs.ticket}" styleClass="janal-wid-100-txt janal-column-right"/> 
+              <p:outputLabel for="razonSocial" value="Razón social:"/>
+							<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: ENVASES UNIVERSALES S.A." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosClientesCuentasSaldos.attrs.cliente}" completeMethod="#{manticCatalogosClientesCuentasSaldos.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<h:outputText value="Clave:" />
+										<h:outputText value="#{custom.clave}" />
+										<h:outputText value="RFC:" />
+										<h:outputText value="#{custom.rfc}" />
+										<h:outputText value="Razón social:" />
+										<h:outputText value="#{custom.razonSocial}" />
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>			
 							<p:outputLabel for="dias" value="Días vencidos:"/>
 							<p:inputText id="dias" value="#{manticCatalogosClientesCuentasSaldos.attrs.dias}" styleClass="janal-wid-100-txt janal-column-right"/> 
 							<p:outputLabel for="vencidos" value="Vencidos:"/>

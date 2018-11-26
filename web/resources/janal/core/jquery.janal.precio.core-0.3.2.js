@@ -46,12 +46,6 @@
 					case $precios.VK_ESC:
             PF('dlgFaltantes').hide();
 					  break;
-   		    case $precios.VK_MINUS:
-		      case $precios.VK_REST:
-						if('codigosFaltantes_input'=== $(this).attr('id')) {
-							$('.janal-clean-input').val('');
-							return false;
-						} // if	
 					case $precios.VK_UP:	
 					case $precios.VK_DOWN:
 					  $precios.jump(true);

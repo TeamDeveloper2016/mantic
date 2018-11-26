@@ -1875,7 +1875,7 @@
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				where
 					{condicion}				
-				  and (tc_mantic_clientes.razon_social like '%{cliente}%' or tc_mantic_clientes.clave like '%{cliente}%' or tc_mantic_clientes.rfc like '%{cliente}%')
+				  and (tc_mantic_clientes.razon_social like '%{razonSocial}%' or tc_mantic_clientes.clave like '%{razonSocial}%' or tc_mantic_clientes.rfc like '%{razonSocial}%')
 				  and tc_mantic_ventas.id_empresa in ({idEmpresa})
 				{sortOrder}						
 			</select>		
