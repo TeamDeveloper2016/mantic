@@ -1782,7 +1782,9 @@
 				inner join 
 					tc_mantic_tipos_ventas on tc_mantic_clientes.id_tipo_venta = tc_mantic_tipos_ventas.id_tipo_venta
 				left join
-					tr_mantic_cliente_domicilio  on tr_mantic_cliente_domicilio.id_cliente=tc_mantic_clientes.id_cliente
+					tr_mantic_cliente_domicilio  on tr_mantic_cliente_domicilio.id_cliente=tc_mantic_clientes.id_cliente 
+				  and tr_mantic_cliente_domicilio.id_tipo_domicilio= 1 
+				  and tr_mantic_cliente_domicilio.id_principal= 1
 				left join
 					tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_cliente_domicilio.id_domicilio
 				where   
@@ -2067,9 +2069,9 @@
 				from
 					tc_mantic_clientes 
 				left join
-					tr_mantic_cliente_domicilio on tr_mantic_cliente_domicilio.id_cliente=tc_mantic_clientes.id_cliente
+					tr_mantic_cliente_domicilio on tr_mantic_cliente_domicilio.id_cliente=tc_mantic_clientes.id_cliente and tr_mantic_cliente_domicilio.id_principal=1
 				left join
-					tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_cliente_domicilio.id_domicilio and tr_mantic_cliente_domicilio.id_principal=1
+					tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_cliente_domicilio.id_domicilio
 				left join 
 					tc_janal_localidades on tc_mantic_domicilios.id_localidad = tc_janal_localidades.id_localidad
 				left join 
