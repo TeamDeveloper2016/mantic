@@ -120,7 +120,7 @@
                   <p:separator/>
                   <p:menuitem id="sincronizar" icon="fa fa-refresh" value="Sincronizar" action="#{manticFacturasFiltro.doSincronizar()}" onstart="return janal.bloquear()"/>
                   <p:separator/>
-                  <p:menuitem id="facturasPdf" icon="fa fa-file-pdf-o" value="Facturama" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doReporteFacturas('FACTURAS_PDF')}" oncomplete="janal.desbloquear();" update="descargar"/>
+                  <p:menuitem id="facturasPdf" icon="fa fa-file-pdf-o" value="Resumen" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doReporteFacturas('FACTURAS_PDF')}" oncomplete="janal.desbloquear();" update="descargar"/>
                 </p:menuButton>
               </div>  
               <div class="xs-pantalla">              

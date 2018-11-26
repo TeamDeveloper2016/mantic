@@ -186,8 +186,7 @@ public class Transferir extends IBaseTnx {
 		try {
 			params=new HashMap<>();
 			params.put("idEntidad", idEntidad);
-			String codigo= municipio.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim();
-			params.put("descripcion", codigo.replaceAll("(,| |\\t)+", ".*.*"));
+			params.put("descripcion", municipio!= null? municipio.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*"): "XYZ");
 			Value value= DaoFactory.getInstance().toField(sesion, "TcJanalMunicipiosDto", "municipio", params, "idMunicipio");
 			if(value!= null && value.getData()!= null)
 				regresar= value.toLong();

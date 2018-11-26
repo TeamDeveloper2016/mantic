@@ -61,13 +61,14 @@ public class CFDIFactory implements Serializable {
    * Contructor default
    */
   private CFDIFactory() {		
-		if (Configuracion.getInstance().isEtapaProduccion())
-			this.facturama= new FacturamaApi(this.USER, this.PASSWORD, false);
-		else 
-			if (Configuracion.getInstance().isEtapaPruebas())
-			  this.facturama= new FacturamaApi(this.USER_PU, this.PASSWORD_PU, true);
-		  else
-			  this.facturama= new FacturamaApi(this.USER_PU, this.PASSWORD_PU, true);
+  	this.facturama= new FacturamaApi(this.USER, this.PASSWORD, false);
+//		if (Configuracion.getInstance().isEtapaProduccion())
+//			this.facturama= new FacturamaApi(this.USER, this.PASSWORD, false);
+//		else 
+//			if (Configuracion.getInstance().isEtapaPruebas())
+//			  this.facturama= new FacturamaApi(this.USER_PU, this.PASSWORD_PU, true);
+//		  else
+//			  this.facturama= new FacturamaApi(this.USER_PU, this.PASSWORD_PU, true);
   } // CFDIFactory
 
   /**

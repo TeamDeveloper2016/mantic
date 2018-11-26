@@ -319,12 +319,12 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try{		
       params= toPrepare();	
       //es importante este orden para los grupos en el reporte	
-      definiciones = new ArrayList<Definicion>();
+      definiciones = new ArrayList<>();
       params.put("sortOrder", "order by tc_mantic_ficticias.id_empresa, tc_mantic_clientes.id_cliente, tc_mantic_ficticias.ejercicio, tc_mantic_ficticias.orden");
       reporteSeleccion= EReportes.valueOf(nombre);
       this.reporte= JsfBase.toReporte();	
       definiciones.add(new Definicion((Map<String, Object>) ((HashMap) params).clone(), params, reporteSeleccion.getProceso(), reporteSeleccion.getIdXml(), reporteSeleccion.getJrxml()));
-      this.reporte.toAsignarReportes(new JuntarReporte(definiciones, reporteSeleccion, "/Paginas/Mantic/Facturas/filtro",false, false));
+      this.reporte.toAsignarReportes(new JuntarReporte(definiciones, reporteSeleccion, "/Paginas/Mantic/Facturas/filtro", false, false));
       if(doVerificarReporte())
         this.reporte.doAceptar();
     } // try
