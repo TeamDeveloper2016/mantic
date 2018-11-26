@@ -1,8 +1,11 @@
 package mx.org.kaana.mantic.catalogos.proveedores.backing;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -15,9 +18,11 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.proveedores.reglas.Gestor;
@@ -63,15 +68,16 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> campos = null;
+    List<Columna> columns    = null;
+		Map<String, Object>params= null;
     try {
-      campos = new ArrayList<>();
-      campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("tipoProveedor", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("tipoDia", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("idTipoProveedor", ((UISelectEntity) this.attrs.get("tipoProveedor")).getKey().equals(-1L) ? toAllTiposProveedores() : ((UISelectEntity) this.attrs.get("tipoProveedor")).getKey());
-      this.lazyModel = new FormatCustomLazy("VistaProveedoresDto", "row", this.attrs, campos);
+      params= toPrepare();	
+      columns= new ArrayList<>();
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("tipoProveedor", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("tipoDia", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      this.lazyModel = new FormatCustomLazy("VistaProveedoresDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -79,7 +85,8 @@ public class Filtro extends IBaseFilter implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     finally {
-      Methods.clean(campos);
+      Methods.clean(params);
+      Methods.clean(columns);
     } // finally		
   } // doLoad
 
@@ -110,4 +117,69 @@ public class Filtro extends IBaseFilter implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
   } // doEliminar
+	
+	public List<UISelectEntity> doCompleteProveedor(String codigo) {
+ 		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		boolean buscaPorCodigo    = false;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", -1L);
+			if(!Cadena.isVacio(codigo)) {
+  			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
+				buscaPorCodigo= codigo.startsWith(".");
+				if(buscaPorCodigo)
+					codigo= codigo.trim().substring(1);
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			} // if	
+			else
+				codigo= "WXYZ";
+  		params.put("codigo", codigo);
+			if(buscaPorCodigo)
+        this.attrs.put("proveedores", UIEntity.build("TcManticProveedoresDto", "porCodigo", params, columns, 40L));
+			else
+        this.attrs.put("proveedores", UIEntity.build("TcManticProveedoresDto", "porNombre", params, columns, 40L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+		return (List<UISelectEntity>)this.attrs.get("proveedores");
+	}	
+	
+	private Map<String, Object> toPrepare() {
+	  Map<String, Object> regresar  = new HashMap<>();	
+		StringBuilder sb              = new StringBuilder();
+	  UISelectEntity proveedor      = (UISelectEntity)this.attrs.get("proveedor");
+		List<UISelectEntity>provedores= (List<UISelectEntity>)this.attrs.get("proveedores");
+		if(!Cadena.isVacio(this.attrs.get("clave")))
+			sb.append("(tc_mantic_proveedores.clave like '%").append(provedores.get(provedores.indexOf(proveedor)).toString("clave")).append("%') and ");
+		if(!Cadena.isVacio(this.attrs.get("rfc")))
+			sb.append("(tc_mantic_proveedores.rfc like '%").append(provedores.get(provedores.indexOf(proveedor)).toString("rfc")).append("%') and ");
+		if(provedores!= null && proveedor!= null && provedores.indexOf(proveedor)>= 0) 
+			sb.append("(tc_mantic_proveedores.razon_social like '%").append(provedores.get(provedores.indexOf(proveedor)).toString("razonSocial")).append("%') and ");
+		else
+ 		  if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
+			  sb.append("(tc_mantic_proveedores.razon_social like '%").append(JsfBase.getParametro("razonSocial_input")).append("%') and ");
+		if(!Cadena.isVacio(this.attrs.get("idTipoProveedor")) && !this.attrs.get("idTipoProveedor").toString().equals("-1"))
+  		sb.append("(tc_mantic_proveedores.id_tipo_proveedor= ").append(this.attrs.get("idTipoProveedor")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
+		else
+		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+		if(sb.length()== 0)
+		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+		else	
+		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+		return regresar;		
+	}
+
 }

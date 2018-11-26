@@ -11,9 +11,9 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'razonSocial': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
-        'clave': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
-        'rfc': {validaciones: 'libre', mascara: 'rfc', formatos: 'cambiar-mayusculas', individual: true}       
+        'razonSocial': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: false},
+        'clave': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: false},
+        'rfc': {validaciones: 'libre', mascara: 'rfc', formatos: 'cambiar-mayusculas', individual: false}       
       };
     </script>		
   </ui:define>
@@ -33,9 +33,20 @@
               <p:outputLabel for="rfc" value="RFC:"/>
               <p:inputText id="rfc" value="#{manticCatalogosProveedoresFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                            
               <p:outputLabel for="razonSocial" value="Razón social:"/>
-              <p:inputText id="razonSocial" value="#{manticCatalogosProveedoresFiltro.attrs.razonSocial}" styleClass="janal-wid-100-txt"/>
+							<p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: HERRAJES HF. S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosProveedoresFiltro.attrs.proveedor}" completeMethod="#{manticCatalogosProveedoresFiltro.doCompleteProveedor}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<h:outputText value="Clave:" />
+										<h:outputText value="#{custom.clave}" />
+										<h:outputText value="RFC:" />
+										<h:outputText value="#{custom.rfc}" />
+										<h:outputText value="Razón social:" />
+										<h:outputText value="#{custom.razonSocial}" />
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>			
               <p:outputLabel for="tipoProveedor"  value="Tipo proveedor:"/>
-              <p:selectOneMenu  id="tipoProveedor" value="#{manticCatalogosProveedoresFiltro.attrs.tipoProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-90">
+              <p:selectOneMenu id="tipoProveedor" value="#{manticCatalogosProveedoresFiltro.attrs.idTipoProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96">
                 <f:selectItems value="#{manticCatalogosProveedoresFiltro.attrs.tiposProveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column>
                   <h:outputText value="#{item.nombre}"/>

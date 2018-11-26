@@ -51,48 +51,19 @@ public class Portal extends IBaseFilter implements Serializable {
 	  
 	@Override
   public void doLoad() {
-		List<UISelectEntity> proveedores= null;
-		List<Columna>campos= null;
-    try {
-			if(!Cadena.isVacio(this.attrs.get("codigo").toString())){
-				campos= new ArrayList<>();
-				campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
-				campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-				proveedores= UIEntity.build("VistaProveedoresDto", "portal", this.attrs, campos, Constantes.SQL_TODOS_REGISTROS);
-				this.attrs.put("proveedores", proveedores);
-				this.attrs.put("proveedor", UIBackingUtilities.toFirstKeySelectEntity(proveedores));
-				doLoadPortal();				
-			} // if
-			else{
-				this.attrs.put("proveedores", new ArrayList<>());
-				this.attrs.put("proveedor", new UISelectEntity("-1"));
-				this.attrs.put("pagina", "");
-				this.attrs.put("cuenta", "");
-				this.attrs.put("contrasenia", "");
-				doLoadServicios();
-				doLoadTransferencias();
-			} // else
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch    
-  } // doLoad  
-	
-	public void doLoadPortal(){
-		MotorBusqueda motor= null;
-		Entity proveedor= null;
+		MotorBusqueda motor                  = null;
+		UISelectEntity  proveedor            = null;
 		TcManticProveedoresPortalesDto portal= null;
 		try {
-			proveedor= (Entity) this.attrs.get("proveedor");
+  	  proveedor= (UISelectEntity)this.attrs.get("proveedor");
 			motor= new MotorBusqueda(proveedor.getKey());
 			portal= motor.toPortal();
-			if(portal.isValid()){
+			if(portal.isValid()) {
 				this.attrs.put("pagina", portal.getPagina());
 				this.attrs.put("cuenta", portal.getCuenta());
 				this.attrs.put("contrasenia", portal.getContrasenia());
 			} // if
-			else{
+			else {
 				this.attrs.put("pagina", "");
 				this.attrs.put("cuenta", "");
 				this.attrs.put("contrasenia", "");
@@ -104,9 +75,9 @@ public class Portal extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch		
-	} // doLoadPortal
+	}
 	
-	public void doLoadServicios(){
+	public void doLoadServicios() {
 		loadBanca(ETiposCuentas.SERVICIOS.getKey());
 		UIBackingUtilities.resetDataTable();
 	} // doLoadServicios
@@ -141,4 +112,42 @@ public class Portal extends IBaseFilter implements Serializable {
 			Methods.clean(campos);
 		} // finally		
 	} // loadBanca
+	
+	public List<UISelectEntity> doCompleteProveedor(String codigo) {
+ 		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		boolean buscaPorCodigo    = false;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", -1L);
+			if(!Cadena.isVacio(codigo)) {
+  			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
+				buscaPorCodigo= codigo.startsWith(".");
+				if(buscaPorCodigo)
+					codigo= codigo.trim().substring(1);
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			} // if	
+			else
+				codigo= "WXYZ";
+  		params.put("codigo", codigo);
+			if(buscaPorCodigo)
+        this.attrs.put("proveedores", UIEntity.build("TcManticProveedoresDto", "porCodigo", params, columns, 40L));
+			else
+        this.attrs.put("proveedores", UIEntity.build("TcManticProveedoresDto", "porNombre", params, columns, 40L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+		return (List<UISelectEntity>)this.attrs.get("proveedores");
+	}	
+
 }

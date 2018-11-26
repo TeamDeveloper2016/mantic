@@ -1659,7 +1659,7 @@
 			</select>
 		</unit>
 		<unit id="VistaProveedoresDto">
-			<select id="row">
+			<select id="lazy">
 				select 
 					tc_mantic_proveedores.id_proveedor as id_key,
 					tc_mantic_proveedores.clave,
@@ -1672,19 +1672,12 @@
 				 from   
 					 tc_mantic_proveedores
 				 inner join
-					 tc_mantic_tipos_proveedores   on  tc_mantic_tipos_proveedores.id_tipo_proveedor= tc_mantic_proveedores.id_tipo_proveedor
+					 tc_mantic_tipos_proveedores on  tc_mantic_tipos_proveedores.id_tipo_proveedor= tc_mantic_proveedores.id_tipo_proveedor
 				 inner  join
-					 tc_mantic_tipos_dias  on tc_mantic_tipos_dias.id_tipo_dia=tc_mantic_proveedores.id_tipo_dia             
+					 tc_mantic_tipos_dias on tc_mantic_tipos_dias.id_tipo_dia=tc_mantic_proveedores.id_tipo_dia             
 				 where
-					 tc_mantic_proveedores.razon_social like '%{razonSocial}%'
-					and
-					 (tc_mantic_proveedores.rfc like '%{rfc}%' or tc_mantic_proveedores.rfc is null)
-					and
-					 tc_mantic_proveedores.clave like '%{clave}%'
-					and 
-						tc_mantic_proveedores.id_tipo_proveedor  in ({idTipoProveedor}) 
-					and
-						tc_mantic_proveedores.id_empresa={idEmpresa}            
+					 tc_mantic_proveedores.id_empresa in ({idEmpresa})    
+			     and {condicion}        
 					{sortOrder}
 			</select>
 			<select id="portal">
