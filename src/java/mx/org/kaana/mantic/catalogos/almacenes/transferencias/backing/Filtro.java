@@ -207,12 +207,12 @@ public class Filtro extends Comun implements Serializable {
 		} // finally
   } // doConfirmaEntrega
   
-  public void doReporte(String nombre) throws Exception{
+  public void doReporte(String nombre) throws Exception {
     ParametrosComunes parametrosComunes = null;
 		Map<String, Object>parametros= null;
 		EReportes reporteSeleccion   = null;
     Entity seleccionado          = null;
-		try{		
+		try {		
       seleccionado = ((Entity)this.attrs.get("seleccionado"));
       if(seleccionado != null)
         this.attrs.put("idKeyTransferencia", seleccionado.getKey());

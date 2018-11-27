@@ -109,7 +109,7 @@ public  class Fecha {
       case FECHA_MINIMA: // Fecha en dd/mm/yy   26/11/03
         fecha = fecha.substring(6, 8).concat("/").concat(fecha.substring(4, 6)).concat("/").concat(fecha.substring(2, 4));
         break;
-      case FECHA_LARGA: // Fecha en:  dia mes a�o  26 de Noviembre del 2003
+      case FECHA_LARGA: // Fecha en:  dia mes anio  26 de Noviembre del 2003
         fecha =
             calendario.get(calendario.DATE) + " de " + getNombreMes(calendario.get(calendario.MONTH)) + " de " + calendario.get(calendario.YEAR);
         break;

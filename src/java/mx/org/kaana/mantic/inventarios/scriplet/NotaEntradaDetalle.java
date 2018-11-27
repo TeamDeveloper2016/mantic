@@ -13,23 +13,25 @@ import mx.org.kaana.libs.formato.Letras;
 import mx.org.kaana.libs.reportes.scriptlets.BarraProgreso;
 import net.sf.jasperreports.engine.JRScriptletException;
 
-public class NotaEntradaDetalle  extends BarraProgreso implements Serializable{
+public class NotaEntradaDetalle extends BarraProgreso implements Serializable {
+
+	private static final long serialVersionUID=-6388255583387640388L;
   
   @Override
   public void afterDetailEval() throws JRScriptletException {
    super.afterDetailEval();
-   Letras letras            = null;
-   QRCodeWriter writer      = new QRCodeWriter();
-   BitMatrix matrix         = null;
+   Letras letras      = null;
+   QRCodeWriter writer= new QRCodeWriter();
+   BitMatrix matrix   = null;
     try {
       letras = new Letras();
-      Map<EncodeHintType, Object> hints = new EnumMap<EncodeHintType, Object>(EncodeHintType.class);
+      Map<EncodeHintType, Object> hints = new EnumMap<>(EncodeHintType.class);
       hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
       hints.put(EncodeHintType.MARGIN, 0); /* default = 4 */
       if(!getFieldValue("TOTAL_FINAL").toString().isEmpty())
         setVariableValue("LETRAS", letras.getMoneda(getFieldValue("TOTAL_FINAL").toString(), Boolean.FALSE));
-      matrix = writer.encode(getParameterValue("NOMBRE_REPORTE").toString().concat(":").concat(getFieldValue("CONSECUTIVO").toString()).toString().concat("-").concat("http://bonanzaj.jvmhost.net/MANTIC/"), BarcodeFormat.QR_CODE, 400, 400, hints);
-      setVariableValue("CODE_QR", MatrixToImageWriter.toBufferedImage(matrix) );
+      matrix = writer.encode(getParameterValue("NOMBRE_REPORTE").toString().concat(":").concat(getFieldValue("CONSECUTIVO").toString()).concat("-").concat("http://bonanzaj.jvmhost.net/MANTIC/"), BarcodeFormat.QR_CODE, 400, 400, hints);
+      setVariableValue("CODE_QR", MatrixToImageWriter.toBufferedImage(matrix));
     } // try
     catch (Exception e) {
       Error.mensaje(e);
