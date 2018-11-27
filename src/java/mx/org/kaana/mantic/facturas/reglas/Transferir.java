@@ -1,11 +1,17 @@
 package mx.org.kaana.mantic.facturas.reglas;
 
+import java.io.File;
+import java.io.StringWriter;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -74,7 +80,7 @@ public class Transferir extends IBaseTnx {
 	} // Transaccion
 
 	public String getClientes() {
-		return clientes.length()> 0? clientes.substring(0, clientes.length()- 1): clientes.toString();
+		return clientes.toString();
 	}
 
 	@Override
@@ -138,6 +144,8 @@ public class Transferir extends IBaseTnx {
 	}
 	
 	private TcManticFacturasDto toFactura(CfdiSearchResult cfdi, Cfdi detail, Calendar calendar, Long idFicticia) {
+		Complement complement = detail.getComplement();
+		Calendar certificacion= Fecha.toCalendar(complement.getTaxStamp().getDate().substring(0, 10), complement.getTaxStamp().getDate().substring(11, 19));
 		TcManticFacturasDto regresar= new TcManticFacturasDto(
 			-1L, // Long idFactura, 
 			new Date(Calendar.getInstance().getTimeInMillis()), // Date ultimoIntento, 
@@ -150,15 +158,15 @@ public class Transferir extends IBaseTnx {
 			cfdi.getEmail(), // String correos, 
 			"", // String comentarios, 
 			"", // String observaciones, 
-			cfdi.getId() // String idFacturama
+			cfdi.getId(), // String idFacturama
+			"", // String cadenaOriginal
+			complement.getTaxStamp().getSatSign(), // String selloSat
+			complement.getTaxStamp().getCfdiSign(), // String selloCfdi
+			complement.getTaxStamp().getSatCertNumber(), // String certificadoSat
+			detail.getCertNumber(), // String certificadoDigital
+			new Timestamp(certificacion.getTimeInMillis()), // Timestamp certificacion
+			complement.getTaxStamp().getUuid()
 		);
-		Complement complement= detail.getComplement();
-		regresar.setSelloSat(complement.getTaxStamp().getSatSign());
-		regresar.setSelloCfdi(complement.getTaxStamp().getCfdiSign());
-		regresar.setCertificadoSat(complement.getTaxStamp().getSatCertNumber());
-		regresar.setCertificadoDigital(detail.getCertNumber());
-		Calendar certificacion= Fecha.toCalendar(complement.getTaxStamp().getDate().substring(0, 10), complement.getTaxStamp().getDate().substring(11, 19));
-		regresar.setCertificacion(new Timestamp(certificacion.getTimeInMillis()));
 		return regresar;
 	}
 	
@@ -252,7 +260,7 @@ public class Transferir extends IBaseTnx {
 			else {
 				LOG.warn("El cliente con RFC ["+ rfc+ "] no existe favor de verificarlo !");
 				Client client= this.clients.get(this.clients.indexOf(new Client(rfc)));
-				this.clientes.append("{").append(rfc).append(Constantes.SEPARADOR).append(client.getName()).append(Constantes.SEPARADOR).append(client.getEmail()).append(Constantes.SEPARADOR).append("}");
+				this.clientes.append("{").append(rfc).append(Constantes.SEPARADOR).append(client.getName()).append(Constantes.SEPARADOR).append(client.getEmail()).append("}");
 				TcManticClientesDto cliente= new TcManticClientesDto(
 					rfc, // String clave, 
 					0L, // Long plazoDias, 
@@ -369,6 +377,8 @@ public class Transferir extends IBaseTnx {
 			  sesion.flush();
       monitoreo.incrementar();
 			x++;
+			if(x> 1)
+				break;
 		} // for
 		this.count= cfdis.size();
 		return true;
@@ -404,6 +414,16 @@ public class Transferir extends IBaseTnx {
 		return regresar;
 	} // toSiguiente
 
+  private String toCadenaOriginal(String xml) throws Exception {
+		StreamSource source       = new StreamSource(new File(xml));
+		StreamSource stylesource  = new StreamSource(this.getClass().getResourceAsStream("/mx/org/kaana/mantic/libs/factura/cadenaoriginal_3_3.xslt"));
+		TransformerFactory factory= TransformerFactory.newInstance();
+		Transformer transformer   = factory.newTransformer(stylesource);
+		StreamResult result       = new StreamResult(new StringWriter());
+		transformer.transform(source, result);
+		return result.getWriter().toString();
+	}
+	
 	private void toProcess(Session sesion, CfdiSearchResult cfdi, Cfdi detail) throws Exception {
 		if(!this.exists(sesion, cfdi.getId())) {
 			Calendar calendar= Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19));
@@ -411,9 +431,13 @@ public class Transferir extends IBaseTnx {
 			CFDIFactory.getInstance().download(path, cfdi.getRfc().concat("-").concat(cfdi.getFolio()), cfdi.getId());
 			Long idCliente= this.toCliente(sesion, cfdi.getRfc()); 
 			if(idCliente> 0) {
+				// GENERA EL REGISTRO DETALLADO DE LA FACTURA
 				TcManticFicticiasDto ficticia= this.toFicticia(sesion, cfdi, detail, calendar, idCliente);
 				DaoFactory.getInstance().insert(sesion, ficticia);
+				// GENERA LA FACTURA CON TODOS LOS DATOS FISCALES 
 				TcManticFacturasDto factura= this.toFactura(cfdi, detail, calendar, ficticia.getIdFicticia());
+				// GENERA LA CADENA ORIGINAL BASA EN EL ARCHIVO XML QUE SE DESCARGO
+				factura.setCadenaOriginal(this.toCadenaOriginal(path.concat(cfdi.getRfc()).concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase())));
 				DaoFactory.getInstance().insert(sesion, factura);
 				TcManticFacturasArchivosDto xml= new TcManticFacturasArchivosDto(
 					factura.getIdFactura(), 

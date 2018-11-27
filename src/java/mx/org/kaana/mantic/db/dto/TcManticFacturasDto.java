@@ -68,6 +68,8 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
   private String certificadoDigital;
   @Column (name="certificacion")
   private Timestamp certificacion;
+  @Column (name="folio_fiscal")
+  private String folioFiscal;
 	
   @Column (name="registro")
   private Timestamp registro;
@@ -82,10 +84,10 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
   }
 
   public TcManticFacturasDto(Long idFactura, Date ultimoIntento, Timestamp timbrado, Long idUsuario, Long idFicticia, String folio, Long idVenta, Long intentos, String correos, String comentarios, String observaciones, String idFacturama) {
-    this(new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()));
+    this(new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()), null);
 	}
 	
-  public TcManticFacturasDto(Long idFactura, Date ultimoIntento, Timestamp timbrado, Long idUsuario, Long idFicticia, String folio, Long idVenta, Long intentos, String correos, String comentarios, String observaciones, String idFacturama, String cadenaOriginal, String selloSat, String selloCfdi, String certificadoSat, String certificadoDigital, Timestamp certificacion) {
+  public TcManticFacturasDto(Long idFactura, Date ultimoIntento, Timestamp timbrado, Long idUsuario, Long idFicticia, String folio, Long idVenta, Long intentos, String correos, String comentarios, String observaciones, String idFacturama, String cadenaOriginal, String selloSat, String selloCfdi, String certificadoSat, String certificadoDigital, Timestamp certificacion, String folioFiscal) {
     setIdFactura(idFactura);
     setUltimoIntento(ultimoIntento);
     setTimbrado(timbrado);
@@ -104,6 +106,7 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 		this.certificadoSat= certificadoSat;
 		this.certificadoDigital= certificadoDigital;
 		this.certificacion= certificacion;
+		this.folioFiscal= folioFiscal;
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -251,6 +254,14 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 		this.certificacion=certificacion;
 	}
 
+	public String getFolioFiscal() {
+		return folioFiscal;
+	}
+
+	public void setFolioFiscal(String folioFiscal) {
+		this.folioFiscal=folioFiscal;
+	}
+
   public void setRegistro(Timestamp registro) {
     this.registro = registro;
   }
@@ -310,6 +321,8 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getCertificacion());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getFolioFiscal());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -336,6 +349,7 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 		regresar.put("certificadoSat", getCertificadoSat());
 		regresar.put("certificadoDigital", getCertificadoDigital());
 		regresar.put("certificacion", getCertificacion());
+		regresar.put("folioFiscal", getFolioFiscal());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -343,7 +357,7 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-    getIdFactura(), getUltimoIntento(), getTimbrado(), getIdUsuario(), getIdFicticia(), getFolio(), getIdVenta(), getIntentos(), getCorreos(), getComentarios(), getObservaciones(), getIdFactura(), getCadenaOriginal(), getSelloSat(), getSelloCfdi(), getCertificadoSat(), getCertificadoDigital(), getCertificacion(), getRegistro()
+      getIdFactura(), getUltimoIntento(), getTimbrado(), getIdUsuario(), getIdFicticia(), getFolio(), getIdVenta(), getIntentos(), getCorreos(), getComentarios(), getObservaciones(), getIdFactura(), getCadenaOriginal(), getSelloSat(), getSelloCfdi(), getCertificadoSat(), getCertificadoDigital(), getCertificacion(), getFolioFiscal(), getRegistro()
     };
     return regresar;
   }
