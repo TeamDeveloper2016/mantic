@@ -377,8 +377,8 @@ public class Transferir extends IBaseTnx {
 			  sesion.flush();
       monitoreo.incrementar();
 			x++;
-			if(x> 1)
-				break;
+//			if(x> 1)
+//				break;
 		} // for
 		this.count= cfdis.size();
 		return true;

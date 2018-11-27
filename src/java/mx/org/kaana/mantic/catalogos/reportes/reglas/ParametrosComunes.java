@@ -7,7 +7,9 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.reflection.Methods;
 
-public final class ParametrosComunes implements Serializable{
+public final class ParametrosComunes implements Serializable {
+
+	private static final long serialVersionUID=-7778494802183548883L;
   
   private Map<String, Object> parametrosComunes; 
   private Long idEmpresa;
@@ -153,8 +155,7 @@ public final class ParametrosComunes implements Serializable{
 		} // finally
 	} // toComplementarCliente
 
-  @Override
-  protected void finalize() throws Throwable {
+  public void finalize() throws Throwable {
     Methods.clean(this.parametrosComunes);
     super.finalize(); 
   }
