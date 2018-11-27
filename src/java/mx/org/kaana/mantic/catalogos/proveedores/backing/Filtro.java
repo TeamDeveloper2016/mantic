@@ -129,7 +129,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			if(!Cadena.isVacio(codigo)) {
-  			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
+  			codigo= new String(codigo).replaceAll(Constantes.CLEAN_SQL, "").trim();
 				buscaPorCodigo= codigo.startsWith(".");
 				if(buscaPorCodigo)
 					codigo= codigo.trim().substring(1);

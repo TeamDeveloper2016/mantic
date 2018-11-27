@@ -18,6 +18,7 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 
 	private static final long serialVersionUID=3088884892456452488L;
 	
+	private UISelectEntity ikEmpresa;
 	private UISelectEntity ikAlmacen;
 	private UISelectEntity ikCliente;
 	private UISelectEntity ikProveedor;
@@ -33,6 +34,16 @@ public class OrdenCompra extends TcManticOrdenesComprasDto implements Serializab
 
 	public OrdenCompra(Long idProveedorPago, Double descuentos, Long idProveedor, Long idCliente, String descuento, Long idOrdenCompra, String extras, Long ejercicio, String consecutivo, Long idGasto, Double total, Long idOrdenEstatus, Date entregaEstimada, Long idUsuario, Long idAlmacen, Double impuestos, Double subTotal, Double tipoDeCambio, Long idSinIva, String observaciones, Long idEmpresa, Long orden, Double excedentes) {
 		super(idProveedorPago, descuentos, idProveedor, idCliente, descuento, idOrdenCompra, extras, ejercicio, consecutivo, idGasto, total, idOrdenEstatus, entregaEstimada, idUsuario, idAlmacen, impuestos, subTotal, tipoDeCambio, idSinIva, observaciones, idEmpresa, orden, excedentes);
+	}
+
+	public UISelectEntity getIkEmpresa() {
+		return ikEmpresa;
+	}
+
+	public void setIkEmpresa(UISelectEntity ikEmpresa) {
+		this.ikEmpresa=ikEmpresa;
+		if(this.ikEmpresa!= null)
+		  this.setIdEmpresa(this.ikEmpresa.getKey());
 	}
 
 	public UISelectEntity getIkAlmacen() {

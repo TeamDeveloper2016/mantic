@@ -118,7 +118,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 	}
 
 	public void doChange() {
-		String codigo= (String)this.attrs.get("buscarPor");
+		String codigo= new String((String)this.attrs.get("buscarPor"));
 		if(codigo== null || codigo.equals(".*.")) 
 			this.lazyModel= null;
 		else {
@@ -241,7 +241,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
-			String search= (String)this.attrs.get("codigoFaltantes"); 
+			String search= new String((String)this.attrs.get("codigoFaltantes")); 
 			if(!Cadena.isVacio(search)) {
   			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
 				buscaPorCodigo= search.startsWith(".");
@@ -309,7 +309,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 	}
 	
 	public void doChangeListaPrecios() {
-		String codigo= (String)this.attrs.get("buscarPor");
+		String codigo= new String((String)this.attrs.get("buscarPor"));
 		if(codigo== null || codigo.equals(".*.")) 
 			this.lazyListaPrecios= null;
 		else {
@@ -348,7 +348,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 	}
 	
 	public void doChangeCatalogoArticulos() {
-		String codigo= (String)this.attrs.get("buscarPor");
+		String codigo= new String((String)this.attrs.get("buscarPor"));
 		if(codigo== null || codigo.equals(".*.")) 
 			this.lazyCatalogoArticulos= null;
 		else {

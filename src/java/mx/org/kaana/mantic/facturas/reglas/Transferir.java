@@ -17,6 +17,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.models.Client;
 import mx.org.kaana.libs.facturama.models.response.Cfdi;
 import mx.org.kaana.libs.facturama.models.response.CfdiSearchResult;
+import mx.org.kaana.libs.facturama.models.response.Complement;
 import mx.org.kaana.libs.facturama.models.response.Tax;
 import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.formato.Cadena;
@@ -136,7 +137,7 @@ public class Transferir extends IBaseTnx {
 		return regresar;
 	}
 	
-	private TcManticFacturasDto toFactura(CfdiSearchResult cfdi, Calendar calendar, Long idFicticia) {
+	private TcManticFacturasDto toFactura(CfdiSearchResult cfdi, Cfdi detail, Calendar calendar, Long idFicticia) {
 		TcManticFacturasDto regresar= new TcManticFacturasDto(
 			-1L, // Long idFactura, 
 			new Date(Calendar.getInstance().getTimeInMillis()), // Date ultimoIntento, 
@@ -149,8 +150,15 @@ public class Transferir extends IBaseTnx {
 			cfdi.getEmail(), // String correos, 
 			"", // String comentarios, 
 			"", // String observaciones, 
-			cfdi.getId() // String idFacturama, 
+			cfdi.getId() // String idFacturama
 		);
+		Complement complement= detail.getComplement();
+		regresar.setSelloSat(complement.getTaxStamp().getSatSign());
+		regresar.setSelloCfdi(complement.getTaxStamp().getCfdiSign());
+		regresar.setCertificadoSat(complement.getTaxStamp().getSatCertNumber());
+		regresar.setCertificadoDigital(detail.getCertNumber());
+		Calendar certificacion= Fecha.toCalendar(complement.getTaxStamp().getDate().substring(0, 10), complement.getTaxStamp().getDate().substring(11, 19));
+		regresar.setCertificacion(new Timestamp(certificacion.getTimeInMillis()));
 		return regresar;
 	}
 	
@@ -405,7 +413,7 @@ public class Transferir extends IBaseTnx {
 			if(idCliente> 0) {
 				TcManticFicticiasDto ficticia= this.toFicticia(sesion, cfdi, detail, calendar, idCliente);
 				DaoFactory.getInstance().insert(sesion, ficticia);
-				TcManticFacturasDto factura= this.toFactura(cfdi, calendar, ficticia.getIdFicticia());
+				TcManticFacturasDto factura= this.toFactura(cfdi, detail, calendar, ficticia.getIdFicticia());
 				DaoFactory.getInstance().insert(sesion, factura);
 				TcManticFacturasArchivosDto xml= new TcManticFacturasArchivosDto(
 					factura.getIdFactura(), 

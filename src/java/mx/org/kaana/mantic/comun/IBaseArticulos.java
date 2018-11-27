@@ -201,7 +201,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 		List<UISelectEntity> articulos= null;
 		boolean buscaPorCodigo        = false;
     try {
-			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
+			codigo= new String(codigo).replaceAll(Constantes.CLEAN_SQL, "").trim();
 			columns= new ArrayList<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
@@ -405,7 +405,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
-			String search= (String)this.attrs.get("codigo"); 
+			String search= new String((String)this.attrs.get("codigo")); 
 			if(!Cadena.isVacio(search)) {
   			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
 				buscaPorCodigo= search.startsWith(".");
@@ -496,7 +496,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
 			if(!Cadena.isVacio(codigo)) {
-  			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
+  			codigo= new String(codigo).replaceAll(Constantes.CLEAN_SQL, "").trim();
 				buscaPorCodigo= codigo.startsWith(".");
 				if(buscaPorCodigo)
 					codigo= codigo.trim().substring(1);

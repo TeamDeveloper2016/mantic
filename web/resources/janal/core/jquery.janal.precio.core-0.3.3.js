@@ -46,10 +46,6 @@
 					case $precios.VK_ESC:
             PF('dlgFaltantes').hide();
 					  break;
-					case $precios.VK_UP:	
-					case $precios.VK_DOWN:
-					  $precios.jump(true);
-					  break;
 					default: 
 						if('faltantesCantidad'=== $(this).attr('id'))
 						  return (key>=48 && key<=57) || (key>=96 && key<=105) || key===8 || key===37 || key===39 || key===110 || key===190;

@@ -30,6 +30,10 @@ public class Caracteres {
 		LOG.info(text2);
 		String texto= "BOQUILLA ROJA 0° PARA PISTOLA Ñandú";
 		LOG.info(Normalizer.normalize(texto, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", ""));
+		
+		String codigo= "[5/8]()()\\4";
+		codigo= codigo.replaceAll("([(,),',*,!,|,<,>,?,¿,&,%,$,#,;,:,{,},\\[,\\],~,\"])", "").trim();
+		LOG.info(codigo);
 	}
 
 }

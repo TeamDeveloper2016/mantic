@@ -491,7 +491,7 @@
 		lastNameFocus : null,
 		reference     : null,
 		globalTimeout : true,
-		cleanString   : /[(|)|'|*|/|!||<|>|?|¿|!|&|%|$|#|;|:|{|}|\[|\]|~|\\]/g,
+		cleanString   : /[(|)|'|*|!||<|>|?|¿|!|&|%|$|#|;|:|{|}|\[|\]|~|\\]/g,
   	errors        : {
       inputs      : [],
       masks       : [],

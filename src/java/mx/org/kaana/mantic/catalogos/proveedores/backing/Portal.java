@@ -125,7 +125,7 @@ public class Portal extends IBaseFilter implements Serializable {
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
   		params.put("idProveedor", -1L);
 			if(!Cadena.isVacio(codigo)) {
-  			codigo= codigo.replaceAll(Constantes.CLEAN_SQL, "").trim();
+  			codigo= new String(codigo).replaceAll(Constantes.CLEAN_SQL, "").trim();
 				buscaPorCodigo= codigo.startsWith(".");
 				if(buscaPorCodigo)
 					codigo= codigo.trim().substring(1);

@@ -90,9 +90,10 @@ public class Filtro extends IBaseTicket implements Serializable {
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
 		StringBuilder sb= new StringBuilder();
-    if(!Cadena.isVacio(this.attrs.get("cliente"))) {
-		  String nombre= ((String)this.attrs.get("cliente")).toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
-  		sb.append("upper(cliente) regexp '.*").append(nombre).append(".*'");
+		String search= new String((String)this.attrs.get("cliente"));
+    if(!Cadena.isVacio(search)) {
+		  search= search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*");
+  		sb.append("upper(cliente) regexp '.*").append(search).append(".*'");
     }
     if(!Cadena.isVacio(this.attrs.get("dias")))
   		sb.append((!Cadena.isVacio(this.attrs.get("cliente"))?" and ":" ").concat("dias =")).append(this.attrs.get("dias"));

@@ -143,11 +143,27 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			columns= new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+			else
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+ 			List<UISelectEntity> empresas= (List<UISelectEntity>)this.attrs.get("empresas");
+			if(!empresas.isEmpty()) 
+				if(this.accion.equals(EAccion.AGREGAR))
+  				((OrdenCompra)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(0));
+			  else
+				  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(empresas.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkEmpresa())));
+			params.put("sucursales", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdEmpresa());
       this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
-			if(!almacenes.isEmpty() && this.accion.equals(EAccion.AGREGAR)) 
-				((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
+			if(!almacenes.isEmpty()) 
+				if(this.accion.equals(EAccion.AGREGAR))
+				  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
+			  else
+				  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(almacenes.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkAlmacen())));
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.remove(0);
 			columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "sucursales", params, columns));
@@ -384,6 +400,29 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		if(isViewException && this.getAdminOrden().getArticulos().size()> 0)
 		  this.toSaveRecord();
     //RequestContext.getCurrentInstance().execute("alert('ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA');");
+	}
+	
+	public void doLoadAlmacenes() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+			params.put("sucursales", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdEmpresa());
+      this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
+ 			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
+			if(!almacenes.isEmpty()) 
+			  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkAlmacen(almacenes.get(0));
+   } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
 	}
 	
 }

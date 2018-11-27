@@ -55,6 +55,20 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
   private String observaciones;
   @Column (name="id_facturama")
   private String idFacturama;
+	
+  @Column (name="cadena_original")
+  private String cadenaOriginal;
+  @Column (name="sello_sat")
+  private String selloSat;
+  @Column (name="sello_cfdi")
+  private String selloCfdi;
+  @Column (name="certificado_sat")
+  private String certificadoSat;
+  @Column (name="certificado_digital")
+  private String certificadoDigital;
+  @Column (name="certificacion")
+  private Timestamp certificacion;
+	
   @Column (name="registro")
   private Timestamp registro;
 
@@ -68,6 +82,10 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
   }
 
   public TcManticFacturasDto(Long idFactura, Date ultimoIntento, Timestamp timbrado, Long idUsuario, Long idFicticia, String folio, Long idVenta, Long intentos, String correos, String comentarios, String observaciones, String idFacturama) {
+    this(new Long(-1L), new Date(Calendar.getInstance().getTimeInMillis()), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Timestamp(Calendar.getInstance().getTimeInMillis()));
+	}
+	
+  public TcManticFacturasDto(Long idFactura, Date ultimoIntento, Timestamp timbrado, Long idUsuario, Long idFicticia, String folio, Long idVenta, Long intentos, String correos, String comentarios, String observaciones, String idFacturama, String cadenaOriginal, String selloSat, String selloCfdi, String certificadoSat, String certificadoDigital, Timestamp certificacion) {
     setIdFactura(idFactura);
     setUltimoIntento(ultimoIntento);
     setTimbrado(timbrado);
@@ -80,6 +98,12 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 		this.comentarios= comentarios;
 		this.observaciones= observaciones;
 		this.idFacturama= idFacturama;
+		this.cadenaOriginal= cadenaOriginal;
+		this.selloSat= selloSat;
+		this.selloCfdi= selloCfdi;
+		this.certificadoSat= certificadoSat;
+		this.certificadoDigital= certificadoDigital;
+		this.certificacion= certificacion;
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
@@ -179,6 +203,54 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 		this.idFacturama=idFacturama;
 	}
 
+	public String getCadenaOriginal() {
+		return cadenaOriginal;
+	}
+
+	public void setCadenaOriginal(String cadenaOriginal) {
+		this.cadenaOriginal=cadenaOriginal;
+	}
+
+	public String getSelloSat() {
+		return selloSat;
+	}
+
+	public void setSelloSat(String selloSat) {
+		this.selloSat=selloSat;
+	}
+
+	public String getSelloCfdi() {
+		return selloCfdi;
+	}
+
+	public void setSelloCfdi(String selloCfdi) {
+		this.selloCfdi=selloCfdi;
+	}
+
+	public String getCertificadoSat() {
+		return certificadoSat;
+	}
+
+	public void setCertificadoSat(String certificadoSat) {
+		this.certificadoSat=certificadoSat;
+	}
+
+	public String getCertificadoDigital() {
+		return certificadoDigital;
+	}
+
+	public void setCertificadoDigital(String certificadoDigital) {
+		this.certificadoDigital=certificadoDigital;
+	}
+
+	public Timestamp getCertificacion() {
+		return certificacion;
+	}
+
+	public void setCertificacion(Timestamp certificacion) {
+		this.certificacion=certificacion;
+	}
+
   public void setRegistro(Timestamp registro) {
     this.registro = registro;
   }
@@ -226,6 +298,18 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdFactura());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCadenaOriginal());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getSelloSat());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getSelloCfdi());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCertificadoSat());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCertificadoDigital());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getCertificacion());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getRegistro());
     regresar.append("]");
   	return regresar.toString();
@@ -246,6 +330,12 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
 		regresar.put("comentarios", getComentarios());
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("idFacturama", getIdFacturama());
+		regresar.put("cadenaOriginal", getCadenaOriginal());
+		regresar.put("selloSat", getSelloSat());
+		regresar.put("selloCfdi", getSelloCfdi());
+		regresar.put("certificadoSat", getCertificadoSat());
+		regresar.put("certificadoDigital", getCertificadoDigital());
+		regresar.put("certificacion", getCertificacion());
 		regresar.put("registro", getRegistro());
   	return regresar;
   }
@@ -253,7 +343,7 @@ public class TcManticFacturasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[] {
-    getIdFactura(), getUltimoIntento(), getTimbrado(), getIdUsuario(), getIdFicticia(), getFolio(), getIdVenta(), getIntentos(), getCorreos(), getComentarios(), getObservaciones(), getIdFactura(), getRegistro()
+    getIdFactura(), getUltimoIntento(), getTimbrado(), getIdUsuario(), getIdFicticia(), getFolio(), getIdVenta(), getIntentos(), getCorreos(), getComentarios(), getObservaciones(), getIdFactura(), getCadenaOriginal(), getSelloSat(), getSelloCfdi(), getCertificadoSat(), getCertificadoDigital(), getCertificacion(), getRegistro()
     };
     return regresar;
   }

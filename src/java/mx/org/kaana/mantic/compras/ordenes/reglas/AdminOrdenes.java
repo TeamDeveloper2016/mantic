@@ -33,6 +33,7 @@ public final class AdminOrdenes extends IAdminArticulos  implements Serializable
 		this.orden  = orden;
 		if(this.orden.isValid()) {
   	  this.setArticulos((List<Articulo>)DaoFactory.getInstance().toEntitySet(Articulo.class, "VistaOrdenesComprasDto", "detalle", orden.toMap()));
+      this.orden.setIkEmpresa(new UISelectEntity(new Entity(this.orden.getIdEmpresa())));
       this.orden.setIkAlmacen(new UISelectEntity(new Entity(this.orden.getIdAlmacen())));
       this.orden.setIkCliente(new UISelectEntity(new Entity(this.orden.getIdCliente())));
       this.orden.setIkProveedor(new UISelectEntity(new Entity(this.orden.getIdProveedor())));
@@ -43,6 +44,7 @@ public final class AdminOrdenes extends IAdminArticulos  implements Serializable
 			this.orden.setConsecutivo(this.toConsecutivo("0"));
 			this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
 			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.orden.setIkEmpresa(new UISelectEntity(new Entity(this.orden.getIdEmpresa())));
 		} // else	
 		this.getArticulos().add(new Articulo(-1L));
 		this.toCalculate();

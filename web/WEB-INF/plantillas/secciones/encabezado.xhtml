@@ -263,7 +263,7 @@
 				<p:outputLabel for="faltantesIdArticulo" value="C&oacute;digo:"/>
 				<p:outputLabel for="faltantesIdArticulo" value="Nombre:"/>
 				<p:outputLabel for="faltantesCantidad" value="Cantidad:"/>
-				<p:autoComplete id="codigosFaltantes" widgetVar="submenu" var="custom" itemLabel="#{custom.nombre}" styleClass="janal-wid-100 janal-clean-input" inputStyleClass="faltantes janal-wid-90 janal-key-event" itemValue="#{custom}" value="#{kajoolEncabezado.attrs.articulo}" completeMethod="#{kajoolEncabezado.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2"  maxResults="10" alt="faltantesCantidad">
+				<p:autoComplete id="codigosFaltantes" widgetVar="submenu" var="custom" itemLabel="#{custom.nombre}" styleClass="janal-wid-100" inputStyleClass="faltantes janal-wid-90 janal-key-event" itemValue="#{custom}" value="#{kajoolEncabezado.attrs.articulo}" completeMethod="#{kajoolEncabezado.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2"  maxResults="10" alt="faltantesCantidad">
 					<p:ajax event="itemSelect" oncomplete="faltantesReplace();"/>
 					<f:facet name="itemtip">
 						<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
