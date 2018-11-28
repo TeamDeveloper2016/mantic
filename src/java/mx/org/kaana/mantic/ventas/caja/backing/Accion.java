@@ -126,6 +126,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("fecha", new Date(Calendar.getInstance().getTimeInMillis()));
 			this.attrs.put("contador", 0L);
 			this.attrs.put("creditoVenta", false);
+			this.attrs.put("busquedaTicketAbierto", "");
 			this.pagar= false;
 			this.attrs.put("activeApartado", false);			
 			this.attrs.put("apartado", false);			

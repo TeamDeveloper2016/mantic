@@ -47,9 +47,13 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 
 	private static final long serialVersionUID= 4853975930464243369L;
 	protected static final String INDIVIDUAL  = "1";
-	
+	protected FormatLazyModel lazyCuentasAbiertas;
 	protected SaldoCliente saldoCliente;
 	private FormatLazyModel almacenes;
+
+	public FormatLazyModel getLazyCuentasAbiertas() {
+		return lazyCuentasAbiertas;
+	}		
 	
 	public IBaseVenta(String precio) {
 		super(precio);
@@ -121,31 +125,20 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		} // finally
 	} // doDetailArticulo
 	
-	public void doLoadTicketAbiertos(){
-		List<UISelectItem> ticketsAbiertos= null;
-		Map<String, Object>params         = null;
-		List<String> fields               = null;
+	public void doLoadTicketAbiertos(){	
+		Map<String, Object>params= null;
+		List<Columna> campos     = null;
 		try {
-			fields= new ArrayList<>();
+			campos= new ArrayList<>();
 			params= new HashMap<>();
 			params.put("sortOrder", "");
-			params.put("idEmpresa", this.attrs.get("idEmpresa"));
-			fields.add("consecutivo");
-			fields.add("cuenta");
-			fields.add("precioTotal");
-			fields.add("cliente");
+			params.put("idEmpresa", this.attrs.get("idEmpresa"));			
+			campos.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
 			params.put(Constantes.SQL_CONDICION, toCondicion());
-			ticketsAbiertos= UISelect.build("VistaVentasDto", "lazy", params, fields, " - ", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
-			if(!ticketsAbiertos.isEmpty()){
-				this.attrs.put("ticketsAbiertos", ticketsAbiertos);
-				if(!ticketsAbiertos.isEmpty())
-					this.attrs.put("ticketAbierto", UIBackingUtilities.toFirstKeySelectItem(ticketsAbiertos));
-				RequestContext.getCurrentInstance().execute("PF('dlgOpenTickets').show();");
-			} // if
-			else{
-				JsfBase.addMessage("Cuentas", "Actualmente no hay cuentas abiertas", ETipoMensaje.INFORMACION);
-				RequestContext.getCurrentInstance().execute("janal.desbloquear();");
-			} // else
+			this.lazyCuentasAbiertas= new FormatLazyModel("VistaVentasDto", "lazy", params, campos);			
+			RequestContext.getCurrentInstance().execute("PF('dlgOpenTickets').show();");			
+			UIBackingUtilities.resetDataTable("tablaTicketsAbiertos");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -154,7 +147,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		finally{
 			Methods.clean(params);
 		} // finally
-	} // doLoadTicketAbiertos
+	} // doLoadTicketAbiertos		
 	
 	public void doLoadCotizaciones(){
 		List<UISelectItem> cotizaciones= null;
@@ -211,11 +204,20 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			else{
 				regresar.append(" date_format(tc_mantic_ventas.registro, '%Y%m%d')= date_format(SYSDATE(), '%Y%m%d')");
 				regresar.append(" and tc_mantic_ventas.id_venta_estatus in (");
+				regresar.append(" tc_mantic_ventas.id_venta_estatus in (");
 				regresar.append(EEstatusVentas.ELABORADA.getIdEstatusVenta());
 				regresar.append(" , ");			
 				regresar.append(EEstatusVentas.ABIERTA.getIdEstatusVenta());
 				regresar.append(")");				
 			} // else
+			if(this.attrs.get("busquedaTicketAbierto")!= null && !Cadena.isVacio(this.attrs.get("busquedaTicketAbierto"))){
+				regresar.append(" and (upper(tc_mantic_personas.cuenta) like upper('%");
+				regresar.append(this.attrs.get("busquedaTicketAbierto"));
+				regresar.append("%') or upper(tc_mantic_clientes.razon_social)");
+				regresar.append(" like upper('%");
+				regresar.append(this.attrs.get("busquedaTicketAbierto"));
+				regresar.append("%'))");
+			} // if
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -226,8 +228,8 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	public void doAsignaTicketAbierto(){
 		Map<String, Object>params = null;
 		try {
-			params= new HashMap<>();
-			params.put("idVenta", this.attrs.get("ticketAbierto"));
+			params= new HashMap<>();			
+			params.put("idVenta", ((Entity)this.attrs.get("selectedCuentaAbierta")).get("idVenta"));
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
     	this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 			this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());
