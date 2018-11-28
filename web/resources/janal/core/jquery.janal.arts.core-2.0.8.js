@@ -15,7 +15,6 @@
 		codes       : '\\:codigos_input', 
 		panels      : 'codigos_panel', 
 		itemtips    : 'codigos_itemtip', 
-		itemtips    : 'codigos_itemtip', 
 		discounts   : '\\:descuentos',
 		additionals : '\\:extras',
 		amounts     : '\\:cantidades',
