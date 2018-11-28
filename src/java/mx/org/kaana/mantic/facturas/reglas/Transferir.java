@@ -24,11 +24,13 @@ import mx.org.kaana.libs.facturama.models.Client;
 import mx.org.kaana.libs.facturama.models.response.Cfdi;
 import mx.org.kaana.libs.facturama.models.response.CfdiSearchResult;
 import mx.org.kaana.libs.facturama.models.response.Complement;
+import mx.org.kaana.libs.facturama.models.response.Item;
 import mx.org.kaana.libs.facturama.models.response.Tax;
 import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
@@ -37,6 +39,7 @@ import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticFacturasDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasBitacoraDto;
+import mx.org.kaana.mantic.db.dto.TcManticFicticiasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
@@ -135,7 +138,7 @@ public class Transferir extends IBaseTnx {
 			1L,  // Long idUsoCfdi, 
 			1L,  // Long idSinIva, 
 			detail.getSubtotal(),  // Double subTotal, 
-			detail.getObservations(),  // String observaciones, 
+			(Cadena.isVacio(detail.getObservations())? "": detail.getObservations())+ " ESTA FACTURA FUE RECUPERADA DE FACTURAMA !",  // String observaciones, 
 			JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),  //  Long idEmpresa, 
 			new Date(calendar.getTimeInMillis()),  // Date dia, 
 			detail.getPaymentAccountNumber() //  referencia
@@ -156,7 +159,7 @@ public class Transferir extends IBaseTnx {
 			null, // Long idVenta, 
 			0L, // Long intentos, 
 			cfdi.getEmail(), // String correos, 
-			"", // String comentarios, 
+			"ESTA FACTURA FUE RECUPERADA DE FACTURAMA !", // String comentarios, 
 			"", // String observaciones, 
 			cfdi.getId(), // String idFacturama
 			"", // String cadenaOriginal
@@ -424,6 +427,37 @@ public class Transferir extends IBaseTnx {
 		return result.getWriter().toString();
 	}
 	
+	private void toDetail(Session sesion, Long idFicticia, Cfdi detail) throws Exception {
+		List<Item> items= detail.getItems();
+		int count= 1;
+		for (Item item : items) {
+			double impuesto= Double.valueOf(Numero.redondearSat((item.getTotal()* 1.16)- item.getTotal()));
+			double importe = Double.valueOf(Numero.redondearSat(item.getTotal()+ impuesto));
+		  TcManticFicticiasDetallesDto detalle= new TcManticFicticiasDetallesDto(
+			  0D, // Double descuentos, 
+				"", // String codigo, 
+				item.getUnit(), // String unidadMedida, 
+				item.getUnitValue(), // Double costo, 
+				idFicticia, // Long idFicticia, 
+				"0", // String descuento, 
+				"40141700", // String sat, 
+				"0", // String extras, 
+				0D, // Double utilidad, 
+				item.getDescription(), // String nombre, 
+				importe, // Double importe, 
+				-1L, // Long idFicticiaDetalle, 
+				item.getUnitValue(), // Double precio, 
+				16D, // Double iva, 
+				impuesto, // Double impuestos, 
+				item.getTotal(), // Double subTotal, 
+				item.getQuantity(), // Double cantidad, 
+				new Long(count) // Long idArticulo
+			);
+			DaoFactory.getInstance().insert(sesion, detalle);
+			count++;
+		} // for
+	}
+
 	private void toProcess(Session sesion, CfdiSearchResult cfdi, Cfdi detail) throws Exception {
 		if(!this.exists(sesion, cfdi.getId())) {
 			Calendar calendar= Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19));
@@ -475,6 +509,7 @@ public class Transferir extends IBaseTnx {
 					"" // comentarios
 				);
 				DaoFactory.getInstance().insert(sesion, pdf);
+				this.toDetail(sesion, ficticia.getIdFicticia(), detail);
 				TcManticFicticiasBitacoraDto bitacora= new TcManticFicticiasBitacoraDto(ficticia.getConsecutivo(), "FACTURA REGISTRADA DE FORMA AUTOMATICA", 3l, 1L, ficticia.getIdFicticia(), -1L, ficticia.getTotal());
 				DaoFactory.getInstance().insert(sesion, bitacora);
 			} // if

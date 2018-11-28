@@ -21,7 +21,7 @@ import net.sf.jasperreports.engine.JRScriptletException;
 public class FacturaDetalle extends BarraProgreso implements Serializable{
 
 	private static final long serialVersionUID= 6191179382089789177L;
-	private final String QR_STRING            = "https://verificacfdi.facturaelectronica.sat.gob.mx/default.aspx?&id={FOLIO_FISCAL}&re={RFC_EMISOR}&rr={RFC_RECEPTOR}&tt={IMPORTE_TOTAL}&fe={SELLO_DIGITAL}";
+	private final String QR_HACIENDA_TOKEN    = "https://verificacfdi.facturaelectronica.sat.gob.mx/default.aspx?&id={FOLIO_FISCAL}&re={RFC_EMISOR}&rr={RFC_RECEPTOR}&tt={IMPORTE_TOTAL}&fe={SELLO_DIGITAL}";
 	
 	private Map<String, Object> params;
 
@@ -50,7 +50,7 @@ public class FacturaDetalle extends BarraProgreso implements Serializable{
 			params.put("IMPORTE_TOTAL", Numero.redondearSat(it.doubleValue()));
 			String sd=((String)this.getFieldValue("SELLO_SAT"));
 			params.put("SELLO_DIGITAL", sd.substring(sd.length()- 8, sd.length()));
-			codigoQR= Cadena.replaceParams(this.QR_STRING, this.params);
+			codigoQR= Cadena.replaceParams(this.QR_HACIENDA_TOKEN, this.params);
       matrix = writer.encode(codigoQR, BarcodeFormat.QR_CODE, 400, 400, hints);
       setVariableValue("CODE_QR", MatrixToImageWriter.toBufferedImage(matrix));
     } // try

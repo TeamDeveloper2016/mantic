@@ -362,7 +362,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 	private void toPrepareDisponibles(boolean checkItems) {
 		List<Articulo> disponibles= new ArrayList<>();
 		for (Articulo disponible : this.getAdminOrden().getArticulos()) {
-			if(disponible.isDisponible() && disponible.getIdArticulo()> -1L)
+			if(disponible.getIdArticulo()> -1L)
 				disponibles.add(disponible);
 		} // for
 		Collections.sort(disponibles);
@@ -376,7 +376,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		try {
 		  List<Articulo> faltantes= (List<Articulo>)this.attrs.get("faltantes");
 			int x= 0;
-			while(x< faltantes.size()) {
+			while(faltantes!= null && x< faltantes.size()) {
 				faltante= faltantes.get(x);
   		  List<Articulo> disponibles= (List<Articulo>)this.attrs.get("disponibles");
 				int y        = 0;
@@ -432,7 +432,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		disponible.setCodigo(faltante.getCodigo());
 		disponible.setCosto(faltante.getCosto());
 		disponible.setCantidad(faltante.getCantidad());
-		disponible.setDescuento(faltante.getDescuento());
+		disponible.setDescuento("0");
 		disponible.setIva(faltante.getIva());
 		disponible.setUnidadMedida(faltante.getUnidadMedida());
 		disponible.setOrigen(faltante.getOrigen());
@@ -621,6 +621,18 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		if(isViewException && this.getAdminOrden().getArticulos().size()> 0)
 		  this.toSaveRecord();
     //RequestContext.getCurrentInstance().execute("alert('ESTO ES UN MENSAJE GLOBAL INVOCADO POR UNA EXCEPCION QUE NO FUE ATRAPADA');");
+	}
+	
+	public void doRecoverArticulo(Integer index) {
+		if(index>= 0 && index< this.getAdminOrden().getArticulos().size()) {
+			Articulo temporal= this.getAdminOrden().getArticulos().get(index);
+			temporal.setOrigen("");
+			temporal.setDescuento("0");
+			temporal.setCosto(0.0);
+			temporal.setCantidad(0D);
+			temporal.setDisponible(true);
+		  this.getAdminOrden().toCalculate();
+		} // if
 	}
 	
 }

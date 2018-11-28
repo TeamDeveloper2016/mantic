@@ -17,14 +17,6 @@ public final class ParametrosComunes implements Serializable {
   private Long idProveedor;
   private Long idCliente;
 
-  public Map<String, Object> getParametrosComunes() {
-    return parametrosComunes;
-  }
-
-  public void setParametrosComunes(Map<String, Object> parametrosComunes) {
-    this.parametrosComunes = parametrosComunes;
-  }
-
   public ParametrosComunes(Long idEmpresa) throws Exception {
     this.idEmpresa = idEmpresa;
     setParametrosComunes(toDatosEmpresa());
@@ -44,6 +36,14 @@ public final class ParametrosComunes implements Serializable {
       toComplementarCliente();
   }
   
+  public Map<String, Object> getParametrosComunes() {
+    return parametrosComunes;
+  }
+
+  public void setParametrosComunes(Map<String, Object> parametrosComunes) {
+    this.parametrosComunes = parametrosComunes;
+  }
+
   private Map<String, Object> toDatosEmpresa() throws Exception {
     Map<String, Object>regresar = null;
 		Map<String, Object>params   = null;
