@@ -281,7 +281,7 @@ public class Express extends IBaseAttribute implements Serializable {
 			} // if
 			else {
 				this.attrs.put("codigo", entity.toString("propio"));
-				this.registroArticulo.getArticulo().setSat(entity.toString("sat"));
+				this.registroArticulo.getArticulo().setSat(Cadena.isVacio(entity.toString("sat"))? Constantes.CODIGO_SAT: entity.toString("sat"));
 				this.registroArticulo.getArticulo().setDescripcion(entity.toString("descripcion"));
 				this.registroArticulo.getArticulo().setNombre(entity.toString("nombre"));
 				this.registroArticulo.getArticulo().setPrecio(entity.toDouble("precio"));

@@ -440,7 +440,7 @@ public class Transferir extends IBaseTnx {
 				item.getUnitValue(), // Double costo, 
 				idFicticia, // Long idFicticia, 
 				"0", // String descuento, 
-				"40141700", // String sat, 
+				Constantes.CODIGO_SAT, // String sat, 
 				"0", // String extras, 
 				0D, // Double utilidad, 
 				item.getDescription(), // String nombre, 

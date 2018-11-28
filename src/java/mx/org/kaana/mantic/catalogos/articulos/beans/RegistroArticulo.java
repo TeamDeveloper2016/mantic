@@ -12,6 +12,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -96,7 +97,7 @@ public class RegistroArticulo implements Serializable{
 		this.deleteList          = new ArrayList<>();
 		this.importado           = new Importado();
 		this.articuloDimencion   = articuloDimencion;
-		this.articulo.setSat("40141700");
+		this.articulo.setSat(Constantes.CODIGO_SAT);
 		this.idServicio          = idServicio;
 		this.idBarras            = idBarras;
 	}
