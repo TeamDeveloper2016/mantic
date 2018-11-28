@@ -432,7 +432,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		disponible.setCodigo(faltante.getCodigo());
 		disponible.setCosto(faltante.getCosto());
 		disponible.setCantidad(faltante.getCantidad());
-		disponible.setDescuento(faltante.getDescuento());
+		disponible.setDescuento("0");
 		disponible.setIva(faltante.getIva());
 		disponible.setUnidadMedida(faltante.getUnidadMedida());
 		disponible.setOrigen(faltante.getOrigen());
@@ -627,6 +627,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		if(index>= 0 && index< this.getAdminOrden().getArticulos().size()) {
 			Articulo temporal= this.getAdminOrden().getArticulos().get(index);
 			temporal.setOrigen("");
+			temporal.setDescuento("0");
 			temporal.setCosto(0.0);
 			temporal.setCantidad(0D);
 			temporal.setDisponible(true);
