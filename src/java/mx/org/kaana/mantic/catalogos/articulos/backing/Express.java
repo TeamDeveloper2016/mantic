@@ -45,8 +45,8 @@ public class Express extends IBaseAttribute implements Serializable {
   protected void init() {		
     try {
 			this.attrs.put("seleccionado", new Entity(-1L));				
-			this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));				
 			this.attrs.put("idArticulo", JsfBase.getFlashAttribute("idArticulo")== null? -1L: JsfBase.getFlashAttribute("idArticulo"));
+			this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null || JsfBase.getFlashAttribute("idArticulo")== null? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));				
       doLoad();
       loadProveedores();
       loadCategorias();
@@ -75,7 +75,6 @@ public class Express extends IBaseAttribute implements Serializable {
 	
   public void doLoad() {
     EAccion eaccion= null;
-    Long idArticulo= -1L;
     try {			
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
@@ -86,8 +85,7 @@ public class Express extends IBaseAttribute implements Serializable {
         case MODIFICAR:
         case CONSULTAR:
         case COPIAR:
-          idArticulo = Long.valueOf(this.attrs.get("idArticulo").toString());
-          this.registroArticulo = new RegistroArticulo(idArticulo);
+          this.registroArticulo = new RegistroArticulo((Long)this.attrs.get("idArticulo"));
           break;
       } // switch
     } // try
@@ -256,10 +254,6 @@ public class Express extends IBaseAttribute implements Serializable {
       Methods.clean(params);
     } // finally
   } // loadClientes	
-	
-	private void generaRespuesta(String mensaje, ETipoMensaje tipoMensaje) throws Exception{		
-		this.attrs.put("respuesta", mensaje.concat(Constantes.TILDE).concat(tipoMensaje.name()));		
-	}
 	
 	public void doActualizaPrecios(){
 		try {

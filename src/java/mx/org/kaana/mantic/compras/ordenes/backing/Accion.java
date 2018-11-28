@@ -22,6 +22,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Global;
+import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -362,6 +363,15 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			JsfBase.addMessageError(e);
     } // catch   
 	}	
+	
+	public void doRecoverArticulo(Integer index) {
+		if(index>= 0 && index< this.getAdminOrden().getArticulos().size()) {
+      this.attrs.put("seleccionado", this.getAdminOrden().getArticulos().get(index).toEntity());
+			Object backing= JsfBase.ELAsObject("manticCatalogosArticulosExpress");
+			if(backing!= null)
+				((IBaseAttribute)backing).getAttrs().put("seleccionado", this.attrs.get("seleccionado"));
+		} // if	
+	}
 	
 	@Override
   public void doFindArticulo(Integer index) {

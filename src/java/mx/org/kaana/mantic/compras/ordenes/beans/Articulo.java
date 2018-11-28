@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Global;
@@ -498,6 +499,19 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	@Override
 	public String toString() {
 		return String.valueOf(this.getIdArticulo());
+	}
+	
+	public Entity toEntity() {
+		Entity regresar= new Entity(this.getIdArticulo());
+		regresar.put("propio", new Value("propio", this.getPropio()));
+		regresar.put("sat", new Value("sat", this.getSat()));
+		regresar.put("descripcion", new Value("descripcion", this.getNombre()));
+		regresar.put("nombre", new Value("nombre", this.getNombre()));
+		regresar.put("precio", new Value("precio", this.getPrecio()));
+		regresar.put("menudeo", new Value("menudeo", this.getCosto()* 1.5));
+		regresar.put("medioMayoreo", new Value("medioMayoreo", this.getCosto()* 1.4));
+		regresar.put("mayoreo", new Value("mayoreo", this.getCosto()* 1.3));
+		return regresar;
 	}
 	
 	public static void main(String ... args) {
