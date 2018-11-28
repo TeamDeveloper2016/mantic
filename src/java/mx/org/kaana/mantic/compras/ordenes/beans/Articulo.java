@@ -3,6 +3,9 @@ package mx.org.kaana.mantic.compras.ordenes.beans;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -10,8 +13,10 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.comun.beans.ArticuloDetalle;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticFicticiasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticGarantiasDetallesDto;
@@ -501,16 +506,28 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		return String.valueOf(this.getIdArticulo());
 	}
 	
-	public Entity toEntity() {
-		Entity regresar= new Entity(this.getIdArticulo());
-		regresar.put("propio", new Value("propio", this.getPropio()));
-		regresar.put("sat", new Value("sat", this.getSat()));
-		regresar.put("descripcion", new Value("descripcion", this.getNombre()));
-		regresar.put("nombre", new Value("nombre", this.getNombre()));
-		regresar.put("precio", new Value("precio", this.getPrecio()));
-		regresar.put("menudeo", new Value("menudeo", this.getCosto()* 1.5));
-		regresar.put("medioMayoreo", new Value("medioMayoreo", this.getCosto()* 1.4));
-		regresar.put("mayoreo", new Value("mayoreo", this.getCosto()* 1.3));
+	public Entity toEntity() throws Exception {
+		Entity regresar           = null;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("idArticulo", this.getIdArticulo());
+  		regresar= (Entity)DaoFactory.getInstance().toEntity("TcManticArticulosDto", "detalle", params);
+			if(regresar== null) {
+				regresar= new Entity(this.getIdArticulo());
+				regresar.put("sat", new Value("sat", this.getSat()));
+				regresar.put("descripcion", new Value("descripcion", this.getNombre()));
+				regresar.put("nombre", new Value("nombre", this.getNombre()));
+				regresar.put("precio", new Value("precio", this.getCosto()));
+				regresar.put("menudeo", new Value("menudeo", this.getCosto()* 1.5));
+				regresar.put("medioMayoreo", new Value("medioMayoreo", this.getCosto()* 1.4));
+				regresar.put("mayoreo", new Value("mayoreo", this.getCosto()* 1.3));				
+			} // if	
+  		regresar.put("propio", new Value("propio", this.getPropio()));
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
 		return regresar;
 	}
 	
