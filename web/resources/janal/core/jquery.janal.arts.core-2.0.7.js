@@ -23,6 +23,7 @@
 		prices      : '\\:precios',
 		keys        : '\\:keys',
 		locks       : '\\:locks',
+		origins     : '\\:origins',
 		values      : '\\:values',
 		selector    : '.key-down-event',
 		focus       : '.key-focus-event',
@@ -265,8 +266,11 @@
 					case $articulos.VK_REST:
 						var txt  = $(this).val().trim().length<= 0;
 						var token= $($articulos.lock())? $articulos.remove(): true;
-						if(txt && $('ul.ui-autocomplete-items:visible').length<= 0  && token)
-						  return $articulos.clean();
+						if(txt && $('ul.ui-autocomplete-items:visible').length<= 0)
+							if(token)
+						    return $articulos.clean();
+						  else
+						    return $articulos.recover();
 						break;
 					case $articulos.VK_PIPE:
 						return $articulos.search();
@@ -439,6 +443,9 @@
 		},
 		value: function() {
 			return '#'+ this.joker+ this.cursor.index+ this.values;
+		},
+		origin: function() {
+			return '#'+ this.joker+ this.cursor.index+ this.origins;
 		},
 		set: function(value) {
 			janal.console('jsArticulo.set: '+ this.name()+ ' ->'+ $(this.name()).val());
@@ -623,6 +630,13 @@
 				$(this.discount()).val('0');
 				$(this.additional()).val('0');
 			  $(this.key()).val('-1');
+			} // if
+			return false;
+		},
+		recover: function() {
+			janal.console('jsArticulos.recover: '+ this.cursor.index+ ' => '+ this.cursor.top);
+			if($(this.origin()) && ($(this.origin()).val().length> 0)) {
+			  recover(this.cursor.index);
 			} // if
 			return false;
 		},
