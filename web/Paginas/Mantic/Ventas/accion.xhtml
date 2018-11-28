@@ -68,7 +68,7 @@
 		<pe:remoteCommand name="userUpdate" process="@this" onstart="janal.bloquear();" actionListener="#{manticVentasAccion.doCerrarTicket}" oncomplete="jsArticulos.activeLogin();" update="deudor contenido tabla panelTotales panelCliente panelEmpresa articulos total @(.filas) @(.recalculo)"/>  			
 		<pe:remoteCommand name="loadTicketAbiertos" process="@this" update="dialogoOpenTickets" actionListener="#{manticVentasAccion.doLoadTicketAbiertos}" onstart="janal.bloquear()"/>  			
 		<pe:remoteCommand name="loadCotizaciones" process="@this" update="dialogoCotizaciones" actionListener="#{manticVentasAccion.doLoadCotizaciones}" onstart="janal.bloquear()"/>  			
-		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticVentasAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); setTimeout('jsArticulos.next()', 500);">  
+		<pe:remoteCommand name="locate" process="@this @(.filas)" update="@(.filas) @(.recalculo) @(.informacion)" actionListener="#{manticVentasAccion.doUpdateArticulo}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();">  
 			<pe:methodSignature parameters="java.lang.String, java.lang.Integer"/>  
 			<pe:methodParam name="codigo"/>  
 			<pe:methodParam name="index"/>  
@@ -211,8 +211,8 @@
 											<p:inputText id="keys" value="#{row['idArticulo']}" style="display:none"/>
                       <p:inputText id="locks" value="0" style="display:none"/>
 											<p:autoComplete id="codigos" widgetVar="listado" var="custom" itemLabel="#{custom.nombre}" inputStyleClass="janal-wid-90 key-down-event filas" itemValue="#{custom}" value="#{manticVentasAccion.attrs.articulo}" completeMethod="#{manticVentasAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10">
-												<p:ajax event="itemSelect" oncomplete="jsArticulos.close();"/>
-												<p:ajax event="focus" process="@this" listener="#{manticVentasAccion.doActualizaImage(row['idArticulo'], row['nombre'])}" update="panelTotales" oncomplete="janal.refresh();$('#source-image').attr('href', $('#icon-image').attr('src'));"/>
+												<p:ajax event="itemSelect" process="@this" oncomplete="jsArticulos.close();"/>
+												<p:ajax event="focus" process="@this" listener="#{manticVentasAccion.doActualizaImage(row['idArticulo'], row['nombre'])}" update="panelTotales" oncomplete="$('#source-image').attr('href', $('#icon-image').attr('src'));"/>
 												<f:facet name="itemtip">
 													<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
 														<f:facet name="header" class="TexAlCenter">
