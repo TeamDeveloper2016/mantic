@@ -102,9 +102,10 @@ public class Accion extends IBaseAttribute implements Serializable {
 		loadDomicilios();
 		loadClientes();
 		loadProveedores();
+		loadEstadosCiviles();
 	} // loadCollections
 	
-	private void loadEmpresas(){
+	private void loadEmpresas() {
 		List<UISelectItem> sucursales= null;
 		try {
 			sucursales= new ArrayList<>();
@@ -118,7 +119,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		} // catch			
 	} // loadEncuestas
 	
-	private void loadPuestos(){
+	private void loadPuestos() {
 		List<UISelectItem> puestos= null;
     Map<String, Object> params= null;
     try {
@@ -128,6 +129,26 @@ public class Accion extends IBaseAttribute implements Serializable {
 			if(!puestos.isEmpty()){
 				this.attrs.put("puestos", puestos);
 				this.attrs.put("idPuesto", UIBackingUtilities.toFirstKeySelectItem(puestos));
+			} // if
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch		
+    finally {
+      Methods.clean(params);
+    } // finally
+	} // loadPuestos
+	
+	private void loadEstadosCiviles() {
+		List<UISelectItem> civiles= null;
+    Map<String, Object> params= null;
+    try {
+      params = new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      civiles = UISelect.build("TcManticEstadosCivilesDto", "all", params, "nombre", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
+			if(!civiles.isEmpty()) {
+				this.attrs.put("estadosCiviles", civiles);
+				this.attrs.put("idEstadoCivil", UIBackingUtilities.toFirstKeySelectItem(civiles));
 			} // if
     } // try
     catch (Exception e) {

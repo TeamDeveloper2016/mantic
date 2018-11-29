@@ -7,6 +7,33 @@
   </model>
 
   <dml>	
+    <unit id="TcManticEstadosCivilesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_estados_civiles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_estados_civiles
+        where      
+          id_estado_civil = {idEstadoCivil} and nombre = '{nombre}'
+      </select>
+      <select id="all">
+        select      
+				  tc_mantic_estados_civiles.id_estado_civil as id_key,
+          tc_mantic_estados_civiles.*
+        from      
+          tc_mantic_estados_civiles
+        where 
+          {condicion} 
+      </select>
+    </unit>		
     <unit id="TcManticFacturasArchivosDto">
       <select id="row">
         select      

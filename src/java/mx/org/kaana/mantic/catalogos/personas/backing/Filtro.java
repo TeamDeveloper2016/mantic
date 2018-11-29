@@ -22,6 +22,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.personas.beans.RegistroPersona;
 import mx.org.kaana.mantic.catalogos.personas.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.personas.reglas.Gestor;
+import mx.org.kaana.mantic.enums.ETipoPersona;
 
 @Named(value = "manticCatalogosPersonasFiltro")
 @ViewScoped
@@ -93,7 +94,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			eaccion= EAccion.valueOf(accion.toUpperCase());
 			JsfBase.setFlashAttribute("accion", eaccion);		
-			JsfBase.setFlashAttribute("tipoPersona", null);		
+			JsfBase.setFlashAttribute("tipoPersona", ETipoPersona.EMPLEADO.getIdTipoPersona());		
 			JsfBase.setFlashAttribute("retorno", "filtro");		
 			JsfBase.setFlashAttribute("idPersona", (eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) ? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);
 		} // try

@@ -55,8 +55,8 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   private Timestamp registro;
   @Column(name = "FECHA_NACIMIENTO")
   private Date fechaNacimiento;
-  @Column(name = "INGRESO")
-  private Date ingreso;
+  @Column(name = "FECHA_INGRESO")
+  private Date fechaIngreso;
   @Column(name = "SUELDO")
   private Double sueldo;
   @Column(name = "ID_ESTADO_CIVIL")
@@ -67,15 +67,15 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   }
 
   public TcManticPersonasDto(Long key) {
-    this(null, null, null, null, null, 1L, null, null, null, null, null);
+    this(null, null, null, null, null, 1L, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null);
     setKey(key);
   }
 
   public TcManticPersonasDto(Long idEmpleado, String nombres, String paterno, String materno, String curp, Long idTipoSexo,  String estilo, String cuenta, String contrasenia, Date fechaNacimiento, Long idUsuario) {
-    this(idEmpleado, nombres, paterno, materno, curp, idTipoSexo, estilo, cuenta, contrasenia, fechaNacimiento, idUsuario, 0D, null, 1L);
+    this(idEmpleado, nombres, paterno, materno, curp, idTipoSexo, estilo, cuenta, contrasenia, fechaNacimiento, idUsuario, 0D, new Date(Calendar.getInstance().getTimeInMillis()), 1L);
 	}
 	
-  public TcManticPersonasDto(Long idEmpleado, String nombres, String paterno, String materno, String curp, Long idTipoSexo,  String estilo, String cuenta, String contrasenia, Date fechaNacimiento, Long idUsuario, Double sueldo, Date ingreso, Long idEstadoCivil) {
+  public TcManticPersonasDto(Long idEmpleado, String nombres, String paterno, String materno, String curp, Long idTipoSexo,  String estilo, String cuenta, String contrasenia, Date fechaNacimiento, Long idUsuario, Double sueldo, Date fechaIngreso, Long idEstadoCivil) {
     setIdEmpleado(idEmpleado);
     setNombres(nombres);
 		setPaterno(paterno);
@@ -89,7 +89,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
 		setFechaNacimiento(fechaNacimiento);
 		setIdUsuario(idUsuario);
 		this.sueldo= sueldo;
-		this.ingreso= ingreso;
+		this.fechaIngreso= fechaIngreso;
 		this.idEstadoCivil= idEstadoCivil;
   }
 
@@ -225,12 +225,12 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     this.idTipoSexo = idTipoSexo;
   }
 
-	public Date getIngreso() {
-		return ingreso;
+	public Date getFechaIngreso() {
+		return fechaIngreso;
 	}
 
-	public void setIngreso(Date ingreso) {
-		this.ingreso=ingreso;
+	public void setFechaIngreso(Date fechaIngreso) {
+		this.fechaIngreso=fechaIngreso;
 	}
 
 	public Double getSueldo() {
@@ -288,7 +288,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     regresar.append(Constantes.SEPARADOR);
     regresar.append(getFechaNacimiento());
     regresar.append(Constantes.SEPARADOR);
-    regresar.append(getIngreso());
+    regresar.append(getFechaIngreso());
     regresar.append(Constantes.SEPARADOR);
     regresar.append(getSueldo());
     regresar.append(Constantes.SEPARADOR);
@@ -314,7 +314,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     regresar.put("registro", getRegistro());
     regresar.put("estilo", getEstilo());
     regresar.put("fechaNacimiento", getFechaNacimiento());
-    regresar.put("ingreso", getIngreso());
+    regresar.put("fechaIngreso", getFechaIngreso());
     regresar.put("sueldo", getSueldo());
     regresar.put("idEstadoCivil", getIdEstadoCivil());
     regresar.put("idUsuario", getIdUsuario());
@@ -324,7 +324,7 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getIdPersona(), getNombres(), getPaterno(), getMaterno(), getIdTipoSexo(), getCurp(), getCuenta(), getContrasenia(), getEstilo(), getFechaNacimiento(), getIngreso(), getSueldo(), getIdEstadoCivil(), getIdUsuario() 
+      getIdPersona(), getNombres(), getPaterno(), getMaterno(), getIdTipoSexo(), getCurp(), getCuenta(), getContrasenia(), getEstilo(), getFechaNacimiento(), getFechaIngreso(), getSueldo(), getIdEstadoCivil(), getIdUsuario() 
 		};
     return regresar;
   }
