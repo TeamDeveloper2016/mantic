@@ -1,7 +1,6 @@
 package mx.org.kaana.mantic.catalogos.proveedores.backing;
 
 import java.io.Serializable;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,7 +17,6 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -160,9 +158,9 @@ public class Filtro extends IBaseFilter implements Serializable {
 	  UISelectEntity proveedor      = (UISelectEntity)this.attrs.get("proveedor");
 		List<UISelectEntity>provedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 		if(!Cadena.isVacio(this.attrs.get("clave")))
-			sb.append("(tc_mantic_proveedores.clave like '%").append(provedores.get(provedores.indexOf(proveedor)).toString("clave")).append("%') and ");
+			sb.append("(tc_mantic_proveedores.clave like '%").append(this.attrs.get("clave")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("rfc")))
-			sb.append("(tc_mantic_proveedores.rfc like '%").append(provedores.get(provedores.indexOf(proveedor)).toString("rfc")).append("%') and ");
+			sb.append("(tc_mantic_proveedores.rfc like '%").append(this.attrs.get("rfc")).append("%') and ");
 		if(provedores!= null && proveedor!= null && provedores.indexOf(proveedor)>= 0) 
 			sb.append("(tc_mantic_proveedores.razon_social like '%").append(provedores.get(provedores.indexOf(proveedor)).toString("razonSocial")).append("%') and ");
 		else
