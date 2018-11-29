@@ -400,6 +400,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			transaccion = new Transaccion(((OrdenCompra)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 			this.getAdminOrden().toAdjustArticulos();
 			if (transaccion.ejecutar(EAccion.MOVIMIENTOS)) {
+   			RequestContext.getCurrentInstance().execute("jsArticulos.back('guard\\u00F3 orden de compra', '"+ ((OrdenCompra)this.getAdminOrden().getOrden()).getConsecutivo()+ "');");
 				this.accion= EAccion.MODIFICAR;
 				this.getAdminOrden().getArticulos().add(new Articulo(-1L));
 				this.attrs.put("autoSave", Global.format(EFormatoDinamicos.FECHA_HORA, Fecha.getRegistro()));
