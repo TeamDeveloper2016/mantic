@@ -56,7 +56,7 @@ public class TrManticProveedorAgenteDto implements IBaseDto, Serializable {
   }
 
   public TrManticProveedorAgenteDto(Long key) {
-    this(null, new Long(-1L), null, null, null, null);
+    this(null, new Long(-1L), null, 2L, null, null);
     setKey(key);
   }
 
