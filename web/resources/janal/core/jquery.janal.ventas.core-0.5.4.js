@@ -640,16 +640,13 @@
 			return true;
 		},
 		find: function() {
-			janal.console('jsArticulo.find: ');
+			janal.console('jsArticulo.find: '+ this.get().trim());
 			var value = this.get().trim();
 			if(value.startsWith('='))
 				this.set(eval(value.substring(1)));
 			else
-			  if(value.length> 0 && !this.valid())
-			    locate(value, this.cursor.index);
-			  else
-  				if($('ul.ui-autocomplete-items:visible').length<= 0 && value.length<= 0)
-	  				this.down(true);
+				if($('ul.ui-autocomplete-items:visible').length<= 0 && value.length<= 0)
+					this.down(true);
 			return false;
 		},
 		exists: function(index) {
