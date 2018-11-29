@@ -55,6 +55,12 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   private Timestamp registro;
   @Column(name = "FECHA_NACIMIENTO")
   private Date fechaNacimiento;
+  @Column(name = "INGRESO")
+  private Date ingreso;
+  @Column(name = "SUELDO")
+  private Double sueldo;
+  @Column(name = "ID_ESTADO_CIVIL")
+  private Long idEstadoCivil;
 
   public TcManticPersonasDto() {
     this(new Long(-1L));
@@ -66,6 +72,10 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   }
 
   public TcManticPersonasDto(Long idEmpleado, String nombres, String paterno, String materno, String curp, Long idTipoSexo,  String estilo, String cuenta, String contrasenia, Date fechaNacimiento, Long idUsuario) {
+    this(idEmpleado, nombres, paterno, materno, curp, idTipoSexo, estilo, cuenta, contrasenia, fechaNacimiento, idUsuario, 0D, null, 1L);
+	}
+	
+  public TcManticPersonasDto(Long idEmpleado, String nombres, String paterno, String materno, String curp, Long idTipoSexo,  String estilo, String cuenta, String contrasenia, Date fechaNacimiento, Long idUsuario, Double sueldo, Date ingreso, Long idEstadoCivil) {
     setIdEmpleado(idEmpleado);
     setNombres(nombres);
 		setPaterno(paterno);
@@ -78,6 +88,9 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     setEstilo(estilo);
 		setFechaNacimiento(fechaNacimiento);
 		setIdUsuario(idUsuario);
+		this.sueldo= sueldo;
+		this.ingreso= ingreso;
+		this.idEstadoCivil= idEstadoCivil;
   }
 
   public Date getFechaNacimiento() {
@@ -212,6 +225,30 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     this.idTipoSexo = idTipoSexo;
   }
 
+	public Date getIngreso() {
+		return ingreso;
+	}
+
+	public void setIngreso(Date ingreso) {
+		this.ingreso=ingreso;
+	}
+
+	public Double getSueldo() {
+		return sueldo;
+	}
+
+	public void setSueldo(Double sueldo) {
+		this.sueldo=sueldo;
+	}
+
+	public Long getIdEstadoCivil() {
+		return idEstadoCivil;
+	}
+
+	public void setIdEstadoCivil(Long idEstadoCivil) {
+		this.idEstadoCivil=idEstadoCivil;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -251,6 +288,12 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     regresar.append(Constantes.SEPARADOR);
     regresar.append(getFechaNacimiento());
     regresar.append(Constantes.SEPARADOR);
+    regresar.append(getIngreso());
+    regresar.append(Constantes.SEPARADOR);
+    regresar.append(getSueldo());
+    regresar.append(Constantes.SEPARADOR);
+    regresar.append(getIdEstadoCivil());
+    regresar.append(Constantes.SEPARADOR);
     regresar.append(getIdUsuario());
     regresar.append("]");
     return regresar.toString();
@@ -271,6 +314,9 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
     regresar.put("registro", getRegistro());
     regresar.put("estilo", getEstilo());
     regresar.put("fechaNacimiento", getFechaNacimiento());
+    regresar.put("ingreso", getIngreso());
+    regresar.put("sueldo", getSueldo());
+    regresar.put("idEstadoCivil", getIdEstadoCivil());
     regresar.put("idUsuario", getIdUsuario());
     return regresar;
   }
@@ -278,7 +324,8 @@ public class TcManticPersonasDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-      getIdPersona(), getNombres(), getPaterno(), getMaterno(), getIdTipoSexo(), getCurp(), getCuenta(), getContrasenia(), getEstilo(), getFechaNacimiento(), getIdUsuario()   };
+      getIdPersona(), getNombres(), getPaterno(), getMaterno(), getIdTipoSexo(), getCurp(), getCuenta(), getContrasenia(), getEstilo(), getFechaNacimiento(), getIngreso(), getSueldo(), getIdEstadoCivil(), getIdUsuario() 
+		};
     return regresar;
   }
 
