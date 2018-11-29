@@ -364,14 +364,20 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     } // catch   
 	}	
 	
-	public void doRecoverArticulo(Integer index) {
-		if(index>= 0 && index< this.getAdminOrden().getArticulos().size()) {
-      this.attrs.put("seleccionado", this.getAdminOrden().getArticulos().get(index).toEntity());
-			Object backing= JsfBase.ELAsObject("manticCatalogosArticulosExpress");
-			if(backing!= null)
-				((IBaseAttribute)backing).getAttrs().put("seleccionado", this.attrs.get("seleccionado"));
-		} // if	
-	}
+	public void doRecoverArticulo(Integer index){
+		try {
+			if(index>= 0 && index< this.getAdminOrden().getArticulos().size()) {
+				this.attrs.put("seleccionado", this.getAdminOrden().getArticulos().get(index).toEntity());
+				Object backing= JsfBase.ELAsObject("manticCatalogosArticulosExpress");
+				if(backing!= null)
+					((IBaseAttribute)backing).getAttrs().put("seleccionado", this.attrs.get("seleccionado"));
+			} // if	
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch				
+	} // doRecoveryArticulo
 	
 	@Override
   public void doFindArticulo(Integer index) {
