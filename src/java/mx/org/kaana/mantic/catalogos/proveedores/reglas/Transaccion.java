@@ -230,7 +230,7 @@ public class Transaccion extends IBaseTnx {
     try {
 			if(this.registroProveedor.getPersonasTiposContacto().size()== 1)
 					this.registroProveedor.getPersonasTiposContacto().get(0).setIdPrincipal(1L);
-      for (ProveedorContactoAgente proveedorRepresentante : this.registroProveedor.getPersonasTiposContacto()) {
+      for (ProveedorContactoAgente proveedorRepresentante : this.registroProveedor.getPersonasTiposContacto()) {				
 				if(proveedorRepresentante.getIdPrincipal().equals(1L))
 					countPrincipal++;
 				if(countPrincipal== 0 && this.registroProveedor.getPersonasTiposContacto().size()-1 == count)
@@ -259,7 +259,7 @@ public class Transaccion extends IBaseTnx {
       throw e;
     } // catch		
     finally {
-      this.messageError = "Error al registrar los representantes, verifique que no haya duplicados";
+      this.messageError = "Error al registrar los agentes, verifique que no haya duplicados";
     } // finally
     return regresar;
   } // registraProveedoresAgentes
@@ -284,7 +284,7 @@ public class Transaccion extends IBaseTnx {
 			throw e;
 		} // catch		
 		finally{
-			this.messageError = "Error al registrar los representantes, verifique que no haya duplicados";
+			this.messageError = "Error al registrar el agente, verifique que no haya duplicados";
 		} // finally
 		return regresar;
 	} // addRepresentante
