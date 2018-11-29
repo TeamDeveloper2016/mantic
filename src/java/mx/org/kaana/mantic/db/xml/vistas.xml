@@ -1668,17 +1668,28 @@
 					tc_mantic_tipos_proveedores.nombre as tipo_proveedor,
 					tc_mantic_proveedores.dias_entrega,
 					tc_mantic_tipos_dias.nombre as tipo_dia,
-					tc_mantic_proveedores.descuento  
-				 from   
+					tc_mantic_proveedores.descuento,
+					tr_mantic_proveedor_tipo_contacto.valor telefono,
+					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) agente,
+					tr_mantic_persona_tipo_contacto.valor celular
+				from   
 					 tc_mantic_proveedores
-				 inner join
+				inner join
 					 tc_mantic_tipos_proveedores on  tc_mantic_tipos_proveedores.id_tipo_proveedor= tc_mantic_proveedores.id_tipo_proveedor
-				 inner  join
-					 tc_mantic_tipos_dias on tc_mantic_tipos_dias.id_tipo_dia=tc_mantic_proveedores.id_tipo_dia             
-				 where
-					 tc_mantic_proveedores.id_empresa in ({idEmpresa})    
-			     and {condicion}        
-					{sortOrder}
+				inner  join
+					 tc_mantic_tipos_dias on tc_mantic_tipos_dias.id_tipo_dia=tc_mantic_proveedores.id_tipo_dia   
+				left join
+					 tr_mantic_proveedor_tipo_contacto ON tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_tipo_contacto.id_proveedor AND id_tipo_contacto &lt;= 1 AND orden =1
+				left join
+					tr_mantic_proveedor_agente ON tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_agente.id_proveedor AND tr_mantic_proveedor_agente.id_principal= 1
+				left join
+					tc_mantic_personas ON tr_mantic_proveedor_agente.id_agente = tc_mantic_personas.id_persona
+				left join
+					tr_mantic_persona_tipo_contacto ON tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona AND tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
+				where
+					tc_mantic_proveedores.id_empresa in ({idEmpresa})    
+			    and {condicion}        
+				{sortOrder}
 			</select>
 			<select id="portal">
 				select 
