@@ -95,12 +95,30 @@
               </f:facet>
               <h:outputText value="#{row['rfc']}"/>
             </p:column>					
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-50" sortBy="#{row.razonSocial}">
+            <p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{row.razonSocial}">
               <f:facet name="header">
                 <h:outputText value="Razón social"/>
               </f:facet>
               <h:outputText value="#{row['razonSocial']}"/>
-            </p:column>	            	
+            </p:column>	      
+						<p:column class="MarAuto Responsive janal-wid-15 janal-column-right" sortBy="#{row.telefono}">
+              <f:facet name="header">
+                <h:outputText value="Contacto" title="Telefono/Celular"/>
+              </f:facet>
+              <h:outputText value="#{row['telefono']}"/>
+            </p:column>														
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{row.agente}">
+              <f:facet name="header">
+                <h:outputText value="Agente"/>
+              </f:facet>
+              <h:outputText value="#{row['agente']}"/>
+            </p:column>	      
+						<p:column class="MarAuto Responsive janal-wid-15 janal-column-right" sortBy="#{row.celular}">
+              <f:facet name="header">
+                <h:outputText value="Contacto" title="Telefono/Celular"/>
+              </f:facet>
+              <h:outputText value="#{row['celular']}"/>
+            </p:column>														
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCatalogosProveedoresFiltro.lazyModel==null?0:manticCatalogosProveedoresFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
