@@ -66,7 +66,7 @@
 					  break;
 					case $precios.VK_ENTER:
       			janal.console('jsPrecios.lookup');
-						lookup();
+						//lookup();
 						return false;
 						break;
 					case $precios.VK_PAGE_NEXT:

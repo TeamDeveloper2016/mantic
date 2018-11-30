@@ -137,7 +137,7 @@ public class Encabezado extends IBaseFilter implements Serializable {
 
   public void doRowDblSelectEvent(SelectEvent event) {
 		Entity entity= (Entity)event.getObject();
-		LOG.debug("doRowSelectEvent: "+ entity.getKey());
+		LOG.info("doRowSelectEvent: "+ entity.getKey());
 		List<Columna> columns     = null;
 		Map<String, Object> params= null;
 		try {

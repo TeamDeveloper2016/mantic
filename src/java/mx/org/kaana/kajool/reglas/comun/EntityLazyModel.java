@@ -18,12 +18,16 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.page.PageRecords;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.xml.Dml;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.SortOrder;
 
 public class EntityLazyModel<T extends IBaseDto> extends LazyDataModel<T> {
 
+	private static final Log LOG=LogFactory.getLog(EntityLazyModel.class);
 	private static final long serialVersionUID=4363382175414414122L;
+	
 	private String proceso;
 	private String idXml;
 	private Map<String, Object> params;
@@ -83,6 +87,7 @@ public class EntityLazyModel<T extends IBaseDto> extends LazyDataModel<T> {
 				  throw new RuntimeException("La vista ["+this.proceso+"] no se le definio un campo llave 'id_key_<nombre>'.");
 		} // try
 		catch(Exception e) {
+			LOG.info("keyName: ["+ this.keyName+ "] "+ sb.toString());
 			throw new RuntimeException(e);
 		} // catch
 		return regresar;
