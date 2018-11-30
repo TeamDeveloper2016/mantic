@@ -11,8 +11,8 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'nombres': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}       
-        'rfc': {validaciones: 'libre', mascara: 'rfc', formatos: 'cambiar-mayusculas', individual: true},
+        'nombres'   : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},       
+        'rfc'       : {validaciones: 'libre', mascara: 'rfc', formatos: 'cambiar-mayusculas'},      
         'idTipoSexo': {validaciones: 'libre', mascara: 'libre'}
       };
     </script>		
@@ -67,30 +67,36 @@
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
-             <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.rfc}">
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.sucursal}">
+              <f:facet name="header">
+                <h:outputText value="Sucursal"/>
+              </f:facet>
+              <h:outputText value="#{filtro['sucursal']}"/>
+            </p:column>														
+            <p:column class="janal-column-center MarAuto Responsive" sortBy="#{filtro.rfc}">
               <f:facet name="header">
                 <h:outputText value="RFC"/>
               </f:facet>
               <h:outputText value="#{filtro['rfc']}"/>
             </p:column>		
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-20" sortBy="#{filtro.nombres}">
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.nombreCompleto}">
               <f:facet name="header">
                 <h:outputText value="Nombres"/>
               </f:facet>
-              <h:outputText value="#{filtro['nombres']}"/>
-            </p:column>														
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-8" sortBy="#{filtro.paterno}">
+              <h:outputText value="#{filtro['nombreCompleto']}"/>
+            </p:column>														            
+						<p:column class="janal-column-right MarAuto Responsive" sortBy="#{filtro.telefono}">
               <f:facet name="header">
-                <h:outputText value="Apellido paterno"/>
+                <h:outputText value="Telefono"/>
               </f:facet>
-              <h:outputText value="#{filtro['paterno']}"/>
-            </p:column>					
-            <p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.materno}">
+              <h:outputText value="#{filtro['contacto']}"/>
+            </p:column>		
+						<p:column class="MarAuto Responsive" sortBy="#{filtro.puesto}">
               <f:facet name="header">
-                <h:outputText value="Apellido materno"/>
+                <h:outputText value="Puesto"/>
               </f:facet>
-              <h:outputText value="#{filtro['materno']}"/>
-            </p:column>					
+              <h:outputText value="#{filtro['puesto']}"/>
+            </p:column>		
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCatalogosEmpleadosFiltro.lazyModel==null?0:manticCatalogosEmpleadosFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
