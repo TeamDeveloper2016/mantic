@@ -41,6 +41,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 			this.attrs.put("curp", "");
       this.attrs.put("sortOrder", "order by tc_mantic_personas.nombres");
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
       loadTiposPersonas();
     } // try
     catch (Exception e) {
