@@ -105,18 +105,20 @@ public class Accion extends IBaseAttribute implements Serializable {
 		loadEstadosCiviles();
 	} // loadCollections
 	
-	private void loadEmpresas() {
+	private void loadEmpresas() {				
 		List<UISelectItem> sucursales= null;
+		Map<String, Object>params    = null;
 		try {
-			sucursales= new ArrayList<>();
-			for(Sucursal sucursal: JsfBase.getAutentifica().getSucursales())
-				sucursales.add(new UISelectItem(sucursal.getIdEmpresa(), sucursal.getNombre()));
+			params= new HashMap<>();
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());			
+			sucursales= UISelect.build("TcManticEmpresasDto", "empresas", params, "nombre", EFormatoDinamicos.MAYUSCULAS);
 			this.attrs.put("empresas", sucursales);
-			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());			
+			this.attrs.put("idEmpresa", UIBackingUtilities.toFirstKeySelectItem(sucursales));
 		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch			
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);			
+		} // catch	
 	} // loadEncuestas
 	
 	private void loadPuestos() {
@@ -785,7 +787,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		Long idProveedor= null;
     try {
       params = new HashMap<>();
-      params.put("sucursales", Boolean.valueOf(this.attrs.get("mostrarEmpresas").toString()) ? Long.valueOf(this.attrs.get("idEmpresa").toString()) : JsfBase.getAutentifica().getEmpresa().getSucursales());
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
 			campos= new ArrayList<>();
 			campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
@@ -820,7 +822,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 		MotorBusqueda motor= null;
     try {
       params = new HashMap<>();
-      params.put("sucursales", Boolean.valueOf(this.attrs.get("mostrarEmpresas").toString()) ? Long.valueOf(this.attrs.get("idEmpresa").toString()) : JsfBase.getAutentifica().getEmpresa().getSucursales());
+      params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
 			campos= new ArrayList<>();
 			campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
