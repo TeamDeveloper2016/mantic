@@ -147,7 +147,7 @@
 			<p:commandButton value="Aceptar" icon="fa fa-check" onstart="janal.monitor(0);" oncomplete="janal.globalTimeout= false; PF('dialogoInactivo').hide(); janal.desbloquear();"/>							
 		</div>				
 	</p:dialog>
-	<p:dialog id="dialogoVerificador" widgetVar="dlgVerificador" header="Verificador de precios" onShow="janal.pivot(); $('#verificadorValue').val(''); $('#verificadorValue').focus();janal.bloquear();" onHide="jsPrecios.hide(); janal.recover(); janal.desbloquear();" height="660px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
+	<p:dialog id="dialogoVerificador" widgetVar="dlgVerificador" header="Verificador de precios" onShow="janal.pivot(); $('#verificadorValue').val(''); $('#verificadorValue').focus();janal.bloquear();" onHide="jsPrecios.hide(); janal.recover(); janal.desbloquear();" height="630px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form prependId="false">
 			<p:remoteCommand name="verificadorLookup" actionListener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor verificadorValue" update="verificadorPrecio verificadorTabla" oncomplete="if($('#verificadorValue').val()==='.*.') $('#verificadorValue').val('');"/>
 			<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-90, janal-wid-15">
