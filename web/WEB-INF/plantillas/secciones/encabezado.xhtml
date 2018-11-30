@@ -114,7 +114,7 @@
 			<pe:methodSignature parameters="java.lang.Boolean"/>  
 			<pe:methodParam name="isViewException"/>  
 		</pe:remoteCommand>	
-		<p:dialog id="janalGlobalException" header="Ocurrió una excepción: '#{pfExceptionHandler.type}' !" widgetVar="exceptionGlobalDialog" width="1300px" height="400px" closeOnEscape="true" closable="true" onShow="janal.bloquear();" onHide="janal.desbloquear();">
+		<p:dialog id="janalGlobalException" header="Ocurrió una excepción: '#{pfExceptionHandler.type}' !" widgetVar="exceptionGlobalDialog" width="1300px" height="400px" closeOnEscape="true" closable="true" onShow="janal.pivot(); janal.bloquear();" onHide="janal.recover(); janal.desbloquear();">
 			<div class="janal-wid-100-txt janal-column-center janal-font-bold">
 				<p:outputLabel value="FAVOR DE NOTIFICAR DE ESTE ERROR AL EQUIPO DE DESARROLLO DE ESTE SISTEMA !" styleClass="recalculo janal-field-error"/>
 			</div>
@@ -147,7 +147,7 @@
 			<p:commandButton value="Aceptar" icon="fa fa-check" onstart="janal.monitor(0);" oncomplete="janal.globalTimeout= false; PF('dialogoInactivo').hide(); janal.desbloquear();"/>							
 		</div>				
 	</p:dialog>
-	<p:dialog id="dialogoVerificador" widgetVar="dlgVerificador" header="Verificador de precios" onShow="$('#verificadorValue').val(''); $('#verificadorValue').focus();janal.bloquear();" onHide="jsPrecios.hide(); janal.sendLastFocus(); janal.desbloquear();" height="440px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
+	<p:dialog id="dialogoVerificador" widgetVar="dlgVerificador" header="Verificador de precios" onShow="janal.pivot(); $('#verificadorValue').val(''); $('#verificadorValue').focus();janal.bloquear();" onHide="jsPrecios.hide(); janal.recover(); janal.desbloquear();" height="440px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form prependId="false">
 			<p:remoteCommand name="verificadorLookup" actionListener="#{kajoolEncabezado.doChange}" process="@this verificadorBuscarPor verificadorValue" update="verificadorPrecio verificadorTabla" oncomplete="if($('#verificadorValue').val()==='.*.') $('#verificadorValue').val('');"/>
 			<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-90, janal-wid-15">
@@ -242,7 +242,7 @@
 			</p:dataTable>
 		</h:form>
 	</p:dialog>  	
-	<p:dialog id="dialogoFaltantes" widgetVar="dlgFaltantes" header="Lista de articulos faltantes" onShow="jsPrecios.refresh();faltantesLookup();janal.bloquear();$('#codigosFaltantes_input').focus();" onHide="janal.sendLastFocus();jsPrecios.update();janal.desbloquear();" height="490px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
+	<p:dialog id="dialogoFaltantes" widgetVar="dlgFaltantes" header="Lista de articulos faltantes" onShow="janal.pivot(); jsPrecios.refresh(); faltantesLookup(); janal.bloquear();$('#codigosFaltantes_input').focus();" onHide="jsPrecios.update(); janal.recover(); janal.desbloquear();" height="490px" width="950px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form id="faltantes" prependId="false">
 			<p:remoteCommand name="faltantesLookup" actionListener="#{kajoolEncabezado.doLoadFaltantes}" process="@this" update="@(.faltantes)" oncomplete="jsPrecios.start();"/>
 			<p:remoteCommand name="faltantesReplace" actionListener="#{kajoolEncabezado.doReplaceFaltante}" process="@this" update="@(.faltantes)" oncomplete="jsPrecios.start();"/>
@@ -337,7 +337,7 @@
 			</p:dataTable>
 		</h:form>
 	</p:dialog>  	
-	<p:dialog id="dialogoEjecutar" widgetVar="dlgEjecutar" header="Ingrese el c&oacute;digo del m&oacute;dulo ..." onShow="$('#kajoolOpcion').val('');janal.bloquear();" onHide="janal.sendLastFocus();janal.desbloquear();" height="90px" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
+	<p:dialog id="dialogoEjecutar" widgetVar="dlgEjecutar" header="Ingrese el c&oacute;digo del m&oacute;dulo ..." onShow="janal.pivot(); $('#kajoolOpcion').val(''); janal.bloquear();" onHide="janal.recover(); janal.desbloquear();" height="90px" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form id="teclasEjecutar" prependId="false">
 			<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
 				<div class="ui-grid-row janal-grid-row">
@@ -357,7 +357,7 @@
 			</div>	
 		</h:form>
 	</p:dialog>	
-	<p:dialog id="dialogoTeclasAyuda" widgetVar="dlgTeclasAyuda" header="Teclas rapidas de la aplicaci&oacute;n" onShow="janal.bloquear();" onHide="janal.sendLastFocus();janal.desbloquear();" height="#{empty notIsCaja or notIsCaja? '220px': '330px'}" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
+	<p:dialog id="dialogoTeclasAyuda" widgetVar="dlgTeclasAyuda" header="Teclas rapidas de la aplicaci&oacute;n" onShow="janal.pivot(); janal.bloquear();" onHide="janal.recover(); janal.desbloquear();" height="#{empty notIsCaja or notIsCaja? '220px': '330px'}" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form id="teclasAyuda" prependId="false">
 			<div class="ui-datatable ui-widget ui-datatable-reflow">
 				<div class="ui-datatable-tablewrapper">
@@ -402,7 +402,7 @@
 	  	</div>
 		</h:form>
 	</p:dialog>
-	<p:dialog id="dialogoListaPrecios" widgetVar="dlgListaPrecios" header="Lista de precios" onShow="$('#listaPreciosValue').val(''); $('#listaPreciosValue').focus();janal.bloquear();" onHide="janal.sendLastFocus(); janal.desbloquear();" height="450px" width="1050px" resizable="false" closeOnEscape="true" dynamic="true">
+	<p:dialog id="dialogoListaPrecios" widgetVar="dlgListaPrecios" header="Lista de precios" onShow="janal.pivot(); $('#listaPreciosValue').val(''); $('#listaPreciosValue').focus();janal.bloquear();" onHide="janal.recover(); janal.desbloquear();" height="450px" width="1050px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form prependId="false">
 			<p:remoteCommand name="listaPreciosLookup" actionListener="#{kajoolEncabezado.doChangeListaPrecios}" process="@this listaPreciosBuscarPor listaPreciosValue" update="listaPreciosTabla" oncomplete="if($('#listaPreciosValue').val()==='.*.') $('#listaPreciosValue').val('');"/>
 			<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-90, janal-wid-15">
@@ -462,7 +462,7 @@
 			</p:dataTable>
 		</h:form>
 	</p:dialog>  
-	<p:dialog id="dialogoCatalogoArticulos" widgetVar="dlgCatalogoArticulos" header="Catálogo de articulos de los proveedores" onShow="$('#catalogoArticulosValue').val(''); $('#catalogoArticulosValue').focus();janal.bloquear();" onHide="janal.sendLastFocus(); janal.desbloquear();" height="450px" width="1050px" resizable="false" closeOnEscape="true" dynamic="true">		<h:form prependId="false">
+	<p:dialog id="dialogoCatalogoArticulos" widgetVar="dlgCatalogoArticulos" header="Catálogo de articulos de los proveedores" onShow="janal.pivot(); $('#catalogoArticulosValue').val(''); $('#catalogoArticulosValue').focus();janal.bloquear();" onHide="janal.recover(); janal.desbloquear();" height="450px" width="1050px" resizable="false" closeOnEscape="true" dynamic="true">		<h:form prependId="false">
 			<p:remoteCommand name="catalogoArticulosLookup" actionListener="#{kajoolEncabezado.doChangeCatalogoArticulos}" process="@this catalogoArticulosValue" update="catalogoArticulosTabla" oncomplete="if($('#catalogoArticulosValue').val()==='.*.') $('#catalogoArticulosValue').val('');"/>
 			<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 				<p:outputLabel for="catalogoArticulosValue" value="Clave/nombre del proveedor:"/>
@@ -489,7 +489,7 @@
 			</p:dataGrid>
 		</h:form>
 	</p:dialog>  	
-	<p:dialog widgetVar="dlgPdfCatalogoArticulos" header="Catálogo de articulos del proveedor" onHide="janal.sendLastFocus(); janal.desbloquear();" height="450px" dynamic="true" width="650px" resizable="false" closeOnEscape="true" closable="true" maximizable="true" appendTo="@(body)">
+	<p:dialog widgetVar="dlgPdfCatalogoArticulos" header="Catálogo de articulos del proveedor" onShow="janal.pivot();" onHide="janal.recover(); janal.desbloquear();" height="450px" dynamic="true" width="650px" resizable="false" closeOnEscape="true" closable="true" maximizable="true" appendTo="@(body)">
 		<h:form prependId="true">
 			<object type="application/pdf" data="#{kajoolEncabezado.attrs.temporal}" height="390px" width="100%" internalinstanceid="5">
 				 Tu navegador no soporta el desplegado de archivos PDF's, por favor da click en el boton de descargar
