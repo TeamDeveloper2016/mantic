@@ -65,7 +65,6 @@ public class EntityLazyModel<T extends IBaseDto> extends LazyDataModel<T> {
 		this.params = (Map<String, Object>) ((HashMap) params).clone();
 		this.idFuenteDato = idFuenteDato;
 	}
-	
 
 	@Override
 	public T getRowData(String rowKey) {
@@ -79,7 +78,7 @@ public class EntityLazyModel<T extends IBaseDto> extends LazyDataModel<T> {
         else
   				sb.append(Dml.getInstance().getSelect(this.proceso, this.idXml, this.params));
 				sb.append(") datos where ");
-				sb.append(Cadena.toSqlName(keyName)).append("=").append(rowKey);
+				sb.append(Cadena.toSqlName(this.keyName)).append("=").append(rowKey);
 				regresar=(T) DaoFactory.getInstance().toEntity(sb.toString());
 			} // if	
 			else
