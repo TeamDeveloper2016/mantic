@@ -178,7 +178,10 @@
 						break;
 					case $precios.VK_F7:
 					case $precios.VK_ENTER:
-						return $precios.show();
+						if($('#verificadorPrecio').is(":hidden"))
+						  return $precios.show();
+						else 
+							return false;
 						break;
 					case $precios.VK_UP:
 					case $precios.VK_DOWN:
