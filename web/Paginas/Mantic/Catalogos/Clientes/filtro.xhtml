@@ -10,9 +10,9 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'razonSocial': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
-        'clave': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
-        'rfc': {validaciones: 'libre', mascara: 'rfc', formatos: 'cambiar-mayusculas', individual: true}       
+        'razonSocial': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'clave': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+        'rfc': {validaciones: 'libre', mascara: 'rfc', formatos: 'cambiar-mayusculas'}       
       };
     </script>		
   </ui:define>
@@ -32,14 +32,29 @@
               <p:outputLabel for="rfc" value="RFC:"/>
               <p:inputText id="rfc" value="#{manticCatalogosClientesFiltro.attrs.rfc}" styleClass="janal-wid-100-txt"/>              			                            
               <p:outputLabel for="razonSocial" value="Razón social:"/>
-              <p:inputText id="razonSocial" value="#{manticCatalogosClientesFiltro.attrs.razonSocial}" styleClass="janal-wid-100-txt"/>              														
+              <p:autoComplete id="razonSocial" var="custom" placeholder="ejemplo: HERRAJES HF. S.A. DE C.V." itemLabel="#{custom.razonSocial}" styleClass="janal-wid-100-txt" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosClientesFiltro.attrs.cliente}" completeMethod="#{manticCatalogosClientesFiltro.doCompleteCliente}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<h:outputText value="Clave:" />
+										<h:outputText value="#{custom.clave}" />
+										<h:outputText value="RFC:" />
+										<h:outputText value="#{custom.rfc}" />
+										<h:outputText value="Razón social:" />
+										<h:outputText value="#{custom.razonSocial}" />
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
+							<p:outputLabel for="credito" value="Credito:"/>
+							<p:selectOneMenu id="credito" value="#{manticCatalogosClientesFiltro.attrs.credito}" styleClass="janal-wid-90">
+								<f:selectItems value="#{manticCatalogosClientesFiltro.attrs.creditos}"/>
+							</p:selectOneMenu>
             </h:panelGrid>
             <p:separator/>
             <div class="janal-align-right lg-pantalla">
-              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this clave razonSocial rfc" actionListener="#{manticCatalogosClientesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.execute();" process="@this clave razonSocial rfc credito" actionListener="#{manticCatalogosClientesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
             </div>
             <div class="janal-align-right xs-pantalla">
-              <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.execute();" process="@this clave razonSocial rfc" actionListener="#{manticCatalogosClientesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+              <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.execute();" process="@this clave razonSocial rfc credito" actionListener="#{manticCatalogosClientesFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
             </div>
           </p:panel>
         </div>
@@ -81,6 +96,12 @@
               </f:facet>
               <h:outputText value="#{filtro['razonSocial']}"/>
             </p:column>
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-5" sortBy="#{filtro.credito}">
+              <f:facet name="header">
+                <h:outputText value="Credito"/>
+              </f:facet>
+              <h:outputText value="#{filtro['credito']}"/>
+            </p:column>														
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCatalogosClientesFiltro.lazyModel==null?0:manticCatalogosClientesFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
