@@ -5,6 +5,7 @@
  *time 18:28:55 PM
  *author Team Developer 2016 <team.developer@kaana.org.mx>
  */
+
 (function(window) {
 	var jsKardex;
 	
@@ -77,7 +78,7 @@
 						else
 							if($kardex.id.endsWith('utilidades'))
 								$kardex.utilidad(this);
-						  else
+						  else 
 								return $kardex.calculate(this);
 						break;
 					case $kardex.VK_UP:
@@ -218,7 +219,8 @@
  			janal.console('jsKardex.calculate: '+ $(name).attr('id')+ ' => '+ value);
 			if($kardex.different(value)) {
 				$kardex.current= value;
-			  calculate(this.cursor.index);
+			  var keep= confirm('Desea mantener los porcentajes de utilidad actuales ?');
+			  calculate(this.cursor.index, keep);
 			} // if
 			return false;
 		},
@@ -280,4 +282,3 @@
 $(document).ready(function() {
   jsKardex= new Janal.Control.Kardex.Core();
 });			
-			

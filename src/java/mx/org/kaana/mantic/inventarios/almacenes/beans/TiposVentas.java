@@ -2,6 +2,10 @@ package mx.org.kaana.mantic.inventarios.almacenes.beans;
 
 import java.io.Serializable;
 import mx.org.kaana.libs.formato.Numero;
+import mx.org.kaana.mantic.inventarios.almacenes.enums.ETiposVentas;
+import static mx.org.kaana.mantic.inventarios.almacenes.enums.ETiposVentas.MAYOREO;
+import static mx.org.kaana.mantic.inventarios.almacenes.enums.ETiposVentas.MEDIO_MAYOREO;
+import static mx.org.kaana.mantic.inventarios.almacenes.enums.ETiposVentas.MENUDEO;
 
 /**
  *@company KAANA
@@ -41,6 +45,14 @@ public class TiposVentas implements Serializable {
 		this.limite=limite;
 		this.impuesto= 0D;
 		this.toCalculate();
+	}
+
+	public Integer getIndex() {
+		return index;
+	}
+
+	public void setIndex(Integer index) {
+		this.index=index;
 	}
 
 	public String getNombre() {
@@ -139,10 +151,23 @@ public class TiposVentas implements Serializable {
 	}
 	
   public void toCalculate() {
-		this.precio  = Numero.toRedondearSat(this.precio);
+  	this.precio  = Numero.toRedondearSat(this.precio);
 		this.utilidad= Numero.toRedondearSat((this.precio*100/(this.costo<= 0? 1: this.costo))- 100);
 	  this.impuesto= Numero.toRedondearSat((this.precio* ((this.iva/100)+ 1))- this.precio);
 		this.importe = Numero.toRedondearSat(this.precio+ this.impuesto);
 	}	
 	
+	public ETiposVentas toEnum() {
+		 ETiposVentas regresar= MENUDEO;
+		 switch(this.index) {
+			 case 1:
+				 regresar= MEDIO_MAYOREO;
+				 break;
+			 case 2:
+				 regresar= MAYOREO;
+				 break;
+		 } // switch
+		 return regresar;
+  }
+
 }

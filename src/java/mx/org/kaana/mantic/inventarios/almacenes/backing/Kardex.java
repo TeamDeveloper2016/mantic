@@ -31,6 +31,7 @@ import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.inventarios.almacenes.beans.AdminKardex;
 import mx.org.kaana.mantic.inventarios.almacenes.beans.TiposVentas;
+import mx.org.kaana.mantic.inventarios.almacenes.enums.ETiposVentas;
 import mx.org.kaana.mantic.inventarios.almacenes.reglas.Transaccion;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
@@ -350,10 +351,21 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		this.adminKardex.toUpdateUtilidad(index, value);
 	}
 	
-	public void doUpdateCosto(Double precio) {
+	public void doUpdateCosto(Double precio, Boolean keep) {
 		double value= ((Entity)this.attrs.get("articulo")).toDouble("value");
 		this.attrs.put("costoMayorMenor", this.getCostoMayorMenor(value, precio));
 		for (TiposVentas item : this.adminKardex.getTiposVentas()) {
+			switch(item.toEnum()) {
+				case MENUDEO:
+					item.setUtilidad(50D);
+					break;
+				case MEDIO_MAYOREO:
+					item.setUtilidad(40D);
+					break;
+				case MAYOREO:
+					item.setUtilidad(30D);
+					break;
+			} // switch
 			item.setPrecio(Numero.toRedondearSat((1+ (item.getUtilidad()/ 100))* precio));
 			item.setCosto(precio);
   		item.toCalculate();

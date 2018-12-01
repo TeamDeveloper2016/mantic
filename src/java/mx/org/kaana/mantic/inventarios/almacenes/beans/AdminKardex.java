@@ -3,6 +3,7 @@ package mx.org.kaana.mantic.inventarios.almacenes.beans;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import mx.org.kaana.mantic.inventarios.almacenes.enums.ETiposVentas;
 
 /**
  *@company KAANA
@@ -26,14 +27,14 @@ public class AdminKardex implements Serializable {
 	}
 
 	public AdminKardex(Long idArticulo, double costo, double iva, double menudeo, double medioMayoreo, double mayoreo, long limiteMedioMayoreo, long limiteMayoreo) {
-		this.idArticulo=idArticulo;
-		this.costo=costo;
-		this.iva=iva;
+		this.idArticulo= idArticulo;
+		this.costo     = costo;
+		this.iva       = iva;
 		this.tiposVentas= new ArrayList<>();
 		if(this.idArticulo> 0) {
-			this.add(0, "MENUDEO", menudeo, limiteMedioMayoreo);
-			this.add(1, "MEDIO-MAYOREO", medioMayoreo, limiteMayoreo);
-			this.add(2, "MAYOREO", mayoreo, 0);
+			this.add(ETiposVentas.MENUDEO.ordinal(), "MENUDEO", menudeo, limiteMedioMayoreo);
+			this.add(ETiposVentas.MEDIO_MAYOREO.ordinal(), "MEDIO-MAYOREO", medioMayoreo, limiteMayoreo);
+			this.add(ETiposVentas.MAYOREO.ordinal(), "MAYOREO", mayoreo, 0);
 		} // if	
 	}
 
