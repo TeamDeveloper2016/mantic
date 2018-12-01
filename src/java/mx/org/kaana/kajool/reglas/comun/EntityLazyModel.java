@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.page.PageRecords;
@@ -86,7 +87,7 @@ public class EntityLazyModel<T extends IBaseDto> extends LazyDataModel<T> {
 				  throw new RuntimeException("La vista ["+this.proceso+"] no se le definio un campo llave 'id_key_<nombre>'.");
 		} // try
 		catch(Exception e) {
-			LOG.info("keyName ["+ this.keyName+ "] rowKey ["+ rowKey+ "] "+ sb.toString());
+			LOG.warn("keyName ["+ this.keyName+ "] rowKey ["+ rowKey+ "] "+ sb.toString());
 			throw new RuntimeException(e);
 		} // catch
 		return regresar;
