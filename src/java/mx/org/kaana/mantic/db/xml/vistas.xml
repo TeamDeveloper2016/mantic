@@ -1749,6 +1749,8 @@
 					tc_mantic_clientes.id_cliente as id_key,
 					tc_mantic_clientes.clave,
 					tc_mantic_clientes.rfc,
+					if(tc_mantic_clientes.id_credito = 1, 'SI', 'NO') credito,
+					tc_mantic_clientes.id_credito,
 					tc_mantic_clientes.razon_social,
 					tc_mantic_clientes.limite_credito,
 					tc_mantic_clientes.plazo_dias,
@@ -1770,6 +1772,8 @@
 					tc_mantic_clientes.clave like '%{clave}%' 
 				and
 					tc_mantic_clientes.id_empresa={idEmpresa} 
+				and 
+					tc_mantic_clientes.id_credito in ({credito})
 				and 
 					(tr_mantic_cliente_domicilio.id_principal={idPrincipal} or tr_mantic_cliente_domicilio.id_principal is null)
 				{sortOrder}            
