@@ -149,7 +149,7 @@ public class CFDIFactory implements Serializable {
 		Cfdi cfdi    = null;
 		try {
 		  cfdi= loadCfdi(encabezado, detalle);
-			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas()) 
+			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo()) 
 			  regresar= createCfdi(cfdi);
 		} // try
 		catch (Exception e) {			
@@ -161,7 +161,7 @@ public class CFDIFactory implements Serializable {
 	public mx.org.kaana.libs.facturama.models.response.Cfdi createCfdi(Cfdi cfdi) throws Exception {
 		mx.org.kaana.libs.facturama.models.response.Cfdi regresar= null;
 		try {
-			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas())
+			if(Configuracion.getInstance().isEtapaProduccion()|| Configuracion.getInstance().isEtapaPruebas() || Configuracion.getInstance().isEtapaDesarrollo())
 			  regresar= this.facturama.Cfdis().Create(cfdi);
 		} // try
 		catch (Exception e) {			
