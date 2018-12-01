@@ -9,13 +9,13 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Kardex de un articulo"/>
 	<ui:define name="librerias">
-    <h:outputScript library="janal" name="core/jquery.janal.kardex.core-0.3.9.js"/>
+    <h:outputScript library="janal" name="core/jquery.janal.kardex.core-0.4.1.js"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:codigos': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-				'contenedorGrupos\\:costos': {validaciones: 'flotante', mascara: 'libre', formatos: 'precio', individual: true, grupo: 'calculos'},
-				'utilidades': {multiple: '$', validaciones: 'flotante', mascara: 'libre', formatos: 'precio', individual: true, grupo: 'calculos'},
-				'precios'   : {multiple: '$', validaciones: 'flotante', mascara: 'libre', formatos: 'precio', individual: true, grupo: 'calculos'},
+				'contenedorGrupos\\:costos': {validaciones: 'flotante', mascara: 'libre', formatos: 'flotante', individual: true, grupo: 'calculos'},
+				'utilidades': {multiple: '$', validaciones: 'flotante', mascara: 'libre', formatos: 'flotante', individual: true, grupo: 'calculos'},
+				'precios'   : {multiple: '$', validaciones: 'flotante', mascara: 'libre', formatos: 'flotante', individual: true, grupo: 'calculos'},
 				'contenedorGrupos\\:tabla\\:0\\:limites': {validaciones: 'requerido|flotante|menor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:1\\\\:limites"})', mascara: 'libre', formatos: 'precio', grupo: 'calculos'},
 				'contenedorGrupos\\:tabla\\:1\\:limites': {validaciones: 'requerido|flotante|mayor-a({"cual":"contenedorGrupos\\\\:tabla\\\\:0\\\\:limites"})', mascara: 'libre', formatos: 'precio', grupo: 'calculos'}
 			};	

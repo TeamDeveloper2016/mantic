@@ -11,6 +11,7 @@
 	Janal.Control.Kardex= {};
 	Janal.Control.Kardex.Core= Class.extend({
 		joker       : 'contenedorGrupos\\:tabla\\:',
+		comodin     : 'contenedorGrupos\\\\:tabla\\\\:',
 		selector    : '.key-down-event',
 		focus       : '.key-focus-event',
 		reference   : '#codigos_input', 
@@ -151,7 +152,7 @@
 		},
 		index: function() {
 			var $id= this.id.replace(/:/gi, '\\:');
-			var start= $id.indexOf(this.joker)>= 0? this.joker.length: -1;
+			var start= $id.indexOf(this.comodin)>= 0? this.comodin.length: -1;
 			if(start> 0)
 				$kardex.cursor.index= parseInt($id.substring(start, $id.lastIndexOf(':')), 10);
 			janal.console('jsKardex.index: '+ $kardex.cursor.index);

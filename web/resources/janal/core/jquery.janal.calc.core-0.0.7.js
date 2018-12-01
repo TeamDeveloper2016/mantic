@@ -113,7 +113,7 @@
 				this.result+= operator;
 			$(element).val('');
 			$('#results').val($('#results').val()+ (concat? number.value+  (operator=== '='? operator: '')+ '\n'+ this.result+ '': this.result+ (operator=== '='? operator: ''))+ '\n');
-			$('#results').scrollTop($('#results').scrollTop()+ 22);
+			$('#results').scrollTop($('#results')[0].scrollHeight);
 			$(element).focus();
 			return false;
 		}

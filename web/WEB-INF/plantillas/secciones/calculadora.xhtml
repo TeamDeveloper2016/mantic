@@ -3,11 +3,9 @@
     xmlns:h="http://java.sun.com/jsf/html"
     xmlns:ui="http://java.sun.com/jsf/facelets"
 		xmlns:p="http://primefaces.org/ui">   
-  <h:outputScript library="janal" name="core/jquery.janal.calc.core-0.0.5.js"/>
-	<script type="text/javascript">
-  </script>		
-	<p:dialog id="dialogoCalculadora" widgetVar="dlgCalculadora" header="Calculadora" onShow="$('#calculadoraValue').focus();" onHide="janal.sendLastFocus();" height="420px" width="250px" resizable="false"  position="right bottom" closeOnEscape="true">
-		<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100" >
+  <h:outputScript library="janal" name="core/jquery.janal.calc.core-0.0.7.js"/>
+	<p:dialog id="dialogoCalculadora" widgetVar="dlgCalculadora" header="Calculadora" onShow="janal.pivot(); $('#calculadoraValue').focus();" onHide="janal.recover();" height="420px" width="250px" resizable="false"  position="right bottom" closeOnEscape="true">
+		<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100"> 
   		<p:inputText id="calculadoraValue" styleClass="janal-wid-100-txt janal-column-right janal-key-calculator janal-not-focus"/>  
       <p:inputTextarea id="results" rows="18" styleClass="janal-wid-100-txt janal-column-right janal-not-focus" readonly="true" scrollHeight="100" autoResize="false"/>			
 		</p:panelGrid>

@@ -50,6 +50,7 @@ public class Transaccion extends IBaseTnx {
 			switch(accion) {
 				case MODIFICAR:
 					TcManticArticulosDto articulo= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.idArticulo);
+					articulo.setPrecio(this.precio);
 					articulo.setMenudeo(this.articulos.get(0).getPrecio());
 					articulo.setLimiteMedioMayoreo(this.articulos.get(0).getLimite());
 					articulo.setMayoreo(this.articulos.get(1).getPrecio());
