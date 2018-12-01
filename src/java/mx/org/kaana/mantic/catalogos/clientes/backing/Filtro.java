@@ -2,7 +2,9 @@ package mx.org.kaana.mantic.catalogos.clientes.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
@@ -14,9 +16,13 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
+import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.clientes.beans.RegistroCliente;
@@ -37,6 +43,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("sortOrder", "order by tc_mantic_clientes.razon_social");
       this.attrs.put("idPrincipal", 1L);
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());     
+			loadCreditos();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -44,9 +51,27 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch		
   } // init
 
+	private void loadCreditos(){
+		List<UISelectItem>creditos= null;
+		try {
+			creditos= new ArrayList<>();
+			creditos.add(new UISelectItem("1,2", "TODOS"));
+			creditos.add(new UISelectItem("1", "SI"));
+			creditos.add(new UISelectItem("2", "NO"));
+			this.attrs.put("creditos", creditos);
+			this.attrs.put("credito", UIBackingUtilities.toFirstKeySelectItem(creditos));
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // loadCreditos
+	
   @Override
   public void doLoad() {
-    List<Columna> campos = null;
+    List<Columna> campos        = null;
+		UISelectEntity cliente      = null;
+		List<UISelectEntity>clientes= null;
     try {
       campos = new ArrayList<>();
       campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));      
@@ -54,6 +79,12 @@ public class Filtro extends IBaseFilter implements Serializable {
       campos.add(new Columna("calle", EFormatoDinamicos.MAYUSCULAS));    
       campos.add(new Columna("asentamiento", EFormatoDinamicos.MAYUSCULAS));    
       campos.add(new Columna("codigoPostal", EFormatoDinamicos.MAYUSCULAS));    
+			cliente= (UISelectEntity)this.attrs.get("cliente");
+			clientes= (List<UISelectEntity>)this.attrs.get("clientes");
+			if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
+				this.attrs.put("razonSocial", clientes.get(clientes.indexOf(cliente)).toString("razonSocial"));
+			else
+				this.attrs.put("razonSocial", "");
       this.lazyModel = new FormatCustomLazy("VistaClientesDto", "row", this.attrs, campos);
       UIBackingUtilities.resetDataTable();
     } // try
@@ -110,4 +141,40 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("idCliente",((Entity)this.attrs.get("seleccionado")).getKey());
 		return "importar".concat(Constantes.REDIRECIONAR);
 	}
+	
+	public List<UISelectEntity> doCompleteCliente(String codigo) {
+ 		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+		boolean buscaPorCodigo    = false;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			if(!Cadena.isVacio(codigo)) {
+  			codigo= new String(codigo).replaceAll(Constantes.CLEAN_SQL, "").trim();
+				buscaPorCodigo= codigo.startsWith(".");
+				if(buscaPorCodigo)
+					codigo= codigo.trim().substring(1);
+				codigo= codigo.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			} // if	
+			else
+				codigo= "WXYZ";
+  		params.put("codigo", codigo);
+			if(buscaPorCodigo)
+        this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "porCodigo", params, columns, 40L));
+			else
+        this.attrs.put("clientes", UIEntity.build("TcManticClientesDto", "porNombre", params, columns, 40L));
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+		return (List<UISelectEntity>)this.attrs.get("clientes");
+	}	
 }
