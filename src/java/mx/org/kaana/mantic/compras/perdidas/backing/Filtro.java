@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
@@ -26,9 +27,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.compras.requisiciones.beans.RegistroRequisicion;
-import mx.org.kaana.mantic.compras.requisiciones.beans.Requisicion;
-import mx.org.kaana.mantic.compras.requisiciones.reglas.Transaccion;
+import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 
 @Named(value= "manticComprasPerdidasFiltro")
 @ViewScoped
@@ -94,21 +93,17 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch
-		return "/Paginas/Mantic/Compras/perdidas/accion".concat(Constantes.REDIRECIONAR);
+		return "/Paginas/Mantic/Compras/Perdidas/accion".concat(Constantes.REDIRECIONAR);
   } // doAccion  
 	
   public void doEliminar() {
-		Transaccion transaccion        = null;
-		Entity seleccionado            = null;
-		RegistroRequisicion requisicion= null;
+		Entity seleccionado= null;
 		try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");			
-			requisicion= new RegistroRequisicion(new Requisicion(seleccionado.getKey()), new ArrayList<>());
-			transaccion= new Transaccion(requisicion, this.attrs.get("justificacionEliminar").toString());
-			if(transaccion.ejecutar(EAccion.ELIMINAR))
-				JsfBase.addMessage("Eliminar", "La requisición de compra se ha eliminado correctamente.", ETipoMensaje.ERROR);
+			if(DaoFactory.getInstance().delete(TcManticFaltantesDto.class, seleccionado.getKey())> 0L)
+				JsfBase.addMessage("Eliminar", "El articulo se ha eliminado correctamente.", ETipoMensaje.ERROR);
 			else
-				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar la requisicion de compra.", ETipoMensaje.ERROR);								
+				JsfBase.addMessage("Eliminar", "Ocurrió un error al eliminar el articulo de la lista de precios.", ETipoMensaje.ERROR);								
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);

@@ -981,6 +981,14 @@
         where      
           id_articulo = {idArticulo} and id_vigente= 1
       </select>
+      <select id="igual">
+        select      
+          *
+        from      
+          tc_mantic_faltantes
+        where      
+          id_faltante = {idFaltante}
+      </select>
 			<update id="rows">
 				update 
 				  tc_mantic_faltantes 
