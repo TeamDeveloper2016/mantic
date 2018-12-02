@@ -13,7 +13,7 @@
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:idSucursal': {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:codigo'    : {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:cantidad'  : {validaciones: 'requerido|flotante|mayor({"cuanto": 1})', mascara: 'libre'}
+				'contenedorGrupos\\:cantidad'  : {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre'}
 			};						
 			
 			$(document).ready(function(){janal.readingMode('#{manticComprasPerdidasAccion.attrs.nombreAccion}');});
@@ -39,7 +39,7 @@
 								</p:selectOneMenu>
 								<p:outputLabel for="codigos" value="Código ó articulo:"/>
 								<p:autoComplete id="codigos" widgetVar="submenu" var="custom" itemLabel="#{custom.nombre}" styleClass="janal-wid-100" inputStyleClass="faltantes janal-wid-100-txt janal-key-event" itemValue="#{custom}" value="#{manticComprasPerdidasAccion.attrs.articulo}" completeMethod="#{manticComprasPerdidasAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2"  maxResults="10" alt="faltantesCantidad">
-									<p:ajax event="itemSelect" listener="#{manticComprasPerdidasAccion.doReplaceFaltante}" process="@this" update="@(.faltantes)" oncomplete="setTimeout($('#codigos_input').focus(), 2000);"/>
+									<p:ajax event="itemSelect" listener="#{manticComprasPerdidasAccion.doReplaceFaltante}" process="@this" update="@(.faltantes)" oncomplete="$('#cantidad').focus();"/>
 									<f:facet name="itemtip">
 										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
 											<f:facet name="header" class="TexAlCenter">
