@@ -10,10 +10,10 @@
     <script type="text/javascript">
       Janal.Control.fields = {
         'idEmpresa'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'codigo'           : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+				'articulo'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'fechaInicio'      : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'fechaTermino'     : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-				'articulo'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
-				'codigo'           : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
 				'idUsuario'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'}
       };
     </script>		
@@ -45,10 +45,10 @@
                   <h:outputText value="#{item.nombre}"/>
                 </p:column>   
               </p:selectOneMenu>                            							
-							<p:outputLabel for="articulo" value="Articulo:"/>
-              <p:inputText id="articulo" value="#{manticComprasPerdidasFiltro.attrs.articulo}" styleClass="janal-wid-100-txt"/>                             							
 							<p:outputLabel for="codigo" value="Codigo:"/>
               <p:inputText id="codigo" value="#{manticComprasPerdidasFiltro.attrs.codigo}" styleClass="janal-wid-100-txt"/>                             							
+							<p:outputLabel for="articulo" value="Articulo:"/>
+              <p:inputText id="articulo" value="#{manticComprasPerdidasFiltro.attrs.articulo}" styleClass="janal-wid-100-txt"/>                             							
 							<p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticComprasPerdidasFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>              
 							<p:outputLabel for="fechaTermino" value="Fecha termino:"/>
@@ -91,7 +91,7 @@
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
-						<p:column class="MarAuto Responsive janal-wid-col-15">
+						<p:column class="MarAuto Responsive janal-wid-col-38">
               <f:facet name="header">
                 <h:outputText value="No."/>
               </f:facet>
