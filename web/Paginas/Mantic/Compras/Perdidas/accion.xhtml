@@ -7,7 +7,7 @@
                 xmlns:p="http://primefaces.org/ui"
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
-	<ui:param name="titulo" value="#{manticComprasPerdidasAccion.attrs.nombreAccion} al listado de ventas perdidas" />
+	<ui:param name="titulo" value="#{manticComprasPerdidasAccion.attrs.nombreAccion} un articulo al listado de ventas perdidas" />
 	<ui:define name="librerias">
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
@@ -25,10 +25,10 @@
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
             <p:tab title="General">							
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-90">		
 								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
 								<p:selectOneMenu id="idSucursal" value="#{manticComprasPerdidasAccion.faltante.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-98" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
-									<p:ajax event="change" process="@this" update="codigosFaltantes"/>
+									<p:ajax event="change" process="@this" update="codigos"/>
 									<f:selectItems value="#{manticComprasPerdidasAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -37,15 +37,15 @@
 										<h:outputText value="#{item.nombre}"/>
 									</p:column>   
 								</p:selectOneMenu>
-								<p:outputLabel for="codigos" value="C&oacute;digo &oacute; articulo:"/>
-								<p:autoComplete id="codigos" widgetVar="submenu" var="custom" itemLabel="#{custom.nombre}" styleClass="janal-wid-100" inputStyleClass="faltantes janal-wid-90 janal-key-event" itemValue="#{custom}" value="#{manticComprasPerdidasAccion.attrs.articulo}" completeMethod="#{manticComprasPerdidasAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2"  maxResults="10" alt="faltantesCantidad">
+								<p:outputLabel for="codigos" value="Código ó articulo:"/>
+								<p:autoComplete id="codigos" widgetVar="submenu" var="custom" itemLabel="#{custom.nombre}" styleClass="janal-wid-100" inputStyleClass="faltantes janal-wid-100-txt janal-key-event" itemValue="#{custom}" value="#{manticComprasPerdidasAccion.attrs.articulo}" completeMethod="#{manticComprasPerdidasAccion.doCompleteArticulo}" converter="janal.convertidor.Entity" minQueryLength="2"  maxResults="10" alt="faltantesCantidad">
 									<p:ajax event="itemSelect" listener="#{manticComprasPerdidasAccion.doReplaceFaltante}" process="@this" update="@(.faltantes)" oncomplete="setTimeout($('#codigos_input').focus(), 2000);"/>
 									<f:facet name="itemtip">
 										<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">
 											<f:facet name="header" class="TexAlCenter">
 												<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-log-mini" width="30"/>
 											</f:facet>
-											<h:outputText value="C&oacute;digo:" />
+											<h:outputText value="Código:" />
 											<h:outputText value="#{custom.propio}" />
 											<h:outputText value="Nombre:" />
 											<h:outputText value="#{custom.nombre}" />
@@ -56,12 +56,12 @@
 										</h:panelGrid>
 									</f:facet>
 								</p:autoComplete>									
-								<p:outputLabel for="codigo" value="C&oacute;digo:"/>
-								<p:inputText id="codigo" value="#{manticComprasPerdidasAccion.faltante.codigo}" styleClass="janal-wid-90 janal-clean-input" readonly="true"/>
+								<p:outputLabel for="codigo" value="Código:"/>
+								<p:inputText id="codigo" value="#{manticComprasPerdidasAccion.faltante.codigo}" styleClass="janal-wid-100-txt faltantes" readonly="true"/>
 								<p:outputLabel for="nombre" value="Nombre:"/>
-								<p:inputText id="nombre" value="#{manticComprasPerdidasAccion.faltante.nombre}" styleClass="janal-wid-90 janal-clean-input" readonly="true"/>
+								<p:inputText id="nombre" value="#{manticComprasPerdidasAccion.faltante.nombre}" styleClass="janal-wid-100-txt faltantes" readonly="true"/>
 								<p:outputLabel for="cantidad" value="Cantidad:"/>
-       					<p:inputText id="cantidad" styleClass="janal-wid-90 janal-column-right janal-key-event" value="#{manticComprasPerdidasAccion.faltante.cantidad}" alt="agregarFaltantes"/>
+       					<p:inputText id="cantidad" styleClass="janal-wid-100-txt janal-column-right janal-key-event" value="#{manticComprasPerdidasAccion.faltante.cantidad}" alt="agregarFaltantes"/>
               </p:panelGrid>
 						</p:tab>						            						            																																																
 					</p:tabView>

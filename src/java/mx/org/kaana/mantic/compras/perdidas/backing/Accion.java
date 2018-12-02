@@ -126,6 +126,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
     } // try
     catch (Exception e) {
@@ -158,7 +159,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 			else
 				search= "WXYZ";
   		params.put("codigo", search);
-			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
+			if(buscaPorCodigo)
         this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
 			else
         this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 20L));
