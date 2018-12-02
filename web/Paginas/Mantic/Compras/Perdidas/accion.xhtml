@@ -13,7 +13,7 @@
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:idSucursal': {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:codigo'    : {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:cantidad'  : {validaciones: 'requerido|flotante', mascara: 'libre'}
+				'contenedorGrupos\\:cantidad'  : {validaciones: 'requerido|flotante|mayor({"cuanto": 1})', mascara: 'libre'}
 			};						
 			
 			$(document).ready(function(){janal.readingMode('#{manticComprasPerdidasAccion.attrs.nombreAccion}');});
