@@ -6,6 +6,8 @@
  *author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
+			
+
 (function(window) {
 	var jsKardex;
 	
@@ -219,8 +221,7 @@
  			janal.console('jsKardex.calculate: '+ $(name).attr('id')+ ' => '+ value);
 			if($kardex.different(value)) {
 				$kardex.current= value;
-			  var keep= confirm('Desea mantener los porcentajes de utilidad actuales ?');
-			  calculate(this.cursor.index, keep);
+			  calculate(this.cursor.index);
 			} // if
 			return false;
 		},
@@ -229,7 +230,8 @@
  			janal.console('jsKardex.costo: '+ name+ ' value: '+ value);
 			if($kardex.different(value)) {
 				$kardex.current= value;
-  			costo(value);
+			  var keep= confirm('Desea mantener los porcentajes de utilidad actuales ?');
+  			costo(value, keep);
 			} // if	
 			return false;
 		},
