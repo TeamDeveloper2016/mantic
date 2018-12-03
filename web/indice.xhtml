@@ -8,26 +8,26 @@
     xmlns:p="http://primefaces.org/ui"
     template="/WEB-INF/plantillas/ingreso.xhtml">
     <ui:define name="librerias">
-        <script type="text/javascript">
-            Janal.Control.errors = 2;
-            Janal.Control.fields = {
-                cuenta: {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresar'},
-                contrasenia: {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresar'},
-                recuperar: {validaciones: 'requerido', mascara: 'libre', grupo: 'recuperar'},
-                curp: {validaciones: 'requerido', mascara: 'libre', grupo: 'recuperar'},
-                nueva: {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresar'},
-                confirma: {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresar'}
-            };
-            //<![CDATA[
-            function validar() {
-              var ok = janal.partial('recuperar');
-              var captcha = captcha.validarCaptcha();
-              if (!captcha)
-                  janal.show([{summary: 'Captcha', detail: 'El orden de las letras es incorrecto.'}]);
-              return ok && captcha;
-            } // validar			
-            //]]>
-        </script>
+			<script type="text/javascript">
+				Janal.Control.errors = 2;
+				Janal.Control.fields = {
+						cuenta: {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresar'},
+						contrasenia: {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresar'},
+						recuperar: {validaciones: 'requerido', mascara: 'libre', grupo: 'recuperar'},
+						curp: {validaciones: 'requerido', mascara: 'libre', grupo: 'recuperar'},
+						nueva: {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresar'},
+						confirma: {validaciones: 'requerido', mascara: 'libre', grupo: 'ingresar'}
+				};
+				//<![CDATA[
+				function validar() {
+					var ok = janal.partial('recuperar');
+					var captcha = captcha.validarCaptcha();
+					if (!captcha)
+							janal.show([{summary: 'Captcha', detail: 'El orden de las letras es incorrecto.'}]);
+					return ok && captcha;
+				} // validar			
+				//]]>
+			</script>
 			<style>
 				input[type="text"], input[type="password"] {
 					text-align: center !important;

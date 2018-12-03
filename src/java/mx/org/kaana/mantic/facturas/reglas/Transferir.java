@@ -133,13 +133,13 @@ public class Transferir extends IBaseTnx {
 			null, // Long idBanco, 
 			new Long(calendar.get(Calendar.YEAR)), // Long ejercicio, 
 			Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true),  // Long consecutivo, 
-			JsfBase.getIdUsuario(), //  Long idUsuario, 
+			JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L, //  Long idUsuario, 
 			taxes, // Double impuestos, 
 			1L,  // Long idUsoCfdi, 
 			1L,  // Long idSinIva, 
 			detail.getSubtotal(),  // Double subTotal, 
 			(Cadena.isVacio(detail.getObservations())? "": detail.getObservations())+ " ESTA FACTURA FUE RECUPERADA DE FACTURAMA !",  // String observaciones, 
-			JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),  //  Long idEmpresa, 
+			JsfBase.getAutentifica()!= null? JsfBase.getAutentifica().getEmpresa().getIdEmpresa(): 1L,  //  Long idEmpresa, 
 			new Date(calendar.getTimeInMillis()),  // Date dia, 
 			detail.getPaymentAccountNumber() //  referencia
 		);
@@ -153,7 +153,7 @@ public class Transferir extends IBaseTnx {
 			-1L, // Long idFactura, 
 			new Date(Calendar.getInstance().getTimeInMillis()), // Date ultimoIntento, 
 			new Timestamp(calendar.getTimeInMillis()), // Timestamp timbrado, 
-			JsfBase.getIdUsuario(), // Long idUsuario, 
+			JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L, // Long idUsuario, 
 			idFicticia, // Long idFicticia, 
 			cfdi.getFolio(), // String folio, 
 			null, // Long idVenta, 
@@ -273,10 +273,10 @@ public class Transferir extends IBaseTnx {
 					client.getName(), // String razonSocial, 
 					0D, // Double saldo, 
 					rfc, // String rfc, 
-					JsfBase.getIdUsuario(), // Long idUsuario, 
+					JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L, // Long idUsuario, 
 					1L, // Long idUsoCfdi, 
 					client.getCfdiUse(), // String observaciones, 
-					JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), //  Long idEmpresa, 
+					JsfBase.getAutentifica()!= null? JsfBase.getAutentifica().getEmpresa().getIdEmpresa(): 1L, //  Long idEmpresa, 
 					1L, // Long idTipoVenta, 
 					client.getId() // String idFacturama
 				);
@@ -284,7 +284,7 @@ public class Transferir extends IBaseTnx {
 				if(!Cadena.isVacio(client.getEmail())) {
 					TrManticClienteTipoContactoDto contacto= new TrManticClienteTipoContactoDto(
 						cliente.getIdCliente(), // Long idCliente, 
-						JsfBase.getIdUsuario(), //Long idUsuario, 
+						JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L, //Long idUsuario, 
 						client.getEmail(), // String valor, 
 						"", // String observaciones, 
 						-1L, // Long idClienteTipoContacto, 
@@ -296,7 +296,7 @@ public class Transferir extends IBaseTnx {
 				if(!Cadena.isVacio(client.getEmailOp1())) {
 					TrManticClienteTipoContactoDto contacto= new TrManticClienteTipoContactoDto(
 						cliente.getIdCliente(), // Long idCliente, 
-						JsfBase.getIdUsuario(), //Long idUsuario, 
+						JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L, //Long idUsuario, 
 						client.getEmailOp1(), // String valor, 
 						"", // String observaciones, 
 						-1L, // Long idClienteTipoContacto, 
@@ -308,7 +308,7 @@ public class Transferir extends IBaseTnx {
 				if(!Cadena.isVacio(client.getEmailOp2())) {
 					TrManticClienteTipoContactoDto contacto= new TrManticClienteTipoContactoDto(
 						cliente.getIdCliente(), // Long idCliente, 
-						JsfBase.getIdUsuario(), //Long idUsuario, 
+						JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L, //Long idUsuario, 
 						client.getEmailOp2(), // String valor, 
 						"", // String observaciones, 
 						-1L, // Long idClienteTipoContacto, 
@@ -333,14 +333,14 @@ public class Transferir extends IBaseTnx {
 						"", // String ycalle, 
 						null, // String longitud, 
 						client.getAddress().getExteriorNumber(), // String numeroExterior, 
-						JsfBase.getIdUsuario(), // Long idUsuario, 
+						JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L, // Long idUsuario, 
 						"" // String observaciones
 					);
 					DaoFactory.getInstance().insert(sesion, domicilio);
 					TrManticClienteDomicilioDto particular= new TrManticClienteDomicilioDto(
 					  cliente.getIdCliente(), // Long idCliente, 
 					  -1L, // Long idClienteDomicilio, 
-						JsfBase.getIdUsuario(), // Long idUsuario, 
+						JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L, // Long idUsuario, 
 						1L, // Long idTipoDomicilio, 
 						domicilio.getIdDomicilio(), // Long idDomicilio, 
 						1L, // Long idPrincipal, 
@@ -350,7 +350,7 @@ public class Transferir extends IBaseTnx {
 					particular= new TrManticClienteDomicilioDto(
 					  cliente.getIdCliente(), // Long idCliente, 
 					  -1L, // Long idClienteDomicilio, 
-						JsfBase.getIdUsuario(), // Long idUsuario, 
+						JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L, // Long idUsuario, 
 						2L, // Long idTipoDomicilio, 
 						domicilio.getIdDomicilio(), // Long idDomicilio, 
 						1L, // Long idPrincipal, 
@@ -367,11 +367,11 @@ public class Transferir extends IBaseTnx {
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toSiguiente
+	} // toCliente
 
 	private boolean toDownload(Session sesion) throws Exception {
 		List<CfdiSearchResult> cfdis= CFDIFactory.getInstance().getCfdis();
- 	  Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
+ 	  Monitoreo monitoreo= JsfBase.getAutentifica()!= null? JsfBase.getAutentifica().getMonitoreo(): new Monitoreo();
     monitoreo.comenzar(Long.valueOf(cfdis.size()));
 		int x= 0;
 		for (CfdiSearchResult cfdi: cfdis) {
@@ -380,8 +380,6 @@ public class Transferir extends IBaseTnx {
 			  sesion.flush();
       monitoreo.incrementar();
 			x++;
-//			if(x> 1)
-//				break;
 		} // for
 		this.count= cfdis.size();
 		return true;
@@ -415,7 +413,7 @@ public class Transferir extends IBaseTnx {
 			Methods.clean(params);
 		} // finally
 		return regresar;
-	} // toSiguiente
+	} // exists
 
   private String toCadenaOriginal(String xml) throws Exception {
 		StreamSource source       = new StreamSource(new File(xml));
@@ -482,7 +480,7 @@ public class Transferir extends IBaseTnx {
 					null, 
 					-1L,
 					0L,
-					JsfBase.getIdUsuario(),
+					JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L,
 					1L, // idTipoArchivo XML
 					1L, // idPrincipal
 					detail.getCfdiType()+ "|"+ detail.getPaymentMethod()+ "|"+ detail.getSerie(), // observaciones, 
@@ -500,7 +498,7 @@ public class Transferir extends IBaseTnx {
 					null, 
 					-1L,
 					0L,
-					JsfBase.getIdUsuario(),
+					JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L,
 					2L, // idTipoArchivo PDF
 					1L, // idPrincipal
 					detail.getCfdiType()+ "|"+ detail.getPaymentMethod()+ "|"+ detail.getPaymentConditions(), // observaciones, 
@@ -522,7 +520,7 @@ public class Transferir extends IBaseTnx {
 		try {
 			params=new HashMap<>();
 			params.put("ejercicio", Fecha.getAnioActual());
-			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put("idEmpresa", JsfBase.getAutentifica()!= null? JsfBase.getAutentifica().getEmpresa().getIdEmpresa(): 1L);
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDto", "siguiente", params, "siguiente");
 			if(next!= null && next.getData()!= null)
 				regresar= next.toLong();
