@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://java.sun.com/jsp/jstl/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:pe="http://primefaces.org/ui/extensions"
+                template="/WEB-INF/plantillas/accion.xhtml">
+	<ui:param name="titulo" value="#{manticCatalogosBancosAccion.attrs.nombreAccion} al catálogo de bancos" />
+	<ui:define name="librerias">
+		<script type="text/javascript">
+			Janal.Control.fields = {				 				
+				'nombre'     : {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'razonSocial': {validaciones: 'requerido', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+			};						
+			
+			$(document).ready(function(){janal.readingMode('#{manticCatalogosBancosAccion.attrs.nombreAccion}');});
+		</script>   
+	</ui:define>
+	<ui:define name="contenido">
+		<div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">					
+						<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
+							<p:outputLabel for="nombre" value="Nombre:"/>
+							<p:inputText id="nombre" styleClass="janal-wid-100-txt" value="#{manticCatalogosBancosAccion.attrs.banco.nombre}"/>                    
+							<p:outputLabel for="razonSocial" value="Razón social:"/>
+							<p:inputText id="razonSocial" styleClass="janal-wid-100-txt" value="#{manticCatalogosBancosAccion.attrs.banco.razonSocial}"/>                    
+						</p:panelGrid>											
+				</div>
+			</div>
+		</div>		
+	</ui:define>    
+	<ui:define name="acciones">
+		<div class="lg-pantalla">
+			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticCatalogosBancosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticCatalogosBancosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+		<div class="xs-pantalla">
+			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosBancosAccion.doAceptar}" onstart="return janal.execute()" oncomplete="janal.desbloquear()"/>
+			<p:commandButton id="cancelarIcon" value="Cancelar" icon="fa fa-close" process="@this" action="#{manticCatalogosBancosAccion.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
+		</div>		
+	</ui:define>
+</ui:composition>
