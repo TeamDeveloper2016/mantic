@@ -914,7 +914,7 @@
 				</p:inputText>
 			</p:panelGrid>							
 			<p:dataTable lazy="true" id="tablaTicketsAbiertos" widgetVar="widgetTablaTicketsAbiertos" var="row" styleClass="janal-row-tickets-abiertos janal-wid-100" value="#{manticVentasCajaAccion.lazyCuentasAbiertas}" selection="#{manticVentasCajaAccion.attrs.selectedCuentaAbierta}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="270" style="margin-bottom:0">
-				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doAsignaTicketAbierto}" process="@this tablaTicketsAbiertos" update="contenido clientes cliente noTicket @(.filas) @(.recalculo) @(.informacion) deudor" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();" />	
+				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doAsignaTicketAbierto}" process="@this tablaTicketsAbiertos" update="@(.filas) @(.recalculo) @(.informacion)" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();" />	
 				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 					<f:facet name="header">
 						<h:outputText value="Consecutivo"/>
@@ -945,7 +945,7 @@
 			</p:dataTable>			
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton id="aceptarTicketAbierto" icon="fa fa-check" process="@this tablaTicketsAbiertos" value="Aceptar" onstart="PF('dlgOpenTickets').hide();" actionListener="#{manticVentasCajaAccion.doAsignaTicketAbierto}" update="contenido clientes cliente noTicket @(.filas) @(.recalculo) @(.informacion) deudor" oncomplete="janal.desbloquear();" style="display: none"/>
+				<p:commandButton id="aceptarTicketAbierto" icon="fa fa-check" process="@this tablaTicketsAbiertos" value="Aceptar" onstart="PF('dlgOpenTickets').hide();" actionListener="#{manticVentasCajaAccion.doAsignaTicketAbierto}" update="@(.filas) @(.recalculo) @(.informacion)" oncomplete="janal.desbloquear();" style="display: none"/>
 				<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();" rendered="false"/>
 			</div>
 		</p:dialog>	
