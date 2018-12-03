@@ -19,6 +19,10 @@ public class Faltante extends TcManticFaltantesDto implements Serializable {
   private String nombre;
 	private Entity ikEmpresa;
 
+	public Faltante() {
+		super(-1L);
+	}
+	
 	public Faltante(Long idUsuario, Long idFaltante, String observaciones, Double cantidad, Long idVigente, Long idArticulo, Long idEmpresa) {
 		super(idUsuario, idFaltante, observaciones, cantidad, idVigente, idArticulo, idEmpresa);
 		this.ikEmpresa= new Entity(idEmpresa);

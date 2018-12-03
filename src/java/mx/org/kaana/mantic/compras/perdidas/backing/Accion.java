@@ -54,8 +54,8 @@ public class Accion extends IBaseAttribute implements Serializable {
 			this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idFaltante", JsfBase.getFlashAttribute("idFaltante")== null? -1L: JsfBase.getFlashAttribute("idFaltante"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));
+			this.doLoad();
 			this.toLoadCatalog();	
-			doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -74,7 +74,7 @@ public class Accion extends IBaseAttribute implements Serializable {
           break;
         case MODIFICAR:					
         case CONSULTAR:					
-          this.faltante= (Faltante)DaoFactory.getInstance().toEntity(Faltante.class, "TcManticFaltantesDto", "existe", Variables.toMap("idFaltante~"+ (Long)this.attrs.get("idFaltante")));
+          this.faltante= (Faltante)DaoFactory.getInstance().toEntity(Faltante.class, "VistaFaltantesDto", "igual", Variables.toMap("idFaltante~"+ (Long)this.attrs.get("idFaltante")));
           break;
       } // switch
     } // try
@@ -128,6 +128,9 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+			List<UISelectEntity> empresas= (List<UISelectEntity>)this.attrs.get("empresas");
+			if(empresas!= null && this.faltante!= null && this.faltante.getIdEmpresa()> 0) 
+				this.faltante.setIkEmpresa(new UISelectEntity(new Entity(this.faltante.getIdEmpresa())));
     } // try
     catch (Exception e) {
       throw e;
