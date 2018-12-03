@@ -111,10 +111,10 @@
     <servlet-name>Faces Servlet</servlet-name>
   </filter-mapping>  
 
-  <servlet-mapping>
+  <!-- servlet-mapping>
     <servlet-name>default</servlet-name>
     <url-pattern>/resources/*</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping-->
   
   <!-- Servlets -->
   <servlet>
