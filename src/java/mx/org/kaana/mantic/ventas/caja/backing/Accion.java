@@ -923,11 +923,12 @@ public class Accion extends IBaseVenta implements Serializable {
 			motor= new MotorBusqueda(-1L);
 			cliente= motor.toClienteDefault();
 			ticketsAbiertos= (List<Entity>) this.attrs.get("ticketsAbiertos");
-			ticketAbierto= (Entity) this.attrs.get("ticketAbierto");
-			if(ticketAbierto!= null)
-				this.attrs.put("disabledFacturar", cliente.getKey().equals(ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto)).toLong("idCliente")));
-			else
-				this.attrs.put("disabledFacturar", false);
+			this.attrs.put("disabledFacturar", false);
+			if(!ticketsAbiertos.isEmpty()){
+				ticketAbierto= (Entity) this.attrs.get("ticketAbierto");
+				if(ticketAbierto!= null)
+					this.attrs.put("disabledFacturar", cliente.getKey().equals(ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto)).toLong("idCliente")));
+			} // if			
 		} // try
 		catch (Exception e) {			
 			throw e;
