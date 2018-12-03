@@ -101,7 +101,19 @@
                 <h:outputText value="Credito"/>
               </f:facet>
               <h:outputText value="#{filtro['credito']}"/>
-            </p:column>														
+            </p:column>
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.saldo}">
+							<f:facet name="header">
+								<h:outputText value="Saldo"/>
+							</f:facet>
+							<h:outputText value="#{filtro['saldo']}"/>
+						</p:column>
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.dias}">
+							<f:facet name="header">
+								<h:outputText value="Días" title="Días trascurridos desde la compra"/>
+							</f:facet>
+							<h:outputText value="#{filtro['dias']}"/>
+						</p:column>
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCatalogosClientesFiltro.lazyModel==null?0:manticCatalogosClientesFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
