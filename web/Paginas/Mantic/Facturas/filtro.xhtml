@@ -243,11 +243,11 @@
 				<h:panelGrid id="panelCorreos" columns="1" styleClass="janal-wid-100" columnClasses="janal-wid-100">					
 					<p:dataTable id="tablaCorreosReenviar" var="row" value="#{manticFacturasFiltro.correos}" selection="#{manticFacturasFiltro.selectedCorreos}" rowKey="#{row.idCorreo}" style="margin-bottom:0">
 						<p:column selectionMode="multiple" style="width:38px;text-align:center"/>
-						<p:column headerText="Correos disponibles del cliente" styleClass="descripcion tablaCorreos_selection">
+						<p:column headerText="Correos disponibles del cliente" styleClass="descripcion tablaCorreosReenviar_selection">
 							<p:inputText id="descripcion" value="#{row['descripcion']}" styleClass="janal-wid-100-txt"/>
 						</p:column>
 						<p:column style="width:45px;text-align: center">
-							<p:commandButton update="tablaCorreos" icon="fa fa-check" title="Agregar" action="#{manticFacturasFiltro.doAgregarCorreo}">
+							<p:commandButton update="tablaCorreosReenviar" icon="fa fa-check" title="Agregar" action="#{manticFacturasFiltro.doAgregarCorreo}">
 								<f:setPropertyActionListener value="#{row}" target="#{manticFacturasFiltro.correo}" />
 							</p:commandButton>
 						</p:column>
