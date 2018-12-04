@@ -9,21 +9,23 @@ import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
-import static mx.org.kaana.kajool.enums.EAccion.AGREGAR;
-import static mx.org.kaana.kajool.enums.EAccion.ELIMINAR;
-import static mx.org.kaana.kajool.enums.EAccion.MODIFICAR;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.proveedores.beans.ProveedorTipoContacto;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesDetallesDto;
+import mx.org.kaana.mantic.db.dto.TrManticProveedorTipoContactoDto;
+import mx.org.kaana.mantic.enums.ETiposContactos;
+import mx.org.kaana.mantic.facturas.beans.Correo;
 import org.apache.log4j.Logger;
 
 /**
@@ -44,7 +46,13 @@ public class Transaccion extends Inventarios implements Serializable {
 	private String messageError;
 	private TcManticOrdenesBitacoraDto bitacora;
 	private Long idFaltante;
+	private Correo correo;	
 
+	public Transaccion(Correo correo, Long idProveedor) {
+		super(-1L, idProveedor);
+		this.correo     = correo;
+	}	// Transaccion
+	
 	public Transaccion(TcManticOrdenesComprasDto orden, TcManticOrdenesBitacoraDto bitacora) {
 		this(orden);
 		this.bitacora= bitacora;
@@ -123,6 +131,9 @@ public class Transaccion extends Inventarios implements Serializable {
 				case DEPURAR:
 					regresar= DaoFactory.getInstance().delete(sesion, TcManticFaltantesDto.class, this.idFaltante)>= 1L;
 					break;
+				case COMPLEMENTAR: 
+					regresar= agregarContacto(sesion);
+					break;
 			} // switch
 			if(!regresar)
         throw new Exception("");
@@ -181,4 +192,51 @@ public class Transaccion extends Inventarios implements Serializable {
 		return regresar;
 	}
 	
+	private boolean agregarContacto(Session sesion) throws Exception{
+		boolean regresar                         = true;
+		List<ProveedorTipoContacto> correos      = null;
+		TrManticProveedorTipoContactoDto contacto= null;
+		int count                                = 0;
+		Long records                             = 1L;
+		try {
+			correos= toProveedoresTipoContacto();
+			if(!correos.isEmpty()){
+				for(ProveedorTipoContacto tipoContacto: correos){
+					if(tipoContacto.getValor().equals(this.correo.getDescripcion()))
+						count++;
+				} // for				
+				records= correos.size() + 1L;
+			} // if
+			if(count== 0){
+				contacto= new TrManticProveedorTipoContactoDto();
+				contacto.setIdProveedor(this.idProveedor);
+				contacto.setIdTipoContacto(ETiposContactos.CORREO.getKey());
+				contacto.setIdUsuario(JsfBase.getIdUsuario());
+				contacto.setValor(this.correo.getDescripcion());
+				contacto.setOrden(records);
+				regresar= DaoFactory.getInstance().insert(sesion, contacto)>= 1L;
+			} // else
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // agregarContacto
+	
+	public List<ProveedorTipoContacto> toProveedoresTipoContacto() throws Exception {
+		List<ProveedorTipoContacto> regresar= null;
+		Map<String, Object>params           = null;
+		try {
+			params= new HashMap<>();
+			params.put(Constantes.SQL_CONDICION, "id_proveedor=" + this.idProveedor + " and id_tipo_contacto=" + ETiposContactos.CORREO.getKey());
+			regresar= DaoFactory.getInstance().toEntitySet(ProveedorTipoContacto.class, "TrManticProveedorTipoContactoDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+		} // try
+		catch (Exception e) {		
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toClientesTipoContacto
 } 

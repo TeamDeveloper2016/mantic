@@ -40,7 +40,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 	private static final long serialVersionUID=-3572599320057390307L;
 	
 	private Long idAlmacen;
-	private Long idProveedor;
+	protected Long idProveedor;
 
 	public Inventarios(Long idAlmacen, Long idProveedor) {
 		this.idAlmacen  = idAlmacen;
