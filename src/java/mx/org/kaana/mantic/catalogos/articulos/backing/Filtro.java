@@ -212,7 +212,7 @@ public class Filtro extends Comun implements Serializable {
 					articulo= articulos.get(articulos.indexOf(articulo));
 			  else
 			    articulo= articulos.get(0);
-			this.attrs.put("seleccionado", new Entity(articulo.getKey()));
+			this.attrs.put("seleccionado", new Entity(articulo.toLong("idArticulo")));
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
