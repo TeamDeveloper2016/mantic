@@ -145,10 +145,10 @@
 							<f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{manticCatalogosArticulosFiltro.attrs.seleccionado}" />
 						</p:menuitem>	
 						<p:separator/>
-						<p:menuitem id="consultar" action="#{manticCatalogosArticulosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
-						<p:separator/>
 						<p:menuitem id="modificar" action="#{manticCatalogosArticulosFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" value="Modificar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
+						<p:separator/>
+						<p:menuitem id="consultar" action="#{manticCatalogosArticulosFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator/>
 						<p:menuitem id="clonar" action="#{manticCatalogosArticulosFiltro.doAccion('COPIAR')}" icon="fa fa-copy" ajax="false" value="Clonar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 					</p:contextMenu>					
