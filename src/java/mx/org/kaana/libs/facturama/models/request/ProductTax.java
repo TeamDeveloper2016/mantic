@@ -61,4 +61,9 @@ public class ProductTax {
 		this.Total = Total;
 	}
 
+	@Override
+	public String toString() {
+		return "ProductTax{"+"Name="+Name+", Rate="+Rate+", IsRetention="+IsRetention+", IsFederalTax="+IsFederalTax+", IsQuota="+IsQuota+", Total="+Total+'}';
+	}
+
 }
