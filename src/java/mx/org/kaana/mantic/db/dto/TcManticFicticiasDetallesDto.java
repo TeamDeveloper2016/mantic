@@ -74,17 +74,19 @@ public class TcManticFicticiasDetallesDto implements IBaseDto, Serializable {
   private Double cantidad;
   @Column (name="id_articulo")
   private Long idArticulo;
+  @Column (name="unitario_sin_iva")
+  private Double unitarioSinIva;
 
   public TcManticFicticiasDetallesDto() {
     this(new Long(-1L));
   }
 
   public TcManticFicticiasDetallesDto(Long key) {
-    this(null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null);
+    this(null, null, null, null, null, null, null, null, null, null, null, new Long(-1L), null, null, null, null, null, null, 0D);
     setKey(key);
   }
 
-  public TcManticFicticiasDetallesDto(Double descuentos, String codigo, String unidadMedida, Double costo, Long idFicticia, String descuento, String sat, String extras, Double utilidad, String nombre, Double importe, Long idFicticiaDetalle, Double precio, Double iva, Double impuestos, Double subTotal, Double cantidad, Long idArticulo) {
+  public TcManticFicticiasDetallesDto(Double descuentos, String codigo, String unidadMedida, Double costo, Long idFicticia, String descuento, String sat, String extras, Double utilidad, String nombre, Double importe, Long idFicticiaDetalle, Double precio, Double iva, Double impuestos, Double subTotal, Double cantidad, Long idArticulo, Double unitarioSinIva) {
     setDescuentos(descuentos);
     setCodigo(codigo);
     setUnidadMedida(unidadMedida);
@@ -104,6 +106,7 @@ public class TcManticFicticiasDetallesDto implements IBaseDto, Serializable {
     setSubTotal(subTotal);
     setCantidad(cantidad);
     setIdArticulo(idArticulo);
+		this.unitarioSinIva= unitarioSinIva;
   }
 	
   public void setDescuentos(Double descuentos) {
@@ -258,6 +261,14 @@ public class TcManticFicticiasDetallesDto implements IBaseDto, Serializable {
     return idArticulo;
   }
 
+	public Double getUnitarioSinIva() {
+		return unitarioSinIva;
+	}
+
+	public void setUnitarioSinIva(Double unitarioSinIva) {
+		this.unitarioSinIva=unitarioSinIva;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -310,6 +321,8 @@ public class TcManticFicticiasDetallesDto implements IBaseDto, Serializable {
 		regresar.append(getCantidad());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdArticulo());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getUnitarioSinIva());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -336,13 +349,14 @@ public class TcManticFicticiasDetallesDto implements IBaseDto, Serializable {
 		regresar.put("subTotal", getSubTotal());
 		regresar.put("cantidad", getCantidad());
 		regresar.put("idArticulo", getIdArticulo());
+		regresar.put("unitarioSinIva", getUnitarioSinIva());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescuentos(), getCodigo(), getUnidadMedida(), getCosto(), getIdFicticia(), getDescuento(), getSat(), getExtras(), getUtilidad(), getNombre(), getImporte(), getIdFicticiaDetalle(), getRegistro(), getPrecio(), getIva(), getImpuestos(), getSubTotal(), getCantidad(), getIdArticulo()
+    getDescuentos(), getCodigo(), getUnidadMedida(), getCosto(), getIdFicticia(), getDescuento(), getSat(), getExtras(), getUtilidad(), getNombre(), getImporte(), getIdFicticiaDetalle(), getRegistro(), getPrecio(), getIva(), getImpuestos(), getSubTotal(), getCantidad(), getIdArticulo(), getUnitarioSinIva()
     };
     return regresar;
   }

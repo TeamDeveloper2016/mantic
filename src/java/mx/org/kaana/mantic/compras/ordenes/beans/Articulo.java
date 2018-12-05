@@ -396,6 +396,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 	
 	public TcManticVentasDetallesDto toVentaDetalle() {
+		double unitario= Numero.toRedondear(this.getCosto()- (this.getCosto()- (this.getCosto()/ (1+(this.getIva()/ 100)))));
 		return new TcManticVentasDetallesDto(
 			this.getDescuentos(),
 			Cadena.isVacio(this.getCodigo())? this.getPropio(): this.getCodigo(), 
@@ -414,7 +415,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getIdArticulo(),
 			-1L, /*idVenta, */
 			this.getPrecio(),
-			this.getUtilidad()
+			this.getUtilidad(),
+			this.getIva()> 0? unitario: 0D
 		);
 	}
 	
@@ -438,6 +440,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 	
 	public TcManticFicticiasDetallesDto toFicticiaDetalle() {
+		double unitario= Numero.toRedondear(this.getCosto()- (this.getCosto()- (this.getCosto()/ (1+(this.getIva()/ 100)))));
 		return new TcManticFicticiasDetallesDto(
 			this.getDescuentos(),
 			Cadena.isVacio(this.getCodigo())? this.getPropio(): this.getCodigo(), 
@@ -456,7 +459,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 			this.getImpuestos(), 
 			this.getSubTotal(), 
 			this.getCantidad(), 
-			this.getIdArticulo()			
+			this.getIdArticulo(),
+      this.getIva()> 0? unitario: 0D
 		);
 	}
 	
