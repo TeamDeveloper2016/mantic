@@ -449,7 +449,8 @@ public class Transferir extends IBaseTnx {
 				impuesto, // Double impuestos, 
 				item.getTotal(), // Double subTotal, 
 				item.getQuantity(), // Double cantidad, 
-				new Long(count) // Long idArticulo
+				new Long(count), // Long idArticulo,
+				item.getUnitValue()
 			);
 			DaoFactory.getInstance().insert(sesion, detalle);
 			count++;
