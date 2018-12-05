@@ -175,8 +175,8 @@ public class TransaccionFactura extends IBaseTnx{
 								else
 									registrarBitacora(sesion, recordCliente.getId(), id);								
 							} // if
-							else
-								CFDIFactory.getInstance().updateClient(recordCliente);
+							//else
+								//CFDIFactory.getInstance().updateClient(recordCliente);
 						} // if
 						else
 							LOG.info("El cliente con rfc: " + recordCliente.getRfc() + " no cuenta con correo por lo que no fue publicado en facturama.");
@@ -309,8 +309,10 @@ public class TransaccionFactura extends IBaseTnx{
 							else
 								registrarBitacora(sesion, recordArticulo.getId(), id, false);								
 						} // if
-						else
+						else{
 							CFDIFactory.getInstance().updateProduct(recordArticulo);						
+							actualizarProducto(sesion, recordArticulo.getId(), id);
+						} // else
 					} // for
 				} // if
 			} // if
