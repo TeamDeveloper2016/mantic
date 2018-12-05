@@ -53,6 +53,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private double diferencia;
 	private double real;
 	private double calculado;
+	private boolean libre;
 
 	public Articulo() {
 		this(-1L);
@@ -84,6 +85,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.diferencia  = 0D;
 		this.real        = costo;
 		this.calculado   = costo;
+		this.libre       = false;
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -209,6 +211,14 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	
 	public double getTipoDeCambio() {
 		return tipoDeCambio;
+	}
+
+	public boolean isLibre() {
+		return libre;
+	}
+
+	public void setLibre(boolean libre) {
+		this.libre=libre;
 	}
 	
 	public String getCostoMayorMenor() {
@@ -396,7 +406,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 	
 	public TcManticVentasDetallesDto toVentaDetalle() {
-		double unitario= Numero.toRedondear(this.getCosto()- (this.getCosto()- (this.getCosto()/ (1+(this.getIva()/ 100)))));
+		//double unitario= Numero.toRedondearSat(this.getCosto()- (this.getCosto()- (this.getCosto()/ (1+(this.getIva()/ 100)))));
+		double unitario= Numero.toRedondearSat(this.getSubTotal()/ this.getCantidad());
 		return new TcManticVentasDetallesDto(
 			this.getDescuentos(),
 			Cadena.isVacio(this.getCodigo())? this.getPropio(): this.getCodigo(), 
@@ -440,7 +451,8 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	}
 	
 	public TcManticFicticiasDetallesDto toFicticiaDetalle() {
-		double unitario= Numero.toRedondear(this.getCosto()- (this.getCosto()- (this.getCosto()/ (1+(this.getIva()/ 100)))));
+		//double unitario= Numero.toRedondearSat(this.getCosto()- (this.getCosto()- (this.getCosto()/ (1+(this.getIva()/ 100)))));
+		double unitario= Numero.toRedondearSat(this.getSubTotal()/ this.getCantidad());
 		return new TcManticFicticiasDetallesDto(
 			this.getDescuentos(),
 			Cadena.isVacio(this.getCodigo())? this.getPropio(): this.getCodigo(), 

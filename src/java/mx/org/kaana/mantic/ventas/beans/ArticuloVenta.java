@@ -40,37 +40,37 @@ public class ArticuloVenta extends Articulo {
 		double porcentajeIva = 1+ (this.getIva()/ 100); 		
 		double costoMoneda   = this.getCosto()* getTipoDeCambio();
 		double costoReal     = this.getCantidad()* costoMoneda;
-		this.getImportes().setImporte(Numero.toRedondear(costoReal));
+		this.getImportes().setImporte(Numero.toRedondearSat(costoReal));
 		
 		Descuentos descuentos= new Descuentos(this.getImportes().getImporte(), this.getDescuento().concat(",").concat(this.getExtras()));
 		double temporal= descuentos.toImporte();
-		this.getImportes().setSubTotal(Numero.toRedondear(temporal<= 0? this.getImportes().getImporte(): temporal));
+		this.getImportes().setSubTotal(Numero.toRedondearSat(temporal<= 0? this.getImportes().getImporte(): temporal));
 	  
 		// la utilidad es calculada tomando como base el costo menos los descuento y a eso quitarle el precio de lista
 		double utilidad      = this.getImportes().getSubTotal()- (this.getPrecio()*this.getCantidad());
 		
 		temporal= descuentos.toImporte(this.getDescuento());
-		this.getImportes().setDescuento(Numero.toRedondear(temporal> 0? this.getImportes().getImporte()- temporal: 0D));
+		this.getImportes().setDescuento(Numero.toRedondearSat(temporal> 0? this.getImportes().getImporte()- temporal: 0D));
 		
 		temporal= descuentos.toImporte(this.getExtras());
-		this.getImportes().setExtra(Numero.toRedondear(temporal> 0? (this.getImportes().getImporte()- this.getImportes().getSubTotal())- this.getImportes().getDescuento(): 0D));
+		this.getImportes().setExtra(Numero.toRedondearSat(temporal> 0? (this.getImportes().getImporte()- this.getImportes().getSubTotal())- this.getImportes().getDescuento(): 0D));
 
 		if(isSinIva()) {
-	  	this.getImportes().setIva(Numero.toRedondear(this.getImportes().getSubTotal()- (this.getImportes().getSubTotal()/porcentajeIva)));
-	  	this.getImportes().setSubTotal(Numero.toRedondear(this.getImportes().getSubTotal()- this.getImportes().getIva()));
+	  	this.getImportes().setIva(Numero.toRedondearSat(this.getImportes().getSubTotal()- (this.getImportes().getSubTotal()/porcentajeIva)));
+	  	this.getImportes().setSubTotal(Numero.toRedondearSat(this.getImportes().getSubTotal()- this.getImportes().getIva()));
 		} // if	
 		else {
-	  	this.getImportes().setIva(Numero.toRedondear((this.getImportes().getSubTotal()* porcentajeIva)- this.getImportes().getSubTotal()));
+	  	this.getImportes().setIva(Numero.toRedondearSat((this.getImportes().getSubTotal()* porcentajeIva)- this.getImportes().getSubTotal()));
 		} // else
-		this.getImportes().setTotal(Numero.toRedondear(this.getImportes().getSubTotal() + this.getImportes().getIva()));
+		this.getImportes().setTotal(Numero.toRedondearSat(this.getImportes().getSubTotal() + this.getImportes().getIva()));
 		this.setSubTotal(this.getImportes().getSubTotal());
 		this.setImpuestos(this.getImportes().getIva());
 		this.setDescuentos(this.getImportes().getDescuento());		
 		this.setDescuentoDescripcion(!Cadena.isVacio(this.getDescuento()) && !this.getDescuento().equals("0") ? this.getDescuento().concat("% [ $").concat(String.valueOf(this.getImportes().getDescuento())).concat(" ] ") : "0");
 		this.setExcedentes(this.getImportes().getExtra());
-		this.setImporte(Numero.toRedondear(this.getImportes().getTotal()));	
+		this.setImporte(Numero.toRedondearSat(this.getImportes().getTotal()));	
 		if(asignar)
-			this.setTotal(Numero.toRedondear(this.getImportes().getTotal()));
+			this.setTotal(Numero.toRedondearSat(this.getImportes().getTotal()));
 		this.setUtilidad(utilidad);
 		this.toDiferencia();
 	}
@@ -78,20 +78,25 @@ public class ArticuloVenta extends Articulo {
 	private void toCalculateCostoPorCantidad() {
 		TcManticArticulosDto validate= null;
 		try {
-			validate= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.getIdArticulo());
-			if(validate!= null && (this.getCosto().equals(validate.getMenudeo()) || this.getCosto().equals(validate.getMedioMayoreo()) || this.getCosto().equals(validate.getMayoreo()))) {
-				if(this.getDescuentos()> 0D)
-					this.setCosto(validate.getMenudeo());
-				else{
-					if(this.getCantidad() >= validate.getLimiteMedioMayoreo()) {
-						if(this.getCantidad()>= validate.getLimiteMedioMayoreo() && this.getCantidad() < validate.getLimiteMayoreo())
-							this.setCosto(validate.getMedioMayoreo());
-						else if (this.getCantidad()>= validate.getLimiteMayoreo())
-							this.setCosto(validate.getMayoreo());
-						else
-							this.setCosto(validate.getMenudeo());
-					} // if
-				} // else						
+			if(!this.isLibre()) {
+			  validate= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.getIdArticulo());
+				if(validate!= null) {
+					//if((this.getCosto().equals(validate.getMenudeo()) || this.getCosto().equals(validate.getMedioMayoreo()) || this.getCosto().equals(validate.getMayoreo())))  {
+					if(this.getDescuentos()> 0D)
+						this.setCosto(validate.getMenudeo());
+					else{
+						if(this.getCantidad() >= validate.getLimiteMedioMayoreo()) {
+							if(this.getCantidad()>= validate.getLimiteMedioMayoreo() && this.getCantidad() < validate.getLimiteMayoreo())
+								this.setCosto(validate.getMedioMayoreo());
+							else 
+								if (this.getCantidad()>= validate.getLimiteMayoreo())
+									this.setCosto(validate.getMayoreo());
+								else
+									this.setCosto(validate.getMenudeo());
+						} // if
+					} // else						
+					// } // if
+				} // if	
 			} // if
 		} // try
 		catch (Exception e) {			

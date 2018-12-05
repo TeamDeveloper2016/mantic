@@ -219,8 +219,8 @@ public class CFDIFactory implements Serializable {
 				articulo.setUnitCode(record.getCodigo());
 				articulo.setUnitPrice(record.getPrecio());
 				articulo.setQuantity(record.getCantidad());
-				articulo.setSubtotal(Numero.getDouble(Numero.formatear(Numero.NUMERO_CON_DECIMALES, (record.getCantidad() * record.getPrecio()))));
-				articulo.setTotal(Numero.getDouble(Numero.formatear(Numero.NUMERO_CON_DECIMALES,(articulo.getSubtotal() + (articulo.getSubtotal() * (record.getIva()>1 ? record.getIva()/100 : record.getIva()))))));				
+				articulo.setSubtotal(record.getSubtotal());
+				articulo.setTotal(record.getTotal());				
 				articulo.setTaxes(toTaxArticulo(record));
 				regresar.add(articulo);
 			} // for
@@ -237,10 +237,10 @@ public class CFDIFactory implements Serializable {
 		try {
 			regresar= new ArrayList<>();
 			taxArticulo= new Tax();
-			taxArticulo.setTotal(Numero.getDouble(Numero.formatear(Numero.NUMERO_CON_DECIMALES,(articulo.getCantidad() * articulo.getPrecio()) * (articulo.getIva()>1 ? articulo.getIva()/100 : articulo.getIva()))));
+			taxArticulo.setTotal(articulo.getImpuestos());
 			taxArticulo.setName(DESCRIPCION_IVA);
-			taxArticulo.setBase(Numero.getDouble(Numero.formatear(Numero.NUMERO_CON_DECIMALES,(articulo.getCantidad() * articulo.getPrecio()))));
-			taxArticulo.setRate(articulo.getIva()>1 ? articulo.getIva()/100 : articulo.getIva());
+			taxArticulo.setBase(articulo.getSubtotal());
+			taxArticulo.setRate(articulo.getIva()> 1 ? articulo.getIva()/100 : articulo.getIva());
 			taxArticulo.setIsRetention(false);
 			regresar.add(taxArticulo);
 		} // try

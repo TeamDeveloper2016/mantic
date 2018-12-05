@@ -22,6 +22,7 @@ public class ArticuloFactura implements Serializable, IBaseDto{
 	private double subtotal;
 	private double total;
 	private double base;
+	private double impuestos;
 
 	public ArticuloFactura() {
 		this("-1");
@@ -50,6 +51,7 @@ public class ArticuloFactura implements Serializable, IBaseDto{
 		this.subtotal      = subtotal;
 		this.total         = total;
 		this.base          = base;
+		this.impuestos     = 0D;
 	}
 
 	public String getId() {
@@ -162,6 +164,14 @@ public class ArticuloFactura implements Serializable, IBaseDto{
 
 	public void setBase(double base) {
 		this.base = base;
+	}
+
+	public double getImpuestos() {
+		return impuestos;
+	}
+
+	public void setImpuestos(double impuestos) {
+		this.impuestos=impuestos;
 	}
 	
 	@Override
