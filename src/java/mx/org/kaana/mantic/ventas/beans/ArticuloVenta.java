@@ -37,7 +37,7 @@ public class ArticuloVenta extends Articulo {
 		if(!asignar)
 			this.setTotal(this.getTotal());
 		this.toCalculateCostoPorCantidad();
-		double porcentajeIva = this.getIva()/ 100; 		
+		double porcentajeIva = 1+ (this.getIva()/ 100); 		
 		double costoMoneda   = this.getCosto()* getTipoDeCambio();
 		double costoReal     = this.getCantidad()* costoMoneda;
 		this.getImportes().setImporte(Numero.toRedondear(costoReal));
@@ -56,11 +56,11 @@ public class ArticuloVenta extends Articulo {
 		this.getImportes().setExtra(Numero.toRedondear(temporal> 0? (this.getImportes().getImporte()- this.getImportes().getSubTotal())- this.getImportes().getDescuento(): 0D));
 
 		if(isSinIva()) {
-	  	this.getImportes().setIva(Numero.toRedondear(this.getImportes().getSubTotal()- (this.getImportes().getSubTotal()/(1+ porcentajeIva))));
+	  	this.getImportes().setIva(Numero.toRedondear(this.getImportes().getSubTotal()- (this.getImportes().getSubTotal()/porcentajeIva)));
 	  	this.getImportes().setSubTotal(Numero.toRedondear(this.getImportes().getSubTotal()- this.getImportes().getIva()));
 		} // if	
 		else {
-	  	this.getImportes().setIva(Numero.toRedondear((this.getImportes().getSubTotal()* (1+ porcentajeIva))- this.getImportes().getSubTotal()));
+	  	this.getImportes().setIva(Numero.toRedondear((this.getImportes().getSubTotal()* porcentajeIva)- this.getImportes().getSubTotal()));
 		} // else
 		this.getImportes().setTotal(Numero.toRedondear(this.getImportes().getSubTotal() + this.getImportes().getIva()));
 		this.setSubTotal(this.getImportes().getSubTotal());

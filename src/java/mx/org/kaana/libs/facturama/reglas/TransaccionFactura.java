@@ -294,10 +294,12 @@ public class TransaccionFactura extends IBaseTnx{
 		try {
 			gestor= new CFDIGestor();
 			articulos= gestor.toAllArticulosFactura(sesion);
+			int count= 0;
 			if(!articulos.isEmpty()){
 				articulosFacturama= CFDIFactory.getInstance().getProducts();
-				if(!articulosFacturama.isEmpty()){
-					for(ArticuloFactura recordArticulo: articulos){
+				if(!articulosFacturama.isEmpty()) {
+					for(ArticuloFactura recordArticulo: articulos) {
+						LOG.warn("Procesando "+ (count++)+ " de "+ articulos.size());
 						idBitacora= recordArticulo.getId();
 						articuloPivote= new Product();
 						articuloPivote.setIdentificationNumber(recordArticulo.getIdentificador());

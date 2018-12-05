@@ -14,6 +14,7 @@ import java.io.IOException;
 import mx.org.kaana.libs.facturama.models.exception.FacturamaException;
 import mx.org.kaana.libs.facturama.models.exception.ModelException;
 import java.net.ProtocolException;
+import java.util.concurrent.TimeUnit;
 
 public abstract class HttpService<TI, TO> {
 
@@ -25,6 +26,8 @@ public abstract class HttpService<TI, TO> {
 	public HttpService(OkHttpClient client, String url) {
 		httpClient = client;
 		relativeUrl = url;
+		httpClient.setConnectTimeout(90, TimeUnit.SECONDS);
+		httpClient.setReadTimeout(90, TimeUnit.SECONDS);
 
 		BaseUrlInterceptor interceptor = (BaseUrlInterceptor) httpClient.interceptors().get(0);
 		this.baseUrl = interceptor.getBaseUrl();
@@ -97,6 +100,7 @@ public abstract class HttpService<TI, TO> {
 		HttpUrl.Builder urlBuilder
 						= HttpUrl.parse(baseUrl + "/" + relativeUrl + resource).newBuilder();
 
+		
 		String url = urlBuilder.build().toString();
 
 		Request request = new Request.Builder()

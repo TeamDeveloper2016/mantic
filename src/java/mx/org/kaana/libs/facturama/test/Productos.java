@@ -34,17 +34,21 @@ public class Productos {
 			params=new HashMap<>();
 			int count= 0;
 			for (Product producto : productos) {
-				LOG.info(producto);
-				//LOG.info((count++)+ "\t"+ producto.getId()+ "\t"+ producto.getCodeProdServ()+ "\t"+ producto.getCuentaPredial()+ "\t'"+ producto.getIdentificationNumber()+ "'\t"+ producto.getName());
+				LOG.warn("update tc_mantic_articulos set id_facturama='"+ producto.getId()+ "' where codigo= '"+ producto.getIdentificationNumber()+ "';");
+//				LOG.info((count++)+ "\t"+ producto.getId()+ "\t"+ producto.getCodeProdServ()+ "\t"+ producto.getCuentaPredial()+ "\t'"+ producto.getIdentificationNumber()+ "'\t"+ producto.getName());
 //  			params.put(Constantes.SQL_CONDICION, "codigo= '"+ producto.getIdentificationNumber()+ "'");
 //				TcManticArticulosDto dto= (TcManticArticulosDto)DaoFactory.getInstance().findFirst(TcManticArticulosDto.class, "row", params);
 //				if(dto!= null) {
-//					 LOG.info(count+ " encontrado "+ dto.getIdArticulo());
-//					 dto.setIdFacturama(producto.getId());
-//					 DaoFactory.getInstance().update(dto);
+//				   LOG.info(count+ " encontrado "+ dto.getIdArticulo());
+//				   if(dto.getIdFacturama()!= null) 
+//  				   LOG.info(count+ " ya actualizado "+ dto.getIdArticulo());
+//					 else {
+//					   dto.setIdFacturama(producto.getId());
+//					   DaoFactory.getInstance().update(dto);
+//					 } // else
 //				} // if
 //				else
-//					 LOG.error(producto.getIdentificationNumber());
+// 			   LOG.error(producto.getIdentificationNumber());
 			} // for
 		} // try
 		catch (Exception e) {
