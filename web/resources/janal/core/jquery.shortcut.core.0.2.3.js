@@ -321,9 +321,7 @@ shortcut.add("Ctrl+H", function() {
 
 shortcut.add("Ctrl+L", function() {
 	janal.console('Shortcut para terminar con la sesión activa:');
-	if($('#salir')) {
-		$('#salir').click();
-	} // if
+	janal.forward();
 });
 
 shortcut.add("Ctrl+R", function() {
