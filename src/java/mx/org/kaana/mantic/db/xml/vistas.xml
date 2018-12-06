@@ -1771,7 +1771,7 @@
 				left join
 					tc_mantic_domicilios on tc_mantic_domicilios.id_domicilio = tr_mantic_cliente_domicilio.id_domicilio
 				where   
-					tc_mantic_clientes.razon_social like '%{razonSocial}%'
+					tc_mantic_clientes.razon_social regexp '.*{razonSocial}.*'
 				and
 					tc_mantic_clientes.rfc like '%{rfc}%'
 				and
