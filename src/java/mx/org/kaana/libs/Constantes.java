@@ -12,6 +12,8 @@ public final class Constantes {
   public static final String NOMBRE_FORMULARIO = ":datos:";
   public static final String RUTA_CLASES = "/WEB-INF/classes/";
   public static final String RUTA_TEMPORALES = "Temporal/";
+  public static final String PATH_INVOICE = "Temporal/Invoice/";
+  public static final String PATH_SHARE = "Temporal/Share/";
   public static final String RUTA_IMAGENES_MENU = "/resources/janal/icon/menu/";
   public static final String RUTA_IMAGENES = "/resources/janal/img/sistema/";
   public static final String REDIRECIONAR = "?faces-redirect=true";

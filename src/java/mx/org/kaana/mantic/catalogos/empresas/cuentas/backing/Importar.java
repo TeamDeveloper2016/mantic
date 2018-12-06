@@ -402,8 +402,8 @@ public class Importar extends IBaseAttribute implements Serializable {
 	
   private void toCopyDocument(String alias, String name) {
 		try {
-  	  this.attrs.put("temporal", JsfBase.getContext().concat("/").concat(Constantes.RUTA_TEMPORALES).concat(name).concat("?pfdrid_c=true"));
-  		File source= new File(JsfBase.getRealPath(Constantes.RUTA_TEMPORALES).concat(name));
+  	  this.attrs.put("temporal", JsfBase.getContext().concat("/").concat(Constantes.PATH_INVOICE).concat(name).concat("?pfdrid_c=true"));
+  		File source= new File(JsfBase.getRealPath(Constantes.PATH_INVOICE).concat(name));
 			if(!source.exists()) {
 	  	  FileInputStream input= new FileInputStream(new File(alias));
         this.toWriteFile(source, input);		

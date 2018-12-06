@@ -424,10 +424,10 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 	
   private void toCopyDocument(String alias, String name) {
 		try {
-			LOG.warn("context: "+ JsfBase.getContext().concat("/").concat(Constantes.RUTA_TEMPORALES).concat(name).concat("?pfdrid_c=true"));
-  	  this.attrs.put("temporal", JsfBase.getContext().concat("/").concat(Constantes.RUTA_TEMPORALES).concat(name).concat("?pfdrid_c=true"));
-  		File source= new File(JsfBase.getRealPath().concat(Constantes.RUTA_TEMPORALES).concat(name));
-			LOG.warn("source: "+ JsfBase.getRealPath().concat(Constantes.RUTA_TEMPORALES).concat(name));
+			LOG.warn("context: "+ JsfBase.getContext().concat("/").concat(Constantes.PATH_INVOICE).concat(name).concat("?pfdrid_c=true"));
+  	  this.attrs.put("temporal", JsfBase.getContext().concat("/").concat(Constantes.PATH_INVOICE).concat(name).concat("?pfdrid_c=true"));
+  		File source= new File(JsfBase.getRealPath().concat(Constantes.PATH_INVOICE).concat(name));
+			LOG.warn("source: "+ JsfBase.getRealPath().concat(Constantes.PATH_INVOICE).concat(name));
 			if(!source.exists()) {
    			LOG.warn("input: "+ alias);
    	  	FileInputStream input= new FileInputStream(new File(alias));
