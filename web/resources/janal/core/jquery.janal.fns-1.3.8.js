@@ -697,8 +697,15 @@ $.mask.masks = $.extend($.mask.masks, {
 			if (janal.empty(value) || $(element).hasClass('ignore'))
 				return true;
 	    else
-  			return /^([A-Za-z]{4})([\d]{6})$/.test(value) && janal.isDate('19'+ value.substring(4,6), value.substring(6,8), value.substring(8,10));
+  			return (/^([A-Za-z]{3})([\d]{6})([\dA-Za-z]{3})$/.test(value) && janal.isDate('19'+ value.substring(3,5), value.substring(5,7), value.substring(7,9))) || ((/^([A-Za-z]{4})([\d]{6})$/.test(value) || /^([A-Za-z]{4})([\d]{6})([\dA-Za-z]{3})$/.test(value)) && janal.isDate('19'+ value.substring(4,6), value.substring(6,8), value.substring(8,10)));
 		}, 'Formato del RFC no es v\u00E1lido.');
+
+	$.validator.addMethod('fiscal', function(value, element, params) {
+			if (janal.empty(value) || $(element).hasClass('ignore'))
+				return true;
+	    else
+  			return /^([A-Za-z]{3})([\d]{6})([\dA-Za-z]{3})$/.test(value) && janal.isDate('19'+ value.substring(3,5), value.substring(5,7), value.substring(7,9));
+		}, 'Formato del RFC fiscal no es v\u00E1lido.');
 
 	$.validator.addMethod('texto-especial', function(value, element, params) {
  		  if (janal.empty(value) || $(element).hasClass('ignore'))
