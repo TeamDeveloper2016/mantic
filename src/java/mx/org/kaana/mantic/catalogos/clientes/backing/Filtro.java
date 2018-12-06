@@ -83,8 +83,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 			clientes= (List<UISelectEntity>)this.attrs.get("clientes");
 			if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
 				this.attrs.put("razonSocial", clientes.get(clientes.indexOf(cliente)).toString("razonSocial"));
-			else
-				this.attrs.put("razonSocial", "");
+			else 
+			  if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
+  				this.attrs.put("razonSocial", JsfBase.getParametro("razonSocial_input").replaceAll("(,| |\\t)+", ".*.*"));
+			  else
+  				this.attrs.put("razonSocial", "");
       this.lazyModel = new FormatCustomLazy("VistaClientesDto", "row", this.attrs, campos);
       UIBackingUtilities.resetDataTable();
     } // try
