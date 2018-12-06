@@ -451,17 +451,25 @@ public class Filtro extends IBaseFilter implements Serializable {
 		try {
 			StringBuilder emails= new StringBuilder("");
 			if(this.selectedCorreos!= null && !this.selectedCorreos.isEmpty()){
-				for(Correo mail: this.selectedCorreos)
-					emails.append(mail.getDescripcion()).append(", ");
+				for(Correo mail: this.selectedCorreos){
+					if(!Cadena.isVacio(mail.getDescripcion()))
+						emails.append(mail.getDescripcion()).append(", ");
+				} // for
 			} // if
 			String idFacturama= ((Entity)this.attrs.get("seleccionado")).toString("idFacturama");
-			if(false && emails.length()> 0 && !Cadena.isVacio(idFacturama))
+			if(emails.length()> 0 && !Cadena.isVacio(idFacturama)){
   	    CFDIFactory.getInstance().toSendMail(emails.substring(0, emails.length()- 2), idFacturama);
+				JsfBase.addMessage("Reenviar factura", "Se realizo el reenvio de factura de forma correcta.");
+			} // if
+			else
+				JsfBase.addMessage("Reenviar factura", "Es necesario seleccionar un correo electronico.");
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
+		finally{
+			this.selectedCorreos= new ArrayList<>();
+		} // finally
 	}
-	
 }
