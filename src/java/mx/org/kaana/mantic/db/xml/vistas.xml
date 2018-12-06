@@ -2127,7 +2127,7 @@
 				inner join
 					tc_mantic_clientes on tc_mantic_ventas.id_cliente = tc_mantic_clientes.id_cliente								
 				inner join 
-					tc_mantic_usos_cfdi on tc_mantic_clientes.id_uso_cfdi = tc_mantic_usos_cfdi.id_uso_cfdi
+					tc_mantic_usos_cfdi on tc_mantic_ventas.id_uso_cfdi = tc_mantic_usos_cfdi.id_uso_cfdi
 				inner join 
 					tr_mantic_venta_medio_pago on tc_mantic_ventas.id_venta = tr_mantic_venta_medio_pago.id_venta				
 				inner join 
@@ -2160,7 +2160,7 @@
 				inner join
 					tc_mantic_clientes on tc_mantic_ficticias.id_cliente = tc_mantic_clientes.id_cliente								
 				inner join 
-					tc_mantic_usos_cfdi on tc_mantic_clientes.id_uso_cfdi = tc_mantic_usos_cfdi.id_uso_cfdi
+					tc_mantic_usos_cfdi on tc_mantic_ficticias.id_uso_cfdi = tc_mantic_usos_cfdi.id_uso_cfdi
 				inner join 
 					tc_mantic_tipos_medios_pagos on tc_mantic_ficticias.id_tipo_medio_pago = tc_mantic_tipos_medios_pagos.id_tipo_medio_pago
 				inner join 
