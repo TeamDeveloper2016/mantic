@@ -381,7 +381,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toClientesTipoContacto
 	
-	private void generarTimbradoFactura(Session sesion, Long idFicticia, String idFactura) throws Exception{
+	private void generarTimbradoFactura(Session sesion, Long idFicticia, String idFactura) throws Exception {
 		TransaccionFactura factura= null;
 		CFDIGestor gestor         = null;
 		try {

@@ -136,7 +136,7 @@
                 <p:menuitem id="facturasPdfIcon" icon="fa fa-file-pdf-o" title="Facturama pdf" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doReporteFacturas('FACTURAS_RESUMEN')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive" sortBy="#{filtro.empresa}">
+            <p:column class="MarAuto Responsive" sortBy="#{filtro.nombreEmpresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
@@ -160,7 +160,7 @@
               </f:facet>
               <h:outputText value="#{filtro['folio']}"/>
             </p:column>		            
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.total}">
               <f:facet name="header">
                 <h:outputText value="Importe"/>
               </f:facet>
@@ -172,7 +172,7 @@
               </f:facet>
               <h:outputText value="#{filtro['estatus']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.fechaEmision}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.timbrado}">
               <f:facet name="header">
                 <h:outputText value="Timbrado"/>
               </f:facet>
