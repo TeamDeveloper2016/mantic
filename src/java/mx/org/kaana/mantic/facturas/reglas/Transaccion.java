@@ -12,6 +12,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.facturama.reglas.CFDIFactory;
 import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
 import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
@@ -41,8 +42,9 @@ import org.apache.log4j.Logger;
 
 public class Transaccion extends IBaseTnx {
 
-  private static final Logger LOG   = Logger.getLogger(Transaccion.class);
-	private static final Long TIMBRADA= 3L;
+  private static final Logger LOG    = Logger.getLogger(Transaccion.class);
+	private static final Long TIMBRADA = 3L;
+	private static final Long CANCELADA= 5L;
 	private TcManticFicticiasBitacoraDto bitacora;
 	private TcManticFicticiasDto orden;	
 	private List<Articulo> articulos;
@@ -145,6 +147,15 @@ public class Transaccion extends IBaseTnx {
 								generarTimbradoFactura(sesion, this.orden.getIdFicticia(), factura.getIdFactura().toString());
 							} // 
 						} // if
+						else if(this.bitacora.getIdFicticiaEstatus().equals(CANCELADA)){
+							params= new HashMap<>();
+							params.put("idFicticia", this.orden.getIdFicticia());
+							factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
+							if(factura!= null && factura.getIdFacturama()!= null)
+								CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama());
+							else
+								throw new Exception("No fue posible cancelar la factura");															
+						} // else if
 					} // if
 					break;								
 				case REPROCESAR:
