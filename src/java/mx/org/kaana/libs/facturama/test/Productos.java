@@ -34,7 +34,7 @@ public class Productos {
 			params=new HashMap<>();
 			int count= 0;
 			for (Product producto : productos) {
-				LOG.warn("update tc_mantic_articulos set id_facturama='"+ producto.getId()+ "' where codigo= '"+ producto.getIdentificationNumber()+ "';");
+				System.out.println("update tc_mantic_articulos set id_facturama='"+ producto.getId()+ "' where codigo= '"+ producto.getIdentificationNumber()+ "';");
 //				LOG.info((count++)+ "\t"+ producto.getId()+ "\t"+ producto.getCodeProdServ()+ "\t"+ producto.getCuentaPredial()+ "\t'"+ producto.getIdentificationNumber()+ "'\t"+ producto.getName());
 //  			params.put(Constantes.SQL_CONDICION, "codigo= '"+ producto.getIdentificationNumber()+ "'");
 //				TcManticArticulosDto dto= (TcManticArticulosDto)DaoFactory.getInstance().findFirst(TcManticArticulosDto.class, "row", params);

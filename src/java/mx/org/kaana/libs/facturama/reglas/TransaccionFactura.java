@@ -345,7 +345,7 @@ public class TransaccionFactura extends IBaseTnx{
 		Cfdi cfdi       = null;
 		try {
 			cfdi= CFDIFactory.getInstance().createCfdi(this.cliente, this.articulos);
-			if(isCorrectId(cfdi.getId())){
+			if(isCorrectId(cfdi.getId())) {
 				regresar= actualizarFactura(sesion, this.cliente.getIdFactura(), cfdi);
 				Calendar calendar= Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19));
 				String path = Configuracion.getInstance().getPropiedadSistemaServidor("facturama")+ calendar.get(Calendar.YEAR)+ "/"+ Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase()+"/"+ this.cliente.getRfc().concat("/");
@@ -362,51 +362,46 @@ public class TransaccionFactura extends IBaseTnx{
 		return regresar;
 	} // generarCfdi
 	
-	public void insertFiles(Session sesion, Calendar calendar, Cfdi cfdi, String path, String rfc, Long idFactura) throws Exception{
-		try {
-			TcManticFacturasArchivosDto xml= new TcManticFacturasArchivosDto(
-					idFactura, 
-					path, 
-					null, 
-					rfc.concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase()), 
-					new Long(calendar.get(Calendar.YEAR)),
-					null, 
-					-1L,
-					0L,
-					JsfBase.getIdUsuario(),
-					1L, // idTipoArchivo XML
-					1L, // idPrincipal
-					cfdi.getCfdiType()+ "|"+ cfdi.getPaymentMethod()+ "|"+ cfdi.getSerie(), // observaciones, 
-					path.concat(rfc).concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase()), 
-					new Long(calendar.get(Calendar.MONTH)+ 1),
-					"" // comentarios
-				);
-				DaoFactory.getInstance().insert(sesion, xml);
-				TcManticFacturasArchivosDto pdf= new TcManticFacturasArchivosDto(
-					idFactura, 
-					path,
-					null, 
-					rfc.concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.PDF.name().toLowerCase()), 
-					new Long(calendar.get(Calendar.YEAR)),
-					null, 
-					-1L,
-					0L,
-					JsfBase.getIdUsuario(),
-					2L, // idTipoArchivo PDF
-					1L, // idPrincipal
-					cfdi.getCfdiType()+ "|"+ cfdi.getPaymentMethod()+ "|"+ cfdi.getPaymentConditions(), // observaciones, 
-					path.concat(rfc).concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.PDF.name().toLowerCase()), 
-					new Long(calendar.get(Calendar.MONTH)+ 1), 
-					"" // comentarios
-				);
-				DaoFactory.getInstance().insert(sesion, pdf);
-		} // try
-		catch (Exception e) {			
-			throw e; 
-		} // catch		
+	public void insertFiles(Session sesion, Calendar calendar, Cfdi cfdi, String path, String rfc, Long idFactura) throws Exception {
+	TcManticFacturasArchivosDto xml= new TcManticFacturasArchivosDto(
+			idFactura, 
+			path, 
+			null, 
+			rfc.concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase()), 
+			new Long(calendar.get(Calendar.YEAR)),
+			null, 
+			-1L,
+			0L,
+			JsfBase.getIdUsuario(),
+			1L, // idTipoArchivo XML
+			1L, // idPrincipal
+			cfdi.getCfdiType()+ "|"+ cfdi.getPaymentMethod()+ "|"+ cfdi.getSerie(), // observaciones, 
+			path.concat(rfc).concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase()), 
+			new Long(calendar.get(Calendar.MONTH)+ 1),
+			"" // comentarios
+		);
+		DaoFactory.getInstance().insert(sesion, xml);
+		TcManticFacturasArchivosDto pdf= new TcManticFacturasArchivosDto(
+			idFactura, 
+			path,
+			null, 
+			rfc.concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.PDF.name().toLowerCase()), 
+			new Long(calendar.get(Calendar.YEAR)),
+			null, 
+			-1L,
+			0L,
+			JsfBase.getIdUsuario(),
+			2L, // idTipoArchivo PDF
+			1L, // idPrincipal
+			cfdi.getCfdiType()+ "|"+ cfdi.getPaymentMethod()+ "|"+ cfdi.getPaymentConditions(), // observaciones, 
+			path.concat(rfc).concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.PDF.name().toLowerCase()), 
+			new Long(calendar.get(Calendar.MONTH)+ 1), 
+			"" // comentarios
+		);
+		DaoFactory.getInstance().insert(sesion, pdf);
 	}
 	
-	protected boolean actualizarFactura(Session sesion, String id, Cfdi cfdi) throws Exception{
+	protected boolean actualizarFactura(Session sesion, String id, Cfdi cfdi) throws Exception {
 		boolean regresar           = false;
 		TcManticFacturasDto factura= null;
 		try {

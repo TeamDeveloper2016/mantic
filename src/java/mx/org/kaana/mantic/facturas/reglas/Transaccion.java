@@ -147,14 +147,14 @@ public class Transaccion extends IBaseTnx {
 								generarTimbradoFactura(sesion, this.orden.getIdFicticia(), factura.getIdFactura().toString());
 							} // 
 						} // if
-						else if(this.bitacora.getIdFicticiaEstatus().equals(CANCELADA)){
+						else if(this.bitacora.getIdFicticiaEstatus().equals(CANCELADA)) {
 							params= new HashMap<>();
 							params.put("idFicticia", this.orden.getIdFicticia());
 							factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
 							if(factura!= null && factura.getIdFacturama()!= null)
 								CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama());
 							else
-								throw new Exception("No fue posible cancelar la factura");															
+								throw new Exception("No fue posible cancelar la factura, por favor vuelva a intentarlo !");															
 						} // else if
 					} // if
 					break;								
@@ -395,7 +395,7 @@ public class Transaccion extends IBaseTnx {
 		catch (Exception e) {			
 			Error.mensaje(e);
 			this.messageError= "";
-			throw new Exception("No fue posible generar la factura");
+			throw new Exception("No fue posible generar la factura, error: "+ e);
 		} // catch				
 	} // generarTimbradoFactura
 } 
