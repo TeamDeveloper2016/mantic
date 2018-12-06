@@ -1565,11 +1565,12 @@
 					tc_mantic_articulos.nombre,
 					tc_mantic_articulos.descripcion,
 					tc_mantic_articulos.sat codigo_hacienda,
-					tc_mantic_ventas_detalles.unitario_sin_iva as precio,    
-				  tc_mantic_ventas_detalles.cantidad,
-				  tc_mantic_ventas_detalles.sub_total subtotal,
-				  tc_mantic_ventas_detalles.importe total,
-					tc_mantic_articulos.iva
+					round(tc_mantic_ventas_detalles.unitario_sin_iva, 2) as precio,    
+				  round(tc_mantic_ventas_detalles.cantidad, 2) as cantidad,
+				  round(tc_mantic_ventas_detalles.sub_total, 2) as subtotal,
+				  round(tc_mantic_ventas_detalles.importe, 2) as total,
+					tc_mantic_articulos.iva,
+					round(tc_mantic_ventas_detalles.impuestos, 2) as impuestos											
 				from 
 					tc_mantic_ventas_detalles
 				inner join
