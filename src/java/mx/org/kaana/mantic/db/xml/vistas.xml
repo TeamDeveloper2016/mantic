@@ -1407,7 +1407,7 @@
 				inner join 
 					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
 				inner join
-					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_unidad_medida
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
 				inner join 
 					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
 				inner join 
@@ -1453,7 +1453,7 @@
 				inner join 
 					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
 				inner join
-					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_unidad_medida
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
 				inner join 
 					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
 				inner join 
@@ -1479,7 +1479,7 @@
 				inner join 
 					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
 				inner join
-					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_unidad_medida
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
 				inner join 
 					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
 				inner join 
@@ -1537,7 +1537,7 @@
 				inner join
 					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
 				inner join
-					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_unidad_medida
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
 				inner join 
 					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
 				inner join 
@@ -1578,7 +1578,7 @@
 				inner join
 					tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
 				inner join
-					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_unidad_medida
+					tr_mantic_empaque_unidad_medida on tc_mantic_articulos.id_empaque_unidad_medida = tr_mantic_empaque_unidad_medida.id_empaque_unidad_medida
 				inner join 
 					tc_mantic_empaques on tr_mantic_empaque_unidad_medida.id_empaque = tc_mantic_empaques.id_empaque
 				inner join 
