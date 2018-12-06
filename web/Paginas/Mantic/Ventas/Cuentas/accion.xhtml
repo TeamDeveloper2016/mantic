@@ -119,7 +119,7 @@
 						<p:outputLabel value="#{manticVentasCuentasAccion.saldoCliente.mensaje}" styleClass="janal-column-center janal-color-orange"/>
 					</p:panelGrid>						
 					<p:panelGrid id="contenido" columns="2" layout="grid" styleClass="janal-wid-100" style="height:350px !important;" columnClasses="janal-wid-80, janal-wid-20">					
-						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" style="height:348px !important;overflow-y: visible" columnClasses="janal-wid-100">					
+						<p:panelGrid columns="1" layout="grid" styleClass="janal-wid-99" style="height:348px !important;overflow-y: auto" columnClasses="janal-wid-100">					
 							<p:dataTable id="tabla" widgetVar="kajoolTable" var="row" value="#{manticVentasCuentasAccion.adminOrden.articulos}" paginator="false" reflow="true" rowKey="#{row.key}" emptyMessage=" " rowIndexVar="index" styleClass="filas">
 								<p:column class="MarAuto Responsive janal-wid-3">
 									<f:facet name="header">
