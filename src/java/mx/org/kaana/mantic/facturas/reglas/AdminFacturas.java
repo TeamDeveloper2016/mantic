@@ -32,15 +32,15 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 	}
 	
 	public AdminFacturas(FacturaFicticia orden, boolean loadDefault) throws Exception {
-		List<ArticuloVenta> arts= null;
+		List<ArticuloVenta> articulos= null;
 		this.orden= orden;		
 		if(this.orden.isValid()) {
-			arts= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaFicticiasDto", "detalle", orden.toMap());
-  	  this.setArticulos(arts);      
+			articulos= (List<ArticuloVenta>)DaoFactory.getInstance().toEntitySet(ArticuloVenta.class, "VistaFicticiasDto", "detalle", orden.toMap());
+  	  this.setArticulos(articulos);      
 		}	// if
 		else	{
-		  arts= new ArrayList<>();
-		  this.setArticulos(arts);			
+		  articulos= new ArrayList<>();
+		  this.setArticulos(articulos);			
 			this.orden.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
 			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 		} // else	
