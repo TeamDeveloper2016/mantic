@@ -15,10 +15,11 @@ public class ArticuloVenta extends Articulo {
 	private static final long serialVersionUID = -7272868284456340705L;
 
 	public ArticuloVenta() {
+		this(-1L, false);
 	}
 
-	public ArticuloVenta(Long key) {
-		super(key);
+	public ArticuloVenta(Long key, boolean costoLibre) {
+		super(key, costoLibre);
 	}
 
 	@Override
@@ -78,7 +79,7 @@ public class ArticuloVenta extends Articulo {
 	private void toCalculateCostoPorCantidad() {
 		TcManticArticulosDto validate= null;
 		try {
-			if(!this.isLibre()) {
+			if(!this.isCostoLibre()) {
 			  validate= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.getIdArticulo());
 				if(validate!= null) {
 					//if((this.getCosto().equals(validate.getMenudeo()) || this.getCosto().equals(validate.getMedioMayoreo()) || this.getCosto().equals(validate.getMayoreo())))  {

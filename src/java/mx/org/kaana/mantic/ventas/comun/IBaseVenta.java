@@ -50,14 +50,21 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	protected FormatLazyModel lazyCuentasAbiertas;
 	protected SaldoCliente saldoCliente;
 	private FormatLazyModel almacenes;
-
+  private boolean costoLibre;
+	
+	
+	public IBaseVenta(String precio) {
+		this(precio, false);
+	}
+	
+	public IBaseVenta(String precio, boolean costoLibre) {
+		super(precio);
+		this.costoLibre= costoLibre;
+	}
+	
 	public FormatLazyModel getLazyCuentasAbiertas() {
 		return lazyCuentasAbiertas;
 	}		
-	
-	public IBaseVenta(String precio) {
-		super(precio);
-	}
 	
 	public SaldoCliente getSaldoCliente() {
 		return saldoCliente;
@@ -70,6 +77,10 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	public FormatLazyModel getAlmacenes() {
 		return almacenes;
 	}	
+
+	public boolean isCostoLibre() {
+		return costoLibre;
+	}
 
 	public String doCancelar() {   
   	JsfBase.setFlashAttribute("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
@@ -529,7 +540,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				Value stock= (Value)DaoFactory.getInstance().toField("TcManticInventariosDto", "stock", params, "stock");
 				temporal.setStock(stock== null? 0D: stock.toDouble());
 				if(index== getAdminOrden().getArticulos().size()- 1) {
-					getAdminOrden().getArticulos().add(new ArticuloVenta(-1L));
+					getAdminOrden().getArticulos().add(new ArticuloVenta(-1L, this.costoLibre));
 					RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (getAdminOrden().getArticulos().size()- 1)+ ");");
 				} // if	
 				RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ articulo.toMap()+ "');");
@@ -654,7 +665,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 					else
 						articulo= articulos.get(0);
 			if(articulo.size()> 1) {
-				int position= this.getAdminOrden().getArticulos().indexOf(new ArticuloVenta(articulo.toLong("idArticulo")));
+				int position= this.getAdminOrden().getArticulos().indexOf(new ArticuloVenta(articulo.toLong("idArticulo"), this.costoLibre));
 				if(articulo.size()> 1 && position>= 0) {
 					if(index!= position)
 						RequestContext.getCurrentInstance().execute("jsArticulos.exists("+ position+ ");");

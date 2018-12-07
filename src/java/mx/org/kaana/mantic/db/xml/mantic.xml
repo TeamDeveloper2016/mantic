@@ -1782,30 +1782,7 @@
           codigo = '{codigo}' and id_articulo_codigo = {idArticuloCodigo} and id_articulo = {idArticulo}
       </select>      
     </unit>
-    
-     <unit id="TrManticArticuloPresentacionDto">
-      <select id="row">
-        select      
-          *
-        from      
-          tr_mantic_articulo_presentacion
-        where 
-          {condicion} 
-      </select>
-      <select id="identically">
-        select      
-          *
-        from      
-          tr_mantic_articulo_presentacion
-        where      
-          id_articulo_presentacion = {idArticuloPresentacion} and id_articulo = {idArticulo} and id_presentacion_unidad_medida = {idPresentacionUnidadMedida}
-      </select>
-			<delete id="rows">
-        delete from tr_mantic_articulo_presentacion where id_articulo= {idArticulo} 
-      </delete>
-    </unit>
-    
-     <unit id="TrManticArticuloProveedorDto">
+    <unit id="TrManticArticuloProveedorDto">
       <select id="row">
         select      
           *

@@ -53,14 +53,19 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	private double diferencia;
 	private double real;
 	private double calculado;
-	private boolean libre;
+	private boolean costoLibre;
 
 	public Articulo() {
 		this(-1L);
 	}
 
 	public Articulo(Long key) {
+		this(key, false);
+	}
+	
+	public Articulo(Long key, boolean costoLibre) {
 		this(false, 1.0, "", "", 0.0, "0", -1L, "0", 0D, "", 16D, 0D, 0D, 1D, -1L, key, 0D, -1L, false, false, 0L, 0D, "", "");
+		this.costoLibre  = costoLibre;
 	}
 
 	public Articulo(boolean sinIva, double tipoDeCambio, String nombre, String codigo, Double costo, String descuento, Long idOrdenCompra, String extras, Double importe, String propio, Double iva, Double totalImpuesto, Double subTotal, Double cantidad, Long idOrdenDetalle, Long idArticulo, Double totalDescuentos, Long idProveedor, boolean ultimo, boolean solicitado, double stock, Double excedentes, String sat, String unidadMedida) {
@@ -85,7 +90,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		this.diferencia  = 0D;
 		this.real        = costo;
 		this.calculado   = costo;
-		this.libre       = false;
+		this.costoLibre  = false;
 	}
 
 	public UISelectEntity getIdEntity() {
@@ -213,12 +218,12 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 		return tipoDeCambio;
 	}
 
-	public boolean isLibre() {
-		return libre;
+	public boolean isCostoLibre() {
+		return costoLibre;
 	}
 
-	public void setLibre(boolean libre) {
-		this.libre=libre;
+	public void setCostoLibre(boolean costoLibre) {
+		this.costoLibre=costoLibre;
 	}
 	
 	public String getCostoMayorMenor() {

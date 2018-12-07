@@ -60,7 +60,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	private FormatLazyModel almacenes;
 
 	public Accion() {
-		super("menudeo");
+		super("menudeo", true);
 	}
 	
 	public String getTitulo() {
