@@ -32,7 +32,6 @@ import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosEspecificacionesDto;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloGrupoDescuentoDto;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloPrecioSugeridoDto;
-import mx.org.kaana.mantic.db.dto.TrManticArticuloPresentacionDto;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloProveedorDto;
 import mx.org.kaana.mantic.db.dto.TrManticArticuloTipoVentaDto;
 import mx.org.kaana.mantic.enums.ETipoImagen;
@@ -96,10 +95,10 @@ public class Transaccion extends TransaccionFactura {
 									if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloTipoVentaDto.class, params)> -1L){
 										if(DaoFactory.getInstance().deleteAll(sesion, TcManticArticulosDimencionesDto.class, params)> -1L){
 											//if(DaoFactory.getInstance().deleteAll(sesion, TcManticImagenesDto.class, params)> -1L){
-											if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloPresentacionDto.class, params)> -1L){
+											//if(DaoFactory.getInstance().deleteAll(sesion, TrManticArticuloPresentacionDto.class, params)> -1L){
 												regresar= DaoFactory.getInstance().delete(sesion, TcManticArticulosDto.class, this.articulo.getIdArticulo())>= 1L;
 												eliminarArticuloFacturama(sesion, this.articulo.getArticulo().getIdFacturama());
-				}	}	}	}	}	}	}	}	} // if		
+				}	}	}	}	}	}	}	} // if		
 		} // try
 		catch (Exception e) {			
 			throw e;

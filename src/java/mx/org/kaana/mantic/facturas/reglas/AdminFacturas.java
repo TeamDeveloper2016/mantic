@@ -45,7 +45,7 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 			this.orden.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 		} // else	
 		if(loadDefault)
-			this.getArticulos().add(new ArticuloVenta(-1L));
+			this.getArticulos().add(new ArticuloVenta(-1L, true));
 		setIdSinIva(1L);
 		this.toCalculate();
 	}

@@ -15,9 +15,13 @@ public class ArticuloVenta extends Articulo {
 	private static final long serialVersionUID = -7272868284456340705L;
 
 	public ArticuloVenta() {
-		this(-1L, false);
+		this(-1L);
 	}
 
+	public ArticuloVenta(Long key) {
+		this(key, false);
+	}
+	
 	public ArticuloVenta(Long key, boolean costoLibre) {
 		super(key, costoLibre);
 	}
