@@ -396,15 +396,34 @@ public class Transferir extends IBaseTnx {
 		return true;
 	}
 
-	private boolean exists(Session sesion, String idFacturama) throws Exception {
-		boolean regresar          = false;
+	private Long exists(Session sesion, String idFacturama) throws Exception {
+		Long regresar             = -1L;
 		Map<String, Object> params= null;
 		try {
 			params=new HashMap<>();
 			params.put("idFacturama", idFacturama);
 			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFacturasDto", "facturama", params, "idFactura");
 			if(next!= null && next.getData()!= null)
-				regresar= true;
+				regresar= next.toLong();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // exists
+	
+	private boolean files(Session sesion, Long idFactura) throws Exception {
+		boolean regresar          = false;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("idFactura", idFactura);
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticFacturasArchivosDto", "total", params, "total");
+			if(next!= null && next.getData()!= null)
+				regresar= next.toLong()> 0;
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -457,11 +476,56 @@ public class Transferir extends IBaseTnx {
 		} // for
 	}
 
+	private void toSaveFiles(Session sesion, CfdiSearchResult cfdi, Cfdi detail, Long idFactura, Calendar calendar, String path) throws Exception {
+		if(!this.files(sesion, idFactura)) { 
+			TcManticFacturasArchivosDto xml= new TcManticFacturasArchivosDto(
+				idFactura, 
+				path, 
+				null, 
+				cfdi.getRfc().concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase()), 
+				new Long(calendar.get(Calendar.YEAR)),
+				null, 
+				-1L,
+				0L,
+				JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L,
+				1L, // idTipoArchivo XML
+				1L, // idPrincipal
+				detail.getCfdiType()+ "|"+ detail.getPaymentMethod()+ "|"+ detail.getSerie(), // observaciones, 
+				path.concat(cfdi.getRfc()).concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase()), 
+				new Long(calendar.get(Calendar.MONTH)+ 1), 
+				"" // comentarios
+			);
+			DaoFactory.getInstance().insert(sesion, xml);
+			TcManticFacturasArchivosDto pdf= new TcManticFacturasArchivosDto(
+				idFactura,
+				path, 
+				null, 
+				cfdi.getRfc().concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.PDF.name().toLowerCase()), 
+				new Long(calendar.get(Calendar.YEAR)),
+				null, 
+				-1L,
+				0L,
+				JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L,
+				2L, // idTipoArchivo PDF
+				1L, // idPrincipal
+				detail.getCfdiType()+ "|"+ detail.getPaymentMethod()+ "|"+ detail.getPaymentConditions(), // observaciones, 
+				path.concat(cfdi.getRfc()).concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.PDF.name().toLowerCase()), 
+				new Long(calendar.get(Calendar.MONTH)+ 1), 
+				"" // comentarios
+			);
+			DaoFactory.getInstance().insert(sesion, pdf);		
+		} // if	
+	}
+	
 	private void toProcess(Session sesion, CfdiSearchResult cfdi, Cfdi detail) throws Exception {
-		if(!this.exists(sesion, cfdi.getId())) {
-			Calendar calendar= Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19));
-			String path = Configuracion.getInstance().getPropiedadSistemaServidor("facturama")+ calendar.get(Calendar.YEAR)+ "/"+ Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase()+"/"+ cfdi.getRfc().concat("/");
-			CFDIFactory.getInstance().download(path, cfdi.getRfc().concat("-").concat(cfdi.getFolio()), cfdi.getId());
+		Calendar calendar= Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19));
+		String path = Configuracion.getInstance().getPropiedadSistemaServidor("facturama")+ calendar.get(Calendar.YEAR)+ "/"+ Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase()+"/"+ cfdi.getRfc().concat("/");
+		CFDIFactory.getInstance().download(path, cfdi.getRfc().concat("-").concat(cfdi.getFolio()), cfdi.getId());
+		Long idFactura= this.exists(sesion, cfdi.getId());
+		if(idFactura> 0) {
+			this.toSaveFiles(sesion, cfdi, detail, idFactura, calendar, path);
+		} // if
+		else {	
 			Long idCliente= this.toCliente(sesion, cfdi.getRfc()); 
 			if(idCliente> 0) {
 				// GENERA EL REGISTRO DETALLADO DE LA FACTURA
@@ -472,42 +536,7 @@ public class Transferir extends IBaseTnx {
 				// GENERA LA CADENA ORIGINAL BASA EN EL ARCHIVO XML QUE SE DESCARGO
 				factura.setCadenaOriginal(this.toCadenaOriginal(path.concat(cfdi.getRfc()).concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase())));
 				DaoFactory.getInstance().insert(sesion, factura);
-				TcManticFacturasArchivosDto xml= new TcManticFacturasArchivosDto(
-					factura.getIdFactura(), 
-					path, 
-					null, 
-					cfdi.getRfc().concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase()), 
-					new Long(calendar.get(Calendar.YEAR)),
-					null, 
-					-1L,
-					0L,
-					JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L,
-					1L, // idTipoArchivo XML
-					1L, // idPrincipal
-					detail.getCfdiType()+ "|"+ detail.getPaymentMethod()+ "|"+ detail.getSerie(), // observaciones, 
-					path.concat(cfdi.getRfc()).concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase()), 
-					new Long(calendar.get(Calendar.MONTH)+ 1), 
-					"" // comentarios
-				);
-				DaoFactory.getInstance().insert(sesion, xml);
-				TcManticFacturasArchivosDto pdf= new TcManticFacturasArchivosDto(
-					factura.getIdFactura(), 
-					path, 
-					null, 
-					cfdi.getRfc().concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.PDF.name().toLowerCase()), 
-					new Long(calendar.get(Calendar.YEAR)),
-					null, 
-					-1L,
-					0L,
-					JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L,
-					2L, // idTipoArchivo PDF
-					1L, // idPrincipal
-					detail.getCfdiType()+ "|"+ detail.getPaymentMethod()+ "|"+ detail.getPaymentConditions(), // observaciones, 
-					path.concat(cfdi.getRfc()).concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.PDF.name().toLowerCase()), 
-					new Long(calendar.get(Calendar.MONTH)+ 1), 
-					"" // comentarios
-				);
-				DaoFactory.getInstance().insert(sesion, pdf);
+				this.toSaveFiles(sesion, cfdi, detail, factura.getIdFactura(), calendar, path);
 				this.toDetail(sesion, ficticia.getIdFicticia(), detail);
 				TcManticFicticiasBitacoraDto bitacora= new TcManticFicticiasBitacoraDto(ficticia.getConsecutivo(), "FACTURA REGISTRADA DE FORMA AUTOMATICA", 3l, 1L, ficticia.getIdFicticia(), -1L, ficticia.getTotal());
 				DaoFactory.getInstance().insert(sesion, bitacora);

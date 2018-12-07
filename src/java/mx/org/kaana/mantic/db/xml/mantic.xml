@@ -70,6 +70,14 @@
         where      
           id_factura = {idFactura} and id_factura_archivo = {idFacturaArchivo} and id_tipo_archivo = {idTipoArchivo} and mes = {mes} and nombre = '{nombre}' and ejercicio = {ejercicio}
       </select>
+      <select id="total">
+        select      
+          count(*) as total
+        from      
+          tc_mantic_facturas_archivos
+        where 
+          id_factura = {idFactura}
+      </select>
     </unit>		
     <unit id="TcManticFacturamaBitacoraDto">
       <select id="row">
