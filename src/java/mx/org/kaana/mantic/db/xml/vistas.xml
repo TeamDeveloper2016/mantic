@@ -1565,12 +1565,12 @@
 					tc_mantic_articulos.nombre,
 					tc_mantic_articulos.descripcion,
 					tc_mantic_articulos.sat codigo_hacienda,
-					truncate(tc_mantic_ventas_detalles.unitario_sin_iva, 2) as precio,    
-				  truncate(tc_mantic_ventas_detalles.cantidad, 2) as cantidad,
-				  truncate(tc_mantic_ventas_detalles.sub_total, 2) as subtotal,
-				  truncate(tc_mantic_ventas_detalles.importe, 2) as total,
+					round(tc_mantic_ventas_detalles.unitario_sin_iva, 2) as precio,    
+				  round(tc_mantic_ventas_detalles.cantidad, 2) as cantidad,
+				  round(tc_mantic_ventas_detalles.sub_total, 2) as subtotal,
+				  round(tc_mantic_ventas_detalles.importe, 2) as total,
 					tc_mantic_articulos.iva,
-					truncate(tc_mantic_ventas_detalles.impuestos, 2) as impuestos											
+					round(tc_mantic_ventas_detalles.impuestos, 2) as impuestos											
 				from 
 					tc_mantic_ventas_detalles
 				inner join
@@ -1609,12 +1609,12 @@
 					tc_mantic_articulos.nombre,
 					tc_mantic_articulos.descripcion,
 					tc_mantic_articulos.sat codigo_hacienda,
-					truncate(tc_mantic_ficticias_detalles.unitario_sin_iva, 2) as precio,    
-				  truncate(tc_mantic_ficticias_detalles.cantidad, 2) as cantidad,
-				  truncate(tc_mantic_ficticias_detalles.sub_total, 2) as subtotal,
-				  truncate(tc_mantic_ficticias_detalles.importe, 2) as total,
+					round(tc_mantic_ficticias_detalles.unitario_sin_iva, 2) as precio,    
+				  round(tc_mantic_ficticias_detalles.cantidad, 2) as cantidad,
+				  round(tc_mantic_ficticias_detalles.sub_total, 2) as subtotal,
+				  round(tc_mantic_ficticias_detalles.importe, 2) as total,
 					tc_mantic_articulos.iva,
-				  truncate(tc_mantic_ficticias_detalles.impuestos, 2) as impuestos
+				  round(tc_mantic_ficticias_detalles.impuestos, 2) as impuestos
 				from 
 					tc_mantic_ficticias_detalles
 				inner join

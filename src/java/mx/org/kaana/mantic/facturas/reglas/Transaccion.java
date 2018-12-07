@@ -395,7 +395,7 @@ public class Transaccion extends IBaseTnx {
 		catch (Exception e) {			
 			Error.mensaje(e);
 			this.messageError= "";
-			throw new Exception("No fue posible generar la factura, error: "+ e);
+			throw e;
 		} // catch				
 	} // generarTimbradoFactura
 } 
