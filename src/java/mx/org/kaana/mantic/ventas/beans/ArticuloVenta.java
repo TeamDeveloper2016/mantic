@@ -28,7 +28,7 @@ public class ArticuloVenta extends Articulo {
 
 	@Override
 	public Double getImporte() {
-    return Numero.toRedondear(super.getImporte());
+    return Numero.toRedondearSat(super.getImporte());
   }
 	
 	@Override
@@ -111,18 +111,18 @@ public class ArticuloVenta extends Articulo {
 	
 	@Override
 	public double getDiferenciaCosto() {
-		return Numero.toRedondear(getDiferenciaReal());
+		return Numero.toRedondearSat(getDiferenciaReal());
 	}
 		
 	@Override
 	public void toDiferencia() {
 		Descuentos descuentos= new Descuentos(this.getCosto(), this.getDescuento());
 		double value= descuentos.toImporte();
-		setCalculado(Numero.toRedondear(value== 0? this.getCosto(): value));
+		setCalculado(Numero.toRedondearSat(value== 0? this.getCosto(): value));
 		descuentos= new Descuentos(this.getCosto(), this.getDescuento().concat(",").concat(this.getExtras()));
 		value= descuentos.toImporte();
-		setReal(Numero.toRedondear(value== 0? this.getCosto(): value));
-		value= Numero.toRedondear((value== 0? this.getCosto(): value)- this.getValor()); 
-  	setDiferencia(this.getValor()== 0? 0: Numero.toRedondear(value* 100/ this.getValor()));
+		setReal(Numero.toRedondearSat(value== 0? this.getCosto(): value));
+		value= Numero.toRedondearSat((value== 0? this.getCosto(): value)- this.getValor()); 
+  	setDiferencia(this.getValor()== 0? 0: Numero.toRedondearSat(value* 100/ this.getValor()));
 	}	// toDiferencia	
 }
