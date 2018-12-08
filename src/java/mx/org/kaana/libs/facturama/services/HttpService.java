@@ -34,27 +34,32 @@ public abstract class HttpService<TI, TO> {
 	}
 
 	protected final Response Execute(Request request) throws IOException, FacturamaException, Exception {
-		Response response = null;
+		Response response= null;
+		StringBuilder sb = new StringBuilder();
 		try {
 			response = httpClient.newCall(request).execute();
-
 			switch (response.code()) {
 				case 400: // BadRequest                    
 					String jsonData = response.body().string();
 					ModelException exception = new Gson().fromJson(jsonData, ModelException.class);
-
-					throw new FacturamaException(exception.getMessage(), exception);
-
+					sb.append(exception.getMessage());
+					for (String key : exception.getDetails().keySet()) {
+						sb.append(key).append("= ");
+						String[] msgs= exception.getDetails().get(key);
+						for (String msg : msgs) {
+  						sb.append(msg).append("|");
+						} // for
+					} // for 
+					throw new FacturamaException(sb.toString(), exception);
 				case 401: // Unauthorized
-					throw new FacturamaException("No esta autorizado para realizar esta petición, verifique su usuario y contraseña y que su suscripción se encuentre activa");
-
+					throw new FacturamaException("No esta autorizado para realizar esta peticion, verifique su usuario y contrasenia y que su suscripcion se encuentre activa");
 				case 500: // InternalServerError
 					throw new Exception(response.message());
-			}
-		} catch (ProtocolException ex) {
-			throw new FacturamaException("No esta autorizado para realizar esta petición, verifique su usuario y contraseña y que su suscripción se encuentre activa");
+			} // switch
+		} // try
+		catch (ProtocolException ex) {
+			throw new FacturamaException("No esta autorizado para realizar esta peticion, verifique su usuario y contrasenia y que su suscripcion se encuentre activa");
 		}
-
 		return response;
 	}
 
