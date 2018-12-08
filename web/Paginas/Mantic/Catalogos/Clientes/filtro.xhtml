@@ -114,6 +114,9 @@
 							</f:facet>
 							<h:outputText value="#{filtro['dias']}"/>
 						</p:column>
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
+							<h:graphicImage library="janal" name="icon/semaforos/#{empty(filtro.idFacturama)? 'circulo-gris.png': 'circulo-verde.png'}" title="Cliente #{empty(filtro.idFacturama)? 'NO': ''} registrado en facturama"/>
+						</p:column>
             <f:facet name="footer">
               <p:outputLabel value="Total [#{manticCatalogosClientesFiltro.lazyModel==null?0:manticCatalogosClientesFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>

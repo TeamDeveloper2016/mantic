@@ -2392,7 +2392,7 @@
         from      
           tc_mantic_proveedores
         where      
-          id_proveedor = {idProveedor} and razon_social = '{razonSocial}' and id_empresa = {idEmpresa}
+          rfc = '{rfc}' and id_empresa = {idEmpresa}
       </select>
 			<select id="porCodigo">			
         select      
@@ -2466,7 +2466,7 @@
         from      
           tc_mantic_clientes
         where      
-          id_cliente = {idCliente}
+          rfc = {rfc} and id_empresa = {idEmpresa}
       </select>    
 			<select id="sucursales">
         select      

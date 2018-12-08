@@ -136,6 +136,9 @@
 							</f:facet>
 							<h:outputText value="#{row['stock']}"/>
 						</p:column>					
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-col-38">
+							<h:graphicImage library="janal" name="icon/semaforos/#{empty(filtro.idFacturama)? 'circulo-gris.png': 'circulo-verde.png'}" title="Articulo #{empty(filtro.idFacturama)? 'NO': ''} registrado en facturama"/>
+						</p:column>
 						<f:facet name="footer">
 							Total [#{manticCatalogosArticulosFiltro.lazyModel==null?0:manticCatalogosArticulosFiltro.lazyModel.rowCount}] registros
 						</f:facet>
