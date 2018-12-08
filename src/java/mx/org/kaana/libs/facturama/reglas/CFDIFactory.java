@@ -3,7 +3,6 @@ package mx.org.kaana.libs.facturama.reglas;
 import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.libs.facturama.container.FacturamaApi;
@@ -24,6 +23,8 @@ import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *@company MANTIC
@@ -34,7 +35,8 @@ import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
  */
 
 public class CFDIFactory implements Serializable {
-
+	
+	private static final Log LOG=LogFactory.getLog(CFDIFactory.class);
 	private static final long serialVersionUID =-5361573067043698091L;
   private static final String USER           = "FERRBONANZA";
   private static final String PASSWORD       = "ZABONAN2018";
@@ -211,6 +213,9 @@ public class CFDIFactory implements Serializable {
 		try {
 			regresar= new ArrayList<>();
 			for(ArticuloFactura record: articulos) {
+				// ESTE AJUSTE ES PARA QUITAR LOS PROBLEMAS DEL REDONDEO A DOS DECIMALES 
+				double diferencia= Numero.toRedondear(record.getTotal()- (record.getImpuestos()+ record.getSubtotal()));
+				record.setSubtotal(Numero.toRedondear(record.getSubtotal()+ diferencia));
 				articulo= new Item();
 				articulo.setProductCode(record.getCodigoHacienda());
 				articulo.setIdentificationNumber(record.getIdentificador());
@@ -515,6 +520,15 @@ public class CFDIFactory implements Serializable {
 	
 	public void toSendMail(String email, String id) throws Exception {
 		this.facturama.Cfdis().SendEmail(email, CfdiService.InvoiceType.Issued, id);
+	}
+	
+	public static void main(String ... args) {
+		double subtotal= 0.72;
+		double impuestos= 0.12;
+		double total= 0.85;
+		double diferencia= Numero.toRedondear(total- (impuestos+ subtotal));
+		subtotal+= diferencia;
+		LOG.info(" diferencia: "+ diferencia+ "  subtotal: "+ subtotal);
 	}
 	
 }
