@@ -51,18 +51,15 @@ public class Filtro extends Comun implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> campos = null;
+    List<Columna> campos      = null;
+		Map<String, Object> params= null;
     try {
       campos = new ArrayList<>();
+			params= new HashMap<>();
       campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			String search= new String((String)this.attrs.get("nombre"));
-			if(!Cadena.isVacio(search)) {
-				search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
-				this.attrs.put("expresion", search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*"));
-			} // if
-			else
-				this.attrs.put("expresion", "A");
-      this.lazyModel = new FormatCustomLazy("VistaArticulosDto", "row", this.attrs, campos);
+			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
+			params.put("condicion", toCondicion());			
+      this.lazyModel = new FormatCustomLazy("VistaArticulosDto", "row", params, campos);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -73,6 +70,30 @@ public class Filtro extends Comun implements Serializable {
       Methods.clean(campos);
     } // finally		
   } // doLoad
+	
+	private String toCondicion(){
+		String regresar        = null;
+		String search          = null;
+		StringBuilder condicion= null;
+		try {
+			condicion= new StringBuilder();
+			if(!Cadena.isVacio(this.attrs.get("codigo")))
+				condicion.append("upper(tc_mantic_articulos_codigos.codigo) like upper('%").append(this.attrs.get("codigo")).append("%') and ");			
+			search= (String) this.attrs.get("nombre");
+			if(!Cadena.isVacio(search)) {
+				search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();				
+				condicion.append("upper(tc_mantic_articulos.nombre) regexp upper('.*").append(search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*")).append(".*') and ");						
+			} // if									
+			if(Cadena.isVacio(condicion))
+				regresar= Constantes.SQL_VERDADERO;
+			else
+				regresar= condicion.substring(0, condicion.length()-4);
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toCondicion
 
   public String doAccion(String accion) {
     EAccion eaccion = null;
