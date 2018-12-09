@@ -364,7 +364,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     } // catch   
 	}	
 	
-	public void doRecoverArticulo(Integer index){
+	public void doRecoverArticulo(Integer index) {
 		try {
 			if(index>= 0 && index< this.getAdminOrden().getArticulos().size()) {
 				this.attrs.put("seleccionado", this.getAdminOrden().getArticulos().get(index).toEntity());

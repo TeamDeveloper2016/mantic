@@ -83,8 +83,10 @@ public abstract class IAdminArticulos implements Serializable {
   public boolean add(Articulo articulo) throws Exception {
 		if(this.articulos.indexOf(articulo)< 0) {
 			this.toFillCodigo(articulo);
-		  this.articulos.add(this.articulos.size()-2, articulo);
-   		this.toCalculate();
+			if(this.articulos.size()<= 1)
+		    this.articulos.add(0, articulo);
+			else
+		    this.articulos.add(this.articulos.size()- 1, articulo);
 			return true;
 		} // if
 		else

@@ -604,9 +604,17 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
 				"",
 				1L
 			);
-			if(this.getAdminOrden().add(item))
-				RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
-			RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ item.toMap()+ "');");
+			int position= this.getAdminOrden().getArticulos().indexOf(item);
+			if(this.getAdminOrden().getArticulos().size()> 1 && position>= 0) {
+				this.getAdminOrden().getArticulos().get(position).setCantidad(this.getAdminOrden().getArticulos().get(position).getCantidad()+ item.getCantidad());
+				RequestContext.getCurrentInstance().execute("jsArticulos.exists("+ position+ ");");
+			} // if
+			else {
+				if(this.getAdminOrden().add(item))
+					RequestContext.getCurrentInstance().execute("jsArticulos.update("+ (this.adminOrden.getArticulos().size()- 1)+ ");");
+				RequestContext.getCurrentInstance().execute("jsArticulos.callback('"+ item.toMap()+ "');");
+			}   // if
+			this.getAdminOrden().toCalculate();
 		} // try
 		finally {
 			Methods.clean(params);
