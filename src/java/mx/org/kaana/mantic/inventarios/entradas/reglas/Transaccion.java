@@ -398,10 +398,14 @@ public class Transaccion extends Inventarios implements Serializable {
 					1L
 				);
 				TcManticNotasArchivosDto exists= (TcManticNotasArchivosDto)DaoFactory.getInstance().toEntity(TcManticNotasArchivosDto.class, "TcManticNotasArchivosDto", "identically", tmp.toMap());
-				if(exists== null) {
+				File file= new File(tmp.getAlias());
+				if(exists== null && file.exists()) {
 					DaoFactory.getInstance().updateAll(sesion, TcManticNotasArchivosDto.class, tmp.toMap());
 					DaoFactory.getInstance().insert(sesion, tmp);
 				} // if
+				else
+				  if(!file.exists())
+						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
 				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, this.xml, 1L));
 			} // if	
@@ -421,10 +425,14 @@ public class Transaccion extends Inventarios implements Serializable {
 					1L
 				);
 				TcManticNotasArchivosDto exists= (TcManticNotasArchivosDto)DaoFactory.getInstance().toEntity(TcManticNotasArchivosDto.class, "TcManticNotasArchivosDto", "identically", tmp.toMap());
-				if(exists== null) {
+				File file= new File(tmp.getAlias());
+				if(exists== null && file.exists()) {
 					DaoFactory.getInstance().updateAll(sesion, TcManticNotasArchivosDto.class, tmp.toMap());
 					DaoFactory.getInstance().insert(sesion, tmp);
 				} // if
+				else
+				  if(!file.exists())
+						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
 				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
 			} // if	

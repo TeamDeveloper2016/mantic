@@ -300,13 +300,13 @@ public final class DaoFactory<T extends IBaseDto> {
    *
    * @param session Session de hibernate en la cual persisten los datos
    * @param dto Dto que contiene la informacion del registro a modificar
-   * @param fieldsDto Map<String,Object> que contiene los campos a modificar con su correspondite nuevo valor.
+   * @param fields Map<String,Object> que contiene los campos a modificar con su correspondite nuevo valor.
    * @return Valor Long con el idKey del registro modificado. Si valor=-1 el registro no se eliminó.
    * @throws Exception
    */
-  public Long update(Session session, T dto, Map fieldsDto) throws Exception {
+  public Long update(Session session, T dto, Map fields) throws Exception {
     try {
-      return update(session, dto.toHbmClass(), dto.getKey(), fieldsDto);
+      return update(session, dto.toHbmClass(), dto.getKey(), fields);
     } // try
     catch (Exception e) {
       throw e;
@@ -321,16 +321,16 @@ public final class DaoFactory<T extends IBaseDto> {
    * @param session Session de hibernate en la cual persisten los datos
    * @param dto Dto que contiene la informacion del registro a modificar
    * @param key idKey del registro a modificar
-   * @param fieldsDto Map<String,Object> que contiene los campos a modificar con su correspondite nuevo valor.
+   * @param fields Map<String,Object> que contiene los campos a modificar con su correspondite nuevo valor.
    * @return Valor Long con el idKey del registro modificado. Si valor=-1 el registro no se eliminó.
    * @throws Exception
    */
-  public Long update(Session session, Class dto, Long key, Map fieldsDto) throws Exception {
+  public Long update(Session session, Class dto, Long key, Map fields) throws Exception {
     IBaseDao dao = null;
     try {
       dao = new DaoFacade(dto);
-      fieldsDto.put("key", key);
-      return dao.update(session, fieldsDto);
+      fields.put("key", key);
+      return dao.update(session, fields);
     } // try
     catch (Exception e) {
       throw e;
@@ -358,13 +358,13 @@ public final class DaoFactory<T extends IBaseDto> {
    * campos y valores a modificar del registro
    *
    * @param dto Dto a modificar
-   * @param fieldsDto Map<String,Object> que contiene los campos a modificar con su correspondite nuevo valor.
+   * @param fields Map<String,Object> que contiene los campos a modificar con su correspondite nuevo valor.
    * @return Valor Long con el idKey del registro modificado. Si valor=-1 el registro no se insertó
    * @throws Exception
    */
-  public Long update(T dto, Map fieldsDto) throws Exception {
+  public Long update(T dto, Map fields) throws Exception {
     try {
-      return update(dto.toHbmClass(), dto.getKey(), fieldsDto);
+      return update(dto.toHbmClass(), dto.getKey(), fields);
     } // try
     catch (Exception e) {
       throw e;
@@ -378,29 +378,29 @@ public final class DaoFactory<T extends IBaseDto> {
    *
    * @param dto Dto a modificar
    * @param key Valor del idKey del registro a modificar
-   * @param fieldsDto Map<String,Object> que contiene los campos a modificar con su correspondite nuevo valor.
+   * @param fields Map<String,Object> que contiene los campos a modificar con su correspondite nuevo valor.
    * @return Valor Long con el idKey del registro modificado. Si valor=-1 el registro no se insertó
    * @throws Exception
    */
-  public Long update(Class dto, Long key, Map fieldsDto) throws Exception {
+  public Long update(Class dto, Long key, Map fields) throws Exception {
     IBaseDao dao = null;
     try {
       dao = new DaoFacade(dto);
-      fieldsDto.put("key", key);
-      return dao.update(fieldsDto);
+      fields.put("key", key);
+      return dao.update(fields);
     } // try
     catch (Exception e) {
       throw e;
     } // catch
   }
 
-  public Long update(Long idFuenteDato, Map fieldsDto, T dto) throws Exception {
+  public Long update(Long idFuenteDato, Map fields, T dto) throws Exception {
     IBaseDao dao = null;
     Long key = -1L;
     try {
       dao = new DaoFacade(dto.toHbmClass());
-      fieldsDto.put("key", dto.getKey());
-      key = dao.update(idFuenteDato, fieldsDto, dto);
+      fields.put("key", dto.getKey());
+      key = dao.update(idFuenteDato, fields, dto);
     } // try
     catch (Exception e) {
       throw e;

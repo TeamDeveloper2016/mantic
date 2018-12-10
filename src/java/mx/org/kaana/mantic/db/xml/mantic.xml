@@ -1061,7 +1061,6 @@
           tc_mantic_notas_archivos
         where      
           ruta = '{ruta}'
-				  and id_tipo_archivo= {idTipoArchivo}
 				  and id_principal= 1
 				order by
 				  ruta
@@ -1123,7 +1122,6 @@
           tc_mantic_creditos_archivos
         where      
           ruta = '{ruta}'
-				  and id_tipo_archivo= {idTipoArchivo}
 				  and id_principal= 1
 				order by
 				  ruta

@@ -5451,6 +5451,7 @@
       </select>
 			<select id="entradaArchivos">
 				select
+				  tc_mantic_notas_archivos.id_nota_archivo as id_key,
 				  tc_mantic_notas_archivos.alias
         from 
           tc_mantic_notas_entradas                
@@ -5458,6 +5459,7 @@
           tc_mantic_notas_archivos on tc_mantic_notas_archivos.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada				
 				where
   				tc_mantic_notas_entradas.id_nota_entrada= {idNotaEntrada}
+				  and tc_mantic_notas_archivos.id_principal= 1
 			</select>	
 			<select id="devolucion">
         select          
@@ -5501,6 +5503,7 @@
       </select>
 			<select id="creditoArchivos">
 				select
+				  tc_mantic_creditos_archivos.id_credito_archivo as id_key,
 				  tc_mantic_creditos_archivos.alias
         from 
           tc_mantic_creditos_notas                
@@ -5508,6 +5511,7 @@
           tc_mantic_creditos_archivos on tc_mantic_creditos_archivos.id_credito_nota= tc_mantic_creditos_notas.id_credito_nota
 				where
   				tc_mantic_creditos_notas.id_credito_nota= {idCreditoNota}
+				  and tc_mantic_creditos_notas.id_principal= 1
 			</select>	
 		</unit>		
 		<unit id="VistaIndicadoresTableroDto">

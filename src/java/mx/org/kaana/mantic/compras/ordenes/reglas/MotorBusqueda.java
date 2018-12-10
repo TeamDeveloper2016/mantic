@@ -6,18 +6,26 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.TreeOrden;
+import mx.org.kaana.mantic.db.dto.TcManticCreditosArchivosDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasArchivosDto;
+import mx.org.kaana.mantic.db.dto.TcManticNotasEntradasDto;
 import mx.org.kaana.mantic.enums.EDocumentosOrden;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 
 public class MotorBusqueda implements Serializable {
 
+	private static final Log LOG=LogFactory.getLog(MotorBusqueda.class);
 	private static final long serialVersionUID=5778899664321119975L;
 	
 	private Long id;
@@ -74,7 +82,7 @@ public class MotorBusqueda implements Serializable {
 							case DEVOLUCION:
 								item.setTipo(EDocumentosOrden.NOTA_CREDITO);
 								item.setUltimoNivel(true);
-								this.toFillDocuments("creditoArchivos", "idCreditoNota", item.getId(), Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").length()+ "|NOTASDECREDITO|");
+								this.toFillDocuments(TcManticCreditosArchivosDto.class, "creditoArchivos", "idCreditoNota", item.getId(), Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").length()+ "|NOTASDECREDITO|");
 								type="credito";
 								break;
 							case NOTA_ENTRADA:
@@ -83,7 +91,7 @@ public class MotorBusqueda implements Serializable {
 								break;
 							case ORDEN_COMPRA:
 								item.setTipo(EDocumentosOrden.NOTA_ENTRADA);
-								this.toFillDocuments("entradaArchivos", "idNotaEntrada", item.getId(), Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").length()+ "|NOTASDEENTRADA|");
+								this.toFillDocuments(TcManticNotasArchivosDto.class, "entradaArchivos", "idNotaEntrada", item.getId(), Configuracion.getInstance().getPropiedadSistemaServidor("notasentradas").length()+ "|NOTASDEENTRADA|");
 								type="entrada";
 								break;							
 						} // switch
@@ -98,7 +106,7 @@ public class MotorBusqueda implements Serializable {
 		return regresar;
 	} // toChildrens
 
-	private void toFillDocuments(String idKey, String key, Long id, String path) throws Exception {
+	private void toFillDocuments(Class dto, String idKey, String key, Long id, String path) throws Exception {
 		Map<String, Object> params=null;
 		try {
 			params=new HashMap<>();
@@ -106,9 +114,23 @@ public class MotorBusqueda implements Serializable {
 			List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaEstructuraOrdenesCompraDto", idKey, params, Constantes.SQL_TODOS_REGISTROS);
 			if(items!= null && !items.isEmpty())
 				for (Entity item : items) {
-					File reference= new File(path+ item.toString("alias"));
+					File reference= new File(item.toString("alias"));
 					if(reference.exists())
 				    this.files.add(path+ item.toString("alias"));	
+					else {
+						// POR ALGUNA RAZON EL ARCHIVO NO SE ENCUENTRA EN LA CARPETA QUE DEBERIA DE ESTAR
+      			try {
+							IBaseDto update= DaoFactory.getInstance().findById(dto, item.toLong("idKey"));
+							if(update!= null) {
+							  Methods.setValue(update, "idPrincipal", new Object[] {2L});
+  						  DaoFactory.getInstance().update(update);
+							} // if	
+						} // try
+						catch (Exception e) {
+							LOG.warn("No se puedo actualizar el "+ dto.getClass().getSimpleName());
+							Error.mensaje(e);
+						} // catch
+					} // else	
 				} // for
 		} // try
 		catch (Exception e) {
@@ -123,6 +145,12 @@ public class MotorBusqueda implements Serializable {
 	protected void finalize() throws Throwable {
 		super.finalize();
 		Methods.clean(this.files);
+	}
+	
+	public static void main(String ... args) throws NoSuchFieldException, Exception {
+		IBaseDto update= DaoFactory.getInstance().findById(TcManticNotasEntradasDto.class, 1L);
+		Methods.setValue(update, "observaciones", new Object[] {"ESTO ES UN DEMO DE REFLECTION"});
+		LOG.info(update);
 	}
 	
 }

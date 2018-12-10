@@ -197,7 +197,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				  File file= new File(matched);
 				  file.delete();
 				} // if
-      } // for // for // for // for
+      } // for 
 	}
 	
 	private List<Nombres> toListFile(Session sesion, Importado tmp, Long idTipoArchivo) throws Exception {
@@ -240,10 +240,14 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					1L
 				);
 				TcManticCreditosArchivosDto exists= (TcManticCreditosArchivosDto)DaoFactory.getInstance().toEntity(TcManticCreditosArchivosDto.class, "TcManticCreditosArchivosDto", "identically", tmp.toMap());
-				if(exists== null) {
+				File file= new File(tmp.getAlias());
+				if(exists== null && file.exists()) {
 					DaoFactory.getInstance().updateAll(sesion, TcManticCreditosArchivosDto.class, tmp.toMap());
 					DaoFactory.getInstance().insert(sesion, tmp);
 				} // if
+				else
+				  if(!file.exists())
+						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
 				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, this.xml, 1L));
 			} // if	
@@ -263,10 +267,14 @@ public class Transaccion extends IBaseTnx implements Serializable {
 					1L
 				);
 				TcManticCreditosArchivosDto exists= (TcManticCreditosArchivosDto)DaoFactory.getInstance().toEntity(TcManticCreditosArchivosDto.class, "TcManticCreditosArchivosDto", "identically", tmp.toMap());
-				if(exists== null) {
+				File file= new File(tmp.getAlias());
+				if(exists== null && file.exists()) {
 					DaoFactory.getInstance().updateAll(sesion, TcManticCreditosArchivosDto.class, tmp.toMap());
 					DaoFactory.getInstance().insert(sesion, tmp);
 				} // if
+				else
+					if(!file.exists())
+						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
 				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("notascreditos").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
 			} // if	

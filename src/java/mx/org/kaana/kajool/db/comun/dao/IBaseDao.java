@@ -91,15 +91,15 @@ public abstract class IBaseDao<T extends IBaseDto> {
 
   public abstract Long delete(Long idFuenteDato, Long key) throws Exception;
 
-  public abstract Long update(Session session, Map fieldsDto) throws Exception;
+  public abstract Long update(Session session, Map fields) throws Exception;
 
-  public abstract Long update(Map fieldsDto) throws Exception;
+  public abstract Long update(Map fields) throws Exception;
 
-  public abstract Long update(Session session, Long key, Map fieldsDto) throws Exception;
+  public abstract Long update(Session session, Long key, Map fields) throws Exception;
 
-  public abstract Long update(Long key, Map fieldsDto) throws Exception;
+  public abstract Long update(Long key, Map fields) throws Exception;
 
-  public abstract Long update(Long idFuenteDato, Map fieldsDto, T dto) throws Exception;
+  public abstract Long update(Long idFuenteDato, Map fields, T dto) throws Exception;
 
   public abstract Long deleteAll(Map params) throws Exception;
 
@@ -250,22 +250,22 @@ public abstract class IBaseDao<T extends IBaseDto> {
     return regresar;
   }
 
-  protected Long update(Session session, T dto, Map fieldsDto) throws Exception {
+  protected Long update(Session session, T dto, Map fields) throws Exception {
     try {
-      return update(session, dto.toHbmClass(), fieldsDto);
+      return update(session, dto.toHbmClass(), fields);
     } // try
     catch (Exception e) {
       throw e;
     } // catch  
   }
 
-  protected Long update(Session session, Class dto, Map fieldsDto) throws Exception {
+  protected Long update(Session session, Class dto, Map fields) throws Exception {
     T ibaseDto = null;
     Long regresar = -1L;
     try {
       ibaseDto = (T) session.get(dto, getKey());
       if (ibaseDto != null) {
-        FieldDto.updateFields(ibaseDto, fieldsDto);
+        FieldDto.updateFields(ibaseDto, fields);
         regresar = (Long) session.save(dto.getSimpleName(), ibaseDto);
       }// if  
     } // try
@@ -275,7 +275,7 @@ public abstract class IBaseDao<T extends IBaseDto> {
     return regresar;
   }
 
-  protected Long update(Class dto, Map fieldsDto) throws Exception {
+  protected Long update(Class dto, Map fields) throws Exception {
     Session session = null;
     Transaction transaction = null;
     Long regresar = -1L;
@@ -283,7 +283,7 @@ public abstract class IBaseDao<T extends IBaseDto> {
       session = SessionFactoryFacade.getInstance().getSession();
       transaction = session.beginTransaction();
       session.clear();
-      regresar = update(session, dto, fieldsDto);
+      regresar = update(session, dto, fields);
       transaction.commit();
     } // try
     catch (Exception e) {
@@ -302,9 +302,9 @@ public abstract class IBaseDao<T extends IBaseDto> {
     return regresar;
   }
 
-  protected Long update(T dto, Map fieldsDto) throws Exception {
+  protected Long update(T dto, Map fields) throws Exception {
     try {
-      return update(dto.toHbmClass(), fieldsDto);
+      return update(dto.toHbmClass(), fields);
     } // try
     catch (Exception e) {
       throw e;
