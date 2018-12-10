@@ -5213,6 +5213,7 @@
 			</select>
 			<select id="detalle">
 				select
+					tc_mantic_ficticias_detalles.id_ficticia_detalle as id_key,
 					tc_mantic_ficticias_detalles.id_ficticia_detalle as id_comodin,
           tc_mantic_ficticias_detalles.*,
 					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
@@ -5228,6 +5229,7 @@
 			</select>
 			<select id="facturaFicticia">				
         select      
+				  tc_mantic_ficticias.id_ficticia as id_key,
 				  tc_mantic_ficticias.*,
 					tc_mantic_facturas.id_factura
         from      
