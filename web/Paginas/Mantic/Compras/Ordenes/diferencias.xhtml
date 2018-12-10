@@ -105,11 +105,16 @@
               </f:facet>
               <h:outputText value="#{row['nombre']}" title="Código propio: #{row['propio']}"/>
             </p:column>
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.costo}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{row.costo}">
               <f:facet name="header">
                 <h:outputText value="Costo"/>
               </f:facet>
-              <h:outputText value="#{row['costo']}"/>
+							<div class="ui-grid-row janal-grid-row">
+								<div class="ui-grid-col-12 janal-column-right">
+									<h:outputLabel value="&lt;span class='#{row['color']}' style='float:left;'&gt;[#{row['porcentaje']}%]&lt;/span&gt;" escape="false"/>
+									<h:outputText value="#{row['costo']}"/>
+								</div>	 
+							</div>	
             </p:column>		
             <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.cantidad}">
               <f:facet name="header">

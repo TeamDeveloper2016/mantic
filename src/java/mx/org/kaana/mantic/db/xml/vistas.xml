@@ -3576,7 +3576,9 @@
 					tc_mantic_ordenes_detalles.importes,
 					tc_mantic_ordenes_detalles.importes as valores,
 				  tc_mantic_ordenes_compras.id_orden_compra,
-					tc_mantic_ordenes_detalles.id_articulo
+					tc_mantic_ordenes_detalles.id_articulo,
+				  if(if(tc_mantic_ordenes_detalles.costo is null, 100, (tc_mantic_ordenes_detalles.costo* 100/ tc_mantic_ordenes_detalles.costo_real)- 100)&lt; -5, 'janal-color-orange', if(if(tc_mantic_ordenes_detalles.costo is null, 100, (tc_mantic_ordenes_detalles.costo* 100/ tc_mantic_ordenes_detalles.costo_real)-100)&gt; 5, 'janal-color-blue', 'janal-color-green')) as color,
+				  if(tc_mantic_ordenes_detalles.costo is null, 100, (tc_mantic_ordenes_detalles.costo* 100/ tc_mantic_ordenes_detalles.costo_real)- 100) as porcentaje
 				from
 					tc_mantic_ordenes_compras
 				inner join

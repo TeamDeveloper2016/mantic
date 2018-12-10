@@ -35,6 +35,7 @@
     	$(document).ready(function() {
 				setTimeout("janal.readingMode('#{manticComprasOrdendesAccion.attrs.nombreAccion}')", 500);
         jsArticulos= new Janal.Control.Articulos.Core(#{manticComprasOrdendesAccion.adminOrden.articulos.size()});
+				janal.decimals= 4;
       });
 			
 			function execute(lock) {
