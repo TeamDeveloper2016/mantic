@@ -11,26 +11,26 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'contenedorGrupos\\:consecutivo': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:herramienta': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:marca': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:modelo': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:caracteristicas': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:reparacion': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:idTipoMedioPago': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},                
-				'contenedorGrupos\\:clave': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:rfc': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:consecutivo': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:herramienta': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:marca': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:modelo': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:caracteristicas': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:reparacion': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        //'contenedorGrupos\\:idTipoMedioPago': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},                
+				'contenedorGrupos\\:clave': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:rfc': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'contenedorGrupos\\:razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:limiteCredito': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:plazo': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},        
         'contenedorGrupos\\:fechaEstimada': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},        
-        'contenedorGrupos\\:correo': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},        
-        'contenedorGrupos\\:telefono': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'}        
+        'contenedorGrupos\\:correo': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},        
+        'contenedorGrupos\\:telefono': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
       };		
 			
 			fieldsDialog= {
-				'busqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
+				'busqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
 			};
 			
 			$(document).ready(function(){janal.readingMode('#{manticTallerAccion.attrs.nombreAccion}');});
@@ -61,10 +61,10 @@
 									<f:selectItem itemValue="1" itemLabel="GARANTIA"/>
 									<f:selectItem itemValue="2" itemLabel="REPARACIÓN"/>
 								</p:selectOneMenu>
-								<p:outputLabel for="idTipoMedioPago" value="Medio de pago:"/>
+								<!--p:outputLabel for="idTipoMedioPago" value="Medio de pago:"/>
 								<p:selectOneMenu id="idTipoMedioPago" value="#{manticTallerAccion.registroServicio.servicio.idTipoMedioPago}" styleClass="janal-wid-100-txt">
 									<f:selectItems value="#{manticTallerAccion.attrs.mediosPagos}"/>
-								</p:selectOneMenu>
+								</p:selectOneMenu-->
 								<p:outputLabel for="fechaEstimada" value="Fecha estimada:"/>
 								<p:calendar id="fechaEstimada" inputStyleClass="janal-wid-94" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.servicio.fechaEstimada}" mode="popup" showOn="button" pattern="dd/MM/yyyy" converter="janal.convertidor.Calendario"/>
               </p:panelGrid>
