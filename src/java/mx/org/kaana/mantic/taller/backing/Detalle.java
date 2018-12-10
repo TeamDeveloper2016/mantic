@@ -107,10 +107,11 @@ public class Detalle extends IBaseArticulos implements Serializable {
 	@Override
   public void doUpdateArticulos() {
 		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
+    Map<String, Object> params= null;
 		boolean buscaPorCodigo    = false;
     try {
 			columns= new ArrayList<>();
+			params= new HashMap<>();
       columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -196,7 +197,7 @@ public class Detalle extends IBaseArticulos implements Serializable {
 		String regresar        = null;
 		Transaccion transaccion= null;
     try {		
-			transaccion= new Transaccion(getAdminOrden().getArticulos(), Long.valueOf(this.attrs.get("idServicio").toString()), -1L);
+			transaccion= new Transaccion(getAdminOrden().getArticulos(), Long.valueOf(this.attrs.get("idServicio").toString()), null);
 			if(transaccion.ejecutar(EAccion.COMPLEMENTAR)) {
 				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
 				JsfBase.addMessage("Se agregaron las refaccion de forma correcta.", ETipoMensaje.INFORMACION);
@@ -214,6 +215,5 @@ public class Detalle extends IBaseArticulos implements Serializable {
   public String doCancelar() {   
   	JsfBase.setFlashAttribute("idServicio", this.attrs.get("idServicio"));
     return (String) this.attrs.get("retorno");
-  } // doCancelar
-	
+  } // doCancelar	
 }
