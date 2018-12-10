@@ -17,6 +17,8 @@ import mx.org.kaana.kajool.procesos.comun.Comun;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
+import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -25,6 +27,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
+import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
@@ -240,4 +243,23 @@ public class Filtro extends Comun implements Serializable {
 			JsfBase.addMessageError(e);
     } // catch   
 	} 
+	
+	public void doPublicarFacturama(){
+		TransaccionFactura transaccion= null;
+		CFDIGestor gestor             = null;
+		ArticuloFactura articulo      = null;
+		try {
+			gestor= new CFDIGestor(((Entity)this.attrs.get("seleccionado")).getKey());
+			articulo= gestor.toArticuloFactura();			
+			transaccion= new TransaccionFactura(articulo);
+			if(transaccion.ejecutar(EAccion.AGREGAR))
+				JsfBase.addMessage("Registrar articulo en facturama", "Se registro de forma correcta.");
+			else
+				JsfBase.addMessage("Registrar articulo en facturama", "Ocurrio un error al registrar el articulo en facturama.");			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doPublicarFacturama
 }
