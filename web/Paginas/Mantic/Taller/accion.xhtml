@@ -22,7 +22,7 @@
 				'contenedorGrupos\\:clave': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:rfc': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
-        'contenedorGrupos\\:limiteCredito': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+        //'contenedorGrupos\\:limiteCredito': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:plazo': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},        
         'contenedorGrupos\\:fechaEstimada': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},        
         'contenedorGrupos\\:correo': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},        
@@ -93,8 +93,8 @@
                 <p:inputText id="rfc" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.cliente.rfc}" />                    
                 <p:outputLabel for="razonSocial" value="Razon social:"/>
                 <p:inputText id="razonSocial" styleClass="janal-wid-100-txt" value="#{manticTallerAccion.registroServicio.cliente.razonSocial}"/>                    
-                <p:outputLabel for="limiteCredito" value="Limite de credito:"/>
-                <p:inputNumber id="limiteCredito" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticTallerAccion.registroServicio.cliente.limiteCredito}"/>                    																	
+                <!--p:outputLabel for="limiteCredito" value="Limite de credito:"/>
+                <p:inputNumber id="limiteCredito" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticTallerAccion.registroServicio.cliente.limiteCredito}"/-->                    																	
                 <p:outputLabel for="plazo" value="Plazo de días:"/>
                 <p:inputNumber id="plazo" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{manticTallerAccion.registroServicio.cliente.plazoDias}" decimalPlaces="0"/>                    																																	                								
 								<p:outputLabel for="telefono" value="Teléfono:"/>
