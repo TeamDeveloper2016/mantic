@@ -1451,6 +1451,14 @@
 			<delete id="rows">
         delete from tc_mantic_servicios_bitacora where id_servicio= {idServicio} 
       </delete>
+			<select id="siguiente">
+        select
+					max(consecutivo)+ 1 as siguiente
+				from 
+					tc_mantic_servicios_bitacora
+				where				  
+				  id_servicio= {idServicio}				
+			</select>			
     </unit>		
     <unit id="TcManticServiciosDetallesDto">
       <select id="row">
