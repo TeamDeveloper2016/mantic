@@ -23,10 +23,14 @@ import mx.org.kaana.mantic.enums.EEstatusClientes;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
-public class Transaccion extends IBaseTnx{
+public class Transaccion extends IBaseTnx {
 
+	private static final Log LOG=LogFactory.getLog(Transaccion.class);
+	
 	private List<Entity> cuentas;
 	private String messageError;
 	private TcManticEmpresasPagosDto pago;
@@ -157,10 +161,14 @@ public class Transaccion extends IBaseTnx{
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1)					
 				);
 				TcManticEmpresasArchivosDto exists= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "TcManticEmpresasArchivosDto", "identically", tmp.toMap());
-				if(exists== null) {
+				File reference= new File(tmp.getAlias());
+				if(exists== null && reference.exists()) {
 					DaoFactory.getInstance().updateAll(sesion, TcManticEmpresasArchivosDto.class, tmp.toMap());
 					DaoFactory.getInstance().insert(sesion, tmp);
 				} // if
+				else
+				  if(!reference.exists())
+						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
 				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.xml.getRuta()), ".".concat(this.xml.getFormat().name()), this.toListFile(sesion, this.xml, 1L));
 			} // if	
@@ -180,10 +188,14 @@ public class Transaccion extends IBaseTnx{
 					new Long(Calendar.getInstance().get(Calendar.MONTH)+ 1)					
 				);
 				TcManticEmpresasArchivosDto exists= (TcManticEmpresasArchivosDto)DaoFactory.getInstance().toEntity(TcManticEmpresasArchivosDto.class, "TcManticEmpresasArchivosDto", "identically", tmp.toMap());
-				if(exists== null) {
+				File reference= new File(tmp.getAlias());
+				if(exists== null && reference.exists()) {
 					DaoFactory.getInstance().updateAll(sesion, TcManticEmpresasArchivosDto.class, tmp.toMap());
 					DaoFactory.getInstance().insert(sesion, tmp);
 				} // if
+				else
+				  if(!reference.exists())
+						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
 				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("pagos").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
 			} // if	

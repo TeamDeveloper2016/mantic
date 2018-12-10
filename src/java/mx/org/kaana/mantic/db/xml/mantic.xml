@@ -617,7 +617,6 @@
           tc_mantic_listas_precios_archivos
         where      
           ruta = '{ruta}'
-				  and id_tipo_archivo= {idTipoArchivo}
 				  and id_principal= 1
 				order by
 				  ruta
@@ -4133,7 +4132,6 @@
           tc_mantic_clientes_archivos
         where      
           ruta = '{ruta}'
-				  and id_tipo_archivo= {idTipoArchivo}
 				  and id_principal= 1
 				order by
 				  ruta
@@ -4163,7 +4161,6 @@
           tc_mantic_empresas_archivos
         where      
           ruta = '{ruta}'
-				  and id_tipo_archivo= {idTipoArchivo}
 				  and id_principal= 1
 				order by
 				  ruta

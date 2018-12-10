@@ -124,7 +124,13 @@ public class Transaccion extends IBaseTnx {
 				);
 				DaoFactory.getInstance().updateAll(sesion, TcManticListasPreciosArchivosDto.class, tmp.toMap());
         DaoFactory.getInstance().deleteAll(sesion, TcManticListasPreciosDetallesDto.class, tmp.toMap());
-        DaoFactory.getInstance().insert(sesion, tmp);
+				
+				File file= new File(tmp.getAlias());
+				if(file.exists()) 
+          DaoFactory.getInstance().insert(sesion, tmp);
+				else
+					LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
+				
         sesion.flush();
         Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
         monitoreo.comenzar(0L);

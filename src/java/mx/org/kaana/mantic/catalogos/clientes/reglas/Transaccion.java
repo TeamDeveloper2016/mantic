@@ -37,9 +37,13 @@ import mx.org.kaana.mantic.enums.ETipoPersona;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 import org.hibernate.Session;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class Transaccion extends TransaccionFactura {
 
+	private static final Log LOG=LogFactory.getLog(Transaccion.class);
+	
 	private static final String ESTILO= "sentinel";
   private IBaseDto dto;
   private RegistroCliente registroCliente;
@@ -521,10 +525,14 @@ public class Transaccion extends TransaccionFactura {
 					this.file.getName()					
 				);
 				TcManticClientesArchivosDto exists= (TcManticClientesArchivosDto)DaoFactory.getInstance().toEntity(TcManticClientesArchivosDto.class, "TcManticClientesArchivosDto", "identically", tmp.toMap());
-				if(exists== null) {
+				File reference= new File(tmp.getAlias());
+				if(exists== null && reference.exists()) {
 					DaoFactory.getInstance().updateAll(sesion, TcManticClientesArchivosDto.class, tmp.toMap());
 					DaoFactory.getInstance().insert(sesion, tmp);
 				} // if
+				else
+				  if(!reference.exists())
+						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
 				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("clientes").concat(this.file.getRuta()), ".".concat(this.file.getFormat().name()), this.toListFile(sesion, this.file, 2L));
 			} // if	
@@ -548,10 +556,14 @@ public class Transaccion extends TransaccionFactura {
 					this.file.getName()					
 				);
 				TcManticClientesPagosArchivosDto exists= (TcManticClientesPagosArchivosDto)DaoFactory.getInstance().toEntity(TcManticClientesPagosArchivosDto.class, "TcManticClientesPagosArchivosDto", "identically", tmp.toMap());
-				if(exists== null) {
+				File reference= new File(tmp.getAlias());
+				if(exists== null && reference.exists()) {
 					DaoFactory.getInstance().updateAll(sesion, TcManticClientesPagosArchivosDto.class, tmp.toMap());
 					DaoFactory.getInstance().insert(sesion, tmp);
 				} // if
+				else
+				  if(!reference.exists())
+						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
 				sesion.flush();
 				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("cobros").concat(this.file.getRuta()), ".".concat(this.file.getFormat().name()), this.toListFile(sesion, this.file, 2L));
 			} // if	
