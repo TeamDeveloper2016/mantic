@@ -28,6 +28,8 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.respaldos.reglas.Transaccion;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -35,6 +37,7 @@ import org.primefaces.model.StreamedContent;
 @ViewScoped
 public class Filtro extends IBaseFilter implements Serializable {
 
+	private static final Log LOG=LogFactory.getLog(Filtro.class);
   private static final long serialVersionUID = 8895632457861235874L;
 
   @PostConstruct
@@ -109,8 +112,15 @@ public class Filtro extends IBaseFilter implements Serializable {
   public StreamedContent doFileDownload(Entity file) {
 		StreamedContent regresar= null;
 		try {
-		  InputStream stream = new FileInputStream(new File(file.toString("alias")));			
-		  regresar= new DefaultStreamedContent(stream, EFormatos.ZIP.getContent(), file.toString("nombre"));
+			File reference= new File(file.toString("alias"));
+			if(reference.exists()) {
+		    InputStream stream = new FileInputStream(reference);			
+		    regresar= new DefaultStreamedContent(stream, EFormatos.ZIP.getContent(), file.toString("nombre"));
+			} // if
+			else {
+				LOG.warn("No existe el archivo: "+ file.toString("alias"));
+        JsfBase.addMessage("No existe el archivo:"+ file.toString("nombre")+ ", favor de verificarlo.");
+			} // else	
 		} // try
     catch (Exception e) {
       Error.mensaje(e);

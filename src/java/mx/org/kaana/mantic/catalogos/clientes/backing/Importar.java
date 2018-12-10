@@ -224,8 +224,15 @@ public class Importar extends IBaseAttribute implements Serializable {
 	public StreamedContent doFileDownload(UISelectEntity file) {
 		StreamedContent regresar= null;
 		try {
-		  InputStream stream = new FileInputStream(new File(file.toString("alias")));			
-		  regresar= new DefaultStreamedContent(stream, EFormatos.PDF.getContent(), file.toString("nombre"));
+			File reference= new File(file.toString("alias"));
+			if(reference.exists()) {
+				InputStream stream = new FileInputStream(reference);
+  		  regresar= new DefaultStreamedContent(stream, EFormatos.PDF.getContent(), file.toString("nombre"));
+	  	} // if
+			else {
+				LOG.warn("No existe el archivo: "+ file.toString("alias"));
+        JsfBase.addMessage("No existe el archivo:"+ file.toString("nombre")+ ", favor de verificarlo.");
+			} // else	
 		} // try
     catch (Exception e) {
       Error.mensaje(e);

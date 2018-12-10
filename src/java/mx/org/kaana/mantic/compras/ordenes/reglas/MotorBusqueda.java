@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.compras.ordenes.reglas;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,7 +106,9 @@ public class MotorBusqueda implements Serializable {
 			List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaEstructuraOrdenesCompraDto", idKey, params, Constantes.SQL_TODOS_REGISTROS);
 			if(items!= null && !items.isEmpty())
 				for (Entity item : items) {
-				  this.files.add(path+ item.toString("alias"));	
+					File reference= new File(path+ item.toString("alias"));
+					if(reference.exists())
+				    this.files.add(path+ item.toString("alias"));	
 				} // for
 		} // try
 		catch (Exception e) {
