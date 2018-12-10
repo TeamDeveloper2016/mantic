@@ -2474,7 +2474,7 @@
         from      
           tc_mantic_clientes
         where      
-          rfc = {rfc} and id_empresa = {idEmpresa}
+          rfc = '{rfc}' and id_empresa = {idEmpresa}
       </select>    
 			<select id="sucursales">
         select      
