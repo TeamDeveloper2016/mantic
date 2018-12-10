@@ -71,7 +71,8 @@ public class Transaccion extends IBaseTnx{
 					break;
 				case JUSTIFICAR:
 					bitacora= (TcManticServiciosBitacoraDto) this.dto;
-					if(DaoFactory.getInstance().insert(sesion, this.dto)>= 1L){
+					bitacora.setConsecutivo(Cadena.rellenar(toSiguiente(sesion, bitacora.getIdServicio()).toString(), 5, '0', true));
+					if(DaoFactory.getInstance().insert(sesion, bitacora)>= 1L){
 						servicio= (TcManticServiciosDto) DaoFactory.getInstance().findById(sesion, TcManticServiciosDto.class, bitacora.getIdServicio());
 						servicio.setIdServicioEstatus(bitacora.getIdServicioEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, servicio)>= 1L;
@@ -108,7 +109,7 @@ public class Transaccion extends IBaseTnx{
 			this.registroServicio.getServicio().setIdCliente(this.registroServicio.getCliente().getIdCliente());			
 			idServicio= DaoFactory.getInstance().insert(sesion, this.registroServicio.getServicio());
 			if(idServicio>= 1L){
-				if(DaoFactory.getInstance().insert(sesion, loadBitacora(idServicio, this.registroServicio.getServicio().getObservaciones()))>= 1L){
+				if(DaoFactory.getInstance().insert(sesion, loadBitacora(sesion, idServicio, this.registroServicio.getServicio().getObservaciones()))>= 1L){
 					if(this.registroServicio.getServicio().getIdCliente()== null || this.registroServicio.getServicio().getIdCliente().equals(-1L)){
 						idCliente= registraCliente(sesion);
 						this.registroServicio.getServicio().setIdCliente(idCliente);
@@ -127,16 +128,17 @@ public class Transaccion extends IBaseTnx{
     return regresar;
   } // procesarCliente
 	
-	private TcManticServiciosBitacoraDto loadBitacora(Long idServicio, String observaciones){
-		return loadBitacora(ELABORADA, idServicio, observaciones);
+	private TcManticServiciosBitacoraDto loadBitacora(Session sesion, Long idServicio, String observaciones) throws Exception{
+		return loadBitacora(sesion, ELABORADA, idServicio, observaciones);
 	} // loadBitacora
 	
-	private TcManticServiciosBitacoraDto loadBitacora(Long idServicioEstatus, Long idServicio, String observaciones){
+	private TcManticServiciosBitacoraDto loadBitacora(Session sesion, Long idServicioEstatus, Long idServicio, String observaciones) throws Exception{
 		TcManticServiciosBitacoraDto regresar= new TcManticServiciosBitacoraDto();
 		regresar.setIdServicio(idServicio);
 		regresar.setIdServicioEstatus(idServicioEstatus);
 		regresar.setIdUsuario(JsfBase.getIdUsuario());
 		regresar.setSeguimiento(observaciones);
+		regresar.setConsecutivo(Cadena.rellenar((toSiguiente(sesion, idServicio)).toString(), 5, '0', true));
 		return regresar;
 	} // loadBitacora
 
@@ -279,7 +281,7 @@ public class Transaccion extends IBaseTnx{
 	} // toSiguiente
 	
 	private boolean registrarDetalle(Session sesion) throws Exception{
-		boolean regresar    = false;
+		boolean regresar    = true;
 		List<Articulo> todos= null;
 		try {
 			todos= (List<Articulo>)DaoFactory.getInstance().toEntitySet(sesion, Articulo.class, "TcManticServiciosDetallesDto", "detalle", new TcManticServiciosDto(this.idServicio).toMap());
@@ -287,17 +289,38 @@ public class Transaccion extends IBaseTnx{
 				if(this.articulos.indexOf(item)< 0)
 					DaoFactory.getInstance().delete(sesion, item);
 			for (Articulo articulo: this.articulos) {
-				TcManticServiciosDetallesDto item= articulo.toServicioDetalle();
-				item.setIdServicio(this.idServicio);
-				item.setIdTrabajo(this.idTrabajo);
-				item.setIdUsuario(JsfBase.getIdUsuario());
-				if(DaoFactory.getInstance().findIdentically(sesion, TcManticServiciosDetallesDto.class, item.toMap())== null) 
-					DaoFactory.getInstance().insert(sesion, item);
+				if(articulo.isValid()){
+					TcManticServiciosDetallesDto item= articulo.toServicioDetalle();
+					item.setIdServicio(this.idServicio);
+					item.setIdTrabajo(this.idTrabajo);
+					item.setIdUsuario(JsfBase.getIdUsuario());
+					if(DaoFactory.getInstance().findIdentically(sesion, TcManticServiciosDetallesDto.class, item.toMap())== null) 
+						DaoFactory.getInstance().insert(sesion, item);
+				} // if
 			} // for
 		} // try
 		catch (Exception e) {			
-			throw e;
+			throw e;	
 		} // catch		
 		return regresar;
 	} // registrarDetalle
+	
+	private Long toSiguiente(Session sesion, Long idServicio) throws Exception {
+		Long regresar             = 1L;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("idServicio", idServicio);
+			Value next= DaoFactory.getInstance().toField(sesion, "TcManticServiciosBitacoraDto", "siguiente", params, "siguiente");
+			if(next.getData()!= null)
+			  regresar= next.toLong();
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toSiguiente
 }
