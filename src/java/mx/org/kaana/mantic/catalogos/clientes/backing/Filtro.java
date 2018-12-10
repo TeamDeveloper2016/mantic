@@ -16,6 +16,8 @@ import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
+import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -26,6 +28,7 @@ import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.clientes.beans.RegistroCliente;
+import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 
 @Named(value = "manticCatalogosClientesFiltro")
 @ViewScoped
@@ -203,4 +206,23 @@ public class Filtro extends IBaseFilter implements Serializable {
     }// finally
 		return (List<UISelectEntity>)this.attrs.get("clientes");
 	}	
+	
+	public void doPublicarFacturama(){
+		TransaccionFactura transaccion= null;
+		CFDIGestor gestor             = null;
+		ClienteFactura cliente        = null;
+		try {
+			gestor= new CFDIGestor(((Entity)this.attrs.get("seleccionado")).getKey());
+			cliente= gestor.toClienteFactura();			
+			transaccion= new TransaccionFactura(cliente);
+			if(transaccion.ejecutar(EAccion.ACTIVAR))
+				JsfBase.addMessage("Registrar cliente en facturama", "Se registro de forma correcta.");
+			else
+				JsfBase.addMessage("Registrar cliente en facturama", "Ocurrio un error al registrar el cliente en facturama.");			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doPublicarFacturama
 }
