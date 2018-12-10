@@ -60,7 +60,9 @@
         </div>
         <div id="collapse-content" class="ui-grid-col-9">
           <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosClientesFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosClientesFiltro.lazyModel.rowCount gt manticCatalogosClientesFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
-            <f:facet name="header" >
+            <p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
+						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
+						<f:facet name="header" >
               <div class="lg-pantalla">
                 <p:menuButton   value="Opciones">
                   <p:menuitem  value="Agregar" action="#{manticCatalogosClientesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
@@ -74,6 +76,7 @@
               <div class="xs-pantalla">              
 								<p:menuitem action="#{manticCatalogosClientesFiltro.doAccion('AGREGAR')}" icon="fa fa-plus" title="Agregar" onstart="return janal.bloquear()"/>						
 								<p:menuitem action="#{manticCatalogosClientesFiltro.doPuntoVenta}" icon="fa fa-usd" title="Regresar a punto de venta" onstart="return janal.bloquear()" rendered="#{manticCatalogosClientesFiltro.attrs.puntoVenta}"/>						
+								<p:separator/>
 								<p:menuitem id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 								<p:menuitem id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
@@ -128,6 +131,8 @@
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
 						<p:separator/>
 						<p:menuitem id="importar" icon="fa fa-external-link" value="Importar" title="Importar identificacion de representante" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosClientesFiltro.doImportar}"/>
+						<p:separator rendered="#{manticCatalogosClientesFiltro.attrs.seleccionado.idFacturama eq '-1'}"/>
+						<p:menuitem id="facturama" icon="fa fa-gear" value="Publicar facturama" title="Registrar cliente en facturama" onstart="return janal.bloquear()" process="@this tabla" oncomplete="janal.desbloquear()" action="#{manticCatalogosClientesFiltro.doPublicarFacturama}" rendered="#{manticCatalogosClientesFiltro.attrs.seleccionado.idFacturama eq '-1'}"/>
           </p:contextMenu>
         </div>
       </div>
