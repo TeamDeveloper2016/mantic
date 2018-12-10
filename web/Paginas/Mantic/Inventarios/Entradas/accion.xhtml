@@ -49,6 +49,7 @@
     	$(document).ready(function() {
 				setTimeout("janal.readingMode('#{manticInventariosEntradasAccion.attrs.nombreAccion}')", 500);
         jsArticulos= new Janal.Control.Articulos.Core(#{manticInventariosEntradasAccion.adminOrden.articulos.size()});
+				janal.decimals= 4;
       });
 			
 			function execute(lock) {
@@ -453,6 +454,7 @@
 													<p:selectBooleanCheckbox value="#{row['aplicar']}" title="Click para ajustar el costo" rendered="#{row['diferenciaCosto'] gt 0}">
 														<p:ajax event="change" process="@this" update="@(.filas)"/>
 													</p:selectBooleanCheckbox>
+													<!--h:outputText value="#{row['diferenciaCosto']}"/-->
 												</p:column>		
 											</p:dataTable>
 										</p:panelGrid>	
@@ -606,6 +608,9 @@
 											<div style="display: flow-root;">
 												<p:outputLabel value="Articulos cargados del archivo XML" style="font-weight: normal;" styleClass="janal-text-white"/>
 												<div style="float:right;">
+													<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();" style="float:right;">
+														<f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{null}"/>
+													</p:commandButton> 
 													<p:commandButton title="Refrescar articulos" icon="fa fa-refresh" process="@this" update="@(.importado)" action="#{manticInventariosEntradasAccion.doLoadXmlFile()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
     											<p:commandButton update="@(.importado) @(.filas) @(.recalculo)" process="@this @(.importado)" icon="fa fa-exchange" title="Asociar articulo" actionListener="#{manticInventariosEntradasAccion.doFaltanteArticulo}" disabled="#{manticInventariosEntradasAccion.attrs.disponibles.size() eq 0 or manticInventariosEntradasAccion.attrs.faltantes.size() eq 0}" onstart="return checkValueList();"/>
 												</div>
@@ -683,6 +688,9 @@
 												<div style="display: flow-root;">
   											  <p:outputLabel value="Articulos disponibles en la orden de compra" style="font-weight: normal;" styleClass="janal-text-white"/>
 													<div style="float:right;">
+														<p:commandButton process="@this" icon="fa fa-sort-alpha-desc" title="Agregar un articulo" update="dialogoArtExpress" oncomplete="PF('dlgArtExpress').show();" style="float:right;">
+															<f:setPropertyActionListener target="#{manticCatalogosArticulosExpress.attrs.seleccionado}" value="#{null}"/>
+														</p:commandButton> 
 														<p:commandButton update="@(.importado) @(.filas) @(.recalculo)" process="@this @(.importado)" icon="fa fa-exchange" title="Asociar articulo" actionListener="#{manticInventariosEntradasAccion.doFaltanteArticulo}" disabled="#{manticInventariosEntradasAccion.attrs.disponibles.size() eq 0 or manticInventariosEntradasAccion.attrs.faltantes.size() eq 0}" onstart="return checkValueList();"/>
 													</div>
 												</div>
