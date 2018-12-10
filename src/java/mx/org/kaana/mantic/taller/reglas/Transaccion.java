@@ -8,6 +8,7 @@ import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EBooleanos;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
@@ -98,7 +99,7 @@ public class Transaccion extends IBaseTnx{
 		Long idServicio = -1L;		
 		Long consecutivo= -1L;
     try {
-      this.messageError = "Error al registrar el articulo";
+      this.messageError = "Error al registrar el servicio";
 			consecutivo= toSiguiente(sesion);
 			this.registroServicio.getServicio().setConsecutivo(Fecha.getAnioActual() + Cadena.rellenar(consecutivo.toString(), 5, '0', true));
 			this.registroServicio.getServicio().setOrden(consecutivo);
@@ -106,7 +107,7 @@ public class Transaccion extends IBaseTnx{
 			this.registroServicio.getServicio().setIdUsuario(JsfBase.getIdUsuario());
 			this.registroServicio.getServicio().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.registroServicio.getServicio().setIdServicioEstatus(ELABORADA);
-			this.registroServicio.getServicio().setIdCliente(this.registroServicio.getCliente().getIdCliente());			
+			this.registroServicio.getServicio().setIdCliente(this.registroServicio.getCliente().getIdCliente().equals(-1L) ? null : this.registroServicio.getCliente().getIdCliente());			
 			idServicio= DaoFactory.getInstance().insert(sesion, this.registroServicio.getServicio());
 			if(idServicio>= 1L){
 				if(DaoFactory.getInstance().insert(sesion, loadBitacora(sesion, idServicio, this.registroServicio.getServicio().getObservaciones()))>= 1L){
@@ -123,6 +124,7 @@ public class Transaccion extends IBaseTnx{
 			} // if
     } // try
     catch (Exception e) {
+			this.messageError= "Ocurrio un error al registrar el cliente";
       throw e;
     } // catch		
     return regresar;
@@ -143,6 +145,10 @@ public class Transaccion extends IBaseTnx{
 	} // loadBitacora
 
 	private Long registraCliente(Session sesion) throws Exception{
+		this.registroServicio.getCliente().setLimiteCredito(0.0D);
+		this.registroServicio.getCliente().setIdTipoVenta(EBooleanos.SI.getIdBooleano());
+		this.registroServicio.getCliente().setIdCredito(EBooleanos.NO.getIdBooleano());
+		this.registroServicio.getCliente().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 		Long idCliente= DaoFactory.getInstance().insert(sesion, this.registroServicio.getCliente());
 		int count     =  0;
 		for(TrManticClienteTipoContactoDto contacto: loadContactos()){
