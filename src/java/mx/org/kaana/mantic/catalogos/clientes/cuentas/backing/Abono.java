@@ -13,24 +13,30 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.catalogos.clientes.cuentas.reglas.Transaccion;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesPagosArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesPagosDto;
 import mx.org.kaana.mantic.enums.EEstatusClientes;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
+import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
+import org.primefaces.context.RequestContext;
+import org.primefaces.event.TabChangeEvent;
 
 @Named(value = "manticCatalogosClientesCuentasAbono")
 @ViewScoped
-public class Abono extends IBaseFilter implements Serializable {
+public class Abono extends IBaseImportar implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428879L;	
 	
@@ -45,6 +51,10 @@ public class Abono extends IBaseFilter implements Serializable {
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
 			this.attrs.put("mostrarBanco", false);
 			this.attrs.put("saldar", "2");
+			setFile(new Importado());
+			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_IDENTIFICACION);
+			this.attrs.put("xml", ""); 
+			this.attrs.put("file", ""); 
 			if(JsfBase.isAdminEncuestaOrAdmin())
 				loadSucursales();							
 			doLoadCajas();
@@ -247,4 +257,103 @@ public class Abono extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doValidaTipoPago
+	
+	public void doTabChange(TabChangeEvent event) {
+		if(event.getTab().getTitle().equals("Archivos")) 
+			this.doLoadImportados();
+		else if(event.getTab().getTitle().equals("Importar")) {
+			doLoadPagosArchivos();
+			this.doLoadFiles();
+		} // else if
+	}	// doTabChange	
+	
+	private void doLoadImportados() {
+		List<Columna> columns                 = null;
+		TcManticClientesDeudasDto clienteDeuda= null;
+		try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("ruta", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+			clienteDeuda= (TcManticClientesDeudasDto)DaoFactory.getInstance().findById(TcManticClientesDeudasDto.class, (Long) this.attrs.get("idClienteDeuda"));
+		  this.attrs.put("importados", UIEntity.build("VistaClientesDto", "importados", clienteDeuda.toMap(), columns));
+		} // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+    finally {
+      Methods.clean(columns);
+    }// finally
+  } // doLoadImportados	
+	
+	private void doLoadFiles() {
+		TcManticClientesPagosArchivosDto tmp= null;
+		if((Long) this.attrs.get("idClienteDeuda") > 0L) {
+			Map<String, Object> params=null;
+			try {
+				params=new HashMap<>();
+				params.put("idClienteDeuda", this.attrs.get("idClienteDeuda"));				
+				params.put("idTipoArchivo", 2L);
+				tmp= (TcManticClientesPagosArchivosDto) DaoFactory.getInstance().toEntity(TcManticClientesPagosArchivosDto.class, "VistaClientesDto", "existsPagos", params); 
+				if(tmp!= null) {
+					setFile(new Importado(tmp.getNombre(), "PDF", EFormatos.PDF, 0L, tmp.getTamanio(), "", tmp.getRuta(), tmp.getObservaciones()));
+  				this.attrs.put("file", getFile().getName()); 
+				} // if	
+			} // try
+			catch (Exception e) {
+				Error.mensaje(e);
+				JsfBase.addMessageError(e);
+			} // catch
+			finally {
+				Methods.clean(params);
+			} // finally
+		} // if
+	} // doLoadFiles	
+	
+	private void doLoadPagosArchivos(){
+		List<Columna> columns     = null;
+    Map<String, Object> params= null;
+    try {
+			params = new HashMap<>();
+			columns= new ArrayList<>();      
+      columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
+			params.put("idClienteDeuda", this.attrs.get("idClienteDeuda"));
+			this.attrs.put("pagos", UIEntity.build("VistaClientesDto", "pagosDeuda", params, columns));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	} // doLoadPagosArchivos	
+	
+	public String doImportar() {
+		String regresar        = null;
+		Transaccion transaccion= null;
+		TcManticClientesDeudasDto clienteDeuda= null;
+		try {
+			clienteDeuda= (TcManticClientesDeudasDto)DaoFactory.getInstance().findById(TcManticClientesDeudasDto.class, (Long) this.attrs.get("idClienteDeuda"));
+			transaccion= new Transaccion(getFile(), clienteDeuda, ((Entity)this.attrs.get("pagoCombo")).getKey());
+      if(transaccion.ejecutar(EAccion.SUBIR)) {
+      	RequestContext.getCurrentInstance().execute("janal.alert('Se importaron los archivos de forma correcta !');");				
+			} // if
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);
+		} // catch
+		finally{
+			setFile(new Importado());
+			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_IDENTIFICACION);
+			this.attrs.put("xml", ""); 
+			this.attrs.put("file", ""); 
+		} // finally
+    return regresar;
+	} // doAceptar
 }
