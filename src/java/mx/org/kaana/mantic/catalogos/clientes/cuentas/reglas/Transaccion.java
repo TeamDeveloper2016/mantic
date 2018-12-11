@@ -317,7 +317,8 @@ public class Transaccion extends IBaseTnx{
 					DaoFactory.getInstance().insert(sesion, tmp);
 				} // if
 				else {
-					DaoFactory.getInstance().delete(sesion, exists);
+					if(exists!= null)
+						DaoFactory.getInstance().delete(sesion, exists);
 					DaoFactory.getInstance().insert(sesion, tmp);
 				} // else
 				sesion.flush();
