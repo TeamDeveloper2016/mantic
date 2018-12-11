@@ -4274,7 +4274,7 @@
         from      
           tc_mantic_clientes_pagos_archivos
         where      
-          ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and id_cliente_pago = {idClientePago} and id_cliente_pago_archivo = {idClientePagoArchivo} and nombre = '{nombre}'
+          ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and id_cliente_pago = {idClientePago} and nombre = '{nombre}'
       </select>
     </unit>
 		<unit id="TcManticRequisicionesEstatusDto">
