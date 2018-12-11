@@ -90,7 +90,7 @@ public class Transaccion extends IBaseTnx{
 					deuda= (TcManticClientesDeudasDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDeudasDto.class, this.pago.getIdClienteDeuda());
 					saldo= deuda.getSaldo() - this.pago.getPago();
 					deuda.setSaldo(saldo);
-					deuda.setIdClienteEstatus(saldo.equals(0L) ? 3L : 2L);
+					deuda.setIdClienteEstatus(saldo.equals(0L) || this.saldar ? 3L : 2L);
 					regresar= DaoFactory.getInstance().update(sesion, deuda)>= 1L;
 				} // if
 			}
