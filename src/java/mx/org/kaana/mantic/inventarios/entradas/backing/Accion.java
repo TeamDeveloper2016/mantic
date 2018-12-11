@@ -134,6 +134,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
     } // catch		
   } // init
 
+	@Override
   public void doLoad() {
     try {
       this.attrs.put("nombreAccion", Cadena.letraCapital(this.accion.name()));

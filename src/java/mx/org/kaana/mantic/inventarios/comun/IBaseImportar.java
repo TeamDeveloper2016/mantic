@@ -219,7 +219,8 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 	private int existsItem(List<Articulo> faltantes, Concepto concepto) {
 		int regresar= 0;
 		for (Articulo faltante: faltantes) {
-			if(faltante.getNombre().equals(concepto.getDescripcion()) && faltante.getUnidadMedida().equals(concepto.getUnidad()))
+			if((faltante.getCodigo()!= null && concepto.getNoIdentificacion()!= null && faltante.getCodigo().equals(concepto.getNoIdentificacion()))  || 
+				 (faltante.getNombre().equals(concepto.getDescripcion()) && faltante.getUnidadMedida().equals(concepto.getUnidad())))
 				break;
 			else
 				regresar++;
@@ -245,35 +246,35 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 					item.setSubTotal(item.getSubTotal()+ Double.parseDouble(concepto.getImporte()));
 				} // if
 				else 
-		    //this(sinIva, tipoDeCambio, nombre, codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos, idProveedor, ultimo, solicitado, stock, excedentes, sat, unidadMedida);
-		    faltantes.add(new Articulo(
-				  sinIva,
-					tipoDeCambio,
-					concepto.getDescripcion(),
-					concepto.getNoIdentificacion(),
-					Numero.toRedondearSat(Double.parseDouble(concepto.getImporte())/ Double.parseDouble(concepto.getCantidad())), // Double.parseDouble(concepto.getValorUnitario()),
-					"", // concepto.getDescuento(),
-					-1L,
-					"",
-					0D,
-					"",
-					Double.parseDouble(concepto.getTraslado().getTasaCuota())* 100,
-					0D,
-					Numero.toRedondearSat(Double.parseDouble(concepto.getImporte())),
-					Double.parseDouble(concepto.getCantidad()),
-					-1L,
-					new Random().nextLong(),
-					0D,
-					-1L,
-					false,
-					false,
-					0D,
-					0D,
-					concepto.getClaveProdServ(),
-					concepto.getUnidad(),
-					2L,
-					concepto.getDescripcion()
-				));
+					//this(sinIva, tipoDeCambio, nombre, codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos, idProveedor, ultimo, solicitado, stock, excedentes, sat, unidadMedida);
+					faltantes.add(new Articulo(
+						sinIva,
+						tipoDeCambio,
+						concepto.getDescripcion(),
+						concepto.getNoIdentificacion(),
+						Numero.toRedondearSat(Double.parseDouble(concepto.getImporte())/ Double.parseDouble(concepto.getCantidad())), // Double.parseDouble(concepto.getValorUnitario()),
+						"", // concepto.getDescuento(),
+						-1L,
+						"",
+						0D,
+						"",
+						Double.parseDouble(concepto.getTraslado().getTasaCuota())* 100,
+						0D,
+						Numero.toRedondearSat(Double.parseDouble(concepto.getImporte())),
+						Double.parseDouble(concepto.getCantidad()),
+						-1L,
+						new Random().nextLong(),
+						0D,
+						-1L,
+						false,
+						false,
+						0D,
+						0D,
+						concepto.getClaveProdServ(),
+						concepto.getUnidad(),
+						2L,
+						concepto.getDescripcion()
+					));
 				
 			} // for
 			Collections.sort(faltantes);
@@ -299,9 +300,12 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 				params.put("idTipoArchivo", 1L);
 				tmp= (Entity)DaoFactory.getInstance().toEntity(proceso, "exists", params);
 				if(tmp!= null) {
-					this.xml= new Importado(tmp.toString("nombre"), EFormatos.XML.name(), EFormatos.XML, 0L, tmp.toLong("tamanio"), "", tmp.toString("ruta"), tmp.toString("observaciones"));
-					this.toReadFactura(new File(tmp.toString("alias")), sinIva, tipoDeCambio);
-  				this.attrs.put("xml", this.xml.getName()); 
+					File reference= new File(tmp.toString("alias"));
+					if(reference.exists()) {
+					  this.xml= new Importado(tmp.toString("nombre"), EFormatos.XML.name(), EFormatos.XML, 0L, tmp.toLong("tamanio"), "", tmp.toString("ruta"), tmp.toString("observaciones"));
+					  this.toReadFactura(reference, sinIva, tipoDeCambio);
+  				  this.attrs.put("xml", this.xml.getName()); 
+					} // if	
 				} // if	
 				params.put("idTipoArchivo", 2L);
 				tmp= (Entity)DaoFactory.getInstance().toEntity(proceso, "exists", params);
