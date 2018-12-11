@@ -102,14 +102,13 @@ public class Saldos extends IBaseFilter implements Serializable {
 
 	private Map<String, Object> toPrepare() {
 	  Map<String, Object> regresar= new HashMap<>();	
-		StringBuilder sb            = new StringBuilder();
+		StringBuilder sb            = new StringBuilder("");
 	  UISelectEntity cliente      = (UISelectEntity)this.attrs.get("cliente");
 		List<UISelectEntity>clientes= (List<UISelectEntity>)this.attrs.get("clientes");
 		if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
-			regresar.put("razonSocial", clientes.get(clientes.indexOf(cliente)).toString("razonSocial"));			
-		else
- 		  if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
-  			regresar.put("razonSocial", JsfBase.getParametro("razonSocial_input"));			
+			sb.append("tc_mantic_clientes.razon_social like '%").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial")).append("%' and ");			
+		else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
+  		sb.append("tc_mantic_clientes.razon_social like '%").append(JsfBase.getParametro("razonSocial_input")).append("%' and ");						
   	if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_mantic_ventas.consecutivo= ").append(this.attrs.get("consecutivo")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
@@ -120,7 +119,7 @@ public class Saldos extends IBaseFilter implements Serializable {
   		sb.append("(now()> tc_mantic_clientes_deudas.limite) and ");
 		if(!Cadena.isVacio(this.attrs.get("dias")))
   		sb.append("(datediff(tc_mantic_clientes_deudas.limite, now())>= ").append(this.attrs.get("dias")).append(") and ");
-		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))			
 		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
 		else
 		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
@@ -129,32 +128,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 		else	
 		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
 		return regresar;		
-	}
-	
-	private void toLoadCatalog() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= new HashMap<>();
-    try {
-			columns= new ArrayList<>();
-			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
-        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
-			else
-				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-      this.attrs.put("sucursales", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
-			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch   
-    finally {
-      Methods.clean(columns);
-      Methods.clean(params);
-    }// finally
-	}
+	} // toPrepare	
 
 	public String doRegresar() {
 	  JsfBase.setFlashAttribute("idCliente", this.attrs.get("idCliente"));		
@@ -357,6 +331,5 @@ public class Saldos extends IBaseFilter implements Serializable {
       Methods.clean(params);
     }// finally
 		return (List<UISelectEntity>)this.attrs.get("clientes");
-	}		
-		
+	} // doCompleteCliente			
 }
