@@ -167,19 +167,19 @@
 								</p:column>   
 								<p:column headerText="Unidades mínimas" styleClass="janal-wid-10 limites">#{index eq 0? 0.0: manticInventariosAlmacenesKardex.adminKardex.tiposVentas[index- 1].limite}  -  <p:inputText id="limites" value="#{item.limite}" styleClass="janal-wid-60 janal-column-right key-focus-event key-change-event recalculo" rendered="#{item.limite gt 0}" onblur="janal.individual('contenedorGrupos\\:tabla\\:#{index}\\:limites');"/>#{index eq 2? 'MAS': ''}</p:column>   
 								<p:column headerText="% Utilidad" styleClass="janal-wid-10">
-									<p:inputText id="utilidades" value="#{item.utilidad}" styleClass="janal-wid-100-txt janal-column-right key-focus-event key-change-event" readonly="#{empty(manticInventariosAlmacenesKardex.attrs.articulo.propio)}"/>
+									<p:inputText id="utilidades" value="#{item.utilidad}" styleClass="recalculo janal-wid-100-txt janal-column-right key-focus-event key-change-event" readonly="#{empty(manticInventariosAlmacenesKardex.attrs.articulo.propio)}"/>
 								</p:column>   
 								<p:column headerText="$ Precio venta" styleClass="janal-wid-10">
-									<p:inputText id="precios" value="#{item.precio}" styleClass="janal-wid-100-txt janal-column-right key-focus-event key-change-event" readonly="#{empty(manticInventariosAlmacenesKardex.attrs.articulo.propio)}"/>
+									<p:inputText id="precios" value="#{item.precio}" styleClass="recalculo janal-wid-100-txt janal-column-right key-focus-event key-change-event" readonly="#{empty(manticInventariosAlmacenesKardex.attrs.articulo.propio)}"/>
 								</p:column>   
 								<p:column headerText="IVA" styleClass="janal-wid-10 janal janal-column-right">
-									<h:outputText value="#{manticInventariosAlmacenesKardex.doPercentageValueFormat(item.iva)}"/>
+									<p:outputLabel value="#{manticInventariosAlmacenesKardex.doPercentageValueFormat(item.iva)}" styleClass="recalculo"/>
 								</p:column>   
 								<p:column headerText="Impuesto" styleClass="janal-wid-10 janal-column-right">
-									<h:outputText value="#{manticInventariosAlmacenesKardex.doMoneyValueFormat(item.impuesto)}"/>
+									<p:outputLabel value="#{manticInventariosAlmacenesKardex.doMoneyValueFormat(item.impuesto)}" styleClass="recalculo"/>
 								</p:column>   
 								<p:column headerText="Precio con IVA" styleClass="janal-wid-10 janal-column-right">
-									<h:outputText value="#{manticInventariosAlmacenesKardex.doMoneyValueFormat(item.importe)}"/>
+									<p:outputLabel value="#{manticInventariosAlmacenesKardex.doMoneyValueFormat(item.importe)}" styleClass="recalculo"/>
 								</p:column>   
 							</p:dataTable>	
 						</p:tab>
@@ -340,9 +340,11 @@
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
 			<p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticInventariosAlmacenesKardex.doAceptar}" onstart="return janal.execute(true) &amp;&amp; confirm('Esta seguro que desea guardar los cambios ?');" oncomplete="janal.desbloquear()" disabled="#{empty(manticInventariosAlmacenesKardex.attrs.articulo.propio)}" styleClass="recalculo"/>
+			<p:commandButton id="cancelar" value="Cancelar" icon="fa fa-close" accesskey="r" process="@this" action="#{manticInventariosAlmacenesKardex.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" update="contenedorGrupos:tabla @(.filas) @(.recalculo) contenedorGrupos:panelImage"/>
 		</div>		
 		<div class="xs-pantalla">
 			<p:commandButton id="aceptarIcon" value="Aceptar" icon="fa fa-check" process="@form" action="#{manticInventariosAlmacenesKardex.doAceptar}" onstart="return janal.execute(true) &amp;&amp; confirm('Esta seguro que desea guardar los cambios ?');" oncomplete="janal.desbloquear()" styleClass="recalculo"/>
+			<p:commandButton id="cancelarIcon" title="Cancelar" icon="fa fa-close" process="@this" action="#{manticInventariosAlmacenesKardex.doCancelar}" onstart="janal.bloquear()" oncomplete="janal.desbloquear()" update="contenedorGrupos:tabla @(.filas) @(.recalculo) contenedorGrupos:panelImage"/>
 		</div>		
 	</ui:define>
 </ui:composition>

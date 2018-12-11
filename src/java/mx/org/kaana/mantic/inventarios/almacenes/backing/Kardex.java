@@ -462,5 +462,15 @@ public class Kardex extends IBaseAttribute implements Serializable {
   public void doRowDblselect(SelectEvent event) {
 		this.attrs.put("encontrado", new UISelectEntity((Entity)event.getObject()));
 	}	
+
+  public String	doCancelar() {
+		if(this.attrs.get("custom")!= null) {
+		  JsfBase.addMessage("Se cargaron de nueva cuenta los datos del articulo.", ETipoMensaje.INFORMACION);
+		  this.doFindArticulo();
+	  } // if	
+		else
+		  JsfBase.addMessage("No se ha seleccionado ningun articulo.", ETipoMensaje.ALERTA);
+    return null;
+	}
 	
 }
