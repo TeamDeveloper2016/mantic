@@ -8,15 +8,50 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
   <ui:param name="titulo" value="Historial de abonos del cliente" />
   <ui:define name="librerias">
+		<h:outputStylesheet library="janal" name="css/sh.css"/>
+		<h:outputStylesheet library="janal" name="css/shCore.css"/>
+		<h:outputStylesheet library="janal" name="css/shThemeDefault.css"/>
+		<h:outputScript library="janal" name="js/sh.js"/>
+	  <h:outputScript library="janal" name="js/shCore.js"/>
+	  <h:outputScript library="janal" name="js/shAutoloader.js"/>
+	  <h:outputScript library="janal" name="js/shBrushXml.js"/>
+	  <h:outputScript library="janal" name="js/shBrushCss.js"/>
     <script type="text/javascript">
-      Janal.Control.fields = {};		
-			
-			fieldsDialog ={
-				'pago'         : {validaciones: 'requerido|menor({"cuanto": #{manticCatalogosClientesCuentasAbono.attrs.deuda.saldo}})', mascara: 'libre', grupo: 'dialogo'},
-				'referencia'   : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
-        'observaciones': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
+			Janal.Control.fields = {
+				'contenedorGrupos\\:file': {validaciones: 'requerido', mascara: 'libre'},				
+				'contenedorGrupos\\:observacionesFile': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
 			};
+
+			fieldsDialog = {
+				'pago': {validaciones: 'requerido|menor({"cuanto": #{manticCatalogosClientesCuentasAbono.attrs.deuda.saldo}})', mascara: 'libre', grupo: 'dialogo'},
+				'referencia': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
+				'observaciones': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
+			};
+			
+			function start() {
+        PF('statusDialog').show();
+      };
+ 
+      function stop() {
+        PF('statusDialog').hide();
+      };
+			
+			function load() {
+			  SyntaxHighlighter.highlight();	
+			}
     </script>		
+		<style>
+			.janal-upload-frame {
+        border: solid 1px #D1D3D4;
+        margin-bottom: 6px;
+        border-radius: 5px;				
+			}
+			.syntaxhighlighter {
+					overflow-y: auto !important;
+					overflow-x: auto !important;
+					max-height: 470px;
+			}			
+		</style>
   </ui:define>
   <ui:define name="contenido">    			
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
@@ -41,60 +76,125 @@
 			</div>
 			<div class="ui-grid-row janal-grid-row">
 				<div id="collapse-content" class="ui-grid-col-12">
-					<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosClientesCuentasAbono.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesCuentasAbono.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosClientesCuentasAbono.lazyModel.rowCount gt manticCatalogosClientesCuentasAbono.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
-						<f:facet name="header" >
-							<div class="lg-pantalla">
-								<p:menuButton   value="Opciones">
-									<p:menuitem id="pagoIcon" icon="fa fa-money" value="Registrar pago" onstart="return janal.bloquear();" oncomplete="PF('dlgPago').show();" disabled="#{manticCatalogosClientesCuentasAbono.attrs.permitirPago}"/>
-									<p:separator/>
-									<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-									<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-								</p:menuButton>
-							</div>  
-							<div class="xs-pantalla">              
-								<p:menuitem id="pagos" icon="fa fa-money" value="Registrar pago" onstart="return janal.bloquear();" oncomplete="PF('dlgPago').show();" disabled="#{manticCatalogosClientesCuentasAbono.attrs.permitirPago}"/>
-								<p:separator/>
-								<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-								<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
-							</div>  
-						</f:facet>												
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.pago}">
-							<f:facet name="header">
-								<h:outputText value="Pago"/>
-							</f:facet>
-							<h:outputText value="#{filtro['pago']}"/>
-						</p:column>				
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.tipoPago}">
-							<f:facet name="header">
-								<h:outputText value="Tipo pago"/>
-							</f:facet>
-							<h:outputText value="#{filtro['tipoPago']}"/>
-						</p:column>			
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
-							<f:facet name="header">
-								<h:outputText value="Usuario"/>
-							</f:facet>
-							<h:outputText value="#{filtro['persona']}"/>
-						</p:column>																							
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.observaciones}">
-							<f:facet name="header">
-								<h:outputText value="Observaciones"/>
-							</f:facet>
-							<h:outputText value="#{filtro['observaciones']}"/>
-						</p:column>																							
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.regitro}">
-							<f:facet name="header">
-								<h:outputText value="Fecha"/>
-							</f:facet>
-							<h:outputText value="#{filtro['registro']}"/>
-						</p:column>						
-						<f:facet name="footer">
-							<p:outputLabel value="Total [#{manticCatalogosClientesCuentasAbono.lazyModel==null?0:manticCatalogosClientesCuentasAbono.lazyModel.rowCount}] registros"/>
-						</f:facet>
-					</p:dataTable>					
+					<p:tabView id="contenedorGrupos">
+            <p:ajax event="tabChange" listener="#{manticCatalogosClientesCuentasAbono.doTabChange}" process="@this" update="@(.importado)"/>						
+            <p:tab title="Pagos">							
+							<p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosClientesCuentasAbono.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosClientesCuentasAbono.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosClientesCuentasAbono.lazyModel.rowCount gt manticCatalogosClientesCuentasAbono.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
+								<f:facet name="header" >
+									<div class="lg-pantalla">
+										<p:menuButton   value="Opciones">
+											<p:menuitem id="pagoIcon" icon="fa fa-money" value="Registrar pago" onstart="return janal.bloquear();" oncomplete="PF('dlgPago').show();" disabled="#{manticCatalogosClientesCuentasAbono.attrs.permitirPago}"/>
+											<p:separator/>
+											<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+											<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+										</p:menuButton>
+									</div>  
+									<div class="xs-pantalla">              
+										<p:menuitem id="pagos" icon="fa fa-money" value="Registrar pago" onstart="return janal.bloquear();" oncomplete="PF('dlgPago').show();" disabled="#{manticCatalogosClientesCuentasAbono.attrs.permitirPago}"/>
+										<p:separator/>
+										<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+										<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+									</div>  
+								</f:facet>												
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.pago}">
+									<f:facet name="header">
+										<h:outputText value="Pago"/>
+									</f:facet>
+									<h:outputText value="#{filtro['pago']}"/>
+								</p:column>				
+								<p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.tipoPago}">
+									<f:facet name="header">
+										<h:outputText value="Tipo pago"/>
+									</f:facet>
+									<h:outputText value="#{filtro['tipoPago']}"/>
+								</p:column>			
+								<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
+									<f:facet name="header">
+										<h:outputText value="Usuario"/>
+									</f:facet>
+									<h:outputText value="#{filtro['persona']}"/>
+								</p:column>																							
+								<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.observaciones}">
+									<f:facet name="header">
+										<h:outputText value="Observaciones"/>
+									</f:facet>
+									<h:outputText value="#{filtro['observaciones']}"/>
+								</p:column>																							
+								<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.regitro}">
+									<f:facet name="header">
+										<h:outputText value="Fecha"/>
+									</f:facet>
+									<h:outputText value="#{filtro['registro']}"/>
+								</p:column>						
+								<f:facet name="footer">
+									<p:outputLabel value="Total [#{manticCatalogosClientesCuentasAbono.lazyModel==null?0:manticCatalogosClientesCuentasAbono.lazyModel.rowCount}] registros"/>
+								</f:facet>
+							</p:dataTable>
+						</p:tab>						            						            																																																
+						<p:tab title="Archivos">
+							<p:dataTable id="importados" var="row" value="#{manticCatalogosClientesCuentasAbono.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
+								<p:column styleClass="janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   								
+								<p:column styleClass="janal-wid-20" headerText="Nombre">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-25" headerText="Usuario">
+									<h:outputText value="#{row.usuario}"/>
+								</p:column>   
+								<p:column styleClass="janal-column-rigth" headerText="Pago">
+									<h:outputText value="$#{row.pago}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-13 janal-column-center" headerText="Fecha">
+									<h:outputText value="#{row.registro}"/>
+								</p:column>   
+								<p:column headerText="Observaciones">
+									<h:outputText value="#{row.observaciones}"/>
+								</p:column>   
+								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{row.idPrincipal.toLong() eq 1}">
+										<p:fileDownload value="#{manticCatalogosClientesCuentasAbono.doFileDownload(row)}" />
+									</p:commandButton>
+								</p:column>
+								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+									<p:commandLink  actionListener="#{manticCatalogosClientesCuentasAbono.doViewFileDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();">
+										<p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
+									</p:commandLink>										
+								</p:column>
+							</p:dataTable>
+						</p:tab>						            						            																																																
+						<p:tab title="Importar">
+							<p:outputLabel for="pagos" value="Pagos:" styleClass="janal-wid-100-txt"/>
+							<p:selectOneMenu id="pagos" value="#{manticCatalogosClientesCuentasAbono.attrs.pagoCombo}" var="item" converter="janal.convertidor.Entity" styleClass="importado janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="contains">
+								<f:selectItems value="#{manticCatalogosClientesCuentasAbono.attrs.pagos}"  var="element" itemValue="#{element.key}" itemLabel="$#{element.pago} - #{element.persona}"/>
+								<p:column headerText="Pago">
+									<h:outputText value="#{item.pago}"/>
+								</p:column>   
+								<p:column headerText="Nombre">
+									<h:outputText value="#{item.persona}"/>
+								</p:column>   									
+								<p:column headerText="Tipo de pago">
+									<h:outputText value="#{item.tipoPago}"/>
+								</p:column>   									
+							</p:selectOneMenu>
+							<p:outputLabel for="observacionesFile" value="Observaciones:" styleClass="janal-wid-100-txt"/><br/>
+							<p:inputTextarea id="observacionesFile" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasAbono.file.observaciones}"/>
+							<p:spacer height="5px"/>
+							<p:fileUpload fileUploadListener="#{manticCatalogosClientesCuentasAbono.doFileUpload}" 
+														mode="advanced" process="@this observacionesFile" update="@(.importado)" label="Selecciona PDF/PNG/JPG" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+														multiple="false" allowTypes="#{manticCatalogosClientesCuentasAbono.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
+														invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosClientesCuentasAbono.attrs.formatos}"/>														
+							<p:inputText id="file" value="#{manticCatalogosClientesCuentasAbono.attrs.file}" styleClass="importado" style="display:none"/>
+							<p:commandButton id="importar" value="Importar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticCatalogosClientesCuentasAbono.doImportar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+							<p:commandLink value="Archivo importado: #{manticCatalogosClientesCuentasAbono.file.ruta}#{manticCatalogosClientesCuentasAbono.file.name}" onclick="viewDocument();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento" style="#{(empty manticCatalogosClientesCuentasAbono.file)? 'display: none': ''}"/>						
+						</p:tab>
+					</p:tabView>
 				</div>
 			</div>	
-    </div>		       
+    </div>		
+		<p:dialog modal="true" widgetVar="statusDialog" header="Estatus de la descarga del archivo" draggable="false" closable="false" resizable="false">
+			<p:graphicImage library="janal" name="/img/sistema/ajaxloadingbar.gif" />
+		</p:dialog>		
   </ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
@@ -104,7 +204,7 @@
 			<p:commandButton id="regresarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosClientesCuentasAbono.doRegresar}" immediate="true"/>
 		</div>	
 	</ui:define>	
-  <ui:param name="componenteBloqueo" value="tabla" />
+  <ui:param name="componenteBloqueo" value="contenedorGrupos" />
 	<ui:define name="dialogos">
 		<p:dialog id="dialogoPago" widgetVar="dlgPago" header="Registrar pago" resizable="false" closable="false" responsive="true" width="50%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoPago', fieldsDialog);janal.refresh();">
 			<h:form id="formDialogoPago" prependId="false">
@@ -168,10 +268,21 @@
 				</h:panelGrid>
 				<hr class="ui-widget-content"/>
 				<div class="janal-line-button">
-					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPago pago observaciones banco referencia idEmpresa caja" update="tabla panelDetalle" actionListener="#{manticCatalogosClientesCuentasAbono.doRegistrarPago}" onstart="return janal.partial('dialogo');" oncomplete="PF('dlgPago').hide(); janal.desbloquear();"/>
+					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPago pago observaciones banco referencia idEmpresa caja" update="contenedorGrupos panelDetalle" actionListener="#{manticCatalogosClientesCuentasAbono.doRegistrarPago}" onstart="return janal.partial('dialogo');" oncomplete="PF('dlgPago').hide(); janal.desbloquear();"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPago').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
 		</p:dialog>		
+		<h:form prependId="true">
+			<p:dialog id="dialogoPDF" widgetVar="dlgPDF" header="Factura en formato digital" onHide="janal.sendLastFocus();janal.desbloquear();" height="550px" width="950px" resizable="false" closeOnEscape="true" closable="true" dynamic="true">
+				<object type="application/pdf" data="#{manticCatalogosClientesCuentasAbono.attrs.temporal}" height="490px" width="100%" internalinstanceid="5">
+					 Tu navegador no soporta el desplegado de archivos PDF's, por favor da click en el boton de descargar
+				</object>
+  			<hr class="ui-widget-content"/>
+	  		<div class="janal-line-button">
+					<p:commandButton process="@this" icon="fa fa-remove" value="Cerrar" actionListener="#{manticCatalogosClientesCuentasAbono.doCerrar}" oncomplete="PF('dlgPDF').hide();"/>
+			  </div>
+			</p:dialog>			
+		</h:form>
 	</ui:define>
 </ui:composition>
