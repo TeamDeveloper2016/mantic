@@ -575,7 +575,7 @@
 									<f:facet name="header">
 										<h:outputText value="Solicitado orden de compra"/>
 									</f:facet>
-									<h:outputText value="#{row['consecutivo']} [#{row['estatus']}] (#{row['solicitado']})" title="Articulo solicitado en una orden de compra"/>
+									<h:outputText value="#{row['consecutivo']} (#{row['estatus']}) {#{row['solicitado']}} [#{row['llegaron']}]" title="Solicitados: {#{row['solicitado']} Surtidos: [#{row['llegaron']}]"/>
 								</p:column>		
 								<p:column style="width:38px; text-align: center">
 									<p:commandButton update="faltantes @(.filas) @(.recalculo)" icon="fa fa-plus" title="Agregar" action="#{manticComprasOrdendesAccion.doFaltanteArticulo}">

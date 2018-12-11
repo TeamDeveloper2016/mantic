@@ -14,6 +14,7 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.procesos.acceso.beans.Faltante;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
@@ -22,11 +23,13 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.ParametrosComunes;
 import mx.org.kaana.mantic.compras.ordenes.reglas.ArticulosLazyLoad;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Transaccion;
 import mx.org.kaana.mantic.comun.ParametrosReporte;
+import mx.org.kaana.mantic.db.dto.TcManticFaltantesDto;
 import mx.org.kaana.mantic.db.dto.TcManticNotasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticOrdenesComprasDto;
@@ -280,5 +283,28 @@ public class Diferencias extends IFilterImportar implements Serializable {
 			"\nCosto calculado: " + row.toString("costoCalculado")+ "'\n\n'></i>";
 		return regresar;
 	}
+
+  public void doFaltanteArticulo() {
+		try {
+			Entity faltante= (Entity)this.attrs.get("faltante");
+			if(faltante!= null) {
+				TcManticFaltantesDto existe= (TcManticFaltantesDto)DaoFactory.getInstance().findFirst(TcManticFaltantesDto.class, "existe", faltante.toMap());
+				if(existe== null) {
+					existe= new TcManticFaltantesDto(JsfBase.getIdUsuario(), -1L, "", faltante.toDouble("solicitar"), 1L, faltante.toLong("idArticulo"), faltante.toLong("idEmpresa"));
+					if(DaoFactory.getInstance().insert(existe)> 0L)
+						JsfBase.addMessage("Agregado:", "El articulo fue agregado a la relación de faltantes. !", ETipoMensaje.INFORMACION);
+				}	// if
+				else {
+					existe.setCantidad(existe.getCantidad()+ faltante.toDouble("solicitar"));
+					if(DaoFactory.getInstance().update(existe)> 0L) 
+						JsfBase.addMessage("Agregado:", "El articulo fue actualizado en la relación de faltantes. !", ETipoMensaje.INFORMACION);
+				} // else	
+			} // if	
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	}	
 	
 }
