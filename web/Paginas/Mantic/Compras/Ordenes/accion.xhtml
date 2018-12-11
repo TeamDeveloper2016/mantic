@@ -547,19 +547,19 @@
 									</f:facet>
 									<h:outputText value="#{row['stock']}"/>	
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
 									<f:facet name="header">
 										<h:outputText value="Minimo"/>
 									</f:facet>
 									<h:outputText value="#{row['minimo']}"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
 									<f:facet name="header">
 										<h:outputText value="Máximo"/>
 									</f:facet>
 									<h:outputText value="#{row['maximo']}"/>
 								</p:column>		
-								<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-6">
 									<f:facet name="header">
 										<h:outputText value="Solicitar"/>
 									</f:facet>
@@ -571,14 +571,14 @@
 									</f:facet>
 									<h:outputText value="#{row['costo']}"/>
 								</p:column>		
-								<p:column class="MarAuto Responsive janal-wid-10">
+								<p:column class="MarAuto Responsive janal-wid-18">
 									<f:facet name="header">
-										<h:outputText value="Estatus"/>
+										<h:outputText value="Solicitado orden de compra"/>
 									</f:facet>
-									<h:outputText value="#{row['estatus']}"/>
+									<h:outputText value="#{row['consecutivo']} [#{row['estatus']}] (#{row['solicitado']})" title="Articulo solicitado en una orden de compra"/>
 								</p:column>		
 								<p:column style="width:38px; text-align: center">
-									<p:commandButton update="faltantes @(.filas) @(.recalculo)" icon="fa fa-plus" title="Agregar" action="#{manticComprasOrdendesAccion.doFaltanteArticulo}" rendered="#{row['idOrdenEstatus'].toInteger eq 0}">
+									<p:commandButton update="faltantes @(.filas) @(.recalculo)" icon="fa fa-plus" title="Agregar" action="#{manticComprasOrdendesAccion.doFaltanteArticulo}">
 										<f:setPropertyActionListener value="#{row}" target="#{manticComprasOrdendesAccion.attrs.faltante}" />
 										<f:setPropertyActionListener value="#{manticComprasOrdendesAccion.adminOrden.orden.ikAlmacen}" target="#{manticComprasOrdendesAccion.attrs.idAlmacen}" />
 										<f:setPropertyActionListener value="#{manticComprasOrdendesAccion.adminOrden.orden.ikProveedor}" target="#{manticComprasOrdendesAccion.attrs.idProveedor}" />
