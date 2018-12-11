@@ -68,7 +68,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.clienteDeuda= (TcManticClientesDeudasDto)DaoFactory.getInstance().findById(TcManticClientesDeudasDto.class, this.idClienteDeuda);
 			if(this.clienteDeuda!= null) {			  
 				this.cliente= (TcManticClientesDto) DaoFactory.getInstance().findById(TcManticClientesDto.class, this.clienteDeuda.getIdCliente());
-				this.toLoadCatalog();
+				this.doLoad();
 			} // if
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_IDENTIFICACION);
@@ -81,8 +81,9 @@ public class Importar extends IBaseImportar implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
   } // init
-
-	private void toLoadCatalog() {
+	
+	@Override
+	public void doLoad() {
 		List<Columna> columns     = null;
     Map<String, Object> params= null;
     try {
