@@ -1,5 +1,8 @@
 package mx.org.kaana.mantic.catalogos.clientes.cuentas.backing;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,23 +25,27 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.catalogos.clientes.cuentas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesPagosArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesPagosDto;
 import mx.org.kaana.mantic.enums.EEstatusClientes;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import org.primefaces.context.RequestContext;
+import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 
 @Named(value = "manticCatalogosClientesCuentasAbono")
 @ViewScoped
 public class Abono extends IBaseImportar implements Serializable {
 
-  private static final long serialVersionUID = 8793667741599428879L;	
+  private static final long serialVersionUID= 8793667741599428879L;	
+	private static final int BUFFER_SIZE      = 6124;	
 	
   @PostConstruct
   @Override
@@ -46,7 +53,8 @@ public class Abono extends IBaseImportar implements Serializable {
     try {			
       this.attrs.put("sortOrder", "order by	tc_mantic_clientes_deudas.registro desc");
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente"));     
-      this.attrs.put("idClienteDeuda", JsfBase.getFlashAttribute("idClienteDeuda"));     
+      this.attrs.put("idClienteDeuda", JsfBase.getFlashAttribute("idClienteDeuda"));    
+			this.attrs.put("cliente", DaoFactory.getInstance().findById(TcManticClientesDto.class, Long.valueOf(this.attrs.get("idCliente").toString())));
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
 			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
 			this.attrs.put("mostrarBanco", false);
@@ -356,4 +364,52 @@ public class Abono extends IBaseImportar implements Serializable {
 		} // finally
     return regresar;
 	} // doAceptar
+	
+	public void doFileUpload(FileUploadEvent event) {
+		StringBuilder path= new StringBuilder();  
+		StringBuilder temp= new StringBuilder();  
+    File result       = null;		
+		Long fileSize     = 0L;
+		try {			
+      path.append(Configuracion.getInstance().getPropiedadSistemaServidor("cobros"));
+      temp.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
+      temp.append("/");
+      temp.append(((TcManticClientesDto)this.attrs.get("cliente")).getClave());
+      temp.append("/");      
+			path.append(temp.toString());
+			result= new File(path.toString());		
+			if (!result.exists())
+				result.mkdirs();
+      path.append(event.getFile().getFileName().toUpperCase());
+			result = new File(path.toString());
+			if (result.exists())
+				result.delete();			      
+			this.toWriteFile(result, event.getFile().getInputstream());
+			fileSize= event.getFile().getSize();						
+			setFile(new Importado(event.getFile().getFileName().toUpperCase(), event.getFile().getContentType(), EFormatos.PDF, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones")));
+  		this.attrs.put("file", getFile().getName()); 			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessage("Importar:", "El archivo no pudo ser importado !", ETipoMensaje.ERROR);
+			if(result!= null)
+			  result.delete();
+		} // catch
+	} // doFileUpload	
+	
+	private void toWriteFile(File result, InputStream upload) throws Exception {
+		FileOutputStream fileOutputStream= new FileOutputStream(result);
+		InputStream inputStream          = upload;
+		byte[] buffer                    = new byte[BUFFER_SIZE];
+		int bulk;
+		while(true) {
+			bulk= inputStream.read(buffer);
+			if (bulk < 0) 
+				break;        
+			fileOutputStream.write(buffer, 0, bulk);
+			fileOutputStream.flush();
+		} // while
+		fileOutputStream.close();
+		inputStream.close();
+	} // toWriteFile
 }
