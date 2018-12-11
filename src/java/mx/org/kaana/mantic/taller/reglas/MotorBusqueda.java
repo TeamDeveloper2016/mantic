@@ -8,12 +8,13 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
+import mx.org.kaana.mantic.catalogos.comun.MotorBusquedaCatalogos;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosDto;
 import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.taller.beans.ContactoCliente;
 
-public class MotorBusqueda implements Serializable{
+public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializable{
 
 	private static final long serialVersionUID = 7475485235141275332L;
 	private Long idServicio;
