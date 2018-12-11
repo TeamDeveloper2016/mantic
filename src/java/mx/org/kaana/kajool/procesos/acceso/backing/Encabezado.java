@@ -468,4 +468,16 @@ public class Encabezado extends IBaseFilter implements Serializable {
     }// finally
 	}
 
+  public boolean isAdmin() {
+    boolean regresar = false;
+    try {
+      regresar = JsfBase.isAdmin();
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+    } // catch		
+    return regresar;
+	}
+	
+	
 }

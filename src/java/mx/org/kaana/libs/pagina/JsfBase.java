@@ -8,7 +8,6 @@ import static mx.org.kaana.libs.pagina.JsfUtilities.getSession;
 import mx.org.kaana.kajool.procesos.beans.UsuariosEnLinea;
 import mx.org.kaana.kajool.seguridad.filters.control.LockUser;
 import mx.org.kaana.kajool.template.backing.Reporte;
-import mx.org.kaana.libs.formato.Numero;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

@@ -5,12 +5,12 @@ import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
 import javax.faces.application.FacesMessage;
-import javax.faces.bean.ApplicationScoped;
-import javax.faces.bean.ManagedBean;
+import javax.enterprise.context.ApplicationScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.context.Flash;
+import javax.inject.Named;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,9 +31,9 @@ import org.primefaces.context.RequestContext;
  *@time 01:41:09 PM
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-@ManagedBean(name = "jsfUtilities")
+@Named(value = "jsfUtilities")
 @ApplicationScoped
-public  class  JsfUtilities {
+public class JsfUtilities {
 
 	
   public static FacesContext getFacesContext() {

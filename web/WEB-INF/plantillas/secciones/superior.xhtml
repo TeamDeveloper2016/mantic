@@ -12,27 +12,27 @@
     <h:outputScript library="janal" name="core/jquery.janal.magnify-0.0.1.js"/>
 		<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css" />
 		<h:outputStylesheet library="janal" name="css/jquery.magnify.min.css.map" />
-  <script type="text/javascript">
-    $(function() {
-      janal.fecha();
-      $('#banner').addClass('ui-panelgrid');
-      $('#banner').addClass('ui-widget');
-      $('#banner tr:eq(0)').addClass('ui-widget-content');
-    });
-  </script>
-	<style>
-		.janal-faltantes-top {
-			margin-top: -6px;
-		}
-		.ui-datatable tr.ui-state-highlight,
-		.ui-datatable tr.ui-state-hover {
-			background-color: #9EB3BB;
-		}
-	</style>
+		<script type="text/javascript">
+			$(function() {
+				janal.fecha();
+				$('#banner').addClass('ui-panelgrid');
+				$('#banner').addClass('ui-widget');
+				$('#banner tr:eq(0)').addClass('ui-widget-content');
+			});
+		</script>
+		<style>
+			.janal-faltantes-top {
+				margin-top: -6px;
+			}
+			.ui-datatable tr.ui-state-highlight,
+			.ui-datatable tr.ui-state-hover {
+				background-color: #9EB3BB;
+			}
+		</style>
   <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
     <div class="ui-grid-row janal-grid-row">
 			<div style="width: 4% !important; text-align: center">
-				<p:commandLink action="/Paginas/Contenedor/tablero?faces-redirect=true" title="Ir al tablero de control">
+				<p:commandLink action="#{kajoolEncabezado.doMovePageStart()}" title="Ir a la página de inicio">
 					<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="50" height="50"/>
 				</p:commandLink>
 			</div>	
@@ -71,6 +71,11 @@
 		<ui:include src="/WEB-INF/plantillas/secciones/header.xhtml"/>
 		<ui:include src="/WEB-INF/plantillas/secciones/calculadora.xhtml"/>
 		<div class="ui-panel-titlebar ui-widget-header ui-corner-all janal-menu-header" style="display: -webkit-box;">
+			<h:panelGrid id="iktan-slide-menu" rendered="#{kajoolEncabezado.admin}">
+				<a href="#" class="BordRad3" onclick="mmenu.open('#{kajoolTemaActivo.name}');">
+					<i class="fa fa-lg icon-menu-1" style="color: white"/>
+				</a>
+			</h:panelGrid>  
 			<span class="ui-panel-title Fs18 lg-pantalla">
 				#{titulo}
 			</span>
