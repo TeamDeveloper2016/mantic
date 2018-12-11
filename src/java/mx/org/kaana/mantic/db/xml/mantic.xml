@@ -2237,6 +2237,16 @@
         where 
           {condicion} 
       </select>
+			<select id="rowPrincipal">
+        select      
+          *
+        from      
+          tc_mantic_articulos_codigos
+        where 
+          {condicion} 
+				order by 
+					id_principal
+      </select>
       <select id="identically">
         select      
           *
