@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
@@ -79,14 +80,17 @@ public class Accion extends IBaseAttribute implements Serializable {
 	} // loadCollections
 	
   public void doLoad() {
-    EAccion eaccion = null;
-    Long idServicio = -1L;
+    EAccion eaccion    = null;
+    Long idServicio    = -1L;
+		MotorBusqueda motor= null;
     try {
       eaccion = (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
       switch (eaccion) {
         case AGREGAR:
           this.registroServicio = new RegistroServicio();
+					motor= new MotorBusqueda(-1L);
+					this.registroServicio.setCliente(motor.toCliente(((Entity)motor.toClienteDefault()).getKey()));
 					loadCollections();
           break;
         case MODIFICAR:

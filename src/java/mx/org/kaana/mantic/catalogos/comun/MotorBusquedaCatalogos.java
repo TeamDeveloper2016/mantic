@@ -6,6 +6,7 @@ import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.catalogos.personas.beans.PersonaTipoContacto;
@@ -14,6 +15,7 @@ import mx.org.kaana.mantic.db.dto.TcManticPersonasDto;
 
 public abstract class MotorBusquedaCatalogos {
 
+	private static final String VENTA= "VENTA";
 	protected Long idCliente;
 	
 	public MotorBusquedaCatalogos() {
@@ -185,4 +187,19 @@ public abstract class MotorBusquedaCatalogos {
 		} // finally
 		return regresar;
 	} // toClientesTipoContacto
+	
+	public Entity toClienteDefault() throws Exception{
+		Entity regresar          = null;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("clave", VENTA);
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
+			regresar= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "clienteDefault", params);			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toClienteDefault	
 }

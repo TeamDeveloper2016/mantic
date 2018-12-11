@@ -20,8 +20,7 @@ import mx.org.kaana.mantic.enums.ETiposContactos;
 
 public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializable{
 
-	private static final long serialVersionUID= -1476191556651225342L;	
-	private static final String VENTA         = "VENTA";
+	private static final long serialVersionUID= -1476191556651225342L;		
 	private Long idArticulo;
 	
 	public MotorBusqueda(Long idArticulo) {
@@ -118,22 +117,7 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			throw e;
 		} // catch		
 		return regresar;
-	} // toDeudaCliente
-	
-	public Entity toClienteDefault() throws Exception{
-		Entity regresar          = null;
-		Map<String, Object>params= null;
-		try {
-			params= new HashMap<>();
-			params.put("clave", VENTA);
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
-			regresar= (Entity) DaoFactory.getInstance().toEntity("VistaClientesDto", "clienteDefault", params);			
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-		return regresar;
-	} // toClienteDefault	
+	} // toDeudaCliente		
 	
 	public List<ClienteTipoContacto> toCorreosCliente() throws Exception {
 		List<ClienteTipoContacto> regresar= null;

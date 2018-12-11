@@ -33,7 +33,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Numero;
-import mx.org.kaana.libs.pagina.IBaseAttribute;
+import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -61,7 +61,7 @@ import org.primefaces.model.StreamedContent;
  *@time 03:35:13 PM
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
-public abstract class IBaseImportar extends IBaseAttribute implements Serializable {
+public abstract class IBaseImportar extends IBaseFilter implements Serializable {
 
 	private static final long serialVersionUID= 3555865994317044663L;
 	private static final Log LOG              = LogFactory.getLog(IBaseImportar.class);

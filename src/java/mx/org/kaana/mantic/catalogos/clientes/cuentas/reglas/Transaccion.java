@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.catalogos.clientes.cuentas.reglas;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,16 +10,25 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.reportes.FileSearch;
+import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.db.dto.TcManticClientesDeudasDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesPagosArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticClientesPagosDto;
 import mx.org.kaana.mantic.enums.EEstatusClientes;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
+import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
 public class Transaccion extends IBaseTnx{
 
+	private static final Log LOG=LogFactory.getLog(Transaccion.class);
+	
 	private List<Entity> cuentas;
 	private String messageError;
 	private TcManticClientesPagosDto pago;
@@ -30,6 +40,9 @@ public class Transaccion extends IBaseTnx{
 	private String referencia;
 	private Double pagoGeneral;
 	private boolean saldar;
+	private TcManticClientesDeudasDto clienteDeuda;
+	private Long idClientePago;
+	private Importado file;
 
 	public Transaccion(TcManticClientesPagosDto pago, Long idCaja, Long idEmpresa, Long idBanco, String referencia, boolean saldar) {
 		this(pago, idCaja, -1L, idEmpresa, idBanco, referencia, saldar);
@@ -50,11 +63,18 @@ public class Transaccion extends IBaseTnx{
 		this.saldar    = saldar;
 	} // Transaccion
 	
+	public Transaccion(Importado file, TcManticClientesDeudasDto clienteDeuda, Long idClientePago) {
+		this.file         = file;
+		this.clienteDeuda = clienteDeuda;
+		this.idClientePago= idClientePago;
+	} // Transaccion
+	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
 		boolean regresar = false;
     try {			
-			this.pagoGeneral= this.pago.getPago();
+			if(this.pago!= null)
+				this.pagoGeneral= this.pago.getPago();
       switch (accion) {
         case AGREGAR:					
 						regresar = procesarPago(sesion);
@@ -64,6 +84,10 @@ public class Transaccion extends IBaseTnx{
           break;       
 				case COMPLEMENTAR: 
 					regresar = procesarPagoSegmento(sesion);
+					break;
+				case SUBIR:
+					regresar= true;
+					toUpdateDeleteFilePago(sesion);
 					break;
       } // switch
       if (!regresar) 
@@ -90,7 +114,7 @@ public class Transaccion extends IBaseTnx{
 					deuda= (TcManticClientesDeudasDto) DaoFactory.getInstance().findById(sesion, TcManticClientesDeudasDto.class, this.pago.getIdClienteDeuda());
 					saldo= deuda.getSaldo() - this.pago.getPago();
 					deuda.setSaldo(saldo);
-					deuda.setIdClienteEstatus(saldo.equals(0L) ? 3L : 2L);
+					deuda.setIdClienteEstatus(saldo.equals(0L) || this.saldar ? 3L : 2L);
 					regresar= DaoFactory.getInstance().update(sesion, deuda)>= 1L;
 				} // if
 			}
@@ -269,4 +293,69 @@ public class Transaccion extends IBaseTnx{
 		} // finally
 		return regresar;
 	} // procesarPagoGeneral
+	
+	protected void toUpdateDeleteFilePago(Session sesion) throws Exception {
+		TcManticClientesPagosArchivosDto tmp= null;
+		if(this.clienteDeuda.getIdClienteDeuda()!= -1L) {			
+			if(this.file!= null) {
+				tmp= new TcManticClientesPagosArchivosDto(
+					this.file.getRuta(),
+					this.file.getFileSize(),
+					JsfBase.getIdUsuario(),
+					2L,
+					1L,
+					this.file.getObservaciones(),
+					this.idClientePago,	
+					Configuracion.getInstance().getPropiedadSistemaServidor("cobros").concat(this.file.getRuta()).concat(this.file.getName()),
+					-1L,																				
+					this.file.getName()					
+				);
+				TcManticClientesPagosArchivosDto exists= (TcManticClientesPagosArchivosDto)DaoFactory.getInstance().toEntity(TcManticClientesPagosArchivosDto.class, "TcManticClientesPagosArchivosDto", "identically", tmp.toMap());
+				File reference= new File(tmp.getAlias());
+				if(exists== null && reference.exists()) {
+					DaoFactory.getInstance().updateAll(sesion, TcManticClientesPagosArchivosDto.class, tmp.toMap());
+					DaoFactory.getInstance().insert(sesion, tmp);
+				} // if
+				else {
+					DaoFactory.getInstance().delete(sesion, exists);
+					DaoFactory.getInstance().insert(sesion, tmp);
+				} // else
+				sesion.flush();
+				toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("cobros").concat(this.file.getRuta()), ".".concat(this.file.getFormat().name()), this.toListFile(sesion, this.file, 2L));
+			} // if	
+  	} // if	
+	} // toUpdateDeleteXml
+	
+	private void toDeleteAll(String path, String type, List<Nombres> listado) {
+    FileSearch fileSearch = new FileSearch();
+    fileSearch.searchDirectory(new File(path), type.toLowerCase());
+    if(fileSearch.getResult().size()> 0){
+		  for (String matched: fileSearch.getResult()) {
+				String name= matched.substring((matched.lastIndexOf("/")< 0? matched.lastIndexOf("\\"): matched.lastIndexOf("/"))+ 1);
+				if(listado.indexOf(new Nombres(name))< 0) {
+				  File file= new File(matched);
+				  file.delete();
+				} // if
+      } // for
+		} // if
+	} // toDeleteAll
+	
+	private List<Nombres> toListFile(Session sesion, Importado tmp, Long idTipoArchivo) throws Exception {
+		List<Nombres> regresar= null;
+		Map<String, Object> params=null;
+		try {
+			params  = new HashMap<>();
+			params.put("idTipoArchivo", idTipoArchivo);
+			params.put("ruta", tmp.getRuta());
+			regresar= (List<Nombres>)DaoFactory.getInstance().toEntitySet(sesion, Nombres.class, "TcManticClientesArchivosDto", "listado", params);
+			regresar.add(new Nombres(tmp.getName()));
+		} // try  // try 
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // toListFile
 }

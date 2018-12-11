@@ -64,7 +64,7 @@ public class MotorBusqueda implements Serializable{
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_articulo=" + this.idArticulo);
-			regresar= DaoFactory.getInstance().toEntitySet(ArticuloCodigo.class, "TcManticArticulosCodigosDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
+			regresar= DaoFactory.getInstance().toEntitySet(ArticuloCodigo.class, "TcManticArticulosCodigosDto", "rowPrincipal", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {		
 			throw e;

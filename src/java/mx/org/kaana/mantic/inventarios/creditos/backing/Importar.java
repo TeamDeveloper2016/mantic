@@ -86,7 +86,7 @@ public class Importar extends IBaseImportar implements Serializable {
   			    this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.orden.getIdProveedor());
 					  break;
 				} // switch
- 			  this.toLoadCatalog();
+ 			  this.doLoad();
 			} // if
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
@@ -99,7 +99,8 @@ public class Importar extends IBaseImportar implements Serializable {
     } // catch		
   } // init
 
-	private void toLoadCatalog() {
+	@Override
+	public void doLoad() {	
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
     try {
@@ -165,5 +166,4 @@ public class Importar extends IBaseImportar implements Serializable {
 		} // catch
     return regresar;
 	}
-
 }

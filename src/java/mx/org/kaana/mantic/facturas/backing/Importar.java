@@ -85,11 +85,8 @@ public class Importar extends IBaseImportar implements Serializable {
 				this.attrs.put("ficticia", DaoFactory.getInstance().findById(TcManticFicticiasDto.class, this.idFicticia));
 				this.attrs.put("cliente", DaoFactory.getInstance().findById(TcManticClientesDto.class, ((TcManticFicticiasDto)this.attrs.get("ficticia")).getIdCliente()));
 			} // if
-			this.doLoadImportados("VistaFicticiasDto", "importados", Variables.toMap("idFactura~"+ this.idFactura)); 
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
-			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
-			this.attrs.put("xml", ""); 
-			this.attrs.put("pdf", ""); 
+			doLoad();			
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -97,6 +94,19 @@ public class Importar extends IBaseImportar implements Serializable {
     } // catch		
   } // init
 
+	@Override
+	public void doLoad() {
+		try {
+			this.doLoadImportados("VistaFicticiasDto", "importados", Variables.toMap("idFactura~"+ this.idFactura)); 			
+			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_FACTURA);
+			this.attrs.put("xml", ""); 
+			this.attrs.put("pdf", ""); 
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // doLoad
+	
 	public void doViewDocument() {
 		this.doViewDocument(Configuracion.getInstance().getPropiedadSistemaServidor("facturama"));
 	}
@@ -163,7 +173,5 @@ public class Importar extends IBaseImportar implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);
 		} // catch
-	}
-
-	
+	}	
 }
