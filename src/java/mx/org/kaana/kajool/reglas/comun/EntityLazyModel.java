@@ -84,7 +84,7 @@ public class EntityLazyModel<T extends IBaseDto> extends LazyDataModel<T> {
 			} // if	
 			else
 				if(regresar==null)
-				  throw new RuntimeException("La vista ["+this.proceso+"] no se le definio un campo llave 'id_key_<nombre>'.");
+				  throw new RuntimeException("La vista ["+ this.proceso+ "] en su proceso ["+ this.idXml+ "] no se le definio un campo llave 'id_key_<nombre>'.");
 		} // try
 		catch(Exception e) {
 			LOG.warn("keyName ["+ this.keyName+ "] rowKey ["+ rowKey+ "] "+ sb.toString());
