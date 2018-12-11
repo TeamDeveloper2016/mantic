@@ -95,17 +95,22 @@ public class Diferencias extends IFilterImportar implements Serializable {
       this.attrs.put("sortOrder", "order by nombre");
 			switch((Integer)this.attrs.get("tipoDiferencia")) {
 				case 0: // TODOS
+					this.attrs.put("seleccionado", null);
 					this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 					break;
 				case 1: // DIFERENCIA POR PRECIO
-					this.attrs.put(Constantes.SQL_CONDICION, " tc_mantic_ordenes_detalles.importes != 0 ");
+					this.attrs.put(Constantes.SQL_CONDICION, " tc_mantic_ordenes_detalles.importes!= 0 and tc_mantic_ordenes_detalles.cantidad!= tc_mantic_ordenes_detalles.cantidades");
 					break;
 				case 2: // DIFERENCIA POR CANTIDAD
-					this.attrs.put(Constantes.SQL_CONDICION, " tc_mantic_ordenes_detalles.cantidades != 0 ");
+					this.attrs.put(Constantes.SQL_CONDICION, " tc_mantic_ordenes_detalles.cantidades!= 0 and tc_mantic_ordenes_detalles.cantidad!= tc_mantic_ordenes_detalles.cantidades");
 					break;
 				case 3: // PARTIDAS NO SOLICITADAS
 					this.attrs.put("seleccionado", null);
 					this.attrs.put(Constantes.SQL_CONDICION, Constantes.SQL_FALSO);
+					break;
+				case 4: // PARTIDAS NO SURTIDAS
+					this.attrs.put("seleccionado", null);
+					this.attrs.put(Constantes.SQL_CONDICION, " tc_mantic_ordenes_detalles.cantidad= tc_mantic_ordenes_detalles.cantidades");
 					break;
 			} // switch
       this.lazyModel = new FormatCustomLazy("VistaOrdenesComprasDto", "confronta", this.attrs, columns);
@@ -202,7 +207,7 @@ public class Diferencias extends IFilterImportar implements Serializable {
       columns.add(new Columna("porcentaje", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
 		  params.put(Constantes.SQL_CONDICION, " ");
 			params.put("idOrdenCompra", this.attrs.get("idOrdenCompra"));
-			if(seleccionado!= null) 
+			if(seleccionado!= null && ((Integer)this.attrs.get("tipoDiferencia")== 1 || (Integer)this.attrs.get("tipoDiferencia")== 2)) 
 				params.put(Constantes.SQL_CONDICION, " and tc_mantic_notas_detalles.id_articulo= "+ seleccionado.toLong("idArticulo"));
 			else
 				if((Integer)this.attrs.get("tipoDiferencia")!= 0 && (Integer)this.attrs.get("tipoDiferencia")!= 3)
