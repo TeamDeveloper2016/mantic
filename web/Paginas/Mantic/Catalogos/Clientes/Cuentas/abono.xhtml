@@ -181,11 +181,11 @@
 							<p:inputTextarea id="observacionesFile" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticCatalogosClientesCuentasAbono.file.observaciones}"/>
 							<p:spacer height="5px"/>
 							<p:fileUpload fileUploadListener="#{manticCatalogosClientesCuentasAbono.doFileUpload}" 
-														mode="advanced" process="@this observacionesFile" update="@(.importado)" label="Selecciona PDF/PNG/JPG" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
+														mode="advanced" process="@this observacionesFile pagos" update="@(.importado)" label="Selecciona PDF/PNG/JPG" uploadLabel="Importar" cancelLabel="Cancelar" sizeLimit="3145728"
 														multiple="false" allowTypes="#{manticCatalogosClientesCuentasAbono.attrs.formatos}" dragDropSupport="true" auto="true" styleClass="janal-wid-100 janal-upload-frame"
 														invalidSizeMessage="El tamaño máximo permitido del archivo es de 3 Megabyte !" invalidFileMessage="Solo se permiten archivos en formato #{manticCatalogosClientesCuentasAbono.attrs.formatos}"/>														
 							<p:inputText id="file" value="#{manticCatalogosClientesCuentasAbono.attrs.file}" styleClass="importado" style="display:none"/>
-							<p:commandButton id="importar" value="Importar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticCatalogosClientesCuentasAbono.doImportar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
+							<p:commandButton id="importar" value="Importar" icon="fa fa-check" accesskey="a"  process="@form" update="@(.importado)" action="#{manticCatalogosClientesCuentasAbono.doImportar}" onstart="return janal.execute();" oncomplete="janal.desbloquear()"/>
 							<p:commandLink value="Archivo importado: #{manticCatalogosClientesCuentasAbono.file.ruta}#{manticCatalogosClientesCuentasAbono.file.name}" onclick="viewDocument();" process="@this" styleClass="pdf importado janal-color-blue janal-steps-boton-siguiente janal-font-bold" title="Ver documento" style="#{(empty manticCatalogosClientesCuentasAbono.file)? 'display: none': ''}"/>						
 						</p:tab>
 					</p:tabView>
