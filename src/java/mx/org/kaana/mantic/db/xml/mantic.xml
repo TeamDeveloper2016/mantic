@@ -7,6 +7,24 @@
   </model>
 
   <dml>	
+	  <unit id="TcManticDevolucionesArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_devoluciones_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_devoluciones_archivos
+        where      
+          id_devolucion = {idDevolucion} and ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and nombre = '{nombre}'
+      </select>
+    </unit>
 		<unit id="TcManticBancosDto">
       <select id="row">
         select      
