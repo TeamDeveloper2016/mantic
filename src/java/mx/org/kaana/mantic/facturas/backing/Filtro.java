@@ -165,12 +165,17 @@ public class Filtro extends IBaseFilter implements Serializable {
 		UISelectEntity estatus= (UISelectEntity) this.attrs.get("idFicticiaEstatus");
 		if(!Cadena.isVacio(this.attrs.get("articulo")))
   		sb.append("(upper(tc_mantic_ficticias_detalles.nombre) like upper('%").append(this.attrs.get("articulo")).append("%')) and ");
-		if(!Cadena.isVacio(this.attrs.get("cliente")) && !this.attrs.get("cliente").toString().equals("-1"))
-			sb.append("tc_mantic_clientes.id_cliente = ").append(((Entity)this.attrs.get("cliente")).getKey()).append(" and ");					
+		if(!Cadena.isVacio(this.attrs.get("razonSocial")) && !this.attrs.get("razonSocial").toString().equals("-1"))
+			sb.append("tc_mantic_clientes.id_cliente = ").append(((Entity)this.attrs.get("razonSocial")).getKey()).append(" and ");					
+		else
+       if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
+			 	 sb.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");							
 		if(!Cadena.isVacio(this.attrs.get("idFicticia")) && !this.attrs.get("idFicticia").toString().equals("-1"))
   		sb.append("(tc_mantic_ficticias.id_ficticia=").append(this.attrs.get("idFicticia")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_mantic_ficticias.consecutivo like '%").append(this.attrs.get("consecutivo")).append("%') and ");
+		if(!Cadena.isVacio(this.attrs.get("folio")))
+  		sb.append("(tc_mantic_facturas.folio like '%").append(this.attrs.get("folio")).append("%') and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
 		  sb.append("(date_format(tc_mantic_facturas.timbrado, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");			
 		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))

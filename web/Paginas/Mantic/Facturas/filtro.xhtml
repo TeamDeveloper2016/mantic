@@ -10,13 +10,14 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'idEmpresa'        : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'consecutivo'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'consecutivo'},
-        'fechaInicio'      : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-        'fechaTermino'     : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
-				'articulo'         : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
-				'cliente'          : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
-        'idFicticiaEstatus': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}        
+        'idEmpresa'        : {validaciones: 'libre',  mascara: 'libre', grupo: 'general'},
+        'folio'            : {validaciones: 'entero', mascara: 'numero', grupo: 'general'},
+        'consecutivo'      : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'consecutivo'},
+        'fechaInicio'      : {validaciones: 'fecha',  mascara: 'fecha', grupo: 'general'},
+        'fechaTermino'     : {validaciones: 'fecha',  mascara: 'fecha', grupo: 'general'},
+				'articulo'         : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+				'razonSocial'      : {validaciones: 'libre',  mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+        'idFicticiaEstatus': {validaciones: 'libre',  mascara: 'libre', grupo: 'general'}        
       };
 			
 			fieldsDialog= {
@@ -66,8 +67,8 @@
               <p:inputText id="consecutivo" value="#{manticFacturasFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/>               
               <p:outputLabel for="folio" value="Folio:"/>
               <p:inputText id="folio" value="#{manticFacturasFiltro.attrs.folio}" styleClass="janal-wid-100-txt"/>               
-              <p:outputLabel for="cliente" value="Cliente:"/>
-              <p:autoComplete id="cliente" placeholder="RFC o nombre" widgetVar="listadoClientes" var="customCliente" itemLabel="#{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticFacturasFiltro.attrs.cliente}" completeMethod="#{manticFacturasFiltro.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
+              <p:outputLabel for="razonSocial" value="Cliente:"/>
+              <p:autoComplete id="razonSocial" placeholder="RFC o nombre" widgetVar="listadoClientes" var="customCliente" itemLabel="#{customCliente.razonSocial}" inputStyleClass="janal-wid-100-txt key-down-clientes filas" itemValue="#{customCliente}" value="#{manticFacturasFiltro.attrs.cliente}" completeMethod="#{manticFacturasFiltro.doCompleteCliente}" converter="janal.convertidor.Entity" minQueryLength="2" maxResults="10" styleClass="janal-wid-100-txt">
 								<p:ajax event="itemSelect" onstart="return janal.bloquear();" process="@this idEmpresa" listener="#{manticFacturasFiltro.doAsignaCliente}" oncomplete="janal.desbloquear();"/>
 								<f:facet name="itemtip">
 									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-300">												
