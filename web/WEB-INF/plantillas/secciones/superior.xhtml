@@ -247,6 +247,17 @@
 			<p:remoteCommand name="faltantesLookup" actionListener="#{kajoolEncabezado.doLoadFaltantes}" process="@this" update="@(.faltantes)"/>
 			<p:remoteCommand name="faltantesReplace" actionListener="#{kajoolEncabezado.doReplaceFaltante}" process="@this" update="@(.faltantes)"/>
 			<p:remoteCommand name="faltantesVerificar" actionListener="#{kajoolEncabezado.doFaltanteArticulo}" process="@this @(.faltantes)" update="@(.faltantes)"/>
+			<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
+			<p:selectOneMenu id="idSucursal" value="#{kajoolEncabezado.faltante.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-98" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+				<p:ajax event="change" process="@this" update="codigosFaltantes faltantesTabla" listener="#{kajoolEncabezado.doLoadFaltantes()}"/>
+				<f:selectItems value="#{kajoolEncabezado.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+				<p:column headerText="Clave">
+					<h:outputText value="#{item.clave}"/>
+				</p:column>   
+				<p:column headerText="Nombre">
+					<h:outputText value="#{item.nombre}"/>
+				</p:column>   
+			</p:selectOneMenu>
 			<p:panelGrid layout="grid" columns="4" styleClass="janal-wid-100" columnClasses="janal-column-center, janal-column-center, janal-column-center, janal-column-center janal-faltantes-top">
 				<p:outputLabel value="Código ó articulo:"/>
 				<p:outputLabel for="faltantesIdArticulo" value="Código:"/>

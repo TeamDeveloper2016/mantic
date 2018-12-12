@@ -104,7 +104,7 @@
 					<p:tabView id="contenedorGrupos">
             <p:ajax event="tabChange" listener="#{manticComprasOrdendesAccion.doTabChange}" process="@this idAlmacen idProveedor" update="faltantes perdidos sinIva" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move();"/>
             <p:tab title="General">							
-							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-150, janal-wid-100">		
 								<p:outputLabel for="idSucursal" value="Sucursal:" rendered="#{sessionScope.autentifica.empresa.matriz}"/>
 								<p:selectOneMenu id="idSucursal" value="#{manticComprasOrdendesAccion.adminOrden.orden.ikEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-99" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
 									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doLoadAlmacenes}" process="@this" update="idAlmacen"/>
@@ -519,9 +519,9 @@
 							<p:inputTextarea id="observaciones" rows="6" cols="33" styleClass="janal-wid-100-txt" value="#{manticComprasOrdendesAccion.adminOrden.orden.observaciones}"/>
 						</p:tab>
 						<p:tab title="Faltantes">
-							<p:dataTable id="faltantes" var="row" value="#{manticComprasOrdendesAccion.attrs.faltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index">
+							<p:dataTable id="faltantes" var="row" value="#{manticComprasOrdendesAccion.attrs.faltantes}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
 								<f:facet name="header">
-									<p:commandButton title="Refrescar articulos faltantes" icon="fa fa-refresh" process="@this" update="faltantes" action="#{manticComprasOrdendesAccion.toLoadFaltantes()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+									<p:commandButton title="Refrescar articulos faltantes" icon="fa fa-refresh" process="@this" update="faltantes" action="#{manticComprasOrdendesAccion.doLoadFaltantes()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
                 </f:facet>
 								<p:column class="MarAuto Responsive janal-wid-col-20">
 									<f:facet name="header">
@@ -587,9 +587,22 @@
 							</p:dataTable>
 						</p:tab>
 						<p:tab title="Ventas perdidas">
-							<p:dataTable id="perdidos" var="row" value="#{manticComprasOrdendesAccion.attrs.perdidos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index">
+							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-col-70, janal-wid-100">		
+								<p:outputLabel for="idPerdidoSucursal" value="Sucursal:"/>
+								<p:selectOneMenu id="idPerdidoSucursal" value="#{manticComprasOrdendesAccion.attrs.idPerdidoSucursal}" var="item" converter="janal.convertidor.Entity" styleClass="sucursales janal-wid-98" effect="fade" filter="true" filterMatchMode="contains">
+									<p:ajax event="change" listener="#{manticComprasOrdendesAccion.doLoadPerdidas}" process="@this" update="perdidos"/>
+									<f:selectItems value="#{manticComprasOrdendesAccion.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombre}"/>
+									</p:column>   
+								</p:selectOneMenu>
+							</p:panelGrid>
+							<p:dataTable id="perdidos" var="row" value="#{manticComprasOrdendesAccion.attrs.perdidos}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="paginated" rowIndexVar="index" paginatorPosition="bottom">
 								<f:facet name="header">
-									<p:commandButton title="Refrescar articulos de las ventas perdidas" icon="fa fa-refresh" process="@this" update="perdidos" action="#{manticComprasOrdendesAccion.toLoadPerdidas()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
+									<p:commandButton title="Refrescar articulos de las ventas perdidas" icon="fa fa-refresh" process="@this" update="perdidos" action="#{manticComprasOrdendesAccion.doLoadPerdidas()}" styleClass="janal-text-white janal-column-center" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/> 
                 </f:facet>
 								<p:column class="MarAuto Responsive janal-wid-col-20">
 									<f:facet name="header">

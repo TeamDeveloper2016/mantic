@@ -619,7 +619,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	}
 	
 	@Override
-	public void toLoadFaltantes() {
+	public void doLoadFaltantes() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
     try {

@@ -151,11 +151,13 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
  			List<UISelectEntity> empresas= (List<UISelectEntity>)this.attrs.get("empresas");
-			if(!empresas.isEmpty()) 
+			if(!empresas.isEmpty()) {
+				this.attrs.put("idPerdidoSucursal", empresas.get(0));
 				if(this.accion.equals(EAccion.AGREGAR))
   				((OrdenCompra)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(0));
 			  else
 				  ((OrdenCompra)this.getAdminOrden().getOrden()).setIkEmpresa(empresas.get(empresas.indexOf(((OrdenCompra)this.getAdminOrden().getOrden()).getIkEmpresa())));
+			} // if	
 			params.put("sucursales", ((OrdenCompra)this.getAdminOrden().getOrden()).getIdEmpresa());
       this.attrs.put("almacenes", UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
  			List<UISelectEntity> almacenes= (List<UISelectEntity>)this.attrs.get("almacenes");
@@ -273,10 +275,10 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		} // if	
 		else 
 			if(event.getTab().getTitle().equals("Faltantes") && this.attrs.get("faltantes")== null) 
-        this.toLoadFaltantes();
+        this.doLoadFaltantes();
 			else 
 			  if(event.getTab().getTitle().equals("Ventas perdidas") && this.attrs.get("perdidos")== null) 
-           this.toLoadPerdidas();
+           this.doLoadPerdidas();
 	}
   
 	public void toLoadArticulos(String idXml) {

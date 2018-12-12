@@ -213,6 +213,8 @@ public class Encabezado extends IBaseFilter implements Serializable {
 	public void doLoadFaltantes() {
     List<Columna> columns= null;
     try {
+			Long idSucursal= this.faltante.getIdEmpresa()== null? -1L: this.faltante.getIdEmpresa();
+			this.attrs.put("idSucursal", idSucursal);
       columns = new ArrayList<>();
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));

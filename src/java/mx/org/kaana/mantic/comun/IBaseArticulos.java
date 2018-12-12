@@ -694,7 +694,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
     } // catch   
 	}
 
-	public void toLoadFaltantes() {
+	public void doLoadFaltantes() {
 		List<Columna> columns     = null;
     Map<String, Object> params= new HashMap<>();
     try {
@@ -721,9 +721,11 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
     }// finally
 	}
 	
-	public void toLoadPerdidas() {
+	public void doLoadPerdidas() {
 		List<Columna> columns= null;
     try {
+			Long idSucursal= this.attrs.get("idPerdidoSucursal")== null? -1L: ((UISelectEntity)this.attrs.get("idPerdidoSucursal")).getKey();
+			this.attrs.put("idSucursal", idSucursal);
 			columns= new ArrayList<>();
       columns.add(new Columna("codigo", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
