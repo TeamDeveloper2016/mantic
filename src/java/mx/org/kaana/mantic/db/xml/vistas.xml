@@ -3810,11 +3810,11 @@
 				inner join
 					tc_mantic_notas_tipos on tc_mantic_notas_entradas.id_nota_tipo= tc_mantic_notas_tipos.id_nota_tipo
 				where
-					{condicion}				
-				  and tc_mantic_proveedores.razon_social like '%{razonSocial}%'
-				  and tc_mantic_almacenes.id_empresa in ({idEmpresa})
-				  and (tc_mantic_almacenes.clave like '%{almacen}%' or tc_mantic_almacenes.nombre like '%{almacen}%')
-				  and tc_mantic_notas_entradas.id_empresa in ({idEmpresa})
+					{condicion}								  
+				and 
+					tc_mantic_almacenes.id_empresa in ({idEmpresa})				  
+				and 
+					tc_mantic_notas_entradas.id_empresa in ({idEmpresa})
 				{sortOrder}						
 			</select>		
 			<select id="cuentas">
