@@ -11,9 +11,6 @@ import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
-import static mx.org.kaana.kajool.enums.EAccion.AGREGAR;
-import static mx.org.kaana.kajool.enums.EAccion.ELIMINAR;
-import static mx.org.kaana.kajool.enums.EAccion.MODIFICAR;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
@@ -128,7 +125,7 @@ public class Transaccion extends Inventarios implements Serializable {
 					this.orden.setConsecutivo(Fecha.getAnioActual()+ Cadena.rellenar(consecutivo.toString(), 5, '0', true));
 					this.orden.setOrden(consecutivo);
 					this.orden.setEjercicio(new Long(Fecha.getAnioActual()));
-					this.orden.setIdOrdenCompra(null);
+					this.orden.setIdOrdenCompra(null);					
 					regresar= DaoFactory.getInstance().insert(sesion, this.orden)>= 1L;
 					bitacoraNota= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
 					regresar= DaoFactory.getInstance().insert(sesion, bitacoraNota)>= 1L;
