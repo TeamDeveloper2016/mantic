@@ -82,7 +82,7 @@
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
             <p:ajax event="tabChange" listener="#{manticCatalogosEmpresasCuentasAccion.doTabChange}" process="@this idAlmacen idProveedor" update="@(.importado) @(.involucrados)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear(); jsArticulos.move(); PF('panelEmisor').toggle();PF('panelReceptor').toggle();"/>						
-            <p:tab title="General">							
+            <p:tab id="datosProveedor" title="General">							
 							<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">		
 								<p:outputLabel for="consecutivo" value="No. nota:" style="display: #{manticCatalogosEmpresasCuentasAccion.agregar}"/>
 								<p:inputText id="consecutivo" styleClass="janal-wid-100-txt" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.consecutivo}" readonly="true" style="display: #{manticCatalogosEmpresasCuentasAccion.agregar}"/>
@@ -129,6 +129,23 @@
 									</p:column>   
 									<p:column styleClass="janal-column-right" headerText="Entrega(dias)">
 										<h:outputText value="#{item.diasEntrega}"/>
+									</p:column>   
+								</p:selectOneMenu>								
+								<p:outputLabel for="idProveedorPago" value="Condición de pago:"/>
+								<p:selectOneMenu id="idProveedorPago" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.ikProveedorPago}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 involucrados" effect="fade" filter="true" filterMatchMode="contains">
+									<p:ajax event="change" listener="#{manticCatalogosEmpresasCuentasAccion.doUpdatePlazo}" update="@(.involucrados)" process="@this"/>
+									<f:selectItems value="#{manticCatalogosEmpresasCuentasAccion.attrs.condiciones}" var="element" itemValue="#{element}" itemLabel="#{element.clave}"/>
+									<p:column headerText="Clave">
+										<h:outputText value="#{item.clave}"/>
+									</p:column>   
+									<p:column headerText="Nombre">
+										<h:outputText value="#{item.nombre}"/>
+									</p:column>   
+									<p:column styleClass="janal-column-right" headerText="Descuento otorgado">
+										<h:outputText value="#{item.descuento}"/>
+									</p:column>   
+									<p:column styleClass="janal-column-right" headerText="Plazo en día para pagar">
+										<h:outputText value="#{item.plazo}"/>
 									</p:column>   
 								</p:selectOneMenu>
               </p:panelGrid>
