@@ -476,6 +476,22 @@ public class Transferir extends IBaseTnx {
 		} // for
 	}
 
+	private void toUpdateData(Session sesion, CfdiSearchResult cfdi, Cfdi detail, Long idFactura, String path) throws Exception {
+		TcManticFacturasDto factura= (TcManticFacturasDto)DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, idFactura);
+		if(factura!= null && factura.getSelloSat()== null) {
+			LOG.warn("Actualizando datos de la factura ["+ cfdi.getFolio()+ "] del cliente ["+ cfdi.getRfc()+ "] porque estaba incompleto el registro !");
+			Complement complement = detail.getComplement();
+			factura.setComentarios("ESTA FACTURA FUE RECUPERADA DE FACTURAMA !");
+			factura.setSelloCfdi(complement.getTaxStamp().getCfdiSign());
+			factura.setSelloSat(complement.getTaxStamp().getSatSign());
+			factura.setCertificadoDigital(detail.getCertNumber());
+			factura.setCertificadoSat(complement.getTaxStamp().getSatCertNumber());
+			factura.setFolioFiscal(complement.getTaxStamp().getUuid());
+			factura.setCadenaOriginal(this.toCadenaOriginal(path.concat(cfdi.getRfc()).concat("-").concat(cfdi.getFolio()).concat(".").concat(EFormatos.XML.name().toLowerCase())));
+			DaoFactory.getInstance().update(sesion, factura);
+		} // if
+	}
+	
 	private void toSaveFiles(Session sesion, CfdiSearchResult cfdi, Cfdi detail, Long idFactura, Calendar calendar, String path) throws Exception {
 		if(!this.files(sesion, idFactura)) { 
 			TcManticFacturasArchivosDto xml= new TcManticFacturasArchivosDto(
@@ -524,6 +540,7 @@ public class Transferir extends IBaseTnx {
 		Long idFactura= this.exists(sesion, cfdi.getId());
 		if(idFactura> 0) {
 			this.toSaveFiles(sesion, cfdi, detail, idFactura, calendar, path);
+			this.toUpdateData(sesion, cfdi, detail, idFactura, path);
 		} // if
 		else {	
 			Long idCliente= this.toCliente(sesion, cfdi.getRfc()); 
