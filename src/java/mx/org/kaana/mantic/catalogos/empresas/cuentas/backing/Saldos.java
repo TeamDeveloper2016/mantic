@@ -63,9 +63,6 @@ public class Saldos extends IBaseFilter implements Serializable {
 	  Map<String, Object> params= null;	
     try {
   	  params = toPrepare();	
-			params.put("empresa", this.attrs.get("empresa"));
-			params.put("idEmpresa", this.attrs.get("idEmpresa").toString().equals("-1") ? this.attrs.get("allEmpresa") : this.attrs.get("idEmpresa"));			
-			params.put("almacen", this.attrs.get("almacen"));			
       columns= new ArrayList<>();
       columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
       columns.add(new Columna("pagar", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
@@ -93,10 +90,9 @@ public class Saldos extends IBaseFilter implements Serializable {
 	  UISelectEntity proveedor      = (UISelectEntity)this.attrs.get("proveedor");
 		List<UISelectEntity>provedores= (List<UISelectEntity>)this.attrs.get("proveedores");
 		if(provedores!= null && proveedor!= null && provedores.indexOf(proveedor)>= 0) 
-			regresar.put("razonSocial", provedores.get(provedores.indexOf(proveedor)).toString("razonSocial"));			
-		else
- 		  if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
-  			regresar.put("razonSocial", JsfBase.getParametro("razonSocial_input"));			
+			sb.append("tc_mantic_proveedores.razon_social like '%").append(provedores.get(provedores.indexOf(proveedor)).toString("razonSocial")).append("%' and ");			
+		else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input")))
+  		sb.append("tc_mantic_proveedores.razon_social like '%").append(JsfBase.getParametro("razonSocial_input")).append("%' and ");			
 		if(!Cadena.isVacio(this.attrs.get("consecutivo")))
   		sb.append("(tc_mantic_notas_entradas.consecutivo= ").append(this.attrs.get("consecutivo")).append(") and ");
 		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
@@ -115,7 +111,9 @@ public class Saldos extends IBaseFilter implements Serializable {
 			} // switch
 		if(!Cadena.isVacio(this.attrs.get("dias")))
   		sb.append("(datediff(tc_mantic_empresas_deudas.limite, now())>= ").append(this.attrs.get("dias")).append(") and ");
-		regresar.put("idEmpresa", this.attrs.get("idEmpresa"));		
+		if(!Cadena.isVacio(this.attrs.get("almacen")))
+  		sb.append("tc_mantic_almacenes.nombre like '%").append(this.attrs.get("almacen")).append("%' and ");
+		regresar.put("idEmpresa", this.attrs.get("idEmpresa").toString().equals("-1") ? this.attrs.get("allEmpresa") : this.attrs.get("idEmpresa"));			
 		if(sb.length()== 0)
 		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
 		else	
