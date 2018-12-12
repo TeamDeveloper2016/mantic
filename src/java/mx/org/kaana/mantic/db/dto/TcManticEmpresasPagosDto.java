@@ -44,6 +44,8 @@ public class TcManticEmpresasPagosDto implements IBaseDto, Serializable {
   private Double pago;
   @Column (name="id_credito_nota")
   private Long idCreditoNota;
+  @Column (name="id_nota_entrada")
+  private Long idNotaEntrada;
   @Column (name="id_banco")
   private Long idBanco;
   @Column (name="referencia")
@@ -56,11 +58,11 @@ public class TcManticEmpresasPagosDto implements IBaseDto, Serializable {
   }
 
   public TcManticEmpresasPagosDto(Long key) {
-    this(null, null, null, null, new Long(-1L), null, null, null, null);
+    this(null, null, null, null, new Long(-1L), null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticEmpresasPagosDto(Long idTipoMedioPago, Long idUsuario, Long idEmpresaDeuda, String observaciones, Long idEmpresaPago, Double pago, Long idCreditoNota, Long idBanco, String referencia) {
+  public TcManticEmpresasPagosDto(Long idTipoMedioPago, Long idUsuario, Long idEmpresaDeuda, String observaciones, Long idEmpresaPago, Double pago, Long idCreditoNota, Long idBanco, String referencia, Long idNotaEntrada) {
     setIdTipoMedioPago(idTipoMedioPago);
     setIdUsuario(idUsuario);
     setIdEmpresaDeuda(idEmpresaDeuda);
@@ -71,6 +73,7 @@ public class TcManticEmpresasPagosDto implements IBaseDto, Serializable {
     setIdBanco(idBanco);
     setReferencia(referencia);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+		this.idNotaEntrada= idNotaEntrada;
   }
 	
   public void setIdTipoMedioPago(Long idTipoMedioPago) {
@@ -129,6 +132,14 @@ public class TcManticEmpresasPagosDto implements IBaseDto, Serializable {
     return idCreditoNota;
   }
 
+	public Long getIdNotaEntrada() {
+		return idNotaEntrada;
+	}
+
+	public void setIdNotaEntrada(Long idNotaEntrada) {
+		this.idNotaEntrada=idNotaEntrada;
+	}
+
   public void setIdBanco(Long idBanco) {
     this.idBanco = idBanco;
   }
@@ -182,6 +193,8 @@ public class TcManticEmpresasPagosDto implements IBaseDto, Serializable {
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdCreditoNota());
 		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdNotaEntrada());
+		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdBanco());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getReferencia());
@@ -201,6 +214,7 @@ public class TcManticEmpresasPagosDto implements IBaseDto, Serializable {
 		regresar.put("idEmpresaPago", getIdEmpresaPago());
 		regresar.put("pago", getPago());
 		regresar.put("idCreditoNota", getIdCreditoNota());
+		regresar.put("idNotaEntrada", getIdNotaEntrada());
 		regresar.put("idBanco", getIdBanco());
 		regresar.put("referencia", getReferencia());
 		regresar.put("registro", getRegistro());
@@ -210,7 +224,7 @@ public class TcManticEmpresasPagosDto implements IBaseDto, Serializable {
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdTipoMedioPago(), getIdUsuario(), getIdEmpresaDeuda(), getObservaciones(), getIdEmpresaPago(), getPago(), getIdCreditoNota(), getIdBanco(), getReferencia(), getRegistro()
+    getIdTipoMedioPago(), getIdUsuario(), getIdEmpresaDeuda(), getObservaciones(), getIdEmpresaPago(), getPago(), getIdCreditoNota(), getIdNotaEntrada(), getIdBanco(), getReferencia(), getRegistro()
     };
     return regresar;
   }
