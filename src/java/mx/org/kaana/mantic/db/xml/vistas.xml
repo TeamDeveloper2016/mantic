@@ -1310,7 +1310,9 @@
 					tc_mantic_articulos_bitacora.id_articulo_bitacora as id_key,
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona,
 					if(tc_mantic_notas_entradas.consecutivo is null, 'KARDEX', tc_mantic_notas_entradas.consecutivo) as consecutivo,					
-				  tc_mantic_articulos_bitacora.*
+				  tc_mantic_articulos_bitacora.*,
+				  ifnull(tc_mantic_proveedores.clave, '  ') as clave,
+				  ifnull(tc_mantic_proveedores.razon_social, '  ') as razon_social
 				from
 					tc_mantic_articulos_bitacora
 				inner join
@@ -1319,11 +1321,124 @@
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				left join
 					tc_mantic_notas_entradas on tc_mantic_articulos_bitacora.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+				left join
+				  tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
 				where
 					tc_mantic_articulos_bitacora.id_articulo= {idArticulo}
 				  and date_format(tc_mantic_articulos_bitacora.registro, '%Y%m%d')&gt;= '{registro}'
 				order by
 					tc_mantic_articulos_bitacora.registro desc				
+			</select>
+			<select id="movimientos">
+				select
+					'ENTRADA' as movimiento,
+				  tc_mantic_almacenes.nombre as almacen,
+					tc_mantic_notas_entradas.consecutivo,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					tc_mantic_articulos.nombre,
+					tc_mantic_proveedores.clave,
+					tc_mantic_proveedores.razon_social,
+					tc_mantic_notas_detalles.cantidad,
+					tc_mantic_notas_detalles.costo,
+					tc_mantic_notas_entradas.registro
+				from
+					tc_mantic_notas_entradas
+				inner join
+					tc_mantic_notas_detalles on tc_mantic_notas_entradas.id_nota_entrada= tc_mantic_notas_detalles.id_nota_entrada
+				inner join
+					tc_mantic_articulos on tc_mantic_notas_detalles.id_articulo= tc_mantic_articulos.id_articulo
+				inner join
+					tc_mantic_almacenes on tc_mantic_notas_entradas.id_empresa= tc_mantic_almacenes.id_empresa and tc_mantic_almacenes.id_principal= 1
+				inner join
+					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
+				where
+					tc_mantic_articulos.id_articulo= {idArticulo}
+					and date_format(tc_mantic_notas_detalles.registro, '%Y%m%d')&gt;= '{registro}'
+					and tc_mantic_notas_entradas.id_nota_estatus in (3, 5, 6)
+				union all
+				select
+					'SALIDAS' as movimiento,
+					tc_mantic_almacenes.nombre as almacen,
+					tc_mantic_ventas.consecutivo,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					tc_mantic_articulos.nombre,
+					tc_mantic_clientes.clave,
+					tc_mantic_clientes.razon_social,
+					tc_mantic_ventas_detalles.cantidad,
+					tc_mantic_ventas_detalles.costo,
+					tc_mantic_ventas.registro
+				from
+					tc_mantic_ventas
+				inner join
+					tc_mantic_ventas_detalles on tc_mantic_ventas.id_venta= tc_mantic_ventas_detalles.id_venta
+				inner join
+					tc_mantic_articulos on tc_mantic_ventas_detalles.id_articulo= tc_mantic_articulos.id_articulo
+				inner join
+					tc_mantic_almacenes on tc_mantic_ventas.id_empresa= tc_mantic_almacenes.id_empresa and tc_mantic_almacenes.id_principal= 1
+				inner join
+					tc_mantic_clientes on tc_mantic_ventas.id_cliente= tc_mantic_clientes.id_cliente
+				where
+					tc_mantic_articulos.id_articulo= {idArticulo}
+					and date_format(tc_mantic_ventas_detalles.registro, '%Y%m%d')>= '{registro}'
+					and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 9)
+				union all
+				select
+					'DEVOLUCIONES' as movimiento,
+					tc_mantic_almacenes.nombre as almacen,
+					tc_mantic_devoluciones.consecutivo,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					tc_mantic_articulos.nombre,
+					tc_mantic_proveedores.clave,
+					tc_mantic_proveedores.razon_social,
+					tc_mantic_devoluciones_detalles.cantidad,
+					tc_mantic_notas_detalles.costo,
+					tc_mantic_devoluciones.registro
+				from
+					tc_mantic_devoluciones
+				inner join
+					tc_mantic_devoluciones_detalles on tc_mantic_devoluciones.id_devolucion= tc_mantic_devoluciones_detalles.id_devolucion
+				inner join
+					tc_mantic_notas_detalles on tc_mantic_devoluciones_detalles.id_nota_detalle= tc_mantic_notas_detalles.id_nota_detalle
+				inner join
+					tc_mantic_articulos on tc_mantic_notas_detalles.id_articulo= tc_mantic_articulos.id_articulo
+				inner join
+					tc_mantic_almacenes on tc_mantic_devoluciones.id_empresa= tc_mantic_almacenes.id_empresa and tc_mantic_almacenes.id_principal= 1
+				inner join
+					tc_mantic_notas_entradas on tc_mantic_devoluciones.id_nota_entrada= tc_mantic_notas_entradas.id_nota_entrada
+				inner join
+					tc_mantic_proveedores on tc_mantic_notas_entradas.id_proveedor= tc_mantic_proveedores.id_proveedor
+				where
+					tc_mantic_articulos.id_articulo= {idArticulo}
+					and date_format(tc_mantic_devoluciones_detalles.registro, '%Y%m%d')>= '{registro}'
+					and tc_mantic_devoluciones.id_devolucion_estatus in (4, 5, 6)
+				union all
+				select
+					'TRASPASOS' as movimiento,
+					tc_mantic_almacenes.nombre as almacen,
+					'2018000000' as consecutivo,
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					tc_mantic_articulos.nombre,
+					tc_mantic_personas.rfc as clave,
+					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) razon_social,
+					tc_mantic_transferencias.cantidad,
+					tc_mantic_articulos.precio as costo,
+					tc_mantic_transferencias.registro
+				from
+					tc_mantic_transferencias
+				inner join
+					tc_mantic_articulos on tc_mantic_transferencias.id_articulo= tc_mantic_articulos.id_articulo
+				inner join
+					tc_mantic_almacenes on tc_mantic_transferencias.id_almacen= tc_mantic_almacenes.id_almacen
+				inner join
+					tc_janal_usuarios on tc_mantic_transferencias.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_articulos.id_articulo= {idArticulo}
+					and date_format(tc_mantic_transferencias.registro, '%Y%m%d')>= '{registro}'
+					and tc_mantic_transferencias.id_transferencia_estatus in (3, 5)
+			  order by
+				  registro
 			</select>
 			<select id="codigos">
         select      
@@ -1711,13 +1826,13 @@
 				inner  join
 					 tc_mantic_tipos_dias on tc_mantic_tipos_dias.id_tipo_dia=tc_mantic_proveedores.id_tipo_dia   
 				left join
-					 tr_mantic_proveedor_tipo_contacto ON tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_tipo_contacto.id_proveedor AND id_tipo_contacto &lt;= 1 AND orden =1
+					 tr_mantic_proveedor_tipo_contacto on tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_tipo_contacto.id_proveedor and id_tipo_contacto &lt;= 1 and orden =1
 				left join
-					tr_mantic_proveedor_agente ON tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_agente.id_proveedor AND tr_mantic_proveedor_agente.id_principal= 1
+					tr_mantic_proveedor_agente on tc_mantic_proveedores.id_proveedor = tr_mantic_proveedor_agente.id_proveedor and tr_mantic_proveedor_agente.id_principal= 1
 				left join
-					tc_mantic_personas ON tr_mantic_proveedor_agente.id_agente = tc_mantic_personas.id_persona
+					tc_mantic_personas on tr_mantic_proveedor_agente.id_agente = tc_mantic_personas.id_persona
 				left join
-					tr_mantic_persona_tipo_contacto ON tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona AND tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
+					tr_mantic_persona_tipo_contacto on tc_mantic_personas.id_persona= tr_mantic_persona_tipo_contacto.id_persona and tr_mantic_persona_tipo_contacto.id_tipo_contacto &lt;= 6 and tr_mantic_persona_tipo_contacto.orden =1         
 				where
 					tc_mantic_proveedores.id_empresa in ({idEmpresa})    
 			    and {condicion}        

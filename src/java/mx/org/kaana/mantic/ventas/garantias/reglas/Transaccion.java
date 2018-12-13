@@ -26,7 +26,6 @@ import mx.org.kaana.mantic.db.dto.TcManticGarantiasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticGarantiasDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import mx.org.kaana.mantic.db.dto.TrManticGarantiaMedioPagoDto;
-import mx.org.kaana.mantic.db.dto.TrManticVentaMedioPagoDto;
 import mx.org.kaana.mantic.enums.EEstatusGarantias;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.ventas.caja.cierres.reglas.Cierre;

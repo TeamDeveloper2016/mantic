@@ -225,11 +225,14 @@ public class Kardex extends IBaseAttribute implements Serializable {
 		if(event.getTab().getTitle().equals("Códigos")) 
 			this.toLoadCodigos();
 		else
-			if(event.getTab().getTitle().equals("Almacenes")) 
+			if(event.getTab().getTitle().equals("Almacenes") && this.attrs.get("idArticulo")!= null) 
 				this.toLoadAlmacenes();
 	    else	
-			  if(event.getTab().getTitle().equals("Historial")) 
+			  if(event.getTab().getTitle().equals("Historial") && this.attrs.get("idArticulo")!= null) 
 				  this.toLoadHistorial();
+				else	
+					if(event.getTab().getTitle().equals("Movimientos") && this.attrs.get("idArticulo")!= null) 
+						this.toLoadMovimientos();
 	}
 
   public void doFindArticulo() {
@@ -326,17 +329,43 @@ public class Kardex extends IBaseAttribute implements Serializable {
     try {
 			columns= new ArrayList<>();
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("costo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
-      columns.add(new Columna("menudeo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
-      columns.add(new Columna("medioMayoreo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
-      columns.add(new Columna("mayoreo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
-      columns.add(new Columna("limiteMedioMayoreo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
-      columns.add(new Columna("limiteMayoreo", EFormatoDinamicos.NUMERO_SAT_DECIMALES));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("menudeo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("medioMayoreo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("mayoreo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("limiteMedioMayoreo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("limiteMayoreo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
 			Periodo periodo= new Periodo();
 			periodo.addMeses(-6);
 			this.attrs.put("registro", periodo.toString());
       this.attrs.put("historial", (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "historial", this.attrs, columns));
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+		finally {
+      Methods.clean(columns);
+    }// finally
+	}
+
+	private void toLoadMovimientos() {
+		List<Columna> columns= null;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("almacen", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("cantidad", EFormatoDinamicos.NUMERO_CON_DECIMALES));
+      columns.add(new Columna("costo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+			Periodo periodo= new Periodo();
+			periodo.addMeses(-6);
+			this.attrs.put("registro", periodo.toString());
+      this.attrs.put("movimientos", (List<UISelectEntity>) UIEntity.build("VistaKardexDto", "movimientos", this.attrs, columns));
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
