@@ -300,9 +300,9 @@ public class Transaccion extends IBaseTnx {
 		Long idEstatus           = -1L;
 		try {
 			deudas= toDeudas(sesion);
-			for(Entity deuda: deudas){
+			for(Entity recordDeuda: deudas){
 				if(saldo > 0){					
-					saldoDeuda= Double.valueOf(deuda.toString("saldo"));
+					saldoDeuda= Double.valueOf(recordDeuda.toString("saldo")) * -1D;
 					if(saldoDeuda < this.pago.getPago()){
 						pagoParcial= saldoDeuda;
 						saldo= this.pago.getPago() - saldoDeuda;						
@@ -316,11 +316,11 @@ public class Transaccion extends IBaseTnx {
 						abono= saldoDeuda - this.pago.getPago();
 						idEstatus= this.saldar ? EEstatusClientes.FINALIZADA.getIdEstatus() : (saldoDeuda.equals(this.pago.getPago()) ? EEstatusClientes.FINALIZADA.getIdEstatus() : EEstatusClientes.PARCIALIZADA.getIdEstatus());
 					} /// else
-					if(registrarPago(sesion, deuda.getKey(), pagoParcial)){
+					if(registrarPago(sesion, recordDeuda.getKey(), pagoParcial)){
 						params= new HashMap<>();
-						params.put("saldo", abono);
+						params.put("saldo", (abono * -1D));
 						params.put("idClienteEstatus", idEstatus);
-						DaoFactory.getInstance().update(sesion, TcManticEmpresasDeudasDto.class, deuda.getKey(), params);
+						DaoFactory.getInstance().update(sesion, TcManticEmpresasDeudasDto.class, recordDeuda.getKey(), params);
 					}	// if				
 				} // if
 			} // for
@@ -424,9 +424,9 @@ public class Transaccion extends IBaseTnx {
 		try {
 			params= new HashMap<>();
 			params.put("idProveedor", this.idProveedor);
-			params.put(Constantes.SQL_CONDICION, " tc_mantic_empresas_deudas.saldo > 0 and tc_mantic_empresas_deudas.id_empresa_estatus not in(".concat(EEstatusClientes.FINALIZADA.getIdEstatus().toString()).concat(")"));			
+			params.put(Constantes.SQL_CONDICION, " tc_mantic_empresas_deudas.saldo < 0 and tc_mantic_empresas_deudas.id_empresa_estatus not in(".concat(EEstatusClientes.FINALIZADA.getIdEstatus().toString()).concat(")"));			
 			params.put("sortOrder", "order by tc_mantic_empresas_deudas.registro");
-			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaEmpresasDto", "cuentas", params);			
+			regresar= DaoFactory.getInstance().toEntitySet(sesion, "VistaEmpresasDto", "cuentasProveedor", params);			
 		} // try
 		catch (Exception e) {			
 			throw e;
