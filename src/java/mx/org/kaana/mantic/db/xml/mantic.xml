@@ -7,6 +7,78 @@
   </model>
 
   <dml>	
+    <unit id="TcManticMasivasBitacoraDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_masivas_bitacora
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_masivas_bitacora
+        where      
+          id_masiva_archivo = {idMasivaArchivo} and id_masiva_estatus = {idMasivaEstatus} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>		
+    <unit id="TcManticMasivasEstatusDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_masivas_estatus
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_masivas_estatus
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcManticTiposMasivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_tipos_masivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_tipos_masivos
+        where      
+          nombre = '{nombre}'
+      </select>
+    </unit>		
+    <unit id="TcManticMasivasArchivosDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_masivas_archivos
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_masivas_archivos
+        where      
+          id_empresa = {idEmpresa} and ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and id_tipo_masivo = {idTipoMasivo} and nombre = '{nombre}' and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>		
 	  <unit id="TcManticDevolucionesArchivosDto">
       <select id="row">
         select      

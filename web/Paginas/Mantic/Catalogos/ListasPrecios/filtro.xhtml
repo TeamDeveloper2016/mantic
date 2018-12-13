@@ -67,7 +67,7 @@
           <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosListaPreciosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosListaPreciosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosListaPreciosFiltro.lazyModel.rowCount gt manticCatalogosListaPreciosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
 						<f:facet name="header">
 							<div class="janal-icons-header">
-								<h:outputLink value="#{request.contextPath}/Temporal/listaPrecios.xls" title="Template del archivo XLS">
+								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/listaPrecios.xls" title="Template del archivo XLS">
 									<p:graphicImage library="janal" name="/icon/acciones/xls.png" width="24"/>
 								</h:outputLink>
 							</div>	

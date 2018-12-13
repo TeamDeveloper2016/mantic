@@ -4,6 +4,44 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaCargasMasivasDto">
+			<select id="importados">
+        select
+					tc_mantic_masivas_archivos.id_masiva_archivo as id_key,
+					tc_mantic_empresas.nombre as empresa,
+					tc_mantic_masivas_archivos.id_masiva_archivo,
+					tc_mantic_tipos_masivos.nombre as categoria,
+			  	tc_mantic_masivas_archivos.id_tipo_archivo,
+					tc_mantic_tipos_archivos.nombre as formato,
+					tc_mantic_masivas_archivos.nombre,
+					tc_mantic_masivas_archivos.alias,
+					tc_mantic_masivas_archivos.ruta,
+					tc_mantic_masivas_archivos.tuplas,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
+					tc_mantic_masivas_archivos.observaciones,
+				  tc_mantic_masivas_estatus.nombre as estatus,
+					tc_mantic_masivas_archivos.registro
+				from
+					tc_mantic_masivas_archivos
+				inner join
+					tc_mantic_empresas on tc_mantic_masivas_archivos.id_empresa= tc_mantic_empresas.id_empresa				
+				inner join
+					tc_mantic_masivas_estatus on tc_mantic_masivas_archivos.id_masiva_estatus= tc_mantic_masivas_estatus.id_masiva_estatus
+				inner join
+					tc_mantic_tipos_masivos on tc_mantic_tipos_masivos.id_tipo_masivo= tc_mantic_tipos_masivos.id_tipo_masivo				
+				inner join
+					tc_mantic_tipos_archivos on tc_mantic_masivas_archivos.id_tipo_archivo= tc_mantic_tipos_archivos.id_tipo_archivo
+				inner join
+					tc_janal_usuarios on tc_mantic_masivas_archivos.id_usuario= tc_janal_usuarios.id_usuario          
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+			    tc_mantic_masivas_archivos.id_empresa in ({sucursales})
+					and tc_mantic_masivas_archivos.id_tipo_masivo= {idTipoMasivo}
+				order by
+					tc_mantic_masivas_archivos.registro desc
+			</select>
+		</unit>		
 		<unit id="VistaServiciosDetallesDto">
 			<select id="detalle">
         select      				  

@@ -79,6 +79,11 @@
 						<p:ajax event="rowSelect" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections()" process="tabla" skipChildren="false"/>
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 						<f:facet name="header" >
+							<div class="janal-icons-header">
+								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivoArticulos.xls" title="Template del archivo XLS">
+									<p:graphicImage library="janal" name="/icon/acciones/xls.png" width="24"/>
+								</h:outputLink>
+							</div>	
               <div class="lg-pantalla">
 								<p:menuButton value="Opciones">
 									<p:menuitem icon="fa fa-plus" value="Agregar" title="Agregar articulo" action="#{manticCatalogosArticulosFiltro.doAccion('AGREGAR')}" onstart="return janal.bloquear()"/>						
