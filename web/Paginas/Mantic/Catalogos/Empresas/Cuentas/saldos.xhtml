@@ -79,10 +79,10 @@
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-80" styleClass="janal-wid-100" value="#{manticCatalogosEmpresasCuentasSaldos.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 						</p:panelGrid>
 						<div class="janal-align-right lg-pantalla">
-							<p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general', true);" process="panelBusqueda" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+							<p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
 						</div>
 						<div class="janal-align-right xs-pantalla">
-							<p:commandButton id="buscarIcon" title="Buscar" icon="fa fa-filter" onstart="return janal.partial('general', true);" process="panelBusqueda" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+							<p:commandButton id="buscarIcon" title="Buscar" icon="fa fa-filter" onstart="return janal.partial('general');" process="panelBusqueda" actionListener="#{manticCatalogosEmpresasCuentasSaldos.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
 						</div>
 					</p:panel>
 				</div>
@@ -126,14 +126,8 @@
 								<h:outputText value="Factura"/>
 							</f:facet>
 							<h:outputText value="#{row['factura']}"/>
-						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.importe}">
-							<f:facet name="header">
-								<h:outputText value="Documento"/>
-							</f:facet>
-							<h:outputText value="#{row['importe']}"/>
-						</p:column>
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{row.pagar}">
+						</p:column>						
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.pagar}">
 							<f:facet name="header">
 								<h:outputText value="Deuda"/>
 							</f:facet>
