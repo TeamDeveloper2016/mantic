@@ -88,7 +88,8 @@ public class Transaccion extends IBaseTnx {
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
 		boolean regresar = false;
     try {			
-			this.pagoGeneral= this.pago.getPago();
+			if(this.pago!= null)
+				this.pagoGeneral= this.pago.getPago();
       switch (accion) {
         case AGREGAR:
           regresar = procesarPago(sesion);
@@ -254,6 +255,7 @@ public class Transaccion extends IBaseTnx {
 				importe= Double.valueOf(String.valueOf(this.detalle.get("importe")));
 				deuda.setLimite(new java.sql.Date(this.fecha.getTime()));
 				deuda.setImporte(importe);
+				deuda.setPagar(importe);
 				deuda.setSaldo(calculateSaldo(sesion, importe, this.detalle.getKey()));
 				regresar= DaoFactory.getInstance().update(sesion, deuda)>= 1L;
 			} // if
