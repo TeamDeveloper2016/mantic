@@ -256,7 +256,7 @@ public class Transaccion extends IBaseTnx {
 				deuda.setLimite(new java.sql.Date(this.fecha.getTime()));
 				deuda.setImporte(importe);
 				deuda.setPagar(importe);
-				deuda.setSaldo(calculateSaldo(sesion, importe, this.detalle.getKey()));
+				deuda.setSaldo(-1 * calculateSaldo(sesion, importe, this.detalle.getKey()));
 				regresar= DaoFactory.getInstance().update(sesion, deuda)>= 1L;
 			} // if
 		} // try
