@@ -109,8 +109,11 @@ public class Transaccion extends IBaseTnx implements Serializable {
 			case PRUEBAS:
         server= "mysqldump -h localhost -u bonanzaj_tester --password=tester2018 --databases bonanzaj_training ";
 				break;
+			case CAPACITACION:
+        server= "mysqldump -h localhost -u ferreter_track --password=track2018 --databases ferreter_testing ";
+				break;
 			case PRODUCCION:
-        server= "mysqldump -h localhost -u bonanzaj_master --password=master2018 --databases bonanzaj_production ";
+        server= "mysqldump -h localhost -u ferreter_super --password=super2018 --databases ferreter_production ";
 				break;
 		} // swtich
 		LOG.info("Proceso a generar: "+ server.concat(" --compact --add-drop-table --complete-insert --extended-insert -r ").concat(path.toString()));
