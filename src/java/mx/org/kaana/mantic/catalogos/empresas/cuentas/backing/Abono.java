@@ -85,6 +85,7 @@ public class Abono extends IBaseFilter implements Serializable {
 			params.put("sortOrder", this.attrs.get("sortOrder"));
 			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaEmpresasDto", "cuentas", params);
 			this.attrs.put("deuda", deuda);
+			this.attrs.put("saldoPositivo", Double.valueOf(deuda.toString("saldo")) * -1);
 		} // try
 		catch (Exception e) {
 			throw e;
