@@ -70,7 +70,7 @@ public class EntityPostgressLazyModel<T extends IBaseDto> extends LazyDataModel<
 				regresar=(T) DaoFactory.getInstance().toEntity(idFuenteDato,sb.toString());
 			} // if	
 			else
-				if(regresar==null)
+				if(regresar==null && rowKey!= null && !rowKey.equals("-1") && this.getRowCount()> 0)
 				  throw new RuntimeException("La vista ["+ this.proceso+ "] en su proceso ["+ this.idXml+ "] no se le definio un campo llave 'id_key_<nombre>'.");
 		} // try
 		catch(Exception e) {

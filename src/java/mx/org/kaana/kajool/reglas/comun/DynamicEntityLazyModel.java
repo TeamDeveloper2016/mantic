@@ -75,7 +75,7 @@ public class DynamicEntityLazyModel<T extends IBaseDto> extends LazyDataModel<T>
 				regresar=(T) DaoFactory.getInstance().toEntity(this.idFuenteDato, sb.toString());
 			} // if	
 			else
-				if(regresar== null && rowKey!= null && !rowKey.equals("-1"))
+				if(regresar== null && rowKey!= null && !rowKey.equals("-1") && this.getRowCount()> 0)
   				throw new RuntimeException("La vista ["+ this.proceso+ "] en su proceso ["+ this.idXml+ "] no se le definio un campo llave 'id_key_<nombre>'.");
 		} // try
 		catch(Exception e) {
