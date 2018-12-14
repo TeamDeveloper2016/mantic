@@ -68,14 +68,6 @@ public class Monitoreo implements Serializable {
 		  this.progreso = this.total;
 	}
   
-  public void terminarBP() {
-		this.corriendo= false;		
-		if(this.total== null || this.total.longValue()<= 0)
-			this.progreso= 0L;
-		else
-		  this.progreso = 100L;
-	}
-
 	public void incrementar(int valor) {
 		this.progreso= this.progreso+ valor;
 	}

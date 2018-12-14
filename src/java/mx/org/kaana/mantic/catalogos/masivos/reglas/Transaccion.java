@@ -2,21 +2,20 @@ package mx.org.kaana.mantic.catalogos.masivos.reglas;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import jxl.Sheet;
 import jxl.Workbook;
 import jxl.WorkbookSettings;
 import jxl.read.biff.BiffException;
+import mx.org.kaana.kajool.catalogos.backing.Monitoreo;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
-import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
+import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
-import mx.org.kaana.mantic.db.dto.TcManticListasPreciosDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticMasivasArchivosDto;
 import static org.apache.commons.io.Charsets.ISO_8859_1;
 import static org.apache.commons.io.Charsets.UTF_8;
@@ -28,12 +27,10 @@ public class Transaccion extends IBaseTnx {
   
   private static final Log LOG = LogFactory.getLog(Transaccion.class);
   private TcManticMasivasArchivosDto masivo;	
-	private Importado xls;
 	private String messageError;
   
-  public Transaccion(TcManticMasivasArchivosDto masivo, Importado xls) {
+  public Transaccion(TcManticMasivasArchivosDto masivo) {
 		this.masivo= masivo;		
-		this.xls   = xls;
 	} // Transaccion
 
 	protected void setMessageError(String messageError) {
@@ -52,10 +49,8 @@ public class Transaccion extends IBaseTnx {
       switch (accion) {
       case PROCESAR: 
         regresar= this.toProcess(sesion);
-        this.toDeleteXls();
         break;
       case ELIMINAR: 
-        this.toDeleteXls();
         regresar = DaoFactory.getInstance().delete(sesion, this.masivo)> -1L;
         break;
       } // swtich 
@@ -72,16 +67,13 @@ public class Transaccion extends IBaseTnx {
 	protected boolean toProcess(Session sesion) throws Exception {
 		boolean regresar= false;  
 		File file= new File(this.masivo.getAlias());
-		if(file.exists()) 
-			if(this.masivo.isValid())
-			  DaoFactory.getInstance().update(sesion, this.masivo);
-		  else
-			  DaoFactory.getInstance().insert(sesion, this.masivo);
-		else
-			LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ this.masivo.getNombre());
-//        Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
-//        monitoreo.comenzar(0L);
-//        monitoreo.setTotal(Long.valueOf(this.articulos.size()));
+		if(file.exists()) {
+			DaoFactory.getInstance().updateAll(sesion, TcManticMasivasArchivosDto.class, this.masivo.toMap());
+		  DaoFactory.getInstance().insert(sesion, this.masivo);
+			this.toDeleteXls();
+			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
+			monitoreo.comenzar(0L);
+			monitoreo.setTotal(this.masivo.getTuplas());
 //        for(TcManticListasPreciosDetallesDto articulo:this.articulos){
 //          articulo.setIdListaPrecio(this.lista.getIdListaPrecio());
 //          DaoFactory.getInstance().insert(sesion, articulo);
@@ -94,22 +86,16 @@ public class Transaccion extends IBaseTnx {
 //            i=0;
 //          }
 //        }
-//        monitoreo.setProgreso(0L);
-//        monitoreo.setTotal(0L);
-//        monitoreo.terminarBP();
+			monitoreo.incrementar(this.masivo.getTuplas().intValue());
+      monitoreo.terminar();
+			monitoreo.setProgreso(0L);
+			regresar= true;
+		} // if	
+		else
+			LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ this.masivo.getNombre());
     return regresar;
 	}
 
-	public void toDeleteXls() throws Exception {
-		List<TcManticMasivasArchivosDto> list= (List<TcManticMasivasArchivosDto>)DaoFactory.getInstance().findViewCriteria(TcManticMasivasArchivosDto.class, this.masivo.toMap(), "all");
-		if(list!= null)
-			for (TcManticMasivasArchivosDto item: list) {
-				LOG.info("Lista archivo: "+ this.masivo.getIdMasivaArchivo()+ " delete file: "+ item.getAlias());
-				File file= new File(item.getAlias());
-				file.delete();
-			} // for
-	}	
- 
   private Boolean toProcessMasivo(File archivo, TcManticMasivasArchivosDto masivo, ECargaMasiva categoria) throws Exception {
 		Boolean regresar	      = false;
 		Workbook workbook	      = null;
@@ -168,4 +154,15 @@ public class Transaccion extends IBaseTnx {
     } // finally
 		return regresar;
 	} // toVerificaXls		
+	
+	public void toDeleteXls() throws Exception {
+		List<TcManticMasivasArchivosDto> list= (List<TcManticMasivasArchivosDto>)DaoFactory.getInstance().findViewCriteria(TcManticMasivasArchivosDto.class, this.masivo.toMap(), "all");
+		if(list!= null)
+			for (TcManticMasivasArchivosDto item: list) {
+				LOG.info("Catalogo importado: "+ this.masivo.getIdMasivaArchivo()+ " delete file: "+ item.getAlias());
+				File file= new File(item.getAlias());
+				file.delete();
+			} // for
+	}	
+ 	
 }

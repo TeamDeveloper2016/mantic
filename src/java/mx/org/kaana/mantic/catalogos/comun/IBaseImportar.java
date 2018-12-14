@@ -72,6 +72,10 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
     return xls;
   }
 
+	public void setXls(Importado xls) {
+		this.xls=xls;
+	}
+
 	public Importado getPdf() {
 		return pdf;
 	}
@@ -135,9 +139,8 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			this.toWriteFile(result, event.getFile().getInputstream());
 			fileSize= event.getFile().getSize();			
 			if(isXls) {
-				if(!this.toVerificaXls(result)){
-          throw new KajoolBaseException("El archivo ["+this.xls.getName()+ "] no tiene el formato adecuado para la carga" );
-        }
+				if(!this.toVerificaXls(result))
+          throw new KajoolBaseException("El archivo ["+ event.getFile().getFileName()+ "] no tiene el formato adecuado para la carga" );
         this.xls= new Importado(name, event.getFile().getContentType(), EFormatos.XLS, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
         this.attrs.put("xls", this.xls.getName());
 			} //
@@ -149,7 +152,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
-			JsfBase.addMessage("Importar:", "El archivo no pudo ser importado, verifiquelo por favor !", ETipoMensaje.ERROR);
+			JsfBase.addMessage("Importar:", e.getMessage(), ETipoMensaje.ERROR);
 			if(result!= null)
 			  result.delete();
 		} // catch
@@ -490,7 +493,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
 		  this.attrs.put("importados", UIEntity.build(proceso, idXml, params, columns));
 		} // try
     catch (Exception e) {
@@ -516,7 +519,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			workbook= Workbook.getWorkbook(archivo, workbookSettings);
 			sheet		= workbook.getSheet(0);
 			if(sheet != null && sheet.getColumns()>= categoria.getColumns() && sheet.getRows()>= 2) {
-				for (int columna= 0; columna< 5; columna++){
+				for (int columna= 0; columna< categoria.getColumns(); columna++){
 					encabezado.append(Cadena.eliminaCaracter(sheet.getCell(columna,0).getContents(), ' '));
 					encabezado.append("|");
 				} // for
@@ -530,7 +533,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			throw e;
 		} // catch
     finally {
-      if(workbook!= null){
+      if(workbook!= null) {
         workbook.close();
         workbook = null;
       }
@@ -538,7 +541,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 		return regresar;
 	} // toCheckHeader
 	
-	protected void doFileUploadMasivo(FileUploadEvent event, Long fecha, String carpeta, TcManticMasivasArchivosDto masivo, ECargaMasiva categoria) {
+	protected void doFileUploadMasivo(FileUploadEvent event, Long fecha, String carpeta, TcManticMasivasArchivosDto masivo, ECargaMasiva categoria) throws Exception {
 		StringBuilder path= new StringBuilder();  
 		StringBuilder temp= new StringBuilder();  
     File result       = null;		
@@ -555,8 +558,6 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
       temp.append("/");
       temp.append(Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase());
       temp.append("/");
-      temp.append(Fecha.formatear(Fecha.FECHA_HORA_LARGA));
-      temp.append("/");
 			path.append(temp.toString());
 			result= new File(path.toString());		
 			if (!result.exists())
@@ -572,19 +573,26 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 			fileSize= event.getFile().getSize();			
 			if(isXls) {
 				if(!this.toCheckHeader(result, masivo, categoria))
-          throw new KajoolBaseException("El archivo ["+ this.xls.getName()+ "] no tiene el formato adecuado para la carga !\n ["+ categoria.getTitles()+ "]");
+          throw new KajoolBaseException("El archivo ["+ event.getFile().getFileName()+ "] no tiene el formato adecuado para la carga !<br/><br/> Columnas del archivo XLS:<br/>["+ categoria.getTitles()+ "]");
+				// Si esta inicializado el objeto XLS, significa que ya se habia subido un archivo eliminar ese archivo siempre y cuando el nombre sea diferente
+				if(this.xls!= null && !this.xls.getName().equals(name)) {
+					result = new File(carpeta+ this.xls.getRuta().concat(this.xls.getName()));
+					if(result.exists())
+					  result.delete();
+				} // if
         this.xls= new Importado(name, event.getFile().getContentType(), EFormatos.XLS, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
         masivo.setNombre(this.xls.getName());
 				masivo.setAlias(path.toString());
 				masivo.setTamanio(event.getFile().getSize());
         this.attrs.put("xls", this.xls.getName());
 			} //
+			else
+				result.delete();
 		} // try
 		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessage("Importar:", "El archivo no pudo ser importado, verifiquelo por favor !", ETipoMensaje.ERROR);
-			if(result!= null)
+			if(result!= null && result.exists())
 			  result.delete();
+			throw e;
 		} // catch
 	} // doFileUpload	
 	

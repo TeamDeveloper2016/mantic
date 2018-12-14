@@ -78,6 +78,25 @@
         where      
           id_empresa = {idEmpresa} and ruta = '{ruta}' and id_tipo_archivo = {idTipoArchivo} and id_tipo_masivo = {idTipoMasivo} and nombre = '{nombre}' and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
       </select>
+      <select id="all">
+        select      
+          *
+        from      
+          tc_mantic_masivas_archivos
+        where      
+				  id_empresa= {idEmpresa} 
+				  and id_tipo_masivo= {idTipoMasivo}
+          and id_masiva_archivo!= {idMasivaArchivo}
+      </select>
+      <update id="rows">
+        update
+          tc_mantic_masivas_archivos
+				set 
+				  id_principal= 2
+        where      
+				  id_empresa= {idEmpresa} 
+				  and id_tipo_masivo= {idTipoMasivo}
+      </update>
     </unit>		
 	  <unit id="TcManticDevolucionesArchivosDto">
       <select id="row">

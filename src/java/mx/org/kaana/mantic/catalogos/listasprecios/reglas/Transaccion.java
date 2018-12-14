@@ -148,9 +148,8 @@ public class Transaccion extends IBaseTnx {
             i=0;
           }
         }
+        monitoreo.terminar();
         monitoreo.setProgreso(0L);
-        monitoreo.setTotal(0L);
-        monitoreo.terminarBP();
 				//this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.xls.getRuta()), ".".concat(this.xls.getFormat().name()), this.toListFile(sesion, this.xls, 1L));
 			} // if	
 			if(this.pdf!= null) {

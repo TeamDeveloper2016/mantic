@@ -20,6 +20,7 @@
 					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as usuario,
 					tc_mantic_masivas_archivos.observaciones,
 				  tc_mantic_masivas_estatus.nombre as estatus,
+					tc_mantic_masivas_archivos.id_principal,
 					tc_mantic_masivas_archivos.registro
 				from
 					tc_mantic_masivas_archivos
@@ -37,7 +38,7 @@
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				where
 			    tc_mantic_masivas_archivos.id_empresa in ({sucursales})
-					and tc_mantic_masivas_archivos.id_tipo_masivo= {idTipoMasivo}
+					and tc_mantic_tipos_masivos.id_tipo_masivo= {idTipoMasivo}
 				order by
 					tc_mantic_masivas_archivos.registro desc
 			</select>

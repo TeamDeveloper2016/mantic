@@ -62,17 +62,19 @@ public class TcManticMasivasArchivosDto implements IBaseDto, Serializable {
   private String alias;
   @Column (name="id_empresa")
   private Long idEmpresa;
+  @Column (name="id_principal")
+  private Long idPrincipal;
 
   public TcManticMasivasArchivosDto() {
     this(new Long(-1L));
   }
 
   public TcManticMasivasArchivosDto(Long key) {
-    this(new Long(-1L), null, null, null, null, null, null, null, null, null, null, null);
+    this(new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, 2L);
     setKey(key);
   }
 
-  public TcManticMasivasArchivosDto(Long idMasivaArchivo, String ruta, Long idTipoMasivo, Long idMasivaEstatus, String nombre, Long tamanio, Long idUsuario, Long idTipoArchivo, Long tuplas, String observaciones, String alias, Long idEmpresa) {
+  public TcManticMasivasArchivosDto(Long idMasivaArchivo, String ruta, Long idTipoMasivo, Long idMasivaEstatus, String nombre, Long tamanio, Long idUsuario, Long idTipoArchivo, Long tuplas, String observaciones, String alias, Long idEmpresa, Long idPrincipal) {
     setIdMasivaArchivo(idMasivaArchivo);
     setRuta(ruta);
     setIdTipoMasivo(idTipoMasivo);
@@ -86,6 +88,7 @@ public class TcManticMasivasArchivosDto implements IBaseDto, Serializable {
     setObservaciones(observaciones);
     setAlias(alias);
     setIdEmpresa(idEmpresa);
+		this.idPrincipal= idPrincipal;
   }
 	
   public void setIdMasivaArchivo(Long idMasivaArchivo) {
@@ -192,6 +195,14 @@ public class TcManticMasivasArchivosDto implements IBaseDto, Serializable {
     return idEmpresa;
   }
 
+	public Long getIdPrincipal() {
+		return idPrincipal;
+	}
+
+	public void setIdPrincipal(Long idPrincipal) {
+		this.idPrincipal=idPrincipal;
+	}
+
   @Transient
   @Override
   public Long getKey() {
@@ -232,6 +243,8 @@ public class TcManticMasivasArchivosDto implements IBaseDto, Serializable {
 		regresar.append(getAlias());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getIdEmpresa());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getIdPrincipal());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -252,13 +265,14 @@ public class TcManticMasivasArchivosDto implements IBaseDto, Serializable {
 		regresar.put("observaciones", getObservaciones());
 		regresar.put("alias", getAlias());
 		regresar.put("idEmpresa", getIdEmpresa());
+		regresar.put("idPrincipal", getIdPrincipal());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getIdMasivaArchivo(), getRuta(), getIdTipoMasivo(), getIdMasivaEstatus(), getNombre(), getRegistro(), getTamanio(), getIdUsuario(), getIdTipoArchivo(), getTuplas(), getObservaciones(), getAlias(), getIdEmpresa()
+    getIdMasivaArchivo(), getRuta(), getIdTipoMasivo(), getIdMasivaEstatus(), getNombre(), getRegistro(), getTamanio(), getIdUsuario(), getIdTipoArchivo(), getTuplas(), getObservaciones(), getAlias(), getIdEmpresa(), getIdPrincipal()
     };
     return regresar;
   }
