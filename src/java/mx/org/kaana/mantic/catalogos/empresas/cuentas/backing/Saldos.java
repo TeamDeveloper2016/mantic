@@ -157,6 +157,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 			seleccionado= (Entity) this.attrs.get("seleccionado");
 			JsfBase.setFlashAttribute("idEmpresaDeuda", seleccionado.getKey());
 			JsfBase.setFlashAttribute("idEmpresa", seleccionado.toString("idEmpresa"));
+			JsfBase.setFlashAttribute("idProveedor", seleccionado.toString("idProveedor"));
 			regresar= "abono".concat(Constantes.REDIRECIONAR);
 		} // try
 		catch (Exception e) {
