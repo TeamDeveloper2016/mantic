@@ -49,6 +49,7 @@ public class Transaccion extends IBaseTnx {
 		return messageError;
 	}
   
+	@Override
   protected boolean ejecutar(Session sesion, EAccion accion) throws Exception{
     boolean regresar          = false;
     Map<String, Object> params= null;

@@ -1,16 +1,11 @@
-package mx.org.kaana.mantic.catalogos.articulos.backing;
+package mx.org.kaana.mantic.catalogos.masivos.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
-import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -18,50 +13,54 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.formato.Cadena;
-import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.db.dto.TcManticListasPreciosDto;
-import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.catalogos.comun.IBaseImportar;
-import mx.org.kaana.mantic.catalogos.listasprecios.reglas.Transaccion;
+import mx.org.kaana.mantic.catalogos.masivos.reglas.Transaccion;
+import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
+import mx.org.kaana.mantic.db.dto.TcManticMasivasArchivosDto;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.TabChangeEvent;
 
-@Named(value= "manticCatalogosArticulosImportar")
+@Named(value= "manticCatalogosMasivosImportar")
 @ViewScoped
 public class Importar extends IBaseImportar implements Serializable {
 
 	private static final Log LOG=LogFactory.getLog(Importar.class);
-  private static final long serialVersionUID= 318633488565639367L;
+  private static final long serialVersionUID= 318633488565639363L;
 	
-	private TcManticListasPreciosDto lista;
-	private TcManticProveedoresDto proveedor;
+	private TcManticMasivasArchivosDto masivo;
+	private ECargaMasiva categoria;
 
-	public TcManticListasPreciosDto getLista() {
-		return lista;
+	public TcManticMasivasArchivosDto getMasivo() {
+		return masivo;
 	}
 
-	public TcManticProveedoresDto getProveedor() {
-		return proveedor;
-	}
-  
 	@PostConstruct
   @Override
   protected void init() {		
     try {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
-			this.lista = new TcManticListasPreciosDto();
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			this.attrs.put("idTipoMasivo", 0L);
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_MASIVO);
+			this.categoria= ECargaMasiva.ARTICULOS;
 			this.attrs.put("observaciones", ""); 
 			this.attrs.put("xls", ""); 
+			this.masivo = new TcManticMasivasArchivosDto(
+				-1L, // Long idMasivaArchivo, 
+				Configuracion.getInstance().getPropiedadSistemaServidor("masivos"), // String ruta, 
+				categoria.getId(), // Long idTipoMasivo, 
+				1L, // Long idMasivaEstatus, 
+				"", // String nombre, 
+				0L, // Long tamanio, 
+			  JsfBase.getIdUsuario(), // Long idUsuario, 
+				8L, // Long idTipoArchivo, 
+				0L, // Long tuplas, 
+				"", // String observaciones, 
+				"", // String alias, 
+				JsfBase.getAutentifica().getEmpresa().getIdEmpresa()
+			);
       setArticulos(new ArrayList<>());
-			this.doLoadImportados("VistaCargasMasivasDto", "importados", this.attrs);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -71,11 +70,11 @@ public class Importar extends IBaseImportar implements Serializable {
   
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Archivos")) 
-			this.doLoadImportados("VistaListasArchivosDto", "importados", this.lista.toMap());
+			this.doLoadImportados("VistaCargasMasivasDto", "importados", this.attrs);
 	}		
 
 	public void doFileUpload(FileUploadEvent event) {
-    this.doFileUpload(event, this.lista.getRegistro().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("masivos"), this.proveedor.getClave());
+    this.doFileUploadMasivo(event, this.masivo.getRegistro().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("masivos"), this.masivo, this.categoria);
 	  // RequestContext.getCurrentInstance().execute("janal.show([{summary: 'Error:', detail: 'Solo se pueden importar catalogos en formato PDF ["+ event.getFile().getFileName().toUpperCase()+ "].'}]);"); 
 	} // doFileUpload	
 	
@@ -90,15 +89,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	public String doAceptar() {
 		String regresar= null;
 		try {
-			if("0".equals((String)this.attrs.get("tipo"))) {
-        this.lista.setIdProveedor(((UISelectEntity)attrs.get("idProveedor")).getKey());
-				this.lista.setNombre("");
-			} // if	
-			else 
-				this.lista.setIdProveedor(null);
-      this.lista.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
-      this.lista.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
-      Transaccion transaccion= new Transaccion(this.lista, getArticulos(), this.getXls(), this.getPdf());
+      Transaccion transaccion= new Transaccion(this.masivo, this.getXls());
       if(transaccion.ejecutar(EAccion.COMPLEMENTAR)) {
         RequestContext.getCurrentInstance().execute("janal.alert('Se actualizo y se importaron los catalogos de forma correcta !');");
         regresar= this.doCancelar();
@@ -118,7 +109,14 @@ public class Importar extends IBaseImportar implements Serializable {
 	} // doCompleto
 
 	public void doChangeTipo() {
-		
+		switch(this.masivo.getIdTipoMasivo().intValue()) {
+			case 1: this.categoria= ECargaMasiva.ARTICULOS;
+				break;
+			case 2: this.categoria= ECargaMasiva.CLIENTES;
+				break;
+			case 3: this.categoria= ECargaMasiva.PROVEEDORES;
+				break;
+		} // switch
 	}
 
 	public void doImageUpload(FileUploadEvent event) {

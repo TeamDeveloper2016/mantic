@@ -47,7 +47,9 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
+import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.db.dto.TcManticListasPreciosDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticMasivasArchivosDto;
 import static org.apache.commons.io.Charsets.ISO_8859_1;
 import static org.apache.commons.io.Charsets.UTF_8;
 import org.apache.commons.logging.Log;
@@ -90,10 +92,6 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
     this.articulos = articulos;
   }
 		
-	protected void doFileUpload(FileUploadEvent event, Long fechaFactura, String carpeta, String clave) {
-		this.doFileUpload(event, fechaFactura, carpeta, clave, true, 1D);
-	}
-
 	private String toNormalizerName(String name, boolean time) {
 		String regresar= name.toUpperCase();
 		try {
@@ -105,7 +103,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 	  return (time? Cadena.rellenar(Fecha.formatear(Fecha.FECHA_HORA_LARGA), 17, '0', false).trim().concat("_"): "")+ Cadena.toNormalizer(regresar);	
 	}
 	
-	protected void doFileUpload(FileUploadEvent event, Long fechaFactura, String carpeta, String clave, Boolean sinIva, Double tipoDeCambio) {
+	protected void doFileUpload(FileUploadEvent event, Long fecha, String carpeta, String clave) {
 		StringBuilder path= new StringBuilder();  
 		StringBuilder temp= new StringBuilder();  
     File result       = null;		
@@ -114,7 +112,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
     String name       = null;
 		try {
 			Calendar calendar= Calendar.getInstance();
-			calendar.setTimeInMillis(fechaFactura);
+			calendar.setTimeInMillis(fecha);
       path.append(carpeta);
       temp.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
       temp.append("/");
@@ -151,7 +149,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
-			JsfBase.addMessage("Importar:", "El archivo no pudo ser importado !", ETipoMensaje.ERROR);
+			JsfBase.addMessage("Importar:", "El archivo no pudo ser importado, verifiquelo por favor !", ETipoMensaje.ERROR);
 			if(result!= null)
 			  result.delete();
 		} // catch
@@ -503,7 +501,93 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
       Methods.clean(columns);
     } // finally
   } 
-		
+
+  private Boolean toCheckHeader(File archivo, TcManticMasivasArchivosDto masivo, ECargaMasiva categoria) throws Exception {
+		Boolean regresar	      = false;
+		Workbook workbook	      = null;
+		Sheet sheet             = null;
+		StringBuilder encabezado= new StringBuilder();
+		try {
+      WorkbookSettings workbookSettings = new WorkbookSettings();
+      workbookSettings.setEncoding("Cp1252");	
+			workbookSettings.setExcelDisplayLanguage("MX");
+      workbookSettings.setExcelRegionalSettings("MX");
+      workbookSettings.setLocale(new Locale("es", "MX"));
+			workbook= Workbook.getWorkbook(archivo, workbookSettings);
+			sheet		= workbook.getSheet(0);
+			if(sheet != null && sheet.getColumns()>= categoria.getColumns() && sheet.getRows()>= 2) {
+				for (int columna= 0; columna< 5; columna++){
+					encabezado.append(Cadena.eliminaCaracter(sheet.getCell(columna,0).getContents(), ' '));
+					encabezado.append("|");
+				} // for
+				encabezado.delete(encabezado.length()-1, encabezado.length());
+				LOG.info("Encabezado: "+ encabezado);
+				regresar = encabezado.toString().equals(categoria.getFields());
+				masivo.setTuplas(new Long(sheet.getRows()- 1));
+			} // if
+		} // try
+		catch (IOException | BiffException e) {
+			throw e;
+		} // catch
+    finally {
+      if(workbook!= null){
+        workbook.close();
+        workbook = null;
+      }
+    } // finally
+		return regresar;
+	} // toCheckHeader
+	
+	protected void doFileUploadMasivo(FileUploadEvent event, Long fecha, String carpeta, TcManticMasivasArchivosDto masivo, ECargaMasiva categoria) {
+		StringBuilder path= new StringBuilder();  
+		StringBuilder temp= new StringBuilder();  
+    File result       = null;		
+		Long fileSize     = 0L;
+		boolean isXls     = false;
+    String name       = null;
+		try {
+			Calendar calendar= Calendar.getInstance();
+			calendar.setTimeInMillis(fecha);
+      path.append(carpeta);
+      temp.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
+      temp.append("/");
+      temp.append(Calendar.getInstance().get(Calendar.YEAR));
+      temp.append("/");
+      temp.append(Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase());
+      temp.append("/");
+      temp.append(Fecha.formatear(Fecha.FECHA_HORA_LARGA));
+      temp.append("/");
+			path.append(temp.toString());
+			result= new File(path.toString());		
+			if (!result.exists())
+				result.mkdirs();
+      masivo.setRuta(path.toString());
+			name= this.toNormalizerName(event.getFile().getFileName(), true);
+      path.append(name);
+			result = new File(path.toString());
+			if (result.exists())
+				result.delete();			      
+			isXls= event.getFile().getFileName().toUpperCase().endsWith(EFormatos.XLS.name());
+			this.toWriteFile(result, event.getFile().getInputstream());
+			fileSize= event.getFile().getSize();			
+			if(isXls) {
+				if(!this.toCheckHeader(result, masivo, categoria))
+          throw new KajoolBaseException("El archivo ["+ this.xls.getName()+ "] no tiene el formato adecuado para la carga !\n ["+ categoria.getTitles()+ "]");
+        this.xls= new Importado(name, event.getFile().getContentType(), EFormatos.XLS, event.getFile().getSize(), fileSize.equals(0L) ? fileSize: fileSize/1024, event.getFile().equals(0L)? " Bytes": " Kb", temp.toString(), (String)this.attrs.get("observaciones"));
+        masivo.setNombre(this.xls.getName());
+				masivo.setAlias(path.toString());
+				masivo.setTamanio(event.getFile().getSize());
+        this.attrs.put("xls", this.xls.getName());
+			} //
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessage("Importar:", "El archivo no pudo ser importado, verifiquelo por favor !", ETipoMensaje.ERROR);
+			if(result!= null)
+			  result.delete();
+		} // catch
+	} // doFileUpload	
+	
 	public static void main(String ... args) {
 		LOG.info(" $ 3,123.12 sin caracteres especiales: "+ " $ 3,123.12 ".replaceAll("[$, ]", ""));
 	}
