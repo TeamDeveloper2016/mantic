@@ -149,15 +149,15 @@
 									<h:outputText value="#{row.observaciones}"/>
 								</p:column>   
 								<p:column style="text-align: center" styleClass="janal-wid-col-38">
-									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);">
+									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{row.idPrincipal.toLong() eq 1}">
 										<p:fileDownload value="#{manticCatalogosListaPreciosImportar.doFileDownload(row)}" />
 									</p:commandButton>
 								</p:column>
 								<p:column style="text-align: center" styleClass="janal-wid-col-38">
-									<p:commandLink  actionListener="#{manticCatalogosListaPreciosImportar.doViewPdfDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idTipoArchivo.toLong() eq 2}">
+									<p:commandLink  actionListener="#{manticCatalogosListaPreciosImportar.doViewPdfDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idTipoArchivo.toLong() eq 2 and row.idPrincipal.toLong() eq 1}">
 									  <p:commandButton icon="fa fa-eye" title="Ver documento PDF" ajax="false" type="button"/>
 									</p:commandLink>	
-									<p:commandLink  actionListener="#{manticCatalogosListaPreciosImportar.doViewXlsDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgXLS').show();" rendered="#{row.idTipoArchivo.toLong() eq 1}">
+									<p:commandLink  actionListener="#{manticCatalogosListaPreciosImportar.doViewXlsDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgXLS').show();" rendered="#{row.idTipoArchivo.toLong() eq 8 and row.idPrincipal.toLong() eq 1}">
 									  <p:commandButton icon="fa fa-eye" title="Ver documento XLS" ajax="false" type="button"/>
 									</p:commandLink>	
 								</p:column>

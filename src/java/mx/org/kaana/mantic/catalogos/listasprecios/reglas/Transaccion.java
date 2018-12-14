@@ -58,25 +58,26 @@ public class Transaccion extends IBaseTnx {
     try {
       this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" articulos a la lista de precios.");
       switch (accion) {
-      case AGREGAR: 
-        regresar= DaoFactory.getInstance().insert(sesion, this.lista)> 0L;
-        break;
-      case COMPLEMENTAR: 
-        if(DaoFactory.getInstance().update(sesion, this.lista)> 0L) {
-          sesion.flush();
-          this.toUpdateXls(sesion);
-          regresar= true;
-        } // if
-        break;
-      case ELIMINAR: 
-        this.toDeleteXmlPdf();
-        regresar = DaoFactory.getInstance().deleteAll(sesion, TcManticListasPreciosDetallesDto.class, this.lista.toMap())>-1L;
-        sesion.flush();
-        regresar = DaoFactory.getInstance().deleteAll(sesion, TcManticListasPreciosArchivosDto.class, this.lista.toMap())>-1L;
-        sesion.flush();
-        regresar = DaoFactory.getInstance().delete(sesion, this.lista)>-1L;
-        sesion.flush();
-        break;
+				case COMPLEMENTAR: 
+					if(this.lista.isValid())
+						regresar= DaoFactory.getInstance().update(sesion, this.lista)> 0L;
+					else
+						regresar= DaoFactory.getInstance().insert(sesion, this.lista)> 0L;
+					if(regresar) {
+						sesion.flush();
+						this.toUpdateXls(sesion);
+						regresar= true;
+					} // if
+					break;
+				case ELIMINAR: 
+					this.toDeleteXmlPdf();
+					regresar = DaoFactory.getInstance().deleteAll(sesion, TcManticListasPreciosDetallesDto.class, this.lista.toMap())>-1L;
+					sesion.flush();
+					regresar = DaoFactory.getInstance().deleteAll(sesion, TcManticListasPreciosArchivosDto.class, this.lista.toMap())>-1L;
+					sesion.flush();
+					regresar = DaoFactory.getInstance().delete(sesion, this.lista)>-1L;
+					sesion.flush();
+					break;
       } // swtich 
       if (!regresar) {
         throw new Exception(messageError);

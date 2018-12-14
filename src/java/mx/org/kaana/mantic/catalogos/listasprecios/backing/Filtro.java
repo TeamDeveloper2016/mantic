@@ -87,7 +87,7 @@ public class Filtro extends IBaseFilter implements java.io.Serializable
   
   public String doAgregarListaProveedor() {
     JsfBase.setFlashAttribute("retorno", "filtro");
-    JsfBase.setFlashAttribute("idListaPrecio", null);
+    JsfBase.setFlashAttribute("idListaPrecio", -1L);
     return "importar".concat("?faces-redirect=true");
   }
   
