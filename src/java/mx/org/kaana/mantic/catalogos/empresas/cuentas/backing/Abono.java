@@ -1,8 +1,6 @@
 package mx.org.kaana.mantic.catalogos.empresas.cuentas.backing;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -26,27 +24,24 @@ import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.Configuracion;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
+import mx.org.kaana.mantic.catalogos.comun.IBasePagos;
 import mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
-import mx.org.kaana.mantic.inventarios.comun.IBaseImportar;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.event.TabChangeEvent;
 
 @Named(value = "manticCatalogosEmpresasCuentasAbono")
 @ViewScoped
-public class Abono extends IBaseImportar implements Serializable {
+public class Abono extends IBasePagos implements Serializable {
 
-  private static final long serialVersionUID= 8793667741599428879L;	
-	private static final int BUFFER_SIZE      = 6124;	
+  private static final long serialVersionUID= 8793667741599428879L;		
 	
   @PostConstruct
   @Override
@@ -59,17 +54,7 @@ public class Abono extends IBaseImportar implements Serializable {
 			this.attrs.put("empresaDeuda", DaoFactory.getInstance().findById(TcManticEmpresasDeudasDto.class, Long.valueOf(this.attrs.get("idEmpresaDeuda").toString())));
 			this.attrs.put("proveedor", DaoFactory.getInstance().findById(TcManticProveedoresDto.class, Long.valueOf(this.attrs.get("idProveedor").toString())));
       this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno"));  
-			this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());			
-			this.attrs.put("mostrarBanco", false);
-			setFile(new Importado());
-			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_IDENTIFICACION);
-			this.attrs.put("xml", ""); 
-			this.attrs.put("file", ""); 
-			if(JsfBase.isAdminEncuestaOrAdmin())
-				loadSucursales();							
-			doLoadCajas();
-			loadTiposPagos();
-			loadBancos();
+			initValues();
 			loadProveedorDeuda();
 			doLoad();
     } // try
@@ -77,29 +62,7 @@ public class Abono extends IBaseImportar implements Serializable {
       Error.mensaje(e);
       JsfBase.addMessageError(e);
     } // catch		
-  } // init
-
-	private void loadBancos(){
-		List<UISelectEntity> bancos= null;
-		Map<String, Object> params = null;
-		List<Columna> campos       = null;
-		try {
-			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
-			campos= new ArrayList<>();
-			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-			bancos= UIEntity.build("TcManticBancosDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
-			this.attrs.put("bancos", bancos);
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally
-	} // loadBancos
+  } // init	
 	
 	private void loadProveedorDeuda() throws Exception{
 		Entity deuda             = null;
@@ -204,84 +167,10 @@ public class Abono extends IBaseImportar implements Serializable {
 			throw e;
 		} // catch
 		return regresar;
-	} // validaPago
-
-	private void loadTiposPagos(){
-		List<UISelectEntity> tiposPagos= null;
-		Map<String, Object>params      = null;
-		try {
-			params= new HashMap<>();
-			params.put(Constantes.SQL_CONDICION, "id_cobro_caja=1");
-			tiposPagos= UIEntity.build("TcManticTiposMediosPagosDto", "row", params);
-			this.attrs.put("tiposPagos", tiposPagos);
-			this.attrs.put("tipoPago", UIBackingUtilities.toFirstKeySelectEntity(tiposPagos));
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch		
-	} // loadTiposPagos
+	} // validaPago	
 	
-	public void doValidaTipoPago(){
-		Long tipoPago= -1L;
-		try {
-			tipoPago= Long.valueOf(this.attrs.get("tipoPago").toString());
-			this.attrs.put("mostrarBanco", !ETipoMediosPago.EFECTIVO.getIdTipoMedioPago().equals(tipoPago));
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch		
-	} // doValidaTipoPago
-	
-	private void loadSucursales(){
-		List<UISelectEntity> sucursales= null;
-		Map<String, Object>params      = null;
-		List<Columna> columns          = null;
-		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
-			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			sucursales=(List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns);
-			this.attrs.put("sucursales", sucursales);
-			this.attrs.put("idEmpresa", sucursales.get(0));
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch		
-	} // loadSucursales
-	
-	public void doLoadCajas(){
-		List<UISelectEntity> cajas= null;
-		Map<String, Object>params = null;
-		List<Columna> columns     = null;
-		try {
-			columns= new ArrayList<>();
-			params= new HashMap<>();
-			params.put("idEmpresa", this.attrs.get("idEmpresa"));
-			columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			cajas=(List<UISelectEntity>) UIEntity.build("TcManticCajasDto", "cajas", params, columns);
-			this.attrs.put("cajas", cajas);
-			this.attrs.put("caja", cajas.get(0));
-		} // try
-		catch (Exception e) {			
-			throw e;
-		} // catch	
-	} // loadCajas
-	
-	public void doTabChange(TabChangeEvent event) {
-		if(event.getTab().getTitle().equals("Archivos")) 
-			this.doLoadImportados();
-		else if(event.getTab().getTitle().equals("Importar")) {
-			doLoadPagosArchivos();
-			this.doLoadFiles();
-		} // else if
-	}	// doTabChange
-	
-	private void doLoadImportados() {
+	@Override
+	public void doLoadImportados() {
 		List<Columna> columns                 = null;
 		TcManticEmpresasDeudasDto empresaDeuda= null;
 		try {
@@ -303,7 +192,8 @@ public class Abono extends IBaseImportar implements Serializable {
     }// finally
   } // doLoadImportados	
 	
-	private void doLoadFiles() {
+	@Override
+	public void doLoadFiles() {
 		TcManticEmpresasArchivosDto tmp= null;
 		if((Long) this.attrs.get("idEmpresaDeuda") > 0L) {
 			Map<String, Object> params=null;
@@ -327,7 +217,8 @@ public class Abono extends IBaseImportar implements Serializable {
 		} // if
 	} // doLoadFiles	
 	
-	private void doLoadPagosArchivos(){
+	@Override
+	public void doLoadPagosArchivos(){
 		List<Columna> columns     = null;
     Map<String, Object> params= null;
     try {
@@ -408,20 +299,4 @@ public class Abono extends IBaseImportar implements Serializable {
 			  result.delete();
 		} // catch
 	} // doFileUpload		
-	
-	private void toWriteFile(File result, InputStream upload) throws Exception {
-		FileOutputStream fos= new FileOutputStream(result);
-		InputStream is      = upload;
-		byte[] buffer       = new byte[BUFFER_SIZE];
-		int bulk;
-		while(true) {
-			bulk= is.read(buffer);
-			if (bulk < 0) 
-				break;        
-			fos.write(buffer, 0, bulk);
-			fos.flush();
-		} // while
-		fos.close();
-		is.close();
-	} // toWriteFile
 }
