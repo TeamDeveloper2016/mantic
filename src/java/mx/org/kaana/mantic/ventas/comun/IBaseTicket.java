@@ -97,7 +97,7 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable{
 						case EFECTIVO:
 							regresar.setEfectivo(pago.toDouble("importe"));							
 							break;
-						case TARJETA:
+						case TARJETA_CREDITO:
 							regresar.setCredito(pago.toDouble("importe"));							
 							regresar.setReferenciaCredito(pago.toString("referencia"));							
 							break;
