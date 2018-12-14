@@ -449,12 +449,35 @@ public class Transaccion extends IBaseTnx {
 	private boolean toCierreCaja(Session sesion, Double pago) throws Exception{
 		mx.org.kaana.mantic.ventas.caja.reglas.Transaccion cierre= null;
 		VentaFinalizada datosCierre= null;
-		boolean regresar= false;
+		boolean regresar           = false;
+		ETipoMediosPago medioPago  = null;
+		Double abono               = 0D;
 		try {
+			medioPago= ETipoMediosPago.fromIdTipoPago(this.pago.getIdTipoMedioPago());
 			datosCierre= new VentaFinalizada();
 			datosCierre.getTicketVenta().setIdEmpresa(this.idEmpresa);
 			datosCierre.setIdCaja(this.idCaja);
-			datosCierre.getTotales().setEfectivo(pago * -1D);
+			abono= pago * -1D;
+			switch(medioPago){
+				case CHEQUE:
+					datosCierre.getTotales().setCheque(abono);
+					break;
+				case EFECTIVO:
+					datosCierre.getTotales().setEfectivo(abono);
+					break;
+				case TARJETA_CREDITO:
+					datosCierre.getTotales().setCredito(abono);
+					break;
+				case TRANSFERENCIA:
+					datosCierre.getTotales().setTransferencia(abono);
+					break;
+				case TARJETA_DEBITO:
+					datosCierre.getTotales().setDebito(abono);
+					break;
+				case VALES_DESPENSA:
+					datosCierre.getTotales().setVales(abono);
+					break;
+			} // switch						
 			cierre= new mx.org.kaana.mantic.ventas.caja.reglas.Transaccion(datosCierre);
 			if(cierre.verificarCierreCaja(sesion)){
 				this.idCierreActivo= cierre.getIdCierreVigente();
