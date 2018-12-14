@@ -74,9 +74,9 @@ public class Deuda extends IBaseFilter implements Serializable {
 			this.attrs.put("mostrarBanco", false);			
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				loadSucursales();							
-			//doLoadCajas();
-			//doLoadCajasGeneral();
-			//doLoadCajasSegmento();
+			doLoadCajas();
+			doLoadCajasGeneral();
+			doLoadCajasSegmento();
 			loadBancos();
 			loadTiposPagos();
 			loadProvedorDeuda();			
@@ -295,7 +295,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 				pago.setPago(Double.valueOf(this.attrs.get("pago").toString()));
 				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
 				tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
-				transaccion= new Transaccion(pago, -1L, Long.valueOf(this.attrs.get("idEmpresa").toString()), tipoPago ? -1L : Long.valueOf(this.attrs.get("banco").toString()), tipoPago ? "" : this.attrs.get("referencia").toString(), false);
+				transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("caja").toString()), Long.valueOf(this.attrs.get("idEmpresa").toString()), tipoPago ? -1L : Long.valueOf(this.attrs.get("banco").toString()), tipoPago ? "" : this.attrs.get("referencia").toString(), false);
 				if(transaccion.ejecutar(EAccion.AGREGAR)){
 					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta", ETipoMensaje.INFORMACION);
 					loadProvedorDeuda();					
@@ -381,7 +381,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 				pago.setPago(Double.valueOf(this.attrs.get("pagoGeneral").toString()));
 				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
 				tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
-				transaccion= new Transaccion(pago, -1L, Long.valueOf(this.attrs.get("idProveedor").toString()), Long.valueOf(this.attrs.get("idEmpresaGeneral").toString()), tipoPago ? -1L : Long.valueOf(this.attrs.get("bancoGeneral").toString()), tipoPago ? "" : this.attrs.get("referenciaGeneral").toString(), false);
+				transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("cajaGeneral").toString()), Long.valueOf(this.attrs.get("idProveedor").toString()), Long.valueOf(this.attrs.get("idEmpresaGeneral").toString()), tipoPago ? -1L : Long.valueOf(this.attrs.get("bancoGeneral").toString()), tipoPago ? "" : this.attrs.get("referenciaGeneral").toString(), false);
 				if(transaccion.ejecutar(EAccion.PROCESAR)){
 					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta");
 					loadProvedorDeuda();					
@@ -396,7 +396,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch				
-	} // doRegistrarPago
+	} // doRegistrarPagoGeneral
 	
 	public void doRegistrarPagoSegmento(){
 		Transaccion transaccion      = null;
