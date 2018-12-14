@@ -337,11 +337,17 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				case EFECTIVO:
 					abono= this.ventaFinalizada.getTotales().getEfectivo();
 					break;
-				case TARJETA:
+				case TARJETA_CREDITO:
 					abono= this.ventaFinalizada.getTotales().getCredito();
 					break;
 				case TRANSFERENCIA:
 					abono= this.ventaFinalizada.getTotales().getTransferencia();
+					break;
+				case TARJETA_DEBITO:
+					abono= this.ventaFinalizada.getTotales().getDebito();
+					break;
+				case VALES_DESPENSA:
+					abono= this.ventaFinalizada.getTotales().getVales();
 					break;
 			} // switch			
 			cierreCaja.setAcumulado(cierreCaja.getAcumulado() + abono);			
@@ -600,7 +606,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		try {
 			if(this.ventaFinalizada.getTotales().getCredito()> 0D){
 				regresar= new TrManticVentaMedioPagoDto();
-				regresar.setIdTipoMedioPago(ETipoMediosPago.TARJETA.getIdTipoMedioPago());
+				regresar.setIdTipoMedioPago(ETipoMediosPago.TARJETA_CREDITO.getIdTipoMedioPago());
 				regresar.setIdUsuario(JsfBase.getIdUsuario());
 				regresar.setIdVenta(getOrden().getIdVenta());
 				regresar.setImporte(this.ventaFinalizada.getTotales().getCredito());				
@@ -740,7 +746,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		try {
 			if(this.ventaFinalizada.getTotales().getCredito()> 0D){
 				regresar= new TcManticApartadosPagosDto();
-				regresar.setIdTipoMedioPago(ETipoMediosPago.TARJETA.getIdTipoMedioPago());
+				regresar.setIdTipoMedioPago(ETipoMediosPago.TARJETA_CREDITO.getIdTipoMedioPago());
 				regresar.setIdUsuario(JsfBase.getIdUsuario());
 				regresar.setIdApartado(idApartado);
 				regresar.setPago(this.ventaFinalizada.getTotales().getCredito());				
