@@ -107,7 +107,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	public String doAceptar() {
 		String regresar= null;
 		try {
-      Transaccion transaccion= new Transaccion(this.masivo);
+      Transaccion transaccion= new Transaccion(this.masivo, this.categoria);
       if(transaccion.ejecutar(EAccion.PROCESAR)) {
         RequestContext.getCurrentInstance().execute("janal.alert('Se proceso el catalogo de forma correcta');");
 				this.setXls(null);

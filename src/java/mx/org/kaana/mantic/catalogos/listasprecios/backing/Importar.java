@@ -54,16 +54,18 @@ public class Importar extends IBaseImportar implements Serializable {
   protected void init() {		
     try {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("tipo", "0");
       doLoadProveedores();
 			if(JsfBase.getFlashAttribute("idListaPrecio")== null) {
 				this.lista = new TcManticListasPreciosDto();
 				this.lista.setLogotipo("bonanza.svg");
         this.attrs.put("isDeshabilitado", false);
-        if(this.attrs.get("idProveedor")!= null) {
-          this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, ((UISelectEntity)this.attrs.get("idProveedor")).getKey());
+        if(this.attrs.get("ikProveedor")!= null) {
+          this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, ((UISelectEntity)this.attrs.get("ikProveedor")).getKey());
           this.lista.setIdProveedor(this.proveedor.getIdProveedor());
-          this.doLoadImportados("VistaListasArchivosDto", "importados", this.lista.toMap());
+					this.attrs.put("idProveedor", this.lista.getIdProveedor());
+          this.doLoadImportados("VistaListasArchivosDto", "importados", this.attrs);
         } // if
       } // if
 			else {
@@ -71,7 +73,8 @@ public class Importar extends IBaseImportar implements Serializable {
         this.lista= (TcManticListasPreciosDto)DaoFactory.getInstance().findById(TcManticListasPreciosDto.class, idListaPrecio);
         this.attrs.put("isDeshabilitado", true);
 				if(lista.getIdProveedor()!= null) {
-          this.attrs.put("idProveedor",(((List<UISelectEntity>)this.attrs.get("proveedores")).get(((List<UISelectEntity>)this.attrs.get("proveedores")).indexOf(new UISelectEntity(this.lista.getIdProveedor().toString())))));
+          this.attrs.put("ikProveedor",(((List<UISelectEntity>)this.attrs.get("proveedores")).get(((List<UISelectEntity>)this.attrs.get("proveedores")).indexOf(new UISelectEntity(this.lista.getIdProveedor().toString())))));
+					this.attrs.put("idProveedor", this.lista.getIdProveedor());
           this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.lista.getIdProveedor());
 			  } // if	
 				else
@@ -102,8 +105,9 @@ public class Importar extends IBaseImportar implements Serializable {
         proveedores = UIEntity.build("TcManticProveedoresDto", "listasPrecios", params);
       else
         proveedores = UIEntity.build("TcManticProveedoresDto", "sucursales", params);
-      attrs.put("proveedores", proveedores);
-      attrs.put("idProveedor", (((List<UISelectEntity>)this.attrs.get("proveedores")).get(0)));
+      this.attrs.put("proveedores", proveedores);
+      this.attrs.put("ikProveedor", (((List<UISelectEntity>)this.attrs.get("proveedores")).get(0)));
+			this.attrs.put("idProveedor", (((List<UISelectEntity>)this.attrs.get("proveedores")).get(0)).getKey());
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -116,10 +120,10 @@ public class Importar extends IBaseImportar implements Serializable {
   
   public void doActualizarProveedor() {
     try {
-      if(this.attrs.get("idProveedor")!= null) {
-			  this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, ((UISelectEntity)this.attrs.get("idProveedor")).getKey());
+      if(this.attrs.get("ikProveedor")!= null) {
+			  this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, ((UISelectEntity)this.attrs.get("ikProveedor")).getKey());
         this.lista.setIdProveedor(this.proveedor.getIdProveedor());
-        this.doLoadImportados("VistaListasArchivosDto", "importados", this.lista.toMap());
+        this.doLoadImportados("VistaListasArchivosDto", "importados", this.attrs);
       } // if
     } // try
     catch (Exception e) {
@@ -130,12 +134,7 @@ public class Importar extends IBaseImportar implements Serializable {
 
 	public void doTabChange(TabChangeEvent event) {
 		if(event.getTab().getTitle().equals("Archivos")) 
-			this.doLoadImportados("VistaListasArchivosDto", "importados", this.lista.toMap());
-/*		else
-		  if(event.getTab().getTitle().equals("Importar") && this.getXls()== null && this.getPdf()== null) {
-				this.doLoadFiles("TcManticListasPreciosArchivosDto", this.lista.getIdListaPrecio(), "idListaPrecio");
-      } // if
-*/
+			this.doLoadImportados("VistaListasArchivosDto", "importados", this.attrs);
 	}		
 
 	public void doFileUpload(FileUploadEvent event) {
@@ -177,6 +176,7 @@ public class Importar extends IBaseImportar implements Serializable {
 				this.lista.setIdProveedor(null);
       this.lista.setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.lista.setIdUsuario(JsfBase.getAutentifica().getPersona().getIdUsuario());
+			this.getXls().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
       Transaccion transaccion= new Transaccion(this.lista, getArticulos(), this.getXls(), this.getPdf());
       if(transaccion.ejecutar(EAccion.COMPLEMENTAR)) {
         RequestContext.getCurrentInstance().execute("janal.alert('Se actualizo y se importaron los catalogos de forma correcta !');");

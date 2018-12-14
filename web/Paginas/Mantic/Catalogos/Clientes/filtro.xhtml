@@ -64,8 +64,8 @@
 						<p:ajax event="contextMenu" update="kajoolContextMenu" oncomplete="PF('kajoolTable').writeSelections();PF('kajoolContextMenu').show(currentEvent);" process="@this tabla" skipChildren="false"/>
 						<f:facet name="header" >
 							<div class="janal-icons-header">
-								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivoClientes.xls" title="Template del archivo XLS">
-									<p:graphicImage library="janal" name="/icon/acciones/xls.png" width="24"/>
+								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/masivo-clientes.xls" title="Plantilla de clientes XLS">
+									<p:commandButton type="button" icon="fa fa-file-excel-o"/>
 								</h:outputLink>
 							</div>	
               <div class="lg-pantalla">

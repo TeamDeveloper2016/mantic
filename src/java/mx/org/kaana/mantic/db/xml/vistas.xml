@@ -5032,7 +5032,9 @@
 					tc_mantic_listas_precios_archivos.observaciones,
 					tc_mantic_listas_precios_archivos.registro
 				from
-					tc_mantic_listas_precios_archivos
+						tc_mantic_listas_precios
+				inner join
+						tc_mantic_listas_precios_archivos on tc_mantic_listas_precios.id_lista_precio= tc_mantic_listas_precios_archivos.id_lista_precio     
 				inner join
 					tc_mantic_tipos_archivos on tc_mantic_listas_precios_archivos.id_tipo_archivo= tc_mantic_tipos_archivos.id_tipo_archivo
 				inner join
@@ -5040,7 +5042,8 @@
 				inner join
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				where
-					tc_mantic_listas_precios_archivos.id_lista_precio= {idListaPrecio}
+					tc_mantic_listas_precios.id_empresa in ({sucursales})
+			    and tc_mantic_listas_precios.id_proveedor= {idProveedor}
 				order by
 					tc_mantic_listas_precios_archivos.id_principal, tc_mantic_listas_precios_archivos.registro desc, tc_mantic_listas_precios_archivos.id_tipo_archivo asc				
 			</select>

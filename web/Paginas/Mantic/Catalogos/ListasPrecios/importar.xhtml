@@ -63,7 +63,7 @@
         PF('progressBar').setValue(0);
       }
       
-      function jsStartTask() {
+      function startTask() {
         PF('progressBar').cancel();
         PF('progressBar').setValue(0);
         PF('progressBar').start();
@@ -114,7 +114,7 @@
 									</p:panel>
 								</h:panelGrid>
                 <p:outputLabel for="idProveedor" value="Proveedor:" styleClass="involucrados" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '0'? '': 'none'}"/>
-                <p:selectOneMenu id="idProveedor" value="#{manticCatalogosListaPreciosImportar.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 involucrados"  effect="fade" filter="true" filterMatchMode="contains" disabled="#{manticCatalogosListaPreciosImportar.attrs.isDeshabilitado}" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '0'? '': 'none'}">
+                <p:selectOneMenu id="idProveedor" value="#{manticCatalogosListaPreciosImportar.attrs.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 involucrados"  effect="fade" filter="true" filterMatchMode="contains" disabled="#{manticCatalogosListaPreciosImportar.attrs.isDeshabilitado}" style="display: #{manticCatalogosListaPreciosImportar.attrs.tipo eq '0'? '': 'none'}">
                   <f:selectItems value="#{manticCatalogosListaPreciosImportar.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
                   <p:ajax event="change" listener="#{manticCatalogosListaPreciosImportar.doActualizarProveedor}" process="@this" update="idProveedor @(.importado)" oncomplete="janal.reset();"/>
                   <p:column headerText="Clave">
@@ -195,11 +195,11 @@
 	</ui:define>    
 	<ui:define name="acciones">
 		<div class="lg-pantalla">
-      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a"  process="@form" action="#{manticCatalogosListaPreciosImportar.doAceptar}"  onstart="jsStartTask(); return janal.bloquear();" oncomplete="janal.desbloquear(); cancel()"/>
+      <p:commandButton id="aceptar" value="Aceptar" icon="fa fa-check" accesskey="a" process="@form" update="@(.importado)" action="#{manticCatalogosListaPreciosImportar.doAceptar}"  onstart="startTask(); return janal.bloquear();" oncomplete="janal.desbloquear(); cancel();" disabled="#{empty manticCatalogosListaPreciosImportar.xls and empty manticCatalogosListaPreciosImportar.xls}" styleClass="importado"/>
 			<p:commandButton id="cancelar" value="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosListaPreciosImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 		<div class="xs-pantalla">
-      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" action="#{manticCatalogosListaPreciosImportar.doAceptar}" onstart="jsStartTask(); return janal.bloquear();" oncomplete="janal.desbloquear(); cancel()"/>
+      <p:commandButton id="aceptarIcon" title="Aceptar" icon="fa fa-check" process="@form" update="@(.importado)" action="#{manticCatalogosListaPreciosImportar.doAceptar}" onstart="startTask(); return janal.bloquear();" oncomplete="janal.desbloquear(); cancel();" disabled="#{empty manticCatalogosListaPreciosImportar.xls and empty manticCatalogosListaPreciosImportar.xls}" styleClass="importado"/>
 			<p:commandButton id="cancelarIcon" title="Regresar" icon="fa fa-reply" process="@this" action="#{manticCatalogosListaPreciosImportar.doCancelar}" ajax="false" onstart="janal.bloquear()" oncomplete="janal.desbloquear()"/>
 		</div>		
 	</ui:define>

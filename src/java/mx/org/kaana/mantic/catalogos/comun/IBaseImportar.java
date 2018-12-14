@@ -270,27 +270,30 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 					LOG.info("Filas del documento: "+ sheet.getRows());
 					int errores= 0;
           for(int fila= 1; fila< sheet.getRows(); fila++) {
-            //(idListaPrecio,descripcion, idListaPrecioDetalle, codigo, precio, auxiliar) 
-					  String contenido= new String(sheet.getCell(2,fila).getContents().getBytes(UTF_8), ISO_8859_1);
-						//LOG.info(fila+ " -> "+ contenido+ " => "+ cleanString(contenido)+ " -> "+ new String(contenido.getBytes(ISO_8859_1), UTF_8));
-						double costo = Numero.getDouble(sheet.getCell(3,fila).getContents()!= null? sheet.getCell(3,fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
-						double precio= Numero.getDouble(sheet.getCell(4,fila).getContents()!= null? sheet.getCell(4,fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
-						String nombre= new String(contenido.getBytes(ISO_8859_1), UTF_8);
-						if((precio> 0 || costo> 0) && !Cadena.isVacio(nombre)) {
-							getArticulos().add(new TcManticListasPreciosDetallesDto(
-								-1L,
-								nombre,
-								-1L,
-								sheet.getCell(0,fila).getContents(),
-								precio,
-								sheet.getCell(1,fila).getContents(),
-								costo)
-							);
-						} // if
-						else {
-							errores++;
-							LOG.warn(fila+ ": ["+ nombre+ "] costo: ["+ costo+ "] precio: ["+ precio+ "]");
-						} // else	
+						if(sheet.getCell(0, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA")) {
+							String contenido= new String(sheet.getCell(2,fila).getContents().getBytes(UTF_8), ISO_8859_1);
+							//LOG.info(fila+ " -> "+ contenido+ " => "+ cleanString(contenido)+ " -> "+ new String(contenido.getBytes(ISO_8859_1), UTF_8));
+							double costo = Numero.getDouble(sheet.getCell(3,fila).getContents()!= null? sheet.getCell(3,fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
+							double precio= Numero.getDouble(sheet.getCell(4,fila).getContents()!= null? sheet.getCell(4,fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
+							String nombre= new String(contenido.getBytes(ISO_8859_1), UTF_8);
+							if((precio> 0 || costo> 0) && !Cadena.isVacio(nombre)) {
+								this.getArticulos().add(
+									new TcManticListasPreciosDetallesDto(
+										-1L, // idListaPrecio
+										nombre, // descripcion
+										-1L, // idListaPrecioDetalle
+										sheet.getCell(0,fila).getContents(), // codigo
+										precio, // precio
+										sheet.getCell(1,fila).getContents(), // auxiliar
+										costo // costo
+									)
+								);
+							} // if
+							else {
+								errores++;
+								LOG.warn(fila+ ": ["+ nombre+ "] costo: ["+ costo+ "] precio: ["+ precio+ "]");
+							} // else	
+						} // if	
           } // for
 					LOG.info("Cantidad de filas con error son: "+ errores);
           regresar = true;

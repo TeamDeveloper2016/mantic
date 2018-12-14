@@ -71,7 +71,7 @@ public class Filtro extends IBaseFilter implements java.io.Serializable
       campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
-      campos.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
+      campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
       lazyModel = new FormatCustomLazy("VistaListasArchivosDto", "lazy", params, campos);
       mx.org.kaana.libs.pagina.UIBackingUtilities.resetDataTable();
     }

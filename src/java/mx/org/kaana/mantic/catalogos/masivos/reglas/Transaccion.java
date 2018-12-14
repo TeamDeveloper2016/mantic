@@ -27,10 +27,12 @@ public class Transaccion extends IBaseTnx {
   
   private static final Log LOG = LogFactory.getLog(Transaccion.class);
   private TcManticMasivasArchivosDto masivo;	
+	private ECargaMasiva categoria;
 	private String messageError;
   
-  public Transaccion(TcManticMasivasArchivosDto masivo) {
-		this.masivo= masivo;		
+  public Transaccion(TcManticMasivasArchivosDto masivo, ECargaMasiva categoria) {
+		this.masivo   = masivo;		
+		this.categoria= categoria;
 	} // Transaccion
 
 	protected void setMessageError(String messageError) {
@@ -47,12 +49,12 @@ public class Transaccion extends IBaseTnx {
     try {
       this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" catalogo de forma masiva.");
       switch (accion) {
-      case PROCESAR: 
-        regresar= this.toProcess(sesion);
-        break;
-      case ELIMINAR: 
-        regresar = DaoFactory.getInstance().delete(sesion, this.masivo)> -1L;
-        break;
+				case PROCESAR: 
+					regresar= this.toProcess(sesion);
+					break;
+				case ELIMINAR: 
+					regresar = DaoFactory.getInstance().delete(sesion, this.masivo)> -1L;
+					break;
       } // swtich 
       if (!regresar) {
         throw new Exception(messageError);
@@ -74,18 +76,17 @@ public class Transaccion extends IBaseTnx {
 			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
 			monitoreo.comenzar(0L);
 			monitoreo.setTotal(this.masivo.getTuplas());
-//        for(TcManticListasPreciosDetallesDto articulo:this.articulos){
-//          articulo.setIdListaPrecio(this.lista.getIdListaPrecio());
-//          DaoFactory.getInstance().insert(sesion, articulo);
-//          monitoreo.setProgreso((long)(reg* 100/ monitoreo.getTotal()));
-//          monitoreo.incrementar();
-//          i++;
-//          reg++;
-//          if(i==1000){
-//            sesion.flush();
-//            i=0;
-//          }
-//        }
+			switch (this.categoria) {
+				case ARTICULOS:
+					this.toArticulos(sesion, file);
+					break;
+				case CLIENTES:
+					this.toClientes(sesion, file);
+					break;
+				case PROVEEDORES:
+					this.toProveedores(sesion, file);
+					break;
+			} // swtich
 			monitoreo.incrementar(this.masivo.getTuplas().intValue());
       monitoreo.terminar();
 			monitoreo.setProgreso(0L);
@@ -96,7 +97,7 @@ public class Transaccion extends IBaseTnx {
     return regresar;
 	}
 
-  private Boolean toProcessMasivo(File archivo, TcManticMasivasArchivosDto masivo, ECargaMasiva categoria) throws Exception {
+  private Boolean toArticulos(Session sesion, File archivo) throws Exception {
 		Boolean regresar	      = false;
 		Workbook workbook	      = null;
 		Sheet sheet             = null;
@@ -109,8 +110,8 @@ public class Transaccion extends IBaseTnx {
       workbookSettings.setLocale(new Locale("es", "MX"));
 			workbook= Workbook.getWorkbook(archivo, workbookSettings);
 			sheet		= workbook.getSheet(0);
-			if(sheet != null && sheet.getColumns()>= categoria.getColumns() && sheet.getRows()>= 2) {
-				if(encabezado.toString().equals(categoria.getFields())) {
+			if(sheet != null && sheet.getColumns()>= this.categoria.getColumns() && sheet.getRows()>= 2) {
+				if(encabezado.toString().equals(this.categoria.getFields())) {
           // this.articulos = new ArrayList<>();
 					//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
 					LOG.info("Filas del documento: "+ sheet.getRows());
@@ -132,6 +133,18 @@ public class Transaccion extends IBaseTnx {
 //								sheet.getCell(1,fila).getContents(),
 //								costo)
 //							);
+//        for(TcManticListasPreciosDetallesDto articulo:this.articulos){
+//          articulo.setIdListaPrecio(this.lista.getIdListaPrecio());
+//          DaoFactory.getInstance().insert(sesion, articulo);
+//          monitoreo.setProgreso((long)(reg* 100/ monitoreo.getTotal()));
+//          monitoreo.incrementar();
+//          i++;
+//          reg++;
+//          if(i==1000){
+//            sesion.flush();
+//            i=0;
+//          }
+//        }
 						} // if
 						else {
 							errores++;
@@ -154,12 +167,20 @@ public class Transaccion extends IBaseTnx {
     } // finally
 		return regresar;
 	} // toVerificaXls		
+
+  private Boolean toClientes(Session sesion, File archivo) throws Exception {	
+		return true;
+	}
+	
+  private Boolean toProveedores(Session sesion, File archivo) throws Exception {	
+		return true;
+	}
 	
 	public void toDeleteXls() throws Exception {
 		List<TcManticMasivasArchivosDto> list= (List<TcManticMasivasArchivosDto>)DaoFactory.getInstance().findViewCriteria(TcManticMasivasArchivosDto.class, this.masivo.toMap(), "all");
 		if(list!= null)
 			for (TcManticMasivasArchivosDto item: list) {
-				LOG.info("Catalogo importado: "+ this.masivo.getIdMasivaArchivo()+ " delete file: "+ item.getAlias());
+				LOG.info("Catalogo importado: "+ item.getIdMasivaArchivo()+ " delete file: "+ item.getAlias());
 				File file= new File(item.getAlias());
 				file.delete();
 			} // for

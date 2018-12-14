@@ -67,8 +67,8 @@
           <p:dataTable  lazy="true" id="tabla" widgetVar="kajoolTable" var="filtro" value="#{manticCatalogosListaPreciosFiltro.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosListaPreciosFiltro.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosListaPreciosFiltro.lazyModel.rowCount gt manticCatalogosListaPreciosFiltro.lazyModel.pageSize}" rowIndexVar="index" reflow="true">
 						<f:facet name="header">
 							<div class="janal-icons-header">
-								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/listaPrecios.xls" title="Template del archivo XLS">
-									<p:graphicImage library="janal" name="/icon/acciones/xls.png" width="24"/>
+								<h:outputLink value="#{request.contextPath}/Temporal/Masivo/lista-precios.xls" title="Plantilla de la lista de precios XLS">
+									<p:commandButton type="button" icon="fa fa-file-excel-o"/>
 								</h:outputLink>
 							</div>	
               <div class="lg-pantalla">
@@ -108,7 +108,7 @@
               </f:facet>
               <h:outputText value="#{filtro['observaciones']}"/>
             </p:column>	 
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.registro}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.registro}">
               <f:facet name="header">
                 <h:outputText value="Fecha"/>
               </f:facet>

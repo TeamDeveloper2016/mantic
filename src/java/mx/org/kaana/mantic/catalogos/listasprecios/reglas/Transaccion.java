@@ -11,10 +11,13 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
+import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.libs.reportes.FileSearch;
 import mx.org.kaana.mantic.catalogos.articulos.beans.Importado;
 import mx.org.kaana.mantic.db.dto.TcManticListasPreciosArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticListasPreciosDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticListasPreciosDto;
+import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
@@ -51,30 +54,25 @@ public class Transaccion extends IBaseTnx {
   
 	@Override
   protected boolean ejecutar(Session sesion, EAccion accion) throws Exception{
-    boolean regresar          = false;
-    Map<String, Object> params= null;
+    boolean regresar= false;
     try {
-      if(this.lista!= null) {
-				params= new HashMap<>();
-				params.put("idListaPrecio", this.lista.getIdListaPrecio());
-			} // if
       this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" articulos a la lista de precios.");
       switch (accion) {
       case AGREGAR: 
-        regresar = procesarListaProveedor(sesion);
+        regresar= DaoFactory.getInstance().insert(sesion, this.lista)> 0L;
         break;
       case COMPLEMENTAR: 
-        if(this.procesarListaProveedor(sesion)) {
+        if(DaoFactory.getInstance().update(sesion, this.lista)> 0L) {
           sesion.flush();
           this.toUpdateXls(sesion);
           regresar= true;
-        }
+        } // if
         break;
       case ELIMINAR: 
         this.toDeleteXmlPdf();
-        regresar = DaoFactory.getInstance().deleteAll(sesion, TcManticListasPreciosDetallesDto.class, params)>-1L;
+        regresar = DaoFactory.getInstance().deleteAll(sesion, TcManticListasPreciosDetallesDto.class, this.lista.toMap())>-1L;
         sesion.flush();
-        regresar = DaoFactory.getInstance().deleteAll(sesion, TcManticListasPreciosArchivosDto.class, params)>-1L;
+        regresar = DaoFactory.getInstance().deleteAll(sesion, TcManticListasPreciosArchivosDto.class, this.lista.toMap())>-1L;
         sesion.flush();
         regresar = DaoFactory.getInstance().delete(sesion, this.lista)>-1L;
         sesion.flush();
@@ -90,25 +88,9 @@ public class Transaccion extends IBaseTnx {
     return regresar;
   }
   
-  private boolean procesarListaProveedor(Session sesion) throws Exception {
-    boolean regresar = false;
-    try {
-     if(this.lista.getKey()!= -1L)
-       regresar = DaoFactory.getInstance().update(sesion, this.lista) > 0L;
-      else
-        regresar = DaoFactory.getInstance().insert(sesion, this.lista) > 0L;
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch
-    return regresar;
-  }
-  
 	protected void toUpdateXls(Session sesion) throws Exception {
-		//(idListaPrecio,ruta,tamanio,idUsuario,idTipoArchivo,observaciones,idPrincipal,alias,idListaPrecioArchivo,nombre)
     TcManticListasPreciosArchivosDto tmp= null;
-    int i=0;
-    int reg = 0;
+    int count = 0;
 		if(this.lista.getIdListaPrecio()!= -1L) {
 			if(this.xls!= null) {
 				tmp= new TcManticListasPreciosArchivosDto(
@@ -125,13 +107,11 @@ public class Transaccion extends IBaseTnx {
 				);
 				DaoFactory.getInstance().updateAll(sesion, TcManticListasPreciosArchivosDto.class, tmp.toMap());
         DaoFactory.getInstance().deleteAll(sesion, TcManticListasPreciosDetallesDto.class, tmp.toMap());
-				
 				File file= new File(tmp.getAlias());
 				if(file.exists()) 
           DaoFactory.getInstance().insert(sesion, tmp);
 				else
 					LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
-				
         sesion.flush();
         Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
         monitoreo.comenzar(0L);
@@ -139,18 +119,15 @@ public class Transaccion extends IBaseTnx {
         for(TcManticListasPreciosDetallesDto articulo:this.articulos){
           articulo.setIdListaPrecio(this.lista.getIdListaPrecio());
           DaoFactory.getInstance().insert(sesion, articulo);
-          monitoreo.setProgreso((long)(reg* 100/ monitoreo.getTotal()));
+          monitoreo.setProgreso((long)(count* 100/ monitoreo.getTotal()));
           monitoreo.incrementar();
-          i++;
-          reg++;
-          if(i==1000){
+          count++;
+          if(count% 1000== 0)
             sesion.flush();
-            i=0;
-          }
-        }
+        } // for
         monitoreo.terminar();
         monitoreo.setProgreso(0L);
-				//this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.xls.getRuta()), ".".concat(this.xls.getFormat().name()), this.toListFile(sesion, this.xls, 1L));
+				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.xls.getRuta()), ".".concat(this.xls.getFormat().name()), this.toListFile(sesion, this.xls, 1L));
 			} // if	
 			if(this.pdf!= null) {
 				tmp= new TcManticListasPreciosArchivosDto(
@@ -168,7 +145,7 @@ public class Transaccion extends IBaseTnx {
 				DaoFactory.getInstance().updateAll(sesion, TcManticListasPreciosArchivosDto.class, tmp.toMap());
 				DaoFactory.getInstance().insert(sesion, tmp);
 				sesion.flush();
-				//this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
+				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
 			} // if	
   	} // if	
 	}
@@ -183,4 +160,38 @@ public class Transaccion extends IBaseTnx {
 			} // for
 	}	
   
+	private void toDeleteAll(String path, String type, List<Nombres> listado) {
+    FileSearch fileSearch = new FileSearch();
+    fileSearch.searchDirectory(new File(path), type.toLowerCase());
+    if(fileSearch.getResult().size()> 0)
+		  for (String matched: fileSearch.getResult()) {
+				String name= matched.substring((matched.lastIndexOf("/")< 0? matched.lastIndexOf("\\"): matched.lastIndexOf("/"))+ 1);
+				if(listado.indexOf(new Nombres(name))< 0) {
+          LOG.warn("Lista de precios: "+ this.lista.getNombre()+ " delete file: ".concat(matched));
+				  File file= new File(matched);
+				  file.delete();
+				} // if
+      } // for
+	}
+	
+	private List<Nombres> toListFile(Session sesion, Importado tmp, Long idTipoArchivo) throws Exception {
+		List<Nombres> regresar= null;
+		Map<String, Object> params=null;
+		try {
+			params  = new HashMap<>();
+			params.put("idTipoArchivo", idTipoArchivo);
+			params.put("ruta", tmp.getRuta());
+			regresar= (List<Nombres>)DaoFactory.getInstance().toEntitySet(sesion, Nombres.class, "TcManticListasPreciosArchivosDto", "listado", params);
+			regresar.add(new Nombres(tmp.getName()));
+		} // try 
+		catch (Exception e) {
+			mx.org.kaana.libs.formato.Error.mensaje(e);
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} 
+	
 }
