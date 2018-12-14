@@ -892,7 +892,7 @@ public class Accion extends IBaseVenta implements Serializable {
 						case EFECTIVO:
 							regresar.setEfectivo(pago.toDouble("importe"));							
 							break;
-						case TARJETA:
+						case TARJETA_CREDITO:
 							regresar.setCredito(pago.toDouble("importe"));							
 							regresar.setReferenciaCredito(pago.toString("referencia"));							
 							break;
