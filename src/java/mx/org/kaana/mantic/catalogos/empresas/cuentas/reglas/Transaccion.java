@@ -142,7 +142,7 @@ public class Transaccion extends IBaseTnx {
 		try {
 			if(this.pago.getPago()>0){
 				if(toCierreCaja(sesion, this.pago.getPago())){
-					this.pago.setIdCierre(this.pago.getIdCierre());
+					this.pago.setIdCierre(this.idCierreActivo);
 					if(!this.pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
 						this.pago.setReferencia(this.referencia);
 						this.pago.setIdBanco(this.idBanco);
