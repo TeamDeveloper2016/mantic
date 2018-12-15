@@ -48,6 +48,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.IBaseAttribute;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
@@ -426,6 +427,10 @@ public class Importar extends IBaseAttribute implements Serializable {
 		String regresar        = null;
 		Transaccion transaccion= null;
 		try {
+			if(this.getXml()!= null && Cadena.isVacio(this.getXml().getObservaciones()))
+			  this.getXml().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
+			if(this.getPdf()!= null && Cadena.isVacio(this.getPdf().getObservaciones()))
+			  this.getPdf().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
 			transaccion= new Transaccion(this.deuda, this.xml, this.pdf, Long.valueOf(this.attrs.get("pago").toString()));
       if(transaccion.ejecutar(EAccion.REGISTRAR)) {
       	RequestContext.getCurrentInstance().execute("janal.alert('Se importaron los archivos de forma correcta !');");
