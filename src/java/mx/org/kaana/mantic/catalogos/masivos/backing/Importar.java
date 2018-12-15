@@ -12,6 +12,7 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.mantic.catalogos.comun.IBaseImportar;
 import mx.org.kaana.mantic.catalogos.masivos.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
@@ -107,6 +108,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	public String doAceptar() {
 		String regresar= null;
 		try {
+		  this.masivo.setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
       Transaccion transaccion= new Transaccion(this.masivo, this.categoria);
       if(transaccion.ejecutar(EAccion.PROCESAR)) {
         RequestContext.getCurrentInstance().execute("janal.alert('Se proceso el catalogo de forma correcta');");
@@ -114,7 +116,7 @@ public class Importar extends IBaseImportar implements Serializable {
 				this.attrs.put("xls", ""); 
 				this.masivo = new TcManticMasivasArchivosDto(
 					-1L, // Long idMasivaArchivo, 
-					Configuracion.getInstance().getPropiedadSistemaServidor("masivos"), // String ruta, 
+					null, // String ruta, 
 					categoria.getId(), // Long idTipoMasivo, 
 					1L, // Long idMasivaEstatus, 
 					null, // String nombre, 
@@ -122,7 +124,7 @@ public class Importar extends IBaseImportar implements Serializable {
 					JsfBase.getIdUsuario(), // Long idUsuario, 
 					8L, // Long idTipoArchivo, 
 					0L, // Long tuplas, 
-					"", // String observaciones, 
+					null, // String observaciones, 
 					null, // String alias, 
 					JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),
 					1L

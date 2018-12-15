@@ -162,7 +162,7 @@
 						<p:separator/>
 						<p:menuitem id="clonar" action="#{manticCatalogosArticulosFiltro.doAccion('COPIAR')}" icon="fa fa-copy" ajax="false" value="Clonar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
 						<p:separator rendered="#{manticCatalogosArticulosFiltro.attrs.seleccionado.idFacturama eq '-1'}"/>
-						<p:menuitem id="facturama" icon="fa fa-gear" value="Publicar facturama" title="Registrar articulo en facturama" onstart="return janal.bloquear()" process="@this tabla" oncomplete="janal.desbloquear()" action="#{manticCatalogosArticulosFiltro.doPublicarFacturama}" rendered="#{manticCatalogosArticulosFiltro.attrs.seleccionado.idFacturama eq '-1'}"/>
+						<p:menuitem id="facturama" icon="fa fa-gear" value="Sincronizar" title="Registrar articulo en facturama" onstart="return janal.bloquear()" process="@this tabla" oncomplete="janal.desbloquear()" action="#{manticCatalogosArticulosFiltro.doPublicarFacturama}" rendered="#{manticCatalogosArticulosFiltro.attrs.seleccionado.idFacturama eq '-1'}"/>
 					</p:contextMenu>					
 				</div>
 			</div>

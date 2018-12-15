@@ -137,7 +137,7 @@
 						<p:separator/>
 						<p:menuitem id="importar" icon="fa fa-external-link" value="Importar" title="Importar identificacion de representante" onstart="return janal.bloquear()" process="@this tabla" action="#{manticCatalogosClientesFiltro.doImportar}"/>
 						<p:separator rendered="#{manticCatalogosClientesFiltro.attrs.seleccionado.idFacturama eq '-1'}"/>
-						<p:menuitem id="facturama" icon="fa fa-gear" value="Publicar facturama" title="Registrar cliente en facturama" onstart="return janal.bloquear()" process="@this tabla" oncomplete="janal.desbloquear()" action="#{manticCatalogosClientesFiltro.doPublicarFacturama}" rendered="#{manticCatalogosClientesFiltro.attrs.seleccionado.idFacturama eq '-1'}"/>
+						<p:menuitem id="facturama" icon="fa fa-gear" value="Sincronizar" title="Registrar cliente en facturama" onstart="return janal.bloquear()" process="@this tabla" oncomplete="janal.desbloquear()" action="#{manticCatalogosClientesFiltro.doPublicarFacturama}" rendered="#{manticCatalogosClientesFiltro.attrs.seleccionado.idFacturama eq '-1'}"/>
           </p:contextMenu>
         </div>
       </div>

@@ -15,21 +15,6 @@
         'contenedorGrupos\\:observacion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
 			};	
 			
-			fields = {				 				
-				'contenedorGrupos\\:xls'        : {validaciones: 'libre', mascara: 'libre'},
-        'contenedorGrupos\\:nombre'     : {validaciones: 'requerido', mascara: 'alfanumerico', formatos: 'cambiar-mayusculas', individual: true},
-        'contenedorGrupos\\:observacion': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
-			};	
-			
-			function refresh() {
-				janal.console('refresh: '+ $('#opcion').val());
-				var start= $('#opcion').val();
-				if(start=== '0')
-			    janal.restore();
-				else
-					janal.update(fields);
-			}
-			
 			function start() {
         PF('statusDialog').show();
       };
@@ -48,7 +33,7 @@
       function startTask() {
         PF('progressBar').cancel();
         PF('progressBar').setValue(0);
-        PF('progressBar').start();
+        PF('progressBar').start(parseInt($('#contenedorGrupos\\:registros').html(), 10));
       }
 		</script>
 		<style>
@@ -81,7 +66,7 @@
 									</h:outputLink>	
 								</f:facet>	
 								<p:selectOneRadio id="tipo" value="#{manticCatalogosMasivosImportar.masivo.idTipoMasivo}" columns="2" styleClass="janal-wid-100-txt">
-									<p:ajax event="change" process="@this" listener="#{manticCatalogosMasivosImportar.doChangeTipo}" update="catalogo @(.involucrados) @(.janal-upload-frame)" oncomplete="refresh();"/>
+									<p:ajax event="change" process="@this" listener="#{manticCatalogosMasivosImportar.doChangeTipo}" update="catalogo @(.involucrados) @(.janal-upload-frame)"/>
 									<f:selectItem itemLabel="CATALOGO DE ARTICULOS" itemValue="1"/>
 									<f:selectItem itemLabel="CATALOGO DE CLIENTES" itemValue="2"/>
 									<f:selectItem itemLabel="CATALOGO DE PROVEEDORES" itemValue="3"/>
@@ -106,6 +91,7 @@
                   <p:ajax event="complete" listener="#{manticCatalogosMasivosImportar.doCompleto}"/>  
                 </p:progressBar>  			
               </p:panel>
+							<p:outputLabel id="registros" value="#{manticCatalogosMasivosImportar.masivo.tuplas}" styleClass="importado" style="display: none"/>
             </p:tab>
             <p:tab title="Archivos">
 							<p:dataTable id="importados" var="row" value="#{manticCatalogosMasivosImportar.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="true" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index" paginatorPosition="bottom">
