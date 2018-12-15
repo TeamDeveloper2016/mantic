@@ -91,63 +91,75 @@ public class Transaccion extends IBaseTnx {
   
 	protected void toUpdateXls(Session sesion) throws Exception {
     TcManticListasPreciosArchivosDto tmp= null;
+		Map<String, Object> params=null;
     int count = 0;
-		if(this.lista.getIdListaPrecio()!= -1L) {
-			if(this.xls!= null) {
-				tmp= new TcManticListasPreciosArchivosDto(
-					this.lista.getIdListaPrecio(),
-					this.xls.getRuta(),
-					this.xls.getFileSize(),
-					JsfBase.getIdUsuario(),
-					8L,
-          this.xls.getObservaciones(),
-          1L,
-					Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.xls.getRuta()).concat(this.xls.getName()),
-					-1L,
-					this.xls.getName()
-				);
-				DaoFactory.getInstance().updateAll(sesion, TcManticListasPreciosArchivosDto.class, tmp.toMap());
-        DaoFactory.getInstance().deleteAll(sesion, TcManticListasPreciosDetallesDto.class, tmp.toMap());
-				File file= new File(tmp.getAlias());
-				if(file.exists()) 
-          DaoFactory.getInstance().insert(sesion, tmp);
-				else
-					LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
-        sesion.flush();
-        Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
-        monitoreo.comenzar(0L);
-        monitoreo.setTotal(Long.valueOf(this.articulos.size()));
-        for(TcManticListasPreciosDetallesDto articulo:this.articulos){
-          articulo.setIdListaPrecio(this.lista.getIdListaPrecio());
-          DaoFactory.getInstance().insert(sesion, articulo);
-          monitoreo.incrementar();
-          count++;
-          if(count% 1000== 0)
-            sesion.flush();
-        } // for
-        monitoreo.terminar();
-        monitoreo.setProgreso(0L);
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.xls.getRuta()), ".".concat(this.xls.getFormat().name()), this.toListFile(sesion, this.xls, 1L));
+		try {
+			params=new HashMap<>();
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put("idProveedor", this.lista.getIdProveedor());
+			params.put("idListaPrecio", this.lista.getIdListaPrecio());
+			if(this.lista.getIdListaPrecio()!= -1L) {
+				if(this.xls!= null) {
+					tmp= new TcManticListasPreciosArchivosDto(
+						this.lista.getIdListaPrecio(),
+						this.xls.getRuta(),
+						this.xls.getFileSize(),
+						JsfBase.getIdUsuario(),
+						8L,
+						this.xls.getObservaciones(),
+						1L,
+						Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.xls.getRuta()).concat(this.xls.getName()),
+						-1L,
+						this.xls.getName()
+					);
+					params.put("idTipoArchivo", 8);
+					DaoFactory.getInstance().updateAll(sesion, TcManticListasPreciosArchivosDto.class, params);
+					DaoFactory.getInstance().deleteAll(sesion, TcManticListasPreciosDetallesDto.class, params);
+					File file= new File(tmp.getAlias());
+					if(file.exists()) 
+						DaoFactory.getInstance().insert(sesion, tmp);
+					else
+						LOG.warn("INVESTIGAR PORQUE NO EXISTE EL ARCHIVO EN EL SERVIDOR: "+ tmp.getAlias());
+					sesion.flush();
+					Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
+					monitoreo.comenzar(0L);
+					monitoreo.setTotal(Long.valueOf(this.articulos.size()));
+					for(TcManticListasPreciosDetallesDto articulo:this.articulos){
+						articulo.setIdListaPrecio(this.lista.getIdListaPrecio());
+						DaoFactory.getInstance().insert(sesion, articulo);
+						monitoreo.incrementar();
+						count++;
+						if(count% 1000== 0)
+							sesion.flush();
+					} // for
+					monitoreo.terminar();
+					monitoreo.setProgreso(0L);
+					this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.xls.getRuta()), ".".concat(this.xls.getFormat().name()), this.toListFile(sesion, this.xls, 8L));
+				} // if	
+				if(this.pdf!= null) {
+					tmp= new TcManticListasPreciosArchivosDto(
+						this.lista.getIdListaPrecio(),
+						this.pdf.getRuta(),
+						this.pdf.getFileSize(),
+						JsfBase.getIdUsuario(),
+						2L,
+						this.pdf.getObservaciones(),
+						1L,
+						Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.pdf.getRuta()).concat(this.pdf.getName()),
+						-1L,
+						this.pdf.getName()
+					);
+					params.put("idTipoArchivo", 2);
+					DaoFactory.getInstance().updateAll(sesion, TcManticListasPreciosArchivosDto.class, params);
+					DaoFactory.getInstance().insert(sesion, tmp);
+					sesion.flush();
+					this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
+				} // if	
 			} // if	
-			if(this.pdf!= null) {
-				tmp= new TcManticListasPreciosArchivosDto(
-					this.lista.getIdListaPrecio(),
-					this.pdf.getRuta(),
-					this.pdf.getFileSize(),
-					JsfBase.getIdUsuario(),
-					2L,
-          this.pdf.getObservaciones(),
-          1L,
-					Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.pdf.getRuta()).concat(this.pdf.getName()),
-					-1L,
-					this.pdf.getName()
-				);
-				DaoFactory.getInstance().updateAll(sesion, TcManticListasPreciosArchivosDto.class, tmp.toMap());
-				DaoFactory.getInstance().insert(sesion, tmp);
-				sesion.flush();
-				this.toDeleteAll(Configuracion.getInstance().getPropiedadSistemaServidor("listaprecios").concat(this.pdf.getRuta()), ".".concat(this.pdf.getFormat().name()), this.toListFile(sesion, this.pdf, 2L));
-			} // if	
-  	} // if	
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
 	}
 
 	public void toDeleteXmlPdf() throws Exception {

@@ -731,10 +731,22 @@
 				  ruta
       </select>
 			<update id="rows">
-				update tc_mantic_listas_precios_archivos set id_principal= 2 where id_tipo_archivo = {idTipoArchivo} and id_lista_precio = {idListaPrecio}
+				update 
+				  tc_mantic_listas_precios_archivos 
+				inner join
+				  tc_mantic_listas_precios on tc_mantic_listas_precios_archivos.id_lista_precio= tc_mantic_listas_precios.id_lista_precio
+				set 
+				  id_principal= 2 
+			  where 
+				  tc_mantic_listas_precios.id_empresa in ({sucursales})
+				  and tc_mantic_listas_precios_archivos.id_tipo_archivo = {idTipoArchivo}
+  				and tc_mantic_listas_precios.id_proveedor = {idProveedor}
 			</update>
 			<delete id="rows">
-				delete from tc_mantic_listas_precios_archivos where id_lista_precio = {idListaPrecio}
+				delete from 
+				  tc_mantic_listas_precios_archivos 
+				where 
+				  id_lista_precio = {idListaPrecio}
 			</delete>
     </unit>		
     <unit id="TcManticListasPreciosDetallesDto">
@@ -755,7 +767,10 @@
           id_lista_precio_detalle = {idListaPrecioDetalle}
       </select>
       <delete id="rows">
-				delete from tc_mantic_listas_precios_detalles where id_lista_precio = {idListaPrecio}
+				delete from 
+				  tc_mantic_listas_precios_detalles 
+				where 
+				  id_lista_precio = {idListaPrecio}
 			</delete>
     </unit>				
     <unit id="TcManticCierresDto">
@@ -2554,23 +2569,6 @@
           tc_mantic_proveedores
         where 
           tc_mantic_proveedores.id_empresa in ({sucursales})
-				order by
-				  tc_mantic_proveedores.clave
-      </select>      
-			<select id="listasPrecios">
-        select      
-					tc_mantic_proveedores.id_proveedor as id_key,
-          tc_mantic_proveedores.*
-        from      
-          tc_mantic_proveedores
-        where 
-          tc_mantic_proveedores.id_empresa in ({sucursales}) 
-				  and tc_mantic_proveedores.id_proveedor not in (
-				    select 
-				     if(tc_mantic_listas_precios.id_proveedor is null, -1, tc_mantic_listas_precios.id_proveedor) as id_proveedor
-    				from 
-				     tc_mantic_listas_precios
-				  )
 				order by
 				  tc_mantic_proveedores.clave
       </select>      

@@ -100,9 +100,6 @@ public class Importar extends IBaseImportar implements Serializable {
     try {
       params = new HashMap();
       params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
-//      if(this.idListaPrecio== -1L)
-//        proveedores = UIEntity.build("TcManticProveedoresDto", "listasPrecios", params);
-//      else
       proveedores = UIEntity.build("TcManticProveedoresDto", "sucursales", params);
       this.attrs.put("proveedores", proveedores);
       this.attrs.put("ikProveedor", (((List<UISelectEntity>)this.attrs.get("proveedores")).get(0)));
@@ -171,14 +168,15 @@ public class Importar extends IBaseImportar implements Serializable {
 		try {
 			if("0".equals((String)this.attrs.get("tipo")))
 				this.lista.setNombre("");
-			else 
-				this.lista.setIdProveedor(null);
-			this.getXls().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
-      Transaccion transaccion= new Transaccion(this.lista, getArticulos(), this.getXls(), this.getPdf());
+			if(this.getXls()!= null && Cadena.isVacio(this.getXls().getObservaciones()))
+			  this.getXls().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
+			if(this.getPdf()!= null && Cadena.isVacio(this.getPdf().getObservaciones()))
+			  this.getPdf().setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
+      Transaccion transaccion= new Transaccion(this.lista, this.getArticulos(), this.getXls(), this.getPdf());
       if(transaccion.ejecutar(EAccion.COMPLEMENTAR)) {
         RequestContext.getCurrentInstance().execute("janal.alert('Se actualizo y se importaron los catalogos de forma correcta !');");
         regresar= this.doCancelar();
-      }//if
+      } // if
       else
         RequestContext.getCurrentInstance().execute("janal.alert('Se deben de seleccionar archivo en formato XLS/PDF');");
 		} // try

@@ -104,7 +104,7 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 		catch(Exception e) {
 			Error.mensaje(e);
 		} // catch
-	  return (time? Cadena.rellenar(Fecha.formatear(Fecha.FECHA_HORA_LARGA), 17, '0', false).trim().concat("_"): "")+ Cadena.toNormalizer(regresar);	
+	  return (time? Fecha.toRegistro().concat("_"): "")+ Cadena.toNormalizer(regresar);	
 	}
 	
 	protected void doFileUpload(FileUploadEvent event, Long fecha, String carpeta, String clave) {

@@ -203,6 +203,10 @@ public  class Fecha {
     return formatear(patron, formatear("yyyyMMddHHmmssS", fecha.getTime()));
   } // formatear
 
+  public static String toRegistro() {
+    return formatear("yyyyMMddHHmmssS", Calendar.getInstance().getTime());
+  } // formatear
+
   public static String formatear(int patron, Timestamp fecha) {
 		Calendar calendar= Calendar.getInstance();
 		calendar.setTimeInMillis(fecha.getTime());
