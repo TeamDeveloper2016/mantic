@@ -19,6 +19,7 @@ import mx.org.kaana.kajool.enums.EFormatos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -33,6 +34,7 @@ import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
+import mx.org.kaana.mantic.enums.EEstatusEmpresas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
@@ -42,6 +44,34 @@ import org.primefaces.event.FileUploadEvent;
 public class Abono extends IBasePagos implements Serializable {
 
   private static final long serialVersionUID= 8793667741599428879L;		
+	private FormatLazyModel notasEntradaFavor;
+	private FormatLazyModel notasCreditoFavor;
+	private List<Entity> seleccionadosNotas;
+	private List<Entity> seleccionadosCredito;
+
+	public FormatLazyModel getNotasEntradaFavor() {
+		return notasEntradaFavor;
+	}
+
+	public FormatLazyModel getNotasCreditoFavor() {
+		return notasCreditoFavor;
+	}
+
+	public List<Entity> getSeleccionadosNotas() {
+		return seleccionadosNotas;
+	}
+
+	public void setSeleccionadosNotas(List<Entity> seleccionadosNotas) {
+		this.seleccionadosNotas = seleccionadosNotas;
+	}
+
+	public List<Entity> getSeleccionadosCredito() {
+		return seleccionadosCredito;
+	}
+
+	public void setSeleccionadosCredito(List<Entity> seleccionadosCredito) {
+		this.seleccionadosCredito = seleccionadosCredito;
+	}		
 	
   @PostConstruct
   @Override
@@ -74,6 +104,7 @@ public class Abono extends IBasePagos implements Serializable {
 			deuda= (Entity) DaoFactory.getInstance().toEntity("VistaEmpresasDto", "cuentas", params);
 			this.attrs.put("deuda", deuda);
 			this.attrs.put("saldoPositivo", Double.valueOf(deuda.toString("saldo")) * -1);
+			this.attrs.put("permitirPago", deuda.toLong("idEmpresaEstatus").equals(EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa()));
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -125,7 +156,7 @@ public class Abono extends IBasePagos implements Serializable {
 		TcManticEmpresasPagosDto pago= null;
 		boolean tipoPago             = false;
 		try {
-			if(validaPago()){
+			//if(validaPago()){
 				pago= new TcManticEmpresasPagosDto();
 				pago.setIdEmpresaDeuda(Long.valueOf(this.attrs.get("idEmpresaDeuda").toString()));
 				pago.setIdUsuario(JsfBase.getIdUsuario());
@@ -133,16 +164,16 @@ public class Abono extends IBasePagos implements Serializable {
 				pago.setPago(Double.valueOf(this.attrs.get("pago").toString()));
 				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
 				tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
-				transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("caja").toString()), Long.valueOf(this.attrs.get("idEmpresa").toString()), tipoPago ? -1 : Long.valueOf(this.attrs.get("banco").toString()), tipoPago ? "" : this.attrs.get("referencia").toString(), false);
+				transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("caja").toString()), -1L, Long.valueOf(this.attrs.get("idEmpresa").toString()), tipoPago ? -1 : Long.valueOf(this.attrs.get("banco").toString()), tipoPago ? "" : this.attrs.get("referencia").toString(), null, false, this.seleccionadosNotas, this.seleccionadosCredito);
 				if(transaccion.ejecutar(EAccion.AGREGAR)){
 					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta", ETipoMensaje.INFORMACION);
 					loadProveedorDeuda();
 				} // if
 				else
 					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
-			} // if
+			/*} // if
 			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y mayor a 0.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y mayor a 0.", ETipoMensaje.ERROR);*/
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -299,4 +330,61 @@ public class Abono extends IBasePagos implements Serializable {
 			  result.delete();
 		} // catch
 	} // doFileUpload		
+	
+	public void doLoadCuentas(){
+		try {
+			doLoadNotasEntradas();
+			doLoadNotasCredito();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doLoadCuentas
+	
+	private void doLoadNotasEntradas(){
+		List<Columna> columns     = null;
+	  Map<String, Object> params= null;	
+		try {
+			this.seleccionadosNotas= new ArrayList<>();
+			params= new HashMap<>();
+			params.put("idProveedor", this.attrs.get("idProveedor"));														
+			params.put("idEmpresaEstatus", EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa());														
+      columns= new ArrayList<>();  
+			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));						
+			this.notasEntradaFavor= new FormatLazyModel("VistaEmpresasDto", "saldoFavorEntradas", params, columns);      
+      UIBackingUtilities.resetDataTable("tablaNotas");		
+		} // try 
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // doLoadNotasEntradas
+	
+	private void doLoadNotasCredito(){
+		List<Columna> columns     = null;
+	  Map<String, Object> params= null;	
+		try {
+			this.seleccionadosCredito= new ArrayList<>();
+			params= new HashMap<>();
+			params.put("idProveedor", this.attrs.get("idProveedor"));						
+			params.put("idCreditoEstatus", EEstatusEmpresas.PARCIALIZADA.getIdEstatusEmpresa());																	
+      columns= new ArrayList<>();  
+			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));						
+			this.notasCreditoFavor= new FormatLazyModel("VistaCreditosNotasDto", "saldoFavorCreditos", params, columns);      
+      UIBackingUtilities.resetDataTable("tablaCreditos");		
+		} // try 
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // doLoadNotasCredito
 }
