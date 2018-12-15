@@ -57,6 +57,7 @@ public class Importar extends IBaseImportar implements Serializable {
       this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
       this.attrs.put("tipo", "0");
+      this.attrs.put("registros", 0);
       this.doLoadProveedores();
 			if(this.idListaPrecio== -1L) {
 				this.lista = new TcManticListasPreciosDto();
@@ -73,12 +74,12 @@ public class Importar extends IBaseImportar implements Serializable {
 				if(lista.getIdProveedor()!= null) {
           this.attrs.put("ikProveedor",(((List<UISelectEntity>)this.attrs.get("proveedores")).get(((List<UISelectEntity>)this.attrs.get("proveedores")).indexOf(new UISelectEntity(this.lista.getIdProveedor().toString())))));
 					this.attrs.put("idProveedor", this.lista.getIdProveedor());
-          this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.lista.getIdProveedor());
 			  } // if	
 				else
           this.attrs.put("tipo", "1");
         this.doLoadImportados("VistaListasArchivosDto", "importados", this.lista.toMap());
       } // else
+      this.proveedor= (TcManticProveedoresDto)DaoFactory.getInstance().findById(TcManticProveedoresDto.class, this.lista.getIdProveedor());
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_LISTA_ARCHIVOS);
 			this.attrs.put("logotipos", Constantes.PATRON_IMPORTAR_LOGOTIPOS);
@@ -150,6 +151,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			}	// IF
 	    else
 				RequestContext.getCurrentInstance().execute("janal.show([{summary: 'Error:', detail: 'Solo se pueden importar catalogos en formato PDF ["+ event.getFile().getFileName().toUpperCase()+ "].'}]);"); 
+		this.attrs.put("registros", this.getArticulos().size());
 	} // doFileUpload	
 	
 	public void doViewDocument() {

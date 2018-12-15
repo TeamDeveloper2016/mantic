@@ -66,7 +66,7 @@
       function startTask() {
         PF('progressBar').cancel();
         PF('progressBar').setValue(0);
-        PF('progressBar').start();
+        PF('progressBar').start(parseInt($('#contenedorGrupos\\:registros').html(), 10));
       }
 		</script>
 		<style>
@@ -184,6 +184,7 @@
                   <p:ajax event="complete" listener="#{manticCatalogosListaPreciosImportar.doCompleto}" />  
                 </p:progressBar>  			
               </p:panel>
+							<p:outputLabel id="registros" value="#{manticCatalogosListaPreciosImportar.attrs.registros}" styleClass="importado" style="display: none"/>
 						</p:tab>
 					</p:tabView>
 				</div>

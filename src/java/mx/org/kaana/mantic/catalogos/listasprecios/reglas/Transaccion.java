@@ -120,7 +120,6 @@ public class Transaccion extends IBaseTnx {
         for(TcManticListasPreciosDetallesDto articulo:this.articulos){
           articulo.setIdListaPrecio(this.lista.getIdListaPrecio());
           DaoFactory.getInstance().insert(sesion, articulo);
-          monitoreo.setProgreso((long)(count* 100/ monitoreo.getTotal()));
           monitoreo.incrementar();
           count++;
           if(count% 1000== 0)
