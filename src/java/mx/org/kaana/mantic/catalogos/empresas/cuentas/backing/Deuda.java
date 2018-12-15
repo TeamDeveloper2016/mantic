@@ -27,6 +27,7 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.empresas.cuentas.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
 import mx.org.kaana.mantic.enums.EEstatusClientes;
+import mx.org.kaana.mantic.enums.EEstatusEmpresas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import org.primefaces.event.ToggleEvent;
 import org.primefaces.model.Visibility;
@@ -39,6 +40,10 @@ public class Deuda extends IBaseFilter implements Serializable {
 	private FormatLazyModel detallePagos;
 	private FormatLazyModel pagosSegmento;
 	private List<Entity> seleccionadosSegmento;
+	private FormatLazyModel notasEntradaFavor;
+	private FormatLazyModel notasCreditoFavor;
+	private List<Entity> seleccionadosNotas;
+	private List<Entity> seleccionadosCredito;
 
 	public FormatLazyModel getDetallePagos() {
 		return detallePagos;
@@ -55,6 +60,30 @@ public class Deuda extends IBaseFilter implements Serializable {
 	public void setSeleccionadosSegmento(List<Entity> seleccionadosSegmento) {
 		this.seleccionadosSegmento = seleccionadosSegmento;
 	}	
+	
+	public FormatLazyModel getNotasEntradaFavor() {
+		return notasEntradaFavor;
+	}
+
+	public FormatLazyModel getNotasCreditoFavor() {
+		return notasCreditoFavor;
+	}
+
+	public List<Entity> getSeleccionadosNotas() {
+		return seleccionadosNotas;
+	}
+
+	public void setSeleccionadosNotas(List<Entity> seleccionadosNotas) {
+		this.seleccionadosNotas = seleccionadosNotas;
+	}
+
+	public List<Entity> getSeleccionadosCredito() {
+		return seleccionadosCredito;
+	}
+
+	public void setSeleccionadosCredito(List<Entity> seleccionadosCredito) {
+		this.seleccionadosCredito = seleccionadosCredito;
+	}		
 	
   @PostConstruct
   @Override
@@ -295,7 +324,7 @@ public class Deuda extends IBaseFilter implements Serializable {
 				pago.setPago(Double.valueOf(this.attrs.get("pago").toString()));
 				pago.setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
 				tipoPago= pago.getIdTipoMedioPago().equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago());
-				transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("caja").toString()), Long.valueOf(this.attrs.get("idEmpresa").toString()), tipoPago ? -1L : Long.valueOf(this.attrs.get("banco").toString()), tipoPago ? "" : this.attrs.get("referencia").toString(), false);
+				transaccion= new Transaccion(pago, Long.valueOf(this.attrs.get("caja").toString()), -1L, Long.valueOf(this.attrs.get("idEmpresa").toString()), tipoPago ? -1L : Long.valueOf(this.attrs.get("banco").toString()), tipoPago ? "" : this.attrs.get("referencia").toString(), null, false, this.seleccionadosNotas, this.seleccionadosCredito);
 				if(transaccion.ejecutar(EAccion.AGREGAR)){
 					JsfBase.addMessage("Registrar pago", "Se registro el pago de forma correcta", ETipoMensaje.INFORMACION);
 					loadProvedorDeuda();					
@@ -517,4 +546,61 @@ public class Deuda extends IBaseFilter implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doValidaTipoPagoSegmento
+	
+	public void doLoadCuentasAFavor(){
+		try {
+			doLoadNotasEntradas();
+			doLoadNotasCredito();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doLoadCuentas
+	
+	private void doLoadNotasEntradas(){
+		List<Columna> columns     = null;
+	  Map<String, Object> params= null;	
+		try {
+			this.seleccionadosNotas= new ArrayList<>();
+			params= new HashMap<>();
+			params.put("idProveedor", this.attrs.get("idProveedor"));														
+			params.put("idEmpresaEstatus", EEstatusEmpresas.LIQUIDADA.getIdEstatusEmpresa());														
+      columns= new ArrayList<>();  
+			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));						
+			this.notasEntradaFavor= new FormatLazyModel("VistaEmpresasDto", "saldoFavorEntradas", params, columns);      
+      UIBackingUtilities.resetDataTable("tablaNotas");		
+		} // try 
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // doLoadNotasEntradas
+	
+	private void doLoadNotasCredito(){
+		List<Columna> columns     = null;
+	  Map<String, Object> params= null;	
+		try {
+			this.seleccionadosCredito= new ArrayList<>();
+			params= new HashMap<>();
+			params.put("idProveedor", this.attrs.get("idProveedor"));						
+			params.put("idCreditoEstatus", EEstatusEmpresas.PARCIALIZADA.getIdEstatusEmpresa());																	
+      columns= new ArrayList<>();  
+			columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+			columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));
+			columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_CON_DECIMALES));
+			columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));
+			columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));						
+			this.notasCreditoFavor= new FormatLazyModel("VistaCreditosNotasDto", "saldoFavorCreditos", params, columns);      
+      UIBackingUtilities.resetDataTable("tablaCreditos");		
+		} // try 
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+	} // doLoadNotasCredito
 }
