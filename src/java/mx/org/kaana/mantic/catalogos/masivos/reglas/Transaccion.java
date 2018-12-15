@@ -258,7 +258,6 @@ public class Transaccion extends IBaseTnx {
 		Sheet sheet             = null;
 		TcManticArticulosCodigosDto codigos= null;
 		TcManticMasivasBitacoraDto bitacora= null;
-		StringBuilder encabezado           = new StringBuilder();
 		try {
       WorkbookSettings workbookSettings = new WorkbookSettings();
       workbookSettings.setEncoding("Cp1252");	
