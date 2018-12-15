@@ -25,6 +25,24 @@
           id_masiva_archivo = {idMasivaArchivo} and id_masiva_estatus = {idMasivaEstatus} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
       </select>
     </unit>		
+    <unit id="TcManticMasivasDetallesDto">
+      <select id="row">
+        select      
+          *
+        from      
+          tc_mantic_masivas_detalles
+        where 
+          {condicion} 
+      </select>
+      <select id="identically">
+        select      
+          *
+        from      
+          tc_mantic_masivas_detalles
+        where      
+          codigo = '{codigo}' and id_masiva_archivo = {idMasivaArchivo} and date_format(registro, '%Y%m%d%H%i%S')= '{registro}'
+      </select>
+    </unit>		
     <unit id="TcManticMasivasEstatusDto">
       <select id="row">
         select      

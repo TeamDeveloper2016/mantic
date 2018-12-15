@@ -529,7 +529,15 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 				encabezado.delete(encabezado.length()-1, encabezado.length());
 				LOG.info("Encabezado: "+ encabezado);
 				regresar = encabezado.toString().equals(categoria.getFields());
-				masivo.setTuplas(new Long(sheet.getRows()- 1));
+				int count= 0;
+				for(int fila= 1; fila< sheet.getRows(); fila++) {
+					if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
+						count++;
+						LOG.info(count+ " ["+ sheet.getCell(0, fila).getContents()+ "] "+ sheet.getCell(2, fila).getContents());
+					} // if
+				} // for	
+				// masivo.setTuplas(new Long(sheet.getRows()- 1));
+				masivo.setTuplas(new Long(count));
 			} // if
 		} // try
 		catch (IOException | BiffException e) {
