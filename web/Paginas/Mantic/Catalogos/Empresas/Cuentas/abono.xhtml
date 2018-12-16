@@ -20,6 +20,10 @@
 				'referencia': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo'},
 				'observaciones': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
 			};
+			
+			fieldsDialogReabrir = {				
+				'observacionesReabrir': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoReabrir', formatos: 'cambiar-mayusculas'}
+			};
 
 			function start() {
 				PF('statusDialog').show();
@@ -83,16 +87,18 @@
 									<div class="lg-pantalla">
 										<p:menuButton   value="Opciones">
 											<p:menuitem id="pagoIcon" icon="fa fa-money" value="Registrar pago" onstart="return janal.bloquear();" actionListener="#{manticCatalogosEmpresasCuentasAbono.doLoadCuentas}" oncomplete="PF('dlgPago').show();" disabled="#{manticCatalogosEmpresasCuentasAbono.attrs.permitirPago}" process="@this" update="dialogoPago"/>
+											<p:menuitem id="reabrirIcon" icon="fa fa-unlink" value="Reabrir cuenta" onstart="return janal.bloquear();" oncomplete="PF('dlgReapertura').show();" disabled="#{!manticCatalogosEmpresasCuentasAbono.attrs.permitirPago}" process="@this" update="dialogoReapertura"/>
 											<p:separator/>
 											<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
 											<p:menuitem id="xlsIcon" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 										</p:menuButton>
 									</div>  
 									<div class="xs-pantalla">              
-										<p:menuitem id="pagos" icon="fa fa-money" value="Registrar pago" onstart="return janal.bloquear();" actionListener="#{manticCatalogosEmpresasCuentasAbono.doLoadCuentas}" oncomplete="PF('dlgPago').show();" disabled="#{manticCatalogosEmpresasCuentasAbono.attrs.permitirPago}" process="@this" update="dialogoPago"/>
+										<p:menuitem id="pagos" icon="fa fa-money" title="Registrar pago" onstart="return janal.bloquear();" actionListener="#{manticCatalogosEmpresasCuentasAbono.doLoadCuentas}" oncomplete="PF('dlgPago').show();" disabled="#{manticCatalogosEmpresasCuentasAbono.attrs.permitirPago}" process="@this" update="dialogoPago"/>
+										<p:menuitem id="reabrir" icon="fa fa-unlink" title="Reabrir cuenta" onstart="return janal.bloquear();" oncomplete="PF('dlgReapertura').show();" disabled="#{!manticCatalogosEmpresasCuentasAbono.attrs.permitirPago}" process="@this" update="dialogoReapertura"/>
 										<p:separator/>
-										<p:menuitem id="pdf" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
-										<p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
+										<p:menuitem id="pdf" icon="fa fa-file-pdf-o" title="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
+										<p:menuitem id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
 									</div>  
 								</f:facet>												
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-15" sortBy="#{filtro.pago}">
@@ -329,6 +335,17 @@
 				<div class="janal-line-button">
 					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoPago panelDialog pago observaciones" update="contenedorGrupos panelDetalle panelDetalleDos" actionListener="#{manticCatalogosEmpresasCuentasAbono.doRegistrarPago}" onstart="return janal.partial('dialogo');" oncomplete="PF('dlgPago').hide(); janal.desbloquear();"/>
 					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgPago').hide();" oncomplete="janal.desbloquear();"/>
+				</div>
+			</h:form>
+		</p:dialog>
+		<p:dialog id="dialogoReapertura" widgetVar="dlgReapertura" header="Reabrir cuenta" resizable="false" closable="false" responsive="true" width="60%" onHide="janal.restore();janal.refresh();" onShow="janal.change('formDialogoReabrir', fieldsDialogReabrir);janal.refresh();">
+			<h:form id="formDialogoReabrir" prependId="false">												
+				<p:outputLabel for="observacionesReabrir" value="Observaciones:"/>
+				<p:inputTextarea id="observacionesReabrir" value="#{manticCatalogosEmpresasCuentasAbono.attrs.observacionesReabrir}" styleClass="janal-wid-100-txt"/>				
+				<hr class="ui-widget-content"/>
+				<div class="janal-line-button">
+					<p:commandButton value="Aceptar" icon="fa fa-check" process="@this dialogoReapertura observacionesReabrir" update="contenedorGrupos panelDetalle panelDetalleDos" actionListener="#{manticCatalogosEmpresasCuentasAbono.doReabrirCuenta}" onstart="return janal.partial('dialogoReabrir');" oncomplete="PF('dlgReapertura').hide(); janal.desbloquear();"/>
+					<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgReabrir').hide();" oncomplete="janal.desbloquear();"/>
 				</div>
 			</h:form>
 		</p:dialog>
