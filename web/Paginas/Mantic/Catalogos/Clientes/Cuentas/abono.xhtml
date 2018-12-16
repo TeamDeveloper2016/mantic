@@ -57,19 +57,23 @@
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">			
 			<div class="ui-grid-row janal-grid-row">								
 				<div id="collapse-content" class="ui-grid-col-12">
-					<p:panelGrid id="panelDetalle" columns="6" styleClass="janal-wid-100" columnClasses="janal-wid-5, janal-wid-40, janal-wid-40, janal-wid-5, janal-wid-5, janal-wid-5">
+					<p:panelGrid id="panelDetalle" columns="4" styleClass="janal-wid-100" columnClasses="janal-wid-5, janal-wid, janal-wid-15, janal-wid-15">
 						<p:outputLabel value="Ticket:"/>						
 						<p:outputLabel value="Cliente:"/>						
-						<p:outputLabel value="Vendedor:"/>						
-						<p:outputLabel value="Importe:"/>						
-						<p:outputLabel value="Saldo:"/>						
+						<p:outputLabel value="Estatus:"/>						
 						<p:outputLabel value="Fecha limite:"/>
 						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.consecutivo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>
 						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.razonSocial}" styleClass="janal-wid-100-txt" disabled="true"/>
+						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.estatus}" styleClass="janal-wid-100-txt" disabled="true"/>
+						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.limite}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>
+						<p:spacer/>
+						<p:outputLabel value="Vendedor:"/>						
+						<p:outputLabel value="Importe:"/>						
+						<p:outputLabel value="Saldo:"/>						
+						<p:spacer/>
 						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.persona}" styleClass="janal-wid-100-txt" disabled="true"/>
 						<p:inputText value="$ #{manticCatalogosClientesCuentasAbono.attrs.deuda.importe}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>
-						<p:inputText value="$ #{manticCatalogosClientesCuentasAbono.attrs.deuda.saldo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>
-						<p:inputText value="#{manticCatalogosClientesCuentasAbono.attrs.deuda.limite}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>
+						<p:inputText value="$ #{manticCatalogosClientesCuentasAbono.attrs.deuda.saldo}" styleClass="janal-wid-100-txt janal-column-right" disabled="true"/>						
 						<p:spacer/>
 					</p:panelGrid>					
 				</div>
