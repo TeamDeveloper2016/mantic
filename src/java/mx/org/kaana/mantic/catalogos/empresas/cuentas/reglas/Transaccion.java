@@ -11,6 +11,7 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
@@ -22,6 +23,7 @@ import mx.org.kaana.mantic.db.dto.TcManticEmpresasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasDeudasDto;
 import mx.org.kaana.mantic.db.dto.TcManticEmpresasPagosDto;
 import mx.org.kaana.mantic.enums.EEstatusClientes;
+import mx.org.kaana.mantic.enums.EEstatusEmpresas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
 import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
@@ -100,7 +102,8 @@ public class Transaccion extends IBaseTnx {
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
-		boolean regresar = false;
+		boolean regresar    = false;
+		String observaciones= null;
     try {			
 			if(this.pago!= null)
 				this.pagoGeneral= this.pago.getPago();
@@ -124,6 +127,13 @@ public class Transaccion extends IBaseTnx {
 				case SUBIR:
 					regresar= true;
 					toUpdateDeleteFilePago(sesion);
+					break;
+				case ACTIVAR:
+					TcManticEmpresasDeudasDto deudaReabrir= (TcManticEmpresasDeudasDto) DaoFactory.getInstance().findById(sesion, TcManticEmpresasDeudasDto.class, this.deuda.getIdEmpresaDeuda());
+					deudaReabrir.setIdEmpresaEstatus(EEstatusEmpresas.PARCIALIZADA.getIdEstatusEmpresa());
+					observaciones= Cadena.isVacio(deudaReabrir.getObservaciones()) ? this.deuda.getObservaciones() : deudaReabrir.getObservaciones().concat("; ").concat(this.deuda.getObservaciones());
+					deudaReabrir.setObservaciones(observaciones);
+					regresar= DaoFactory.getInstance().update(sesion, deudaReabrir)>= 1L;
 					break;
       } // switch
       if (!regresar) 
