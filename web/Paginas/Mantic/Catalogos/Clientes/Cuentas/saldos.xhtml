@@ -115,12 +115,6 @@
 								<h:outputText value="Ticket"/>
 							</f:facet>
 							<h:outputText value="#{filtro['consecutivo']}"/>
-						</p:column>														
-						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
-							<f:facet name="header">
-								<h:outputText value="Vendedor"/>
-							</f:facet>
-							<h:outputText value="#{filtro['persona']}"/>
 						</p:column>					
 						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.razonSocial}">
 							<f:facet name="header">
@@ -128,37 +122,43 @@
 							</f:facet>
 							<h:outputText value="#{filtro['razonSocial']}"/>
 						</p:column>					
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.persona}">
+							<f:facet name="header">
+								<h:outputText value="Vendedor"/>
+							</f:facet>
+							<h:outputText value="#{filtro['persona']}"/>
+						</p:column>											
 						<p:column class="janal-column-left MarAuto Responsive janal-wid-10" sortBy="#{filtro.estatus}">
 							<f:facet name="header">
 								<h:outputText value="Estatus"/>
 							</f:facet>
 							<h:outputText value="#{filtro['estatus']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.importe}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.importe}">
 							<f:facet name="header">
 								<h:outputText value="Importe"/>
 							</f:facet>
 							<h:outputText value="#{filtro['importe']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.saldo}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.saldo}">
 							<f:facet name="header">
 								<h:outputText value="Saldo"/>
 							</f:facet>
 							<h:outputText value="#{filtro['saldo']}"/>
-						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.limite}">
-							<f:facet name="header">
-								<h:outputText value="Vence" title="Fecha en la que vence el crédito otorgado"/>
-							</f:facet>
-							<h:outputText value="#{filtro['limite']}"/>
-						</p:column>
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{filtro.regitro}">
+						</p:column>						
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.regitro}">
 							<f:facet name="header">
 								<h:outputText value="Fecha" title="Fecha en la que se hizo la venta"/>
 							</f:facet>
 							<h:outputText value="#{filtro['registro']}"/>
 						</p:column>
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{filtro.dias}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.limite}">
+							<f:facet name="header">
+								<h:outputText value="Vence" title="Fecha en la que vence el crédito otorgado"/>
+							</f:facet>
+							<h:outputText value="#{filtro['limite']}"/>
+						</p:column>
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-4" sortBy="#{filtro.dias}">
 							<f:facet name="header">
 								<h:outputText value="Días" title="Días trascurridos desde la compra"/>
 							</f:facet>
