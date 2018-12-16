@@ -83,7 +83,7 @@ public class Saldos extends IBaseFilter implements Serializable {
       columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));    
       columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));    
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_EXTENDIDA));    
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));    
 			if(!this.idCliente.equals(-1L))
 				this.lazyModel = new FormatCustomLazy("VistaClientesDto", "cuentas", params, columns);
 			else
