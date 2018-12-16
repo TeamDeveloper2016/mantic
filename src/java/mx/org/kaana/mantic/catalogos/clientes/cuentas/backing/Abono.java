@@ -117,7 +117,7 @@ public class Abono extends IBasePagos implements Serializable {
 		boolean tipoPago             = false;
 		boolean saldar               = false;
 		try {
-			if(validaPago()){
+			/*if(validaPago()){*/
 				saldar= Long.valueOf(this.attrs.get("saldar").toString()).equals(1L);
 				pago= new TcManticClientesPagosDto();
 				pago.setIdClienteDeuda(Long.valueOf(this.attrs.get("idClienteDeuda").toString()));
@@ -133,9 +133,9 @@ public class Abono extends IBasePagos implements Serializable {
 				} // if
 				else
 					JsfBase.addMessage("Registrar pago", "Ocurrió un error al registrar el pago", ETipoMensaje.ERROR);
-			} // if
+			/*} // if
 			else
-				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y mayor a 0.", ETipoMensaje.ERROR);
+				JsfBase.addMessage("Registrar pago", "El pago debe ser menor o igual al saldo restante y mayor a 0.", ETipoMensaje.ERROR);*/
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
