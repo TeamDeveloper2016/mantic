@@ -387,4 +387,42 @@ public class Abono extends IBasePagos implements Serializable {
 			throw e;
 		} // catch		
 	} // doLoadNotasCredito
+	
+	public void doReabrirCuenta(){
+		Transaccion transaccion               = null;
+		TcManticEmpresasDeudasDto deudaReabrir= null;
+		try {
+			deudaReabrir= new TcManticEmpresasDeudasDto();
+			deudaReabrir.setIdEmpresaDeuda((Long)this.attrs.get("idEmpresaDeuda"));
+			deudaReabrir.setObservaciones(toObservacionesReabrir());
+			transaccion= new Transaccion(deudaReabrir, null, -1L);
+			if(transaccion.ejecutar(EAccion.ACTIVAR)){
+				JsfBase.addMessage("Se abrió la cuenta de forma correcta", ETipoMensaje.INFORMACION);
+				loadProveedorDeuda();
+			} // if
+			else
+				JsfBase.addMessage("Ocurrió un error al abrir la cuenta", ETipoMensaje.ERROR);
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doReabrirCuenta
+	
+	private String toObservacionesReabrir(){
+		StringBuilder regresar= null;
+		try {
+			regresar= new StringBuilder("");
+			regresar.append(this.attrs.get("observacionesReabrir"));
+			regresar.append("[Reapertura [Usuario:");
+			regresar.append(JsfBase.getIdUsuario());
+			regresar.append("][Fecha:");
+			regresar.append(Fecha.getRegistro());
+			regresar.append("]]");
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar.toString();
+	} // toObservacionesReabrir
 }
