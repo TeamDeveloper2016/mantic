@@ -26,9 +26,16 @@ import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosCodigosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticClientesDto;
+import mx.org.kaana.mantic.db.dto.TcManticDomiciliosDto;
 import mx.org.kaana.mantic.db.dto.TcManticMasivasArchivosDto;
 import mx.org.kaana.mantic.db.dto.TcManticMasivasBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticMasivasDetallesDto;
+import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
+import mx.org.kaana.mantic.db.dto.TrManticClienteDomicilioDto;
+import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
+import mx.org.kaana.mantic.db.dto.TrManticProveedorDomicilioDto;
+import mx.org.kaana.mantic.db.dto.TrManticProveedorTipoContactoDto;
 import static org.apache.commons.io.Charsets.ISO_8859_1;
 import static org.apache.commons.io.Charsets.UTF_8;
 import org.apache.commons.logging.Log;
@@ -68,17 +75,7 @@ public class Transaccion extends IBaseTnx {
       this.messageError= "Ocurrio un error en ".concat(accion.name().toLowerCase()).concat(" catalogo de forma masiva.");
       switch (accion) {
 				case PROCESAR: 
-					switch (this.categoria) {
-						case ARTICULOS:
-     					regresar= this.toProcessArticulos(sesion);
-							break;
-						case CLIENTES:
-							// this.toClientes(sesion, file);
-							break;
-						case PROVEEDORES:
-							// this.toProveedores(sesion, file);
-							break;
-					} // swtich
+ 					regresar= this.toProcess(sesion);
 					break;
 				case ELIMINAR: 
 					// regresar = DaoFactory.getInstance().delete(sesion, this.masivo)> -1L;
@@ -94,7 +91,7 @@ public class Transaccion extends IBaseTnx {
     return regresar;
   }
   
-	protected boolean toProcessArticulos(Session sesion) throws Exception {
+	protected boolean toProcess(Session sesion) throws Exception {
 		boolean regresar= false;  
 		File file= new File(this.masivo.getAlias());
 		if(file.exists()) {
@@ -113,7 +110,17 @@ public class Transaccion extends IBaseTnx {
 			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
 			monitoreo.comenzar(0L);
 			monitoreo.setTotal(this.masivo.getTuplas());
-			this.toArticulos(sesion, file);
+			switch (this.categoria) {
+				case ARTICULOS:
+    			this.toArticulos(sesion, file);
+					break;
+				case CLIENTES:
+					this.toClientes(sesion, file);
+					break;
+				case PROVEEDORES:
+					this.toProveedores(sesion, file);
+					break;
+			} // swtich
       monitoreo.terminar();
 			monitoreo.setProgreso(0L);
 			bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 3L);
@@ -203,6 +210,97 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	}
 	
+	private Long toFindUsoCFDI(Session sesion, String clave) {
+		Long regresar= 3L;
+		Map<String, Object> params=null;
+		try {
+			params=new HashMap<>();
+			params.put("clave", clave.toUpperCase());
+			Value value= DaoFactory.getInstance().toField(sesion, "VistaCargasMasivasDto", "usoCfdi", params, "idUsoCfdi");
+			if(value!= null && value.getData()!= null)
+				regresar= value.toLong();
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+	
+	private TrManticClienteTipoContactoDto toFindTipoContactoCliente(Session sesion, Long idTipoContacto, Long idCliente) {
+		TrManticClienteTipoContactoDto regresar= null;
+		Map<String, Object> params  = null;
+		try {
+			// 1 telefono, 9 correo, 10 correo personal
+			params=new HashMap<>();
+			params.put("idTipoContacto", idTipoContacto);
+			params.put("idCliente", idCliente);
+			regresar= (TrManticClienteTipoContactoDto)DaoFactory.getInstance().toEntity(sesion, TrManticClienteTipoContactoDto.class, "VistaCargasMasivasDto", "contactoc", params);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+	
+	private TrManticProveedorTipoContactoDto toFindTipoContactoProveedor(Session sesion, Long idTipoContacto, Long idProveedor) {
+		TrManticProveedorTipoContactoDto regresar= null;
+		Map<String, Object> params  = null;
+		try {
+			// 1 telefono, 9 correo, 10 correo personal
+			params=new HashMap<>();
+			params.put("idTipoContacto", idTipoContacto);
+			params.put("idProveedor", idProveedor);
+			regresar= (TrManticProveedorTipoContactoDto)DaoFactory.getInstance().toEntity(sesion, TrManticProveedorTipoContactoDto.class, "VistaCargasMasivasDto", "contactop", params);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+	
+	private TcManticClientesDto toFindCliente(Session sesion, String rfc) {
+		TcManticClientesDto regresar= null;
+		Map<String, Object> params  = null;
+		try {
+			params=new HashMap<>();
+			params.put("rfc", rfc);
+			regresar= (TcManticClientesDto)DaoFactory.getInstance().toEntity(sesion, TcManticClientesDto.class, "VistaCargasMasivasDto", "cliente", params);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+
+	private TcManticProveedoresDto toFindProveedor(Session sesion, String rfc) {
+		TcManticProveedoresDto regresar= null;
+		Map<String, Object> params  = null;
+		try {
+			params=new HashMap<>();
+			params.put("rfc", rfc);
+			regresar= (TcManticProveedoresDto)DaoFactory.getInstance().toEntity(sesion, TcManticProveedoresDto.class, "VistaCargasMasivasDto", "proveedor", params);
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	}
+
 	private Long toFindUnidadMedida(Session sesion, String codigo) {
 		Long regresar= 1L;
 		Map<String, Object> params=null;
@@ -278,7 +376,7 @@ public class Transaccion extends IBaseTnx {
 				this.errores= 0;
 				for(int fila= 1; fila< sheet.getRows(); fila++) {
 					if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
-						String contenido= new String(sheet.getCell(2, fila).getContents().getBytes(UTF_8), ISO_8859_1);
+						String contenido= new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 						// 0           1          2        3          4          5          6           7        8        9            10               11          12
 						//CODIGO|CODIGOAUXILIAR|NOMBRE|COSTOS/IVA|MENUDEONETO|MEDIONETO|MAYOREONETO|UNIDADMEDIDA|IVA|LIMITEMENUDEO|LIMITEMAYOREO|STOCKMINIMO|STOCKMAXIMO
 						double costo   = Numero.getDouble(sheet.getCell(3, fila).getContents()!= null? sheet.getCell(3, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
@@ -292,7 +390,7 @@ public class Transaccion extends IBaseTnx {
 						double maximo  = Numero.getDouble(sheet.getCell(12, fila).getContents()!= null? sheet.getCell(12, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 						String nombre= new String(contenido.getBytes(ISO_8859_1), UTF_8);
 						if(costo> 0 && menudeo> 0 && medio> 0 && mayoreo> 0) {
-							String codigo= new String(sheet.getCell(0, fila).getContents().getBytes(UTF_8), ISO_8859_1);
+							String codigo= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 							TcManticArticulosDto articulo= this.toFindArticulo(sesion, codigo);
 							if(articulo!= null) {
 								articulo.setIdCategoria(null);
@@ -444,14 +542,355 @@ public class Transaccion extends IBaseTnx {
       } // if
     } // finally
 		return regresar;
-	} // toVerificaXls		
+	} // toArticulos		
+	
+	private void toProcessContactoCliente(Session sesion, String valor, Long idTipoContacto, Long idCliente) throws Exception {
+		TrManticClienteTipoContactoDto contacto= this.toFindTipoContactoCliente(sesion, idTipoContacto, idCliente);
+		if(contacto== null) {
+      contacto= new TrManticClienteTipoContactoDto(
+				idCliente, // Long idCliente, 
+				JsfBase.getIdUsuario(), // Long idUsuario, 
+				valor.trim(), // String valor, 
+				"", // String observaciones, 
+				-1L, // Long idClienteTipoContacto, 
+				1L, // Long orden, 
+				idTipoContacto // Long idTipoContacto
+			);
+			DaoFactory.getInstance().insert(sesion, contacto);
+		} // if
+		else {
+			contacto.setValor(valor);
+			DaoFactory.getInstance().update(sesion, contacto);
+		} // else
+	}
 
   private Boolean toClientes(Session sesion, File archivo) throws Exception {	
-		return true;
+		Boolean regresar	      = false;
+		Workbook workbook	      = null;
+		Sheet sheet             = null;
+		TcManticMasivasBitacoraDto bitacora= null;
+		try {
+      WorkbookSettings workbookSettings = new WorkbookSettings();
+      workbookSettings.setEncoding("Cp1252");	
+			workbookSettings.setExcelDisplayLanguage("MX");
+      workbookSettings.setExcelRegionalSettings("MX");
+      workbookSettings.setLocale(new Locale("es", "MX"));
+			workbook= Workbook.getWorkbook(archivo, workbookSettings);
+			sheet		= workbook.getSheet(0);
+			if(sheet != null && sheet.getColumns()>= this.categoria.getColumns() && sheet.getRows()>= 2) {
+				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
+				LOG.info("Filas del documento: "+ sheet.getRows());
+				this.errores= 0;
+				for(int fila= 1; fila< sheet.getRows(); fila++) {
+					if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
+						String contenido= new String(sheet.getCell(2, fila).getContents().getBytes(UTF_8), ISO_8859_1);
+						// 0    1       2          3       4       5       6       7        8         9     10     11       12
+						//RFC|CLAVE|RAZONSOCIAL|USOCFDI|TELEFONO|CORREO1|CORREO2|ENTIDAD|MUNICIPIO|COLONIA|CALLE|NUMERO|CODIGOPOSTAL
+						String nombre= new String(contenido.toUpperCase().getBytes(ISO_8859_1), UTF_8);
+						if(!Cadena.isVacio(sheet.getCell(5, fila).getContents()) && !Cadena.isVacio(sheet.getCell(7, fila).getContents()) && !Cadena.isVacio(sheet.getCell(8, fila).getContents())) {
+							String rfc= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+							TcManticClientesDto cliente= this.toFindCliente(sesion, rfc);
+							if(cliente!= null) {
+								cliente.setRazonSocial(nombre);
+								// si trae nulo, blanco o cero se respeta el valor que tiene el campo
+								if(!Cadena.isVacio(sheet.getCell(1, fila).getContents()))
+									cliente.setClave(sheet.getCell(1, fila).getContents().trim());
+								if(!Cadena.isVacio(sheet.getCell(3, fila).getContents()))
+  								cliente.setIdUsoCfdi(this.toFindUsoCFDI(sesion, Cadena.isVacio(sheet.getCell(3, fila).getContents())? "XYZW": sheet.getCell(3, fila).getContents().trim()));
+								DaoFactory.getInstance().update(sesion, cliente);
+							} // if
+							else {
+								cliente= new TcManticClientesDto(
+									Cadena.isVacio(sheet.getCell(1, fila).getContents())? null: sheet.getCell(1, fila).getContents().toUpperCase().trim(), // String clave, 
+									0L, // Long plazoDias, 
+									-1L, // Long idCliente, 
+									0D, // Double limiteCredito, 
+									2L, // Long idCredito, 
+									nombre, // String razonSocial, 
+									0D, // Double saldo, 
+									rfc, // String rfc, 
+									JsfBase.getIdUsuario(), // Long idUsuario, 
+									this.toFindUsoCFDI(sesion, Cadena.isVacio(sheet.getCell(3, fila).getContents())? "XYZW": sheet.getCell(3, fila).getContents().trim()), // Long idUsoCfdi, 
+									"", // String observaciones, 
+									JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), // Long idEmpresa, 
+									1L, // Long idTipoVenta, 
+									null // String idFacturama
+								);
+								DaoFactory.getInstance().insert(sesion, cliente);
+								
+								Long idEntidad  = this.toFindEntidad(sesion, Cadena.isVacio(sheet.getCell(7, fila).getContents())? "XYZW": sheet.getCell(7, fila).getContents().toUpperCase().trim());
+								Long idMunicipio= this.toFindMunicipio(sesion, idEntidad, Cadena.isVacio(sheet.getCell(8, fila).getContents())? "XYZW": sheet.getCell(8, fila).getContents().toUpperCase().trim());
+								Long idLocalidad= this.toFindLocalidad(sesion, idMunicipio, "XYZW");
+								TcManticDomiciliosDto domicilio= new TcManticDomiciliosDto(
+									Cadena.isVacio(sheet.getCell(9, fila).getContents())? "COLONIA NO DEFINIDA": sheet.getCell(9, fila).getContents().toUpperCase().trim(), // String asentamiento, 
+									idLocalidad, // Long idLocalidad, 
+									Cadena.isVacio(sheet.getCell(12, fila).getContents())? "20000": sheet.getCell(12, fila).getContents().toUpperCase().trim(), // String codigoPostal, 
+									null, // String latitud, 
+									"", // String entreCalle, 
+									Cadena.isVacio(sheet.getCell(10, fila).getContents())? "CALLE NO DEFINIDA": sheet.getCell(10, fila).getContents().toUpperCase().trim(), // String calle, 
+									-1L, // Long idDomicilio, 
+									Cadena.isVacio(sheet.getCell(12, fila).getContents())? "1": sheet.getCell(12, fila).getContents().toUpperCase().trim(), // String numeroInterior,  
+									null, // String ycalle, 
+									null, // String longitud, 
+									null, // String numeroExterior, 
+									JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L, // Long idUsuario, 
+									"" // String observaciones
+								);
+								DaoFactory.getInstance().insert(sesion, domicilio);
+								TrManticClienteDomicilioDto particular= new TrManticClienteDomicilioDto(
+									cliente.getIdCliente(), // Long idCliente, 
+									-1L, // Long idClienteDomicilio, 
+									JsfBase.getIdUsuario(), // Long idUsuario, 
+									1L, // Long idTipoDomicilio, 
+									domicilio.getIdDomicilio(), // Long idDomicilio, 
+									1L, // Long idPrincipal, 
+									"" // String observaciones
+								);
+								DaoFactory.getInstance().insert(sesion, particular);
+								particular= new TrManticClienteDomicilioDto(
+									cliente.getIdCliente(), // Long idCliente, 
+									-1L, // Long idClienteDomicilio, 
+									JsfBase.getIdUsuario(), // Long idUsuario, 
+									2L, // Long idTipoDomicilio, 
+									domicilio.getIdDomicilio(), // Long idDomicilio, 
+									1L, // Long idPrincipal, 
+									"" // String observaciones
+								);
+								DaoFactory.getInstance().insert(sesion, particular);
+					      // aqui va el codigo para que se registre en facturama el cliente
+								// **
+								// **
+							} // if
+							// telefono
+							if(!Cadena.isVacio(sheet.getCell(4, fila).getContents())) 
+								this.toProcessContactoCliente(sesion, sheet.getCell(4, fila).getContents(), 1L, cliente.getIdCliente());
+							// correos
+							if(!Cadena.isVacio(sheet.getCell(5, fila).getContents())) 
+								this.toProcessContactoCliente(sesion, sheet.getCell(5, fila).getContents(), 9L, cliente.getIdCliente());
+							if(!Cadena.isVacio(sheet.getCell(6, fila).getContents())) 
+								this.toProcessContactoCliente(sesion, sheet.getCell(6, fila).getContents(), 10L, cliente.getIdCliente());
+							JsfBase.getAutentifica().getMonitoreo().incrementar();
+							if(fila% 1000== 0) {
+								if(bitacora== null) {
+								  bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, new Long(fila), 2L);
+  								DaoFactory.getInstance().insert(sesion, bitacora);
+							  } // if
+								else {
+									bitacora.setProcesados(new Long(fila));
+									bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+  								DaoFactory.getInstance().update(sesion, bitacora);
+								} // else
+								sesion.flush();
+							} // if
+						} // if
+						else {
+							this.errores++;
+							LOG.warn(fila+ ": ["+ nombre+ "]  LOS DATOS DE ESTA FILA ESTAN EN BLANCO");
+							TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
+								sheet.getCell(0, fila).getContents(), // String rfc, 
+								-1L, // Long idMasivaDetalle, 
+								this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
+								"EL ["+ sheet.getCell(2, fila).getContents()+ "] ALGUNOS DE SUS DATOS ESTAN VACIOS, CORREO, ENTIDAD, MUNICIPIO" // String observaciones
+							);
+							DaoFactory.getInstance().insert(sesion, detalle);
+						} // else	
+					} // if	
+				} // for
+				if(bitacora== null) {
+					bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
+  				DaoFactory.getInstance().insert(sesion, bitacora);
+				} // if
+			  else {
+					bitacora.setProcesados(this.masivo.getTuplas());
+					bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					DaoFactory.getInstance().update(sesion, bitacora);
+				} // if
+				LOG.warn("Cantidad de filas con error son: "+ this.errores);
+				regresar = true;
+			} // if
+		} // try
+		catch (IOException | BiffException e) {
+			throw e;
+		} // catch
+    finally {
+      if(workbook!= null) {
+        workbook.close();
+        workbook = null;
+      } // if
+    } // finally
+		return regresar;
+	} // toClientes
+
+	private void toProcessContactoProveedor(Session sesion, String valor, Long idTipoContacto, Long idProveedor) throws Exception {
+		TrManticProveedorTipoContactoDto contacto= this.toFindTipoContactoProveedor(sesion, idTipoContacto, idProveedor);
+		if(contacto== null) {
+      contacto= new TrManticProveedorTipoContactoDto(
+				idProveedor, // Long idProveedor, 
+				JsfBase.getIdUsuario(), // Long idUsuario, 
+				valor.trim(), // String valor, 
+				"", // String observaciones, 
+				1L, // Long orden, 
+				-1L, // Long idProveedorTipoContacto, 
+				idTipoContacto // Long idTipoContacto
+			);
+			DaoFactory.getInstance().insert(sesion, contacto);
+		} // if
+		else {
+			contacto.setValor(valor);
+			DaoFactory.getInstance().update(sesion, contacto);
+		} // else
 	}
+
 	
   private Boolean toProveedores(Session sesion, File archivo) throws Exception {	
-		return true;
+		Boolean regresar	      = false;
+		Workbook workbook	      = null;
+		Sheet sheet             = null;
+		TcManticMasivasBitacoraDto bitacora= null;
+		try {
+      WorkbookSettings workbookSettings = new WorkbookSettings();
+      workbookSettings.setEncoding("Cp1252");	
+			workbookSettings.setExcelDisplayLanguage("MX");
+      workbookSettings.setExcelRegionalSettings("MX");
+      workbookSettings.setLocale(new Locale("es", "MX"));
+			workbook= Workbook.getWorkbook(archivo, workbookSettings);
+			sheet		= workbook.getSheet(0);
+			if(sheet != null && sheet.getColumns()>= this.categoria.getColumns() && sheet.getRows()>= 2) {
+				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
+				LOG.info("Filas del documento: "+ sheet.getRows());
+				this.errores= 0;
+				for(int fila= 1; fila< sheet.getRows(); fila++) {
+					if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
+						String contenido= new String(sheet.getCell(2, fila).getContents().getBytes(UTF_8), ISO_8859_1);
+						// 0    1       2          3       4       5       6        7        8       9     10      11
+						//RFC|CLAVE|RAZONSOCIAL|TELEFONO|CORREO1|CORREO2|ENTIDAD|MUNICIPIO|COLONIA|CALLE|NUMERO|CODIGOPOSTAL
+						String nombre= new String(contenido.toUpperCase().getBytes(ISO_8859_1), UTF_8);
+						if(!Cadena.isVacio(sheet.getCell(4, fila).getContents()) && !Cadena.isVacio(sheet.getCell(6, fila).getContents()) && !Cadena.isVacio(sheet.getCell(7, fila).getContents())) {
+							String rfc= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+							TcManticProveedoresDto proveedor= this.toFindProveedor(sesion, rfc);
+							if(proveedor!= null) {
+								proveedor.setRazonSocial(nombre);
+								// si trae nulo, blanco o cero se respeta el valor que tiene el campo
+								if(!Cadena.isVacio(sheet.getCell(1, fila).getContents()))
+									proveedor.setClave(sheet.getCell(1, fila).getContents().trim());
+								DaoFactory.getInstance().update(sesion, proveedor);
+							} // if
+							else {
+								proveedor= new TcManticProveedoresDto(
+									1L, // Long idTipoProveedor, 
+									-1L, // Long idProveedor, 
+									Cadena.isVacio(sheet.getCell(1, fila).getContents())? null: sheet.getCell(1, fila).getContents().toUpperCase().trim(), // String clave, 
+									30L, // Long diasEntrega, 
+									"0", // String descuento, 
+									rfc.substring(0, 4), // String prefijo, 
+									nombre, // String razonSocial, 
+									rfc, // String rfc, 
+									1L, // Long idTipoDia, 
+									JsfBase.getIdUsuario(), // Long idUsuario, 
+									1L, // Long idTipoMoneda, 
+									"", // String observaciones, 
+									JsfBase.getAutentifica().getEmpresa().getIdEmpresa() // Long idEmpresa, 
+								);
+								DaoFactory.getInstance().insert(sesion, proveedor);
+								
+								Long idEntidad  = this.toFindEntidad(sesion, Cadena.isVacio(sheet.getCell(7, fila).getContents())? "XYZW": sheet.getCell(7, fila).getContents().toUpperCase().trim());
+								Long idMunicipio= this.toFindMunicipio(sesion, idEntidad, Cadena.isVacio(sheet.getCell(8, fila).getContents())? "XYZW": sheet.getCell(8, fila).getContents().toUpperCase().trim());
+								Long idLocalidad= this.toFindLocalidad(sesion, idMunicipio, "XYZW");
+								TcManticDomiciliosDto domicilio= new TcManticDomiciliosDto(
+									Cadena.isVacio(sheet.getCell(9, fila).getContents())? "COLONIA NO DEFINIDA": sheet.getCell(9, fila).getContents().toUpperCase().trim(), // String asentamiento, 
+									idLocalidad, // Long idLocalidad, 
+									Cadena.isVacio(sheet.getCell(12, fila).getContents())? "20000": sheet.getCell(12, fila).getContents().toUpperCase().trim(), // String codigoPostal, 
+									null, // String latitud, 
+									"", // String entreCalle, 
+									Cadena.isVacio(sheet.getCell(10, fila).getContents())? "CALLE NO DEFINIDA": sheet.getCell(10, fila).getContents().toUpperCase().trim(), // String calle, 
+									-1L, // Long idDomicilio, 
+									Cadena.isVacio(sheet.getCell(12, fila).getContents())? "1": sheet.getCell(12, fila).getContents().toUpperCase().trim(), // String numeroInterior,  
+									null, // String ycalle, 
+									null, // String longitud, 
+									null, // String numeroExterior, 
+									JsfBase.getAutentifica()!= null? JsfBase.getIdUsuario(): 1L, // Long idUsuario, 
+									"" // String observaciones
+								);
+								DaoFactory.getInstance().insert(sesion, domicilio);
+								TrManticProveedorDomicilioDto particular= new TrManticProveedorDomicilioDto(
+									-1L, // Long idProveedorDomicilio, 
+									proveedor.getIdProveedor(), // Long idProveedor, 
+									JsfBase.getIdUsuario(), // Long idUsuario, 
+									1L, // Long idTipoDomicilio, 
+									domicilio.getIdDomicilio(), // Long idDomicilio, 
+									1L, // Long idPrincipal, 
+									"" // String observaciones
+								);
+								DaoFactory.getInstance().insert(sesion, particular);
+								particular= new TrManticProveedorDomicilioDto(
+									-1L, // Long idProveedorDomicilio, 
+									proveedor.getIdProveedor(), // Long idProveedor, 
+									JsfBase.getIdUsuario(), // Long idUsuario, 
+									2L, // Long idTipoDomicilio, 
+									domicilio.getIdDomicilio(), // Long idDomicilio, 
+									1L, // Long idPrincipal, 
+									"" // String observaciones
+								);
+								DaoFactory.getInstance().insert(sesion, particular);
+							} // if
+							// telefono
+							if(!Cadena.isVacio(sheet.getCell(3, fila).getContents())) 
+								this.toProcessContactoProveedor(sesion, sheet.getCell(3, fila).getContents(), 1L, proveedor.getIdProveedor());
+							// correos
+							if(!Cadena.isVacio(sheet.getCell(4, fila).getContents())) 
+								this.toProcessContactoProveedor(sesion, sheet.getCell(4, fila).getContents(), 9L, proveedor.getIdProveedor());
+							if(!Cadena.isVacio(sheet.getCell(5, fila).getContents())) 
+								this.toProcessContactoProveedor(sesion, sheet.getCell(5, fila).getContents(), 10L, proveedor.getIdProveedor());
+							JsfBase.getAutentifica().getMonitoreo().incrementar();
+							if(fila% 1000== 0) {
+								if(bitacora== null) {
+								  bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, new Long(fila), 2L);
+  								DaoFactory.getInstance().insert(sesion, bitacora);
+							  } // if
+								else {
+									bitacora.setProcesados(new Long(fila));
+									bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+  								DaoFactory.getInstance().update(sesion, bitacora);
+								} // else
+								sesion.flush();
+							} // if
+						} // if
+						else {
+							this.errores++;
+							LOG.warn(fila+ ": ["+ nombre+ "]  LOS DATOS DE ESTA FILA ESTAN EN BLANCO");
+							TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
+								sheet.getCell(0, fila).getContents(), // String rfc, 
+								-1L, // Long idMasivaDetalle, 
+								this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
+								"EL ["+ sheet.getCell(2, fila).getContents()+ "] ALGUNOS DE SUS DATOS ESTAN VACIOS, CORREO, ENTIDAD, MUNICIPIO" // String observaciones
+							);
+							DaoFactory.getInstance().insert(sesion, detalle);
+						} // else	
+					} // if	
+				} // for
+				if(bitacora== null) {
+					bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
+  				DaoFactory.getInstance().insert(sesion, bitacora);
+				} // if
+			  else {
+					bitacora.setProcesados(this.masivo.getTuplas());
+					bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+					DaoFactory.getInstance().update(sesion, bitacora);
+				} // if
+				LOG.warn("Cantidad de filas con error son: "+ this.errores);
+				regresar = true;
+			} // if
+		} // try
+		catch (IOException | BiffException e) {
+			throw e;
+		} // catch
+    finally {
+      if(workbook!= null) {
+        workbook.close();
+        workbook = null;
+      } // if
+    } // finally
+		return regresar;
 	}
 	
 	public void toDeleteXls() throws Exception {

@@ -131,7 +131,7 @@ public class Importar extends IBaseImportar implements Serializable {
 				);
       } //if
       else
-    		JsfBase.addMessage("Error:", "Ocurrio un error en la cargar del catalogo !", ETipoMensaje.ERROR);		
+    		JsfBase.addMessage("Error:", "Ocurrio un error en la cargar masiva del cátalogo !", ETipoMensaje.ERROR);		
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
