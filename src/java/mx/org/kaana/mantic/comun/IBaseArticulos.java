@@ -383,7 +383,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
       columns.add(new Columna("proveedor", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("precio", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("descuento", EFormatoDinamicos.NUMERO_CON_DECIMALES));
-		  this.attrs.put("sugeridos", UIEntity.build("VistaOrdenesComprasDto", "sugerido", this.attrs, columns));
+		  this.attrs.put("sugeridos", UIEntity.build("VistaOrdenesComprasDto", "sugerido", this.attrs, columns, Constantes.SQL_TODOS_REGISTROS));
     } // try
     catch (Exception e) {
 			Error.mensaje(e);
@@ -709,7 +709,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
       columns.add(new Columna("stock", EFormatoDinamicos.NUMERO_CON_DECIMALES));
       columns.add(new Columna("minimo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       columns.add(new Columna("maximo", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
-      this.attrs.put("faltantes", UIEntity.build("VistaOrdenesComprasDto", "faltantes", params, columns));
+      this.attrs.put("faltantes", UIEntity.build("VistaOrdenesComprasDto", "faltantes", params, columns, Constantes.SQL_TODOS_REGISTROS));
     } // try
     catch (Exception e) {
 			Error.mensaje(e);
@@ -731,7 +731,7 @@ public abstract class IBaseArticulos extends IBaseImportar implements Serializab
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
-      this.attrs.put("perdidos", UIEntity.build("VistaOrdenesComprasDto", "registrados", this.attrs, columns));
+      this.attrs.put("perdidos", UIEntity.build("VistaOrdenesComprasDto", "registrados", this.attrs, columns, Constantes.SQL_TODOS_REGISTROS));
     } // try
     catch (Exception e) {
 			Error.mensaje(e);
