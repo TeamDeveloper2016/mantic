@@ -225,4 +225,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 			Error.mensaje(e);			
 		} // catch		
 	} // doPublicarFacturama
+
+  public String doMasivo() {
+    JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Clientes/filtro");
+    JsfBase.setFlashAttribute("idTipoMasivo", 2L);
+    return "/Paginas/Mantic/Catalogos/Masivos/importar".concat(Constantes.REDIRECIONAR);
+	}
+	
 }

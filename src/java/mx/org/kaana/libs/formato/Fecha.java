@@ -553,7 +553,9 @@ public  class Fecha {
     long hours  = (long)(seconds/ 60/ 60);
     long minutes= (long)((seconds/ 60)- (hours* 60));
     seconds     = (long)(seconds- (hours* 60* 60)- (minutes* 60)); 
-    return Cadena.rellenar(String.valueOf(hours), 2, '0', Boolean.TRUE).concat(":").concat(Cadena.rellenar(String.valueOf(minutes), 2, '0', Boolean.TRUE)).concat(":").concat(Cadena.rellenar(String.valueOf(seconds), 2, '0', Boolean.TRUE));
+		long days   = (long) (hours/ 24);
+		hours       = (long) (hours- (days* 24));
+    return (days> 0? days+ " dias, ": "")+ Cadena.rellenar(String.valueOf(hours), 2, '0', Boolean.TRUE).concat(":").concat(Cadena.rellenar(String.valueOf(minutes), 2, '0', Boolean.TRUE)).concat(":").concat(Cadena.rellenar(String.valueOf(seconds), 2, '0', Boolean.TRUE));
   }
 
   public static java.sql.Date toDateDefault(String fecha) {

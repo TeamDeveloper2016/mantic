@@ -111,7 +111,7 @@ public class Importar extends IBaseImportar implements Serializable {
 		  this.masivo.setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
       Transaccion transaccion= new Transaccion(this.masivo, this.categoria);
       if(transaccion.ejecutar(EAccion.PROCESAR)) {
-        RequestContext.getCurrentInstance().execute("janal.alert('Se proceso el catalogo de forma correcta');");
+        RequestContext.getCurrentInstance().execute("janal.alert('Cátalogo procesado de forma correcta ["+ this.masivo.getTuplas()+ "], registros erroneos ["+ transaccion.getErrores()+ "]';");
 				this.setXls(null);
 				this.attrs.put("xls", ""); 
 				this.masivo = new TcManticMasivasArchivosDto(

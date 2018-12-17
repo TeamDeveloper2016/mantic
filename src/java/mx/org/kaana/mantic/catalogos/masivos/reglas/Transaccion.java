@@ -40,11 +40,13 @@ public class Transaccion extends IBaseTnx {
   private static final Log LOG = LogFactory.getLog(Transaccion.class);
   private TcManticMasivasArchivosDto masivo;	
 	private ECargaMasiva categoria;
+	private int errores;
 	private String messageError;
   
   public Transaccion(TcManticMasivasArchivosDto masivo, ECargaMasiva categoria) {
 		this.masivo   = masivo;		
 		this.categoria= categoria;
+		this.errores  = 0;
 	} // Transaccion
 
 	protected void setMessageError(String messageError) {
@@ -53,6 +55,10 @@ public class Transaccion extends IBaseTnx {
 
 	public String getMessageError() {
 		return messageError;
+	}
+
+	public int getErrores() {
+		return errores;
 	}
   
 	@Override
@@ -269,7 +275,7 @@ public class Transaccion extends IBaseTnx {
 			if(sheet != null && sheet.getColumns()>= this.categoria.getColumns() && sheet.getRows()>= 2) {
 				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
 				LOG.info("Filas del documento: "+ sheet.getRows());
-				int errores= 0;
+				this.errores= 0;
 				for(int fila= 1; fila< sheet.getRows(); fila++) {
 					if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
 						String contenido= new String(sheet.getCell(2, fila).getContents().getBytes(UTF_8), ISO_8859_1);
@@ -289,6 +295,8 @@ public class Transaccion extends IBaseTnx {
 							String codigo= new String(sheet.getCell(0, fila).getContents().getBytes(UTF_8), ISO_8859_1);
 							TcManticArticulosDto articulo= this.toFindArticulo(sesion, codigo);
 							if(articulo!= null) {
+								articulo.setIdCategoria(null);
+								articulo.setIdImagen(null);
 								articulo.setPrecio(costo);
 								articulo.setMenudeo(menudeo);
 								articulo.setMedioMayoreo(medio);
@@ -363,7 +371,7 @@ public class Transaccion extends IBaseTnx {
 									sheet.getCell(0, fila).getContents(), // String codigo, 
 									-1L, // Long idMasivaDetalle, 
 									this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
-									"ESTE ARTICULO FUE AGREGADO AL CATALOGO DE ARTICULOS ["+ sheet.getCell(2, fila).getContents()+ "]" // String observaciones
+									"ESTE ARTICULO FUE AGREGADO ["+ sheet.getCell(2, fila).getContents()+ "]" // String observaciones
 								);
 								DaoFactory.getInstance().insert(sesion, detalle);
 								// aqui va el codigo para que se registre en facturama el articulo
@@ -401,13 +409,13 @@ public class Transaccion extends IBaseTnx {
 							} // if
 						} // if
 						else {
-							errores++;
+							this.errores++;
 							LOG.warn(fila+ ": ["+ nombre+ "] costo: ["+ costo+ "] menudeo: ["+ menudeo+ "] menudeo: ["+ medio+ "] menudeo: ["+ mayoreo+ "]");
 							TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
 								sheet.getCell(0, fila).getContents(), // String codigo, 
 								-1L, // Long idMasivaDetalle, 
 								this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
-								"EL COSTO O LOS PRECIOS NETOS DE MENUDEO, MEDIO MAYOREO, MAYOREO ESTAN EN CEROS" // String observaciones
+								"EL COSTO["+ costo+ "], MENUDEO["+ menudeo+ "], MEDIO MAYOREO["+ medio+ "], MAYOREO["+ mayoreo+ "] ESTAN EN CEROS" // String observaciones
 							);
 							DaoFactory.getInstance().insert(sesion, detalle);
 						} // else	
@@ -422,7 +430,7 @@ public class Transaccion extends IBaseTnx {
 					bitacora.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
-				LOG.info("Cantidad de filas con error son: "+ errores);
+				LOG.warn("Cantidad de filas con error son: "+ this.errores);
 				regresar = true;
 			} // if
 		} // try
