@@ -113,7 +113,7 @@ public class Transaccion extends TransaccionFactura {
 		Long idImagen   = -1L;
 		try {			
 			if(eliminarRegistros(sesion)){
-				this.messageError= "Error al registrar el articulo";
+				this.messageError= "Error al registrar el articulo.\nVerificar que el articulo no se encuentre registrado.";
 				this.articulo.getArticulo().setIdRedondear(this.articulo.isRedondear() ? ACTIVO : INACTIVO);
 				this.articulo.getArticulo().setIdUsuario(JsfBase.getIdUsuario());
 				this.articulo.getArticulo().setIdEmpresa(JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
