@@ -60,13 +60,13 @@ public class Transaccion extends TransaccionFactura {
 					regresar= procesarArticulo(sesion);
 					break;
 				case MODIFICAR:
+				case ACTIVAR:
 					regresar= actualizarArticulo(sesion);
 					break;				
 				case ELIMINAR:
 					regresar= eliminarArticulo(sesion);				
 					break;
-				case COPIAR:
-				case ACTIVAR:
+				case COPIAR:				
 					this.articulo.getArticulo().setIdArticulo(-1L);
 					regresar= procesarArticulo(sesion);
 					break;
@@ -136,7 +136,7 @@ public class Transaccion extends TransaccionFactura {
 										if(registraArticulosTipoVenta(sesion, idArticulo)) {
 											if(this.articulo.getArticuloDimencion()!= null && this.articulo.getArticuloDimencion().getAlto()!= null){
 												this.articulo.getArticuloDimencion().setIdArticulo(idArticulo);	
-												if(this.eaccionGeneral.equals(EAccion.COPIAR) || this.eaccionGeneral.equals(EAccion.ACTIVAR))
+												if(this.eaccionGeneral.equals(EAccion.COPIAR))
 													this.articulo.getArticuloDimencion().setIdArticuloDimension(-1L);
 												regresar= DaoFactory.getInstance().insert(sesion, this.articulo.getArticuloDimencion()) >= 1L;
 											} // if
@@ -336,7 +336,7 @@ public class Transaccion extends TransaccionFactura {
 				} // if
 				codigo.setOrden(count + 1L);
 				dto= (TcManticArticulosCodigosDto) codigo;
-				alterSqlAction= this.eaccionGeneral.equals(EAccion.COPIAR) || this.eaccionGeneral.equals(EAccion.ACTIVAR);
+				alterSqlAction= this.eaccionGeneral.equals(EAccion.COPIAR);
 				sqlAccion= alterSqlAction ? ESql.INSERT : codigo.getSqlAccion();
 				switch(sqlAccion){
 					case INSERT:
@@ -379,7 +379,7 @@ public class Transaccion extends TransaccionFactura {
 				especificacion.setIdArticulo(idArticulo);				
 				especificacion.setIdUsuario(JsfBase.getIdUsuario());
 				dto= (TcManticArticulosEspecificacionesDto) especificacion;				
-				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) || this.eaccionGeneral.equals(EAccion.ACTIVAR) ? ESql.INSERT : especificacion.getSqlAccion();
+				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : especificacion.getSqlAccion();
 				switch(sqlAccion){
 					case INSERT:
 						dto.setIdArticuloEspecificacion(-1L);
@@ -416,7 +416,7 @@ public class Transaccion extends TransaccionFactura {
 				descuento.setVigenciaInicial(new Timestamp(descuento.getVigenciaIni().getTime()));
 				descuento.setVigenciaFinal(new Timestamp(descuento.getVigenciaFin().getTime()));
 				dto= (TcManticArticulosDescuentosDto) descuento;				
-				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) || this.eaccionGeneral.equals(EAccion.ACTIVAR) ? ESql.INSERT : descuento.getSqlAccion();
+				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : descuento.getSqlAccion();
 				switch(sqlAccion){
 					case INSERT:
 						dto.setIdArticuloDescuento(-1L);
@@ -453,7 +453,7 @@ public class Transaccion extends TransaccionFactura {
 				descuentoEspecial.setVigenciaInicial(new Timestamp(descuentoEspecial.getVigenciaIni().getTime()));
 				descuentoEspecial.setVigenciaFinal(new Timestamp(descuentoEspecial.getVigenciaFin().getTime()));
 				dto= (TrManticArticuloGrupoDescuentoDto) descuentoEspecial;				
-				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) || this.eaccionGeneral.equals(EAccion.ACTIVAR) ? ESql.INSERT : descuentoEspecial.getSqlAccion();
+				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : descuentoEspecial.getSqlAccion();
 				switch(sqlAccion){
 					case INSERT:
 						dto.setIdArticuloGrupoDescuento(-1L);
@@ -488,7 +488,7 @@ public class Transaccion extends TransaccionFactura {
 				precioSugerido.setIdArticulo(idArticulo);				
 				precioSugerido.setIdUsuario(JsfBase.getIdUsuario());				
 				dto= (TrManticArticuloPrecioSugeridoDto) precioSugerido;				
-				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) || this.eaccionGeneral.equals(EAccion.ACTIVAR) ? ESql.INSERT : precioSugerido.getSqlAccion();
+				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : precioSugerido.getSqlAccion();
 				switch(sqlAccion){
 					case INSERT:
 						dto.setIdLeido(2L);
@@ -524,7 +524,7 @@ public class Transaccion extends TransaccionFactura {
 				articuloProveedor.setIdArticulo(idArticulo);				
 				articuloProveedor.setIdUsuario(JsfBase.getIdUsuario());				
 				dto= (TrManticArticuloProveedorDto) articuloProveedor;				
-				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) || this.eaccionGeneral.equals(EAccion.ACTIVAR) ? ESql.INSERT : articuloProveedor.getSqlAccion();
+				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : articuloProveedor.getSqlAccion();
 				switch(sqlAccion){
 					case INSERT:
 						dto.setIdArticuloProveedor(-1L);
@@ -558,7 +558,7 @@ public class Transaccion extends TransaccionFactura {
 			for(TipoVenta tipoVenta: this.articulo.getArticulosTiposVenta()){
 				tipoVenta.setIdArticulo(idArticulo);				
 				dto= (TrManticArticuloTipoVentaDto) tipoVenta;				
-				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) || this.eaccionGeneral.equals(EAccion.ACTIVAR) ? ESql.INSERT : tipoVenta.getSqlAccion();
+				sqlAccion= this.eaccionGeneral.equals(EAccion.COPIAR) ? ESql.INSERT : tipoVenta.getSqlAccion();
 				switch(sqlAccion){
 					case INSERT:
 						dto.setIdArticuloTipoVenta(-1L);
