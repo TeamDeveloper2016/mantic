@@ -53,7 +53,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
   private static final long serialVersionUID = 327393488565639367L;
 	private static final String VENDEDOR_PERFIL= "VENDEDOR DE PISO";
 	private static final String INDIVIDUAL     = "1";
-	private static final Long ESTATUS_ELABORADA= 1L;
+	private static final Long ESTATUS_ELABORADA= 2L;
 	private EOrdenes tipoOrden;
 	private SaldoCliente saldoCliente;
 	private StreamedContent image;
