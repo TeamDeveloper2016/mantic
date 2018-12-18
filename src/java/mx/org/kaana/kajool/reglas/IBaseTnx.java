@@ -54,7 +54,7 @@ public abstract class IBaseTnx {
 	}
 	
 	protected void commit() throws Exception {
-  	if (this.transaction!= null) 
+  	if (this.transaction!= null && this.transaction.isActive()) 
 			this.transaction.commit();
 	}
 
