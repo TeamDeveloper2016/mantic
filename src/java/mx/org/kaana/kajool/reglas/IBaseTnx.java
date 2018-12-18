@@ -14,6 +14,7 @@ import org.hibernate.Transaction;
 
 public abstract class IBaseTnx {
 
+	private	Transaction transaction;
 	private Long idFuenteDato;
 
 	public IBaseTnx() {
@@ -27,9 +28,8 @@ public abstract class IBaseTnx {
 	protected abstract boolean ejecutar(Session sesion, EAccion accion) throws Exception;
 
 	public final boolean ejecutar(EAccion accion) throws Exception {
-		boolean regresar       = false;
-		Session session        = null;
-		Transaction transaction= null;
+		boolean regresar= false;
+		Session session = null;
 		try {
 			session= SessionFactoryFacade.getInstance().getSession(this.idFuenteDato);
 			transaction= session.beginTransaction();
@@ -38,8 +38,8 @@ public abstract class IBaseTnx {
 			transaction.commit();
 		} // try
 		catch (Exception e) {
-			if (transaction!= null) {
-				transaction.rollback();
+			if (this.transaction!= null) {
+				this.transaction.rollback();
 			} // if
 			throw e;
 		} // catch
@@ -47,9 +47,15 @@ public abstract class IBaseTnx {
 			if (session!= null) {
 				session.close();
 			} // if
-			transaction= null;
+			this.transaction= null;
 			session    = null;
 		} // finally
 		return regresar;
 	}
+	
+	protected void commit() throws Exception {
+  	if (this.transaction!= null) 
+			this.transaction.commit();
+	}
+
 }

@@ -5,6 +5,47 @@
 <process>
 	<dml> 
 		<unit id="VistaCargasMasivasDto">
+			<select id="lazy">
+				select
+					tc_mantic_masivas_detalles.id_masiva_detalle as id_key,
+					tc_mantic_masivas_archivos.nombre as archivo,
+					tc_mantic_masivas_archivos.tuplas,
+					tc_mantic_masivas_detalles.codigo,
+					tc_mantic_masivas_detalles.observaciones,
+					tc_mantic_masivas_detalles.registro
+				from 
+					tc_mantic_masivas_archivos
+				inner join
+					tc_mantic_masivas_detalles on tc_mantic_masivas_archivos.id_masiva_archivo= tc_mantic_masivas_detalles.id_masiva_archivo
+				where
+					tc_mantic_masivas_archivos.id_masiva_archivo= {idMasivaArchivo}
+				{sortOrder}
+			</select>
+			<select id="movimientos">
+				select
+					tc_mantic_masivas_bitacora.id_masiva_bitacora as id_key,
+					tc_mantic_masivas_archivos.nombre as archivo,
+					tc_mantic_masivas_archivos.tuplas,
+					tc_mantic_masivas_bitacora.procesados,
+					tc_mantic_masivas_bitacora.justificacion,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as nombre,
+				  tc_mantic_masivas_estatus.nombre as estatus,
+					tc_mantic_masivas_bitacora.registro
+				from 
+					tc_mantic_masivas_archivos
+				inner join
+					tc_mantic_masivas_bitacora on tc_mantic_masivas_archivos.id_masiva_archivo= tc_mantic_masivas_bitacora.id_masiva_archivo
+				inner join
+					tc_mantic_masivas_estatus on tc_mantic_masivas_bitacora.id_masiva_estatus= tc_mantic_masivas_estatus.id_masiva_estatus
+				inner join
+					tc_janal_usuarios on tc_mantic_masivas_bitacora.id_usuario= tc_janal_usuarios.id_usuario
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					tc_mantic_masivas_bitacora.id_masiva_archivo= {idMasivaArchivo}
+				order by
+					tc_mantic_masivas_bitacora.registro desc				
+			</select>	
 			<select id="articulo">
 				select
 					tc_mantic_articulos.id_articulo as id_key,
@@ -33,6 +74,15 @@
 					tc_mantic_proveedores
 				where  
 					 upper(tc_mantic_proveedores.rfc)= '{rfc}'				
+			</select>		
+			<select id="trabajo">
+				select
+					tc_mantic_trabajos.id_trabajo as id_key,
+					tc_mantic_trabajos.*
+				from
+					tc_mantic_trabajos
+				where  
+					 upper(tc_mantic_trabajos.codigo)= '{codigo}'				
 			</select>		
 			<select id="usoCfdi">
         select

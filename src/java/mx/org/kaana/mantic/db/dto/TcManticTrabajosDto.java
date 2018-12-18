@@ -52,17 +52,19 @@ public class TcManticTrabajosDto implements IBaseDto, Serializable {
   private String sat;
   @Column (name="registro")
   private Timestamp registro;
+  @Column (name="herramienta")
+  private String herramienta;
 
   public TcManticTrabajosDto() {
     this(new Long(-1L));
   }
 
   public TcManticTrabajosDto(Long key) {
-    this(null, null, null, null, null, new Long(-1L), null, null, null, null);
+    this(null, null, null, null, null, new Long(-1L), null, null, null, null, null);
     setKey(key);
   }
 
-  public TcManticTrabajosDto(String descripcion, String codigo, Double precio, Double iva, Long idUsuario, Long idTrabajo, Long idEmpresa, Long idVigente, String nombre, String sat) {
+  public TcManticTrabajosDto(String descripcion, String codigo, Double precio, Double iva, Long idUsuario, Long idTrabajo, Long idEmpresa, Long idVigente, String nombre, String sat, String herramienta) {
     setDescripcion(descripcion);
     setCodigo(codigo);
     setPrecio(precio);
@@ -73,7 +75,8 @@ public class TcManticTrabajosDto implements IBaseDto, Serializable {
     setIdVigente(idVigente);
     setNombre(nombre);
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-		setSat(sat);
+		this.sat= sat;
+		this.herramienta= herramienta;
   }
 	
   public void setDescripcion(String descripcion) {
@@ -163,6 +166,14 @@ public class TcManticTrabajosDto implements IBaseDto, Serializable {
 	public void setSat(String sat) {
 		this.sat = sat;
 	}	
+
+	public String getHerramienta() {
+		return herramienta;
+	}
+
+	public void setHerramienta(String herramienta) {
+		this.herramienta=herramienta;
+	}
 	
   @Transient
   @Override
@@ -200,6 +211,8 @@ public class TcManticTrabajosDto implements IBaseDto, Serializable {
 		regresar.append(getRegistro());
 		regresar.append(Constantes.SEPARADOR);
 		regresar.append(getSat());
+		regresar.append(Constantes.SEPARADOR);
+		regresar.append(getHerramienta());
     regresar.append("]");
   	return regresar.toString();
   }
@@ -218,13 +231,14 @@ public class TcManticTrabajosDto implements IBaseDto, Serializable {
 		regresar.put("nombre", getNombre());
 		regresar.put("registro", getRegistro());
 		regresar.put("sat", getSat());
+		regresar.put("herramienta", getHerramienta());
   	return regresar;
   }
 
   @Override
   public Object[] toArray() {
     Object[] regresar = new Object[]{
-    getDescripcion(), getCodigo(), getPrecio(), getIva(), getIdUsuario(), getIdTrabajo(), getIdEmpresa(), getIdVigente(), getNombre(), getRegistro(), getSat()
+      getDescripcion(), getCodigo(), getPrecio(), getIva(), getIdUsuario(), getIdTrabajo(), getIdEmpresa(), getIdVigente(), getNombre(), getRegistro(), getSat(), getHerramienta()
     };
     return regresar;
   }

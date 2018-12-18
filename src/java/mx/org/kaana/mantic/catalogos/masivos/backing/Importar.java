@@ -12,7 +12,6 @@ import mx.org.kaana.libs.recurso.Configuracion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.libs.Constantes;
-import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.mantic.catalogos.comun.IBaseImportar;
 import mx.org.kaana.mantic.catalogos.masivos.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
@@ -53,6 +52,9 @@ public class Importar extends IBaseImportar implements Serializable {
 						break;
 					case 3:
 						this.categoria= ECargaMasiva.PROVEEDORES;
+						break;
+					case 4:
+						this.categoria= ECargaMasiva.REFACCIONES;
 						break;
 				} // switch
 			else
@@ -151,6 +153,8 @@ public class Importar extends IBaseImportar implements Serializable {
 			case 2: this.categoria= ECargaMasiva.CLIENTES;
 				break;
 			case 3: this.categoria= ECargaMasiva.PROVEEDORES;
+				break;
+			case 4: this.categoria= ECargaMasiva.REFACCIONES;
 				break;
 		} // switch
 	}
