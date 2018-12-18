@@ -2381,7 +2381,8 @@
       </select>
 			<select id="rowPrincipal">
         select      
-          *
+					tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
+					tc_mantic_articulos_codigos.*
         from      
           tc_mantic_articulos_codigos
         where 
