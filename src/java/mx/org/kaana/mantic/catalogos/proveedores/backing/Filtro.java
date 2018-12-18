@@ -23,6 +23,7 @@ import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.catalogos.proveedores.reglas.Gestor;
 import mx.org.kaana.mantic.catalogos.proveedores.reglas.Transaccion;
 import mx.org.kaana.mantic.db.dto.TcManticProveedoresDto;
@@ -181,7 +182,7 @@ public class Filtro extends IBaseFilter implements Serializable {
 
   public String doMasivo() {
     JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Proveedores/filtro");
-    JsfBase.setFlashAttribute("idTipoMasivo", 2L);
+    JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.PROVEEDORES.getId());
     return "/Paginas/Mantic/Catalogos/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	}
 

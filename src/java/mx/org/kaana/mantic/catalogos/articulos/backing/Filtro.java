@@ -27,6 +27,7 @@ import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.articulos.beans.RegistroArticulo;
 import mx.org.kaana.mantic.catalogos.articulos.reglas.Transaccion;
+import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.facturas.beans.ArticuloFactura;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
@@ -265,7 +266,7 @@ public class Filtro extends Comun implements Serializable {
 	
   public String doMasivo() {
     JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Articulos/filtro");
-    JsfBase.setFlashAttribute("idTipoMasivo", 1L);
+    JsfBase.setFlashAttribute("idTipoMasivo", ECargaMasiva.ARTICULOS.getId());
     return "/Paginas/Mantic/Catalogos/Masivos/importar".concat(Constantes.REDIRECIONAR);
 	}
 	
