@@ -55,7 +55,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // catch		
   } // init
 
-	private void loadCreditos(){
+	private void loadCreditos() {
 		List<UISelectItem>creditos= null;
 		try {
 			creditos= new ArrayList<>();
