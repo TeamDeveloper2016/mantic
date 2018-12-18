@@ -22,6 +22,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.KajoolBaseException;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosCodigosDto;
@@ -522,6 +523,8 @@ public class Transaccion extends IBaseTnx {
 							DaoFactory.getInstance().insert(sesion, detalle);
 						} // else	
 					} // if	
+//					if(fila> 4)
+//						throw new KajoolBaseException("Este error fue provocado intencionalmente !");
 				} // for
 				if(bitacora== null) {
 					bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);

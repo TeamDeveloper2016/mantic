@@ -69,7 +69,7 @@ public class Movimientos extends IBaseFilter implements Serializable {
 	
 	public String doRegresar() {
 		JsfBase.setFlashAttribute("idMasivaArchivo", this.attrs.get("idMasivaArchivo"));
-		return ((String)this.attrs.get("regreso")).concat(Constantes.REDIRECIONAR);
+		return "filtro".concat(Constantes.REDIRECIONAR);
 	}
 	
 }
