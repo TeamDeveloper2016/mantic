@@ -43,7 +43,7 @@ public class ArticuloVenta extends Articulo {
 			this.setTotal(this.getTotal());
 		this.toCalculateCostoPorCantidad();
 		double porcentajeIva = 1+ (this.getIva()/ 100); 		
-		double costoMoneda   = this.getCosto()* getTipoDeCambio();
+		double costoMoneda   = this.getCosto()* this.getTipoDeCambio();
 		double costoReal     = this.getCantidad()* costoMoneda;
 		this.getImportes().setImporte(Numero.toRedondearSat(costoReal));
 		

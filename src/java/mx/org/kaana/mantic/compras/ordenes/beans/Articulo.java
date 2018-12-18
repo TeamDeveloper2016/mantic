@@ -260,7 +260,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 	
 	public void toPrepare(boolean sinIva, Double tipoDeCambio, Long idProvedores) {
 		this.sinIva      = sinIva;
-		this.tipoDeCambio= tipoDeCambio;
+		this.tipoDeCambio= tipoDeCambio== 0? 1: tipoDeCambio;
 		this.idProveedor = idProvedores;
 	}
 	
@@ -310,7 +310,7 @@ public class Articulo extends ArticuloDetalle implements Comparable<Articulo>, S
 
 	public void toCalculate(boolean sinIva, double tipoDeCambio) {
 		this.sinIva      = sinIva;
-		this.tipoDeCambio= tipoDeCambio;
+		this.tipoDeCambio= tipoDeCambio== 0? 1: tipoDeCambio;
 		this.toCalculate();
 	}
 

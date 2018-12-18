@@ -87,7 +87,7 @@ public class TcManticFicticiasDto implements IBaseDto, Serializable {
   }
 
   public TcManticFicticiasDto(Long key) {
-    this(null, null, new Long(-1L), null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null);
+    this(null, null, new Long(-1L), null, null, null, null, 1D, null, null, null, null, null, null, null, null, null, null, null, null, null, null, new Date(Calendar.getInstance().getTimeInMillis()), null);
     setKey(key);
   }
 

@@ -46,7 +46,8 @@ public final class AdminFacturas extends IAdminArticulos implements Serializable
 		} // else	
 		if(loadDefault)
 			this.getArticulos().add(new ArticuloVenta(-1L, true));
-		setIdSinIva(1L);
+		this.setIdSinIva(1L);
+		LOG.warn("Forzar que todos los precios capturados ya son netos, por lo tanto se les descuenta el IVA");
 		this.toCalculate();
 	}
 	
