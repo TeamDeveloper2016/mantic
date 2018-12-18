@@ -4,6 +4,7 @@ import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.libs.formato.Error;
@@ -162,5 +163,17 @@ public class Importar extends IBaseImportar implements Serializable {
 	public void doImageUpload(FileUploadEvent event) {
 		
 	} 
+
+	public String doMovimientos() {
+		JsfBase.setFlashAttribute("idMasivaArchivo", ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("regreso", "filtro");
+		return "movimientos".concat(Constantes.REDIRECIONAR);
+	}
+	
+	public String doDetalles() {
+		JsfBase.setFlashAttribute("idMasivaArchivo", ((Entity)this.attrs.get("seleccionado")).getKey());
+		JsfBase.setFlashAttribute("regreso", "filtro");
+		return "detalles".concat(Constantes.REDIRECIONAR);
+	}
 	
 }

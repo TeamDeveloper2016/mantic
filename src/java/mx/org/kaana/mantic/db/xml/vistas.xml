@@ -43,8 +43,7 @@
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				where
 					tc_mantic_masivas_bitacora.id_masiva_archivo= {idMasivaArchivo}
-				order by
-					tc_mantic_masivas_bitacora.registro desc				
+				{sortOrder}
 			</select>	
 			<select id="articulo">
 				select

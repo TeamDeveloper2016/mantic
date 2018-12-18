@@ -1,4 +1,4 @@
-package mx.org.kaana.mantic.compras.ordenes.backing;
+package mx.org.kaana.mantic.catalogos.masivos.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,35 +15,27 @@ import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.enums.ETipoMovimiento;
 
 /**
  *@company KAANA
  *@project KAJOOL (Control system polls)
- *@date 19/06/2018
+ *@date 17/12/2018
  *@time 07:51:53 AM 
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-@Named(value = "manticComprasOrdenesMovimientos")
+@Named(value = "manticCatalogosMasivosMovimientos")
 @ViewScoped
 public class Movimientos extends IBaseFilter implements Serializable {
 
   private static final long serialVersionUID = 8793667741599428311L;
 
-  private ETipoMovimiento tipo;
-	
-	public String getTitle() {
-		return this.tipo.getTitle();
-	}
-		
   @PostConstruct
   @Override
   protected void init() {
     try {
-			this.tipo= JsfBase.getFlashAttribute("tipo")== null? ETipoMovimiento.ORDENES_COMPRAS: (ETipoMovimiento)JsfBase.getFlashAttribute("tipo");
-      this.attrs.put(this.tipo.getIdKey(), JsfBase.getFlashAttribute(this.tipo.getIdKey()));
-      this.attrs.put("regreso", JsfBase.getFlashAttribute("regreso"));
+      this.attrs.put("idMasivaArchivo", JsfBase.getFlashAttribute("idMasivaArchivo"));
+      this.attrs.put("regreso", "filtro");
 		  this.doLoad();
     } // try
     catch (Exception e) {
@@ -59,10 +51,11 @@ public class Movimientos extends IBaseFilter implements Serializable {
       columns = new ArrayList<>();
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("justificacion", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));
+      columns.add(new Columna("tuplas", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
+      columns.add(new Columna("procesados", EFormatoDinamicos.NUMERO_SIN_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
-      this.attrs.put("sortOrder", "order by ".concat(this.tipo.getTable()).concat(".registro desc"));
-      this.lazyModel = new FormatCustomLazy(this.tipo.getProceso(), "movimientos", this.attrs, columns);
+      this.attrs.put("sortOrder", "order by tc_mantic_masivas_bitacora.registro desc");
+      this.lazyModel = new FormatCustomLazy("VistaCargasMasivasDto", "movimientos", this.attrs, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -75,7 +68,7 @@ public class Movimientos extends IBaseFilter implements Serializable {
   } // doLoad
 	
 	public String doRegresar() {
-		JsfBase.setFlashAttribute(this.tipo.getIdKey(), this.attrs.get(this.tipo.getIdKey()));
+		JsfBase.setFlashAttribute("idMasivaArchivo", this.attrs.get("idMasivaArchivo"));
 		return ((String)this.attrs.get("regreso")).concat(Constantes.REDIRECIONAR);
 	}
 	
