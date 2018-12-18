@@ -10,11 +10,15 @@ import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.KajoolBaseException;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.beans.Totales;
+import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  *@company KAANA
@@ -26,6 +30,7 @@ import mx.org.kaana.mantic.compras.ordenes.beans.Totales;
 
 public abstract class IAdminArticulos implements Serializable {
 
+	private static final Log LOG=LogFactory.getLog(IAdminArticulos.class);
 	private static final long serialVersionUID=506956550372353914L;
 	
 	private List<Articulo> articulos;
@@ -198,10 +203,25 @@ public abstract class IAdminArticulos implements Serializable {
 			  this.totales.addCantidad(articulo.getCantidad());
 		} // for
 	}
+
+	public void toCheckTotales() {
+		// verificar que el importe total de la factura sea igual que el importe del detalle de sus articulos
+		double total  = this.totales.getTotal();
+		double detalle= 0d; 
+		for (Articulo item : this.articulos) {
+			detalle+= item.getImporte();
+		} // for
+		if(!Numero.toTruncate(total,  1).equals(Numero.toTruncate(detalle, 1))) {
+			LOG.warn("Diferencias en los importes del documento ["+ this.getClass().getSimpleName()+ "] id: "+ this.getOrden().getKey()+ " verificar situacion, total ["+ total+ "] detalle["+ detalle+ "]");
+			this.toCalculate();
+			throw new KajoolBaseException("Por favor verifique que los importes sean correctos y vuelva a guardar el documento !");	
+		} // if
+	}
 	
 	@Override
 	protected void finalize() throws Throwable {
 		Methods.clean(this.articulos);
 		Methods.clean(this.filtrados);
 	}	
+	
 }

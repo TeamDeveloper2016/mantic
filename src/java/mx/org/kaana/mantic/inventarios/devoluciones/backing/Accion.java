@@ -128,6 +128,7 @@ public class Accion extends IBaseArticulos implements Serializable {
     Transaccion transaccion= null;
     String regresar        = null;
     try {			
+			this.getAdminOrden().toCheckTotales();
 			((Devolucion)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
 			((Devolucion)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
 			((Devolucion)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());

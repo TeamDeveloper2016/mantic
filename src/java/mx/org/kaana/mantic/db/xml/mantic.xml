@@ -322,6 +322,14 @@
 				order by
 				  tc_mantic_ficticias_detalles.registro
       </select>
+			<select id="total">
+				select
+					truncate(sum(tc_mantic_ficticias_detalles.importe), 1) as total
+				from 
+					tc_mantic_ficticias_detalles 
+				where  
+					id_ficticia = {idFicticia}
+			</select>
 			<delete id="rows">
 				delete from tc_mantic_ficticias_detalles where id_ficticia= {idFicticia}
 			</delete>
@@ -386,6 +394,14 @@
 				  ejercicio= {ejercicio} 
 				  and id_empresa= {idEmpresa}				
 			</select>			
+			<select id="total">
+				select
+					truncate(sum(tc_mantic_ficticias.total), 1) as total
+				from 
+					tc_mantic_ficticias
+				where  
+					id_ficticia = {idFicticia}
+			</select>
     </unit>
     <unit id="TcManticCierresMonedasDto">
       <select id="row">

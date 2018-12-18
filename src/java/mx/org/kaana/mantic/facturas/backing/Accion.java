@@ -20,7 +20,9 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.models.request.*;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
+import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.KajoolBaseException;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -54,6 +56,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 	private static final String VENDEDOR_PERFIL= "VENDEDOR DE PISO";
 	private static final String INDIVIDUAL     = "1";
 	private static final Long ESTATUS_ELABORADA= 2L;
+	
 	private EOrdenes tipoOrden;
 	private SaldoCliente saldoCliente;
 	private StreamedContent image;
@@ -71,10 +74,12 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		return tipoOrden;
 	}
 
+	@Override
 	public SaldoCliente getSaldoCliente() {
 		return saldoCliente;
 	}	
 
+	@Override
 	public void setSaldoCliente(SaldoCliente saldoCliente) {
 		this.saldoCliente = saldoCliente;
 	}
@@ -83,6 +88,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		return image;
 	}
 
+	@Override
 	public FormatLazyModel getAlmacenes() {
 		return almacenes;
 	}	
@@ -373,34 +379,32 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		return regresar;
 	} // toDescuentoVigente
 	
-	private void loadOrdenVenta(){		
-		UISelectEntity cliente = null;
-		try {
-			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");			
-			((FacturaFicticia)this.getAdminOrden().getOrden()).setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
-			((FacturaFicticia)this.getAdminOrden().getOrden()).setIdCliente(cliente.getKey());
-			((FacturaFicticia)this.getAdminOrden().getOrden()).setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
-			((FacturaFicticia)this.getAdminOrden().getOrden()).setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoMedioPago").toString()));
-			((FacturaFicticia)this.getAdminOrden().getOrden()).setIdUsoCfdi(Long.valueOf(this.attrs.get("cfdi").toString()));
-			if(!Long.valueOf(this.attrs.get("tipoMedioPago").toString()).equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
-				((FacturaFicticia)this.getAdminOrden().getOrden()).setIdBanco(Long.valueOf(this.attrs.get("banco").toString()));
-				((FacturaFicticia)this.getAdminOrden().getOrden()).setReferencia(this.attrs.get("referencia").toString());
-			} // if
-			((FacturaFicticia)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
-			((FacturaFicticia)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
-			((FacturaFicticia)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
-			((FacturaFicticia)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
-		} // try
-		catch (Exception e) {		
-			throw e;
-		} // catch		
+	private void loadOrdenVenta() {
+		this.getAdminOrden().toCheckTotales();
+		UISelectEntity cliente = (UISelectEntity) this.attrs.get("clienteSeleccion");			
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdCliente(cliente.getKey());
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdTipoPago(Long.valueOf(this.attrs.get("tipoPago").toString()));
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdTipoMedioPago(Long.valueOf(this.attrs.get("tipoMedioPago").toString()));
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setIdUsoCfdi(Long.valueOf(this.attrs.get("cfdi").toString()));
+		if(!Long.valueOf(this.attrs.get("tipoMedioPago").toString()).equals(ETipoMediosPago.EFECTIVO.getIdTipoMedioPago())){
+			((FacturaFicticia)this.getAdminOrden().getOrden()).setIdBanco(Long.valueOf(this.attrs.get("banco").toString()));
+			((FacturaFicticia)this.getAdminOrden().getOrden()).setReferencia(this.attrs.get("referencia").toString());
+		} // if
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
+		((FacturaFicticia)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
+		
+		if(((FacturaFicticia)this.getAdminOrden().getOrden()).getTipoDeCambio()< 1)
+			((FacturaFicticia)this.getAdminOrden().getOrden()).setTipoDeCambio(1D);
 	} // loadOrdenVenta
 	
 	public void doCerrarTicket(){		
 		Transaccion transaccion= null;
     try {								
 			if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
-				loadOrdenVenta();
+				this.loadOrdenVenta();
 				transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos());
 				this.getAdminOrden().toAdjustArticulos();
 				if (transaccion.ejecutar(EAccion.REGISTRAR)) {				
@@ -781,7 +785,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			if(this.attrs.get("clienteSeleccion")!= null && !((Entity)this.attrs.get("clienteSeleccion")).getKey().equals(-1L)){
 				if(!this.getAdminOrden().getArticulos().isEmpty() && (this.getAdminOrden().getArticulos().size() > 1 || (this.getAdminOrden().getArticulos().size()== 1 && (this.getAdminOrden().getArticulos().get(0).getIdArticulo()!= null && !this.getAdminOrden().getArticulos().get(0).getIdArticulo().equals(-1L))))){
 					((FacturaFicticia)this.getAdminOrden().getOrden()).setIdFicticiaEstatus(ESTATUS_ELABORADA);
-					loadOrdenVenta();
+					this.loadOrdenVenta();
 					transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.attrs.get("observaciones").toString());
 					this.getAdminOrden().toAdjustArticulos();
 					transaccion.ejecutar(EAccion.DESACTIVAR);
@@ -906,7 +910,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		Transaccion transaccion= null;
 		EAccion eaccion        = null;		
     try {			
-			loadOrdenVenta();
+			this.loadOrdenVenta();
 			eaccion= ((FacturaFicticia)this.getAdminOrden().getOrden()).getIdFicticia().equals(-1L) ? EAccion.AGREGAR : EAccion.MODIFICAR;						
 			transaccion = new Transaccion(((FacturaFicticia)this.getAdminOrden().getOrden()), this.getAdminOrden().getArticulos(), this.attrs.get("observaciones").toString());			
 			if (transaccion.ejecutar(eaccion)){ 

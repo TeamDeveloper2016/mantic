@@ -362,20 +362,15 @@ public class Accion extends IBaseVenta implements Serializable {
 		return regresar;
 	} // toDescuentoVigente
 	
-	private void loadOrdenVenta(){		
-		UISelectEntity cliente = null;
-		try {
-			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");			
-			((TicketVenta)this.getAdminOrden().getOrden()).setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
-			((TicketVenta)this.getAdminOrden().getOrden()).setIdCliente(cliente.getKey());
-			((TicketVenta)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
-			((TicketVenta)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
-			((TicketVenta)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
-			((TicketVenta)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
-		} // try
-		catch (Exception e) {		
-			throw e;
-		} // catch		
+	private void loadOrdenVenta() {		
+		this.getAdminOrden().toCheckTotales();
+		UISelectEntity cliente = (UISelectEntity) this.attrs.get("clienteSeleccion");			
+		((TicketVenta)this.getAdminOrden().getOrden()).setIdEmpresa(Long.valueOf(this.attrs.get("idEmpresa").toString()));
+		((TicketVenta)this.getAdminOrden().getOrden()).setIdCliente(cliente.getKey());
+		((TicketVenta)this.getAdminOrden().getOrden()).setDescuentos(this.getAdminOrden().getTotales().getDescuentos());
+		((TicketVenta)this.getAdminOrden().getOrden()).setImpuestos(this.getAdminOrden().getTotales().getIva());
+		((TicketVenta)this.getAdminOrden().getOrden()).setSubTotal(this.getAdminOrden().getTotales().getSubTotal());
+		((TicketVenta)this.getAdminOrden().getOrden()).setTotal(this.getAdminOrden().getTotales().getTotal());
 	} // loadOrdenVenta
 	
 	public void doCerrarTicket(){		

@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.hibernate.Session;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Value;
@@ -19,6 +20,7 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
+import mx.org.kaana.libs.pagina.KajoolBaseException;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.clientes.beans.ClienteTipoContacto;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
@@ -134,7 +136,7 @@ public class Transaccion extends IBaseTnx {
 						this.orden= (TcManticFicticiasDto) DaoFactory.getInstance().findById(sesion, TcManticFicticiasDto.class, this.bitacora.getIdFicticia());
 						this.orden.setIdFicticiaEstatus(this.bitacora.getIdFicticiaEstatus());						
 						regresar= DaoFactory.getInstance().update(sesion, this.orden)>= 1L;
-						if(this.bitacora.getIdFicticiaEstatus().equals(TIMBRADA)){
+						if(this.bitacora.getIdFicticiaEstatus().equals(TIMBRADA) && this.checkTotal(sesion)) {
 							params= new HashMap<>();
 							params.put("idFicticia", this.orden.getIdFicticia());
 							factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
@@ -147,15 +149,16 @@ public class Transaccion extends IBaseTnx {
 								generarTimbradoFactura(sesion, this.orden.getIdFicticia(), factura.getIdFactura().toString());
 							} // 
 						} // if
-						else if(this.bitacora.getIdFicticiaEstatus().equals(CANCELADA)) {
-							params= new HashMap<>();
-							params.put("idFicticia", this.orden.getIdFicticia());
-							factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
-							if(factura!= null && factura.getIdFacturama()!= null)
-								CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama());
-							else
-								throw new Exception("No fue posible cancelar la factura, por favor vuelva a intentarlo !");															
-						} // else if
+						else 
+							if(this.bitacora.getIdFicticiaEstatus().equals(CANCELADA)) {
+								params= new HashMap<>();
+								params.put("idFicticia", this.orden.getIdFicticia());
+								factura= (TcManticFacturasDto) DaoFactory.getInstance().toEntity(sesion, TcManticFacturasDto.class, "TcManticFacturasDto", "detalle", params);
+								if(factura!= null && factura.getIdFacturama()!= null)
+									CFDIFactory.getInstance().cfdiRemove(factura.getIdFacturama());
+								else
+									throw new Exception("No fue posible cancelar la factura, por favor vuelva a intentarlo !");															
+							} // else if
 					} // if
 					break;								
 				case REPROCESAR:
@@ -398,4 +401,31 @@ public class Transaccion extends IBaseTnx {
 			throw e;
 		} // catch				
 	} // generarTimbradoFactura
+
+	private boolean checkTotal(Session sesion) throws Exception {
+		boolean regresar = false;
+		Double sumTotal  = 0D;
+		Double sumDetalle= 0D;
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			params.put("idFicticia", this.orden.getIdFicticia());
+			Value detalle= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDetallesDto", "total", params, "total");
+			if(detalle!= null && detalle.getData()!= null)
+				sumDetalle= detalle.toDouble();
+			Value total= DaoFactory.getInstance().toField(sesion, "TcManticFicticiasDto", "total", params, "total");
+			if(total!= null && total.getData()!= null)
+				sumTotal= total.toDouble();
+		} // try
+		finally {
+			Methods.clean(params);
+		} // finally
+		regresar= Objects.equals(sumTotal, sumDetalle);
+		if(!regresar) {
+			LOG.warn("Diferencias en los importes de la factura: "+ this.orden.getIdFicticia()+ " verificar situacion, total ["+ sumTotal+ "] detalle["+ sumDetalle+ "]");
+			throw new KajoolBaseException("No se puede timbrar porque el importe total difiere de los importes del detalle de la factura !");	
+		} // if	
+		return regresar;
+	}
+	
 } 

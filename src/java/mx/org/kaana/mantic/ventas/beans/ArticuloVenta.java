@@ -10,7 +10,7 @@ import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 
-public class ArticuloVenta extends Articulo {	
+public class ArticuloVenta extends Articulo {
 	
 	private static final long serialVersionUID = -7272868284456340705L;
 
