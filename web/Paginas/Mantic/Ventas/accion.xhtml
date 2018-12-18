@@ -243,7 +243,7 @@
 									<f:facet name="header">
 										<h:outputText value="Precio"/>
 									</f:facet>
-									<p:outputLabel value="#{row['total']}"/>
+									<p:outputLabel value="#{row['costo']}"/>
 									<p:inputText id="values" value="#{row['valor']}" style="display:none"/>
 									<p:inputText id="precios" value="#{row['costo']}" styleClass="janal-wid-100-txt key-focus-event filas" style="display:none"/>
 								</p:column>		
@@ -259,6 +259,12 @@
 										<h:outputText value="Unidad medida"/>
 									</f:facet>
 									<p:outputLabel value="#{row['unidadMedida']}"/>
+								</p:column>		
+								<p:column class="janal-column-right MarAuto Responsive janal-wid-5">
+									<f:facet name="header">
+										<h:outputText value="Impuesto"/>
+									</f:facet>
+									<p:outputLabel value="#{row['impuestos']}"/>
 								</p:column>		
 								<p:column class="janal-column-right MarAuto Responsive janal-wid-8">
 									<f:facet name="header">
