@@ -66,9 +66,9 @@
               <p:outputLabel for="consecutivo" value="No. nota entrada:"/>
               <p:inputText id="consecutivo" value="#{manticInventariosEntradasFiltro.attrs.consecutivo}" styleClass="janal-wid-100-txt"/> 
               <p:outputLabel for="idProveedor" value="Proveedor:"/>
-              <p:selectOneMenu id="idProveedor" value="#{manticInventariosEntradasFiltro.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96"  effect="fade" filter="true" filterMatchMode="contains">
+              <p:selectOneMenu id="idProveedor" value="#{manticInventariosEntradasFiltro.attrs.idProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-96" effect="fade" filter="true" filterMatchMode="contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
-                <f:selectItems value="#{manticInventariosEntradasFiltro.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{item.clave}- #{item.nombre}"/>
+                <f:selectItems value="#{manticInventariosEntradasFiltro.attrs.proveedores}" var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Clave">
                   <h:outputText value="#{item.clave}"/>
                 </p:column>   
