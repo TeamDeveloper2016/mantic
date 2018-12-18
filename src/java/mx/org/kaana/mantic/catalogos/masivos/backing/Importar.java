@@ -1,18 +1,27 @@
 package mx.org.kaana.mantic.catalogos.masivos.backing;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
+import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
+import mx.org.kaana.kajool.reglas.comun.Columna;
+import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.recurso.Configuracion;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.comun.IBaseImportar;
 import mx.org.kaana.mantic.catalogos.masivos.reglas.Transaccion;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
@@ -27,14 +36,19 @@ public class Importar extends IBaseImportar implements Serializable {
 
 	private static final Log LOG=LogFactory.getLog(Importar.class);
   private static final long serialVersionUID= 318633488565639363L;
-	
-	private TcManticMasivasArchivosDto masivo;
+
+  private TcManticMasivasArchivosDto masivo;
+	protected FormatLazyModel lazyModel;
 	private ECargaMasiva categoria;
 
 	public TcManticMasivasArchivosDto getMasivo() {
 		return masivo;
 	}
 
+	public FormatLazyModel getLazyModel() {
+		return lazyModel;
+	}
+	
 	@PostConstruct
   @Override
   protected void init() {		
@@ -86,9 +100,31 @@ public class Importar extends IBaseImportar implements Serializable {
 	public void doTabChange(TabChangeEvent event) {
 		this.attrs.put("idTipoMasivo", this.masivo.getIdTipoMasivo());
 		if(event.getTab().getTitle().equals("Archivos")) 
-			this.doLoadImportados("VistaCargasMasivasDto", "importados", this.attrs);
+			this.doLoadArhivos("VistaCargasMasivasDto", "importados", this.attrs);
 	}		
+	
 
+	protected void doLoadArhivos(String proceso, String idXml, Map<String, Object> params) {
+		List<Columna> columns= null;
+		try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("ruta", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("usuario", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("observaciones", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA));
+		  this.lazyModel= new FormatCustomLazy(proceso, idXml, params, columns);
+			UIBackingUtilities.resetDataTable();
+		} // try
+    catch (Exception e) {
+      Error.mensaje(e);
+      JsfBase.addMessageError(e);
+    } // catch		
+    finally {
+      Methods.clean(columns);
+    } // finally
+  } 
+	
 	public void doFileUpload(FileUploadEvent event) {
 		try {
       this.doFileUploadMasivo(event, this.masivo.getRegistro().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("masivos"), this.masivo, this.categoria);

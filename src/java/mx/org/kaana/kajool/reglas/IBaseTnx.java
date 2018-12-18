@@ -32,10 +32,10 @@ public abstract class IBaseTnx {
 		Session session = null;
 		try {
 			session= SessionFactoryFacade.getInstance().getSession(this.idFuenteDato);
-			transaction= session.beginTransaction();
+			this.transaction= session.beginTransaction();
 			session.clear();
 			regresar= ejecutar(session, accion);
-			transaction.commit();
+			this.transaction.commit();
 		} // try
 		catch (Exception e) {
 			if (this.transaction!= null) {

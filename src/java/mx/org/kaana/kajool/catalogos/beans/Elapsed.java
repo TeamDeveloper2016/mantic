@@ -1,5 +1,6 @@
 package mx.org.kaana.kajool.catalogos.beans;
 
+import java.io.Serializable;
 import java.util.Calendar;
 import mx.org.kaana.libs.formato.Fecha;
 import org.apache.commons.logging.Log;
@@ -13,9 +14,10 @@ import org.apache.commons.logging.LogFactory;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Elapsed {
+public class Elapsed implements Serializable {
 	
 	private static final Log LOG=LogFactory.getLog(Elapsed.class);
+	private static final long serialVersionUID=2406100144415196522L;
 
 	private long elapsed;
 	private long missing;

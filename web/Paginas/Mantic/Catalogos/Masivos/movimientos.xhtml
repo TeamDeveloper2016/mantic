@@ -24,7 +24,7 @@
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.archivo}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.archivo}">
               <f:facet name="header">
                 <h:outputText value="Archivo"/>
               </f:facet>
@@ -48,19 +48,19 @@
               </f:facet>
               <h:outputText value="&lt;i class='fa fa-fw fa-user'&gt;&lt;/i&gt; #{row['nombre']}" escape="false"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.tuplas}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.tuplas}">
               <f:facet name="header">
                 <h:outputText value="Filas"/>
               </f:facet>
               <h:outputText value="#{row['tuplas']}"/>
             </p:column>		
-            <p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{row.procesados}">
+            <p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.procesados}">
               <f:facet name="header">
                 <h:outputText value="Procesados"/>
               </f:facet>
               <h:outputText value="#{row['procesados']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.registro}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-13" sortBy="#{row.registro}">
               <f:facet name="header">
                 <h:outputText value="Registro"/>
               </f:facet>
@@ -75,7 +75,7 @@
     </div>		    
 		<hr class="ui-widget-content"/>
 		<div class="janal-line-button">
-			<p:commandButton process="@this" icon="fa fa-reply" value="Regresar" action="#{manticCatalogosMasivosMovimientos.doRegresar}" immediate="true"/>
+			<p:commandButton process="@this" icon="fa fa-reply" value="Regresar" action="#{manticCatalogosMasivosMovimientos.doRegresar}" immediate="true" ajax="false"/>
 		</div>
   </ui:define>   
   <ui:param name="componenteBloqueo" value="tabla"/>

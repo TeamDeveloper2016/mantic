@@ -365,6 +365,10 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 		return regresar;
 	}	
 	
+	public StreamedContent doFileDownload(Entity file) {
+		return this.doFileDownload(new UISelectEntity(file));
+	}
+	
 	public StreamedContent doFileDownload(UISelectEntity file) {
 		StreamedContent regresar= null;
 		try {
@@ -404,6 +408,10 @@ public abstract class IBaseImportar extends IBaseAttribute implements Serializab
 		this.toCopyDocument(carpeta.concat(this.file.getRuta()).concat(this.file.getName()), this.file.getName());
 	}
 
+	public void doViewXlsDocument(Entity item) {
+		this.doViewXlsDocument(new UISelectEntity(item));
+	}
+	
 	public void doViewXlsDocument(UISelectEntity item) {
 		this.toViewFile(item.toString("alias"));
 	}

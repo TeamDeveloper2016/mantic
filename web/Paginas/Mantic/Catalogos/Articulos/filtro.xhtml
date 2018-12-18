@@ -151,7 +151,7 @@
 							<h:graphicImage library="janal" name="icon/semaforos/#{row.idFacturama eq '-1' ? 'circulo-gris.png': 'circulo-verde.png'}" title="Articulo #{row.idFacturama eq '-1' ? 'NO': ''} registrado en facturama"/>
 						</p:column>
 						<f:facet name="footer">
-							Total [#{manticCatalogosArticulosFiltro.lazyModel==null?0:manticCatalogosArticulosFiltro.lazyModel.rowCount}] registros
+							Total [#{manticCatalogosArticulosFiltro.lazyModel== null ? 0: manticCatalogosArticulosFiltro.lazyModel.rowCount}] registros
 						</f:facet>
 					</p:dataTable>
 					<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">

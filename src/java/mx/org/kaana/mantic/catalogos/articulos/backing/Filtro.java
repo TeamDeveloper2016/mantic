@@ -55,15 +55,15 @@ public class Filtro extends Comun implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> campos      = null;
+    List<Columna> columns     = null;
 		Map<String, Object> params= null;
     try {
-      campos = new ArrayList<>();
+      columns = new ArrayList<>();
 			params= new HashMap<>();
-      campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
 			params.put("condicion", toCondicion());			
-      this.lazyModel = new FormatCustomLazy("VistaArticulosDto", "row", params, campos);
+      this.lazyModel = new FormatCustomLazy("VistaArticulosDto", "row", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try
     catch (Exception e) {
@@ -71,7 +71,7 @@ public class Filtro extends Comun implements Serializable {
       JsfBase.addMessageError(e);
     } // catch
     finally {
-      Methods.clean(campos);
+      Methods.clean(columns);
     } // finally		
   } // doLoad
 	
