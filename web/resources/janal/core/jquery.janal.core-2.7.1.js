@@ -1198,7 +1198,7 @@
 			alert(msg);
     }, // alert
     version: function() {
-      return '0.2.7.0';
+      return '0.2.7.1';
     }, // version
     align: function(pixels) {
       try {
@@ -1290,8 +1290,10 @@
 		}, // readingMode
 		valueLastFocus: function(value) {
 			this.console('janal.valueLastFocus: '+ $(this.lastNameFocus).attr('id')+ ' => '+ value);
-			if($(this.lastNameFocus))
+			if($(this.lastNameFocus) && !$(this.lastNameFocus).is('[readonly="readonly"]'))	
 				$(this.lastNameFocus).val(value);
+			else
+				janal.console('janal.focus: '+ this.lastNameFocus+ ' esta de solo lectura ');
 		},
 		sendLastFocus: function() {
 			if($(this.lastNameFocus))

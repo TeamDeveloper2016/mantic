@@ -357,7 +357,7 @@
 			</div>	
 		</h:form>
 	</p:dialog>	
-	<p:dialog id="dialogoTeclasAyuda" widgetVar="dlgTeclasAyuda" header="Teclas rapidas de la aplicaci&oacute;n" onShow="janal.pivot(); janal.bloquear();" onHide="janal.recover(); janal.desbloquear();" height="#{empty notIsCaja or notIsCaja? '220px': '330px'}" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
+	<p:dialog id="dialogoTeclasAyuda" widgetVar="dlgTeclasAyuda" header="Teclas rapidas de la aplicaci&oacute;n" onShow="janal.pivot(); janal.bloquear();" onHide="janal.recover(); janal.desbloquear();" height="#{empty notIsCaja or notIsCaja? '220px': '350px'}" width="650px" resizable="false" closeOnEscape="true" dynamic="true">
 		<h:form id="teclasAyuda" prependId="false">
 			<div class="ui-datatable ui-widget ui-datatable-reflow">
 				<div class="ui-datatable-tablewrapper">
@@ -386,6 +386,9 @@
 							</tr>
 							<tr style="display: #{empty notIsCaja or notIsCaja? 'none': ''}">
 								<td colspan="3">&nbsp;</td>
+							</tr>
+							<tr style="display: #{empty notIsCaja or notIsCaja? 'none': ''}">
+								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-sellsy"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[SHIFT+P]</strong></td><td>Pagar ticket</td>	
 							</tr>
 							<tr style="display: #{empty notIsCaja or notIsCaja? 'none': ''}">
 								<td class="janal-wid-col-40 janal-column-center"><i class="fa fa-desktop"/></td><td class="janal-wid-20"><strong class='janal-color-blue'>[F7]</strong></td><td>Detalle del articulo</td>	

@@ -8,7 +8,7 @@
                 xmlns:pe="http://primefaces.org/ui/extensions"
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="Cuentas abiertas para cobro"/>
-	<ui:param name="notIsCaja" value="false" class="javax.faces.Boolean"/>
+	<ui:param name="notIsCaja" value="true" class="javax.faces.Boolean"/>
 	<ui:define name="librerias">    		
 		<h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryVentasJs}"/>
 		<h:outputScript library="janal" name="barcode/js.barcode.all.min.js"/>		
@@ -374,7 +374,7 @@
 								<p:outputLabel value="Apartado:"/>
 								<p:outputLabel value="Facturar:"/>
 								<p:outputLabel value="Credito:"/>
-								<p:selectOneMenu id="cliente" value="#{manticVentasCajaAccion.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity" disabled="true">								
+								<p:selectOneMenu id="cliente" value="#{manticVentasCajaAccion.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
 									<f:selectItem itemValue="-1" itemLabel="PUBLICO EN GENERAL"/>
 									<f:selectItems value="#{manticVentasCajaAccion.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
 									<p:column headerText="Clave">

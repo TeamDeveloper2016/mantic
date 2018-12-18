@@ -241,8 +241,8 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 				if(index>= 0) {
 					Articulo item= faltantes.get(index);
 					item.setCantidad(item.getCantidad()+ Double.parseDouble(concepto.getCantidad()));
-					item.setCosto(Numero.toRedondearSat((item.getSubTotal()+ Double.parseDouble(concepto.getImporte()))/ item.getCantidad()));
-					item.setSubTotal(item.getSubTotal()+ Double.parseDouble(concepto.getImporte()));
+					item.setCosto(Numero.toRedondearSat((item.getSubTotal()+ Double.parseDouble(concepto.getTraslado().getBase()))/ item.getCantidad()));
+					item.setSubTotal(item.getSubTotal()+ Double.parseDouble(concepto.getTraslado().getBase()));
 				} // if
 				else 
 					//this(sinIva, tipoDeCambio, nombre, codigo, costo, descuento, idOrdenCompra, extras, importe, propio, iva, totalImpuesto, subTotal, cantidad, idOrdenDetalle, idArticulo, totalDescuentos, idProveedor, ultimo, solicitado, stock, excedentes, sat, unidadMedida);
@@ -251,7 +251,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 						tipoDeCambio,
 						concepto.getDescripcion(),
 						concepto.getNoIdentificacion(),
-						Numero.toRedondearSat(Double.parseDouble(concepto.getImporte())/ Double.parseDouble(concepto.getCantidad())), // Double.parseDouble(concepto.getValorUnitario()),
+						Numero.toRedondearSat(Double.parseDouble(concepto.getTraslado().getBase())/ Double.parseDouble(concepto.getCantidad())), // Double.parseDouble(concepto.getValorUnitario()),
 						"", // concepto.getDescuento(),
 						-1L,
 						"",
@@ -259,7 +259,7 @@ public abstract class IBaseImportar extends IBaseFilter implements Serializable 
 						"",
 						Double.parseDouble(concepto.getTraslado().getTasaCuota())* 100,
 						0D,
-						Numero.toRedondearSat(Double.parseDouble(concepto.getImporte())),
+						Numero.toRedondearSat(Double.parseDouble(concepto.getTraslado().getBase())),
 						Double.parseDouble(concepto.getCantidad()),
 						-1L,
 						new Random().nextLong(),

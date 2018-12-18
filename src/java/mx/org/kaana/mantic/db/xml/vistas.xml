@@ -3706,7 +3706,7 @@
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and 
 				  (
-				    upper(tc_mantic_articulos.nombre) like upper('%{codigo}%')
+				    upper(tc_mantic_articulos.nombre) like upper('{codigo}%')
 				  or
 				    tc_mantic_articulos.id_articulo= {idArticulo}
 				  ) 			
@@ -4442,7 +4442,7 @@
 					tc_mantic_empresas.id_empresa in ({sucursales})
 				  and 
 				  (
-				    upper(tc_mantic_articulos.nombre) like '%{codigo}%'
+				    upper(tc_mantic_articulos.nombre) like '{codigo}%'
 				  or
 				    tc_mantic_articulos.id_articulo= {idArticulo}
 				  ) 			

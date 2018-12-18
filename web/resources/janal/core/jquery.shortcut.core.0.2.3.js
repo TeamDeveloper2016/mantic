@@ -253,7 +253,7 @@ shortcut.add("f10", function() {
 
 shortcut.add("Shift+C", function() {
 	janal.console('Cambio de precio a articulo:');
-	if(PF('dlgCambioPrecio') && !PF('dlgCambioPrecio').isVisible()){
+	if(PF('dlgCambioPrecio') && !PF('dlgCambioPrecio').isVisible()) {
 		janal.bloquear();
 	  PF('dlgCambioPrecio').show();				
 		setTimeout("$('#cambiopreciousr').focus();", 1000);						
