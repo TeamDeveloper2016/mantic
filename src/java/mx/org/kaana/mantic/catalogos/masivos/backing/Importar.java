@@ -178,8 +178,11 @@ public class Importar extends IBaseImportar implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);
 		} // catch
-		if(transaccion!= null)
+		if(transaccion!= null) {
 			this.attrs.put("procesados", transaccion.getProcesados());
+			RequestContext.getCurrentInstance().execute("janal.alert('Se termin\\u00F3 de procesar el archivo !\\u000DTotal de registros: "+ this.masivo.getTuplas()+ "\\u000DRegistros procesados: "+ transaccion.getProcesados()+ 
+				(this.masivo.getTuplas()!= transaccion.getProcesados()? "\\u000D\\u000DOcurrio un error en el proceso de cargar, favor de verificarlo": "")+ "')");
+		} // if	
     return regresar;
 	}	
   

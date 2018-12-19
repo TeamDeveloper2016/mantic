@@ -98,7 +98,7 @@ public class CFDIGestor implements Serializable{
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_ficticias.id_ficticia=" + this.idComodin);
-			regresar= (ClienteFactura) DaoFactory.getInstance().toEntity(ClienteFactura.class, "VistaClientesDto", "facturamaCfdiFicticia", params);
+			regresar= (ClienteFactura) DaoFactory.getInstance().toEntity(ClienteFactura.class, "VistaClientesDto", "cfdiFicticia", params);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -115,7 +115,7 @@ public class CFDIGestor implements Serializable{
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_ficticias.id_ficticia=" + this.idComodin);
-			regresar= (ClienteFactura) DaoFactory.getInstance().toEntity(sesion, ClienteFactura.class, "VistaClientesDto", "facturamaCfdiFicticia", params);
+			regresar= (ClienteFactura) DaoFactory.getInstance().toEntity(sesion, ClienteFactura.class, "VistaClientesDto", "cfdiFicticia", params);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -268,7 +268,7 @@ public class CFDIGestor implements Serializable{
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_ficticias_detalles.id_ficticia=" + this.idComodin);
-			regresar= DaoFactory.getInstance().toEntitySet(ArticuloFactura.class, "VistaArticulosDto", "facturamaCfdiFicticia", params, Constantes.SQL_TODOS_REGISTROS);
+			regresar= DaoFactory.getInstance().toEntitySet(ArticuloFactura.class, "VistaArticulosDto", "detalleCfdi", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {
 			throw e;
@@ -285,7 +285,7 @@ public class CFDIGestor implements Serializable{
 		try {
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "tc_mantic_ficticias_detalles.id_ficticia=" + this.idComodin);
-			regresar= DaoFactory.getInstance().toEntitySet(sesion, ArticuloFactura.class, "VistaArticulosDto", "facturamaCfdiFicticia", params, Constantes.SQL_TODOS_REGISTROS);
+			regresar= DaoFactory.getInstance().toEntitySet(sesion, ArticuloFactura.class, "VistaArticulosDto", "detalleCfdi", params, Constantes.SQL_TODOS_REGISTROS);
 		} // try
 		catch (Exception e) {
 			throw e;
