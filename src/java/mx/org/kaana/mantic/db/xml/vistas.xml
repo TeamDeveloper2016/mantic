@@ -183,7 +183,7 @@
           tc_mantic_servicios_detalles.id_trabajo,
           tc_mantic_servicios_detalles.codigo,
           tc_mantic_servicios_detalles.propio,
-          tc_mantic_servicios_detalles.concepto,
+          tc_mantic_servicios_detalles.concepto as nombre,
           tc_mantic_servicios_detalles.cantidad,
           tc_mantic_servicios_detalles.costo,
           tc_mantic_servicios_detalles.descuento,
@@ -192,12 +192,9 @@
           tc_mantic_servicios_detalles.sub_total,
           tc_mantic_servicios_detalles.importe,
           tc_mantic_servicios_detalles.id_usuario,
-          tc_mantic_servicios_detalles.registro,
-          tc_mantic_articulos.nombre
+          tc_mantic_servicios_detalles.registro
         from      
-          tc_mantic_servicios_detalles
-				inner join 
-					tc_mantic_articulos on tc_mantic_servicios_detalles.id_articulo = tc_mantic_articulos.id_articulo
+          tc_mantic_servicios_detalles				
         where      
           tc_mantic_servicios_detalles.id_servicio = {idServicio}
 				order by
