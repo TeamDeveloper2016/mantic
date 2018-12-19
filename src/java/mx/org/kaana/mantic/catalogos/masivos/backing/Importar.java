@@ -57,6 +57,7 @@ public class Importar extends IBaseImportar implements Serializable {
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? "filtro": JsfBase.getFlashAttribute("retorno"));
 			this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
 			this.attrs.put("formatos", Constantes.PATRON_IMPORTAR_MASIVO);
+			this.attrs.put("procesados", 0L);
 			if(JsfBase.getFlashAttribute("idTipoMasivo")!= null)
 				switch(((Long)JsfBase.getFlashAttribute("idTipoMasivo")).intValue()) {
 					case 1:
@@ -145,10 +146,11 @@ public class Importar extends IBaseImportar implements Serializable {
   } // doCancelar
 	
 	public String doAceptar() {
-		String regresar= null;
+		String regresar        = null;
+		Transaccion transaccion= null;
 		try {
 		  this.masivo.setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
-      Transaccion transaccion= new Transaccion(this.masivo, this.categoria);
+      transaccion= new Transaccion(this.masivo, this.categoria);
       if(transaccion.ejecutar(EAccion.PROCESAR)) {
         RequestContext.getCurrentInstance().execute("janal.alert('Cátalogo procesado de forma correcta ["+ this.masivo.getTuplas()+ "], registros erroneos ["+ transaccion.getErrores()+ "]';");
 				this.setXls(null);
@@ -176,6 +178,8 @@ public class Importar extends IBaseImportar implements Serializable {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);
 		} // catch
+		if(transaccion!= null)
+			this.attrs.put("procesados", transaccion.getProcesados());
     return regresar;
 	}	
   

@@ -34,7 +34,7 @@ public class Transaccion extends IBaseTnx{
         throw new Exception("");
     } // try
     catch (Exception e) {
-      throw new Exception(this.messageError.concat("\n\n")+ e.getMessage());
+      throw new Exception(this.messageError.concat("<br/>")+ e.getMessage());
     } // catch		
     return regresar;
 	} // ejecutar	
