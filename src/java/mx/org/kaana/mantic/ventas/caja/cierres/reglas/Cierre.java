@@ -194,7 +194,7 @@ public class Cierre extends IBaseTnx implements Serializable  {
 		} // try
 		catch (Exception e) {
       Error.mensaje(e);			
-			throw new Exception(this.messageError.concat("\n\n")+ e.getMessage());
+			throw new Exception(this.messageError.concat("<br/>")+ e.getMessage());
 		} // catch		
 		finally {
 			Methods.clean(params);

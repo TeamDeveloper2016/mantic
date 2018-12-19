@@ -105,7 +105,7 @@ public class Transferir extends IBaseTnx {
 		} // try
 		catch (Exception e) {		
 			Error.mensaje(e);
-			throw new Exception(this.messageError.concat("\n\n")+ e.getMessage());
+			throw new Exception(this.messageError.concat("<br/>")+ e.getMessage());
 		} // catch		
 		LOG.info("Se proceso de forma correcta la sincronización de facturas, transferidas: "+ this.count);
 		return regresar;

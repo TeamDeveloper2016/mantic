@@ -127,7 +127,7 @@ public class Transaccion extends IBaseTnx implements Serializable  {
 		} // try
 		catch (Exception e) {
       Error.mensaje(e);			
-			throw new Exception(this.messageError.concat("\n\n")+ e.getMessage());
+			throw new Exception(this.messageError.concat("<br/>")+ e.getMessage());
 		} // catch		
 		LOG.info("Se genero de forma correcta el registro del "+ (this.retiro.getIdAbono().equals(1L)? "abono": "retiro")+ " de caja: "+ this.retiro.getConsecutivo());
 		return regresar;

@@ -50,12 +50,14 @@ public class Transaccion extends IBaseTnx {
   private TcManticMasivasArchivosDto masivo;	
 	private ECargaMasiva categoria;
 	private int errores;
+	private int procesados;
 	private String messageError;
   
   public Transaccion(TcManticMasivasArchivosDto masivo, ECargaMasiva categoria) {
-		this.masivo   = masivo;		
-		this.categoria= categoria;
-		this.errores  = 0;
+		this.masivo    = masivo;		
+		this.categoria = categoria;
+		this.errores   = 0;
+		this.procesados= 0;
 	} // Transaccion
 
 	protected void setMessageError(String messageError) {
@@ -68,6 +70,10 @@ public class Transaccion extends IBaseTnx {
 
 	public int getErrores() {
 		return errores;
+	}
+
+	public int getProcesados() {
+		return procesados;
 	}
   
 	@Override
@@ -88,7 +94,7 @@ public class Transaccion extends IBaseTnx {
       } // if
     } // tyr
 		catch (Exception e) {
-      throw new Exception(messageError.concat("\n\n") + e.getMessage());
+      throw new Exception(messageError.concat("<br/>") + e.getMessage());
     } // catch
     return regresar;
   }
@@ -379,7 +385,8 @@ public class Transaccion extends IBaseTnx {
 				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
 				LOG.info("Filas del documento: "+ sheet.getRows());
 				this.errores= 0;
-				for(int fila= 1; fila< sheet.getRows(); fila++) {
+				int fila    = 0; 
+				for(fila= 1; fila< sheet.getRows(); fila++) {
 					if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
 						String contenido= new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 						// 0           1          2        3          4          5          6           7        8        9            10               11          12
@@ -509,6 +516,7 @@ public class Transaccion extends IBaseTnx {
   								DaoFactory.getInstance().update(sesion, bitacora);
 								} // else
 								this.commit();
+								this.procesados= fila;
 							} // if
 						} // if
 						else {
@@ -523,7 +531,7 @@ public class Transaccion extends IBaseTnx {
 							DaoFactory.getInstance().insert(sesion, detalle);
 						} // else	
 					} // if	
-//					if(fila> 4)
+//					if(fila> 3)
 //						throw new KajoolBaseException("Este error fue provocado intencionalmente !");
 				} // for
 				if(bitacora== null) {
@@ -536,7 +544,8 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
-				regresar = true;
+				regresar       = true;
+				this.procesados= fila;
 			} // if
 		} // try
 		catch (IOException | BiffException e) {
@@ -585,7 +594,8 @@ public class Transaccion extends IBaseTnx {
 				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
 				LOG.info("Filas del documento: "+ sheet.getRows());
 				this.errores= 0;
-				for(int fila= 1; fila< sheet.getRows(); fila++) {
+				int fila    = 0; 
+				for(fila= 1; fila< sheet.getRows(); fila++) {
 					if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
 						String contenido= new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 						// 0           1          2        3          4        5
@@ -643,6 +653,7 @@ public class Transaccion extends IBaseTnx {
   								DaoFactory.getInstance().update(sesion, bitacora);
 								} // else
 								this.commit();
+        				this.procesados= fila;
 							} // if
 						} // if
 						else {
@@ -668,6 +679,7 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
+				this.procesados= fila;
 				regresar = true;
 			} // if
 		} // try
@@ -720,7 +732,8 @@ public class Transaccion extends IBaseTnx {
 				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
 				LOG.info("Filas del documento: "+ sheet.getRows());
 				this.errores= 0;
-				for(int fila= 1; fila< sheet.getRows(); fila++) {
+				int fila    = 0;
+				for(fila= 1; fila< sheet.getRows(); fila++) {
 					if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
 						String contenido= new String(sheet.getCell(2, fila).getContents().getBytes(UTF_8), ISO_8859_1);
 						// 0    1       2          3       4       5       6       7        8         9     10     11       12
@@ -820,6 +833,7 @@ public class Transaccion extends IBaseTnx {
   								DaoFactory.getInstance().update(sesion, bitacora);
 								} // else
 								this.commit();
+								this.procesados= fila; 
 							} // if
 						} // if
 						else {
@@ -845,7 +859,8 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
-				regresar = true;
+				regresar       = true;
+				this.procesados= fila; 
 			} // if
 		} // try
 		catch (IOException | BiffException e) {
@@ -898,7 +913,8 @@ public class Transaccion extends IBaseTnx {
 				//LOG.info("<-------------------------------------------------------------------------------------------------------------->");
 				LOG.info("Filas del documento: "+ sheet.getRows());
 				this.errores= 0;
-				for(int fila= 1; fila< sheet.getRows(); fila++) {
+				int fila    = 0; 
+				for(fila= 1; fila< sheet.getRows(); fila++) {
 					if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
 						String contenido= new String(sheet.getCell(2, fila).getContents().getBytes(UTF_8), ISO_8859_1);
 						// 0    1       2          3       4       5       6        7        8       9     10      11
@@ -992,6 +1008,7 @@ public class Transaccion extends IBaseTnx {
   								DaoFactory.getInstance().update(sesion, bitacora);
 								} // else
 								this.commit();
+								this.procesados= fila; 
 							} // if
 						} // if
 						else {
@@ -1017,7 +1034,8 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
-				regresar = true;
+				regresar       = true;
+				this.procesados= fila; 
 			} // if
 		} // try
 		catch (IOException | BiffException e) {

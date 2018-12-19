@@ -73,7 +73,7 @@ public class Transaccion extends Cierre {
         throw new Exception("");
     } // try
     catch (Exception e) {
-      throw new Exception(this.messageError.concat("\n\n")+ e.getMessage());
+      throw new Exception(this.messageError.concat("<br/>")+ e.getMessage());
     } // catch		
     finally {
 			Methods.clean(params);

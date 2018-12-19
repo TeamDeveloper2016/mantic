@@ -70,7 +70,7 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		} // try
 		catch (Exception e) {
       Error.mensaje(e);			
-			throw new Exception(this.messageError.concat("\n\n")+ e.getMessage());
+			throw new Exception(this.messageError.concat("<br/>")+ e.getMessage());
 		} // catch		
 		LOG.info("Se genero de forma el respaldo de la base de datos ! ");
 		return regresar;
