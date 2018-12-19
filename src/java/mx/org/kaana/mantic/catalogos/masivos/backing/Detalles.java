@@ -68,7 +68,7 @@ public class Detalles extends IBaseFilter implements Serializable {
 	
 	public String doRegresar() {
 		JsfBase.setFlashAttribute("idMasivaArchivo", this.attrs.get("idMasivaArchivo"));
-		return "filtro".concat(Constantes.REDIRECIONAR);
+		return "importar".concat(Constantes.REDIRECIONAR);
 	}
 	
 }

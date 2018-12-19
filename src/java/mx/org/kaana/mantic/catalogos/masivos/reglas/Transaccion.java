@@ -100,21 +100,24 @@ public class Transaccion extends IBaseTnx {
   }
   
 	protected boolean toProcess(Session sesion) throws Exception {
-		boolean regresar= false;  
+		boolean regresar                   = false;  
+		TcManticMasivasBitacoraDto bitacora= null;
 		File file= new File(this.masivo.getAlias());
 		if(file.exists()) {
-			DaoFactory.getInstance().updateAll(sesion, TcManticMasivasArchivosDto.class, this.masivo.toMap());
-		  DaoFactory.getInstance().insert(sesion, this.masivo);
-			TcManticMasivasBitacoraDto bitacora= new TcManticMasivasBitacoraDto(
-				"", // String justificacion, 
-				this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
-				JsfBase.getIdUsuario(), // Long idUsuario, 
-				-1L, // Long idMasivaBitacora, 
-				0L, // Long procesados, 
-				1L // Long idMasivaEstatus
-			);
-		  DaoFactory.getInstance().insert(sesion, bitacora);
-			this.toDeleteXls();
+	 		if(!this.masivo.isValid()) {
+			  DaoFactory.getInstance().updateAll(sesion, TcManticMasivasArchivosDto.class, this.masivo.toMap());
+		    DaoFactory.getInstance().insert(sesion, this.masivo);
+				bitacora= new TcManticMasivasBitacoraDto(
+					"", // String justificacion, 
+					this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
+					JsfBase.getIdUsuario(), // Long idUsuario, 
+					-1L, // Long idMasivaBitacora, 
+					0L, // Long procesados, 
+					1L // Long idMasivaEstatus
+				);
+				DaoFactory.getInstance().insert(sesion, bitacora);
+				this.toDeleteXls();
+			} // if
 			Monitoreo monitoreo= JsfBase.getAutentifica().getMonitoreo();
 			monitoreo.comenzar(0L);
 			monitoreo.setTotal(this.masivo.getTuplas());

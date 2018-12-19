@@ -170,7 +170,7 @@ public class Importar extends IBaseImportar implements Serializable {
 					JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),
 					1L
 				);
-      } //if
+      } // if
       else
     		JsfBase.addMessage("Error:", "Ocurrio un error en la cargar masiva del cátalogo !", ETipoMensaje.ERROR);		
 		} // try
@@ -206,13 +206,13 @@ public class Importar extends IBaseImportar implements Serializable {
 
 	public String doMovimientos() {
 		JsfBase.setFlashAttribute("idMasivaArchivo", ((Entity)this.attrs.get("seleccionado")).getKey());
-		JsfBase.setFlashAttribute("regreso", "filtro");
+		JsfBase.setFlashAttribute("regreso", "importar");
 		return "movimientos".concat(Constantes.REDIRECIONAR);
 	}
 	
 	public String doDetalles() {
 		JsfBase.setFlashAttribute("idMasivaArchivo", ((Entity)this.attrs.get("seleccionado")).getKey());
-		JsfBase.setFlashAttribute("regreso", "filtro");
+		JsfBase.setFlashAttribute("regreso", "importar");
 		return "detalles".concat(Constantes.REDIRECIONAR);
 	}
 	

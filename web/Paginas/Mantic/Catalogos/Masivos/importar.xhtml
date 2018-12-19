@@ -64,6 +64,9 @@
 									<h:outputLink rendered="#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 3}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-proveedores.xls" title="Plantilla proveedores XLS">
 	  								<p:commandButton type="button" icon="fa fa-file-excel-o"/>
 									</h:outputLink>	
+									<h:outputLink rendered="#{manticCatalogosMasivosImportar.masivo.idTipoMasivo eq 4}" style="float:right" styleClass="involucrados" value="#{request.contextPath}/Temporal/Masivo/masivo-refacciones.xls" title="Plantilla refacciones XLS">
+	  								<p:commandButton type="button" icon="fa fa-file-excel-o"/>
+									</h:outputLink>	
 								</f:facet>	
 								<p:selectOneRadio id="tipo" value="#{manticCatalogosMasivosImportar.masivo.idTipoMasivo}" columns="2" styleClass="janal-wid-100-txt">
 									<p:ajax event="change" process="@this" listener="#{manticCatalogosMasivosImportar.doChangeTipo}" update="catalogo @(.involucrados) @(.janal-upload-frame)"/>

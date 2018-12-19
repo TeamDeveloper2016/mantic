@@ -6,7 +6,7 @@
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Detalle de movimiento encontrados en el proceso de carga"/>
+  <ui:param name="titulo" value="Detalle de movimientos encontrados en el proceso de carga masiva"/>
   <ui:define name="contenido">
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
@@ -24,7 +24,7 @@
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" value="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>	            
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.archivo}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{row.archivo}">
               <f:facet name="header">
                 <h:outputText value="Archivo"/>
               </f:facet>
@@ -36,7 +36,7 @@
               </f:facet>
               <h:outputText value="#{row['tuplas']}"/>
             </p:column>		
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{row.codigo}">
               <f:facet name="header">
                 <h:outputText value="Código"/>
               </f:facet>
