@@ -1788,7 +1788,7 @@
 			<select id="detalle">
 				select 
 				  tc_mantic_articulos.id_articulo as id_key,
-				tc_mantic_articulos.id_articulo,
+					tc_mantic_articulos.id_articulo,
 				  tc_mantic_articulos.nombre,          
 				  tc_mantic_articulos.menudeo,          
 				  tc_mantic_articulos.medio_mayoreo,          
@@ -5429,8 +5429,7 @@
         where 
           id_garantia = {idGarantia} 
 			</select>
-			<select id="detalle">
-				<select id="detalle">
+			<select id="detalle">				
 				select
 					tc_mantic_ventas_detalles.id_venta_detalle as id_comodin,
           tc_mantic_ventas_detalles.id_venta_detalle,
@@ -5477,8 +5476,7 @@
 				where  
 					id_venta = {idVenta}
 				order by
-					tc_mantic_ventas_detalles.registro
-			</select>
+					tc_mantic_ventas_detalles.registro			
 			</select>
 			<select id="detalleGarantia">
 				select
