@@ -80,9 +80,6 @@ public class Filtro extends IBaseFilter implements Serializable {
       campos = new ArrayList<>();
       campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));      
       campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));    
-      campos.add(new Columna("calle", EFormatoDinamicos.MAYUSCULAS));    
-      campos.add(new Columna("asentamiento", EFormatoDinamicos.MAYUSCULAS));    
-      campos.add(new Columna("codigoPostal", EFormatoDinamicos.MAYUSCULAS));    			
 			params.put(Constantes.SQL_CONDICION, toCondicion());
 			params.put("idPrincipal", 1L);
 			params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());			

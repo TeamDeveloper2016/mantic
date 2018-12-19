@@ -95,15 +95,15 @@ catch(e) {
  *  Rules and names mask's defined for Janal validations
  */
 $.mask.rules = $.extend($.mask.rules, {
-  'a': /[a-z\u00C1\u00E4\u00E9\u00EB\u00ED\u00EF\u00F3\u00F6\u00FA\u00FC \u00F1]/,
-  'b': /[A-Z\u00E1\u00C4\u00C9\u00CB\u00CD\u00CF\u00D3\u00D6\u00DA\u00DC \u00D1]/,
+  'a': /[a-zA-Z\u00C1\u00E4\u00E9\u00EB\u00ED\u00EF\u00F3\u00F6\u00FA\u00FC \u00F1]/,
+  'b': /[a-zA-Z\u00E1\u00C4\u00C9\u00CB\u00CD\u00CF\u00D3\u00D6\u00DA\u00DC \u00D1]/,
 //                Á     á     ä     Ä     É     é     ë     Ë     Í     í    ï     Ï      Ó     ó    ö     Ö      Ú     ú    ü     Ü      ñ     Ñ
   'c': /[a-zA-Z\u00C1\u00E1\u00C4\u00E4\u00C9\u00E9\u00CB\u00EB\u00CD\u00ED\u00CF\u00EF\u00D3\u00F3\u00D6\u00F6\u00DA\u00FA\u00DC\u00FC \u00F1\u00D1]/,
-  'd': /[A-Z\u00D10-9]/,
-  'e': /[A-Z\u00D10-9.]/,
+  'd': /[a-zA-Z\u00D10-9]/,
+  'e': /[a-zA-Z\u00D10-9.]/,
   'f': /[HM]/,
   'g': /[0-9a-zA-Z\u00F1\u00D1]/,
-  'h': /[0-9A]/,
+  'h': /[0-9aA]/,
   'i': /[0-9a-zA-Z\u00C1\u00E1\u00C4\u00E4\u00C9\u00E9\u00CB\u00EB\u00CD\u00ED\u00CF\u00EF\u00D3\u00F3\u00D6\u00F6\u00DA\u00FA\u00DC\u00FC \u00F1\u00D1,.;:¿?¡!"(){}@#%&_]/,
   'j': /[0-9a-zA-Z\u00C1\u00E1\u00C4\u00E4\u00C9\u00E9\u00CB\u00EB\u00CD\u00ED\u00CF\u00EF\u00D3\u00F3\u00D6\u00F6\u00DA\u00FA\u00DC\u00FC \u00F1\u00D1,.;:¿?¡!"(){}@+-=*_%#|~^&]/,
   'k': /[0-9a-zA-Z]/,
