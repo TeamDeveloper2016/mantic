@@ -52,6 +52,7 @@ public final class AdminTickets extends IAdminArticulos implements Serializable 
 		} // else	
 		if(loadDefault)
 			this.getArticulos().add(new ArticuloVenta(-1L));
+		this.setIdSinIva(1L);
 		this.toCalculate();
 	}
 

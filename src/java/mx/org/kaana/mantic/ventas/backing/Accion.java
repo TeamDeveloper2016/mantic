@@ -73,7 +73,7 @@ public class Accion extends IBaseVenta implements Serializable {
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente")== null? -1L: JsfBase.getFlashAttribute("idCliente"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? null: JsfBase.getFlashAttribute("retorno"));
       this.attrs.put("isPesos", false);
-			this.attrs.put("sinIva", false);
+			this.attrs.put("sinIva", true);
 			this.attrs.put("buscaPorCodigo", true);
 			this.attrs.put("activeLogin", false);
 			this.attrs.put("autorized", false);
