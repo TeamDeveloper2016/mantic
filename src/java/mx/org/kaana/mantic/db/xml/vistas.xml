@@ -1754,8 +1754,8 @@
 				  tc_mantic_articulos.stock,
 				  tc_mantic_articulos.iva,
 				  tc_mantic_articulos.desperdicio,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
-				   if(tc_mantic_articulos.id_facturama is null, -1, tc_mantic_articulos.id_facturama) id_facturama
+					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and {condicion}) as propio,
+				  if(tc_mantic_articulos.id_facturama is null, -1, tc_mantic_articulos.id_facturama) id_facturama
 				from 
 					tc_mantic_articulos
 				inner join
@@ -1770,8 +1770,7 @@
 					tc_mantic_unidades_medidas on tr_mantic_empaque_unidad_medida.id_unidad_medida = tc_mantic_unidades_medidas.id_unidad_medida
 				where 
 					tc_mantic_empresas.id_empresa in ({idEmpresa})
-				and 
-					{condicion}					
+				  and {condicion}					
 				group by 
 				  tc_mantic_articulos.nombre,          
 				  tc_mantic_articulos.menudeo,          
