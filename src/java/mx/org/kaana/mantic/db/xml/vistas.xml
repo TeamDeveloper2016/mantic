@@ -159,7 +159,7 @@
 				inner join
 					tc_mantic_masivas_estatus on tc_mantic_masivas_archivos.id_masiva_estatus= tc_mantic_masivas_estatus.id_masiva_estatus
 				inner join
-					tc_mantic_tipos_masivos on tc_mantic_tipos_masivos.id_tipo_masivo= tc_mantic_tipos_masivos.id_tipo_masivo				
+					tc_mantic_tipos_masivos on tc_mantic_masivas_archivos.id_tipo_masivo= tc_mantic_tipos_masivos.id_tipo_masivo				
 				inner join
 					tc_mantic_tipos_archivos on tc_mantic_masivas_archivos.id_tipo_archivo= tc_mantic_tipos_archivos.id_tipo_archivo
 				inner join
@@ -1125,6 +1125,7 @@
 					tc_mantic_proveedores.razon_social as proveedor,
 					tc_mantic_creditos_notas.consecutivo,
 					tc_mantic_empresas.clave as empresa,
+				  tc_mantic_empresas.nombre as nombre_empresa,
 					tc_mantic_creditos_notas.folio,
 					tc_mantic_creditos_notas.importe,
 		  		tc_mantic_creditos_estatus.nombre as estatus,
@@ -1540,6 +1541,7 @@
 			</select>
 			<select id="movimientos">
 				select
+				  (cast(date_format(now(), '%Y%m%d%H%i%S%s') as unsigned)+ truncate(rand()* 10000, 0)) as id_key,
 					'ENTRADA' as movimiento,
 				  tc_mantic_almacenes.nombre as almacen,
 					tc_mantic_notas_entradas.consecutivo,
@@ -1566,6 +1568,7 @@
 					and tc_mantic_notas_entradas.id_nota_estatus in (3, 5, 6)
 				union all
 				select
+				  (cast(date_format(now(), '%Y%m%d%H%i%S%s') as unsigned)+ truncate(rand()* 10000, 0)) as id_key,
 					'SALIDAS' as movimiento,
 					tc_mantic_almacenes.nombre as almacen,
 					tc_mantic_ventas.consecutivo,
@@ -1592,6 +1595,7 @@
 					and tc_mantic_ventas.id_venta_estatus in (3, 4, 6, 9)
 				union all
 				select
+				  (cast(date_format(now(), '%Y%m%d%H%i%S%s') as unsigned)+ truncate(rand()* 10000, 0)) as id_key,
 					'DEVOLUCIONES' as movimiento,
 					tc_mantic_almacenes.nombre as almacen,
 					tc_mantic_devoluciones.consecutivo,
@@ -1619,9 +1623,10 @@
 				where
 					tc_mantic_articulos.id_articulo= {idArticulo}
 					and date_format(tc_mantic_devoluciones_detalles.registro, '%Y%m%d')>= '{registro}'
-					and tc_mantic_devoluciones.id_devolucion_estatus in (4, 5, 6)
+					and tc_mantic_devoluciones.id_devolucion_estatus in (3, 4, 5, 6)
 				union all
 				select
+				  (cast(date_format(now(), '%Y%m%d%H%i%S%s') as unsigned)+ truncate(rand()* 10000, 0)) as id_key,
 					'TRASPASOS' as movimiento,
 					tc_mantic_almacenes.nombre as almacen,
 					'2018000000' as consecutivo,
@@ -5803,6 +5808,7 @@
 			<select id="entrada">
         select          
           tc_mantic_notas_entradas.id_nota_entrada as id,
+          tc_mantic_notas_entradas.id_nota_entrada,
           tc_mantic_empresas.nombre as nombre_empresa,
           tc_mantic_notas_entradas.consecutivo consecutivo,
           tc_mantic_notas_entradas.registro registro,
@@ -5845,6 +5851,7 @@
 			<select id="devolucion">
         select          
           tc_mantic_devoluciones.id_devolucion as id,
+          tc_mantic_notas_entradas.id_nota_entrada,
           tc_mantic_empresas.nombre as nombre_empresa,
           tc_mantic_devoluciones.consecutivo consecutivo,
           tc_mantic_devoluciones.registro registro,
@@ -5892,7 +5899,7 @@
           tc_mantic_creditos_archivos on tc_mantic_creditos_archivos.id_credito_nota= tc_mantic_creditos_notas.id_credito_nota
 				where
   				tc_mantic_creditos_notas.id_credito_nota= {idCreditoNota}
-				  and tc_mantic_creditos_notas.id_principal= 1
+				  and tc_mantic_creditos_archivos.id_principal= 1
 			</select>	
 		</unit>		
 		<unit id="VistaIndicadoresTableroDto">

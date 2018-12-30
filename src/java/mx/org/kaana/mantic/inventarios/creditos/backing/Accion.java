@@ -254,8 +254,11 @@ public class Accion extends IBaseImportar implements Serializable {
 	} // doFileUpload	
 	
 	public void doTabChange(TabChangeEvent event) {
-		if(event.getTab().getTitle().equals("Importar"))
-			this.doLoadFiles("TcManticCreditosArchivosDto", this.orden.getIdCreditoNota(), "idCreditoNota", true, 1D);
+		if(event.getTab().getTitle().equals("Archivos")) 
+			this.doLoadImportados("VistaCreditosNotasDto", "importados", this.orden.toMap());
+		else
+		  if(event.getTab().getTitle().equals("Importar"))
+			  this.doLoadFiles("TcManticCreditosArchivosDto", this.orden.getIdCreditoNota(), "idCreditoNota", true, 1D);
 	}
 	
 	public StreamedContent doFileDownload() {

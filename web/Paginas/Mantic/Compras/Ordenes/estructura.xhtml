@@ -218,8 +218,8 @@
         </div>
       </div>
     </div>
-		<p:dialog id="dialogoDetalle" widgetVar="dlgDetalle" header="Detalle del documento" closable="true" resizable="false" dynamic="true" closeOnEscape="true" onHide="janal.desbloquear();" position="center" width="600px">
-			<h:panelGrid columns="2" styleClass="janal-col-100" columnClasses="janal-wid-col-130, janal-wid-100">
+		<p:dialog id="dialogoDetalle" widgetVar="dlgDetalle" header="Detalle del documento" closable="true" resizable="false" dynamic="true" closeOnEscape="true" onHide="janal.desbloquear();" position="center" width="700px">
+			<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-100">
         <p:outputLabel value="Consecutivo: " style="font-weight: bold"/>
         <p:inputText value="#{manticComprasOrdenesEstructura.attrs.detalle.consecutivo}" styleClass="janal-wid-100-txt" readonly="true"/>        
         <p:outputLabel value="Empresa: " style="font-weight: bold" rendered="#{manticComprasOrdenesEstructura.attrs.isPrincipal}"/>

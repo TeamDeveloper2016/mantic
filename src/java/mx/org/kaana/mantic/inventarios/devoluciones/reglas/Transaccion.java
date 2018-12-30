@@ -21,6 +21,7 @@ import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosBitacoraDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.db.dto.TcManticDevolucionesBitacoraDto;
@@ -234,6 +235,15 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				inventario.setStock(inventario.getStock()+ item.getCantidad());
 				DaoFactory.getInstance().update(sesion, inventario);
 			} // else
+			// afectar el almacen de articulos proque se cancelo la devolucion
+			TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class,  params, "ubicacion");
+			if(ubicacion!= null) {
+				ubicacion.setStock(ubicacion.getStock()+ item.getCantidad());
+				DaoFactory.getInstance().update(sesion, ubicacion);
+			} // if
+			else {
+				LOG.warn("VERIFICAR PORQUE RAZON NO ESTA EL ARTICULO["+ item.getIdArticulo()+ "] EN EL ALMACEN["+ idAlmacen+ "] SI ES QUE EN LA NOTA DE ENTRADA SE REGISTRO SU INGRESO.");
+			} // else
 			global.setStock(global.getStock()+ item.getCantidad());
 			DaoFactory.getInstance().update(sesion, global);
 		} // try
@@ -266,6 +276,15 @@ public class Transaccion extends IBaseTnx implements Serializable {
 				DaoFactory.getInstance().update(sesion, inventario);
 			} // else
 			
+			// afectar el almacen de articulos con las devoluciones realizadas
+			TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class,  params, "ubicacion");
+			if(ubicacion!= null) {
+				ubicacion.setStock(ubicacion.getStock()- item.getCantidad());
+				DaoFactory.getInstance().update(sesion, ubicacion);
+			} // if
+			else {
+				LOG.warn("VERIFICAR PORQUE RAZON NO ESTA EL ARTICULO["+ item.getIdArticulo()+ "] EN EL ALMACEN["+ idAlmacen+ "] SI ES QUE EN LA NOTA DE ENTRADA SE REGISTRO SU INGRESO.");
+			} // else
 			// afectar los precios del catalogo de articulos
 			if(this.aplicar) {
   			TcManticArticulosBitacoraDto movimiento= new TcManticArticulosBitacoraDto(global.getIva(), JsfBase.getIdUsuario(), global.getMayoreo(), -1L, global.getMenudeo(), global.getCantidad()* -1L, global.getIdArticulo(), idNotaEntrada, global.getMedioMayoreo(), global.getPrecio(), global.getLimiteMedioMayoreo(), global.getLimiteMayoreo(), global.getDescuento(), global.getExtra());

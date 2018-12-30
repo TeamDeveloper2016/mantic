@@ -73,11 +73,11 @@ public class Filtro extends IBaseFilter implements Serializable {
 	
   @Override
   public void doLoad() {
-    List<Columna> campos        = null;		
-		Map<String, Object>params   = null;
+    List<Columna> campos     = null;		
+		Map<String, Object>params= null;
     try {
 			params= new HashMap<>();
-      campos = new ArrayList<>();
+      campos= new ArrayList<>();
       campos.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));      
       campos.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));    
 			params.put(Constantes.SQL_CONDICION, toCondicion());
@@ -96,7 +96,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     } // finally		
   } // doLoad
 
-	private String toCondicion(){
+	private String toCondicion() {
 		String regresar             = null;
 		StringBuilder condicion     = null;
 		UISelectEntity cliente      = null;
@@ -106,9 +106,10 @@ public class Filtro extends IBaseFilter implements Serializable {
 			cliente= (UISelectEntity)this.attrs.get("cliente");
 			clientes= (List<UISelectEntity>)this.attrs.get("clientes");
 			if(clientes!= null && cliente!= null && clientes.indexOf(cliente)>= 0) 
-				condicion.append("tc_mantic_clientes.razon_social regexp '.*").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial")).append(".*' and ");				
-			else if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
-					condicion.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
+				condicion.append("tc_mantic_clientes.razon_social regexp '.*").append(clientes.get(clientes.indexOf(cliente)).toString("razonSocial").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
+			else 
+				if(!Cadena.isVacio(JsfBase.getParametro("razonSocial_input"))) 
+					condicion.append("tc_mantic_clientes.razon_social regexp '.*").append(JsfBase.getParametro("razonSocial_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' and ");				
 			if(!Cadena.isVacio(this.attrs.get("rfc")))
 				condicion.append("tc_mantic_clientes.rfc like '%").append(this.attrs.get("rfc")).append("%' and ");
 			if(!Cadena.isVacio(this.attrs.get("clave")))

@@ -22,7 +22,6 @@ import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.KajoolBaseException;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.masivos.enums.ECargaMasiva;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosCodigosDto;
@@ -392,7 +391,7 @@ public class Transaccion extends IBaseTnx {
 				for(fila= 1; fila< sheet.getRows(); fila++) {
 					if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
 						String contenido= new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
-						// 0           1          2        3          4          5          6           7        8        9            10               11          12
+						// 0           1          2        3          4          5          6           7        8        9            10            11          12
 						//CODIGO|CODIGOAUXILIAR|NOMBRE|COSTOS/IVA|MENUDEONETO|MEDIONETO|MAYOREONETO|UNIDADMEDIDA|IVA|LIMITEMENUDEO|LIMITEMAYOREO|STOCKMINIMO|STOCKMAXIMO
 						double costo   = Numero.getDouble(sheet.getCell(3, fila).getContents()!= null? sheet.getCell(3, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
 						double menudeo = Numero.getDouble(sheet.getCell(4, fila).getContents()!= null? sheet.getCell(4, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
@@ -536,6 +535,7 @@ public class Transaccion extends IBaseTnx {
 					} // if	
 //					if(fila> 3)
 //						throw new KajoolBaseException("Este error fue provocado intencionalmente !");
+  				this.procesados= fila;
 				} // for
 				if(bitacora== null) {
 					bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
@@ -548,7 +548,6 @@ public class Transaccion extends IBaseTnx {
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
 				regresar       = true;
-				this.procesados= fila;
 			} // if
 		} // try
 		catch (IOException | BiffException e) {
@@ -599,23 +598,25 @@ public class Transaccion extends IBaseTnx {
 				this.errores= 0;
 				int fila    = 0; 
 				for(fila= 1; fila< sheet.getRows(); fila++) {
-					if(sheet.getCell(0, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
-						String contenido= new String(sheet.getCell(2, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
-						// 0           1          2        3          4        5
-						//CODIGO|CODIGOAUXILIAR|NOMBRE|HERRAMIENTA|COSTOS/IVA|IVA
+					if(sheet.getCell(0, fila)!= null && sheet.getCell(1, fila)!= null && sheet.getCell(2, fila)!= null && !sheet.getCell(0, fila).getContents().toUpperCase().startsWith("NOTA") && !Cadena.isVacio(sheet.getCell(0, fila).getContents()) && !Cadena.isVacio(sheet.getCell(1, fila).getContents())&& !Cadena.isVacio(sheet.getCell(2, fila).getContents())) {
+						String contenido= new String(sheet.getCell(1, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
+						// 0      1          2        3          4    
+						//CODIGO|NOMBRE|HERRAMIENTA|COSTOS NETO|IVA
 						double costo   = Numero.getDouble(sheet.getCell(3, fila).getContents()!= null? sheet.getCell(3, fila).getContents().replaceAll("[$, ]", ""): "0", 0D);
-						double iva     = Numero.getDouble(sheet.getCell(5, fila).getContents()!= null? sheet.getCell(5, fila).getContents().replaceAll("[$, ]", ""): "0", 16D);
+						double iva     = Numero.getDouble(sheet.getCell(4, fila).getContents()!= null? sheet.getCell(4, fila).getContents().replaceAll("[$, ]", ""): "0", 16D);
 						String nombre= new String(contenido.trim().getBytes(ISO_8859_1), UTF_8);
 						if(costo> 0) {
 							String codigo= new String(sheet.getCell(0, fila).getContents().toUpperCase().getBytes(UTF_8), ISO_8859_1);
 							TcManticTrabajosDto trabajo= this.toFindTrabajo(sesion, codigo);
 							if(trabajo!= null) {
 								trabajo.setPrecio(costo);
+								trabajo.setNombre(nombre);
+								trabajo.setDescripcion(nombre);
 								// si trae nulo, blanco o cero se respeta el valor que tiene el campo
 								if(iva!= 0D)
 									trabajo.setIva(iva< 1? iva* 100: iva);
-								if(!Cadena.isVacio(sheet.getCell(3, fila).getContents()))
-									trabajo.setHerramienta(Cadena.isVacio(sheet.getCell(3, fila).getContents())? "": sheet.getCell(3, fila).getContents().toUpperCase().trim());
+								if(!Cadena.isVacio(sheet.getCell(2, fila).getContents()))
+									trabajo.setHerramienta(Cadena.isVacio(sheet.getCell(2, fila).getContents())? "": sheet.getCell(2, fila).getContents().toUpperCase().trim());
 								DaoFactory.getInstance().update(sesion, trabajo);
 							} // if
 							else {
@@ -629,15 +630,15 @@ public class Transaccion extends IBaseTnx {
 									JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), // Long idEmpresa, 
 									1L, // Long idVigente, 
 									nombre, // String nombre, 
-									"", // String sat, 
-									Cadena.isVacio(sheet.getCell(3, fila).getContents())? "": sheet.getCell(3, fila).getContents().toUpperCase().trim() // String herramienta
+									null, // String sat, 
+									Cadena.isVacio(sheet.getCell(2, fila).getContents())? "": sheet.getCell(2, fila).getContents().toUpperCase().trim() // String herramienta
 								);
 								DaoFactory.getInstance().insert(sesion, trabajo);
 								TcManticMasivasDetallesDto detalle= new TcManticMasivasDetallesDto(
 									sheet.getCell(0, fila).getContents(), // String codigo, 
 									-1L, // Long idMasivaDetalle, 
 									this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
-									"ESTE ARTICULO FUE AGREGADO ["+ sheet.getCell(2, fila).getContents()+ "]" // String observaciones
+									"ESTE ARTICULO FUE AGREGADO ["+ sheet.getCell(1, fila).getContents()+ "]" // String observaciones
 								);
 								DaoFactory.getInstance().insert(sesion, detalle);
 								// aqui va el codigo para que se registre en facturama el articulo
@@ -666,10 +667,11 @@ public class Transaccion extends IBaseTnx {
 								sheet.getCell(0, fila).getContents(), // String codigo, 
 								-1L, // Long idMasivaDetalle, 
 								this.masivo.getIdMasivaArchivo(), // Long idMasivaArchivo, 
-								"EL COSTO["+ costo+ "], ESTAN EN CEROS" // String observaciones
+								"EL COSTO["+ costo+ "], ESTA EN CEROS" // String observaciones
 							);
 							DaoFactory.getInstance().insert(sesion, detalle);
 						} // else	
+    				this.procesados= fila;
 					} // if	
 				} // for
 				if(bitacora== null) {
@@ -682,7 +684,6 @@ public class Transaccion extends IBaseTnx {
 					DaoFactory.getInstance().update(sesion, bitacora);
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
-				this.procesados= fila;
 				regresar = true;
 			} // if
 		} // try
@@ -766,7 +767,7 @@ public class Transaccion extends IBaseTnx {
 									rfc, // String rfc, 
 									JsfBase.getIdUsuario(), // Long idUsuario, 
 									this.toFindUsoCFDI(sesion, Cadena.isVacio(sheet.getCell(3, fila).getContents())? "XYZW": sheet.getCell(3, fila).getContents().trim()), // Long idUsoCfdi, 
-									"", // String observaciones, 
+									null, // String observaciones, 
 									JsfBase.getAutentifica().getEmpresa().getIdEmpresa(), // Long idEmpresa, 
 									1L, // Long idTipoVenta, 
 									null // String idFacturama
@@ -850,8 +851,9 @@ public class Transaccion extends IBaseTnx {
 							);
 							DaoFactory.getInstance().insert(sesion, detalle);
 						} // else	
+    				this.procesados= fila; 
 					} // if	
-				} // for
+ 				} // for
 				if(bitacora== null) {
 					bitacora= new TcManticMasivasBitacoraDto("", this.masivo.getIdMasivaArchivo(), JsfBase.getIdUsuario(), -1L, this.masivo.getTuplas(), 2L);
   				DaoFactory.getInstance().insert(sesion, bitacora);
@@ -863,7 +865,6 @@ public class Transaccion extends IBaseTnx {
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
 				regresar       = true;
-				this.procesados= fila; 
 			} // if
 		} // try
 		catch (IOException | BiffException e) {
@@ -946,7 +947,7 @@ public class Transaccion extends IBaseTnx {
 									1L, // Long idTipoDia, 
 									JsfBase.getIdUsuario(), // Long idUsuario, 
 									1L, // Long idTipoMoneda, 
-									"", // String observaciones, 
+									null, // String observaciones, 
 									JsfBase.getAutentifica().getEmpresa().getIdEmpresa() // Long idEmpresa, 
 								);
 								DaoFactory.getInstance().insert(sesion, proveedor);
@@ -954,15 +955,17 @@ public class Transaccion extends IBaseTnx {
 								Long idEntidad  = this.toFindEntidad(sesion, Cadena.isVacio(sheet.getCell(7, fila).getContents())? "XYZW": sheet.getCell(7, fila).getContents().toUpperCase().trim());
 								Long idMunicipio= this.toFindMunicipio(sesion, idEntidad, Cadena.isVacio(sheet.getCell(8, fila).getContents())? "XYZW": sheet.getCell(8, fila).getContents().toUpperCase().trim());
 								Long idLocalidad= this.toFindLocalidad(sesion, idMunicipio, "XYZW");
+								// 0    1       2          3       4       5       6        7        8       9     10      11
+								//RFC|CLAVE|RAZONSOCIAL|TELEFONO|CORREO1|CORREO2|ENTIDAD|MUNICIPIO|COLONIA|CALLE|NUMERO|CODIGOPOSTAL
 								TcManticDomiciliosDto domicilio= new TcManticDomiciliosDto(
-									Cadena.isVacio(sheet.getCell(9, fila).getContents())? "COLONIA NO DEFINIDA": sheet.getCell(9, fila).getContents().toUpperCase().trim(), // String asentamiento, 
+									Cadena.isVacio(sheet.getCell(8, fila).getContents())? "COLONIA NO DEFINIDA": sheet.getCell(8, fila).getContents().toUpperCase().trim(), // String asentamiento, 
 									idLocalidad, // Long idLocalidad, 
-									Cadena.isVacio(sheet.getCell(12, fila).getContents())? "20000": sheet.getCell(12, fila).getContents().toUpperCase().trim(), // String codigoPostal, 
+									Cadena.isVacio(sheet.getCell(11, fila).getContents())? "20000": sheet.getCell(11, fila).getContents().toUpperCase().trim(), // String codigoPostal, 
 									null, // String latitud, 
-									"", // String entreCalle, 
-									Cadena.isVacio(sheet.getCell(10, fila).getContents())? "CALLE NO DEFINIDA": sheet.getCell(10, fila).getContents().toUpperCase().trim(), // String calle, 
+									null, // String entreCalle, 
+									Cadena.isVacio(sheet.getCell(9, fila).getContents())? "CALLE NO DEFINIDA": sheet.getCell(9, fila).getContents().toUpperCase().trim(), // String calle, 
 									-1L, // Long idDomicilio, 
-									Cadena.isVacio(sheet.getCell(12, fila).getContents())? "1": sheet.getCell(12, fila).getContents().toUpperCase().trim(), // String numeroInterior,  
+									Cadena.isVacio(sheet.getCell(10, fila).getContents())? "1": sheet.getCell(10, fila).getContents().toUpperCase().trim(), // String numeroInterior,  
 									null, // String ycalle, 
 									null, // String longitud, 
 									null, // String numeroExterior, 
@@ -1025,6 +1028,7 @@ public class Transaccion extends IBaseTnx {
 							);
 							DaoFactory.getInstance().insert(sesion, detalle);
 						} // else	
+    				this.procesados= fila; 
 					} // if	
 				} // for
 				if(bitacora== null) {
@@ -1038,7 +1042,6 @@ public class Transaccion extends IBaseTnx {
 				} // if
 				LOG.warn("Cantidad de filas con error son: "+ this.errores);
 				regresar       = true;
-				this.procesados= fila; 
 			} // if
 		} // try
 		catch (IOException | BiffException e) {

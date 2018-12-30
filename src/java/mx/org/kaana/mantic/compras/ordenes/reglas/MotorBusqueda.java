@@ -114,23 +114,26 @@ public class MotorBusqueda implements Serializable {
 			List<Entity> items= (List<Entity>)DaoFactory.getInstance().toEntitySet("VistaEstructuraOrdenesCompraDto", idKey, params, Constantes.SQL_TODOS_REGISTROS);
 			if(items!= null && !items.isEmpty())
 				for (Entity item : items) {
-					File reference= new File(item.toString("alias"));
-					if(reference.exists())
-				    this.files.add(path+ item.toString("alias"));	
-					else {
-						// POR ALGUNA RAZON EL ARCHIVO NO SE ENCUENTRA EN LA CARPETA QUE DEBERIA DE ESTAR
-      			try {
-							IBaseDto update= DaoFactory.getInstance().findById(dto, item.toLong("idKey"));
-							if(update!= null) {
-							  Methods.setValue(update, "idPrincipal", new Object[] {2L});
-  						  DaoFactory.getInstance().update(update);
-							} // if	
-						} // try
-						catch (Exception e) {
-							LOG.warn("No se puedo actualizar el "+ dto.getClass().getSimpleName());
-							Error.mensaje(e);
-						} // catch
-					} // else	
+					// no deberia de devolver registros porque no existe ningun registro
+					if(item.toString("alias")!= null) {
+						File reference= new File(item.toString("alias"));
+						if(reference.exists())
+							this.files.add(path+ item.toString("alias"));	
+						else {
+							// POR ALGUNA RAZON EL ARCHIVO NO SE ENCUENTRA EN LA CARPETA QUE DEBERIA DE ESTAR
+							try {
+								IBaseDto update= DaoFactory.getInstance().findById(dto, item.toLong("idKey"));
+								if(update!= null) {
+									Methods.setValue(update, "idPrincipal", new Object[] {2L});
+									DaoFactory.getInstance().update(update);
+								} // if	
+							} // try
+							catch (Exception e) {
+								LOG.warn("No se puedo actualizar el "+ dto.getClass().getSimpleName());
+								Error.mensaje(e);
+							} // catch
+						} // else	
+					} // if
 				} // for
 		} // try
 		catch (Exception e) {

@@ -124,7 +124,7 @@
 													</f:facet>
 													<h:outputText id="nombres" value="#{row['nombre']}" title="Código propio: #{row['propio']}    Existencias almacen: #{row['stock']}" escape="false"/>
 												</p:column>		
-												<p:column class="cantidades janal-column-right MarAuto Responsive janal-wid-8">
+												<p:column class="cantidades janal-column-right MarAuto Responsive janal-wid-10">
 													<f:facet name="header">
 														<h:outputText value="Cantidad"/>
 													</f:facet>
@@ -133,7 +133,7 @@
 															<p:inputText id="solicitados" value="#{row['solicitados']}" style="display: none;"/>
 															<p:inputText id="cantidades" value="#{row['cantidad']}" styleClass="janal-wid-100-txt janal-column-right key-move-event key-event-sat filas" onblur="jsArticulos.individual(#{index}); affect();"/>
 														</div>
-														<div style="width: 10px; margin-left: -4px; margin-top: 1px;">
+														<div style="width: 5px; margin-left: -4px; margin-top: 1px;">
 															<h:outputText value="#{row['cantidadMayorMenor']}" escape="false" styleClass="filas"/>
 														 </div>
 													</div>

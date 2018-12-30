@@ -48,6 +48,10 @@ public class Importar extends IBaseImportar implements Serializable {
 	public FormatLazyModel getLazyModel() {
 		return lazyModel;
 	}
+
+	public ECargaMasiva getCategoria() {
+		return categoria;
+	}
 	
 	@PostConstruct
   @Override
@@ -128,6 +132,7 @@ public class Importar extends IBaseImportar implements Serializable {
 	
 	public void doFileUpload(FileUploadEvent event) {
 		try {
+  		this.attrs.put("procesados", 0);
       this.doFileUploadMasivo(event, this.masivo.getRegistro().getTime(), Configuracion.getInstance().getPropiedadSistemaServidor("masivos"), this.masivo, this.categoria);
 		} // try
 		catch(Exception e) {
@@ -148,28 +153,29 @@ public class Importar extends IBaseImportar implements Serializable {
 	public String doAceptar() {
 		String regresar        = null;
 		Transaccion transaccion= null;
+		long tuplas            = this.masivo.getTuplas();
 		try {
 		  this.masivo.setObservaciones(this.attrs.get("observaciones")!= null? (String)this.attrs.get("observaciones"): null);
       transaccion= new Transaccion(this.masivo, this.categoria);
       if(transaccion.ejecutar(EAccion.PROCESAR)) {
-        RequestContext.getCurrentInstance().execute("janal.alert('Cátalogo procesado de forma correcta ["+ this.masivo.getTuplas()+ "], registros erroneos ["+ transaccion.getErrores()+ "]';");
-				this.setXls(null);
-				this.attrs.put("xls", ""); 
-				this.masivo = new TcManticMasivasArchivosDto(
-					-1L, // Long idMasivaArchivo, 
-					null, // String ruta, 
-					categoria.getId(), // Long idTipoMasivo, 
-					1L, // Long idMasivaEstatus, 
-					null, // String nombre, 
-					0L, // Long tamanio, 
-					JsfBase.getIdUsuario(), // Long idUsuario, 
-					8L, // Long idTipoArchivo, 
-					0L, // Long tuplas, 
-					null, // String observaciones, 
-					null, // String alias, 
-					JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),
-					1L
-				);
+//        RequestContext.getCurrentInstance().execute("janal.alert('Cátalogo procesado de forma correcta ["+ tuplas+ "], registros erroneos ["+ transaccion.getErrores()+ "]';");
+//				this.setXls(null);
+//				this.attrs.put("xls", ""); 
+//				this.masivo = new TcManticMasivasArchivosDto(
+//					-1L, // Long idMasivaArchivo, 
+//					null, // String ruta, 
+//					categoria.getId(), // Long idTipoMasivo, 
+//					1L, // Long idMasivaEstatus, 
+//					null, // String nombre, 
+//					0L, // Long tamanio, 
+//					JsfBase.getIdUsuario(), // Long idUsuario, 
+//					8L, // Long idTipoArchivo, 
+//					0L, // Long tuplas, 
+//					null, // String observaciones, 
+//					null, // String alias, 
+//					JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),
+//					1L
+//				);
       } // if
       else
     		JsfBase.addMessage("Error:", "Ocurrio un error en la cargar masiva del cátalogo !", ETipoMensaje.ERROR);		
@@ -180,8 +186,8 @@ public class Importar extends IBaseImportar implements Serializable {
 		} // catch
 		if(transaccion!= null) {
 			this.attrs.put("procesados", transaccion.getProcesados());
-			RequestContext.getCurrentInstance().execute("janal.alert('Se termin\\u00F3 de procesar el archivo !\\u000DTotal de registros: "+ this.masivo.getTuplas()+ "\\u000DRegistros procesados: "+ transaccion.getProcesados()+ 
-				(this.masivo.getTuplas()!= transaccion.getProcesados()? "\\u000D\\u000DOcurrio un error en el proceso de cargar, favor de verificarlo": "")+ "')");
+			RequestContext.getCurrentInstance().execute("janal.alert('Se termin\\u00F3 de procesar el archivo !\\u000DTotal de registros: "+ tuplas+ "\\u000DRegistros procesados: "+ transaccion.getProcesados()+ 
+				(tuplas!= transaccion.getProcesados()? "\\u000D\\u000DOcurrio un error en el proceso de cargar, favor de verificarlo": "")+ "')");
 		} // if	
     return regresar;
 	}	
@@ -201,11 +207,27 @@ public class Importar extends IBaseImportar implements Serializable {
 			case 4: this.categoria= ECargaMasiva.REFACCIONES;
 				break;
 		} // switch
+		if(this.masivo!= null && this.masivo.isValid()) {
+			this.attrs.put("procesados", 0);
+			this.setXls(null);
+			this.attrs.put("xls", ""); 
+			this.masivo = new TcManticMasivasArchivosDto(
+				-1L, // Long idMasivaArchivo, 
+				null, // String ruta, 
+				categoria.getId(), // Long idTipoMasivo, 
+				1L, // Long idMasivaEstatus, 
+				null, // String nombre, 
+				0L, // Long tamanio, 
+				JsfBase.getIdUsuario(), // Long idUsuario, 
+				8L, // Long idTipoArchivo, 
+				0L, // Long tuplas, 
+				null, // String observaciones, 
+				null, // String alias, 
+				JsfBase.getAutentifica().getEmpresa().getIdEmpresa(),
+				1L
+			);
+		} // if
 	}
-
-	public void doImageUpload(FileUploadEvent event) {
-		
-	} 
 
 	public String doMovimientos() {
 		JsfBase.setFlashAttribute("idMasivaArchivo", ((Entity)this.attrs.get("seleccionado")).getKey());

@@ -30,6 +30,7 @@ public class TreeOrden implements Serializable, IBaseDto {
 	private String almacen;	
 	private String persona;	
 	private boolean ultimoNivel;  
+	private Long idNotaEntrada;
 
 	public TreeOrden() {
 		this(-1L);
@@ -62,6 +63,7 @@ public class TreeOrden implements Serializable, IBaseDto {
 		this.folio=folio;
 		this.almacen=almacen;
 		this.ultimoNivel=ultimoNivel;
+		this.idNotaEntrada= -1L;
 	}
 
 
@@ -217,6 +219,14 @@ public class TreeOrden implements Serializable, IBaseDto {
 		this.persona=persona;
 	}
 
+	public Long getIdNotaEntrada() {
+		return idNotaEntrada;
+	}
+
+	public void setIdNotaEntrada(Long idNotaEntrada) {
+		this.idNotaEntrada=idNotaEntrada;
+	}
+
 	@Override
 	public Long getKey() {
 		return this.id;
@@ -264,7 +274,7 @@ public class TreeOrden implements Serializable, IBaseDto {
 
 	@Override
 	public String toString() {
-		return "TreeOrden{"+"id="+id+", tipo="+tipo+", claveEmpresa="+claveEmpresa+", nombreEmpresa="+nombreEmpresa+", tituloEmpresa="+tituloEmpresa+", consecutivo="+consecutivo+", proveedor="+proveedor+", importe="+importe+", estatus="+estatus+", registro="+registro+", factura="+factura+", fechaFactura="+fechaFactura+", fechaRecepcion="+fechaRecepcion+", fechaDocumento="+fechaDocumento+", fechaEntrega="+fechaEntrega+", folio="+folio+", almacen="+almacen+", persona="+persona+", ultimoNivel="+ultimoNivel+'}';
+		return "TreeOrden{"+"id="+id+", tipo="+tipo+", claveEmpresa="+claveEmpresa+", nombreEmpresa="+nombreEmpresa+", tituloEmpresa="+tituloEmpresa+", consecutivo="+consecutivo+", proveedor="+proveedor+", importe="+importe+", estatus="+estatus+", registro="+registro+", factura="+factura+", fechaFactura="+fechaFactura+", fechaRecepcion="+fechaRecepcion+", fechaDocumento="+fechaDocumento+", fechaEntrega="+fechaEntrega+", folio="+folio+", almacen="+almacen+", persona="+persona+", ultimoNivel="+ultimoNivel+", idNotaEntrada="+ idNotaEntrada+ '}';
 	}
 
 }

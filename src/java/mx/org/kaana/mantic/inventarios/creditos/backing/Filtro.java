@@ -11,6 +11,7 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Named;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
 import mx.org.kaana.kajool.db.comun.sql.Entity;
+import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
@@ -302,5 +303,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 		JsfBase.setFlashAttribute("idCreditoNota",((Entity)this.attrs.get("seleccionado")).getKey());
 		return "importar".concat(Constantes.REDIRECIONAR);
 	}
+	
+	public String doAgregar() {
+		JsfBase.setFlashAttribute("idTipoCreditoNota", 1L);
+		JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);
+  	JsfBase.setFlashAttribute("idDevolucion", ((Value)this.attrs.get("idDevolucion")).toLong());
+		JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Creditos/filtro");		
+		return "/Paginas/Mantic/Inventarios/Creditos/accion".concat(Constantes.REDIRECIONAR);
+	}
+
 	
 }

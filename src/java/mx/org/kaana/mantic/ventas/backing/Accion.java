@@ -556,11 +556,17 @@ public class Accion extends IBaseVenta implements Serializable {
 			else
 				search= "WXYZ";
   		params.put("codigo", search);
-			if((boolean)this.attrs.get("buscaPorCodigo") || buscaPorCodigo)
-        this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.buildImage("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
+			if(buscaPorCodigo)
+        if((boolean)this.attrs.get("buscaPorCodigo"))				
+          this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.buildImage("VistaOrdenesComprasDto", "porNombre", params, columns, 20L));
+  			else
+          this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.buildImage("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
 			else
-        this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.buildImage("VistaOrdenesComprasDto", "porNombre", params, columns, 20L));
-		} // try
+        if((boolean)this.attrs.get("buscaPorCodigo"))				
+           this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.buildImage("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
+	  		else
+          this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.buildImage("VistaOrdenesComprasDto", "porNombre", params, columns, 20L));
+  	} // try
 	  catch (Exception e) {
       Error.mensaje(e);
 			JsfBase.addMessageError(e);
@@ -630,4 +636,5 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 		return regresar;
 	} // doCatalogos
+
 }

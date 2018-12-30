@@ -206,7 +206,7 @@
               </p:dataTable>
 						</p:tab>
 						<p:tab title="Almacenes">
-							<p:dataTable var="row" value="#{manticInventariosAlmacenesKardex.attrs.almacenes}" paginator="false" reflow="true" emptyMessage=" " styleClass="paginated filas" rowIndexVar="index" selectionMode="single" selection="#{manticInventariosAlmacenesKardex.attrs.selected}" rowKey="#{row.idKey}">
+							<p:dataTable var="row" value="#{manticInventariosAlmacenesKardex.attrs.almacenes}" paginator="false" reflow="true" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated filas" rowIndexVar="index" selectionMode="single" selection="#{manticInventariosAlmacenesKardex.attrs.selected}" rowKey="#{row.idKey}">
 								<p:ajax event="rowSelect" listener="#{manticInventariosAlmacenesKardex.doUpdateInventario}" process="@this" update="@(.inventario)" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 								<p:column headerText="No" styleClass="janal-wid-3">
 									<h:outputText value="#{index+ 1}.-"/>
@@ -230,7 +230,9 @@
 									<h:outputText value="#{row.ubicacion}"/>
 								</p:column>   
 							</p:dataTable>	
-							<p:spacer width="3px"/>
+							<p:outputLabel value="Click sobre la fila del almacen para recuperar los valores del inventario del articulo seleccionado !" styleClass="janal-color-orange"/>
+							<br/>
+							<br/>
 							<p:fieldset legend="Inventario [#{manticInventariosAlmacenesKardex.attrs.selected.clave}]" styleClass="inventario">
 								<div class="ui-grid-row janal-grid-row">
 									<div class="ui-grid-col-4 janal-column-center">
@@ -253,7 +255,7 @@
 							</p:fieldset>
 						</p:tab>
 						<p:tab title="Historial">
-							<p:dataTable var="item" value="#{manticInventariosAlmacenesKardex.attrs.historial}" paginator="false" reflow="true" rowKey="#{row.idKey}" emptyMessage=" " styleClass="paginated filas" rowIndexVar="index">
+							<p:dataTable var="item" value="#{manticInventariosAlmacenesKardex.attrs.historial}" paginator="false" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" styleClass="paginated filas" rowIndexVar="index">
 								<p:column headerText="No" styleClass="janal-wid-3">
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   
@@ -288,11 +290,11 @@
 							<p:outputLabel value="Son los movimientos que ha tenido el articulo en los últimos 6 meses."/>
 						</p:tab>
 						<p:tab title="Movimientos">
-							<p:dataTable var="item" value="#{manticInventariosAlmacenesKardex.attrs.movimientos}" paginator="#{manticInventariosAlmacenesKardex.attrs.movimientos.size() gt 0}" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" styleClass="paginated movimientos" rowIndexVar="index" paginatorPosition="bottom">
+							<p:dataTable var="item" value="#{manticInventariosAlmacenesKardex.attrs.movimientos}" paginator="#{manticInventariosAlmacenesKardex.attrs.movimientos.size() gt 0}" reflow="true" rowKey="#{row.idKey}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}"  rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" styleClass="paginated filas" rowIndexVar="index" paginatorPosition="bottom">
 								<p:column headerText="No" styleClass="janal-wid-3">
 									<h:outputText value="#{index+ 1}.-"/>
 								</p:column>   
-								<p:column headerText="Tipo" styleClass="janal-wid-8">
+								<p:column headerText="Tipo" styleClass="janal-wid-10">
 									<h:outputText value="#{item.movimiento}"/>
 								</p:column>   
 								<p:column headerText="Almacen">
@@ -304,7 +306,7 @@
 								<p:column headerText="Articulo">
 									<h:outputText value="#{item.nombre}"/>
 								</p:column>   
-								<p:column headerText="Clave" styleClass="janal-wid-10">
+								<p:column headerText="Proveedor" styleClass="janal-wid-8">
 									<h:outputText value="#{item.clave}" title="Razon social/nombre: #{item.razonSocial}"/>
 								</p:column>   
 								<p:column headerText="Cantidad" styleClass="janal-wid-8 janal-column-right">

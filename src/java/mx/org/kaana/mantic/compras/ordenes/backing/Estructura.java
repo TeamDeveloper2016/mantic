@@ -204,6 +204,11 @@ public class Estructura extends IBaseFilter implements Serializable {
       rc= RequestContext.getCurrentInstance();
       if(this.node!= null){
 				seleccionado= (TreeOrden) this.node.getData();       
+				switch(seleccionado.getTipo()) {
+					case DEVOLUCION:
+    				JsfBase.setFlashAttribute("idNotaEntrada", seleccionado.getIdNotaEntrada());
+						break;
+				} // switch
 				JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Compras/Ordenes/estructura.jsf".concat(Constantes.REDIRECIONAR));
 				JsfBase.setFlashAttribute(seleccionado.getTipo().getIdKey(), seleccionado.getId());
 				JsfBase.setFlashAttribute("accion", EAccion.CONSULTAR);

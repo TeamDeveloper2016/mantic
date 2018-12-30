@@ -1,4 +1,4 @@
-?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="ISO-8859-1" ?>
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
                 xmlns:ui="http://java.sun.com/jsf/facelets"
                 xmlns:h="http://java.sun.com/jsf/html"
@@ -142,6 +142,41 @@
 								<p:inputTextarea id="observaciones" rows="2" cols="33" styleClass="janal-wid-100-txt" value="#{manticInventariosCreditosAccion.orden.observaciones}"/>
 							</p:panelGrid>		
 						</p:tab>
+						<p:tab title="Archivos">
+							<p:dataTable id="importados" var="row" value="#{manticInventariosCreditosAccion.attrs.importados}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" paginator="false" reflow="true" rowKey="#{row.key}" styleClass="importado paginated" rowIndexVar="index">
+								<p:column styleClass="janal-wid-col-30" headerText="No.">
+									<h:outputText value="#{index+ 1}.-"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-col-40 janal-column-center" headerText="Tipo">
+									<h:outputText value="#{row.tipo}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-15" headerText="Nombre">
+									<h:outputText value="#{row.nombre}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-25" headerText="Usuario">
+									<h:outputText value="#{row.usuario}"/>
+								</p:column>   
+								<p:column styleClass="janal-wid-15 janal-column-center" headerText="Fecha">
+									<h:outputText value="#{row.registro}"/>
+								</p:column>   
+								<p:column headerText="Observaciones">
+									<h:outputText value="#{row.observaciones}"/>
+								</p:column>   
+								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+									<p:commandButton icon="fa fa-download" title="Descargar archivo" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop);" rendered="#{row.idPrincipal.toLong() eq 1}">
+										<p:fileDownload value="#{manticInventariosCreditosAccion.doFileDownload(row)}" />
+									</p:commandButton>
+								</p:column>
+								<p:column style="text-align: center" styleClass="janal-wid-col-38">
+									<p:commandLink actionListener="#{manticInventariosCreditosAccion.doViewPdfDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgPDF').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 2}">
+									  <p:commandButton icon="fa fa-eye-slash" title="Ver documento PDF" ajax="false" type="button"/>
+									</p:commandLink>	
+									<p:commandLink actionListener="#{manticInventariosCreditosAccion.doViewXmlDocument(row)}" process="@this" onstart="return janal.bloquear();" oncomplete="PF('dlgXML').show();" rendered="#{row.idPrincipal.toLong() eq 1 and row.idTipoArchivo.toLong() eq 1}">
+									  <p:commandButton icon="fa fa-eye" title="Ver documento XML" ajax="false" type="button"/>
+									</p:commandLink>	
+								</p:column>
+							</p:dataTable>
+						</p:tab>						            						            																																																
 						<p:tab title="Importar">
 							<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100 janal-column-center involucrados" style="display: #{manticInventariosCreditosAccion.diferente? '': 'none'}">
   							<p:commandLink actionListener="#{manticInventariosCreditosAccion.doUpdateRfc}" process="@this" update="@(.involucrados)" onstart="janal.bloquear(); if(confirm('Esta seguro que desea actualizar el RFC ?')) { return true; } else { janal.desbloquear(); return false; }" oncomplete="janal.desbloquear();">
