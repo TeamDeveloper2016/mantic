@@ -60,7 +60,7 @@
 		<p:commandLink id="catalogoPrecios" value="Catalogos" action="#{manticVentasAccion.doIrPage}" process="@form" style="display: none;"/>
 		<p:poll listener="#{manticVentasAccion.doActivatePage}" process="@this" interval="60"/>
 		<pe:remoteCommand name="updateDescuentos" process="@this" update="panelDescuentoEspecificacionIndividual panelDescuentoEspecificacionGlobal descuentousr descuentopswrd"/>  			
-		<pe:remoteCommand name="loginValidate" process="@this @(.janal-login-user)" update="headerCuenta cuenta password" actionListener="#{manticVentasAccion.doLogin}" oncomplete="janal.desbloquear();"/>  			
+		<pe:remoteCommand name="loginValidate" process="@this @(.janal-login-user)" update="headerCuenta cuenta password" actionListener="#{manticVentasAccion.doLogin}" oncomplete="janal.desbloquear(); if($('#tabla\\:0\\:codigos_input')) $('#tabla\\:0\\:codigos_input').focus();"/>  			
 		<pe:remoteCommand name="userUpdate" process="@this" onstart="janal.bloquear();" actionListener="#{manticVentasAccion.doCerrarTicket}" oncomplete="jsArticulos.activeLogin();" update="deudor contenido tabla panelTotales panelCliente panelEmpresa articulos total @(.filas) @(.recalculo)"/>  			
 		<pe:remoteCommand name="loadTicketAbiertos" process="@this" update="dialogoOpenTickets" actionListener="#{manticVentasAccion.doLoadTicketAbiertos}" onstart="janal.bloquear()"/>  			
 		<pe:remoteCommand name="loadCotizaciones" process="@this" update="dialogoCotizaciones" actionListener="#{manticVentasAccion.doLoadCotizaciones}" onstart="janal.bloquear()"/>  			
@@ -300,7 +300,7 @@
 		</div>		
 		<p:dialog id="dialogoOpenTickets" widgetVar="dlgOpenTickets" header="Cuentas abiertas" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="janal.pivot(); $('#busquedaTicketAbierto').val(''); $('#busquedaTicketAbierto').focus();" onHide="janal.desbloquear(); janal.recover();" width="70%">						
 			<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-				<p:outputLabel for="busquedaTicketAbierto" value="Cuenta, usuario:"/>
+				<p:outputLabel for="busquedaTicketAbierto" value="Cuenta de acceso ó nombre del vendedor:"/>
 				<p:inputText id="busquedaTicketAbierto" styleClass="janal-key-tickets-abiertos janal-wid-100-txt" value="#{manticVentasAccion.attrs.busquedaTicketAbierto}">   
 					<p:ajax event="keyup" listener="#{manticVentasAccion.doLoadTicketAbiertos}" process="@this busquedaTicketAbierto" update="verificadorPrecio tablaTicketsAbiertos" onstart="return $('#busquedaTicketAbierto').val().trim().length> 1"/>
 				</p:inputText>
@@ -309,13 +309,13 @@
 				<p:ajax event="rowDblselect" listener="#{manticVentasAccion.doAsignaTicketAbierto}" process="@this tablaTicketsAbiertos" update="contenido clientes cliente noTicket @(.filas) @(.recalculo) @(.informacion) deudor" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();" />	
 				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
 					<f:facet name="header">
-						<h:outputText value="Consecutivo"/>
+						<h:outputText value="Cuenta"/>
 					</f:facet>
 					<h:outputText value="#{row['consecutivo']}"/>
 				</p:column>		
 				<p:column class="MarAuto Responsive">
 					<f:facet name="header">
-						<h:outputText value="Cuenta"/>
+						<h:outputText value="Vendedor"/>
 					</f:facet>
 					<h:outputText value="#{row['cuenta']}"/>
 				</p:column>		

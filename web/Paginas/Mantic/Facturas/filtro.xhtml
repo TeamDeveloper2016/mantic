@@ -137,11 +137,11 @@
                 <p:menuitem id="facturasPdfIcon" icon="fa fa-file-pdf-o" title="Facturama pdf" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doReporteFacturas('FACTURAS_RESUMEN')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive" sortBy="#{filtro.nombreEmpresa}">
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.empresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
-              <h:outputText value="#{filtro['nombreEmpresa']}"/>
+              <h:outputText value="#{filtro['empresa']}"/>
             </p:column>		
             <p:column class="MarAuto Responsive" sortBy="#{filtro.cliente}">
               <f:facet name="header">

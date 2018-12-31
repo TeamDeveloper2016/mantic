@@ -128,11 +128,11 @@
 								<f:setPropertyActionListener value="#{filtro['consecutivo']}" target="#{manticInventariosDevolucionesFiltro.attrs.devolucion}" />
 							</p:commandButton>
 						</p:column>
-            <p:column class="MarAuto Responsive" sortBy="#{filtro.nombreEmpresa}">
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.empresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
-              <h:outputText value="#{filtro['nombreEmpresa']}"/>
+              <h:outputText value="#{filtro['empresa']}"/>
             </p:column>		
             <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.consecutivo}">
               <f:facet name="header">
