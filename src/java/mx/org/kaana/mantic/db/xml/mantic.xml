@@ -1163,7 +1163,9 @@
         from      
           tc_mantic_faltantes
         where      
-          id_articulo = {idArticulo} and id_vigente= 1
+          id_articulo = {idArticulo} 
+				  and id_empresa = {idEmpresa} 
+				  and id_vigente= 1
       </select>
 			<update id="rows">
 				update 

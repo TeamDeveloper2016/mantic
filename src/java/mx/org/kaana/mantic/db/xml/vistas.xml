@@ -1260,7 +1260,7 @@
 				  tc_mantic_proveedores.clave
 			</select>
 		</unit>
-		<unit id="VistaConsultasDto">
+		<unit id="VistaVentasDto">
 			<select id="movimientos">
 				select
 					tc_mantic_ventas_bitacora.id_venta_bitacora as id_key,
