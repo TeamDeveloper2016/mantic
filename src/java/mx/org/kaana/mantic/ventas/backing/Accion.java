@@ -461,7 +461,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		return regresar;
 	} // doCatalogos
 	
-	public void doLoadUsers(){
+	public void doLoadUsers() {
 		List<UISelectEntity> vendedores= null;
 		Map<String, Object>params      = null;
 		List<Columna> campos           = null;
@@ -475,7 +475,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			campos.add(new Columna("nombreCompleto", EFormatoDinamicos.MAYUSCULAS));
 			vendedores= UIEntity.build("VistaTcJanalUsuariosDto", "cambioUsuario", params, campos, Constantes.SQL_TODOS_REGISTROS);
 			rc= RequestContext.getCurrentInstance();
-			if(!vendedores.isEmpty()){
+			if(!vendedores.isEmpty()) {
 				this.attrs.put("vendedores", vendedores);
 				this.attrs.put("vendedor", UIBackingUtilities.toFirstKeySelectEntity(vendedores));
 				rc.execute("PF('dlgCloseTicket').show();");
@@ -577,7 +577,7 @@ public class Accion extends IBaseVenta implements Serializable {
     } // finally
 	} // doUpdateArticulos
 	
-	private void loadClienteDefault(){
+	private void loadClienteDefault() {
 		UISelectEntity seleccion              = null;
 		List<UISelectEntity> clientesSeleccion= null;
 		MotorBusqueda motorBusqueda           = null;

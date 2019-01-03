@@ -86,21 +86,17 @@ public class ArticuloVenta extends Articulo {
 			if(!this.isCostoLibre()) {
 			  validate= (TcManticArticulosDto) DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.getIdArticulo());
 				if(validate!= null) {
-					//if((this.getCosto().equals(validate.getMenudeo()) || this.getCosto().equals(validate.getMedioMayoreo()) || this.getCosto().equals(validate.getMayoreo())))  {
 					if(this.getDescuentos()> 0D)
 						this.setCosto(validate.getMenudeo());
-					else{
-						if(this.getCantidad() >= validate.getLimiteMedioMayoreo()) {
-							if(this.getCantidad()>= validate.getLimiteMedioMayoreo() && this.getCantidad() < validate.getLimiteMayoreo())
-								this.setCosto(validate.getMedioMayoreo());
-							else 
-								if (this.getCantidad()>= validate.getLimiteMayoreo())
-									this.setCosto(validate.getMayoreo());
-								else
-									this.setCosto(validate.getMenudeo());
-						} // if
+					else {
+						if (this.getCantidad()>= validate.getLimiteMayoreo())
+							this.setCosto(validate.getMayoreo());
+						else 
+  						if(this.getCantidad()>= validate.getLimiteMedioMayoreo() && this.getCantidad()< validate.getLimiteMayoreo())
+	  						this.setCosto(validate.getMedioMayoreo());
+							else
+								this.setCosto(validate.getMenudeo());
 					} // else						
-					// } // if
 				} // if	
 			} // if
 		} // try
