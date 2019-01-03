@@ -922,7 +922,7 @@
 		</p:dialog>
 		<p:dialog id="dialogoOpenTickets" widgetVar="dlgOpenTickets" header="Cuentas abiertas" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="$('#busquedaTicketAbierto').val(''); $('#busquedaTicketAbierto').focus();" onHide="janal.desbloquear();restoreCursoArt();" width="70%">						
 			<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
-				<p:outputLabel for="busquedaTicketAbierto" value="Cuenta de acceso ó nombre del vendedor:""/>
+				<p:outputLabel for="busquedaTicketAbierto" value="Cuenta de acceso ó nombre del vendedor:"/>
 				<p:inputText id="busquedaTicketAbierto" styleClass="janal-key-tickets-abiertos janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.busquedaTicketAbierto}">   
 					<p:ajax event="keyup" listener="#{manticVentasCajaAccion.doLoadTicketAbiertos}" process="@this busquedaTicketAbierto" update="verificadorPrecio tablaTicketsAbiertos" onstart="return $('#busquedaTicketAbierto').val().trim().length> 1"/>
 				</p:inputText>
@@ -941,7 +941,7 @@
 					</f:facet>
 					<h:outputText value="#{row['cuenta']}"/>
 				</p:column>		
-				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+				<p:column class="janal-column-right MarAuto Responsive janal-wid-20">
 					<f:facet name="header">
 						<h:outputText value="Precio total"/>
 					</f:facet> 
