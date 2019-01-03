@@ -63,6 +63,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	private Long idCierreVigente;
 	private String cotizacion;
 	private String idFacturaGeneral;
+	private Long idVenta;
+	private Long idCliente;
 	
 	public Transaccion(IBaseDto dto) {
 		super(new TicketVenta());
@@ -78,6 +80,12 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		this.ventaFinalizada = ventaFinalizada;		
 	}	// Transaccion	
 
+	public Transaccion(Long idVenta, Long idCliente){
+		super(new TicketVenta());
+		this.idVenta  = idVenta;
+		this.idCliente= idCliente;		
+	} // Transaccion
+	
 	public Long getIdCierreVigente() {
 		return idCierreVigente;
 	}	
@@ -102,6 +110,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 				case MODIFICAR:
 					regresar= procesaCotizacion(sesion);					
 					break;
+				case ASIGNAR:
+					regresar= actualizarClienteVenta(sesion);
+					break;
 			} // switch
 			if(!regresar)
         throw new Exception(getMessageError());
@@ -114,6 +125,23 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			LOG.info("Se genero de forma correcta la orden: "+ this.ventaFinalizada.getTicketVenta().getConsecutivo());
 		return regresar;
 	} // ejecutar
+	
+	private boolean actualizarClienteVenta(Session sesion) throws Exception{
+		boolean regresar         = false;
+		Map<String, Object>params= null;
+		try {
+			params= new HashMap<>();
+			params.put("idCliente", this.idCliente);
+			regresar= DaoFactory.getInstance().update(sesion, TcManticVentasDto.class, this.idVenta, params)>= 1L;
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+		return regresar;
+	} // actualizarClienteVenta
 	
 	private boolean procesaCotizacion(Session sesion) throws Exception{
 		boolean regresar            = false;
