@@ -385,7 +385,7 @@ public class RegistroProveedor implements Serializable{
 			proveedorCondicionPago= new ProveedorCondicionPago(this.contadores.getTotalProveedoresPago() + this.countIndice, ESql.INSERT, true);				
 			proveedorCondicionPago.setIdTipoPago(1L);
 			this.proveedoresCondicionPago.add(proveedorCondicionPago);		
-			doValidaTipoPago(proveedorCondicionPago);
+			// doValidaTipoPago(proveedorCondicionPago);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -571,7 +571,7 @@ public class RegistroProveedor implements Serializable{
 		} // finally
 	} // doAgregarClienteDomicilio
 	
-	public void doConsultarAgente(){
+	public void doConsultarAgente() {
 		ProveedorContactoAgente pivote= null;
 		try {			
 			pivote= this.personasTiposContacto.get(this.personasTiposContacto.indexOf(this.personaTipoContacto));
@@ -588,9 +588,9 @@ public class RegistroProveedor implements Serializable{
 		} // catch		
 	} // doConsultarAgente
 	
-	public void doEliminarAgente(){
+	public void doEliminarAgente() {
 		try {
-			if(this.personasTiposContacto.remove(this.personaTipoContacto)){
+			if(this.personasTiposContacto.remove(this.personaTipoContacto)) {
 				if(!this.personaTipoContacto.getNuevo())
 					addDeleteList(this.personaTipoContactoSeleccion);
 				JsfBase.addMessage("Se eliminó correctamente el tipo de contacto", ETipoMensaje.INFORMACION);
@@ -604,7 +604,7 @@ public class RegistroProveedor implements Serializable{
 		} // catch		
 	} // doEliminarAgente
 	
-	public void doActualizaAgente(){
+	public void doActualizaAgente() {
 		ProveedorContactoAgente pivote= null;
 		try {			
 			pivote= this.personasTiposContacto.get(this.personasTiposContacto.indexOf(this.personaTipoContacto));
@@ -620,15 +620,15 @@ public class RegistroProveedor implements Serializable{
 		} // catch	
 	} // doActualizaAgente
 	
-	public void doValidaTipoPago(ProveedorCondicionPago condicionPago){
+	public void doValidaTipoPago(ProveedorCondicionPago condicionPago) {
 		int countEfectivo=0;
 		try {
-			if(this.proveedoresCondicionPago.size()>1){
-				for(ProveedorCondicionPago record: this.proveedoresCondicionPago){
-					if(record.getIdTipoPago().equals(1L))
+			if(this.proveedoresCondicionPago.size()> 1) {
+				for(ProveedorCondicionPago record: this.proveedoresCondicionPago) {
+					if(record.getIdTipoPago().equals(1L) || record.getIdTipoPago().equals(3L))
 						countEfectivo++;
 				} // 
-				if(countEfectivo>1 && condicionPago.getIdTipoPago().equals(1L)){
+				if(countEfectivo> 2 && (condicionPago.getIdTipoPago().equals(1L) || condicionPago.getIdTipoPago().equals(3L))) {
 					this.proveedoresCondicionPago.get(this.proveedoresCondicionPago.indexOf(condicionPago)).setIdTipoPago(2L);
 				} // if
 			} // if

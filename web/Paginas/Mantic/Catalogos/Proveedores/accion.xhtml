@@ -11,17 +11,17 @@
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'contenedorGrupos\\:prefijo': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:prefijo': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:rfc': {validaciones: 'requerido|rfc', mascara: 'fiscal', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:razonSocial': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:idTipoProveedor': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:descuento': {validaciones: 'porcentaje', mascara: 'libre', grupo: 'general', individual: true},
+        'contenedorGrupos\\:descuento': {validaciones: 'porcentaje', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:dias_entrega': {validaciones: 'entero', mascara: 'entero', grupo: 'general'},
         'contenedorGrupos\\:idTipoDia': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
         'contenedorGrupos\\:idTipoMoneda': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:observaciones': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:detalleCalle': {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-        'contenedorGrupos\\:clave': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true},
+        'contenedorGrupos\\:clave': {validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:diasEntrega': {validaciones: 'libre', mascara: 'numero', grupo: 'general'},
 				'contenedorGrupos\\:pagina': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'contenedorGrupos\\:cuenta': {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
@@ -37,22 +37,22 @@
         'contenedorGrupos\\:entreCalle': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:ycalle': {validaciones: 'libre', mascara: 'libre', grupo: 'domicilio', formatos: 'cambiar-mayusculas'},
         'contenedorGrupos\\:nombreRepresentante': {validaciones: 'requerido', mascara: 'libre', mensaje:'La captura del campo nombres es obligatorio', grupo: 'representantes', formatos: 'cambiar-mayusculas', individual: true},
-				'contenedorGrupos\\:nombreAgente': {validaciones: 'requerido', mascara: 'libre', grupo: 'agente', formatos: 'cambiar-mayusculas', individual: true},
+				'contenedorGrupos\\:nombreAgente': {validaciones: 'requerido', mascara: 'libre', grupo: 'agente', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:paternoAgente': {validaciones: 'requerido', mascara: 'libre', grupo: 'agente', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:maternoAgente': {validaciones: 'requerido', mascara: 'libre', grupo: 'agente', formatos: 'cambiar-mayusculas'},
-				'llave': {multiple: '$', validaciones: 'requerido', mascara: 'libre',grupo: 'general', formatos: 'cambiar-mayusculas'},
-				'extra': {multiple: '$', validaciones: 'porcentaje|requerido', mascara: 'libre',grupo: 'general', individual: true},
-				'plazo': {multiple: '$', validaciones: 'porcentaje|requerido', mascara: 'libre', grupo: 'general'},
-				'valor': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor del contacto'},
-				'agentevalor': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del valor del agente'},
-				'bancaconvenio': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del convenio'},
-				'bancavalor': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura de la referencia'},
-				'convenio': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura del convenio'},
-				'referencia': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Es necesario la captura de la referencia'}
+				'llave': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas'},
+				'extra': {multiple: '$', validaciones: 'requerido|porcentaje', mascara: 'libre',grupo: 'general'},
+				'plazo': {multiple: '$', validaciones: 'requerido|porcentaje', mascara: 'libre', grupo: 'general'},
+				'valor': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura del valor del contacto'},
+				'agentevalor': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura del valor del agente'},
+				'bancaconvenio': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura del convenio'},
+				'bancavalor': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura de la referencia'},
+				'convenio': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura del convenio'},
+				'referencia': {multiple: '$', validaciones: 'requerido', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', mensaje:'Es necesario la captura de la referencia'}
       };      
 			
 			fieldsDialog= {
-				'calleBusqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas', individual: true}
+				'calleBusqueda': {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogo', formatos: 'cambiar-mayusculas'}
 			};
 			
 			$(document).ready(function(){janal.readingMode('#{manticCatalogosProveedoresAccion.attrs.nombreAccion}');});
@@ -63,7 +63,7 @@
       <div class="ui-grid-row janal-grid-row">
         <div class="ui-grid-col-12">
           <p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" process="@this" oncomplete="janal.refresh(janal.tabView('contenedorGrupos'))"/>
+            <p:ajax event="tabChange" process="@this" update="tablaTipoPago" oncomplete="janal.refresh();"/>
             <p:tab id="general"  title="General">
               <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-20, janal-wid-100">								
                 <p:outputLabel for="clave" value="Clave"/>
@@ -220,12 +220,12 @@
                   </p:column>
 									<p:column headerText="Tipo de pago">										
                     <p:selectOneMenu id="tipoPago#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.idTipoPago}" filter="true" filterMatchMode="contains" disabled="#{!tipoPago.nuevo}">
-                      <p:ajax listener="#{manticCatalogosProveedoresAccion.registroProveedor.doValidaTipoPago(tipoPago)}" process="@this tablaTipoPago" update="tablaTipoPago" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/>
+                      <!--p:ajax listener="#{manticCatalogosProveedoresAccion.registroProveedor.doValidaTipoPago(tipoPago)}" process="@this tablaTipoPago" update="tablaTipoPago" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/-->
 											<f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.tiposPago}"/>
                     </p:selectOneMenu> 				
                   </p:column>	
                   <p:column headerText="Descuento adicional" styleClass="janal-wid-30 extra">		
-                    <p:inputText id="extra#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.descuento}" disabled="#{!tipoPago.nuevo}"/>                    																																			
+                    <p:inputText id="extra#{tipoPago.key}" styleClass="janal-wid-100-txt janal-column-right" value="#{tipoPago.descuento}" disabled="#{!tipoPago.nuevo}"/>                    																																			
                   </p:column>
                   <p:column headerText="Plazo" styleClass="janal-wid-5 plazo">		
                     <p:inputNumber decimalPlaces="0" id="plazo#{tipoPago.key}" inputStyleClass="janal-wid-100-txt janal-column-right" value="#{tipoPago.plazo}" disabled="#{!tipoPago.nuevo}"/>
@@ -236,7 +236,7 @@
                     </p:commandButton>
                   </p:column>
                   <f:facet name="footer">
-                    <p:commandButton actionListener="#{manticCatalogosProveedoresAccion.registroProveedor.doAgregarProveedorCondicionPago}" process="@this tablaTipoPago" update="tablaTipoPago" icon="fa fa-plus"/>						
+                    <p:commandButton actionListener="#{manticCatalogosProveedoresAccion.registroProveedor.doAgregarProveedorCondicionPago}" process="@this tablaTipoPago" update="tablaTipoPago" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
                   </f:facet>
                 </p:dataTable>	
               </p:panelGrid>	

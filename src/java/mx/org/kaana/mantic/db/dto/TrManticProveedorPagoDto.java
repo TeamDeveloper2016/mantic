@@ -54,7 +54,7 @@ public class TrManticProveedorPagoDto implements IBaseDto, Serializable {
   }
 
   public TrManticProveedorPagoDto(Long key) {
-    this(new Long(-1L), null, null, null, null, "0.00", null, null);
+    this(new Long(-1L), null, null, null, null, "0.00", null, 0L);
     setKey(key);
   }
 
