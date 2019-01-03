@@ -59,8 +59,9 @@ import org.primefaces.event.TabChangeEvent;
 @ViewScoped
 public class Accion extends IBaseVenta implements Serializable {
 
-  private static final long serialVersionUID  = 327393488565639367L;
-	private static final String CLAVE_VENTA_GRAL= "VENTA";
+  private static final long serialVersionUID      = 327393488565639367L;
+	private static final String CLAVE_VENTA_GRAL    = "VENTA";
+	private static final String GASTOS_GENERAL_CLAVE= "G03";	
 	private List<ClienteTipoContacto> clientesTiposContacto;
 	private ClienteTipoContacto clienteTipoContactoSeleccion;
 	private FormatCustomLazy lazyModelTicket;
@@ -131,7 +132,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("activeApartado", false);			
 			this.attrs.put("apartado", false);			
 			this.attrs.put("observaciones", "");		
-			this.attrs.put("disabledFacturar", false);			
+			this.attrs.put("disabledFacturar", false);
+			this.attrs.put("ajustePreciosCliente", true);			
 			this.apartado= new TcManticApartadosDto();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
 				loadSucursales();							
@@ -140,6 +142,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			loadBancos();
 			loadCfdis();
 			verificaLimiteCaja();
+			doActivarCliente();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -147,6 +150,7 @@ public class Accion extends IBaseVenta implements Serializable {
     } // catch		
   } // init
 
+	@Override
   public void doLoad() {
     EAccion eaccion= null;
     try {
@@ -275,19 +279,32 @@ public class Accion extends IBaseVenta implements Serializable {
     } // finally
 	} // loadCatalog
 	
+	@Override
 	public void doAsignaCliente(SelectEvent event){
 		UISelectEntity seleccion              = null;
+		UISelectEntity ticketAbierto          = null;
 		List<UISelectEntity> clientes         = null;
 		List<UISelectEntity> clientesSeleccion= null;
+		Transaccion transaccion               = null;		
 		try {
+			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
 			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
 			seleccion= clientes.get(clientes.indexOf((UISelectEntity)event.getObject()));
 			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
-			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
-			doReCalculatePreciosArticulos(seleccion.getKey());			
+			if(seleccion!= null && ((TicketVenta)this.getAdminOrden().getOrden()).isValid()){
+				transaccion= new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta(), seleccion.getKey());
+				if(transaccion.ejecutar(EAccion.ASIGNAR)){
+					doLoadTicketAbiertos();
+					this.attrs.put("ticketAbierto", ticketAbierto);
+					doAsignaTicketAbiertoCambioCliente();					
+					this.attrs.put("tabIndex", 1);
+				} // if
+				else
+					JsfBase.addMessage("no fue posible modificar el cliente a la venta", ETipoMensaje.ERROR);				
+			} // if			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -382,6 +399,28 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // finally
 	} // doAsignaTicketAbiertoDlg
 	
+	public void doAsignaTicketAbiertoDirecto(){
+		try {
+			this.attrs.put("ajustePreciosCliente", true);
+			doAsignaTicketAbierto();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doAsignaTicketAbiertoDirecto
+	
+	public void doAsignaTicketAbiertoCambioCliente(){
+		try {
+			this.attrs.put("ajustePreciosCliente", false);
+			doAsignaTicketAbierto();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doAsignaTicketAbiertoCambioCliente
+	
 	@Override
 	public void doAsignaTicketAbierto() {
 		Map<String, Object>params           = null;		
@@ -418,6 +457,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			validaFacturacion();
 			RequestContext.getCurrentInstance().execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
 			this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
+			doActivarCliente();
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -441,8 +481,10 @@ public class Accion extends IBaseVenta implements Serializable {
 			clientesSeleccion.add(seleccion);
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
-			setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
-			doReCalculatePreciosArticulos(seleccion.getKey());			
+			if((Boolean)this.attrs.get("ajustePreciosCliente")){
+				setPrecio(Cadena.toBeanNameEspecial(seleccion.toString("tipoVenta")));
+				doReCalculatePreciosArticulos(seleccion.getKey());			
+			} // if
 		} // try
 		catch (Exception e) {	
 			throw e;
@@ -468,17 +510,15 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch	
 	} // loadCajas
 	
-	public void doActivarCliente(){
-		boolean facturarVenta                 = true;
+	public void doActivarCliente(){		
 		UISelectEntity cliente                = null;
 		UISelectEntity seleccionado           = null;
 		List<UISelectEntity> clientesSeleccion= null;
 		MotorBusqueda motor                   = null;
 		ClienteTipoContacto contactoNuevo     = null;
-		try {
-			facturarVenta= (Boolean) this.attrs.get("facturarVenta");
-			if(facturarVenta){
-				cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");		
+		try {			
+			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");	
+			if(cliente!= null){
 				clientesSeleccion= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
 				seleccionado= clientesSeleccion.get(clientesSeleccion.indexOf(cliente));
 				if(!seleccionado.toString("clave").equals(CLAVE_VENTA_GRAL)){
@@ -498,8 +538,17 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.attrs.put("telefono", contactoNuevo);
 					this.attrs.put("celular", contactoNuevo);
 				} // else
-				this.attrs.put("tabIndex", 1);
 			} // if
+			else{
+				setDomicilio(new Domicilio());
+				loadDefaultCollections();					
+				this.attrs.put("registroCliente", new TcManticClientesDto());
+				this.clientesTiposContacto= new ArrayList<>();
+				contactoNuevo= new ClienteTipoContacto();
+				contactoNuevo.setSqlAccion(ESql.INSERT);
+				this.attrs.put("telefono", contactoNuevo);
+				this.attrs.put("celular", contactoNuevo);
+			} // else				
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -672,9 +721,10 @@ public class Accion extends IBaseVenta implements Serializable {
 	} // loadVentaFinalizada
 	
 	private void loadCfdis(){
-		List<UISelectEntity> cfdis= null;
-		List<Columna> campos      = null;
-		Map<String, Object>params = null;
+		List<UISelectEntity> cfdis  = null;
+		UISelectEntity cfdiSeleccion= null;
+		List<Columna> campos        = null;
+		Map<String, Object>params   = null;
 		try {
 			params= new HashMap<>();
 			campos= new ArrayList<>();
@@ -683,7 +733,11 @@ public class Accion extends IBaseVenta implements Serializable {
 			campos.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
 			cfdis= UIEntity.build("TcManticUsosCfdiDto", "row", params, campos, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("cfdis", cfdis);
-			this.attrs.put("cfdi", new UISelectEntity("-1"));
+			for(UISelectEntity record: cfdis){
+				if(record.toString("clave").equals(GASTOS_GENERAL_CLAVE))
+					cfdiSeleccion= record;
+			} // for
+			this.attrs.put("cfdi", cfdiSeleccion);
 		} // try
 		catch (Exception e) {			
 			throw e;
