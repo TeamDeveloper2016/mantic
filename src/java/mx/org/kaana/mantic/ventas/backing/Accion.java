@@ -99,6 +99,7 @@ public class Accion extends IBaseVenta implements Serializable {
     } // catch		
   } // init
 
+	@Override
   public void doLoad() {
     EAccion eaccion= null;
 		Long idCliente = 3515L;
@@ -204,38 +205,7 @@ public class Accion extends IBaseVenta implements Serializable {
       Methods.clean(columns);
       Methods.clean(params);
     } // finally
-	}
-  
-	public List<UISelectEntity> doCompleteCliente(String query) {
-		this.attrs.put("codigoCliente", query);
-    this.doUpdateClientes();		
-		return (List<UISelectEntity>)this.attrs.get("clientes");
-	}	// doCompleteCliente
-
-	public void doUpdateClientes() {
-		List<Columna> columns     = null;
-    Map<String, Object> params= null;
-    try {
-			params= new HashMap<>();
-			columns= new ArrayList<>();
-      columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
-      columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
-  		params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getDependencias());
-			String search= new String((String) this.attrs.get("codigoCliente")); 
-			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*") : "WXYZ";
-  		params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_clientes.razon_social) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*'")));			
-      this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("VistaClientesDto", "findRazonSocial", params, columns, 20L));
-		} // try
-	  catch (Exception e) {
-      Error.mensaje(e);
-			JsfBase.addMessageError(e);
-    } // catch   
-    finally {
-      Methods.clean(columns);
-      Methods.clean(params);
-    } // finally
-	}	// doUpdateClientes
-	
+	}  			
 	
 	public void doAsignaClienteInicial(Long idCliente) {
 		UISelectEntity seleccion              = null;
@@ -545,7 +515,7 @@ public class Accion extends IBaseVenta implements Serializable {
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
   		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getDependencias());
   		params.put("idProveedor", this.attrs.get("proveedor")== null? new UISelectEntity(new Entity(-1L)): ((UISelectEntity)this.attrs.get("proveedor")).getKey());
-			String search= new String((String)this.attrs.get("codigo")); 
+			String search= (String)this.attrs.get("codigo"); 
 			if(!Cadena.isVacio(search)) {
 				search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
 				buscaPorCodigo= search.startsWith(".");
@@ -555,18 +525,18 @@ public class Accion extends IBaseVenta implements Serializable {
 			} // if	
 			else
 				search= "WXYZ";
-  		params.put("codigo", search);
+  		params.put("codigo", search);						
 			if(buscaPorCodigo)
         if((boolean)this.attrs.get("buscaPorCodigo"))				
           this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.buildImage("VistaOrdenesComprasDto", "porNombre", params, columns, 20L));
   			else
           this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.buildImage("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
 			else
-        if((boolean)this.attrs.get("buscaPorCodigo"))				
+				if((boolean)this.attrs.get("buscaPorCodigo"))				
            this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.buildImage("VistaOrdenesComprasDto", "porCodigo", params, columns, 20L));
 	  		else
           this.attrs.put("articulos", (List<UISelectEntity>) UIEntity.buildImage("VistaOrdenesComprasDto", "porNombre", params, columns, 20L));
-  	} // try
+		} // try
 	  catch (Exception e) {
       Error.mensaje(e);
 			JsfBase.addMessageError(e);
@@ -636,5 +606,4 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 		return regresar;
 	} // doCatalogos
-
 }

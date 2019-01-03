@@ -151,7 +151,7 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
 	} // toClienteVenta
 	
 	private void loadTiposDomicilios() {
-    List<UISelectItem> tiposDomicilios = null;
+    List<UISelectItem> tiposDomicilios= null;
     try {
       tiposDomicilios = new ArrayList<>();
       for (ETiposDomicilios tipoDomicilio : ETiposDomicilios.values()) 
@@ -191,8 +191,8 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
 	
 	private void loadEntidades() {
     List<UISelectEntity> entidades= null;
-		List<Columna>campos= null;
-    Map<String, Object> params= null;
+		List<Columna>campos           = null;
+    Map<String, Object> params    = null;
     try {
       params = new HashMap<>();
       params.put("idPais", 1);
@@ -212,7 +212,7 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
   } // loadEntidades
 	
 	private void toAsignaEntidad(){
-		Entity domicilio= null;
+		Entity domicilio     = null;
 		List<Entity>entidades= null;
 		try {
 			if(!this.domicilio.getIdDomicilio().equals(-1L)){
@@ -233,8 +233,8 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
 
   private void loadMunicipios() {
     List<UISelectEntity> municipios= null;
-    Map<String, Object> params= null;
-		List<Columna>campos= null;
+    Map<String, Object> params     = null;
+		List<Columna>campos            = null;
     try {
 			if(!this.domicilio.getIdEntidad().getKey().equals(-1L)){
 				params = new HashMap<>();
@@ -257,7 +257,7 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
   } // loadMunicipios
 	
 	private void toAsignaMunicipio(){
-		Entity domicilio= null;
+		Entity domicilio      = null;
 		List<Entity>municipios= null;
 		try {
 			if(!this.domicilio.getIdMunicipio().getKey().equals(-1L)){
@@ -276,8 +276,8 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
 
   private void loadLocalidades() {
     List<UISelectEntity> localidades= null;
-    Map<String, Object> params= null;
-		List<Columna>campos= null;
+    Map<String, Object> params      = null;
+		List<Columna>campos             = null;
     try {
 			if(!this.domicilio.getIdMunicipio().getKey().equals(-1L)){
 				params = new HashMap<>();
@@ -303,7 +303,7 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
   } // loadLocalidades
 	
 	private void toAsignaLocalidad(){
-		Entity domicilio= null;
+		Entity domicilio       = null;
 		List<Entity>localidades= null;
 		try {
 			if(!this.domicilio.getIdDomicilio().equals(-1L)){
@@ -323,8 +323,8 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
 	} // toAsignaLocalidad
 
   private void loadCodigosPostales() {
-    List<UISelectItem> codigosPostales = null;
-    Map<String, Object> params = null;
+    List<UISelectItem> codigosPostales= null;
+    Map<String, Object> params        = null;
     try {
 			if(!this.domicilio.getIdEntidad().getKey().equals(-1L)){
 				params = new HashMap<>();
@@ -351,7 +351,7 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
   } // loadCodigosPostales
 
 	private void toAsignaCodigoPostal(){
-		Entity domicilio= null;
+		Entity domicilio         = null;
 		List<UISelectItem>codigos= null;
 		int count=0;
 		try {
@@ -395,8 +395,8 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
 	
   public void doBusquedaDomicilios() {
     List<UISelectEntity> domicilios= null;
-    Map<String, Object> params= null;
-		List<Columna>campos= null;
+    Map<String, Object> params     = null;
+		List<Columna>campos            = null;
     try {
       params = new HashMap<>();      
       params.put(Constantes.SQL_CONDICION, "upper(calle) like upper('%".concat(this.attrs.get("calle").toString()).concat("%')"));
@@ -450,10 +450,10 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
 	}
 	
 	public void doAsignaDomicilioClienteInicial(Long idCliente){
-		TcManticClientesDto registroCliente    = null;
-		MotorBusqueda motorBusqueda            = null;
-		Entity domicilioCliente                = null;
-		List<UISelectEntity> domicilios        = null;
+		TcManticClientesDto registroCliente= null;
+		MotorBusqueda motorBusqueda        = null;
+		Entity domicilioCliente            = null;
+		List<UISelectEntity> domicilios    = null;
 		try {
 			loadTiposDomicilios();
 			loadTiposVentas();
@@ -484,7 +484,7 @@ public abstract class IBaseCliente extends IBaseArticulos implements Serializabl
 	}
 	
   private void updateCodigoPostal() {
-    List<UISelectItem> codigosPostales = null;
+    List<UISelectItem> codigosPostales= null;
     try {
       if (this.domicilio.getIdCodigoPostal().equals(-1L)) {
         this.domicilio.setCodigoPostal("");

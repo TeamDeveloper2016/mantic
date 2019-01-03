@@ -190,12 +190,14 @@ public class Express extends IBaseVenta implements Serializable {
     } // finally
 	}
   
+	@Override
 	public List<UISelectEntity> doCompleteCliente(String query) {
 		this.attrs.put("codigoCliente", query);
     this.doUpdateClientes();		
 		return (List<UISelectEntity>)this.attrs.get("clientes");
 	}	// doCompleteCliente
 
+	@Override
 	public void doUpdateClientes() {
 		List<Columna> columns     = null;
     Map<String, Object> params= null;
@@ -205,7 +207,7 @@ public class Express extends IBaseVenta implements Serializable {
       columns.add(new Columna("rfc", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
   		params.put("idEmpresa", this.attrs.get("idEmpresa"));
-			String search= new String((String) this.attrs.get("codigoCliente")); 
+			String search= (String) this.attrs.get("codigoCliente"); 
 			search= !Cadena.isVacio(search) ? search.toUpperCase().replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*") : "WXYZ";
   		params.put(Constantes.SQL_CONDICION, "upper(tc_mantic_clientes.razon_social) regexp '.*".concat(search).concat(".*'").concat(" or upper(tc_mantic_clientes.rfc) regexp '.*".concat(search).concat(".*'")));			
       this.attrs.put("clientes", (List<UISelectEntity>) UIEntity.build("VistaClientesDto", "findRazonSocial", params, columns, 20L));
@@ -220,6 +222,7 @@ public class Express extends IBaseVenta implements Serializable {
     } // finally
 	}	// doUpdateClientes
 	
+	@Override
 	public void doAsignaCliente(SelectEvent event){
 		UISelectEntity seleccion              = null;
 		List<UISelectEntity> clientes         = null;
