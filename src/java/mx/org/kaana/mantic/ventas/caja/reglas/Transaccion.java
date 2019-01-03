@@ -597,6 +597,9 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			pago= toPagoTarjeta();
 			if(pago!= null)
 				regresar.add(pago);
+			pago= toPagoTarjetaDebito();
+			if(pago!= null)
+				regresar.add(pago);
 			pago= toPagoTransferencia();
 			if(pago!= null)
 				regresar.add(pago);
@@ -628,6 +631,26 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		} // catch		
 		return regresar;
 	} // toPagoEfectivo
+	
+	private TrManticVentaMedioPagoDto toPagoTarjetaDebito(){
+		TrManticVentaMedioPagoDto regresar= null;
+		try {
+			if(this.ventaFinalizada.getTotales().getDebito()> 0D){
+				regresar= new TrManticVentaMedioPagoDto();
+				regresar.setIdTipoMedioPago(ETipoMediosPago.TARJETA_DEBITO.getIdTipoMedioPago());
+				regresar.setIdUsuario(JsfBase.getIdUsuario());
+				regresar.setIdVenta(getOrden().getIdVenta());
+				regresar.setImporte(this.ventaFinalizada.getTotales().getDebito());				
+				regresar.setIdBanco(this.ventaFinalizada.getTotales().getBancoDebito().getKey());
+				regresar.setReferencia(this.ventaFinalizada.getTotales().getReferenciaDebito());	
+				regresar.setIdCierre(this.idCierreVigente);
+			} // if
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar;
+	} // toPagoTCredito
 	
 	private TrManticVentaMedioPagoDto toPagoTarjeta(){
 		TrManticVentaMedioPagoDto regresar= null;
