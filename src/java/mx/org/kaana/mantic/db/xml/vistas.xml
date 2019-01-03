@@ -1545,7 +1545,6 @@
 					'ENTRADA' as movimiento,
 				  tc_mantic_almacenes.nombre as almacen,
 					tc_mantic_notas_entradas.consecutivo,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
 					tc_mantic_articulos.nombre,
 					tc_mantic_proveedores.clave,
 					tc_mantic_proveedores.razon_social,
@@ -1569,14 +1568,13 @@
 				union all
 				select
 				  (cast(date_format(now(), '%Y%m%d%H%i%S%s') as unsigned)+ truncate(rand()* 10000, 0)) as id_key,
-					'SALIDAS' as movimiento,
+					'VENTAS' as movimiento,
 					tc_mantic_almacenes.nombre as almacen,
-					tc_mantic_ventas.consecutivo,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
+					tc_mantic_ventas.ticket as consecutivo,
 					tc_mantic_articulos.nombre,
 					tc_mantic_clientes.clave,
 					tc_mantic_clientes.razon_social,
-					tc_mantic_ventas_detalles.cantidad,
+					tc_mantic_ventas_detalles.cantidad * -1,
 					tc_mantic_ventas_detalles.costo,
 					tc_mantic_ventas.registro
 				from
@@ -1599,7 +1597,6 @@
 					'DEVOLUCIONES' as movimiento,
 					tc_mantic_almacenes.nombre as almacen,
 					tc_mantic_devoluciones.consecutivo,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
 					tc_mantic_articulos.nombre,
 					tc_mantic_proveedores.clave,
 					tc_mantic_proveedores.razon_social,
@@ -1630,11 +1627,10 @@
 					'TRASPASOS' as movimiento,
 					tc_mantic_almacenes.nombre as almacen,
 					'2018000000' as consecutivo,
-					(select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
 					tc_mantic_articulos.nombre,
 					tc_mantic_personas.rfc as clave,
 					concat(tc_mantic_personas.nombres,' ',tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) razon_social,
-					tc_mantic_transferencias.cantidad,
+					tc_mantic_transferencias.cantidad * -1,
 					tc_mantic_articulos.precio as costo,
 					tc_mantic_transferencias.registro
 				from

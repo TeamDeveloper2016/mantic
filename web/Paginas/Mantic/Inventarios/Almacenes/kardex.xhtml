@@ -86,7 +86,17 @@
 					<p:outputLabel value="#{manticInventariosAlmacenesKardex.attrs.existe}" styleClass="filas" escape="false"/>
 				</div>	
 			</div>	
-			<p:spacer width="3px"/>
+			<p:spacer height="2px"/>
+			<div class="ui-grid-row janal-grid-row">
+				<div class="ui-grid-col-12">
+  				<p:panel header="Código: [#{manticInventariosAlmacenesKardex.attrs.articulo.propio}]" styleClass="filas">
+						<div class="janal-column-center">
+  						<p:outputLabel value="#{manticInventariosAlmacenesKardex.attrs.articulo.nombre}" styleClass="janal-color-blue"/>
+						</div>
+		  		</p:panel>
+				</div>	
+			</div>	
+			<p:spacer height="2px"/>
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12">
 					<p:tabView id="contenedorGrupos">
@@ -297,14 +307,11 @@
 								<p:column headerText="Tipo" styleClass="janal-wid-10">
 									<h:outputText value="#{item.movimiento}"/>
 								</p:column>   
+								<p:column headerText="Consecutivo" styleClass="janal-wid-10">
+									<h:outputText value="#{item.consecutivo}"/>
+								</p:column>   
 								<p:column headerText="Almacen">
 									<h:outputText value="#{item.almacen}"/>
-								</p:column>   
-								<p:column headerText="Código" styleClass="janal-wid-8">
-									<h:outputText value="#{item.propio}"/>
-								</p:column>   
-								<p:column headerText="Articulo">
-									<h:outputText value="#{item.nombre}"/>
 								</p:column>   
 								<p:column headerText="Proveedor" styleClass="janal-wid-8">
 									<h:outputText value="#{item.clave}" title="Razon social/nombre: #{item.razonSocial}"/>
