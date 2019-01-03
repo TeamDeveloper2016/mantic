@@ -854,19 +854,23 @@
 		}, // toPasswordEnter		
 		refreshCobroValidate: function(){
 			var limiteCredito= parseFloat($('#contenedorGrupos\\:limiteCredito').text());
+			var limiteDebito= parseFloat($('#contenedorGrupos\\:limiteDebito').text());
 			var limiteCheque = parseFloat($('#contenedorGrupos\\:limiteCheque').text());
 			var limiteTransferencia = parseFloat($('#contenedorGrupos\\:limiteTransferencia').text());
 			var credito= parseFloat($('#contenedorGrupos\\:credito_input').val());
+			var debito= parseFloat($('#contenedorGrupos\\:debito_input').val());
 			var cheque = parseFloat($('#contenedorGrupos\\:cheque_input').val());
 			var transferencia = parseFloat($('#contenedorGrupos\\:transferencia_input').val());
 			var totalVenta = parseFloat($('#contenedorGrupos\\:totalVenta').text());
-			this.refreshValidationsPagos(limiteCredito, limiteCheque, totalVenta, limiteTransferencia);
+			this.refreshValidationsPagos(limiteCredito, limiteDebito, limiteCheque, totalVenta, limiteTransferencia);
+			this.refreshDebito(debito);
 			this.refreshCredito(credito);
 			this.refreshCheque(cheque);
 			this.refreshTransferencia(transferencia);
 			janal.refresh();
 		}, // refreshCobroValidate		
 		validateApartado: function(minPago){				
+			this.refreshDebito(0);
 			this.refreshCredito(0);
 			this.refreshCheque(0);
 			this.refreshTransferencia(0);
@@ -877,24 +881,27 @@
 			janal.refresh();
 		},			
 		validateCredito: function(){							
+			this.refreshDebito(0);
 			this.refreshCredito(0);
 			this.refreshCheque(0);
 			this.refreshTransferencia(0);
 			this.refreshFreeValidationsPagos();
 			janal.refresh();
 		}, // validateCredito
-		refreshValidationsPagos: function(limiteCredito, limiteCheque, totalVenta, limiteTransferencia){
+		refreshValidationsPagos: function(limiteCredito, limiteDebito, limiteCheque, totalVenta, limiteTransferencia){
+			janal.fields.debito.validaciones= 'libre|max-valor({"cuanto":'+limiteDebito+'})';
 			janal.fields.credito.validaciones= 'libre|max-valor({"cuanto":'+limiteCredito+'})';
 			janal.fields.cheque.validaciones= 'libre|max-valor({"cuanto":'+limiteCheque+'})';
 			janal.fields.pago.validaciones= 'requerido|min-valor({"cuanto":'+totalVenta+'})';
 			janal.fields.transferencia.validaciones= 'libre|max-valor({"cuanto":'+limiteTransferencia+'})';
 		}, // refreshValidationsPagos
 		refreshFreeValidationsPagos: function(){
+			janal.fields.debito.validaciones= 'libre';
 			janal.fields.credito.validaciones= 'libre';
 			janal.fields.cheque.validaciones= 'libre';
 			janal.fields.pago.validaciones= 'libre';
 			janal.fields.transferencia.validaciones= 'libre';
-		}, // refreshValidationsPagos		
+		}, // refreshFreeValidationsPagos		
 		refreshCredito: function(total){
 			if(total > 0){
 				janal.fields.referenciaCredito.validaciones= "requerido";
@@ -903,6 +910,16 @@
 			else{
 				janal.fields.referenciaCredito.validaciones= "libre";
 				janal.fields.bancoCredito.validaciones= "libre";										
+			} // else
+		}, // refreshCredito
+		refreshDebito: function(total){
+			if(total > 0){
+				janal.fields.referenciaDebito.validaciones= "requerido";
+				janal.fields.bancoDebito.validaciones= "requerido";										
+			} // if
+			else{
+				janal.fields.referenciaDebito.validaciones= "libre";
+				janal.fields.bancoDebito.validaciones= "libre";										
 			} // else
 		}, // refreshCredito
 		refreshCheque: function(total){
