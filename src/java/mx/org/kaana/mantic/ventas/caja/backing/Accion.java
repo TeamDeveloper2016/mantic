@@ -21,6 +21,7 @@ import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
+import mx.org.kaana.kajool.reglas.comun.FormatLazyModel;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
@@ -196,6 +197,7 @@ public class Accion extends IBaseVenta implements Serializable {
 					JsfBase.addMessage("Se finalizo el pago del ticket de venta.", ETipoMensaje.INFORMACION);
 					this.setAdminOrden(new AdminTickets(new TicketVenta()));
 					this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
+					this.attrs.put("clienteSeleccion", null);
 					init();
 				} // if
 				else 
@@ -311,6 +313,30 @@ public class Accion extends IBaseVenta implements Serializable {
 			JsfBase.addMessageError(e);
 		} // catch		
 	} // doAsignaCliente
+		
+	public void doLoadTicketAbiertosPrincipal(){		
+		Map<String, Object>params= null;
+		List<Columna> campos     = null;
+		try {
+			campos= new ArrayList<>();
+			params= new HashMap<>();
+			params.put("sortOrder", "");
+			params.put("idEmpresa", this.attrs.get("idEmpresa"));			
+			campos.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
+			params.put(Constantes.SQL_CONDICION, toCondicion());
+			this.lazyCuentasAbiertas= new FormatLazyModel("VistaVentasDto", "lazy", params, campos);			
+			RequestContext.getCurrentInstance().execute("PF('dlgOpenTickets').show();");			
+			UIBackingUtilities.resetDataTable("tablaTicketsAbiertos");
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally		
+	} // doLoadTicketAbiertosPrincipal
 	
 	@Override
 	public void doLoadTicketAbiertos(){
@@ -354,9 +380,12 @@ public class Accion extends IBaseVenta implements Serializable {
 		try {
 			fecha= (Date) this.attrs.get("fecha");
 			regresar= new StringBuilder();
-			regresar.append(" DATE_FORMAT(tc_mantic_ventas.registro, '%Y%m%d')=".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, fecha)));
-			regresar.append(" and tc_mantic_ventas.id_venta_estatus=");
+			regresar.append(" date_format (tc_mantic_ventas.registro, '%Y%m%d')=".concat(Fecha.formatear(Fecha.FECHA_ESTANDAR, fecha)));
+			regresar.append(" and tc_mantic_ventas.id_venta_estatus in (");
+			regresar.append(EEstatusVentas.ELABORADA.getIdEstatusVenta());									
+			regresar.append(" , ");
 			regresar.append(EEstatusVentas.ABIERTA.getIdEstatusVenta());									
+			regresar.append(")");
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -401,7 +430,8 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	public void doAsignaTicketAbiertoDirecto(){
 		try {
-			this.attrs.put("ajustePreciosCliente", true);
+			this.attrs.put("ajustePreciosCliente", true);			
+			this.attrs.put("ticketAbierto", new UISelectEntity((Entity)this.attrs.get("selectedCuentaAbierta")));
 			doAsignaTicketAbierto();
 		} // try
 		catch (Exception e) {
