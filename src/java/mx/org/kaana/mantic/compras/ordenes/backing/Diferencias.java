@@ -280,8 +280,11 @@ public class Diferencias extends IFilterImportar implements Serializable {
 
 	public String doCostos(Entity row) {
 		String regresar= "<i class='fa fa-fw fa-question-circle janal-color-green' style='float:right;' title='\n\nCosto: "+ Global.format(EFormatoDinamicos.NUMERO_SAT_DECIMALES, row.toDouble("costo"))+ 
-			"\nCosto real: "+ Global.format(EFormatoDinamicos.NUMERO_SAT_DECIMALES, row.toDouble("costoReal"))+ 
-			"\nCosto calculado: " + row.toString("costoCalculado")+ "'\n\n'></i>";
+			"\nCosto real: $"+ Global.format(EFormatoDinamicos.NUMERO_SAT_DECIMALES, row.toDouble("costoReal"))+ 
+			"\nCosto calculado: $" + row.toString("costoCalculado")+ 
+			"\n\nDescuento: $" + row.toString("descuento")+ " %"+
+			"\nExtras: " + row.toString("extras")+  " %"+
+			"'\n\n'></i>";
 		return regresar;
 	}
 
