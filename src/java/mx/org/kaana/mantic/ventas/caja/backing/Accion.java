@@ -52,6 +52,7 @@ import mx.org.kaana.mantic.ventas.caja.beans.VentaFinalizada;
 import mx.org.kaana.mantic.ventas.caja.reglas.CreateTicket;
 import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
+import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.event.TabChangeEvent;
@@ -60,6 +61,7 @@ import org.primefaces.event.TabChangeEvent;
 @ViewScoped
 public class Accion extends IBaseVenta implements Serializable {
 
+	private static final Logger LOG                = Logger.getLogger(Accion.class);
   private static final long serialVersionUID      = 327393488565639367L;
 	private static final String CLAVE_VENTA_GRAL    = "VENTA";
 	private static final String GASTOS_GENERAL_CLAVE= "G03";	
@@ -114,6 +116,7 @@ public class Accion extends IBaseVenta implements Serializable {
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null ? EAccion.AGREGAR: JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null ? -1L: JsfBase.getFlashAttribute("idVenta"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null ? null : JsfBase.getFlashAttribute("retorno"));
+			LOG.warn("Flash atributes [accion[" + this.attrs.get("accion") + "] idVenta [" + this.attrs.get("idVenta") + "] retorno [" + this.attrs.get("retorno") + "]]");
 			this.attrs.put("sortOrder", "order by tc_mantic_ventas.registro desc");
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", false);
@@ -157,12 +160,15 @@ public class Accion extends IBaseVenta implements Serializable {
     try {
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));			
+			LOG.warn("Inicializando admin orden.");
+			LOG.warn("Accion:" + eaccion.name());
       switch (eaccion) {
         case AGREGAR:											
           this.setAdminOrden(new AdminTickets(new TicketVenta(-1L)));
           break;
         case MODIFICAR:			
         case CONSULTAR:			
+					LOG.warn("Atributes:" + this.attrs.toString());
           this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", this.attrs)));
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
           break;
@@ -237,12 +243,13 @@ public class Accion extends IBaseVenta implements Serializable {
 			transaccion = new Transaccion((TicketVenta)this.getAdminOrden().getOrden());
 			if (transaccion.ejecutar(EAccion.MODIFICAR)) {
 				((TicketVenta)(((AdminTickets)getAdminOrden()).getOrden())).setCotizacion(transaccion.getCotizacion());
-				ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), "COTIZACIÓN");
-				RequestContext.getCurrentInstance().execute("imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + transaccion.getCotizacion()+ "','" + ticket.toHtml() + "');");
-				regresar = this.attrs.get("retorno")!= null ? this.attrs.get("retorno").toString().concat(Constantes.REDIRECIONAR) : null;
-				JsfBase.addMessage("Se genero la cotización del ticket de venta.", ETipoMensaje.INFORMACION);
+				ticket= new CreateTicket(((AdminTickets)getAdminOrden()), (Pago) this.attrs.get("pago"), "COTIZACIÓN");				
+				RequestContext.getCurrentInstance().execute("jsTicket.imprimirTicket('" + ticket.getPrincipal().getClave()  + "-" + transaccion.getCotizacion() + "','" + ticket.toHtml() + "');");
+				RequestContext.getCurrentInstance().execute("jsTicket.clicTicket();");
+				JsfBase.addMessage("Se finalizo la cotización del ticket.", ETipoMensaje.INFORMACION);								
 				this.setAdminOrden(new AdminTickets(new TicketVenta()));
 				this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
+				this.attrs.put("clienteSeleccion", null);
 				init();
 			} // if
 			else 
