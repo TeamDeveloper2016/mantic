@@ -78,7 +78,14 @@ public class Pago implements Serializable{
 	}
 	
 	public Double getPago() {
-		return (this.efectivo + this.credito + this.debito + this.cheque + this.vales + this.transferencia);
+		Double regresar= 0D;
+		regresar= regresar + (this.efectivo != null ? this.efectivo : 0D);
+		regresar= regresar + (this.credito != null ? this.credito : 0D);
+		regresar= regresar + (this.debito != null ? this.debito : 0D);
+		regresar= regresar + (this.cheque != null ? this.cheque : 0D);
+		regresar= regresar + (this.vales != null ? this.vales : 0D);
+		regresar= regresar + (this.transferencia != null ? this.transferencia : 0D);
+		return regresar;
 	}
 	
 	public void setPago$(String pago$) {
@@ -111,7 +118,7 @@ public class Pago implements Serializable{
 	}
 
 	public void setEfectivo(Double efectivo) {
-		this.efectivo = efectivo;
+		this.efectivo = efectivo != null ? efectivo : 0.0D;
 	}
 
 	public Double getCredito() {
@@ -119,7 +126,7 @@ public class Pago implements Serializable{
 	}
 
 	public void setCredito(Double credito) {
-		this.credito = credito;
+		this.credito = credito!= null ? credito : 0.0D;
 	}
 
 	public Double getDebito() {
@@ -127,7 +134,7 @@ public class Pago implements Serializable{
 	}
 
 	public void setDebito(Double debito) {
-		this.debito = debito;
+		this.debito = debito != null ? debito : 0.0D;
 	}
 
 	public Double getCheque() {
@@ -135,7 +142,7 @@ public class Pago implements Serializable{
 	}
 
 	public void setCheque(Double cheque) {
-		this.cheque = cheque;
+		this.cheque = cheque != null ? cheque : 0.0D;
 	}
 
 	public Double getVales() {
@@ -143,7 +150,7 @@ public class Pago implements Serializable{
 	}
 
 	public void setVales(Double vales) {
-		this.vales = vales;
+		this.vales = vales != null ? vales : 0.0D;
 	}
 
 	public Double getTransferencia() {
@@ -151,7 +158,7 @@ public class Pago implements Serializable{
 	}
 
 	public void setTransferencia(Double transferencia) {
-		this.transferencia = transferencia;
+		this.transferencia = transferencia != null ? transferencia : 0.0D;
 	}
 	
 	public Double getLimiteCredito() {
