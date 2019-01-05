@@ -90,8 +90,8 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 			params= new HashMap<>();
 			params.put(Constantes.SQL_CONDICION, "id_cliente=" + this.idCliente);
 			domicilios= DaoFactory.getInstance().toEntitySet(ClienteDomicilio.class, "TrManticClienteDomicilioDto", "row", params, Constantes.SQL_TODOS_REGISTROS);
-			for(ClienteDomicilio clienteDomicilio: domicilios){
-				if(clienteDomicilio.getIdPrincipal().equals(1L)){
+			for(ClienteDomicilio clienteDomicilio: domicilios) {
+				if(clienteDomicilio.getIdPrincipal().equals(1L) || domicilios.size()== 1) {
 					clienteDomicilio.setIdLocalidad(toLocalidad(clienteDomicilio.getIdDomicilio()));
 					clienteDomicilio.setIdMunicipio(toMunicipio(clienteDomicilio.getIdLocalidad().getKey()));
 					clienteDomicilio.setIdEntidad(toEntidad(clienteDomicilio.getIdMunicipio().getKey()));
@@ -109,9 +109,9 @@ public class MotorBusqueda extends MotorBusquedaCatalogos implements Serializabl
 					entityDomicilio.put("codigoPostal", new Value("codigoPostal", clienteDomicilio.getCodigoPostal()));
 					regresar.setDomicilio(entityDomicilio);
 				} // if
-				if(regresar== null)
-					regresar= new Domicilio();								
 			} // for
+			if(regresar== null)
+				regresar= new Domicilio();								
 		} // try
 		catch (Exception e) {		
 			throw e;
