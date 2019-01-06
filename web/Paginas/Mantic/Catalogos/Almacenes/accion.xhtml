@@ -50,8 +50,8 @@
     <div class="ui-grid ui-grid-responsive" style="overflow-y:hidden;">
       <div class="ui-grid-row janal-grid-row">
         <div class="ui-grid-col-12">
-          <p:tabView id="contenedorGrupos">
-            <p:ajax event="tabChange" listener="#{manticCatalogosAlamacenesAccion.registroAlmacen.doActualizarListaUbicaciones}" process="@this contenedorGrupos:tabUbicacion" oncomplete="janal.refresh(janal.tabView('contenedorGrupos'))"/>
+          <p:tabView id="contenedorGrupos" onTabChange="simpleProcess();">
+            <p:ajax event="tabChange" listener="#{manticCatalogosAlamacenesAccion.registroAlmacen.doActualizarListaUbicaciones}" process="@this contenedorGrupos:tabUbicacion" update="tablaContactos tablaUbicacion" oncomplete="janal.refresh();"/>
             <p:tab title="General">
               <p:panelGrid columns="2" layout="grid" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">								
                 <p:outputLabel for="clave" value="Clave:"/>
@@ -180,12 +180,12 @@
               <p:panelGrid id="panelTablaContactos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaContactos" rowIndexVar="index" var="contacto" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.almacenTiposContacto}" rows="6" paginator="false" reflow="true" rowKey="#{cliente.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Tipo contacto">										
-                    <p:selectOneMenu id="contacto#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.idTipoContacto}" filter="true" filterMatchMode="contains" disabled="#{!contacto.nuevo}">
+                    <p:selectOneMenu id="contacto#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.idTipoContacto}" filter="true" filterMatchMode="contains" disabled="#{!contacto.nuevo}" onblur="simpleProcess();">
                       <f:selectItems value="#{manticCatalogosAlamacenesAccion.attrs.tiposContactos}"/>
                     </p:selectOneMenu> 				
                   </p:column>	
                   <p:column headerText="Valor" styleClass="janal-wid-50 valor">		
-                    <p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}" disabled="#{!contacto.nuevo}"  />                    																																			
+                    <p:inputText id="valor#{contacto.key}" styleClass="janal-wid-100-txt" value="#{contacto.valor}" disabled="#{!contacto.nuevo}" onblur="simpleProcess();"/>
                   </p:column>
                   <p:column style="width:32px;text-align: center">
                     <p:commandButton update="tablaContactos" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosAlamacenesAccion.registroAlmacen.doEliminarAlamcenTipoContacto}">
@@ -193,7 +193,7 @@
                     </p:commandButton>
                   </p:column>
                   <f:facet name="footer">
-                    <p:commandButton actionListener="#{manticCatalogosAlamacenesAccion.registroAlmacen.doAgregarAlmacenTipoContacto}" process="@this tablaContactos" update="tablaContactos" icon="fa fa-plus"/>						
+                    <p:commandButton actionListener="#{manticCatalogosAlamacenesAccion.registroAlmacen.doAgregarAlmacenTipoContacto}" process="@this tablaContactos" update="tablaContactos" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
                   </f:facet>
                 </p:dataTable>	
               </p:panelGrid>	
@@ -202,16 +202,16 @@
 							<p:panelGrid id="panelTablaUbicacion" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaUbicacion" rowIndexVar="index" var="ubicacion" value="#{manticCatalogosAlamacenesAccion.registroAlmacen.ubicaciones}" rows="8" paginator="false" reflow="true" rowKey="#{ubicacion.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Piso" styleClass="piso">										
-                    <p:inputText id="piso#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.piso}" disabled="#{!ubicacion.nuevo}"  />                    																																			
+                    <p:inputText id="piso#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.piso}" disabled="#{!ubicacion.nuevo}" onblur="simpleProcess();"/>
                   </p:column>	
                   <p:column headerText="Cuarto" styleClass="cuarto">		
-                    <p:inputText id="cuarto#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.cuarto}" disabled="#{!ubicacion.nuevo}"  />                    																																			
+                    <p:inputText id="cuarto#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.cuarto}" disabled="#{!ubicacion.nuevo}" onblur="simpleProcess();"/>
                   </p:column>
                   <p:column headerText="Anaquel" styleClass="anaquel">		
-                    <p:inputText id="anaquel#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.anaquel}" disabled="#{!ubicacion.nuevo}"  />                    																																			
+                    <p:inputText id="anaquel#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.anaquel}" disabled="#{!ubicacion.nuevo}"  onblur="simpleProcess();"/>																																			
                   </p:column>
                   <p:column headerText="Charola" styleClass="charola">		
-                    <p:inputText id="charola#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.charola}" disabled="#{!ubicacion.nuevo}"  />                    																																			
+                    <p:inputText id="charola#{ubicacion.key}" styleClass="janal-wid-100-txt" value="#{ubicacion.charola}" disabled="#{!ubicacion.nuevo}" onblur="simpleProcess();"/>																																		
                   </p:column>
                   <p:column style="width:32px;text-align: center">
                     <p:commandButton update="tablaUbicacion" icon="fa fa-close" title="Eliminar" action="#{manticCatalogosAlamacenesAccion.registroAlmacen.doEliminarAlmacenUbicacion}">
@@ -219,7 +219,7 @@
                     </p:commandButton>
                   </p:column>
                   <f:facet name="footer">
-                    <p:commandButton actionListener="#{manticCatalogosAlamacenesAccion.registroAlmacen.doAgregarAlmacenUbicacion}" process="@this tablaUbicacion" update="tablaUbicacion contenedorGrupos:idAlmacen" icon="fa fa-plus"/>						
+                    <p:commandButton actionListener="#{manticCatalogosAlamacenesAccion.registroAlmacen.doAgregarAlmacenUbicacion}" process="@this tablaUbicacion" update="tablaUbicacion contenedorGrupos:idAlmacen" icon="fa fa-plus" oncomplete="janal.refresh();"/>						
                     <p:remoteCommand id="agregarUbicacion" name="widAgregarUbicacion" process="@this tablaUbicacion" actionListener="#{manticCatalogosAlamacenesAccion.registroAlmacen.doLoadUbicaciones}" update="tablaUbicacion contenedorGrupos:idAlmacen"/>						
                   </f:facet>
                 </p:dataTable>	
@@ -270,6 +270,7 @@
               </p:panelGrid>
             </p:tab>  
           </p:tabView>
+					<p:remoteCommand name="simpleProcess" process="@this contenedorGrupos:tablaContactos contenedorGrupos:tablaUbicacion"/>
         </div>
       </div>
     </div>		
