@@ -2676,7 +2676,7 @@
 					tc_mantic_grupos.nombre
 			</select>
 		</unit>
-		<unit id="VistaFicticiasDto">
+		<unit id="VistaDevolucionesDto">
 			<select id="movimientos">
 				select
 					tc_mantic_devoluciones_bitacora.id_devolucion_bitacora as id_key,
