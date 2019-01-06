@@ -219,7 +219,7 @@
                     <p:inputText id="llave#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.clave}" disabled="#{!tipoPago.nuevo}" onblur="simpleProcess();"/>                    																																			
                   </p:column>
 									<p:column headerText="Tipo de pago">										
-                    <p:selectOneMenu id="tipoPago#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.idTipoPago}" filter="true" filterMatchMode="contains" disabled="#{!tipoPago.nuevo}">
+                    <p:selectOneMenu id="tipoPago#{tipoPago.key}" styleClass="janal-wid-100-txt" value="#{tipoPago.idTipoPago}" filter="true" filterMatchMode="contains" disabled="#{!tipoPago.nuevo}" onblur="simpleProcess();">
                       <!--p:ajax listener="#{manticCatalogosProveedoresAccion.registroProveedor.doValidaTipoPago(tipoPago)}" process="@this tablaTipoPago" update="tablaTipoPago" onstart="janal.bloquear();" oncomplete="janal.desbloquear();"/-->
 											<f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.tiposPago}"/>
                     </p:selectOneMenu> 				
@@ -245,7 +245,7 @@
               <p:panelGrid id="panelTablaContactos" columns="1" layout="grid" styleClass="janal-wid-100 janal-panel-tabla" columnClasses="janal-wid-100">
                 <p:dataTable id="tablaContactos" rowIndexVar="index" var="tipoContacto" value="#{manticCatalogosProveedoresAccion.registroProveedor.proveedoresTipoContacto}" rows="6" paginator="false" reflow="true" rowKey="#{tipoContacto.key}" emptyMessage=" " styleClass="paginated">																					
                   <p:column headerText="Tipo contacto">										
-                    <p:selectOneMenu id="tipo#{tipoContacto.key}" styleClass="janal-wid-100-txt" value="#{tipoContacto.idTipoContacto}" filter="true" filterMatchMode="contains" disabled="#{!tipoContacto.nuevo}">
+                    <p:selectOneMenu id="tipo#{tipoContacto.key}" styleClass="janal-wid-100-txt" value="#{tipoContacto.idTipoContacto}" filter="true" filterMatchMode="contains" disabled="#{!tipoContacto.nuevo}" onblur="simpleProcess();">
                       <f:selectItems value="#{manticCatalogosProveedoresAccion.attrs.tiposContactos}"/>
                     </p:selectOneMenu> 				
                   </p:column>	
