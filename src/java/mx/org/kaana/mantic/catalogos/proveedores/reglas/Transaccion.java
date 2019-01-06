@@ -333,11 +333,13 @@ public class Transaccion extends IBaseTnx {
     TrManticProveedorTipoContactoDto dto = null;
     ESql sqlAccion = null;
     int count = 0;
+    int orden = 0;
     boolean validate = false;
     boolean regresar = false;
     try {
       for (ProveedorTipoContacto proveedorTipoContacto : this.registroProveedor.getProveedoresTipoContacto()) {
 				if(proveedorTipoContacto.getValor()!= null && !Cadena.isVacio(proveedorTipoContacto.getValor())){
+					proveedorTipoContacto.setOrden(orden + 1L);
 					proveedorTipoContacto.setIdProveedor(idProveedor);
 					proveedorTipoContacto.setIdUsuario(JsfBase.getIdUsuario());
 					dto = (TrManticProveedorTipoContactoDto) proveedorTipoContacto;
@@ -351,6 +353,7 @@ public class Transaccion extends IBaseTnx {
 							validate = actualizar(sesion, dto);
 							break;
 					} // switch
+					orden++;
 				} // if
 				else
 					validate= true;
