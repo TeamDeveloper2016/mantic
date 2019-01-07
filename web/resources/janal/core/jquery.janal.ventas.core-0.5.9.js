@@ -320,6 +320,70 @@
 						break;
 				} // swtich
 			});	
+			$(document).on('keydown', '.janal-key-cotizaciones', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('jsVentas.keydown: '+ key);
+				switch(key) {
+					case $articulos.VK_UP:	
+					case $articulos.VK_DOWN:	
+					case $articulos.VK_TAB:
+						return $articulos.nextCotizacion(true);
+					  break;
+					case $articulos.VK_ESC:
+            PF('dlgCotizaciones').hide();
+					  break;
+					case $articulos.VK_ENTER:
+      			janal.console('jsVentas.lookup');
+						lookup();
+						return false;
+						break;
+					case $articulos.VK_PAGE_NEXT:
+						$('#tablaCotizaciones_paginator_top > a.ui-paginator-next').click();
+						return setTimeout($articulos.next(false), 1000);
+						break;
+					case $articulos.VK_PAGE_PREV:
+						$('#tablaCotizaciones_paginator_top > a.ui-paginator-prev').click();
+						return setTimeout($articulos.next(false), 1000);
+						break;
+				} // swtich
+			});	
+			$(document).on('keydown', '.janal-row-cotizaciones', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				switch(key) {
+					case $articulos.VK_TAB:
+					  $('#busquedaCotizacion').focus();
+						return false;
+					  break;
+					case $articulos.VK_ESC:
+            PF('widgetTablaCotizaciones').hide();
+						break;
+					case $articulos.VK_F7:
+					case $articulos.VK_ENTER:
+			      $('#aceptarCotizacion').click();		
+				    return false;
+						break;
+					case $articulos.VK_UP:
+					case $articulos.VK_DOWN:
+						break;
+					case $articulos.VK_PAGE_NEXT:
+						if($('#tablaCotizaciones_paginator_top > a.ui-paginator-next')) {
+						  $('#tablaCotizaciones_paginator_top > a.ui-paginator-next').click();
+						  return setTimeout($articulos.goon(false), 1000);
+					  } // if
+						else
+							return false;
+						break;
+					case $articulos.VK_PAGE_PREV:
+						if($('#tablaCotizaciones_paginator_top > a.ui-paginator-prev')) {
+  						$('#tablaCotizaciones_paginator_top > a.ui-paginator-prev').click();
+	  					return setTimeout($articulos.goon(false), 1000);
+					  } // if
+						else
+							return false;
+						break;
+				} // swtich
+			});	
 	    $(document).on('keydown', '.janal-key-clientes', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('jsArticulos.keydown: '+ key);
@@ -399,6 +463,17 @@
 				//PF('widgetTablaTicketsAbiertos').selectRow(0, true);	
 				if(focus)
 					$('#tablaTicketsAbiertos .ui-datatable-data').focus();
+			} // if	
+			return false;
+		},
+		nextCotizacion: function(focus) {
+			janal.console('jsArticulos.nextCotizacion');
+			if(!PF('widgetTablaCotizaciones').isEmpty()) {
+				PF('widgetTablaCotizaciones').clearSelection();
+				PF('widgetTablaCotizaciones').writeSelections();
+				//PF('widgetTablaTicketsAbiertos').selectRow(0, true);	
+				if(focus)
+					$('#tablaCotizaciones .ui-datatable-data').focus();
 			} // if	
 			return false;
 		},
