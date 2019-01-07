@@ -140,6 +140,9 @@
 			.font-resume-venta-detail{
 				font-weight: bold !important;				
 			}
+			.janal-tr-yellow {
+				background-color: yellow !important;
+			}
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
@@ -796,7 +799,7 @@
 			<p:outputLabel value="¿ Deseas continuar con la finalización del ticket como una cotización ?"/>
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton id="aceptarCotizacion" value="Aceptar" icon="fa fa-check" process="@this" action="#{manticVentasCajaAccion.doAceptarCotizacion}" onstart="PF('dlgCotizacion').hide();" oncomplete="janal.desbloquear();jsTicket.clicTicket();" update="contenedorGrupos @(.filas) @(.recalculo)"/>
+				<p:commandButton id="aceptarSendCotizacion" value="Aceptar" icon="fa fa-check" process="@this" action="#{manticVentasCajaAccion.doAceptarCotizacion}" onstart="PF('dlgCotizacion').hide();" oncomplete="janal.desbloquear();jsTicket.clicTicket();" update="contenedorGrupos @(.filas) @(.recalculo)"/>
 				<p:commandButton value="Cancelar" icon="fa fa-remove" onstart="PF('dlgCotizacion').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>
@@ -923,22 +926,63 @@
 				<p:commandButton icon="fa fa-close" process="@none" accesskey="r" value="Cerrar" onstart="PF('dlgDetalleArticulo').hide();" oncomplete="janal.desbloquear();"/>
 			</div>
 		</p:dialog>		
-		<p:dialog id="dialogoCotizaciones" widgetVar="dlgCotizaciones" header="Cotizaciones" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();restoreCursoArt();" width="50%">			
-			<h:panelGrid id="panelCotizacion" columns="2" styleClass="janal-wid-100 expirada" columnClasses="janal-wid-10, janal-wid-100">
-				<p:outputLabel value="Cotización:"/>
-				<p:selectOneMenu id="cotizacion" value="#{manticVentasCajaAccion.attrs.cotizacion}" styleClass="janal-wid-100-txt">
-					<p:ajax event="change" process="@this" listener="#{manticVentasCajaAccion.doVerificaVigenciaCotizacion}" update="panelCotizacion"/>
-					<f:selectItems value="#{manticVentasCajaAccion.attrs.cotizaciones}"/>
-				</p:selectOneMenu>
-				<p:spacer rendered="#{manticVentasCajaAccion.attrs.expirada}"/>
-				<p:outputLabel value="La cotización ha expirado" rendered="#{manticVentasCajaAccion.attrs.expirada}" class="janal-etapa janal-data-table-opciones"/>
-			</h:panelGrid>
+		
+		<p:dialog id="dialogoCotizaciones" widgetVar="dlgCotizaciones" header="Cotizaciones" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onHide="janal.desbloquear();restoreCursoArt();" width="70%">			
+			<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+				<p:outputLabel for="busquedaCotizacion" value="Cuenta de acceso ó nombre del vendedor:"/>
+				<p:inputText id="busquedaCotizacion" styleClass="janal-key-cotizaciones janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.busquedaCotizacion}">   
+					<p:ajax event="keyup" listener="#{manticVentasCajaAccion.doLoadCotizaciones}" process="@this busquedaCotizacion" update="tablaCotizaciones" onstart="return $('#busquedaCotizacion').val().trim().length> 1"/>
+				</p:inputText>
+			</p:panelGrid>							
+			<p:dataTable lazy="true" id="tablaCotizaciones" widgetVar="widgetTablaCotizaciones" var="row" styleClass="janal-row-cotizaciones janal-wid-100" value="#{manticVentasCajaAccion.lazyCotizaciones}" selection="#{manticVentasCajaAccion.attrs.cotizacion}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="270" style="margin-bottom:0" rowStyleClass="#{manticVentasCajaAccion.toColor(row)}">
+				<p:ajax event="rowDblselect" listener="#{manticVentasCajaAccion.doAsignaCotizacion}" process="@this tablaCotizaciones" update="contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion)" onstart="PF('dlgCotizaciones').hide();" oncomplete="janal.desbloquear();" />	
+				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+					<f:facet name="header">
+						<h:outputText value="Cuenta"/>
+					</f:facet>
+					<h:outputText value="#{row['consecutivo']}"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive">
+					<f:facet name="header">
+						<h:outputText value="Vendedor"/>
+					</f:facet>
+					<h:outputText value="#{row['cuenta']}"/>
+				</p:column>		
+				<p:column class="janal-column-right MarAuto Responsive janal-wid-15">
+					<f:facet name="header">
+						<h:outputText value="Precio total"/>
+					</f:facet> 
+					<h:outputText value="$ #{row['precioTotal']}"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive">
+					<f:facet name="header">
+						<h:outputText value="Cliente"/>
+					</f:facet>
+					<h:outputText value="#{row['cliente']}"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive janal-column-center janal-wid-15">
+					<f:facet name="header">
+						<h:outputText value="Registro"/>
+					</f:facet>
+					<h:outputText value="#{row['registro']}"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive janal-column-center janal-wid-15">
+					<f:facet name="header">
+						<h:outputText value="Vigencia"/>
+					</f:facet>
+					<h:outputText value="#{row['vigencia']}"/>
+				</p:column>		
+				<f:facet name="footer">
+					<p:outputLabel value="Total [#{manticVentasCajaAccion.lazyCotizaciones==null?0:manticVentasCajaAccion.lazyCotizaciones.rowCount}] registros"/>
+				</f:facet>
+			</p:dataTable>			
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton icon="fa fa-check" process="@this cotizacion" value="Aceptar" onstart="PF('dlgCotizaciones').hide();" actionListener="#{manticVentasCajaAccion.doAsignaCotizacion}" update="contenedorGrupos:contenido contenedorGrupos:cliente @(.filas) @(.recalculo) @(.informacion)" oncomplete="janal.desbloquear();"/>
-				<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgCotizaciones').hide();" oncomplete="janal.desbloquear();"/>
+				<p:commandButton id="aceptarCotizacion" icon="fa fa-check" process="@this tablaCotizaciones" value="Aceptar" onstart="PF('dlgCotizaciones').hide();" actionListener="#{manticVentasCajaAccion.doAsignaCotizacion}" update="contenedorGrupos aceptar aceptarIcon @(.cotizar) @(.filas) @(.recalculo) @(.informacion)" oncomplete="janal.desbloquear();" style="display: none"/>
+				<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgCotizaciones').hide();" oncomplete="janal.desbloquear();" rendered="false"/>
 			</div>
 		</p:dialog>
+		
 		<p:dialog id="dialogoOpenTickets" widgetVar="dlgOpenTickets" header="Cuentas abiertas" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="$('#busquedaTicketAbierto').val(''); $('#busquedaTicketAbierto').focus();" onHide="janal.desbloquear();restoreCursoArt();" width="70%">						
 			<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 				<p:outputLabel for="busquedaTicketAbierto" value="Cuenta de acceso ó nombre del vendedor:"/>
@@ -982,6 +1026,7 @@
 				<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();" rendered="false"/>
 			</div>
 		</p:dialog>	
+		
 		<p:dialog widgetVar="dialogo" header="Buscar articulo" hideEffect="explode" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" closable="true" onShow="$('input[name=codigo]').val('');clean();" width="900px" height="470px" resizable="false" onHide="janal.desbloquear();restoreCursoArt();" appendTo="@(body)">
 			<div class="ui-grid-row janal-grid-row">
 				<div class="ui-grid-col-12 janal-column-left">

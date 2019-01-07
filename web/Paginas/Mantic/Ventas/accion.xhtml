@@ -53,6 +53,10 @@
 				font-weight: bold !important;
 				font-style: italic;	
 			}			
+			
+			.janal-tr-yellow {
+				background-color: yellow !important;
+			}
 		</style>
 	</ui:define>
 	<ui:define name="contenido">
@@ -341,20 +345,59 @@
 				<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgOpenTickets').hide();" oncomplete="janal.desbloquear();" rendered="false"/>
 			</div>
 		</p:dialog>							
-		<p:dialog id="dialogoCotizaciones" widgetVar="dlgCotizaciones" header="Cotizaciones" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="janal.pivot();" onHide="janal.recover(); janal.desbloquear();" width="50%">			
-			<h:panelGrid id="panelCotizacion" columns="2" styleClass="janal-wid-100 expirada" columnClasses="janal-wid-10, janal-wid-100">
-				<p:outputLabel value="Cotización:"/>
-				<p:selectOneMenu id="cotizacion" value="#{manticVentasAccion.attrs.cotizacion}" styleClass="janal-wid-100-txt">
-					<p:ajax event="change" process="@this" listener="#{manticVentasAccion.doVerificaVigenciaCotizacion}" update="panelCotizacion"/>
-					<f:selectItems value="#{manticVentasAccion.attrs.cotizaciones}"/>
-				</p:selectOneMenu>
-				<p:spacer rendered="#{manticVentasAccion.attrs.expirada}"/>
-				<p:outputLabel value="La cotización ha expirado" rendered="#{manticVentasAccion.attrs.expirada}" class="janal-etapa janal-data-table-opciones"/>
-			</h:panelGrid>
+		<p:dialog id="dialogoCotizaciones" widgetVar="dlgCotizaciones" header="Cotizaciones" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="janal.pivot();" onHide="janal.recover(); janal.desbloquear();" width="70%">									
+			<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
+				<p:outputLabel for="busquedaCotizacion" value="Cuenta de acceso ó nombre del vendedor:"/>
+				<p:inputText id="busquedaCotizacion" styleClass="janal-key-cotizaciones janal-wid-100-txt" value="#{manticVentasAccion.attrs.busquedaCotizacion}">   
+					<p:ajax event="keyup" listener="#{manticVentasAccion.doLoadCotizaciones}" process="@this busquedaCotizacion" update="tablaCotizaciones" onstart="return $('#busquedaCotizacion').val().trim().length> 1"/>
+				</p:inputText>
+			</p:panelGrid>							
+			<p:dataTable lazy="true" id="tablaCotizaciones" widgetVar="widgetTablaCotizaciones" var="row" styleClass="janal-row-cotizaciones janal-wid-100" value="#{manticVentasAccion.lazyCotizaciones}" selection="#{manticVentasAccion.attrs.cotizacion}" selectionMode="single" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rowIndexVar="index" reflow="true" scrollRows="200" scrollable="true" liveScroll="true" liveScrollBuffer="50" scrollHeight="270" style="margin-bottom:0" rowStyleClass="#{manticVentasAccion.toColor(row)}">
+				<p:ajax event="rowDblselect" listener="#{manticVentasAccion.doAsignaCotizacion}" process="@this tablaCotizaciones" update="contenido clientes cliente noTicket @(.filas) @(.recalculo) @(.informacion) deudor" onstart="PF('dlgCotizaciones').hide();" oncomplete="janal.desbloquear();" />	
+				<p:column class="janal-column-right MarAuto Responsive janal-wid-10">
+					<f:facet name="header">
+						<h:outputText value="Cuenta"/>
+					</f:facet>
+					<h:outputText value="#{row['consecutivo']}"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive">
+					<f:facet name="header">
+						<h:outputText value="Vendedor"/>
+					</f:facet>
+					<h:outputText value="#{row['cuenta']}"/>
+				</p:column>		
+				<p:column class="janal-column-right MarAuto Responsive janal-wid-15">
+					<f:facet name="header">
+						<h:outputText value="Precio total"/>
+					</f:facet> 
+					<h:outputText value="$ #{row['precioTotal']}"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive">
+					<f:facet name="header">
+						<h:outputText value="Cliente"/>
+					</f:facet>
+					<h:outputText value="#{row['cliente']}"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive janal-column-center janal-wid-15">
+					<f:facet name="header">
+						<h:outputText value="Registro"/>
+					</f:facet>
+					<h:outputText value="#{row['registro']}"/>
+				</p:column>		
+				<p:column class="MarAuto Responsive janal-column-center janal-wid-15">
+					<f:facet name="header">
+						<h:outputText value="Vigencia"/>
+					</f:facet>
+					<h:outputText value="#{row['vigencia']}"/>
+				</p:column>		
+				<f:facet name="footer">
+					<p:outputLabel value="Total [#{manticVentasAccion.lazyCotizaciones==null?0:manticVentasAccion.lazyCotizaciones.rowCount}] registros"/>
+				</f:facet>
+			</p:dataTable>			
 			<hr class="ui-widget-content"/>
 			<div class="janal-line-button">
-				<p:commandButton icon="fa fa-check" process="@this cotizacion" value="Aceptar" onstart="PF('dlgCotizaciones').hide();" actionListener="#{manticVentasAccion.doAsignaCotizacion}" update="contenido clientes cliente noTicket @(.filas) @(.recalculo) @(.informacion) deudor" oncomplete="janal.desbloquear();"/>
-				<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgCotizaciones').hide();" oncomplete="janal.desbloquear();"/>
+				<p:commandButton id="aceptarCotizacion" icon="fa fa-check" process="@this tablaCotizaciones" value="Aceptar" onstart="PF('dlgCotizaciones').hide();" actionListener="#{manticVentasAccion.doAsignaCotizacion}" update="contenido clientes cliente noTicket @(.filas) @(.recalculo) @(.informacion) deudor" oncomplete="janal.desbloquear();" style="display: none"/>
+				<p:commandButton icon="fa fa-remove" process="@none" value="Cancelar" onstart="PF('dlgCotizaciones').hide();" oncomplete="janal.desbloquear();" rendered="false"/>
 			</div>
 		</p:dialog>							
 		<p:dialog id="dialogoDetalleArticulo" widgetVar="dlgDetalleArticulo" header="Articulo [#{manticVentasAccion.attrs.detailArticulo.codigo}]" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="janal.pivot();" onHide="janal.desbloquear(); setTimeout('jsArticulos.goto();', 1000);" width="70%">			
