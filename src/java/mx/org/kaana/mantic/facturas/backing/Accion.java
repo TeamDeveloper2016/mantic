@@ -20,9 +20,7 @@ import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.facturama.models.request.*;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Cifrar;
-import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.libs.pagina.KajoolBaseException;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
@@ -637,19 +635,6 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 			this.attrs.put("passwordDescuento", "");
 		} // finally
 	} // doAplicarDescuento
-	
-	@Override
-	public void doVerificaVigenciaCotizacion(){
-		MotorBusqueda motorBusqueda= null;		
-		try {
-			motorBusqueda= new MotorBusqueda(-1L);
-			this.attrs.put("expirada", motorBusqueda.doVerificaVigenciaCotizacion(Long.valueOf(this.attrs.get("cotizacion").toString())));
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);			
-		} // catch		
-	} // doVerificaVigenciaCotizacion	
 	
 	public void doGenerateFactura(){
 		Cfdi cfdi= null;
