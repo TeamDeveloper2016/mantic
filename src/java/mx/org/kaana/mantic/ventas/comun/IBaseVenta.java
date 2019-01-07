@@ -23,9 +23,7 @@ import mx.org.kaana.libs.formato.Numero;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
 import mx.org.kaana.libs.pagina.UIEntity;
-import mx.org.kaana.libs.pagina.UISelect;
 import mx.org.kaana.libs.pagina.UISelectEntity;
-import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
@@ -48,6 +46,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	private static final long serialVersionUID= 4853975930464243369L;
 	protected static final String INDIVIDUAL  = "1";
 	protected FormatLazyModel lazyCuentasAbiertas;
+	protected FormatLazyModel lazyCotizaciones;
 	protected SaldoCliente saldoCliente;
 	private FormatLazyModel almacenes;
   private boolean costoLibre;
@@ -64,6 +63,10 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	
 	public FormatLazyModel getLazyCuentasAbiertas() {
 		return lazyCuentasAbiertas;
+	}		
+
+	public FormatLazyModel getLazyCotizaciones() {
+		return lazyCotizaciones;
 	}		
 	
 	public SaldoCliente getSaldoCliente() {
@@ -160,35 +163,21 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		} // finally
 	} // doLoadTicketAbiertos		
 	
-	public void doLoadCotizaciones(){
-		List<UISelectItem> cotizaciones= null;
-		Map<String, Object>params      = null;
-		List<String> fields            = null;
-		MotorBusqueda motorBusqueda    = null;
-		try {
-			fields= new ArrayList<>();
+	public void doLoadCotizaciones(){		
+		Map<String, Object>params      = null;		
+		List<Columna> campos           = null;
+		try {			
 			params= new HashMap<>();
 			params.put("sortOrder", "");
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));
-			fields.add("consecutivo");
-			fields.add("cuenta");
-			fields.add("precioTotal");
-			fields.add("cliente");
 			params.put(Constantes.SQL_CONDICION, toCondicion(true));
-			cotizaciones= UISelect.build("VistaVentasDto", "lazy", params, fields, " - ", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
-			if(!cotizaciones.isEmpty()){
-				this.attrs.put("cotizaciones", cotizaciones);
-				if(!cotizaciones.isEmpty()){
-					motorBusqueda= new MotorBusqueda(-1L);
-					this.attrs.put("cotizacion", UIBackingUtilities.toFirstKeySelectItem(cotizaciones));
-					this.attrs.put("expirada", motorBusqueda.doVerificaVigenciaCotizacion(Long.valueOf(this.attrs.get("cotizacion").toString())));
-				}
-				RequestContext.getCurrentInstance().execute("PF('dlgCotizaciones').show();");
-			} // if
-			else{
-				JsfBase.addMessage("Cuentas", "Actualmente no hay cotizaciones abiertas", ETipoMensaje.INFORMACION);
-				RequestContext.getCurrentInstance().execute("janal.desbloquear();");
-			} // else
+			campos= new ArrayList<>();
+			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+			campos.add(new Columna("vigencia", EFormatoDinamicos.FECHA_HORA_CORTA));
+			this.lazyCotizaciones= new FormatLazyModel("VistaVentasDto", "lazy", params, campos);			
+			RequestContext.getCurrentInstance().execute("PF('dlgCotizaciones').show();");			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
@@ -196,6 +185,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		} // catch		
 		finally{
 			Methods.clean(params);
+			Methods.clean(campos);
 		} // finally
 	} // doLoadCotizaciones
 	
@@ -211,6 +201,14 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				regresar.append("tc_mantic_ventas.id_venta_estatus in (");
 				regresar.append(EEstatusVentas.COTIZACION.getIdEstatusVenta());
 				regresar.append(") and vigencia is not null");
+				if(this.attrs.get("busquedaCotizacion")!= null && !Cadena.isVacio(this.attrs.get("busquedaCotizacion"))){
+					regresar.append(" and (upper(tc_mantic_personas.cuenta) like upper('%");
+					regresar.append(this.attrs.get("busquedaCotizacion"));
+					regresar.append("%') or upper(tc_mantic_clientes.razon_social)");
+					regresar.append(" like upper('%");
+					regresar.append(this.attrs.get("busquedaCotizacion"));
+					regresar.append("%'))");
+				} // if
 			} // if
 			else{
 				regresar.append(" date_format(tc_mantic_ventas.registro, '%Y%m%d')= date_format(SYSDATE(), '%Y%m%d')");
@@ -219,15 +217,15 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 				regresar.append(" , ");			
 				regresar.append(EEstatusVentas.ABIERTA.getIdEstatusVenta());
 				regresar.append(")");				
-			} // else
-			if(this.attrs.get("busquedaTicketAbierto")!= null && !Cadena.isVacio(this.attrs.get("busquedaTicketAbierto"))){
-				regresar.append(" and (upper(tc_mantic_personas.cuenta) like upper('%");
-				regresar.append(this.attrs.get("busquedaTicketAbierto"));
-				regresar.append("%') or upper(tc_mantic_clientes.razon_social)");
-				regresar.append(" like upper('%");
-				regresar.append(this.attrs.get("busquedaTicketAbierto"));
-				regresar.append("%'))");
-			} // if
+				if(this.attrs.get("busquedaTicketAbierto")!= null && !Cadena.isVacio(this.attrs.get("busquedaTicketAbierto"))){
+					regresar.append(" and (upper(tc_mantic_personas.cuenta) like upper('%");
+					regresar.append(this.attrs.get("busquedaTicketAbierto"));
+					regresar.append("%') or upper(tc_mantic_clientes.razon_social)");
+					regresar.append(" like upper('%");
+					regresar.append(this.attrs.get("busquedaTicketAbierto"));
+					regresar.append("%'))");
+				} // if
+			} // else			
 		} // try
 		catch (Exception e) {			
 			throw e;
@@ -475,16 +473,18 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		} // finally
 	} // doAplicarDescuento
 	
-	public void doVerificaVigenciaCotizacion(){
+	public boolean doVerificaVigenciaCotizacion(Long idKey){
+		boolean regresar           = false;
 		MotorBusqueda motorBusqueda= null;		
 		try {
 			motorBusqueda= new MotorBusqueda(-1L);
-			this.attrs.put("expirada", motorBusqueda.doVerificaVigenciaCotizacion(Long.valueOf(this.attrs.get("cotizacion").toString())));
+			regresar= motorBusqueda.doVerificaVigenciaCotizacion(idKey);
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 			JsfBase.addMessageError(e);			
 		} // catch		
+		return regresar;
 	} // doVerificaVigenciaCotizacion
 	
 	public void doActivarDescuento(){
@@ -813,4 +813,8 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
       Methods.clean(params);
     } // finally
 	}	// doUpdateClientes
+	
+	public String toColor(Entity row) {
+		return doVerificaVigenciaCotizacion(row.getKey()) ? "janal-tr-yellow" : "";
+	} // toColor
 }
