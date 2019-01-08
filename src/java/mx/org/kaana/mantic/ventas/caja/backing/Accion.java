@@ -61,7 +61,7 @@ import org.primefaces.event.TabChangeEvent;
 @ViewScoped
 public class Accion extends IBaseVenta implements Serializable {
 
-	private static final Logger LOG                = Logger.getLogger(Accion.class);
+	private static final Logger LOG                 = Logger.getLogger(Accion.class);
   private static final long serialVersionUID      = 327393488565639367L;
 	private static final String CLAVE_VENTA_GRAL    = "VENTA";
 	private static final String GASTOS_GENERAL_CLAVE= "G03";	
@@ -1025,4 +1025,25 @@ public class Accion extends IBaseVenta implements Serializable {
 			throw e;
 		} // catch		
 	} // validaFacturacion
+	
+	@Override
+	public void doAsignaCotizacion(){		
+		Transaccion transaccion= null;
+		try {			
+			transaccion= new Transaccion(new TcManticVentasDto(Long.valueOf(this.attrs.get("cotizacion").toString())));			
+			if (transaccion.ejecutar(EAccion.AGREGAR)){
+    		super.doAsignaCotizacion();						
+				doLoadTicketAbiertos();
+				this.attrs.put("ajustePreciosCliente", true);			
+				this.attrs.put("ticketAbierto", new UISelectEntity(new Entity(Long.valueOf(this.attrs.get("cotizacion").toString()))));
+				doAsignaTicketAbierto();
+			} // if
+			else 
+				JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doAsignaCotizacion		        
 }
