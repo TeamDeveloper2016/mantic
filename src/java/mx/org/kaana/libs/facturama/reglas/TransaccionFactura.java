@@ -85,7 +85,10 @@ public class TransaccionFactura extends IBaseTnx{
 					regresar= procesarArticulos(sesion);
 					break;				
 				case ACTIVAR:
-					regresar= procesarCliente(sesion);
+					if(Cadena.isVacio(this.cliente.getIdFacturama()))
+						regresar= procesarCliente(sesion);
+					else
+						regresar= updateCliente(sesion);
 					break;
 				case AGREGAR:
 					regresar= procesarArticulo(sesion);
@@ -138,7 +141,7 @@ public class TransaccionFactura extends IBaseTnx{
 			id= CFDIFactory.getInstance().createClientId(this.cliente);
 			if(isCorrectId(id))
 				regresar= actualizarCliente(sesion, this.cliente.getId(), id);
-			else
+			else				
 				registrarBitacora(sesion, this.cliente.getId(), id, false);								
 		} // try
 		catch (Exception e) {		
