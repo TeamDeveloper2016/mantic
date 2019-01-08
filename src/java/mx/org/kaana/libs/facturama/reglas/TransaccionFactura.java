@@ -91,7 +91,10 @@ public class TransaccionFactura extends IBaseTnx{
 						regresar= updateCliente(sesion);
 					break;
 				case AGREGAR:
-					regresar= procesarArticulo(sesion);
+					if(Cadena.isVacio(this.articulo.getIdFacturama()))
+						regresar= procesarArticulo(sesion);
+					else
+						regresar= updateArticulo(sesion);
 					break;
 				case MODIFICAR:
 					regresar= updateCliente(sesion);
