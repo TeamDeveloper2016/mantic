@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.ventas.caja.reglas;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -54,7 +55,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	private static final String GENERAL      = "GENERAL";
 	private static final String CIERRE_ACTIVO= "1,2";
 	private static final Long SI             = 1L;
-	private static final Long NO             = 2L;
+	private static final Long NO             = 2L;	
 	private VentaFinalizada ventaFinalizada;
 	private IBaseDto dto;
 	private boolean clienteDeault;
@@ -84,7 +85,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		super(new TicketVenta());
 		this.idVenta  = idVenta;
 		this.idCliente= idCliente;		
-	} // Transaccion
+	} // Transaccion	
 	
 	public Long getIdCierreVigente() {
 		return idCierreVigente;
@@ -96,9 +97,10 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
-		boolean regresar  = false;
-		this.isNuevoCierre= false;
-		this.cierreCaja   = 0D;		
+		boolean regresar   = false;
+		this.isNuevoCierre = false;
+		this.cierreCaja    = 0D;		
+		Long idEstatusVenta= null;
 		try {						
 			switch(accion) {					
 				case REPROCESAR:				
@@ -112,6 +114,10 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 					break;
 				case ASIGNAR:
 					regresar= actualizarClienteVenta(sesion);
+					break;
+				case AGREGAR:
+					idEstatusVenta= EEstatusVentas.ABIERTA.getIdEstatusVenta();
+					regresar= actualizarVenta(sesion, idEstatusVenta);					
 					break;
 			} // switch
 			if(!regresar)
@@ -1003,4 +1009,24 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			Error.mensaje(e);
 		} // catch				
 	} // generarTimbradoFactura
+	
+	private boolean actualizarVenta(Session sesion, Long idEstatusVenta) throws Exception{
+		boolean regresar             = false;
+		Map<String, Object>params    = null;
+		TcManticVentasDto ventaPivote= null;
+		try {						
+			ventaPivote= (TcManticVentasDto) DaoFactory.getInstance().findById(sesion, TcManticVentasDto.class, this.dto.getKey());
+			ventaPivote.setIdVentaEstatus(idEstatusVenta);						
+			ventaPivote.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			if(DaoFactory.getInstance().update(sesion, ventaPivote)>= 1L)
+				regresar= registraBitacora(sesion, ventaPivote.getIdVenta(), idEstatusVenta, "Cambio de cotización a venta");				
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally			
+		return regresar;
+	} // actualizarVenta
 }
