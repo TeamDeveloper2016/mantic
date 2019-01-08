@@ -226,7 +226,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 		return regresar;
 	} // doImportar
 	
-	public String doModificar(){
+	public String doModificar() {
 		String regresar= null;
 		try {
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Catalogos/Empresas/Cuentas/saldos");		
@@ -257,7 +257,9 @@ public class Saldos extends IBaseFilter implements Serializable {
   } // doAccion  
 
   public String toColor(Entity row) {
-		return row.toLong("idNotaTipo").equals(3L)? "janal-tr-orange": "";
+		Double original= row.toDouble("original");
+		Double total   = row.toDouble("total");
+		return row.toLong("idNotaTipo").equals(3L)? "janal-tr-purple": (original!= 0D && original> total)? "janal-tr-yellow": (original!= 0D && original< total)? "janal-tr-green": "";
 	} 
 
 	public String doDeuda(){

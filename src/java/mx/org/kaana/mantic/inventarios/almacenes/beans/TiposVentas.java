@@ -154,7 +154,8 @@ public class TiposVentas implements Serializable {
   	this.precio  = Numero.toRedondearSat(this.precio);
 		this.utilidad= Numero.toRedondearSat((this.precio*100/(this.costo<= 0? 1: this.costo))- 100);
 	  this.impuesto= Numero.toRedondearSat((this.precio* ((this.iva/100)+ 1))- this.precio);
-		this.importe = Numero.toRedondearSat(this.precio+ this.impuesto);
+		//this.importe = Numero.toRedondearSat(this.precio+ this.impuesto);
+		this.importe = Numero.toRedondearSat(this.precio);
 	}	
 	
 	public ETiposVentas toEnum() {

@@ -31,7 +31,6 @@ import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.inventarios.almacenes.beans.AdminKardex;
 import mx.org.kaana.mantic.inventarios.almacenes.beans.TiposVentas;
-import mx.org.kaana.mantic.inventarios.almacenes.enums.ETiposVentas;
 import mx.org.kaana.mantic.inventarios.almacenes.reglas.Transaccion;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
