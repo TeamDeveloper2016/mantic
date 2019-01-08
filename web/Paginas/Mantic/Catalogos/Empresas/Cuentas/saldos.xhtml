@@ -175,7 +175,7 @@
 						<f:facet name="footer">
 							<div style="display:flow-root;">
 								<div style="float:left;">
-  								<p:outputLabel value="Las filas que estan color morado son cuentas por pagar directas&lt;br/&gt;Las filas en amarillo el importe de la factura es mayor que la nota de entrada&lt;br/&gt;Las filas en verde el importe de la factura es menor que la nota de entrada" style="float: left; text-align: left" escape="false"/>
+  								<p:outputLabel value="Las filas que estan color morado son cuentas por pagar directas&lt;br/&gt;Las filas en amarillo representan aquellas factura donde el importe es mayor que la nota de entrada&lt;br/&gt;Las filas en verde representan aquellas factura donde el importe es menor que la nota de entrada" style="float: left; text-align: left" escape="false"/>
 								</div>	
 								<div style="float:right;">
     							<p:outputLabel value="Total [#{manticCatalogosEmpresasCuentasSaldos.lazyModel==null?0:manticCatalogosEmpresasCuentasSaldos.lazyModel.rowCount}] registros"  styleClass="importado janal-color-orange"/>
@@ -183,7 +183,7 @@
 							</div>	
 						</f:facet>
 					</p:dataTable>
-					<p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla"> 
+					<p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla"> 
             <p:menuitem icon="fa fa-money" value="Pago" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doPago}" process="@this tabla" />
 						<p:menuitem icon="fa fa-minus-circle" value="Deuda" onstart="return janal.bloquear()" action="#{manticCatalogosEmpresasCuentasSaldos.doDeuda}" process="@this tabla"/>					
 						<p:separator/>
