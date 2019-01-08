@@ -32,6 +32,7 @@ import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
+import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 import mx.org.kaana.mantic.ventas.beans.ClienteVenta;
 import org.apache.log4j.Logger;
@@ -373,6 +374,7 @@ public class Transaccion extends TransaccionFactura {
 				if (registraClientesDomicilios(sesion, idCliente)) 
 					regresar = registraClientesTipoContacto(sesion, idCliente);			
 			} // if
+			sesion.flush();
 			if(idCliente > -1)
 				registraClienteFacturama(sesion, idCliente);
     } // try
@@ -409,6 +411,7 @@ public class Transaccion extends TransaccionFactura {
 				if(updateDomicilioPrincipal(sesion, this.clienteVenta.getCliente().getIdCliente())){
 					if (DaoFactory.getInstance().update(sesion, domicilio)>= 1L) {
 						regresar = registraClientesTipoContacto(sesion, this.clienteVenta.getCliente().getIdCliente());	
+						sesion.flush();
 						actualizarClienteFacturama(sesion, this.clienteVenta.getCliente().getIdCliente());
 					} // if
 				} // if
@@ -604,9 +607,17 @@ public class Transaccion extends TransaccionFactura {
     boolean validate= false;
     boolean regresar= false;
 		TrManticClienteTipoContactoDto pivote= null;
+		int orden = 1;
+    boolean validateOrden = true;
     try {
       for (TrManticClienteTipoContactoDto clienteTipoContacto : this.clienteVenta.getContacto()) {
 				if(clienteTipoContacto.getValor()!= null && !Cadena.isVacio(clienteTipoContacto.getValor())){
+					if(clienteTipoContacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()) && validateOrden){
+						clienteTipoContacto.setOrden(1L);
+						validateOrden= false;
+					} // if
+					else
+						clienteTipoContacto.setOrden(orden + 1L);
 					if(clienteTipoContacto.getIdClienteTipoContacto().equals(-1L)){
 						clienteTipoContacto.setIdCliente(idCliente);
 						clienteTipoContacto.setIdUsuario(JsfBase.getIdUsuario());
@@ -618,6 +629,7 @@ public class Transaccion extends TransaccionFactura {
 						pivote.setValor(clienteTipoContacto.getValor());
 						validate = actualizarSentencia(sesion, pivote);		
 					} // else
+					orden++;
 				} // if
 				else
 					validate= true;
