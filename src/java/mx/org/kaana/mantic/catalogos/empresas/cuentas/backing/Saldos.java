@@ -64,7 +64,6 @@ public class Saldos extends IBaseFilter implements Serializable {
     try {
   	  params = toPrepare();	
       columns= new ArrayList<>();
-      columns.add(new Columna("importe", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
       columns.add(new Columna("pagar", EFormatoDinamicos.MONEDA_SAT_DECIMALES));      
       columns.add(new Columna("saldo", EFormatoDinamicos.MONEDA_SAT_DECIMALES));    
       columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));    
@@ -258,7 +257,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 
   public String toColor(Entity row) {
 		Double original= row.toDouble("original");
-		Double total   = row.toDouble("total");
+		Double total   = row.toDouble("importe");
 		return row.toLong("idNotaTipo").equals(3L)? "janal-tr-purple": (original!= 0D && original> total)? "janal-tr-yellow": (original!= 0D && original< total)? "janal-tr-green": "";
 	} 
 

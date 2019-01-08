@@ -4144,7 +4144,6 @@
 					tc_mantic_empresas_deudas.id_empresa,
 					tc_mantic_notas_entradas.consecutivo,
 					tc_mantic_notas_entradas.factura,
-					tc_mantic_empresas_deudas.importe as total,
 					tc_mantic_empresas_deudas.importe,
 				  tc_mantic_empresas_deudas.pagar,
 					tc_mantic_empresas_deudas.saldo,
