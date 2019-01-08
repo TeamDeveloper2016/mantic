@@ -34,6 +34,7 @@ import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteRepresentanteDto;
 import mx.org.kaana.mantic.db.dto.TrManticPersonaTipoContactoDto;
 import mx.org.kaana.mantic.enums.ETipoPersona;
+import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 import org.hibernate.Session;
 import mx.org.kaana.mantic.inventarios.entradas.beans.Nombres;
@@ -127,6 +128,7 @@ public class Transaccion extends TransaccionFactura {
           }
         } // if
       } // if
+			sesion.flush();
 			if(idCliente > -1)
 				registraClienteFacturama(sesion, idCliente);
     } // try
@@ -186,6 +188,7 @@ public class Transaccion extends TransaccionFactura {
         if (registraClientesRepresentantes(sesion, idCliente)) {
           if (registraClientesTipoContacto(sesion, idCliente)) {
             regresar = DaoFactory.getInstance().update(sesion, this.registroCliente.getCliente()) >= 1L;
+						sesion.flush();
 						actualizarClienteFacturama(sesion, this.registroCliente.getIdCliente());
           }
         } // if
@@ -378,11 +381,19 @@ public class Transaccion extends TransaccionFactura {
     TrManticClienteTipoContactoDto dto = null;
     ESql sqlAccion = null;
     int count = 0;
+    int orden = 1;
+    boolean validateOrden = true;
     boolean validate = false;
     boolean regresar = false;
     try {
       for (ClienteTipoContacto clienteTipoContacto : this.registroCliente.getClientesTiposContacto()) {
 				if(clienteTipoContacto.getValor()!= null && !Cadena.isVacio(clienteTipoContacto.getValor())){
+					if(clienteTipoContacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()) && validateOrden){
+						clienteTipoContacto.setOrden(1L);
+						validateOrden= false;
+					} // if
+					else
+						clienteTipoContacto.setOrden(orden + 1L);
 					clienteTipoContacto.setIdCliente(idCliente);
 					clienteTipoContacto.setIdUsuario(JsfBase.getIdUsuario());
 					dto = (TrManticClienteTipoContactoDto) clienteTipoContacto;
@@ -396,6 +407,7 @@ public class Transaccion extends TransaccionFactura {
 							validate = actualizar(sesion, dto);
 							break;
 					} // switch
+					orden++;
 				} // if
 				else
 					validate= true;
