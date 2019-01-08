@@ -322,7 +322,7 @@ public class Accion extends IBaseArticulos implements Serializable {
       this.attrs.put("condiciones", UIEntity.build("VistaOrdenesComprasDto", "condiciones", params, columns));
 			List<UISelectEntity> condiciones= (List<UISelectEntity>) this.attrs.get("condiciones");			
 			if(!condiciones.isEmpty()) {				
-				if(this.accion.equals(EAccion.AGREGAR) && ((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago()== null)
+				if(this.accion.equals(EAccion.COMPLETO))
 				  ((NotaEntrada)this.getAdminOrden().getOrden()).setIkProveedorPago(condiciones.get(0));
 				else {
 					Entity entity= new UISelectEntity(new Entity(((NotaEntrada)this.getAdminOrden().getOrden()).getIdProveedorPago()));
@@ -335,7 +335,7 @@ public class Accion extends IBaseArticulos implements Serializable {
     } // try
     catch (Exception e) {
 			Error.mensaje(e);
-			//JsfBase.addMessageError(e);
+			JsfBase.addMessageError(e);
     } // catch   
     finally {
       Methods.clean(columns);
