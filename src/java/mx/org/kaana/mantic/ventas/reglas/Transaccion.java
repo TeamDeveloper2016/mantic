@@ -13,7 +13,8 @@ import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.ESql;
-import mx.org.kaana.kajool.reglas.IBaseTnx;
+import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
+import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.formato.Error;
@@ -31,6 +32,7 @@ import mx.org.kaana.mantic.db.dto.TcManticVentasDetallesDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteDomicilioDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
+import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 import mx.org.kaana.mantic.ventas.beans.ClienteVenta;
 import org.apache.log4j.Logger;
 
@@ -42,7 +44,7 @@ import org.apache.log4j.Logger;
  *@author Team Developer 2016 <team.developer@kaana.org.mx>
  */
 
-public class Transaccion extends IBaseTnx {
+public class Transaccion extends TransaccionFactura {
 
   private static final Logger LOG  = Logger.getLogger(Transaccion.class);
 	private static final String VENTA= "VENTA";
@@ -370,13 +372,29 @@ public class Transaccion extends IBaseTnx {
 			if(updateDomicilioPrincipal(sesion, this.clienteVenta.getCliente().getIdCliente())){
 				if (registraClientesDomicilios(sesion, idCliente)) 
 					regresar = registraClientesTipoContacto(sesion, idCliente);			
-			}
+			} // if
+			if(idCliente > -1)
+				registraClienteFacturama(sesion, idCliente);
     } // try
     catch (Exception e) {
       throw e;
     } // catch		
     return regresar;
   } // procesarCliente
+	
+	private void registraClienteFacturama(Session sesion, Long idCliente){		
+		CFDIGestor gestor     = null;
+		ClienteFactura cliente= null;
+		try {
+			gestor= new CFDIGestor(idCliente);
+			cliente= gestor.toClienteFactura(sesion);
+			setCliente(cliente);
+			super.procesarCliente(sesion);
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+		} // catch		
+	} // registraArticuloFacturama
 	
 	protected boolean actualizarCliente(Session sesion) throws Exception {
     boolean regresar= false;
@@ -389,8 +407,10 @@ public class Transaccion extends IBaseTnx {
 				domicilio.setIdTipoDomicilio(this.clienteVenta.getDomicilio().getIdTipoDomicilio());
 				domicilio.setIdPrincipal(1L);
 				if(updateDomicilioPrincipal(sesion, this.clienteVenta.getCliente().getIdCliente())){
-					if (DaoFactory.getInstance().update(sesion, domicilio)>= 1L) 
-						regresar = registraClientesTipoContacto(sesion, this.clienteVenta.getCliente().getIdCliente());			
+					if (DaoFactory.getInstance().update(sesion, domicilio)>= 1L) {
+						regresar = registraClientesTipoContacto(sesion, this.clienteVenta.getCliente().getIdCliente());	
+						actualizarClienteFacturama(sesion, this.clienteVenta.getCliente().getIdCliente());
+					} // if
 				} // if
 			} // if			
     } // try
@@ -399,6 +419,23 @@ public class Transaccion extends IBaseTnx {
     } // catch		
     return regresar;
   } // procesarCliente
+	
+	private void actualizarClienteFacturama(Session sesion, Long idCliente){		
+		CFDIGestor gestor     = null;
+		ClienteFactura cliente= null;
+		try {
+			gestor= new CFDIGestor(idCliente);
+			cliente= gestor.toClienteFactura(sesion);
+			setCliente(cliente);
+			if(cliente.getIdFacturama()!= null)
+				updateCliente(sesion);
+			else
+				super.procesarCliente(sesion);
+		} // try
+		catch (Exception e) {			
+			Error.mensaje(e);
+		} // catch		
+	} // actualizarArticuloFacturama
 	
 	private boolean registraClientesDomicilios(Session sesion, Long idCliente) throws Exception {
     TrManticClienteDomicilioDto dto  = null;
