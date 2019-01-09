@@ -295,6 +295,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		List<UISelectEntity> clientes         = null;
 		List<UISelectEntity> clientesSeleccion= null;
 		Transaccion transaccion               = null;		
+		boolean facturarVenta                 = false;
 		try {
 			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
 			clientes= (List<UISelectEntity>) this.attrs.get("clientes");
@@ -303,6 +304,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			clientesSeleccion.add(seleccion);
 			this.attrs.put("clientesSeleccion", clientesSeleccion);
 			this.attrs.put("clienteSeleccion", seleccion);
+			facturarVenta= (Boolean) this.attrs.get("facturarVenta");
 			if(seleccion!= null && ((TicketVenta)this.getAdminOrden().getOrden()).isValid()){
 				transaccion= new Transaccion(((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta(), seleccion.getKey());
 				if(transaccion.ejecutar(EAccion.ASIGNAR)){
@@ -310,6 +312,8 @@ public class Accion extends IBaseVenta implements Serializable {
 					this.attrs.put("ticketAbierto", ticketAbierto);
 					doAsignaTicketAbiertoCambioCliente();					
 					this.attrs.put("tabIndex", 1);
+					this.attrs.put("facturarVenta", facturarVenta);					
+					this.attrs.put("disabledFacturar", !facturarVenta);					
 				} // if
 				else
 					JsfBase.addMessage("no fue posible modificar el cliente a la venta", ETipoMensaje.ERROR);				
@@ -552,8 +556,10 @@ public class Accion extends IBaseVenta implements Serializable {
 		UISelectEntity seleccionado           = null;
 		List<UISelectEntity> clientesSeleccion= null;
 		MotorBusqueda motor                   = null;
-		ClienteTipoContacto contactoNuevo     = null;
-		try {			
+		ClienteTipoContacto telefono          = null;
+		ClienteTipoContacto celular           = null;
+		try {						
+			this.attrs.put("disabledFacturar", !((Boolean)this.attrs.get("facturarVenta")));			
 			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");	
 			if(cliente!= null){
 				clientesSeleccion= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
@@ -570,10 +576,14 @@ public class Accion extends IBaseVenta implements Serializable {
 					loadDefaultCollections();					
 					this.attrs.put("registroCliente", new TcManticClientesDto());
 					this.clientesTiposContacto= new ArrayList<>();
-					contactoNuevo= new ClienteTipoContacto();
-					contactoNuevo.setSqlAccion(ESql.INSERT);
-					this.attrs.put("telefono", contactoNuevo);
-					this.attrs.put("celular", contactoNuevo);
+					telefono= new ClienteTipoContacto();
+					telefono.setSqlAccion(ESql.INSERT);
+					telefono.setIdTipoContacto(ETiposContactos.TELEFONO.getKey());
+					this.attrs.put("telefono", telefono);
+					celular= new ClienteTipoContacto();
+					celular.setSqlAccion(ESql.INSERT);
+					celular.setIdTipoContacto(ETiposContactos.CELULAR.getKey());
+					this.attrs.put("celular", celular);
 				} // else
 			} // if
 			else{
@@ -581,10 +591,14 @@ public class Accion extends IBaseVenta implements Serializable {
 				loadDefaultCollections();					
 				this.attrs.put("registroCliente", new TcManticClientesDto());
 				this.clientesTiposContacto= new ArrayList<>();
-				contactoNuevo= new ClienteTipoContacto();
-				contactoNuevo.setSqlAccion(ESql.INSERT);
-				this.attrs.put("telefono", contactoNuevo);
-				this.attrs.put("celular", contactoNuevo);
+				telefono= new ClienteTipoContacto();
+				telefono.setSqlAccion(ESql.INSERT);
+				telefono.setIdTipoContacto(ETiposContactos.TELEFONO.getKey());
+				this.attrs.put("telefono", telefono);
+				celular= new ClienteTipoContacto();
+				celular.setSqlAccion(ESql.INSERT);
+				celular.setIdTipoContacto(ETiposContactos.CELULAR.getKey());
+				this.attrs.put("celular", celular);
 			} // else				
 		} // try
 		catch (Exception e) {
@@ -737,6 +751,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			} // if
 			regresar= new VentaFinalizada();
 			regresar.setTicketVenta(ticketVenta);
+			for(ClienteTipoContacto record: this.clientesTiposContacto)
+				record.setIdTipoContacto(ETiposContactos.CORREO.getKey());
 			regresar.setCorreosContacto(this.clientesTiposContacto);
 			regresar.setCelular((ClienteTipoContacto) this.attrs.get("celular"));
 			regresar.setTelefono((ClienteTipoContacto) this.attrs.get("telefono"));
