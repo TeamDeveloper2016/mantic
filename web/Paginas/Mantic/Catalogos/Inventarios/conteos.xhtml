@@ -11,8 +11,8 @@
     <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryKardexJs}"/>
     <script type="text/javascript">
 			Janal.Control.fields = {				
-				'inicial': {multiple: '$', validaciones: 'requerido|flotante', mascara: 'flotante'},
-				'stock'  : {multiple: '$', validaciones: 'flotante', mascara: 'flotante'}
+				'inicial': {multiple: '$', validaciones: 'requerido|flotante', mascara: 'libre'},
+				'stock'  : {multiple: '$', validaciones: 'flotante', mascara: 'libre'}
 			};
     </script>		
   </ui:define>
@@ -95,23 +95,19 @@
 									<p:inputText id="ejercicio" value="#{manticCatalogosInventariosConteos.attrs.vigente.ejercicio}" styleClass="janal-wid-96 filas" readonly="true"/>
 									<p:outputLabel for="inicial" value="Inicial:" style="font-weight: bold !important"/>
   								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-98" columnClasses="janal-wid-100, janal-wid-col-38">
-										<p:inputText id="inicial" value="#{manticCatalogosInventariosConteos.attrs.vigente.inicial}" styleClass="janal-column-right janal-wid-98 filas janal-key-event janal-color-orange" readonly="#{empty manticCatalogosInventariosConteos.attrs.vigente}" alt="contenedorGrupos\\:agregarInventario">	
-											<p:ajax event="keyup" process="@this" update="stock" onstart="$('#contenedorGrupos\\:inicial').val($janal.cleanToken($('#contenedorGrupos\\:inicial').val())); return true;"/>
+										<p:inputText id="inicial" value="#{manticCatalogosInventariosConteos.attrs.vigente.inicial}" styleClass="janal-column-right janal-wid-98 filas janal-key-kardex janal-color-orange" readonly="#{empty manticCatalogosInventariosConteos.attrs.vigente}">	
+											<p:ajax event="keyup" process="@this" update="stock" onstart="return true;"/>
 										</p:inputText>	
-										<p:commandButton id="agregarInventario" process="@this" icon="fa fa-cart-plus" title="Agregar/Actualizar inventario" style="float:right;" styleClass="janal-key-event filas" action="#{manticCatalogosInventariosConteos.doAceptar}" disabled="#{empty manticCatalogosInventariosConteos.attrs.vigente}" alt="codigos"/>
+										<p:commandButton id="agregarInventario" process="@this" icon="fa fa-cart-plus" title="Agregar/Actualizar inventario" style="float:right;" styleClass="janal-key-kardex filas" action="#{manticCatalogosInventariosConteos.doAceptar}" disabled="#{empty manticCatalogosInventariosConteos.attrs.vigente}" onstart="janal.execute();"/>
 									</p:panelGrid>
-									<p:outputLabel for="entradas" value="Entradas:" style="font-weight: bold !important"/>
-									<p:inputText id="entradas" value="#{manticCatalogosInventariosConteos.attrs.vigente.entradas}" styleClass="janal-column-right janal-wid-96 filas" readonly="true"/>	
-									<p:outputLabel for="salidas" value="Salidas:" style="font-weight: bold !important"/>
-									<p:inputText id="salidas" value="#{manticCatalogosInventariosConteos.attrs.vigente.salidas}" styleClass="janal-column-right janal-wid-96 filas" readonly="true"/>
 									<p:outputLabel for="stock" value="Stock:" style="font-weight: bold !important"/>
 									<p:inputText id="stock" value="#{manticCatalogosInventariosConteos.attrs.vigente.inicial}" styleClass="janal-column-right janal-wid-96 filas" readonly="true"/>
   							  <p:outputLabel value="Fecha:" style="font-weight: bold !important"/>
-  								<p:inputText value="#{manticCatalogosInventariosConteos.attrs.vigente.registro}" styleClass="janal-wid-96 filas" readonly="true"/>
+  								<p:inputText value="#{manticCatalogosInventariosConteos.doRegistro(manticCatalogosInventariosConteos.attrs.vigente.registro)}" styleClass="janal-wid-96 filas" readonly="true"/>
 								</p:panelGrid>	
 								<p:panel id="panelImage" header="#{manticCatalogosInventariosConteos.attrs.articulo.propio}" styleClass="TexAlCenter janal-wid-100-txt" style="height:98%">
 									<a id="source-image" data-magnify="gallery" data-caption="#{manticCatalogosInventariosConteos.attrs.articulo.nombre}" data-group="icon-gallery" href="" title="Click para ver más grande la imagen">
-										<p:graphicImage id="icon-image" value="#{manticCatalogosInventariosConteos.image}" styleClass="janal-logo-mini" width="165" height="165" stream="false" style="cursor:zoom-in;"/>
+										<p:graphicImage id="icon-image" value="#{manticCatalogosInventariosConteos.image}" styleClass="janal-logo-mini" width="105" height="105" stream="false" style="cursor:zoom-in;"/>
 									</a>	
 								</p:panel>
 							</p:panelGrid>

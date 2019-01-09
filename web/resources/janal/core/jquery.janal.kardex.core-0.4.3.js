@@ -50,6 +50,22 @@
 		}, // init
 		events: function() {
  			janal.console('jsKardex.events');
+	    $(document).on('keydown', '.janal-key-kardex', function(e) {
+				var key= e.keyCode? e.keyCode: e.which;
+				janal.console('jsPrecios.keydown: '+ key);
+				switch(key) {
+					case $precios.VK_TAB:
+					case $precios.VK_ENTER:
+						janal.console('jsPrecios.keydown: '+ $(this).attr('id'));
+						if('codigos_input'=== $(this).attr('id'))
+              $('#contenedorGrupos\\:inicial').focus();								
+						if('contenedorGrupos:inicial'=== $(this).attr('id'))
+              $('#contenedorGrupos\\:agregarInventario').focus();								
+						if('contenedorGrupos:agregarInventario'=== $(this).attr('id'))
+              $(this).click();								
+            return false;  					
+				} // swtich
+			});	
       $(document).on('keyup', '.key-up-event', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('jsKardex.keyup: '+ $(this).attr('id')+ ' key: '+ key);

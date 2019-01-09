@@ -41,8 +41,6 @@
 						  $('#'+ $(this).attr('alt')).focus();
 							if('agregarFaltantes'=== $(this).attr('id'))
                 $(this).click();								
-							if('contenedorGrupos:agregarInventario'=== $(this).attr('id'))
-                $(this).click();								
 						} // if	
             return false;  					
 					case $precios.VK_ESC:

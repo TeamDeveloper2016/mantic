@@ -139,4 +139,8 @@ public abstract class IBaseAttribute implements Serializable {
 		return Global.format(EFormatoDinamicos.NUMERO_SIN_DECIMALES, numero);
 	}
 
+  public String doRegistro(Timestamp registro) {
+		return Global.format(EFormatoDinamicos.FECHA_HORA, registro);
+	}
+
 }
