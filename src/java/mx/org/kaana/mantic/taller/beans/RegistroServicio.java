@@ -15,9 +15,11 @@ public class RegistroServicio implements Serializable{
 	private TcManticClientesDto cliente;
 	private ContactoCliente contactoCliente;
 	private UISelectEntity clienteSeleccion;
+	private boolean registrarCliente;
+	private Long idClienteDefault;
 
 	public RegistroServicio() {
-		this(-1L, new TcManticServiciosDto(), new TcManticClientesDto(), new ContactoCliente());
+		this(-1L, new TcManticServiciosDto(), new TcManticClientesDto(), new ContactoCliente(), false, -1L);
 	} // RegistroServicio
 	
 	public RegistroServicio(Long idServicio) {
@@ -25,11 +27,12 @@ public class RegistroServicio implements Serializable{
 		init();		
 	} // RegistroServicio
 
-	public RegistroServicio(Long idServicio, TcManticServiciosDto servicio, TcManticClientesDto cliente, ContactoCliente contactoCliente) {
-		this.idServicio     = idServicio;
-		this.servicio       = servicio;
-		this.cliente        = cliente;
-		this.contactoCliente= contactoCliente;
+	public RegistroServicio(Long idServicio, TcManticServiciosDto servicio, TcManticClientesDto cliente, ContactoCliente contactoCliente, boolean registrarCliente, Long idClienteDefault) {
+		this.idServicio      = idServicio;
+		this.servicio        = servicio;
+		this.cliente         = cliente;
+		this.contactoCliente = contactoCliente;
+		this.registrarCliente= registrarCliente;
 	}
 
 	public Long getIdServicio() {
@@ -81,9 +84,27 @@ public class RegistroServicio implements Serializable{
 			this.servicio= motor.toServicio();
 			this.cliente= motor.toCliente(this.servicio.getIdCliente());
 			this.contactoCliente= motor.toContactoCliente(this.servicio.getIdCliente());
+			this.idClienteDefault= motor.toClienteDefault().getKey();
+			this.registrarCliente= this.servicio.getIdCliente()!= null && this.servicio.getIdCliente()>-1L && !this.servicio.getIdCliente().equals(this.idClienteDefault);			
 		} // try
 		catch (Exception e) {
 			Error.mensaje(e);
 		} // catch
 	} // init
+
+	public boolean isRegistrarCliente() {
+		return registrarCliente;
+	}
+
+	public void setRegistrarCliente(boolean registrarCliente) {
+		this.registrarCliente = registrarCliente;
+	}
+
+	public Long getIdClienteDefault() {
+		return idClienteDefault;
+	}
+
+	public void setIdClienteDefault(Long idClienteDefault) {
+		this.idClienteDefault = idClienteDefault;
+	}	
 }
