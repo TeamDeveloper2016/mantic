@@ -17,7 +17,7 @@ public class ClienteVenta {
 	}
 	
 	public ClienteVenta(TcManticClientesDto cliente, Domicilio domicilio, List<TrManticClienteTipoContactoDto> contacto) {
-		this(null, null, null, null);
+		this(cliente, domicilio, contacto, null);
 	}
 	
 	public ClienteVenta(TcManticClientesDto cliente, Domicilio domicilio, List<TrManticClienteTipoContactoDto> contacto, Long idClienteDomicilio) {

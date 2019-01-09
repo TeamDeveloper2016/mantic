@@ -41,6 +41,7 @@ import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.db.dto.TrManticVentaMedioPagoDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.enums.ETipoMediosPago;
+import mx.org.kaana.mantic.enums.ETiposContactos;
 import mx.org.kaana.mantic.enums.ETiposDomicilios;
 import mx.org.kaana.mantic.ventas.beans.ClienteVenta;
 import mx.org.kaana.mantic.ventas.beans.TicketVenta;
@@ -440,8 +441,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	private boolean pagarVenta(Session sesion, Long idEstatusVenta) throws Exception{
 		boolean regresar         = false;
 		Map<String, Object>params= null;
-		Long consecutivo          = -1L;
-		boolean validacionEstatus = false;
+		Long consecutivo         = -1L;
+		boolean validacionEstatus= false;
 		try {									
 			validacionEstatus= !idEstatusVenta.equals(EEstatusVentas.APARTADO.getIdEstatusVenta());
 			consecutivo= toSiguiente(sesion);			
@@ -457,6 +458,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 					this.ventaFinalizada.getCorreosContacto().add(this.ventaFinalizada.getTelefono());
 					this.ventaFinalizada.getDomicilio().setIdTipoDomicilio(ETiposDomicilios.FISCAL.getKey());
 					this.ventaFinalizada.getCliente().setIdUsoCfdi(getOrden().getIdUsoCfdi());
+					this.ventaFinalizada.getCliente().setIdTipoVenta(1L);
 					setClienteVenta(new ClienteVenta(this.ventaFinalizada.getCliente(), this.ventaFinalizada.getDomicilio(), null));
 					procesarCliente(sesion);
 					getOrden().setIdCliente(getIdClienteNuevo());
@@ -505,13 +507,21 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	@Override
 	public boolean registraClientesTipoContacto(Session sesion, Long idCliente) throws Exception {
 		TrManticClienteTipoContactoDto dto = null;
-    ESql sqlAccion  = null;
-    int count       = 0;
-    boolean validate= false;
-    boolean regresar= false;
+    ESql sqlAccion       = null;
+    int count            = 0;
+    boolean validate     = false;
+    boolean regresar     = false;
+		int orden            = 1;
+    boolean validateOrden= true;
     try {
       for (ClienteTipoContacto clienteTipoContacto : this.ventaFinalizada.getCorreosContacto()) {
 				if(clienteTipoContacto.getValor()!= null && !Cadena.isVacio(clienteTipoContacto.getValor())){
+					if(clienteTipoContacto.getIdTipoContacto().equals(ETiposContactos.CORREO.getKey()) && validateOrden){
+						clienteTipoContacto.setOrden(1L);
+						validateOrden= false;
+					} // if
+					else
+						clienteTipoContacto.setOrden(orden + 1L);
 					clienteTipoContacto.setIdCliente(idCliente);
 					clienteTipoContacto.setIdUsuario(JsfBase.getIdUsuario());
 					dto= (TrManticClienteTipoContactoDto) clienteTipoContacto;
@@ -525,6 +535,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 							validate = DaoFactory.getInstance().update(sesion, dto)>= 1L;
 							break;
 					} // switch
+					orden++;
 				} // if
 				else
 					validate= true;
@@ -998,6 +1009,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		TransaccionFactura factura= null;
 		CFDIGestor gestor         = null;
 		try {
+			sesion.flush();
 			gestor= new CFDIGestor(this.ventaFinalizada.getTicketVenta().getIdVenta());			
 			factura= new TransaccionFactura();
 			factura.setArticulos(gestor.toDetalleCfdiVentas(sesion));
