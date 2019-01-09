@@ -4319,14 +4319,10 @@
 					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
 				where
 					{condicion}				
-				and 					
-					tc_mantic_proveedores.razon_social like '%{proveedor}%'
-				and 
-					tc_mantic_almacenes.id_empresa in ({idEmpresa})
-				and 
-					(tc_mantic_almacenes.clave like upper('%{almacen}%') or tc_mantic_almacenes.nombre like upper('%{almacen}%'))
-				and 
-					tc_mantic_notas_entradas.id_empresa in ({idEmpresa})
+				and	tc_mantic_proveedores.razon_social like '%{proveedor}%'
+				and tc_mantic_almacenes.id_empresa in ({idEmpresa})
+				and (tc_mantic_almacenes.clave like upper('%{almacen}%') or tc_mantic_almacenes.nombre like upper('%{almacen}%'))
+				and tc_mantic_notas_entradas.id_empresa in ({idEmpresa})
 				order by
 					tc_mantic_notas_entradas.consecutivo, 
 					tc_mantic_empresas_deudas.registro desc						
