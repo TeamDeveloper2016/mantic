@@ -83,31 +83,43 @@
                 <p:menuitem id="xls" icon="fa fa-file-excel-o" title="Exportar XLS" onstart="return janal.exportTable('dataXls', 'tabla')" oncomplete="janal.desbloquear()"/>
               </div>  
             </f:facet>												
-            <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.consecutivo}">
+            <p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.consecutivo}">
               <f:facet name="header">
                 <h:outputText value="Consecutivo"/>
               </f:facet>
               <h:outputText value="#{filtro['consecutivo']}"/>
-            </p:column>														
-            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.herramienta}">
-              <f:facet name="header">
-                <h:outputText value="Herramienta"/>
-              </f:facet>
-              <h:outputText value="#{filtro['herramienta']}"/>
-            </p:column>					            
-            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.cliente}">
+            </p:column>											
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.cliente}">
               <f:facet name="header">
                 <h:outputText value="Cliente"/>
               </f:facet>
               <h:outputText value="#{filtro['razonSocial']}"/>
             </p:column>					                                    
+            <p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.herramienta}">
+              <f:facet name="header">
+                <h:outputText value="Herramienta"/>
+              </f:facet>
+              <h:outputText value="#{filtro['herramienta']}"/>
+            </p:column>					                        
 						<p:column class="janal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.estatus}">
               <f:facet name="header">
                 <h:outputText value="Estatus"/>
               </f:facet>
               <h:outputText value="#{filtro['estatus']}"/>
             </p:column>	                          			
-						<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.fechaEstimada}">
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.total}">
+              <f:facet name="header">
+                <h:outputText value="Precio"/>
+              </f:facet>
+              <h:outputText value="#{filtro['total']}"/>
+            </p:column>	                          			
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.registro}">
+              <f:facet name="header">
+                <h:outputText value="Fecha ingreso"/>
+              </f:facet>
+              <h:outputText value="#{filtro['registro']}"/>
+            </p:column>	                          			
+						<p:column class="janal-column-center MarAuto Responsive janal-wid-10" sortBy="#{filtro.fechaEstimada}">
               <f:facet name="header">
                 <h:outputText value="Fecha estimada"/>
               </f:facet>
@@ -122,8 +134,8 @@
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion"/>					
             <p:menuitem id="consultar" action="#{manticTallerFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					
             <p:menuitem id="movimientos" icon="fa fa-user" value="Bitacora" onstart="return janal.bloquear()" process="@this tabla" action="#{manticTallerFiltro.doMovimientos}"/>
-						<p:separator rendered="#{!(manticTallerFiltro.attrs.seleccionado.estatus eq '5')}"/>					
-            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticTallerFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticTallerFiltro.attrs.seleccionado.estatus eq '5')}"/>					            
+						<p:separator rendered="#{!(manticTallerFiltro.attrs.seleccionado.estatus eq '6')}"/>					
+            <p:menuitem icon="fa fa-exchange" value="Estatus" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticTallerFiltro.doLoadEstatus}" oncomplete="PF('dlgEstatus').show();" update="dialogoEstatus" rendered="#{!(manticTallerFiltro.attrs.seleccionado.estatus eq '6')}"/>					            
 						<p:separator/>
             <p:menuitem icon="fa fa-twitch" value="Refacciones" onstart="return janal.bloquear()" oncomplete="janal.desbloquear();" process="@this tabla" action="#{manticTallerFiltro.doRefacciones}"/> 
           </p:contextMenu>
