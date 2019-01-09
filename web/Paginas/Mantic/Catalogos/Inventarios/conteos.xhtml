@@ -98,7 +98,7 @@
 										<p:inputText id="inicial" value="#{manticCatalogosInventariosConteos.attrs.vigente.inicial}" styleClass="janal-column-right janal-wid-98 filas janal-key-kardex janal-color-orange" readonly="#{empty manticCatalogosInventariosConteos.attrs.vigente}">	
 											<p:ajax event="keyup" process="@this" update="stock" onstart="return true;"/>
 										</p:inputText>	
-										<p:commandButton id="agregarInventario" process="@this" icon="fa fa-cart-plus" title="Agregar/Actualizar inventario" style="float:right;" styleClass="janal-key-kardex filas" action="#{manticCatalogosInventariosConteos.doAceptar}" disabled="#{empty manticCatalogosInventariosConteos.attrs.vigente}" onstart="janal.execute();"/>
+										<p:commandButton id="agregarInventario" process="@this" icon="fa fa-cart-plus" title="Agregar/Actualizar inventario" style="float:right;" styleClass="janal-key-kardex filas" action="#{manticCatalogosInventariosConteos.doAceptar}" disabled="#{empty manticCatalogosInventariosConteos.attrs.vigente}" onstart="janal.execute();" oncomplete="$('#codigos_input').focus();"/>
 									</p:panelGrid>
 									<p:outputLabel for="stock" value="Stock:" style="font-weight: bold !important"/>
 									<p:inputText id="stock" value="#{manticCatalogosInventariosConteos.attrs.vigente.inicial}" styleClass="janal-column-right janal-wid-96 filas" readonly="true"/>
@@ -114,7 +114,7 @@
 							<p:spacer height="3px"/>
 							<p:dataTable lazy="true" id="tabla" widgetVar="kajoolTable" var="row" value="#{manticCatalogosInventariosConteos.lazyModel}" emptyMessage="#{Constantes.NO_EXISTEN_REGISTROS}" rows="#{Constantes.REGISTROS_POR_PAGINA}" paginatorTemplate="#{Constantes.ICONOS_DE_PAGINACION}" rowsPerPageTemplate="#{Constantes.REGISTROS_POR_CADA_PAGINA}" selection="#{manticCatalogosInventariosConteos.attrs.seleccionado}" selectionMode="single" paginator="#{manticCatalogosInventariosConteos.lazyModel.rowCount gt manticCatalogosInventariosConteos.lazyModel.pageSize}" rowIndexVar="index" reflow="true" styleClass="filas">
 								<f:facet name="header">
-									<p:outputLabel value="Historial del inventario del articulo" style="float:left" styleClass="janal-text-white"/>
+									<p:outputLabel value="Historial del articulo" style="float:left" styleClass="janal-text-white"/>
 									<div class="lg-pantalla">
 										<p:menuButton value="Opciones">
 											<p:menuitem id="pdfIcon" icon="fa fa-file-pdf-o" value="Exportar PDF" onstart="return janal.exportTable('dataPdf', 'tabla')" oncomplete="janal.desbloquear()"/>
