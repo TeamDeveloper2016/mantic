@@ -41,4 +41,5 @@ public class ArticuloInventario extends TcManticInventariosDto {
 	public void setNuevo(Boolean nuevo) {
 		this.nuevo = nuevo;
 	}	
+	
 }

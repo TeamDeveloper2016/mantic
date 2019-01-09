@@ -41,7 +41,7 @@
 						  $('#'+ $(this).attr('alt')).focus();
 							if('agregarFaltantes'=== $(this).attr('id'))
                 $(this).click();								
-							if('agregarInventario'=== $(this).attr('id'))
+							if('contenedorGrupos:agregarInventario'=== $(this).attr('id'))
                 $(this).click();								
 						} // if	
             return false;  					

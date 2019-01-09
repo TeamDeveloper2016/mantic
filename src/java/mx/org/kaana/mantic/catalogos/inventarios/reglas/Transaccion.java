@@ -1,5 +1,6 @@
 package mx.org.kaana.mantic.catalogos.inventarios.reglas;
 
+import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
@@ -20,6 +21,11 @@ public class Transaccion extends IBaseTnx{
 
 	public Transaccion(IBaseDto dto) {
 		this.dto = dto;
+	}
+
+	public Transaccion(ArticuloInventario articulo) {
+		this.inventarios= new ArrayList<>();
+		this.inventarios.add(articulo);
 	}
 
 	public Transaccion(List<ArticuloInventario> inventarios) {
@@ -60,10 +66,6 @@ public class Transaccion extends IBaseTnx{
 					sqlAccion = articuloInventario.getSqlAccion();
 					switch (sqlAccion) {
 						case INSERT:
-							dto.setIdUsuario(JsfBase.getIdUsuario());
-							dto.setSalidas(0D);
-							dto.setStock(articuloInventario.getEntradas()-articuloInventario.getSalidas());
-							dto.setIdInventario(-1L);
 							validate = registrar(sesion, dto);
 							break;
 						case UPDATE:

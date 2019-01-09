@@ -1,7 +1,9 @@
 package mx.org.kaana.mantic.catalogos.inventarios.backing;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +16,7 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
+import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
@@ -74,8 +77,22 @@ public class Conteos extends IBaseFilter implements Serializable {
 			this.attrs.put("sortOrder", " order by registro desc");
 			if(this.attrs.get("almacen")!= null)
 			  this.attrs.put("idAlmacen", ((Entity)this.attrs.get("almacen")).getKey());			
-			Entity vigente= (Entity)DaoFactory.getInstance().toEntity("TcManticInventariosDto", "inventario", this.attrs);
-			UIBackingUtilities.toFormatEntity(vigente, columns);
+			ArticuloInventario vigente= (ArticuloInventario)DaoFactory.getInstance().toEntity(ArticuloInventario.class, "TcManticInventariosDto", "inventario", this.attrs);
+			if(vigente== null || !vigente.getEntradas().equals(0D) || !vigente.getSalidas().equals(0D)) {
+				vigente= new ArticuloInventario(-1L, ESql.INSERT, true);
+				vigente.setIdAlmacen((Long)this.attrs.get("idAlmacen"));
+				vigente.setIdArticulo((Long)this.attrs.get("idArticulo"));
+				vigente.setEjercicio(new Long(Calendar.getInstance().get(Calendar.YEAR)));
+				vigente.setInicial(0D);
+				vigente.setEntradas(0D);
+				vigente.setSalidas(0D);
+				vigente.setStock(0D);
+  			vigente.setIdUsuario(JsfBase.getIdUsuario());
+				vigente.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			} // if
+			else
+       if(vigente.getEntradas().equals(0D) && vigente.getSalidas().equals(0D))
+				 vigente.setSqlAccion(ESql.UPDATE);
       this.attrs.put("vigente", vigente);
       this.lazyModel = new FormatCustomLazy("VistaInventariosDto", this.attrs, columns);
       UIBackingUtilities.resetDataTable();
@@ -237,9 +254,14 @@ public class Conteos extends IBaseFilter implements Serializable {
 	public void doAceptar() {
 		Transaccion transaccion= null;
 		try {
-			transaccion= new Transaccion(this.inventarios);
-			if(transaccion.ejecutar(EAccion.AGREGAR))
-				JsfBase.addMessage("Inventarios", "Se agrego de forma correcta el inventario", ETipoMensaje.INFORMACION);
+			ArticuloInventario articulo= (ArticuloInventario)this.attrs.get("vigente");
+			articulo.setIdUsuario(JsfBase.getIdUsuario());
+			articulo.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			transaccion= new Transaccion(articulo);
+			if(transaccion.ejecutar(EAccion.AGREGAR)) {
+				JsfBase.addMessage("Inventarios", "Se agregó/modificó de forma correcta el inventario", ETipoMensaje.INFORMACION);
+				articulo.setSqlAccion(ESql.UPDATE);
+			} // if	
 			else
 				JsfBase.addMessage("Inventarios", "Ocurrió un error al agregar el inventario", ETipoMensaje.ERROR);
 		} // try
