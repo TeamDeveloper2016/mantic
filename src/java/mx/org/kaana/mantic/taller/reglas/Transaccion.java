@@ -11,6 +11,8 @@ import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.kajool.enums.EBooleanos;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.facturama.reglas.CFDIGestor;
+import mx.org.kaana.libs.facturama.reglas.TransaccionFactura;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
@@ -22,10 +24,11 @@ import mx.org.kaana.mantic.db.dto.TcManticServiciosDetallesDto;
 import mx.org.kaana.mantic.db.dto.TcManticServiciosDto;
 import mx.org.kaana.mantic.db.dto.TrManticClienteTipoContactoDto;
 import mx.org.kaana.mantic.enums.ETiposContactos;
+import mx.org.kaana.mantic.facturas.beans.ClienteFactura;
 import mx.org.kaana.mantic.taller.beans.RegistroServicio;
 import org.hibernate.Session;
 
-public class Transaccion extends IBaseTnx{
+public class Transaccion extends TransaccionFactura{
 
 	private static final Long ELABORADA= 1L;
 	private IBaseDto dto;
@@ -111,15 +114,23 @@ public class Transaccion extends IBaseTnx{
 			idServicio= DaoFactory.getInstance().insert(sesion, this.registroServicio.getServicio());
 			if(idServicio>= 1L){
 				if(DaoFactory.getInstance().insert(sesion, loadBitacora(sesion, idServicio, this.registroServicio.getServicio().getObservaciones()))>= 1L){
-					if(this.registroServicio.getServicio().getIdCliente()== null || this.registroServicio.getServicio().getIdCliente().equals(-1L)){
-						idCliente= registraCliente(sesion);
-						this.registroServicio.getServicio().setIdCliente(idCliente);
-						regresar= DaoFactory.getInstance().update(sesion, this.registroServicio.getServicio())>= 1L;
-					} // if			
-					else{
-						registraContactos(sesion, this.registroServicio.getServicio().getIdCliente());
+					if(this.registroServicio.isRegistrarCliente()){
+						if(this.registroServicio.getCliente().getIdCliente()== null || this.registroServicio.getCliente().getIdCliente().equals(-1L) || this.registroServicio.getCliente().getIdCliente().equals(this.registroServicio.getIdClienteDefault())){
+							idCliente= registraCliente(sesion);
+							this.registroServicio.getServicio().setIdCliente(idCliente);
+							regresar= DaoFactory.getInstance().update(sesion, this.registroServicio.getServicio())>= 1L;
+							sesion.flush();
+							registraClienteFacturama(sesion, idCliente);
+						} // if			
+						else{
+							registraContactos(sesion, this.registroServicio.getServicio().getIdCliente());
+							sesion.flush();
+							actualizarClienteFacturama(sesion, this.registroServicio.getServicio().getIdCliente());
+							regresar= true;
+						} // else
+					} // if
+					else
 						regresar= true;
-					} // else
 				} // if			
 			} // if
     } // try
@@ -129,6 +140,20 @@ public class Transaccion extends IBaseTnx{
     } // catch		
     return regresar;
   } // procesarCliente
+	
+	private void registraClienteFacturama(Session sesion, Long idCliente){		
+		CFDIGestor gestor     = null;
+		ClienteFactura cliente= null;
+		try {
+			gestor= new CFDIGestor(idCliente);
+			cliente= gestor.toClienteFactura(sesion);
+			setCliente(cliente);
+			super.procesarCliente(sesion);
+		} // try
+		catch (Exception e) {			
+			mx.org.kaana.libs.formato.Error.mensaje(e);
+		} // catch		
+	} // registraArticuloFacturama
 	
 	private TcManticServiciosBitacoraDto loadBitacora(Session sesion, Long idServicio, String observaciones) throws Exception{
 		return loadBitacora(sesion, ELABORADA, idServicio, observaciones);
@@ -174,18 +199,35 @@ public class Transaccion extends IBaseTnx{
 	} // loadContactos
 	
   private boolean actualizarServicio(Session sesion) throws Exception {		
-    boolean regresar= false;
-		Long idCliente  = -1L;		
+    boolean regresar         = false;
+		Long idCliente           = -1L;	
+		boolean registrarCliente = false;
+		boolean actualizarCliente= false;
     try {
-			if(this.registroServicio.getServicio().getIdCliente()== null || this.registroServicio.getServicio().getIdCliente().equals(-1L)){
-				idCliente= registraCliente(sesion);
-				this.registroServicio.getServicio().setIdCliente(idCliente);				
+			if(this.registroServicio.isRegistrarCliente()){
+				if(this.registroServicio.getCliente().getIdCliente()== null || this.registroServicio.getCliente().getIdCliente().equals(-1L) || this.registroServicio.getCliente().getIdCliente().equals(this.registroServicio.getIdClienteDefault())){
+					idCliente= registraCliente(sesion);
+					this.registroServicio.getServicio().setIdCliente(idCliente);				
+					registrarCliente= true;
+				} // if
+				else{
+					idCliente= this.registroServicio.getCliente().getIdCliente();					
+					registraContactos(sesion, idCliente);
+					this.registroServicio.getServicio().setIdCliente(idCliente);				
+					actualizarCliente= true;
+				} // else
 			} // if
-			else{
-				idCliente= this.registroServicio.getServicio().getIdCliente();
-				registraContactos(sesion, idCliente);
-			} // else
+			else
+				this.registroServicio.getServicio().setIdCliente(this.registroServicio.getIdClienteDefault());				
 			regresar= DaoFactory.getInstance().update(sesion, this.registroServicio.getServicio())>= 1L;      
+			if(registrarCliente){
+				sesion.flush();
+				registraClienteFacturama(sesion, idCliente);
+			} // if
+			if(actualizarCliente){
+				sesion.flush();
+				actualizarClienteFacturama(sesion, idCliente);
+			} // if
     } // try
     catch (Exception e) {
       throw e;
@@ -193,6 +235,23 @@ public class Transaccion extends IBaseTnx{
     return regresar;
   } // actualizarCliente
 
+	private void actualizarClienteFacturama(Session sesion, Long idCliente){		
+		CFDIGestor gestor     = null;
+		ClienteFactura cliente= null;
+		try {
+			gestor= new CFDIGestor(idCliente);
+			cliente= gestor.toClienteFactura(sesion);
+			setCliente(cliente);
+			if(cliente.getIdFacturama()!= null)
+				updateCliente(sesion);
+			else
+				super.procesarCliente(sesion);
+		} // try
+		catch (Exception e) {			
+			mx.org.kaana.libs.formato.Error.mensaje(e);
+		} // catch		
+	} // actualizarArticuloFacturama
+	
 	private void registraContactos(Session sesion, Long idCliente) throws Exception{
 		List<ClienteTipoContacto> contactos= null;
 		ClienteTipoContacto pivote         = null;
