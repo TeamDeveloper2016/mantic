@@ -9,7 +9,7 @@
                 template="/WEB-INF/plantillas/accion.xhtml">
 	<ui:param name="titulo" value="#{manticInventariosDevolucionesAccion.attrs.nombreAccion} una devolución de entrada"/>
 	<ui:define name="librerias">
-    <h:outputScript library="janal" name="#{kajoolUtilAplicacion.articulosJs}"/>
+    <h:outputScript library="janal" name="#{kajoolUtilAplicacion.libraryArticulosJs}"/>
 		<script type="text/javascript">
 			Janal.Control.fields = {				 				
 				'contenedorGrupos\\:consecutivo'    : {validaciones: 'requerido', mascara: 'libre'},

@@ -4,6 +4,24 @@
 -->
 <process>
 	<dml> 
+		<unit id="VistaInventariosDto">
+			<select id="lazy">
+				select
+					tc_mantic_inventarios.id_inventario as id_key,
+					tc_mantic_inventarios.*,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as persona
+				from 
+					tc_mantic_inventarios
+				inner join
+					tc_janal_usuarios on tc_mantic_inventarios.id_usuario= tc_janal_usuarios.id_usuario          
+				inner join
+					tc_mantic_personas on tc_janal_usuarios.id_persona= tc_mantic_personas.id_persona
+				where
+					id_almacen= {idAlmacen}
+					and id_articulo= {idArticulo}
+				{sortOrder}
+			</select>	
+		</unit>	
 		<unit id="VistaCargasMasivasDto">
 			<select id="lazy">
 				select
@@ -2572,7 +2590,8 @@
 				  tc_mantic_domicilios.asentamiento,
 				  tc_mantic_domicilios.codigo_postal,
 				  tc_janal_entidades.descripcion as entidad,
-				  tc_janal_municipios.descripcion as municipio             
+				  tc_janal_municipios.descripcion as municipio,
+				  tc_mantic_empresas.nombre as sucursal
 			  from 
 				  tc_mantic_almacenes
 			  inner join
@@ -2587,8 +2606,10 @@
 				  tc_janal_municipios on tc_janal_municipios.id_municipio= tc_janal_localidades.id_municipio
 				inner join
 					tc_janal_entidades  on tc_janal_municipios.id_entidad=tc_janal_entidades.id_entidad
+				inner join 
+					tc_mantic_empresas on tc_mantic_almacenes.id_empresa = tc_mantic_empresas.id_empresa
 				where					
-					tc_mantic_almacenes.id_empresa= {idEmpresa} 				
+					tc_mantic_almacenes.id_empresa in ({idEmpresa})
 			</select> 
 		</unit>
 		<unit id="VistaPersonasDto">

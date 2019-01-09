@@ -99,4 +99,5 @@ public class Transaccion extends IBaseTnx{
   private boolean actualizar(Session sesion, IBaseDto dto) throws Exception {
     return DaoFactory.getInstance().update(sesion, dto) >= 1L;
   } // actualizar
+	
 }
