@@ -66,7 +66,7 @@ public class Accion extends IBaseAttribute implements Serializable {
 				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
       this.attrs.put("accion", JsfBase.getFlashAttribute("accion"));
       this.attrs.put("idServicio", JsfBase.getFlashAttribute("idServicio"));
-			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin());
+			this.attrs.put("admin", JsfBase.isAdminEncuestaOrAdmin());			
       doLoad();      					
     } // try
     catch (Exception e) {
@@ -86,10 +86,11 @@ public class Accion extends IBaseAttribute implements Serializable {
     try {
       eaccion = (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
+			motor= new MotorBusqueda(-1L);
       switch (eaccion) {
         case AGREGAR:
-          this.registroServicio = new RegistroServicio();
-					motor= new MotorBusqueda(-1L);
+					this.attrs.put("clienteRegistrado", false);
+          this.registroServicio = new RegistroServicio();					
 					this.registroServicio.setCliente(motor.toCliente(((Entity)motor.toClienteDefault()).getKey()));
 					loadCollections();
           break;
@@ -98,6 +99,7 @@ public class Accion extends IBaseAttribute implements Serializable {
           idServicio = Long.valueOf(this.attrs.get("idServicio").toString());
           this.registroServicio = new RegistroServicio(idServicio);
 					loadCollections();					
+					this.attrs.put("clienteRegistrado", this.registroServicio.getServicio().getIdCliente()!= null && this.registroServicio.getServicio().getIdCliente()>-1L && !this.registroServicio.getCliente().getIdCliente().equals(motor.toClienteDefault().getKey()));
           break;
       } // switch 			
     } // try
@@ -111,6 +113,7 @@ public class Accion extends IBaseAttribute implements Serializable {
     Transaccion transaccion = null;
     String regresar = null;
     try {
+			this.registroServicio.setRegistrarCliente((Boolean)this.attrs.get("clienteRegistrado"));
       transaccion = new Transaccion(this.registroServicio);
       if (transaccion.ejecutar((EAccion) this.attrs.get("accion"))) {
         regresar = "filtro".concat(Constantes.REDIRECIONAR);
