@@ -16,7 +16,6 @@ import mx.org.kaana.libs.pagina.KajoolBaseException;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.beans.Totales;
-import mx.org.kaana.mantic.facturas.beans.FacturaFicticia;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
