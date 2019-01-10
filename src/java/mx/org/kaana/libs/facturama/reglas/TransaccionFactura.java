@@ -35,6 +35,7 @@ public class TransaccionFactura extends IBaseTnx{
 	private ClienteFactura cliente;
 	private ArticuloFactura articulo;	
 	private List<ArticuloFactura> articulos;	
+	private String idFacturamaRegistro;
 
 	public TransaccionFactura() {		
 	} // Transaccion
@@ -72,6 +73,10 @@ public class TransaccionFactura extends IBaseTnx{
 	public void setArticulos(List<ArticuloFactura> articulos) {
 		this.articulos = articulos;
 	}		
+
+	public String getIdFacturamaRegistro() {
+		return idFacturamaRegistro;
+	}	
 	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {		
@@ -352,6 +357,7 @@ public class TransaccionFactura extends IBaseTnx{
 		try {
 			cfdi= CFDIFactory.getInstance().createCfdi(this.cliente, this.articulos);
 			if(isCorrectId(cfdi.getId())) {
+				this.idFacturamaRegistro= cfdi.getId();
 				regresar= actualizarFactura(sesion, this.cliente.getIdFactura(), cfdi);
 				Calendar calendar= Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19));
 				String path = Configuracion.getInstance().getPropiedadSistemaServidor("facturama")+ calendar.get(Calendar.YEAR)+ "/"+ Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase()+"/"+ this.cliente.getRfc().concat("/");
