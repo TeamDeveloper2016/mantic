@@ -36,11 +36,13 @@ import mx.org.kaana.mantic.ventas.comun.IBaseVenta;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import org.primefaces.context.RequestContext;
 import org.primefaces.model.StreamedContent;
+import org.apache.log4j.Logger;
 
 @Named(value= "manticVentasAccion")
 @ViewScoped
 public class Accion extends IBaseVenta implements Serializable {
 
+	private static final Logger LOG            = Logger.getLogger(Accion.class);
   private static final long serialVersionUID = 327393488565639367L;
 	private static final String VENDEDOR_PERFIL= "VENDEDOR DE PISO";	
 	private EOrdenes tipoOrden;
@@ -69,9 +71,10 @@ public class Accion extends IBaseVenta implements Serializable {
     try {
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
 			this.attrs.put("idVenta", JsfBase.getFlashAttribute("idVenta")== null? -1L: JsfBase.getFlashAttribute("idVenta"));
-      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null ? EAccion.AGREGAR : (this.attrs.get("idVenta") != null ? JsfBase.getFlashAttribute("accion") : EAccion.AGREGAR));      
+      this.attrs.put("accion", JsfBase.getFlashAttribute("accion")== null ? EAccion.AGREGAR : (this.attrs.get("idVenta") != null && !Long.valueOf(this.attrs.get("idVenta").toString()).equals(-1L) ? JsfBase.getFlashAttribute("accion") : EAccion.AGREGAR));      
       this.attrs.put("idCliente", JsfBase.getFlashAttribute("idCliente")== null? -1L: JsfBase.getFlashAttribute("idCliente"));
 			this.attrs.put("retorno", JsfBase.getFlashAttribute("retorno")== null? null: JsfBase.getFlashAttribute("retorno"));
+			LOG.warn("Flash atributes [accion[" + this.attrs.get("accion") + "] idVenta [" + this.attrs.get("idVenta") + "] retorno [" + this.attrs.get("retorno") + "]]");
       this.attrs.put("isPesos", false);
 			this.attrs.put("sinIva", true);
 			this.attrs.put("buscaPorCodigo", true);
@@ -106,6 +109,8 @@ public class Accion extends IBaseVenta implements Serializable {
     try {
       eaccion= (EAccion) this.attrs.get("accion");
       this.attrs.put("nombreAccion", Cadena.letraCapital(eaccion.name()));
+			LOG.warn("Inicializando admin orden.");
+			LOG.warn("Accion:" + eaccion.name());
       switch (eaccion) {
         case AGREGAR:											
           this.setAdminOrden(new AdminTickets(new TicketVenta(-1L)));
@@ -117,6 +122,7 @@ public class Accion extends IBaseVenta implements Serializable {
           break;
         case MODIFICAR:			
         case CONSULTAR:			
+					LOG.warn("Atributes:" + this.attrs.toString());
           this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", this.attrs)));					
     			this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
 					idCliente= ((TicketVenta)getAdminOrden().getOrden()).getIdCliente();

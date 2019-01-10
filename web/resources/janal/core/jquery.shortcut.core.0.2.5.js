@@ -335,5 +335,9 @@ shortcut.add("Shift+P", function() {
 	janal.console('Shortcut cobrar venta:');
 	if(PF('contenedorCaja')) {
 	  cobrarVenta();
+		setTimeout(function(){			
+			$('#contenedorGrupos\\:efectivo_input').addClass('ui-state-focus');
+			$('#contenedorGrupos\\:efectivo_input').focus();
+		}, 1000);						
 	} // if
 });
