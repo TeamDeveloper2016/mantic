@@ -146,7 +146,7 @@ public class Transaccion extends IBaseTnx {
 								params.put("comentarios", this.comentarios);								
 								params.put("timbrado", new Timestamp(Calendar.getInstance().getTimeInMillis()));								
 								DaoFactory.getInstance().update(sesion, TcManticFacturasDto.class, factura.getIdFactura(), params);
-								generarTimbradoFactura(sesion, this.orden.getIdFicticia(), factura.getIdFactura().toString());
+								generarTimbradoFactura(sesion, this.orden.getIdFicticia(), factura.getIdFactura().toString(), this.correos);
 							} // 
 						} // if
 						else 
@@ -384,7 +384,7 @@ public class Transaccion extends IBaseTnx {
 		return regresar;
 	} // toClientesTipoContacto
 	
-	private void generarTimbradoFactura(Session sesion, Long idFicticia, String idFactura) throws Exception {
+	private void generarTimbradoFactura(Session sesion, Long idFicticia, String idFactura, String correos) throws Exception {
 		TransaccionFactura factura= null;
 		CFDIGestor gestor         = null;
 		try {
@@ -393,7 +393,13 @@ public class Transaccion extends IBaseTnx {
 			factura.setArticulos(gestor.toDetalleCfdiFicticia(sesion));
 			factura.setCliente(gestor.toClienteCfdiFicticia(sesion));
 			factura.getCliente().setIdFactura(idFactura);
-			factura.generarCfdi(sesion);			
+			factura.generarCfdi(sesion);	
+			try {
+				CFDIFactory.getInstance().toSendMail(correos, factura.getIdFacturamaRegistro());
+			} // try
+			catch (Exception e) {				
+				Error.mensaje(e);				
+			} // catch						
 		} // try
 		catch (Exception e) {			
 			Error.mensaje(e);
