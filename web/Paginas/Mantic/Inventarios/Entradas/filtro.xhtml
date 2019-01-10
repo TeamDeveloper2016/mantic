@@ -190,10 +190,10 @@
             </f:facet>
           </p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
-            <p:menuitem id="agregar" value="Agregar" action="#{manticInventariosEntradasFiltro.doAgregar}" icon="fa fa-plus" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|4|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus) and manticInventariosEntradasFiltro.attrs.seleccionado.idNotaTipo ne '3'}">
+            <p:menuitem id="agregar" value="Agregar" action="#{manticInventariosEntradasFiltro.doAgregar}" icon="fa fa-plus" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{fn:contains('|1|2|4|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus) and manticInventariosEntradasFiltro.attrs.seleccionado.idNotaTipo eq '2'}">
 							<f:setPropertyActionListener target="#{manticInventariosEntradasFiltro.attrs.idOrdenCompra}" value="#{manticInventariosEntradasFiltro.attrs.seleccionado.idOrdenCompra}"/>
 						</p:menuitem>	
-            <p:separator rendered="#{fn:contains('|1|2|4|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus) and manticInventariosEntradasFiltro.attrs.seleccionado.idNotaTipo ne '3'}"/>
+            <p:separator rendered="#{fn:contains('|1|2|4|', manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus) and manticInventariosEntradasFiltro.attrs.seleccionado.idNotaTipo eq '2'}"/>
             <p:menuitem id="modificar" value="Modificar" action="#{manticInventariosEntradasFiltro.doAccion('MODIFICAR')}" icon="fa fa-edit" ajax="false" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" rendered="#{manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '1'}"/>					
             <p:menuitem id="eliminar" icon="fa fa-close" value="Eliminar" onstart="return janal.bloquear()" process="@this tabla" oncomplete="PF('dialogoConfirmacion').show();" update="confirmacion" rendered="#{manticInventariosEntradasFiltro.attrs.seleccionado.idNotaEstatus eq '1'}"/>					
             <p:menuitem id="consultar" action="#{manticInventariosEntradasFiltro.doAccion('CONSULTAR')}" icon="fa fa-search" ajax="false" value="Consultar" onstart="return janal.bloquear()" oncomplete="janal.desbloquear()" />					

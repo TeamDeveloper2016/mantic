@@ -94,9 +94,9 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 				Descuentos descuentos= new Descuentos(item.getCosto(), item.getDescuento());
 				// aplicar el descuento sobre el valor del costo del articulo para afectar el catalogo
 			  global.setPrecio(Numero.toRedondearSat(descuentos.toImporte()== 0D? item.getCosto(): descuentos.toImporte()));
-			  global.setMenudeo(Numero.toRedondearSat(item.getCosto()* Constantes.PORCENTAJE_MENUDEO));
-			  global.setMedioMayoreo(Numero.toRedondearSat(item.getCosto()* Constantes.PORCENTAJE_MEDIO_MAYOREO));
-			  global.setMayoreo(Numero.toRedondearSat(item.getCosto()* Constantes.PORCENTAJE_MAYOREO));
+			  global.setMenudeo(Numero.toRedondearSat(global.getPrecio()* Constantes.PORCENTAJE_MENUDEO));
+			  global.setMedioMayoreo(Numero.toRedondearSat(global.getPrecio()* Constantes.PORCENTAJE_MEDIO_MAYOREO));
+			  global.setMayoreo(Numero.toRedondearSat(global.getPrecio()* Constantes.PORCENTAJE_MAYOREO));
 				global.setDescuento(item.getDescuento());
 				global.setExtra(item.getExtras());
 			} // if	

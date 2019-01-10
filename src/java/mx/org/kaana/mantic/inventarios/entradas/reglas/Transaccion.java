@@ -304,6 +304,12 @@ public class Transaccion extends Inventarios implements Serializable {
 				TcManticOrdenesBitacoraDto estatus= new TcManticOrdenesBitacoraDto(ordenCompra.getIdOrdenEstatus(), "", JsfBase.getIdUsuario(), ordenCompra.getIdOrdenCompra(), -1L, ordenCompra.getConsecutivo(), this.orden.getTotal());
 				DaoFactory.getInstance().insert(sesion, estatus);
 			} // if
+			else
+			  if(this.orden.getIdNotaTipo().equals(1L) && this.aplicar) {
+					TcManticNotasBitacoraDto seguimiento= new TcManticNotasBitacoraDto(-1L, "", JsfBase.getIdUsuario(), this.orden.getIdNotaEntrada(), this.orden.getIdNotaEstatus(), this.orden.getConsecutivo(), this.orden.getTotal());
+					DaoFactory.getInstance().insert(sesion, seguimiento);
+					this.toApplyNotaEntrada(sesion);
+				} // if
 		} // try
 		catch (Exception e) {
 			throw e;
