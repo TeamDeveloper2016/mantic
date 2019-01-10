@@ -1072,6 +1072,10 @@
 				ok= false;
 			} // if	
 			return ok;
+		},
+		focusCobro: function() {
+			$('#contenedorGrupos\\:efectivo_input').addClass('ui-state-focus');
+			$('#contenedorGrupos\\:efectivo_input').focus();
 		}
 	});
 	
