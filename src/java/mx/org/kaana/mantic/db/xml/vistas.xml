@@ -5604,7 +5604,7 @@
 					tc_mantic_ficticias.registro,
 					tc_mantic_ficticias_estatus.estatus_asociados, 					
 					tc_mantic_personas.cuenta,
-					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) ,
+					concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno),
 					tc_mantic_facturas.timbrado,
 					tc_mantic_facturas.folio,
 					tc_mantic_clientes.razon_social,

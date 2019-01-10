@@ -109,7 +109,8 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
-      columns.add(new Columna("timbrado", EFormatoDinamicos.FECHA_CORTA));      
+      columns.add(new Columna("timbrado", EFormatoDinamicos.FECHA_CORTA));   
+      this.attrs.put("sortOrder", "order by tc_mantic_ficticias.registro desc");
       this.lazyModel = new FormatCustomLazy("VistaFicticiasDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try

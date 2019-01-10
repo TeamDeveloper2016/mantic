@@ -137,11 +137,11 @@
                 <p:menuitem id="facturasPdfIcon" icon="fa fa-file-pdf-o" title="Facturama pdf" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticFacturasFiltro.doReporteFacturas('FACTURAS_RESUMEN')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>	            
-            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.empresa}">
+            <p:column class="MarAuto Responsive janal-wid-10" sortBy="#{filtro.nombreEmpresa}">
               <f:facet name="header">
                 <h:outputText value="Sucursal"/>
               </f:facet>
-              <h:outputText value="#{filtro['empresa']}"/>
+              <h:outputText value="#{filtro['nombreEmpresa']}"/>
             </p:column>		
             <p:column class="MarAuto Responsive" sortBy="#{filtro.cliente}">
               <f:facet name="header">
@@ -186,7 +186,7 @@
               <h:outputText value="#{filtro['registro']}"/>
             </p:column>		
             <f:facet name="footer">
-              <p:outputLabel value="Total [#{manticFacturasFiltro.lazyModel==null?0:manticFacturasFiltro.lazyModel.rowCount}] registros"/>
+              <p:outputLabel value="Total [#{manticFacturasFiltro.lazyModel==null? 0: manticFacturasFiltro.lazyModel.rowCount}] registros"/>
             </f:facet>
           </p:dataTable>
           <p:contextMenu id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">
