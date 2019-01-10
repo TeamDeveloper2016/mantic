@@ -29,7 +29,7 @@ public class TcManticAlmacenesArticulosDto implements IBaseDto, Serializable {
 		
   private static final long serialVersionUID=1L;
   @Column (name="minimo")
-  private Long minimo;
+  private Double minimo;
   @Id
   @GeneratedValue(strategy = javax.persistence.GenerationType.IDENTITY)
 	@Column (name="id_almacen_articulo")
@@ -39,7 +39,7 @@ public class TcManticAlmacenesArticulosDto implements IBaseDto, Serializable {
   @Column (name="id_almacen")
   private Long idAlmacen;
   @Column (name="maximo")
-  private Long maximo;
+  private Double maximo;
   @Column (name="id_almacen_ubicacion")
   private Long idAlmacenUbicacion;
   @Column (name="id_articulo")
@@ -58,7 +58,7 @@ public class TcManticAlmacenesArticulosDto implements IBaseDto, Serializable {
     setKey(key);
   }
 
-  public TcManticAlmacenesArticulosDto(Long minimo, Long idAlmacenArticulo, Long idUsuario, Long idAlmacen, Long maximo, Long idAlmacenUbicacion, Long idArticulo, Double stock) {
+  public TcManticAlmacenesArticulosDto(Double minimo, Long idAlmacenArticulo, Long idUsuario, Long idAlmacen, Double maximo, Long idAlmacenUbicacion, Long idArticulo, Double stock) {
     setMinimo(minimo);
     setIdAlmacenArticulo(idAlmacenArticulo);
     setIdUsuario(idUsuario);
@@ -70,11 +70,11 @@ public class TcManticAlmacenesArticulosDto implements IBaseDto, Serializable {
     setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
   }
 	
-  public void setMinimo(Long minimo) {
+  public void setMinimo(Double minimo) {
     this.minimo = minimo;
   }
 
-  public Long getMinimo() {
+  public Double getMinimo() {
     return minimo;
   }
 
@@ -102,11 +102,11 @@ public class TcManticAlmacenesArticulosDto implements IBaseDto, Serializable {
     return idAlmacen;
   }
 
-  public void setMaximo(Long maximo) {
+  public void setMaximo(Double maximo) {
     this.maximo = maximo;
   }
 
-  public Long getMaximo() {
+  public Double getMaximo() {
     return maximo;
   }
 

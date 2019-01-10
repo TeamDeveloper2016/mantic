@@ -1,48 +1,45 @@
 package mx.org.kaana.mantic.catalogos.inventarios.reglas;
 
-import java.util.ArrayList;
-import java.util.List;
-import mx.org.kaana.kajool.db.comun.dto.IBaseDto;
+import java.util.HashMap;
+import java.util.Map;
 import mx.org.kaana.kajool.db.comun.hibernate.DaoFactory;
+import mx.org.kaana.kajool.db.comun.sql.Entity;
 import mx.org.kaana.kajool.enums.EAccion;
-import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.reglas.IBaseTnx;
-import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.pagina.JsfBase;
-import mx.org.kaana.mantic.catalogos.inventarios.beans.ArticuloInventario;
+import mx.org.kaana.libs.reflection.Methods;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesUbicacionesDto;
 import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import org.hibernate.Session;
 
-public class Transaccion extends IBaseTnx{
+public class Transaccion extends IBaseTnx {
 
-	private IBaseDto dto;
-	private List<ArticuloInventario> inventarios;
+	private TcManticInventariosDto articulo;
+	private TcManticAlmacenesArticulosDto almacen;
 	private String messageError;
 
-	public Transaccion(IBaseDto dto) {
-		this.dto = dto;
+	public Transaccion(TcManticInventariosDto articulo, TcManticAlmacenesArticulosDto almacen) {
+		this.articulo= articulo;
+		this.almacen = almacen;
 	}
 
-	public Transaccion(ArticuloInventario articulo) {
-		this.inventarios= new ArrayList<>();
-		this.inventarios.add(articulo);
-	}
-
-	public Transaccion(List<ArticuloInventario> inventarios) {
-		this.inventarios = inventarios;
-	}	
-	
 	@Override
 	protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
-		boolean regresar= false;
+		boolean regresar = false;
+    this.messageError= "Error al registrar el inventario, verifique que los datos de captura esten completos.";
 		try {
-			switch(accion){
+			switch(accion) {
 				case AGREGAR:
-          regresar = registraInventarios(sesion);
+					this.toAffectAlmacenes(sesion);
+					this.articulo.setStock(this.articulo.getInicial());
+          regresar = DaoFactory.getInstance().insert(sesion, this.articulo)> 0L;
           break;        
-        case DEPURAR:
-          regresar= DaoFactory.getInstance().delete(sesion, this.dto)>= 1L;
-          break;
+				case MODIFICAR:
+					this.toAffectAlmacenes(sesion);
+					this.articulo.setStock(this.articulo.getInicial());
+          regresar = DaoFactory.getInstance().update(sesion, this.articulo)> 0L;
+          break;        
 			} // switch
 			if (!regresar) 
         throw new Exception("");      
@@ -51,55 +48,36 @@ public class Transaccion extends IBaseTnx{
 			throw new Exception(this.messageError.concat("<br/>")+ e.getMessage());
 		} // catch		
 		return regresar;
-	} // ejecutar	
-	
-	private boolean registraInventarios(Session sesion) throws Exception {
-    TcManticInventariosDto dto= null;
-    ESql sqlAccion            = null;
-    int count                 = 0;
-    boolean validate          = false;
-    boolean regresar          = false;
-    try {
-      for (ArticuloInventario articuloInventario : this.inventarios) {
-				if(articuloInventario.getEjercicio()!= null && !Cadena.isVacio(articuloInventario.getEjercicio())){					
-					dto = (TcManticInventariosDto) articuloInventario;
-					sqlAccion = articuloInventario.getSqlAccion();
-					switch (sqlAccion) {
-						case INSERT:
-							validate = registrar(sesion, dto);
-							break;
-						case UPDATE:
-							validate = actualizar(sesion, dto);
-							break;
-					} // switch
-				} // if
-				else
-					validate= true;
-        if (validate) {
-          count++;
-        }
-      } // for		
-      regresar = count == this.inventarios.size();
-    } // try
-    catch (Exception e) {
-      throw e;
-    } // catch		
-    finally {
-      this.messageError = "Error al registrar el inventario, verifique que los datos de captura esten completos.";
-    } // finally
-    return regresar;
-  } // registraClientesTipoContacto
-	
-	private boolean registrar(Session sesion, IBaseDto dto) throws Exception {
-    return registrarSentencia(sesion, dto) >= 1L;
-  } // registrar
-  
-	private Long registrarSentencia(Session sesion, IBaseDto dto) throws Exception {
-    return DaoFactory.getInstance().insert(sesion, dto);
-  } // registrar
+	} 
 
-  private boolean actualizar(Session sesion, IBaseDto dto) throws Exception {
-    return DaoFactory.getInstance().update(sesion, dto) >= 1L;
-  } // actualizar
-	
+	private void toAffectAlmacenes(Session sesion) throws Exception {
+		Map<String, Object> params= null;
+		try {
+			params=new HashMap<>();
+			this.almacen.setStock(this.articulo.getInicial());
+			if(this.almacen.isValid()) 
+				DaoFactory.getInstance().update(sesion, this.almacen);
+			else {
+				params.put("idAlmacen", this.articulo.getIdAlmacen());
+				params.put("idArticulo", this.articulo.getIdArticulo());
+				TcManticAlmacenesArticulosDto ubicacion= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesArticulosDto.class, params, "ubicacion");
+				if(ubicacion== null) {
+					TcManticAlmacenesUbicacionesDto general= (TcManticAlmacenesUbicacionesDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesUbicacionesDto.class, params, "general");
+					if(general== null) {
+						general= new TcManticAlmacenesUbicacionesDto("GENERAL", "", "GENERAL", "", "", JsfBase.getAutentifica().getPersona().getIdUsuario(), this.articulo.getIdAlmacen(), -1L);
+						DaoFactory.getInstance().insert(sesion, general);
+					} // if	
+					this.almacen.setIdAlmacenUbicacion(general.getIdAlmacenUbicacion());
+					DaoFactory.getInstance().insert(sesion, this.almacen);
+				} // if		
+			} // else	
+		} // try
+		catch (Exception e) {
+			throw e;
+		} // catch
+		finally {
+			Methods.clean(params);
+		} // finally
+	}
+		
 }

@@ -62,7 +62,7 @@ public abstract class Inventarios extends IBaseTnx implements Serializable {
 					DaoFactory.getInstance().insert(sesion, general);
 				} // if	
 			  Entity entity= (Entity)DaoFactory.getInstance().toEntity(sesion, "TcManticArticulosDto", "inventario", params);
-				TcManticAlmacenesArticulosDto articulo= new TcManticAlmacenesArticulosDto(entity.toLong("minimo"), -1L, general.getIdUsuario(), general.getIdAlmacen(), entity.toLong("maximo"), general.getIdAlmacenUbicacion(), item.getIdArticulo(), item.getCantidad());
+				TcManticAlmacenesArticulosDto articulo= new TcManticAlmacenesArticulosDto(entity.toDouble("minimo"), -1L, general.getIdUsuario(), general.getIdAlmacen(), entity.toDouble("maximo"), general.getIdAlmacenUbicacion(), item.getIdArticulo(), item.getCantidad());
 				DaoFactory.getInstance().insert(sesion, articulo);
 		  } // if
 			else { 

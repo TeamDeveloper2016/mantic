@@ -2919,7 +2919,7 @@
         from      
           tc_mantic_almacenes_articulos
         where      
-          id_almacen_articulo = {idAlmacenArticulo} and id_almacen = {idAlmacen} and id_articulo = {idArticulo}
+          id_almacen = {idAlmacen} and id_articulo = {idArticulo}
       </select>
 			<select id="maximo">
         select      

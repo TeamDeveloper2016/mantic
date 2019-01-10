@@ -16,7 +16,6 @@ import mx.org.kaana.kajool.db.comun.sql.Value;
 import mx.org.kaana.kajool.enums.EAccion;
 import mx.org.kaana.libs.formato.Error;
 import mx.org.kaana.kajool.enums.EFormatoDinamicos;
-import mx.org.kaana.kajool.enums.ESql;
 import mx.org.kaana.kajool.enums.ETipoMensaje;
 import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
@@ -30,8 +29,10 @@ import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.recurso.LoadImages;
 import mx.org.kaana.libs.reflection.Methods;
-import mx.org.kaana.mantic.catalogos.inventarios.beans.ArticuloInventario;
 import mx.org.kaana.mantic.catalogos.inventarios.reglas.Transaccion;
+import mx.org.kaana.mantic.db.dto.TcManticAlmacenesArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
+import mx.org.kaana.mantic.db.dto.TcManticInventariosDto;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.StreamedContent;
@@ -43,11 +44,23 @@ public class Conteos extends IBaseFilter implements Serializable {
 	
 	private static final long serialVersionUID = 5570593377763068163L;	
 	
-	private List<ArticuloInventario> inventarios;
 	private StreamedContent image;
+	private TcManticAlmacenesArticulosDto articulo;
 		
 	public StreamedContent getImage() {
 		return image;
+	}
+
+	public TcManticAlmacenesArticulosDto getArticulo() {
+		return articulo;
+	}
+
+	public void setArticulo(TcManticAlmacenesArticulosDto articulo) {
+		this.articulo=articulo;
+	}
+	
+	public boolean getHabilitar() {
+		return this.attrs.get("existe")!= null || this.attrs.get("vigente")== null;
 	}
 	
 	@PostConstruct
@@ -56,7 +69,8 @@ public class Conteos extends IBaseFilter implements Serializable {
     try {			
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());	
     	this.attrs.put("buscaPorCodigo", false);
-			loadAlmacenes();
+			this.articulo= new TcManticAlmacenesArticulosDto();
+			this.loadAlmacenes();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -77,9 +91,9 @@ public class Conteos extends IBaseFilter implements Serializable {
 			this.attrs.put("sortOrder", " order by registro desc");
 			if(this.attrs.get("almacen")!= null)
 			  this.attrs.put("idAlmacen", ((Entity)this.attrs.get("almacen")).getKey());			
-			ArticuloInventario vigente= (ArticuloInventario)DaoFactory.getInstance().toEntity(ArticuloInventario.class, "TcManticInventariosDto", "inventario", this.attrs);
+			TcManticInventariosDto vigente= (TcManticInventariosDto)DaoFactory.getInstance().toEntity(TcManticInventariosDto.class, "TcManticInventariosDto", "inventario", this.attrs);
 			if(vigente== null || !vigente.getEntradas().equals(0D) || !vigente.getSalidas().equals(0D)) {
-				vigente= new ArticuloInventario(-1L, ESql.INSERT, true);
+				vigente= new TcManticInventariosDto(-1L);
 				vigente.setIdAlmacen((Long)this.attrs.get("idAlmacen"));
 				vigente.setIdArticulo((Long)this.attrs.get("idArticulo"));
 				vigente.setEjercicio(new Long(Calendar.getInstance().get(Calendar.YEAR)));
@@ -90,12 +104,26 @@ public class Conteos extends IBaseFilter implements Serializable {
   			vigente.setIdUsuario(JsfBase.getIdUsuario());
 				vigente.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 			} // if
-			else
-       if(vigente.getEntradas().equals(0D) && vigente.getSalidas().equals(0D))
-				 vigente.setSqlAccion(ESql.UPDATE);
       this.attrs.put("vigente", vigente);
       this.lazyModel = new FormatCustomLazy("VistaInventariosDto", this.attrs, columns);
       UIBackingUtilities.resetDataTable();
+			this.articulo= (TcManticAlmacenesArticulosDto)DaoFactory.getInstance().toEntity(TcManticAlmacenesArticulosDto.class, "TcManticAlmacenesArticulosDto", "almacenArticulo", this.attrs);
+			if(this.articulo== null) {
+				TcManticArticulosDto item= (TcManticArticulosDto)DaoFactory.getInstance().findById(TcManticArticulosDto.class, this.attrs.get("idArticulo")== null? -1L: (Long)this.attrs.get("idArticulo"));
+				if(item!= null)
+					this.articulo= new TcManticAlmacenesArticulosDto(
+						item.getMinimo(), // Long minimo, 
+						-1L, // Long idAlmacenArticulo, 
+						JsfBase.getIdUsuario(), // Long idUsuario, 
+						(Long)this.attrs.get("idAlmacen"), // Long idAlmacen,
+						item.getMaximo(), // Long maximo, 
+						-1L, // Long idAlmacenUbicacion, 
+						(Long)this.attrs.get("idArticulo"), // Long idArticulo, 
+						0D // Double stock
+						);
+				else
+    			this.articulo= new TcManticAlmacenesArticulosDto();
+			} // if	
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -103,7 +131,7 @@ public class Conteos extends IBaseFilter implements Serializable {
     } // catch   
 		finally {
       Methods.clean(columns);
-    }// finally
+    } // finally
   } // doLoad	
 	
 	private void loadAlmacenes() {
@@ -148,7 +176,6 @@ public class Conteos extends IBaseFilter implements Serializable {
 				if(solicitado!= null) {
 					UIBackingUtilities.toFormatEntity(solicitado, columns);
 					this.attrs.put("articulo", solicitado);
-					this.attrs.put("precio", solicitado.toDouble("precio"));
 					Value ultimo= (Value)DaoFactory.getInstance().toField("TcManticArticulosBitacoraDto", "ultimo", this.attrs, "registro");
 					if(ultimo!= null)
 					  this.attrs.put("ultimo", Global.format(EFormatoDinamicos.FECHA_HORA, ultimo.toTimestamp()));
@@ -158,7 +185,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 			else {
 				this.attrs.put("existe", "<span class='janal-color-orange'>EL ARTICULO NO EXISTE EN EL CATALOGO !</span>");
 				this.attrs.put("articulo", null);
-			} // if	
+			} // else	
 			this.doLoad();
 		} // try
 		finally {
@@ -254,13 +281,12 @@ public class Conteos extends IBaseFilter implements Serializable {
 	public void doAceptar() {
 		Transaccion transaccion= null;
 		try {
-			ArticuloInventario articulo= (ArticuloInventario)this.attrs.get("vigente");
-			articulo.setIdUsuario(JsfBase.getIdUsuario());
-			articulo.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
-			transaccion= new Transaccion(articulo);
-			if(transaccion.ejecutar(EAccion.AGREGAR)) {
+			TcManticInventariosDto vigente= (TcManticInventariosDto)this.attrs.get("vigente");
+			vigente.setIdUsuario(JsfBase.getIdUsuario());
+			vigente.setRegistro(new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			transaccion= new Transaccion(vigente, this.articulo);
+			if(transaccion.ejecutar(vigente.isValid()? EAccion.MODIFICAR: EAccion.AGREGAR)) {
 				JsfBase.addMessage("Inventarios", "Se agregó/modificó de forma correcta el inventario", ETipoMensaje.INFORMACION);
-				articulo.setSqlAccion(ESql.UPDATE);
 			} // if	
 			else
 				JsfBase.addMessage("Inventarios", "Ocurrió un error al agregar el inventario", ETipoMensaje.ERROR);
@@ -358,15 +384,15 @@ public class Conteos extends IBaseFilter implements Serializable {
 	public void doFindArticulo() {
 		try {
     	List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");
-	    UISelectEntity articulo= (UISelectEntity)this.attrs.get("custom");
-			if(articulo== null)
-			  articulo= new UISelectEntity(new Entity(-1L));
+	    UISelectEntity item= (UISelectEntity)this.attrs.get("custom");
+			if(item== null)
+			  item= new UISelectEntity(new Entity(-1L));
 			else
-				if(articulos.indexOf(articulo)>= 0) 
-					articulo= articulos.get(articulos.indexOf(articulo));
+				if(articulos.indexOf(item)>= 0) 
+					item= articulos.get(articulos.indexOf(item));
 			  else
-			    articulo= articulos.get(0);
-			this.updateArticulo(articulo);
+			    item= articulos.get(0);
+			this.updateArticulo(item);
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
