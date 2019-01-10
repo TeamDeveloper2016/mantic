@@ -115,7 +115,7 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
   protected void init() {		
     try {
 			this.aplicar  =  false;
-			if(JsfBase.getFlashAttribute("accion")== null)
+			if(JsfBase.getFlashAttribute("accion")== null && JsfBase.getParametro("zOyOxDwIvGuCt")== null)
 				RequestContext.getCurrentInstance().execute("janal.isPostBack('cancelar')");
 			this.tipoOrden= JsfBase.getParametro("zOyOxDwIvGuCt")== null || JsfBase.getFlashAttribute("idOrdenCompra")== null? EOrdenes.NORMAL: EOrdenes.valueOf(Cifrar.descifrar(JsfBase.getParametro("zOyOxDwIvGuCt")));
       this.accion   = JsfBase.getFlashAttribute("accion")== null? EAccion.AGREGAR: (EAccion)JsfBase.getFlashAttribute("accion");
