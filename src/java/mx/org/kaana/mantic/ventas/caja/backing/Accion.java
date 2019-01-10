@@ -404,7 +404,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		return regresar.toString();
 	} // toCondicion
 	
-	public void doAsignaTicketAbiertoDlg(){
+	public void doAsignaTicketAbiertoDlg() {
 		List<UISelectItem> ticketsAbiertos= null;
 		Map<String, Object>params         = null;
 		List<String> fields               = null;

@@ -3695,7 +3695,7 @@
 				  registro desc
 			</select>
     </unit>		
-	   <unit id="TcManticVentasDto">
+	  <unit id="TcManticVentasDto">
       <select id="row">
         select      
           *

@@ -23,7 +23,7 @@ public class TransformDto extends Transformer {
   @Override
   public Object tuple(Object[] data, String[] fields, String[] bdNames) throws InstantiationException, IllegalAccessException {
     Object regresar        = toNewDto();
-    StringBuilder sb       = new StringBuilder();
+    // StringBuilder sb       = new StringBuilder();
     BeanUtilsBean utilsBean= new BeanUtilsBean(new ConvertUtilsBean(), new PropertyUtilsBean());
     for (int x=0; x<data.length; x++) {
       try {
@@ -31,13 +31,13 @@ public class TransformDto extends Transformer {
       } // try
       catch(Exception e) {
         Error.mensaje(e, " Class: "+ regresar.getClass());
-        sb.append(fields[x]).append(",");
-        LOG.warn(e.getMessage());
+        //sb.append(fields[x]).append("[").append(" Class: "+ regresar.getClass()).append("],");
+        LOG.warn(fields[x]+ "[".concat(" Class: ").concat(regresar.getClass().getSimpleName()).concat("] Error: ")+ e);
       } // catch
     } // for
 //    if(sb.length()> 0)
 //      throw new FieldNotFoundException(getDto().getName(), sb.substring(0, sb.length()- 1));
-    sb= null;
+//    sb= null;
     return regresar;
   }
 

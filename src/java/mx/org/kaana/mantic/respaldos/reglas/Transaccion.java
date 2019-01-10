@@ -84,8 +84,8 @@ public class Transaccion extends IBaseTnx implements Serializable {
 		StringBuilder name= new StringBuilder();
 		Calendar calendar = Calendar.getInstance();
 		sb.append(Configuracion.getInstance().getPropiedadSistemaServidor("respaldos"));
-		sb.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
-		sb.append("/");
+		//sb.append(JsfBase.getAutentifica().getEmpresa().getNombreCorto().replaceAll(" ", ""));
+		//sb.append("/");
 		sb.append(Calendar.getInstance().get(Calendar.YEAR));
 		sb.append("/");
 		sb.append(Fecha.getNombreMes(calendar.get(Calendar.MONTH)).toUpperCase());

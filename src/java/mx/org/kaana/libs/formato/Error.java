@@ -43,7 +43,7 @@ public final class Error {
   }
 
   public static void mensaje(Object objeto, Throwable exception, Object ... valores)  {
-    if (Configuracion.getInstance().getPropiedad("sistema.log.error.".concat(Configuracion.getInstance().getPropiedad("sistema.servidor"))).equals("si")){
+    if (Configuracion.getInstance().getPropiedad("sistema.log.error.".concat(Configuracion.getInstance().getPropiedad("sistema.servidor"))).equals("si")) {
       LOG.error(MessageFormat.format(getMensaje(objeto), valores));
       LOG.warn(exception);
     } // if
