@@ -49,7 +49,7 @@
 				'cheque'           : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasCajaAccion.attrs.pago.limiteCheque}})', mascara: 'libre', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
 				'referenciaCheque' : {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Capturar la referencia del cheque'},
 				'bancoCheque'      : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de tu cheque'},
-				'pago'             : {validaciones: 'requerido|min-valor({"cuanto":1})', mascara: 'libre', grupo: 'general', mensaje: 'No se a cubierto la totalidad del pago.'},
+				'pago'             : {validaciones: 'requerido|min-valor({"cuanto":1})', mascara: 'libre', grupo: 'general', mensaje: 'No se a cubierto la totalidad del pago. Si es un apartado es necesario cubrir el 10% de la compra.'},
 				'transferencia'          : {validaciones: 'libre|max-valor({"cuanto": #{manticVentasCajaAccion.attrs.pago.limiteTransferencia}})', mascara: 'libre', grupo: 'general', mensaje:'La suma de los pagos que no son en efectivo sobrepasa al total.'},
 				'referenciaTransferencia': {validaciones: 'libre', mascara: 'libre', grupo: 'general', formatos: 'cambiar-mayusculas', individual: true, mensaje:'Capturar la referencia de la transferencia'},
 				'bancoTransferencia'     : {validaciones: 'libre', mascara: 'libre', grupo: 'general', mensaje: 'Selecciona el banco de transferencia'},
@@ -394,8 +394,7 @@
 										</h:panelGrid>
 									</f:facet>
 								</p:autoComplete>	
-								<p:selectOneMenu id="cliente" value="#{manticVentasCajaAccion.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">								
-									<f:selectItem itemValue="-1" itemLabel="PUBLICO EN GENERAL"/>
+								<p:selectOneMenu id="cliente" value="#{manticVentasCajaAccion.attrs.clienteSeleccion}" var="item" styleClass="janal-wid-100-txt" converter="janal.convertidor.Entity">																	
 									<f:selectItems value="#{manticVentasCajaAccion.attrs.clientesSeleccion}" var="element" itemValue="#{element}" itemLabel="#{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>
@@ -411,9 +410,9 @@
 									<p:ajax event="blur" listener="#{manticVentasCajaAccion.doUpdateDescuento}" process="@this" update="@(.filas) @(.recalculo)" onstart="janal.descuentos($('#descuento'), '0'); return true;"/>
 								</p:inputText>	
 								<p:inputSwitch value="#{manticVentasCajaAccion.attrs.apartado}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt cambio-cliente">
-									<p:ajax listener="#{manticVentasCajaAccion.doActiveApartado}" process="@this contenedorGrupos:panelTotales" update="contenedorGrupos contenedorGrupos:switchFacturar" onstart="janal.bloquear();" oncomplete="janal.desbloquear();applyValidacionesCredito();"/>
+									<p:ajax listener="#{manticVentasCajaAccion.doActiveApartado}" process="@this contenedorGrupos:panelTotales" update="contenedorGrupos contenedorGrupos:switchFacturar" onstart="janal.bloquear();" oncomplete="applyValidacionesCredito();"/>
 								</p:inputSwitch>
-								<p:inputSwitch id="switchFacturar" value="#{manticVentasCajaAccion.attrs.facturarVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt cambio-cliente">
+								<p:inputSwitch id="switchFacturar" value="#{manticVentasCajaAccion.attrs.facturarVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt cambio-cliente" disabled="#{manticVentasCajaAccion.attrs.disabledFacturarSwitch}">
 									<p:ajax listener="#{manticVentasCajaAccion.doActivarCliente}" process="@this contenedorGrupos:panelTotales contenedorGrupos:observacionesFactura" update="contenedorGrupos" onstart="janal.bloquear();" oncomplete="janal.desbloquear();janal.refresh();"/>
 								</p:inputSwitch>
 								<p:inputSwitch id="creditoCliente" value="#{manticVentasCajaAccion.attrs.creditoVenta}" onLabel="SI" offLabel="NO" styleClass="janal-wid-100-txt cambio-cliente" disabled="#{!manticVentasCajaAccion.attrs.creditoCliente}">
@@ -532,7 +531,7 @@
 									<p:inputText id="clave" placeholder="Ej. 00001" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.registroCliente.clave}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}"/>                    						
 									<p:inputText id="rfc" placeholder="Ej. AAA000000AA0" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.registroCliente.rfc}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}"/>                    						
 									<p:inputText id="razonSocial" placeholder="Ej. Nombre de la empresa" styleClass="janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.registroCliente.razonSocial}" disabled="#{manticVentasCajaAccion.attrs.clienteAsignado or manticVentasCajaAccion.attrs.disabledFacturar}"/>                                    															
-									<p:selectOneMenu id="cfdi" value="#{manticVentasCajaAccion.attrs.cfdi}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity" style="min-width: 20% !important">																			
+									<p:selectOneMenu id="cfdi" value="#{manticVentasCajaAccion.attrs.cfdi}" styleClass="janal-wid-100-txt" filter="true" filterMatchMode="contains" var="item" converter="janal.convertidor.Entity" style="min-width: 20% !important" disabled="#{!manticVentasCajaAccion.attrs.clienteRegistrado}">																			
 										<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 										<f:selectItems value="#{manticVentasCajaAccion.attrs.cfdis}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
 										<p:column  styleClass="janal-column-left janal-wid-col-50">
@@ -644,7 +643,7 @@
 											</p:commandButton>
 										</p:column>
 										<f:facet name="footer">
-											<p:commandButton actionListener="#{manticVentasCajaAccion.doAgregarClienteTipoContacto}" process="@this tablaCorreos" update="tablaCorreos" icon="fa fa-plus"/>						
+											<p:commandButton actionListener="#{manticVentasCajaAccion.doAgregarClienteTipoContacto}" process="@this tablaCorreos" update="tablaCorreos" icon="fa fa-plus" disabled="#{!manticVentasCajaAccion.attrs.clienteRegistrado}"/>						
 										</f:facet>
 									</p:dataTable>										
 								</p:panelGrid>								
@@ -983,7 +982,7 @@
 			</div>
 		</p:dialog>
 		
-		<p:dialog id="dialogoOpenTickets" widgetVar="dlgOpenTickets" header="Cuentas abiertas" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="$('#busquedaTicketAbierto').val(''); $('#busquedaTicketAbierto').focus();" onHide="janal.desbloquear();restoreCursoArt();" width="70%">						
+		<p:dialog id="dialogoOpenTickets" widgetVar="dlgOpenTickets" header="Cuentas abiertas" showEffect="puff" maximizable="false" minimizable="false" closeOnEscape="true" resizable="false" responsive="true" closable="false" onShow="$('#busquedaTicketAbierto').val(''); $('#busquedaTicketAbierto').focus();" onHide="restoreCursoArt();" width="70%">						
 			<p:panelGrid layout="grid" columns="1" styleClass="janal-wid-100">
 				<p:outputLabel for="busquedaTicketAbierto" value="Cuenta de acceso ó nombre del vendedor:"/>
 				<p:inputText id="busquedaTicketAbierto" styleClass="janal-key-tickets-abiertos janal-wid-100-txt" value="#{manticVentasCajaAccion.attrs.busquedaTicketAbierto}">   
