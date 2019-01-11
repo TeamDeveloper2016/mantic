@@ -935,8 +935,8 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 			almacenArticulo.setIdAlmacen(getOrden().getIdAlmacen());
 			almacenArticulo.setIdArticulo(idArticulo);
 			almacenArticulo.setIdUsuario(JsfBase.getIdUsuario());
-			almacenArticulo.setMaximo(0L);
-			almacenArticulo.setMinimo(0L);
+			almacenArticulo.setMaximo(0D);
+			almacenArticulo.setMinimo(0D);
 			almacenArticulo.setStock(0 - cantidad);
 			almacenArticulo.setIdAlmacenUbicacion(toIdAlmacenUbicacion(sesion));
 			regresar= DaoFactory.getInstance().insert(sesion, almacenArticulo)>= 1L;
