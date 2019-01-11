@@ -206,9 +206,9 @@ public abstract class IAdminArticulos implements Serializable {
 	public void toCheckTotales() {
 		// verificar que el importe total de la factura sea igual que el importe del detalle de sus articulos
 		double total  = this.totales.getTotal();
-		double detalle= 0d; 
+		double detalle= 0D; 
 		for (Articulo item : this.articulos) {
-			detalle+= item.getImporte();
+			detalle= Numero.toRedondear(detalle+ item.getImporte());
 		} // for
 		if(!Numero.toTruncate(total,  1).equals(Numero.toTruncate(detalle, 1))) {
 			LOG.warn("Diferencias en los importes del documento ["+ this.getClass().getSimpleName()+ "] id: "+ this.getOrden().getKey()+ " verificar situacion, total ["+ total+ "] detalle["+ detalle+ "]");

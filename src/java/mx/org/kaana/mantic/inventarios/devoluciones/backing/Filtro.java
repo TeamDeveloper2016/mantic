@@ -101,7 +101,7 @@ public void doReporte(String nombre) throws Exception{
     List<Columna> columns     = null;
 		Map<String, Object> params= toPrepare();
     try {
-      params.put("sortOrder", "order by tc_mantic_devoluciones.id_empresa, tc_mantic_devoluciones.ejercicio, tc_mantic_devoluciones.orden");
+      params.put("sortOrder", "order by tc_mantic_devoluciones.id_empresa, tc_mantic_devoluciones.registro desc");
       columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));

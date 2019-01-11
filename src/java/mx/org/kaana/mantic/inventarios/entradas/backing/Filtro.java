@@ -73,7 +73,7 @@ public class Filtro extends IBaseFilter implements Serializable {
     List<Columna> columns     = null;
 		Map<String, Object> params= toPrepare();
     try {
-      params.put("sortOrder", "order by tc_mantic_notas_entradas.id_empresa, tc_mantic_notas_entradas.ejercicio, tc_mantic_notas_entradas.orden");
+      params.put("sortOrder", "order by tc_mantic_notas_entradas.id_empresa, tc_mantic_notas_entradas.registro desc");
       columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("razonSocial", EFormatoDinamicos.MAYUSCULAS));
@@ -108,11 +108,14 @@ public class Filtro extends IBaseFilter implements Serializable {
 					JsfBase.setFlashAttribute("accion", EAccion.AGREGAR);		
 				else 
 					JsfBase.setFlashAttribute("accion", eaccion);		
-				if(!eaccion.equals(EAccion.COMPLETO) || ((eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) && ((Entity)this.attrs.get("seleccionado")).toLong("idDirecta").equals(2L))) 
+				if(!eaccion.equals(EAccion.COMPLETO) || ((eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)) && ((Entity)this.attrs.get("seleccionado")).toLong("idNotaTipo").equals(2L))) 
 					regresar= regresar.concat("?zOyOxDwIvGuCt=zNyLxMwAvCuEtAs");
 				else
 					regresar= regresar.concat("?zOyOxDwIvGuCt=zLyOxRwMvAuNt");
-  			JsfBase.setFlashAttribute("idOrdenCompra", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).toLong("idOrdenCompra"): -1L);
+				Long idOrdenCompra= -1L;
+				if(((Entity)this.attrs.get("seleccionado")).toLong("idOrdenCompra")!= null)
+				  idOrdenCompra= ((Entity)this.attrs.get("seleccionado")).toLong("idOrdenCompra");
+  			JsfBase.setFlashAttribute("idOrdenCompra", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR) || ((Entity)this.attrs.get("seleccionado")).toLong("idNotaTipo").equals(2L)? idOrdenCompra: -1L);
 			} // else	
 			JsfBase.setFlashAttribute("retorno", "/Paginas/Mantic/Inventarios/Entradas/filtro");		
 			JsfBase.setFlashAttribute("idNotaEntrada", eaccion.equals(EAccion.MODIFICAR) || eaccion.equals(EAccion.CONSULTAR)? ((Entity)this.attrs.get("seleccionado")).getKey() : -1L);

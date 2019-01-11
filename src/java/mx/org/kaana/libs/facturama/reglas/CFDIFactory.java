@@ -216,6 +216,11 @@ public class CFDIFactory implements Serializable {
 				// ESTE AJUSTE ES PARA QUITAR LOS PROBLEMAS DEL REDONDEO A DOS DECIMALES 
 				double diferencia= Numero.toRedondear(record.getTotal()- (record.getImpuestos()+ record.getSubtotal()));
 				record.setSubtotal(Numero.toRedondear(record.getSubtotal()+ diferencia));
+				
+				// SI AUN HACIENDO EL AJUSTE DEL SUBTOTAL CON EL IMPUESTO EXISTE UNA DIFERENCIA EN EL TOTAL ENTONCES AJUSTAR EL TOTAL
+				//if((record.getImpuestos()+ record.getSubtotal())!= record.getTotal())
+				//	record.setTotal(Numero.toRedondear(record.getImpuestos()+ record.getSubtotal()));
+				
 				articulo= new Item();
 				articulo.setProductCode(record.getCodigoHacienda());
 				articulo.setIdentificationNumber(record.getIdentificador());
@@ -523,12 +528,15 @@ public class CFDIFactory implements Serializable {
 	}
 	
 	public static void main(String ... args) {
-		double subtotal= 0.72;
-		double impuestos= 0.12;
-		double total= 0.85;
+		double subtotal= Numero.toRedondear(48.9071);
+		double impuestos= Numero.toRedondear(7.8251);
+		double total= Numero.toRedondear(56.7322);
 		double diferencia= Numero.toRedondear(total- (impuestos+ subtotal));
+		LOG.info("subtotal: "+ Numero.toRedondear(48.9071));
+		LOG.info("impuesto: "+ Numero.toRedondear(7.8251));
+		LOG.info("total: "+ Numero.toRedondear(56.7322)+ " calculado: "+ Numero.toRedondear(impuestos+ subtotal)+ " ajustado: "+ Numero.toRedondear(impuestos+ subtotal+ diferencia));
 		subtotal+= diferencia;
-		LOG.info(" diferencia: "+ diferencia+ "  subtotal: "+ subtotal);
+		LOG.info("original: "+ Numero.toRedondear(48.9071)+ " diferencia: "+ diferencia+ "  subtotal: "+ subtotal+ " total: "+ Numero.toRedondear(impuestos+ subtotal));
 	}
 	
 }

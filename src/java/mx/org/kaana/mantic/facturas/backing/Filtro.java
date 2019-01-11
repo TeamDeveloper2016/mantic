@@ -87,8 +87,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
 			this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
       this.attrs.put("idFicticia", JsfBase.getFlashAttribute("idFicticia"));
-      this.attrs.put("sortOrder", "order by tc_mantic_ficticias.id_empresa, tc_mantic_ficticias.ejercicio, tc_mantic_ficticias.orden");
-			toLoadCatalog();
+			this.toLoadCatalog();
       if(this.attrs.get("idFicticia")!= null) 
 			  this.doLoad();			
       this.attrs.remove("idFicticia"); 
@@ -102,7 +101,7 @@ public class Filtro extends IBaseFilter implements Serializable {
   @Override
   public void doLoad() {
     List<Columna> columns     = null;
-		Map<String, Object> params= toPrepare();
+		Map<String, Object> params= this.toPrepare();
     try {
       columns = new ArrayList<>();
       columns.add(new Columna("empresa", EFormatoDinamicos.MAYUSCULAS));
@@ -110,7 +109,7 @@ public class Filtro extends IBaseFilter implements Serializable {
       columns.add(new Columna("total", EFormatoDinamicos.MONEDA_CON_DECIMALES));
       columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));      
       columns.add(new Columna("timbrado", EFormatoDinamicos.FECHA_CORTA));   
-      this.attrs.put("sortOrder", "order by tc_mantic_ficticias.registro desc");
+      params.put("sortOrder", "order by tc_mantic_ficticias.registro desc");
       this.lazyModel = new FormatCustomLazy("VistaFicticiasDto", params, columns);
       UIBackingUtilities.resetDataTable();
     } // try

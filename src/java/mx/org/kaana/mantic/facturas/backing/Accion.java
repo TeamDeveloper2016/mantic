@@ -361,7 +361,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		} // catch	
 	} // toMoveData
 	
-	private String toDescuentoVigente(Long idArticulo) throws Exception{
+	private String toDescuentoVigente(Long idArticulo) throws Exception {
 		MotorBusqueda motorBusqueda= null;
 		Entity descuentoVigente    = null;
 		String regresar            = null;
@@ -763,7 +763,7 @@ public class Accion extends IBaseVenta implements IBaseStorage, Serializable {
 		} // catch		
 	} // doActualizaPrecioCliente
 	
-	public String doClientes(){
+	public String doClientes() {
 		String regresar        = null;
 		Transaccion transaccion= null;
 		try {
