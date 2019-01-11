@@ -122,7 +122,10 @@
 							<f:facet name="header">
 								<h:outputText value="Nota Entrada"/>
 							</f:facet>
-							<h:outputText value="#{row['consecutivo']}"/>
+							<p:commandLink action="#{manticCatalogosEmpresasCuentasSaldos.doNotaEntrada}">
+								<f:setPropertyActionListener target="#{manticCatalogosEmpresasCuentasSaldos.attrs.idNotaEntrada}" value="#{row.idNotaEntrada}"/>
+  							<h:outputText value="#{row['consecutivo']}"/>
+							</p:commandLink>	
 						</p:column>														
 						<p:column class="janal-column-right MarAuto Responsive janal-wid-8" sortBy="#{row.factura}">
 							<f:facet name="header">
@@ -142,13 +145,20 @@
 							</f:facet>
 							<h:outputText value="#{row['estatus']}"/>
 						</p:column>						
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{row.pagar}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.pagar}">
 							<f:facet name="header">
 								<h:outputText value="Deuda"/>
 							</f:facet>
-							<h:outputText value="#{row['pagar']}"/>
+							<div class="ui-grid-row janal-grid-row">
+								<div class="ui-grid-col-12 janal-column-right" style="padding-right:14px;">
+    							<h:outputText value="#{row['pagar']}"/>
+								</div>	 
+								<div style="width: 10px; margin-left: -4px; margin-top: 1px;">
+									<h:outputText value="#{manticCatalogosEmpresasCuentasSaldos.doCostos(row)}" escape="false"/>
+								 </div>
+							</div>	
 						</p:column>											
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{row.saldo}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-13" sortBy="#{row.saldo}">
 							<f:facet name="header">
 								<h:outputText value="Saldo"/>
 							</f:facet>
@@ -178,7 +188,7 @@
   								<p:outputLabel value="Las filas que estan color morado son cuentas por pagar directas&lt;br/&gt;Las filas en amarillo representan aquellas factura donde el importe es mayor que la nota de entrada&lt;br/&gt;Las filas en verde representan aquellas factura donde el importe es menor que la nota de entrada" style="float: left; text-align: left" escape="false"/>
 								</div>	
 								<div style="float:right;">
-    							<p:outputLabel value="Total [#{manticCatalogosEmpresasCuentasSaldos.lazyModel==null?0:manticCatalogosEmpresasCuentasSaldos.lazyModel.rowCount}] registros"  styleClass="importado janal-color-orange"/>
+    							<p:outputLabel value="Total [#{manticCatalogosEmpresasCuentasSaldos.lazyModel==null? 0: manticCatalogosEmpresasCuentasSaldos.lazyModel.rowCount}] registros"  styleClass="importado janal-color-orange"/>
 								</div>
 							</div>	
 						</f:facet>

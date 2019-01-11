@@ -20,6 +20,7 @@ import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
 import mx.org.kaana.libs.formato.Cadena;
 import mx.org.kaana.libs.formato.Fecha;
+import mx.org.kaana.libs.formato.Global;
 import mx.org.kaana.libs.pagina.IBaseFilter;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
@@ -69,7 +70,8 @@ public class Saldos extends IBaseFilter implements Serializable {
       columns.add(new Columna("limite", EFormatoDinamicos.FECHA_CORTA));    
       columns.add(new Columna("persona", EFormatoDinamicos.MAYUSCULAS));    
       columns.add(new Columna("directa", EFormatoDinamicos.MAYUSCULAS));    
-      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));    			
+      columns.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));  
+			params.put("sortOrder", " order by dias ");
 			this.lazyModel = new FormatCustomLazy("VistaEmpresasDto", "cuentasBusqueda", params, columns);
       UIBackingUtilities.resetDataTable();		
     } // try
@@ -149,7 +151,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 		} // catch		
 	} // loadSucursales
 	
-	public String doPago(){
+	public String doPago() {
 		String regresar    = null;
 		Entity seleccionado= null;
 		try {
@@ -255,12 +257,6 @@ public class Saldos extends IBaseFilter implements Serializable {
 		return regresar.concat(Constantes.REDIRECIONAR);
   } // doAccion  
 
-  public String toColor(Entity row) {
-		Double original= row.toDouble("original");
-		Double total   = row.toDouble("importe");
-		return row.toLong("idNotaTipo").equals(3L)? "janal-tr-purple": (original!= 0D && original> total)? "janal-tr-yellow": (original!= 0D && original< total)? "janal-tr-green": "";
-	} 
-
 	public String doDeuda(){
 		String regresar    = null;
 		Entity seleccionado= null;
@@ -327,5 +323,26 @@ public class Saldos extends IBaseFilter implements Serializable {
     }// finally
 		return (List<UISelectEntity>)this.attrs.get("proveedores");
 	}		
+
+	public String doNotaEntrada() {
+		JsfBase.setFlashAttribute("idNotaEntrada", this.attrs.get("idNotaEntrada"));
+		return "/Paginas/Mantic/Catalogos/Empresas/Cuentas/saldos".concat(Constantes.REDIRECIONAR);
+	}
+
+  public String toColor(Entity row) {
+		Double original= row.toDouble("original");
+		Double total   = row.toDouble("importe");
+		return row.toLong("idNotaTipo").equals(3L)? "janal-tr-purple": (original!= 0D && original> total)? "janal-tr-yellow": (original!= 0D && original< total)? "janal-tr-green": "";
+	} 
+
 	
+	public String doCostos(Entity row) {
+		Double original= row.toDouble("original");
+		Double total   = row.toDouble("importe");
+		String regresar= "<i class='fa fa-fw fa-question-circle janal-color-green' style='float:right;' title='\n\nNota entrada: "+ Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, row.toDouble("importe"))+ 
+			"\n\nImporte factura: " + Global.format(EFormatoDinamicos.MONEDA_SAT_DECIMALES, row.toString("original"))+ 
+			"'\n\n'></i>";
+		return (original!= 0D && original> total) || (original!= 0D && original< total)? regresar: "";
+	}
+
 }
