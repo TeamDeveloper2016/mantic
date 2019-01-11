@@ -27,7 +27,7 @@
 				'contenedorGrupos\\:factura'        : {validaciones: '#{manticInventariosEntradasAccion.validacion}', mascara: 'texto', formatos: 'cambiar-mayusculas', grupo: 'general'},
 				'contenedorGrupos\\:fechaFactura'   : {validaciones: 'fecha|#{manticInventariosEntradasAccion.validacion}', mascara: 'fecha', grupo: 'general'},
 				'contenedorGrupos\\:fechaRecepcion' : {validaciones: 'fecha|fecha-mayor({"cual":"contenedorGrupos\\\\:fechaFactura"})|#{manticInventariosEntradasAccion.validacion}', mascara: 'fecha', grupo: 'general', individual: true},
-				'contenedorGrupos\\:diasPlazo'      : {validaciones: 'requerido|entero|mayor-igual({"cuanto": 0})', mascara: 'entero', grupo: 'general'},			
+				'contenedorGrupos\\:diasPlazo'      : {validaciones: 'requerido|entero|mayor-igual({"cuanto": 0})', mascara: 'libre', grupo: 'general'},			
 				'contenedorGrupos\\:fechaPago'      : {validaciones: 'fecha|fecha-mayor({"cual":"contenedorGrupos\\\\:fechaRecepcion"})|#{manticInventariosEntradasAccion.validacion}', mascara: 'fecha', grupo: 'general', individual: true},
 				'contenedorGrupos\\:deuda'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', formatos: 'sat', individual: true, grupo: 'general'},			
 				'contenedorGrupos\\:idAlmacen'      : {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
@@ -196,9 +196,9 @@
 								<p:outputLabel for="fechaRecepcion" value="Fecha recepción:"/>
 								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-94" styleClass="janal-wid-99" value="#{manticInventariosEntradasAccion.adminOrden.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 								<p:outputLabel for="diasPlazo" value="Dias plazo:"/>
-								<p:inputText id="diasPlazo" styleClass="janal-wid-100-txt janal-column-right involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.diasPlazo}">
-									<p:ajax event="blur" listener="#{manticInventariosEntradasAccion.doCalculateFechaPago}" process="@this" update="fechaPago"/>
-								</p:inputText>
+								<p:inputNumber id="diasPlazo" inputStyleClass="janal-wid-100-txt janal-column-right" styleClass="involucrados" value="#{manticInventariosEntradasAccion.adminOrden.orden.diasPlazo}">
+									<p:ajax event="keyup" listener="#{manticInventariosEntradasAccion.doCalculateFechaPago}" process="@this" update="fechaPago"/>
+								</p:inputNumber>
 								<p:outputLabel for="deuda" value="Deuda:"/>
 								<p:inputText id="deuda" styleClass="recalculo janal-wid-100-txt janal-column-right" value="#{manticInventariosEntradasAccion.adminOrden.orden.deuda}"/>
 								<p:outputLabel for="fechaPago" value="Fecha de pago:"/>
@@ -220,7 +220,7 @@
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
 								<p:selectOneMenu id="idProveedor" value="#{manticInventariosEntradasAccion.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="contains" disabled="#{not manticInventariosEntradasAccion.isDirecta}">
-									<p:ajax event="change" listener="#{manticInventariosEntradasAccion.doUpdateProveedor}" update="idProveedorPago datosArticulos tabla @(.recalculo)" process="@form" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="change" listener="#{manticInventariosEntradasAccion.doUpdateProveedor}" update="idProveedorPago diasPlazo fechaPago datosArticulos tabla @(.recalculo)" process="@form" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{manticInventariosEntradasAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>

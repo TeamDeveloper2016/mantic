@@ -24,14 +24,14 @@
 				'contenedorGrupos\\:factura'        : {validaciones: 'requerido', mascara: 'texto', formatos: 'cambiar-mayusculas'},
 				'contenedorGrupos\\:fechaFactura'   : {validaciones: 'requerido|fecha', mascara: 'fecha'},
 				'contenedorGrupos\\:fechaRecepcion' : {validaciones: 'requerido|fecha', mascara: 'fecha'},
-				'contenedorGrupos\\:diasPlazo'      : {validaciones: 'requerido|entero|mayor-igual({"cuanto": 0})', mascara: 'entero'},			
+				'contenedorGrupos\\:diasPlazo'      : {validaciones: 'requerido|entero|mayor-igual({"cuanto": 0})', mascara: 'libre'},			
 				'contenedorGrupos\\:fechaPago'      : {validaciones: 'requerido|fecha', mascara: 'fecha'},
 				'contenedorGrupos\\:extra'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})|menor-a({"cual": "contenedorGrupos\\\\:deuda"})', mascara: 'libre', formatos:'precio', individual: true},			
-				'contenedorGrupos\\:deuda'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', formatos:'precio', individual: true},			
+				'contenedorGrupos\\:deuda'          : {validaciones: 'requerido|flotante|mayor-igual({"cuanto": 0})', mascara: 'libre', formatos:'precio'},
 				'contenedorGrupos\\:idAlmacen'      : {validaciones: 'requerido', mascara: 'libre'},
 				'contenedorGrupos\\:idProveedor'    : {validaciones: 'requerido', mascara: 'libre'},
-				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true},
-				'contenedorGrupos\\:comentarios'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true}
+				'contenedorGrupos\\:observaciones'  : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'contenedorGrupos\\:comentarios'    : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
 			};			
     	$(document).ready(function() {
 				setTimeout("janal.readingMode('#{manticCatalogosEmpresasCuentasAccion.attrs.nombreAccion}')", 500);
@@ -95,7 +95,7 @@
 								<p:calendar id="fechaRecepcion" inputStyleClass="janal-wid-94" styleClass="janal-wid-99" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.fechaRecepcion}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
 								<p:outputLabel for="diasPlazo" value="Dias plazo:"/>
 								<p:inputText id="diasPlazo" styleClass="janal-wid-100-txt janal-column-right involucrados" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.diasPlazo}">
-									<p:ajax event="blur" listener="#{manticCatalogosEmpresasCuentasAccion.doCalculateFechaPago}" process="@this" update="fechaPago"/>
+									<p:ajax event="keyup" listener="#{manticCatalogosEmpresasCuentasAccion.doCalculateFechaPago}" process="@this" update="fechaPago"/>
 								</p:inputText>
 								<p:outputLabel for="extra" value="Descuento extra:"/>
 								<p:inputText id="extra" styleClass="recalculo janal-wid-100-txt janal-column-right" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.excedentes}"/>
@@ -119,7 +119,7 @@
 								<p:spacer width="1px"/><p:separator/>
 								<p:outputLabel for="idProveedor" value="Proveedor:"/>
 								<p:selectOneMenu id="idProveedor" value="#{manticCatalogosEmpresasCuentasAccion.adminOrden.orden.ikProveedor}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-99 faltantes" effect="fade" filter="true" filterMatchMode="contains">
-									<p:ajax event="change" listener="#{manticCatalogosEmpresasCuentasAccion.doCalculateFechaPago}" update="@(.involucrados)" process="@this fechaPago" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+									<p:ajax event="change" listener="#{manticCatalogosEmpresasCuentasAccion.doUpdateProveedor}" update="@(.involucrados)" process="@this diasPlazo fechaPago" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
 									<f:selectItems value="#{manticCatalogosEmpresasCuentasAccion.attrs.proveedores}"  var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.razonSocial}"/>
 									<p:column headerText="Clave">
 										<h:outputText value="#{item.clave}"/>

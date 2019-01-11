@@ -482,6 +482,8 @@ public class Accion extends IBaseArticulos implements IBaseStorage, Serializable
 		Date fechaFactura= ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura();
 		Calendar calendar= Calendar.getInstance();
 		calendar.setTimeInMillis(fechaFactura.getTime());
+		if(((NotaEntrada)this.getAdminOrden().getOrden()).getDiasPlazo()== null)
+			((NotaEntrada)this.getAdminOrden().getOrden()).setDiasPlazo(1L);
 		calendar.add(Calendar.DATE, ((NotaEntrada)this.getAdminOrden().getOrden()).getDiasPlazo().intValue()- 1);
 		((NotaEntrada)this.getAdminOrden().getOrden()).setFechaPago(new Date(calendar.getTimeInMillis()));
 	}

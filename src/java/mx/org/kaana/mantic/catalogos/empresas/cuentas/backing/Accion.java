@@ -281,7 +281,6 @@ public class Accion extends IBaseArticulos implements Serializable {
 	} // doCheckFolio
 	
 	public void doCalculateFechaPago() {
-		doUpdateProveedor();
 		this.doCalculateFechaPagoInit();
 	} // doCalculateFechaPago
 	
@@ -289,6 +288,8 @@ public class Accion extends IBaseArticulos implements Serializable {
 		Date fechaFactura= ((NotaEntrada)this.getAdminOrden().getOrden()).getFechaFactura();
 		Calendar calendar= Calendar.getInstance();
 		calendar.setTimeInMillis(fechaFactura.getTime());
+		if(((NotaEntrada)this.getAdminOrden().getOrden()).getDiasPlazo()== null)
+			((NotaEntrada)this.getAdminOrden().getOrden()).setDiasPlazo(1L);
 		calendar.add(Calendar.DATE, ((NotaEntrada)this.getAdminOrden().getOrden()).getDiasPlazo().intValue()- 1);
 		((NotaEntrada)this.getAdminOrden().getOrden()).setFechaPago(new Date(calendar.getTimeInMillis()));
 	}
@@ -332,6 +333,7 @@ public class Accion extends IBaseArticulos implements Serializable {
         ((NotaEntrada)this.getAdminOrden().getOrden()).setDescuento(((NotaEntrada)this.getAdminOrden().getOrden()).getIkProveedorPago().toString("descuento"));
         this.doUpdatePorcentaje();
 			} // if
+			this.doCalculateFechaPagoInit();
     } // try
     catch (Exception e) {
 			Error.mensaje(e);
