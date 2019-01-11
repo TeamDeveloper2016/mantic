@@ -384,6 +384,70 @@
 						break;
 				} // swtich
 			});	
+			$(document).on('keydown', '.janal-key-apartados', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('jsVentas.keydown: '+ key);
+				switch(key) {
+					case $articulos.VK_UP:	
+					case $articulos.VK_DOWN:	
+					case $articulos.VK_TAB:
+						return $articulos.nextApartados(true);
+					  break;
+					case $articulos.VK_ESC:
+            PF('dlgApartados').hide();
+					  break;
+					case $articulos.VK_ENTER:
+      			janal.console('jsVentas.lookup');
+						lookup();
+						return false;
+						break;
+					case $articulos.VK_PAGE_NEXT:
+						$('#tablaApartados_paginator_top > a.ui-paginator-next').click();
+						return setTimeout($articulos.next(false), 1000);
+						break;
+					case $articulos.VK_PAGE_PREV:
+						$('#tablaApartados_paginator_top > a.ui-paginator-prev').click();
+						return setTimeout($articulos.next(false), 1000);
+						break;
+				} // swtich
+			});	
+			$(document).on('keydown', '.janal-row-apartados', function(e) {
+				var key   = e.keyCode ? e.keyCode : e.which;
+				janal.console('jsArticulos.keydown: '+ $(this).attr('id')+ ' key: '+ key);
+				switch(key) {
+					case $articulos.VK_TAB:
+					  $('#busquedaApartados').focus();
+						return false;
+					  break;
+					case $articulos.VK_ESC:
+            PF('widgetTablaApartados').hide();
+						break;
+					case $articulos.VK_F7:
+					case $articulos.VK_ENTER:
+			      $('#aceptarApartados').click();		
+				    return false;
+						break;
+					case $articulos.VK_UP:
+					case $articulos.VK_DOWN:
+						break;
+					case $articulos.VK_PAGE_NEXT:
+						if($('#tablaApartados_paginator_top > a.ui-paginator-next')) {
+						  $('#tablaApartados_paginator_top > a.ui-paginator-next').click();
+						  return setTimeout($articulos.goon(false), 1000);
+					  } // if
+						else
+							return false;
+						break;
+					case $articulos.VK_PAGE_PREV:
+						if($('#tablaApartados_paginator_top > a.ui-paginator-prev')) {
+  						$('#tablaApartados_paginator_top > a.ui-paginator-prev').click();
+	  					return setTimeout($articulos.goon(false), 1000);
+					  } // if
+						else
+							return false;
+						break;
+				} // swtich
+			});	
 	    $(document).on('keydown', '.janal-key-clientes', function(e) {
 				var key   = e.keyCode ? e.keyCode : e.which;
 				janal.console('jsArticulos.keydown: '+ key);
@@ -474,6 +538,16 @@
 				//PF('widgetTablaTicketsAbiertos').selectRow(0, true);	
 				if(focus)
 					$('#tablaCotizaciones .ui-datatable-data').focus();
+			} // if	
+			return false;
+		},
+		nextApartados: function(focus) {
+			janal.console('jsArticulos.nextApartados');
+			if(!PF('widgetTablaApartados').isEmpty()) {
+				PF('widgetTablaApartados').clearSelection();
+				PF('widgetTablaApartados').writeSelections();				
+				if(focus)
+					$('#tablaApartados .ui-datatable-data').focus();
 			} // if	
 			return false;
 		},
