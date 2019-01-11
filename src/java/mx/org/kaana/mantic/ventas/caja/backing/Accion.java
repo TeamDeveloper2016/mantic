@@ -137,6 +137,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("apartado", false);			
 			this.attrs.put("observaciones", "");		
 			this.attrs.put("disabledFacturar", false);
+			this.attrs.put("disabledFacturarSwitch", false);			
 			this.attrs.put("ajustePreciosCliente", true);			
 			this.apartado= new TcManticApartadosDto();
 			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
@@ -517,6 +518,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			motorBusqueda= new MotorBusqueda(-1L, ((TicketVenta)this.getAdminOrden().getOrden()).getIdCliente());
 			seleccion= new UISelectEntity(motorBusqueda.toCliente());
 			this.attrs.put("clienteAsignado", !seleccion.toString("clave").equals(CLAVE_VENTA_GRAL));
+			this.attrs.put("clienteRegistrado", seleccion.toString("clave").equals(CLAVE_VENTA_GRAL));
 			this.attrs.put("nombreCliente", seleccion.toString("razonSocial"));
 			clientesSeleccion= new ArrayList<>();
 			clientesSeleccion.add(seleccion);
@@ -559,7 +561,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		ClienteTipoContacto telefono          = null;
 		ClienteTipoContacto celular           = null;
 		try {						
-			this.attrs.put("disabledFacturar", !((Boolean)this.attrs.get("facturarVenta")));			
+			this.attrs.put("disabledFacturar", !((Boolean)this.attrs.get("facturarVenta")));						
 			cliente= (UISelectEntity) this.attrs.get("clienteSeleccion");	
 			if(cliente!= null){
 				clientesSeleccion= (List<UISelectEntity>) this.attrs.get("clientesSeleccion");
@@ -569,7 +571,8 @@ public class Accion extends IBaseVenta implements Serializable {
 					motor= new MotorBusqueda(-1L, seleccionado.getKey());
 					this.clientesTiposContacto= motor.toCorreosCliente();
 					this.attrs.put("telefono", motor.toTelefonoCliente());
-					this.attrs.put("celular", motor.toCelularCliente());
+					this.attrs.put("celular", motor.toCelularCliente());					
+					this.attrs.put("clienteRegistrado", true);
 				} // if
 				else{
 					setDomicilio(new Domicilio());
@@ -584,6 +587,7 @@ public class Accion extends IBaseVenta implements Serializable {
 					celular.setSqlAccion(ESql.INSERT);
 					celular.setIdTipoContacto(ETiposContactos.CELULAR.getKey());
 					this.attrs.put("celular", celular);
+					this.attrs.put("clienteRegistrado", ((Boolean)this.attrs.get("facturarVenta")));
 				} // else
 			} // if
 			else{
@@ -599,6 +603,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				celular.setSqlAccion(ESql.INSERT);
 				celular.setIdTipoContacto(ETiposContactos.CELULAR.getKey());
 				this.attrs.put("celular", celular);
+				this.attrs.put("clienteRegistrado", ((Boolean)this.attrs.get("facturarVenta")));
 			} // else				
 		} // try
 		catch (Exception e) {
@@ -610,9 +615,15 @@ public class Accion extends IBaseVenta implements Serializable {
 	public void doActiveApartado(){
 		boolean apartado= true;
 		try {
-			apartado= (boolean) this.attrs.get("apartado");			
-			this.attrs.put("facturarVenta", !apartado);
-			this.attrs.put("disabledFacturar", apartado);			
+			apartado= (boolean) this.attrs.get("apartado");	
+			if(apartado){
+				this.attrs.put("facturarVenta", !apartado);
+				this.attrs.put("disabledFacturar", apartado);			
+				this.attrs.put("clienteRegistrado", ((Boolean)this.attrs.get("facturarVenta")));
+			} // if			
+			else
+				this.attrs.put("clienteRegistrado", ((Boolean)this.attrs.get("clienteAsignado")));
+			this.attrs.put("disabledFacturarSwitch", apartado);			
 			this.attrs.put("tabIndex", 1);
 		} // try
 		catch (Exception e) {
@@ -1022,7 +1033,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // catch		
 		return regresar;
 	} // toPago
-	
+		
 	private void validaFacturacion() throws Exception{
 		List<Entity> ticketsAbiertos= null;
 		Entity ticketAbierto        = null;
@@ -1031,18 +1042,18 @@ public class Accion extends IBaseVenta implements Serializable {
 		try {
 			motor= new MotorBusqueda(-1L);
 			cliente= motor.toClienteDefault();
-			ticketsAbiertos= (List<Entity>) this.attrs.get("ticketsAbiertos");
+			ticketsAbiertos= (List<Entity>) this.attrs.get("ticketsAbiertos");			
 			this.attrs.put("disabledFacturar", false);
 			if(!ticketsAbiertos.isEmpty()){
 				ticketAbierto= (Entity) this.attrs.get("ticketAbierto");
 				if(ticketAbierto!= null)
 					this.attrs.put("disabledFacturar", cliente.getKey().equals(ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto)).toLong("idCliente")));
-			} // if			
+			} // if						
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
-	} // validaFacturacion
+	} // validaFacturacion	
 	
 	@Override
 	public void doAsignaCotizacion(){		
