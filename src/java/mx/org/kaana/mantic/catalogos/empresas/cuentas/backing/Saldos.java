@@ -326,7 +326,7 @@ public class Saldos extends IBaseFilter implements Serializable {
 
 	public String doNotaEntrada() {
 		JsfBase.setFlashAttribute("idNotaEntrada", this.attrs.get("idNotaEntrada"));
-		return "/Paginas/Mantic/Catalogos/Empresas/Cuentas/saldos".concat(Constantes.REDIRECIONAR);
+		return "/Paginas/Mantic/Inventarios/Entradas/filtro".concat(Constantes.REDIRECIONAR);
 	}
 
   public String toColor(Entity row) {
