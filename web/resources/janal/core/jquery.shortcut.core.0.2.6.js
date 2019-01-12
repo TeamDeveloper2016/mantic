@@ -294,6 +294,16 @@ shortcut.add("Ctrl+P", function() {
 	} // if
 });
 
+shortcut.add("Ctrl+A", function() {
+	janal.console('Shortcut apartados:');
+	if(PF('dlgApartados') && !PF('dlgApartados').isVisible()) {
+		if(!($('#aceptar').prop("disabled")=== true && $('#cuenta').prop("disabled")=== false)){
+			janal.bloquear();
+			loadApartados();
+		} // if
+	} // if
+});
+
 shortcut.add("f4", function() {
 	janal.console('Shortcut cotizaciones:');
 	if(PF('dlgCotizaciones')){
