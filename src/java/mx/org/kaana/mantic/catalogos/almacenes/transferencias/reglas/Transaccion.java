@@ -22,7 +22,7 @@ public class Transaccion extends IBaseTnx {
   private TcManticAlmacenesArticulosDto almanecArticuloOrigen;
   private String messageError;
   private String nombreSolicito;
-  private String cantidad;
+  private Double cantidad;
   private Long idAlmacenDestino;
 
 	public Transaccion(TcManticTransferenciasDto dto, String nombreSolicito) {
@@ -34,36 +34,17 @@ public class Transaccion extends IBaseTnx {
     this.dtoBitacora = dtoBitacora;
   }
 
-  public Transaccion(TcManticAlmacenesArticulosDto almanecArticuloOrigen, String cantidad, Long idAlmacenDestino) {
+  public Transaccion(TcManticAlmacenesArticulosDto almanecArticuloOrigen, Double cantidad, Long idAlmacenDestino) {
+	  this(null, almanecArticuloOrigen, cantidad, idAlmacenDestino);
+	}
+	
+  public Transaccion(TcManticTransferenciasBitacoraDto dtoBitacora, TcManticAlmacenesArticulosDto almanecArticuloOrigen, Double cantidad, Long idAlmacenDestino) {
+    this.dtoBitacora = dtoBitacora;
     this.almanecArticuloOrigen = almanecArticuloOrigen;
     this.cantidad = cantidad;
     this.idAlmacenDestino = idAlmacenDestino;
   }
 
-  public TcManticAlmacenesArticulosDto getAlmanecArticuloOrigen() {
-    return almanecArticuloOrigen;
-  }
-
-  public void setAlmanecArticuloOrigen(TcManticAlmacenesArticulosDto almanecArticuloOrigen) {
-    this.almanecArticuloOrigen = almanecArticuloOrigen;
-  }
-
-  public String getCantidad() {
-    return cantidad;
-  }
-
-  public void setCantidad(String cantidad) {
-    this.cantidad = cantidad;
-  }
-
-  public Long getIdAlmacenDestino() {
-    return idAlmacenDestino;
-  }
-
-  public void setIdAlmacenDestino(Long idAlmacenDestino) {
-    this.idAlmacenDestino = idAlmacenDestino;
-  }
-  
   @Override
   protected boolean ejecutar(Session sesion, EAccion accion) throws Exception {
     boolean regresar = false;
@@ -75,15 +56,15 @@ public class Transaccion extends IBaseTnx {
           break;
         case REGISTRAR:
           regresar= DaoFactory.getInstance().insert(sesion, this.dtoBitacora).intValue()> 0;
-          if(regresar){
+          if(regresar) {
 						this.dto= (TcManticTransferenciasDto) DaoFactory.getInstance().findById(sesion, TcManticTransferenciasDto.class, this.dtoBitacora.getIdTransferencia());
 						this.dto.setIdTransferenciaEstatus(this.dtoBitacora.getIdTransferenciaEstatus());
 						regresar= DaoFactory.getInstance().update(sesion, this.dto)>= 1L;
             if(this.dto.getIdTransferenciaEstatus().equals(5L)){
-              regresar= DaoFactory.getInstance().update(almanecArticuloOrigen)>0L;
+              regresar= DaoFactory.getInstance().update(almanecArticuloOrigen)> 0L;
               if(regresar)
                 agregaActualizaDestino(sesion);
-            }
+            } // if
 					} // if
           break;
         case ELIMINAR:
@@ -152,26 +133,25 @@ public class Transaccion extends IBaseTnx {
       params.put("idTransferencia", this.dto.getIdTransferencia());
       params.put("idAlmacen", this.idAlmacenDestino);
       params.put("idArticulo", this.almanecArticuloOrigen.getIdArticulo());
-      general= (TcManticAlmacenesUbicacionesDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesUbicacionesDto.class, params, "general");
       destino = (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().findFirst(TcManticAlmacenesArticulosDto.class, "almacenArticulo", params);
       if(destino != null){
-        nuevoStock = destino.getStock()- Double.valueOf(this.cantidad);
+        nuevoStock = destino.getStock()- this.cantidad;
         destino.setStock(nuevoStock);
-        regresar = DaoFactory.getInstance().update(sesion, destino)>0L;
+        regresar = DaoFactory.getInstance().update(sesion, destino)> 0L;
       }
-      else{
+			else {
         destino = new TcManticAlmacenesArticulosDto();
         destino.setIdAlmacen(idAlmacenDestino);
         destino.setIdArticulo(this.almanecArticuloOrigen.getIdArticulo());
         destino.setIdUsuario(JsfBase.getIdUsuario());
-        destino.setStock(Double.valueOf(this.cantidad));
+        destino.setStock(this.cantidad);
         destino.setMinimo(this.almanecArticuloOrigen.getMinimo());
         destino.setMaximo(this.almanecArticuloOrigen.getMaximo());
         general= (TcManticAlmacenesUbicacionesDto)DaoFactory.getInstance().findFirst(sesion, TcManticAlmacenesUbicacionesDto.class, params, "general");
 				if(general== null) {
   				general= new TcManticAlmacenesUbicacionesDto("GENERAL", "", "GENERAL", "", "", JsfBase.getAutentifica().getPersona().getIdUsuario(), this.idAlmacenDestino, -1L);
 					DaoFactory.getInstance().insert(sesion, general);
-        }
+        } // if
         destino.setIdAlmacenUbicacion(general.getIdAlmacenUbicacion());
         regresar = DaoFactory.getInstance().insert(sesion, destino) >= 0L;
       }  

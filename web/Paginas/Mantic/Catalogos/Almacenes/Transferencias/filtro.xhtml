@@ -6,19 +6,20 @@
                 xmlns:p="http://primefaces.org/ui"
 								xmlns:fn="http://java.sun.com/jsp/jstl/functions"
                 template="/WEB-INF/plantillas/reporte.xhtml">
-  <ui:param name="titulo" value="Catálogo de transferencias almacenes" />
+  <ui:param name="titulo" value="Transferencias de articulos entre almacenes"/>
   <ui:define name="librerias">
     <script type="text/javascript">
       Janal.Control.fields = {
-        'clave': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, grupo: 'general'},
-        'nombre': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, grupo: 'general'},
-        'codigoArticulo': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, grupo: 'general'},
-				'nombreArticulo': {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', individual: true, grupo: 'general'}        
+        'idEmpresa'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
+				'codigos'     : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
+				'nombre'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
+        'fechaInicio' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'fechaTermino': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
+        'idTransferenciaEstatus': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
       };
 			
 			fieldsDialog ={
-				'justificacion' : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoDos', formatos: 'cambiar-mayusculas'},
-        'estatus'       : {validaciones: 'libre', mascara: 'libre', grupo:'dialogoDos'}  
+				'justificacion' : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoDos', formatos: 'cambiar-mayusculas'}
 			};
 			
 			function validaJustificacion(){
@@ -43,21 +44,67 @@
           <p:panel id="panelBusqueda" header="Busqueda:" styleClass="lg-pantalla" toggleable="true" toggleOrientation="horizontal">
 						<p:ajax event="toggle" oncomplete="janal.collapsePanel('collapse')"/>
             <h:panelGrid styleClass="janal-wid-100">
-              <p:outputLabel for="clave" value="Clave Almacen:"/>
-              <p:inputText id="clave" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.clave}" styleClass="janal-wid-100-txt" /> 
-              <p:outputLabel for="nombre" value="Nombre Almacen:"/>
-              <p:inputText id="nombre" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.nombre}" styleClass="janal-wid-100-txt" />
-              <p:outputLabel for="codigoArticulo" value="Código Artículo:"/>
-							<p:inputText id="codigoArticulo" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.codigoArticulo}" styleClass="janal-wid-100-txt"/>              							
-							<p:outputLabel for="nombreArticulo" value="Nombre Artículo:"/>
-							<p:inputText id="nombreArticulo" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.nombreArticulo}" styleClass="janal-wid-100-txt"/>       
+              <p:outputLabel for="idEmpresa" value="Sucursal:" rendered="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.isMatriz}"/>
+              <p:selectOneMenu id="idEmpresa" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.idEmpresa}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+								<p:ajax event="change" process="@this" update="idAlmacen" listener="#{manticCatalogosAlmacenesTransferenciasFiltro.doAlmacenes}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                <f:selectItems value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.empresas}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+              <p:outputLabel for="idAlmacen" value="Almacen:"/>
+              <p:selectOneMenu id="idAlmacen" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.idAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt" rendered="#{sessionScope.autentifica.empresa.matriz}" effect="fade" filter="true" filterMatchMode="contains">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                <f:selectItems value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.almacenes}" var="element" itemValue="#{element}" itemLabel="#{element.clave} - #{element.nombre}"/>
+                <p:column headerText="Clave">
+                  <h:outputText value="#{item.clave}"/>
+                </p:column>   
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
+              <p:outputLabel for="codigos" value="Código ó nombre:"/>
+							<p:autoComplete id="codigos" var="custom" placeholder="ejemplo: AU125" itemLabel="#{custom.nombre}" styleClass="janal-wid-100-txt key-down-event" inputStyleClass="janal-wid-100-txt" itemValue="#{custom}" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.custom}" completeMethod="#{manticCatalogosAlmacenesTransferenciasFiltro.doCompleteArticulo}" maxResults="8" converter="janal.convertidor.Entity" minQueryLength="2" panelStyleClass="janal-wid-col-500">
+								<p:ajax event="itemSelect" process="panelBusqueda" update="tabla" listener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoad}" onstart="return janal.bloquear();" oncomplete="janal.desbloquear();"/>
+								<f:facet name="itemtip">
+									<h:panelGrid columns="2" cellpadding="5" styleClass="janal-wid-col-400">
+										<f:facet name="header" class="TexAlCenter">
+											<p:graphicImage library="janal" name="img/sistema/bonanza.svg" styleClass="janal-logo-mini" width="30"/>
+										</f:facet>
+										<h:outputText value="Propio:" />
+										<h:outputText value="#{custom.propio}" />
+										<h:outputText value="Nombre:" />
+										<h:outputText value="#{custom.nombre}" />
+										<h:outputText value="IVA:" />
+										<h:outputText value="#{custom.iva}" />
+										<h:outputText value="Costo:" />
+										<h:outputText value="$ #{custom.precio}" />
+									</h:panelGrid>
+								</f:facet>
+							</p:autoComplete>	
+              <p:outputLabel for="fechaInicio" value="Fecha inicio:"/>
+							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+              <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
+							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
+              <p:outputLabel for="idTransferenciaEstatus" value="Estatus:"/>
+              <p:selectOneMenu id="idTransferenciaEstatus" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.idTransferenciaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="contains">
+								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
+                <f:selectItems value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.catalogo}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
+                <p:column headerText="Nombre">
+                  <h:outputText value="#{item.nombre}"/>
+                </p:column>   
+              </p:selectOneMenu>
             </h:panelGrid>
             <p:separator/>
             <div class="janal-align-right lg-pantalla">
-              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general', true);" process="@this clave nombre codigoArticulo nombreArticulo" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
+              <p:commandButton id="buscar" value="Buscar" icon="fa fa-filter" accesskey="b" onstart="return janal.partial('general', true);" process="panelBusqueda" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla"/>
             </div>
 						<div class="janal-align-right xs-pantalla">
- 						  <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general', true);" process="@this clave nombre codigoArticulo nombreArticulo" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
+ 						  <p:commandButton id="buscarIcon" icon="fa fa-filter" onstart="return janal.partial('general', true);" process="panelBusqueda" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doLoad}" oncomplete="janal.desbloquear();" update="tabla" />
 					  </div>
           </p:panel>
         </div>
@@ -85,42 +132,36 @@
                 <p:menuitem icon="fa fa-file-word-o" title="Reporte" value="Reporte" onstart="return janal.bloquear()" process="@this tabla" actionListener="#{manticCatalogosAlmacenesTransferenciasFiltro.doReporte('TRANSFERENCIAS')}" oncomplete="janal.desbloquear();" update="descargar"/>
               </div>  
             </f:facet>												
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{filtro.nombreOrigen}">
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.nombreOrigen}">
 							<f:facet name="header">
 								<h:outputText value="Almacen origen"/>
 							</f:facet>
 							<h:outputText value="#{filtro['nombreOrigen']}"/>
 						</p:column>														
-						<p:column class="janal-column-left MarAuto Responsive janal-wid-30" sortBy="#{filtro.nombreDestino}">
+						<p:column class="janal-column-left MarAuto Responsive" sortBy="#{filtro.nombreDestino}">
 							<f:facet name="header">
 								<h:outputText value="Almacen destino"/>
 							</f:facet>
 							<h:outputText value="#{filtro['nombreDestino']}"/>
 						</p:column>					
-						<p:column class="anal-column-left MarAuto Responsive janal-wid-30" sortBy="#{filtro.nombre}">
+						<p:column class="anal-column-left MarAuto Responsive" sortBy="#{filtro.nombre}">
 							<f:facet name="header">
 								<h:outputText value="Artículo"/>
 							</f:facet>
-							<h:outputText value="#{filtro['nombre']}"/>
+							<h:outputText value="#{filtro['nombre']}" title="Observaciones: #{filtro['observaciones']}"/>
 						</p:column>					
-						<p:column class="janal-column-right MarAuto Responsive janal-wid-10" sortBy="#{filtro.cantidad}">
+						<p:column class="janal-column-right MarAuto Responsive janal-wid-12" sortBy="#{filtro.cantidad}">
 							<f:facet name="header">
 								<h:outputText value="Cantidad"/>
 							</f:facet>
-							<h:outputText value="#{filtro['cantidad']}"/>
+							<h:outputText value="#{filtro['cantidad']}" title="Observaciones: #{filtro['observaciones']}"/>
 						</p:column>							
             <p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.nombreEstatus}">
 							<f:facet name="header">
 								<h:outputText value="Estatus"/>
 							</f:facet>
-							<h:outputText value="#{filtro['nombreEstatus']}"/>
+							<h:outputText value="#{filtro['nombreEstatus']}" title="Observaciones: #{filtro['observaciones']}"/>
 						</p:column>	
-            <p:column class="anal-column-left MarAuto Responsive janal-wid-15" sortBy="#{filtro.observaciones}">
-							<f:facet name="header">
-								<h:outputText value="Observaciones"/>
-							</f:facet>
-							<h:outputText value="#{filtro['observaciones']}"/>
-						</p:column>		
 						<p:column class="janal-column-center MarAuto Responsive janal-wid-15" sortBy="#{filtro.registro}">
 							<f:facet name="header">
 								<h:outputText value="Fecha"/>
@@ -128,7 +169,7 @@
 							<h:outputText value="#{filtro['registro']}"/>
 						</p:column>					
 						<f:facet name="footer">
-							Total [#{manticCatalogosAlmacenesTransferenciasFiltro.lazyModel==null?0:manticCatalogosAlmacenesTransferenciasFiltro.lazyModel.rowCount}] registros
+							Total [#{manticCatalogosAlmacenesTransferenciasFiltro.lazyModel== null? 0: manticCatalogosAlmacenesTransferenciasFiltro.lazyModel.rowCount}] registros
 						</f:facet>
 					</p:dataTable>
           <p:contextMenu  id="kajoolContextMenu" widgetVar="kajoolContextMenu" for="tabla">

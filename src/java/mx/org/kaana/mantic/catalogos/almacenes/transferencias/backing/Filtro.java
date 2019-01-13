@@ -1,6 +1,7 @@
 package mx.org.kaana.mantic.catalogos.almacenes.transferencias.backing;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,9 +20,13 @@ import mx.org.kaana.kajool.reglas.comun.Columna;
 import mx.org.kaana.kajool.reglas.comun.FormatCustomLazy;
 import mx.org.kaana.kajool.template.backing.Reporte;
 import mx.org.kaana.libs.Constantes;
+import mx.org.kaana.libs.formato.Cadena;
+import mx.org.kaana.libs.formato.Fecha;
 import mx.org.kaana.libs.pagina.JsfBase;
 import mx.org.kaana.libs.pagina.UIBackingUtilities;
+import mx.org.kaana.libs.pagina.UIEntity;
 import mx.org.kaana.libs.pagina.UISelect;
+import mx.org.kaana.libs.pagina.UISelectEntity;
 import mx.org.kaana.libs.pagina.UISelectItem;
 import mx.org.kaana.libs.reflection.Methods;
 import mx.org.kaana.mantic.catalogos.reportes.reglas.ParametrosComunes;
@@ -44,13 +49,11 @@ public class Filtro extends Comun implements Serializable {
   @Override
   protected void init() {
     try {
-			this.attrs.put("clave", "");
-			this.attrs.put("nombre", "");
-      this.attrs.put("codigoArticulo", "");
-			this.attrs.put("nombreArticulo", "");
-      this.attrs.put("sortOrder", "order by tc_mantic_transferencias.registro");
-      this.attrs.put("idPrincipal", 1L);
-      this.attrs.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+      this.attrs.put("isMatriz", JsfBase.getAutentifica().getEmpresa().isMatriz());
+      this.attrs.put("idTransferencia", JsfBase.getFlashAttribute("idTransferencia"));
+			this.toLoadCatalog();
+      if(this.attrs.get("idTransferencia")!= null) 
+			  this.doLoad();
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -60,8 +63,10 @@ public class Filtro extends Comun implements Serializable {
 
   @Override
   public void doLoad() {
-    List<Columna> campos = null;
+    List<Columna> campos      = null;
+		Map<String, Object> params= toPrepare();
     try {
+      params.put("sortOrder", "order by tc_mantic_transferencias.registro desc");
       campos = new ArrayList<>();
       campos.add(new Columna("nombreOrigen", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("nombreDestino", EFormatoDinamicos.MAYUSCULAS));
@@ -71,8 +76,9 @@ public class Filtro extends Comun implements Serializable {
       campos.add(new Columna("estatus", EFormatoDinamicos.MAYUSCULAS));
       campos.add(new Columna("registro", EFormatoDinamicos.FECHA_CORTA));
       campos.add(new Columna("solicito", EFormatoDinamicos.MAYUSCULAS));
-      this.lazyModel = new FormatCustomLazy("VistaAlmacenesTransferenciasDto", "row", this.attrs, campos);
+      this.lazyModel = new FormatCustomLazy("VistaAlmacenesTransferenciasDto", params, campos);
       UIBackingUtilities.resetDataTable();
+			this.attrs.put("idTransferencia", null);
     } // try
     catch (Exception e) {
       Error.mensaje(e);
@@ -82,6 +88,67 @@ public class Filtro extends Comun implements Serializable {
       Methods.clean(campos);
     } // finally		
   } // doLoad
+
+	private Map<String, Object> toPrepare() {
+	  Map<String, Object> regresar= new HashMap<>();	
+		StringBuilder sb= new StringBuilder();
+		if(!Cadena.isVacio(this.attrs.get("idTransferencia")) && !this.attrs.get("idTransferencia").toString().equals("-1"))
+  		sb.append("(tc_mantic_transferencias.id_transferencia=").append(this.attrs.get("idTransferencia")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idAlmacen")) && !this.attrs.get("idAlmacen").toString().equals("-1"))
+  		sb.append("(tc_mantic_transferencias.id_almacen= ").append(this.attrs.get("idAlmacen")).append(" or tc_mantic_transferencias.id_destino= ").append(this.attrs.get("idAlmacen")).append(") and ");
+		UISelectEntity articulo      = (UISelectEntity)this.attrs.get("articulo");
+		List<UISelectEntity>articulos= (List<UISelectEntity>)this.attrs.get("articulos");
+		if(articulos!= null && articulo!= null && articulos.indexOf(articulo)>= 0) 
+			sb.append("(tc_mantic_articulos.id_articulo= ").append(articulos.get(articulos.indexOf(articulo)).getKey()).append(") and ");				
+		else 
+			if(!Cadena.isVacio(JsfBase.getParametro("codigos_input"))) 
+				sb.append("(tc_mantic_articulos.nombre regexp '.*").append(JsfBase.getParametro("codigos_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*' or tc_mantic_articulos.codigo regexp '.*").append(JsfBase.getParametro("codigos_input").replaceAll(Constantes.CLEAN_SQL, "").trim().replaceAll("(,| |\\t)+", ".*.*")).append(".*') and ");				
+		if(!Cadena.isVacio(this.attrs.get("fechaInicio")))
+		  sb.append("(date_format(tc_mantic_transferencias.registro, '%Y%m%d')>= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaInicio"))).append("') and ");	
+		if(!Cadena.isVacio(this.attrs.get("fechaTermino")))
+		  sb.append("(date_format(tc_mantic_transferencias.registro, '%Y%m%d')<= '").append(Fecha.formatear(Fecha.FECHA_ESTANDAR, (Date)this.attrs.get("fechaTermino"))).append("') and ");	
+		if(!Cadena.isVacio(this.attrs.get("idTransferenciaEstatus")) && !this.attrs.get("idTransferenciaEstatus").toString().equals("-1"))
+  		sb.append("(tc_mantic_transferencias.id_transferencia_estatus= ").append(this.attrs.get("idTransferenciaEstatus")).append(") and ");
+		if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+		  regresar.put("idEmpresa", this.attrs.get("idEmpresa"));
+		else
+		  regresar.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getSucursales());
+		if(sb.length()== 0)
+		  regresar.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+		else	
+		  regresar.put(Constantes.SQL_CONDICION, sb.substring(0, sb.length()- 4));
+		return regresar;
+	}
+
+	private void toLoadCatalog() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			columns= new ArrayList<>();
+			if(JsfBase.getAutentifica().getEmpresa().isMatriz())
+        params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresaDepende());
+			else
+				params.put("idEmpresa", JsfBase.getAutentifica().getEmpresa().getIdEmpresa());
+			params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("empresas", (List<UISelectEntity>) UIEntity.build("TcManticEmpresasDto", "empresas", params, columns));
+			this.attrs.put("idEmpresa", new UISelectEntity("-1"));
+      this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
+			this.attrs.put("idAlmacen", new UISelectEntity("-1"));
+			columns.remove(0);
+      this.attrs.put("catalogo", (List<UISelectEntity>) UIEntity.build("TcManticTransferenciasEstatusDto", "row", params, columns));
+			this.attrs.put("idTransferenciasEstatus", new UISelectEntity("-1"));
+    } // try
+    catch (Exception e) {
+      throw e;
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}
 
   public String doAccion(String accion) {
     EAccion eaccion= null;
@@ -97,7 +164,7 @@ public class Filtro extends Comun implements Serializable {
 		return "accion".concat(Constantes.REDIRECIONAR);
   } // doAccion
   
-  public void doLoadEstatus(){
+  public void doLoadEstatus() {
 		Entity seleccionado          = null;
 		Map<String, Object>params    = null;
 		List<UISelectItem> allEstatus= null;
@@ -118,7 +185,7 @@ public class Filtro extends Comun implements Serializable {
 		} // finally
 	} // doLoadEstatus
 	
-	public void doActualizarEstatus(){
+	public void doActualizarEstatus() {
 		Transaccion transaccion                   = null;
 		TcManticTransferenciasBitacoraDto bitacora= null;
 		Entity seleccionado                       = null;
@@ -133,20 +200,18 @@ public class Filtro extends Comun implements Serializable {
 			bitacora.setIdTransferenciaEstatus(Long.valueOf(this.attrs.get("estatusAsigna").toString()));
 			bitacora.setJustificacion((String) this.attrs.get("justificacion"));
 			bitacora.setIdUsuario(JsfBase.getIdUsuario());
-			transaccion= new Transaccion(bitacora);
-      if(Long.valueOf(this.attrs.get("estatusAsigna").toString()).equals(5L)){//estatus entregado
-          params.put("idAlmacen", seleccionado.get("idAlmacen").toLong());
-          params.put("idArticulo", seleccionado.get("idArticulo").toLong());
-          origen = (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().findFirst(TcManticAlmacenesArticulosDto.class, "almacenArticulo", params);
-          nuevoStock = origen.getStock()- Double.valueOf(seleccionado.get("cantidad").toString());
-          origen.setStock(nuevoStock);
-          transaccion.setAlmanecArticuloOrigen(origen);
-          transaccion.setIdAlmacenDestino(seleccionado.get("idDestino").toLong());
-          transaccion.setCantidad(seleccionado.get("cantidad").toString());
-      }
-			if(transaccion.ejecutar(EAccion.REGISTRAR)){
+      if(Long.valueOf(this.attrs.get("estatusAsigna").toString()).equals(5L)) { // estatus entregado
+				params.put("idAlmacen", seleccionado.get("idAlmacen").toLong());
+				params.put("idArticulo", seleccionado.get("idArticulo").toLong());
+				origen = (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().findFirst(TcManticAlmacenesArticulosDto.class, "almacenArticulo", params);
+				nuevoStock = origen.getStock()- seleccionado.toDouble("cantidad");
+				origen.setStock(nuevoStock);
+  			transaccion= new Transaccion(bitacora, origen, seleccionado.toDouble("cantidad"), seleccionado.toLong("idDestino"));
+      } // if
+			else
+  			transaccion= new Transaccion(bitacora);
+			if(transaccion.ejecutar(EAccion.REGISTRAR)) 
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
-      }
 			else
 				JsfBase.addMessage("Cambio estatus", "Ocurrio un error al realizar el cambio de estatus", ETipoMensaje.ERROR);
 		} // try
@@ -187,12 +252,12 @@ public class Filtro extends Comun implements Serializable {
     try {
       params= new HashMap<>();
 			seleccionado= (Entity) this.attrs.get("seleccionado");
-      params.put("idAlmacen", seleccionado.get("idAlmacen").toLong());
-      params.put("idArticulo", seleccionado.get("idArticulo").toLong());
+      params.put("idAlmacen", seleccionado.toLong("idAlmacen"));
+      params.put("idArticulo", seleccionado.toLong("idArticulo"));
       origen = (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().findViewCriteria(TcManticAlmacenesArticulosDto.class, params, "almacenArticulo");
-      nuevoStock = origen.getStock()- Double.valueOf(seleccionado.get("cantidad").toString());
+      nuevoStock = origen.getStock()- seleccionado.toDouble("cantidad");
       origen.setStock(nuevoStock);
-      transaccion= new Transaccion(origen, seleccionado.get("cantidad").toString(), seleccionado.get("idDestino").toLong());
+      transaccion= new Transaccion(origen, seleccionado.toDouble("cantidad"), seleccionado.toLong("idDestino"));
 			if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
 				JsfBase.addMessage("Complementar entrega transferencia", "La transferencia de artículos se ha concretado correctamente.", ETipoMensaje.INFORMACION);
 			else
@@ -248,4 +313,94 @@ public class Filtro extends Comun implements Serializable {
 		} // else
     return regresar;
 	} // doVerificarReporte		
+	
+  public void doFindArticulo() {
+		try {
+    	List<UISelectEntity> articulos= (List<UISelectEntity>)this.attrs.get("articulos");
+	    UISelectEntity articulo= (UISelectEntity)this.attrs.get("custom");
+			if(articulo== null)
+			  articulo= new UISelectEntity(new Entity(-1L));
+			else
+				if(articulos.indexOf(articulo)>= 0) 
+					articulo= articulos.get(articulos.indexOf(articulo));
+			  else
+			    articulo= articulos.get(0);
+			this.attrs.put("seleccionado", new Entity(articulo.toLong("idArticulo")));
+		} // try
+	  catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+	} 
+
+	public void doUpdateArticulos() {
+		List<Columna> columns         = null;
+    Map<String, Object> params    = new HashMap<>();
+		List<UISelectEntity> articulos= null;
+		boolean buscaPorCodigo        = false;
+    try {
+			columns= new ArrayList<>();
+      columns.add(new Columna("propio", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+  		params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+  		params.put("idProveedor", -1L);
+			String search= new String((String)this.attrs.get("codigo")); 
+			if(!Cadena.isVacio(search)) {
+  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
+				buscaPorCodigo= search.startsWith(".");
+				if(buscaPorCodigo)
+					search= search.trim().substring(1);
+				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
+			} // if	
+			else
+				search= "WXYZ";
+  		params.put("codigo", search);
+			if(buscaPorCodigo)
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porCodigo", params, columns, 40L);
+			else
+        articulos= (List<UISelectEntity>) UIEntity.build("VistaOrdenesComprasDto", "porNombre", params, columns, 40L);
+      this.attrs.put("articulos", articulos);
+		} // try
+	  catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    }// finally
+	}	
+
+	public List<UISelectEntity> doCompleteArticulo(String query) {
+		this.attrs.put("existe", null);
+		this.attrs.put("codigo", query);
+    this.doUpdateArticulos();		
+		return (List<UISelectEntity>)this.attrs.get("articulos");
+	}	
+
+	public void doAlmacenes() {
+		List<Columna> columns     = null;
+    Map<String, Object> params= new HashMap<>();
+    try {
+			columns= new ArrayList<>();
+			if(!Cadena.isVacio(this.attrs.get("idEmpresa")) && !this.attrs.get("idEmpresa").toString().equals("-1"))
+				params.put("sucursales", this.attrs.get("idEmpresa"));
+			else
+				params.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+			params.put(Constantes.SQL_CONDICION, Constantes.SQL_VERDADERO);
+      columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
+      columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
+      this.attrs.put("almacenes", (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns));
+			this.attrs.put("idAlmacen", new UISelectEntity("-1"));
+    } // try
+    catch (Exception e) {
+      Error.mensaje(e);
+			JsfBase.addMessageError(e);
+    } // catch   
+    finally {
+      Methods.clean(columns);
+      Methods.clean(params);
+    } // finally
+	}
+	
 }

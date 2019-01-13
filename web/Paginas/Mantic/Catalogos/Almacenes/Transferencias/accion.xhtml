@@ -11,12 +11,13 @@
 	<ui:define name="librerias">
     <script type="text/javascript">
 			Janal.Control.fields = {
-				idAlmacenOrigen:  {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+				idAlmacenOrigen: {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
         idAlmacenDestino: {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-        idArticulo:       {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-        solicito:         {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
-        observaciones:    {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
-        cantidad:         {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'flotante', grupo: 'general'}
+        idArticulo: {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        solicito: {validaciones: 'requerido', mascara: 'libre', grupo: 'general'},
+        quedaran: {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'},
+        observaciones:{validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas', grupo: 'general'},
+        cantidad: {validaciones: 'requerido|flotante|mayor({"cuanto": 0})', mascara: 'libre', grupo: 'general'}
 			};
       
       $(document).ready(function(){janal.readingMode('#{manticCatalogosAlmacenesTransferenciasAccion.attrs.nombreAccion}');});		
@@ -63,18 +64,18 @@
 									</p:autoComplete>
 								</p:panelGrid>
 								<p:outputLabel for="cantidad" value="Cantidad:"/>
-								<p:inputText id="cantidad" styleClass="janal-wid-100-txt filas" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.cantidad}">
-									<p:ajax event="blur" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doCalculate}" process="@this" update="@(.filas)"  oncomplete="janal.refresh();" />
-								</p:inputText>
+								<p:inputNumber id="cantidad" inputStyleClass="janal-color-orange janal-column-right" styleClass="janal-wid-100-txt filas" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.cantidad}" converter="javax.faces.Double" disabled="#{empty manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo or manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo.stock.toDouble() le 0}">
+									<p:ajax event="keyup" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doCalculate}" process="@this" update="@(.filas)" oncomplete="janal.refresh();" />
+								</p:inputNumber>
 								<p:spacer height="1"/>
 								<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100 filas" columnClasses="janal-wid-50, janal-wid-50">
 									<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-col-80, janal-wid-100">
 										<p:outputLabel value="Existencia:" for="stockOrigen" />
-										<p:inputText id="stockOrigen" styleClass="janal-wid-100-txt janal-column-right key-press-enter filas" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo==null?0:manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo.stock}" readonly="true"/>	
+										<p:inputText id="stockOrigen" styleClass="janal-wid-100-txt janal-column-right key-press-enter filas" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo== null? 0: manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo.stock}" readonly="true"/>	
 									</p:panelGrid>
 									<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-col-80, janal-wid-100">
-										<p:outputLabel value="Quedarán:" for="nuevaExistenciaOrigen" />
-										<p:inputText id="nuevaExistenciaOrigen" styleClass="janal-wid-100-txt janal-column-right key-press-enter filas" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo==null?0:manticCatalogosAlmacenesTransferenciasAccion.attrs.nuevaExistenciaOrigen}" readonly="true"/>	
+										<p:outputLabel value="Quedarán:" for="quedaran" />
+										<p:inputText id="quedaran" styleClass="janal-color-blue janal-wid-100-txt janal-column-right key-press-enter filas" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.articulo== null? 0: manticCatalogosAlmacenesTransferenciasAccion.attrs.nuevaExistenciaOrigen}" readonly="true"/>	
 									</p:panelGrid>
 								</p:panelGrid>
 								<p:outputLabel for="idAlmacenDestino" value="Almacen destino:"/>
@@ -97,7 +98,7 @@
 									</p:panelGrid>
 									<p:panelGrid layout="grid" columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-col-80, janal-wid-100">
 										<p:outputLabel value="Quedarán:" for="nuevaExistenciaDestino" styleClass="janal-column-left"/>
-										<p:inputText id="nuevaExistenciaDestino" styleClass="janal-wid-100-txt janal-column-right key-press-enter filas" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.nuevaExistenciaDestino==null?0:manticCatalogosAlmacenesTransferenciasAccion.attrs.nuevaExistenciaDestino}" readonly="true"/>	
+										<p:inputText id="nuevaExistenciaDestino" styleClass="janal-color-blue janal-wid-100-txt janal-column-right key-press-enter filas" value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.nuevaExistenciaDestino==null?0:manticCatalogosAlmacenesTransferenciasAccion.attrs.nuevaExistenciaDestino}" readonly="true"/>	
 									</p:panelGrid>
 								</p:panelGrid>
 								<p:outputLabel for="solicito"  value="Solicitó:"/>

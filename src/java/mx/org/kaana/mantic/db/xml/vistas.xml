@@ -5013,29 +5013,22 @@
       </select>
 		</unit>
     <unit id="VistaAlmacenesTransferenciasDto">
-      <select id="row">
+      <select id="lazy">
         select 
           tc_mantic_transferencias.id_transferencia as id_key,
           tc_mantic_transferencias.id_transferencia,
           tc_mantic_transferencias.id_almacen,
+          tc_mantic_transferencias.id_destino,
           origen.nombre  nombre_origen,
           origen.clave clave_origen,
-          tc_mantic_transferencias.id_destino,
           destino.nombre nombre_destino,
           destino.clave clave_destino,
           tc_mantic_transferencias.id_articulo,
           tc_mantic_articulos.nombre,
           concat('(',
-          ifnull((select
-            tc_mantic_articulos_codigos.codigo 
-          from
-            tc_mantic_articulos_codigos 
-          where
-            tc_mantic_articulos_codigos.id_proveedor= tc_mantic_articulos.id_articulo),
-          ''),
-          ' ) ',
+						ifnull((select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1), ''),
+						') ',
           tc_mantic_articulos.nombre) as nombre_articulo,
-          tc_mantic_articulos_codigos.codigo,
           tc_mantic_transferencias.id_solicito,
           concat(tc_mantic_personas.nombres, ' ', tc_mantic_personas.paterno, ' ', tc_mantic_personas.materno) as solicito,
           tc_mantic_transferencias.id_usuario,
@@ -5053,21 +5046,15 @@
           tc_mantic_articulos on tc_mantic_transferencias.id_articulo = tc_mantic_articulos.id_articulo
         inner join 
 					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
-        inner join
-           tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1   
         inner join 
-          tc_mantic_personas  on tc_mantic_transferencias.id_solicito = tc_mantic_personas.id_persona
+          tc_mantic_personas on tc_mantic_transferencias.id_solicito = tc_mantic_personas.id_persona
         inner join 
         	tc_mantic_almacenes origen on tc_mantic_transferencias.id_almacen = origen.id_almacen
         inner join 
         	tc_mantic_almacenes destino on tc_mantic_transferencias.id_destino = destino.id_almacen
-        where 
-          tc_mantic_empresas.id_empresa in ({idEmpresa}) and ((
-          (upper(tc_mantic_articulos_codigos.codigo) like upper('%{codigoArticulo}%'))
-           and 
-           upper(tc_mantic_articulos.nombre) like upper('%{nombreArticulo}%')	)
-            or(((origen.clave like '%{clave}%' or origen.clave is null) or origen.nombre like '%{nombre}%'))
-            or(((destino.clave like '%{clave}%' or destino.clave is null) or destino.nombre like '%{nombre}%')))		
+				where 
+          tc_mantic_empresas.id_empresa in ({idEmpresa}) 
+				  and {condicion}	
         {sortOrder}
       </select>   
       <select id="porNombre">
@@ -5075,7 +5062,6 @@
 				  tc_mantic_articulos.id_articulo as id_key,
 				  tc_mantic_articulos.id_articulo,
 				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1 and (upper(tc_mantic_articulos.nombre) regexp '.*{codigo}.*')) as propio,
-          tc_mantic_articulos_codigos.codigo,  
           tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.descripcion,
 				  tc_mantic_articulos.precio,
@@ -5096,8 +5082,6 @@
 					tc_mantic_articulos
         left join 
 					tc_mantic_imagenes on tc_mantic_articulos.id_imagen = tc_mantic_imagenes.id_imagen
-        inner join
-           tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
 				inner join 
 					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
 				inner join 
@@ -5139,8 +5123,6 @@
 					tc_mantic_articulos
         left join 
 					tc_mantic_imagenes on tc_mantic_articulos.id_imagen = tc_mantic_imagenes.id_imagen
-        inner join
-           tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
 				inner join 
 					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
 				inner join 
@@ -5165,7 +5147,6 @@
 				  tc_mantic_articulos_codigos.id_articulo_codigo as id_key,
 				  tc_mantic_articulos.id_articulo,
 				  (select tc_mantic_articulos_codigos.codigo from tc_mantic_articulos_codigos where tc_mantic_articulos_codigos.id_articulo= tc_mantic_articulos.id_articulo and tc_mantic_articulos_codigos.id_principal= 1) as propio,
-				  tc_mantic_articulos_codigos.codigo,
           tc_mantic_articulos.nombre,
 				  tc_mantic_articulos.precio,
 				  tc_mantic_articulos.menudeo,
@@ -5184,8 +5165,6 @@
 					tc_mantic_articulos
         left join 
 					tc_mantic_imagenes on tc_mantic_articulos.id_imagen = tc_mantic_imagenes.id_imagen
-        inner join
-           tc_mantic_articulos_codigos on tc_mantic_articulos.id_articulo = tc_mantic_articulos_codigos.id_articulo
 				inner join 
 					tc_mantic_empresas on tc_mantic_articulos.id_empresa = tc_mantic_empresas.id_empresa
 				inner join 
@@ -5196,10 +5175,8 @@
 				  tc_mantic_almacenes_ubicaciones on tc_mantic_almacenes_articulos.id_almacen_ubicacion= tc_mantic_almacenes_ubicaciones.id_almacen_ubicacion
 				where 
 					tc_mantic_empresas.id_empresa in ({sucursales})
-				  and 
-             tc_mantic_articulos.id_articulo = {idArticulo}
-          and 
-            tc_mantic_almacenes.id_almacen = {idAlmacenDestino}  						   
+				  and tc_mantic_articulos.id_articulo= {idArticulo}
+          and tc_mantic_almacenes.id_almacen= {idAlmacenDestino}  						   
         order by 
 				  tc_mantic_articulos_codigos.codigo
 			</select>
