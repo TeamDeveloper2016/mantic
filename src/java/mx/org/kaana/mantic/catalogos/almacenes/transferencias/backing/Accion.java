@@ -2,6 +2,7 @@ package mx.org.kaana.mantic.catalogos.almacenes.transferencias.backing;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -87,18 +88,20 @@ public class Accion extends IBaseAttribute implements Serializable {
         case CONSULTAR:
           idTransferencia = Long.valueOf(this.attrs.get("idTransferencia").toString());
           this.transferencia = (TcManticTransferenciasDto) DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, idTransferencia);
-					loadAlmacenes();
+					this.loadAlmacenes();
           this.attrs.put("idAlmacenOrigen", (((List<UISelectEntity>)this.attrs.get("almacenesOrigen")).get(((List<UISelectEntity>)this.attrs.get("almacenesOrigen")).indexOf(new UISelectEntity(this.transferencia.getIdAlmacen().toString())))));
-          doUpdateAlmacenOrigen();
-          this.attrs.put("idArticulo",this.transferencia.getIdArticulo());
+          this.doUpdateAlmacenOrigen();
+          this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
+          this.attrs.put("idArticulo", this.transferencia.getIdArticulo());
           this.attrs.put("idAlmacenDestino", (((List<UISelectEntity>)this.attrs.get("almacenesDestino")).get(((List<UISelectEntity>)this.attrs.get("almacenesDestino")).indexOf(new UISelectEntity(this.transferencia.getIdDestino().toString())))));
-          this.attrs.put("articulo", (((List<UISelectEntity>)this.attrs.get("articulos")).get(((List<UISelectEntity>)this.attrs.get("articulos")).indexOf(new UISelectEntity(this.transferencia.getIdArticulo().toString())))));
-           this.image= LoadImages.getImage(((UISelectEntity)this.attrs.get("articulo")).toString("archivo"));
+					List<UISelectEntity> articulos= (List<UISelectEntity>)UIEntity.build("VistaAlmacenesTransferenciasDto", "porNombre", this.attrs);
+					this.attrs.put("articulo", articulos.get(0));
+          this.image= LoadImages.getImage(((UISelectEntity)this.attrs.get("articulo")).toString("archivo"));
           this.attrs.put("cantidad", this.transferencia.getCantidad());
-          doUpdateAlmacenDestino();
-          loadPersonas(); 
+          this.doUpdateAlmacenDestino();
+          this.loadPersonas(); 
           this.attrs.put("idUsuario", this.transferencia.getIdSolicito());
-          loadUsuario();
+          this.loadUsuario();
           this.criteriosBusqueda.setPersona(this.criteriosBusqueda.getListaPersonas().get(this.criteriosBusqueda.getListaPersonas().indexOf(new UISelectEntity(this.transferencia.getIdSolicito().toString()))));
           this.attrs.put("observaciones", this.transferencia.getObservaciones());
           break;
@@ -203,7 +206,6 @@ public class Accion extends IBaseAttribute implements Serializable {
       almacenes = (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns);
       this.attrs.put("almacenesOrigen",almacenes);
       this.attrs.put("almacenesDestino", ((ArrayList<UISelectEntity>)almacenes).clone());
-      //doUpdateArticulos();
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -232,7 +234,7 @@ public class Accion extends IBaseAttribute implements Serializable {
   public void doUpdateAlmacenDestino() {
     Entity articuloDestino = null;
 		try {
-      articuloDestino = (Entity) DaoFactory.getInstance().toEntity("VistaAlmacenesTransferenciasDto", "articuloAlmacen", this.attrs);
+      articuloDestino = (Entity) DaoFactory.getInstance().toEntity("VistaAlmacenesTransferenciasDto", "articulo", this.attrs);
       this.attrs.put("articuloDestino", articuloDestino);
 			Double cantidad= this.attrs.get("cantidad")== null? 0D: (Double)this.attrs.get("cantidad");
 			Double stock   = this.attrs.get("articulo")!= null? ((UISelectEntity)this.attrs.get("articulo")).get("stock").toDouble(): 0D;
