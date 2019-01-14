@@ -497,6 +497,14 @@
 				where
 				  ejercicio= {ejercicio} 
 			</select>		
+			<select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_apartados
+        where 
+          id_venta= {idVenta}
+      </select>
     </unit>		
     <unit id="TcManticApartadosBitacoraDto">
       <select id="row">
