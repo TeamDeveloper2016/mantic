@@ -29,6 +29,7 @@ import mx.org.kaana.mantic.compras.ordenes.beans.Articulo;
 import mx.org.kaana.mantic.compras.ordenes.reglas.Descuentos;
 import mx.org.kaana.mantic.comun.IAdminArticulos;
 import mx.org.kaana.mantic.comun.IBaseCliente;
+import mx.org.kaana.mantic.db.dto.TcManticApartadosDto;
 import mx.org.kaana.mantic.db.dto.TcManticArticulosDto;
 import mx.org.kaana.mantic.enums.EEstatusVentas;
 import mx.org.kaana.mantic.ventas.beans.ArticuloVenta;
@@ -37,6 +38,7 @@ import mx.org.kaana.mantic.ventas.beans.TicketVenta;
 import mx.org.kaana.mantic.ventas.reglas.AdminTickets;
 import mx.org.kaana.mantic.ventas.reglas.CambioUsuario;
 import mx.org.kaana.mantic.ventas.reglas.MotorBusqueda;
+import mx.org.kaana.mantic.ventas.caja.beans.Pago;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 
@@ -47,6 +49,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	protected static final String INDIVIDUAL  = "1";
 	protected FormatLazyModel lazyCuentasAbiertas;
 	protected FormatLazyModel lazyCotizaciones;
+	protected FormatLazyModel lazyApartados;
 	protected SaldoCliente saldoCliente;
 	private FormatLazyModel almacenes;
   private boolean costoLibre;
@@ -67,6 +70,10 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 
 	public FormatLazyModel getLazyCotizaciones() {
 		return lazyCotizaciones;
+	}		
+
+	public FormatLazyModel getLazyApartados() {
+		return lazyApartados;
 	}		
 	
 	public SaldoCliente getSaldoCliente() {
@@ -189,6 +196,32 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		} // finally
 	} // doLoadCotizaciones
 	
+	public void doLoadApartados(){		
+		Map<String, Object>params      = null;		
+		List<Columna> campos           = null;
+		try {			
+			params= new HashMap<>();
+			params.put("sortOrder", "");
+			params.put("idEmpresa", this.attrs.get("idEmpresa"));
+			params.put(Constantes.SQL_CONDICION, toCondicionApartados());
+			campos= new ArrayList<>();
+			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
+			campos.add(new Columna("registro", EFormatoDinamicos.FECHA_HORA_CORTA));
+			campos.add(new Columna("vigencia", EFormatoDinamicos.FECHA_HORA_CORTA));
+			this.lazyApartados= new FormatLazyModel("VistaVentasDto", "lazyApartados", params, campos);			
+			RequestContext.getCurrentInstance().execute("PF('dlgApartados').show();");			
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally{
+			Methods.clean(params);
+			Methods.clean(campos);
+		} // finally
+	} // doLoadCotizaciones
+	
 	private String toCondicion() {
 		return toCondicion(false);
 	} // toCondicion
@@ -233,6 +266,28 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		return regresar.toString();
 	} // toCondicion	
 	
+	private String toCondicionApartados() {
+		StringBuilder regresar= null;
+		try {
+			regresar= new StringBuilder();			
+			regresar.append("tc_mantic_ventas.id_venta_estatus in (");
+			regresar.append(EEstatusVentas.APARTADOS.getIdEstatusVenta());
+			regresar.append(") and vigencia is not null");
+			if(this.attrs.get("busquedaApartados")!= null && !Cadena.isVacio(this.attrs.get("busquedaApartados"))){
+				regresar.append(" and (upper(tc_mantic_personas.cuenta) like upper('%");
+				regresar.append(this.attrs.get("busquedaApartados"));
+				regresar.append("%') or upper(tc_mantic_clientes.razon_social)");
+				regresar.append(" like upper('%");
+				regresar.append(this.attrs.get("busquedaApartados"));
+				regresar.append("%'))");
+			} // if			
+		} // try
+		catch (Exception e) {			
+			throw e;
+		} // catch		
+		return regresar.toString();
+	} // toCondicion	
+	
 	public void doAsignaTicketAbierto(){
 		Map<String, Object>params = null;
 		try {
@@ -263,9 +318,7 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
 			actual= new Date(Calendar.getInstance().getTimeInMillis());
 			if(actual.after(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
-				generateNewVenta();
-    	this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
-			this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());
+				generateNewVenta();    	
 			toLoadCatalog();
 			doAsignaClienteTicketAbierto();
 			RequestContext.getCurrentInstance().execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
@@ -277,9 +330,33 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 		finally{
 			Methods.clean(params);
 		} // finally
-	} // doAsignaTicketAbierto
+	} // doAsignaTicketAbierto	
 	
-	private void generateNewVenta() throws Exception{
+	public void doAsignaApartado(){
+		Map<String, Object>params = null;
+		Date actual               = null;
+		try {
+			params= new HashMap<>();
+			params.put("idVenta", this.attrs.get("apartados"));
+			this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params)));
+			asignaAbonoApartado();
+			actual= new Date(Calendar.getInstance().getTimeInMillis());
+			if(actual.after(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
+				generateNewVenta();    				
+			toLoadCatalog();
+			doAsignaClienteTicketAbierto();
+			RequestContext.getCurrentInstance().execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
+		} // try
+		catch (Exception e) {
+			Error.mensaje(e);
+			JsfBase.addMessageError(e);
+		} // catch		
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // doAsignaApartado
+	
+	protected void generateNewVenta() throws Exception{
 		IAdminArticulos adminTicketPivote= null;
 		try {
 			adminTicketPivote= getAdminOrden();
@@ -817,4 +894,40 @@ public abstract class IBaseVenta extends IBaseCliente implements Serializable {
 	public String toColor(Entity row) {
 		return doVerificaVigenciaCotizacion(row.getKey()) ? "janal-tr-yellow" : "";
 	} // toColor
+	
+	protected void asignaAbonoApartado() throws Exception{
+		TcManticApartadosDto apartado= null;
+		Map<String, Object>params    = null;
+		try {
+			params= new HashMap<>();
+			params.put("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
+			apartado= (TcManticApartadosDto) DaoFactory.getInstance().toEntity(TcManticApartadosDto.class, "TcManticApartadosDto", "detalle", params);
+			if(apartado.isValid())
+				((Pago) this.attrs.get("pago")).setAbono(apartado.getAbonado());								
+		} // try
+		catch (Exception e) {			
+			throw e; 
+		} // catch
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // asignaAbonoApartado
+	
+	protected void asignaFechaApartado() throws Exception{
+		TcManticApartadosDto apartado= null;
+		Map<String, Object>params    = null;
+		try {
+			params= new HashMap<>();
+			params.put("idVenta", ((TicketVenta)this.getAdminOrden().getOrden()).getIdVenta());
+			apartado= (TcManticApartadosDto) DaoFactory.getInstance().toEntity(TcManticApartadosDto.class, "TcManticApartadosDto", "detalle", params);
+			if(apartado.isValid())
+				((TicketVenta)this.getAdminOrden().getOrden()).setVigencia(apartado.getVencimiento());
+		} // try
+		catch (Exception e) {			
+			throw e; 
+		} // catch
+		finally{
+			Methods.clean(params);
+		} // finally
+	} // asignaAbonoApartado
 }
