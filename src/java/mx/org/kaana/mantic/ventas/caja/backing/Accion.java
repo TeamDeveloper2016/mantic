@@ -337,7 +337,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			params.put("idEmpresa", this.attrs.get("idEmpresa"));			
 			campos.add(new Columna("cuenta", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
-			params.put(Constantes.SQL_CONDICION, toCondicion());
+			params.put(Constantes.SQL_CONDICION, toCondicion(false));
 			this.lazyCuentasAbiertas= new FormatLazyModel("VistaVentasDto", "lazy", params, campos);			
 			RequestContext.getCurrentInstance().execute("PF('dlgOpenTickets').show();");			
 			UIBackingUtilities.resetDataTable("tablaTicketsAbiertos");
@@ -364,7 +364,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			campos= new ArrayList<>();
 			campos.add(new Columna("cliente", EFormatoDinamicos.MAYUSCULAS));
 			campos.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
-			params.put(Constantes.SQL_CONDICION, toCondicion());
+			params.put(Constantes.SQL_CONDICION, toCondicion(true));
 			ticketsAbiertos= UIEntity.build("VistaVentasDto", "lazy", params, campos, Constantes.SQL_TODOS_REGISTROS);
 			this.attrs.put("ticketsAbiertos", ticketsAbiertos);			
 			this.attrs.put("ticketAbierto", new UISelectEntity("-1"));
@@ -387,7 +387,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		} // finally
 	} // doLoadTicketAbiertos
 	
-	private String toCondicion(){
+	private String toCondicion(boolean all){
 		StringBuilder regresar= null;
 		Date fecha            = null;
 		try {
@@ -398,52 +398,19 @@ public class Accion extends IBaseVenta implements Serializable {
 			regresar.append(EEstatusVentas.ELABORADA.getIdEstatusVenta());									
 			regresar.append(" , ");
 			regresar.append(EEstatusVentas.ABIERTA.getIdEstatusVenta());									
-			regresar.append(" , ");
-			regresar.append(EEstatusVentas.APARTADOS.getIdEstatusVenta());									
-			regresar.append(" , ");
-			regresar.append(EEstatusVentas.COTIZACION.getIdEstatusVenta());									
+			if(all){
+				regresar.append(" , ");
+				regresar.append(EEstatusVentas.APARTADOS.getIdEstatusVenta());									
+				regresar.append(" , ");
+				regresar.append(EEstatusVentas.COTIZACION.getIdEstatusVenta());									
+			} // if
 			regresar.append(")");
 		} // try
 		catch (Exception e) {			
 			throw e;
 		} // catch		
 		return regresar.toString();
-	} // toCondicion
-	
-	public void doAsignaTicketAbiertoDlg() {
-		List<UISelectItem> ticketsAbiertos= null;
-		Map<String, Object>params         = null;
-		List<String> fields               = null;
-		try {
-			fields= new ArrayList<>();
-			params= new HashMap<>();
-			params.put("sortOrder", "");
-			params.put("idEmpresa", this.attrs.get("idEmpresa"));
-			fields.add("consecutivo");
-			fields.add("cuenta");
-			fields.add("precioTotal");
-			fields.add("cliente");
-			params.put(Constantes.SQL_CONDICION, toCondicion());
-			ticketsAbiertos= UISelect.build("VistaVentasDto", "lazy", params, fields, " - ", EFormatoDinamicos.MAYUSCULAS, Constantes.SQL_TODOS_REGISTROS);
-			if(!ticketsAbiertos.isEmpty()){
-				this.attrs.put("ticketsAbiertosDlg", ticketsAbiertos);
-				if(!ticketsAbiertos.isEmpty())
-					this.attrs.put("ticketAbiertoDlg", UIBackingUtilities.toFirstKeySelectItem(ticketsAbiertos));
-				RequestContext.getCurrentInstance().execute("PF('dlgOpenTickets').show();");
-			} // if
-			else{
-				JsfBase.addMessage("Cuentas", "Actualmente no hay cuentas abiertas", ETipoMensaje.INFORMACION);
-				RequestContext.getCurrentInstance().execute("janal.desbloquear();");
-			} // else
-		} // try
-		catch (Exception e) {
-			Error.mensaje(e);
-			JsfBase.addMessageError(e);
-		} // catch		
-		finally{
-			Methods.clean(params);
-		} // finally
-	} // doAsignaTicketAbiertoDlg
+	} // toCondicion	
 	
 	public void doAsignaTicketAbiertoDirecto(){
 		try {
@@ -517,7 +484,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			validaFacturacion();
 			RequestContext.getCurrentInstance().execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
 			this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
-			if(tipo.equals(EEstatusVentas.APARTADOS.name()))
+			if(tipo!= null && tipo.equals(EEstatusVentas.APARTADOS.name()))
 				asignaAbonoApartado();
 			doActivarCliente();
 		} // try
