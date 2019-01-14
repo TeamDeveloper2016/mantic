@@ -59,6 +59,8 @@ public class Traspases extends TcManticTransferenciasDto implements Serializable
 
 	public void setIkSolicito(UISelectEntity ikSolicito) {
 		this.ikSolicito= ikSolicito;
+		if(ikSolicito!= null)
+			this.setIdSolicito(ikSolicito.getKey());
 	}
 
 	@Override

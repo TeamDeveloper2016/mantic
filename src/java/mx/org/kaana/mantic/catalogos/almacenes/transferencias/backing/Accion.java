@@ -84,12 +84,15 @@ public class Accion extends IBaseAttribute implements Serializable {
           break;
         case MODIFICAR:
         case CONSULTAR:
-          this.transferencia = (Traspases) DaoFactory.getInstance().findById(Traspases.class, (Long)this.attrs.get("idTransferencia"));
+          this.transferencia = (Traspases) DaoFactory.getInstance().toEntity(Traspases.class, "TcManticTransferenciasDto", "detalle", this.attrs);
           this.attrs.put("sucursales", JsfBase.getAutentifica().getEmpresa().getSucursales());
           this.attrs.put("idArticulo", this.transferencia.getIdArticulo());
+          this.attrs.put("idAlmacen", this.transferencia.getIdAlmacen());
 					List<UISelectEntity> articulos= (List<UISelectEntity>)UIEntity.build("VistaAlmacenesTransferenciasDto", "porNombre", this.attrs);
-					this.attrs.put("articulo", articulos.get(0));
-          this.image= LoadImages.getImage(((UISelectEntity)this.attrs.get("articulo")).toString("archivo"));
+					if(articulos!= null && !articulos.isEmpty()) {
+					  this.attrs.put("articulo", articulos.get(0));
+            this.image= LoadImages.getImage(((UISelectEntity)this.attrs.get("articulo")).toString("archivo"));
+					} // if	
           break;
       } // switch      
       this.loadAlmacenes();
@@ -112,12 +115,12 @@ public class Accion extends IBaseAttribute implements Serializable {
       columns.add(new Columna("clave", EFormatoDinamicos.MAYUSCULAS));
       columns.add(new Columna("nombre", EFormatoDinamicos.MAYUSCULAS));
       almacenes = (List<UISelectEntity>) UIEntity.build("TcManticAlmacenesDto", "almacenes", params, columns);
+      this.attrs.put("almacenes", almacenes);
 			if(almacenes!= null && !this.accion.equals(EAccion.AGREGAR)) {
 				this.transferencia.setIkAlmacen(almacenes.get(almacenes.indexOf(new UISelectEntity(this.transferencia.getIdAlmacen()))));
 				this.transferencia.setIkDestino(almacenes.get(almacenes.indexOf(new UISelectEntity(this.transferencia.getIdDestino()))));
-        this.attrs.put("destinos", ((ArrayList<UISelectEntity>)almacenes).clone());
+        this.doUpdateAlmacenOrigen();
 			}	// if
-      this.attrs.put("almacenes", almacenes);
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -142,7 +145,7 @@ public class Accion extends IBaseAttribute implements Serializable {
       List<UISelectEntity> personas= UIEntity.build("VistaAlmacenesTransferenciasDto", "solicito", params, columns);
       this.attrs.put("personas", personas);
 			if(personas!= null && !this.accion.equals(EAccion.AGREGAR)) 
-				this.transferencia.setIkAlmacen(personas.get(personas.indexOf(new UISelectEntity(this.transferencia.getIdSolicito()))));
+				this.transferencia.setIkSolicito(personas.get(personas.indexOf(new UISelectEntity(this.transferencia.getIdSolicito()))));
     } // try
     catch (Exception e) {
       throw e;
@@ -232,16 +235,16 @@ public class Accion extends IBaseAttribute implements Serializable {
       Methods.clean(params);
     }// finally
 	}
-  public void doAsignaArticulo(SelectEvent event){
-		UISelectEntity seleccion       = null;
-		List<UISelectEntity> articulos = null;
+  public void doAsignaArticulo(SelectEvent event) {
+		UISelectEntity seleccion      = null;
+		List<UISelectEntity> articulos= null;
 		try {
 			articulos= (List<UISelectEntity>) this.attrs.get("articulos");
 			seleccion= articulos.get(articulos.indexOf((UISelectEntity)event.getObject()));
 			this.attrs.put("articulo", seleccion);
       this.attrs.put("idArticulo", seleccion.get("idArticulo"));
+			this.transferencia.setIdArticulo(seleccion.toLong("idArticulo"));
       this.image= LoadImages.getImage(seleccion.toString("archivo"));
-      this.attrs.put("cantidad", 0D);
       this.attrs.put("nuevaExistenciaOrigen", 0D);
       this.attrs.put("nuevaExistenciaDestino", 0D);
 		} // try

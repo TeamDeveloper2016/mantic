@@ -79,7 +79,7 @@
 									</p:panelGrid>
 								</p:panelGrid>
 								<p:outputLabel for="idAlmacenDestino" value="Almacen destino:"/>
-								<p:selectOneMenu id="idAlmacenDestino" value="#{manticCatalogosAlmacenesTransferenciasAccion.transferencia.ikAlmacen}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98 filas" effect="fade" filter="true" filterMatchMode="contains">
+								<p:selectOneMenu id="idAlmacenDestino" value="#{manticCatalogosAlmacenesTransferenciasAccion.transferencia.ikDestino}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-98 filas" effect="fade" filter="true" filterMatchMode="contains">
 									<p:ajax event="change" listener="#{manticCatalogosAlmacenesTransferenciasAccion.doUpdateAlmacenDestino}" process="@this" update="@(.filas)" oncomplete="janal.refresh();"/>
 									<f:selectItem itemValue="" itemLabel="SELECCIONE"/>
 									<f:selectItems value="#{manticCatalogosAlmacenesTransferenciasAccion.attrs.destinos}"  var="element" itemValue="#{element.key}" itemLabel="#{element.clave}"/>

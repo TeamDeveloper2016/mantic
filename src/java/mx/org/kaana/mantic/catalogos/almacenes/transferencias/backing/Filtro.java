@@ -186,30 +186,11 @@ public class Filtro extends Comun implements Serializable {
 	} // doLoadEstatus
 	
 	public void doActualizarEstatus() {
-		Transaccion transaccion                   = null;
-		TcManticTransferenciasBitacoraDto bitacora= null;
-		Entity seleccionado                       = null;
-    TcManticAlmacenesArticulosDto origen      = null;
-    Map<String, Object>params                 = null;
-    Double nuevoStock                         = 0D;
+		Transaccion transaccion= null;
+		Entity seleccionado    = null;
 		try {
-      params= new HashMap<>();
 			seleccionado= (Entity)this.attrs.get("seleccionado");
-			bitacora= new TcManticTransferenciasBitacoraDto();
-			bitacora.setIdTransferencia(seleccionado.getKey());
-			bitacora.setIdTransferenciaEstatus(Long.valueOf(this.attrs.get("estatusAsigna").toString()));
-			bitacora.setJustificacion((String) this.attrs.get("justificacion"));
-			bitacora.setIdUsuario(JsfBase.getIdUsuario());
-      if(Long.valueOf(this.attrs.get("estatusAsigna").toString()).equals(5L)) { // estatus entregado
-				params.put("idAlmacen", seleccionado.get("idAlmacen").toLong());
-				params.put("idArticulo", seleccionado.get("idArticulo").toLong());
-				origen = (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().findFirst(TcManticAlmacenesArticulosDto.class, "almacenArticulo", params);
-				nuevoStock = origen.getStock()- seleccionado.toDouble("cantidad");
-				origen.setStock(nuevoStock);
-  			transaccion= new Transaccion(bitacora, origen, seleccionado.toDouble("cantidad"), seleccionado.toLong("idDestino"));
-      } // if
-			else
-  			transaccion= new Transaccion(bitacora);
+			transaccion = new Transaccion((TcManticTransferenciasDto)DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, seleccionado.getKey()), ((UISelectEntity)this.attrs.get("idTransferenciaEstatus")).getKey());
 			if(transaccion.ejecutar(EAccion.REGISTRAR)) 
 				JsfBase.addMessage("Cambio estatus", "Se realizo el cambio de estatus de forma correcta", ETipoMensaje.INFORMACION);
 			else
@@ -225,13 +206,11 @@ public class Filtro extends Comun implements Serializable {
 	}	// doActualizaEstatus
 
   public void doEliminar() {
-		Transaccion transaccion           = null;
-		Entity seleccionado               = null;
-		TcManticTransferenciasDto registro= null;
+		Transaccion transaccion= null;
+		Entity seleccionado    = null;
     try {
 			seleccionado= (Entity) this.attrs.get("seleccionado");
-      registro = (TcManticTransferenciasDto) DaoFactory.getInstance().findById(TcManticTransferenciasDto.class, seleccionado.getKey());
-			transaccion= new Transaccion(registro, "");
+			transaccion= new Transaccion(new TcManticTransferenciasDto(seleccionado.getKey()));
 			if(transaccion.ejecutar(EAccion.ELIMINAR))
 				JsfBase.addMessage("Eliminar transferencia", "La transferencia de artículos se ha eliminado correctamente.", ETipoMensaje.INFORMACION);
 			else
@@ -242,35 +221,6 @@ public class Filtro extends Comun implements Serializable {
       JsfBase.addMessageError(e);
     } // catch		
   } // doEliminar
-  
-  public void doConfirmaEntrega() {
-		Transaccion transaccion              = null;
-		Entity seleccionado                  = null;
-		TcManticAlmacenesArticulosDto origen = null;
-    Map<String, Object>params            = null;
-    Double nuevoStock                    = 0D;
-    try {
-      params= new HashMap<>();
-			seleccionado= (Entity) this.attrs.get("seleccionado");
-      params.put("idAlmacen", seleccionado.toLong("idAlmacen"));
-      params.put("idArticulo", seleccionado.toLong("idArticulo"));
-      origen = (TcManticAlmacenesArticulosDto) DaoFactory.getInstance().findViewCriteria(TcManticAlmacenesArticulosDto.class, params, "almacenArticulo");
-      nuevoStock = origen.getStock()- seleccionado.toDouble("cantidad");
-      origen.setStock(nuevoStock);
-      transaccion= new Transaccion(origen, seleccionado.toDouble("cantidad"), seleccionado.toLong("idDestino"));
-			if(transaccion.ejecutar(EAccion.COMPLEMENTAR))
-				JsfBase.addMessage("Complementar entrega transferencia", "La transferencia de artículos se ha concretado correctamente.", ETipoMensaje.INFORMACION);
-			else
-				JsfBase.addMessage("Complementar entrega transferencia", "Ocurrió un error al concretar la transferencia de artículos.", ETipoMensaje.ERROR);								
-    } // try
-    catch (Exception e) {
-      Error.mensaje(e);
-      JsfBase.addMessageError(e);
-    } // catch		
-    	finally {
-			Methods.clean(params);
-		} // finally
-  } // doConfirmaEntrega
   
   public void doReporte(String nombre) throws Exception {
     ParametrosComunes parametrosComunes = null;

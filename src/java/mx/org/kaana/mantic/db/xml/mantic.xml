@@ -4343,13 +4343,18 @@
         from      
           tc_mantic_transferencias
         where      
-          id_almacen= {idAlmacen} and
-          id_destino= {idDestino} and
-          id_articulo= {idArticulo} and
-          id_usuario= {idUsuario} and
-          id_solicito= {idSolicito} and
-          observaciones = '{observaciones}' and
-          id_transferencia_estatus= {idTransferenciaEstatus}
+          id_almacen= {idAlmacen}
+          and id_destino= {idDestino}
+          and id_articulo= {idArticulo} 
+          and id_solicito= {idSolicito}
+      </select>
+      <select id="detalle">
+        select      
+          *
+        from      
+          tc_mantic_transferencias
+        where 
+          id_transferencia= {idTransferencia}
       </select>
       <select id="todos">
         select      
@@ -4389,6 +4394,9 @@
         order by
           tc_mantic_transferencias_bitacora.id_transferencia_bitacora,  tc_mantic_transferencias_bitacora.id_transferencia_estatus
       </select>
+			<delete id="rows">
+				delete from tc_mantic_transferencias_bitacora where id_transferencia= {idTransferencia}
+			</delete>
     </unit>
     <unit id="TcManticTransferenciasEstatusDto">
       <select id="row">
