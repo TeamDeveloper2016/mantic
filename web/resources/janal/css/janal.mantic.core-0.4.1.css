@@ -149,6 +149,8 @@ div.ui-panelgrid-content {
   float:right !important;
 }
 .janal-help-icon {cursor:help;}
+.janal-wid-1 {width: 1% !important;}
+.janal-wid-2 {width: 2% !important;}
 .janal-wid-3 {width: 3% !important;}
 .janal-wid-4 {width: 4% !important;}
 .janal-wid-5 {width: 5% !important;}
