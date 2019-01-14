@@ -420,7 +420,8 @@ public class TransaccionFactura extends IBaseTnx{
 			factura= (TcManticFacturasDto) DaoFactory.getInstance().findById(sesion, TcManticFacturasDto.class, Long.valueOf(id));
 			factura.setIdFacturama(cfdi.getId());
 			factura.setFolio(cfdi.getFolio());			
-			factura.setTimbrado(new Timestamp(Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19)).getTimeInMillis()));
+			//factura.setTimbrado(new Timestamp(Fecha.toCalendar(cfdi.getDate().substring(0, 10), cfdi.getDate().substring(11, 19)).getTimeInMillis()));
+			factura.setTimbrado(new Timestamp(Calendar.getInstance().getTimeInMillis()));
 			regresar= DaoFactory.getInstance().update(sesion, factura)>= 1L;
 		} // try
 		catch (Exception e) {			
