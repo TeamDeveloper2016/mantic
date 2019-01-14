@@ -134,6 +134,7 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("busquedaTicketAbierto", "");
 			this.pagar= false;
 			this.attrs.put("activeApartado", false);			
+			this.attrs.put("mostrarApartado", false);			
 			this.attrs.put("apartado", false);			
 			this.attrs.put("observaciones", "");		
 			this.attrs.put("disabledFacturar", false);
@@ -397,6 +398,10 @@ public class Accion extends IBaseVenta implements Serializable {
 			regresar.append(EEstatusVentas.ELABORADA.getIdEstatusVenta());									
 			regresar.append(" , ");
 			regresar.append(EEstatusVentas.ABIERTA.getIdEstatusVenta());									
+			regresar.append(" , ");
+			regresar.append(EEstatusVentas.APARTADOS.getIdEstatusVenta());									
+			regresar.append(" , ");
+			regresar.append(EEstatusVentas.COTIZACION.getIdEstatusVenta());									
 			regresar.append(")");
 		} // try
 		catch (Exception e) {			
@@ -469,6 +474,8 @@ public class Accion extends IBaseVenta implements Serializable {
 		UISelectEntity ticketAbierto        = null;
 		UISelectEntity ticketAbiertoPivote  = null;
 		List<UISelectEntity> ticketsAbiertos= null;
+		Date actual                         = null;
+		String tipo                         = null;
 		try {			
 			ticketAbierto= (UISelectEntity) this.attrs.get("ticketAbierto");
 			params= new HashMap<>();
@@ -477,9 +484,20 @@ public class Accion extends IBaseVenta implements Serializable {
 			this.attrs.put("registroCliente", new TcManticClientesDto());
 			if(ticketAbierto!= null && !ticketAbierto.getKey().equals(-1L)){				
 				ticketsAbiertos= (List<UISelectEntity>) this.attrs.get("ticketsAbiertos");
-				ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));
+				ticketAbiertoPivote= ticketsAbiertos.get(ticketsAbiertos.indexOf(ticketAbierto));												
 				this.setAdminOrden(new AdminTickets((TicketVenta)DaoFactory.getInstance().toEntity(TicketVenta.class, "TcManticVentasDto", "detalle", params), true));
+				tipo= ticketAbiertoPivote.toString("tipo");
+				this.attrs.put("tipo", tipo);
+				this.attrs.put("mostrarApartado", tipo.equals(EEstatusVentas.APARTADOS.name()));								
+				if(tipo.equals(EEstatusVentas.COTIZACION.name()) || tipo.equals(EEstatusVentas.APARTADOS.name())){					
+					if(tipo.equals(EEstatusVentas.APARTADOS.name()))
+						asignaFechaApartado();
+					actual= new Date(Calendar.getInstance().getTimeInMillis());
+					if(actual.after(((TicketVenta)getAdminOrden().getOrden()).getVigencia()))
+						generateNewVenta();					
+				} // if
 				this.attrs.put("sinIva", this.getAdminOrden().getIdSinIva().equals(1L));
+				this.attrs.put("consecutivo", ((TicketVenta)this.getAdminOrden().getOrden()).getConsecutivo());
 				loadCatalog();
 				doAsignaClienteTicketAbierto();
 				this.attrs.put("pagarVenta", true);
@@ -499,6 +517,8 @@ public class Accion extends IBaseVenta implements Serializable {
 			validaFacturacion();
 			RequestContext.getCurrentInstance().execute("jsArticulos.initArrayArt(" + String.valueOf(getAdminOrden().getArticulos().size()-1) + ");");
 			this.attrs.put("pago", new Pago(getAdminOrden().getTotales()));
+			if(tipo.equals(EEstatusVentas.APARTADOS.name()))
+				asignaAbonoApartado();
 			doActivarCliente();
 		} // try
 		catch (Exception e) {
@@ -968,7 +988,7 @@ public class Accion extends IBaseVenta implements Serializable {
 				case COTIZACION:
 					regresar= "COTIZACIÓN";
 					break;
-				case APARTADO:
+				case APARTADOS:
 					regresar= "APARTADO";
 					break;
 			} // switch			
@@ -984,7 +1004,7 @@ public class Accion extends IBaseVenta implements Serializable {
 		EEstatusVentas estatus= null;
 		try {
 			estatus= EEstatusVentas.fromIdTipoPago(idEstatus);
-			if(estatus.equals(EEstatusVentas.TERMINADA) || estatus.equals(EEstatusVentas.APARTADO))
+			if(estatus.equals(EEstatusVentas.TERMINADA) || estatus.equals(EEstatusVentas.APARTADOS))
 				regresar= ((TicketVenta)(ticket.getOrden())).getTicket();
 			else
 				regresar= ((TicketVenta)(ticket.getOrden())).getCotizacion();
@@ -1057,22 +1077,32 @@ public class Accion extends IBaseVenta implements Serializable {
 	
 	@Override
 	public void doAsignaCotizacion(){		
-		Transaccion transaccion= null;
 		try {			
-			transaccion= new Transaccion(new TcManticVentasDto(Long.valueOf(this.attrs.get("cotizacion").toString())));			
-			if (transaccion.ejecutar(EAccion.AGREGAR)){
-    		super.doAsignaCotizacion();						
-				doLoadTicketAbiertos();
-				this.attrs.put("ajustePreciosCliente", true);			
-				this.attrs.put("ticketAbierto", new UISelectEntity(new Entity(Long.valueOf(this.attrs.get("cotizacion").toString()))));
-				doAsignaTicketAbierto();
-			} // if
-			else 
-				JsfBase.addMessage("Ocurrió un error al registrar la cuenta de venta.", ETipoMensaje.ERROR);      			
+			super.doAsignaCotizacion();						
+			this.attrs.put("ajustePreciosCliente", true);			
+			this.attrs.put("ticketAbierto", new UISelectEntity(new Entity(Long.valueOf(this.attrs.get("cotizacion").toString()))));
+			doAsignaTicketAbierto();			
 		} // try
 		catch (Exception e) {
 			JsfBase.addMessageError(e);
 			Error.mensaje(e);			
 		} // catch		
-	} // doAsignaCotizacion		        
+	} // doAsignaCotizacion		 
+	
+	@Override
+	public void doAsignaApartado(){
+		try {			
+			super.doAsignaApartado();			
+			this.attrs.put("mostrarApartado", true);			
+			this.attrs.put("apartado", false);
+			this.attrs.put("creditoVenta", false);
+			this.attrs.put("ajustePreciosCliente", true);			
+			this.attrs.put("ticketAbierto", new UISelectEntity(new Entity(Long.valueOf(this.attrs.get("apartados").toString()))));
+			doAsignaTicketAbierto();
+		} // try
+		catch (Exception e) {
+			JsfBase.addMessageError(e);
+			Error.mensaje(e);			
+		} // catch		
+	} // doAsignaApartado
 }
