@@ -53,7 +53,7 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable{
 				case COTIZACION:
 					regresar= "COTIZACIÓN";
 					break;
-				case APARTADO:
+				case APARTADOS:
 					regresar= "APARTADO";
 					break;
 			} // switch			
@@ -69,7 +69,7 @@ public abstract class IBaseTicket extends IBaseFilter implements Serializable{
 		EEstatusVentas estatus= null;
 		try {
 			estatus= EEstatusVentas.fromIdTipoPago(idEstatus);
-			if(estatus.equals(EEstatusVentas.TERMINADA) || estatus.equals(EEstatusVentas.APARTADO))
+			if(estatus.equals(EEstatusVentas.TERMINADA) || estatus.equals(EEstatusVentas.APARTADOS))
 				regresar= ((TicketVenta)(ticket.getOrden())).getTicket();
 			else
 				regresar= ((TicketVenta)(ticket.getOrden())).getCotizacion();
