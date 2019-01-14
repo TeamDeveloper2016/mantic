@@ -14,7 +14,7 @@ public enum EEstatusVentas {
   TERMINADA  (6L),
   COTIZACION (7L),
   EXPIRADA   (8L),
-  APARTADO   (9L),
+  APARTADOS  (9L),
 	EN_CAPTURA (10L);
 
   private Long idEstatusVenta;
