@@ -34,6 +34,12 @@ public class Pago implements Serializable{
 	private Double limiteCheque;
 	private Double limiteVales;
 	private Double limiteTransferencia;
+	private Double difEfectivo;
+	private Double difCredito;
+	private Double difDebito;
+	private Double difTransferencia;
+	private Double difCheque;
+	private Double abono;
 	
 	public Pago(){
 		this(new Totales());
@@ -63,6 +69,12 @@ public class Pago implements Serializable{
 		this.referenciaCheque  = referenciaCheque;
 		this.transferencia     = transferencia;
 		this.referenciaTransferencia= referenciaTransferencia;
+		this.difCheque         = 0D;
+		this.difCredito        = 0D;
+		this.difDebito         = 0D;
+		this.difEfectivo       = 0D;
+		this.difTransferencia  = 0D;
+		this.abono             = 0D;
 	}
 	
 	public Totales getTotales() {
@@ -79,6 +91,7 @@ public class Pago implements Serializable{
 	
 	public Double getPago() {
 		Double regresar= 0D;
+		regresar= regresar + (this.abono != null ? this.abono : 0D);
 		regresar= regresar + (this.efectivo != null ? this.efectivo : 0D);
 		regresar= regresar + (this.credito != null ? this.credito : 0D);
 		regresar= regresar + (this.debito != null ? this.debito : 0D);
@@ -113,6 +126,14 @@ public class Pago implements Serializable{
 		return regresar < 0 ?  0: regresar;
 	}
 
+	public Double getAbono() {
+		return abono;
+	}
+
+	public void setAbono(Double abono) {
+		this.abono = abono != null ? abono : 0.0D;
+	}	
+	
 	public Double getEfectivo() {
 		return efectivo;
 	}
@@ -163,42 +184,42 @@ public class Pago implements Serializable{
 	
 	public Double getLimiteCredito() {
 		Double regresar= 0D;
-		if((this.cheque + this.debito + this.transferencia) <= 0)
+		if((this.cheque + this.debito + this.transferencia + this.abono) <= 0)
 			regresar= this.totales.getTotal();
 		else
-			regresar= this.totales.getTotal() - (this.cheque + this.debito + this.vales + this.transferencia);
+			regresar= this.totales.getTotal() - (this.cheque + this.debito + this.vales + this.transferencia + this.abono);
 		return regresar < 0 ? 0 : regresar;
 	}	
 
 	public Double getLimiteDebito() {
 		Double regresar= 0D;
-		if((this.cheque + this.credito + this.transferencia) <= 0)
+		if((this.cheque + this.credito + this.transferencia + this.abono) <= 0)
 			regresar= this.totales.getTotal();
 		else
-			regresar= this.totales.getTotal() - (this.cheque + this.credito + this.vales + + this.transferencia);
+			regresar= this.totales.getTotal() - (this.cheque + this.credito + this.vales + this.transferencia + this.abono);
 		return regresar < 0 ? 0 : regresar;
 	}
 
 	public Double getLimiteCheque() {
 		Double regresar= 0D;
-		if((this.debito + this.credito + this.transferencia) <= 0)
+		if((this.debito + this.credito + this.transferencia + this.abono) <= 0)
 			regresar= this.totales.getTotal();
 		else
-			regresar= this.totales.getTotal() - (this.credito + this.debito + this.vales + + this.transferencia);
+			regresar= this.totales.getTotal() - (this.credito + this.debito + this.vales + this.transferencia + this.abono);
 		return regresar < 0 ? 0 : regresar;
 	}
 
 	public Double getLimiteVales() {
-		Double regresar= this.totales.getTotal() - (this.cheque + this.debito + this.credito + + this.transferencia);
+		Double regresar= this.totales.getTotal() - (this.cheque + this.debito + this.credito + this.transferencia + this.abono);
 		return regresar < 0D ? 0D : regresar;
 	}
 
 	public Double getLimiteTransferencia() {
 		Double regresar= 0D;
-		if((this.debito + this.credito + this.cheque) <= 0)
+		if((this.debito + this.credito + this.cheque + this.abono) <= 0)
 			regresar= this.totales.getTotal();
 		else
-			regresar= this.totales.getTotal() - (this.credito + this.debito + this.vales + this.cheque);
+			regresar= this.totales.getTotal() - (this.credito + this.debito + this.vales + this.cheque + this.abono);
 		return regresar < 0 ? 0 : regresar;
 	}
 
@@ -284,5 +305,45 @@ public class Pago implements Serializable{
 
 	public void setReferenciaTransferencia(String referenciaTransferencia) {
 		this.referenciaTransferencia = referenciaTransferencia;
+	}
+
+	public Double getDifEfectivo() {
+		return getPago().equals(0D) ? 0D : (getEfectivo().equals(0D) ? getTotales().getTotal() - getPago() : getEfectivo());
+	}
+
+	public void setDifEfectivo(Double difEfectivo) {
+		this.difEfectivo = difEfectivo;
+	}
+
+	public Double getDifCredito() {
+		return getPago().equals(0D) ? 0D : (getCredito().equals(0D) ? getTotales().getTotal() - getPago() : getCredito());
+	}
+
+	public void setDifCredito(Double difCredito) {
+		this.difCredito = difCredito;
+	}
+
+	public Double getDifDebito() {
+		return getPago().equals(0D) ? 0D : (getDebito().equals(0D) ? getTotales().getTotal() - getPago() : getDebito());
+	}
+
+	public void setDifDebito(Double difDebito) {
+		this.difDebito = difDebito;
+	}
+
+	public Double getDifTransferencia() {
+		return getPago().equals(0D) ? 0D : (getTransferencia().equals(0D) ? getTotales().getTotal() - getPago() : getTransferencia());
+	}
+
+	public void setDifTransferencia(Double difTransferencia) {
+		this.difTransferencia = difTransferencia;
+	}
+
+	public Double getDifCheque() {
+		return getPago().equals(0D) ? 0D : (getCheque().equals(0D) ? getTotales().getTotal() - getPago() : getCheque());
+	}
+
+	public void setDifCheque(Double difCheque) {
+		this.difCheque = difCheque;
 	}	
 }
