@@ -11,6 +11,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.libs.reflection.Methods;
 
 public class CriteriosBusqueda implements Serializable {
 
@@ -67,7 +68,12 @@ public class CriteriosBusqueda implements Serializable {
   public void setListaPersonas(List<UISelectEntity> listaPersonas) {
     this.listaPersonas = listaPersonas;
   }
-  
-  
+
+	@Override
+	protected void finalize() throws Throwable {
+		super.finalize();
+		Methods.clean(this.listaPerfiles);
+		Methods.clean(this.listaPersonas);
+	}
 
 }

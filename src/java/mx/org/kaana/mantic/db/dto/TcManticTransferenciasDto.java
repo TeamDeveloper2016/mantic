@@ -57,11 +57,11 @@ public class TcManticTransferenciasDto implements IBaseDto, Serializable {
   }
 
   public TcManticTransferenciasDto(Long key) {
-    this(new Long(-1L),new Long(-1L),new Long(-1L),new Long(-1L),new Long(-1L),new Long(-1L),new Long(-1L),new Double(-1D),null,null);
+    this(new Long(-1L), new Long(-1L), new Long(-1L), new Long(-1L), new Long(-1L), new Long(-1L), new Long(-1L), new Double(-1D), null);
     setKey(key);
   }
 
-  public TcManticTransferenciasDto(Long idTransferencia, Long idAlmacen, Long idDestino, Long idArticulo, Long idSolicito, Long idUsuario, Long idTransferenciaEstatus, Double cantidad, String observaciones, Timestamp registro) {
+  public TcManticTransferenciasDto(Long idTransferencia, Long idAlmacen, Long idDestino, Long idArticulo, Long idSolicito, Long idUsuario, Long idTransferenciaEstatus, Double cantidad, String observaciones) {
     setIdTransferencia(idTransferencia);
     setIdAlmacen(idAlmacen);
     setIdDestino(idDestino);

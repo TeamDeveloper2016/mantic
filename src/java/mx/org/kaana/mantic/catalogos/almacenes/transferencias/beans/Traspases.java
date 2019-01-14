@@ -1,0 +1,69 @@
+package mx.org.kaana.mantic.catalogos.almacenes.transferencias.beans;
+
+import java.io.Serializable;
+import mx.org.kaana.libs.pagina.UISelectEntity;
+import mx.org.kaana.mantic.db.dto.TcManticTransferenciasDto;
+
+/**
+ * @company KAANA
+ * @project KAJOOL (Control system polls)
+ * @date 14/01/2019
+ * @time 10:33:04 AM 
+ * @author Team Developer 2016 <team.developer@kaana.org.mx>
+*/
+
+public class Traspases extends TcManticTransferenciasDto implements Serializable {
+
+	private static final long serialVersionUID=-4987242434377529059L;
+	
+	private UISelectEntity ikAlmacen;
+	private UISelectEntity ikDestino;
+	private UISelectEntity ikSolicito;
+
+	public Traspases() {
+		this.ikAlmacen = new UISelectEntity(-1L);
+		this.ikDestino = new UISelectEntity(-1L);
+		this.ikSolicito= new UISelectEntity(-1L);
+	}
+
+	public Traspases(Long idTransferencia, Long idAlmacen, Long idDestino, Long idArticulo, Long idSolicito, Long idUsuario, Long idTransferenciaEstatus, Double cantidad, String observaciones) {
+		super(idTransferencia, idAlmacen, idDestino, idArticulo, idSolicito, idUsuario, idTransferenciaEstatus, cantidad, observaciones);
+		this.ikAlmacen = new UISelectEntity(-1L);
+		this.ikDestino = new UISelectEntity(-1L);
+		this.ikSolicito= new UISelectEntity(-1L);
+	}
+	
+	public UISelectEntity getIkAlmacen() {
+		return ikAlmacen;
+	}
+
+	public void setIkAlmacen(UISelectEntity ikAlmacen) {
+		this.ikAlmacen=ikAlmacen;
+		if(ikAlmacen!= null)
+			this.setIdAlmacen(ikAlmacen.getKey());
+	}
+
+	public UISelectEntity getIkDestino() {
+		return ikDestino;
+	}
+
+	public void setIkDestino(UISelectEntity ikDestino) {
+		this.ikDestino=ikDestino;
+		if(ikDestino!= null)
+			this.setIdDestino(ikDestino.getKey());
+	}
+
+	public UISelectEntity getIkSolicito() {
+		return ikSolicito;
+	}
+
+	public void setIkSolicito(UISelectEntity ikSolicito) {
+		this.ikSolicito= ikSolicito;
+	}
+
+	@Override
+	public Class toHbmClass() {
+		return TcManticTransferenciasDto.class;
+	}
+	
+}

@@ -12,13 +12,12 @@
       Janal.Control.fields = {
         'idEmpresa'   : {validaciones: 'libre', mascara: 'libre', grupo: 'general'},
 				'codigos'     : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'},
-				'nombre'      : {validaciones: 'libre', mascara: 'libre', formatos: 'cambiar-mayusculas'}
         'fechaInicio' : {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'fechaTermino': {validaciones: 'fecha', mascara: 'fecha', grupo: 'general'},
         'idTransferenciaEstatus': {validaciones: 'libre', mascara: 'libre', grupo: 'general'}				
       };
 			
-			fieldsDialog ={
+			fieldsDialog= {
 				'justificacion' : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoDos', formatos: 'cambiar-mayusculas'}
 			};
 			
@@ -199,7 +198,7 @@
     </h:panelGrid>			
   </ui:define>
 	<ui:define name="dialogos">
-		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoEstatus', fieldsDialog);janal.refresh();">
+		<p:dialog id="dialogoEstatus" widgetVar="dlgEstatus" header="Cambio de estatus" resizable="false" closable="false" minimizable="false" maximizable="false" responsive="true" width="60%" onShow="janal.change('formDialogoEstatus', fieldsDialog); janal.refresh();">
 			<h:form id="formDialogoEstatus" prependId="false">
 				<h:panelGrid columns="2" styleClass="janal-wid-100" columnClasses="janal-wid-10, janal-wid-100">
 					<p:outputLabel for="estatusDlg" value="Estatus:"/>												
