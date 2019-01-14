@@ -198,7 +198,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 	private boolean procesarVenta(Session sesion) throws Exception{
 		boolean regresar= false;
 		try {
-			regresar= pagarVenta(sesion, this.ventaFinalizada.getApartado() ? EEstatusVentas.APARTADO.getIdEstatusVenta() : (this.ventaFinalizada.isCredito() ? EEstatusVentas.CREDITO.getIdEstatusVenta() : EEstatusVentas.PAGADA.getIdEstatusVenta()));
+			regresar= pagarVenta(sesion, this.ventaFinalizada.getApartado() ? EEstatusVentas.APARTADOS.getIdEstatusVenta() : (this.ventaFinalizada.isCredito() ? EEstatusVentas.CREDITO.getIdEstatusVenta() : EEstatusVentas.PAGADA.getIdEstatusVenta()));
 			if(regresar){
 				if(this.ventaFinalizada.isFacturar() && !this.ventaFinalizada.getApartado())
 					regresar= registrarFactura(sesion);
@@ -444,7 +444,7 @@ public class Transaccion extends mx.org.kaana.mantic.ventas.reglas.Transaccion{
 		Long consecutivo         = -1L;
 		boolean validacionEstatus= false;
 		try {									
-			validacionEstatus= !idEstatusVenta.equals(EEstatusVentas.APARTADO.getIdEstatusVenta());
+			validacionEstatus= !idEstatusVenta.equals(EEstatusVentas.APARTADOS.getIdEstatusVenta());
 			consecutivo= toSiguiente(sesion);			
 			getOrden().setCticket(consecutivo);			
 			getOrden().setTicket(Fecha.getAnioActual() + Cadena.rellenar(consecutivo.toString(), 5, '0', true));
