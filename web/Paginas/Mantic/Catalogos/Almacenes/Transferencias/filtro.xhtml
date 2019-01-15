@@ -18,7 +18,7 @@
       };
 			
 			fieldsDialog= {
-				'idTransferenciaEstatus' : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoDos'},
+				'idEstatus' : {validaciones: 'requerido', mascara: 'libre', grupo: 'dialogoDos'},
 				'justificacion' : {validaciones: 'libre', mascara: 'libre', grupo: 'dialogoDos', formatos: 'cambiar-mayusculas'}
 			};
 			
@@ -90,8 +90,8 @@
 							<p:calendar id="fechaInicio" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.fechaInicio}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
               <p:outputLabel for="fechaTermino" value="Fecha termino:"/>
 							<p:calendar id="fechaTermino" inputStyleClass="janal-wid-70" styleClass="janal-wid-100" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.fechaTermino}" showOn="button" pattern="dd/MM/yyyy" readonlyInput="true" locale="es" converter="janal.convertidor.Calendario"/>
-              <p:outputLabel for="idTransferenciaEstatus" value="Estatus:"/>
-              <p:selectOneMenu id="idTransferenciaEstatus" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.idTransferenciaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="contains">
+              <p:outputLabel for="idEstatus" value="Estatus:"/>
+              <p:selectOneMenu id="idEstatus" value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.idTransferenciaEstatus}" var="item" converter="janal.convertidor.Entity" styleClass="janal-wid-100-txt"  effect="fade" filter="true" filterMatchMode="contains">
 								<f:selectItem itemLabel="SELECCIONE" itemValue="-1"/>
                 <f:selectItems value="#{manticCatalogosAlmacenesTransferenciasFiltro.attrs.catalogo}"  var="element" itemValue="#{element}" itemLabel="#{element.nombre}"/>
                 <p:column headerText="Nombre">

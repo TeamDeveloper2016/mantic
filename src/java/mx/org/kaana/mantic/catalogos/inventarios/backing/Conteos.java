@@ -124,6 +124,9 @@ public class Conteos extends IBaseFilter implements Serializable {
 				else
     			this.articulo= new TcManticAlmacenesArticulosDto();
 			} // if	
+			else
+				if(!vigente.isValid())
+					vigente.setInicial(articulo.getStock());
 		} // try
 	  catch (Exception e) {
 			Error.mensaje(e);
@@ -218,8 +221,8 @@ public class Conteos extends IBaseFilter implements Serializable {
   		params.put("idProveedor", -1L);
 			String search= new String((String)this.attrs.get("codigo")); 
 			if(!Cadena.isVacio(search)) {
-  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
 				buscaPorCodigo= search.startsWith(".");
+  			search= search.replaceAll(Constantes.CLEAN_SQL, "").trim();
 				if(buscaPorCodigo)
 					search= search.trim().substring(1);
 				search= search.toUpperCase().replaceAll("(,| |\\t)+", ".*.*");
@@ -287,6 +290,7 @@ public class Conteos extends IBaseFilter implements Serializable {
 			transaccion= new Transaccion(vigente, this.articulo);
 			if(transaccion.ejecutar(vigente.isValid()? EAccion.MODIFICAR: EAccion.AGREGAR)) {
 				JsfBase.addMessage("Inventarios", "Se agregó/modificó de forma correcta el inventario", ETipoMensaje.INFORMACION);
+				this.doLoad();
 			} // if	
 			else
 				JsfBase.addMessage("Inventarios", "Ocurrió un error al agregar el inventario", ETipoMensaje.ERROR);

@@ -97,7 +97,7 @@
 									<p:outputLabel for="inicial" value="Inicial:"/>
   								<p:panelGrid columns="2" layout="grid" styleClass="janal-wid-98" columnClasses="janal-wid-100, janal-wid-col-38">
 										<p:inputNumber id="inicial" inputStyleClass="janal-wid-98 janal-column-right janal-key-kardex janal-color-orange" value="#{manticCatalogosInventariosConteos.attrs.vigente.inicial}" styleClass="filas" readonly="#{manticCatalogosInventariosConteos.habilitar}"/>	
-										<p:commandButton id="agregarInventario" process="@this @(.filas)" icon="fa fa-cart-plus" title="Agregar/Actualizar inventario" style="float:right;" styleClass="janal-key-kardex filas" action="#{manticCatalogosInventariosConteos.doAceptar}" disabled="#{manticCatalogosInventariosConteos.habilitar}" onstart="janal.execute();" oncomplete="$('#codigos_input').focus();"/>
+										<p:commandButton id="agregarInventario" process="@this @(.filas)" update="tabla" icon="fa fa-cart-plus" title="Agregar/Actualizar inventario" style="float:right;" styleClass="janal-key-kardex filas" action="#{manticCatalogosInventariosConteos.doAceptar}" disabled="#{manticCatalogosInventariosConteos.habilitar}" onstart="janal.execute();" oncomplete="$('#codigos_input').focus();"/>
 									</p:panelGrid>
   							  <p:outputLabel value="Fecha:"/>
   								<p:inputText value="#{manticCatalogosInventariosConteos.doRegistro(manticCatalogosInventariosConteos.attrs.vigente.registro)}" styleClass="janal-wid-96 filas" readonly="true"/>
